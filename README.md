@@ -57,6 +57,7 @@ Copy-Item C:\otel\config.yaml C:\otel\config.candidate.yaml -Force
 | `make-audit-pack.ps1` | Audit packaging | Compliance evidence |
 | `setup-weekly-audit.ps1` | Weekly audit setup | Hands-off evidence trail |
 | `post-deploy-smoke.ps1` | CI/CD smoke test | Pipeline gate validation |
+| `generate-wallet-card-pdf.ps1` | PDF generation | Printable wallet card |
 
 ## 📁 Repository Structure
 
@@ -73,6 +74,8 @@ C:\otel\
 ├── make-audit-pack.ps1           # Audit packaging
 ├── setup-weekly-audit.ps1        # Weekly audit setup
 ├── post-deploy-smoke.ps1         # CI/CD smoke test
+├── generate-wallet-card-pdf.ps1  # PDF generation
+├── wallet-card.html              # Printable wallet card
 ├── FINALIZATION_COMPLETE.md      # Finalization documentation
 ├── ON_CALL_RUNBOOK.md            # On-call procedures
 ├── HANDOFF_CHECKLIST.md          # Handoff checklist
