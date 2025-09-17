@@ -1,5 +1,5 @@
-# Require review from ops for changes to core scripts/config
-C:/otel/config.yaml                                    @fubumaki
-C:/otel/config-hardened-plus.yaml                      @fubumaki
-C:/otel/*.ps1                                          @fubumaki
+# Core configs and scripts require @fubumaki review
+/config.yaml                                           @fubumaki
+/config-hardened-plus.yaml                             @fubumaki
+/*.ps1                                                 @fubumaki
 /docs/*                                                @fubumaki

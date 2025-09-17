@@ -5,16 +5,18 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-      - name: ASCII & CRLF check (no binaries)
+      - name: ASCII & no-BOM, no smart quotes
         shell: pwsh
         run: |
-          $bin = @(git ls-files | %{
-            $bytes = [System.IO.File]::ReadAllBytes($_)
-            if ($bytes -contains 0) { $_ }
-          })
-          if ($bin.Count -gt 0) { 
-            Write-Error "Binary files detected: $($bin -join ', ')"; exit 1 
+          $bad = @()
+          git ls-files | %{
+            $p = $_
+            $bytes = [System.IO.File]::ReadAllBytes($p)
+            $hasBom = ($bytes.Length -ge 3 -and $bytes[0..2] -ceq 0xEF,0xBB,0xBF)
+            $text = Get-Content $p -Raw -ErrorAction SilentlyContinue
+            if ($hasBom -or ($text -match '[\u2018\u2019\u201C\u201D]')) { $bad += $p }
           }
+          if ($bad.Count) { Write-Error "BOM or smart quotes found in: $($bad -join ', ')"; exit 1 }
       - name: Smoke lint (static placeholder)
         shell: pwsh
         run: |

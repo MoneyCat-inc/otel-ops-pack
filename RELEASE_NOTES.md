@@ -1,5 +1,18 @@
 # Release Notes
 
+## Release Template
+```markdown
+## vX.Y.Z – Title
+- change summary (fix/feat/docs)
+- proof:
+  - safe-apply-config.ps1: canary PASS (+1)
+  - audit pack: audit-pack_YYYYMMDD_HHMMSS.zip (SHA256: …)
+- notes:
+  - service PathName includes --config C:\otel\config.yaml
+```
+
+---
+
 ## v1.2.2 – ASCII config fix (2025-09-18)
 
 ### Changes

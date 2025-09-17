@@ -139,6 +139,30 @@ sc.exe failureflag otelcol-contrib 1
 - Audit trail via `make-audit-pack.ps1`
 - Immutable release artifacts with SHA256 verification
 
+## 🔧 Repository Maintenance
+
+### Clean Up Merged Branches
+```bash
+# prune merged branches locally
+git fetch --all --prune
+git branch --merged main | egrep -v "^\*|main|master|release/" | xargs -n1 git branch -d
+
+# delete merged remote branches (review carefully)
+git branch -r --merged origin/main | egrep -v "origin/(main|master|release/)" \
+  | sed 's#origin/##' | xargs -n1 -I{} git push origin --delete {}
+
+# compact history
+git gc --aggressive --prune=now
+```
+
+### Repository Status
+```bash
+# Check repository health
+git status
+git log --oneline -5
+gh repo view fubumaki/otel-ops-pack
+```
+
 ## 📞 Support
 
 See `ON_CALL_RUNBOOK.md` for detailed operational procedures and troubleshooting guides.
