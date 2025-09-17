@@ -5,15 +5,17 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-      - name: ASCII & CRLF check
+      - name: ASCII & CRLF check (no binaries)
         shell: pwsh
         run: |
-          $bad = git ls-files | %{
-            $bin = (Get-Content $_ -Encoding Byte -ReadCount 0)
-            if ($bin -contains 0) { $_ }
+          $bin = @(git ls-files | %{
+            $bytes = [System.IO.File]::ReadAllBytes($_)
+            if ($bytes -contains 0) { $_ }
+          })
+          if ($bin.Count -gt 0) { 
+            Write-Error "Binary files detected: $($bin -join ', ')"; exit 1 
           }
-          if ($bad) { Write-Error "Binary files detected: $bad"; exit 1 }
-      - name: smoke (static)
+      - name: Smoke lint (static placeholder)
         shell: pwsh
         run: |
-          Test-Path C:\windows  # placeholder; real runtime checks run on host
+          Write-Host "Static check OK"

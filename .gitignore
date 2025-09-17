@@ -1,4 +1,4 @@
-# operational dirs & artifacts
+# operational dirs
 logs/
 queue/
 backup/
@@ -17,5 +17,5 @@ config.candidate.yaml
 # OS/IDE
 .DS_Store
 Thumbs.db
-.idea/
 .vscode/
+.idea/

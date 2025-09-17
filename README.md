@@ -4,6 +4,20 @@ Production-ready observability package with hardened collector configuration and
 
 ## 🚀 Quick Start
 
+### Daily Ops (60 seconds)
+```powershell
+C:\otel\green-sheet.ps1
+C:\otel\canary-check-min.ps1
+```
+
+### Safe Change
+```powershell
+Copy-Item C:\otel\config.yaml C:\otel\config.candidate.yaml -Force
+# edit candidate...
+C:\otel\safe-apply-config.ps1
+C:\otel\make-audit-pack.ps1
+```
+
 ### Service Status
 ```powershell
 # Check service status and health
