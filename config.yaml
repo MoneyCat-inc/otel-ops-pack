@@ -1,5 +1,5 @@
 # C:\otel\config-hardened-plus.yaml
-# Hardened, loopback-only, resilient Windows Collector → SigNoz
+# Hardened, loopback-only, resilient Windows Collector ? SigNoz
 
 extensions:
   health_check:
