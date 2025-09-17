@@ -1,0 +1,61 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^T-\\d{4}-\\d{2}-\\d{2}-\\d{3}$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 100
+    },
+    "goal": {
+      "type": "string",
+      "minLength": 20,
+      "maxLength": 200
+    },
+    "acceptance": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "scope": {
+      "type": "object",
+      "properties": {
+        "paths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "excluded": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": ["paths"]
+    },
+    "tests": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "priority": {
+      "type": "string",
+      "enum": ["L", "M", "H", "C"]
+    },
+    "deadline": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    }
+  },
+  "required": ["id", "title", "goal", "acceptance", "scope", "priority"]
+}
+

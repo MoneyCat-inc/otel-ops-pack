@@ -1,0 +1,31 @@
+name: observability-canary
+
+on:
+  schedule:
+    - cron: "0 * * * *"   # every hour
+  workflow_dispatch:
+
+jobs:
+  canary:
+    runs-on: self-hosted  # your Windows runner label(s), e.g. ["self-hosted","windows","x64"]
+    steps:
+      - name: Checkout (optional if you store scripts in repo)
+        uses: actions/checkout@v4
+
+      - name: Canary check (SigNoz API)
+        shell: pwsh
+        run: |
+          $script = "C:\otel\canary-check.ps1"
+          if (-Not (Test-Path $script)) {
+            Write-Error "Missing $script"; exit 1
+          }
+          # Run default (SigNoz API mode)
+          & $script
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      # If you prefer ClickHouse fallback (expose 18123:8123), enable this step instead:
+      # - name: Canary check (ClickHouse fallback)
+      #   shell: pwsh
+      #   run: |
+      #     & "C:\otel\canary-check.ps1" -UseClickHouse -ClickHouseHttp "http://localhost:18123"
+      #     if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
