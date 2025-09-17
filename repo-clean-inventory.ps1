@@ -13,10 +13,10 @@ $unwanted = Get-ChildItem -Recurse -File | Where-Object {
 }
 
 if ($unwanted) {
-    Write-Host "  ⚠️  Found unwanted files:" -ForegroundColor Red
+    Write-Host "  Found unwanted files:" -ForegroundColor Red
     $unwanted | ForEach-Object { Write-Host "    $($_.FullName)" -ForegroundColor Red }
 } else {
-    Write-Host "  ✅ No unwanted files found" -ForegroundColor Green
+    Write-Host "  No unwanted files found" -ForegroundColor Green
 }
 
 # Check operational directories
@@ -25,9 +25,9 @@ $opDirs = @('logs', 'audit', 'backup', 'state', 'queue')
 foreach ($dir in $opDirs) {
     if (Test-Path $dir) {
         $fileCount = (Get-ChildItem $dir -File -Recurse | Measure-Object).Count
-        Write-Host "  📁 $dir`: $fileCount files" -ForegroundColor Cyan
+        Write-Host "  $dir`: $fileCount files" -ForegroundColor Cyan
     } else {
-        Write-Host "  📁 $dir`: Not found" -ForegroundColor Yellow
+        Write-Host "  $dir`: Not found" -ForegroundColor Yellow
     }
 }
 
@@ -40,12 +40,12 @@ $oldFiles = Get-ChildItem -Recurse -File | Where-Object {
 }
 
 if ($oldFiles) {
-    Write-Host "  📅 Old files found (candidates for rotation):" -ForegroundColor Yellow
+    Write-Host "  Old files found (candidates for rotation):" -ForegroundColor Yellow
     $oldFiles | ForEach-Object { 
         Write-Host "    $($_.FullName) ($($_.LastWriteTime.ToString('yyyy-MM-dd')))" -ForegroundColor Yellow 
     }
 } else {
-    Write-Host "  ✅ No old files found" -ForegroundColor Green
+    Write-Host "  No old files found" -ForegroundColor Green
 }
 
 # Check core scripts integrity
@@ -64,9 +64,9 @@ $coreScripts = @(
 
 foreach ($script in $coreScripts) {
     if (Test-Path $script) {
-        Write-Host "  ✅ $script" -ForegroundColor Green
+        Write-Host "  $script" -ForegroundColor Green
     } else {
-        Write-Host "  ❌ $script MISSING!" -ForegroundColor Red
+        Write-Host "  $script MISSING!" -ForegroundColor Red
     }
 }
 
