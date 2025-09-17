@@ -1,25 +1,21 @@
-# Ignore backup and temporary files
-*.bak.*
-*.last.*
-*.zip
-*.sha256
-
-# Ignore operational directories (keep structure but ignore contents)
+# operational dirs & artifacts
 logs/
-audit/
+queue/
 backup/
+audit/
 state/
 
-# Ignore Windows-specific files
+# generated packs & signatures
+*.zip
+*.sha256.txt
+
+# working files
+*.last.*
+*.bak.*
+config.candidate.yaml
+
+# OS/IDE
+.DS_Store
 Thumbs.db
-Desktop.ini
-
-# Ignore PowerShell profile and temporary files
-*.ps1.bak
-*.ps1.tmp
-
-# Ignore any IDE files
-.vscode/
 .idea/
-*.swp
-*.swo
+.vscode/

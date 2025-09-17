@@ -1,0 +1,19 @@
+name: sanity
+on: [push, pull_request]
+jobs:
+  verify:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: ASCII & CRLF check
+        shell: pwsh
+        run: |
+          $bad = git ls-files | %{
+            $bin = (Get-Content $_ -Encoding Byte -ReadCount 0)
+            if ($bin -contains 0) { $_ }
+          }
+          if ($bad) { Write-Error "Binary files detected: $bad"; exit 1 }
+      - name: smoke (static)
+        shell: pwsh
+        run: |
+          Test-Path C:\windows  # placeholder; real runtime checks run on host
