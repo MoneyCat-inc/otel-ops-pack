@@ -32,6 +32,9 @@ Invoke-WebRequest -Uri "http://127.0.0.1:13134" -TimeoutSec 5 | ConvertFrom-Json
 # 5) (Optional) schedule local monitors
 # canary every 10 min, drift-guard every 15, queue-watch every 5, backup daily
 C:\otel\setup-operational-monitoring.ps1
+
+# 6) (Optional) setup weekly auto-audit for evidence trail
+C:\otel\setup-weekly-audit.ps1
 ```
 
 ## 🔧 Safe Change Control (Repeatable)
@@ -77,8 +80,9 @@ C:\otel\canary-check-min.ps1           # deterministic delta +1, exit 0
 
 * **AllSigned**: code-sign `C:\otel\*.ps1` and move host to `ExecutionPolicy AllSigned`
 * **SigNoz API auth**: optional L3 search-side verify in canary (keep metrics-delta as the truth)
-* **Weekly audit pack**: scheduled job to collect evidence automatically
+* **Weekly audit pack**: ✅ **DONE** - `setup-weekly-audit.ps1` creates hands-off evidence trail
 * **Least-privilege service account**: move service off LocalSystem/LocalService with ACL'd `C:\otel`
+* **CI/CD Integration**: ✅ **DONE** - `post-deploy-smoke.ps1` for pipeline gates
 
 ## ✅ What "Good" Looks Like Going Forward
 

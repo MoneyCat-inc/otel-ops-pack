@@ -55,6 +55,8 @@ Copy-Item C:\otel\config.yaml C:\otel\config.candidate.yaml -Force
 | `safe-apply-config.ps1` | Safe config application | Change management |
 | `chaos-drill.ps1` | Chaos engineering | Resilience testing |
 | `make-audit-pack.ps1` | Audit packaging | Compliance evidence |
+| `setup-weekly-audit.ps1` | Weekly audit setup | Hands-off evidence trail |
+| `post-deploy-smoke.ps1` | CI/CD smoke test | Pipeline gate validation |
 
 ## 📁 Repository Structure
 
@@ -69,6 +71,8 @@ C:\otel\
 ├── safe-apply-config.ps1         # Safe config application
 ├── chaos-drill.ps1               # Chaos engineering
 ├── make-audit-pack.ps1           # Audit packaging
+├── setup-weekly-audit.ps1        # Weekly audit setup
+├── post-deploy-smoke.ps1         # CI/CD smoke test
 ├── FINALIZATION_COMPLETE.md      # Finalization documentation
 ├── ON_CALL_RUNBOOK.md            # On-call procedures
 ├── HANDOFF_CHECKLIST.md          # Handoff checklist
@@ -82,9 +86,10 @@ C:\otel\
 
 ## 🔄 Maintenance Schedule
 
-- **Weekly:** `make-audit-pack.ps1` → attach to ops log
+- **Weekly:** `setup-weekly-audit.ps1` → automated evidence trail (hands-off)
 - **Monthly:** `repo-clean-inventory.ps1` (dry-run) → confirm no drift
 - **Quarterly:** `chaos-drill.ps1` (maintenance window) → verify resilience
+- **CI/CD:** `post-deploy-smoke.ps1` → pipeline gate validation
 
 ## 🚨 Emergency Procedures
 
