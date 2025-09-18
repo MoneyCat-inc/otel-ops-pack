@@ -10,11 +10,18 @@ C:\otel\green-sheet.ps1
 C:\otel\canary-check-min.ps1
 ```
 
-### Safe Change
+### Safe Change Control
 ```powershell
+# Create candidate config
 Copy-Item C:\otel\config.yaml C:\otel\config.candidate.yaml -Force
 # edit candidate...
-C:\otel\safe-apply-config.ps1
+
+# Apply a candidate config
+# validate + restart + canary (+ rollback if needed)
+C:\otel\safe-apply-config.ps1 -Candidate C:\otel\config.candidate.yaml
+Get-Content C:\otel\logs\safe-apply.last.txt -Tail 50
+
+# Generate audit pack
 C:\otel\make-audit-pack.ps1
 ```
 

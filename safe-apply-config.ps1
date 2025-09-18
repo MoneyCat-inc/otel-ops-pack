@@ -25,6 +25,9 @@ if (-not $admin) { Write-Error "Run elevated (Administrator)."; exit 1 }
 
 if (-not (Test-Path $Candidate)) { Write-Error "Candidate not found: $Candidate"; exit 2 }
 
+# Log the candidate path being used
+WL ("Candidate path: {0}" -f $Candidate)
+
 # Validate config (newer collectors support 'validate')
 try {
   $p = Start-Process -FilePath $Exe -ArgumentList @("validate","--config",$Candidate) -Wait -PassThru

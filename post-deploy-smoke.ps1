@@ -20,6 +20,17 @@ try {
         throw "canary failed (exit code: $($p.ExitCode))" 
     }
     
+    # Optional Kafka smoke test (non-blocking)
+    Write-Host "  Checking Kafka connectivity (optional)..." -ForegroundColor Yellow
+    $kafkaP = Start-Process "$env:WINDIR\System32\WindowsPowerShell\v1.0\powershell.exe" `
+        -ArgumentList @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', 'C:\otel\kafka-smoke.ps1') `
+        -PassThru -Wait
+    if ($kafkaP.ExitCode -eq 0) {
+        Write-Host "  ✅ Kafka reachable" -ForegroundColor Green
+    } else {
+        Write-Host "  ⚠️  Kafka unreachable (optional)" -ForegroundColor Yellow
+    }
+    
     Write-Host "✅ SMOKE OK - All checks passed" -ForegroundColor Green
     exit 0
     

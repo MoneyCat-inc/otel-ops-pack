@@ -20,6 +20,9 @@ The OpenTelemetry Collector observability package has been successfully transfor
 ✅ **Resilience testing** with chaos engineering drills  
 ✅ **Daily operations** in under 60 seconds  
 ✅ **Emergency procedures** with fast rollback capabilities  
+✅ **Kafka fan-out** for multi-destination observability  
+✅ **Resource standardization** with unified project/namespace attributes  
+✅ **Tail-based sampling** ready for traces optimization  
 
 ## 🚀 Ready for Deployment
 
@@ -87,9 +90,24 @@ The observability package is now:
 
 ---
 
-**Version:** v1.0.0  
+**Version:** v1.3.0  
 **Release Date:** $(Get-Date -Format 'yyyy-MM-dd')  
 **Status:** Ready for Production Deployment  
 **Next Review:** Quarterly (use `chaos-drill.ps1`)
+
+## 📝 Integration Notes
+
+### GPU Metrics (Optional)
+GPU metrics scrape is intentionally omitted from the current configuration. To enable:
+
+1. **Prerequisites**: Deploy `dcgm_exporter` or similar GPU monitoring service on `127.0.0.1:9400`
+2. **Enable**: Uncomment the `prometheus` receiver in `config.yaml` and add to metrics pipeline
+3. **Verify**: Run `kafka-smoke.ps1` to check connectivity
+
+### Kafka Configuration
+- **Default Broker**: `localhost:9092` (placeholder)
+- **Topic**: `otel-logs` 
+- **Encoding**: `otlp_json`
+- **Verification**: Use `kafka-smoke.ps1` for connectivity check
 
 **This is the way.** 🏁
