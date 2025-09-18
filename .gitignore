@@ -5,6 +5,11 @@ backup/
 audit/
 state/
 
+# agent directories
+.agent/logs/
+.agent/reports/
+.agent/LOCK
+
 # generated packs & signatures
 *.zip
 *.sha256.txt
@@ -19,3 +24,9 @@ config.candidate.yaml
 Thumbs.db
 .vscode/
 .idea/
+
+.venv/
+start/
+qc/
+query/
+queryex/
