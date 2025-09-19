@@ -70,4 +70,4 @@ sc.exe failureflag otelcol-contrib 1
 - **Quarterly**: `chaos-drill.ps1` (maintenance window) → verify resilience
 
 ---
-**Version:** v1.0.0 | **Compatibility:** PS 5.1+, Windows 10/11+ | **Emergency:** See ON_CALL_RUNBOOK.md
+**Version:** v1.1.0 | **Compatibility:** PS 5.1+, Windows 10/11+ | **Emergency:** See ON_CALL_RUNBOOK.md
