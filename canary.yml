@@ -15,7 +15,7 @@ jobs:
       - name: Canary check (SigNoz API)
         shell: pwsh
         run: |
-          $script = "C:\otel\canary-check-min.ps1"
+          $script = "C:\otel\canary-check.ps1"
           if (-Not (Test-Path $script)) {
             Write-Error "Missing $script"; exit 1
           }
@@ -27,5 +27,5 @@ jobs:
       # - name: Canary check (ClickHouse fallback)
       #   shell: pwsh
       #   run: |
-      #     & "C:\otel\canary-check-min.ps1"
+      #     & "C:\otel\canary-check.ps1" -UseClickHouse -ClickHouseHttp "http://localhost:18123"
       #     if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
