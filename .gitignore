@@ -19,6 +19,11 @@ state/
 *.bak.*
 config.candidate.yaml
 
+# API token verification artifacts
+artifacts/*.json
+artifacts/verify-run.txt
+artifacts/REVIEWER_CHECKLIST_SAMPLE.md
+
 # OS/IDE
 .DS_Store
 Thumbs.db

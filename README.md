@@ -1,5 +1,7 @@
 # OTel Windows → SigNoz Observability Kit
 
+[![Observability Verify](https://github.com/your-org/otel/actions/workflows/ci-verify.yml/badge.svg)](https://github.com/your-org/otel/actions/workflows/ci-verify.yml)
+
 A complete Windows-to-SigNoz observability pipeline with automated monitoring and alerting.
 
 ## 🚀 Quick Start
@@ -43,6 +45,33 @@ A complete Windows-to-SigNoz observability pipeline with automated monitoring an
 # Check scheduled task
 Get-ScheduledTask -TaskName "OTel-Verification-Canary"
 ```
+
+## 🔐 API Token Setup (Optional)
+
+For **full end-to-end API verification** including redaction testing, set up a SigNoz API token:
+
+### 1. Generate Token in SigNoz UI
+1. Open SigNoz UI: http://localhost:8080
+2. Go to **Settings → Personal Access Tokens**
+3. Click **+ Generate Token**
+4. Copy the generated token
+
+### 2. Set Token Locally
+```powershell
+# Set environment variable for current session
+$env:SIGNOZ_API_TOKEN="your-token-here"
+
+# Verify with full API testing
+pwsh -File .\scripts\verify-integration.ps1
+```
+
+### 3. Set Token in CI/CD (GitHub Actions)
+1. Go to **Repository → Settings → Secrets → Actions**
+2. Click **New secret**
+3. Name: `SIGNOZ_API_TOKEN`
+4. Value: `your-token-here`
+
+**Benefits:** Enables API verification of redaction (`Bearer ***`, `pwd=***`) and synthetic dataset queries in both local and CI environments.
 
 ## 🔧 Management
 
