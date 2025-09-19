@@ -35,19 +35,19 @@ exporters:
     tls:
       insecure: true
     retry_on_failure:
-      enabled: true
-      initial_interval: 1s
+      initial_interval: 5s
       max_interval: 30s
-      max_elapsed_time: 5m
+      max_elapsed_time: 10m
     sending_queue:
-      enabled: true
-      queue_size: 2048
+      storage: file_storage
+      queue_size: 5000
+      num_consumers: 4
 
 processors:
   memory_limiter:
-    limit_mib: 512
-    spike_limit_mib: 128
-    check_interval: 5s
+    check_interval: 2s
+    limit_percentage: 80
+    spike_limit_percentage: 25
 
   resource/defaults:
     attributes:
@@ -61,10 +61,40 @@ processors:
         key: deployment.environment
         value: local
 
+  filter/drop_noise:
+    error_mode: ignore
+    logs:
+      log_record:
+        # Drop routine Windows Event Log entries
+        - attributes["winlog.event_id"] in [6005, 6006]
+        # Drop health check/heartbeat noise
+        - IsMatch(body, "(?i)health check|heartbeat|diagnostic ping")
+        # Drop common Windows noise patterns
+        - IsMatch(body, "(?i)service control manager|task scheduler|windows update")
+
+  transform/sanitize:
+    log_statements:
+      - context: log
+        statements:
+          # Redact Bearer tokens
+          - replace_pattern(body, "(?i)bearer\\s+[A-Za-z0-9._-]+", "Bearer ***")
+          # Redact password patterns
+          - replace_pattern(body, "(?i)pwd=.*?(\\s|$)", "pwd=*** ")
+          - replace_pattern(body, "(?i)password=.*?(\\s|$)", "password=*** ")
+          # Redact API keys
+          - replace_pattern(body, "(?i)api[_-]?key\\s*[:=]\\s*[A-Za-z0-9._-]+", "api_key=***")
+
+  transform/enrich:
+    log_statements:
+      - context: resource
+        statements:
+          - set(attributes["service.name"], "windows-host")
+          - set(attributes["deployment.environment"], "local-dev")
+
   batch:
     timeout: 1s
-    send_batch_size: 1024
-    send_batch_max_size: 2048
+    send_batch_size: 1000
+    send_batch_max_size: 2000
 
   tail_sampling:
     decision_wait: 10s
@@ -104,9 +134,11 @@ extensions:
     path: /healthz
   pprof:
     endpoint: 0.0.0.0:1777
+  file_storage:
+    directory: C:\ProgramData\OTel\wal
 
 service:
-  extensions: [health_check, pprof]
+  extensions: [health_check, pprof, file_storage]
   telemetry:
     metrics:
       address: 0.0.0.0:8888
@@ -121,5 +153,5 @@ service:
       exporters: [logging, otlp/sigz]
     logs:
       receivers: [otlp, filelog]
-      processors: [memory_limiter, resource/defaults, batch, attributes/redact]
+      processors: [memory_limiter, filter/drop_noise, transform/sanitize, transform/enrich, attributes/redact, batch]
       exporters: [logging, otlp/sigz]
