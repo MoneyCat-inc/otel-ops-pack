@@ -28,7 +28,7 @@ cmd /c netstat -ano | findstr /R ":(5317|5318|8889|13134)\s" > (Join-Path $stage
 
 # 3) Health + metrics
 Write-Host "Collecting health and metrics..." -ForegroundColor Yellow
-try { (Invoke-WebRequest "http://127.0.0.1:13134" -TimeoutSec 5).Content | Out-File (Join-Path $staged "health.json") } catch { "unavailable" | Out-File (Join-Path $staged "health.json") }
+try { (Invoke-WebRequest "http://127.0.0.1:13134/healthz" -TimeoutSec 5).Content | Out-File (Join-Path $staged "health.json") } catch { "unavailable" | Out-File (Join-Path $staged "health.json") }
 try {
   $m = (Invoke-WebRequest "http://127.0.0.1:8889/metrics" -TimeoutSec 5).Content -split "`n"
   $m | Out-File (Join-Path $staged "metrics.txt")

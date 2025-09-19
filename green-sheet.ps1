@@ -1,7 +1,7 @@
 # green-sheet.ps1
 param(
   [string] $Service   = 'otelcol-contrib',
-  [string] $HealthUrl = 'http://127.0.0.1:13134',
+  [string] $HealthUrl = 'http://127.0.0.1:13134/healthz',
   [string] $MetricsUrl = 'http://127.0.0.1:8889/metrics'
 )
 $ErrorActionPreference = 'SilentlyContinue'

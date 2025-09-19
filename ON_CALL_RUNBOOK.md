@@ -15,7 +15,7 @@
 # From any directory - run these three commands:
 otel-status                  # Summary: service, path, health, metrics lines
 canary                       # Should print delta +1 and exit 0
-Invoke-WebRequest -Uri http://127.0.0.1:13134 -TimeoutSec 5 | ConvertFrom-Json
+Invoke-WebRequest -Uri http://127.0.0.1:13134/healthz -TimeoutSec 5 | ConvertFrom-Json
 ```
 
 **Expected Output:**
@@ -32,7 +32,7 @@ Invoke-WebRequest -Uri http://127.0.0.1:13134 -TimeoutSec 5 | ConvertFrom-Json
 #### **1. Health Endpoint Down**
 ```powershell
 # Check health
-Invoke-WebRequest http://127.0.0.1:13134
+Invoke-WebRequest http://127.0.0.1:13134/healthz
 
 # If fails → restart service
 Restart-Service otelcol-contrib

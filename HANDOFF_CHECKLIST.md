@@ -11,7 +11,7 @@
 # Quick status check (60 seconds)
 otel-status                  # Summary: service, path, health, metrics
 canary                       # Should print delta +1 and exit 0
-Invoke-WebRequest -Uri http://127.0.0.1:13134 -TimeoutSec 5 | ConvertFrom-Json
+Invoke-WebRequest -Uri http://127.0.0.1:13134/healthz -TimeoutSec 5 | ConvertFrom-Json
 ```
 
 **Expected Results:**
@@ -42,7 +42,7 @@ canary
 
 **What to look for:**
 - Service status: Running
-- Health endpoint: Server available
+- Health endpoint: `http://127.0.0.1:13134/healthz` available
 - Canary test: Delta +1 observed
 - No errors in output
 
@@ -209,7 +209,7 @@ Restart-Service otelcol-contrib
 
 - **Pipeline Availability**: ≥ 99.9% (canary success over 24h)
 - **Ingest Latency**: p99 ≤ 5s (canary delta observation)
-- **Health Endpoint Uptime**: ≥ 99.95% (13134 responds 200 OK)
+- **Health Endpoint Uptime**: ≥ 99.95% (`http://127.0.0.1:13134/healthz` responds 200 OK)
 - **Backpressure**: 0 exporter failures during normal ops
 
 ---
