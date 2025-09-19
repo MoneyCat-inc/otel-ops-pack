@@ -9,9 +9,9 @@
 winget install --id OpenTelemetry.CollectorContrib -e   # or MSI if you prefer
 New-Item -ItemType Directory -Force C:\otel | Out-Null
 
-# 1) Get the ops pack (via git or ops-pack.zip)
+# 1) Get the ops toolkit (via git or offline zip)
 git clone <repo-url> C:\otel
-# or unzip ops-pack.zip into C:\otel
+# or copy a release zip created with Compress-Archive into C:\otel
 
 # 2) Install hardened config + scripts
 Copy-Item -Force C:\otel\config-hardened-plus.yaml C:\otel\config.yaml
@@ -30,8 +30,11 @@ C:\otel\canary-check-min.ps1     # expect delta +1
 Invoke-WebRequest -Uri "http://127.0.0.1:13134/healthz" -TimeoutSec 5 | ConvertFrom-Json
 
 # 5) (Optional) schedule local monitors
-# canary every 10 min, drift-guard every 15, queue-watch every 5, backup daily
-C:\otel\setup-operational-monitoring.ps1
+# Example: run deterministic canary every 10 minutes via Task Scheduler
+$exe = "$env:WINDIR\System32\WindowsPowerShell\v1.0\powershell.exe"
+$action = New-ScheduledTaskAction -Execute $exe -Argument "-NoProfile -ExecutionPolicy Bypass -File C:\otel\canary-check-min.ps1"
+$trigger = New-ScheduledTaskTrigger -Once -At (Get-Date).AddMinutes(1) -RepetitionInterval (New-TimeSpan -Minutes 10) -RepetitionDuration ([TimeSpan]::MaxValue)
+Register-ScheduledTask -TaskName "otel_canary_10m" -Action $action -Trigger $trigger -RunLevel Highest -Force
 
 # 6) (Optional) setup weekly auto-audit for evidence trail
 C:\otel\setup-weekly-audit.ps1
@@ -89,7 +92,7 @@ C:\otel\canary-check-min.ps1           # deterministic delta +1, exit 0
 * **Green-sheet** shows *Running*, config path includes `--config C:\otel\config.yaml`, health 200, metrics present
 * **Canary** is near-instant, always delta +1
 * **Auto-restart** fires on real failures and is logged by SCM
-* **Changes** only via `safe-apply-config.ps1`; each CAB has `audit-pack.zip` + SHA256
+* **Changes** only via `safe-apply-config.ps1`; each CAB has `audit-pack_*.zip` + SHA256
 * **Repo** stays lean; tasks and service always point to kept scripts
 
 ## 📊 Success Metrics
