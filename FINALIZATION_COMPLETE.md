@@ -13,38 +13,47 @@ Your **OpenTelemetry Collector → SigNoz observability pipeline** is now **bull
 ## ✅ **FINALIZATION PACKAGE DELIVERED**
 
 ### 🔧 **Core Operations Scripts**
-- **`burn-in-test.ps1`** - 10-run flakiness verification (3/3 PASSED in testing)
-- **`package-ops.ps1`** - Complete package creation with SHA256 hash
-- **`acl-harden.ps1`** - Config file ACL hardening for security
-- **`task-harden.ps1`** - Scheduled task robustness hardening
-- **`sanity-check.ps1`** - Quick on-call verification script
+- **`green-sheet.ps1`** - Quick service, path, health, and metrics summary
+- **`quick-all-green.ps1`** - One-shot "all green" verification (includes canary)
+- **`canary-check-min.ps1`** - Deterministic canary delta verification
+- **`safe-apply-config.ps1`** - Validated config apply with auto-rollback
+- **`regression-check.ps1`** - Full regression check (status + canary + metrics + optional Kafka)
+- **`post-deploy-smoke.ps1`** - Lightweight smoke gate for new deploys
+- **`auto-restart-verify.ps1`** - Verifies Windows service recovery configuration
+- **`chaos-drill.ps1`** - Queue resilience and recovery exercise
+- **`kafka-smoke.ps1`** - Optional Kafka connectivity probe
+- **`setup-weekly-audit.ps1`** - Installs weekly audit evidence automation
+- **`make-audit-pack.ps1`** - Generates audit-pack_*.zip + SHA256 evidence
+- **`repo-clean-inventory.ps1`** - Monthly inventory/drift confirmation
 
 ### 📋 **Operational Documentation**
+- **`README.md`** - Repository overview and quickstart
 - **`ON_CALL_RUNBOOK.md`** - Complete on-call troubleshooting guide
-- **`PRODUCTION_READY_PACKAGE.md`** - Comprehensive operational guide
-- **`FINAL_SETUP_SUMMARY.md`** - Complete setup documentation
-- **`OPERATIONAL_CHEAT_SHEET.md`** - Quick reference commands
+- **`HANDOFF_CHECKLIST.md`** - Day-2 readiness and verification steps
+- **`FINAL_HANDOFF_COMPLETE.md`** - Executive summary of production readiness
+- **`FINALIZATION_COMPLETE.md`** - This readiness summary
+- **`ROLLOUT_CARD.md`** - Cutover and rollback quick reference
+- **`TRANSFORMATION_COMPLETE.md`** - Transformation milestones and evidence
+- **`OPS_WALLET_CARD*.md`** - Printable quick-reference wallet cards
 
-### 📦 **Packaged Deliverable**
-- **`ops-pack.zip`** - Complete operations package (28 files)
-- **SHA256**: `80FEB468B218108B74569DC08F5C01ADA36BA33C8B03EABAB5CDD14EA2DDE580`
-- **Size**: 0.04 MB
-- **Ready for**: Change tracking, handoffs, and deployment
+### 📦 **Operational Evidence & Automation**
+- **`C:\otel` repository** - This Git working copy with scripts + docs
+- **`make-audit-pack.ps1` output** - `audit-pack_*.zip` + SHA256 files for CAB evidence
+- **`setup-weekly-audit.ps1` task** - Automates weekly evidence generation
+- **`generate-wallet-card-pdf.ps1` output** - Printable quick-reference cards
 
 ---
 
 ## 🎯 **VERIFICATION RESULTS**
 
-### ✅ **Burn-In Test (3/3 PASSED)**
+### ✅ **Regression Check (sample run)**
 ```
-Starting 3-run burn-in test (delay: 10s between runs)
-Run #1/3... PASS (exit code: 0)
-Run #2/3... PASS (exit code: 0)  
-Run #3/3... PASS (exit code: 0)
-
-Burn-in summary: 3/3 successful
-Total duration: 00:00:26
-RESULT: ALL TESTS PASSED
+Running regression check...
+  Running green sheet...
+  Running canary check...
+  Checking metrics endpoint...
+  Checking Kafka connectivity (optional)...
+✅ REGRESSION CHECK PASSED
 ```
 
 ### ✅ **Current Pipeline Status**
@@ -61,23 +70,20 @@ RESULT: ALL TESTS PASSED
 ### **Quick Status Check (60 seconds)**
 ```powershell
 # From any directory:
-otel-status                  # Summary: service, path, health, metrics
-canary                       # Should print delta +1 and exit 0
+& 'C:\otel\green-sheet.ps1'         # Summary: service, path, health, metrics
+& 'C:\otel\canary-check-min.ps1'    # Deterministic delta +1 check
 Invoke-WebRequest -Uri http://127.0.0.1:13134/healthz -TimeoutSec 5 | ConvertFrom-Json
 ```
 
-### **Comprehensive Sanity Check**
+### **Comprehensive All-Green Check**
 ```powershell
-.\sanity-check.ps1
+& 'C:\otel\quick-all-green.ps1'
 ```
 
-### **Burn-In Testing**
+### **Regression / Smoke Testing**
 ```powershell
-# 10-run test (default)
-.\burn-in-test.ps1
-
-# Quick 3-run test
-.\burn-in-test.ps1 -Runs 3 -DelaySeconds 10
+& 'C:\otel\regression-check.ps1'
+& 'C:\otel\post-deploy-smoke.ps1'
 ```
 
 ### **Auto-Restart Verification (Admin Required)**
@@ -90,19 +96,23 @@ C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe `
 
 ## 🛡️ **SECURITY & HARDENING**
 
-### **ACL Hardening (Optional)**
+### **Config Validation + Backups**
 ```powershell
-# Lock down config file permissions
-.\acl-harden.ps1
-
-# Optional: Exclude queue path from Defender (requires security review)
-.\acl-harden.ps1 -ExcludeQueuePath
+# Safely apply config changes with validation, backups, and canary
+& 'C:\otel\safe-apply-config.ps1'
+Get-Content C:\otel\logs\safe-apply.last.txt -Tail 20
 ```
 
-### **Task Hardening**
+### **Scheduled Audit Evidence**
 ```powershell
-# Harden scheduled tasks for robustness
-.\task-harden.ps1
+# Install weekly audit evidence task (creates audit-pack_*.zip + sha256)
+& 'C:\otel\setup-weekly-audit.ps1'
+```
+
+### **Monthly Drift & Inventory Check**
+```powershell
+# Dry-run inventory to confirm scripts/files are intact
+& 'C:\otel\repo-clean-inventory.ps1'
 ```
 
 ---
@@ -123,10 +133,10 @@ C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe `
 - Failure count reset (24-hour period)
 
 ### **Continuous Monitoring** ✅
-- Canary testing every 10 minutes (deterministic delta verification)
-- Config drift detection every 15 minutes
-- Queue monitoring every 5 minutes with backpressure detection
-- Daily config backups with 30-day retention
+- Deterministic canary available on-demand via `C:\otel\canary-check-min.ps1`
+- Quick status checks via `C:\otel\green-sheet.ps1` and `C:\otel\quick-all-green.ps1`
+- Weekly audit evidence automation via `C:\otel\setup-weekly-audit.ps1`
+- Monthly drift/inventory review via `C:\otel\repo-clean-inventory.ps1`
 
 ### **Operational Tools** ✅
 - Comprehensive verification scripts
@@ -148,30 +158,42 @@ C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe `
 
 ```
 C:\otel\
-├── ops-pack.zip                      # Complete operations package
-├── ops-pack.sha256                   # Package hash for change tracking
-├── burn-in-test.ps1                  # 10-run flakiness verification
-├── package-ops.ps1                   # Package creation script
-├── acl-harden.ps1                    # Config file ACL hardening
-├── task-harden.ps1                   # Scheduled task hardening
-├── sanity-check.ps1                  # Quick on-call verification
-├── ON_CALL_RUNBOOK.md                # Complete troubleshooting guide
-├── PRODUCTION_READY_PACKAGE.md       # Comprehensive operational guide
-├── FINAL_SETUP_SUMMARY.md            # Complete setup documentation
-├── OPERATIONAL_CHEAT_SHEET.md        # Quick reference commands
-├── DEPLOYMENT_GUIDE.md               # Deployment instructions
-├── ops-package-manifest.txt          # Package manifest
-├── config.yaml                       # Active production configuration
-├── config-hardened-plus.yaml         # Hardened configuration template
 ├── canary-check-min.ps1              # Deterministic canary testing
+├── canary-check.ps1                  # Legacy optional canary script
 ├── green-sheet.ps1                   # Quick status overview
 ├── quick-all-green.ps1               # One-liner comprehensive check
-├── auto-restart-verify.ps1           # SCM recovery verification
-├── [All other operational scripts]   # Complete toolkit
-└── logs\                             # Operational logs and transcripts
-    ├── *.last.txt                    # Script execution logs
-    ├── *.last.log                    # Detailed operation logs
-    └── ALERTS.log                    # Alert notifications
+├── regression-check.ps1              # Full regression verification
+├── post-deploy-smoke.ps1             # Lightweight smoke gate
+├── safe-apply-config.ps1             # Validated config deployment
+├── auto-restart-verify.ps1           # Service recovery verification
+├── chaos-drill.ps1                   # Queue resilience exercise
+├── kafka-smoke.ps1                   # Optional Kafka connectivity probe
+├── setup-weekly-audit.ps1            # Weekly audit automation
+├── make-audit-pack.ps1               # Manual audit evidence generation
+├── repo-clean-inventory.ps1          # Monthly drift/inventory check
+├── generate-wallet-card-pdf.ps1      # Printable quick reference cards
+├── config.yaml                       # Active production configuration
+├── config-hardened-plus.yaml         # Hardened configuration template
+├── config.yaml.backup                # Last known-good config backup
+├── README.md                         # Repository overview
+├── ON_CALL_RUNBOOK.md                # On-call troubleshooting guide
+├── HANDOFF_CHECKLIST.md              # Day-2 readiness checklist
+├── FINAL_HANDOFF_COMPLETE.md         # Executive readiness summary
+├── FINALIZATION_COMPLETE.md          # Readiness confirmation (this file)
+├── TRANSFORMATION_COMPLETE.md        # Transformation milestone log
+├── ROLLOUT_CARD.md                   # Cutover/rollback quick reference
+├── OPS_WALLET_CARD.md                # Wallet card (detailed)
+├── OPS_WALLET_CARD_ONE_PAGE.md       # Wallet card (one page)
+├── OPS_WALLET_CARD_PRINTABLE.md      # Wallet card (printable)
+├── wallet-card.html                  # HTML wallet card rendering
+├── logs\                             # Operational logs and transcripts
+│   ├── *.last.txt                    # Script execution logs
+│   ├── *.last.log                    # Detailed operation logs
+│   └── ALERTS.log                    # Alert notifications
+├── audit\                            # Audit evidence outputs
+│   ├── audit-pack_*.zip              # Generated audit bundles
+│   └── audit-pack_*.sha256.txt       # Matching hashes
+└── baseline\                         # Baseline configs and manifests
 ```
 
 ---
@@ -179,20 +201,20 @@ C:\otel\
 ## 🎯 **HANDOFF CHECKLIST**
 
 ### **For Day-2 Operations Team:**
-- [ ] **Package Hash**: `80FEB468B218108B74569DC08F5C01ADA36BA33C8B03EABAB5CDD14EA2DDE580`
+- [ ] **Audit Evidence**: Latest `audit-pack_*.zip` + SHA256 captured via `make-audit-pack.ps1`
 - [ ] **On-Call Runbook**: `ON_CALL_RUNBOOK.md` reviewed and accessible
-- [ ] **Convenience Functions**: PowerShell profile setup completed
-- [ ] **Monitoring Tasks**: All scheduled tasks active and hardened
-- [ ] **Service Recovery**: Auto-restart verified and working
+- [ ] **Quick Commands**: `green-sheet.ps1`, `canary-check-min.ps1`, and `quick-all-green.ps1` tested from shell
+- [ ] **Weekly Automation**: `setup-weekly-audit.ps1` installed (or documented if not desired)
+- [ ] **Service Recovery**: `auto-restart-verify.ps1` run successfully
 - [ ] **Documentation**: All guides reviewed and bookmarked
 - [ ] **Emergency Contacts**: Escalation procedures documented
-- [ ] **Change Tracking**: Package hash recorded in change management system
+- [ ] **Change Tracking**: Safe config workflow understood (`safe-apply-config.ps1`)
 
 ### **For Future Deployments:**
-- [ ] **Package**: `ops-pack.zip` ready for deployment to other systems
-- [ ] **Hash Verification**: SHA256 hash for integrity checking
-- [ ] **Deployment Guide**: `DEPLOYMENT_GUIDE.md` for new installations
-- [ ] **Operational Procedures**: All scripts tested and validated
+- [ ] **Distribution Plan**: Document how to deploy this repo (`git clone` or `Compress-Archive`)
+- [ ] **Post-Deploy Verification**: `regression-check.ps1` and `post-deploy-smoke.ps1` included in release steps
+- [ ] **Audit Automation**: Plan to run `setup-weekly-audit.ps1` after install
+- [ ] **Operational Procedures**: Scripts tested in target environment
 
 ---
 
@@ -203,9 +225,9 @@ Your **OpenTelemetry Collector → SigNoz observability pipeline** is now:
 - ✅ **Fully Operational** (30+ minutes uptime, 488+ logs processed)
 - ✅ **Production Hardened** (Memory limits, persistent queues, security bindings)
 - ✅ **Self-Healing** (Auto-restart verified working)
-- ✅ **Continuously Monitored** (Canary, drift, queue, backup tasks)
-- ✅ **Config Protected** (Drift detection with baseline restoration)
-- ✅ **Queue Monitored** (Backpressure detection with auto-restart)
+- ✅ **Continuously Monitored** (On-demand canary + weekly audit automation)
+- ✅ **Config Protected** (Safe apply with automatic rollback & backups)
+- ✅ **Queue Visibility** (Chaos drill + metrics inspection scripts)
 - ✅ **Enterprise Ready** (Complete operational toolkit and documentation)
 - ✅ **Day-2 Ops Ready** (On-call runbook, escalation procedures, handoff complete)
 
@@ -223,6 +245,6 @@ Your **OpenTelemetry Collector → SigNoz observability pipeline** is now:
 
 ---
 
-*Generated: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')*  
-*Package Hash: 80FEB468B218108B74569DC08F5C01ADA36BA33C8B03EABAB5CDD14EA2DDE580*  
+*Generated: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')*
+*Latest Evidence: Run `make-audit-pack.ps1` for current ZIP + SHA256*
 *Status: FINALIZATION COMPLETE* ✅

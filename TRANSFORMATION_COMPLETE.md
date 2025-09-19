@@ -69,7 +69,7 @@
 
 ### **Every Release is Immutable**
 - **Version tags**: `v1.0.0 → v1.1.0 → v1.2.0`
-- **SHA256 verification**: Immutable artifacts
+- **SHA256 verification**: Audit packs include hashes for evidence
 - **Git history**: Clean, atomic commits
 
 ### **Every On-Call Has a One-Page PDF**
@@ -87,9 +87,8 @@
 ## 📋 **CAB / Change Record Checklist**
 
 ### **What to Freeze in the CAB**
-- [ ] **SHA256 of `ops-pack.zip`** - Immutable release artifact
-- [ ] **SHA256 of most recent `audit-pack_YYYYMMDD_HHMMSS.zip`** - Evidence trail
-- [ ] **Release tag `v1.2.0`** - Version verification
+- [ ] **Latest `audit-pack_YYYYMMDD_HHMMSS.zip` + `.sha256.txt`** - Evidence trail
+- [ ] **Release tag / commit (`git rev-parse HEAD`)** - Version verification
 - [ ] **Sample canary delta log (+1)** - Health verification
 - [ ] **Service `PathName` showing `--config C:\otel\config.yaml`** - Configuration proof
 - [ ] **Screenshot/print of wallet card** - On-call reference
