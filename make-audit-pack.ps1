@@ -38,12 +38,25 @@ try {
 
 # 4) Scheduled tasks
 Write-Host "Collecting scheduled task information..." -ForegroundColor Yellow
-$tasks = 'otel_canary_10m','otel_drift_guard_15m','otel_queue_watch_5m','otel_config_backup_daily'
-$tasks | ForEach-Object {
-  try {
-    Get-ScheduledTask -TaskName $_ | Out-File (Join-Path $staged "task.$_.txt")
-    Get-ScheduledTaskInfo -TaskName $_ | Out-File (Join-Path $staged "task.$_.info.txt")
-  } catch { "not found" | Out-File (Join-Path $staged "task.$_.txt") }
+try {
+  $otelTasks = Get-ScheduledTask | Where-Object { $_.TaskName -like 'otel_*' } | Select-Object -ExpandProperty TaskName
+} catch {
+  $otelTasks = @()
+}
+
+if(-not $otelTasks -or $otelTasks.Count -eq 0) {
+  "no scheduled tasks with prefix otel_ found" | Out-File (Join-Path $staged "task.none.txt")
+} else {
+  $otelTasks | Sort-Object | Out-File (Join-Path $staged "task.list.txt")
+  foreach($taskName in $otelTasks) {
+    $safeName = $taskName -replace '[^A-Za-z0-9_\-]', '_'
+    try {
+      Get-ScheduledTask -TaskName $taskName | Out-File (Join-Path $staged "task.$safeName.txt")
+      Get-ScheduledTaskInfo -TaskName $taskName | Out-File (Join-Path $staged "task.$safeName.info.txt")
+    } catch {
+      "not found" | Out-File (Join-Path $staged "task.$safeName.txt")
+    }
+  }
 }
 
 # 5) Config + hashes

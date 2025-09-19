@@ -54,12 +54,11 @@ sc.exe failureflag otelcol-contrib 1
 ```
 
 ## 📋 CAB Record Checklist
-- [ ] SHA256 of `ops-pack.zip`
-- [ ] `audit-pack_YYYYMMDD_HHMMSS.zip` + sha
-- [ ] Release tag (e.g., `v1.0.0`)
+- [ ] Latest `audit-pack_YYYYMMDD_HHMMSS.zip` + matching `.sha256.txt`
+- [ ] Release tag or commit ID recorded (`git rev-parse HEAD`)
 - [ ] Screenshot of `sc qfailure` output
 - [ ] Service `PathName` verification
-- [ ] Canary delta output confirmation
+- [ ] Canary delta output confirmation (`canary-check-min.ps1`)
 
 ## 🔄 Periodic Maintenance
 - **Weekly:** `make-audit-pack.ps1` → attach to ops log

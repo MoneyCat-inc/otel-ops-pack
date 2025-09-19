@@ -13,8 +13,8 @@
 
 ```powershell
 # From any directory - run these three commands:
-otel-status                  # Summary: service, path, health, metrics lines
-canary                       # Should print delta +1 and exit 0
+& 'C:\otel\green-sheet.ps1'         # Summary: service, path, health, metrics lines
+& 'C:\otel\canary-check-min.ps1'    # Should print delta +1 and exit 0
 Invoke-WebRequest -Uri http://127.0.0.1:13134/healthz -TimeoutSec 5 | ConvertFrom-Json
 ```
 
@@ -37,7 +37,7 @@ Invoke-WebRequest http://127.0.0.1:13134/healthz
 # If fails → restart service
 Restart-Service otelcol-contrib
 Start-Sleep 5
-canary
+& 'C:\otel\canary-check-min.ps1'
 ```
 
 #### **2. Metrics Unreachable**
@@ -88,17 +88,18 @@ Copy-Item C:\otel\config-hardened-plus.yaml C:\otel\config.yaml -Force
 Restart-Service otelcol-contrib
 
 # Verify
-canary
+& 'C:\otel\canary-check-min.ps1'
 ```
 
 ### **Config Drift Recovery**
 ```powershell
-# Check drift
-.\drift-guard.ps1
+# Check for unexpected files or missing core scripts
+& 'C:\otel\repo-clean-inventory.ps1'
 
-# If drift detected → restore baseline
-.\drift-guard.ps1 -Restore
+# If config drift detected → restore baseline
+Copy-Item C:\otel\config.yaml.backup C:\otel\config.yaml -Force
 Restart-Service otelcol-contrib
+& 'C:\otel\canary-check-min.ps1'
 ```
 
 ---
@@ -112,10 +113,10 @@ C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe `
   -NoProfile -ExecutionPolicy Bypass -File "C:\otel\auto-restart-verify.ps1"
 ```
 
-### **Burn-In Test (10 runs)**
+### **Regression Check (full stack)**
 ```powershell
-.\burn-in-test.ps1
-# Expected: "Burn-in summary: 10/10 successful"
+& 'C:\otel\regression-check.ps1'
+# Expected: "✅ REGRESSION CHECK PASSED"
 ```
 
 ---
@@ -212,9 +213,9 @@ Restart-Service otelcol-contrib
 
 ## 🔗 **QUICK LINKS**
 
-- **Service Management**: `otel-start`, `otel-stop`, `otel-restart`
-- **Status Checks**: `otel-status`, `otel-health`
-- **Testing**: `canary`, `otel-restart-test`
+- **Service Management**: `Start-Service otelcol-contrib`, `Stop-Service otelcol-contrib`, `Restart-Service otelcol-contrib`
+- **Status Checks**: `C:\otel\green-sheet.ps1`, `C:\otel\quick-all-green.ps1`
+- **Testing**: `C:\otel\canary-check-min.ps1`, `C:\otel\regression-check.ps1`
 - **Logs**: `C:\otel\logs\`, `C:\otel\ALERTS.log`
 - **Config**: `C:\otel\config.yaml`
 - **Backups**: `C:\otel\backups\`
