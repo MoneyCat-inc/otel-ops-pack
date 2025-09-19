@@ -23,7 +23,7 @@
 
 ### Verification
 - ✅ Verified with safe-apply-config.ps1 (canary delta +1)
-- ✅ Mini burn-in test: 3/3 successful canary runs
+- ✅ Regression check: `regression-check.ps1` (PASS)
 - ✅ ASCII guard function confirms pure ASCII encoding
 - ✅ Service running with correct configuration
 
