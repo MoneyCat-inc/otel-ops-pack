@@ -52,7 +52,7 @@ Get-Content C:\otel\logs\chaos-drill.last.txt -Tail 200
 - **Green-sheet**: Running, config path includes `--config C:\otel\config.yaml`, health 200, metrics present
 - **Canary**: Near-instant, always delta +1
 - **Auto-restart**: Fires on real failures, logged by SCM
-- **Changes**: Only via `safe-apply-config.ps1`; each CAB has `audit-pack.zip` + SHA256
+- **Changes**: Only via `safe-apply-config.ps1`; each CAB has `audit-pack_*.zip` + SHA256
 
 ## 🔒 SERVICE RECOVERY POLICY
 ```powershell
@@ -61,12 +61,11 @@ sc.exe failureflag otelcol-contrib 1
 ```
 
 ## 📋 CAB RECORD CHECKLIST
-- [ ] SHA256 of `ops-pack.zip`
-- [ ] `audit-pack_YYYYMMDD_HHMMSS.zip` + sha
-- [ ] Release tag (e.g., `v1.1.0`)
+- [ ] Latest `audit-pack_YYYYMMDD_HHMMSS.zip` + matching `.sha256.txt`
+- [ ] Release tag or commit ID recorded (`git rev-parse HEAD`)
 - [ ] Screenshot of `sc qfailure` output
 - [ ] Service `PathName` verification
-- [ ] Canary delta output confirmation
+- [ ] Canary delta output confirmation (`canary-check-min.ps1`)
 
 ## 🔄 MAINTENANCE SCHEDULE
 - **Weekly**: `setup-weekly-audit.ps1` → automated evidence trail (hands-off)

@@ -80,6 +80,9 @@ Copy-Item C:\otel\config.yaml C:\otel\config.candidate.yaml -Force
 | `make-audit-pack.ps1` | Audit packaging | Compliance evidence |
 | `setup-weekly-audit.ps1` | Weekly audit setup | Hands-off evidence trail |
 | `post-deploy-smoke.ps1` | CI/CD smoke test | Pipeline gate validation |
+| `regression-check.ps1` | Full regression run | Deep verification |
+| `repo-clean-inventory.ps1` | Monthly drift check | Inventory & cleanup |
+| `kafka-smoke.ps1` | Optional Kafka probe | Connectivity spot-check |
 | `generate-wallet-card-pdf.ps1` | PDF generation | Printable wallet card |
 
 ## 📁 Repository Structure
@@ -91,12 +94,15 @@ C:\otel\
 ├── canary-check-min.ps1          # Minimal canary check
 ├── green-sheet.ps1               # Status check
 ├── quick-all-green.ps1           # Quick verification
+├── regression-check.ps1          # Full regression run
+├── post-deploy-smoke.ps1         # CI/CD smoke test
 ├── auto-restart-verify.ps1       # Auto-restart verification
 ├── safe-apply-config.ps1         # Safe config application
 ├── chaos-drill.ps1               # Chaos engineering
+├── kafka-smoke.ps1               # Optional Kafka probe
+├── repo-clean-inventory.ps1      # Monthly drift/inventory
 ├── make-audit-pack.ps1           # Audit packaging
 ├── setup-weekly-audit.ps1        # Weekly audit setup
-├── post-deploy-smoke.ps1         # CI/CD smoke test
 ├── generate-wallet-card-pdf.ps1  # PDF generation
 ├── wallet-card.html              # Printable wallet card
 ├── FINALIZATION_COMPLETE.md      # Finalization documentation
@@ -138,7 +144,7 @@ sc.exe failureflag otelcol-contrib 1
 
 - **Version:** v1.0.0
 - **Release Date:** $(Get-Date -Format 'yyyy-MM-dd')
-- **Artifact:** `ops-pack.zip` with SHA256 verification
+- **Evidence:** Audit packs generated via `make-audit-pack.ps1` (ZIP + SHA256)
 - **Compatibility:** PowerShell 5.1+, Windows 10/11, Windows Server 2016+
 
 ## 🔒 Security & Compliance
