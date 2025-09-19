@@ -1,0 +1,31 @@
+{
+  "id": "cardinality-spike-20250918",
+  "type": "alert",
+  "priority": "high",
+  "created_at": "2025-09-18T23:40:00Z",
+  "source": "signoz",
+  "title": "Cardinality Spike Detected",
+  "description": "Metric series count exceeds 1000 threshold, indicating high cardinality attributes",
+  "metrics": {
+    "series_count": 1250,
+    "max_series": 1000,
+    "hot_attributes": ["pod.uid", "container.id"],
+    "memory_usage": 0.75,
+    "timestamp": "2025-09-18T23:40:00Z"
+  },
+  "recipe": "cardinality_spike",
+  "status": "pending",
+  "assigned_to": "codex",
+  "validation_commands": [
+    "otelcol --config=config.yaml --dry-run",
+    "curl -s http://localhost:13134/",
+    "powershell -ExecutionPolicy Bypass -File validation/validate-cardinality.ps1"
+  ],
+  "expected_output": "Cardinality controls active, hot attributes redacted",
+  "rollback_commands": [
+    "copy config.backup.yaml config.yaml",
+    "sc restart otelcol-contrib"
+  ]
+}
+
+

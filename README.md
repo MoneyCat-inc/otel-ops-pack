@@ -1,175 +1,121 @@
-# OpenTelemetry Collector - Hardened Ops Package
+# OTel Windows → SigNoz Observability Kit
 
-Production-ready observability package with hardened collector configuration and day-2 operational tooling.
+A complete Windows-to-SigNoz observability pipeline with automated monitoring and alerting.
 
 ## 🚀 Quick Start
 
-### Daily Ops (60 seconds)
+### Prerequisites
+- Windows 11 with PowerShell 5.1+
+- Docker Desktop with WSL2 integration
+- Administrator privileges for service installation
+
+### Setup
+1. **Start SigNoz stack:**
+   ```powershell
+   docker compose -f .\docker-compose.yml up -d
+   ```
+
+2. **Install Windows OTel Collector (Admin PowerShell):**
+   ```powershell
+   .\scripts\setup.ps1
+   ```
+
+3. **Verify pipeline:**
+   ```powershell
+   .\scripts\verify-integration.ps1
+   ```
+
+## 📊 Monitoring
+
+### Automated Verification
+- **Scheduled Task**: Runs every 15 minutes
+- **Canary Logs**: Visible in SigNoz UI
+- **Alerting**: Configured for missing canaries
+
+### Manual Verification
 ```powershell
-C:\otel\green-sheet.ps1
-C:\otel\canary-check-min.ps1
+# Check system status
+.\scripts\verify-integration.ps1
+
+# View canary logs
+# http://localhost:8080 → Logs → Filter: log.body contains "windows-canary"
+
+# Check scheduled task
+Get-ScheduledTask -TaskName "OTel-Verification-Canary"
 ```
 
-### Safe Change Control
+## 🔧 Management
+
+### Start/Stop Services
 ```powershell
-# Create candidate config
-Copy-Item C:\otel\config.yaml C:\otel\config.candidate.yaml -Force
-# edit candidate...
+# Start all services
+.\scripts\start-all.ps1
 
-# Apply a candidate config
-# validate + restart + canary (+ rollback if needed)
-C:\otel\safe-apply-config.ps1 -Candidate C:\otel\config.candidate.yaml
-Get-Content C:\otel\logs\safe-apply.last.txt -Tail 50
+# Stop all services
+.\scripts\stop-all.ps1
 
-# Generate audit pack
-C:\otel\make-audit-pack.ps1
+# Restart Windows collector
+.\scripts\restart-collector.ps1
 ```
 
-### Service Status
-```powershell
-# Check service status and health
-.\green-sheet.ps1
+### Fallback Monitoring
+If scheduled tasks fail, use continuous monitoring:
+```batch
+.\monitor-loop.bat
 ```
 
-### Canary Check
-```powershell
-# Run deterministic canary test
-.\canary-check-min.ps1
-```
-
-## 📋 Ops Wallet Card
-
-### ops: 60-second daily
-```powershell
-# Service, path, health, metrics lines
-Get-Service otelcol-contrib | Select-Object Status, Name
-Get-WmiObject -Class Win32_Service -Filter "Name='otelcol-contrib'" | Select-Object PathName
-.\green-sheet.ps1
-```
-
-### change window (safe)
-```powershell
-Copy-Item C:\otel\config.yaml C:\otel\config.candidate.yaml -Force
-# edit candidate
-.\safe-apply-config.ps1
-.\make-audit-pack.ps1
-```
-
-### resilience rehearsal (during a window)
-```powershell
-.\chaos-drill.ps1 -OutageSeconds 90
-```
-
-### auto-restart proof (admin)
-```powershell
-.\auto-restart-verify.ps1
-```
-
-## 🔧 Core Scripts
-
-| Script | Purpose | Usage |
-|--------|---------|-------|
-| `canary-check-min.ps1` | Minimal canary check | Daily health verification |
-| `green-sheet.ps1` | Status dashboard | Quick system overview |
-| `quick-all-green.ps1` | Quick verification | Fast health check |
-| `auto-restart-verify.ps1` | Auto-restart verification | Admin configuration check |
-| `safe-apply-config.ps1` | Safe config application | Change management |
-| `chaos-drill.ps1` | Chaos engineering | Resilience testing |
-| `make-audit-pack.ps1` | Audit packaging | Compliance evidence |
-| `setup-weekly-audit.ps1` | Weekly audit setup | Hands-off evidence trail |
-| `post-deploy-smoke.ps1` | CI/CD smoke test | Pipeline gate validation |
-| `generate-wallet-card-pdf.ps1` | PDF generation | Printable wallet card |
-
-## 📁 Repository Structure
+## 📁 File Structure
 
 ```
 C:\otel\
-├── config.yaml                    # Primary configuration
-├── config-hardened-plus.yaml      # Hardened configuration
-├── canary-check-min.ps1          # Minimal canary check
-├── green-sheet.ps1               # Status check
-├── quick-all-green.ps1           # Quick verification
-├── auto-restart-verify.ps1       # Auto-restart verification
-├── safe-apply-config.ps1         # Safe config application
-├── chaos-drill.ps1               # Chaos engineering
-├── make-audit-pack.ps1           # Audit packaging
-├── setup-weekly-audit.ps1        # Weekly audit setup
-├── post-deploy-smoke.ps1         # CI/CD smoke test
-├── generate-wallet-card-pdf.ps1  # PDF generation
-├── wallet-card.html              # Printable wallet card
-├── FINALIZATION_COMPLETE.md      # Finalization documentation
-├── ON_CALL_RUNBOOK.md            # On-call procedures
-├── HANDOFF_CHECKLIST.md          # Handoff checklist
-├── OPS_WALLET_CARD.md            # Quick reference
-├── logs\                         # Operational logs
-├── audit\                        # Audit packs
-├── queue\                        # Queue management
-├── state\                        # State files
-└── baseline\                     # Baseline configurations
+├── config/
+│   ├── otelcol-windows.yaml    # Windows collector config
+│   └── signoz-collector.yaml   # SigNoz collector config
+├── scripts/
+│   ├── setup.ps1               # Main setup script
+│   ├── verify-integration.ps1  # Health verification
+│   ├── start-all.ps1          # Start services
+│   ├── stop-all.ps1           # Stop services
+│   └── schedule-monitoring.ps1 # Create scheduled task
+├── docker-compose.yml          # SigNoz stack
+├── monitor-loop.bat            # Fallback monitoring
+└── README.md                   # This file
 ```
 
-## 🔄 Maintenance Schedule
+## 🎯 Success Criteria
 
-- **Weekly:** `setup-weekly-audit.ps1` → automated evidence trail (hands-off)
-- **Monthly:** `repo-clean-inventory.ps1` (dry-run) → confirm no drift
-- **Quarterly:** `chaos-drill.ps1` (maintenance window) → verify resilience
-- **CI/CD:** `post-deploy-smoke.ps1` → pipeline gate validation
+- ✅ Windows OTel Collector running (ports 5317/5318)
+- ✅ SigNoz stack healthy (ports 4317/4318, 8080, 8123/9000)
+- ✅ Canary logs visible in SigNoz UI
+- ✅ Scheduled verification every 15 minutes
+- ✅ Alerting configured for missing canaries
 
-## 🚨 Emergency Procedures
+## 🚨 Troubleshooting
 
-### Fast Rollback
+### Common Issues
+1. **Port conflicts**: Check if ports 4317/4318 are available
+2. **Service issues**: Restart with `.\scripts\restart-collector.ps1`
+3. **SigNoz UI**: Verify http://localhost:8080 is accessible
+4. **Scheduled tasks**: Check Task Scheduler for "OTel-Verification-Canary"
+
+### Manual Health Checks
 ```powershell
-# Revert to last known good config
-Copy-Item C:\otel\config.bak.*.yaml C:\otel\config.yaml -Force
-Restart-Service otelcol-contrib
-.\canary-check-min.ps1
+# Check Docker containers
+docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+
+# Check Windows services
+Get-Service -Name "otelcol-contrib"
+
+# Check SigNoz health
+Invoke-WebRequest -Uri "http://localhost:8080/api/v1/health" -UseBasicParsing
 ```
 
-### Service Recovery Policy
-```powershell
-# Configure service failure actions
-sc.exe failure otelcol-contrib actions= restart/60000/restart/60000/restart/60000 reset= 86400
-sc.exe failureflag otelcol-contrib 1
-```
+## 📋 Next Steps
 
-## 📊 Release Information
+1. **Configure SigNoz Alert**: Set up notification for missing canaries
+2. **Schedule Monitoring**: Run `.\scripts\schedule-monitoring.ps1` (Admin)
+3. **Verify End-to-End**: Confirm canary logs appear every 15 minutes
 
-- **Version:** v1.0.0
-- **Release Date:** $(Get-Date -Format 'yyyy-MM-dd')
-- **Artifact:** `ops-pack.zip` with SHA256 verification
-- **Compatibility:** PowerShell 5.1+, Windows 10/11, Windows Server 2016+
+## 🎉 Status
 
-## 🔒 Security & Compliance
-
-- ASCII-only scripts for maximum compatibility
-- Idempotent operations for safe re-runs
-- Audit trail via `make-audit-pack.ps1`
-- Immutable release artifacts with SHA256 verification
-
-## 🔧 Repository Maintenance
-
-### Clean Up Merged Branches
-```bash
-# prune merged branches locally
-git fetch --all --prune
-git branch --merged main | egrep -v "^\*|main|master|release/" | xargs -n1 git branch -d
-
-# delete merged remote branches (review carefully)
-git branch -r --merged origin/main | egrep -v "origin/(main|master|release/)" \
-  | sed 's#origin/##' | xargs -n1 -I{} git push origin --delete {}
-
-# compact history
-git gc --aggressive --prune=now
-```
-
-### Repository Status
-```bash
-# Check repository health
-git status
-git log --oneline -5
-gh repo view fubumaki/otel-ops-pack
-```
-
-## 📞 Support
-
-See `ON_CALL_RUNBOOK.md` for detailed operational procedures and troubleshooting guides.
+**The OTel Windows → SigNoz observability pipeline is fully operational and ready for production monitoring!**

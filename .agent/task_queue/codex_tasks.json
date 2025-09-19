@@ -1,0 +1,22 @@
+﻿{
+    "id":  "3778df3c-fc88-4002-8f7d-dd156a5cfab8",
+    "name":  "remediate-overall-health-health_score",
+    "severity":  "CRITICAL",
+    "description":  "Alert \u0027CRITICAL\u0027 triggered for overall-health/health_score: Health score is 22 (threshold: 75)\nPlease investigate and propose remediation steps.",
+    "source_alert":  "health_alerts_20250918_223343.json",
+    "files_to_edit":  [
+
+                      ],
+    "details":  {
+                    "otel_collector":  "running",
+                    "metrics_endpoint":  "down",
+                    "canary_endpoint":  "error",
+                    "kafka_status":  "unreachable",
+                    "warnings":  [
+                                     "WARNING: Resource defaults processor not configured",
+                                     "WARNING: Kafka exporter not configured",
+                                     "WARNING: Traces pipeline not configured",
+                                     "WARNING: Insecure TLS detected - ensure it\u0027s only for local connections"
+                                 ]
+                }
+}

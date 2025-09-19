@@ -1,0 +1,26 @@
+receivers:
+  otlp:
+    protocols:
+      http:  { endpoint: 0.0.0.0:14318 }
+      grpc:  { endpoint: 0.0.0.0:14317 }
+  windows_event_log:
+    channels: [Application, System]
+  filelog:
+    include: ["C:\\logs\\**\\*.log"]
+
+processors:
+  batch: {}
+
+exporters:
+  otlp:
+    endpoint: http://localhost:4317
+    tls: { insecure: true }
+
+service:
+  pipelines:
+    logs:    { receivers: [windows_event_log, filelog, otlp], processors: [batch], exporters: [otlp] }
+    metrics: { receivers: [otlp],                            processors: [batch], exporters: [otlp] }
+    traces:  { receivers: [otlp],                            processors: [batch], exporters: [otlp] }
+
+
+

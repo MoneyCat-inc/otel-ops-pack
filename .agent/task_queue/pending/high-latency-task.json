@@ -1,0 +1,31 @@
+{
+  "id": "high-latency-20250918",
+  "type": "alert",
+  "priority": "medium",
+  "created_at": "2025-09-18T23:35:00Z",
+  "source": "manual",
+  "title": "High Latency Traces Detected",
+  "description": "P95 latency exceeds 200ms threshold, requiring tail sampling policy adjustment",
+  "metrics": {
+    "latency_p95": 350,
+    "latency_p99": 800,
+    "trace_count": 1250,
+    "slow_traces": 45,
+    "timestamp": "2025-09-18T23:35:00Z"
+  },
+  "recipe": "high_latency",
+  "status": "pending",
+  "assigned_to": "codex",
+  "validation_commands": [
+    "otelcol --config=config.yaml --dry-run",
+    "curl -s http://localhost:13134/",
+    "powershell -ExecutionPolicy Bypass -File validation/validate-tail-sampling.ps1"
+  ],
+  "expected_output": "Tail sampling configured, slow traces captured",
+  "rollback_commands": [
+    "copy config.backup.yaml config.yaml",
+    "sc restart otelcol-contrib"
+  ]
+}
+
+

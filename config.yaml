@@ -1,118 +1,125 @@
-# C:\otel\config-hardened-plus.yaml
-# Hardened, loopback-only, resilient Windows Collector → SigNoz + Kafka
-
-extensions:
-  health_check:
-    endpoint: 127.0.0.1:13134
-  file_storage:
-    directory: C:\ProgramData\Otelcol\FileStorage
-    timeout: 10s
-    compaction:
-      on_start: true
-
 receivers:
-  # OTLP (loopback only)
   otlp:
     protocols:
       http:
-        endpoint: 127.0.0.1:5318
+        endpoint: 0.0.0.0:5318
       grpc:
-        endpoint: 127.0.0.1:5317
+        endpoint: 0.0.0.0:5317
 
-  # Tail Windows logs directory (optional; safe defaults)
+  prometheus/gpu:
+    config:
+      scrape_configs:
+        - job_name: 'gpu-exporter'
+          scrape_interval: 15s
+          static_configs:
+            - targets: ['localhost:9400']
+
   filelog:
-    include:
-      - C:\logs\*.log
+    include: [C:/logs/**/*.log]
     start_at: end
     include_file_path: true
-    include_file_name: true
-    poll_interval: 1s
-    # Minimal, widely compatible JSON parsing
+    include_file_name_resolved: true
     operators:
       - type: json_parser
-        parse_to: body
-
-  # Windows Event Logs (Application + System) - separate receivers for compatibility
-  windowseventlog/application:
-    channel: Application
-    start_at: end
-  windowseventlog/system:
-    channel: System
-    start_at: end
-
-processors:
-  # Resource defaults for unified attributes
-  resource/defaults:
-    attributes:
-      - key: project
-        value: common
-        action: upsert
-      - key: service.namespace
-        value: core
-        action: upsert
-
-  # Tail-based sampling for traces (when traces pipeline is added)
-  tail_sampling:
-    decision_wait: 5s
-    num_traces: 50000
-    policies:
-      - name: errors
-        type: status_code
-        status_code: ERROR
-      - name: high_latency
-        type: latency
-        latency: 500ms
-
-  # Keep memory in check under load
-  memory_limiter:
-    check_interval: 2s
-    limit_mib: 512
-    spike_limit_mib: 256
-
-  # Efficient, low-latency batching that preserves throughput
-  batch:
-    timeout: 2s
-    send_batch_size: 2048
-    send_batch_max_size: 4096
+        parse_from: body
+      - type: move
+        from: attributes["log.file.name"]
+        to: attributes["log.file.name"]
 
 exporters:
-  # Export to SigNoz collector running in Docker on localhost
-  otlp:
-    endpoint: 127.0.0.1:14318
+  logging:
+    loglevel: info
+
+  otlp/sigz:
+    endpoint: "localhost:14317"
     tls:
       insecure: true
     retry_on_failure:
       enabled: true
       initial_interval: 1s
       max_interval: 30s
-      max_elapsed_time: 300s
+      max_elapsed_time: 5m
     sending_queue:
       enabled: true
-      num_consumers: 4
-      queue_size: 8192
-      storage: file_storage
+      queue_size: 2048
 
-  # Kafka fan-out exporter
-  kafka:
-    brokers: ["localhost:9092"]
-    topic: otel-logs
-    encoding: otlp_json
-    protocol_version: 2.0.0
+processors:
+  memory_limiter:
+    limit_mib: 512
+    spike_limit_mib: 128
+    check_interval: 5s
 
-  # Optional local debug (uncomment if you want console logs)
-  # logging:
-  #   loglevel: info
+  resource/defaults:
+    attributes:
+      - action: upsert
+        key: service.name
+        value: windows-otel-collector
+      - action: upsert
+        key: service.namespace
+        value: platform
+      - action: upsert
+        key: deployment.environment
+        value: local
+
+  batch:
+    timeout: 1s
+    send_batch_size: 1024
+    send_batch_max_size: 2048
+
+  tail_sampling:
+    decision_wait: 10s
+    num_traces: 50000
+    expected_new_traces_per_sec: 10
+    policies:
+      - name: errors
+        type: status_code
+        status_code:
+          status_codes: [ERROR]
+      - name: slow-traces
+        type: latency
+        latency:
+          threshold_ms: 500
+      - name: canary
+        type: string_attribute
+        string_attribute:
+          key: canary
+          values: ["true"]
+      - name: baseline
+        type: probabilistic
+        probabilistic:
+          sampling_percentage: 10
+
+  attributes/redact:
+    actions:
+      - key: http.request.header.authorization
+        action: delete
+      - key: http.request.header.cookie
+        action: delete
+      - key: user.email
+        action: delete
+
+extensions:
+  health_check:
+    endpoint: 0.0.0.0:13134
+    path: /healthz
+  pprof:
+    endpoint: 0.0.0.0:1777
 
 service:
-  extensions: [health_check, file_storage]
-
-  pipelines:
-    logs:
-      receivers: [otlp, filelog, windowseventlog/application, windowseventlog/system]
-      processors: [resource/defaults, memory_limiter, batch]
-      exporters: [otlp, kafka]
-      # For local debug add: , logging
-
+  extensions: [health_check, pprof]
   telemetry:
     metrics:
-      address: 127.0.0.1:8889
+      address: 0.0.0.0:8888
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, resource/defaults, tail_sampling, batch]
+      exporters: [logging, otlp/sigz]
+    metrics:
+      receivers: [otlp, prometheus/gpu]
+      processors: [memory_limiter, resource/defaults, batch]
+      exporters: [logging, otlp/sigz]
+    logs:
+      receivers: [otlp, filelog]
+      processors: [memory_limiter, resource/defaults, batch, attributes/redact]
+      exporters: [logging, otlp/sigz]

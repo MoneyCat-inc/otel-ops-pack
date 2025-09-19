@@ -23,3 +23,5 @@ try {
   Write-Host "Kafka UNREACHABLE at $Broker (optional)" -ForegroundColor Yellow
   exit 1
 }
+
+

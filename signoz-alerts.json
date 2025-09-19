@@ -1,0 +1,66 @@
+{
+  "alerts": [
+    {
+      "name": "High Error Rate",
+      "description": "Alert when error rate exceeds 5% for 5 minutes",
+      "query": "rate(count by (level) (level=\"ERROR\")[5m]) / rate(count[5m]) > 0.05",
+      "severity": "critical",
+      "duration": "5m"
+    },
+    {
+      "name": "Canary Test Failure",
+      "description": "Alert when canary tests fail or stop",
+      "query": "count by (canary) (canary=\"true\" and level=\"ERROR\") == 0",
+      "severity": "warning",
+      "duration": "2m"
+    },
+    {
+      "name": "High Memory Usage",
+      "description": "Alert when collector memory usage is high",
+      "query": "otelcol_process_memory_rss > 400000000",
+      "severity": "warning",
+      "duration": "3m"
+    },
+    {
+      "name": "Windows Event Log Errors",
+      "description": "Alert on critical Windows Event Log entries",
+      "query": "count by (log.source) (log.source=\"windows_event_log\" and level=\"ERROR\") > 10",
+      "severity": "warning",
+      "duration": "5m"
+    }
+  ],
+  "dashboards": [
+    {
+      "name": "Observability Overview",
+      "panels": [
+        {
+          "title": "Error Rate (24h)",
+          "query": "rate(count by (level) (level=\"ERROR\")[1h]) / rate(count[1h])",
+          "type": "line"
+        },
+        {
+          "title": "Log Volume by Source",
+          "query": "count by (log.source)",
+          "type": "pie"
+        },
+        {
+          "title": "Top Error Messages",
+          "query": "topk(10, count by (message) (level=\"ERROR\"))",
+          "type": "table"
+        },
+        {
+          "title": "Windows Event Log Entries",
+          "query": "count by (log.source, level) (log.source=\"windows_event_log\")",
+          "type": "bar"
+        },
+        {
+          "title": "Canary Test Status",
+          "query": "count by (canary, level) (canary=\"true\")",
+          "type": "stat"
+        }
+      ]
+    }
+  ]
+}
+
+

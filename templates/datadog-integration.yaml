@@ -1,0 +1,134 @@
+# Datadog Integration Template
+# Copy this template and customize for your Datadog setup
+
+# =============================================================================
+# DATADOG EXPORTER CONFIGURATION
+# =============================================================================
+
+exporters:
+  datadog:
+    # Basic Datadog configuration
+    api_key: ${DD_API_KEY}  # Use environment variable for security
+    site: datadoghq.com     # or datadoghq.eu, us3.datadoghq.com, etc.
+    
+    # Optional: Custom tags
+    tags:
+      - "service:otel-collector"
+      - "environment:production"
+      - "datacenter:us-east-1"
+      - "team:platform"
+    
+    # Optional: Custom hostname
+    # hostname: "otel-collector-01"
+    
+    # Optional: Custom namespace
+    # namespace: "otel"
+    
+    # Retry configuration
+    retry_on_failure:
+      enabled: true
+      initial_interval: 1s
+      max_interval: 30s
+      max_elapsed_time: 300s
+    
+    # Queue configuration
+    sending_queue:
+      enabled: true
+      num_consumers: 4
+      queue_size: 8192
+      storage: file_storage
+    
+    # Optional: Custom timeout
+    # timeout: 30s
+    
+    # Optional: Custom headers
+    # headers:
+    #   X-Custom-Header: "value"
+
+# =============================================================================
+# DATADOG RECEIVER CONFIGURATION (Optional)
+# =============================================================================
+
+# If you want to receive data directly from Datadog agents:
+receivers:
+  datadog:
+    endpoint: 127.0.0.1:8126  # Datadog agent endpoint
+    tls:
+      insecure: true  # Set to false for production with TLS
+
+# =============================================================================
+# PIPELINE INTEGRATION
+# =============================================================================
+
+# Add to your service pipelines:
+# service:
+#   pipelines:
+#     logs:
+#       receivers: [otlp, filelog]
+#       processors: [resource/defaults, memory_limiter, batch]
+#       exporters: [otlp, datadog]  # Add datadog exporter
+#     traces:
+#       receivers: [otlp]
+#       processors: [resource/defaults, tail_sampling, memory_limiter, batch]
+#       exporters: [otlp, datadog]  # Add datadog exporter
+#     metrics:
+#       receivers: [otlp, prometheus]
+#       processors: [resource/defaults, memory_limiter, batch]
+#       exporters: [otlp, datadog]  # Add datadog exporter
+
+# =============================================================================
+# CUSTOMIZATION OPTIONS
+# =============================================================================
+
+# 1. Different Datadog sites:
+# site: datadoghq.eu        # EU
+# site: us3.datadoghq.com   # US3
+# site: us5.datadoghq.com   # US5
+
+# 2. Custom tags:
+# tags:
+#   - "service:${DD_SERVICE}"
+#   - "env:${DD_ENV}"
+#   - "version:${DD_VERSION}"
+
+# 3. Custom hostname:
+# hostname: "${HOSTNAME}"
+
+# 4. Custom namespace:
+# namespace: "myapp"
+
+# 5. Custom timeout:
+# timeout: 60s
+
+# 6. Custom headers:
+# headers:
+#   Authorization: "Bearer ${DD_API_KEY}"
+#   X-Custom-Header: "value"
+
+# =============================================================================
+# ENVIRONMENT VARIABLES
+# =============================================================================
+
+# Set these environment variables:
+# $env:DD_API_KEY = "your-datadog-api-key"
+# $env:DD_SERVICE = "otel-collector"
+# $env:DD_ENV = "production"
+# $env:DD_VERSION = "1.0.0"
+
+# =============================================================================
+# VERIFICATION COMMANDS
+# =============================================================================
+
+# Test Datadog connectivity:
+# Invoke-WebRequest -Uri "https://api.datadoghq.com/api/v1/validate" -Headers @{"DD-API-KEY" = $env:DD_API_KEY} -UseBasicParsing
+
+# Validate configuration:
+# C:\otel\config-schema.ps1 -ConfigPath C:\otel\config.yaml
+
+# Apply configuration:
+# C:\otel\safe-apply-config.ps1 -Candidate C:\otel\config.candidate.yaml
+
+# Verify data flow:
+# C:\otel\canary-check-min.ps1
+
+

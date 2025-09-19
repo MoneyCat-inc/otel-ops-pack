@@ -1,0 +1,63 @@
+receivers:
+  windows_event_log:
+    - channel: Application
+      log_name: Application
+      start_at: end
+      poll_interval: 1s
+      exclude_providers:
+        - Microsoft-Windows-Security-SPP
+  filelog:
+    - include: C:\logs\**\*.log
+      start_at: end
+      poll_interval: 1s
+      operators:
+        - type: json_parser
+          parse_from: body
+        - type: add
+          field: log.source
+          value: file
+
+processors:
+  batch:
+    timeout: 1s
+    send_batch_size: 1024
+  memory_limiter:
+    limit_mib: 256
+  attributes:
+    actions:
+      - key: deployment.env
+        value: local
+        action: insert
+      - key: log.source
+        value: windows_event_log
+        action: insert
+        conditions:
+          - key: log.source
+            value: windows_event_log
+
+exporters:
+  otlp:
+    endpoint: localhost:4317
+    tls:
+      insecure: true
+  otlphttp:
+    endpoint: http://localhost:4318
+    tls:
+      insecure: true
+  debug:
+    verbosity: normal
+
+service:
+  pipelines:
+    logs:
+      receivers: [windows_event_log, filelog]
+      processors: [memory_limiter, attributes, batch]
+      exporters: [otlp, otlphttp, debug]
+    metrics:
+      receivers: []
+      processors: [memory_limiter, batch]
+      exporters: [otlp, otlphttp]
+    traces:
+      receivers: []
+      processors: [memory_limiter, batch]
+      exporters: [otlp, otlphttp]

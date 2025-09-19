@@ -1,0 +1,26 @@
+[
+    {
+        "name":  "daily-health-check",
+        "description":  "Run daily health check and generate JSON report",
+        "command":  ".\\gpu\\scripts\\comprehensive-monitoring.ps1 -Mode health -GenerateReport",
+        "timeout_minutes":  15,
+        "frequency":  "daily",
+        "enabled":  true
+    },
+    {
+        "name":  "daily-report-analysis",
+        "description":  "Analyze latest health report, summarize breaches and create alerts",
+        "command":  ".\\gpu\\scripts\\health-report-analyzer.ps1 -Action analyze -GenerateSummary -GenerateAlerts",
+        "timeout_minutes":  10,
+        "frequency":  "daily",
+        "enabled":  true
+    },
+    {
+        "name":  "codex-task-generator",
+        "description":  "Read alert file and enqueue tasks for codex-local autobot",
+        "command":  ".\\codex\\scripts\\generate-codex-tasks.ps1",
+        "timeout_minutes":  5,
+        "frequency":  "daily",
+        "enabled":  true
+    }
+]

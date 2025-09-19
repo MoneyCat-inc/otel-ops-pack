@@ -1,0 +1,77 @@
+﻿{
+    "timestamp":  "2025-09-18T22:59:38Z",
+    "report_path":  "C:\\otel\\gpu\\monitoring\\reports\\health_report_20250918_225938.json",
+    "health_threshold":  75,
+    "alert_count":  4,
+    "alerts":  [
+                   {
+                       "id":  "f4da2bb0-0aa0-4ddf-962c-b46ae74cc799",
+                       "type":  "HEALTH_SCORE_LOW",
+                       "severity":  "CRITICAL",
+                       "message":  "Health score is 22 (threshold: 75)",
+                       "category":  "overall-health",
+                       "metric":  "health_score",
+                       "value":  22,
+                       "threshold":  75,
+                       "timestamp":  "2025-09-18T22:59:38Z",
+                       "details":  {
+                                       "otel_collector":  "running",
+                                       "metrics_endpoint":  "down",
+                                       "canary_endpoint":  "error",
+                                       "kafka_status":  "unreachable",
+                                       "warnings":  [
+                                                        "WARNING: Resource defaults processor not configured",
+                                                        "WARNING: Kafka exporter not configured",
+                                                        "WARNING: Traces pipeline not configured",
+                                                        "WARNING: Insecure TLS detected - ensure it\u0027s only for local connections"
+                                                    ]
+                                   }
+                   },
+                   {
+                       "id":  "0ca5d6ac-4bcc-4f80-9847-e30bdccbf191",
+                       "type":  "WARNING",
+                       "category":  "metrics-endpoint",
+                       "metric":  "availability",
+                       "value":  "degraded",
+                       "threshold":  "reachable",
+                       "message":  "Metrics endpoint issues detected.",
+                       "timestamp":  "2025-09-18T22:59:38Z",
+                       "details":  {
+                                       "samples":  [
+                                                       "Metrics fetch failed on http://127.0.0.1:8889/metrics: Unable to connect to the remote server"
+                                                   ]
+                                   }
+                   },
+                   {
+                       "id":  "982d8468-90de-40fc-88d7-5392795ed31c",
+                       "type":  "WARNING",
+                       "category":  "kafka-connectivity",
+                       "metric":  "availability",
+                       "value":  "degraded",
+                       "threshold":  "available",
+                       "message":  "Kafka availability issues detected.",
+                       "timestamp":  "2025-09-18T22:59:38Z",
+                       "details":  {
+                                       "samples":  [
+                                                       "Kafka UNREACHABLE at localhost:9092 (optional)",
+                                                       "Kafka: UNREACHABLE (optional)"
+                                                   ]
+                                   }
+                   },
+                   {
+                       "id":  "c4ee841b-6c11-4737-935a-3452bd1d5032",
+                       "type":  "WARNING",
+                       "category":  "canary-test",
+                       "metric":  "result",
+                       "value":  "failed",
+                       "threshold":  "success",
+                       "message":  "Canary test failures detected.",
+                       "timestamp":  "2025-09-18T22:59:38Z",
+                       "details":  {
+                                       "samples":  [
+                                                       "Canary: ERROR"
+                                                   ]
+                                   }
+                   }
+               ]
+}

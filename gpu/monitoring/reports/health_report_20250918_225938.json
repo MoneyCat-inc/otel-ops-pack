@@ -1,0 +1,70 @@
+﻿{
+    "timestamp":  "2025-09-18T22:59:38Z",
+    "source":  "health-check.ps1",
+    "health_score":  22,
+    "parsed":  {
+                   "otel_collector":  "running",
+                   "metrics_endpoint":  "down",
+                   "canary_endpoint":  "error",
+                   "kafka_status":  "unreachable",
+                   "warnings":  [
+                                    "WARNING: Resource defaults processor not configured",
+                                    "WARNING: Kafka exporter not configured",
+                                    "WARNING: Traces pipeline not configured",
+                                    "WARNING: Insecure TLS detected - ensure it\u0027s only for local connections"
+                                ]
+               },
+    "raw_lines":  [
+                      "== OTel Health Check ==",
+                      "Service: Running",
+                      "Health: Server available (uptime 2h36m2.0049s)",
+                      "Metrics: DOWN",
+                      "Reading baseline metrics...",
+                      "Metrics fetch failed on http://127.0.0.1:8889/metrics: Unable to connect to the remote server",
+                      "Canary: ERROR",
+                      "Kafka UNREACHABLE at localhost:9092 (optional)",
+                      "Kafka: UNREACHABLE (optional)",
+                      "WARNING: Resource defaults processor not configured",
+                      "WARNING: Kafka exporter not configured",
+                      "WARNING: Traces pipeline not configured",
+                      "",
+                      "Running security validation...",
+                      "WARNING: Insecure TLS detected - ensure it\u0027s only for local connections",
+                      "",
+                      "Running performance validation...",
+                      "",
+                      "Validation Summary:",
+                      "  Passed: 22",
+                      "  Warnings: 4",
+                      "  Errors: 0",
+                      "",
+                      "Validation PASSED with 4 warnings",
+                      "Config: VALID",
+                      "",
+                      "Summary: 3/6 checks passed",
+                      "Some required issues detected",
+                      ""
+                  ],
+    "metrics_lines":  [
+                          "Metrics: DOWN",
+                          "Reading baseline metrics...",
+                          "Metrics fetch failed on http://127.0.0.1:8889/metrics: Unable to connect to the remote server"
+                      ],
+    "kafka_lines":  [
+                        "Kafka UNREACHABLE at localhost:9092 (optional)",
+                        "Kafka: UNREACHABLE (optional)",
+                        "WARNING: Kafka exporter not configured"
+                    ],
+    "canary_lines":  [
+                         "Canary: ERROR"
+                     ],
+    "gpu_lines":  [
+
+                  ],
+    "otel_lines":  [
+                       "== OTel Health Check =="
+                   ],
+    "signoz_lines":  [
+
+                     ]
+}

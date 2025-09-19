@@ -1,0 +1,528 @@
+# OTel Common Configurations - AI Assistant Context
+# Reusable configuration patterns for common integrations
+
+# =============================================================================
+# KAFKA INTEGRATION PATTERNS
+# =============================================================================
+
+kafka_basic:
+  exporters:
+    kafka:
+      brokers: ["localhost:9092"]
+      topic: otel-logs
+      encoding: otlp_json
+      protocol_version: 2.0.0
+
+kafka_advanced:
+  exporters:
+    kafka:
+      brokers: ["localhost:9092"]
+      topic: otel-${type}
+      encoding: otlp_json
+      protocol_version: 2.0.0
+      retry_on_failure:
+        enabled: true
+        initial_interval: 1s
+        max_interval: 30s
+        max_elapsed_time: 300s
+      sending_queue:
+        enabled: true
+        num_consumers: 4
+        queue_size: 8192
+        storage: file_storage
+
+kafka_secure:
+  exporters:
+    kafka:
+      brokers: ["localhost:9092"]
+      topic: otel-logs
+      encoding: otlp_json
+      protocol_version: 2.0.0
+      auth:
+        sasl:
+          mechanism: PLAIN
+          username: ${KAFKA_USERNAME}
+          password: ${KAFKA_PASSWORD}
+      tls:
+        insecure: false
+        ca_file: /path/to/ca.pem
+        cert_file: /path/to/client.pem
+        key_file: /path/to/client.key
+
+# =============================================================================
+# PROMETHEUS INTEGRATION PATTERNS
+# =============================================================================
+
+prometheus_basic:
+  receivers:
+    prometheus:
+      config:
+        scrape_configs:
+          - job_name: 'otel-collector'
+            static_configs:
+              - targets: ['127.0.0.1:8889']
+  exporters:
+    prometheus:
+      endpoint: "0.0.0.0:8889"
+      namespace: otelcol
+
+prometheus_advanced:
+  receivers:
+    prometheus:
+      config:
+        scrape_configs:
+          - job_name: 'otel-collector'
+            static_configs:
+              - targets: ['127.0.0.1:8889']
+          - job_name: 'gpu-metrics'
+            static_configs:
+              - targets: ['127.0.0.1:9400']
+            scrape_interval: 15s
+            metrics_path: /metrics
+  exporters:
+    prometheus:
+      endpoint: "0.0.0.0:8889"
+      namespace: otelcol
+      const_labels:
+        service: otel-collector
+        environment: production
+
+# =============================================================================
+# JAEGER INTEGRATION PATTERNS
+# =============================================================================
+
+jaeger_basic:
+  exporters:
+    jaeger:
+      endpoint: http://localhost:14268/api/traces
+      tls:
+        insecure: true
+
+jaeger_advanced:
+  exporters:
+    jaeger:
+      endpoint: http://localhost:14268/api/traces
+      tls:
+        insecure: true
+      retry_on_failure:
+        enabled: true
+        initial_interval: 1s
+        max_interval: 30s
+        max_elapsed_time: 300s
+      sending_queue:
+        enabled: true
+        num_consumers: 4
+        queue_size: 8192
+        storage: file_storage
+
+# =============================================================================
+# DATADOG INTEGRATION PATTERNS
+# =============================================================================
+
+datadog_basic:
+  exporters:
+    datadog:
+      api_key: ${DD_API_KEY}
+      site: datadoghq.com
+
+datadog_advanced:
+  exporters:
+    datadog:
+      api_key: ${DD_API_KEY}
+      site: datadoghq.com
+      tags:
+        - "service:otel-collector"
+        - "environment:production"
+      retry_on_failure:
+        enabled: true
+        initial_interval: 1s
+        max_interval: 30s
+        max_elapsed_time: 300s
+      sending_queue:
+        enabled: true
+        num_consumers: 4
+        queue_size: 8192
+        storage: file_storage
+
+# =============================================================================
+# RESOURCE STANDARDIZATION PATTERNS
+# =============================================================================
+
+resource_basic:
+  processors:
+    resource/defaults:
+      attributes:
+        - key: project
+          value: common
+          action: upsert
+        - key: service.namespace
+          value: core
+          action: upsert
+
+resource_advanced:
+  processors:
+    resource/defaults:
+      attributes:
+        - key: project
+          value: common
+          action: upsert
+        - key: service.namespace
+          value: core
+          action: upsert
+        - key: environment
+          value: production
+          action: upsert
+        - key: datacenter
+          value: us-east-1
+          action: upsert
+        - key: team
+          value: platform
+          action: upsert
+
+# =============================================================================
+# SAMPLING PATTERNS
+# =============================================================================
+
+sampling_basic:
+  processors:
+    tail_sampling:
+      decision_wait: 5s
+      num_traces: 50000
+      policies:
+        - name: errors
+          type: status_code
+          status_code: ERROR
+        - name: high_latency
+          type: latency
+          latency: 500ms
+
+sampling_advanced:
+  processors:
+    tail_sampling:
+      decision_wait: 5s
+      num_traces: 50000
+      policies:
+        - name: errors
+          type: status_code
+          status_code: ERROR
+        - name: high_latency
+          type: latency
+          latency: 500ms
+        - name: business_critical
+          type: attribute
+          attribute:
+            key: business.critical
+            value: true
+        - name: user_requests
+          type: attribute
+          attribute:
+            key: user.id
+            value: ".*"
+        - name: rate_limiting
+          type: probabilistic
+          probabilistic:
+            sampling_percentage: 10
+
+# =============================================================================
+# SECURITY PATTERNS
+# =============================================================================
+
+security_loopback_only:
+  receivers:
+    otlp:
+      protocols:
+        http:
+          endpoint: 127.0.0.1:5318
+        grpc:
+          endpoint: 127.0.0.1:5317
+  exporters:
+    otlp:
+      endpoint: 127.0.0.1:14318
+      tls:
+        insecure: true
+
+security_redaction:
+  processors:
+    attributes/redact:
+      actions:
+        - key: password
+          action: delete
+        - key: token
+          action: delete
+        - key: secret
+          action: delete
+        - key: api_key
+          action: delete
+
+# =============================================================================
+# PERFORMANCE PATTERNS
+# =============================================================================
+
+performance_basic:
+  processors:
+    memory_limiter:
+      check_interval: 2s
+      limit_mib: 512
+      spike_limit_mib: 256
+    batch:
+      timeout: 2s
+      send_batch_size: 2048
+      send_batch_max_size: 4096
+
+performance_high_throughput:
+  processors:
+    memory_limiter:
+      check_interval: 1s
+      limit_mib: 1024
+      spike_limit_mib: 512
+    batch:
+      timeout: 1s
+      send_batch_size: 4096
+      send_batch_max_size: 8192
+    queued_retry:
+      enabled: true
+      num_workers: 4
+      queue_size: 1000
+      initial_interval: 1s
+      max_interval: 30s
+      max_elapsed_time: 300s
+
+# =============================================================================
+# COMPLETE PIPELINE PATTERNS
+# =============================================================================
+
+pipeline_logs_basic:
+  service:
+    pipelines:
+      logs:
+        receivers: [otlp, filelog]
+        processors: [memory_limiter, batch]
+        exporters: [otlp]
+
+pipeline_logs_advanced:
+  service:
+    pipelines:
+      logs:
+        receivers: [otlp, filelog, windowseventlog/application]
+        processors: [resource/defaults, memory_limiter, batch]
+        exporters: [otlp, kafka]
+
+pipeline_traces_basic:
+  service:
+    pipelines:
+      traces:
+        receivers: [otlp]
+        processors: [memory_limiter, batch]
+        exporters: [otlp]
+
+pipeline_traces_advanced:
+  service:
+    pipelines:
+      traces:
+        receivers: [otlp]
+        processors: [resource/defaults, tail_sampling, memory_limiter, batch]
+        exporters: [otlp, jaeger]
+
+pipeline_metrics_basic:
+  service:
+    pipelines:
+      metrics:
+        receivers: [otlp]
+        processors: [memory_limiter, batch]
+        exporters: [otlp]
+
+pipeline_metrics_advanced:
+  service:
+    pipelines:
+      metrics:
+        receivers: [otlp, prometheus]
+        processors: [resource/defaults, memory_limiter, batch]
+        exporters: [otlp, prometheus]
+
+# =============================================================================
+# COMPLETE CONFIGURATION TEMPLATES
+# =============================================================================
+
+complete_basic:
+  extensions:
+    health_check:
+      endpoint: 127.0.0.1:13134
+    file_storage:
+      directory: C:\ProgramData\Otelcol\FileStorage
+      timeout: 10s
+      compaction:
+        on_start: true
+  
+  receivers:
+    otlp:
+      protocols:
+        http:
+          endpoint: 127.0.0.1:5318
+        grpc:
+          endpoint: 127.0.0.1:5317
+  
+  processors:
+    memory_limiter:
+      check_interval: 2s
+      limit_mib: 512
+      spike_limit_mib: 256
+    batch:
+      timeout: 2s
+      send_batch_size: 2048
+      send_batch_max_size: 4096
+  
+  exporters:
+    otlp:
+      endpoint: 127.0.0.1:14318
+      tls:
+        insecure: true
+      retry_on_failure:
+        enabled: true
+        initial_interval: 1s
+        max_interval: 30s
+        max_elapsed_time: 300s
+      sending_queue:
+        enabled: true
+        num_consumers: 4
+        queue_size: 8192
+        storage: file_storage
+  
+  service:
+    extensions: [health_check, file_storage]
+    pipelines:
+      logs:
+        receivers: [otlp]
+        processors: [memory_limiter, batch]
+        exporters: [otlp]
+    telemetry:
+      metrics:
+        address: 127.0.0.1:8889
+
+complete_advanced:
+  extensions:
+    health_check:
+      endpoint: 127.0.0.1:13134
+    file_storage:
+      directory: C:\ProgramData\Otelcol\FileStorage
+      timeout: 10s
+      compaction:
+        on_start: true
+  
+  receivers:
+    otlp:
+      protocols:
+        http:
+          endpoint: 127.0.0.1:5318
+        grpc:
+          endpoint: 127.0.0.1:5317
+    filelog:
+      include:
+        - C:\logs\*.log
+      start_at: end
+      include_file_path: true
+      include_file_name: true
+      poll_interval: 1s
+      operators:
+        - type: json_parser
+          parse_to: body
+    windowseventlog/application:
+      channel: Application
+      start_at: end
+    windowseventlog/system:
+      channel: System
+      start_at: end
+    prometheus:
+      config:
+        scrape_configs:
+          - job_name: 'otel-collector'
+            static_configs:
+              - targets: ['127.0.0.1:8889']
+  
+  processors:
+    resource/defaults:
+      attributes:
+        - key: project
+          value: common
+          action: upsert
+        - key: service.namespace
+          value: core
+          action: upsert
+        - key: environment
+          value: production
+          action: upsert
+    tail_sampling:
+      decision_wait: 5s
+      num_traces: 50000
+      policies:
+        - name: errors
+          type: status_code
+          status_code: ERROR
+        - name: high_latency
+          type: latency
+          latency: 500ms
+    memory_limiter:
+      check_interval: 2s
+      limit_mib: 512
+      spike_limit_mib: 256
+    batch:
+      timeout: 2s
+      send_batch_size: 2048
+      send_batch_max_size: 4096
+  
+  exporters:
+    otlp:
+      endpoint: 127.0.0.1:14318
+      tls:
+        insecure: true
+      retry_on_failure:
+        enabled: true
+        initial_interval: 1s
+        max_interval: 30s
+        max_elapsed_time: 300s
+      sending_queue:
+        enabled: true
+        num_consumers: 4
+        queue_size: 8192
+        storage: file_storage
+    kafka:
+      brokers: ["localhost:9092"]
+      topic: otel-logs
+      encoding: otlp_json
+      protocol_version: 2.0.0
+      retry_on_failure:
+        enabled: true
+        initial_interval: 1s
+        max_interval: 30s
+        max_elapsed_time: 300s
+      sending_queue:
+        enabled: true
+        num_consumers: 4
+        queue_size: 8192
+        storage: file_storage
+    prometheus:
+      endpoint: "0.0.0.0:8889"
+      namespace: otelcol
+      const_labels:
+        service: otel-collector
+        environment: production
+  
+  service:
+    extensions: [health_check, file_storage]
+    pipelines:
+      logs:
+        receivers: [otlp, filelog, windowseventlog/application, windowseventlog/system]
+        processors: [resource/defaults, memory_limiter, batch]
+        exporters: [otlp, kafka]
+      traces:
+        receivers: [otlp]
+        processors: [resource/defaults, tail_sampling, memory_limiter, batch]
+        exporters: [otlp]
+      metrics:
+        receivers: [otlp, prometheus]
+        processors: [resource/defaults, memory_limiter, batch]
+        exporters: [otlp, prometheus]
+    telemetry:
+      metrics:
+        address: 127.0.0.1:8889
+
+

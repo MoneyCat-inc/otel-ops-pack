@@ -1,0 +1,30 @@
+{
+  "id": "gpu-thermal-20250918",
+  "type": "alert",
+  "priority": "critical",
+  "created_at": "2025-09-18T23:45:00Z",
+  "source": "gpu",
+  "title": "GPU Thermal Headroom Critical",
+  "description": "GPU temperature 85°C with only 5°C headroom, requiring workload reduction",
+  "metrics": {
+    "gpu_temperature": 85,
+    "max_temperature": 90,
+    "thermal_headroom": 5,
+    "workload_intensity": 0.95,
+    "timestamp": "2025-09-18T23:45:00Z"
+  },
+  "recipe": "gpu_thermal",
+  "status": "pending",
+  "assigned_to": "codex",
+  "validation_commands": [
+    "powershell -ExecutionPolicy Bypass -File validation/validate-gpu-thermal.ps1",
+    "curl -s http://localhost:9400/metrics"
+  ],
+  "expected_output": "GPU monitoring active, thermal controls available",
+  "rollback_commands": [
+    "Restore previous GPU workload settings",
+    "Restart GPU monitoring services"
+  ]
+}
+
+

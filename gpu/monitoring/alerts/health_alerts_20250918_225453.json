@@ -1,0 +1,73 @@
+﻿{
+    "timestamp":  "2025-09-18T22:54:53Z",
+    "report_path":  "C:\\otel\\gpu\\monitoring\\reports\\health_report_20250918_225453.json",
+    "health_threshold":  75,
+    "alert_count":  4,
+    "alerts":  [
+                   {
+                       "id":  "55c7bc5a-6c28-4208-9474-c26a3c6340ce",
+                       "type":  "HEALTH_SCORE_LOW",
+                       "severity":  "CRITICAL",
+                       "message":  "Health score is 22 (threshold: 75)",
+                       "category":  "overall-health",
+                       "metric":  "health_score",
+                       "value":  22,
+                       "threshold":  75,
+                       "timestamp":  "2025-09-18T22:54:53Z",
+                       "details":  {
+                                       "otel_collector":  "running",
+                                       "metrics_endpoint":  "down",
+                                       "canary_endpoint":  "error",
+                                       "kafka_status":  "unreachable",
+                                       "warnings":  [
+                                                        "WARNING: Resource defaults processor not configured",
+                                                        "WARNING: Kafka exporter not configured",
+                                                        "WARNING: Traces pipeline not configured",
+                                                        "WARNING: Insecure TLS detected - ensure it\u0027s only for local connections"
+                                                    ]
+                                   }
+                   },
+                   {
+                       "id":  "c134d904-75e2-4b7a-90b5-1a3b102bae86",
+                       "type":  "WARNING",
+                       "category":  "metrics-endpoint",
+                       "metric":  "availability",
+                       "value":  "degraded",
+                       "threshold":  "reachable",
+                       "message":  "Metrics endpoint issues detected.",
+                       "timestamp":  "2025-09-18T22:54:53Z",
+                       "details":  {
+                                       "samples":  "Metrics fetch failed on http://127.0.0.1:8889/metrics: Unable to connect to the remote server"
+                                   }
+                   },
+                   {
+                       "id":  "a9dc4573-11e1-4ead-83ea-bb36c997c5c4",
+                       "type":  "WARNING",
+                       "category":  "kafka-connectivity",
+                       "metric":  "availability",
+                       "value":  "degraded",
+                       "threshold":  "available",
+                       "message":  "Kafka availability issues detected.",
+                       "timestamp":  "2025-09-18T22:54:53Z",
+                       "details":  {
+                                       "samples":  [
+                                                       "Kafka UNREACHABLE at localhost:9092 (optional)",
+                                                       "Kafka: UNREACHABLE (optional)"
+                                                   ]
+                                   }
+                   },
+                   {
+                       "id":  "c95d0b43-5e4d-4722-bc8e-63a3a9d5b01e",
+                       "type":  "WARNING",
+                       "category":  "canary-test",
+                       "metric":  "result",
+                       "value":  "failed",
+                       "threshold":  "success",
+                       "message":  "Canary test failures detected.",
+                       "timestamp":  "2025-09-18T22:54:53Z",
+                       "details":  {
+                                       "samples":  "Canary: ERROR"
+                                   }
+                   }
+               ]
+}

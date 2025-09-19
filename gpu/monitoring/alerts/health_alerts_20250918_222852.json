@@ -1,0 +1,31 @@
+﻿{
+    "timestamp":  "2025-09-18T22:28:52Z",
+    "report_path":  "C:\\otel\\gpu\\monitoring\\reports\\health_report_20250918_222845.json",
+    "health_threshold":  75,
+    "alert_count":  1,
+    "alerts":  [
+                   {
+                       "id":  "2fbb4011-9595-4693-8bfa-73c4f66bc639",
+                       "type":  "HEALTH_SCORE_LOW",
+                       "severity":  "CRITICAL",
+                       "message":  "Health score is 22 (threshold: 75)",
+                       "component":  "overall-health",
+                       "metric":  "health_score",
+                       "value":  22,
+                       "threshold":  75,
+                       "timestamp":  "2025-09-18T22:28:52Z",
+                       "details":  {
+                                       "otel_collector":  "running",
+                                       "metrics_endpoint":  "down",
+                                       "canary_endpoint":  "error",
+                                       "kafka_status":  "unreachable",
+                                       "warnings":  [
+                                                        "WARNING: Resource defaults processor not configured",
+                                                        "WARNING: Kafka exporter not configured",
+                                                        "WARNING: Traces pipeline not configured",
+                                                        "WARNING: Insecure TLS detected - ensure it\u0027s only for local connections"
+                                                    ]
+                                   }
+                   }
+               ]
+}
