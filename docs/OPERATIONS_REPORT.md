@@ -18,7 +18,7 @@
 ### 3. Performance Tuning
 - **Memory Limiter**: 80% limit, 25% spike limit, 2s check interval
 - **Batch Processing**: 1000 batch size, 2000 max size, 1s timeout
-- **Pipeline Order**: memory_limiter → filters → transforms → batch → exporters
+- **Pipeline Order**: memory_limiter -> filters -> transforms -> batch -> exporters
 
 ### 4. Storage Cleanup
 - Docker system prune completed
@@ -62,3 +62,4 @@ Add-Content -Path "C:\logs\app.json" -Value "{`"timestamp`":`"$(Get-Date -Format
 Copy-Item C:\otel\backup\collector_*.yaml C:\otel\config.yaml -Force
 Restart-Service -Name "otelcol-contrib"
 ```
+
