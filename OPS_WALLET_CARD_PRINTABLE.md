@@ -85,7 +85,7 @@ sc.exe failureflag otelcol-contrib 1
 - **Config**: `C:\otel\config.yaml`
 - **Logs**: `C:\otel\logs\`
 - **Audit**: `C:\otel\audit\`
-- **Health**: `http://127.0.0.1:13134`
+- **Health**: `http://127.0.0.1:13134/healthz`
 - **Metrics**: `http://127.0.0.1:8889/metrics`
 
 ## 🔗 QR CODES & LINKS

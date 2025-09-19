@@ -49,7 +49,7 @@ RESULT: ALL TESTS PASSED
 
 ### ✅ **Current Pipeline Status**
 - **Service**: Running (30+ minutes uptime)
-- **Health**: Server available on port 13134
+- **Health**: `http://127.0.0.1:13134/healthz` responds 200 OK
 - **Metrics**: HTTP 200 on port 8889
 - **Canary**: Delta +1 working perfectly (487 → 488 logs)
 - **Config**: Correctly pointing to `C:\otel\config.yaml`
@@ -63,7 +63,7 @@ RESULT: ALL TESTS PASSED
 # From any directory:
 otel-status                  # Summary: service, path, health, metrics
 canary                       # Should print delta +1 and exit 0
-Invoke-WebRequest -Uri http://127.0.0.1:13134 -TimeoutSec 5 | ConvertFrom-Json
+Invoke-WebRequest -Uri http://127.0.0.1:13134/healthz -TimeoutSec 5 | ConvertFrom-Json
 ```
 
 ### **Comprehensive Sanity Check**
@@ -113,7 +113,7 @@ C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe `
 - Memory limits and spike protection
 - Persistent queue storage in `C:\ProgramData\Otelcol\FileStorage`
 - Loopback-only security bindings (127.0.0.1)
-- Health endpoint on port 13134
+- Health endpoint at `http://127.0.0.1:13134/healthz`
 - Metrics endpoint on port 8889
 
 ### **Self-Healing** ✅

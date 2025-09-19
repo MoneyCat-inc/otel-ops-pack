@@ -16,7 +16,7 @@ Write-Host "Service: $($svc.Status)" -ForegroundColor $(if ($svc.Status -eq 'Run
 
 # Health endpoint
 try {
-  $health = Invoke-WebRequest -Uri 'http://127.0.0.1:13134' -TimeoutSec 5 | ConvertFrom-Json
+  $health = Invoke-WebRequest -Uri 'http://127.0.0.1:13134/healthz' -TimeoutSec 5 | ConvertFrom-Json
   Write-Host "Health: $($health.status)" -ForegroundColor Green
 } catch {
   Write-Host "Health: DOWN" -ForegroundColor Red

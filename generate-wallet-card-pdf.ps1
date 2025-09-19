@@ -216,7 +216,7 @@ sc.exe failureflag otelcol-contrib 1</div>
 • Config: C:\otel\config.yaml<br>
 • Logs: C:\otel\logs\<br>
 • Audit: C:\otel\audit\<br>
-• Health: http://127.0.0.1:13134<br>
+• Health: http://127.0.0.1:13134/healthz<br>
 • Metrics: http://127.0.0.1:8889/metrics</div>
     </div>
 
