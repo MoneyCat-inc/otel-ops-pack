@@ -6,7 +6,7 @@ param(
   [string] $Service        = 'otelcol-contrib',
   [int]    $ProdDelayMs    = 60000,
   [int]    $TestDelayMs    = 5000,
-  [string] $HealthUrl      = 'http://127.0.0.1:13134',
+  [string] $HealthUrl      = 'http://127.0.0.1:13134/healthz',
   [string] $CanaryScript   = 'C:\otel\canary-check-min.ps1',
   [string] $LogFile        = 'C:\otel\logs\auto-restart-verify.last.txt'
 )

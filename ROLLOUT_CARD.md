@@ -27,7 +27,7 @@ sc.exe start otelcol-contrib
 # 4) First-time verification
 C:\otel\green-sheet.ps1
 C:\otel\canary-check-min.ps1     # expect delta +1
-Invoke-WebRequest -Uri "http://127.0.0.1:13134" -TimeoutSec 5 | ConvertFrom-Json
+Invoke-WebRequest -Uri "http://127.0.0.1:13134/healthz" -TimeoutSec 5 | ConvertFrom-Json
 
 # 5) (Optional) schedule local monitors
 # canary every 10 min, drift-guard every 15, queue-watch every 5, backup daily
