@@ -1,0 +1,73 @@
+name: "Observability Summary"
+description: "Write a reviewer-friendly success/failure summary for observability verification runs."
+author: "Observability Copilot"
+
+inputs:
+  outcome:
+    description: "Result of the verification step (success|failure)"
+    required: true
+  golden_pr_url:
+    description: "URL to the Golden Reference PR"
+    required: true
+  checklist_path:
+    description: "Path to the full reviewer checklist in the repo"
+    default: "artifacts/REVIEWER_CHECKLIST.md"
+    required: false
+  quick_guide_path:
+    description: "Path to the PR comment template / quick guide"
+    default: "artifacts/PR_COMMENT_TEMPLATE.md"
+    required: false
+  include_artifacts_list:
+    description: "Comma-separated list of artifact filenames to mention"
+    default: "verify-run.txt,api-sample.json"
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+    - name: Write Observability Summary
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        OUTCOME="${{ inputs.outcome }}"
+        GOLDEN="${{ inputs.golden_pr_url }}"
+        CHECKLIST="${{ inputs.checklist_path }}"
+        QUICK="${{ inputs.quick_guide_path }}"
+        ARTIFACTS="${{ inputs.include_artifacts_list }}"
+        ARTIFACT_LIST=$(echo "$ARTIFACTS" | tr ',' '\n' | sed -E 's/^[[:space:]]+|[[:space:]]+$//g' | sed -E 's/^/- `&`/')
+
+        if [ "$OUTCOME" = "success" ]; then
+          {
+            echo "## ✅ Observability Verification Passed"
+            echo ""
+            echo "This run matches the [Golden Reference PR]($GOLDEN)."
+            echo ""
+            echo "### Highlights"
+            echo "- Collector: healthy (healthz 200)"
+            echo "- SigNoz: schema present (logs_v2, distributed_logs_v2)"
+            echo "- Synthetic dataset: ingested, redaction confirmed"
+            echo "- Canary: GUID visible in logs"
+            echo ""
+            echo "Artifacts uploaded:"
+            echo "$ARTIFACT_LIST"
+            echo ""
+            echo "Reviewers can use the [Quick Approver's Guide]($QUICK) or the full [Reviewer Checklist]($CHECKLIST)."
+          } >> "$GITHUB_STEP_SUMMARY"
+        else
+          {
+            echo "## ❌ Observability Verification Failed"
+            echo ""
+            echo "Please compare your results with the [Golden Reference PR]($GOLDEN)."
+            echo ""
+            echo "### Quick Checklist"
+            echo "- **verify-run.txt** ends with \`== Verification complete: all checks passed ==\`"
+            echo "- **api-sample.json** contains a recent \`synthetic_id\` and redaction (\`Bearer ***\`, \`pwd=***\`)"
+            echo "- **Canary GUID** visible in logs"
+            echo ""
+            echo "Artifacts expected (if present):"
+            echo "$ARTIFACT_LIST"
+            echo ""
+            echo "For detailed expectations, see [$CHECKLIST]($CHECKLIST)."
+          } >> "$GITHUB_STEP_SUMMARY"
+        fi

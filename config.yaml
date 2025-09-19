@@ -15,7 +15,7 @@ receivers:
             - targets: ['localhost:9400']
 
   filelog:
-    include: [C:/logs/**/*.log]
+    include: [C:/logs/**/*.log, C:/logs/**/*.jsonl, /tmp/logs/**/*.log, /tmp/logs/**/*.jsonl]
     start_at: end
     include_file_path: true
     include_file_name_resolved: true
@@ -31,7 +31,7 @@ exporters:
     loglevel: info
 
   otlp/sigz:
-    endpoint: "localhost:14317"
+    endpoint: "localhost:4317"
     tls:
       insecure: true
     retry_on_failure:
@@ -66,7 +66,7 @@ processors:
     logs:
       log_record:
         # Drop routine Windows Event Log entries
-        - attributes["winlog.event_id"] in [6005, 6006]
+        - attributes["winlog.event_id"] == 6005 or attributes["winlog.event_id"] == 6006
         # Drop health check/heartbeat noise
         - IsMatch(body, "(?i)health check|heartbeat|diagnostic ping")
         # Drop common Windows noise patterns
@@ -90,6 +90,10 @@ processors:
         statements:
           - set(attributes["service.name"], "windows-host")
           - set(attributes["deployment.environment"], "local-dev")
+      - context: log
+        statements:
+          # Tag synthetic logs for easy filtering
+          - set(attributes["dataset"], "synthetic") where attributes["synthetic_id"] != nil
 
   batch:
     timeout: 1s
@@ -155,3 +159,4 @@ service:
       receivers: [otlp, filelog]
       processors: [memory_limiter, filter/drop_noise, transform/sanitize, transform/enrich, attributes/redact, batch]
       exporters: [logging, otlp/sigz]
+

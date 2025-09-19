@@ -1,20 +1,19 @@
-name: Observability Verify
+name: Observability Cron
 
 on:
-  push:
-    branches: [ main, develop ]
-  pull_request:
-    branches: [ main ]
+  schedule:
+    # Run every 6 hours to catch regressions
+    - cron: '0 */6 * * *'
   workflow_dispatch:
 
 permissions: read-all
 
 concurrency:
-  group: obs-${{ github.ref }}
+  group: obs-cron
   cancel-in-progress: true
 
 jobs:
-  observability-verify:
+  observability-cron:
     runs-on: ubuntu-latest
     
     steps:
@@ -48,7 +47,7 @@ jobs:
         docker compose -f docker-compose.yml up -d
         docker compose -f deploy/signoz/docker-compose.yml up -d
         
-        # Run schema migrations
+        # Run schema migrations (cron runs get fresh migrations)
         echo "Running schema migrations..."
         docker compose -f deploy/signoz/docker-compose.yml -f deploy/signoz/docker-compose.override.yml run --rm signoz-schema-migrator
         
@@ -76,8 +75,8 @@ jobs:
         # Create logs directory
         mkdir -p /tmp/logs/synthetic
         
-        # Generate synthetic test data (shorter for CI)
-        pwsh -File "scripts/dataset/generate-logs.ps1" -Rate 10 -Duration 15 -ErrorRate 0.15
+        # Generate synthetic test data
+        pwsh -File "scripts/dataset/generate-logs.ps1" -Rate 10 -Duration 20 -ErrorRate 0.15
         
         # Start collector in background
         /usr/local/bin/otelcol-contrib --config "config.yaml" &
@@ -85,15 +84,13 @@ jobs:
         
         # Wait for ingestion
         echo "Waiting for data ingestion..."
-        sleep 10
+        sleep 15
         
     - name: Run Observability Verification
       id: verify
-      env:
-        SIGNOZ_API_TOKEN: ${{ secrets.SIGNOZ_API_TOKEN }}
       run: |
-        # Run the verification script
-        $result = pwsh -File "scripts/ci-verify.ps1"
+        # Run the verification script with cron-specific settings
+        $result = pwsh -File "scripts/ci-verify.ps1" -CronMode
         
         # Write result to file for artifact
         $result | Out-File -FilePath "verification-report.md" -Encoding UTF8
@@ -108,7 +105,7 @@ jobs:
     - name: Generate Job Summary
       if: always()
       run: |
-        echo "## 🔍 Observability Verify — Summary" >> $GITHUB_STEP_SUMMARY
+        echo "## 🔍 Observability Cron — Summary" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         
         # Extract key metrics from verification report
@@ -129,72 +126,14 @@ jobs:
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: observability-verification-report
+        name: observability-cron-report-${{ github.run_number }}
         path: verification-report.md
-        retention-days: 30
-        
-    - name: Upload observability evidence
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: observability-evidence
-        path: artifacts/*
-        if-no-files-found: ignore
         retention-days: 7
-
-    # Success summary block
-    - name: Observability Summary — Success
-      if: success()
-      uses: ./.github/actions/obs-summary
-      with:
-        outcome: success
-        golden_pr_url: https://github.com/${{ github.repository }}/pull/PLACEHOLDER_GOLDEN_PR_NUMBER
-        checklist_path: artifacts/REVIEWER_CHECKLIST.md
-        quick_guide_path: artifacts/PR_COMMENT_TEMPLATE.md
-        include_artifacts_list: verify-run.txt,api-sample.json
-
-    # Failure summary block
-    - name: Observability Summary — Failure
-      if: failure()
-      uses: ./.github/actions/obs-summary
-      with:
-        outcome: failure
-        golden_pr_url: https://github.com/${{ github.repository }}/pull/PLACEHOLDER_GOLDEN_PR_NUMBER
-        checklist_path: artifacts/REVIEWER_CHECKLIST.md
-        quick_guide_path: artifacts/PR_COMMENT_TEMPLATE.md
-        include_artifacts_list: verify-run.txt,api-sample.json
         
-    - name: Comment PR with Results
-      if: github.event_name == 'pull_request'
-      uses: actions/github-script@v7
-      with:
-        script: |
-          const fs = require('fs');
-          const report = fs.readFileSync('verification-report.md', 'utf8');
-          
-          const comment = `## 🔍 Observability Health Check Results
-          
-          ${report}
-          
-          <details>
-          <summary>📋 Full Report</summary>
-          
-          \`\`\`markdown
-          ${report}
-          \`\`\`
-          </details>`;
-          
-          github.rest.issues.createComment({
-            issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            body: comment
-          });
-          
     - name: Set Status Check
       if: steps.verify.outputs.status == 'FAIL'
       run: |
-        Write-Error "Observability verification failed. Check the verification report for details."
+        echo "Observability cron verification failed. Check the verification report for details."
         exit 1
         
     - name: Cleanup

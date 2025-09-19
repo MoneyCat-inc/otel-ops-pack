@@ -1,0 +1,33 @@
+{
+  "alert": {
+    "name": "Health Canary Missing",
+    "description": "Health canary missing from Windows collector pipeline. Expected canary every 5 minutes, but none received in last 5 minutes. Current value: {{$value}} canaries in last 5 minutes. Threshold: {{$threshold}} (minimum expected).",
+    "severity": "warning",
+    "labels": {
+      "service": "windows-collector",
+      "component": "health-check",
+      "severity": "warning",
+      "environment": "local"
+    },
+    "query": {
+      "queryType": "logs",
+      "logsQuery": {
+        "query": "service.name = 'windows-collector' AND body contains 'health-check'",
+        "groupBy": ["service.name"],
+        "legendFormat": "{{service.name}} - Health Canaries"
+      }
+    },
+    "condition": {
+      "threshold": 1,
+      "operator": "below",
+      "evaluationWindow": "5m",
+      "alertFrequency": "1m",
+      "notificationOnMissingData": true,
+      "minimumDataPoints": 1
+    },
+    "notificationChannels": [
+      "email-default",
+      "slack-default"
+    ]
+  }
+}
