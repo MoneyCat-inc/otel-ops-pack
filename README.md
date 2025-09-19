@@ -29,6 +29,8 @@ C:\otel\make-audit-pack.ps1
 ```powershell
 # Check service status and health
 .\green-sheet.ps1
+# Raw health probe (JSON)
+Invoke-WebRequest -Uri http://127.0.0.1:13134/healthz -TimeoutSec 5 | ConvertFrom-Json
 ```
 
 ### Canary Check
