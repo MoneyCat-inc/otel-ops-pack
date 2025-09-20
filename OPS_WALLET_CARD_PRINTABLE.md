@@ -68,7 +68,7 @@ sc.exe failureflag otelcol-contrib 1
 - [ ] Canary delta output confirmation (`canary-check-min.ps1`)
 
 ## 🔄 MAINTENANCE SCHEDULE
-- **Weekly**: `setup-weekly-audit.ps1` → automated evidence trail (hands-off)
+- **Weekly**: `setup-weekly-audit.ps1` → automated evidence trail (hands-off); run `make-audit-pack.ps1` on-demand for manual capture
 - **Monthly**: `repo-clean-inventory.ps1` (dry-run) → confirm no drift
 - **Quarterly**: `chaos-drill.ps1` (maintenance window) → verify resilience
 - **CI/CD**: `post-deploy-smoke.ps1` → pipeline gate validation

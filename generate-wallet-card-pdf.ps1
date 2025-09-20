@@ -195,7 +195,7 @@ sc.exe failureflag otelcol-contrib 1</div>
 
     <div class="section">
         <h3>🔄 MAINTENANCE SCHEDULE</h3>
-        <div class="code">• Weekly: setup-weekly-audit.ps1 → automated evidence trail (hands-off)<br>
+        <div class="code">• Weekly: setup-weekly-audit.ps1 → automated evidence trail (hands-off); run make-audit-pack.ps1 on-demand for manual capture<br>
 • Monthly: repo-clean-inventory.ps1 (dry-run) → confirm no drift<br>
 • Quarterly: chaos-drill.ps1 (maintenance window) → verify resilience<br>
 • CI/CD: post-deploy-smoke.ps1 → pipeline gate validation</div>
