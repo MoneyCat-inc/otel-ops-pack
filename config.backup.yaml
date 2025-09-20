@@ -4,6 +4,7 @@
 extensions:
   health_check:
     endpoint: 127.0.0.1:13134
+    path: /healthz
   file_storage:
     directory: C:\ProgramData\Otelcol\FileStorage
     timeout: 10s

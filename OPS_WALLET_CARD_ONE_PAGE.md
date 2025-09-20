@@ -49,7 +49,7 @@ Get-Content C:\otel\logs\chaos-drill.last.txt -Tail 200
 - **Green-sheet**: Running, config path includes `--config C:\otel\config.yaml`, health 200, metrics present
 - **Canary**: Near-instant, always delta +1
 - **Auto-restart**: Fires on real failures, logged by SCM
-- **Changes**: Only via `safe-apply-config.ps1`; each CAB has `audit-pack.zip` + SHA256
+- **Changes**: Only via `safe-apply-config.ps1`; each CAB has `audit-pack_*.zip` + SHA256
 
 ## 🔒 Service Recovery Policy
 ```powershell
@@ -58,17 +58,16 @@ sc.exe failureflag otelcol-contrib 1
 ```
 
 ## 📋 CAB Record Checklist
-- [ ] SHA256 of `ops-pack.zip`
-- [ ] `audit-pack_YYYYMMDD_HHMMSS.zip` + sha
-- [ ] Release tag (e.g., `v1.0.0`)
+- [ ] Latest `audit-pack_YYYYMMDD_HHMMSS.zip` + matching `.sha256.txt`
+- [ ] Release tag or commit ID recorded (`git rev-parse HEAD`)
 - [ ] Screenshot of `sc qfailure` output
 - [ ] Service `PathName` verification
-- [ ] Canary delta output confirmation
+- [ ] Canary delta output confirmation (`canary-check-min.ps1`)
 
 ## 🔄 Maintenance Schedule
-- **Weekly**: `make-audit-pack.ps1` → attach to ops log
+- **Weekly**: `setup-weekly-audit.ps1` → automated evidence trail; run `make-audit-pack.ps1` on-demand if you need a manual capture
 - **Monthly**: `repo-clean-inventory.ps1` (dry-run) → confirm no drift
 - **Quarterly**: `chaos-drill.ps1` (maintenance window) → verify resilience
 
 ---
-**Version:** v1.0.0 | **Compatibility:** PS 5.1+, Windows 10/11+ | **Emergency:** See ON_CALL_RUNBOOK.md
+**Version:** v1.1.0 | **Compatibility:** PS 5.1+, Windows 10/11+ | **Emergency:** See ON_CALL_RUNBOOK.md

@@ -9,9 +9,9 @@
 ### **System Status (Run these now)**
 ```powershell
 # Quick status check (60 seconds)
-otel-status                  # Summary: service, path, health, metrics
-canary                       # Should print delta +1 and exit 0
-Invoke-WebRequest -Uri http://127.0.0.1:13134 -TimeoutSec 5 | ConvertFrom-Json
+& 'C:\otel\green-sheet.ps1'         # Summary: service, path, health, metrics
+& 'C:\otel\canary-check-min.ps1'    # Should print delta +1 and exit 0
+Invoke-WebRequest -Uri http://127.0.0.1:13134/healthz -TimeoutSec 5 | ConvertFrom-Json
 ```
 
 **Expected Results:**
@@ -21,12 +21,14 @@ Invoke-WebRequest -Uri http://127.0.0.1:13134 -TimeoutSec 5 | ConvertFrom-Json
 
 ### **Package Verification**
 ```powershell
-# Verify operations package
-Get-FileHash C:\otel\ops-pack.zip -Algorithm SHA256
-# Expected: 80FEB468B218108B74569DC08F5C01ADA36BA33C8B03EABAB5CDD14EA2DDE580
+# Confirm required scripts are present
+Get-ChildItem C:\otel -Filter *.ps1 | Where-Object { $_.Name -in @(
+  'green-sheet.ps1','quick-all-green.ps1','canary-check-min.ps1',
+  'safe-apply-config.ps1','regression-check.ps1','make-audit-pack.ps1'
+)} | Select-Object Name, FullName
 
-# Generate fresh audit pack
-.\make-audit-pack.ps1
+# Generate fresh audit pack (captures ZIP + SHA256)
+& 'C:\otel\make-audit-pack.ps1'
 ```
 
 ---
@@ -36,13 +38,13 @@ Get-FileHash C:\otel\ops-pack.zip -Algorithm SHA256
 ### **Daily Health Check**
 ```powershell
 # From any directory
-otel-status
-canary
+& 'C:\otel\green-sheet.ps1'
+& 'C:\otel\canary-check-min.ps1'
 ```
 
 **What to look for:**
 - Service status: Running
-- Health endpoint: Server available
+- Health endpoint: `http://127.0.0.1:13134/healthz` available
 - Canary test: Delta +1 observed
 - No errors in output
 
@@ -81,16 +83,16 @@ Get-Content C:\otel\logs\safe-apply.last.txt -Tail 20
 
 ## 🧪 **TESTING & VERIFICATION**
 
-### **Burn-In Testing**
+### **Regression / Smoke Testing**
 ```powershell
-# Full 10-run test (recommended for new deployments)
-.\burn-in-test.ps1
+# Full regression check (status + canary + metrics + optional Kafka)
+& 'C:\otel\regression-check.ps1'
 
-# Quick 3-run test
-.\burn-in-test.ps1 -Runs 3 -DelaySeconds 10
+# Lightweight post-deploy smoke test
+& 'C:\otel\post-deploy-smoke.ps1'
 ```
 
-**Expected:** "Burn-in summary: 10/10 successful"
+**Expected:** `✅ REGRESSION CHECK PASSED` or `✅ SMOKE OK - All checks passed`
 
 ### **Auto-Restart Verification (Admin Required)**
 ```powershell
@@ -174,7 +176,7 @@ Restart-Service otelcol-contrib
 ### **Change Management Process**
 1. **Before any change:** Generate audit pack
 2. **Apply change:** Use `safe-apply-config.ps1`
-3. **After change:** Verify with `canary` and generate new audit pack
+3. **After change:** Verify with `C:\otel\canary-check-min.ps1` and generate new audit pack
 4. **Document:** Include audit pack SHA256 in change ticket
 
 ---
@@ -207,9 +209,9 @@ Restart-Service otelcol-contrib
 
 ## 🎯 **SLO TARGETS**
 
-- **Pipeline Availability**: ≥ 99.9% (canary success over 24h)
-- **Ingest Latency**: p99 ≤ 5s (canary delta observation)
-- **Health Endpoint Uptime**: ≥ 99.95% (13134 responds 200 OK)
+- **Pipeline Availability**: ≥ 99.9% (`C:\otel\canary-check-min.ps1` success over 24h)
+- **Ingest Latency**: p99 ≤ 5s (delta reported by `C:\otel\canary-check-min.ps1`)
+- **Health Endpoint Uptime**: ≥ 99.95% (`http://127.0.0.1:13134/healthz` responds 200 OK)
 - **Backpressure**: 0 exporter failures during normal ops
 
 ---
@@ -217,14 +219,15 @@ Restart-Service otelcol-contrib
 ## 📁 **KEY FILES & LOCATIONS**
 
 ### **Scripts**
-- `canary` - Run canary test (any directory)
-- `otel-status` - Quick status check (any directory)
-- `otel-health` - Health endpoint check (any directory)
-- `.\safe-apply-config.ps1` - Safe config changes
-- `.\burn-in-test.ps1` - Flakiness testing
-- `.\auto-restart-verify.ps1` - Auto-restart verification
-- `.\chaos-drill.ps1` - Queue resilience testing
-- `.\make-audit-pack.ps1` - Audit evidence generation
+- `C:\otel\canary-check-min.ps1` - Deterministic canary test
+- `C:\otel\green-sheet.ps1` - Quick status (service + health + metrics)
+- `C:\otel\quick-all-green.ps1` - Combined green-check with canary
+- `C:\otel\safe-apply-config.ps1` - Safe config changes
+- `C:\otel\regression-check.ps1` - Full regression verification
+- `C:\otel\post-deploy-smoke.ps1` - Lightweight post-deploy test
+- `C:\otel\auto-restart-verify.ps1` - Auto-restart verification
+- `C:\otel\chaos-drill.ps1` - Queue resilience testing
+- `C:\otel\make-audit-pack.ps1` - Audit evidence generation
 
 ### **Configuration**
 - `C:\otel\config.yaml` - Active production configuration
@@ -236,23 +239,22 @@ Restart-Service otelcol-contrib
 - `C:\otel\ALERTS.log` - Alert notifications
 - `C:\otel\audit\` - Audit evidence packs
 
-### **Package**
-- `C:\otel\ops-pack.zip` - Complete operations package
-- SHA256: `80FEB468B218108B74569DC08F5C01ADA36BA33C8B03EABAB5CDD14EA2DDE580`
+### **Package & Evidence**
+- `C:\otel\audit\audit-pack_*.zip` - Generated audit evidence bundles
+- `C:\otel\audit\audit-pack_*.sha256.txt` - Matching SHA256 hashes
 
 ---
 
 ## ✅ **HANDOFF COMPLETION CHECKLIST**
 
 - [ ] **System Status**: All health checks passing
-- [ ] **Package Verified**: SHA256 hash matches expected value
-- [ ] **Audit Pack**: Generated and SHA256 recorded
+- [ ] **Audit Evidence**: Latest audit pack generated and SHA256 recorded
 - [ ] **Documentation**: All guides reviewed and bookmarked
 - [ ] **Team Training**: On-call team familiar with procedures
 - [ ] **Emergency Contacts**: Escalation procedures documented
 - [ ] **Change Process**: Safe config apply process understood
 - [ ] **Monitoring**: Scheduled tasks active (if applicable)
-- [ ] **Testing**: Burn-in and auto-restart tests successful
+- [ ] **Testing**: Regression/smoke and auto-restart tests successful
 - [ ] **Compliance**: Audit pack generation process verified
 
 ---
