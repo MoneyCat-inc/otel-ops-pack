@@ -1,6 +1,7 @@
 services:
   clickhouse:
     image: clickhouse/clickhouse-server:25.5.6
+    # Enhanced for Codex-Cloud multi-file testing
     container_name: signoz-clickhouse
     ports:
       - "9000:9000"
