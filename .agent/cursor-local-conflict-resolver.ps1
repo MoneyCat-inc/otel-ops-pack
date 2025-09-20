@@ -54,7 +54,7 @@ function Get-ConflictInfo {
         $baseRepo = $prData | ConvertFrom-Json | Select-Object -ExpandProperty baseRepository
         $headRepo = $prData | ConvertFrom-Json | Select-Object -ExpandProperty headRepository
         
-        Write-Host "PR #$PR: $baseRepo/$baseRef ← $headRepo/$headRef" -ForegroundColor Green
+        Write-Host "PR #${PR}: $baseRepo/$baseRef <- $headRepo/$headRef" -ForegroundColor Green
         
         # Fetch latest refs
         git fetch --all --quiet
