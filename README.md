@@ -2,9 +2,12 @@
 
 [![Observability Verify](https://github.com/your-org/otel/actions/workflows/ci-verify.yml/badge.svg)](https://github.com/your-org/otel/actions/workflows/ci-verify.yml)
 
-A complete Windows-to-SigNoz observability pipeline with automated monitoring and alerting.
+A complete Windows-to-SigNoz observability pipeline with automated monitoring, alerting, and intelligent agent automation.
 
 ## 🚀 Quick Start
+
+### Agent System
+This repository includes an intelligent agent system for automated maintenance and conflict resolution. Use GitHub Actions workflow dispatch or PR labels to trigger agent tasks.
 
 ### Prerequisites
 - Windows 11 with PowerShell 5.1+
