@@ -1,0 +1,276 @@
+name: Codex-Cloud Agent Trigger
+
+on:
+  pull_request:
+    types: [opened, synchronize, labeled]
+  repository_dispatch:
+    types: [codex-cloud-task-requested]
+  workflow_dispatch:
+    inputs:
+      task_type:
+        description: 'Type of task to execute'
+        required: true
+        default: 'conflict-resolution'
+        type: choice
+        options:
+          - conflict-resolution
+          - documentation-update
+          - configuration-change
+          - monitoring-setup
+      pr_number:
+        description: 'PR number (for conflict resolution)'
+        required: false
+        type: string
+      description:
+        description: 'Task description'
+        required: true
+        type: string
+
+jobs:
+  trigger-codex-cloud:
+    runs-on: ubuntu-latest
+    if: |
+      github.event.label.name == 'needs-conflict-help' ||
+      contains(github.event.pull_request.body, '@codex please analyze this conflict') ||
+      github.event_name == 'repository_dispatch' ||
+      github.event_name == 'workflow_dispatch'
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Setup environment
+        run: |
+          echo "CODEX_CLOUD_TASK_TYPE=${{ github.event.inputs.task_type || 'conflict-resolution' }}" >> $GITHUB_ENV
+          echo "CODEX_CLOUD_PR_NUMBER=${{ github.event.inputs.pr_number || github.event.pull_request.number }}" >> $GITHUB_ENV
+          echo "CODEX_CLOUD_DESCRIPTION=${{ github.event.inputs.description || 'Automated task execution' }}" >> $GITHUB_ENV
+          echo "CODEX_CLOUD_REPOSITORY=${{ github.repository }}" >> $GITHUB_ENV
+          echo "CODEX_CLOUD_TRIGGER=${{ github.event_name }}" >> $GITHUB_ENV
+      
+      - name: Determine task type
+        id: task-type
+        run: |
+          if [ "${{ github.event.label.name }}" = "needs-conflict-help" ]; then
+            echo "type=conflict-resolution" >> $GITHUB_OUTPUT
+            echo "pr_number=${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
+          elif [ "${{ github.event.inputs.task_type }}" != "" ]; then
+            echo "type=${{ github.event.inputs.task_type }}" >> $GITHUB_OUTPUT
+            echo "pr_number=${{ github.event.inputs.pr_number }}" >> $GITHUB_OUTPUT
+          elif [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+            echo "type=${{ github.event.action }}" >> $GITHUB_OUTPUT
+          else
+            echo "type=conflict-resolution" >> $GITHUB_OUTPUT
+            echo "pr_number=${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Create task for Codex-Cloud
+        run: |
+          TASK_ID="T-$(date +%Y%m%d-%H%M%S)-$(shuf -i 1000-9999 -n 1)"
+          
+          case "${{ steps.task-type.outputs.type }}" in
+            "conflict-resolution")
+              cat > task.json << EOF
+          {
+            "id": "$TASK_ID",
+            "title": "Resolve merge conflicts in PR ${{ steps.task-type.outputs.pr_number }}",
+            "goal": "Resolve merge conflicts using canonical resolutions and ensure style consistency",
+            "acceptance": [
+              "No merge markers remain",
+              "Canonical resolution applied exactly",
+              "Style rules followed consistently",
+              "Clean commit created"
+            ],
+            "scope": {
+              "paths": ["*.md", "*.yaml", "*.yml", "*.ps1"]
+            },
+            "priority": "H",
+            "deadline": "$(date -d '+1 day' '+%Y-%m-%d')",
+            "metadata": {
+              "pr_number": "${{ steps.task-type.outputs.pr_number }}",
+              "task_type": "conflict-resolution",
+              "trigger": "${{ github.event_name }}"
+            }
+          }
+          EOF
+              ;;
+            "documentation-update")
+              cat > task.json << EOF
+          {
+            "id": "$TASK_ID",
+            "title": "Update documentation and maintain style consistency",
+            "goal": "Update documentation with consistent formatting and current references",
+            "acceptance": [
+              "Style consistency applied",
+              "All links verified and current",
+              "Command examples tested",
+              "Changelog updated"
+            ],
+            "scope": {
+              "paths": ["*.md", "README.md", "CHANGELOG.md"]
+            },
+            "priority": "M",
+            "deadline": "$(date -d '+3 days' '+%Y-%m-%d')",
+            "metadata": {
+              "task_type": "documentation-update",
+              "trigger": "${{ github.event_name }}"
+            }
+          }
+          EOF
+              ;;
+            "configuration-change")
+              cat > task.json << EOF
+          {
+            "id": "$TASK_ID",
+            "title": "Update observability configuration",
+            "goal": "Modify collector configuration with proper validation and testing",
+            "acceptance": [
+              "Configuration syntax validated",
+              "Service restarts cleanly",
+              "Canary tests pass",
+              "Pipeline integrity maintained"
+            ],
+            "scope": {
+              "paths": ["config.yaml", "*.yaml", "*.yml"]
+            },
+            "priority": "H",
+            "deadline": "$(date -d '+1 day' '+%Y-%m-%d')",
+            "metadata": {
+              "task_type": "configuration-change",
+              "trigger": "${{ github.event_name }}"
+            }
+          }
+          EOF
+              ;;
+            "monitoring-setup")
+              cat > task.json << EOF
+          {
+            "id": "$TASK_ID",
+            "title": "Setup monitoring and canary validation",
+            "goal": "Configure monitoring, alerts, and canary tests for observability pipeline",
+            "acceptance": [
+              "Canary tests configured",
+              "Monitoring alerts active",
+              "Health checks operational",
+              "Documentation updated"
+            ],
+            "scope": {
+              "paths": ["*.ps1", "*.json", "signoz-*.json"]
+            },
+            "priority": "M",
+            "deadline": "$(date -d '+2 days' '+%Y-%m-%d')",
+            "metadata": {
+              "task_type": "monitoring-setup",
+              "trigger": "${{ github.event_name }}"
+            }
+          }
+          EOF
+              ;;
+            *)
+              cat > task.json << EOF
+          {
+            "id": "$TASK_ID",
+            "title": "General task execution",
+            "goal": "${{ github.event.inputs.description }}",
+            "acceptance": [
+              "Task completed successfully",
+              "All tests passing",
+              "Documentation updated",
+              "No regressions introduced"
+            ],
+            "scope": {
+              "paths": ["*"]
+            },
+            "priority": "M",
+            "deadline": "$(date -d '+3 days' '+%Y-%m-%d')",
+            "metadata": {
+              "task_type": "${{ steps.task-type.outputs.type }}",
+              "trigger": "${{ github.event_name }}"
+            }
+          }
+          EOF
+              ;;
+          esac
+          
+          echo "TASK_ID=$TASK_ID" >> $GITHUB_ENV
+          echo "Created task: $TASK_ID"
+          cat task.json | jq .
+      
+      - name: Queue task for Codex-Cloud
+        run: |
+          mkdir -p .agent/state
+          if [ ! -f .agent/state/queue.jsonl ]; then
+            touch .agent/state/queue.jsonl
+          fi
+          
+          cat task.json >> .agent/state/queue.jsonl
+          echo "Task queued in .agent/state/queue.jsonl"
+          
+          # Show queue status
+          echo "Current task queue:"
+          cat .agent/state/queue.jsonl | jq -r '.id + ": " + .title' || echo "Queue is empty"
+      
+      - name: Comment on PR (if applicable)
+        if: steps.task-type.outputs.pr_number != ''
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const task = require('./task.json');
+            const comment = `## 🤖 Codex-Cloud Task Queued
+            
+            **Task ID**: \`${task.id}\`
+            **Type**: ${task.metadata.task_type}
+            **Priority**: ${task.priority}
+            **Deadline**: ${task.deadline}
+            
+            ### Goal
+            ${task.goal}
+            
+            ### Acceptance Criteria
+            ${task.acceptance.map(criteria => `- [ ] ${criteria}`).join('\n')}
+            
+            ### Scope
+            ${task.scope.paths.map(path => `- \`${path}\``).join('\n')}
+            
+            Codex-Cloud will process this task autonomously. Monitor the progress and results.
+            
+            ---
+            *Triggered by: ${task.metadata.trigger}*`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+      
+      - name: Create task summary
+        run: |
+          echo "## Codex-Cloud Task Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Task ID**: \`$TASK_ID\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Type**: ${{ steps.task-type.outputs.type }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Priority**: $(jq -r '.priority' task.json)" >> $GITHUB_STEP_SUMMARY
+          echo "**Deadline**: $(jq -r '.deadline' task.json)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Goal" >> $GITHUB_STEP_SUMMARY
+          echo "$(jq -r '.goal' task.json)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Acceptance Criteria" >> $GITHUB_STEP_SUMMARY
+          jq -r '.acceptance[]' task.json | sed 's/^/- [ ] /' >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Next Steps" >> $GITHUB_STEP_SUMMARY
+          echo "1. Codex-Cloud will process this task autonomously" >> $GITHUB_STEP_SUMMARY
+          echo "2. Monitor the PR for updates and results" >> $GITHUB_STEP_SUMMARY
+          echo "3. Review and merge when acceptance criteria are met" >> $GITHUB_STEP_SUMMARY
+      
+      - name: Upload task artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: codex-cloud-task-$TASK_ID
+          path: |
+            task.json
+            .agent/state/queue.jsonl
+          retention-days: 30
