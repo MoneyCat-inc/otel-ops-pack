@@ -55,7 +55,6 @@ jobs:
           script: |
             const fs = require('fs');
             const path = require('path');
-            const core = require('@actions/core');
             const eventName = context.eventName;
             const payload = context.payload;
 
@@ -164,7 +163,6 @@ jobs:
           COMMENT_BODY: ${{ steps.prep.outputs.comment_body }}
         with:
           script: |
-            const core = require('@actions/core');
             const issueNumber = Number(process.env.COMMENT_TARGET);
             if (!Number.isInteger(issueNumber)) {
               core.warning('Comment target is not a valid issue number; skipping comment.');
