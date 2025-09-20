@@ -1,0 +1,96 @@
+{
+  "$schema": "./tasks.schema.json",
+  "agent": {
+    "name": "codex-cloud",
+    "version": "1.0.0",
+    "description": "Autonomous observability operator for the otel-ops-pack repository",
+    "owners": ["observability-team", "platform-sre"],
+    "queue_file": ".agent/state/queue.jsonl"
+  },
+  "limits": {
+    "max_files": 10,
+    "max_total_changed_lines": 200,
+    "max_parallel_tasks": 2,
+    "requires_manual_review_above": {
+      "files": 7,
+      "changed_lines": 150
+    }
+  },
+  "infrastructure": {
+    "windows_collector": {
+      "service_name": "otelcol-contrib",
+      "config_path": "C:\\otel\\config.yaml",
+      "backup_path": "C:\\otel\\backups",
+      "validation_scripts": [
+        "safe-apply-config.ps1",
+        "quick-all-green.ps1"
+      ]
+    },
+    "signoz": {
+      "ui_url": "http://localhost:8080",
+      "otlp_grpc": "http://localhost:4317",
+      "otlp_http": "http://localhost:4318",
+      "clickhouse_ports": [8123, 9000]
+    }
+  },
+  "workflow": {
+    "default_priority": "standard",
+    "supported_task_types": [
+      "documentation-update",
+      "configuration-change",
+      "conflict-resolution",
+      "observability-audit",
+      "incident-response"
+    ],
+    "verification": {
+      "required_for": {
+        "configuration-change": [
+          "safe-apply-config.ps1 -ValidateOnly",
+          "quick-all-green.ps1"
+        ],
+        "observability-audit": [
+          "canary-check-min.ps1",
+          "kafka-smoke.ps1"
+        ]
+      },
+      "optional_tools": [
+        "setup-weekly-audit.ps1",
+        "regression-check.ps1",
+        "auto-restart-verify.ps1"
+      ]
+    }
+  },
+  "safety": {
+    "rollback_procedures": [
+      "Restore C\\otel\\config.yaml from config.yaml.backup",
+      "Restart otelcol-contrib service",
+      "Disable canary emission until telemetry stabilizes"
+    ],
+    "forbidden_actions": [
+      "Commit secrets or API tokens",
+      "Modify SigNoz admin credentials",
+      "Force-push to protected branches"
+    ],
+    "escalation_contacts": [
+      {
+        "team": "Observability On-Call",
+        "contact": "#observability-alerts"
+      },
+      {
+        "team": "Platform SRE",
+        "contact": "#platform-sre"
+      }
+    ]
+  },
+  "integrations": {
+    "cursor_local": {
+      "brief_template": "Provide conflict summary, canonical file order, desired end-state, validation steps"
+    },
+    "github_actions": {
+      "workflow": ".github/workflows/codex-cloud-trigger.yml",
+      "label_triggers": ["needs-conflict-help", "needs-codex-cloud"],
+      "command_triggers": ["@codex", "@codex-cloud"],
+      "artifact_name": "codex-cloud-task"
+    }
+  }
+}
