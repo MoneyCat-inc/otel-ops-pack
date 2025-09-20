@@ -156,7 +156,7 @@ service:
       processors: [memory_limiter, resource/defaults, batch]
       exporters: [logging, otlp/sigz]
     logs:
-      receivers: [otlp, filelog, prometheus/gpu]
+      receivers: [otlp, filelog, windowseventlog/application, prometheus/gpu]
       processors: [memory_limiter, filter/drop_noise, transform/sanitize, transform/enrich, attributes/redact, batch]
       exporters: [logging, otlp/sigz]
 
