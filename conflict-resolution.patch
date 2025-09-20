@@ -1,0 +1,20 @@
+diff --git a/README.md b/README.md
+index ca8590d..71168e8 100644
+--- a/README.md
++++ b/README.md
+@@ -2,12 +2,12 @@
+ 
+ [![Observability Verify](https://github.com/your-org/otel/actions/workflows/ci-verify.yml/badge.svg)](https://github.com/your-org/otel/actions/workflows/ci-verify.yml)
+ 
+-A complete Windows-to-SigNoz observability pipeline with automated monitoring, alerting, and Codex-Cloud conflict resolution capabilities.
++A complete Windows-to-SigNoz observability pipeline with automated monitoring, alerting, and intelligent agent automation with Codex-Cloud conflict resolution capabilities.
+ 
+ ## 🚀 Quick Start
+ 
+-### Codex-Cloud Integration
+-This repository includes automated conflict resolution via the Codex-Cloud system. Add the `needs-conflict-help` label to any PR to trigger automated conflict analysis and resolution.
++### Agent System & Codex-Cloud Integration
++This repository includes an intelligent agent system for automated maintenance and conflict resolution. Use GitHub Actions workflow dispatch or PR labels to trigger agent tasks. The Codex-Cloud system provides automated conflict resolution - add the `needs-conflict-help` label to any PR to trigger automated conflict analysis and resolution.
+ 
+ ### Prerequisites
+ - Windows 11 with PowerShell 5.1+
