@@ -2,9 +2,12 @@
 
 [![Observability Verify](https://github.com/your-org/otel/actions/workflows/ci-verify.yml/badge.svg)](https://github.com/your-org/otel/actions/workflows/ci-verify.yml)
 
-A complete Windows-to-SigNoz observability pipeline with automated monitoring and alerting.
+A complete Windows-to-SigNoz observability pipeline with automated monitoring, alerting, and Codex-Cloud conflict resolution capabilities.
 
 ## 🚀 Quick Start
+
+### Codex-Cloud Integration
+This repository includes automated conflict resolution via the Codex-Cloud system. Add the `needs-conflict-help` label to any PR to trigger automated conflict analysis and resolution.
 
 ### Prerequisites
 - Windows 11 with PowerShell 5.1+
