@@ -1,0 +1,127 @@
+# Stress Test Configuration File 1
+# This file contains extensive configuration changes to test Codex-Cloud limits
+
+receivers:
+  stress_test_receiver_1:
+    type: filelog
+    include: [C:/stress-test-logs/**/*.log]
+    start_at: end
+    include_file_path: true
+    include_file_name_resolved: true
+    operators:
+      - type: json_parser
+        parse_from: body
+      - type: move
+        from: attributes["log.file.name"]
+        to: attributes["log.file.name"]
+      - type: add
+        field: attributes["stress.test"]
+        value: "receiver_1"
+      - type: add
+        field: attributes["test.scenario"]
+        value: "large_scale_conflict"
+      - type: add
+        field: attributes["codex.cloud"]
+        value: "stress_test"
+
+  stress_test_receiver_2:
+    type: prometheus
+    config:
+      scrape_configs:
+        - job_name: 'stress-test-metrics-1'
+          scrape_interval: 10s
+          static_configs:
+            - targets: ['localhost:9090']
+        - job_name: 'stress-test-metrics-2'
+          scrape_interval: 15s
+          static_configs:
+            - targets: ['localhost:9091']
+        - job_name: 'stress-test-metrics-3'
+          scrape_interval: 20s
+          static_configs:
+            - targets: ['localhost:9092']
+
+  stress_test_receiver_3:
+    type: windowseventlog
+    channel: Application
+    start_at: end
+    attributes:
+      - key: stress.test
+        value: "receiver_3"
+      - key: test.scenario
+        value: "large_scale_conflict"
+      - key: codex.cloud
+        value: "stress_test"
+
+exporters:
+  stress_test_exporter_1:
+    type: logging
+    loglevel: debug
+    attributes:
+      - key: stress.test
+        value: "exporter_1"
+      - key: test.scenario
+        value: "large_scale_conflict"
+
+  stress_test_exporter_2:
+    type: otlp
+    endpoint: "localhost:4317"
+    tls:
+      insecure: true
+    retry_on_failure:
+      initial_interval: 1s
+      max_interval: 60s
+      max_elapsed_time: 30m
+    sending_queue:
+      storage: file_storage
+      queue_size: 10000
+      num_consumers: 8
+    attributes:
+      - key: stress.test
+        value: "exporter_2"
+      - key: test.scenario
+        value: "large_scale_conflict"
+
+processors:
+  stress_test_processor_1:
+    type: memory_limiter
+    check_interval: 1s
+    limit_percentage: 90
+    spike_limit_percentage: 30
+    attributes:
+      - key: stress.test
+        value: "processor_1"
+
+  stress_test_processor_2:
+    type: batch
+    timeout: 1s
+    send_batch_size: 1024
+    send_batch_max_size: 2048
+    attributes:
+      - key: stress.test
+        value: "processor_2"
+
+  stress_test_processor_3:
+    type: filter
+    logs:
+      log_record:
+        - attributes["stress.test"] == "receiver_1"
+        - attributes["test.scenario"] == "large_scale_conflict"
+    attributes:
+      - key: stress.test
+        value: "processor_3"
+
+service:
+  pipelines:
+    stress_test_traces:
+      receivers: [stress_test_receiver_1, stress_test_receiver_2]
+      processors: [stress_test_processor_1, stress_test_processor_2]
+      exporters: [stress_test_exporter_1, stress_test_exporter_2]
+    stress_test_metrics:
+      receivers: [stress_test_receiver_2, stress_test_receiver_3]
+      processors: [stress_test_processor_2, stress_test_processor_3]
+      exporters: [stress_test_exporter_2]
+    stress_test_logs:
+      receivers: [stress_test_receiver_1, stress_test_receiver_3]
+      processors: [stress_test_processor_1, stress_test_processor_3]
+      exporters: [stress_test_exporter_1]

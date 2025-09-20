@@ -1,0 +1,26 @@
+diff --git a/config.yaml b/config.yaml
+index 693d83b..4f9afcc 100644
+--- a/config.yaml
++++ b/config.yaml
+@@ -156,7 +156,7 @@ service:
+       processors: [memory_limiter, resource/defaults, batch]
+       exporters: [logging, otlp/sigz]
+     logs:
+-      receivers: [otlp, filelog, prometheus/gpu]
++      receivers: [otlp, filelog, windowseventlog/application, prometheus/gpu]
+       processors: [memory_limiter, filter/drop_noise, transform/sanitize, transform/enrich, attributes/redact, batch]
+       exporters: [logging, otlp/sigz]
+ 
+diff --git a/docker-compose.yml b/docker-compose.yml
+index 9c3457d..387ae84 100644
+--- a/docker-compose.yml
++++ b/docker-compose.yml
+@@ -1,7 +1,7 @@
+ services:
+   clickhouse:
+     image: clickhouse/clickhouse-server:25.5.6
+-    # Enhanced for Codex-Cloud multi-file testing
++    # Enhanced for Codex-Cloud multi-file testing and agent automation
+     container_name: signoz-clickhouse
+     ports:
+       - "9000:9000"
