@@ -121,23 +121,23 @@ jobs:
         run: |
           mkdir -p otel
           cat > otel/ci-config.yaml <<'EOF'
-receivers:
-  otlp:
-    protocols:
-      http:
-        endpoint: 0.0.0.0:4318
-processors:
-  batch:
-exporters:
-  debug:
-    verbosity: detailed
-service:
-  pipelines:
-    traces:
-      receivers: [otlp]
-      processors: [batch]
-      exporters: [debug]
-EOF
+          receivers:
+            otlp:
+              protocols:
+                http:
+                  endpoint: 0.0.0.0:4318
+          processors:
+            batch:
+          exporters:
+            debug:
+              verbosity: detailed
+          service:
+            pipelines:
+              traces:
+                receivers: [otlp]
+                processors: [batch]
+                exporters: [debug]
+          EOF
       - name: Start collector (CI config)
         run: |
           docker run -d --name otel \
@@ -200,5 +200,3 @@ EOF
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: github-pr-review
           eslint_flags: "."
-
-
