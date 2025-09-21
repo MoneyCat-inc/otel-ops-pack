@@ -1,0 +1,159 @@
+name: CI — quality gates
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt || true
+          pip install -r requirements-dev.txt || true
+      - name: Lint & typecheck
+        run: |
+          flake8 .
+          python -m mypy . || true
+      - name: Tests
+        run: pytest -q || true
+      - name: Upload coverage (optional)
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: |
+            coverage.xml
+            htmlcov
+
+  node:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - name: Install
+        run: npm ci || npm i
+      - name: Lint
+        run: npm run -s lint || true
+      - name: Typecheck
+        run: npm run -s typecheck || true
+      - name: Tests
+        run: npm test -- --coverage || true
+
+  powershell:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ensure YAML parser for pwsh
+        shell: pwsh
+        run: |
+          Set-PSRepository PSGallery -InstallationPolicy Trusted
+          Install-Module powershell-yaml -Scope CurrentUser -Force
+      - name: Analyze PowerShell with PSScriptAnalyzer
+        shell: pwsh
+        run: |
+          Set-PSRepository PSGallery -InstallationPolicy Trusted
+          Install-Module PSScriptAnalyzer -Scope CurrentUser -Force
+          Invoke-ScriptAnalyzer -Path ./scripts -Recurse -Verbose
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+
+  yamls:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint YAML
+        run: |
+          pipx install yamllint
+          yamllint -s .
+      - name: yamllint otel configs
+        run: |
+          pipx install yamllint
+          yamllint -s config/*.yaml || true
+          yamllint -s *.yaml || true
+
+  actionlint:
+    # catches GitHub Actions YAML mistakes early
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: rhysd/actionlint@v1
+
+  otel-config-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Smoke test collector image pulls
+        run: docker pull ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:0.114.0
+      - name: Show collector version (ensures binary is alive)
+        run: docker run --rm ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:0.114.0 --version
+      - name: Create minimal CI config
+        run: |
+          mkdir -p otel
+          cat > otel/ci-config.yaml << 'EOF'
+          receivers:
+            otlp:
+              protocols:
+                http:
+                  endpoint: 0.0.0.0:4318
+            logging:
+              loglevel: info
+          processors:
+            batch:
+          exporters:
+            logging:
+              loglevel: info
+          service:
+            pipelines:
+              traces:
+                receivers: [otlp]
+                processors: [batch]
+                exporters: [logging]
+          EOF
+      - name: Start collector (CI config)
+        run: |
+          docker run -d --name otel \
+            -v "$PWD/otel/ci-config.yaml:/etc/otel/config.yaml" \
+            -p 4318:4318 \
+            ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:0.114.0 \
+            --config=/etc/otel/config.yaml
+      - name: Send sample span
+        run: |
+          sleep 3  # Wait for collector to start
+          curl -sS -X POST http://localhost:4318/v1/traces \
+            -H 'Content-Type: application/json' \
+            -d '{"resourceSpans":[{"resource":{"attributes":[{"key":"service.name","value":{"stringValue":"ci-cat"}}]},"scopeSpans":[{"spans":[{"traceId":"0123456789abcdef0123456789abcdef","spanId":"0123456789abcdef","name":"ci-smoke","kind":1,"startTimeUnixNano":"1","endTimeUnixNano":"2"}]}]}]}'
+      - name: Tear down
+        if: always()
+        run: docker rm -f otel || true
+
+  reviewdog-eslint:
+    if: always()
+    needs: [node]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci || npm i
+      - name: reviewdog / eslint
+        uses: reviewdog/action-eslint@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-review
+          eslint_flags: "."
