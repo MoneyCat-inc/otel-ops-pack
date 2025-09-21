@@ -1,0 +1,23 @@
+queue_rules:
+  - name: default
+    conditions:
+      - base=main
+
+pull_request_rules:
+  - name: queue when green
+    conditions:
+      - base=main
+      - "check-success=CI — quality gates"
+      - "#approved-reviews-by>=1"
+      - "-label~=^(wip|do not merge)$"
+    actions:
+      queue:
+        name: default
+        method: squash
+  - name: auto-merge dependabot
+    conditions:
+      - author=dependabot[bot]
+      - "check-success=CI — quality gates"
+    actions:
+      merge:
+        method: squash

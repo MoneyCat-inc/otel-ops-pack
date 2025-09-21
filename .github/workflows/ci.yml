@@ -5,6 +5,10 @@ on:
   pull_request:
     branches: [ main, master ]
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   pull-requests: write
@@ -137,6 +141,22 @@ jobs:
           curl -sS -X POST http://localhost:4318/v1/traces \
             -H 'Content-Type: application/json' \
             -d '{"resourceSpans":[{"resource":{"attributes":[{"key":"service.name","value":{"stringValue":"ci-cat"}}]},"scopeSpans":[{"spans":[{"traceId":"0123456789abcdef0123456789abcdef","spanId":"0123456789abcdef","name":"ci-smoke","kind":1,"startTimeUnixNano":"1","endTimeUnixNano":"2"}]}]}]}'
+      - name: Collect collector logs
+        if: always()
+        run: |
+          mkdir -p artifacts
+          docker logs otel > artifacts/collector.log 2>&1 || true
+          if [ ! -s artifacts/collector.log ]; then
+            echo "collector logs unavailable" > artifacts/collector.log
+          fi
+          cat artifacts/collector.log
+      - name: Upload collector logs artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: otel-collector-logs
+          path: artifacts/collector.log
+          retention-days: 7
       - name: Tear down
         if: always()
         run: docker rm -f otel || true
