@@ -5,7 +5,7 @@ receivers:
         endpoint: 0.0.0.0:4318
 
 exporters:
-  logging:
+  debug:
     verbosity: detailed
 
 processors:
@@ -16,4 +16,4 @@ service:
     traces:
       receivers: [otlp]
       processors: [batch]
-      exporters: [logging]
+      exporters: [debug]
