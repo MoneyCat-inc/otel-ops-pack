@@ -1,0 +1,69 @@
+# .yamllint - OTel/SigNoz + GitHub Actions friendly
+# Docs: https://yamllint.readthedocs.io/
+
+extends: default
+
+# Which files to lint (keeps it focused + fast)
+yaml-files:
+  - "*.yml"
+  - "*.yaml"
+  - ".github/workflows/**/*.yml"
+  - "configs/**/*.yml"
+  - "configs/**/*.yaml"
+  - "compose/**/*.yml"
+  - "compose/**/*.yaml"
+
+# Ignore generated or irrelevant content
+ignore: |
+  node_modules/**
+  third_party/**
+  artifacts/**
+  .vercel/**
+  .next/**
+  dist/**
+
+rules:
+  # --- Formatting + spacing ---------------------------------------------------
+  indentation:
+    spaces: 2
+    indent-sequences: true            # play nice with GH Actions style
+    check-multi-line-strings: false
+  line-length:
+    max: 160                           # long URLs and annotations happen
+    allow-non-breakable-words: true
+    allow-non-breakable-inline-mappings: true
+    level: warning                     # don't fail builds for long URLs
+  new-lines:
+    type: unix                         # LF; matches typical repo .gitattributes
+  trailing-spaces: enable
+  empty-lines:
+    max: 2
+    max-start: 0
+    max-end: 1
+  comments:
+    require-starting-space: true
+    min-spaces-from-content: 2
+  comments-indentation: enable
+  colons:
+    max-spaces-before: 0
+    max-spaces-after: 1
+  commas:
+    max-spaces-before: 0
+    min-spaces-after: 1
+  hyphens:
+    max-spaces-after: 1
+  braces: enable
+  brackets: enable
+
+  # --- Safety + pragmatism ----------------------------------------------------
+  document-start:
+    present: false                     # GH Actions & OTel don't need '---'
+  document-end:
+    present: false
+  key-duplicates: enable               # real foot-gun; keep enabled
+  key-ordering: disable                # schemas often have meaningful order
+  truthy: disable                      # avoids noise with on/off/yes/no in CI worlds
+  octal-values: disable                # leading-zero values (e.g., 0600) sometimes appear
+  # quoted-strings: disable             # leave quoting flexible; OTel durations, env vars, etc.
+  # float-values: enable                # default ok
+  # anchors: enable                     # default ok
