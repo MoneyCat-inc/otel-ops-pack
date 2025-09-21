@@ -30,7 +30,7 @@ jobs:
           fi
       - name: Lint & typecheck
         run: |
-          flake8 .
+          python -m flake8 .
           python -m mypy . || true
       - name: Tests
         run: pytest -q || true
@@ -50,7 +50,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: npm
       - name: Check for package.json and install
         run: |
           if [ -f package.json ]; then
@@ -122,25 +121,23 @@ jobs:
         run: |
           mkdir -p otel
           cat > otel/ci-config.yaml <<'EOF'
-          receivers:
-            otlp:
-              protocols:
-                http:
-                  endpoint: 0.0.0.0:4318
-            logging:
-              loglevel: info
-          processors:
-            batch:
-          exporters:
-            logging:
-              loglevel: info
-          service:
-            pipelines:
-              traces:
-                receivers: [otlp]
-                processors: [batch]
-                exporters: [logging]
-          EOF
+receivers:
+  otlp:
+    protocols:
+      http:
+        endpoint: 0.0.0.0:4318
+processors:
+  batch:
+exporters:
+  debug:
+    verbosity: detailed
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [debug]
+EOF
       - name: Start collector (CI config)
         run: |
           docker run -d --name otel \
@@ -187,16 +184,21 @@ jobs:
         with:
           node-version: '20'
       - name: Check for package.json and install
+        id: npm-setup
         run: |
           if [ -f package.json ]; then
+            echo "has_package_json=true" >> "$GITHUB_OUTPUT"
             npm install
           else
             echo "No package.json found, skipping npm install"
-            exit 0
+            echo "has_package_json=false" >> "$GITHUB_OUTPUT"
           fi
       - name: reviewdog / eslint
+        if: steps.npm-setup.outputs.has_package_json == 'true'
         uses: reviewdog/action-eslint@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: github-pr-review
           eslint_flags: "."
+
+
