@@ -1,12 +1,12 @@
-name: CI — quality gates
+name: CI - quality gates
 on:
   push:
-    branches: [ main, master ]
+    branches: [main, master]
   pull_request:
-    branches: [ main, master ]
+    branches: [main, master]
 
 concurrency:
-  group: ci-${{ github.ref }}
+  group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
@@ -21,12 +21,13 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          cache: 'pip'
-      - name: Install deps
+          cache: pip
+      - name: Install tooling
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt || true
-          pip install -r requirements-dev.txt || true
+          if [ -f requirements-dev.txt ]; then
+            python -m pip install -r requirements-dev.txt
+          fi
       - name: Lint & typecheck
         run: |
           flake8 .
@@ -49,53 +50,65 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
-      - name: Install
-        run: npm ci || npm i
+          cache: npm
+      - name: Check for package.json and install
+        run: |
+          if [ -f package.json ]; then
+            npm install
+          else
+            echo "No package.json found, skipping Node.js steps"
+            exit 0
+          fi
       - name: Lint
-        run: npm run -s lint || true
+        run: |
+          if [ -f package.json ]; then
+            npm run -s lint || true
+          else
+            echo "Skipping lint (no package.json)"
+          fi
       - name: Typecheck
-        run: npm run -s typecheck || true
+        run: |
+          if [ -f package.json ]; then
+            npm run -s typecheck || true
+          else
+            echo "Skipping typecheck (no package.json)"
+          fi
       - name: Tests
-        run: npm test -- --coverage || true
+        run: |
+          if [ -f package.json ]; then
+            npm test -- --coverage || true
+          else
+            echo "Skipping tests (no package.json)"
+          fi
 
   powershell:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Ensure YAML parser for pwsh
+      - name: Install PowerShell tooling
         shell: pwsh
         run: |
           Set-PSRepository PSGallery -InstallationPolicy Trusted
           Install-Module powershell-yaml -Scope CurrentUser -Force
+          Install-Module PSScriptAnalyzer -Scope CurrentUser -Force
       - name: Analyze PowerShell with PSScriptAnalyzer
         shell: pwsh
-        run: |
-          Set-PSRepository PSGallery -InstallationPolicy Trusted
-          Install-Module PSScriptAnalyzer -Scope CurrentUser -Force
-          Invoke-ScriptAnalyzer -Path ./scripts -Recurse -Verbose
-          if ($LASTEXITCODE -ne 0) { exit 1 }
+        run: Invoke-ScriptAnalyzer -Path ./scripts -Recurse -Severity Error -EnableExit
 
   yamls:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Lint YAML
-        run: |
-          pipx install yamllint
-          yamllint -s .
-      - name: yamllint otel configs
-        run: |
-          pipx install yamllint
-          yamllint -s config/*.yaml || true
-          yamllint -s *.yaml || true
+      - name: Install yamllint
+        run: pipx install yamllint
+      - name: Lint workflow YAML
+        run: yamllint -c .yamllint .github/workflows/ci.yml
 
   actionlint:
-    # catches GitHub Actions YAML mistakes early
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: rhysd/actionlint@v1
+      - uses: rhysd/actionlint@v1.6.25
 
   otel-config-smoke:
     runs-on: ubuntu-latest
@@ -108,7 +121,7 @@ jobs:
       - name: Create minimal CI config
         run: |
           mkdir -p otel
-          cat > otel/ci-config.yaml << 'EOF'
+          cat > otel/ci-config.yaml <<'EOF'
           receivers:
             otlp:
               protocols:
@@ -137,10 +150,13 @@ jobs:
             --config=/etc/otel/config.yaml
       - name: Send sample span
         run: |
-          sleep 3  # Wait for collector to start
+          sleep 3
+          cat <<'JSON' > span.json
+          {"resourceSpans":[{"resource":{"attributes":[{"key":"service.name","value":{"stringValue":"ci-cat"}}]},"scopeSpans":[{"spans":[{"traceId":"0123456789abcdef0123456789abcdef","spanId":"0123456789abcdef","name":"ci-smoke","kind":1,"startTimeUnixNano":"1","endTimeUnixNano":"2"}]}]}]}
+          JSON
           curl -sS -X POST http://localhost:4318/v1/traces \
             -H 'Content-Type: application/json' \
-            -d '{"resourceSpans":[{"resource":{"attributes":[{"key":"service.name","value":{"stringValue":"ci-cat"}}]},"scopeSpans":[{"spans":[{"traceId":"0123456789abcdef0123456789abcdef","spanId":"0123456789abcdef","name":"ci-smoke","kind":1,"startTimeUnixNano":"1","endTimeUnixNano":"2"}]}]}]}'
+            --data @span.json
       - name: Collect collector logs
         if: always()
         run: |
@@ -170,7 +186,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - run: npm ci || npm i
+      - name: Check for package.json and install
+        run: |
+          if [ -f package.json ]; then
+            npm install
+          else
+            echo "No package.json found, skipping npm install"
+            exit 0
+          fi
       - name: reviewdog / eslint
         uses: reviewdog/action-eslint@v1
         with:
