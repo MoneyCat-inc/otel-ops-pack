@@ -9,14 +9,15 @@ param(
     [int]$OtlpHttpPort = 4318
 )
 
-$knownFallbackPorts = @(4317, 4318, 14317, 14318)
+$defaultGrpcPorts = @(4317)
+$defaultHttpPorts = @(4318)
 $script:PrimaryPorts = @($OtlpGrpcPort, $OtlpHttpPort)
-$script:PortsToCheck = ($script:PrimaryPorts + $knownFallbackPorts) | Select-Object -Unique
+$script:PortsToCheck = ($script:PrimaryPorts + $defaultGrpcPorts + $defaultHttpPorts) | Select-Object -Unique
 $script:PortLabels = @{}
 foreach ($port in $script:PortsToCheck) { $script:PortLabels[$port] = "fallback" }
 foreach ($port in $script:PrimaryPorts) { $script:PortLabels[$port] = "primary" }
 
-$httpPortCandidates = @($OtlpHttpPort, 4318, 14318) | Select-Object -Unique
+$httpPortCandidates = @($OtlpHttpPort, 4318) | Select-Object -Unique
 $script:OtlpHttpTargets = $httpPortCandidates | ForEach-Object { "http://localhost:$_/v1/logs" }
 
 function Start-OTelCollector {
