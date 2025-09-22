@@ -23,17 +23,19 @@ processors:
     send_batch_size: 1024
   memory_limiter:
     limit_mib: 256
-  attributes:
+  attributes/global:
     actions:
       - key: deployment.env
         value: local
         action: insert
+  attributes/windows_event_log:
+    include:
+      match_type: instrumentation_scope
+      instrumentation_scope_names: [otelcol/wineventlogreceiver]
+    actions:
       - key: log.source
         value: windows_event_log
         action: insert
-        conditions:
-          - key: log.source
-            value: windows_event_log
 
 exporters:
   otlp:
@@ -51,7 +53,7 @@ service:
   pipelines:
     logs:
       receivers: [windows_event_log, filelog]
-      processors: [memory_limiter, attributes, batch]
+      processors: [memory_limiter, attributes/global, attributes/windows_event_log, batch]
       exporters: [otlp, otlphttp, debug]
     metrics:
       receivers: []
