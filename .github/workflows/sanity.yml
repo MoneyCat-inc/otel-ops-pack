@@ -1,5 +1,7 @@
 name: sanity
-on: [push, pull_request]
+on:
+  - push
+  - pull_request
 jobs:
   verify:
     runs-on: windows-latest
@@ -19,5 +21,4 @@ jobs:
           if ($bad.Count) { Write-Error "BOM or smart quotes found in: $($bad -join ', ')"; exit 1 }
       - name: Smoke lint (static placeholder)
         shell: pwsh
-        run: |
-          Write-Host "Static check OK"
+        run: Write-Host "Static check OK"

@@ -7,6 +7,7 @@ $script:allChecksPassed = $true
 $script:checkFailures = New-Object 'System.Collections.Generic.List[string]'
 $canaryId = $null
 $canaryMessage = $null
+$runbookRelativePath = "docs/observability/SIGNOZ_RUNBOOK_BUNDLE.md"
 $script:sigNozHeaders = $null
 $envToken = [Environment]::GetEnvironmentVariable('SIGNOZ_API_TOKEN')
 if (-not $envToken) { $envToken = [Environment]::GetEnvironmentVariable('SIGNOZ_API_BEARER') }
@@ -37,6 +38,26 @@ function Invoke-CanaryQuery {
     if ($script:sigNozHeaders) { $params.Headers = $script:sigNozHeaders }
     Invoke-RestMethod @params
 }
+
+function Write-RunbookFooter {
+    param(
+        [string]$RunbookPath,
+        [string]$LastCanaryId,
+        [string]$CanaryQuery
+    )
+    Write-Host "`nWhere to look next:" -ForegroundColor Yellow
+    Write-Host " - Runbook: $RunbookPath" -ForegroundColor Yellow
+    $fullPath = Join-Path (Get-Location) $RunbookPath
+    Write-Detail "Open locally: $fullPath"
+    if ($LastCanaryId) {
+        Write-Host " - Last canary ID: $LastCanaryId" -ForegroundColor Yellow
+        if ($CanaryQuery) {
+            Write-Host "   SigNoz filter: message contains '$CanaryQuery'" -ForegroundColor Yellow
+        }
+    }
+}
+
+
 
 Write-Host "`n1. Service Status Check:" -ForegroundColor Yellow
 try {
@@ -74,6 +95,8 @@ Test-TcpPort -Port 5318 -Label "Windows collector (HTTP)"
 Write-Host "`n3. SigNoz Collector Ports:" -ForegroundColor Yellow
 Test-TcpPort -Port 4317 -Label "SigNoz collector (gRPC)"
 Test-TcpPort -Port 4318 -Label "SigNoz collector (HTTP)"
+Test-TcpPort -Port 14317 -Label "SigNoz collector (gRPC remapped)"
+Test-TcpPort -Port 14318 -Label "SigNoz collector (HTTP remapped)"
 
 Write-Host "`n4. SigNoz UI Connectivity:" -ForegroundColor Yellow
 $uiUrl = "http://localhost:8080"; $uiSuccess = $false; $uiError = $null
@@ -92,13 +115,82 @@ $configPath = Join-Path (Get-Location) "config.yaml"
 if (Test-Path $configPath) {
     try {
         $configContent = Get-Content -Path $configPath -Raw
-        if ($configContent -match 'endpoint\s*:\s*"?localhost:4317"?' -or $configContent -match 'endpoint\s*:\s*"?0\.0\.0\.0:4317"?') { Write-Pass "OTLP gRPC exporter points to port 4317" } else { Write-Fail "Unable to confirm OTLP gRPC endpoint on 4317" }
+        if ($configContent -match "endpoint\s*:\s*['`"]?http://localhost:4317['`"]?" -or $configContent -match "endpoint\s*:\s*['`"]?http://0\.0\.0\.0:4317['`"]?" -or $configContent -match "endpoint\s*:\s*['`"]?http://localhost:14317['`"]?" -or $configContent -match "endpoint\s*:\s*['`"]?http://0\.0\.0\.0:14317['`"]?" -or $configContent -match "endpoint\s*:\s*['`"]?http://127\.0\.0\.1:14317['`"]?" -or $configContent -match "endpoint\s*:\s*['`"]?http://127\.0\.0\.1:4317['`"]?") { Write-Pass "OTLP gRPC exporter configured for SigNoz connection" } else { Write-Fail "Unable to confirm OTLP gRPC endpoint configuration" }
         if ($configContent -match 'windows-canary') { Write-Pass "Windows canary pipeline configuration detected" } else { Write-Detail "Windows canary pipeline not detected in config" }
     } catch { Write-Fail "Failed to read config.yaml: $($_.Exception.Message)" }
 } else { Write-Fail "Config file not found at $configPath" }
 
-Write-Host "`n6. Canary Test:" -ForegroundColor Yellow
+Write-Host "`n6. GPU Sidecar Prerequisites:" -ForegroundColor Yellow
+try {
+    $nvidiaSmi = Get-Command nvidia-smi -ErrorAction Stop
+    $nvidiaOutput = & nvidia-smi --query-gpu=name,driver_version --format=csv,noheader,nounits
+    if ($nvidiaOutput) {
+        $gpuInfo = $nvidiaOutput.Split(',')
+        Write-Pass "NVIDIA GPU detected: $($gpuInfo[0].Trim())"
+        Write-Detail "Driver: $($gpuInfo[1].Trim())"
+    } else {
+        Write-Fail "nvidia-smi returned no GPU information"
+    }
+} catch {
+    Write-Fail "nvidia-smi not available: $($_.Exception.Message)"
+}
+
+try {
+    $wslNvidiaOutput = wsl.exe --distribution Ubuntu -- nvidia-smi --query-gpu=name --format=csv,noheader,nounits 2>&1
+    if ($wslNvidiaOutput -and $wslNvidiaOutput -notmatch "error") {
+        Write-Pass "WSL2 GPU support available"
+        Write-Detail "WSL GPU: $($wslNvidiaOutput.Trim())"
+    } else {
+        Write-Fail "WSL2 GPU support not available: $wslNvidiaOutput"
+    }
+} catch {
+    Write-Fail "WSL2 GPU check failed: $($_.Exception.Message)"
+}
+
+try {
+    $dockerInfo = docker info --format "{{.Runtimes}}" 2>&1
+    if ($dockerInfo -match "nvidia") {
+        Write-Pass "Docker NVIDIA runtime available"
+    } else {
+        Write-Fail "Docker NVIDIA runtime not found"
+    }
+} catch {
+    Write-Fail "Docker GPU runtime check failed: $($_.Exception.Message)"
+}
+
+# Check GPU sidecar directories
+$gpuDirs = @("sidecars", "gpu-buffers", "sidecars/compression", "sidecars/aggregation", "sidecars/inference")
+foreach ($dir in $gpuDirs) {
+    if (Test-Path $dir) {
+        Write-Pass "GPU sidecar directory exists: $dir"
+    } else {
+        Write-Fail "GPU sidecar directory missing: $dir"
+    }
+}
+
+# Check GPU base image
+try {
+    $dockerImages = docker images --format "{{.Repository}}:{{.Tag}}" | Where-Object { $_ -match "otel-gpu-sidecar" }
+    if ($dockerImages) {
+        Write-Pass "GPU sidecar base image available"
+    } else {
+        Write-Detail "GPU sidecar base image not built yet (run: docker build -f Dockerfile.gpu-base -t otel-gpu-sidecar:latest .)"
+    }
+} catch {
+    Write-Detail "Docker image check failed: $($_.Exception.Message)"
+}
+
+Write-Host "`n7. Canary Test:" -ForegroundColor Yellow
 $timestamp = Get-Date -Format "yyyy-MM-ddTHH:mm:ss.fffK"; $canaryId = [Guid]::NewGuid().ToString(); $canaryMessage = "windows-canary-$canaryId"
+$artifactsDir = Join-Path (Get-Location) '.artifacts'
+if (-not (Test-Path $artifactsDir)) { New-Item -Path $artifactsDir -ItemType Directory -Force | Out-Null }
+$env:LAST_CANARY_ID = $canaryId
+$lastCanaryPath = Join-Path $artifactsDir 'last_canary_id.txt'
+try {
+    $canaryId | Out-File -FilePath $lastCanaryPath -Encoding ascii
+} catch {
+    Write-Detail "Unable to persist last canary id: $($_.Exception.Message)"
+}
 $logEntry = @{ timestamp=$timestamp; level="INFO"; message=$canaryMessage; source="verify-integration"; service="windows-collector"; test_id=$canaryId; pipeline_test=$true } | ConvertTo-Json -Depth 3
 $logPath = "C:\\logs\\canary-test.log"; $logWriteSucceeded = $false
 try {
@@ -115,7 +207,7 @@ if ($logWriteSucceeded) {
             else { $lastQueryError = "No match in response"; Write-Detail "Attempt $attempt -> no canary match" }
         } catch {
             $lastQueryError = $_.Exception.Message
-            if ($_.Exception.Response -and $_.Exception.Response.StatusCode.value__ -eq 401) {
+            if ($_.Exception.Response -and $_.Exception.Response.StatusCode -eq 401) {
                 $authRequired = $true
                 Write-Detail "Attempt $attempt -> 401 Unauthorized (set SIGNOZ_API_TOKEN to enable API verification)"
                 break
@@ -148,4 +240,7 @@ if ($allChecksPassed) {
     Write-Host "`nTroubleshooting:"; Write-Host "1. Ensure otelcol-contrib service is running"; Write-Host "2. Check ports 5317, 5318, 4317, 4318 are listening"; Write-Host "3. Confirm SigNoz containers are healthy"
 }
 if ($canaryId) { Write-Host "`nCanary ID for verification: $canaryId" -ForegroundColor Yellow }
+Write-RunbookFooter -RunbookPath $runbookRelativePath -LastCanaryId $canaryId -CanaryQuery $canaryMessage
+
 if ($allChecksPassed) { exit 0 } else { exit 1 }
+

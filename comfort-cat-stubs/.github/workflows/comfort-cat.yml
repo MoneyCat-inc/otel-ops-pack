@@ -1,0 +1,15 @@
+name: Comfort Cat Compliance
+on: [pull_request]
+jobs:
+  vibes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ensure comfort cat docs present
+        run: |
+          test -f "C:/otel/docs/comfort cat/README.md" || \
+          test -f "C:\\otel\\docs\\comfort cat\\README.md" || \
+          (echo "Missing C:\\otel\\docs\\comfort cat" && exit 1)
+      - name: PR template acknowledgements (soft fail)
+        run: |
+          echo "Please confirm Creative Compliance checklist is ticked in PR body."

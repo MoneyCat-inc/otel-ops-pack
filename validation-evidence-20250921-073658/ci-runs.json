@@ -1,0 +1,82 @@
+[
+  {
+    "conclusion": "failure",
+    "createdAt": "2025-09-21T06:26:18Z",
+    "databaseId": 17890064683,
+    "displayTitle": "Observability Cron",
+    "headSha": "5aa37f9da0a78155f2375d242ccb92e8521055b1",
+    "status": "completed"
+  },
+  {
+    "conclusion": "failure",
+    "createdAt": "2025-09-21T06:19:53Z",
+    "databaseId": 17890000024,
+    "displayTitle": "agent-codex",
+    "headSha": "5aa37f9da0a78155f2375d242ccb92e8521055b1",
+    "status": "completed"
+  },
+  {
+    "conclusion": "failure",
+    "createdAt": "2025-09-21T06:08:38Z",
+    "databaseId": 17889878268,
+    "displayTitle": "test: add JavaScript file with ESLint issues for reviewdog testing",
+    "headSha": "f70468b9cade7fba293a7d1592fca26dceabce61",
+    "status": "completed"
+  },
+  {
+    "conclusion": "failure",
+    "createdAt": "2025-09-21T06:07:34Z",
+    "databaseId": 17889866116,
+    "displayTitle": "test: mergify queue behavior",
+    "headSha": "1258234f7f1f5e193f72ea2d47eac1549c25a299",
+    "status": "completed"
+  },
+  {
+    "conclusion": "failure",
+    "createdAt": "2025-09-21T06:05:26Z",
+    "databaseId": 17889840949,
+    "displayTitle": "test: concurrency cancellation",
+    "headSha": "5aa37f9da0a78155f2375d242ccb92e8521055b1",
+    "status": "completed"
+  },
+  {
+    "conclusion": "failure",
+    "createdAt": "2025-09-21T06:05:26Z",
+    "databaseId": 17889840947,
+    "displayTitle": "test: concurrency cancellation",
+    "headSha": "5aa37f9da0a78155f2375d242ccb92e8521055b1",
+    "status": "completed"
+  },
+  {
+    "conclusion": "failure",
+    "createdAt": "2025-09-21T06:05:26Z",
+    "databaseId": 17889840945,
+    "displayTitle": "test: concurrency cancellation",
+    "headSha": "5aa37f9da0a78155f2375d242ccb92e8521055b1",
+    "status": "completed"
+  },
+  {
+    "conclusion": "failure",
+    "createdAt": "2025-09-21T06:02:25Z",
+    "databaseId": 17889804767,
+    "displayTitle": "trigger: CI run with fixed YAML syntax",
+    "headSha": "96bc8f218daea2b5a5e90ad83f9276c8b8c53cb4",
+    "status": "completed"
+  },
+  {
+    "conclusion": "failure",
+    "createdAt": "2025-09-21T06:02:25Z",
+    "databaseId": 17889804747,
+    "displayTitle": "trigger: CI run with fixed YAML syntax",
+    "headSha": "96bc8f218daea2b5a5e90ad83f9276c8b8c53cb4",
+    "status": "completed"
+  },
+  {
+    "conclusion": "failure",
+    "createdAt": "2025-09-21T06:02:25Z",
+    "databaseId": 17889804744,
+    "displayTitle": "trigger: CI run with fixed YAML syntax",
+    "headSha": "96bc8f218daea2b5a5e90ad83f9276c8b8c53cb4",
+    "status": "completed"
+  }
+]

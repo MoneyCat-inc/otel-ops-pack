@@ -1,0 +1,23 @@
+{
+  "name": "cat-nap-control-room-preview",
+  "version": "1.0.0",
+  "description": "Cat Nap Control Room - OTel Pipeline Preview",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "serve": "python -m http.server 3000"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0"
+  },
+  "keywords": [
+    "observability",
+    "otel",
+    "signoz",
+    "preview",
+    "dashboard"
+  ],
+  "author": "Observability Copilot",
+  "license": "MIT"
+}

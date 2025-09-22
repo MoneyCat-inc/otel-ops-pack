@@ -1,0 +1,63 @@
+# GPU Sidecar Base Image for OpenTelemetry Workloads
+# Based on NVIDIA CUDA runtime with RAPIDS, Triton, and nvCOMP support
+
+FROM nvcr.io/nvidia/cuda:12.4.1-runtime-ubuntu22.04
+
+# Set environment variables
+ENV DEBIAN_FRONTEND=noninteractive
+ENV CUDA_HOME=/usr/local/cuda
+ENV PATH=${CUDA_HOME}/bin:${PATH}
+ENV LD_LIBRARY_PATH=${CUDA_HOME}/lib64:${LD_LIBRARY_PATH}
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-pip \
+    python3-dev \
+    build-essential \
+    curl \
+    wget \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies
+RUN pip3 install --no-cache-dir \
+    numpy \
+    pandas \
+    pyarrow \
+    fastapi \
+    uvicorn \
+    pydantic \
+    requests \
+    opentelemetry-api \
+    opentelemetry-sdk \
+    opentelemetry-exporter-otlp-proto-http \
+    opentelemetry-instrumentation-requests
+
+# Install RAPIDS cuDF (GPU DataFrame library)
+RUN pip3 install --no-cache-dir \
+    cudf-cu12 \
+    dask-cudf-cu12 \
+    cuml-cu12
+
+# Install GPU compression libraries (using cuDF for now, nvCOMP requires manual compilation)
+RUN pip3 install --no-cache-dir \
+    zstandard \
+    lz4
+
+# Install Triton Inference Server client
+RUN pip3 install --no-cache-dir \
+    tritonclient[all]
+
+# Install Morpheus for GPU pipelines
+RUN pip3 install --no-cache-dir \
+    morpheus
+
+# Create working directory
+WORKDIR /app
+
+# Copy common utilities
+COPY sidecars/ /app/sidecars/
+
+# Set default command
+CMD ["python3", "-c", "import cudf, nvcomp; print('GPU sidecar base image ready')"]

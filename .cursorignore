@@ -1,0 +1,60 @@
+# Cursor workspace hygiene — ignore bulky/generated/noisy files
+# Docs: keep canonical creative refs in docs/comfort-cat/
+
+# Node & deps
+node_modules/
+**/node_modules/
+.pnp.*
+
+# Build outputs / logs / artifacts
+artifacts/
+logs/
+**/*.log
+coverage/
+dist/
+build/
+.out/
+.next/
+.cache/
+.tmp/
+.DS_Store
+Thumbs.db
+
+# Python caches
+**/__pycache__/
+**/*.pyc
+
+# VCS & CI noise
+.git/
+.gitignore
+.github/
+.husky/
+.releaserc*
+
+# Large vendor/third_party
+third_party/
+
+# Screenshots/exports
+**/*.png
+**/*.jpg
+**/*.jpeg
+**/*.gif
+**/*.webp
+**/*.mp4
+
+# Local environment/state
+.env*
+*.local
+*.tmp
+*.swp
+
+# Cursor internal backups
+**/*.bak
+**/*.backup
+
+# Keep these included explicitly
+!docs/
+!docs/comfort-cat/
+!config.yaml
+!config/*.yaml
+!scripts/**

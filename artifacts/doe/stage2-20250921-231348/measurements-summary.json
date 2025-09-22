@@ -1,0 +1,15 @@
+{
+  "totalRuns": 36,
+  "experiment": {
+    "stage": "stage2",
+    "replicates": 2,
+    "timestamp": "20250921-231348",
+    "duration": 60,
+    "loadCommand": "pwsh -File scripts/generate-synthetic-load.ps1"
+  },
+  "measurementsExtracted": 36,
+  "extractionTimestamp": "2025-09-22T02:10:40.857Z",
+  "completedRuns": 36,
+  "timeRange": 15,
+  "sigNozEndpoint": "http://localhost:8080"
+}

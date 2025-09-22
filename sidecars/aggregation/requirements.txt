@@ -1,0 +1,13 @@
+# GPU Aggregation Sidecar Dependencies
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+pydantic==2.5.0
+numpy==1.24.3
+cudf-cu12==24.08.0
+dask-cudf-cu12==24.08.0
+pandas==2.0.3
+opentelemetry-api==1.21.0
+opentelemetry-sdk==1.21.0
+opentelemetry-exporter-otlp-proto-http==1.21.0
+opentelemetry-instrumentation-requests==0.42b0
+requests==2.31.0

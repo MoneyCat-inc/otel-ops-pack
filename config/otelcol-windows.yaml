@@ -1,3 +1,8 @@
+extensions:
+  health_check:
+    endpoint: 0.0.0.0:13134
+    path: /healthz
+
 receivers:
   windows_event_log:
     - channel: Application
@@ -16,13 +21,14 @@ receivers:
         - type: add
           field: log.source
           value: file
-
 processors:
-  batch:
-    timeout: 1s
-    send_batch_size: 1024
+  batch/logs:
+    timeout: 200ms
+    send_batch_size: 256
   memory_limiter:
     limit_mib: 256
+    check_interval: 1s
+    spike_limit_mib: 512
   attributes:
     actions:
       - key: deployment.env
@@ -34,30 +40,52 @@ processors:
         conditions:
           - key: log.source
             value: windows_event_log
-
+  filter/drop_noise:
+    logs:
+      log_record:
+        - attributes["winlog.event_id"] in [6005, 6006, 7036]
+        - IsMatch(body, "(?i)windows update|service control manager")
+  batch:
+    timeout: 1s
+    send_batch_size: 1024
 exporters:
   otlp:
-    endpoint: localhost:4317
+    endpoint: localhost:14317
     tls:
       insecure: true
   otlphttp:
-    endpoint: http://localhost:4318
+    endpoint: http://localhost:14318
     tls:
       insecure: true
-  debug:
-    verbosity: normal
-
 service:
+  extensions:
+    - health_check
   pipelines:
     logs:
-      receivers: [windows_event_log, filelog]
-      processors: [memory_limiter, attributes, batch]
-      exporters: [otlp, otlphttp, debug]
+      receivers:
+        - windows_event_log
+        - filelog
+      processors:
+        - memory_limiter
+        - filter/drop_noise
+        - attributes
+        - batch/logs
+      exporters:
+        - otlp
+        - otlphttp
     metrics:
       receivers: []
-      processors: [memory_limiter, batch]
-      exporters: [otlp, otlphttp]
+      processors:
+        - memory_limiter
+        - batch
+      exporters:
+        - otlp
+        - otlphttp
     traces:
       receivers: []
-      processors: [memory_limiter, batch]
-      exporters: [otlp, otlphttp]
+      processors:
+        - memory_limiter
+        - batch
+      exporters:
+        - otlp
+        - otlphttp

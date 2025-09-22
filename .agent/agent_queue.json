@@ -1,2 +1,45 @@
-{}
-
+{
+  "version": 1,
+  "lastRun": null,
+  "jobs": [
+    {
+      "id": "env-ready",
+      "type": "health-check",
+      "command": "pnpm agent:doctor",
+      "schedule": "RRULE:FREQ=HOURLY;BYMINUTE=0;BYSECOND=0",
+      "deps": [],
+      "ttlMs": 3600000,
+      "attempts": 0,
+      "maxAttempts": 3,
+      "backoffMs": 300000,
+      "status": "queued",
+      "lastResult": null
+    },
+    {
+      "id": "otel-wiring-check",
+      "type": "health-check",
+      "command": "pwsh -File scripts/verify-wiring.ps1",
+      "schedule": "RRULE:FREQ=DAILY;BYHOUR=9;BYMINUTE=0;BYSECOND=0",
+      "deps": ["env-ready"],
+      "ttlMs": 86400000,
+      "attempts": 0,
+      "maxAttempts": 3,
+      "backoffMs": 900000,
+      "status": "queued",
+      "lastResult": null
+    },
+    {
+      "id": "otel-analytics-monitor",
+      "type": "monitor",
+      "command": "pwsh -File scripts/monitor-analytics-ingestion.ps1",
+      "schedule": "RRULE:FREQ=HOURLY;BYMINUTE=30;BYSECOND=0",
+      "deps": ["env-ready", "otel-wiring-check"],
+      "ttlMs": 3600000,
+      "attempts": 0,
+      "maxAttempts": 2,
+      "backoffMs": 600000,
+      "status": "queued",
+      "lastResult": null
+    }
+  ]
+}

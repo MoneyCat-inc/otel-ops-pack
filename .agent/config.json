@@ -8,7 +8,7 @@
   "environment": "resonai-otel",
   "capabilities": [
     "code_navigation",
-    "text_extraction", 
+    "text_extraction",
     "script_execution",
     "patch_preparation",
     "reporting",
@@ -29,8 +29,20 @@
       "audit"
     ],
     "allowed_file_extensions": [
-      ".ps1", ".yaml", ".yml", ".json", ".md", ".txt", ".log",
-      ".ts", ".tsx", ".js", ".jsx", ".py", ".go", ".rs"
+      ".ps1",
+      ".yaml",
+      ".yml",
+      ".json",
+      ".md",
+      ".txt",
+      ".log",
+      ".ts",
+      ".tsx",
+      ".js",
+      ".jsx",
+      ".py",
+      ".go",
+      ".rs"
     ]
   },
   "resonai_integration": {
@@ -38,7 +50,12 @@
     "ai_assistant_config": "C:\\otel\\ai-assistant-config.yaml",
     "templates_path": "C:\\otel\\templates",
     "logs_path": "C:\\otel\\logs",
-    "monitoring_enabled": true
+    "monitoring_enabled": true,
+    "runbook_reference": {
+      "path": "C:/otel/docs/observability/SIGNOZ_RUNBOOK_BUNDLE.md",
+      "last_verified_utc": "2025-09-20T21:14:00+01:00",
+      "latest_canary_id": "5806cb5d-00b5-4415-8373-87a3f94b9a6d"
+    }
   },
   "logging": {
     "level": "INFO",

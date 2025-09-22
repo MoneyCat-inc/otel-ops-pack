@@ -1,0 +1,36 @@
+{
+  "name": "ECRR Canary Missing",
+  "description": "ECRR-enhanced canary missing from pipeline. Expected canary every 10 minutes.",
+  "state": "active",
+  "labels": {
+    "service": "ecrr-canary",
+    "component": "health-check",
+    "severity": "warning",
+    "framework": "ecrr"
+  },
+  "compositeQuery": {
+    "queryType": "builder",
+    "builderQueries": {
+      "A": {
+        "queryName": "A",
+        "dataSource": "logs",
+        "aggregateOperator": "count",
+        "expression": "",
+        "filters": {
+          "items": [
+            { "id": "svc", "key": "service.name", "op": "=", "value": "ecrr-canary", "disabled": false },
+            { "id": "ctype", "key": "attributes.canary.type", "op": "=", "value": "ecrr-enhanced", "disabled": false }
+          ],
+          "op": "AND"
+        },
+        "groupBy": [],
+        "stepInterval": 60
+      }
+    }
+  },
+  "condition": { "op": "<", "lhs": "A", "rhs": 1 },
+  "evaluationWindow": "15m",
+  "checkFrequency": "5m",
+  "notifications": [],
+  "disabled": false
+}

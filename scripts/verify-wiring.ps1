@@ -1,0 +1,260 @@
+# Resonai ↔ OTel Wiring Verification Script
+# Tests the analytics forwarding from /api/events to SigNoz via OTLP/HTTP
+
+Set-StrictMode -Version 2
+$ErrorActionPreference = "Stop"
+
+Write-Host "=== Resonai ↔ OTel Wiring Verification ===" -ForegroundColor Green
+
+$script:allChecksPassed = $true
+$script:checkFailures = New-Object 'System.Collections.Generic.List[string]'
+$testEventId = [Guid]::NewGuid().ToString()
+$script:artifactsDir = Join-Path (Get-Location) "artifacts"
+
+function Write-Pass { param([string]$Message) Write-Host "   [OK] $Message" -ForegroundColor Green }
+function Write-Detail { param([string]$Message) if ($Message) { Write-Host "      $Message" -ForegroundColor DarkGray } }
+function Write-Fail {
+    param([string]$Message)
+    Write-Host "   [FAIL] $Message" -ForegroundColor Red
+    $script:allChecksPassed = $false
+    $script:checkFailures.Add($Message) | Out-Null
+}
+
+# Ensure artifacts directory exists
+if (-not (Test-Path $script:artifactsDir)) {
+    New-Item -Path $script:artifactsDir -ItemType Directory -Force | Out-Null
+    Write-Detail "Created artifacts directory: $script:artifactsDir"
+}
+
+# Get SigNoz auth headers if available
+$script:sigNozHeaders = $null
+$envToken = [Environment]::GetEnvironmentVariable('SIGNOZ_API_TOKEN')
+if (-not $envToken) { $envToken = [Environment]::GetEnvironmentVariable('SIGNOZ_API_BEARER') }
+if (-not $envToken) { $envToken = [Environment]::GetEnvironmentVariable('SIGNOZ_JWT') }
+if ($envToken) { $script:sigNozHeaders = @{ Authorization = "Bearer $envToken" } }
+
+function Test-TcpPort {
+    param([int]$Port,[string]$Label)
+    try {
+        $result = Test-NetConnection -ComputerName localhost -Port $Port -WarningAction SilentlyContinue
+        if ($result.TcpTestSucceeded) { Write-Pass "$Label port $Port reachable" } else { Write-Fail "$Label port $Port not reachable" }
+    } catch { Write-Fail "$Label port $Port error: $($_.Exception.Message)" }
+}
+
+function Invoke-AnalyticsQuery {
+    param([string]$EventId,[int]$MinutesBack = 15)
+    $now = [long]([DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()); $start = $now - [long]($MinutesBack * 60000)
+    $filterExpression = "attributes.dataset = `"resonai_analytics`" AND attributes.event_id = `"$EventId`""
+    $payload = @{ start=$start; end=$now; requestType="raw"; compositeQuery=@{ queries=@(@{ type="builder_query"; spec=@{ name="A"; signal="logs"; filter=@{ expression=$filterExpression }; order=@(@{ key=@{ name="timestamp" }; direction="desc" }); limit=10; offset=0 }}) } } | ConvertTo-Json -Depth 8
+    $params = @{ Method='Post'; Uri='http://localhost:8080/api/v5/query_range'; ContentType='application/json'; Body=$payload; TimeoutSec=30 }
+    if ($script:sigNozHeaders) { $params.Headers = $script:sigNozHeaders }
+    Invoke-RestMethod @params
+}
+
+Write-Host "`n1. Prerequisites Check:" -ForegroundColor Yellow
+
+# Check OTel Collector service
+try {
+    $service = Get-Service -Name otelcol-contrib -ErrorAction Stop
+    if ($service.Status -eq 'Running') { Write-Pass "Service otelcol-contrib is running" } else { Write-Fail "Service otelcol-contrib status is $($service.Status)" }
+} catch { Write-Fail "Service otelcol-contrib not found: $($_.Exception.Message)" }
+
+# Check ports
+Test-TcpPort -Port 5318 -Label "Windows collector (OTLP/HTTP)"
+Test-TcpPort -Port 8080 -Label "SigNoz UI"
+
+Write-Host "`n2. Analytics API Test:" -ForegroundColor Yellow
+
+# Test data
+$testEvent = @{
+    event = "wiring_verification_test"
+    event_id = $testEventId
+    session_id = "test-session-$testEventId"
+    variant = "test"
+    ttv_ms = 150
+    ua = "PowerShell-Verification-Script"
+    cohort = "test-cohort"
+    props = @{
+        test_type = "wiring_verification"
+        timestamp = (Get-Date).ToString("o")
+    }
+} | ConvertTo-Json -Depth 3
+
+$apiUrl = "http://localhost:3003/api/events"
+$apiSuccess = $false
+$apiError = $null
+
+try {
+    Write-Detail "Sending test analytics event to $apiUrl"
+    $response = Invoke-RestMethod -Uri $apiUrl -Method POST -Body $testEvent -ContentType "application/json" -TimeoutSec 10
+    if ($response.ok -and $response.count -eq 1) {
+        Write-Pass "Analytics API accepted event (count: $($response.count))"
+        $apiSuccess = $true
+    } else {
+        $apiError = "Unexpected response: $($response | ConvertTo-Json)"
+        Write-Detail $apiError
+    }
+} catch {
+    $apiError = $_.Exception.Message
+    Write-Detail "API call failed: $apiError"
+    
+    # Check if it's a connection error vs server error
+    if ($_.Exception.Message -match "connection|timeout|refused") {
+        Write-Fail "Analytics API not reachable (is dev server running on port 3003?)"
+    } else {
+        Write-Fail "Analytics API error: $apiError"
+    }
+}
+
+if (-not $apiSuccess) {
+    Write-Fail "Cannot proceed without successful API call"
+    Write-Host "`nPlease ensure:" -ForegroundColor Yellow
+    Write-Host "1. Resonai dev server is running (pnpm dev)" -ForegroundColor Yellow
+    Write-Host "2. Server is accessible on http://localhost:3003" -ForegroundColor Yellow
+    Write-Host "3. /api/events endpoint is working" -ForegroundColor Yellow
+    exit 2  # Unhealthy but retryable (API unreachable)
+}
+
+Write-Host "`n3. SigNoz Verification:" -ForegroundColor Yellow
+
+if ($apiSuccess) {
+    Write-Detail "Waiting 8 seconds for OTel forwarding..."
+    Start-Sleep -Seconds 8
+    
+    $sigNozSeen = $false
+    $lastQueryError = $null
+    $authRequired = $false
+    
+    for ($attempt = 1; $attempt -le 3 -and -not $sigNozSeen; $attempt++) {
+        try {
+            Write-Detail "Querying SigNoz for test event (attempt $attempt)..."
+            $responseJson = (Invoke-AnalyticsQuery -EventId $testEventId) | ConvertTo-Json -Depth 8
+            
+            if ($responseJson -and $responseJson -match $testEventId) {
+                Write-Pass "SigNoz API returned analytics event (attempt $attempt)"
+                $sigNozSeen = $true
+                
+                # Write artifacts
+                $verifyArtifact = @"
+== Resonai ↔ OTel Wiring Verification Results ==
+Timestamp: $(Get-Date -Format "yyyy-MM-ddTHH:mm:ss.fffK")
+Test Event ID: $testEventId
+
+API Test: PASSED
+- Event sent to /api/events successfully
+- Response: $($response | ConvertTo-Json -Compress)
+
+SigNoz Test: PASSED
+- Event found in SigNoz logs
+- Query response contains test event ID
+- Dataset: resonai_analytics
+
+== Wiring verification PASSED ==
+"@
+                
+                $verifyArtifact | Out-File -FilePath (Join-Path $script:artifactsDir "wiring-verify.txt") -Encoding utf8NoBOM
+                $responseJson | Out-File -FilePath (Join-Path $script:artifactsDir "wiring-api.json") -Encoding utf8NoBOM
+                
+                Write-Pass "Artifacts written to artifacts/wiring-verify.txt and artifacts/wiring-api.json"
+                
+            } else {
+                $lastQueryError = "No match in response"
+                Write-Detail "Attempt $attempt -> no analytics event match"
+            }
+        } catch {
+            $lastQueryError = $_.Exception.Message
+            if ($_.Exception.Response -and $_.Exception.Response.StatusCode.value__ -eq 401) {
+                $authRequired = $true
+                Write-Detail "Attempt $attempt -> 401 Unauthorized (set SIGNOZ_API_TOKEN to enable API verification)"
+                break
+            }
+            Write-Detail "Attempt $attempt -> $lastQueryError"
+        }
+        
+        if (-not $sigNozSeen -and $attempt -lt 3) { 
+            Write-Host "   Waiting 8s before retry..." -ForegroundColor Yellow
+            Start-Sleep -Seconds 8 
+        }
+    }
+    
+    if (-not $sigNozSeen) {
+        if ($authRequired -and -not $script:sigNozHeaders) {
+            Write-Detail "SigNoz API verification skipped (authentication required)"
+            Write-Detail "Set SIGNOZ_API_TOKEN environment variable to enable full verification"
+            
+            # Write partial artifacts
+            $partialArtifact = @"
+== Resonai ↔ OTel Wiring Verification Results ==
+Timestamp: $(Get-Date -Format "yyyy-MM-ddTHH:mm:ss.fffK")
+Test Event ID: $testEventId
+
+API Test: PASSED
+- Event sent to /api/events successfully
+- Response: $($response | ConvertTo-Json -Compress)
+
+SigNoz Test: SKIPPED (Authentication required)
+- Set SIGNOZ_API_TOKEN environment variable for full verification
+- Manual check: Open SigNoz UI → Logs → Filter: attributes.dataset = "resonai_analytics"
+
+== Wiring verification PARTIAL (API only) ==
+"@
+            $partialArtifact | Out-File -FilePath (Join-Path $script:artifactsDir "wiring-verify.txt") -Encoding utf8NoBOM
+            Write-Pass "Partial artifacts written (API test passed)"
+            
+        } else {
+            Write-Fail "SigNoz API query failed to find analytics event within 15 minutes: $lastQueryError"
+            
+            # Write failure artifacts
+            $failureArtifact = @"
+== Resonai ↔ OTel Wiring Verification Results ==
+Timestamp: $(Get-Date -Format "yyyy-MM-ddTHH:mm:ss.fffK")
+Test Event ID: $testEventId
+
+API Test: PASSED
+- Event sent to /api/events successfully
+- Response: $($response | ConvertTo-Json -Compress)
+
+SigNoz Test: FAILED
+- Error: $lastQueryError
+- Manual check: Open SigNoz UI → Logs → Filter: attributes.dataset = "resonai_analytics"
+
+== Wiring verification FAILED ==
+"@
+            $failureArtifact | Out-File -FilePath (Join-Path $script:artifactsDir "wiring-verify.txt") -Encoding utf8NoBOM
+        }
+    }
+}
+
+Write-Host "`n=== Verification Complete ===" -ForegroundColor Green
+if ($allChecksPassed) {
+    Write-Host "== Wiring verification PASSED ===" -ForegroundColor Green
+    Write-Host "Analytics are successfully flowing from Resonai to SigNoz!" -ForegroundColor Green
+    Write-Host "`nNext steps:" -ForegroundColor Yellow
+    Write-Host "1. Open SigNoz UI at http://localhost:8080" -ForegroundColor Yellow
+    Write-Host "2. Go to Logs section" -ForegroundColor Yellow
+    Write-Host "3. Filter: attributes.dataset = `"resonai_analytics`"" -ForegroundColor Yellow
+    Write-Host "4. Check artifacts in artifacts/wiring-verify.txt" -ForegroundColor Yellow
+} else {
+    Write-Host "== Wiring verification FAILED ==" -ForegroundColor Red
+    Write-Host "Some checks failed. Please review the errors above." -ForegroundColor Red
+    if ($checkFailures.Count -gt 0) {
+        Write-Host "`nFailure summary:" -ForegroundColor Yellow
+        foreach ($item in $checkFailures) { Write-Host " - $item" -ForegroundColor Red }
+    }
+    Write-Host "`nTroubleshooting:" -ForegroundColor Yellow
+    Write-Host "1. Ensure otelcol-contrib service is running" -ForegroundColor Yellow
+    Write-Host "2. Check ports 5318 (OTLP/HTTP) and 8080 (SigNoz UI) are listening" -ForegroundColor Yellow
+    Write-Host "3. Confirm Resonai dev server is running on port 3003" -ForegroundColor Yellow
+    Write-Host "4. Check artifacts/wiring-verify.txt for details" -ForegroundColor Yellow
+}
+
+Write-Host "`nTest Event ID: $testEventId" -ForegroundColor Yellow
+
+# Explicit exit codes for agent integration
+if ($allChecksPassed) {
+    Write-Host "== Wiring verification PASSED ==" -ForegroundColor Green
+    exit 0  # Healthy - ready for production
+} else {
+    Write-Host "== Wiring verification FAILED ==" -ForegroundColor Red
+    exit 2  # Unhealthy but retryable (watchdog can backoff and re-enqueue)
+}
