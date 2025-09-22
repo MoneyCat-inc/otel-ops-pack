@@ -1,0 +1,13 @@
+== Resonai ↔ OTel Wiring Verification Results ==
+Timestamp: 2025-09-20T21:09:26.197+01:00
+Test Event ID: ff3fa61b-7880-4c4f-ae96-ec5e8062cc9e
+
+API Test: PASSED
+- Event sent to /api/events successfully
+- Response: {"ok":true,"count":1}
+
+SigNoz Test: SKIPPED (Authentication required)
+- Set SIGNOZ_API_TOKEN environment variable for full verification
+- Manual check: Open SigNoz UI → Logs → Filter: attributes.dataset = "resonai_analytics"
+
+== Wiring verification PARTIAL (API only) ==

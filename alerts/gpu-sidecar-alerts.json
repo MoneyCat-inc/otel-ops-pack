@@ -1,0 +1,37 @@
+[
+  {
+    "threshold": "0",
+    "description": "GPU sidecar service is unhealthy",
+    "condition": "gpu_sidecar_health_status == 0",
+    "severity": "critical",
+    "name": "GPU Sidecar Health Down"
+  },
+  {
+    "threshold": "0.1",
+    "description": "GPU fallback rate exceeds 10%",
+    "condition": "rate(gpu_sidecar_fallback_total[5m]) > 0.1",
+    "severity": "warning",
+    "name": "High GPU Fallback Rate"
+  },
+  {
+    "threshold": "1000",
+    "description": "GPU buffer queue depth is too high",
+    "condition": "gpu_buffer_queue_depth > 1000",
+    "severity": "warning",
+    "name": "GPU Buffer Queue Depth High"
+  },
+  {
+    "threshold": "0.5",
+    "description": "GPU processing efficiency below 50%",
+    "condition": "rate(gpu_processing_efficiency[5m]) < 0.5",
+    "severity": "warning",
+    "name": "Low GPU Processing Efficiency"
+  },
+  {
+    "threshold": "0.9",
+    "description": "GPU memory usage exceeds 90%",
+    "condition": "gpu_memory_used_bytes / gpu_memory_total_bytes > 0.9",
+    "severity": "critical",
+    "name": "GPU Memory Usage High"
+  }
+]

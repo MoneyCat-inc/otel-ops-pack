@@ -1,0 +1,40 @@
+name: Path Hygiene — Near-duplicate Detection
+
+on:
+  pull_request:
+    branches: [ "**" ]
+
+jobs:
+  detect-near-duplicates:
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PowerShell (non-Windows)
+        if: runner.os != 'Windows'
+        uses: PowerShell/setup-pwsh@v2
+
+      - name: Scan for near-duplicate directories
+        run: |
+          $output = pwsh -NoLogo -File scripts/find-near-duplicate-paths.ps1 -Root .
+          Write-Host $output
+          if ($output -notmatch 'No near-duplicate names detected') {
+            throw 'Near-duplicate directories found. See output above.'
+          }
+
+      - name: Scan for near-duplicate files
+        run: |
+          $output = pwsh -NoLogo -File scripts/find-near-duplicate-paths.ps1 -Root . -IncludeFiles
+          Write-Host $output
+          if ($output -notmatch 'No near-duplicate names detected') {
+            throw 'Near-duplicate files found. See output above.'
+          }
+
+

@@ -1,0 +1,40 @@
+name: Comfort Cat Compliance
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ensure PowerShell 7 available
+        uses: PowerShell/PowerShell@v1
+        with:
+          pwsh-version: "7.x"
+      - name: Verify Comfort Cat guideline files exist
+        shell: pwsh
+        run: |
+          $root = "docs/comfort-cat"
+          $required = @(
+            "README.md","palette.md","type.md","motion.md","copy.md",
+            "storyboard.md","proofpoints.md","accessibility.md","success-criteria.md"
+          )
+          if(-not (Test-Path $root)){
+            Write-Error "Missing $root"; exit 1
+          }
+          $missing = @()
+          foreach($item in $required){
+            if(-not (Test-Path (Join-Path $root $item))){
+              $missing += $item
+            }
+          }
+          if($missing.Count -gt 0){
+            Write-Error "Missing guideline files: $($missing -join ', ')"; exit 1
+          }
+          Write-Host "Comfort Cat docs present."
+      - name: Demonstrate scaffold workflow
+        shell: pwsh
+        run: |
+          Write-Host "Demonstrating Comfort Cat scaffold workflow..."
+          pwsh -File scripts/scaffold-comfort-cat.ps1 -Force
+          Write-Host "Scaffold workflow completed successfully."

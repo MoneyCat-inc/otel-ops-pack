@@ -1,0 +1,52 @@
+name: ECRR Gate
+on:
+  pull_request_target:
+    types:
+      - opened
+      - edited
+      - synchronize
+      - reopened
+      - ready_for_review
+permissions:
+  pull-requests: read
+jobs:
+  check-ecrr:
+    name: Verify PR contains ECRR badge + gate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate ECRR elements in PR body
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = (context.payload.pull_request?.body || "").trim();
+
+            // 1) Require the ECRR Gate section (and 4 core items)
+            const blockMatch = body.match(/(^|\n)##\s*✅\s*ECRR Gate\b[\s\S]*?(\n##\s|$)/i);
+            const block = blockMatch ? blockMatch[0] : "";
+            const requiredItems = ["**Examine**","**Clean**","**Report**","**Role**"];
+            const missingItems = requiredItems.filter(k => !block.includes(k));
+
+            // 2) Require the badge reference at the top of PR body (allow a little slack)
+            // Accepts either ../docs or ./docs path and both badge styles (flat-square / for-the-badge)
+            const badgeRe = /\[!\[ECRR\]\(https?:\/\/img\.shields\.io\/badge\/.*ECRR.*\)\]\((\.\.\/|\.\.\/\.\.\/|\.\/)?(docs\/ECRR_MANTRA\.md|AGENTS\.md#-agents--ecrr-mantra)\)/i;
+            const hasBadge = badgeRe.test(body);
+
+            let errors = [];
+            if (!blockMatch) errors.push("Missing '## ✅ ECRR Gate' section.");
+            if (missingItems.length) errors.push("ECRR Gate is missing required items: " + missingItems.join(", "));
+              if (!hasBadge) errors.push("Missing ECRR badge link to AGENTS.md#-agents--ecrr-mantra at the top of the PR.");
+
+            if (errors.length) {
+              core.setFailed("ECRR check failed:\n- " + errors.join("\n- "));
+            } else {
+              core.summary
+                .addHeading("ECRR Gate")
+                .addRaw("✅ Found badge and ECRR Gate with required items.\n")
+                .write();
+            }
+
+            // Soft notice to encourage linking the report file
+            const mentionsReport = /docs\/ECRR_REPORTS\/.+\.md/i.test(body);
+            if (!mentionsReport) {
+              core.notice("Consider linking your report (docs/ECRR_REPORTS/<date>-<slug>.md).", { title: "ECRR report link not detected" });
+            }

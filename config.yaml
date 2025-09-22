@@ -1,162 +1,87 @@
-receivers:
-  otlp:
-    protocols:
-      http:
-        endpoint: 0.0.0.0:5318
-      grpc:
-        endpoint: 0.0.0.0:5317
-
-  prometheus/gpu:
-    config:
-      scrape_configs:
-        - job_name: 'gpu-exporter'
-          scrape_interval: 15s
-          static_configs:
-            - targets: ['localhost:9400']
-
-  filelog:
-    include: [C:/logs/**/*.log, C:/logs/**/*.jsonl, /tmp/logs/**/*.log, /tmp/logs/**/*.jsonl]
-    start_at: end
-    include_file_path: true
-    include_file_name_resolved: true
-    operators:
-      - type: json_parser
-        parse_from: body
-      - type: move
-        from: attributes["log.file.name"]
-        to: attributes["log.file.name"]
-
-exporters:
-  logging:
-    loglevel: info
-
-  otlp/sigz:
-    endpoint: "localhost:4317"
-    tls:
-      insecure: true
-    retry_on_failure:
-      initial_interval: 5s
-      max_interval: 30s
-      max_elapsed_time: 10m
-    sending_queue:
-      storage: file_storage
-      queue_size: 5000
-      num_consumers: 4
-
-processors:
-  memory_limiter:
-    check_interval: 2s
-    limit_percentage: 80
-    spike_limit_percentage: 25
-
-  resource/defaults:
-    attributes:
-      - action: upsert
-        key: service.name
-        value: windows-otel-collector
-      - action: upsert
-        key: service.namespace
-        value: platform
-      - action: upsert
-        key: deployment.environment
-        value: local
-
-  filter/drop_noise:
-    error_mode: ignore
-    logs:
-      log_record:
-        # Drop routine Windows Event Log entries
-        - attributes["winlog.event_id"] == 6005 or attributes["winlog.event_id"] == 6006
-        # Drop health check/heartbeat noise
-        - IsMatch(body, "(?i)health check|heartbeat|diagnostic ping")
-        # Drop common Windows noise patterns
-        - IsMatch(body, "(?i)service control manager|task scheduler|windows update")
-
-  transform/sanitize:
-    log_statements:
-      - context: log
-        statements:
-          # Redact Bearer tokens
-          - replace_pattern(body, "(?i)bearer\\s+[A-Za-z0-9._-]+", "Bearer ***")
-          # Redact password patterns
-          - replace_pattern(body, "(?i)pwd=.*?(\\s|$)", "pwd=*** ")
-          - replace_pattern(body, "(?i)password=.*?(\\s|$)", "password=*** ")
-          # Redact API keys
-          - replace_pattern(body, "(?i)api[_-]?key\\s*[:=]\\s*[A-Za-z0-9._-]+", "api_key=***")
-
-  transform/enrich:
-    log_statements:
-      - context: resource
-        statements:
-          - set(attributes["service.name"], "windows-host")
-          - set(attributes["deployment.environment"], "local-dev")
-      - context: log
-        statements:
-          # Tag synthetic logs for easy filtering
-          - set(attributes["dataset"], "synthetic") where attributes["synthetic_id"] != nil
-
-  batch:
-    timeout: 1s
-    send_batch_size: 1000
-    send_batch_max_size: 2000
-
-  tail_sampling:
-    decision_wait: 10s
-    num_traces: 50000
-    expected_new_traces_per_sec: 10
-    policies:
-      - name: errors
-        type: status_code
-        status_code:
-          status_codes: [ERROR]
-      - name: slow-traces
-        type: latency
-        latency:
-          threshold_ms: 500
-      - name: canary
-        type: string_attribute
-        string_attribute:
-          key: canary
-          values: ["true"]
-      - name: baseline
-        type: probabilistic
-        probabilistic:
-          sampling_percentage: 10
-
-  attributes/redact:
-    actions:
-      - key: http.request.header.authorization
-        action: delete
-      - key: http.request.header.cookie
-        action: delete
-      - key: user.email
-        action: delete
-
 extensions:
   health_check:
     endpoint: 0.0.0.0:13134
     path: /healthz
-  pprof:
-    endpoint: 0.0.0.0:1777
-  file_storage:
-    directory: C:\ProgramData\OTel\wal
+
+receivers:
+  # OTLP receivers for direct application log ingestion
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 127.0.0.1:5317
+      http:
+        endpoint: 127.0.0.1:5318
+  windowseventlog/application:
+    channel: Application
+    start_at: end
+    poll_interval: 1s
+  windowseventlog/system:
+    channel: System
+    start_at: end
+    poll_interval: 1s
+  filelog/canary:
+    include:
+      - C:/logs/**/*.log
+    start_at: end
+    include_file_path: true
+    include_file_name: true
+    poll_interval: 1s
+    operators:
+      - type: json_parser
+        parse_from: body
+  
+
+processors:
+  memory_limiter:
+    limit_mib: 512
+    check_interval: 1s
+    spike_limit_mib: 256
+  resource/defaults:
+    attributes:
+      - key: deployment.env
+        value: local
+        action: upsert
+      - key: service.name
+        value: windows-gpu-metrics
+        action: upsert
+  filter/drop_noise:
+    logs:
+      log_record:
+        - attributes["winlog.event_id"] == 6005
+        - attributes["winlog.event_id"] == 6006
+        - attributes["winlog.event_id"] == 7036
+        - IsMatch(body, "(?i)windows update|service control manager")
+  batch/logs:
+    timeout: 200ms
+    send_batch_size: 256
+  
+
+exporters:
+  otlp:
+    endpoint: 127.0.0.1:14317
+    tls:
+      insecure: true
+  otlphttp:
+    endpoint: http://127.0.0.1:14318
+    tls:
+      insecure: true
 
 service:
-  extensions: [health_check, pprof, file_storage]
-  telemetry:
-    metrics:
-      address: 0.0.0.0:8888
+  extensions:
+    - health_check
   pipelines:
-    traces:
-      receivers: [otlp]
-      processors: [memory_limiter, resource/defaults, tail_sampling, batch]
-      exporters: [logging, otlp/sigz]
-    metrics:
-      receivers: [otlp, prometheus/gpu]
-      processors: [memory_limiter, resource/defaults, batch]
-      exporters: [logging, otlp/sigz]
     logs:
-      receivers: [otlp, filelog, windowseventlog/application, prometheus/gpu]
-      processors: [memory_limiter, filter/drop_noise, transform/sanitize, transform/enrich, attributes/redact, batch]
-      exporters: [logging, otlp/sigz]
-
+      receivers:
+        - otlp
+        - windowseventlog/application
+        - windowseventlog/system
+        - filelog/canary
+      processors:
+        - memory_limiter
+        - filter/drop_noise
+        - resource/defaults
+        - batch/logs
+      exporters:
+        - otlp
+        - otlphttp
+    

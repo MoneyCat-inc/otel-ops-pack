@@ -1,0 +1,119 @@
+name: Repo Hygiene Validation
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+  workflow_dispatch:
+jobs:
+  hygiene:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup PowerShell
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Install Python dependencies
+        run: |
+          pip install yamllint
+          pip install actionlint
+      - name: List YAML files
+        id: list_yaml
+        shell: bash
+        run: |
+          git ls-files -- '*.yml' '*.yaml' > yaml_files.txt
+      - name: Yamllint (per-file)
+        shell: bash
+        run: |
+          pip install yamllint
+          mkdir -p artifacts
+          while IFS= read -r file; do
+            [ -z "$file" ] && continue
+            echo "::group::Lint $file"
+            yamllint -c .yamllint "$file"
+            echo "::endgroup::"
+          done < yaml_files.txt
+      - name: Yamllint (annotate PR)
+        if: ${{ github.event_name == 'pull_request' }}
+        shell: bash
+        run: |
+          pip install yamllint
+          mkdir -p artifacts
+          yamllint -c .yamllint . --format github | tee artifacts/yamllint.txt
+      - name: Validate OpenTelemetry configs
+        shell: pwsh
+        run: |
+          $files = git ls-files -- 'configs/otel/*.yml' 'configs/otel/*.yaml' 'config/*.yml' 'config/*.yaml'
+          if (-not $files) {
+            Write-Host 'No OpenTelemetry config files found, skipping dry-run.'
+            exit 0
+          }
+          $otel = Get-Command otelcol-contrib.exe -ErrorAction SilentlyContinue
+          if (-not $otel) {
+            Write-Error 'otelcol-contrib.exe not found on PATH'
+            exit 1
+          }
+          foreach ($f in $files.Trim().Split([Environment]::NewLine, [System.StringSplitOptions]::RemoveEmptyEntries)) {
+            Write-Host "Validating $f"
+            otelcol-contrib.exe --config "$f" --dry-run
+          }
+      - name: Install PowerShell modules
+        run: |
+          Install-Module PSScriptAnalyzer -Scope CurrentUser -Force
+          Install-Module Pester -Scope CurrentUser -Force
+      - name: Install OTel Collector
+        run: |
+          $url = "https://github.com/open-telemetry/opentelemetry-collector-contrib/releases/latest/download/otelcol-contrib_windows_amd64.zip"
+          $zipFile = "otelcol-contrib.zip"
+          Invoke-WebRequest -Uri $url -OutFile $zipFile
+          Expand-Archive -Path $zipFile -DestinationPath "otelcol" -Force
+          $env:PATH += ";$(Get-Location)\otelcol"
+          echo "$(Get-Location)\otelcol" >> $env:GITHUB_PATH
+      - name: Cache PowerShell modules
+        uses: actions/cache@v3
+        with:
+          path: ~\Documents\WindowsPowerShell\Modules
+          key: ${{ runner.os }}-psmodules-${{ hashFiles('**/*.ps1') }}
+      - name: Pre-pull Docker images
+        run: |
+          docker pull alpine:latest
+          docker pull postgres:15-alpine
+          docker pull clickhouse/clickhouse-server:latest
+        continue-on-error: true
+      - name: Validate .env.example exists
+        run: |
+          if (-not (Test-Path ".env.example")) {
+            Write-Error "Missing .env.example file"
+            exit 1
+          }
+          Write-Host "OK: .env.example found"
+      - name: Run hygiene validation
+        run: |
+          pwsh ./tools/hygiene.ps1 -ArtifactsPath "artifacts"
+      - name: Upload hygiene logs
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: hygiene-logs
+          path: artifacts/
+          retention-days: 30
+      - name: Run Pester tests
+        run: |
+          if (Test-Path "tests/Hygiene.Tests.ps1") {
+            Invoke-Pester -Path "tests/Hygiene.Tests.ps1" -OutputFile "artifacts/pester-results.xml" -OutputFormat NUnitXml
+          } else {
+            Write-Host "No Pester tests found, skipping..."
+          }
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: test-results
+          path: artifacts/pester-results.xml
+          retention-days: 30

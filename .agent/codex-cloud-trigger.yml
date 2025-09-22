@@ -1,16 +1,19 @@
 name: Codex-Cloud Agent Trigger
-
 on:
   pull_request:
-    types: [opened, synchronize, labeled]
+    types:
+      - opened
+      - synchronize
+      - labeled
   repository_dispatch:
-    types: [codex-cloud-task-requested]
+    types:
+      - codex-cloud-task-requested
   workflow_dispatch:
     inputs:
       task_type:
-        description: 'Type of task to execute'
+        description: Type of task to execute
         required: true
-        default: 'conflict-resolution'
+        default: conflict-resolution
         type: choice
         options:
           - conflict-resolution
@@ -18,14 +21,13 @@ on:
           - configuration-change
           - monitoring-setup
       pr_number:
-        description: 'PR number (for conflict resolution)'
+        description: PR number (for conflict resolution)
         required: false
         type: string
       description:
-        description: 'Task description'
+        description: Task description
         required: true
         type: string
-
 jobs:
   trigger-codex-cloud:
     runs-on: ubuntu-latest
@@ -34,14 +36,12 @@ jobs:
       contains(github.event.pull_request.body, '@codex please analyze this conflict') ||
       github.event_name == 'repository_dispatch' ||
       github.event_name == 'workflow_dispatch'
-    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
-      
       - name: Setup environment
         run: |
           echo "CODEX_CLOUD_TASK_TYPE=${{ github.event.inputs.task_type || 'conflict-resolution' }}" >> $GITHUB_ENV
@@ -49,7 +49,6 @@ jobs:
           echo "CODEX_CLOUD_DESCRIPTION=${{ github.event.inputs.description || 'Automated task execution' }}" >> $GITHUB_ENV
           echo "CODEX_CLOUD_REPOSITORY=${{ github.repository }}" >> $GITHUB_ENV
           echo "CODEX_CLOUD_TRIGGER=${{ github.event_name }}" >> $GITHUB_ENV
-      
       - name: Determine task type
         id: task-type
         run: |
@@ -65,11 +64,10 @@ jobs:
             echo "type=conflict-resolution" >> $GITHUB_OUTPUT
             echo "pr_number=${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
           fi
-      
       - name: Create task for Codex-Cloud
         run: |
           TASK_ID="T-$(date +%Y%m%d-%H%M%S)-$(shuf -i 1000-9999 -n 1)"
-          
+
           case "${{ steps.task-type.outputs.type }}" in
             "conflict-resolution")
               cat > task.json << EOF
@@ -193,59 +191,28 @@ jobs:
           EOF
               ;;
           esac
-          
+
           echo "TASK_ID=$TASK_ID" >> $GITHUB_ENV
           echo "Created task: $TASK_ID"
           cat task.json | jq .
-      
       - name: Queue task for Codex-Cloud
         run: |
           mkdir -p .agent/state
           if [ ! -f .agent/state/queue.jsonl ]; then
             touch .agent/state/queue.jsonl
           fi
-          
+
           cat task.json >> .agent/state/queue.jsonl
           echo "Task queued in .agent/state/queue.jsonl"
-          
+
           # Show queue status
           echo "Current task queue:"
           cat .agent/state/queue.jsonl | jq -r '.id + ": " + .title' || echo "Queue is empty"
-      
       - name: Comment on PR (if applicable)
         if: steps.task-type.outputs.pr_number != ''
         uses: actions/github-script@v7
         with:
-          script: |
-            const task = require('./task.json');
-            const comment = `## 🤖 Codex-Cloud Task Queued
-            
-            **Task ID**: \`${task.id}\`
-            **Type**: ${task.metadata.task_type}
-            **Priority**: ${task.priority}
-            **Deadline**: ${task.deadline}
-            
-            ### Goal
-            ${task.goal}
-            
-            ### Acceptance Criteria
-            ${task.acceptance.map(criteria => `- [ ] ${criteria}`).join('\n')}
-            
-            ### Scope
-            ${task.scope.paths.map(path => `- \`${path}\``).join('\n')}
-            
-            Codex-Cloud will process this task autonomously. Monitor the progress and results.
-            
-            ---
-            *Triggered by: ${task.metadata.trigger}*`;
-            
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: comment
-            });
-      
+          script: "const task = require('./task.json');\nconst comment = `## \U0001F916 Codex-Cloud Task Queued\n\n**Task ID**: \\`${task.id}\\`\n**Type**: ${task.metadata.task_type}\n**Priority**: ${task.priority}\n**Deadline**: ${task.deadline}\n\n### Goal\n${task.goal}\n\n### Acceptance Criteria\n${task.acceptance.map(criteria => `- [ ] ${criteria}`).join('\\n')}\n\n### Scope\n${task.scope.paths.map(path => `- \\`${path}\\``).join('\\n')}\n\nCodex-Cloud will process this task autonomously. Monitor the progress and results.\n\n---\n*Triggered by: ${task.metadata.trigger}*`;\n\ngithub.rest.issues.createComment({\n  issue_number: context.issue.number,\n  owner: context.repo.owner,\n  repo: context.repo.repo,\n  body: comment\n});\n"
       - name: Create task summary
         run: |
           echo "## Codex-Cloud Task Summary" >> $GITHUB_STEP_SUMMARY
@@ -265,7 +232,6 @@ jobs:
           echo "1. Codex-Cloud will process this task autonomously" >> $GITHUB_STEP_SUMMARY
           echo "2. Monitor the PR for updates and results" >> $GITHUB_STEP_SUMMARY
           echo "3. Review and merge when acceptance criteria are met" >> $GITHUB_STEP_SUMMARY
-      
       - name: Upload task artifacts
         uses: actions/upload-artifact@v4
         with:

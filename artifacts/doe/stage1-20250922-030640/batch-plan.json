@@ -1,0 +1,2393 @@
+{
+  "experiment": {
+    "duration": 300,
+    "replicates": 3,
+    "timestamp": "20250922-030640",
+    "stage": "stage1",
+    "loadCommand": "pwsh -File scripts/generate-synthetic-load.ps1"
+  },
+  "artifacts": {
+    "resultsDir": "artifacts\\doe\\stage1-20250922-030640\\results",
+    "configsDir": "artifacts\\doe\\stage1-20250922-030640\\configs",
+    "logsDir": "artifacts\\doe\\stage1-20250922-030640\\logs",
+    "runDir": "artifacts\\doe\\stage1-20250922-030640"
+  },
+  "runs": [
+    {
+      "runId": "row01-r1-20250922-030640",
+      "ports": {
+        "http": 5012,
+        "health": 5013,
+        "metrics": 5015,
+        "grpc": 5011,
+        "pprof": 5014
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row01-r1-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row01-r1-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row01-r1-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row01-r1-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row01",
+        "traces_timeout_ms": "100",
+        "metrics_timeout_ms": "500",
+        "logs_timeout_ms": "1000",
+        "send_batch_max_size": "5000",
+        "queue_size": "3000",
+        "num_consumers": "1",
+        "memory_limit_mib": "512",
+        "compression": "gzip",
+        "retry_max_elapsed_minutes": "5"
+      },
+      "runLabel": "row01",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 1
+    },
+    {
+      "runId": "row01-r2-20250922-030640",
+      "ports": {
+        "http": 5022,
+        "health": 5023,
+        "metrics": 5025,
+        "grpc": 5021,
+        "pprof": 5024
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row01-r2-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row01-r2-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row01-r2-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row01-r2-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row01",
+        "traces_timeout_ms": "100",
+        "metrics_timeout_ms": "500",
+        "logs_timeout_ms": "1000",
+        "send_batch_max_size": "5000",
+        "queue_size": "3000",
+        "num_consumers": "1",
+        "memory_limit_mib": "512",
+        "compression": "gzip",
+        "retry_max_elapsed_minutes": "5"
+      },
+      "runLabel": "row01",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 2
+    },
+    {
+      "runId": "row01-r3-20250922-030640",
+      "ports": {
+        "http": 5032,
+        "health": 5033,
+        "metrics": 5035,
+        "grpc": 5031,
+        "pprof": 5034
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row01-r3-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row01-r3-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row01-r3-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row01-r3-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row01",
+        "traces_timeout_ms": "100",
+        "metrics_timeout_ms": "500",
+        "logs_timeout_ms": "1000",
+        "send_batch_max_size": "5000",
+        "queue_size": "3000",
+        "num_consumers": "1",
+        "memory_limit_mib": "512",
+        "compression": "gzip",
+        "retry_max_elapsed_minutes": "5"
+      },
+      "runLabel": "row01",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 3
+    },
+    {
+      "runId": "row02-r1-20250922-030640",
+      "ports": {
+        "http": 5042,
+        "health": 5043,
+        "metrics": 5045,
+        "grpc": 5041,
+        "pprof": 5044
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row02-r1-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row02-r1-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row02-r1-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row02-r1-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row02",
+        "traces_timeout_ms": "100",
+        "metrics_timeout_ms": "500",
+        "logs_timeout_ms": "2000",
+        "send_batch_max_size": "10000",
+        "queue_size": "6000",
+        "num_consumers": "2",
+        "memory_limit_mib": "1024",
+        "compression": "gzip",
+        "retry_max_elapsed_minutes": "10"
+      },
+      "runLabel": "row02",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 1
+    },
+    {
+      "runId": "row02-r2-20250922-030640",
+      "ports": {
+        "http": 5052,
+        "health": 5053,
+        "metrics": 5055,
+        "grpc": 5051,
+        "pprof": 5054
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row02-r2-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row02-r2-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row02-r2-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row02-r2-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row02",
+        "traces_timeout_ms": "100",
+        "metrics_timeout_ms": "500",
+        "logs_timeout_ms": "2000",
+        "send_batch_max_size": "10000",
+        "queue_size": "6000",
+        "num_consumers": "2",
+        "memory_limit_mib": "1024",
+        "compression": "gzip",
+        "retry_max_elapsed_minutes": "10"
+      },
+      "runLabel": "row02",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 2
+    },
+    {
+      "runId": "row02-r3-20250922-030640",
+      "ports": {
+        "http": 5062,
+        "health": 5063,
+        "metrics": 5065,
+        "grpc": 5061,
+        "pprof": 5064
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row02-r3-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row02-r3-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row02-r3-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row02-r3-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row02",
+        "traces_timeout_ms": "100",
+        "metrics_timeout_ms": "500",
+        "logs_timeout_ms": "2000",
+        "send_batch_max_size": "10000",
+        "queue_size": "6000",
+        "num_consumers": "2",
+        "memory_limit_mib": "1024",
+        "compression": "gzip",
+        "retry_max_elapsed_minutes": "10"
+      },
+      "runLabel": "row02",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 3
+    },
+    {
+      "runId": "row03-r1-20250922-030640",
+      "ports": {
+        "http": 5072,
+        "health": 5073,
+        "metrics": 5075,
+        "grpc": 5071,
+        "pprof": 5074
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row03-r1-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row03-r1-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row03-r1-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row03-r1-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row03",
+        "traces_timeout_ms": "100",
+        "metrics_timeout_ms": "500",
+        "logs_timeout_ms": "5000",
+        "send_batch_max_size": "20000",
+        "queue_size": "15000",
+        "num_consumers": "4",
+        "memory_limit_mib": "2048",
+        "compression": "gzip",
+        "retry_max_elapsed_minutes": "15"
+      },
+      "runLabel": "row03",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 1
+    },
+    {
+      "runId": "row03-r2-20250922-030640",
+      "ports": {
+        "http": 5082,
+        "health": 5083,
+        "metrics": 5085,
+        "grpc": 5081,
+        "pprof": 5084
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row03-r2-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row03-r2-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row03-r2-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row03-r2-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row03",
+        "traces_timeout_ms": "100",
+        "metrics_timeout_ms": "500",
+        "logs_timeout_ms": "5000",
+        "send_batch_max_size": "20000",
+        "queue_size": "15000",
+        "num_consumers": "4",
+        "memory_limit_mib": "2048",
+        "compression": "gzip",
+        "retry_max_elapsed_minutes": "15"
+      },
+      "runLabel": "row03",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 2
+    },
+    {
+      "runId": "row03-r3-20250922-030640",
+      "ports": {
+        "http": 5092,
+        "health": 5093,
+        "metrics": 5095,
+        "grpc": 5091,
+        "pprof": 5094
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row03-r3-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row03-r3-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row03-r3-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row03-r3-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row03",
+        "traces_timeout_ms": "100",
+        "metrics_timeout_ms": "500",
+        "logs_timeout_ms": "5000",
+        "send_batch_max_size": "20000",
+        "queue_size": "15000",
+        "num_consumers": "4",
+        "memory_limit_mib": "2048",
+        "compression": "gzip",
+        "retry_max_elapsed_minutes": "15"
+      },
+      "runLabel": "row03",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 3
+    },
+    {
+      "runId": "row04-r1-20250922-030640",
+      "ports": {
+        "http": 5102,
+        "health": 5103,
+        "metrics": 5105,
+        "grpc": 5101,
+        "pprof": 5104
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row04-r1-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row04-r1-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row04-r1-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row04-r1-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row04",
+        "traces_timeout_ms": "200",
+        "metrics_timeout_ms": "1000",
+        "logs_timeout_ms": "1000",
+        "send_batch_max_size": "10000",
+        "queue_size": "3000",
+        "num_consumers": "2",
+        "memory_limit_mib": "512",
+        "compression": "none",
+        "retry_max_elapsed_minutes": "5"
+      },
+      "runLabel": "row04",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 1
+    },
+    {
+      "runId": "row04-r2-20250922-030640",
+      "ports": {
+        "http": 5112,
+        "health": 5113,
+        "metrics": 5115,
+        "grpc": 5111,
+        "pprof": 5114
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row04-r2-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row04-r2-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row04-r2-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row04-r2-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row04",
+        "traces_timeout_ms": "200",
+        "metrics_timeout_ms": "1000",
+        "logs_timeout_ms": "1000",
+        "send_batch_max_size": "10000",
+        "queue_size": "3000",
+        "num_consumers": "2",
+        "memory_limit_mib": "512",
+        "compression": "none",
+        "retry_max_elapsed_minutes": "5"
+      },
+      "runLabel": "row04",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 2
+    },
+    {
+      "runId": "row04-r3-20250922-030640",
+      "ports": {
+        "http": 5122,
+        "health": 5123,
+        "metrics": 5125,
+        "grpc": 5121,
+        "pprof": 5124
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row04-r3-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row04-r3-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row04-r3-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row04-r3-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row04",
+        "traces_timeout_ms": "200",
+        "metrics_timeout_ms": "1000",
+        "logs_timeout_ms": "1000",
+        "send_batch_max_size": "10000",
+        "queue_size": "3000",
+        "num_consumers": "2",
+        "memory_limit_mib": "512",
+        "compression": "none",
+        "retry_max_elapsed_minutes": "5"
+      },
+      "runLabel": "row04",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 3
+    },
+    {
+      "runId": "row05-r1-20250922-030640",
+      "ports": {
+        "http": 5132,
+        "health": 5133,
+        "metrics": 5135,
+        "grpc": 5131,
+        "pprof": 5134
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row05-r1-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row05-r1-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row05-r1-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row05-r1-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row05",
+        "traces_timeout_ms": "200",
+        "metrics_timeout_ms": "1000",
+        "logs_timeout_ms": "2000",
+        "send_batch_max_size": "20000",
+        "queue_size": "15000",
+        "num_consumers": "1",
+        "memory_limit_mib": "1024",
+        "compression": "none",
+        "retry_max_elapsed_minutes": "10"
+      },
+      "runLabel": "row05",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 1
+    },
+    {
+      "runId": "row05-r2-20250922-030640",
+      "ports": {
+        "http": 5142,
+        "health": 5143,
+        "metrics": 5145,
+        "grpc": 5141,
+        "pprof": 5144
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row05-r2-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row05-r2-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row05-r2-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row05-r2-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row05",
+        "traces_timeout_ms": "200",
+        "metrics_timeout_ms": "1000",
+        "logs_timeout_ms": "2000",
+        "send_batch_max_size": "20000",
+        "queue_size": "15000",
+        "num_consumers": "1",
+        "memory_limit_mib": "1024",
+        "compression": "none",
+        "retry_max_elapsed_minutes": "10"
+      },
+      "runLabel": "row05",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 2
+    },
+    {
+      "runId": "row05-r3-20250922-030640",
+      "ports": {
+        "http": 5152,
+        "health": 5153,
+        "metrics": 5155,
+        "grpc": 5151,
+        "pprof": 5154
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row05-r3-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row05-r3-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row05-r3-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row05-r3-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row05",
+        "traces_timeout_ms": "200",
+        "metrics_timeout_ms": "1000",
+        "logs_timeout_ms": "2000",
+        "send_batch_max_size": "20000",
+        "queue_size": "15000",
+        "num_consumers": "1",
+        "memory_limit_mib": "1024",
+        "compression": "none",
+        "retry_max_elapsed_minutes": "10"
+      },
+      "runLabel": "row05",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 3
+    },
+    {
+      "runId": "row06-r1-20250922-030640",
+      "ports": {
+        "http": 5162,
+        "health": 5163,
+        "metrics": 5165,
+        "grpc": 5161,
+        "pprof": 5164
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row06-r1-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row06-r1-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row06-r1-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row06-r1-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row06",
+        "traces_timeout_ms": "200",
+        "metrics_timeout_ms": "1000",
+        "logs_timeout_ms": "5000",
+        "send_batch_max_size": "5000",
+        "queue_size": "6000",
+        "num_consumers": "4",
+        "memory_limit_mib": "2048",
+        "compression": "none",
+        "retry_max_elapsed_minutes": "15"
+      },
+      "runLabel": "row06",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 1
+    },
+    {
+      "runId": "row06-r2-20250922-030640",
+      "ports": {
+        "http": 5172,
+        "health": 5173,
+        "metrics": 5175,
+        "grpc": 5171,
+        "pprof": 5174
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row06-r2-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row06-r2-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row06-r2-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row06-r2-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row06",
+        "traces_timeout_ms": "200",
+        "metrics_timeout_ms": "1000",
+        "logs_timeout_ms": "5000",
+        "send_batch_max_size": "5000",
+        "queue_size": "6000",
+        "num_consumers": "4",
+        "memory_limit_mib": "2048",
+        "compression": "none",
+        "retry_max_elapsed_minutes": "15"
+      },
+      "runLabel": "row06",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 2
+    },
+    {
+      "runId": "row06-r3-20250922-030640",
+      "ports": {
+        "http": 5182,
+        "health": 5183,
+        "metrics": 5185,
+        "grpc": 5181,
+        "pprof": 5184
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row06-r3-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row06-r3-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row06-r3-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row06-r3-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row06",
+        "traces_timeout_ms": "200",
+        "metrics_timeout_ms": "1000",
+        "logs_timeout_ms": "5000",
+        "send_batch_max_size": "5000",
+        "queue_size": "6000",
+        "num_consumers": "4",
+        "memory_limit_mib": "2048",
+        "compression": "none",
+        "retry_max_elapsed_minutes": "15"
+      },
+      "runLabel": "row06",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 3
+    },
+    {
+      "runId": "row07-r1-20250922-030640",
+      "ports": {
+        "http": 5192,
+        "health": 5193,
+        "metrics": 5195,
+        "grpc": 5191,
+        "pprof": 5194
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row07-r1-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row07-r1-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row07-r1-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row07-r1-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row07",
+        "traces_timeout_ms": "500",
+        "metrics_timeout_ms": "2000",
+        "logs_timeout_ms": "1000",
+        "send_batch_max_size": "20000",
+        "queue_size": "6000",
+        "num_consumers": "4",
+        "memory_limit_mib": "512",
+        "compression": "gzip",
+        "retry_max_elapsed_minutes": "5"
+      },
+      "runLabel": "row07",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 1
+    },
+    {
+      "runId": "row07-r2-20250922-030640",
+      "ports": {
+        "http": 5202,
+        "health": 5203,
+        "metrics": 5205,
+        "grpc": 5201,
+        "pprof": 5204
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row07-r2-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row07-r2-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row07-r2-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row07-r2-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row07",
+        "traces_timeout_ms": "500",
+        "metrics_timeout_ms": "2000",
+        "logs_timeout_ms": "1000",
+        "send_batch_max_size": "20000",
+        "queue_size": "6000",
+        "num_consumers": "4",
+        "memory_limit_mib": "512",
+        "compression": "gzip",
+        "retry_max_elapsed_minutes": "5"
+      },
+      "runLabel": "row07",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 2
+    },
+    {
+      "runId": "row07-r3-20250922-030640",
+      "ports": {
+        "http": 5212,
+        "health": 5213,
+        "metrics": 5215,
+        "grpc": 5211,
+        "pprof": 5214
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row07-r3-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row07-r3-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row07-r3-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row07-r3-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row07",
+        "traces_timeout_ms": "500",
+        "metrics_timeout_ms": "2000",
+        "logs_timeout_ms": "1000",
+        "send_batch_max_size": "20000",
+        "queue_size": "6000",
+        "num_consumers": "4",
+        "memory_limit_mib": "512",
+        "compression": "gzip",
+        "retry_max_elapsed_minutes": "5"
+      },
+      "runLabel": "row07",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 3
+    },
+    {
+      "runId": "row08-r1-20250922-030640",
+      "ports": {
+        "http": 5222,
+        "health": 5223,
+        "metrics": 5225,
+        "grpc": 5221,
+        "pprof": 5224
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row08-r1-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row08-r1-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row08-r1-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row08-r1-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row08",
+        "traces_timeout_ms": "500",
+        "metrics_timeout_ms": "2000",
+        "logs_timeout_ms": "2000",
+        "send_batch_max_size": "5000",
+        "queue_size": "15000",
+        "num_consumers": "2",
+        "memory_limit_mib": "1024",
+        "compression": "gzip",
+        "retry_max_elapsed_minutes": "10"
+      },
+      "runLabel": "row08",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 1
+    },
+    {
+      "runId": "row08-r2-20250922-030640",
+      "ports": {
+        "http": 5232,
+        "health": 5233,
+        "metrics": 5235,
+        "grpc": 5231,
+        "pprof": 5234
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row08-r2-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row08-r2-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row08-r2-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row08-r2-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row08",
+        "traces_timeout_ms": "500",
+        "metrics_timeout_ms": "2000",
+        "logs_timeout_ms": "2000",
+        "send_batch_max_size": "5000",
+        "queue_size": "15000",
+        "num_consumers": "2",
+        "memory_limit_mib": "1024",
+        "compression": "gzip",
+        "retry_max_elapsed_minutes": "10"
+      },
+      "runLabel": "row08",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 2
+    },
+    {
+      "runId": "row08-r3-20250922-030640",
+      "ports": {
+        "http": 5242,
+        "health": 5243,
+        "metrics": 5245,
+        "grpc": 5241,
+        "pprof": 5244
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row08-r3-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row08-r3-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row08-r3-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row08-r3-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row08",
+        "traces_timeout_ms": "500",
+        "metrics_timeout_ms": "2000",
+        "logs_timeout_ms": "2000",
+        "send_batch_max_size": "5000",
+        "queue_size": "15000",
+        "num_consumers": "2",
+        "memory_limit_mib": "1024",
+        "compression": "gzip",
+        "retry_max_elapsed_minutes": "10"
+      },
+      "runLabel": "row08",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 3
+    },
+    {
+      "runId": "row09-r1-20250922-030640",
+      "ports": {
+        "http": 5252,
+        "health": 5253,
+        "metrics": 5255,
+        "grpc": 5251,
+        "pprof": 5254
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row09-r1-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row09-r1-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row09-r1-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row09-r1-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row09",
+        "traces_timeout_ms": "500",
+        "metrics_timeout_ms": "2000",
+        "logs_timeout_ms": "5000",
+        "send_batch_max_size": "10000",
+        "queue_size": "3000",
+        "num_consumers": "1",
+        "memory_limit_mib": "2048",
+        "compression": "gzip",
+        "retry_max_elapsed_minutes": "15"
+      },
+      "runLabel": "row09",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 1
+    },
+    {
+      "runId": "row09-r2-20250922-030640",
+      "ports": {
+        "http": 5262,
+        "health": 5263,
+        "metrics": 5265,
+        "grpc": 5261,
+        "pprof": 5264
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row09-r2-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row09-r2-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row09-r2-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row09-r2-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row09",
+        "traces_timeout_ms": "500",
+        "metrics_timeout_ms": "2000",
+        "logs_timeout_ms": "5000",
+        "send_batch_max_size": "10000",
+        "queue_size": "3000",
+        "num_consumers": "1",
+        "memory_limit_mib": "2048",
+        "compression": "gzip",
+        "retry_max_elapsed_minutes": "15"
+      },
+      "runLabel": "row09",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 2
+    },
+    {
+      "runId": "row09-r3-20250922-030640",
+      "ports": {
+        "http": 5272,
+        "health": 5273,
+        "metrics": 5275,
+        "grpc": 5271,
+        "pprof": 5274
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row09-r3-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row09-r3-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row09-r3-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row09-r3-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row09",
+        "traces_timeout_ms": "500",
+        "metrics_timeout_ms": "2000",
+        "logs_timeout_ms": "5000",
+        "send_batch_max_size": "10000",
+        "queue_size": "3000",
+        "num_consumers": "1",
+        "memory_limit_mib": "2048",
+        "compression": "gzip",
+        "retry_max_elapsed_minutes": "15"
+      },
+      "runLabel": "row09",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 3
+    },
+    {
+      "runId": "row10-r1-20250922-030640",
+      "ports": {
+        "http": 5282,
+        "health": 5283,
+        "metrics": 5285,
+        "grpc": 5281,
+        "pprof": 5284
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row10-r1-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row10-r1-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row10-r1-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row10-r1-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row10",
+        "traces_timeout_ms": "100",
+        "metrics_timeout_ms": "1000",
+        "logs_timeout_ms": "2000",
+        "send_batch_max_size": "5000",
+        "queue_size": "15000",
+        "num_consumers": "2",
+        "memory_limit_mib": "2048",
+        "compression": "none",
+        "retry_max_elapsed_minutes": "5"
+      },
+      "runLabel": "row10",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 1
+    },
+    {
+      "runId": "row10-r2-20250922-030640",
+      "ports": {
+        "http": 5292,
+        "health": 5293,
+        "metrics": 5295,
+        "grpc": 5291,
+        "pprof": 5294
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row10-r2-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row10-r2-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row10-r2-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row10-r2-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row10",
+        "traces_timeout_ms": "100",
+        "metrics_timeout_ms": "1000",
+        "logs_timeout_ms": "2000",
+        "send_batch_max_size": "5000",
+        "queue_size": "15000",
+        "num_consumers": "2",
+        "memory_limit_mib": "2048",
+        "compression": "none",
+        "retry_max_elapsed_minutes": "5"
+      },
+      "runLabel": "row10",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 2
+    },
+    {
+      "runId": "row10-r3-20250922-030640",
+      "ports": {
+        "http": 5302,
+        "health": 5303,
+        "metrics": 5305,
+        "grpc": 5301,
+        "pprof": 5304
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row10-r3-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row10-r3-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row10-r3-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row10-r3-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row10",
+        "traces_timeout_ms": "100",
+        "metrics_timeout_ms": "1000",
+        "logs_timeout_ms": "2000",
+        "send_batch_max_size": "5000",
+        "queue_size": "15000",
+        "num_consumers": "2",
+        "memory_limit_mib": "2048",
+        "compression": "none",
+        "retry_max_elapsed_minutes": "5"
+      },
+      "runLabel": "row10",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 3
+    },
+    {
+      "runId": "row11-r1-20250922-030640",
+      "ports": {
+        "http": 5312,
+        "health": 5313,
+        "metrics": 5315,
+        "grpc": 5311,
+        "pprof": 5314
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row11-r1-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row11-r1-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row11-r1-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row11-r1-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row11",
+        "traces_timeout_ms": "200",
+        "metrics_timeout_ms": "2000",
+        "logs_timeout_ms": "1000",
+        "send_batch_max_size": "10000",
+        "queue_size": "6000",
+        "num_consumers": "1",
+        "memory_limit_mib": "512",
+        "compression": "none",
+        "retry_max_elapsed_minutes": "10"
+      },
+      "runLabel": "row11",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 1
+    },
+    {
+      "runId": "row11-r2-20250922-030640",
+      "ports": {
+        "http": 5322,
+        "health": 5323,
+        "metrics": 5325,
+        "grpc": 5321,
+        "pprof": 5324
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row11-r2-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row11-r2-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row11-r2-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row11-r2-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row11",
+        "traces_timeout_ms": "200",
+        "metrics_timeout_ms": "2000",
+        "logs_timeout_ms": "1000",
+        "send_batch_max_size": "10000",
+        "queue_size": "6000",
+        "num_consumers": "1",
+        "memory_limit_mib": "512",
+        "compression": "none",
+        "retry_max_elapsed_minutes": "10"
+      },
+      "runLabel": "row11",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 2
+    },
+    {
+      "runId": "row11-r3-20250922-030640",
+      "ports": {
+        "http": 5332,
+        "health": 5333,
+        "metrics": 5335,
+        "grpc": 5331,
+        "pprof": 5334
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row11-r3-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row11-r3-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row11-r3-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row11-r3-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row11",
+        "traces_timeout_ms": "200",
+        "metrics_timeout_ms": "2000",
+        "logs_timeout_ms": "1000",
+        "send_batch_max_size": "10000",
+        "queue_size": "6000",
+        "num_consumers": "1",
+        "memory_limit_mib": "512",
+        "compression": "none",
+        "retry_max_elapsed_minutes": "10"
+      },
+      "runLabel": "row11",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 3
+    },
+    {
+      "runId": "row12-r1-20250922-030640",
+      "ports": {
+        "http": 5342,
+        "health": 5343,
+        "metrics": 5345,
+        "grpc": 5341,
+        "pprof": 5344
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row12-r1-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row12-r1-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row12-r1-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row12-r1-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row12",
+        "traces_timeout_ms": "500",
+        "metrics_timeout_ms": "1000",
+        "logs_timeout_ms": "5000",
+        "send_batch_max_size": "20000",
+        "queue_size": "3000",
+        "num_consumers": "4",
+        "memory_limit_mib": "1024",
+        "compression": "none",
+        "retry_max_elapsed_minutes": "15"
+      },
+      "runLabel": "row12",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 1
+    },
+    {
+      "runId": "row12-r2-20250922-030640",
+      "ports": {
+        "http": 5352,
+        "health": 5353,
+        "metrics": 5355,
+        "grpc": 5351,
+        "pprof": 5354
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row12-r2-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row12-r2-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row12-r2-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row12-r2-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row12",
+        "traces_timeout_ms": "500",
+        "metrics_timeout_ms": "1000",
+        "logs_timeout_ms": "5000",
+        "send_batch_max_size": "20000",
+        "queue_size": "3000",
+        "num_consumers": "4",
+        "memory_limit_mib": "1024",
+        "compression": "none",
+        "retry_max_elapsed_minutes": "15"
+      },
+      "runLabel": "row12",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 2
+    },
+    {
+      "runId": "row12-r3-20250922-030640",
+      "ports": {
+        "http": 5362,
+        "health": 5363,
+        "metrics": 5365,
+        "grpc": 5361,
+        "pprof": 5364
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row12-r3-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row12-r3-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row12-r3-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row12-r3-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row12",
+        "traces_timeout_ms": "500",
+        "metrics_timeout_ms": "1000",
+        "logs_timeout_ms": "5000",
+        "send_batch_max_size": "20000",
+        "queue_size": "3000",
+        "num_consumers": "4",
+        "memory_limit_mib": "1024",
+        "compression": "none",
+        "retry_max_elapsed_minutes": "15"
+      },
+      "runLabel": "row12",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 3
+    },
+    {
+      "runId": "row13-r1-20250922-030640",
+      "ports": {
+        "http": 5372,
+        "health": 5373,
+        "metrics": 5375,
+        "grpc": 5371,
+        "pprof": 5374
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row13-r1-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row13-r1-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row13-r1-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row13-r1-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row13",
+        "traces_timeout_ms": "100",
+        "metrics_timeout_ms": "1000",
+        "logs_timeout_ms": "1000",
+        "send_batch_max_size": "20000",
+        "queue_size": "6000",
+        "num_consumers": "2",
+        "memory_limit_mib": "1024",
+        "compression": "gzip",
+        "retry_max_elapsed_minutes": "10"
+      },
+      "runLabel": "row13",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 1
+    },
+    {
+      "runId": "row13-r2-20250922-030640",
+      "ports": {
+        "http": 5382,
+        "health": 5383,
+        "metrics": 5385,
+        "grpc": 5381,
+        "pprof": 5384
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row13-r2-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row13-r2-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row13-r2-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row13-r2-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row13",
+        "traces_timeout_ms": "100",
+        "metrics_timeout_ms": "1000",
+        "logs_timeout_ms": "1000",
+        "send_batch_max_size": "20000",
+        "queue_size": "6000",
+        "num_consumers": "2",
+        "memory_limit_mib": "1024",
+        "compression": "gzip",
+        "retry_max_elapsed_minutes": "10"
+      },
+      "runLabel": "row13",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 2
+    },
+    {
+      "runId": "row13-r3-20250922-030640",
+      "ports": {
+        "http": 5392,
+        "health": 5393,
+        "metrics": 5395,
+        "grpc": 5391,
+        "pprof": 5394
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row13-r3-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row13-r3-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row13-r3-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row13-r3-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row13",
+        "traces_timeout_ms": "100",
+        "metrics_timeout_ms": "1000",
+        "logs_timeout_ms": "1000",
+        "send_batch_max_size": "20000",
+        "queue_size": "6000",
+        "num_consumers": "2",
+        "memory_limit_mib": "1024",
+        "compression": "gzip",
+        "retry_max_elapsed_minutes": "10"
+      },
+      "runLabel": "row13",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 3
+    },
+    {
+      "runId": "row14-r1-20250922-030640",
+      "ports": {
+        "http": 5402,
+        "health": 5403,
+        "metrics": 5405,
+        "grpc": 5401,
+        "pprof": 5404
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row14-r1-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row14-r1-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row14-r1-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row14-r1-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row14",
+        "traces_timeout_ms": "200",
+        "metrics_timeout_ms": "500",
+        "logs_timeout_ms": "2000",
+        "send_batch_max_size": "5000",
+        "queue_size": "15000",
+        "num_consumers": "4",
+        "memory_limit_mib": "2048",
+        "compression": "none",
+        "retry_max_elapsed_minutes": "5"
+      },
+      "runLabel": "row14",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 1
+    },
+    {
+      "runId": "row14-r2-20250922-030640",
+      "ports": {
+        "http": 5412,
+        "health": 5413,
+        "metrics": 5415,
+        "grpc": 5411,
+        "pprof": 5414
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row14-r2-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row14-r2-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row14-r2-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row14-r2-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row14",
+        "traces_timeout_ms": "200",
+        "metrics_timeout_ms": "500",
+        "logs_timeout_ms": "2000",
+        "send_batch_max_size": "5000",
+        "queue_size": "15000",
+        "num_consumers": "4",
+        "memory_limit_mib": "2048",
+        "compression": "none",
+        "retry_max_elapsed_minutes": "5"
+      },
+      "runLabel": "row14",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 2
+    },
+    {
+      "runId": "row14-r3-20250922-030640",
+      "ports": {
+        "http": 5422,
+        "health": 5423,
+        "metrics": 5425,
+        "grpc": 5421,
+        "pprof": 5424
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row14-r3-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row14-r3-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row14-r3-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row14-r3-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row14",
+        "traces_timeout_ms": "200",
+        "metrics_timeout_ms": "500",
+        "logs_timeout_ms": "2000",
+        "send_batch_max_size": "5000",
+        "queue_size": "15000",
+        "num_consumers": "4",
+        "memory_limit_mib": "2048",
+        "compression": "none",
+        "retry_max_elapsed_minutes": "5"
+      },
+      "runLabel": "row14",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 3
+    },
+    {
+      "runId": "row15-r1-20250922-030640",
+      "ports": {
+        "http": 5432,
+        "health": 5433,
+        "metrics": 5435,
+        "grpc": 5431,
+        "pprof": 5434
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row15-r1-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row15-r1-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row15-r1-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row15-r1-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row15",
+        "traces_timeout_ms": "500",
+        "metrics_timeout_ms": "500",
+        "logs_timeout_ms": "5000",
+        "send_batch_max_size": "10000",
+        "queue_size": "3000",
+        "num_consumers": "1",
+        "memory_limit_mib": "512",
+        "compression": "gzip",
+        "retry_max_elapsed_minutes": "15"
+      },
+      "runLabel": "row15",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 1
+    },
+    {
+      "runId": "row15-r2-20250922-030640",
+      "ports": {
+        "http": 5442,
+        "health": 5443,
+        "metrics": 5445,
+        "grpc": 5441,
+        "pprof": 5444
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row15-r2-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row15-r2-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row15-r2-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row15-r2-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row15",
+        "traces_timeout_ms": "500",
+        "metrics_timeout_ms": "500",
+        "logs_timeout_ms": "5000",
+        "send_batch_max_size": "10000",
+        "queue_size": "3000",
+        "num_consumers": "1",
+        "memory_limit_mib": "512",
+        "compression": "gzip",
+        "retry_max_elapsed_minutes": "15"
+      },
+      "runLabel": "row15",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 2
+    },
+    {
+      "runId": "row15-r3-20250922-030640",
+      "ports": {
+        "http": 5452,
+        "health": 5453,
+        "metrics": 5455,
+        "grpc": 5451,
+        "pprof": 5454
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row15-r3-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row15-r3-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row15-r3-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row15-r3-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row15",
+        "traces_timeout_ms": "500",
+        "metrics_timeout_ms": "500",
+        "logs_timeout_ms": "5000",
+        "send_batch_max_size": "10000",
+        "queue_size": "3000",
+        "num_consumers": "1",
+        "memory_limit_mib": "512",
+        "compression": "gzip",
+        "retry_max_elapsed_minutes": "15"
+      },
+      "runLabel": "row15",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 3
+    },
+    {
+      "runId": "row16-r1-20250922-030640",
+      "ports": {
+        "http": 5462,
+        "health": 5463,
+        "metrics": 5465,
+        "grpc": 5461,
+        "pprof": 5464
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row16-r1-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row16-r1-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row16-r1-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row16-r1-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row16",
+        "traces_timeout_ms": "100",
+        "metrics_timeout_ms": "2000",
+        "logs_timeout_ms": "2000",
+        "send_batch_max_size": "10000",
+        "queue_size": "3000",
+        "num_consumers": "4",
+        "memory_limit_mib": "512",
+        "compression": "none",
+        "retry_max_elapsed_minutes": "10"
+      },
+      "runLabel": "row16",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 1
+    },
+    {
+      "runId": "row16-r2-20250922-030640",
+      "ports": {
+        "http": 5472,
+        "health": 5473,
+        "metrics": 5475,
+        "grpc": 5471,
+        "pprof": 5474
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row16-r2-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row16-r2-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row16-r2-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row16-r2-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row16",
+        "traces_timeout_ms": "100",
+        "metrics_timeout_ms": "2000",
+        "logs_timeout_ms": "2000",
+        "send_batch_max_size": "10000",
+        "queue_size": "3000",
+        "num_consumers": "4",
+        "memory_limit_mib": "512",
+        "compression": "none",
+        "retry_max_elapsed_minutes": "10"
+      },
+      "runLabel": "row16",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 2
+    },
+    {
+      "runId": "row16-r3-20250922-030640",
+      "ports": {
+        "http": 5482,
+        "health": 5483,
+        "metrics": 5485,
+        "grpc": 5481,
+        "pprof": 5484
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row16-r3-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row16-r3-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row16-r3-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row16-r3-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row16",
+        "traces_timeout_ms": "100",
+        "metrics_timeout_ms": "2000",
+        "logs_timeout_ms": "2000",
+        "send_batch_max_size": "10000",
+        "queue_size": "3000",
+        "num_consumers": "4",
+        "memory_limit_mib": "512",
+        "compression": "none",
+        "retry_max_elapsed_minutes": "10"
+      },
+      "runLabel": "row16",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 3
+    },
+    {
+      "runId": "row17-r1-20250922-030640",
+      "ports": {
+        "http": 5492,
+        "health": 5493,
+        "metrics": 5495,
+        "grpc": 5491,
+        "pprof": 5494
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row17-r1-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row17-r1-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row17-r1-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row17-r1-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row17",
+        "traces_timeout_ms": "200",
+        "metrics_timeout_ms": "1000",
+        "logs_timeout_ms": "5000",
+        "send_batch_max_size": "20000",
+        "queue_size": "6000",
+        "num_consumers": "1",
+        "memory_limit_mib": "2048",
+        "compression": "gzip",
+        "retry_max_elapsed_minutes": "5"
+      },
+      "runLabel": "row17",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 1
+    },
+    {
+      "runId": "row17-r2-20250922-030640",
+      "ports": {
+        "http": 5502,
+        "health": 5503,
+        "metrics": 5505,
+        "grpc": 5501,
+        "pprof": 5504
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row17-r2-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row17-r2-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row17-r2-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row17-r2-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row17",
+        "traces_timeout_ms": "200",
+        "metrics_timeout_ms": "1000",
+        "logs_timeout_ms": "5000",
+        "send_batch_max_size": "20000",
+        "queue_size": "6000",
+        "num_consumers": "1",
+        "memory_limit_mib": "2048",
+        "compression": "gzip",
+        "retry_max_elapsed_minutes": "5"
+      },
+      "runLabel": "row17",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 2
+    },
+    {
+      "runId": "row17-r3-20250922-030640",
+      "ports": {
+        "http": 5512,
+        "health": 5513,
+        "metrics": 5515,
+        "grpc": 5511,
+        "pprof": 5514
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row17-r3-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row17-r3-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row17-r3-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row17-r3-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row17",
+        "traces_timeout_ms": "200",
+        "metrics_timeout_ms": "1000",
+        "logs_timeout_ms": "5000",
+        "send_batch_max_size": "20000",
+        "queue_size": "6000",
+        "num_consumers": "1",
+        "memory_limit_mib": "2048",
+        "compression": "gzip",
+        "retry_max_elapsed_minutes": "5"
+      },
+      "runLabel": "row17",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 3
+    },
+    {
+      "runId": "row18-r1-20250922-030640",
+      "ports": {
+        "http": 5522,
+        "health": 5523,
+        "metrics": 5525,
+        "grpc": 5521,
+        "pprof": 5524
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row18-r1-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row18-r1-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row18-r1-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row18-r1-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row18",
+        "traces_timeout_ms": "500",
+        "metrics_timeout_ms": "1000",
+        "logs_timeout_ms": "1000",
+        "send_batch_max_size": "5000",
+        "queue_size": "15000",
+        "num_consumers": "2",
+        "memory_limit_mib": "1024",
+        "compression": "none",
+        "retry_max_elapsed_minutes": "15"
+      },
+      "runLabel": "row18",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 1
+    },
+    {
+      "runId": "row18-r2-20250922-030640",
+      "ports": {
+        "http": 5532,
+        "health": 5533,
+        "metrics": 5535,
+        "grpc": 5531,
+        "pprof": 5534
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row18-r2-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row18-r2-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row18-r2-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row18-r2-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row18",
+        "traces_timeout_ms": "500",
+        "metrics_timeout_ms": "1000",
+        "logs_timeout_ms": "1000",
+        "send_batch_max_size": "5000",
+        "queue_size": "15000",
+        "num_consumers": "2",
+        "memory_limit_mib": "1024",
+        "compression": "none",
+        "retry_max_elapsed_minutes": "15"
+      },
+      "runLabel": "row18",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 2
+    },
+    {
+      "runId": "row18-r3-20250922-030640",
+      "ports": {
+        "http": 5542,
+        "health": 5543,
+        "metrics": 5545,
+        "grpc": 5541,
+        "pprof": 5544
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row18-r3-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row18-r3-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row18-r3-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row18-r3-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row18",
+        "traces_timeout_ms": "500",
+        "metrics_timeout_ms": "1000",
+        "logs_timeout_ms": "1000",
+        "send_batch_max_size": "5000",
+        "queue_size": "15000",
+        "num_consumers": "2",
+        "memory_limit_mib": "1024",
+        "compression": "none",
+        "retry_max_elapsed_minutes": "15"
+      },
+      "runLabel": "row18",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 3
+    },
+    {
+      "runId": "row19-r1-20250922-030640",
+      "ports": {
+        "http": 5552,
+        "health": 5553,
+        "metrics": 5555,
+        "grpc": 5551,
+        "pprof": 5554
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row19-r1-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row19-r1-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row19-r1-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row19-r1-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row19",
+        "traces_timeout_ms": "100",
+        "metrics_timeout_ms": "2000",
+        "logs_timeout_ms": "5000",
+        "send_batch_max_size": "10000",
+        "queue_size": "6000",
+        "num_consumers": "1",
+        "memory_limit_mib": "1024",
+        "compression": "gzip",
+        "retry_max_elapsed_minutes": "10"
+      },
+      "runLabel": "row19",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 1
+    },
+    {
+      "runId": "row19-r2-20250922-030640",
+      "ports": {
+        "http": 5562,
+        "health": 5563,
+        "metrics": 5565,
+        "grpc": 5561,
+        "pprof": 5564
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row19-r2-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row19-r2-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row19-r2-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row19-r2-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row19",
+        "traces_timeout_ms": "100",
+        "metrics_timeout_ms": "2000",
+        "logs_timeout_ms": "5000",
+        "send_batch_max_size": "10000",
+        "queue_size": "6000",
+        "num_consumers": "1",
+        "memory_limit_mib": "1024",
+        "compression": "gzip",
+        "retry_max_elapsed_minutes": "10"
+      },
+      "runLabel": "row19",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 2
+    },
+    {
+      "runId": "row19-r3-20250922-030640",
+      "ports": {
+        "http": 5572,
+        "health": 5573,
+        "metrics": 5575,
+        "grpc": 5571,
+        "pprof": 5574
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row19-r3-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row19-r3-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row19-r3-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row19-r3-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row19",
+        "traces_timeout_ms": "100",
+        "metrics_timeout_ms": "2000",
+        "logs_timeout_ms": "5000",
+        "send_batch_max_size": "10000",
+        "queue_size": "6000",
+        "num_consumers": "1",
+        "memory_limit_mib": "1024",
+        "compression": "gzip",
+        "retry_max_elapsed_minutes": "10"
+      },
+      "runLabel": "row19",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 3
+    },
+    {
+      "runId": "row20-r1-20250922-030640",
+      "ports": {
+        "http": 5582,
+        "health": 5583,
+        "metrics": 5585,
+        "grpc": 5581,
+        "pprof": 5584
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row20-r1-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row20-r1-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row20-r1-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row20-r1-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row20",
+        "traces_timeout_ms": "200",
+        "metrics_timeout_ms": "500",
+        "logs_timeout_ms": "1000",
+        "send_batch_max_size": "20000",
+        "queue_size": "15000",
+        "num_consumers": "4",
+        "memory_limit_mib": "512",
+        "compression": "none",
+        "retry_max_elapsed_minutes": "5"
+      },
+      "runLabel": "row20",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 1
+    },
+    {
+      "runId": "row20-r2-20250922-030640",
+      "ports": {
+        "http": 5592,
+        "health": 5593,
+        "metrics": 5595,
+        "grpc": 5591,
+        "pprof": 5594
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row20-r2-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row20-r2-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row20-r2-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row20-r2-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row20",
+        "traces_timeout_ms": "200",
+        "metrics_timeout_ms": "500",
+        "logs_timeout_ms": "1000",
+        "send_batch_max_size": "20000",
+        "queue_size": "15000",
+        "num_consumers": "4",
+        "memory_limit_mib": "512",
+        "compression": "none",
+        "retry_max_elapsed_minutes": "5"
+      },
+      "runLabel": "row20",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 2
+    },
+    {
+      "runId": "row20-r3-20250922-030640",
+      "ports": {
+        "http": 5602,
+        "health": 5603,
+        "metrics": 5605,
+        "grpc": 5601,
+        "pprof": 5604
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row20-r3-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row20-r3-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row20-r3-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row20-r3-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row20",
+        "traces_timeout_ms": "200",
+        "metrics_timeout_ms": "500",
+        "logs_timeout_ms": "1000",
+        "send_batch_max_size": "20000",
+        "queue_size": "15000",
+        "num_consumers": "4",
+        "memory_limit_mib": "512",
+        "compression": "none",
+        "retry_max_elapsed_minutes": "5"
+      },
+      "runLabel": "row20",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 3
+    },
+    {
+      "runId": "row21-r1-20250922-030640",
+      "ports": {
+        "http": 5612,
+        "health": 5613,
+        "metrics": 5615,
+        "grpc": 5611,
+        "pprof": 5614
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row21-r1-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row21-r1-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row21-r1-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row21-r1-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row21",
+        "traces_timeout_ms": "500",
+        "metrics_timeout_ms": "500",
+        "logs_timeout_ms": "2000",
+        "send_batch_max_size": "5000",
+        "queue_size": "3000",
+        "num_consumers": "2",
+        "memory_limit_mib": "2048",
+        "compression": "gzip",
+        "retry_max_elapsed_minutes": "15"
+      },
+      "runLabel": "row21",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 1
+    },
+    {
+      "runId": "row21-r2-20250922-030640",
+      "ports": {
+        "http": 5622,
+        "health": 5623,
+        "metrics": 5625,
+        "grpc": 5621,
+        "pprof": 5624
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row21-r2-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row21-r2-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row21-r2-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row21-r2-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row21",
+        "traces_timeout_ms": "500",
+        "metrics_timeout_ms": "500",
+        "logs_timeout_ms": "2000",
+        "send_batch_max_size": "5000",
+        "queue_size": "3000",
+        "num_consumers": "2",
+        "memory_limit_mib": "2048",
+        "compression": "gzip",
+        "retry_max_elapsed_minutes": "15"
+      },
+      "runLabel": "row21",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 2
+    },
+    {
+      "runId": "row21-r3-20250922-030640",
+      "ports": {
+        "http": 5632,
+        "health": 5633,
+        "metrics": 5635,
+        "grpc": 5631,
+        "pprof": 5634
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row21-r3-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row21-r3-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row21-r3-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row21-r3-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row21",
+        "traces_timeout_ms": "500",
+        "metrics_timeout_ms": "500",
+        "logs_timeout_ms": "2000",
+        "send_batch_max_size": "5000",
+        "queue_size": "3000",
+        "num_consumers": "2",
+        "memory_limit_mib": "2048",
+        "compression": "gzip",
+        "retry_max_elapsed_minutes": "15"
+      },
+      "runLabel": "row21",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 3
+    },
+    {
+      "runId": "row22-r1-20250922-030640",
+      "ports": {
+        "http": 5642,
+        "health": 5643,
+        "metrics": 5645,
+        "grpc": 5641,
+        "pprof": 5644
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row22-r1-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row22-r1-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row22-r1-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row22-r1-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row22",
+        "traces_timeout_ms": "100",
+        "metrics_timeout_ms": "1000",
+        "logs_timeout_ms": "5000",
+        "send_batch_max_size": "20000",
+        "queue_size": "3000",
+        "num_consumers": "4",
+        "memory_limit_mib": "512",
+        "compression": "none",
+        "retry_max_elapsed_minutes": "10"
+      },
+      "runLabel": "row22",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 1
+    },
+    {
+      "runId": "row22-r2-20250922-030640",
+      "ports": {
+        "http": 5652,
+        "health": 5653,
+        "metrics": 5655,
+        "grpc": 5651,
+        "pprof": 5654
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row22-r2-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row22-r2-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row22-r2-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row22-r2-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row22",
+        "traces_timeout_ms": "100",
+        "metrics_timeout_ms": "1000",
+        "logs_timeout_ms": "5000",
+        "send_batch_max_size": "20000",
+        "queue_size": "3000",
+        "num_consumers": "4",
+        "memory_limit_mib": "512",
+        "compression": "none",
+        "retry_max_elapsed_minutes": "10"
+      },
+      "runLabel": "row22",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 2
+    },
+    {
+      "runId": "row22-r3-20250922-030640",
+      "ports": {
+        "http": 5662,
+        "health": 5663,
+        "metrics": 5665,
+        "grpc": 5661,
+        "pprof": 5664
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row22-r3-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row22-r3-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row22-r3-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row22-r3-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row22",
+        "traces_timeout_ms": "100",
+        "metrics_timeout_ms": "1000",
+        "logs_timeout_ms": "5000",
+        "send_batch_max_size": "20000",
+        "queue_size": "3000",
+        "num_consumers": "4",
+        "memory_limit_mib": "512",
+        "compression": "none",
+        "retry_max_elapsed_minutes": "10"
+      },
+      "runLabel": "row22",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 3
+    },
+    {
+      "runId": "row23-r1-20250922-030640",
+      "ports": {
+        "http": 5672,
+        "health": 5673,
+        "metrics": 5675,
+        "grpc": 5671,
+        "pprof": 5674
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row23-r1-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row23-r1-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row23-r1-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row23-r1-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row23",
+        "traces_timeout_ms": "200",
+        "metrics_timeout_ms": "2000",
+        "logs_timeout_ms": "2000",
+        "send_batch_max_size": "5000",
+        "queue_size": "6000",
+        "num_consumers": "1",
+        "memory_limit_mib": "1024",
+        "compression": "gzip",
+        "retry_max_elapsed_minutes": "5"
+      },
+      "runLabel": "row23",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 1
+    },
+    {
+      "runId": "row23-r2-20250922-030640",
+      "ports": {
+        "http": 5682,
+        "health": 5683,
+        "metrics": 5685,
+        "grpc": 5681,
+        "pprof": 5684
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row23-r2-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row23-r2-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row23-r2-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row23-r2-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row23",
+        "traces_timeout_ms": "200",
+        "metrics_timeout_ms": "2000",
+        "logs_timeout_ms": "2000",
+        "send_batch_max_size": "5000",
+        "queue_size": "6000",
+        "num_consumers": "1",
+        "memory_limit_mib": "1024",
+        "compression": "gzip",
+        "retry_max_elapsed_minutes": "5"
+      },
+      "runLabel": "row23",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 2
+    },
+    {
+      "runId": "row23-r3-20250922-030640",
+      "ports": {
+        "http": 5692,
+        "health": 5693,
+        "metrics": 5695,
+        "grpc": 5691,
+        "pprof": 5694
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row23-r3-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row23-r3-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row23-r3-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row23-r3-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row23",
+        "traces_timeout_ms": "200",
+        "metrics_timeout_ms": "2000",
+        "logs_timeout_ms": "2000",
+        "send_batch_max_size": "5000",
+        "queue_size": "6000",
+        "num_consumers": "1",
+        "memory_limit_mib": "1024",
+        "compression": "gzip",
+        "retry_max_elapsed_minutes": "5"
+      },
+      "runLabel": "row23",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 3
+    },
+    {
+      "runId": "row24-r1-20250922-030640",
+      "ports": {
+        "http": 5702,
+        "health": 5703,
+        "metrics": 5705,
+        "grpc": 5701,
+        "pprof": 5704
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row24-r1-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row24-r1-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row24-r1-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row24-r1-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row24",
+        "traces_timeout_ms": "500",
+        "metrics_timeout_ms": "500",
+        "logs_timeout_ms": "1000",
+        "send_batch_max_size": "10000",
+        "queue_size": "15000",
+        "num_consumers": "2",
+        "memory_limit_mib": "2048",
+        "compression": "none",
+        "retry_max_elapsed_minutes": "15"
+      },
+      "runLabel": "row24",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 1
+    },
+    {
+      "runId": "row24-r2-20250922-030640",
+      "ports": {
+        "http": 5712,
+        "health": 5713,
+        "metrics": 5715,
+        "grpc": 5711,
+        "pprof": 5714
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row24-r2-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row24-r2-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row24-r2-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row24-r2-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row24",
+        "traces_timeout_ms": "500",
+        "metrics_timeout_ms": "500",
+        "logs_timeout_ms": "1000",
+        "send_batch_max_size": "10000",
+        "queue_size": "15000",
+        "num_consumers": "2",
+        "memory_limit_mib": "2048",
+        "compression": "none",
+        "retry_max_elapsed_minutes": "15"
+      },
+      "runLabel": "row24",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 2
+    },
+    {
+      "runId": "row24-r3-20250922-030640",
+      "ports": {
+        "http": 5722,
+        "health": 5723,
+        "metrics": 5725,
+        "grpc": 5721,
+        "pprof": 5724
+      },
+      "configFile": "artifacts\\doe\\stage1-20250922-030640\\configs\\row24-r3-20250922-030640.yaml",
+      "artifacts": {
+        "metricsFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row24-r3-20250922-030640-metrics.json",
+        "logFile": "artifacts\\doe\\stage1-20250922-030640\\logs\\row24-r3-20250922-030640.log",
+        "resultFile": "artifacts\\doe\\stage1-20250922-030640\\results\\row24-r3-20250922-030640-result.json"
+      },
+      "status": "pending",
+      "factors": {
+        "run_label": "row24",
+        "traces_timeout_ms": "500",
+        "metrics_timeout_ms": "500",
+        "logs_timeout_ms": "1000",
+        "send_batch_max_size": "10000",
+        "queue_size": "15000",
+        "num_consumers": "2",
+        "memory_limit_mib": "2048",
+        "compression": "none",
+        "retry_max_elapsed_minutes": "15"
+      },
+      "runLabel": "row24",
+      "startTime": null,
+      "endTime": null,
+      "replicate": 3
+    }
+  ]
+}

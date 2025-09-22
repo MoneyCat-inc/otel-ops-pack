@@ -2,6 +2,8 @@
 
 This guide documents the integration between Resonai analytics and the local OpenTelemetry → SigNoz observability stack.
 
+> Cross-project context: see the ECRR Project Report for the overarching Examine/Clean/Report/Role summary — [ECRR_PROJECT_REPORT.md](ECRR_PROJECT_REPORT.md)
+
 ## Purpose
 
 The wiring forwards sanitized Resonai analytics events from `/api/events` to SigNoz via OTLP/HTTP, enabling:
@@ -261,3 +263,4 @@ The integration automatically redacts sensitive information:
 - **[Query Recipes](QUERY_RECIPES.md)** - SigNoz queries for analytics insights  
 - **[Monitoring Setup Guide](../MONITORING_SETUP_GUIDE.md)** - Complete monitoring and alerting configuration
 - **[Agent Roles](roles/)** - Understanding the agent ecosystem that maintains this observability pipeline
+- **[ECRR Project Report](ECRR_PROJECT_REPORT.md)** - Cross-project summary of Examine / Clean / Report / Role
