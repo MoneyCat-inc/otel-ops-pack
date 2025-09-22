@@ -31,9 +31,6 @@ processors:
       - key: log.source
         value: windows_event_log
         action: insert
-        conditions:
-          - key: log.source
-            value: windows_event_log
 
 exporters:
   otlp:
