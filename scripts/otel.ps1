@@ -4,8 +4,20 @@
 param(
     [Parameter(Position=0)]
     [ValidateSet("start", "stop", "restart", "status", "canary", "health")]
-    [string]$Action = "status"
+    [string]$Action = "status",
+    [int]$OtlpGrpcPort = 4317,
+    [int]$OtlpHttpPort = 4318
 )
+
+$knownFallbackPorts = @(4317, 4318, 14317, 14318)
+$script:PrimaryPorts = @($OtlpGrpcPort, $OtlpHttpPort)
+$script:PortsToCheck = ($script:PrimaryPorts + $knownFallbackPorts) | Select-Object -Unique
+$script:PortLabels = @{}
+foreach ($port in $script:PortsToCheck) { $script:PortLabels[$port] = "fallback" }
+foreach ($port in $script:PrimaryPorts) { $script:PortLabels[$port] = "primary" }
+
+$httpPortCandidates = @($OtlpHttpPort, 4318, 14318) | Select-Object -Unique
+$script:OtlpHttpTargets = $httpPortCandidates | ForEach-Object { "http://localhost:$_/v1/logs" }
 
 function Start-OTelCollector {
     Write-Host "🚀 Starting OTel Collector..." -ForegroundColor Cyan
@@ -53,13 +65,30 @@ function Get-OTelStatus {
     }
     
     # Check ports
-    Write-Host "`nPorts:" -ForegroundColor Cyan
-    $ports = @(14317, 14318)
-    foreach ($port in $ports) {
+    $primaryList = @()
+    $fallbackList = @()
+    foreach ($port in $script:PortsToCheck) {
+        if ($script:PortLabels[$port] -eq "primary") {
+            $primaryList += $port
+        } else {
+            $fallbackList += $port
+        }
+    }
+
+    $primaryDisplay = if ($primaryList) { ($primaryList | Sort-Object -Unique) -join '/' } else { 'none' }
+    $fallbackDisplay = if ($fallbackList) { ($fallbackList | Sort-Object -Unique) -join '/' } else { 'none' }
+
+    Write-Host "`nPorts (primary: $primaryDisplay; fallback: $fallbackDisplay):" -ForegroundColor Cyan
+    foreach ($port in $script:PortsToCheck) {
         $ok = Test-NetConnection -ComputerName "localhost" -Port $port -WarningAction SilentlyContinue
         $status = if ($ok.TcpTestSucceeded) { "✅ Listening" } else { "❌ Closed" }
         $color = if ($ok.TcpTestSucceeded) { "Green" } else { "Red" }
-        Write-Host "  Port $port`: $status" -ForegroundColor $color
+        $label = $script:PortLabels[$port]
+        if ($label -eq "primary") {
+            Write-Host "  Port $port (primary): $status" -ForegroundColor $color
+        } else {
+            Write-Host "  Port $port (fallback): $status" -ForegroundColor $color
+        }
     }
     
     # Check SigNoz
@@ -74,40 +103,73 @@ function Get-OTelStatus {
 
 function Send-OTelCanary {
     Write-Host "🧪 Sending OTLP canary..." -ForegroundColor Cyan
-    
+
     $nowNs = [string]([DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()*1000000)
-    $body = @{
-        resourceLogs = @(@{
-            resource  = @{ attributes = @(@{ key="service.name"; value=@{ stringValue="otel-canary" }}) }
-            scopeLogs = @(@{
-                logRecords = @(@{
-                    timeUnixNano = $nowNs
-                    body = @{ stringValue = "OTel canary from $(hostname) $(Get-Date -Format o)" }
-                    severityText = "INFO"
+    try {
+        $body = @{
+            resourceLogs = @(@{
+                resource  = @{ attributes = @(@{ key="service.name"; value=@{ stringValue="otel-canary" }}) }
+                scopeLogs = @(@{
+                    logRecords = @(@{
+                        timeUnixNano = $nowNs
+                        body = @{ stringValue = "OTel canary from $(hostname) $(Get-Date -Format o)" }
+                        severityText = "INFO"
+                    })
                 })
             })
-        })
-    } | ConvertTo-Json -Depth 7
+        } | ConvertTo-Json -Depth 7
+    } catch {
+        Write-Host "❌ Canary payload preparation failed: $($_.Exception.Message)" -ForegroundColor Red
+        return
+    }
 
-    try {
-        $resp = Invoke-RestMethod -Method Post -Uri "http://localhost:14318/v1/logs" -ContentType "application/json" -Body $body
-        Write-Host "✅ Canary sent successfully" -ForegroundColor Green
-        Write-Host "📊 Check SigNoz for 'otel-canary' service logs" -ForegroundColor Yellow
-    } catch { 
-        Write-Host "❌ Canary failed: $($_.Exception.Message)" -ForegroundColor Red
+    Write-Host "OTLP HTTP targets (preferred first):" -ForegroundColor Yellow
+    $script:OtlpHttpTargets | ForEach-Object { Write-Host "  -> $_" -ForegroundColor Yellow }
+
+    $errors = @()
+    foreach ($uri in $script:OtlpHttpTargets) {
+        $port = ([uri]$uri).Port
+        try {
+            Write-Host "Target: $uri" -ForegroundColor Yellow
+            $resp = Invoke-RestMethod -Method Post -Uri $uri -ContentType "application/json" -Body $body
+            Write-Host "✅ Canary sent successfully via OTLP HTTP port $port" -ForegroundColor Green
+            Write-Host "📊 Check SigNoz for 'otel-canary' service logs" -ForegroundColor Yellow
+            return
+        } catch {
+            $errors += "  - $uri (port $port): $($_.Exception.Message)"
+        }
+    }
+
+    if ($errors.Count -gt 0) {
+        Write-Host "❌ Canary failed for all OTLP HTTP endpoints:`n$($errors -join "`n")" -ForegroundColor Red
     }
 }
 
 function Test-OTelHealth {
     Write-Host "🏥 OTel Health Check" -ForegroundColor Cyan
     Write-Host "===================" -ForegroundColor Cyan
-    
+
     # Test collector endpoint
-    try {
-        $response = Invoke-WebRequest -Uri "http://localhost:14318/v1/logs" -Method Post -ContentType "application/json" -Body '{"test":"health"}' -TimeoutSec 5
-        Write-Host "Collector HTTP: ✅ Responding" -ForegroundColor Green
-    } catch {
-        Write-Host "Collector HTTP: ❌ Not responding" -ForegroundColor Red
+    $healthErrors = @()
+    $collectorResponding = $false
+    foreach ($uri in $script:OtlpHttpTargets) {
+        $port = ([uri]$uri).Port
+        try {
+            $response = Invoke-WebRequest -Uri $uri -Method Post -ContentType "application/json" -Body '{"test":"health"}' -TimeoutSec 5
+            Write-Host "Collector HTTP ($port): ✅ Responding at $uri" -ForegroundColor Green
+            $collectorResponding = $true
+            break
+        } catch {
+            $healthErrors += "  - $uri (port $port): $($_.Exception.Message)"
+        }
+    }
+
+    if (-not $collectorResponding) {
+        if ($healthErrors.Count -gt 0) {
+            Write-Host "Collector HTTP: ❌ No OTLP HTTP endpoint responded:`n$($healthErrors -join "`n")" -ForegroundColor Red
+        } else {
+            Write-Host "Collector HTTP: ❌ No OTLP HTTP endpoint responded" -ForegroundColor Red
+        }
     }
     
     # Test SigNoz
