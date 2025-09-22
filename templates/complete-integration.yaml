@@ -1,10 +1,9 @@
 # Complete Integration Template
 # Copy this template for a full-featured OTel collector configuration
-
+# 
 # =============================================================================
 # EXTENSIONS
 # =============================================================================
-
 extensions:
   health_check:
     endpoint: 127.0.0.1:13134
@@ -13,11 +12,11 @@ extensions:
     timeout: 10s
     compaction:
       on_start: true
-
 # =============================================================================
+
 # RECEIVERS
-# =============================================================================
 
+# =============================================================================
 receivers:
   # OTLP receiver (primary)
   otlp:
@@ -26,7 +25,6 @@ receivers:
         endpoint: 127.0.0.1:5318
       grpc:
         endpoint: 127.0.0.1:5317
-  
   # File log receiver
   filelog:
     include:
@@ -38,7 +36,6 @@ receivers:
     operators:
       - type: json_parser
         parse_to: body
-  
   # Windows Event Log receivers
   windowseventlog/application:
     channel: Application
@@ -46,22 +43,23 @@ receivers:
   windowseventlog/system:
     channel: System
     start_at: end
-  
   # Prometheus receiver (metrics scraping)
   prometheus:
     config:
       scrape_configs:
-        - job_name: 'otel-collector'
+        - job_name: otel-collector
           static_configs:
-            - targets: ['127.0.0.1:8889']
-        - job_name: 'gpu-metrics'
+            - targets:
+                - 127.0.0.1:8889
+        - job_name: gpu-metrics
           static_configs:
-            - targets: ['127.0.0.1:9400']
-
+            - targets:
+                - 127.0.0.1:9400
 # =============================================================================
+
 # PROCESSORS
-# =============================================================================
 
+# =============================================================================
 processors:
   # Resource standardization
   resource/defaults:
@@ -78,7 +76,6 @@ processors:
       - key: datacenter
         value: us-east-1
         action: upsert
-  
   # Tail-based sampling (traces)
   tail_sampling:
     decision_wait: 5s
@@ -95,23 +92,21 @@ processors:
         attribute:
           key: business.critical
           value: true
-  
   # Memory management
   memory_limiter:
     check_interval: 2s
     limit_mib: 512
     spike_limit_mib: 256
-  
   # Efficient batching
   batch:
     timeout: 2s
     send_batch_size: 2048
     send_batch_max_size: 4096
-
 # =============================================================================
+
 # EXPORTERS
-# =============================================================================
 
+# =============================================================================
 exporters:
   # SigNoz exporter (primary)
   otlp:
@@ -128,10 +123,10 @@ exporters:
       num_consumers: 4
       queue_size: 8192
       storage: file_storage
-  
   # Kafka exporter (fan-out)
   kafka:
-    brokers: ["localhost:9092"]
+    brokers:
+      - localhost:9092
     topic: otel-logs
     encoding: otlp_json
     protocol_version: 2.0.0
@@ -145,15 +140,13 @@ exporters:
       num_consumers: 4
       queue_size: 8192
       storage: file_storage
-  
   # Prometheus exporter (metrics)
   prometheus:
-    endpoint: "0.0.0.0:8889"
+    endpoint: 0.0.0.0:8889
     namespace: otelcol
     const_labels:
       service: otel-collector
       environment: production
-  
   # Jaeger exporter (traces)
   jaeger:
     endpoint: http://localhost:14268/api/traces
@@ -169,81 +162,126 @@ exporters:
       num_consumers: 4
       queue_size: 8192
       storage: file_storage
-  
-  # Datadog exporter (optional)
-  # datadog:
-  #   api_key: ${DD_API_KEY}
-  #   site: datadoghq.com
-  #   tags:
-  #     - "service:otel-collector"
-  #     - "environment:production"
-  #   retry_on_failure:
-  #     enabled: true
-  #     initial_interval: 1s
-  #     max_interval: 30s
-  #     max_elapsed_time: 300s
-  #   sending_queue:
-  #     enabled: true
-  #     num_consumers: 4
-  #     queue_size: 8192
-  #     storage: file_storage
+      # Datadog exporter (optional)
+# datadog:
+
+#   api_key: ${DD_API_KEY}
+
+#   site: datadoghq.com
+
+#   tags:
+
+#     - "service:otel-collector"
+
+#     - "environment:production"
+
+#   retry_on_failure:
+
+#     enabled: true
+
+#     initial_interval: 1s
+
+#     max_interval: 30s
+
+#     max_elapsed_time: 300s
+
+#   sending_queue:
+
+#     enabled: true
+
+#     num_consumers: 4
+
+#     queue_size: 8192
+
+#     storage: file_storage
 
 # =============================================================================
+
 # SERVICE CONFIGURATION
-# =============================================================================
 
+# =============================================================================
 service:
-  extensions: [health_check, file_storage]
-  
+  extensions:
+    - health_check
+    - file_storage
   pipelines:
     # Logs pipeline
     logs:
-      receivers: [otlp, filelog, windowseventlog/application, windowseventlog/system]
-      processors: [resource/defaults, memory_limiter, batch]
-      exporters: [otlp, kafka]
-    
+      receivers:
+        - otlp
+        - filelog
+        - windowseventlog/application
+        - windowseventlog/system
+      processors:
+        - resource/defaults
+        - memory_limiter
+        - batch
+      exporters:
+        - otlp
+        - kafka
     # Traces pipeline
     traces:
-      receivers: [otlp]
-      processors: [resource/defaults, tail_sampling, memory_limiter, batch]
-      exporters: [otlp, jaeger]
-    
+      receivers:
+        - otlp
+      processors:
+        - resource/defaults
+        - tail_sampling
+        - memory_limiter
+        - batch
+      exporters:
+        - otlp
+        - jaeger
     # Metrics pipeline
     metrics:
-      receivers: [otlp, prometheus]
-      processors: [resource/defaults, memory_limiter, batch]
-      exporters: [otlp, prometheus]
-  
+      receivers:
+        - otlp
+        - prometheus
+      processors:
+        - resource/defaults
+        - memory_limiter
+        - batch
+      exporters:
+        - otlp
+        - prometheus
   # Telemetry configuration
   telemetry:
     metrics:
       address: 127.0.0.1:8889
-
 # =============================================================================
 # CUSTOMIZATION NOTES
+
 # =============================================================================
 
 # 1. Enable/disable exporters by commenting/uncommenting
+
 # 2. Adjust memory limits based on available RAM
+
 # 3. Configure Kafka brokers for your environment
+
 # 4. Set up authentication for external services
+
 # 5. Adjust batch sizes based on data volume
+
 # 6. Configure sampling policies for your use case
 
 # =============================================================================
+
 # VERIFICATION COMMANDS
+
 # =============================================================================
 
 # Test all integrations:
+
 # C:\otel\integration-tests.ps1 -FullTest
 
 # Validate configuration:
+
 # C:\otel\config-schema.ps1 -ConfigPath C:\otel\config.yaml -CheckSecurity -CheckPerformance
 
 # Apply configuration:
+
 # C:\otel\safe-apply-config.ps1 -Candidate C:\otel\config.candidate.yaml
 
 # Verify all systems:
+
 # C:\otel\regression-check.ps1
-
-

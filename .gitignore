@@ -19,6 +19,25 @@ state/
 *.bak.*
 config.candidate.yaml
 
+# local dependency + build caches
+.next/
+.turbo/
+.vite/
+dist/
+build/
+coverage/
+.parcel-cache/
+.cache/
+tmp/
+temp/
+out/
+node_modules/
+.pnpm-store/
+pnpm-store/
+npm-debug.log*
+pnpm-debug.log*
+*.tsbuildinfo
+
 # API token verification artifacts
 artifacts/*.json
 artifacts/verify-run.txt
@@ -28,6 +47,8 @@ artifacts/REVIEWER_CHECKLIST_SAMPLE.md
 .DS_Store
 Thumbs.db
 .vscode/
+!.vscode/
+!.vscode/settings.json
 .idea/
 
 .venv/
@@ -35,3 +56,11 @@ start/
 qc/
 query/
 queryex/
+
+
+# Observability artifacts
+.artifacts/
+*.log
+*.png
+*.svg
+

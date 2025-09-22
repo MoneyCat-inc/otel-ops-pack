@@ -1,0 +1,19 @@
+{
+  "artifacts": {
+    "resultsDir": "artifacts\\doe\\stage2-20250921-231348\\results",
+    "logsDir": "artifacts\\doe\\stage2-20250921-231348\\logs",
+    "runDir": "artifacts\\doe\\stage2-20250921-231348",
+    "configsDir": "artifacts\\doe\\stage2-20250921-231348\\configs"
+  },
+  "completedAt": "2025-09-22T00:11:29.219Z",
+  "totalRuns": 36,
+  "experiment": {
+    "stage": "stage2",
+    "replicates": 2,
+    "timestamp": "20250921-231348",
+    "duration": 60,
+    "loadCommand": "pwsh -File scripts/generate-synthetic-load.ps1"
+  },
+  "failedRuns": 0,
+  "completedRuns": 36
+}

@@ -1,0 +1,16 @@
+# ECRR Reports Directory
+
+This directory contains ECRR (Examine → Clean → Report → Role) reports for each PR or significant change.
+
+## Naming Convention
+- Format: `YYYY-MM-DD-<slug>.md`
+- Example: `2025-09-20-otel-config-update.md`
+
+## Template
+Use `docs/ECRR_REPORT_TEMPLATE.md` as the base template for all reports.
+
+## Purpose
+- Document environment state before and after changes
+- Provide evidence for PR reviews
+- Maintain audit trail of observability stack changes
+- Ensure ECRR compliance on every task/PR

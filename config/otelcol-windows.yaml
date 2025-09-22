@@ -1,3 +1,8 @@
+extensions:
+  health_check:
+    endpoint: 0.0.0.0:13134
+    path: /healthz
+
 receivers:
   windows_event_log:
     - channel: Application
@@ -16,11 +21,10 @@ receivers:
         - type: add
           field: log.source
           value: file
-
 processors:
-  batch:
-    timeout: 1s
-    send_batch_size: 1024
+  batch/logs:
+    timeout: 200ms
+    send_batch_size: 256
   memory_limiter:
     limit_mib: 256
   attributes/global:
@@ -36,20 +40,18 @@ processors:
       - key: log.source
         value: windows_event_log
         action: insert
-
 exporters:
   otlp:
-    endpoint: localhost:4317
+    endpoint: localhost:14317
     tls:
       insecure: true
   otlphttp:
-    endpoint: http://localhost:4318
+    endpoint: http://localhost:14318
     tls:
       insecure: true
-  debug:
-    verbosity: normal
-
 service:
+  extensions:
+    - health_check
   pipelines:
     logs:
       receivers: [windows_event_log, filelog]
@@ -57,9 +59,17 @@ service:
       exporters: [otlp, otlphttp, debug]
     metrics:
       receivers: []
-      processors: [memory_limiter, batch]
-      exporters: [otlp, otlphttp]
+      processors:
+        - memory_limiter
+        - batch
+      exporters:
+        - otlp
+        - otlphttp
     traces:
       receivers: []
-      processors: [memory_limiter, batch]
-      exporters: [otlp, otlphttp]
+      processors:
+        - memory_limiter
+        - batch
+      exporters:
+        - otlp
+        - otlphttp

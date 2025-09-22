@@ -1,0 +1,93 @@
+Canonical creative reference:
+- In repo: docs/comfort-cat/
+- Windows mirror: C:\\otel\\docs\\comfort cat
+When uncertain, add or update the guideline doc before proceeding.
+
+# Cursor Rules for OTel Observability Kit
+# Cat Nap Control Room - Low-Latency Observability Pipeline
+
+All creative, copy, motion, and accessibility decisions MUST reference:
+- In repo: docs/comfort-cat/
+- On Windows: C:\otel\docs\comfort cat
+Fail closed: if a required spec is missing, open a PR to add a stub before proceeding.
+
+## Project Context
+This is a Windows-based OpenTelemetry observability pipeline that feeds Windows Event Logs and file logs into SigNoz for real-time monitoring. The system is optimized for low latency (200ms batches) and includes noise filtering to reduce volume by ~50%.
+
+## Key Directories
+- `scripts/` - PowerShell monitoring and automation scripts
+- `artifacts/` - Generated reports, dashboards, and monitoring data
+- `config/` - OTel collector configuration files
+- `docs/` - Documentation and guides
+
+## Core Scripts
+- `monitor-optimized-pipeline.ps1` - Enhanced real-time monitoring with ECRR reporting
+- `quick-monitor.ps1` - Fast health check and status verification
+- `canary-test.ps1` - Generate test logs and traces
+- `verify-pipeline.ps1` - End-to-end pipeline validation
+
+## ECRR Methodology
+All changes follow the ECRR (Examine → Clean → Report → Role) framework:
+1. **Examine** - Capture environment state before changes
+2. **Clean** - Remove drift and enforce guardrails
+3. **Report** - Generate artifacts and evidence
+4. **Role** - Declare the actor responsible
+
+## Monitoring Features
+- Real-time SigNoz API integration
+- Threshold-based alerting system
+- ECRR-compliant reporting
+- Export capabilities for monitoring data
+- Color-coded status indicators
+
+## SigNoz Integration
+- UI: http://localhost:8080
+- OTLP Endpoints: 5317 (gRPC), 5318 (HTTP)
+- Key Queries:
+  - Logs: `message contains "canary test"`
+  - Metrics: `otelcol_*` for pipeline metrics
+  - Dataset: `attributes.dataset = "resonai_analytics"`
+
+## Common Commands
+```powershell
+# Quick health check
+pwsh -File scripts\quick-monitor.ps1
+
+# Detailed monitoring
+pwsh -File scripts\monitor-optimized-pipeline.ps1 -DurationMinutes 10
+
+# Generate canary test
+pwsh -File scripts\canary-test.ps1
+
+# Verify pipeline
+pwsh -File scripts\verify-pipeline.ps1
+```
+
+## File Patterns
+- `*.ps1` - PowerShell scripts (use UTF-8 encoding)
+- `*.json` - Configuration and report files
+- `*.yaml` - OTel collector configuration
+- `artifacts/*.json` - Generated monitoring reports
+
+## Guardrails
+- Always use UTF-8 encoding for PowerShell scripts
+- Include ECRR reporting in monitoring scripts
+- Export monitoring data to `artifacts/` directory
+- Use color-coded output for status indicators
+- Include error handling and timeout management
+- Follow the "Cat Nap Control Room" aesthetic (calm, efficient, playful)
+
+## Testing
+- Run `quick-monitor.ps1` for fast health checks
+- Use `canary-test.ps1` to generate test data
+- Verify in SigNoz UI with provided queries
+- Check `artifacts/` for generated reports
+
+## Troubleshooting
+- Check Windows Collector service: `sc query otelcol-contrib`
+- Verify SigNoz health: `http://localhost:8080/api/v1/health`
+- Check Docker services: `docker ps`
+- Review logs in SigNoz UI with appropriate filters
+
+## Creative Context
+This system embodies the "Cat Nap Control Room" concept - a serene, minimalist observability cockpit where logs, metrics, and traces flow seamlessly at sub-second cadence. The monitoring should feel calm and efficient, like a cat resting beside a softly glowing control board.

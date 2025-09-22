@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "updatedAt": "2025-09-20T03:23:01.7873341+01:00",
+  "sections": {
+    "env": {
+      "ok": false,
+      "detail": "Not initialized",
+      "ts": null
+    },
+    "analytics": {
+      "ok": false,
+      "detail": "Not initialized",
+      "ts": null
+    },
+    "otel": {
+      "ok": true,
+      "detail": "OTLP/HTTP 5318 OK",
+      "ts": "2025-09-20T03:23:01.7873341+01:00"
+    }
+  }
+}

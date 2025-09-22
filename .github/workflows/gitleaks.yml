@@ -1,0 +1,33 @@
+name: Gitleaks Security Scan
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+  schedule:
+    - cron: 0 2 * * * # Daily at 2 AM
+  workflow_dispatch:
+jobs:
+  gitleaks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Full history for better detection
+      - name: Run Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
+      - name: Upload Gitleaks report
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: gitleaks-report
+          path: gitleaks-report.json
+          retention-days: 30

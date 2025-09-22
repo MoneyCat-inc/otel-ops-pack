@@ -1,0 +1,26 @@
+{
+  "metrics": {
+    "processing_efficiency": 0,
+    "queue_depth": 0,
+    "fallback_rate": 0
+  },
+  "validation_success": true,
+  "timestamp": "20250922-020044",
+  "environment": "production",
+  "sidecar_health": {
+    "aggregation": {
+      "status": "healthy",
+      "gpu_available": true,
+      "buffer_size": 0
+    },
+    "inference": {
+      "status": "healthy",
+      "triton_available": false,
+      "available_models": []
+    },
+    "compression": {
+      "status": "healthy",
+      "gpu_available": true
+    }
+  }
+}

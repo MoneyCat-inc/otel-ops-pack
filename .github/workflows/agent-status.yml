@@ -1,9 +1,8 @@
 name: agent-status
 on:
   schedule:
-    - cron: "0 9 * * *"  # Daily at 9 AM
+    - cron: 0 9 * * * # Daily at 9 AM
   workflow_dispatch:
-
 jobs:
   status:
     runs-on: ubuntu-latest
@@ -12,7 +11,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: "18"
       - name: Run Health Checks
         run: node .agent/tools/smoke.mjs
       - name: Generate Status Badge
@@ -22,4 +21,3 @@ jobs:
           else
             echo "❌ Observability Pipeline: Issues Detected" >> $GITHUB_STEP_SUMMARY
           fi
-

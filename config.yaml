@@ -1,3 +1,8 @@
+extensions:
+  health_check:
+    endpoint: 0.0.0.0:13134
+    path: /healthz
+
 receivers:
   otlp:
     protocols:
@@ -140,31 +145,11 @@ processors:
       - key: user.email
         action: delete
 
-extensions:
-  health_check:
-    endpoint: 0.0.0.0:13134
-    path: /healthz
-  pprof:
-    endpoint: 0.0.0.0:1777
-  file_storage:
-    directory: C:\ProgramData\OTel\wal
-
 service:
-  extensions: [health_check, pprof, file_storage]
-  telemetry:
-    metrics:
-      address: 0.0.0.0:8888
+  extensions:
+    - health_check
   pipelines:
-    traces:
-      receivers: [otlp]
-      processors: [memory_limiter, resource/defaults, tail_sampling, batch]
-      exporters: [logging, otlp/sigz]
-    metrics:
-      receivers: [otlp, prometheus/gpu]
-      processors: [memory_limiter, resource/defaults, batch]
-      exporters: [logging, otlp/sigz]
     logs:
       receivers: [otlp, filelog, windowseventlog/application, windowseventlog/system]
       processors: [memory_limiter, filter/drop_noise, transform/sanitize, transform/enrich, attributes/redact, batch]
       exporters: [logging, otlp/sigz]
-
