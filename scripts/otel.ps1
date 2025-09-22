@@ -54,7 +54,7 @@ function Get-OTelStatus {
     
     # Check ports
     Write-Host "`nPorts:" -ForegroundColor Cyan
-    $ports = @(14317, 14318)
+    $ports = @(4317, 4318)
     foreach ($port in $ports) {
         $ok = Test-NetConnection -ComputerName "localhost" -Port $port -WarningAction SilentlyContinue
         $status = if ($ok.TcpTestSucceeded) { "✅ Listening" } else { "❌ Closed" }
@@ -74,8 +74,9 @@ function Get-OTelStatus {
 
 function Send-OTelCanary {
     Write-Host "🧪 Sending OTLP canary..." -ForegroundColor Cyan
-    
+
     $nowNs = [string]([DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()*1000000)
+    $uri = "http://localhost:4318/v1/logs"
     $body = @{
         resourceLogs = @(@{
             resource  = @{ attributes = @(@{ key="service.name"; value=@{ stringValue="otel-canary" }}) }
@@ -90,24 +91,26 @@ function Send-OTelCanary {
     } | ConvertTo-Json -Depth 7
 
     try {
-        $resp = Invoke-RestMethod -Method Post -Uri "http://localhost:14318/v1/logs" -ContentType "application/json" -Body $body
-        Write-Host "✅ Canary sent successfully" -ForegroundColor Green
+        Write-Host "Target: $uri" -ForegroundColor Yellow
+        $resp = Invoke-RestMethod -Method Post -Uri $uri -ContentType "application/json" -Body $body
+        Write-Host "✅ Canary sent successfully to $uri" -ForegroundColor Green
         Write-Host "📊 Check SigNoz for 'otel-canary' service logs" -ForegroundColor Yellow
-    } catch { 
-        Write-Host "❌ Canary failed: $($_.Exception.Message)" -ForegroundColor Red
+    } catch {
+        Write-Host "❌ Canary failed posting to ${uri}: $($_.Exception.Message)" -ForegroundColor Red
     }
 }
 
 function Test-OTelHealth {
     Write-Host "🏥 OTel Health Check" -ForegroundColor Cyan
     Write-Host "===================" -ForegroundColor Cyan
-    
+
     # Test collector endpoint
+    $uri = "http://localhost:4318/v1/logs"
     try {
-        $response = Invoke-WebRequest -Uri "http://localhost:14318/v1/logs" -Method Post -ContentType "application/json" -Body '{"test":"health"}' -TimeoutSec 5
-        Write-Host "Collector HTTP: ✅ Responding" -ForegroundColor Green
+        $response = Invoke-WebRequest -Uri $uri -Method Post -ContentType "application/json" -Body '{"test":"health"}' -TimeoutSec 5
+        Write-Host "Collector HTTP (4318): ✅ Responding" -ForegroundColor Green
     } catch {
-        Write-Host "Collector HTTP: ❌ Not responding" -ForegroundColor Red
+        Write-Host "Collector HTTP (4318): ❌ Not responding at $uri" -ForegroundColor Red
     }
     
     # Test SigNoz
