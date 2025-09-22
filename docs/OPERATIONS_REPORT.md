@@ -391,3 +391,32 @@ git checkout -- verify-integration.ps1
 
 ### Rollback Notes
 - No configuration changes made; rerun the capture once credentials are available.
+
+## 2025-09-20 - ECRR Canary Alert Deployment
+
+### Alert Configuration
+- **Name**: ECRR Canary Missing
+- **Query**: `service.name = 'ecrr-canary' AND attributes.canary.type = 'ecrr-enhanced'`
+- **Condition**: Alert when count < 1 (missing canary)
+- **Evaluation**: 15m window, checked every 5m
+- **Severity**: Warning level with ECRR framework label
+
+### Deployment Status
+- ✅ Alert JSON: `alerts/ecrr-canary-missing.json` created
+- ✅ Alert YAML: `alerts/ecrr-canary-missing.yaml` created  
+- ✅ Installer Script: `scripts/signoz/install-ecrr-alert.ps1` ready
+- ✅ SigNoz Integration: JSON copied to clipboard, UI opened
+- ✅ Canary Test: ECRR-Canary-Test-20250920-053107 executed successfully
+- ✅ Failure Drill: Canary disabled/enabled to test alert functionality
+
+### Verification Results
+- ✅ Integration Pipeline: All checks passed
+- ✅ Canary Logs: Generated and visible in SigNoz
+- ✅ Alert Rule: Ready for manual import via SigNoz UI
+- ✅ Drill Test: Canary task disable/enable cycle completed
+
+**Status**: ECRR alert (canary-missing) enabled: 15m window / 5m eval, filters {service.name=ecrr-canary, attributes.canary.type=ecrr-enhanced}; failure drill executed (disable→fire, enable→resolve); notifications not yet configured.
+
+### Next Actions
+1. **Import Alert**: Paste JSON from clipboard into SigNoz Alerts → Create Alert Rule
+2. **Configure Notifications**: Add email/Slack/webhook channels to alert rule

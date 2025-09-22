@@ -1,0 +1,107 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:5091
+      http:
+        endpoint: 0.0.0.0:5092
+
+processors:
+  memory_limiter:
+    check_interval: 2s
+    limit_mib: 2048
+    spike_limit_mib: 2048
+  
+  batch/traces:
+    timeout: 100ms
+    send_batch_size: 20000
+    send_batch_max_size: 20000
+    metadata_keys:
+      - service.name
+      - run.id
+      - run.stage
+  
+  batch/metrics:
+    timeout: 500ms
+    send_batch_size: 20000
+    send_batch_max_size: 20000
+    metadata_keys:
+      - service.name
+      - run.id
+      - run.stage
+  
+  batch/logs:
+    timeout: 5000ms
+    send_batch_size: 20000
+    send_batch_max_size: 20000
+    metadata_keys:
+      - service.name
+      - run.id
+      - run.stage
+  
+  attributes/run:
+    actions:
+      - action: upsert
+        key: run.id
+        value: row03-r3-20250922-030818
+      - action: upsert
+        key: run.stage
+        value: stage1
+      - action: upsert
+        key: run.label
+        value: row03
+      - action: upsert
+        key: experiment.timestamp
+        value: 20250922-030818
+      - action: upsert
+        key: service.name
+        value: otel-doe-collector
+
+exporters:
+  debug:
+    verbosity: basic
+  
+  otlp/signoz:
+    endpoint: http://localhost:14317
+    tls:
+      insecure: true
+    compression: gzip
+    timeout: 30s
+    retry_on_failure:
+      enabled: true
+      initial_interval: 1s
+      max_interval: 30s
+      max_elapsed_time: 15m
+    sending_queue:
+      enabled: true
+      storage: file_storage
+      num_consumers: 4
+      queue_size: 15000
+
+extensions:
+  health_check:
+    endpoint: 0.0.0.0:5093
+    path: /healthz
+  pprof:
+    endpoint: 0.0.0.0:5094
+  file_storage:
+    directory: C:\ProgramData\OTel\wal\row03-r3-20250922-030818
+
+service:
+  extensions: [health_check, pprof, file_storage]
+  telemetry:
+    metrics:
+      address: 0.0.0.0:5095
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, attributes/run, batch/traces]
+      exporters: [debug, otlp/signoz]
+    metrics:
+      receivers: [otlp]
+      processors: [memory_limiter, attributes/run, batch/metrics]
+      exporters: [debug, otlp/signoz]
+    logs:
+      receivers: [otlp]
+      processors: [memory_limiter, attributes/run, batch/logs]
+      exporters: [debug, otlp/signoz]

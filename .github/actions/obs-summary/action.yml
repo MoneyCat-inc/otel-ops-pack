@@ -1,29 +1,27 @@
-name: "Observability Summary"
-description: "Write a reviewer-friendly success/failure summary for observability verification runs."
-author: "Observability Copilot"
-
+name: Observability Summary
+description: Write a reviewer-friendly success/failure summary for observability verification runs.
+author: Observability Copilot
 inputs:
   outcome:
-    description: "Result of the verification step (success|failure)"
+    description: Result of the verification step (success|failure)
     required: true
   golden_pr_url:
-    description: "URL to the Golden Reference PR"
+    description: URL to the Golden Reference PR
     required: true
   checklist_path:
-    description: "Path to the full reviewer checklist in the repo"
-    default: "artifacts/REVIEWER_CHECKLIST.md"
+    description: Path to the full reviewer checklist in the repo
+    default: artifacts/REVIEWER_CHECKLIST.md
     required: false
   quick_guide_path:
-    description: "Path to the PR comment template / quick guide"
-    default: "artifacts/PR_COMMENT_TEMPLATE.md"
+    description: Path to the PR comment template / quick guide
+    default: artifacts/PR_COMMENT_TEMPLATE.md
     required: false
   include_artifacts_list:
-    description: "Comma-separated list of artifact filenames to mention"
-    default: "verify-run.txt,api-sample.json"
+    description: Comma-separated list of artifact filenames to mention
+    default: verify-run.txt,api-sample.json
     required: false
-
 runs:
-  using: "composite"
+  using: composite
   steps:
     - name: Write Observability Summary
       shell: bash

@@ -1,0 +1,85 @@
+# GPU Sidecar Services for OpenTelemetry Workloads
+version: '3.8'
+
+services:
+  gpu-compression-sidecar:
+    build:
+      context: .
+      dockerfile: Dockerfile.gpu-base
+    image: otel-gpu-sidecar:latest
+    container_name: otel-gpu-compression
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+      - CUDA_VISIBLE_DEVICES=0
+    volumes:
+      - ./gpu-buffers:/app/gpu-buffers
+      - ./sidecars/compression:/app/sidecars/compression
+    working_dir: /app/sidecars/compression
+    command: python3 compression_sidecar.py
+    ports:
+      - "8001:8001"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  gpu-aggregation-sidecar:
+    build:
+      context: .
+      dockerfile: Dockerfile.gpu-base
+    image: otel-gpu-sidecar:latest
+    container_name: otel-gpu-aggregation
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+      - CUDA_VISIBLE_DEVICES=0
+    volumes:
+      - ./gpu-buffers:/app/gpu-buffers
+      - ./sidecars/aggregation:/app/sidecars/aggregation
+    working_dir: /app/sidecars/aggregation
+    command: python3 aggregation_sidecar.py
+    ports:
+      - "8002:8002"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  gpu-inference-sidecar:
+    build:
+      context: .
+      dockerfile: Dockerfile.gpu-base
+    image: otel-gpu-sidecar:latest
+    container_name: otel-gpu-inference
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+      - CUDA_VISIBLE_DEVICES=0
+    volumes:
+      - ./gpu-buffers:/app/gpu-buffers
+      - ./sidecars/inference:/app/sidecars/inference
+    working_dir: /app/sidecars/inference
+    command: python3 inference_sidecar.py
+    ports:
+      - "8003:8003"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8003/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  default:
+    name: otel-gpu-network

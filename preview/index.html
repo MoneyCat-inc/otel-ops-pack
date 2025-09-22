@@ -1,0 +1,163 @@
+<!-- See C:\otel\docs\comfort cat -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cat Nap Control Room - OTel Preview</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'cat-nap': {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <!-- Cat Nap Control Room Header -->
+    <header class="bg-gray-800 border-b border-gray-700 p-4">
+        <div class="flex items-center justify-between">
+            <h1 class="text-2xl font-bold text-cat-nap-400">🐱 Cat Nap Control Room</h1>
+            <div class="flex items-center space-x-4">
+                <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                <span class="text-sm text-gray-300">Pipeline Active</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dashboard -->
+    <main class="p-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Logs Panel -->
+            <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+                <h2 class="text-lg font-semibold text-cat-nap-300 mb-4">📋 Logs</h2>
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-300">Recent Events</span>
+                        <span class="text-cat-nap-400 font-mono">42</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-300">Canary Tests</span>
+                        <span class="text-green-400 font-mono">8</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-300">Filtered Noise</span>
+                        <span class="text-yellow-400 font-mono">23</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Metrics Panel -->
+            <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+                <h2 class="text-lg font-semibold text-cat-nap-300 mb-4">📊 Metrics</h2>
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-300">Batch Processing</span>
+                        <span class="text-cat-nap-400 font-mono">200ms</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-300">Export Rate</span>
+                        <span class="text-green-400 font-mono">99.2%</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-300">Noise Reduction</span>
+                        <span class="text-blue-400 font-mono">47%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Traces Panel -->
+            <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+                <h2 class="text-lg font-semibold text-cat-nap-300 mb-4">🔍 Traces</h2>
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-300">P95 Latency</span>
+                        <span class="text-green-400 font-mono">0.8s</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-300">P99 Latency</span>
+                        <span class="text-yellow-400 font-mono">1.2s</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-300">Success Rate</span>
+                        <span class="text-green-400 font-mono">99.8%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Bar -->
+        <div class="mt-8 bg-gray-800 rounded-lg p-4 border border-gray-700">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-6">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-2 h-2 bg-green-400 rounded-full"></div>
+                        <span class="text-sm text-gray-300">SigNoz</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-2 h-2 bg-green-400 rounded-full"></div>
+                        <span class="text-sm text-gray-300">Windows Collector</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-2 h-2 bg-green-400 rounded-full"></div>
+                        <span class="text-sm text-gray-300">Docker Services</span>
+                    </div>
+                </div>
+                <div class="text-sm text-gray-400">
+                    Last updated: <span id="lastUpdate">--:--:--</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cat Silhouette -->
+        <div class="mt-8 flex justify-center">
+            <div class="text-6xl opacity-20">🐱</div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 border-t border-gray-700 p-4 mt-8">
+        <div class="text-center text-sm text-gray-400">
+            <p>Sleep easy. We've got the signal.</p>
+            <p class="mt-1">OTel Pipeline • ECRR Methodology • Cat Nap Control Room</p>
+        </div>
+    </footer>
+
+    <script>
+        // Update timestamp
+        function updateTimestamp() {
+            document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
+        }
+        
+        updateTimestamp();
+        setInterval(updateTimestamp, 1000);
+        
+        // Simulate gentle pulsing for status indicators
+        setInterval(() => {
+            const indicators = document.querySelectorAll('.w-2.h-2, .w-3.h-3');
+            indicators.forEach(indicator => {
+                indicator.style.opacity = '0.5';
+                setTimeout(() => {
+                    indicator.style.opacity = '1';
+                }, 500);
+            });
+        }, 2000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+{
+  "files.watcherExclude": {
+    "**/.git/**": true,
+    "**/.agent/logs/**": true,
+    "**/artifacts/**": true,
+    "**/logs/**": true,
+    "**/queue/**": true,
+    "**/backup/**": true,
+    "**/state/**": true,
+    "**/tmp/**": true
+  },
+  "search.exclude": {
+    "**/.agent/logs/**": true,
+    "**/artifacts/**": true,
+    "**/logs/**": true,
+    "**/queue/**": true,
+    "**/backup/**": true,
+    "**/state/**": true,
+    "**/tmp/**": true
+  },
+  "editor.inlineSuggest.enabled": false,
+  "typescript.tsserver.maxTsServerMemory": 4096,
+  "typescript.tsserver.watchOptions": {
+    "watchDirectory": "useFsEvents"
+  }
+}

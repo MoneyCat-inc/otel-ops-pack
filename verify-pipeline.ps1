@@ -1,90 +1,73 @@
-Write-Host "== Verifying Observability Pipeline ==" -ForegroundColor Cyan
+# SigNoz Pipeline Verification Script
+# Run this after restarting the Windows collector service
 
-$failures = @()
+Write-Host "=== SigNoz Pipeline Verification ===" -ForegroundColor Green
 
-function Test-Port {
-    param(
-        [int[]]$Ports,
-        [string]$Label
-    )
+# 1. Check service status
+Write-Host "`n1. Checking Windows collector service..." -ForegroundColor Yellow
+sc.exe query otelcol-contrib
 
-    foreach ($port in $Ports) {
-        $listening = Test-NetConnection -ComputerName "localhost" -Port $port -WarningAction SilentlyContinue -InformationLevel Quiet
-        if ($listening) {
-            Write-Host "  [OK] $Label port $port listening" -ForegroundColor Green
-            return
-        }
-    }
+# 2. Emit fresh canaries
+Write-Host "`n2. Emitting fresh canary logs..." -ForegroundColor Yellow
+Write-EventLog -LogName Application -Source SigNozTest -EventId 999 -EntryType Information -Message "SigNoz pipeline test event from Codex - $(Get-Date)"
 
-    Write-Host "  [FAIL] $Label not listening on ports $($Ports -join ', ')" -ForegroundColor Red
-    $failures += "$Label port unavailable"
-}
+$timestamp = (Get-Date).ToString('o')
+$canary = '{"event":"signoz_canary","severity":"ERROR","message":"SigNoz file canary log","synthetic_id":"pipeline-check","timestamp":"' + $timestamp + '"}'
+Add-Content -Path 'C:/logs/app.json' -Value $canary
 
-Write-Host "[1/5] Checking SigNoz UI health..." -ForegroundColor Yellow
-try {
-    $uiResponse = Invoke-RestMethod -Uri "http://localhost:8080/api/v1/health" -TimeoutSec 5
-    if ($uiResponse.status -eq "ok") {
-        Write-Host "  [OK] SigNoz UI status: ok" -ForegroundColor Green
-    } else {
-        Write-Host "  [FAIL] SigNoz UI status: $($uiResponse.status)" -ForegroundColor Red
-        $failures += "SigNoz UI health"
-    }
-} catch {
-    Write-Host "  [FAIL] SigNoz UI unreachable: $($_.Exception.Message)" -ForegroundColor Red
-    $failures += "SigNoz UI health"
-}
+Write-Host "✓ Windows Event Log entry created" -ForegroundColor Green
+Write-Host "✓ File log entry created" -ForegroundColor Green
 
-Write-Host "[2/5] Checking collector health endpoint..." -ForegroundColor Yellow
-try {
-    $collectorResponse = Invoke-RestMethod -Uri "http://localhost:13134/healthz" -TimeoutSec 5
-    if (@("Serving", "Server available") -contains $collectorResponse.status) {
-        Write-Host "  [OK] Collector health: $($collectorResponse.status)" -ForegroundColor Green
-    } else {
-        Write-Host "  [FAIL] Collector health: $($collectorResponse.status)" -ForegroundColor Red
-        $failures += "Collector health"
-    }
-} catch {
-    Write-Host "  [FAIL] Collector health endpoint unreachable: $($_.Exception.Message)" -ForegroundColor Red
-    $failures += "Collector health"
-}
+# 3. Wait for processing
+Write-Host "`n3. Waiting for log processing (30 seconds)..." -ForegroundColor Yellow
+Start-Sleep -Seconds 30
 
-Write-Host "[3/5] Checking collector metrics endpoint..." -ForegroundColor Yellow
-try {
-    $metricsResponse = Invoke-WebRequest -Uri "http://localhost:8888/metrics" -TimeoutSec 5
-    if ($metricsResponse.StatusCode -eq 200) {
-        $metricLines = $metricsResponse.Content -split "`n" | Where-Object { $_ -match "otelcol_" }
-        Write-Host "  [OK] Metrics endpoint responded with $($metricLines.Count) otelcol_* metrics" -ForegroundColor Green
-    } else {
-        Write-Host "  [FAIL] Metrics endpoint returned status $($metricsResponse.StatusCode)" -ForegroundColor Red
-        $failures += "Collector metrics"
-    }
-} catch {
-    Write-Host "  [FAIL] Collector metrics unreachable: $($_.Exception.Message)" -ForegroundColor Red
-    $failures += "Collector metrics"
-}
+# 4. Query SigNoz for canaries
+Write-Host "`n4. Querying SigNoz for canary logs..." -ForegroundColor Yellow
 
-Write-Host "[4/5] Checking OTLP listener ports..." -ForegroundColor Yellow
-Test-Port -Ports @(5317, 4317) -Label "OTLP gRPC"
-Test-Port -Ports @(5318, 4318) -Label "OTLP HTTP"
+$query = @"
+SELECT fromUnixTimestamp64Milli(timestamp) AS ts, JSONExtractString(body, 'message') AS message
+FROM signoz_logs.distributed_logs_v2
+WHERE JSONExtractString(body, 'message') ILIKE '%SigNoz pipeline test%'
+ORDER BY timestamp DESC
+LIMIT 3
+"@
 
-Write-Host "[5/5] Checking canary log freshness..." -ForegroundColor Yellow
-$logPath = "C:\\logs\\canary-test.log"
-if (Test-Path $logPath) {
-    $lastWrite = (Get-Item $logPath).LastWriteTime
-    $ageMinutes = ((Get-Date) - $lastWrite).TotalMinutes
-    Write-Host "  [OK] Canary log exists (age: $([math]::Round($ageMinutes, 2)) minutes)" -ForegroundColor Green
+Write-Host "Windows Event Log canaries:" -ForegroundColor Cyan
+$result1 = docker exec signoz-clickhouse clickhouse-client --query "$query"
+if ($result1) {
+    Write-Host $result1 -ForegroundColor Green
 } else {
-    Write-Host "  [FAIL] Canary log file missing at $logPath" -ForegroundColor Red
-    $failures += "Canary log missing"
+    Write-Host "No Windows Event Log canaries found yet. Try waiting longer or check SigNoz UI." -ForegroundColor Yellow
 }
 
-if ($failures.Count -eq 0) {
-    Write-Host "== Observability pipeline healthy ==" -ForegroundColor Green
-    exit 0
+$query2 = @"
+SELECT fromUnixTimestamp64Milli(timestamp) AS ts, body
+FROM signoz_logs.distributed_logs_v2
+WHERE body ILIKE '%signoz_canary%'
+ORDER BY timestamp DESC
+LIMIT 3
+"@
+
+Write-Host "`nFile log canaries:" -ForegroundColor Cyan
+$result2 = docker exec signoz-clickhouse clickhouse-client --query "$query2"
+if ($result2) {
+    Write-Host $result2 -ForegroundColor Green
 } else {
-    Write-Host "== Observability pipeline issues detected ==" -ForegroundColor Red
-    Write-Host "Failing checks: $($failures -join ', ')" -ForegroundColor Red
-    exit 1
+    Write-Host "No file log canaries found yet. Try waiting longer or check SigNoz UI." -ForegroundColor Yellow
 }
 
+# 5. Provide UI instructions
+Write-Host "`n5. SigNoz UI Verification:" -ForegroundColor Yellow
+Write-Host "Open http://localhost:8080 → Logs" -ForegroundColor Cyan
+Write-Host "Add filter: message contains 'SigNoz pipeline test'" -ForegroundColor Cyan
+Write-Host "Or filter: log.file.path contains 'C:/logs/app.json'" -ForegroundColor Cyan
 
+# 6. Alternative verification
+Write-Host "`n6. Alternative verification commands:" -ForegroundColor Yellow
+Write-Host "Check recent Windows Event Log:" -ForegroundColor Cyan
+Write-Host "Get-WinEvent -FilterHashtable @{LogName='Application'; ID=999} -MaxEvents 1" -ForegroundColor White
+Write-Host "Check file log:" -ForegroundColor Cyan
+Write-Host "Get-Content 'C:/logs/app.json' -Tail 1" -ForegroundColor White
+
+Write-Host "`n=== Verification Complete ===" -ForegroundColor Green

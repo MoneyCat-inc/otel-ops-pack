@@ -1,118 +1,152 @@
 # New Relic Integration Template
 # Copy this template and customize for your New Relic setup
-
+# 
 # =============================================================================
 # NEW RELIC EXPORTER CONFIGURATION
 # =============================================================================
-
 exporters:
   newrelic:
     # Basic New Relic configuration
-    apikey: ${NEW_RELIC_API_KEY}  # Use environment variable for security
-    endpoint: https://otlp.nr-data.net  # New Relic OTLP endpoint
-    
+    apikey: ${NEW_RELIC_API_KEY} # Use environment variable for security
+    endpoint: https://otlp.nr-data.net # New Relic OTLP endpoint
     # Optional: Custom headers
     headers:
       api-key: ${NEW_RELIC_API_KEY}
-    
     # Optional: Custom timeout
     timeout: 30s
-    
     # Retry configuration
     retry_on_failure:
       enabled: true
       initial_interval: 1s
       max_interval: 30s
       max_elapsed_time: 300s
-    
     # Queue configuration
     sending_queue:
       enabled: true
       num_consumers: 4
       queue_size: 8192
       storage: file_storage
-
 # =============================================================================
+
 # NEW RELIC RECEIVER CONFIGURATION (Optional)
+
 # =============================================================================
 
 # If you want to receive data directly from New Relic agents:
 receivers:
   newrelic:
-    endpoint: 127.0.0.1:8080  # New Relic agent endpoint
+    endpoint: 127.0.0.1:8080 # New Relic agent endpoint
     tls:
-      insecure: true  # Set to false for production with TLS
-
+      insecure: true # Set to false for production with TLS
 # =============================================================================
 # PIPELINE INTEGRATION
+
 # =============================================================================
 
 # Add to your service pipelines:
+
 # service:
+
 #   pipelines:
+
 #     logs:
+
 #       receivers: [otlp, filelog]
+
 #       processors: [resource/defaults, memory_limiter, batch]
+
 #       exporters: [otlp, newrelic]  # Add newrelic exporter
+
 #     traces:
+
 #       receivers: [otlp]
+
 #       processors: [resource/defaults, tail_sampling, memory_limiter, batch]
+
 #       exporters: [otlp, newrelic]  # Add newrelic exporter
+
 #     metrics:
+
 #       receivers: [otlp, prometheus]
+
 #       processors: [resource/defaults, memory_limiter, batch]
+
 #       exporters: [otlp, newrelic]  # Add newrelic exporter
 
 # =============================================================================
+
 # CUSTOMIZATION OPTIONS
+
 # =============================================================================
 
 # 1. Different New Relic regions:
+
 # endpoint: https://otlp.eu01.nr-data.net  # EU
+
 # endpoint: https://otlp.us01.nr-data.net  # US
 
 # 2. Custom headers:
+
 # headers:
+
 #   api-key: ${NEW_RELIC_API_KEY}
+
 #   X-Custom-Header: "value"
 
 # 3. Custom timeout:
+
 # timeout: 60s
 
 # 4. Custom queue settings:
+
 # sending_queue:
+
 #   num_consumers: 8
+
 #   queue_size: 16384
 
 # 5. Custom retry settings:
+
 # retry_on_failure:
+
 #   initial_interval: 2s
+
 #   max_interval: 60s
+
 #   max_elapsed_time: 600s
 
 # =============================================================================
+
 # ENVIRONMENT VARIABLES
+
 # =============================================================================
 
 # Set these environment variables:
+
 # $env:NEW_RELIC_API_KEY = "your-newrelic-api-key"
+
 # $env:NEW_RELIC_APP_NAME = "otel-collector"
+
 # $env:NEW_RELIC_LICENSE_KEY = "your-newrelic-license-key"
 
 # =============================================================================
+
 # VERIFICATION COMMANDS
+
 # =============================================================================
 
 # Test New Relic connectivity:
+
 # Invoke-WebRequest -Uri "https://otlp.nr-data.net/v1/traces" -Headers @{"api-key" = $env:NEW_RELIC_API_KEY} -UseBasicParsing
 
 # Validate configuration:
+
 # C:\otel\config-schema.ps1 -ConfigPath C:\otel\config.yaml
 
 # Apply configuration:
+
 # C:\otel\safe-apply-config.ps1 -Candidate C:\otel\config.candidate.yaml
 
 # Verify data flow:
+
 # C:\otel\canary-check-min.ps1
-
-

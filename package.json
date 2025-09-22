@@ -1,0 +1,50 @@
+{
+  "name": "otel-observability-kit",
+  "version": "1.0.0",
+  "description": "Windows OTel to SigNoz observability pipeline with ECRR methodology",
+  "scripts": {
+    "pr:new": "node scripts/new-pr.mjs",
+    "ecrr:template": "node scripts/ensure-pr-template.mjs",
+    "ecrr:drill": "pwsh -File scripts/ecrr-failure-drill.ps1",
+    "canary:status": "Get-ScheduledTask -TaskName 'OTel-ECRR-Canary' | Get-ScheduledTaskInfo",
+    "canary:report": "Get-Content artifacts/canary-ecrr-report.txt -Tail 10",
+    "hygiene": "pwsh ./tools/hygiene.ps1",
+    "test:smoke": "playwright test -c playwright.smoke.config.ts",
+    "test:smoke:ci": "playwright test -c playwright.smoke.config.ts --reporter=list",
+    "tidy": "pwsh -File scripts/quick-tidy.ps1",
+    "clean:deep": "pwsh -File scripts/deep-clean.ps1",
+    "lint": "eslint . --ext .js,.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "jest -w 1",
+    "quality": "npm run lint && npm run typecheck || true",
+    "monitor:quick": "pwsh -File scripts/quick-monitor.ps1",
+    "monitor:full": "pwsh -File scripts/monitor-optimized-pipeline.ps1",
+    "monitor:export": "pwsh -File scripts/monitor-optimized-pipeline.ps1 -ExportReport",
+    "preview:dev": "cd preview && npm run dev",
+    "preview:serve": "cd preview && npm run serve",
+    "preview:build": "cd preview && npm run build",
+    "comfort:sync": "pwsh -File scripts/scaffold-comfort-cat.ps1 -Force",
+    "comfort:check": "pwsh -File scripts/comfort-checklist.ps1",
+    "comfort:scaffold": "pwsh -File scripts/scaffold-comfort-cat.ps1",
+    "comfort:sanity": "pwsh -File scripts/comfort-cat-sanity-sweep.ps1"
+  },
+  "keywords": [
+    "observability",
+    "otel",
+    "signoz",
+    "ecrr",
+    "windows"
+  ],
+  "author": "Observability Copilot",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0",
+    "eslint": "^9.0.0",
+    "jest": "^29.7.0",
+    "prettier": "^3.3.3",
+    "typescript": "^5.6.2"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "alert": {
+    "name": "ECRR Canary Missing",
+    "description": "ECRR-enhanced canary missing from pipeline. Expected canary every 10 minutes with canary.type='ecrr-enhanced', but none received in last 15 minutes. Current value: {{$value}} canaries in last 15 minutes. Threshold: {{$threshold}} (minimum expected).",
+    "severity": "warning",
+    "labels": {
+      "service": "ecrr-canary",
+      "component": "health-check",
+      "severity": "warning",
+      "environment": "local",
+      "framework": "ecrr"
+    },
+    "query": {
+      "queryType": "logs",
+      "logsQuery": {
+        "query": "service.name = 'ecrr-canary' AND attributes.canary.type = 'ecrr-enhanced'",
+        "groupBy": ["service.name", "attributes.canary.type"],
+        "legendFormat": "{{service.name}} - {{attributes.canary.type}} Canaries"
+      }
+    },
+    "condition": {
+      "threshold": 1,
+      "operator": "below",
+      "evaluationWindow": "15m",
+      "alertFrequency": "5m",
+      "notificationOnMissingData": true,
+      "minimumDataPoints": 1
+    },
+    "notificationChannels": [
+      "email-default",
+      "slack-default"
+    ]
+  }
+}

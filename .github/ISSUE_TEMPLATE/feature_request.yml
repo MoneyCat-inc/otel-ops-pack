@@ -1,0 +1,112 @@
+name: ✨ Feature Request
+description: Suggest an idea for the OTel Ops Pack
+title: '[Feature]: '
+labels:
+  - enhancement
+  - needs-triage
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a new feature! Please provide as much detail as possible about your idea.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: What problem does this feature solve?
+      placeholder: Is your feature request related to a problem? Please describe...
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: Describe the solution you'd like
+      placeholder: A clear and concise description of what you want to happen.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternative Solutions
+      description: Describe any alternative solutions you've considered
+      placeholder: A clear and concise description of any alternative solutions or features you've considered.
+    validations:
+      required: false
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      description: Which component would this feature affect?
+      options:
+        - OpenTelemetry Collector
+        - SigNoz Stack
+        - PowerShell Scripts
+        - Docker Compose
+        - CI/CD Workflows
+        - Documentation
+        - Monitoring & Alerting
+        - Other
+    validations:
+      required: true
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: How important is this feature?
+      options:
+        - Low - Nice to have
+        - Medium - Would improve workflow
+        - High - Critical for current work
+        - Urgent - Blocking current work
+    validations:
+      required: true
+  - type: textarea
+    id: use-cases
+    attributes:
+      label: Use Cases
+      description: Describe specific use cases for this feature
+      placeholder: |
+        1. Use case 1: ...
+        2. Use case 2: ...
+        3. Use case 3: ...
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: Define what "done" looks like for this feature
+      placeholder: |
+        - [ ] Criterion 1
+        - [ ] Criterion 2
+        - [ ] Criterion 3
+    validations:
+      required: true
+  - type: textarea
+    id: implementation-notes
+    attributes:
+      label: Implementation Notes
+      description: Any technical considerations or implementation ideas
+      placeholder: Any technical details, considerations, or implementation ideas...
+    validations:
+      required: false
+  - type: checkboxes
+    id: hygiene
+    attributes:
+      label: Hygiene Checklist
+      description: Please confirm you've completed these checks
+      options:
+        - label: Ran `pwsh .\tools\hygiene.ps1` and reviewed results
+          required: true
+        - label: Checked for similar features in existing issues/PRs
+          required: true
+        - label: Verified this aligns with project goals
+          required: true
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Any other context about the feature request
+      placeholder: Add any other context or screenshots about the feature request here...

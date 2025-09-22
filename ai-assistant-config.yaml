@@ -1,6 +1,5 @@
 # AI Assistant Configuration
 # Configuration for AI assistant capabilities and behavior
-
 ai_assistant:
   # Core capabilities
   capabilities:
@@ -12,41 +11,35 @@ ai_assistant:
     - security_validation
     - template_generation
     - troubleshooting_guidance
-  
   # Integration settings
   integrations:
     kafka:
       enabled: true
-      validation_rules: "strict"
+      validation_rules: strict
       smoke_test: true
-      template: "kafka-integration.yaml"
-    
+      template: kafka-integration.yaml
     prometheus:
       enabled: true
-      validation_rules: "standard"
+      validation_rules: standard
       smoke_test: true
-      template: "prometheus-integration.yaml"
-    
+      template: prometheus-integration.yaml
     jaeger:
       enabled: true
-      validation_rules: "standard"
+      validation_rules: standard
       smoke_test: true
-      template: "jaeger-integration.yaml"
-    
+      template: jaeger-integration.yaml
     datadog:
       enabled: false
-      validation_rules: "strict"
+      validation_rules: strict
       smoke_test: true
-      template: "datadog-integration.yaml"
+      template: datadog-integration.yaml
       requires_auth: true
-    
     newrelic:
       enabled: false
-      validation_rules: "strict"
+      validation_rules: strict
       smoke_test: true
-      template: "newrelic-integration.yaml"
+      template: newrelic-integration.yaml
       requires_auth: true
-  
   # Safety and security checks
   safety_checks:
     - ascii_only
@@ -55,7 +48,6 @@ ai_assistant:
     - validation_required
     - rollback_plan
     - audit_trail
-  
   # Validation rules
   validation:
     security:
@@ -63,61 +55,53 @@ ai_assistant:
       - check_hardcoded_secrets
       - check_cors_settings
       - check_tls_configuration
-    
     performance:
       - check_memory_limits
       - check_batch_settings
       - check_queue_sizes
       - check_timeout_values
-    
     configuration:
       - check_required_sections
       - check_pipeline_completeness
       - check_component_names
       - check_yaml_syntax
-  
   # Template management
   templates:
-    base_path: "C:\\otel\\templates"
-    marketplace: "marketplace.json"
+    base_path: C:\otel\templates
+    marketplace: marketplace.json
     auto_validate: true
     include_examples: true
-  
   # Context and knowledge
   context:
-    patterns_file: "C:\\otel\\ai-context\\integration-patterns.md"
-    configurations_file: "C:\\otel\\ai-context\\common-configurations.yaml"
-    troubleshooting_file: "C:\\otel\\ai-context\\troubleshooting-guide.md"
-    best_practices_file: "C:\\otel\\ai-context\\best-practices.md"
-    checklist_file: "C:\\otel\\ai-context\\integration-checklist.md"
-  
+    patterns_file: C:\otel\ai-context\integration-patterns.md
+    configurations_file: C:\otel\ai-context\common-configurations.yaml
+    troubleshooting_file: C:\otel\ai-context\troubleshooting-guide.md
+    best_practices_file: C:\otel\ai-context\best-practices.md
+    checklist_file: C:\otel\ai-context\integration-checklist.md
   # Testing and validation
   testing:
-    integration_tests: "C:\\otel\\integration-tests.ps1"
-    config_schema: "C:\\otel\\config-schema.ps1"
-    regression_check: "C:\\otel\\regression-check.ps1"
-    canary_test: "C:\\otel\\canary-check-min.ps1"
+    integration_tests: C:\otel\integration-tests.ps1
+    config_schema: C:\otel\config-schema.ps1
+    regression_check: C:\otel\regression-check.ps1
+    canary_test: C:\otel\canary-check-min.ps1
     smoke_tests:
-      kafka: "C:\\otel\\kafka-smoke.ps1"
-      prometheus: "built-in"
-      jaeger: "built-in"
-  
+      kafka: C:\otel\kafka-smoke.ps1
+      prometheus: built-in
+      jaeger: built-in
   # Operational procedures
   operations:
-    safe_apply: "C:\\otel\\safe-apply-config.ps1"
-    audit_pack: "C:\\otel\\make-audit-pack.ps1"
-    health_check: "C:\\otel\\green-sheet.ps1"
-    rollback: "automatic"
-  
+    safe_apply: C:\otel\safe-apply-config.ps1
+    audit_pack: C:\otel\make-audit-pack.ps1
+    health_check: C:\otel\green-sheet.ps1
+    rollback: automatic
   # AI behavior settings
   behavior:
-    default_mode: "safe"
+    default_mode: safe
     auto_validate: true
     require_confirmation: true
     generate_docs: true
     create_audit_trail: true
     provide_rollback_plan: true
-  
   # Error handling
   error_handling:
     max_retries: 3
@@ -125,25 +109,20 @@ ai_assistant:
     fallback_to_backup: true
     notify_on_failure: true
     log_all_attempts: true
-  
   # Performance settings
   performance:
     max_memory_mb: 512
     max_batch_size: 4096
     max_queue_size: 8192
     timeout_seconds: 30
-  
   # Logging and monitoring
   logging:
-    level: "INFO"
-    log_file: "C:\\otel\\logs\\ai-assistant.last.txt"
+    level: INFO
+    log_file: C:\otel\logs\ai-assistant.last.txt
     include_timestamps: true
     include_context: true
-  
   # Version and metadata
-  version: "1.0.0"
+  version: 1.0.0
   last_updated: "2025-09-18"
-  compatible_with: "PowerShell 5.1+"
+  compatible_with: PowerShell 5.1+
   ascii_only: true
-
-

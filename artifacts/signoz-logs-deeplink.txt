@@ -1,0 +1,2 @@
+SigNoz Logs — quick link (open with scripts/open-signoz-logs.ps1)
+http://localhost:8080/logs
