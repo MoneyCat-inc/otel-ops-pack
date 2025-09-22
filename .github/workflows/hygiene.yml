@@ -76,7 +76,7 @@ jobs:
           $env:PATH += ";$(Get-Location)\otelcol"
           echo "$(Get-Location)\otelcol" >> $env:GITHUB_PATH
       - name: Cache PowerShell modules
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~\Documents\WindowsPowerShell\Modules
           key: ${{ runner.os }}-psmodules-${{ hashFiles('**/*.ps1') }}
