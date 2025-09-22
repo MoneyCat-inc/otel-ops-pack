@@ -26,6 +26,14 @@ receivers:
         from: attributes["log.file.name"]
         to: attributes["log.file.name"]
 
+  windowseventlog/application:
+    channel: Application
+    start_at: end
+
+  windowseventlog/system:
+    channel: System
+    start_at: end
+
 exporters:
   logging:
     loglevel: info
@@ -156,7 +164,7 @@ service:
       processors: [memory_limiter, resource/defaults, batch]
       exporters: [logging, otlp/sigz]
     logs:
-      receivers: [otlp, filelog, windowseventlog/application, prometheus/gpu]
+      receivers: [otlp, filelog, windowseventlog/application, windowseventlog/system]
       processors: [memory_limiter, filter/drop_noise, transform/sanitize, transform/enrich, attributes/redact, batch]
       exporters: [logging, otlp/sigz]
 
