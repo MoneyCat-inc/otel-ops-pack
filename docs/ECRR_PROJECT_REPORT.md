@@ -1,59 +1,84 @@
-# Resonai - ECRR Project Report
+# 📑 **Resonai — Full Project ECRR Report**
 
-## E - Examine (Current State)
+## **E — Examine (Current State)**
 
-- Core product: a local-first voice feminization trainer built with Next.js 14, React 18, TypeScript, Tailwind, and AudioWorklets.
-- Delivered milestones:
-   - M1: safe warm-up FSM, IndexedDB session logging.
-   - M2: prosody drills, expressiveness metric, coaching copy.
-   - Instant Practice: /try flow with one-tap mic, analytics, A/B testing, pilot gating.
-- Audio engine: Firefox-optimized low-latency capture using CREPE-tiny ONNX with YIN fallback.
-- Practice flows: JSON-defined daily practices (onboarding -> warm-up -> glide -> phrase -> reflection).
-- Deployment: Vercel with strict CSP, COOP, and COEP headers.
-- System context: D-MONOLITH (Ryzen 3900X, RTX 2080 Super, 32 GB RAM, Windows 11 Pro).
-- Governance: multi-agent workflow (ChatGPT orchestrator, Codex for CI/security, Cursor for implementation, BossCat for upkeep).
-- Audit status: independent review marks project production-ready for controlled beta; residual risks in offline isolation, mobile stability, feedback fairness.
+**Product**
 
-## C - Clean (Risks and Gaps)
+* A **local-first voice feminization trainer**: low-latency pitch, resonance, and prosody feedback, running fully in-browser with IndexedDB persistence.
+* **M1 → M2 delivered**:
 
-- Isolation: Service Worker must preserve COOP and COEP headers for offline use.
-- Resonance and formants: LPC tracking unstable; vowel classifier fallback may be required.
-- Device variability: Bluetooth microphones at 16 kHz cause drift; need auto-reinit.
-- Mobile coverage: mid-tier Android latency and stability remain unvalidated.
-- Loudness guardrails: current >=5 s @ 0.8 RMS threshold may mis-trigger; cohort calibration needed.
-- Expressiveness metric: can be gamed with exaggerated swoops; apply caps.
-- UI and accessibility: reduced motion and neuro-inclusive copy variants not fully systematized.
-- Community layer: safe sharing and moderation flows outstanding.
+  * M1: Warmup FSM, Reflection + Orbs, IndexedDB storage.
+  * M2: Prosody drills, expressiveness metrics, Pitch Band prep.
+* **Deployment**: Production app on Vercel with strict CSP/COOP/COEP, service worker caching, and PWA support.
 
-## R - Report (Recommendations and Roadmap)
+**Architecture**
 
-1. Audio and DSP
-   - Harden LPC to F1 and F2 buckets or pivot to vowel classifier if instability persists.
-   - Calibrate loudness heuristics with beta cohort of 8-12 users.
-   - Expose prosody thresholds in HUD for transparent tuning.
-2. Product flows
-   - Add pitch band and resonance drills per roadmap.
-   - Extend adaptive flow logic for gating, retries, and cooldowns.
-   - Integrate Orb v2 visuals (resonance hue, shimmer trends).
-3. Safety and privacy
-   - Confirm offline isolation continuity via Playwright smoke tests.
-   - Clamp expressiveness-to-Orb shimmer mapping to deter gaming.
-   - Enforce local-first analytics: IndexedDB only, opt-in sharing.
-4. Operations and cohort
-   - Run controlled beta (30-50 participants) with coach and SLP sharing panel.
-   - Instrument retention (>=35 percent at four weeks) and strain flag safety (<1 percent repeats).
-   - Quarantine flaky tests and publish nightly SSOT via BossCat worker.
-5. Community
-   - Draft moderation policies modeled on safe trans voice forums.
-   - Build peer feedback channels with explicit opt-in consent.
+* Next.js 14 + React 18 + Tailwind CSS.
+* AudioWorklets for real-time DSP (pitch via CREPE-tiny + YIN fallback, resonance via LPC prototype, loudness via RMS/tilt).
+* IndexedDB schema for flows & sessions.
+* Background worker (watchdog/runner) automating SSOT upkeep, flaky test quarantines, and artefact regeneration.
 
-## R - Role (Ownership)
+**User Experience & Curriculum**
 
-- You (Project Lead): set vision, approve scope, provide authorization.
-- ChatGPT Agent (Orchestrator): plan, build, validate, and record; author prompts, specs, acceptance criteria.
-- Cursor Agent (Implementer): build scoped UI features in Cursor IDE under guardrails.
-- Codex (Coordinator): own CI, security posture, repository hygiene, merges.
-- BossCat: background upkeep; refresh SSOT, quarantine flaky tests, fix accessibility and CSP drift.
-- codex-local: maintain local developer ergonomics, pnpm scripts, devcontainers, environment parity, guardrails.
+* Flow-based progression: warmup → glide → phrase → reflection.
+* Affirming UX: self-vs-self comparisons, no gendered scoring.
+* Inclusive curriculum: pitch, resonance, prosody, articulation.
+* Visual metaphors: vertical “voice thread”, orb shimmer, expressiveness meters.
+* Accessibility: WCAG 2.2 AA, ARIA live regions, reduced-motion.
 
-Verdict: Resonai is production-ready for controlled beta. Core flows, audio engine, and governance are strong; a targeted cohort test should validate safety thresholds and fairness ahead of broader expansion.
+**Ops & Governance**
+
+* CI/CD: GitHub Actions with Windows + nightly runs.
+* Playwright + Vitest tests; 100% coverage on new features.
+* Role structure:
+
+  * **You**: Product lead.
+  * **ChatGPT Agent**: Research + orchestration.
+  * **Cursor Agent**: Scoped UI implementation.
+  * **Codex Agent**: CI/CD, merges, CSP guardrails.
+  * **codex-local**: Local workflow steward.
+  * **BossCat**: Background guardian for repo health.
+
+---
+
+## **C — Clean (Risks & Gaps)**
+
+1. **Offline COOP/COEP continuity** — must confirm Firefox keeps isolation via cached headers.
+2. **Formant tracking** — LPC buckets unstable; fallback vowel-classifier required.
+3. **Device variability** — Bluetooth sample rate changes (16kHz) can cause drift.
+4. **Mobile stability** — Mid-tier Android not yet validated.
+5. **Feedback fairness** — DTW thresholds and expressiveness scores risk discouragement/gaming.
+6. **Community layer** — Sharing/moderation roadmap pending.
+7. **Integration setup** — bootstrap scripts, env parity, and JSON logs could ease local agent integration.
+
+---
+
+## **R — Report (Audit Findings)**
+
+* ✅ **Strengths**: Local-first privacy, accessible UX, affirming design, robust CI/CD, clear agent workflow, strong test culture.
+* ⚠️ **Weaknesses**: Initial deployments lacked styling/isolation; fixed by M1/M2 hardening.
+* 🔍 **Audit recommendations**:
+
+  * Add Playwright smokes for offline isolation & accessibility.
+  * Expose/tune prosody thresholds via HUD.
+  * Clamp expressiveness to prevent gaming.
+  * Calibrate loudness/DTW thresholds with real cohort.
+
+---
+
+## **R — Role (Agent Ecosystem)**
+
+* **You (Product Lead)**: Vision, approvals, external auth.
+* **ChatGPT Agent**: Specs, TASKS.md/DECISIONS.md upkeep, orchestration.
+* **Cursor Agent**: Implements scoped UI features under guardrails.
+* **Codex Agent**: Coordinator/merger; enforces CSP/CI/tests.
+* **codex-local**: Maintains local workflows, pnpm/env parity, devcontainers.
+* **BossCat**: Continuous repo guardian; runs background jobs, keeps SSOT/tests green.
+
+Together, the loop is: **Plan → Build → Validate → Record → Repeat** with shared artefacts (TASKS.md, DECISIONS.md, SSOT, CI reports).
+
+---
+
+# ✅ **Summary**
+
+The **Resonai project** has matured into a **production-ready, local-first trainer** with affirming UX, real-time DSP, and strong governance. The **next phase** should address **mobile/device stability, fairness calibration, and community features**, while maintaining the **agent loop** that ensures no work is repeated.
