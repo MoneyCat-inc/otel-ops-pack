@@ -71,4 +71,4 @@ $files | % { "{0} => {1}" -f $_, (Test-Path $_) }
 (Get-Content 'artifacts/ecrr-01-playwright-offline.json' -Raw | ConvertFrom-Json).stats.unexpected
 ```
 - Saved drilldown recipe
-  - `docs/comfort-cat/DRILLDOWN_RECIPES.md` — “Comfort Cat — High‑severity drilldown (15m)”
+  - `docs/comfort-cat/DRILLDOWN_RECIPES.md` — "Comfort Cat — High‑severity drilldown (15m)"

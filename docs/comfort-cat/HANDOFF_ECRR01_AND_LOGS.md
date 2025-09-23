@@ -15,7 +15,7 @@ The style is intentionally slow, clear, and kind — imagine sitting in a **Cat 
 
 ---
 
-## What You’ll Use
+## What You'll Use
 
 - **SigNoz Logs UI** — the web interface where logs are filtered, grouped, and inspected.
 - **Helper scripts** for generating ECRR-01 evidence:
@@ -31,7 +31,7 @@ The goal is to reduce log noise and highlight the errors and warnings that matte
 ### 1. Set the Time Window
 
 - **Do:** In SigNoz, go to **Logs**. At the top right, find the **Time Range** dropdown. Select **Last 15 minutes**. If you are investigating a specific incident, set the window to exactly that time span.
-- **Why:** Smaller time slices mean less clutter. You’re looking at the freshest activity, not ancient noise.
+- **Why:** Smaller time slices mean less clutter. You're looking at the freshest activity, not ancient noise.
 - **Expect:** The total number of logs shown should drop. You may also notice spikes or bursts of activity become easier to see in charts.
 
 ---
@@ -55,7 +55,7 @@ The goal is to reduce log noise and highlight the errors and warnings that matte
 severity_text in ["ERROR","WARN"] AND message contains "login"
 ```
 
-  Replace `"login"` with whatever keyword matches the issue you’re chasing.
+  Replace `"login"` with whatever keyword matches the issue you're chasing.
 - **Why:** This lets you zoom in on a specific feature, endpoint, or error code.
 - **Expect:** A smaller, more focused set of logs that tell a tighter story.
 
@@ -66,7 +66,7 @@ severity_text in ["ERROR","WARN"] AND message contains "login"
 - **Do:** Use the **Group By** option to group logs by:
   - `service.name`
   - `severity_text`
-- **Why:** Grouping shows patterns. You’ll see which services are producing the most problems, and at what severity.
+- **Why:** Grouping shows patterns. You'll see which services are producing the most problems, and at what severity.
 - **Expect:** A panel displaying counts per service, sorted by error/warning volume.
 
 ---
@@ -80,13 +80,13 @@ severity_text in ["ERROR","WARN"] AND message contains "login"
   - `log.file.path` → Where in the code/logs it originated.
   - `exception.*` → Error type and stack trace if available.
   - `http.*` → HTTP details if it was a web request.
-- **Expect:** You see a structured breakdown of the log. If `traceId` exists, you’ll see a “View related trace” button.
+- **Expect:** You see a structured breakdown of the log. If `traceId` exists, you'll see a "View related trace" button.
 
 ---
 
 ### 6. Pivot to Trace (when available)
 
-- **Do:** If “View related trace” appears, click it.
+- **Do:** If "View related trace" appears, click it.
 - **Why:** This shows the trace timeline: upstream and downstream calls, spans, and how the log fits into the bigger picture.
 - **Expect:** A timeline visualization, with your log highlighted.
 
@@ -135,7 +135,7 @@ pwsh -NoLogo -File scripts/ecrr/collect-evidence.ps1 -BaseUrl http://localhost:3
 ```
 
 - **Why:** This runs automated Playwright tests and assembles a full bundle of evidence.
-- **Expect:** Several new files appear (see “What you should see” below).
+- **Expect:** Several new files appear (see "What you should see" below).
 
 ---
 
@@ -168,7 +168,7 @@ scripts/ecrr/collect-evidence.sh
   - ERROR/WARN filter visible.
   - Grouped counts by service name.
   - At least one log expanded with attributes shown.
-  - “View related trace” works if a trace exists.
+  - "View related trace" works if a trace exists.
 
 - **Evidence bundle:**
   - Both JSON files report `unexpected = 0`.
@@ -180,7 +180,7 @@ scripts/ecrr/collect-evidence.sh
 ## When to Alert
 
 - If a **single service** produces more than **5 ERROR logs in 5 minutes**, consider alerting.
-- Keep alerts **gentle**: don’t wake the household for one scratch. Wait until a pattern repeats.
+- Keep alerts **gentle**: don't wake the household for one scratch. Wait until a pattern repeats.
 
 ---
 
@@ -192,7 +192,7 @@ scripts/ecrr/collect-evidence.sh
 
 ---
 
-## That’s It
+## That's It
 
 This process should feel **predictable, calm, and light.**
 If anything feels noisy or confusing, simplify — Comfort Cat prefers a smooth nap over tangled yarn.

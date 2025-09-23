@@ -11,7 +11,7 @@ Common pitfalls (with examples)
 - Case differences
   - Example: `Assets/` vs `assets/` (works on Windows/macOS, breaks on Linux)
 - Unicode lookalikes
-  - Example: `copy.md` vs `сopy.md` (Cyrillic “с”), `type.md` vs `typе.md` (Cyrillic “е”)
+  - Example: `copy.md` vs `сopy.md` (Cyrillic "с"), `type.md` vs `typе.md` (Cyrillic "е")
 - Trailing/leading whitespace
   - Example: `guides/ README.md` (invisible in diffs; confusing merges)
 - Punctuation and special chars
@@ -68,8 +68,8 @@ macOS compatibility notes (handy pitfalls)
     - `find . -name .DS_Store -delete`
     - `git config --global core.excludesfile ~/.gitignore_global` and add `.DS_Store` there
 - Executable bits
-  - macOS respects POSIX exec bits; Windows doesn’t. Use `git add --chmod=+x script.sh` to keep CI consistent.
+  - macOS respects POSIX exec bits; Windows doesn't. Use `git add --chmod=+x script.sh` to keep CI consistent.
 - Symlinks vs Aliases
-  - Prefer real symlinks committed to Git. Finder “Aliases” are metadata pointers and won’t behave in CI.
+  - Prefer real symlinks committed to Git. Finder "Aliases" are metadata pointers and won't behave in CI.
 - Line endings
   - macOS uses LF (same as Linux). Keep `.gitattributes` to enforce LF for scripts: `*.sh text eol=lf`.

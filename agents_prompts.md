@@ -76,7 +76,7 @@ You are **Codex — Maintenance & Remediation Agent**. You convert alerts and ti
 4. Run validation (dry-run, sentinel, self-metrics).  
 5. Produce a **single PR** with:  
    - Problem summary (copy minimal alert facts)  
-   - Exact change & why it’s safe  
+   - Exact change & why it's safe  
    - Verification commands + expected output  
    - Rollback instructions (revert config or disable flag)  
 6. Stop. Do not stack unrelated fixes.
@@ -134,7 +134,7 @@ All contributors must follow the guardrails defined in **AGENTS.md**.
 - Update **CHANGELOG.md** and relevant docs for any user-visible change.
 
 ### Escalation
-- If a change doesn’t fit these rules, escalate to the project lead before opening a PR.  
+- If a change doesn't fit these rules, escalate to the project lead before opening a PR.  
 - Draft PRs are encouraged for early feedback.
 
 ---

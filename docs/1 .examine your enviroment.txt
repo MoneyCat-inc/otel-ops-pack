@@ -31,7 +31,7 @@ I am operating as the Cursor Agent — Observability Copilot / OTel Steward, ste
 
 ChatGPT 5
 
-Here’s the structured response to your 4-step request:
+Here's the structured response to your 4-step request:
 
 ---
 

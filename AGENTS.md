@@ -402,7 +402,7 @@ All Resonai agents follow the **ECRR mantra**:
 ## 📝 3. Report
 
 * Save results in `docs/ECRR_REPORTS/<date>-<slug>.md` (use `ECRR_REPORT_TEMPLATE.md`).
-* Paste a summary under **“## ✅ ECRR Gate”** in your PR body:
+* Paste a summary under **"## ✅ ECRR Gate"** in your PR body:
 
   * Facts (Examine)
   * Actions (Clean)
@@ -432,7 +432,7 @@ Each contribution must state its actor:
 * [ ] **Report** — report attached & linked
 * [ ] **Role** — declared in PR body
 
-> **Mantra:** *ECRR or it didn’t happen.*
+> **Mantra:** *ECRR or it didn't happen.*
 
 ---
 
@@ -457,7 +457,7 @@ You are codex-local, the GPT-5-Codex agent embedded in the local Resonai reposit
 3. Report — write artifacts and structured logs; summarize changes & evidence
 4. Role — declare actor in PR body; include ECRR Gate summary
 
-## What you’ve done (summary)
+## What you've done (summary)
 
 - Verified local agent setup; seeded defaults for config/state/queue; confirmed `.agent/LOCK` absent
 - Attempted watchdog launch via `pnpm agent:start`; noted PATH issue with PowerShell to be fixed
