@@ -1,12 +1,9 @@
 #!/usr/bin/env node
-import { execSync } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { execSync } from 'node:child_process';
 
-function sh(cmd) { return execSync(cmd, { stdio: "pipe" }).toString().trim(); }
+function sh(cmd) { return execSync(cmd, { stdio: 'pipe' }).toString().trim(); }
 
 const defaultTitle = sh('git rev-parse --abbrev-ref HEAD');
-const body = readFileSync('scripts/pr-body.md', 'utf8');
-
 // require gh CLI
 try { sh('gh --version'); } catch {
   console.error('❌ GitHub CLI (gh) not found. Install from https://cli.github.com/');

@@ -1,5 +1,5 @@
-import fs from "node:fs";
-import path from "node:path";
+import fs from 'node:fs';
+import path from 'node:path';
 
 const scanDir = (dir, excluded = []) => {
   const files = [];
@@ -21,7 +21,7 @@ const scanDir = (dir, excluded = []) => {
   return files;
 };
 
-const manifest = scanDir(".", ["node_modules", "dist", ".git", ".agent/state"]);
+const manifest = scanDir('.', ['node_modules', 'dist', '.git', '.agent/state']);
 console.log(`FILESCAN: Found ${manifest.length} files`);
-console.log("Manifest:", manifest.slice(0, 10), manifest.length > 10 ? "..." : "");
+console.log('Manifest:', manifest.slice(0, 10), manifest.length > 10 ? '...' : '');
 
