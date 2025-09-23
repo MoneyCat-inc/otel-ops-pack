@@ -1,13 +1,18 @@
 == Resonai ↔ OTel Wiring Verification Results ==
-Timestamp: 2025-09-20T21:09:26.197+01:00
-Test Event ID: ff3fa61b-7880-4c4f-ae96-ec5e8062cc9e
+Timestamp: 2025-09-23T06:08:16.622+01:00
+Test Event ID: d018940e-e273-4880-a91f-4b2a923f29c3
+
+Toolchain Checks:
+- npm run lint: PASSED
+- npm run typecheck: PASSED
 
 API Test: PASSED
 - Event sent to /api/events successfully
 - Response: {"ok":true,"count":1}
 
-SigNoz Test: SKIPPED (Authentication required)
-- Set SIGNOZ_API_TOKEN environment variable for full verification
-- Manual check: Open SigNoz UI → Logs → Filter: attributes.dataset = "resonai_analytics"
+SigNoz Test: PASSED (via ClickHouse)
+- Event found in SigNoz logs via ClickHouse query
+- Dataset: resonai_analytics
+- Logs count: 5
 
-== Wiring verification PARTIAL (API only) ==
+== Wiring verification PASSED ==

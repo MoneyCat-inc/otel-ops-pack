@@ -1,0 +1,4 @@
+repo_name,closed_at,pr_number,merged,merge_duration_hours,ai_signal
+otel,2024-01-06,101,true,72,agentic
+resonai,2024-01-10,55,false,48,automation
+comfort-cat,2024-01-15,12,true,24,none
