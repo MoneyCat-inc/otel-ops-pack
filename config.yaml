@@ -44,7 +44,7 @@ exporters:
     loglevel: info
 
   otlp/sigz:
-    endpoint: "localhost:4317"
+    endpoint: "localhost:14317"
     tls:
       insecure: true
     retry_on_failure:
