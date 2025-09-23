@@ -9,6 +9,7 @@ import json
 import os
 from datetime import datetime
 from pathlib import Path
+from urllib.parse import urlparse
 
 try:
     import pynvml
@@ -22,9 +23,22 @@ except ImportError as e:
     print("Please install: pip install opentelemetry-sdk opentelemetry-exporter-otlp nvidia-ml-py")
     exit(1)
 
+def _normalize_endpoint(endpoint: str) -> str:
+    """Convert http(s) style URLs to host:port targets for gRPC exporters."""
+    if "://" in endpoint:
+        parsed = urlparse(endpoint)
+        host = parsed.hostname or "localhost"
+        port = parsed.port
+        if port is None:
+            port = 443 if parsed.scheme == "https" else 80
+        return f"{host}:{port}"
+    return endpoint
+
+
 class SimpleGPUMetricsEmitter:
-    def __init__(self, otlp_endpoint="http://localhost:4317", service_name="gpu-monitor"):
-        self.otlp_endpoint = otlp_endpoint
+    def __init__(self, otlp_endpoint="localhost:14317", service_name="gpu-monitor"):
+        self.original_endpoint = otlp_endpoint
+        self.otlp_endpoint = _normalize_endpoint(otlp_endpoint)
         self.service_name = service_name
         
         # Initialize NVML
@@ -83,6 +97,8 @@ class SimpleGPUMetricsEmitter:
             # Create meter
             self.meter = self.meter_provider.get_meter("gpu-metrics")
             
+            if self.otlp_endpoint != self.original_endpoint:
+                print(f"Normalized OTLP endpoint '{self.original_endpoint}' -> '{self.otlp_endpoint}'")
             print(f"OpenTelemetry metrics configured for {self.otlp_endpoint}")
             
         except Exception as e:
@@ -289,8 +305,8 @@ def main():
     import argparse
     
     parser = argparse.ArgumentParser(description="Simple GPU Metrics Emitter for SigNoz")
-    parser.add_argument("--endpoint", default="http://localhost:4317", 
-                       help="OTLP endpoint (default: http://localhost:4317)")
+    parser.add_argument("--endpoint", default="localhost:14317",
+                       help="OTLP endpoint (default: localhost:14317; http(s) URLs are normalized)")
     parser.add_argument("--duration", type=int, default=300,
                        help="Duration in seconds (default: 300)")
     parser.add_argument("--interval", type=int, default=15,
