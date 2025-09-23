@@ -50,35 +50,25 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - name: Check for package.json and install
+      - name: Detect Node workspace
+        id: node-workspace
         run: |
           if [ -f package.json ]; then
-            npm install
+            echo "has_package_json=true" >> "$GITHUB_OUTPUT"
           else
-            echo "No package.json found, skipping Node.js steps"
-            exit 0
+            echo "has_package_json=false" >> "$GITHUB_OUTPUT"
           fi
-      - name: Lint
+      - name: Install dependencies
+        if: steps.node-workspace.outputs.has_package_json == 'true'
         run: |
-          if [ -f package.json ]; then
-            npm run -s lint || true
-          else
-            echo "Skipping lint (no package.json)"
-          fi
-      - name: Typecheck
-        run: |
-          if [ -f package.json ]; then
-            npm run -s typecheck || true
-          else
-            echo "Skipping typecheck (no package.json)"
-          fi
+          corepack enable
+          corepack pnpm install --frozen-lockfile
+      - name: Quality gate (lint + typecheck)
+        if: steps.node-workspace.outputs.has_package_json == 'true'
+        run: corepack pnpm run quality
       - name: Tests
-        run: |
-          if [ -f package.json ]; then
-            npm test -- --coverage || true
-          else
-            echo "Skipping tests (no package.json)"
-          fi
+        if: steps.node-workspace.outputs.has_package_json == 'true'
+        run: corepack pnpm test -- --coverage || true
 
   powershell:
     runs-on: windows-latest
@@ -183,16 +173,20 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - name: Check for package.json and install
+      - name: Detect Node workspace
         id: npm-setup
         run: |
           if [ -f package.json ]; then
             echo "has_package_json=true" >> "$GITHUB_OUTPUT"
-            npm install
           else
-            echo "No package.json found, skipping npm install"
+            echo "No package.json found, skipping pnpm install"
             echo "has_package_json=false" >> "$GITHUB_OUTPUT"
           fi
+      - name: Install dependencies
+        if: steps.npm-setup.outputs.has_package_json == 'true'
+        run: |
+          corepack enable
+          corepack pnpm install --frozen-lockfile
       - name: reviewdog / eslint
         if: steps.npm-setup.outputs.has_package_json == 'true'
         uses: reviewdog/action-eslint@v1
