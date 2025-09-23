@@ -64,3 +64,4 @@ queryex/
 *.png
 *.svg
 
+\\n.tmp/\n\
