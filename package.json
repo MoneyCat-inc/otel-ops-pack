@@ -16,7 +16,7 @@
     "lint": "eslint --no-warn-ignored --ext .js,.cjs,.mjs,.ts,.tsx .",
     "typecheck": "tsc --noEmit",
     "test": "jest -w 1",
-    "quality": "npm run lint && npm run typecheck || true",
+    "quality": "npm run lint && npm run typecheck",
     "monitor:quick": "pwsh -File scripts/quick-monitor.ps1",
     "monitor:full": "pwsh -File scripts/monitor-optimized-pipeline.ps1",
     "monitor:export": "pwsh -File scripts/monitor-optimized-pipeline.ps1 -ExportReport",
