@@ -1,6 +1,11 @@
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
 import js from '@eslint/js';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
+
+const tsconfigRootDir = path.dirname(fileURLToPath(import.meta.url));
 
 const sharedStyleRules = {
   curly: ['error', 'all'],
@@ -50,7 +55,7 @@ export default tseslint.config(
       ecmaVersion: 2022,
       sourceType: 'module',
       parserOptions: {
-        tsconfigRootDir: import.meta.dirname,
+        tsconfigRootDir,
       },
       globals: {
         ...globals.browser,
