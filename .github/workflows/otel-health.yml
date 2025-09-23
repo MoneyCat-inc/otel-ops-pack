@@ -1,13 +1,16 @@
-name: OTel Health Check
+name: OTel Health Monitoring
 
 on:
   schedule:
-    - cron: "*/5 * * * *"  # Every 5 minutes
+    - cron: '*/15 * * * *'  # Every 15 minutes
   workflow_dispatch:
   push:
-    branches: [ main, develop ]
-  pull_request:
     branches: [ main ]
+    paths:
+      - 'scripts/otel-health*.ps1'
+      - 'scripts/otel-health*.sh'
+      - 'config.yaml'
+      - '.github/workflows/otel-health.yml'
 
 jobs:
   otel-health-check:
@@ -20,16 +23,65 @@ jobs:
     - name: Setup PowerShell
       uses: actions/setup-powershell@v1
       
+    - name: Run OTel Health Check
+      run: |
+        pwsh -File scripts/otel-health-check.ps1 -Verbose
+        
+    - name: Run OTel Health Monitoring
+      run: |
+        pwsh -File scripts/otel-health.ps1
+        
     - name: Check OTel Collector Service
       run: |
         $service = Get-Service -Name "otelcol-contrib" -ErrorAction SilentlyContinue
         if ($service) {
-          Write-Host "✅ OTel Collector service found: $($service.Status)"
+          Write-Host "OTel Collector service: $($service.Status)"
           if ($service.Status -ne "Running") {
-            Write-Host "⚠️  Service not running, attempting to start..."
+            Write-Host "Starting OTel Collector service..."
             Start-Service -Name "otelcol-contrib"
           }
         } else {
-          Write-Host "❌ OTel Collector service not found"
+          Write-Host "OTel Collector service not found"
           exit 1
         }
+        
+    - name: Test OTLP Endpoint
+      run: |
+        try {
+          $testPayload = @{
+            resourceLogs = @(
+              @{
+                resource = @{ attributes = @() }
+                scopeLogs = @(
+                  @{
+                    scope = @{ name = "github-actions-health-check" }
+                    logRecords = @(
+                      @{
+                        timeUnixNano = ([DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds() * 1000000)
+                        severityText = "INFO"
+                        body = @{ stringValue = "GitHub Actions health check - $(Get-Date)" }
+                      }
+                    )
+                  }
+                )
+              }
+            )
+          } | ConvertTo-Json -Depth 10
+          
+          $response = Invoke-RestMethod -Uri "http://localhost:5318/v1/logs" -Method POST -ContentType "application/json" -Body $testPayload -TimeoutSec 10
+          Write-Host "OTLP endpoint test successful"
+        } catch {
+          Write-Host "OTLP endpoint test failed: $($_.Exception.Message)"
+          exit 1
+        }
+        
+    - name: Generate Health Report
+      run: |
+        pwsh -File scripts/otel-listener-summary.ps1 | Out-File -FilePath "otel-health-report.txt" -Encoding UTF8
+        
+    - name: Upload Health Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: otel-health-report-${{ github.run_number }}
+        path: otel-health-report.txt
+        retention-days: 7
