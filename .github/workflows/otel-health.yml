@@ -1,0 +1,35 @@
+name: OTel Health Check
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"  # Every 5 minutes
+  workflow_dispatch:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  otel-health-check:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup PowerShell
+      uses: actions/setup-powershell@v1
+      
+    - name: Check OTel Collector Service
+      run: |
+        $service = Get-Service -Name "otelcol-contrib" -ErrorAction SilentlyContinue
+        if ($service) {
+          Write-Host "✅ OTel Collector service found: $($service.Status)"
+          if ($service.Status -ne "Running") {
+            Write-Host "⚠️  Service not running, attempting to start..."
+            Start-Service -Name "otelcol-contrib"
+          }
+        } else {
+          Write-Host "❌ OTel Collector service not found"
+          exit 1
+        }
