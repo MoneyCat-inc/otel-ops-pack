@@ -7,7 +7,7 @@ export default defineConfig({
   timeout: 20_000,
   reporter: [['list']],
   use: {
-    baseURL: process.env.BASE_URL || 'http://localhost:3003',
+    baseURL: process.env['BASE_URL'] ?? 'http://localhost:3003',
     headless: true,
     trace: 'off',
     video: 'off',
