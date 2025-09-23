@@ -53,3 +53,4 @@ Register-ScheduledTask -TaskName $TaskName -Action $action -Trigger $trigger -Se
 
 $taskInfo = Get-ScheduledTaskInfo -TaskName $TaskName
 Get-ScheduledTask -TaskName $TaskName | Select-Object TaskName, State, @{Name = "NextRunTime"; Expression = { $taskInfo.NextRunTime }}, Actions
+

@@ -1,0 +1,220 @@
+{
+  "dashboard": {
+    "title": "Resonai Analytics Overview",
+    "description": "Comprehensive monitoring dashboard for Resonai analytics pipeline",
+    "tags": ["resonai", "analytics", "monitoring"],
+    "panels": [
+      {
+        "id": 1,
+        "title": "Event Volume (24h)",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+        "targets": [
+          {
+            "expr": "count(*)",
+            "legendFormat": "Total Events",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "color": {"mode": "palette-classic"}
+          }
+        }
+      },
+      {
+        "id": 2,
+        "title": "Error Rate (24h)",
+        "type": "stat",
+        "gridPos": {"h": 4, "w": 6, "x": 12, "y": 0},
+        "targets": [
+          {
+            "expr": "count(*) where event contains 'error' / count(*) * 100",
+            "legendFormat": "Error Rate %",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "color": {"mode": "thresholds"},
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "yellow", "value": 2},
+                {"color": "red", "value": 5}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 3,
+        "title": "TTV Performance (24h)",
+        "type": "graph",
+        "gridPos": {"h": 4, "w": 6, "x": 18, "y": 0},
+        "targets": [
+          {
+            "expr": "avg(ttv_ms)",
+            "legendFormat": "Avg TTV",
+            "refId": "A"
+          },
+          {
+            "expr": "p50(ttv_ms)",
+            "legendFormat": "P50 TTV",
+            "refId": "B"
+          },
+          {
+            "expr": "p95(ttv_ms)",
+            "legendFormat": "P95 TTV",
+            "refId": "C"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "ms",
+            "color": {"mode": "palette-classic"}
+          }
+        }
+      },
+      {
+        "id": 4,
+        "title": "Event Types Distribution",
+        "type": "piechart",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8},
+        "targets": [
+          {
+            "expr": "count(*) by event",
+            "legendFormat": "{{event}}",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "pieType": "pie",
+          "tooltip": {"mode": "single"},
+          "legend": {"displayMode": "visible", "placement": "bottom"}
+        }
+      },
+      {
+        "id": 5,
+        "title": "Top Variants",
+        "type": "bargauge",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8},
+        "targets": [
+          {
+            "expr": "count(*) by variant",
+            "legendFormat": "{{variant}}",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "orientation": "horizontal",
+          "displayMode": "gradient",
+          "showUnfilled": true
+        }
+      },
+      {
+        "id": 6,
+        "title": "Session Activity",
+        "type": "stat",
+        "gridPos": {"h": 4, "w": 6, "x": 0, "y": 16},
+        "targets": [
+          {
+            "expr": "count(distinct session_id)",
+            "legendFormat": "Unique Sessions",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "color": {"mode": "palette-classic"}
+          }
+        }
+      },
+      {
+        "id": 7,
+        "title": "Pipeline Health",
+        "type": "stat",
+        "gridPos": {"h": 4, "w": 6, "x": 6, "y": 16},
+        "targets": [
+          {
+            "expr": "count(*) where event = 'wiring_verification_test'",
+            "legendFormat": "Verification Events",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "color": {"mode": "palette-classic"}
+          }
+        }
+      },
+      {
+        "id": 8,
+        "title": "Recent Activity (1h)",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 16},
+        "targets": [
+          {
+            "expr": "rate(count(*), 5m)",
+            "legendFormat": "Events/min",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "reqps",
+            "color": {"mode": "palette-classic"}
+          }
+        }
+      }
+    ],
+    "time": {
+      "from": "now-24h",
+      "to": "now"
+    },
+    "refresh": "30s",
+    "schemaVersion": 27,
+    "version": 1
+  },
+  "filters": {
+    "service_name": "resonai-analytics"
+  },
+  "alerts": [
+    {
+      "name": "Resonai High Error Rate",
+      "condition": "error_rate > 5",
+      "query": "count(*) where event contains 'error' / count(*) * 100",
+      "evaluation_window": "5m",
+      "severity": "critical",
+      "description": "Error rate exceeds 5% for 5 minutes"
+    },
+    {
+      "name": "Resonai High TTV",
+      "condition": "p95_ttv > 1000",
+      "query": "p95(ttv_ms)",
+      "evaluation_window": "5m",
+      "severity": "warning",
+      "description": "P95 TTV exceeds 1000ms for 5 minutes"
+    },
+    {
+      "name": "Resonai Data Flow Stalled",
+      "condition": "event_count = 0",
+      "query": "count(*)",
+      "evaluation_window": "10m",
+      "severity": "critical",
+      "description": "No events detected for 10 minutes"
+    },
+    {
+      "name": "Resonai Pipeline Health",
+      "condition": "verification_events = 0",
+      "query": "count(*) where event = 'wiring_verification_test'",
+      "evaluation_window": "30m",
+      "severity": "warning",
+      "description": "No verification events for 30 minutes"
+    }
+  ]
+}

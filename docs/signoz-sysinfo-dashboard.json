@@ -1,0 +1,177 @@
+{
+  "version": "1.0.0",
+  "dashboard": {
+    "id": "sysinfo-monitoring",
+    "title": "SysInfo & System Monitoring Dashboard",
+    "description": "Comprehensive monitoring dashboard for Windows SysInfo logs and system metrics",
+    "panels": [
+      {
+        "id": "sysinfo-logs-panel",
+        "title": "SysInfo Log Volume",
+        "type": "time_series",
+        "query": {
+          "query": "count by (log.file.name) | where log.file.name contains \"monolith-D.txt\" | group by log.file.name",
+          "dataSource": "logs"
+        },
+        "position": {
+          "x": 0,
+          "y": 0,
+          "w": 12,
+          "h": 8
+        }
+      },
+      {
+        "id": "memory-usage-panel",
+        "title": "Memory Usage Trends",
+        "type": "time_series",
+        "query": {
+          "query": "avg(attributes.memory.usage.percent) by (service.name) | where dataset = \"memory-monitoring\" | group by service.name",
+          "dataSource": "logs"
+        },
+        "position": {
+          "x": 12,
+          "y": 0,
+          "w": 12,
+          "h": 8
+        }
+      },
+      {
+        "id": "cpu-usage-panel",
+        "title": "CPU Usage Trends",
+        "type": "time_series",
+        "query": {
+          "query": "avg(attributes.metric.value.percent) by (service.name) | where dataset = \"system-monitoring\" and attributes.metric.type = \"cpu\" | group by service.name",
+          "dataSource": "logs"
+        },
+        "position": {
+          "x": 0,
+          "y": 8,
+          "w": 12,
+          "h": 8
+        }
+      },
+      {
+        "id": "disk-usage-panel",
+        "title": "Disk Usage by Drive",
+        "type": "time_series",
+        "query": {
+          "query": "avg(attributes.metric.value.percent) by (attributes.disk.drive) | where dataset = \"system-monitoring\" and attributes.metric.type = \"disk\" | group by attributes.disk.drive",
+          "dataSource": "logs"
+        },
+        "position": {
+          "x": 12,
+          "y": 8,
+          "w": 12,
+          "h": 8
+        }
+      },
+      {
+        "id": "alert-summary-panel",
+        "title": "System Alerts Summary",
+        "type": "table",
+        "query": {
+          "query": "count by (attributes.alert.type, attributes.metric.type) | where dataset = \"system-monitoring\" or dataset = \"memory-monitoring\" | group by attributes.alert.type, attributes.metric.type",
+          "dataSource": "logs"
+        },
+        "position": {
+          "x": 0,
+          "y": 16,
+          "w": 24,
+          "h": 6
+        }
+      },
+      {
+        "id": "sysinfo-content-panel",
+        "title": "Recent SysInfo Log Entries",
+        "type": "logs",
+        "query": {
+          "query": "log.file.name contains \"monolith-D.txt\" | order by timestamp desc | limit 50",
+          "dataSource": "logs"
+        },
+        "position": {
+          "x": 0,
+          "y": 22,
+          "w": 24,
+          "h": 8
+        }
+      }
+    ],
+    "timeRange": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "refreshInterval": "30s"
+  },
+  "savedSearches": [
+    {
+      "name": "SysInfo Monitoring",
+      "description": "Filter for SysInfo log files",
+      "query": "log.file.name contains \"monolith-D.txt\"",
+      "dataSource": "logs"
+    },
+    {
+      "name": "Memory Alerts",
+      "description": "Memory usage alerts and warnings",
+      "query": "dataset = \"memory-monitoring\" and (attributes.alert.type = \"warning\" or attributes.alert.type = \"critical\")",
+      "dataSource": "logs"
+    },
+    {
+      "name": "System Alerts",
+      "description": "CPU and disk usage alerts",
+      "query": "dataset = \"system-monitoring\" and (attributes.alert.type = \"warning\" or attributes.alert.type = \"critical\")",
+      "dataSource": "logs"
+    },
+    {
+      "name": "High Memory Usage",
+      "description": "Memory usage above 80%",
+      "query": "attributes.memory.usage.percent > 80",
+      "dataSource": "logs"
+    },
+    {
+      "name": "High CPU Usage",
+      "description": "CPU usage above 85%",
+      "query": "attributes.metric.type = \"cpu\" and attributes.metric.value.percent > 85",
+      "dataSource": "logs"
+    },
+    {
+      "name": "High Disk Usage",
+      "description": "Disk usage above 90%",
+      "query": "attributes.metric.type = \"disk\" and attributes.metric.value.percent > 90",
+      "dataSource": "logs"
+    }
+  ],
+  "alerts": [
+    {
+      "name": "Memory Usage Critical",
+      "description": "Alert when memory usage exceeds 95%",
+      "query": "attributes.memory.usage.percent > 95",
+      "threshold": 1,
+      "evaluationWindow": "5m",
+      "severity": "critical"
+    },
+    {
+      "name": "Memory Usage Warning",
+      "description": "Alert when memory usage exceeds 80%",
+      "query": "attributes.memory.usage.percent > 80",
+      "threshold": 1,
+      "evaluationWindow": "5m",
+      "severity": "warning"
+    },
+    {
+      "name": "CPU Usage Critical",
+      "description": "Alert when CPU usage exceeds 95%",
+      "query": "attributes.metric.type = \"cpu\" and attributes.metric.value.percent > 95",
+      "threshold": 1,
+      "evaluationWindow": "5m",
+      "severity": "critical"
+    },
+    {
+      "name": "Disk Usage Critical",
+      "description": "Alert when disk usage exceeds 95%",
+      "query": "attributes.metric.type = \"disk\" and attributes.metric.value.percent > 95",
+      "threshold": 1,
+      "evaluationWindow": "5m",
+      "severity": "critical"
+    }
+  ]
+}

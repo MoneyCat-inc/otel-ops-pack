@@ -12,7 +12,7 @@ const gateHeader = '## ✅ ECRR Gate';
 if (!fs.existsSync(p)) {
   fs.mkdirSync('.github', { recursive: true });
   fs.writeFileSync(p, `${badge}\n\n${gateHeader}\n\n- [ ] **Examine**\n- [ ] **Clean**\n- [ ] **Report**\n- [ ] **Role**\n`);
-  console.log('🆕 Created PR template with ECRR badge + Gate.');
+  console.info('🆕 Created PR template with ECRR badge + Gate.');
   process.exit(0);
 }
 
@@ -29,7 +29,7 @@ if (!orig.includes(gateHeader)) {
 
 if (changed !== orig) {
   fs.writeFileSync(p, changed);
-  console.log('🩹 Updated PR template with ECRR badge + Gate.');
+  console.info('🩹 Updated PR template with ECRR badge + Gate.');
 } else {
-  console.log('✅ PR template already contains ECRR badge + Gate.');
+  console.info('✅ PR template already contains ECRR badge + Gate.');
 }
