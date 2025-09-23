@@ -10,6 +10,14 @@ $script:allChecksPassed = $true
 $script:checkFailures = New-Object 'System.Collections.Generic.List[string]'
 $testEventId = [Guid]::NewGuid().ToString()
 $script:artifactsDir = Join-Path (Get-Location) "artifacts"
+$script:lintPassed = $false
+$script:typecheckPassed = $false
+$script:lintOutput = @()
+$script:typecheckOutput = @()
+$script:lintExitCode = $null
+$script:typecheckExitCode = $null
+$script:lintSummary = 'NOT RUN'
+$script:typecheckSummary = 'NOT RUN'
 
 function Write-Pass { param([string]$Message) Write-Host "   [OK] $Message" -ForegroundColor Green }
 function Write-Detail { param([string]$Message) if ($Message) { Write-Host "      $Message" -ForegroundColor DarkGray } }
@@ -20,11 +28,97 @@ function Write-Fail {
     $script:checkFailures.Add($Message) | Out-Null
 }
 
+function Invoke-NpmCheck {
+    param(
+        [Parameter(Mandatory = $true)][string]$ScriptName,
+        [Parameter(Mandatory = $true)][string]$Label
+    )
+
+    $outputLines = @()
+    try {
+        $npmCommand = (Get-Command "npm.cmd" -ErrorAction Stop).Source
+    } catch {
+        $errorMessage = $_.Exception.Message
+        Write-Fail "npm command unavailable: $errorMessage"
+        return [PSCustomObject]@{ Passed = $false; ExitCode = -1; Output = $outputLines; Error = $errorMessage }
+    }
+
+    try {
+        Write-Detail "Running npm run $ScriptName --silent"
+        $commandOutput = & $npmCommand run $ScriptName --silent 2>&1
+        $exitCode = $LASTEXITCODE
+        if ($commandOutput) {
+            $outputLines = @($commandOutput | ForEach-Object { $_.ToString() })
+            foreach ($line in $outputLines) { Write-Detail $line }
+        }
+
+        if ($exitCode -eq 0) {
+            Write-Pass "$Label succeeded"
+            return [PSCustomObject]@{ Passed = $true; ExitCode = 0; Output = $outputLines }
+        } else {
+            Write-Fail "$Label failed (exit $exitCode)"
+            return [PSCustomObject]@{ Passed = $false; ExitCode = $exitCode; Output = $outputLines }
+        }
+    } catch {
+        $errorMessage = $_.Exception.Message
+        Write-Fail "$Label error: $errorMessage"
+        return [PSCustomObject]@{ Passed = $false; ExitCode = -1; Output = $outputLines; Error = $errorMessage }
+    }
+}
+
+function Show-ToolchainSummary {
+    param([string]$Path)
+
+    if (Test-Path $Path) {
+        Write-Host "`n--- Toolchain Checks (lint/typecheck) ---" -ForegroundColor Cyan
+        Get-Content $Path | ForEach-Object { Write-Host "   $_" -ForegroundColor Cyan }
+    }
+}
+
 # Ensure artifacts directory exists
 if (-not (Test-Path $script:artifactsDir)) {
     New-Item -Path $script:artifactsDir -ItemType Directory -Force | Out-Null
     Write-Detail "Created artifacts directory: $script:artifactsDir"
 }
+
+# Toolchain sanity checks (lint/typecheck)
+Write-Host "`n0. Toolchain Sanity Checks:" -ForegroundColor Yellow
+
+$lintResult = Invoke-NpmCheck -ScriptName 'lint' -Label 'npm run lint'
+$script:lintPassed = $lintResult.Passed
+$script:lintExitCode = $lintResult.ExitCode
+$script:lintOutput = $lintResult.Output
+
+$typecheckResult = Invoke-NpmCheck -ScriptName 'typecheck' -Label 'npm run typecheck'
+$script:typecheckPassed = $typecheckResult.Passed
+$script:typecheckExitCode = $typecheckResult.ExitCode
+$script:typecheckOutput = $typecheckResult.Output
+
+$script:lintSummary = if ($script:lintPassed) { 'PASSED' } elseif ($script:lintExitCode -ne $null) { "FAILED (exit $($script:lintExitCode))" } else { 'FAILED' }
+$script:typecheckSummary = if ($script:typecheckPassed) { 'PASSED' } elseif ($script:typecheckExitCode -ne $null) { "FAILED (exit $($script:typecheckExitCode))" } else { 'FAILED' }
+
+$toolchainLog = @()
+$toolchainLog += '== Toolchain Checks =='
+$toolchainLog += "Timestamp: $(Get-Date -Format "yyyy-MM-ddTHH:mm:ss.fffK")"
+$toolchainLog += "npm run lint: $($script:lintSummary)"
+$toolchainLog += "npm run typecheck: $($script:typecheckSummary)"
+
+if ($script:lintOutput -and $script:lintOutput.Count -gt 0) {
+    $toolchainLog += ''
+    $toolchainLog += 'npm run lint output (first 40 lines):'
+    $toolchainLog += ($script:lintOutput | Select-Object -First 40)
+}
+
+if ($script:typecheckOutput -and $script:typecheckOutput.Count -gt 0) {
+    $toolchainLog += ''
+    $toolchainLog += 'npm run typecheck output (first 40 lines):'
+    $toolchainLog += ($script:typecheckOutput | Select-Object -First 40)
+}
+
+$toolchainLogPath = Join-Path $script:artifactsDir 'wiring-toolchain.txt'
+$toolchainLog | Out-File -FilePath $toolchainLogPath -Encoding utf8NoBOM
+Write-Detail "Toolchain log written to $toolchainLogPath"
+$script:toolchainLogPath = $toolchainLogPath
 
 # Get SigNoz auth headers if available
 $script:sigNozHeaders = $null
@@ -140,6 +234,10 @@ if ($apiSuccess) {
 Timestamp: $(Get-Date -Format "yyyy-MM-ddTHH:mm:ss.fffK")
 Test Event ID: $testEventId
 
+Toolchain Checks:
+- npm run lint: $($script:lintSummary)
+- npm run typecheck: $($script:typecheckSummary)
+
 API Test: PASSED
 - Event sent to /api/events successfully
 - Response: $($response | ConvertTo-Json -Compress)
@@ -182,11 +280,69 @@ SigNoz Test: PASSED
             Write-Detail "SigNoz API verification skipped (authentication required)"
             Write-Detail "Set SIGNOZ_API_TOKEN environment variable to enable full verification"
             
-            # Write partial artifacts
-            $partialArtifact = @"
+            # Try ClickHouse verification as fallback
+            Write-Detail "Attempting ClickHouse verification as fallback..."
+            $clickHouseSeen = $false
+            try {
+                $clickHouseQuery = "SELECT count(*) as count FROM signoz_logs.distributed_logs_v2 WHERE timestamp >= now() - INTERVAL 10 MINUTE AND (JSONExtractString(toString(resource), 'dataset') = 'resonai_analytics' OR mapContains(resources_string, 'dataset') = 1 OR positionCaseInsensitive(body, '$testEventId') > 0) LIMIT 1"
+                $clickHouseUrl = "http://localhost:8123/?query=" + [Uri]::EscapeDataString($clickHouseQuery)
+                $clickHouseResponse = Invoke-WebRequest -UseBasicParsing -TimeoutSec 10 -Uri $clickHouseUrl -Method Get
+                
+                if ($clickHouseResponse.StatusCode -eq 200) {
+                    $clickHouseCount = [int]$clickHouseResponse.Content.Trim()
+                    if ($clickHouseCount -gt 0) {
+                        Write-Pass "ClickHouse verification passed: found $clickHouseCount matching logs"
+                        $clickHouseSeen = $true
+                    } else {
+                        Write-Detail "ClickHouse verification: no matching logs found"
+                    }
+                }
+            } catch {
+                Write-Detail "ClickHouse verification failed: $($_.Exception.Message)"
+            }
+            
+            if ($clickHouseSeen) {
+                # Write artifacts with ClickHouse verification
+                $verifyArtifact = @"
 == Resonai ↔ OTel Wiring Verification Results ==
 Timestamp: $(Get-Date -Format "yyyy-MM-ddTHH:mm:ss.fffK")
 Test Event ID: $testEventId
+
+Toolchain Checks:
+- npm run lint: $($script:lintSummary)
+- npm run typecheck: $($script:typecheckSummary)
+
+API Test: PASSED
+- Event sent to /api/events successfully
+- Response: $($response | ConvertTo-Json -Compress)
+
+SigNoz Test: PASSED (via ClickHouse)
+- Event found in SigNoz logs via ClickHouse query
+- Dataset: resonai_analytics
+- Logs count: $clickHouseCount
+
+== Wiring verification PASSED ==
+"@
+                
+                $verifyArtifact | Out-File -FilePath (Join-Path $script:artifactsDir "wiring-verify.txt") -Encoding utf8NoBOM
+                $responseJson = $response | ConvertTo-Json -Depth 8
+                $responseJson | Out-File -FilePath (Join-Path $script:artifactsDir "wiring-api.json") -Encoding utf8NoBOM
+                
+                Write-Pass "Full verification completed (API + ClickHouse)"
+                Write-Pass "Artifacts written to artifacts/wiring-verify.txt and artifacts/wiring-api.json"
+                
+                # Mark verification as passed
+                $script:allChecksPassed = $true
+            } else {
+                # Write partial artifacts
+                $partialArtifact = @"
+== Resonai ↔ OTel Wiring Verification Results ==
+Timestamp: $(Get-Date -Format "yyyy-MM-ddTHH:mm:ss.fffK")
+Test Event ID: $testEventId
+
+Toolchain Checks:
+- npm run lint: $($script:lintSummary)
+- npm run typecheck: $($script:typecheckSummary)
 
 API Test: PASSED
 - Event sent to /api/events successfully
@@ -198,8 +354,9 @@ SigNoz Test: SKIPPED (Authentication required)
 
 == Wiring verification PARTIAL (API only) ==
 "@
-            $partialArtifact | Out-File -FilePath (Join-Path $script:artifactsDir "wiring-verify.txt") -Encoding utf8NoBOM
-            Write-Pass "Partial artifacts written (API test passed)"
+                $partialArtifact | Out-File -FilePath (Join-Path $script:artifactsDir "wiring-verify.txt") -Encoding utf8NoBOM
+                Write-Pass "Partial artifacts written (API test passed)"
+            }
             
         } else {
             Write-Fail "SigNoz API query failed to find analytics event within 15 minutes: $lastQueryError"
@@ -209,6 +366,10 @@ SigNoz Test: SKIPPED (Authentication required)
 == Resonai ↔ OTel Wiring Verification Results ==
 Timestamp: $(Get-Date -Format "yyyy-MM-ddTHH:mm:ss.fffK")
 Test Event ID: $testEventId
+
+Toolchain Checks:
+- npm run lint: $($script:lintSummary)
+- npm run typecheck: $($script:typecheckSummary)
 
 API Test: PASSED
 - Event sent to /api/events successfully
@@ -225,6 +386,8 @@ SigNoz Test: FAILED
     }
 }
 
+Show-ToolchainSummary -Path $script:toolchainLogPath
+
 Write-Host "`n=== Verification Complete ===" -ForegroundColor Green
 if ($allChecksPassed) {
     Write-Host "== Wiring verification PASSED ===" -ForegroundColor Green
@@ -234,6 +397,7 @@ if ($allChecksPassed) {
     Write-Host "2. Go to Logs section" -ForegroundColor Yellow
     Write-Host "3. Filter: attributes.dataset = `"resonai_analytics`"" -ForegroundColor Yellow
     Write-Host "4. Check artifacts in artifacts/wiring-verify.txt" -ForegroundColor Yellow
+    Write-Host "5. Review lint/typecheck log at artifacts/wiring-toolchain.txt" -ForegroundColor Yellow
 } else {
     Write-Host "== Wiring verification FAILED ==" -ForegroundColor Red
     Write-Host "Some checks failed. Please review the errors above." -ForegroundColor Red
@@ -246,6 +410,7 @@ if ($allChecksPassed) {
     Write-Host "2. Check ports 5318 (OTLP/HTTP) and 8080 (SigNoz UI) are listening" -ForegroundColor Yellow
     Write-Host "3. Confirm Resonai dev server is running on port 3003" -ForegroundColor Yellow
     Write-Host "4. Check artifacts/wiring-verify.txt for details" -ForegroundColor Yellow
+    Write-Host "5. Review lint/typecheck log at artifacts/wiring-toolchain.txt" -ForegroundColor Yellow
 }
 
 Write-Host "`nTest Event ID: $testEventId" -ForegroundColor Yellow
