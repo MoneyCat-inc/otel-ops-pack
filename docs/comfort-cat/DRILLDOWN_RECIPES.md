@@ -10,7 +10,7 @@ Steps (SigNoz UI)
 - Optional keyword: `severity_text in ["ERROR","WARN"] AND message contains "login"`
 - Group by: `service.name`, `severity_text`
 - Inspect: expand a log → Attributes (`service.name`, `host.name`, `log.file.path`, `exception.*`, `http.*`)
-- Trace pivot: if `traceId` present → “View related trace”
+- Trace pivot: if `traceId` present → "View related trace"
 
 Saved view name
 - Comfort Cat — High-severity drilldown (15m)

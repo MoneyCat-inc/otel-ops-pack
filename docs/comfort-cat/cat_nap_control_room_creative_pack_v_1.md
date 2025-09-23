@@ -8,7 +8,7 @@ _A serene observability story built for quick production and crisp proof points.
 ## 1) Logline & Promise
 **Logline:** While the cat naps, a lean Windows→SigNoz pipeline keeps perfect watch—logs, metrics, and traces flowing in sub‑second harmony.
 
-**Audience Promise:** “Sleep easy. We’ve got the signal.” Minimalist cockpit visuals + concrete, reproducible metrics.
+**Audience Promise:** "Sleep easy. We've got the signal." Minimalist cockpit visuals + concrete, reproducible metrics.
 
 ---
 
@@ -21,21 +21,21 @@ _A serene observability story built for quick production and crisp proof points.
 2. **Logs — Snap‑to‑Action (6–18s)**
    - Visual: Left panel of triptych expands. Recent WARN events flicker at ~15s cadence; canary breadcrumbs filter to the top (`message contains "canary test"`).
    - Motion: Subtle ticker left→right; highlight wipes at event arrival.
-   - On‑screen micro‑copy: _“Filtered Windows events in instantly.”_
+   - On‑screen micro‑copy: _"Filtered Windows events in instantly."_
 
 3. **Metrics — Heartbeat (18–36s)**
    - Visual: Center panel surfaces `otelcol_*` metrics: accepted / filtered / export errors. Clean sparklines + stacked bar for 200 ms batching.
    - Motion: 200 ms pulse glows on batch closure; exporter health dot idles green.
-   - On‑screen: _“200 ms rhythm. Exporter steady.”_
+   - On‑screen: _"200 ms rhythm. Exporter steady."_
 
 4. **Traces — Pulse Check (36–54s)**
    - Visual: Right panel reveals p95/p99 ribbons; stable, flat contours.
    - Motion: Tiny shimmer when percentile updates; cat ear twitches once.
-   - On‑screen: _“p95/p99 stay calm under load.”_
+   - On‑screen: _"p95/p99 stay calm under load."_
 
 5. **Close — Assurance (54–72s)**
    - Visual: Triptych re‑combines. Cat snores (one tiny Z) as the control board hums.
-   - CTA Card: _“Sleep easy. We’ve got the signal.”_ + import prompts.
+   - CTA Card: _"Sleep easy. We've got the signal."_ + import prompts.
 
 ---
 
@@ -60,7 +60,7 @@ _A serene observability story built for quick production and crisp proof points.
 ---
 
 ## 5) Copy Pack
-- **Primary CTA:** _Sleep easy. We’ve got the signal._
+- **Primary CTA:** _Sleep easy. We've got the signal._
 - **Secondary CTA:** _Import the dashboard & alerts. Watch the calm in real time._
 - **Body Options:**
   - _Logs land instantly. Metrics breathe at 200 ms. Traces stay flat._
@@ -77,10 +77,10 @@ _A serene observability story built for quick production and crisp proof points.
 5. **KF‑5 (Merge & CTA):** Triptych recombines; CTA card rises; import hints.
 
 **Supers & Captions (timed):**
-- 00:07 “Filtered Windows events in instantly.”
-- 00:22 “`otelcol_*` metrics—ingestion, filtering, exporter health.”
-- 00:40 “p95 / p99 flat under load.”
-- 00:58 “Sleep easy. We’ve got the signal.”
+- 00:07 "Filtered Windows events in instantly."
+- 00:22 "`otelcol_*` metrics—ingestion, filtering, exporter health."
+- 00:40 "p95 / p99 flat under load."
+- 00:58 "Sleep easy. We've got the signal."
 
 ---
 
@@ -139,11 +139,11 @@ _A serene observability story built for quick production and crisp proof points.
 
 ## 13) Edit Script (VO + SFX)
 **VO (soft, assured):**
-- “When the room goes quiet… we listen harder.”
-- “Filtered Windows events, right when they happen.”
-- “`otelcol` heartbeats at 200 milliseconds.”
-- “p95, p99—steady as a cat’s breath.”
-- “Sleep easy. We’ve got the signal.”
+- "When the room goes quiet… we listen harder."
+- "Filtered Windows events, right when they happen."
+- "`otelcol` heartbeats at 200 milliseconds."
+- "p95, p99—steady as a cat's breath."
+- "Sleep easy. We've got the signal."
 
 **SFX:** airy pad, low mechanical hum, light chime on batch pulse, single cat purr near CTA.
 

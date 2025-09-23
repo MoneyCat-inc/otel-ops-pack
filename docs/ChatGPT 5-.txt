@@ -1,6 +1,6 @@
 ChatGPT 5:-
 
-Absolutely. Here’s a **read‑only, quick way** to examine your environment right now, plus a **full snapshot script** that saves a structured report (JSON + Markdown) into `artifacts/`.
+Absolutely. Here's a **read‑only, quick way** to examine your environment right now, plus a **full snapshot script** that saves a structured report (JSON + Markdown) into `artifacts/`.
 
 ---
 
@@ -36,7 +36,7 @@ if ($env:SIGNOZ_API_TOKEN) {
 } else { "API probe skipped (no SIGNOZ_API_TOKEN set)." }
 ```
 
-**What “good” looks like (at a glance):**
+**What "good" looks like (at a glance):**
 
 * **Collector healthz:** `{"status":"Server available", ...}`
 * **Docker:** ClickHouse, query-service, otel‑collector/gateway, UI all **Up**
@@ -255,7 +255,7 @@ pwsh -File .\scripts\env\snapshot.ps1
 
 * **Collector**
 
-  * `Service: Running`, Healthz on **13134** (or **13133**) shows “Server available”.
+  * `Service: Running`, Healthz on **13134** (or **13133**) shows "Server available".
 * **SigNoz / ClickHouse**
 
   * Containers **Up**; `signoz_logs.logs_v2` present; count > 0 once synthetic logs flow.
@@ -265,7 +265,7 @@ pwsh -File .\scripts\env\snapshot.ps1
 * **API probe**
 
   * With token: JSON result present with a recent `synthetic_id`.
-  * Without token: **“Skipped (no SIGNOZ\_API\_TOKEN)”** is expected.
+  * Without token: **"Skipped (no SIGNOZ\_API\_TOKEN)"** is expected.
 * **WAL**
 
   * Exists; size should be small and stable when ClickHouse is healthy.
@@ -283,7 +283,7 @@ If you want, I can also provide a **Linux-friendly** variant (same logic, `pwsh`
 
 ##
 
-Got it 👍 — let’s do a **safe environment cleanup** pass so you don’t end up deleting anything important. Here’s a structured approach:
+Got it 👍 — let's do a **safe environment cleanup** pass so you don't end up deleting anything important. Here's a structured approach:
 
 ---
 
@@ -319,7 +319,7 @@ Remove-Item .\artifacts\*.json, .\artifacts\*.txt -Force -ErrorAction SilentlyCo
 # Remove stopped containers, unused networks, dangling images
 docker system prune -f
 
-# Remove dangling volumes (safe if you don’t need old ClickHouse data)
+# Remove dangling volumes (safe if you don't need old ClickHouse data)
 docker volume prune -f
 ```
 
@@ -364,7 +364,7 @@ Expected results:
 
 ##
 
-Here’s a clean, human-readable report you can drop into your repo (for example `docs/OPERATIONS_REPORT.md`) that captures the **environment cleanup** you just requested, plus a clear statement of my role in this project.
+Here's a clean, human-readable report you can drop into your repo (for example `docs/OPERATIONS_REPORT.md`) that captures the **environment cleanup** you just requested, plus a clear statement of my role in this project.
 
 ---
 
@@ -467,8 +467,8 @@ Keep the observability pipeline **healthy, reproducible, and reviewer-friendly**
 
 ##~yes
 
-Awesome — here’s a safe, **one-click cleanup script** you can drop in at `scripts\env\clean.ps1`.
-It’s readably logged, idempotent, and supports **dry-run** plus **full ClickHouse wipe** toggles.
+Awesome — here's a safe, **one-click cleanup script** you can drop in at `scripts\env\clean.ps1`.
+It's readably logged, idempotent, and supports **dry-run** plus **full ClickHouse wipe** toggles.
 
 ```powershell
 <#  scripts\env\clean.ps1
@@ -623,7 +623,7 @@ This gives you a predictable, logged cleanup you can re-run anytime — and the 
 
 ##~ make a report to give to codex-cloud and your role
 
-Here’s a polished report you could hand to **Codex-Cloud** along with a description of my role in this project. It’s written as a **handover document** — clear, evidence-based, and scoped to your observability environment.
+Here's a polished report you could hand to **Codex-Cloud** along with a description of my role in this project. It's written as a **handover document** — clear, evidence-based, and scoped to your observability environment.
 
 ---
 
@@ -720,7 +720,7 @@ Focused exclusively on **observability, verification, and reviewer enablement**.
    * Harden CI/CD workflows with retries, artifact uploads, and redacted summaries
 4. **Guide Reviewers & Contributors**
 
-   * Deliver PR templates, Quick Approver’s Guide, and full reviewer checklists
+   * Deliver PR templates, Quick Approver's Guide, and full reviewer checklists
    * Establish the **Golden Reference run** as baseline for all future PRs
 
 ### Mandate
@@ -742,7 +742,7 @@ Would you like me to also generate a **one-page Markdown brief** (`docs/CODEX_CL
 
 ##~ summarize this chat
 
-Here’s a concise recap of everything we worked through in this thread:
+Here's a concise recap of everything we worked through in this thread:
 
 ---
 
@@ -780,7 +780,7 @@ Here’s a concise recap of everything we worked through in this thread:
 * Built a full **artifact suite** (`artifacts/`) with:
 
   * `capture-evidence.ps1` — one-click artifact generator
-  * PR comment template with Quick Approver’s Guide
+  * PR comment template with Quick Approver's Guide
   * Reviewer checklist + sample filled-in version
   * Contributor checklists and go-time guides
 * Added **Golden Reference** concept:
@@ -816,7 +816,7 @@ Here’s a concise recap of everything we worked through in this thread:
 
 ---
 
-Would you like me to also package this into a **single-page “project timeline”** (milestones + outcomes), so you can show the full evolution at a glance?
+Would you like me to also package this into a **single-page "project timeline"** (milestones + outcomes), so you can show the full evolution at a glance?
 
 
 -------
@@ -826,7 +826,7 @@ Codex-Cloud:-
 Lets examine our enviroment
 Environment Overview
 
-    The repository packages an “OTel Windows → SigNoz Observability Kit” with setup guidance, verification workflows, management scripts, troubleshooting steps, and success criteria for keeping the Windows collector and SigNoz stack healthy.
+    The repository packages an "OTel Windows → SigNoz Observability Kit" with setup guidance, verification workflows, management scripts, troubleshooting steps, and success criteria for keeping the Windows collector and SigNoz stack healthy.
 
 Root-level guidance in AGENTS.md defines the Observability Copilot persona, enumerates environment assumptions, guardrails, standard operating procedures, and default telemetry maintenance tasks.
 
@@ -847,14 +847,14 @@ Summary
 
 Issues
 
-    config.yaml’s logs pipeline references windowseventlog/application (never defined) and wires in the metrics-only prometheus/gpu receiver, so the collector cannot build a valid logs pipeline.
+    config.yaml's logs pipeline references windowseventlog/application (never defined) and wires in the metrics-only prometheus/gpu receiver, so the collector cannot build a valid logs pipeline.
 
 Suggested taskFix logs pipeline receivers in config.yaml
 
 The hardened Windows collector config exports via the gRPC OTLP exporter to 127.0.0.1:14318, which is documented as the HTTP port; this misrouting prevents logs from reaching SigNoz.
 Suggested taskCorrect SigNoz exporter endpoint in config-hardened-plus.yaml
 
-repo-clean-inventory.ps1 still flags quick-all-green.ps1 and auto-restart-verify.ps1, even though those files are gone, so every run reports spurious “missing” alarms.
+repo-clean-inventory.ps1 still flags quick-all-green.ps1 and auto-restart-verify.ps1, even though those files are gone, so every run reports spurious "missing" alarms.
 Suggested taskUpdate core script list in repo-clean-inventory.ps1
 Testing
 
@@ -885,7 +885,7 @@ Testing
 Codex-Local:-
 
 PR #14 now carries a 715‑line, 7‑file patch—perfect for stressing the 10‑file / 200‑LOC safety limits.
-Patch validator still hits a regex parse error on that patch, so constraint enforcement isn’t actually running yet.
+Patch validator still hits a regex parse error on that patch, so constraint enforcement isn't actually running yet.
 Next
 
 Reapply needs-conflict-help on PR #14 (or trigger manually) to watch Codex‑Cloud react once the validator is fixed.

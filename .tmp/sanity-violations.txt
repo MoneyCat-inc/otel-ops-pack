@@ -1,0 +1,37 @@
+.agent/task_queue/codex_tasks.json
+agents_prompts.md
+AGENTS.md
+docs/1 .examine your enviroment.txt
+docs/ChatGPT 5-.txt
+docs/comfort cat/cat_nap_control_room_creative_pack_v_1.md
+docs/comfort-cat/cat_nap_control_room_creative_pack_v_1.md
+docs/comfort-cat/DRILLDOWN_RECIPES.md
+docs/comfort-cat/FILESYSTEM_NAMING_PITFALLS.md
+docs/comfort-cat/HANDOFF_ECRR01_AND_LOGS.md
+docs/ECRR_REPORTS/2025-09-22-ecrr-01-and-comfort-cat-merge.md
+docs/project-reports/README.md
+docs/QUERY_RECIPES.md
+docs/research/gpu-sidecar-doc.txt
+docs/research/SigNoz _ Logs_files/appcues.main.3ea757f1c15a40a2e36b79c64b68c9d70c5c52f4.js
+docs/research/SigNoz _ Logs_files/main.b98842f8f135c41a9e8f.js
+gpu/monitoring/alerts/health_alerts_20250918_222754.json
+gpu/monitoring/alerts/health_alerts_20250918_222852.json
+gpu/monitoring/alerts/health_alerts_20250918_223343.json
+gpu/monitoring/alerts/health_alerts_20250918_225453.json
+gpu/monitoring/alerts/health_alerts_20250918_225525.json
+gpu/monitoring/alerts/health_alerts_20250918_225833.json
+gpu/monitoring/alerts/health_alerts_20250918_225938.json
+gpu/monitoring/alerts/health_alerts_20250918_230425.json
+gpu/monitoring/reports/health_report_20250918_222302.json
+gpu/monitoring/reports/health_report_20250918_222747.json
+gpu/monitoring/reports/health_report_20250918_222845.json
+gpu/monitoring/reports/health_report_20250918_223343.json
+gpu/monitoring/reports/health_report_20250918_223936.json
+gpu/monitoring/reports/health_report_20250918_224054.json
+gpu/monitoring/reports/health_report_20250918_225453.json
+gpu/monitoring/reports/health_report_20250918_225525.json
+gpu/monitoring/reports/health_report_20250918_225833.json
+gpu/monitoring/reports/health_report_20250918_225938.json
+gpu/monitoring/reports/health_report_20250918_230424.json
+SigNoz _ Home_files/appcues.main.3ea757f1c15a40a2e36b79c64b68c9d70c5c52f4.js
+SigNoz _ Home_files/main.b98842f8f135c41a9e8f.js

@@ -224,7 +224,7 @@ SigNoz UI Steps:
 2. Add filter: `severity_text` is in `ERROR, WARN`
 3. (Optional) Add keyword in search bar
 4. Group by `service.name`, `severity_text`
-5. Expand a log → Attributes; open “View related trace” if shown
+5. Expand a log → Attributes; open "View related trace" if shown
 
 
 **Purpose**: Identify problematic analytics events
