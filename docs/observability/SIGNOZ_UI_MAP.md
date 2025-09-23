@@ -66,3 +66,19 @@ Known gotchas
 - Management APIs: not always exposed locally; prefer UI import
 - Time zones: UI shows local time; APIs use epoch ms
 - Trace correlation: requires logs to carry `traceId`/`spanId`
+
+## WER crash summaries
+- Source: `C:\otel\scripts\capture-wer-phoneexperience.ps1` (writes to `C:\logs\wer-phoneexperience.log`)
+- SigNoz Logs filter: `dataset = "windows-wer" AND faulting_application = "PhoneExperienceHost.exe"`
+- Suggested view: Group by `exception_code`, `faulting_module`; display `process_id`, `thread_id`
+- Schedule helper: run `pwsh -File C:\otel\scripts\schedule-wer-phoneexperience.ps1 -IntervalMinutes 15`
+- Smoke test: `pwsh -File C:\otel\scripts\capture-wer-phoneexperience.ps1 -EmitTestRecord` (writes synthetic log line)
+- Verification: `dataset = "windows-wer" AND synthetic = "true"` within last 24h
+- Task management: `Get-ScheduledTask -TaskName SigNoz-WER-PhoneExperience` to check status
+
+## Firmware & DMA follow-up
+- Current BIOS: `American Megatrends Inc. 5602 (13.1.25)` (from SysInfo report)
+- Kernel DMA protection: Off (common on B450); enable in BIOS if newer firmware supports it
+- Action: check ASUS support for newer BIOS enabling DMA guard; document changes in `artifacts/monolith-D-summary.json`
+- Health check: when BIOS updated, flip collector health script to treat DMA guard regressions as failures
+

@@ -1,0 +1,20 @@
+[
+  {
+    "key": "ECRR-20250923-002045",
+    "file": "ECRR-20250923-002045-SLEEP-KIT-IMPLEMENTATION.md",
+    "timestamp": "2025-09-23T00:20:45Z",
+    "scope": "Sleep Kit implementation - nap-friendly automation",
+    "outcome": "success",
+    "branch": "main",
+    "commit": "5d81e493837f59c867d6f3e4d01acdbdac7c3b75"
+  },
+  {
+    "key": "ECRR-20250923-001032",
+    "file": "ECRR-20250923-001032-NIGHTLY-TRACKER-SYNC-IMPLEMENTATION.md",
+    "timestamp": "2025-09-23T00:10:32Z",
+    "scope": "Nightly tracker sync implementation",
+    "outcome": "success",
+    "branch": "main",
+    "commit": "5d81e493837f59c867d6f3e4d01acdbdac7c3b75"
+  }
+]

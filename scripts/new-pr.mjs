@@ -1,26 +1,37 @@
 #!/usr/bin/env node
-import { execSync } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { execSync } from 'node:child_process';
+import { accessSync } from 'node:fs';
 
-function sh(cmd) { return execSync(cmd, { stdio: "pipe" }).toString().trim(); }
+function sh(cmd) {
+  return execSync(cmd, { stdio: 'pipe' }).toString().trim();
+}
 
-const defaultTitle = sh('git rev-parse --abbrev-ref HEAD');
-const body = readFileSync('scripts/pr-body.md', 'utf8');
+const bodyPath = 'scripts/pr-body.md';
 
-// require gh CLI
-try { sh('gh --version'); } catch {
-  console.error('❌ GitHub CLI (gh) not found. Install from https://cli.github.com/');
+try {
+  accessSync(bodyPath);
+} catch {
+  console.error('? PR template body missing at scripts/pr-body.md');
   process.exit(1);
 }
 
-// create PR (interactive base/labels allowed via flags if you like)
-const cmd = `gh pr create -t "${defaultTitle}" -F scripts/pr-body.md`;
-console.log('➡️  ', cmd);
+const defaultTitle = sh('git rev-parse --abbrev-ref HEAD');
+
+try {
+  sh('gh --version');
+} catch {
+  console.error('? GitHub CLI (gh) not found. Install from https://cli.github.com/');
+  process.exit(1);
+}
+
+const cmd = `gh pr create -t "${defaultTitle}" -F ${bodyPath}`;
+console.info('??  ', cmd);
+
 try {
   const out = sh(cmd);
-  console.log(out);
-  console.log('✅ PR created with ECRR badge + Gate prefilled.');
+  console.info(out);
+  console.info('? PR created with ECRR badge + Gate prefilled.');
 } catch (e) {
-  console.error('❌ Failed to create PR. Details:\n', e?.stdout?.toString() || e?.message);
+  console.error('? Failed to create PR. Details:\n', e?.stdout?.toString() || e?.message);
   process.exit(1);
 }
