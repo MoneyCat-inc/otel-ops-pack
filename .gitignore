@@ -59,7 +59,8 @@ queryex/
 
 
 # Observability artifacts
-.artifacts/
+.artifacts/*
+!.artifacts/SSOT.md
 *.log
 *.png
 *.svg

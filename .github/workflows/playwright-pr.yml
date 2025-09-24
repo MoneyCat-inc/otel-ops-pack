@@ -1,0 +1,66 @@
+name: Playwright — Deterministic PR Lane
+
+on:
+  pull_request:
+    branches: ["**"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  checks: write
+
+concurrency:
+  group: playwright-pr-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deterministic-firefox:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Playwright Firefox bits
+        run: npx --yes playwright install firefox --with-deps
+
+      - name: Start preview server
+        run: |
+          python -m http.server 3003 --directory preview &
+          echo $! > preview-server.pid
+          for attempt in $(seq 1 20); do
+            if curl -fsS http://127.0.0.1:3003 > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "Preview server did not become ready" >&2
+          exit 1
+
+      - name: Run deterministic suite (Firefox only)
+        env:
+          BASE_URL: http://127.0.0.1:3003
+        run: npm run test:smoke:ci
+
+      - name: Upload Playwright traces (if any)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-pr-traces
+          path: playwright-report
+          if-no-files-found: ignore
+          retention-days: 5
+
+      - name: Stop preview server
+        if: always()
+        run: |
+          if [ -f preview-server.pid ]; then
+            kill $(cat preview-server.pid) || true
+          fi

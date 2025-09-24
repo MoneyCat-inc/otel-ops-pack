@@ -11,6 +11,7 @@
     "hygiene": "pwsh ./tools/hygiene.ps1",
     "test:smoke": "playwright test -c playwright.smoke.config.ts",
     "test:smoke:ci": "playwright test -c playwright.smoke.config.ts --reporter=list",
+    "test:playwright:nightly": "playwright test -c playwright.nightly.config.ts --reporter=list",
     "tidy": "pwsh -File scripts/quick-tidy.ps1",
     "clean:deep": "pwsh -File scripts/deep-clean.ps1",
     "lint": "eslint --no-warn-ignored --ext .js,.mjs scripts ./*.js ./*.mjs",

@@ -1,0 +1,76 @@
+name: Playwright — Nightly Matrix
+
+on:
+  schedule:
+    - cron: '0 8 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  checks: write
+
+concurrency:
+  group: playwright-nightly
+  cancel-in-progress: false
+
+jobs:
+  nightly-matrix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [chromium-nightly, firefox-nightly, webkit-nightly]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Playwright browsers
+        run: npx --yes playwright install --with-deps chromium firefox webkit
+
+      - name: Start preview server
+        run: |
+          python -m http.server 3003 --directory preview &
+          echo $! > preview-server.pid
+          for attempt in $(seq 1 20); do
+            if curl -fsS http://127.0.0.1:3003 > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "Preview server did not become ready" >&2
+          exit 1
+
+      - name: Prepare report directory
+        run: mkdir -p playwright-report
+
+      - name: Run nightly suite (${{ matrix.project }})
+        env:
+          BASE_URL: http://127.0.0.1:3003
+        run: |
+          npx playwright test -c playwright.nightly.config.ts \
+            --project ${{ matrix.project }} \
+            --reporter=list,json=playwright-report/${{ matrix.project }}.json
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-nightly-${{ matrix.project }}
+          path: playwright-report
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Stop preview server
+        if: always()
+        run: |
+          if [ -f preview-server.pid ]; then
+            kill $(cat preview-server.pid) || true
+          fi
