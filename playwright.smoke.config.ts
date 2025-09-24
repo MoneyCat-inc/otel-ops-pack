@@ -23,6 +23,14 @@ export default defineConfig({
     video: 'off',
     screenshot: 'off',
   },
+  webServer: {
+    command: 'npm run preview:dev',
+    url: baseURL,
+    reuseExistingServer: !process.env['CI'],
+    timeout: 60_000,
+    stdout: 'pipe',
+    stderr: 'pipe',
+  },
   projects: [
     {
       name: 'firefox-deterministic',
