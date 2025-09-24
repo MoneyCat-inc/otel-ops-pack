@@ -174,11 +174,7 @@ We're normalizing wording in the **Periodic Maintenance** section. Preserve auto
 
 ### Conflict hunk
 ````diff
-<<<<<<< feature-branch
-- **Weekly:** `setup-weekly-audit.ps1` → automated evidence trail (hands-off); run `make-audit-pack.ps1` on-demand for manual capture
-=======
-- **Weekly:** `setup-weekly-audit.ps1` → automated evidence trail; run `make-audit-pack.ps1` on-demand if you need a manual capture
->>>>>>> main
+
 ````
 
 ### Canonical resolution (apply exactly)
