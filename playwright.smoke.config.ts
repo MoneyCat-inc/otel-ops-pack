@@ -9,14 +9,6 @@ const firefoxPreferences = {
   'media.autoplay.default': 0,
 };
 
-const baseUse = {
-  baseURL,
-  headless: true,
-  trace: 'off' as const,
-  video: 'off' as const,
-  screenshot: 'off' as const,
-};
-
 export default defineConfig({
   testDir: 'tests',
   testMatch: ['smoke/**/*.spec.ts', 'isolation/**/*.spec.ts', 'mic-flow/**/*.spec.ts', 'a11y-min/**/*.spec.ts'],
@@ -24,12 +16,17 @@ export default defineConfig({
   workers: 1,
   timeout: 20_000,
   reporter: [['list']],
-  use: baseUse,
+  use: {
+    baseURL,
+    headless: true,
+    trace: 'off',
+    video: 'off',
+    screenshot: 'off',
+  },
   projects: [
     {
       name: 'firefox-deterministic',
       use: {
-        ...baseUse,
         ...devices['Desktop Firefox'],
         launchOptions: {
           firefoxUserPrefs: {
