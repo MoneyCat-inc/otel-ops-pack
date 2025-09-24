@@ -1,0 +1,109 @@
+{
+  "version": 1,
+  "flowName": "Daily Practice v1",
+  "cohort": "pilot",
+  "dataControls": {
+    "export": true,
+    "delete": true,
+    "retentionHours": 24
+  },
+  "steps": [
+    {
+      "id": "warmup_intro",
+      "type": "info",
+      "title": "Gentle Warmup",
+      "content": "Spend one minute focusing on breath and posture before we activate the mic.",
+      "next": "warmup_drill"
+    },
+    {
+      "id": "warmup_drill",
+      "type": "drill",
+      "title": "Warmup Glide",
+      "copy": "Sustain an ah from low to comfortable high pitch.",
+      "durationSec": 45,
+      "target": {
+        "pitchRange": ["A3", "E4"],
+        "trajectory": "ascending"
+      },
+      "metrics": [
+        "voicedTimePct",
+        "timeInTargetPct",
+        "smoothness"
+      ],
+      "analytics": [
+        {
+          "event": "drill_started",
+          "endpoint": "/api/events",
+          "props": {
+            "flow": "daily",
+            "step": "warmup",
+            "grantRatePct": 0,
+            "activationRatePct": 0,
+            "durationMs": 45000
+          }
+        },
+        {
+          "event": "drill_completed",
+          "endpoint": "/api/events",
+          "props": {
+            "flow": "daily",
+            "step": "warmup",
+            "timeInTargetPct": 0,
+            "latencyMs": 0
+          }
+        }
+      ],
+      "next": "phrase_prep"
+    },
+    {
+      "id": "phrase_prep",
+      "type": "info",
+      "title": "Phrase Setup",
+      "content": "Preview the activation phrase. Focus on clear articulation.",
+      "next": "phrase_drill"
+    },
+    {
+      "id": "phrase_drill",
+      "type": "drill",
+      "title": "Activation Phrase",
+      "copy": "Deliver the activation phrase with intent: \"We are ready for launch.\"",
+      "durationSec": 30,
+      "target": {
+        "intonation": "falling",
+        "phraseText": "We are ready for launch."
+      },
+      "metrics": [
+        "expressiveness",
+        "timeInTargetPct"
+      ],
+      "analytics": [
+        {
+          "event": "phrase_attempt",
+          "endpoint": "/api/events",
+          "props": {
+            "flow": "daily",
+            "step": "activation",
+            "activationRatePct": 0,
+            "grantRatePct": 0
+          }
+        }
+      ],
+      "successThreshold": {
+        "timeInTargetPct": 0.7,
+        "expressiveness": 0.4
+      },
+      "next": "reflection"
+    },
+    {
+      "id": "reflection",
+      "type": "reflection",
+      "title": "Reflection",
+      "copy": "How did the activation phrase feel?",
+      "prompts": [
+        "Was the mic granted instantly?",
+        "Did you feel vocally warmed up?",
+        "What would you adjust next run?"
+      ]
+    }
+  ]
+}
