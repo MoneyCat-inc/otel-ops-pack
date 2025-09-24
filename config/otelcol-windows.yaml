@@ -21,12 +21,21 @@ receivers:
         - type: add
           field: log.source
           value: file
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
 processors:
-  batch/logs:
+  batch:
     timeout: 200ms
     send_batch_size: 256
   memory_limiter:
-    limit_mib: 256
+    check_interval: 5s
+    limit_mib: 512
+    spike_limit_mib: 128
   attributes/global:
     actions:
       - key: deployment.env
@@ -40,36 +49,33 @@ processors:
       - key: log.source
         value: windows_event_log
         action: insert
+
 exporters:
-  otlp:
+  otlp/signoz:
     endpoint: localhost:14317
     tls:
       insecure: true
-  otlphttp:
+  otlphttp/signoz:
     endpoint: http://localhost:14318
     tls:
       insecure: true
+
 service:
   extensions:
     - health_check
+  telemetry:
+    metrics:
+      address: 0.0.0.0:8888
   pipelines:
     logs:
       receivers: [windows_event_log, filelog]
       processors: [memory_limiter, attributes/global, attributes/windows_event_log, batch]
-      exporters: [otlp, otlphttp, debug]
+      exporters: [otlp/signoz, otlphttp/signoz]
     metrics:
-      receivers: []
-      processors:
-        - memory_limiter
-        - batch
-      exporters:
-        - otlp
-        - otlphttp
+      receivers: [otlp]
+      processors: [memory_limiter, batch]
+      exporters: [otlp/signoz, otlphttp/signoz]
     traces:
-      receivers: []
-      processors:
-        - memory_limiter
-        - batch
-      exporters:
-        - otlp
-        - otlphttp
+      receivers: [otlp]
+      processors: [memory_limiter, batch]
+      exporters: [otlp/signoz, otlphttp/signoz]
