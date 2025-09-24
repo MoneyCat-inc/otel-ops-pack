@@ -6,21 +6,7 @@ Lines: 5-19
 
 ## Raw Conflict
 ```diff
-<<<<<<< codex-cloud-smoke-test
-A complete Windows-to-SigNoz observability pipeline with automated monitoring, alerting, and Codex-Cloud conflict resolution capabilities.
 
-## 🚀 Quick Start
-
-### Codex-Cloud Integration
-This repository includes automated conflict resolution via the Codex-Cloud system. Add the `needs-conflict-help` label to any PR to trigger automated conflict analysis and resolution.
-=======
-A complete Windows-to-SigNoz observability pipeline with automated monitoring, alerting, and intelligent agent automation.
-
-## 🚀 Quick Start
-
-### Agent System
-This repository includes an intelligent agent system for automated maintenance and conflict resolution. Use GitHub Actions workflow dispatch or PR labels to trigger agent tasks.
->>>>>>> main
 ```
 
 ## Canonical Resolution

@@ -14,11 +14,7 @@ We're normalizing wording in the **{{section}}** section. Preserve automation po
 
 ### Conflict hunk
 ````diff
-<<<<<<< {{headRef}}
-- **Weekly:** `setup-weekly-audit.ps1` → automated evidence trail (hands-off); run `make-audit-pack.ps1` on-demand for manual capture
-=======
-- **Weekly:** `setup-weekly-audit.ps1` → automated evidence trail; run `make-audit-pack.ps1` on-demand if you need a manual capture
->>>>>>> {{baseRef}}
+
 ````
 
 ### Canonical resolution (apply exactly)
