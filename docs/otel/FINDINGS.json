@@ -1,0 +1,50 @@
+[
+  {
+    "id": "CFG-001",
+    "severity": "critical",
+    "area": "config",
+    "desc": "Windows collector log pipeline references an undefined batch processor and debug exporter, preventing startup.",
+    "evidence": "config/otelcol-windows.yaml",
+    "fix": "Rename the processor to match `batch/logs` (or change the pipeline reference) and remove or define the debug exporter; drop empty metrics/traces pipelines or supply valid receivers."
+  },
+  {
+    "id": "CFG-002",
+    "severity": "high",
+    "area": "config",
+    "desc": "SigNoz collector exporters run without retry/backoff or memory limits, so transient ClickHouse outages drop data.",
+    "evidence": "config/signoz-collector.yaml",
+    "fix": "Add `memory_limiter` and enable `retry_on_failure` plus `sending_queue` on every OTLP exporter feeding ClickHouse." 
+  },
+  {
+    "id": "CFG-003",
+    "severity": "high",
+    "area": "config",
+    "desc": "Local smoke collector lacks memory limiter, queues, or health endpoint, so it is unsafe for CI harnessing.",
+    "evidence": "collector/otel-local.yaml",
+    "fix": "Port the production memory limiter, add retry/queue settings, and expose health telemetry before running in automation."
+  },
+  {
+    "id": "SEC-001",
+    "severity": "medium",
+    "area": "security",
+    "desc": "Teams copy `config/otelcol-windows.yaml`, which omits the sanitizer/redaction processors present in the hardened baseline.",
+    "evidence": "config/otelcol-windows.yaml",
+    "fix": "Promote `config-hardened-plus.yaml` as the canonical Windows config or add its redaction/sanitizer processors to `config/otelcol-windows.yaml`."
+  },
+  {
+    "id": "SEC-002",
+    "severity": "medium",
+    "area": "security",
+    "desc": "SigNoz JWT secret is committed inline in docker-compose, blocking reuse of the file in shared environments.",
+    "evidence": "docker-compose.yml",
+    "fix": "Externalize the JWT secret via environment file or secret manager before promoting beyond local development."
+  },
+  {
+    "id": "TEST-001",
+    "severity": "high",
+    "area": "testing",
+    "desc": "CI only runs a single YAML syntax check and never executes end-to-end smoke coverage for the OTel pipeline.",
+    "evidence": "validate-yaml.py",
+    "fix": "Add the new `scripts/otel/smoke.ps1` and `scripts/otel/smoke.sh` to CI so every PR exercises OTLP logs, traces, and metrics flow into SigNoz." 
+  }
+]
