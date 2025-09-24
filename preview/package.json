@@ -6,7 +6,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "serve": "python -m http.server 3000"
+    "serve": "vite preview --host 0.0.0.0 --port 3003"
   },
   "devDependencies": {
     "vite": "^5.0.0"
