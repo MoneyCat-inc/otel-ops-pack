@@ -27,6 +27,14 @@
       "query": "count by (log.source) (log.source=\"windows_event_log\" and level=\"ERROR\") > 10",
       "severity": "warning",
       "duration": "5m"
+    },
+    {
+      "name": "Windows Canary Log Absence",
+      "description": "Alert when canary logs stop appearing for more than 5 minutes",
+      "query": "absent_over_time(count by (test_id) (log.body contains \"windows-canary\")[5m])",
+      "severity": "critical",
+      "duration": "5m",
+      "notification_channels": ["default"]
     }
   ],
   "dashboards": [

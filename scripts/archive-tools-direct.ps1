@@ -66,7 +66,7 @@ foreach ($file in $oldFiles) {
     try {
         $relativePath = $file.FullName.Substring($toolsPath.Length + 1)
         $destinationPath = Join-Path $archivePath $relativePath
-        $destinationDir = Split-Path $destinationPath -Parent
+        $destinationDir = Split-Path -Path $destinationPath -Parent
         
         if (-not (Test-Path $destinationDir)) {
             New-Item -ItemType Directory -Path $destinationDir -Force | Out-Null
@@ -109,3 +109,4 @@ if ($finalUsagePercent -lt 85) {
 }
 
 Write-Host "`nArchive complete!" -ForegroundColor Cyan
+

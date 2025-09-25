@@ -1,0 +1,43 @@
+{
+  "backlog": [
+    {
+      "id": "task_1758743754068_vmd4zuq2t",
+      "title": "Missing automated health checks",
+      "source": "demo-report.md",
+      "section": "Critical Gaps",
+      "status": "todo",
+      "priority": "high",
+      "createdAt": 1758743754068,
+      "assignedTo": null,
+      "dueDate": null,
+      "tags": []
+    },
+    {
+      "id": "task_1758743754068_tn2fcc9ef",
+      "title": "Implement automated health checks",
+      "source": "demo-report.md",
+      "section": "Recommendations",
+      "status": "todo",
+      "priority": "medium",
+      "createdAt": 1758743754068,
+      "assignedTo": null,
+      "dueDate": null,
+      "tags": []
+    },
+    {
+      "id": "task_1758743754068_p5gu8y4qm",
+      "title": "[ ] Deploy health check script",
+      "source": "demo-report.md",
+      "section": "Action Items",
+      "status": "todo",
+      "priority": "medium",
+      "createdAt": 1758743754068,
+      "assignedTo": null,
+      "dueDate": null,
+      "tags": []
+    }
+  ],
+  "completed": [],
+  "lastUpdated": "2025-09-24T19:56:05.866Z",
+  "version": 1
+}

@@ -1,0 +1,826 @@
+Brilliant idea. Here’s a concrete, end‑to‑end **implementation plan** to make OpenTelemetry (OTel) the “control plane of truth” while you **LLM‑author an 8080‑style OS** and **bootstrap it onto x86** using emulation. The plan treats OTel as the glue that: (1) instruments the LLM/agent workflow, (2) observes the build/assemble/run loop, and (3) extracts early‑boot telemetry from the guest (QEMU/Bochs) back to the host so you can iterate safely.
+
+Below you’ll find: architecture, signal mapping (including GenAI semconv), emulator bridges (port **0xE9** / serial), Collector configs (agent/gateway), and a milestone schedule. I’ve annotated the few load‑bearing facts with sources so you can wire everything up quickly.
+
+---
+
+## 0) Big picture: what we’re building
+
+**Goal:** Natural‑language specs → LLM(s) generate boot code + kernel routines (8080 flavor) → assemble/link → run in **QEMU** (or Bochs) → stream early‑boot output back to host through a **debug I/O port / serial** → **OTel** turns every step into traces/metrics/logs → route to SigNoz (or your backend) for fast looped iteration and guardrails.
+
+```
+User NL spec
+   ⇣
+LLM/agents (planner + codegen)
+   ⇣ (traces: gen_ai.* spans; logs)
+Builder (asm/link/test harness)
+   ⇣ (traces/logs/metrics)
+Emulator (QEMU)   <── guest "telemetry" via I/O (0xE9) or COM1 ──>  Host collector
+   ⇣
+SigNoz (dashboards, alerts, “golden” flows)
+```
+
+* **OTel roles**: (a) rich spans for LLM planning/execution (GenAI semantic conventions), (b) logs/metrics for build + emulator runs, (c) **tail sampling** keeps all failure traces & slow boots, only a fraction of happy paths. ([OpenTelemetry][1])
+* **Collector** is our pipeline brain: receivers → processors → exporters, separated per signal (traces/metrics/logs). ([OpenTelemetry][2])
+
+---
+
+## 1) Signals & semantic conventions
+
+### 1.1 GenAI spans for the LLM workflow
+
+Instrument your agent stack (planner, tools, codegen, tests) with **GenAI semantic conventions** so each step is explorable in SigNoz: prompt/response, tokens, model, provider. Use the new GenAI docs (still evolving), and **opt into** the current category via `OTEL_SEMCONV_STABILITY_OPT_IN` so you don’t get surprise renames. Key attributes: `gen_ai.system`, `gen_ai.model.name`, token usage, etc. ([OpenTelemetry][3])
+
+> Why: you’ll correlate “broken boot at 0x7C00” directly to the exact prompt/tool-call that produced that boot sector.
+
+### 1.2 Build/test harness spans & logs
+
+* **Traces**: one root span per **build‑run**; children for “assemble”, “link”, “launch QEMU”, “parse debugcon”, “validate”.
+* **Metrics**: duration, success rate, QEMU exit code histograms, per‑stage CPU/mem (via **hostmetrics receiver**) on the builder host/WSL node. ([Uptrace][4])
+* **Logs**: structured build logs and emulator console lines; inject `trace_id`/`span_id` into logs to enable **trace↔log correlation** in SigNoz. ([SigNoz][5])
+
+### 1.3 Guest early‑boot “telemetry” over I/O
+
+You can’t run an OTel SDK at 16‑bit real‑mode, so we **bridge**:
+
+* **QEMU debug console (`-debugcon`)**: guest writes bytes to **port 0xE9** → host prints/captures. Use this for tiny logging macros in your boot sector & kernel. ([QEMU][6])
+* Optional **ISA debug exit** device: `-device isa-debug-exit,iobase=0xf4,iosize=0x04`; guest OUT to 0xF4 exits QEMU with a code (great for pass/fail CI). ([GitHub][7])
+
+> Boot fact for reference: the BIOS loads your boot sector at **0x7C00** and jumps there; your early code can immediately emit bytes to 0xE9. ([Retrocomputing Stack Exchange][8])
+
+---
+
+## 2) Emulator wiring (guest→host) you’ll use from day 1
+
+**QEMU flags (headless dev loop):**
+
+```bash
+qemu-system-i386 -drive file=build/os.img,format=raw \
+  -nographic -debugcon file:debugcon.txt \
+  -device isa-debug-exit,iobase=0xf4,iosize=0x04
+```
+
+* `-debugcon ...` mirrors I/O port **0xE9** to a host file/stdio. ([QEMU][6])
+* The ISA debug exit lets your test harness exit cleanly on guest `OUT 0xF4, AL`. ([GitHub][7])
+
+**Guest (16‑bit) “printf” to 0xE9 (example):**
+
+```asm
+; AL contains byte to print. Writes to QEMU debug console (port 0xE9).
+out 0xE9, al
+```
+
+**Guest “exit” to host (optional):**
+
+```asm
+; Exit QEMU with code in AL via isa-debug-exit at 0xF4
+out 0xF4, al
+```
+
+(Use this to signal PASS/FAIL to your harness and end a span.)
+
+---
+
+## 3) Collector topology (containerized + WSL‑friendly)
+
+**Why two tiers?** Agents keep latency low and attach host context; gateway handles heavy work (tail sampling, transforms) and export to SigNoz. ([OpenTelemetry][2])
+
+### 3.1 Agent (sidecar/daemonset) near the builder/emulator host
+
+* **Receivers**:
+
+  * `filelog` to tail `debugcon.txt` and builder logs. (De‑facto for logs in k8s/containers.) ([OpenTelemetry][9])
+  * `hostmetrics` for CPU/mem/disk/net of the build node/WSL VM. ([Uptrace][4])
+* **Processors**: `memory_limiter` + `batch` as safety/throughput defaults; optional `transform`/`filter` to redact & cut noise. ([OpenTelemetry][10])
+* **Exporters**: `otlp` → gateway.
+
+**Agent (minimal)**
+
+```yaml
+receivers:
+  filelog:
+    include: [ /workspace/debugcon.txt, /workspace/build/*.log ]
+    start_at: beginning
+    operators:                    # parse lines, add source, json, etc.
+      - type: regex_parser
+        regex: '^(?P<ts>[^ ]+) (?P<msg>.*)$'
+        timestamp:
+          parse_from: attributes.ts
+          layout: '%Y-%m-%dT%H:%M:%S.%LZ'
+  hostmetrics:
+    collection_interval: 10s
+    scrapers: { cpu: {}, memory: {}, disk: {}, network: {} }
+processors:
+  memory_limiter: { check_interval: 1s, limit_mib: 500, spike_limit_mib: 128 }
+  batch: { send_batch_size: 8192, timeout: 10s }
+exporters:
+  otlp: { endpoint: "otel-gateway:4317" }   # same cluster / docker network
+service:
+  pipelines:
+    logs:    { receivers: [filelog],   processors: [memory_limiter, batch], exporters: [otlp] }
+    metrics: { receivers: [hostmetrics], processors: [memory_limiter, batch], exporters: [otlp] }
+```
+
+### 3.2 Gateway Collector (cluster service)
+
+* **Receivers**: `otlp` (from agents and LLM/Orchestrator SDKs).
+* **Processors**:
+
+  * `tail_sampling` for traces: sample **all** error/slow boots + small % of success. ([OpenTelemetry][11])
+  * `transform` (OTTL) to redact secrets, normalize attributes, map GenAI keys. ([OpenTelemetry][10])
+  * `filter` to drop noisy spans/logs (health checks, micro‑pings). ([Grafana Labs][12])
+* **Exporters**: `otlp` → **SigNoz ingest** (Cloud or self‑host). For SigNoz Cloud use the regional endpoint & ingestion key. ([SigNoz][13])
+
+**Gateway (core excerpt)**
+
+```yaml
+receivers: { otlp: { protocols: { grpc: {}, http: {} } } }
+
+processors:
+  batch: {}
+  tail_sampling:
+    decision_wait: 8s
+    num_traces: 80000
+    policies:
+      - name: errors      ; type: status_code ; status_code: { status_codes: [ERROR] }
+      - name: slow_boot   ; type: latency     ; latency: { threshold_ms: 5000 }
+      - name: baseline    ; type: probabilistic ; probabilistic: { sampling_percentage: 5.0 }
+  transform:
+    trace_statements:
+      - context: span
+        statements:
+          - delete_key(attributes, "secret")     # redact
+          - set(attributes["pipeline.stage"], "gateway")
+  filter:
+    traces:
+      span: [ 'name == "qemu.poll-idle"' ]       # example noisy span
+    logs:
+      log_record: [ 'body matches "^DEBUG"' ]
+
+exporters:
+  otlp:
+    endpoint: ingest.us.signoz.cloud:443
+    tls: { insecure: false }
+    headers: { "signoz-access-token": "${SIGNOZ_TOKEN}" }
+
+service:
+  pipelines:
+    traces:  { receivers: [otlp], processors: [batch, tail_sampling, transform], exporters: [otlp] }
+    metrics: { receivers: [otlp], processors: [batch], exporters: [otlp] }
+    logs:    { receivers: [otlp], processors: [batch, transform, filter], exporters: [otlp] }
+```
+
+> SigNoz can then **correlate logs ↔ traces** once your logs carry `trace_id`/`span_id` (parse with SigNoz log pipeline or inject in your code). ([SigNoz][5])
+
+---
+
+## 4) Harness details: make early‑boot observable
+
+### 4.1 Boot “printf” macros (8080‑style flavor on x86)
+
+Even if your OS is “8080‑style”, targeting **x86 real mode** is pragmatic. Start with a 512‑byte boot sector that prints life‑signs to both screen and **0xE9** console. BIOS loads it at **0x7C00**; keep a tiny string routine that emits to 0xE9 in a loop. ([Retrocomputing Stack Exchange][8])
+
+* Emitted bytes land in `debugcon.txt`; the **agent** filelog receiver picks them up and forwards to the gateway. ([QEMU][6])
+
+### 4.2 Terminate runs deterministically
+
+When a stage passes (e.g., GDT set, disk read OK), write a code to **0xF4** to exit QEMU (ISA debug exit). Your harness reads QEMU’s exit code and marks the root span success/fail with that attribute. ([GitHub][7])
+
+### 4.3 Serial path (for real hardware later)
+
+Mirror the debug output to **COM1** (0x3F8) as well. On real hardware (or other hypervisors) you can sniff serial → host → filelog. If you stay in QEMU, `-serial telnet:localhost:4321,server,nowait` binds the serial to a TCP port your receiver or shim can consume. ([University of Cologne][14])
+
+---
+
+## 5) Instrument the LLM/agent layer
+
+Implement spans around each “thought/tool call” using GenAI conventions (model name, tokens, cost, latency). This lets you **diff** prompt variants against boot outcomes.
+
+* Use **OTLP exporter** from your orchestrator to the gateway.
+* Set `OTEL_SEMCONV_STABILITY_OPT_IN=gen-ai` (and any categories you need) to lock behavior while the spec evolves. ([OpenTelemetry][3])
+
+---
+
+## 6) Recommended dashboards & alerts in SigNoz
+
+1. **Bootstrap loop health** (trace aggregates): P50/95 build‑run latency; success rate; top error reasons (span.status, assert names).
+2. **Emulator visibility**: QEMU exits/timeouts; per‑stage timing; host CPU/mem from `hostmetrics`. ([Honeycomb Documentation][15])
+3. **GenAI cost/perf**: tokens/request, failure rate by model/provider (use `gen_ai.provider.name`). ([OpenTelemetry][16])
+4. **Log→Trace correlation**: “select any boot trace; see related `debugcon` lines”.
+
+Alerts:
+
+* Span error rate ↑, QEMU exit != 0, tail sampling drop rate ↑, exporter retry rate ↑, exporter queue near capacity (Collector’s internal metrics). ([OpenTelemetry][17])
+
+---
+
+## 7) Hardening & tuning
+
+* **Batch + memory limits**: Keep `memory_limiter` just below container memory; batch size 4–8k items; 10s timeout is a good start. ([OpenTelemetry][10])
+* **Tail sampling**: Always‑sample errors and slow boots; otherwise 5–10% baseline. (Tail sampling = decision after seeing the whole trace; excellent for keeping interesting runs.) ([OpenTelemetry][11])
+* **Filter**: Drop health‑check spans/logs with OTTL (noise control & cost). ([Grafana Labs][12])
+* **WSL/containers**: mount the `debugcon.txt` path into the agent; avoid CPU throttling (Collector under heavy OTTL/filter can be CPU‑hot).
+* **Scaling**: Scale gateway if exporter queues stay >70% full; if scaling doesn’t help, your **backend is the bottleneck**—reduce volume or increase SigNoz capacity. (Watch exporter queue + send\_fail metrics.) ([OpenTelemetry][17])
+
+---
+
+## 8) Optional: go “native” with a custom receiver (zero files)
+
+If you don’t want file tails, build a tiny **custom receiver** that reads from the QEMU channel directly (eg. a UNIX socket from `-serial` or `-chardev`) and emits logs/spans. The Collector docs show how to **build a receiver** scaffold; use that template and parse your message framing. ([OpenTelemetry][18])
+
+---
+
+## 9) CI loop
+
+1. **Generate**: NL spec → LLM plan/code (trace spans).
+2. **Build**: assemble/link; attach build logs with `trace_id`.
+3. **Run in QEMU**: capture `debugcon` → logs; parse `isa-debug-exit` code.
+4. **Decide**: if EXIT!=0 or assertions in debugcon, mark span error; SigNoz shows failing deltas first.
+5. **Sample**: via tail sampling, all failures are kept; only some successes. ([OpenTelemetry][11])
+
+---
+
+## 10) Milestones (2–4 weeks)
+
+* **Week 1**
+
+  * Wire **QEMU -debugcon** and **isa-debug-exit**; produce `debugcon.txt`. ([QEMU][6])
+  * Agent Collector with **filelog** + **hostmetrics** + OTLP to gateway. ([OpenTelemetry][9])
+  * Orchestrator emits GenAI spans (`gen_ai.*`). ([OpenTelemetry][3])
+* **Week 2**
+
+  * Gateway with **tail\_sampling**, **transform**, **filter**; export to **SigNoz ingest** (Cloud or self‑host). ([SigNoz][13])
+  * SigNoz dashboards: boot loop health, GenAI cost, log↔trace correlation. ([SigNoz][5])
+* **Week 3–4**
+
+  * Hardening: sampling tune, queue/limits, noise filters.
+  * (Optional) Custom receiver to remove file dependency. ([OpenTelemetry][18])
+
+---
+
+## 11) Starter snippets you can paste today
+
+### 11.1 Boot sector “hello” to debugcon (x86 real mode)
+
+```asm
+org 0x7C00             ; BIOS loads boot sector here
+start:
+  mov si, msg
+.print:
+  lodsb
+  test al, al
+  jz .done
+  out 0xE9, al         ; QEMU debug console (host sees it)
+  mov ah, 0x0E         ; BIOS teletype (also write to screen)
+  mov bh, 0
+  int 0x10
+  jmp .print
+.done:
+  mov al, 0            ; success
+  out 0xF4, al         ; exit QEMU if isa-debug-exit is present
+hang: jmp hang
+msg db "Boot OK via 0xE9", 0
+times 510-($-$$) db 0
+dw 0xAA55
+```
+
+Facts: BIOS jumps to **0x7C00**; QEMU **0xE9** debug console; **ISA debug exit** at 0xF4. ([Retrocomputing Stack Exchange][8])
+
+### 11.2 SigNoz Cloud exporter (gateway)
+
+```yaml
+exporters:
+  otlp:
+    endpoint: ingest.eu.signoz.cloud:443
+    headers: { "signoz-access-token": "${SIGNOZ_TOKEN}" }
+    tls: { insecure: false }
+```
+
+(Choose region: US/EU/IN.) ([SigNoz][13])
+
+---
+
+## 12) Risks & guardrails
+
+* **GenAI semconv are still maturing** → set the **opt‑in env var** and pin versions so dashboards don’t break on spec churn. ([OpenTelemetry][3])
+* **Tail sampling complexity** → ensure trace‑consistent routing if you horizontally scale the gateway (consistent hashing or OTel load‑balancing). ([Grafana Labs][19])
+* **Collector CPU hot spots** → OTTL filters & regex parsers are powerful but can be expensive; profile and scale gateway if needed. ([OpenTelemetry][10])
+* **QEMU‑specific channels** → `0xE9` is QEMU/Bochs‑friendly; for real hardware use serial (COM1) so the same filelog path still works. ([OSDev Wiki][20])
+
+---
+
+## 13) What you’ll see in SigNoz (and why it matters)
+
+* A **single trace** that spans: prompt→codegen→assemble→run→validate, with **debugcon lines** attached as logs on the “run” span. You can pivot from a failing boot trace into the exact prompts/tools that created it. (That’s your fast, explainable feedback loop.)
+
+---
+
+### Quick reference links
+
+* OTel Collector architecture & config. ([OpenTelemetry][2])
+* Tail sampling concept (decide after seeing the whole trace). ([OpenTelemetry][11])
+* Transform (OTTL) & Filter processors. ([OpenTelemetry][10])
+* Filelog receiver (de‑facto for logs) & Logging guidance. ([OpenTelemetry][9])
+* GenAI semantic conventions + opt‑in stability flag. ([OpenTelemetry][3])
+* QEMU `-debugcon` (port **0xE9**) and ISA debug exit device. ([QEMU][6])
+* SigNoz ingestion & trace↔log correlation. ([SigNoz][13])
+
+---
+
+If you want, I can turn this into a **starter repo skeleton**:
+
+```
+/telemetry
+  agent.yaml
+  gateway.yaml
+  dashboards/
+  scripts/qemu-run.sh
+  scripts/parse-exit.sh
+/boot
+  boot.asm         ; 0xE9 + 0xF4 helpers
+  Makefile
+/llm
+  orchestrator/    ; emits gen_ai spans
+  prompts/
+```
+
+…and wire CI to run the boot loop under QEMU, push telemetry to SigNoz, and fail the build on bad exits or missing early‑boot markers.
+
+[1]: https://opentelemetry.io/docs/concepts/semantic-conventions/?utm_source=chatgpt.com "Semantic Conventions"
+[2]: https://opentelemetry.io/docs/collector/?utm_source=chatgpt.com "Collector"
+[3]: https://opentelemetry.io/docs/specs/semconv/gen-ai/?utm_source=chatgpt.com "Semantic conventions for generative AI systems"
+[4]: https://uptrace.dev/opentelemetry/collector/host-metrics?utm_source=chatgpt.com "OpenTelemetry Host Metrics receiver"
+[5]: https://signoz.io/docs/traces-management/guides/correlate-traces-and-logs/?utm_source=chatgpt.com "Correlate Traces and Logs"
+[6]: https://www.qemu.org/docs/master/system/qemu-manpage.html?utm_source=chatgpt.com "QEMU User Documentation"
+[7]: https://github.com/rust-embedded/qemu-exit?utm_source=chatgpt.com "rust-embedded/qemu-exit: Exit QEMU with user-defined code"
+[8]: https://retrocomputing.stackexchange.com/questions/21956/why-did-the-bios-load-the-mbr-at-0x7c00?utm_source=chatgpt.com "Why did the BIOS load the MBR at 0x7c00?"
+[9]: https://opentelemetry.io/docs/platforms/kubernetes/collector/components/?utm_source=chatgpt.com "Important Components for Kubernetes"
+[10]: https://opentelemetry.io/docs/collector/transforming-telemetry/?utm_source=chatgpt.com "Transforming telemetry"
+[11]: https://opentelemetry.io/docs/concepts/sampling/?utm_source=chatgpt.com "Sampling"
+[12]: https://grafana.com/docs/alloy/latest/reference/components/otelcol/otelcol.processor.filter/?utm_source=chatgpt.com "otelcol.processor.filter | Grafana Alloy documentation"
+[13]: https://signoz.io/docs/ingestion/signoz-cloud/overview/?utm_source=chatgpt.com "Ingestion Overview"
+[14]: https://www.uni-koeln.de/~pbogusze/posts/QEMU_serial_console.html?utm_source=chatgpt.com "QEMU serial console"
+[15]: https://docs.honeycomb.io/send-data/metrics/system/?utm_source=chatgpt.com "Send System Metrics with the OpenTelemetry Collector"
+[16]: https://opentelemetry.io/docs/specs/semconv/gen-ai/gen-ai-metrics/?utm_source=chatgpt.com "Semantic conventions for generative AI metrics"
+[17]: https://opentelemetry.io/docs/collector/configuration/?utm_source=chatgpt.com "Configuration"
+[18]: https://opentelemetry.io/docs/collector/building/receiver/?utm_source=chatgpt.com "Building a receiver"
+[19]: https://grafana.com/docs/opentelemetry/collector/sampling/tail/?utm_source=chatgpt.com "Tail sampling | OpenTelemetry documentation"
+[20]: https://wiki.osdev.org/QEMU?utm_source=chatgpt.com "QEMU"
+
+
+##~make a full wiring
+
+Below is a **copy‑pasteable, end‑to‑end wiring guide** that takes you from a clean WSL/containers setup to a fully instrumented loop:
+
+* LLM → codegen → build → **QEMU boot** (8080‑style on x86 real mode)
+* Early‑boot output over **I/O port 0xE9** (QEMU `-debugcon`) and **ISA debug exit**
+* **OpenTelemetry** agent+gateway Collectors with advanced processors
+* **SigNoz** as the backend with **trace↔log correlation**
+
+Citations anchor the few load‑bearing facts and choices.
+
+---
+
+## 0) What you’re wiring together (mental model)
+
+```
+[LLM Orchestrator] --(OTLP)--> [OTel Gateway] --(OTLP)--> [SigNoz]
+         |                                 ^
+         | spans/logs (GenAI SemConv)      | tail-sampling, transforms
+         v                                 |
+ [Build & Harness] ----(filelog)--> [OTel Agent] --(OTLP)--> ^
+         |    ^             ^                         ^
+         |    |             |                         |
+         |    |         debugcon.txt (QEMU 0xE9)      |
+         v    |                                       |
+      (QEMU)  +--- writes early-boot bytes -----------+
+                 (OUT 0xE9)  + exit code (OUT 0xF4)
+```
+
+* **Collector pipelines** are built from receivers → processors → exporters; you declare one pipeline per signal (traces/metrics/logs). This is the core of how data flows. ([OpenTelemetry][1])
+* **QEMU early‑boot logging**: `-debugcon` exposes an I/O port (typically **0xE9**) that prints to a host sink; BIOS loads the boot sector to **0x7C00**; `isa-debug-exit` lets the guest write a byte to exit QEMU with a code. ([QEMU][2])
+* **Trace↔log correlation** in SigNoz is done by parsing `trace_id`/`span_id` via a **Logs Pipeline “Trace Parser”**. ([SigNoz][3])
+
+---
+
+## 1) Prerequisites (WSL‑friendly)
+
+* Windows 11 + **WSL2 Ubuntu** (or native Linux)
+* **Docker** (Desktop with WSL integration)
+* Packages in your dev distro:
+
+  ```bash
+  sudo apt update && sudo apt install -y nasm qemu-system-x86 make python3-pip
+  ```
+* A SigNoz target: **Cloud** (quickest) or **self‑hosted**. For Cloud you’ll get an `ingest.<region>.signoz.cloud:443` endpoint. ([SigNoz][4])
+
+---
+
+## 2) Repo scaffold (drop this anywhere)
+
+```
+otel-8080/
+├─ boot/
+│  ├─ boot.asm
+│  └─ Makefile
+├─ scripts/
+│  ├─ qemu-run.sh
+│  └─ runner.py
+├─ telemetry/
+│  ├─ agent.yaml
+│  ├─ gateway.yaml
+│  └─ docker-compose.yaml
+├─ logs/                 # host-mounted, agent tails here
+└─ .env                  # SigNoz creds/endpoint
+```
+
+---
+
+## 3) Boot artifacts (8080‑style flavor on x86 real mode)
+
+**boot/boot.asm** — prints to screen and **0xE9**, then exits via **0xF4** (if present).
+BIOS places us at **0x7C00**; QEMU maps **0xE9** via `-debugcon`; `isa-debug-exit` exits QEMU from guest. ([OSDev Wiki][5])
+
+```asm
+org 0x7C00
+
+start:
+  mov si, msg
+.print:
+  lodsb
+  test al, al
+  jz .done
+  out 0xE9, al           ; QEMU debug console
+  mov ah, 0x0E           ; BIOS teletype (screen)
+  mov bh, 0
+  int 0x10
+  jmp .print
+
+.done:
+  mov al, 0              ; success exit code
+  out 0xF4, al           ; ISA debug exit (if device present)
+hang: jmp hang
+
+msg db "Boot OK via 0xE9", 0
+
+times 510-($-$$) db 0
+dw 0xAA55
+```
+
+**boot/Makefile**
+
+```make
+all: os.img
+boot.bin: boot.asm
+	nasm -f bin $< -o $@
+os.img: boot.bin
+	dd if=/dev/zero of=$@ bs=512 count=2880
+	dd if=boot.bin of=$@ conv=notrunc
+clean:
+	rm -f boot.bin os.img
+```
+
+---
+
+## 4) QEMU wiring (headless; dumps to a file the agent will tail)
+
+**scripts/qemu-run.sh**
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+mkdir -p ./logs
+IMG="${1:-boot/os.img}"
+RUN_ID="${RUN_ID:-$(date +%Y%m%d-%H%M%S)}"
+DBG="./logs/debugcon-${RUN_ID}.txt"
+qemu-system-i386 \
+  -drive file="${IMG}",format=raw \
+  -nographic \
+  -debugcon file:"${DBG}" \
+  -device isa-debug-exit,iobase=0xf4,iosize=0x04
+# QEMU exits when the guest writes to 0xF4 (isa-debug-exit).
+echo "debugcon captured at ${DBG}"
+```
+
+* `-debugcon dev` redirects writes to I/O port **0xE9** to a host device/file; `-nographic` keeps it CLI. ([QEMU][2])
+* `isa-debug-exit` exits on any OUT to 0xF4 with the written code (handy for CI). ([GitHub][6])
+
+---
+
+## 5) Harness + LLM spans (so you can correlate prompts ↔ boots)
+
+We’ll create a **run span** around the QEMU run, annotate it, and name the debugcon file using the run id. For LLM work, attach **GenAI semantic‑conventions** attributes (model, tokens, etc.) and use the **stability opt‑in env var** to ride spec churn safely. ([OpenTelemetry][7])
+
+**.env** (fill these)
+
+```bash
+# SigNoz Cloud example (use your region + key)
+SIGNOZ_ENDPOINT=ingest.us.signoz.cloud:443
+SIGNOZ_TOKEN=REDACTED
+SERVICE_NAME=llm-boot-orchestrator
+```
+
+**scripts/runner.py** (minimal; Python OTLP exporter)
+
+```python
+#!/usr/bin/env python3
+import os, subprocess, time, uuid
+from opentelemetry import trace
+from opentelemetry.sdk.resources import SERVICE_NAME, Resource
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
+
+endpoint = os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT", f"https://{os.getenv('SIGNOZ_ENDPOINT')}")
+token = os.getenv("SIGNOZ_TOKEN", "")
+headers = (("signoz-access-token", token),) if token else ()
+resource = Resource.create({SERVICE_NAME: os.getenv("SERVICE_NAME", "llm-boot-orchestrator")})
+
+provider = TracerProvider(resource=resource)
+provider.add_span_processor(BatchSpanProcessor(OTLPSpanExporter(endpoint=endpoint, headers=dict(headers))))
+trace.set_tracer_provider(provider)
+tracer = trace.get_tracer(__name__)
+
+run_id = os.getenv("RUN_ID", uuid.uuid4().hex)
+with tracer.start_as_current_span("boot-run", attributes={"run.id": run_id}) as span:
+    # (Optional) if you do LLM planning/codegen here, add GenAI attrs per spec.
+    # span.set_attribute("gen_ai.request.model", "gpt-4o")  # example per spec
+
+    # Build OS image
+    subprocess.run(["make", "-C", "boot"], check=True)
+
+    # Launch QEMU (writes to logs/debugcon-<run_id>.txt)
+    env = os.environ.copy()
+    env["RUN_ID"] = run_id
+    p = subprocess.run(["bash", "scripts/qemu-run.sh", "boot/os.img"], env=env)
+    span.set_attribute("qemu.returncode", p.returncode)
+    if p.returncode != 0:
+        span.record_exception(Exception(f"qemu exited {p.returncode}"))
+        span.set_status(trace.Status(trace.StatusCode.ERROR))
+```
+
+> GenAI semconv references and stability **opt‑in**: use the `OTEL_SEMCONV_STABILITY_OPT_IN` env var to select categories (e.g., `gen_ai_latest_experimental`) while conventions finalize. ([OpenTelemetry][8])
+
+---
+
+## 6) Agent Collector (tails early‑boot logs + host metrics)
+
+**telemetry/agent.yaml** — **filelog** tails your `logs/` directory and **hostmetrics** scrapes CPU/memory; both forward to the gateway via OTLP. ([Splunk Docs][9])
+
+```yaml
+receivers:
+  filelog:
+    include: [ /logs/debugcon-*.txt, /logs/build-*.log ]
+    start_at: beginning
+    operators:
+      # Example: parse timestamp if you prefix lines; optional.
+      - type: regex_parser
+        regex: '^(?P<ts>[^ ]+)\s(?P<body>.*)$'
+        timestamp:
+          parse_from: attributes.ts
+          layout: '%Y-%m-%dT%H:%M:%S.%LZ'
+      # Capture run id from filename into an attribute
+      - type: regex_parser
+        parse_from: attributes["log.file.name"]
+        regex: 'debugcon-(?P<run_id>[0-9a-fA-F\-]+)\.txt$'
+  hostmetrics:
+    collection_interval: 10s
+    scrapers: { cpu: {}, memory: {}, disk: {}, network: {} }
+
+processors:
+  memory_limiter: { check_interval: 1s, limit_mib: 500, spike_limit_mib: 128 }
+  batch: { send_batch_size: 8192, timeout: 10s }
+
+exporters:
+  otlp:
+    endpoint: otel-gateway:4317  # docker-compose service name
+    tls: { insecure: true }
+
+service:
+  pipelines:
+    logs:    { receivers: [filelog],   processors: [memory_limiter, batch], exporters: [otlp] }
+    metrics: { receivers: [hostmetrics], processors: [memory_limiter, batch], exporters: [otlp] }
+```
+
+* `filelog` supports **operators** like `regex_parser` to parse from the body or attributes (e.g., extracting from the **filename**). ([OpenText Documentation Portal][10])
+
+> We’ll **complete correlation in SigNoz** by mapping your `run_id` or a parsed id to `trace_id` later via the SigNoz Logs Pipeline “Trace Parser” step. ([SigNoz][3])
+
+---
+
+## 7) Gateway Collector (sampling, transforms, redaction → SigNoz)
+
+**telemetry/gateway.yaml** — tail‑sampling keeps **all errors/slow boots** + a baseline %, **transform** (OTTL) redacts sensitive fields, **filter** drops noise. Then **OTLP → SigNoz**. ([OpenTelemetry][11])
+
+```yaml
+receivers:
+  otlp: { protocols: { grpc: {}, http: {} } }
+
+processors:
+  batch: {}
+  tail_sampling:
+    decision_wait: 8s
+    num_traces: 80000
+    expected_new_traces_per_sec: 300
+    policies:
+      - name: keep-errors        ; type: status_code ; status_code: { status_codes: [ERROR] }
+      - name: keep-slow-boot     ; type: latency     ; latency: { threshold_ms: 5000 }
+      - name: keep-sample        ; type: probabilistic ; probabilistic: { sampling_percentage: 5.0 }
+  transform:
+    trace_statements:
+      - context: span
+        statements:
+          - delete_key(attributes, "secret")        # redact sensitive attrs
+          - set(attributes["pipeline.stage"], "gateway")
+  filter:
+    traces:
+      span: [ 'name == "healthcheck"' ]             # example
+    logs:
+      log_record: [ 'body matches "^DEBUG"' ]
+
+exporters:
+  otlp:
+    endpoint: ${SIGNOZ_ENDPOINT}
+    tls: { insecure: false }
+    headers:
+      signoz-access-token: ${SIGNOZ_TOKEN}
+
+service:
+  pipelines:
+    traces:  { receivers: [otlp], processors: [batch, tail_sampling, transform], exporters: [otlp] }
+    metrics: { receivers: [otlp], processors: [batch], exporters: [otlp] }
+    logs:    { receivers: [otlp], processors: [batch, transform, filter], exporters: [otlp] }
+```
+
+* **Tail sampling** = decision **after** seeing (most of) a trace → perfect to keep all failures and outliers. ([OpenTelemetry][11])
+* **Transform (OTTL)** lets you redact/mutate attributes or bodies in‑pipeline. ([OpenTelemetry][12])
+* **Filter** (OTTL) drops noisy spans/logs (health checks, DEBUG chatter). ([IBM][13])
+
+> For **SigNoz Cloud**, set `SIGNOZ_ENDPOINT=ingest.<region>.signoz.cloud:443` and provide the API key header. You can also point directly from SDKs via `OTEL_EXPORTER_OTLP_ENDPOINT=https://ingest.<region>.signoz.cloud:443`. ([SigNoz][4])
+
+---
+
+## 8) Compose: run both Collectors near your code (WSL‑safe)
+
+**telemetry/docker-compose.yaml**
+
+```yaml
+version: "3.9"
+services:
+  otel-gateway:
+    image: otel/opentelemetry-collector-contrib:latest
+    command: ["--config=/etc/otelcol-contrib/config.yaml"]
+    environment:
+      SIGNOZ_ENDPOINT: ${SIGNOZ_ENDPOINT}
+      SIGNOZ_TOKEN: ${SIGNOZ_TOKEN}
+    volumes:
+      - ./gateway.yaml:/etc/otelcol-contrib/config.yaml:ro
+    ports:
+      - "4317:4317"   # grpc
+      - "4318:4318"   # http
+
+  otel-agent:
+    image: otel/opentelemetry-collector-contrib:latest
+    command: ["--config=/etc/otelcol-contrib/config.yaml"]
+    volumes:
+      - ./agent.yaml:/etc/otelcol-contrib/config.yaml:ro
+      - ../logs:/logs:rw           # host logs directory
+    depends_on: [ otel-gateway ]
+```
+
+**.env** (same dir as compose)
+
+```bash
+SIGNOZ_ENDPOINT=ingest.us.signoz.cloud:443
+SIGNOZ_TOKEN=REDACTED
+```
+
+Bring up:
+
+```bash
+cd telemetry
+docker compose up -d
+```
+
+---
+
+## 9) SigNoz: enable trace↔log correlation
+
+In the SigNoz UI:
+
+1. Go to **Logs → Pipelines** and add a **Trace Parser** step.
+2. If you log/parse a `trace_id`/`span_id` in attributes (or embed in lines), configure the parser to **extract them** into OTel’s top‑level `trace_id`/`span_id` fields.
+3. Save & test → now log lines link to traces. ([SigNoz][3])
+
+> If you prefer to embed the id at source, you can add the active trace’s ids into your harness logs and parse them (the Parser supports regex/JSON). ([SigNoz][3])
+
+---
+
+## 10) Run it
+
+From repo root:
+
+```bash
+# 1) Start the collectors
+(cd telemetry && docker compose up -d)
+
+# 2) Build the OS image
+make -C boot
+
+# 3) Execute a traced run (sends trace via OTLP; debugcon lines go to logs/)
+OTEL_EXPORTER_OTLP_ENDPOINT="https://${SIGNOZ_ENDPOINT}" \
+SIGNOZ_TOKEN="..." \
+python3 scripts/runner.py
+```
+
+Open SigNoz:
+
+* **Traces**: `boot-run` span with attributes like `qemu.returncode`, duration, children (if you add more).
+* **Logs**: `debugcon-*.txt` lines; after the Logs Pipeline parser, clicking the trace id jumps to the trace. ([SigNoz][3])
+
+---
+
+## 11) Scaling and tail sampling across replicas (when you need it)
+
+If you run **multiple gateway collectors** with tail sampling, ensure **all spans of a trace reach the same instance**. Put a small **load‑balancing exporter** in front of them (or at agents) that **consistently hashes by trace ID** and routes to a downstream pool (e.g., a K8s headless Service). ([OpenTelemetry][14])
+
+Key idea: “fan‑in” to a sampling tier with **consistent hashing by traceID**; without it, tail sampling can’t see the whole trace. ([OpenTelemetry][14])
+
+---
+
+## 12) Tuning & guardrails (production basics)
+
+* **Batch + memory**: `batch.send_batch_size: 4–8k`, `timeout: 10s`; set `memory_limiter.limit_mib` just under the container memory limit to avoid OOM. (Batch improves throughput; limiter sheds load safely.) ([OpenTelemetry][15])
+* **Monitor the collectors**: scrape internal metrics (exporter queue fill, send\_failures, memory limiter drops) and alert if queues stay >70% full or drops occur—these indicate backpressure or downstream slowness. ([OpenTelemetry][15])
+* **Noise control**: use **filter** (OTTL) to drop healthchecks/debug noise; use **transform** (OTTL) to redact secrets. ([IBM][13])
+
+---
+
+## 13) Optional: serial & sockets (for other hypervisors / real HW)
+
+If you move beyond QEMU’s `0xE9`, expose **COM1**:
+`-serial telnet:localhost:4321,server,nowait` then tail that TCP stream (or route via a tiny shim that writes to a file for the agent). ([University of Cologne][16])
+
+---
+
+## 14) Optional: custom receiver (skip file tails)
+
+If you’d rather stream debug output directly into the Collector, build a **custom receiver** that reads from a socket/pipe and emits logs/spans—OpenTelemetry provides a short tutorial for building receivers. ([OpenTelemetry][17])
+
+---
+
+## 15) Common env vars you’ll set
+
+* **SDK head sampling** (simple default):
+  `OTEL_TRACES_SAMPLER=parentbased_traceidratio` + `OTEL_TRACES_SAMPLER_ARG=0.1` (10%). The gateway’s **tail sampling** then **keeps all errors/slow boots** from those. ([OpenTelemetry][11])
+* **SemConv stability opt‑in** (avoid breaking renames during migrations):
+  `OTEL_SEMCONV_STABILITY_OPT_IN=http/dup,gen_ai_latest_experimental` (example categories). ([OpenTelemetry][18])
+
+---
+
+## 16) Quick validation checklist
+
+* **QEMU**: `scripts/qemu-run.sh` creates `logs/debugcon-<id>.txt` containing “Boot OK via 0xE9”. ([QEMU][2])
+* **Traces**: a `boot-run` span lands in SigNoz; failed runs (non‑zero ISA debug exit) are marked error; tail sampling retains them. ([OpenTelemetry][11])
+* **Logs**: you can click from a log line to a trace after setting up the **Trace Parser** in SigNoz Logs Pipeline. ([SigNoz][3])
+
+---
+
+### Appendix A — Why these specific building blocks?
+
+* **filelog receiver** is the most flexible way to tail arbitrary logs (like QEMU’s debugcon file). ([Honeycomb Documentation][19])
+* **hostmetrics receiver** gives you build/VM CPU/memory/disk—useful when quick boots start to regress. ([Splunk Docs][20])
+* **tail\_sampling** is the right tool to “keep all failures + outliers” without drowning in good‑path traces. ([OpenTelemetry][11])
+* **transform/filter (OTTL)** let you mutate and drop data in‑pipeline without code changes. ([OpenTelemetry][12])
+* **GenAI semconv** gives you a first‑class view of prompts, tokens, models, and agent steps in the same trace as your boot. Use the stability opt‑in while they finalize. ([OpenTelemetry][7])
+
+---
+
+## What you can ask me next
+
+* Produce **ready‑to‑run files** for your exact environment (`.env` preset, compose, CI YAML).
+* Add a **SigNoz Logs Pipeline** recipe (regex/JSON) tailored to your debugcon format to auto‑populate `trace_id`/`span_id`. ([SigNoz][3])
+* Split agent/gateway into **Kubernetes** (DaemonSet + Deployment) with a **load‑balancing exporter** for tail sampling at scale. ([OpenTelemetry][14])
+
+If you follow the steps above, you’ll have a tight, observable loop from LLM prompts to the first instruction of your boot sector—with the telemetry to iterate fast and safely.
+
+[1]: https://opentelemetry.io/docs/collector/?utm_source=chatgpt.com "Collector"
+[2]: https://www.qemu.org/docs/master/system/qemu-manpage.html?utm_source=chatgpt.com "QEMU User Documentation"
+[3]: https://signoz.io/docs/traces-management/guides/correlate-traces-and-logs/?utm_source=chatgpt.com "Correlate Traces and Logs"
+[4]: https://signoz.io/docs/ingestion/signoz-cloud/overview/?utm_source=chatgpt.com "Ingestion Overview"
+[5]: https://wiki.osdev.org/Boot_Sequence?utm_source=chatgpt.com "Boot Sequence"
+[6]: https://github.com/rust-embedded/qemu-exit?utm_source=chatgpt.com "rust-embedded/qemu-exit: Exit QEMU with user-defined code"
+[7]: https://opentelemetry.io/docs/specs/semconv/gen-ai/?utm_source=chatgpt.com "Semantic conventions for generative AI systems"
+[8]: https://opentelemetry.io/docs/specs/semconv/gen-ai/gen-ai-events/?utm_source=chatgpt.com "Semantic conventions for Generative AI events"
+[9]: https://help.splunk.com/en/splunk-observability-cloud/manage-data/available-data-sources/supported-integrations-in-splunk-observability-cloud/opentelemetry-receivers/filelog-receiver?utm_source=chatgpt.com "Filelog receiver"
+[10]: https://docs.microfocus.com/doc/122/saas/filelogreceiverapachehttpserver?utm_source=chatgpt.com "Collect Apache HTTP server logs using Filelog receiver"
+[11]: https://opentelemetry.io/docs/concepts/sampling/?utm_source=chatgpt.com "Sampling"
+[12]: https://opentelemetry.io/docs/collector/transforming-telemetry/?utm_source=chatgpt.com "Transforming telemetry"
+[13]: https://www.ibm.com/docs/en/instana-observability/1.0.303?topic=logs-filtering-opentelemetry&utm_source=chatgpt.com "Filtering OpenTelemetry logs"
+[14]: https://opentelemetry.io/docs/collector/scaling/?utm_source=chatgpt.com "Scaling the Collector"
+[15]: https://opentelemetry.io/docs/collector/configuration/?utm_source=chatgpt.com "Configuration"
+[16]: https://www.uni-koeln.de/~pbogusze/posts/QEMU_serial_console.html?utm_source=chatgpt.com "QEMU serial console"
+[17]: https://opentelemetry.io/docs/collector/building/receiver/?utm_source=chatgpt.com "Building a receiver"
+[18]: https://opentelemetry.io/docs/specs/semconv/http/http-metrics/?utm_source=chatgpt.com "Semantic conventions for HTTP metrics"
+[19]: https://docs.honeycomb.io/send-data/logs/collector/?utm_source=chatgpt.com "Send Logs with the OpenTelemetry Collector | Honeycomb"
+[20]: https://docs.splunk.com/observability/gdi/opentelemetry/components/host-metrics-receiver.html?utm_source=chatgpt.com "Host metrics receiver | Splunk Docs"

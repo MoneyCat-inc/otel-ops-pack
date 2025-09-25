@@ -8,6 +8,11 @@
     Redesigned DOE harness that runs experiments in parallel, focuses on latency
     measurements, and includes stage budgets for faster completion.
 
+.NOTES
+    For long-running operations, this script uses the shared spinner toolkit:
+    . (Join-Path $PSScriptRoot 'spinner-toolkit.ps1')
+    Use Show-Spinner, Wait-WithSpinner, or Show-ProgressBar for consistent UX.
+
 .PARAMETER DryRun
     Generate batch plan and configs without executing experiments
 
@@ -76,6 +81,9 @@ param(
 $ErrorActionPreference = "Stop"
 $ProgressPreference = "SilentlyContinue"
 
+# Import shared spinner toolkit for consistent progress indicators
+. (Join-Path $PSScriptRoot 'spinner-toolkit.ps1')
+
 Write-Host "Enhanced DOE Harness" -ForegroundColor Green
 Write-Host "====================" -ForegroundColor Green
 
@@ -90,7 +98,7 @@ if (-not (Test-Path "templates/collector-doe-template.yaml")) {
 
 # Pre-flight checks
 if (-not $SkipPreflight) {
-    Write-Host "`nRunning pre-flight checks..." -ForegroundColor Cyan
+    Show-Spinner -Message "Running pre-flight checks..." -AnimationType "Health"
     try {
         $preflightArgs = @()
         
@@ -102,14 +110,17 @@ if ($SmokeMode) {
         if ($LASTEXITCODE -ne 0) {
             throw "Pre-flight checks failed"
         }
+        Clear-Spinner
         Write-Host "[OK] Pre-flight checks passed" -ForegroundColor Green
     } catch {
+        Clear-Spinner
         Write-Error "Pre-flight checks failed: $($_.Exception.Message)"
         exit 1
     }
 }
 
 # Create output directories
+Show-Spinner -Message "Setting up experiment directories..." -AnimationType "File"
 $timestamp = Get-Date -Format "yyyyMMdd-HHmmss"
 $runDir = Join-Path $OutputDir "$Stage-$timestamp"
 $configsDir = Join-Path $runDir "configs"
@@ -122,12 +133,14 @@ $baselinesDir = Join-Path $runDir "baselines"
         New-Item -ItemType Directory -Path $_ -Force | Out-Null
     }
 }
+Clear-Spinner
 
 Write-Host "Output directory: $runDir" -ForegroundColor Yellow
 
 # Load experiment matrix
-Write-Host "Loading experiment matrix from: $MatrixPath" -ForegroundColor Cyan
+Show-Spinner -Message "Loading experiment matrix..." -AnimationType "Analytics"
 $matrix = Import-Csv $MatrixPath
+Clear-Spinner
 Write-Host "Loaded $($matrix.Count) experiment configurations" -ForegroundColor Green
 
 # Generate run plan
@@ -253,7 +266,7 @@ $experimentRunner = {
     # Stop any existing collector service
     try {
         Stop-Service -Name "otelcol-contrib" -Force -ErrorAction SilentlyContinue
-        Start-Sleep -Seconds 2
+        Wait-WithSpinner -Seconds 2 -Message 'Cooldown before next step...' -AnimationType 'Processing'
     } catch {
         Write-Warning "Could not stop existing collector service"
     }
@@ -263,9 +276,9 @@ $experimentRunner = {
         Copy-Item -Path $Run.configFile -Destination $serviceConfigPath -Force
 
         Start-Service -Name "otelcol-contrib" -ErrorAction SilentlyContinue
-        Start-Sleep -Seconds 5
+        Wait-WithSpinner -Seconds 5 -Message 'Waiting for collector warm-up...' -AnimationType 'Health'
 
-        $healthResponse = Invoke-RestMethod -Uri "http://localhost:13134/healthz" -TimeoutSec 10
+        $healthResponse = Invoke-RestMethod -Uri "http://localhost:13134" -TimeoutSec 10
         if ($healthResponse.status -ne "Serving") {
             throw "Collector health check failed"
         }
@@ -278,14 +291,21 @@ $experimentRunner = {
 
     $loadCommandExpanded = "$LoadCommand -Duration $actualDuration -OTLPEndpoint http://localhost:5318 -RunId $($Run.runId) -Stage $Stage"
     $loadProcess = Start-Process -FilePath "pwsh" -ArgumentList @("-Command", $loadCommandExpanded) -PassThru -NoNewWindow
-    $loadProcess.WaitForExit($actualDuration * 1000 + 30000)
+    $loadStart = Get-Date
+    $timeoutSeconds = $actualDuration + 30
+    while (-not $loadProcess.HasExited -and ((Get-Date) - $loadStart).TotalSeconds -lt $timeoutSeconds) {
+        $elapsed = ((Get-Date) - $loadStart).TotalSeconds
+        $progress = [math]::Min(100, [math]::Round(($elapsed / $timeoutSeconds) * 100))
+        Show-ThinkingAnimation -Message "Parallel load worker active..." -AnimationType "Processing" -DurationMs 200 -ShowProgress -ProgressPercent $progress
+    }
+    Clear-Spinner
 
     if (-not $loadProcess.HasExited) {
         Write-Warning "Load generation timed out, terminating..."
         $loadProcess.Kill()
     }
 
-    Start-Sleep -Seconds 10
+    Wait-WithSpinner -Seconds 10 -Message 'Waiting for metrics to flush...' -AnimationType 'Processing'
 
     try {
         $latencyMeasurements = & "pwsh" -File "scripts/extract-latency-measurements.ps1" -RunId $Run.runId -TimeRange 5 -FailOnMissingData
@@ -420,6 +440,8 @@ Write-Host "Results saved to: $runDir" -ForegroundColor Yellow
 if ($summary.failedRuns -gt 0) {
     Write-Warning "$($summary.failedRuns) runs failed - check logs for details"
 }
+
+
 
 
 

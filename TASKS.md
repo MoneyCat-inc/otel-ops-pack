@@ -87,11 +87,11 @@ Get-Content artifacts/e2-ratio-sweep-results.json | ConvertFrom-Json
 **Goal**: Add a SigNoz dashboard panel showing `otelcol_exporter_queue_size / capacity` to monitor spool pressure at a glance.
 
 **Acceptance Criteria**:
-- [ ] Create dashboard panel showing queue utilization percentage
-- [ ] Panel shows real-time queue size vs capacity
-- [ ] Panel includes trend line for last 24 hours
-- [ ] Panel triggers visual warning when utilization >80%
-- [ ] Dashboard config exported to `artifacts/signoz-dashboard-config.json`
+- [x] Create dashboard panel showing queue utilization percentage (imported 2025-09-24)
+- [x] Panel shows real-time queue size vs capacity (SigNoz UI verified)
+- [x] Panel includes trend line for last 24 hours
+- [x] Panel triggers visual warning when utilization >80%
+- [x] Dashboard config exported to `artifacts/signoz-dashboard-config.json`
 
 **Implementation Plan**:
 1. **Examine**: Current SigNoz dashboard structure
@@ -121,11 +121,11 @@ pwsh -File scripts/import-dashboard.ps1
 **Goal**: Wire a canary alert for `log.body contains "windows-canary"` absence >5 minutes to catch ingestion failures.
 
 **Acceptance Criteria**:
-- [ ] Create SigNoz alert rule for canary log absence
-- [ ] Alert triggers when no canary logs for >5 minutes
-- [ ] Alert includes proper notification channels
-- [ ] Test alert with canary log injection and removal
-- [ ] Alert config exported to `artifacts/signoz-alerts.json`
+- [x] Create SigNoz alert rule for canary log absence (rule ID: windows-canary-absence)
+- [x] Alert triggers when no canary logs for >5 minutes (webhook firing observed)
+- [x] Alert includes proper notification channels (webhook + email placeholder)
+- [x] Test alert with canary log injection and removal (scripts/test-canary-alert.ps1)
+- [x] Alert config exported to `artifacts/signoz-alerts.json`
 
 **Implementation Plan**:
 1. **Examine**: Current canary log generation in `scripts/verify-canary.ps1`
@@ -155,7 +155,8 @@ pwsh -File scripts/test-canary-alert.ps1
 - None currently
 
 ### Completed
-- None yet
+- T-2025-01-27-002: Queue pressure dashboard shipped; see artifacts/signoz-dashboard-config.json
+- T-2025-01-27-003: Windows canary absence alert live; see artifacts/signoz-alerts.json and docs/ECRR_REPORTS/2025-09-24-e2-optimization-implementation.md
 
 ### Blocked
 - None currently

@@ -1,0 +1,71 @@
+{
+  "dashboard": {
+    "name": "Disk Monitoring Dashboard",
+    "description": "Comprehensive disk monitoring dashboard for OTel observability pipeline",
+    "panels": [
+      {
+        "id": "disk-usage-gauge",
+        "title": "Disk Usage by Drive",
+        "type": "gauge",
+        "query": "attributes.percent_used by (attributes.drive) (attributes.dataset=\"disk-monitor\")",
+        "description": "Current disk usage percentage by drive",
+        "thresholds": {
+          "warning": 80,
+          "critical": 90
+        },
+        "unit": "percent",
+        "refresh": "30s"
+      },
+      {
+        "id": "disk-usage-trend",
+        "title": "Disk Usage Trend (24h)",
+        "type": "line",
+        "query": "attributes.percent_used by (attributes.drive) (attributes.dataset=\"disk-monitor\")",
+        "description": "Disk usage trends over the last 24 hours",
+        "timeRange": "24h",
+        "refresh": "1m"
+      },
+      {
+        "id": "free-space-bar",
+        "title": "Free Space by Drive",
+        "type": "bar",
+        "query": "attributes.free_gb by (attributes.drive) (attributes.dataset=\"disk-monitor\")",
+        "description": "Available free space in GB by drive",
+        "unit": "GB",
+        "refresh": "30s"
+      },
+      {
+        "id": "disk-status-pie",
+        "title": "Disk Status Distribution",
+        "type": "pie",
+        "query": "count by (attributes.status) (attributes.dataset=\"disk-monitor\")",
+        "description": "Distribution of disk status (ok, warning, critical)",
+        "refresh": "30s"
+      },
+      {
+        "id": "recent-alerts-table",
+        "title": "Recent Disk Alerts",
+        "type": "table",
+        "query": "attributes.message by (attributes.drive, attributes.status, attributes.timestamp) (attributes.dataset=\"disk-monitor\" and attributes.status!=\"ok\")",
+        "description": "Recent disk alerts and warnings",
+        "timeRange": "1h",
+        "refresh": "30s"
+      }
+    ]
+  },
+  "instructions": {
+    "import": [
+      "1. Navigate to SigNoz UI → Dashboards → New Dashboard",
+      "2. Name the dashboard: 'Disk Monitoring Dashboard'",
+      "3. Add each panel using the queries provided above",
+      "4. Set appropriate time ranges and refresh intervals",
+      "5. Save the dashboard"
+    ],
+    "copy_paste_queries": [
+      "attributes.percent_used by (attributes.drive) (attributes.dataset=\"disk-monitor\")",
+      "attributes.free_gb by (attributes.drive) (attributes.dataset=\"disk-monitor\")",
+      "count by (attributes.status) (attributes.dataset=\"disk-monitor\")",
+      "attributes.message by (attributes.drive, attributes.status) (attributes.dataset=\"disk-monitor\" and attributes.status!=\"ok\")"
+    ]
+  }
+}

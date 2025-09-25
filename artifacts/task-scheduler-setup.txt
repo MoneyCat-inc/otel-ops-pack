@@ -1,0 +1,10 @@
+# Windows Task Scheduler Commands (run as Administrator)
+
+# Daily maintenance at 9 AM
+schtasks /create /tn "TaskMaintenanceDaily" /tr "pwsh -File C:\otel\scripts\task-maintenance-scheduler.ps1 -Schedule daily" /sc daily /st 09:00 /ru SYSTEM
+
+# Weekly maintenance on Mondays at 8 AM
+schtasks /create /tn "TaskMaintenanceWeekly" /tr "pwsh -File C:\otel\scripts\task-maintenance-scheduler.ps1 -Schedule weekly" /sc weekly /d MON /st 08:00 /ru SYSTEM
+
+# Monthly maintenance on 1st of month at 7 AM
+schtasks /create /tn "TaskMaintenanceMonthly" /tr "pwsh -File C:\otel\scripts\task-maintenance-scheduler.ps1 -Schedule monthly" /sc monthly /d 1 /st 07:00 /ru SYSTEM

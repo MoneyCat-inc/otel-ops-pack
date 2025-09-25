@@ -1,0 +1,129 @@
+{
+  "notificationChannels": [
+    {
+      "name": "Email-Alerts",
+      "type": "email",
+      "config": {
+        "to": ["admin@company.com", "ops@company.com"],
+        "subject": "[SigNoz Alert] {{ .GroupLabels.alertname }}",
+        "body": "Alert: {{ .GroupLabels.alertname }}\nSeverity: {{ .GroupLabels.severity }}\nStatus: {{ .Status }}\nDescription: {{ range .Alerts }}{{ .Annotations.description }}{{ end }}\nRunbook: {{ range .Alerts }}{{ .Annotations.runbook_url }}{{ end }}",
+        "smtp": {
+          "host": "smtp.company.com",
+          "port": 587,
+          "username": "alerts@company.com",
+          "password": "CHANGE_ME",
+          "tls": true
+        }
+      },
+      "enabled": true,
+      "labels": {
+        "team": "ops",
+        "priority": "high"
+      }
+    },
+    {
+      "name": "Slack-Ops",
+      "type": "slack",
+      "config": {
+        "webhook_url": "https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK",
+        "channel": "#ops-alerts",
+        "title": "🚨 SigNoz Alert: {{ .GroupLabels.alertname }}",
+        "text": "{{ range .Alerts }}{{ .Annotations.description }}{{ end }}",
+        "color": "{{ if eq .Status \"firing\" }}danger{{ else }}good{{ end }}",
+        "fields": [
+          {
+            "title": "Severity",
+            "value": "{{ .GroupLabels.severity }}",
+            "short": true
+          },
+          {
+            "title": "Status",
+            "value": "{{ .Status }}",
+            "short": true
+          },
+          {
+            "title": "Runbook",
+            "value": "{{ range .Alerts }}{{ .Annotations.runbook_url }}{{ end }}",
+            "short": false
+          }
+        ]
+      },
+      "enabled": true,
+      "labels": {
+        "team": "ops",
+        "priority": "high"
+      }
+    },
+    {
+      "name": "Teams-Ops",
+      "type": "teams",
+      "config": {
+        "webhook_url": "https://outlook.office.com/webhook/YOUR/TEAMS/WEBHOOK",
+        "title": "🚨 Windows Logs Canary Alert",
+        "text": "{{ range .Alerts }}{{ .Annotations.description }}{{ end }}",
+        "themeColor": "{{ if eq .Status \"firing\" }}FF0000{{ else }}00FF00{{ end }}",
+        "sections": [
+          {
+            "activityTitle": "Alert: {{ .GroupLabels.alertname }}",
+            "activitySubtitle": "Severity: {{ .GroupLabels.severity }} | Status: {{ .Status }}",
+            "facts": [
+              {
+                "name": "Component",
+                "value": "{{ .GroupLabels.component }}"
+              },
+              {
+                "name": "Duration",
+                "value": "{{ .GroupLabels.duration }}"
+              },
+              {
+                "name": "Canary Type",
+                "value": "{{ .GroupLabels.canary }}"
+              }
+            ]
+          }
+        ]
+      },
+      "enabled": true,
+      "labels": {
+        "team": "ops",
+        "priority": "medium"
+      }
+    },
+    {
+      "name": "Webhook-Generic",
+      "type": "webhook",
+      "config": {
+        "url": "http://localhost:8080/api/v1/webhook/alerts",
+        "http_method": "POST",
+        "headers": {
+          "Content-Type": "application/json",
+          "X-Alert-Source": "signoz"
+        },
+        "body": {
+          "alert": "{{ .GroupLabels.alertname }}",
+          "status": "{{ .Status }}",
+          "severity": "{{ .GroupLabels.severity }}",
+          "description": "{{ range .Alerts }}{{ .Annotations.description }}{{ end }}",
+          "labels": "{{ .GroupLabels }}",
+          "timestamp": "{{ .StartsAt }}",
+          "runbook": "{{ range .Alerts }}{{ .Annotations.runbook_url }}{{ end }}"
+        }
+      },
+      "enabled": false,
+      "labels": {
+        "team": "ops",
+        "priority": "low"
+      }
+    }
+  ],
+  "alertGroups": [
+    {
+      "name": "Windows-Logs-Canary",
+      "alerts": ["Windows Logs Canary Missing (1 Hour)"],
+      "notificationChannels": ["Email-Alerts", "Slack-Ops", "Teams-Ops"],
+      "repeatInterval": "1h",
+      "groupWait": "10s",
+      "groupInterval": "10m"
+    }
+  ]
+}

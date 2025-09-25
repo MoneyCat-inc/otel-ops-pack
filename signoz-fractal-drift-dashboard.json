@@ -1,0 +1,308 @@
+{
+  "dashboard": {
+    "title": "Fractal Drift Monitors - Cat Nap Control Room",
+    "description": "Multi-scale pattern drift detection for OTel observability pipeline. Sleep easy. We've got the signal.",
+    "refreshInterval": "30s",
+    "timeRange": "24h",
+    "panels": [
+      {
+        "id": "drift-heatmap",
+        "title": "Drift Heatmap - Multi-Scale Overview",
+        "type": "heatmap",
+        "position": { "x": 0, "y": 0, "w": 12, "h": 8 },
+        "query": {
+          "query": "count(*) by bin(timestamp, 5m), service.name where service.name = 'resonai-analytics'",
+          "timeRange": "24h"
+        },
+        "description": "Visual representation of drift patterns across temporal scales",
+        "visualization": {
+          "colorScheme": "blues",
+          "showLegend": true,
+          "showValues": true
+        }
+      },
+      {
+        "id": "micro-scale-drift",
+        "title": "Micro-Scale Drift (5m windows)",
+        "type": "time-series",
+        "position": { "x": 0, "y": 8, "w": 6, "h": 6 },
+        "query": {
+          "query": "count(*) where service.name = 'resonai-analytics'",
+          "timeRange": "2h",
+          "aggregation": "5m"
+        },
+        "description": "Real-time metric drift detection (seconds)",
+        "visualization": {
+          "lineColor": "#3B82F6",
+          "fillOpacity": 0.1,
+          "showPoints": true
+        }
+      },
+      {
+        "id": "meso-scale-drift",
+        "title": "Meso-Scale Drift (1h windows)",
+        "type": "time-series",
+        "position": { "x": 6, "y": 8, "w": 6, "h": 6 },
+        "query": {
+          "query": "count(*) where service.name = 'resonai-analytics'",
+          "timeRange": "24h",
+          "aggregation": "1h"
+        },
+        "description": "Pattern evolution analysis (minutes)",
+        "visualization": {
+          "lineColor": "#06B6D4",
+          "fillOpacity": 0.1,
+          "showPoints": true
+        }
+      },
+      {
+        "id": "macro-scale-drift",
+        "title": "Macro-Scale Drift (6h windows)",
+        "type": "time-series",
+        "position": { "x": 0, "y": 14, "w": 6, "h": 6 },
+        "query": {
+          "query": "count(*) where service.name = 'resonai-analytics'",
+          "timeRange": "7d",
+          "aggregation": "6h"
+        },
+        "description": "Baseline drift monitoring (hours)",
+        "visualization": {
+          "lineColor": "#F59E0B",
+          "fillOpacity": 0.1,
+          "showPoints": true
+        }
+      },
+      {
+        "id": "meta-scale-drift",
+        "title": "Meta-Scale Drift (1d windows)",
+        "type": "time-series",
+        "position": { "x": 6, "y": 14, "w": 6, "h": 6 },
+        "query": {
+          "query": "count(*) where service.name = 'resonai-analytics'",
+          "timeRange": "30d",
+          "aggregation": "1d"
+        },
+        "description": "Long-term system evolution (days)",
+        "visualization": {
+          "lineColor": "#8B5CF6",
+          "fillOpacity": 0.1,
+          "showPoints": true
+        }
+      },
+      {
+        "id": "error-rate-drift",
+        "title": "Error Rate Drift Analysis",
+        "type": "stat",
+        "position": { "x": 12, "y": 0, "w": 6, "h": 4 },
+        "query": {
+          "query": "count(*) where service.name = 'resonai-analytics' AND event contains 'error' / count(*) where service.name = 'resonai-analytics' * 100",
+          "timeRange": "24h"
+        },
+        "description": "Error rate drift with baseline comparison",
+        "visualization": {
+          "thresholds": [
+            { "value": 0, "color": "#10B981" },
+            { "value": 5, "color": "#F59E0B" },
+            { "value": 10, "color": "#EF4444" }
+          ],
+          "unit": "%"
+        }
+      },
+      {
+        "id": "ttv-performance-drift",
+        "title": "TTV Performance Drift",
+        "type": "stat",
+        "position": { "x": 12, "y": 4, "w": 6, "h": 4 },
+        "query": {
+          "query": "avg(ttv_ms) where service.name = 'resonai-analytics' AND ttv_ms is not null",
+          "timeRange": "24h"
+        },
+        "description": "Time to voice performance drift",
+        "visualization": {
+          "thresholds": [
+            { "value": 0, "color": "#10B981" },
+            { "value": 500, "color": "#F59E0B" },
+            { "value": 1000, "color": "#EF4444" }
+          ],
+          "unit": "ms"
+        }
+      },
+      {
+        "id": "session-activity-drift",
+        "title": "Session Activity Drift",
+        "type": "stat",
+        "position": { "x": 12, "y": 8, "w": 6, "h": 4 },
+        "query": {
+          "query": "count(distinct session_id) where service.name = 'resonai-analytics'",
+          "timeRange": "24h"
+        },
+        "description": "Unique session count drift",
+        "visualization": {
+          "unit": "sessions"
+        }
+      },
+      {
+        "id": "variant-distribution-drift",
+        "title": "Variant Distribution Drift",
+        "type": "pie-chart",
+        "position": { "x": 12, "y": 12, "w": 6, "h": 8 },
+        "query": {
+          "query": "count(*) by variant where service.name = 'resonai-analytics'",
+          "timeRange": "24h"
+        },
+        "description": "Variant usage distribution changes",
+        "visualization": {
+          "showLegend": true,
+          "showValues": true
+        }
+      },
+      {
+        "id": "drift-velocity",
+        "title": "Drift Velocity Analysis",
+        "type": "time-series",
+        "position": { "x": 0, "y": 20, "w": 12, "h": 6 },
+        "query": {
+          "query": "derivative(count(*)) where service.name = 'resonai-analytics'",
+          "timeRange": "24h",
+          "aggregation": "5m"
+        },
+        "description": "Rate of change in drift patterns",
+        "visualization": {
+          "lineColor": "#EF4444",
+          "fillOpacity": 0.1,
+          "showPoints": true
+        }
+      },
+      {
+        "id": "baseline-stability",
+        "title": "Baseline Stability Score",
+        "type": "stat",
+        "position": { "x": 12, "y": 20, "w": 6, "h": 6 },
+        "query": {
+          "query": "stddev(count(*)) where service.name = 'resonai-analytics'",
+          "timeRange": "7d"
+        },
+        "description": "Long-term trend stability measurement",
+        "visualization": {
+          "thresholds": [
+            { "value": 0, "color": "#10B981" },
+            { "value": 10, "color": "#F59E0B" },
+            { "value": 20, "color": "#EF4444" }
+          ]
+        }
+      }
+    ]
+  },
+  "savedSearches": [
+    {
+      "name": "Micro-Scale Drift Events",
+      "query": "service.name = 'resonai-analytics' AND timestamp >= now() - 5m",
+      "description": "Real-time events for micro-scale drift analysis"
+    },
+    {
+      "name": "Meso-Scale Pattern Analysis",
+      "query": "service.name = 'resonai-analytics' AND timestamp >= now() - 1h",
+      "description": "Pattern evolution analysis for meso-scale monitoring"
+    },
+    {
+      "name": "Macro-Scale Baseline Drift",
+      "query": "service.name = 'resonai-analytics' AND timestamp >= now() - 6h",
+      "description": "Baseline drift detection for macro-scale analysis"
+    },
+    {
+      "name": "Meta-Scale Long-term Evolution",
+      "query": "service.name = 'resonai-analytics' AND timestamp >= now() - 7d",
+      "description": "Long-term system evolution for meta-scale monitoring"
+    },
+    {
+      "name": "High Drift Events",
+      "query": "service.name = 'resonai-analytics' AND (event contains 'error' OR ttv_ms > 1000)",
+      "description": "Events indicating significant drift patterns"
+    },
+    {
+      "name": "Stable Pattern Events",
+      "query": "service.name = 'resonai-analytics' AND ttv_ms < 500 AND NOT (event contains 'error')",
+      "description": "Events showing stable, healthy patterns"
+    }
+  ],
+  "alerts": [
+    {
+      "name": "Micro-Scale Drift Alert",
+      "query": "count(*) where service.name = 'resonai-analytics'",
+      "threshold": 20,
+      "evaluationWindow": "5m",
+      "severity": "warning",
+      "description": "Alert when micro-scale drift exceeds 20% change in 5-minute window"
+    },
+    {
+      "name": "Meso-Scale Pattern Drift",
+      "query": "count(*) where service.name = 'resonai-analytics'",
+      "threshold": 15,
+      "evaluationWindow": "1h",
+      "severity": "warning",
+      "description": "Alert when meso-scale pattern drift exceeds 15% in 1-hour window"
+    },
+    {
+      "name": "Macro-Scale Baseline Drift",
+      "query": "count(*) where service.name = 'resonai-analytics'",
+      "threshold": 10,
+      "evaluationWindow": "6h",
+      "severity": "critical",
+      "description": "Alert when macro-scale baseline drift exceeds 10% in 6-hour window"
+    },
+    {
+      "name": "Meta-Scale Evolution Alert",
+      "query": "count(*) where service.name = 'resonai-analytics'",
+      "threshold": 5,
+      "evaluationWindow": "1d",
+      "severity": "critical",
+      "description": "Alert when meta-scale evolution drift exceeds 5% in 1-day window"
+    },
+    {
+      "name": "Error Rate Drift Alert",
+      "query": "count(*) where service.name = 'resonai-analytics' AND event contains 'error' / count(*) where service.name = 'resonai-analytics' * 100",
+      "threshold": 5,
+      "evaluationWindow": "1h",
+      "severity": "warning",
+      "description": "Alert when error rate drift exceeds 5%"
+    },
+    {
+      "name": "TTV Performance Drift",
+      "query": "avg(ttv_ms) where service.name = 'resonai-analytics' AND ttv_ms is not null",
+      "threshold": 1000,
+      "evaluationWindow": "1h",
+      "severity": "warning",
+      "description": "Alert when TTV performance drift exceeds 1000ms"
+    },
+    {
+      "name": "Fractal Dimension Collapse",
+      "query": "stddev(count(*)) where service.name = 'resonai-analytics'",
+      "threshold": 25,
+      "evaluationWindow": "1h",
+      "severity": "critical",
+      "description": "Alert when fractal dimension collapses (high variance)"
+    }
+  ],
+  "metadata": {
+    "version": "cc-v1.0.0",
+    "created": "2025-01-27",
+    "author": "Observability Copilot",
+    "description": "Fractal Drift Monitors Dashboard for OTel observability pipeline",
+    "tags": ["fractal", "drift", "monitoring", "observability", "otel", "signoz"],
+    "comfortCat": {
+      "primaryCTA": "Sleep easy. We've got the signal.",
+      "tone": "Warm, concise, lightly clever. Keep copy sparse; rely on visuals.",
+      "typography": {
+        "headlines": "Söhne / Inter Tight / SF Pro Display (semibold)",
+        "supporting": "Inter / Source Sans, 1.25x line-height",
+        "data": "JetBrains Mono / IBM Plex Mono for metrics"
+      },
+      "colorPalette": {
+        "stable": "#3B82F6",
+        "moderate": "#F59E0B", 
+        "significant": "#EF4444",
+        "critical": "#DC2626"
+      }
+    }
+  }
+}

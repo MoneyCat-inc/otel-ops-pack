@@ -1,0 +1,55 @@
+{
+  "id": "T-2025-09-23-183",
+  "rollback_commands": [
+    "copy config.backup.yaml config.yaml",
+    "sc stop otelcol-contrib",
+    "sc start otelcol-contrib"
+  ],
+  "acceptance": [
+    "Collector configuration validates",
+    "Collector health endpoint responds",
+    "Pipeline verification passes",
+    "Command 'powershell -ExecutionPolicy Bypass -File validation/validate-otlp-exporter.ps1' executes successfully"
+  ],
+  "scope": {
+    "excluded": [],
+    "paths": [
+      "config.yaml",
+      "scripts/verify-pipeline.ps1",
+      "scripts/verify-integration.ps1"
+    ]
+  },
+  "priority": "H",
+  "migration_source": "example-task.json",
+  "validation_commands": [
+    "otelcol --config=config.yaml --dry-run",
+    "curl -s http://localhost:13134/",
+    "powershell -ExecutionPolicy Bypass -File verify-pipeline.ps1",
+    "powershell -ExecutionPolicy Bypass -File validation/validate-otlp-exporter.ps1"
+  ],
+  "assigned_to": "codex",
+  "status": "pending",
+  "recipe": "otlp_exporter_failure",
+  "description": "OTLP exporter failure rate exceeds 1% for 5 minutes, indicating potential batch size or retry configuration issues",
+  "source": "canary",
+  "type": "alert",
+  "original_id": "example-task-20250918",
+  "deadline": "2025-09-30",
+  "goal": "OTLP exporter failure rate exceeds 1% for 5 minutes, indicating potential batch size or retry configuration issues",
+  "metrics": {
+    "error_rate": 0.15,
+    "latency_p95": 500,
+    "memory_usage": 0.8,
+    "exporter_failures": 25,
+    "timestamp": "2025-09-18T23:30:00Z"
+  },
+  "created_at": "2025-09-18T23:30:00Z",
+  "title": "OTLP Exporter High Failure Rate",
+  "tests": [
+    "otelcol --config=config.yaml --dry-run",
+    "curl -s http://localhost:13134/",
+    "powershell -ExecutionPolicy Bypass -File verify-pipeline.ps1",
+    "powershell -ExecutionPolicy Bypass -File validation/validate-otlp-exporter.ps1"
+  ],
+  "expected_output": "Collector healthy, OTLP working, batch configured"
+}

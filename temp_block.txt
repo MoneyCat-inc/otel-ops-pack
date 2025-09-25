@@ -1,0 +1,10 @@
+# Update exporter timeout - need to add timeout to otlp/sigz exporter
+        if ($config -match 'otlp/sigz:') {
+            # Add timeout to existing exporter
+            $config = $config -replace '(otlp/sigz:\s*\n\s*endpoint:[^\n]*\n)', "`$1    timeout: $($combo.GatewayTimeout)`n"
+        } else {
+            # Fallback: replace any existing timeout
+            $config = $config -replace 'timeout:\s*[\d]+s', "timeout: $($combo.GatewayTimeout)"
+        }
+        
+        

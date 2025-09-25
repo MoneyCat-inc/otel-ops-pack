@@ -25,12 +25,12 @@ try {
 }
 
 const cmd = `gh pr create -t "${defaultTitle}" -F ${bodyPath}`;
-console.info('??  ', cmd);
+console.log('??  ', cmd);
 
 try {
   const out = sh(cmd);
-  console.info(out);
-  console.info('? PR created with ECRR badge + Gate prefilled.');
+  console.log(out);
+  console.log('? PR created with ECRR badge + Gate prefilled.');
 } catch (e) {
   console.error('? Failed to create PR. Details:\n', e?.stdout?.toString() || e?.message);
   process.exit(1);

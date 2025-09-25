@@ -1,0 +1,15 @@
+{
+  "goal": "Document and organize knowledge artifacts with structured metadata",
+  "executedAt": 1758746476158,
+  "ticketId": "7fd98e82-247d-4e1a-88a8-f99a6b5e574e",
+  "results": {
+    "tokensUsed": 800,
+    "metadataExtracted": 25,
+    "documentsCreated": 3,
+    "format": "markdown"
+  },
+  "mode": "Archivist",
+  "logs": [
+    "Archivist agent generated documentation artifacts"
+  ]
+}

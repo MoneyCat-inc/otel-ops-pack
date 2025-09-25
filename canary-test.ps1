@@ -138,6 +138,34 @@ Write-Host "2. SigNoz UI -> Traces -> filter: canary='true'" -ForegroundColor Wh
 Write-Host "3. Windows Event Viewer -> Application -> Source 'SigNoz-Canary'" -ForegroundColor White
 Write-Host "4. Confirm canary log file updated at $logFile" -ForegroundColor White
 
+# Multiline JSON canary test
+Write-Host "== Testing Multiline JSON Ingestion ==" -ForegroundColor Cyan
+$multilineLogFile = Join-Path $logDir "signoz-multiline-test.log"
+$multilineContent = @"
+{
+  "timestamp": "$(Get-Date -Format o)",
+  "level": "INFO",
+  "message": "SigNoz multiline canary test",
+  "canary": "true",
+  "canary.type": "multiline-json",
+  "details": {
+    "nested": {
+      "line1": "alpha",
+      "line2": "beta",
+      "multiline_test": "This JSON spans multiple lines and should be stitched together"
+    }
+  }
+}
+"@
+
+try {
+    Add-Content -Path $multilineLogFile -Value $multilineContent -Encoding UTF8
+    Write-Host "[OK] Wrote multiline JSON canary to $multilineLogFile" -ForegroundColor Green
+} catch {
+    Write-Host "[WARN] Failed to write multiline canary: $($_.Exception.Message)" -ForegroundColor Yellow
+}
+
 Write-Host "Run verify-pipeline.ps1 and verify-integration.ps1 after a few seconds to confirm ingestion." -ForegroundColor Yellow
+Write-Host "For multiline verification: SigNoz UI -> Logs -> filter: attributes.dataset = 'ecrr-canary'" -ForegroundColor Yellow
 
 

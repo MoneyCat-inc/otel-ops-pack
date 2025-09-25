@@ -1,20 +1,83 @@
 [
   {
-    "key": "ECRR-20250923-002045",
-    "file": "ECRR-20250923-002045-SLEEP-KIT-IMPLEMENTATION.md",
-    "timestamp": "2025-09-23T00:20:45Z",
-    "scope": "Sleep Kit implementation - nap-friendly automation",
+    "key": "ECRR-20250127-011900-AGENT-HYGIENE-FILE-STORAGE-CLEANUP",
+    "file": "2025-01-27-agent-hygiene-file-storage-cleanup.md",
+    "timestamp": "2025-01-27T01:19:00Z",
+    "scope": "agent-hygiene-file-storage-cleanup",
     "outcome": "success",
     "branch": "main",
-    "commit": "5d81e493837f59c867d6f3e4d01acdbdac7c3b75"
+    "commit": "local"
   },
   {
-    "key": "ECRR-20250923-001032",
-    "file": "ECRR-20250923-001032-NIGHTLY-TRACKER-SYNC-IMPLEMENTATION.md",
-    "timestamp": "2025-09-23T00:10:32Z",
-    "scope": "Nightly tracker sync implementation",
+    "key": "ECRR-20250923-213827-QUALITY-GATE-IMPLEMENTATION",
+    "file": "ECRR-20250923-213827-QUALITY-GATE-IMPLEMENTATION.md",
+    "timestamp": "2025-09-23T21:38:27Z",
+    "scope": "quality-gate-implementation",
+    "outcome": "success",
+    "branch": "docs/ecrr-refresh",
+    "commit": "ac53cf6"
+  },
+  {
+    "key": "ECRR-20250923-232924-PARSER-REGRESSION-MONITORING",
+    "file": "2025-09-23-232924-parser-regression-monitoring-health-check.md",
+    "timestamp": "2025-09-23T23:29:24Z",
+    "scope": "parser-regression-monitoring",
     "outcome": "success",
     "branch": "main",
-    "commit": "5d81e493837f59c867d6f3e4d01acdbdac7c3b75"
+    "commit": "local"
+  },
+  {
+    "key": "ECRR-20250923-234800-QUICK-TASKS-COMPLETION",
+    "file": "2025-09-23-234800-quick-tasks-completion.md",
+    "timestamp": "2025-09-23T23:48:00Z",
+    "scope": "task-management-optimization",
+    "outcome": "success",
+    "branch": "main",
+    "commit": "local"
+  },
+  {
+    "key": "ECRR-20250924-003000-DISK-MONITORING-AUTOMATION-COMPLETE",
+    "file": "2025-09-24-disk-monitoring-automation-complete.md",
+    "timestamp": "2025-09-24T00:30:00Z",
+    "scope": "disk-monitoring-automation",
+    "outcome": "success",
+    "branch": "main",
+    "commit": "local"
+  },
+  {
+    "key": "ECRR-20250924-004523-SIGNOZ-PARSER-ERROR-RESOLUTION-COMPLETE",
+    "file": "2025-09-24-signoz-parser-error-resolution-complete.md",
+    "timestamp": "2025-09-24T00:45:23Z",
+    "scope": "signoz-parser-error-resolution",
+    "outcome": "success",
+    "branch": "main",
+    "commit": "local"
+  },
+  {
+    "key": "ECRR-20250924-005600-SIGNOZ-CANARY-MONITORING-AUTOMATION-COMPLETE",
+    "file": "2025-09-24-signoz-canary-monitoring-automation-complete.md",
+    "timestamp": "2025-09-24T00:56:00Z",
+    "scope": "signoz-canary-monitoring-automation",
+    "outcome": "success",
+    "branch": "main",
+    "commit": "local"
+  },
+  {
+    "key": "ECRR-20250924-200000-MERGE-CONFLICT-DETECTOR-IMPLEMENTATION",
+    "file": "2025-09-24-merge-conflict-detector-ecrr.md",
+    "timestamp": "2025-09-24T20:00:00Z",
+    "scope": "merge-conflict-detector-progress-animation",
+    "outcome": "success",
+    "branch": "main",
+    "commit": "local"
+  },
+  {
+    "key": "ECRR-20250924-235243-ECRR-AUTOBOT-ROLLOUT",
+    "file": "2025-09-25-ecrr-autobot-rollout-deployment.md",
+    "timestamp": "2025-09-25T00:51:00Z",
+    "scope": "ecrr-autobot-rollout-deployment",
+    "outcome": "success",
+    "branch": "main",
+    "commit": "local"
   }
 ]

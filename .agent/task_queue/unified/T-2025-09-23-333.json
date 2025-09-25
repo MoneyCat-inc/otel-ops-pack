@@ -1,0 +1,47 @@
+{
+  "id": "T-2025-09-23-333",
+  "rollback_commands": [
+    "Restore previous GPU workload settings",
+    "Restart GPU monitoring services"
+  ],
+  "acceptance": [
+    "Command 'powershell -ExecutionPolicy Bypass -File validation/validate-gpu-thermal.ps1' executes successfully",
+    "Command 'curl -s http://localhost:9400/metrics' executes successfully"
+  ],
+  "scope": {
+    "excluded": [],
+    "paths": [
+      "scripts/gpu-monitor.ps1",
+      "validation/validate-gpu-thermal.ps1"
+    ]
+  },
+  "priority": "C",
+  "migration_source": "gpu-thermal-task.json",
+  "validation_commands": [
+    "powershell -ExecutionPolicy Bypass -File validation/validate-gpu-thermal.ps1",
+    "curl -s http://localhost:9400/metrics"
+  ],
+  "assigned_to": "codex",
+  "status": "pending",
+  "recipe": "gpu_thermal",
+  "description": "GPU temperature 85°C with only 5°C headroom, requiring workload reduction",
+  "source": "gpu",
+  "type": "alert",
+  "original_id": "gpu-thermal-20250918",
+  "deadline": "2025-09-30",
+  "goal": "GPU temperature 85°C with only 5°C headroom, requiring workload reduction",
+  "metrics": {
+    "gpu_temperature": 85,
+    "max_temperature": 90,
+    "thermal_headroom": 5,
+    "workload_intensity": 0.95,
+    "timestamp": "2025-09-18T23:45:00Z"
+  },
+  "created_at": "2025-09-18T23:45:00Z",
+  "title": "GPU Thermal Headroom Critical",
+  "tests": [
+    "powershell -ExecutionPolicy Bypass -File validation/validate-gpu-thermal.ps1",
+    "curl -s http://localhost:9400/metrics"
+  ],
+  "expected_output": "GPU monitoring active, thermal controls available"
+}

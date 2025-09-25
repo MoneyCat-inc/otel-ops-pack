@@ -1,0 +1,18 @@
+{
+  "examine": {
+    "total_files": 136,
+    "cutoff_date": "2025-09-18 01:05:33",
+    "total_size_gb": 0.01,
+    "space_to_free_gb": 0.0,
+    "files_to_remove": 0
+  },
+  "timestamp": "2025-09-25 01:05:32",
+  "clean": {
+    "files_removed": 0,
+    "space_freed_gb": 0
+  },
+  "report": {},
+  "artifacts_path": "C:\\otel\\scripts\\..\\artifacts",
+  "retention_days": 7,
+  "role": "OTel Artifacts Cleanup Script"
+}

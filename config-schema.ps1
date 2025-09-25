@@ -8,7 +8,9 @@ param(
   [switch]$CheckPerformance,
   [switch]$CheckPipelines,
   [switch]$CheckMemory,
-  [switch]$Verbose
+  [switch]$Verbose,
+  [int]$BatchTimeoutMsMin = 100,
+  [int]$BatchTimeoutMsMax = 300
 )
 
 $ErrorActionPreference = "Stop"
@@ -227,14 +229,22 @@ if ($CheckPerformance) {
   
   # Check batch settings
   if ($configContent -match "batch:") {
-    if ($configContent -match "timeout:\s*(\d+)s") {
-      $timeout = [int]$Matches[1]
-      if ($timeout -eq 0) {
-        Add-Warning "Batch timeout is 0 (no batching)"
-      } elseif ($timeout -gt 10) {
-        Add-Warning "Batch timeout is high ($timeout seconds)"
+    # Support timeouts expressed in ms or s
+    $timeoutMs = $null
+    if ($configContent -match "(?m)^\s*batch:\s*[\s\S]*?^\s*timeout:\s*(\d+)ms") {
+      $timeoutMs = [int]$Matches[1]
+    } elseif ($configContent -match "(?m)^\s*batch:\s*[\s\S]*?^\s*timeout:\s*(\d+)s") {
+      $timeoutMs = ([int]$Matches[1]) * 1000
+    }
+    if ($null -ne $timeoutMs) {
+      if ($timeoutMs -le 0) {
+        Add-Warning "Batch timeout is 0ms (no batching)"
       } else {
-        Add-Pass "Batch timeout is reasonable ($timeout seconds)"
+        if ($timeoutMs -lt $BatchTimeoutMsMin -or $timeoutMs -gt $BatchTimeoutMsMax) {
+          Add-Warning ("Batch timeout {0}ms outside target A/B window {1}-{2}ms" -f $timeoutMs,$BatchTimeoutMsMin,$BatchTimeoutMsMax)
+        } else {
+          Add-Pass ("Batch timeout {0}ms within target window {1}-{2}ms" -f $timeoutMs,$BatchTimeoutMsMin,$BatchTimeoutMsMax)
+        }
       }
     }
     

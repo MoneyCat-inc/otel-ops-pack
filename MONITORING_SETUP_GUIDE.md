@@ -69,6 +69,45 @@ pwsh -File scripts/monitor-optimized-pipeline.ps1 -Continuous
 - Check SigNoz collector health: http://localhost:13134/metrics
 - Verify port mappings: 5317/5318 → 14317/14318
 
+## IONA Supervisor Operations
+
+### Agent Lifecycle Management
+
+```powershell
+# Check supervisor status
+pwsh -File scripts/agents/supervisor.ps1 -Action status
+
+# Spawn an agent
+pwsh -File scripts/agents/supervisor.ps1 -Action spawn -SpecPath specs/sample-companion.json
+
+# Monitor agent execution
+pwsh -File scripts/agents/supervisor.ps1 -Action await -Id <ticket-id> -TimeoutMs 30000
+
+# Terminate agent if needed
+pwsh -File scripts/agents/supervisor.ps1 -Action terminate -Id <ticket-id> -Reason "operator stop"
+```
+
+### Emergency Controls
+
+```powershell
+# Emergency stop (pause all agents)
+touch .agent/LOCK
+
+# Resume operations
+rm .agent/LOCK
+
+# Run verification tests
+pwsh -File scripts/agents/verify-supervisor.ps1 -Quick
+```
+
+### Agent Modes
+
+- **Companion**: Conversational assistance with humor gating
+- **Archivist**: Documentation and knowledge management  
+- **Cipher**: Security analysis and compliance checking
+- **MarketAnalyst**: Business intelligence and metrics analysis
+- **Care**: Health monitoring and maintenance tasks
+
 ## Next Steps
 
 1. Import dashboard and verify all panels render
@@ -76,5 +115,7 @@ pwsh -File scripts/monitor-optimized-pipeline.ps1 -Continuous
 3. Monitor "Recent Logs (5m)" for noise patterns
 4. Tune filter rules based on observed patterns
 5. Set up automated reports for daily/weekly summaries
+6. **Configure IONA agents** for automated monitoring and maintenance
+7. **Test supervisor** with verification suite before production use
 
-The optimized pipeline is now fully observable with unified Logs → Metrics → Traces visibility! 🚀
+The optimized pipeline is now fully observable with unified Logs → Metrics → Traces visibility and intelligent agent automation! 🚀

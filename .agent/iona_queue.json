@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "lastRun": null,
+  "jobs": {
+    "metadata": {
+      "guardrails": {
+        "browsing": false,
+        "maxTokens": 4000,
+        "humorGating": false
+      },
+      "createdAt": 1758746471980,
+      "mode": "Archivist",
+      "updatedAt": 1758746471980,
+      "budgets": {
+        "maxJobs": 2,
+        "maxFiles": 20,
+        "maxLines": 1000,
+        "ttlMs": 600000,
+        "maxAttempts": 3,
+        "backoffMs": 10000
+      },
+      "goal": "Document and organize knowledge artifacts with structured metadata"
+    },
+    "deadline": 1758747071980,
+    "attempts": 0,
+    "status": "succeeded",
+    "id": "7fd98e82-247d-4e1a-88a8-f99a6b5e574e",
+    "updatedAt": 1758746477318,
+    "outputs": {
+      "goal": "Document and organize knowledge artifacts with structured metadata",
+      "executedAt": 1758746476158,
+      "ticketId": "7fd98e82-247d-4e1a-88a8-f99a6b5e574e",
+      "results": {
+        "tokensUsed": 800,
+        "metadataExtracted": 25,
+        "documentsCreated": 3,
+        "format": "markdown"
+      },
+      "mode": "Archivist",
+      "logs": [
+        "Archivist agent generated documentation artifacts"
+      ]
+    }
+  }
+}

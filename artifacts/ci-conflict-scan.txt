@@ -1,0 +1,21 @@
+# Merge Conflict Scan Report
+Generated: 2025-09-24 20:35:57 UTC
+Mode: detect
+Repository: C:\otel
+
+## Summary
+- Conflicted files: none
+- Total conflict markers: 0
+
+## Marker Breakdown
+- ^<<<<<<<  : 0
+- ^=======$ : 0
+- ^>>>>>>>  : 0
+
+## Conflicted Files
+- none
+
+
+## Marker Hits
+- none
+

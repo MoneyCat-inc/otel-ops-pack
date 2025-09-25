@@ -8,6 +8,11 @@
     Generates and executes batch experiments from a factor matrix, producing
     configs with randomized parameters and measurement collection.
 
+.NOTES
+    For long-running operations, this script uses the shared spinner toolkit:
+    . (Join-Path $PSScriptRoot 'spinner-toolkit.ps1')
+    Use Show-Spinner, Wait-WithSpinner, or Show-ProgressBar for consistent UX.
+
 .PARAMETER DryRun
     Generate batch plan and configs without executing experiments
 
@@ -51,6 +56,9 @@ param(
 # Initialize script
 $ErrorActionPreference = "Stop"
 $ProgressPreference = "SilentlyContinue"
+
+# Import shared spinner toolkit for consistent progress indicators
+. (Join-Path $PSScriptRoot 'spinner-toolkit.ps1')
 
 # Validate inputs
 if (-not (Test-Path $MatrixPath)) {
@@ -199,7 +207,7 @@ foreach ($run in $runPlan.runs) {
         # Stop any existing collector service
         try {
             Stop-Service -Name "otelcol-contrib" -Force -ErrorAction SilentlyContinue
-            Start-Sleep -Seconds 2
+            Wait-WithSpinner -Seconds 2 -Message 'Cooldown before next step...' -AnimationType 'Processing'
         } catch {
             Write-Warning "Could not stop existing collector service"
         }
@@ -228,7 +236,7 @@ foreach ($run in $runPlan.runs) {
         # Verify collector is running
         try {
             # Use standard collector health endpoint
-            $healthResponse = Invoke-RestMethod -Uri "http://localhost:13134/healthz" -TimeoutSec 10
+            $healthResponse = Invoke-RestMethod -Uri "http://localhost:13134" -TimeoutSec 10
             if ($healthResponse.status -ne "Serving") {
                 throw "Collector health check failed"
             }
@@ -248,15 +256,20 @@ foreach ($run in $runPlan.runs) {
         
         $loadCommandExpanded = "$LoadCommand -Duration $Duration -OTLPEndpoint http://localhost:5318 -RunId $($run.runId) -Stage $Stage"
         
-        # Execute load command
+        # Execute load command with progress animation
         $loadProcess = Start-Process -FilePath "pwsh" -ArgumentList @("-Command", $loadCommandExpanded) -PassThru -NoNewWindow
-        $loadProcess.WaitForExit($Duration * 1000 + 30000) # Wait with 30s buffer
-        
+        $loadStart = Get-Date
+        $timeoutSeconds = $Duration + 30
+        while (-not $loadProcess.HasExited -and ((Get-Date) - $loadStart).TotalSeconds -lt $timeoutSeconds) {
+            $elapsed = ((Get-Date) - $loadStart).TotalSeconds
+            $progress = [math]::Min(100, [math]::Round(($elapsed / $timeoutSeconds) * 100))
+            Show-ThinkingAnimation -Message "Load generation running..." -AnimationType "Processing" -DurationMs 200 -ShowProgress -ProgressPercent $progress
+        }
+        Clear-Spinner
         if (-not $loadProcess.HasExited) {
             Write-Warning "Load generation timed out, terminating..."
             $loadProcess.Kill()
         }
-        
         # Collect metrics
         Write-Host "Collecting experiment metrics..." -ForegroundColor Yellow
         $metrics = @{
@@ -299,7 +312,7 @@ foreach ($run in $runPlan.runs) {
         $runPlan | ConvertTo-Json -Depth 10 | Set-Content $planFile
         
         # Brief pause between runs
-        Start-Sleep -Seconds 2
+        Wait-WithSpinner -Seconds 2 -Message 'Cooldown before next run...' -AnimationType 'Processing'
         
     } catch {
         Write-Error "Failed to execute run $($run.runId): $($_.Exception.Message)"
@@ -332,3 +345,8 @@ Write-Host "Summary file: $summaryFile" -ForegroundColor Yellow
 if ($summary.failedRuns -gt 0) {
     Write-Warning "$($summary.failedRuns) runs failed - check logs for details"
 }
+
+
+
+
+

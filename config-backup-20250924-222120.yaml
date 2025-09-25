@@ -1,0 +1,283 @@
+extensions:
+  health_check:
+    endpoint: 0.0.0.0:13134
+    path: /healthz
+  file_storage:
+    directory: C:/otel/otelcol-storage
+
+receivers:
+  otlp:
+    protocols:
+      http:
+        endpoint: 0.0.0.0:5318
+      grpc:
+        endpoint: 0.0.0.0:5317
+
+  prometheus/gpu:
+    config:
+      scrape_configs:
+        - job_name: 'gpu-exporter'
+          scrape_interval: 15s
+          static_configs:
+            - targets: ['localhost:9400']
+
+  filelog:
+    include: [C:/logs/**/*.log, C:/logs/**/*.jsonl]
+    start_at: end
+    include_file_path: true
+    include_file_name_resolved: true
+    multiline:
+      line_start_pattern: '^(\\s*\\{|[A-Za-z0-9])'
+    operators:
+      - type: router
+        routes:
+          - output: json_parser
+            expr: 'IsMatch(body, "^\\s*\\{")'
+          - output: plain_text_parser
+            expr: 'true'
+      - type: json_parser
+        id: json_parser
+        parse_from: body
+        parse_to: attributes
+        on_error: send
+      - type: noop
+        id: plain_text_parser
+      - type: move
+        from: attributes["log.file.name"]
+        to: attributes["log.file.name"]
+
+  windowseventlog/application:
+    channel: Application
+    start_at: end
+
+  windowseventlog/system:
+    channel: System
+    start_at: end
+
+exporters:
+  logging:
+    loglevel: info
+
+  otlp/sigz:
+    endpoint: "localhost:14317"
+    timeout: 2s
+    tls:
+      insecure: true
+    retry_on_failure:
+      initial_interval: 5s
+      max_interval: 30s
+      max_elapsed_time: 10m
+    sending_queue:
+      storage: file_storage
+      queue_size: 5000
+      num_consumers: 4
+
+processors:
+  memory_limiter:
+    check_interval: 2s
+    limit_percentage: 80
+    spike_limit_percentage: 25
+
+  resource/defaults:
+    attributes:
+      - action: upsert
+        key: service.name
+        value: windows-otel-collector
+      - action: upsert
+        key: service.namespace
+        value: platform
+      - action: upsert
+        key: deployment.environment
+        value: local
+
+  resource/iona:
+    attributes:
+      - action: upsert
+        key: service.name
+        value: iona-supervisor
+      - action: upsert
+        key: service.namespace
+        value: iona
+      - action: upsert
+        key: deployment.environment
+        value: local
+
+  filter/drop_noise:
+    error_mode: ignore
+    logs:
+      log_record:
+        # Drop routine Windows Event Log entries
+        - attributes["winlog.event_id"] == 6005 or attributes["winlog.event_id"] == 6006
+        # Drop health check/heartbeat noise
+        - IsMatch(body, "(?i)health check|heartbeat|diagnostic ping")
+        # Drop common Windows noise patterns
+        - IsMatch(body, "(?i)service control manager|task scheduler|windows update")
+
+  transform/sanitize:
+    log_statements:
+      - context: log
+        statements:
+          # Redact Bearer tokens
+          - replace_pattern(body, "(?i)bearer\\s+[A-Za-z0-9._-]+", "Bearer ***")
+          # Redact password patterns
+          - replace_pattern(body, "(?i)pwd=.*?(\\s|$)", "pwd=*** ")
+          - replace_pattern(body, "(?i)password=.*?(\\s|$)", "password=*** ")
+          # Redact API keys
+          - replace_pattern(body, "(?i)api[_-]?key\\s*[:=]\\s*[A-Za-z0-9._-]+", "api_key=***")
+
+  transform/enrich:
+    log_statements:
+      - context: resource
+        statements:
+          - set(attributes["service.name"], "windows-host")
+          - set(attributes["deployment.environment"], "local-dev")
+      - context: log
+        statements:
+          # Tag synthetic logs for easy filtering
+          - set(attributes["dataset"], "synthetic") where attributes["synthetic_id"] != nil
+          # Default dataset tag for Windows logs to avoid blank buckets
+          - set(attributes["dataset"], "windows") where attributes["dataset"] == nil or attributes["dataset"] == ""
+          # Tag canary logs
+          - set(attributes["dataset"], "ecrr-canary") where attributes["canary"] == "true"
+          - set(attributes["dataset"], "ecrr-canary") where attributes["canary.type"] != nil
+          - set(attributes["dataset"], "ecrr-canary") where IsMatch(body, "\"canary\"\\s*:\\s*\"true\"")
+          - set(attributes["dataset"], "ecrr-canary") where IsMatch(body, "\"canary.type\"")
+          - set(attributes["dataset"], "ecrr-canary") where IsMatch(body, "(?i)ECRR-Canary")
+          # Tag GPU metrics logs
+          - set(attributes["dataset"], "windows-gpu-metrics") where attributes["service"] == "gpu-metrics"
+
+  batch:
+    timeout: 300ms
+    send_batch_size: 512
+    send_batch_max_size: 1024
+
+  batch/iona:
+    timeout: 200ms
+    send_batch_size: 256
+    send_batch_max_size: 512
+
+  tail_sampling:
+    decision_wait: 10s
+    num_traces: 50000
+    expected_new_traces_per_sec: 10
+    policies:
+      - name: errors
+        type: status_code
+        status_code:
+          status_codes: [ERROR]
+      - name: slow-traces
+        type: latency
+        latency:
+          threshold_ms: 500
+      - name: canary
+        type: string_attribute
+        string_attribute:
+          key: canary
+          values: ["true"]
+      - name: baseline
+        type: probabilistic
+        probabilistic:
+          sampling_percentage: 10
+
+  attributes/redact:
+    actions:
+      - key: http.request.header.authorization
+        action: delete
+      - key: http.request.header.cookie
+        action: delete
+      - key: user.email
+        action: delete
+
+service:
+  extensions:
+    - health_check
+    - file_storage
+  pipelines:
+    logs:
+      receivers: [otlp, filelog, windowseventlog/application, windowseventlog/system]
+      processors: [memory_limiter, filter/drop_noise, transform/sanitize, transform/enrich, attributes/redact, batch]
+      exporters: [logging, otlp/sigz]
+
+    metrics:
+      receivers: [otlp, prometheus/gpu]
+      processors: [memory_limiter, batch]
+      exporters: [otlp/sigz]
+
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, tail_sampling, batch]
+      exporters: [otlp/sigz]
+
+    # IONA Supervisor dedicated pipelines for optimized processing
+    metrics/iona:
+      receivers: [otlp]
+      processors: [memory_limiter, resource/iona, batch/iona]
+      exporters: [otlp/sigz]
+
+    traces/iona:
+      receivers: [otlp]
+      processors: [memory_limiter, resource/iona, tail_sampling, batch/iona]
+      exporters: [otlp/sigz]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

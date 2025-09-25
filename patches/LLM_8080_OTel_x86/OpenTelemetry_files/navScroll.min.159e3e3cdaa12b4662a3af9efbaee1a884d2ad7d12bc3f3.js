@@ -1,0 +1,1 @@
+(()=>{function t(e){const t=e.getBoundingClientRect();return t.top>=0&&t.left>=0&&t.bottom<=(window.innerHeight||document.documentElement.clientHeight)&&t.right<=(window.innerWidth||document.documentElement.clientWidth)}var e=document.querySelector("#td-section-nav .td-sidebar-nav-active-item");e&&!t(e)&&e.scrollIntoView({behavior:"smooth",block:"end",inline:"nearest"})})()

@@ -1,0 +1,28 @@
+{
+  "alert": {
+    "name": "Windows Logs Canary Missing (1 Hour)",
+    "description": "Alert when Windows Event Log canaries are missing for more than 1 hour, indicating potential ingestion pipeline issues",
+    "severity": "warning",
+    "condition": {
+      "threshold": 1,
+      "operator": "below",
+      "duration": "60m"
+    },
+    "query": {
+      "logsQuery": {
+        "query": "SELECT count() as value FROM logs WHERE attributes_string['dataset'] = 'windows' AND body LIKE '%windows-logs-canary%' AND timestamp >= now() - INTERVAL 1 HOUR"
+      }
+    },
+    "notificationChannels": [],
+    "runbook": {
+      "description": "Windows logs canary missing for 1 hour - check ingestion pipeline",
+      "url": "http://localhost:8080/logs?query=attributes.log.source%20%3D%20%27windows_event_log%27%20AND%20body%20LIKE%20%27%25canary%25%27"
+    },
+    "labels": {
+      "component": "windows-logs",
+      "canary": "true",
+      "alert_type": "ingestion",
+      "duration": "1h"
+    }
+  }
+}

@@ -108,7 +108,7 @@ Write-Host "✓ Larger queue (50k items, 8 consumers)" -ForegroundColor Green
 Write-Host "✓ GZIP compression enabled" -ForegroundColor Green
 Write-Host "✓ Extended timeout (30s)" -ForegroundColor Green
 Write-Host "✓ Resource enrichment (host.name, service.version)" -ForegroundColor Green
-Write-Host "✓ Proper SigNoz endpoint (http://localhost:4317)" -ForegroundColor Green
+Write-Host "✓ Proper SigNoz endpoint (gRPC on localhost:4317)" -ForegroundColor Green
 
 # 8. Next steps
 Write-Host "`n=== NEXT STEPS ===" -ForegroundColor Cyan

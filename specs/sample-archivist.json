@@ -1,0 +1,22 @@
+{
+  "mode": "Archivist",
+  "goal": "Document and organize knowledge artifacts with structured metadata",
+  "inputs": {
+    "source": "codebase analysis",
+    "target": "documentation generation",
+    "format": "markdown"
+  },
+  "guardrails": {
+    "browsing": false,
+    "maxTokens": 4000,
+    "humorGating": false
+  },
+  "budgets": {
+    "maxJobs": 2,
+    "maxFiles": 20,
+    "maxLines": 1000,
+    "ttlMs": 600000,
+    "maxAttempts": 3,
+    "backoffMs": 10000
+  }
+}

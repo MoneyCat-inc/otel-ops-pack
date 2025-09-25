@@ -42,7 +42,7 @@ function ConvertTo-OrderedHashtable {
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-$root = Split-Path -Parent $PSCommandPath
+$root = Split-Path -Path -Parent $PSCommandPath
 if (-not $root) {
     $root = (Get-Location).Path
 }

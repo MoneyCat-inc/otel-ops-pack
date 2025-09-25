@@ -1,21 +1,31 @@
 {
   "version": 1,
-  "updatedAt": "2025-09-20T03:23:01.7873341+01:00",
+  "updatedAt": "2025-09-24T14:48:22.2552509+01:00",
   "sections": {
-    "env": {
-      "ok": false,
-      "detail": "Not initialized",
-      "ts": null
-    },
     "analytics": {
       "ok": false,
       "detail": "Not initialized",
       "ts": null
     },
-    "otel": {
+    "hygiene": {
       "ok": true,
-      "detail": "OTLP/HTTP 5318 OK",
-      "ts": "2025-09-20T03:23:01.7873341+01:00"
+      "ts": "2025-01-27T00:19:00+00:00",
+      "detail": "Agent hygiene cleanup completed - 48 files archived, 13 backups removed, ECRR report filed"
+    },
+    "env": {
+      "ok": true,
+      "detail": "pnpm, node, playwright: OK",
+      "ts": "2025-09-24T14:48:21.3968428+01:00"
+    },
+    "otel": {
+      "detail": "OTLP/HTTP 5318 reachable; dataset logs present",
+      "ok": true,
+      "ts": "2025-09-24T14:48:22.2552509+01:00"
     }
+  },
+  "otel": {
+    "ok": true,
+    "detail": "Nightly ECRR validation OK: exclusions restored, index/ledger regenerated; port conflicts detected",
+    "stamp": "2025-09-25 02:00:09"
   }
 }

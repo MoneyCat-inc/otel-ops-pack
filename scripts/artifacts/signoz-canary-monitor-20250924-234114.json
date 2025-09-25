@@ -1,0 +1,18 @@
+{
+  "timestamp": "2025-09-24 23:41:20",
+  "emittedMessage": "SigNoz wiring canary sent 2025-09-24T23:41:14",
+  "timeWindowMinutes": 60,
+  "canaryCount": 332,
+  "earliestTimestamp": "2025-09-24 10:54:47.522811200",
+  "latestTimestamp": "2025-09-24 22:41:17.135822800",
+  "alertThreshold": 1,
+  "spikeThreshold": 300,
+  "status": "warning",
+  "alerts": [
+    "WARNING: spike detected with 332 canary entries (spike threshold: 300)"
+  ],
+  "latest": {
+    "event_time": "2025-09-24 22:41:17.135822800",
+    "body": "{\"source\":\"SigNozTestSource\",\"level\":\"INFO\",\"message\":\"SigNoz wiring canary sent 2025-09-24T23:41:14\",\"timestamp\":\"2025-09-24T22:41:16.4630404Z\",\"eventId\":1001}"
+  }
+}

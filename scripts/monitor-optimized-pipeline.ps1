@@ -7,8 +7,12 @@ param(
     [int]$DurationMinutes = 10,
     [switch]$Continuous = $false,
     [switch]$ExportReport = $false,
-    [string]$ReportPath = "artifacts\monitoring-report-$(Get-Date -Format 'yyyyMMdd-HHmmss').json"
+    [string]$ReportPath = "artifacts\monitoring-report-$(Get-Date -Format 'yyyyMMdd-HHmmss').json",
+    [int]$RefreshSeconds = 5
 )
+
+# Import shared spinner toolkit
+. (Join-Path $PSScriptRoot 'spinner-toolkit.ps1')
 
 Write-Host "🔍 Enhanced Pipeline Monitor (ECRR v2.0)" -ForegroundColor Cyan
 Write-Host "Monitoring: 200ms batches, noise filtering, sub-second latency" -ForegroundColor Gray
@@ -22,6 +26,7 @@ $script:monitoringData = @{
     EndTime = $endTime
     Checks = @()
     Metrics = @()
+    Latency = @()
     Alerts = @()
     Status = "running"
 }
@@ -100,6 +105,42 @@ function Get-PipelineMetrics {
     }
 }
 
+# Lightweight exporter failure counter delta via SigNoz metrics API (if available)
+function Get-ExporterFailuresDelta {
+    try {
+        $now = [long]([DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()); $start = $now - 60000
+        $payload = @{ start=$start; end=$now; requestType="series"; compositeQuery=@{ queries=@(@{ name="A"; panelType="graph"; queryType="promql"; promql=@{ query="sum(rate(otelcol_exporter_send_failed_log_records[1m]))" } }) } } | ConvertTo-Json -Depth 6
+        $resp = Invoke-RestMethod -Method Post -Uri "http://localhost:8080/api/v5/query_range" -ContentType "application/json" -Body $payload -TimeoutSec 5
+        $val = 0
+        try { $val = [double]$resp.data.result[0].values[-1][1] } catch { $val = 0 }
+        return $val
+    } catch { return $null }
+}
+
+# Emit canary log and measure time-to-ingest by querying for event_id
+function Measure-CanaryLatency {
+    try {
+        $eid = [Guid]::NewGuid().ToString()
+        $canary = @{ event="latency_probe"; event_id=$eid; dataset="ecrr-canary"; canary="true"; timestamp=(Get-Date).ToString("o") } | ConvertTo-Json -Compress
+        Invoke-RestMethod -Uri "http://localhost:5318/v1/logs" -Method Post -Body $canary -ContentType "application/json" -TimeoutSec 2 | Out-Null
+        $t0 = Get-Date
+        $seen = $false; $latMs = $null
+        for ($i=0; $i -lt 10 -and -not $seen; $i++) {
+            Show-Spinner -Message "Probing canary latency..." -AnimationType "Analytics" -DurationMs 300
+            try {
+                $now = [long]([DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()); $start = $now - 120000
+                $expr = "attributes.dataset = `"ecrr_canary`" OR attributes.dataset = `"ecrr-canary`" OR body contains `"$eid`""
+                $payload = @{ start=$start; end=$now; requestType="raw"; compositeQuery=@{ queries=@(@{ type="builder_query"; spec=@{ name="A"; signal="logs"; filter=@{ expression=$expr }; order=@(@{ key=@{ name="timestamp" }; direction="desc" }); limit=5; offset=0 }}) } } | ConvertTo-Json -Depth 7
+                $resp = Invoke-RestMethod -Method Post -Uri "http://localhost:8080/api/v5/query_range" -ContentType "application/json" -Body $payload -TimeoutSec 5
+                $json = $resp | ConvertTo-Json -Depth 8
+                if ($json -match $eid) { $seen = $true; $latMs = ([int]((Get-Date) - $t0).TotalMilliseconds) }
+            } catch { }
+        }
+        Clear-Spinner
+        return @{ event_id=$eid; seen=$seen; latency_ms=$latMs }
+    } catch { return @{ event_id=""; seen=$false; latency_ms=$null } }
+}
+
 function Show-Status {
     $currentTime = Get-Date
     $elapsed = $currentTime - $startTime
@@ -172,10 +213,23 @@ function Show-KeyMetrics {
         Write-Host "   Noise Filtering: Active" -ForegroundColor White
         Write-Host "   Export Target: ClickHouse" -ForegroundColor White
         
+        # Latency gauge: exporter failure rate + canary latency
+        $failRate = Get-ExporterFailuresDelta
+        $latProbe = Measure-CanaryLatency
+        if ($null -ne $failRate) { Write-Host ("   Exporter failed logs rate: {0:F4}/s" -f $failRate) -ForegroundColor White }
+        if ($latProbe.seen) { Write-Host ("   Canary ingest latency: {0} ms" -f $latProbe.latency_ms) -ForegroundColor White } else { Write-Host "   Canary ingest latency: n/a" -ForegroundColor Yellow }
+
         # Store metrics for ECRR report
         $script:monitoringData.Metrics += @{
             Timestamp = $currentTime
             Data = $metrics
+        }
+        $script:monitoringData.Latency += @{
+            Timestamp = $currentTime
+            ExporterFailedRatePerSec = $failRate
+            CanarySeen = $latProbe.seen
+            CanaryLatencyMs = $latProbe.latency_ms
+            CanaryEventId = $latProbe.event_id
         }
         
         # Check for alerts
@@ -256,7 +310,14 @@ do {
     Write-Host "Features: Real-time metrics, ECRR reporting, threshold alerting" -ForegroundColor Gray
     Write-Host ""
     
+    Show-ThinkingAnimation -Message "Collecting pipeline metrics..." -AnimationType "Processing" -DurationMs 0
+    Start-Sleep -Milliseconds 200
+    Clear-Spinner
     Show-Status
+    
+    Show-ThinkingAnimation -Message "Analyzing key metrics and performance..." -AnimationType "Analyzing" -DurationMs 0
+    Start-Sleep -Milliseconds 200
+    Clear-Spinner
     Show-KeyMetrics
     
     # Show recent alerts if any
@@ -284,8 +345,10 @@ do {
     } else {
         $remaining = $endTime - (Get-Date)
         if ($remaining.TotalSeconds -gt 0) {
-            Write-Host "Next update in 30 seconds..." -ForegroundColor Gray
-            Start-Sleep -Seconds 30
+            Write-Host ("Next update in {0} seconds..." -f $RefreshSeconds) -ForegroundColor Gray
+            
+            # Show thinking animation during countdown
+            Wait-WithSpinner -Seconds $RefreshSeconds -Message "Pipeline monitoring standby" -AnimationType "Thinking"
         } else {
             break
         }

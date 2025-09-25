@@ -1,0 +1,234 @@
+8080 operating system
+
+If you mean **operating systems for the Intel 8080** (the 8‑bit CPU from 1974), here’s the quick lay of the land and how to get one running today.
+
+---
+
+## The main 8080 OS options
+
+* **CP/M (CP/M‑80)** — the canonical choice. Its portability came from a clean split into **CCP** (command processor), **BDOS** (disk/OS services), and a hardware‑specific **BIOS** you tailor to your machine. Only the BIOS depends on your hardware; CCP/BDOS are stock.&#x20;
+
+* **MP/M (Multi‑user CP/M)** — Digital Research’s multi‑user/multi‑tasking CP/M for 8080/8085/Z80 systems. Typical installations needed more RAM and disk and supported multiple terminals. (The MP/M II Programmer’s Guide lists a minimum of an 8080/Z80 and **32 KB RAM**.) ([cpm.z80.de][1])
+
+* **Intel ISIS / ISIS‑II** — Intel’s own development OS for its MDS 8080/8085 systems, shipping with PL/M, assemblers, linker, and tools. Great historically (and for cross‑development), but **not CP/M‑compatible**. ([bitsavers.org][2])
+
+* **Vendor DOSes on S‑100 machines** — e.g., **IMSAI’s IMDOS** (a modified CP/M for the IMSAI 8080), **Heathkit’s HDOS** for the 8080‑based H8/H89 line, and **North Star’s NSDOS** for North Star systems. These were tied to specific hardware but show the diversity of 8080 software ecosystems. ([Wikipedia][3])
+
+> Note: Many later “CP/M‑like” systems targeted the Z80 and use Z80‑specific opcodes. They’ll run on Z80 machines (backward‑compatible with 8080 mnemonics) but **not** on a pure 8080 unless assembled for 8080. (Classic example: Cromemco CDOS was for Z80 systems.) ([Wikipedia][4])
+
+---
+
+## Fastest way to try CP/M right now
+
+* **SIMH AltairZ80**: launch the simulator and at the `sim>` prompt run `do cpm2` to boot CP/M 2.2. ([classiccmp.org][5])
+* **z80pack**: a mature 8080/Z80 emulator with ready‑to‑run CP/M environments; clone/build and start the CP/M 2.x script. ([GitHub][6])
+
+(If you want to explore CP/M 3—**the last CP/M for 8‑bit 8080/Z80**—there are curated Altair builds and docs as well.) ([altairclone.com][7])
+
+---
+
+## Bringing up CP/M on your own 8080 hardware (TL;DR checklist)
+
+If you’re building an 8080 single‑board computer or porting CP/M:
+
+1. **Start from a stock BDOS/CCP** and write a tiny loader **GETSYS** to read the system from the first tracks into RAM. The standard build assumes a 20 KB baseline, relocatable upward with MOVCPM (typical systems used 32–64 KB).&#x20;
+2. Implement the **BIOS jump table** at **4A00h + b** (where *b* depends on your RAM size). At minimum you need console I/O: `CONST`, `CONIN`, `CONOUT`; disk routines (`SELDSK`, `SETTRK`, `SETSEC`, `SETDMA`, `READ`, `WRITE`) come next.&#x20;
+3. Write **PUTSYS** to place your patched memory image (with your BIOS) back on the system tracks; then add a small **cold‑start loader** on track 0 to make it boot.&#x20;
+4. On boot, CP/M initializes page zero and jumps into the CCP; you should see the `A>` prompt if your BIOS and disk I/O are correct.&#x20;
+
+---
+
+## Programmer’s cheat‑sheet (CP/M on 8080)
+
+* **Program load address**: **0x0100** (the Transient Program Area start). Even the GETSYS example is coded to start at 0x0100.&#x20;
+* **System call gateway**: **CALL 0005h** enters **BDOS**; set **C=function**, **DE=parameter** as needed.&#x20;
+
+**Hello, CP/M (8080 assembly):**
+
+```asm
+        org  100h            ; CP/M program entry
+        mvi  c,9             ; BDOS function 9 = print "$"-terminated string
+        lxi  d, msg
+        call 5               ; jump into BDOS via page-zero vector
+        ret
+
+msg:    db 'Hello from 8080 on CP/M!$'
+```
+
+BDOS function 9 prints the string at DE until `$`. Assemble to a `.COM` (ORG 100h), place on a CP/M disk image, and run. ([Seasip][8])
+
+---
+
+### Reference manuals (useful pages)
+
+* **CP/M 2.2 Alteration Guide** — the definitive guide to tailoring/porting CP/M (BIOS jump table, loaders, memory map).&#x20;
+* **CP/M 2.2 User/Programmer docs** — BDOS function reference and calling conventions. ([Seasip][8])
+* **MP/M** and **ISIS‑II** manuals for multi‑user CP/M and Intel’s dev OS, respectively. ([cpm.z80.de][1])
+
+---
+
+If you were aiming for something different (e.g., “port 8080 on modern OSes” or writing a minimal 8080 kernel from scratch), this should still give you a running start. I can also sketch a bare‑metal 8080 monitor or a minimal diskless shell if you’re building hardware.
+
+[1]: https://www.cpm.z80.de/manuals/mpm2pg.pdf?utm_source=chatgpt.com "MP/M II Operating System PROGRAMMER'S GUIDE"
+[2]: https://bitsavers.org/pdf/intel/ISIS_II/9800306-06_ISIS-II_Users_Guide_May81.pdf?utm_source=chatgpt.com "ISIS-II USER'S GUIDE"
+[3]: https://en.wikipedia.org/wiki/IMDOS?utm_source=chatgpt.com "IMDOS"
+[4]: https://en.wikipedia.org/wiki/Cromemco?utm_source=chatgpt.com "Cromemco"
+[5]: https://www.classiccmp.org/cpmarchives/cpm/mirrors/www.schorn.ch/cpm/intro.php?utm_source=chatgpt.com "The SIMH Altair 8800 Z80 simulator"
+[6]: https://github.com/udo-munk/z80pack?utm_source=chatgpt.com "udo-munk/z80pack: A Zilog Z80 and Intel 8080 systems ..."
+[7]: https://altairclone.com/downloads/cpm/CPM%203.0/ReadMe.pdf?utm_source=chatgpt.com "[PDF] CP/M 3 for the Altair 8800 with Altair 8” Floppy Drives Creating Altair CP/M 3 Disks"
+[8]: https://www.seasip.info/Cpm/bdos.html "CP/M information archive : BDOS system calls"
+
+
+~could you create a research plan for OTel  
+
+Awesome—here’s a crisp, no-nonsense **OpenTelemetry (OTel) research plan** you can run immediately. I tuned it for your current stack (Collector + SigNoz + Windows/WSL + containers), while tracking what’s new in 2025 (semantic conventions stabilization work, Collector updates, logs model realities, etc.).
+
+---
+
+# Goals (what success looks like)
+
+1. **Specification alignment** — we ingest & emit data that matches the **current semantic conventions** (and know what changed). ([OpenTelemetry][1])
+2. **Collector hardening** — we use supported processors/receivers/exporters and understand breaking changes in recent **Collector releases**. ([OpenTelemetry][2])
+3. **Signals coverage** — traces, metrics, logs (and a stance on profiling readiness). ([OpenTelemetry][3])
+4. **Operational posture** — sampling, back-pressure, cost controls, and golden-path pipelines to SigNoz/Grafana backends. ([Grafana Labs][4])
+
+---
+
+# Key questions to answer
+
+* **SemConv:** What version are we targeting? What deltas landed (DB stabilized, **RPC stabilization** in flight)? What attribute renames/removals hit our services? ([OpenTelemetry][5])
+* **Collector:** Which components in our pipeline are **stable vs. experimental**? Any metric/label changes from v0.13x that affect our dashboards/alerts? ([OpenTelemetry][6])
+* **Logs:** Given OTel doesn’t define a separate “logs API,” what’s our path to **log/trace correlation** and ingestion (filelog/OTLP) without vendor lock? ([OpenTelemetry][3])
+* **Profiling & Next:** Do we pilot **profiling** or table it until GA in our languages? (track ecosystem claims for 2025). ([Dynatrace][7])
+
+---
+
+# Workstreams & deliverables
+
+## 1) Semantic Conventions sweep
+
+* **Tasks**
+
+  * Inventory our current attributes; map to **SemConv** version (e.g., 1.3x).
+  * Diff against the site/changelog; flag any **breaking renames** (DB stabilized in May ’25; **RPC stabilization project** kicked off June ’25).
+* **Artifacts**
+
+  * `semconv/DELTA_REPORT.md` (what changed, by service)
+  * `semconv/mapping-rules.json` (attribute rewrite rules for processors)
+* **Sources**: SemConv docs, changelog, vendor support ranges. ([OpenTelemetry][1])
+
+## 2) Collector pipeline hardening
+
+* **Tasks**
+
+  * Lock a **known-good Collector version** (v0.135.0 docs last updated Sept 10, 2025).
+  * Review **component stability** per registry; replace deprecated processors; note receiverhelper metrics changes.
+  * Define **SLOs** for pipeline CPU/mem, queue length, export success.
+* **Artifacts**
+
+  * `otel/pipelines/*.yaml` (prod, canary, local)
+  * `otel/pipelines/COMPONENT_MATRIX.md` (status, maturity, owners)
+  * `runbooks/COLLECTOR_OPERATIONS.md` (rollout/rollback, feature gates)
+* **Sources**: Collector docs/releases. ([OpenTelemetry][2])
+
+## 3) Signals coverage & correlation
+
+* **Tasks**
+
+  * **Traces/Metrics**: confirm exporters and exemplars; set consistent service/resource attrs.
+  * **Logs**: choose ingestion path (filelog/OTLP) and **correlate with trace/span ids**; validate in SigNoz UI.
+  * **Profiling**: track maturity; decide POC scope only if toolchain is ready.
+* **Artifacts**
+
+  * `checklists/SIGNAL_COVERAGE.md` (by service)
+  * `dashboards/SEMCONV_READY.json` (ensures panels expect latest attrs)
+* **Sources**: Logs concept, 2025 trend notes. ([OpenTelemetry][3])
+
+## 4) Language SDKs & auto-instrumentation
+
+* **Tasks**
+
+  * Pin SDK versions per language; note 2025 goals (e.g., **Go team roadmap**) impacting API surface or default behavior.
+  * Standardize **resource detection** and **propagation** (W3C TraceContext/Baggage).
+* **Artifacts**
+
+  * `language-guides/*/INSTRUMENTATION.md` per language
+  * `ci/verify-instrumentation.[ps1|sh]` to smoke-test signals
+* **Sources**: OTel Go 2025 goals. ([OpenTelemetry][8])
+
+## 5) Backend integrations & cost controls
+
+* **Tasks**
+
+  * Validate SigNoz ingest paths; define **sampling policy** (probabilistic, tail if applicable) at the Collector.
+  * Document cardinality budgets and aggregation strategies.
+* **Artifacts**
+
+  * `policies/SAMPLING_STRATEGY.md`
+  * `alerts/PIPELINE_HEALTH.yml`
+* **Sources**: Ecosystem posts on 2025 directions (use as directional input only). ([Grafana Labs][4])
+
+---
+
+# Research method & timeline (2 weeks, parallelizable)
+
+**Day 1–2: Baseline & inventory**
+
+* Capture current Collector config, SDK versions, and attribute usage.
+* Produce **component matrix** & **service attribute inventory**.
+
+**Day 3–5: Spec & SemConv alignment**
+
+* Map attributes → latest SemConv; write remap rules (processors).
+* Update dashboards/alerts to the new names.
+
+**Day 6–8: Pipeline hardening**
+
+* Upgrade to pinned Collector; test feature gates & metric name changes.
+* Load-test queues/exporters; set SLOs and alerts.
+
+**Day 9–10: Logs correlation & UX**
+
+* Validate logs→traces correlation paths; confirm in SigNoz.
+* Create “golden dashboards” for each signal.
+
+**Day 11–12: SDKs & auto-instr**
+
+* Pin SDK versions; bake smoke tests into CI.
+* Write per-language quick-starts.
+
+**Day 13–14: Review & handoff**
+
+* Finalize docs, rollback plan, and **decision log** with trade-offs.
+
+---
+
+# Evidence to collect (acceptance)
+
+* **SemConv report** showing all attribute migrations complete. ([OpenTelemetry][1])
+* **Collector validation**: runs on v0.13x with no deprecated components; receiverhelper metrics verified. ([OpenTelemetry][2])
+* **Logs↔Traces demo** in SigNoz with a reproducible script. ([OpenTelemetry][3])
+* **CI job** that fails on drift (SDK version/attribute mismatch).
+* **Runbook** for upgrades and rollbacks.
+
+---
+
+# Risks & watchlist
+
+* **Moving target SemConv** (RPC stabilization in progress; track the changelog). ([OpenTelemetry][5])
+* **Collector churn** (monthly releases; check breaking metric semantics). ([GitHub][9])
+* **Profiling maturity** (don’t over-commit until the pieces you need are GA). ([Dynatrace][7])
+
+---
+
+If you want, I can turn this into a ready-to-run checklist pack (`/docs/OTEL_RESEARCH/`) with the folder skeleton and starter markdowns in your repo.
+
+[1]: https://opentelemetry.io/docs/concepts/semantic-conventions/?utm_source=chatgpt.com "Semantic Conventions"
+[2]: https://opentelemetry.io/docs/collector/?utm_source=chatgpt.com "Collector"
+[3]: https://opentelemetry.io/docs/concepts/signals/logs/?utm_source=chatgpt.com "OpenTelemetry logs"
+[4]: https://grafana.com/blog/2025/01/07/opentelemetry-and-grafana-labs-whats-new-and-whats-next-in-2025/?utm_source=chatgpt.com "OpenTelemetry and Grafana Labs: what's new ..."
+[5]: https://opentelemetry.io/blog/2025/stabilizing-rpc-conventions/?utm_source=chatgpt.com "Announcing the RPC Semantic Conventions stabilization ..."
+[6]: https://opentelemetry.io/status/?utm_source=chatgpt.com "Status"
+[7]: https://www.dynatrace.com/news/blog/opentelemetry-trends-2025/?utm_source=chatgpt.com "Catching up with OpenTelemetry trends in 2025"
+[8]: https://opentelemetry.io/blog/2025/go-goals/?utm_source=chatgpt.com "OpenTelemetry Go 2025 Goals"
+[9]: https://github.com/open-telemetry/opentelemetry-collector/releases?utm_source=chatgpt.com "Releases · open-telemetry/opentelemetry-collector"

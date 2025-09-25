@@ -1,0 +1,22 @@
+{
+  "mode": "Cipher",
+  "goal": "Analyze security patterns and compliance requirements in codebase",
+  "inputs": {
+    "scope": "security analysis",
+    "focus": "vulnerability detection",
+    "compliance": "OWASP Top 10"
+  },
+  "guardrails": {
+    "browsing": false,
+    "maxTokens": 3000,
+    "humorGating": false
+  },
+  "budgets": {
+    "maxJobs": 1,
+    "maxFiles": 15,
+    "maxLines": 800,
+    "ttlMs": 900000,
+    "maxAttempts": 2,
+    "backoffMs": 15000
+  }
+}

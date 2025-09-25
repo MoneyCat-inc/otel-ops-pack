@@ -1,131 +1,106 @@
 # Test Canary Alert Script
-# Tests the canary alert by generating and then stopping canary logs
+# Generates canary logs and verifies alert conditions
 
 param(
-    [int]$TestDurationMinutes = 10,
-    [string]$OutputFile = "artifacts/canary-alert-test-results.json"
+    [switch]$GenerateCanary,
+    [switch]$StopCanary,
+    [switch]$TestAlert,
+    [int]$DurationMinutes = 10
 )
 
-Write-Host "=== Canary Alert Test ===" -ForegroundColor Green
-Write-Host "Test duration: $TestDurationMinutes minutes" -ForegroundColor Yellow
-
-# Ensure artifacts directory exists
-if (-not (Test-Path "artifacts")) {
-    New-Item -ItemType Directory -Path "artifacts" -Force
-}
+Write-Host "=== Canary Alert Test Script ===" -ForegroundColor Green
 
 # Ensure logs directory exists
 if (-not (Test-Path "C:\logs")) {
     New-Item -ItemType Directory -Path "C:\logs" -Force
 }
 
-try {
-    $testResults = @{
-        test_duration_minutes = $TestDurationMinutes
-        start_time = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
-        phases = @()
-    }
+if ($GenerateCanary) {
+    Write-Host "Generating canary logs for $DurationMinutes minutes..." -ForegroundColor Yellow
     
-    # Phase 1: Generate canary logs for first half of test
-    Write-Host "Phase 1: Generating canary logs..." -ForegroundColor Yellow
-    $phase1Start = Get-Date
-    $phase1End = $phase1Start.AddMinutes($TestDurationMinutes / 2)
+    $endTime = (Get-Date).AddMinutes($DurationMinutes)
+    $logCount = 0
     
-    $canaryCount = 0
-    while ((Get-Date) -lt $phase1End) {
+    while ((Get-Date) -lt $endTime) {
         # Create Windows Event Log entry
-        Write-EventLog -LogName Application -Source "WindowsCanary" -EventId 3001 -Message "windows-canary test event $canaryCount"
+        Write-EventLog -LogName Application -Source "WindowsCanary" -EventId 5001 -Message "windows-canary test $logCount - $(Get-Date)"
         
         # Create file log entry
         $logEntry = @{
             timestamp = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
-            message = "windows-canary test log $canaryCount"
+            message = "windows-canary test log $logCount - $(Get-Date)"
+            canary = "true"
+            canary_type = "windows"
             test_id = "canary-alert-test"
-            phase = "generation"
         } | ConvertTo-Json -Compress
         
         Add-Content -Path "C:\logs\windows-canary-test.json" -Value $logEntry
         
-        $canaryCount++
-        Start-Sleep -Seconds 30
-    }
-    
-    $testResults.phases += @{
-        name = "generation"
-        start_time = $phase1Start.ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
-        end_time = $phase1End.ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
-        canary_events_generated = $canaryCount
-    }
-    
-    Write-Host "Generated $canaryCount canary events" -ForegroundColor Green
-    
-    # Phase 2: Stop generating canary logs (should trigger alert)
-    Write-Host "Phase 2: Stopping canary logs (alert should trigger)..." -ForegroundColor Yellow
-    $phase2Start = Get-Date
-    $phase2End = $phase2Start.AddMinutes($TestDurationMinutes / 2)
-    
-    # Wait for alert to potentially trigger
-    while ((Get-Date) -lt $phase2End) {
-        Write-Host "Waiting for alert to trigger... (no canary logs being generated)" -ForegroundColor Yellow
-        Start-Sleep -Seconds 60
-    }
-    
-    $testResults.phases += @{
-        name = "alert_trigger"
-        start_time = $phase2Start.ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
-        end_time = $phase2End.ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
-        canary_events_generated = 0
-    }
-    
-    # Phase 3: Resume canary logs (should clear alert)
-    Write-Host "Phase 3: Resuming canary logs (alert should clear)..." -ForegroundColor Yellow
-    $phase3Start = Get-Date
-    $phase3End = $phase3Start.AddMinutes(2)
-    
-    $resumeCount = 0
-    while ((Get-Date) -lt $phase3End) {
-        # Create Windows Event Log entry
-        Write-EventLog -LogName Application -Source "WindowsCanary" -EventId 3001 -Message "windows-canary resume event $resumeCount"
+        $logCount++
+        Write-Host "Generated canary log $logCount" -ForegroundColor Cyan
         
-        # Create file log entry
-        $logEntry = @{
-            timestamp = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
-            message = "windows-canary resume log $resumeCount"
-            test_id = "canary-alert-test"
-            phase = "resume"
-        } | ConvertTo-Json -Compress
-        
-        Add-Content -Path "C:\logs\windows-canary-test.json" -Value $logEntry
-        
-        $resumeCount++
-        Start-Sleep -Seconds 30
+        Start-Sleep -Seconds 30  # Generate every 30 seconds
     }
     
-    $testResults.phases += @{
-        name = "resume"
-        start_time = $phase3Start.ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
-        end_time = $phase3End.ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
-        canary_events_generated = $resumeCount
+    Write-Host "Generated $logCount canary logs" -ForegroundColor Green
+}
+
+if ($StopCanary) {
+    Write-Host "Stopping canary log generation..." -ForegroundColor Yellow
+    
+    # Remove canary log file
+    if (Test-Path "C:\logs\windows-canary-test.json") {
+        Remove-Item "C:\logs\windows-canary-test.json" -Force
+        Write-Host "Removed canary log file" -ForegroundColor Green
     }
     
-    $testResults.end_time = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
-    $testResults.total_canary_events = $canaryCount + $resumeCount
+    Write-Host "Canary log generation stopped" -ForegroundColor Green
+}
+
+if ($TestAlert) {
+    Write-Host "Testing canary alert conditions..." -ForegroundColor Yellow
     
-    # Save results
-    $testResults | ConvertTo-Json -Depth 10 | Set-Content $OutputFile
-    Write-Host "Test results saved to: $OutputFile" -ForegroundColor Green
+    # Test SigNoz connectivity
+    try {
+        $response = Invoke-RestMethod -Uri "http://localhost:8080/api/v1/health" -Method Get -TimeoutSec 10
+        Write-Host "✓ SigNoz is accessible" -ForegroundColor Green
+    } catch {
+        Write-Warning "✗ SigNoz is not accessible: $($_.Exception.Message)"
+        return
+    }
     
-    # Display results
-    Write-Host "`n=== Test Results ===" -ForegroundColor Green
-    Write-Host "Total canary events generated: $($testResults.total_canary_events)" -ForegroundColor White
-    Write-Host "Generation phase: $canaryCount events" -ForegroundColor White
-    Write-Host "Resume phase: $resumeCount events" -ForegroundColor White
-    Write-Host "Alert trigger phase: 0 events (should trigger alert)" -ForegroundColor White
-    
-    Write-Host "`nCanary Alert Test completed!" -ForegroundColor Green
-    Write-Host "Check SigNoz UI → Alerts → Windows Canary Alert for alert status" -ForegroundColor Cyan
-    
-} catch {
-    Write-Error "Canary Alert Test failed: $($_.Exception.Message)"
-    exit 1
+    # Query for recent canary logs
+    try {
+        $query = "count(logs) where message contains 'windows-canary' and timestamp > now() - 5m"
+        $body = @{
+            query = $query
+            start = (Get-Date).AddMinutes(-5).ToString("yyyy-MM-ddTHH:mm:ssZ")
+            end = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ssZ")
+        } | ConvertTo-Json
+        
+        $response = Invoke-RestMethod -Uri "http://localhost:8080/api/v1/query_range" -Method Post -Body $body -ContentType "application/json" -TimeoutSec 30
+        
+        if ($response.data.result -and $response.data.result.Count -gt 0) {
+            $count = $response.data.result[0].values[-1][1]
+            Write-Host "✓ Found $count canary logs in last 5 minutes" -ForegroundColor Green
+            
+            if ([int]$count -eq 0) {
+                Write-Host "⚠️  ALERT CONDITION: No canary logs found - alert should trigger!" -ForegroundColor Red
+            } else {
+                Write-Host "✓ Canary logs present - no alert should trigger" -ForegroundColor Green
+            }
+        } else {
+            Write-Host "⚠️  No canary logs found in SigNoz - alert should trigger!" -ForegroundColor Red
+        }
+    } catch {
+        Write-Warning "Failed to query canary logs: $($_.Exception.Message)"
+    }
+}
+
+if (-not $GenerateCanary -and -not $StopCanary -and -not $TestAlert) {
+    Write-Host "Usage examples:" -ForegroundColor Yellow
+    Write-Host "  Generate canary logs: pwsh -File scripts/test-canary-alert.ps1 -GenerateCanary -DurationMinutes 10" -ForegroundColor White
+    Write-Host "  Stop canary logs: pwsh -File scripts/test-canary-alert.ps1 -StopCanary" -ForegroundColor White
+    Write-Host "  Test alert: pwsh -File scripts/test-canary-alert.ps1 -TestAlert" -ForegroundColor White
+    Write-Host "  Full test: pwsh -File scripts/test-canary-alert.ps1 -GenerateCanary -DurationMinutes 5; Start-Sleep 60; pwsh -File scripts/test-canary-alert.ps1 -TestAlert" -ForegroundColor White
 }

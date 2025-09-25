@@ -13,7 +13,7 @@ function New-DirIfMissing([string]$Path) {
     }
 }
 
-$Root = Split-Path -Parent $MyInvocation.MyCommand.Path
+$Root = Split-Path -Path -Parent $MyInvocation.MyCommand.Path
 $RepoRoot = Resolve-Path "$Root\.." | Select-Object -ExpandProperty Path
 $OutDir = Join-Path $RepoRoot "artifacts\bq_exports"
 $SqlDir = Join-Path $RepoRoot "sql"
@@ -85,3 +85,4 @@ Write-Host " - $closedCsv ($closedCount rows)"
 Write-Host " - $summaryFile"
 
 exit 0
+

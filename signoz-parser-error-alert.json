@@ -1,0 +1,32 @@
+{
+  "name": "JSON Parser Error Regression Alert",
+  "description": "Detects JSON parser errors in filelog processing to catch configuration regressions",
+  "type": "alert",
+  "query": {
+    "dataSource": "logs",
+    "queryType": "builder",
+    "filters": [
+      {
+        "key": "body",
+        "operator": "contains",
+        "value": "expected { character for map value"
+      },
+      {
+        "key": "severity_text",
+        "operator": "=",
+        "value": "ERROR"
+      }
+    ],
+    "timeRange": {
+      "from": "now-15m",
+      "to": "now"
+    }
+  },
+  "threshold": {
+    "operator": ">",
+    "value": 0
+  },
+  "evaluationWindow": "5m",
+  "notificationChannels": ["slack", "email"],
+  "tags": ["parser", "filelog", "regression", "critical"]
+}

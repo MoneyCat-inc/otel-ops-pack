@@ -1,0 +1,4 @@
+# Place your Teams/SMTP webhook URL on the first line of this file.
+# Example: https://contoso.webhook.office.com/... or smtp://localhost:2525/canary
+# This file is read by monitor-signoz-canary-remediate-wrapper.ps1 before remediation runs.
+# Do not commit secrets to source control; keep this file local-only.

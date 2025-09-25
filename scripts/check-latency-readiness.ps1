@@ -76,7 +76,7 @@ try {
 # Check 2: Collector health
 Write-Host "`n2. Checking collector health..." -ForegroundColor Cyan
 try {
-    $healthResponse = Invoke-RestMethod -Uri "$CollectorHealthEndpoint/healthz" -TimeoutSec 10
+    $healthResponse = Invoke-RestMethod -Uri "$CollectorHealthEndpoint" -TimeoutSec 10
     if ($healthResponse.status -in @("Serving", "Server available")) {
         Write-Host "[OK] Collector is healthy" -ForegroundColor Green
         $checks.collector = $true

@@ -64,6 +64,15 @@ Copy-Item config-hardened.yaml config.yaml -Force
 - SigNoz port 8080: `Test-NetConnection -ComputerName localhost -Port 8080`
 - Canary test: `.\canary-check.ps1`
 
+### ECRR Filing Safeguard
+- Purpose: keep guides/templates out of `docs/ECRR_REPORTS/` and restore them if swept in.
+- Restore exclusions and rebuild index/ledger:
+```powershell
+pwsh -NoLogo -NoProfile -File scripts\ecrr-exclusions.ps1 -Action Restore
+pwsh -NoLogo -NoProfile -File scripts\ecrr-manage.ps1 -Action RegenerateAll
+```
+- Note: `scripts/process-ecrr-reports.ps1` automatically runs the restore step before regenerating.
+
 ### Logs
 - Collector logs: Windows Event Logs
 - Agent logs: `.agent\state\results.jsonl`

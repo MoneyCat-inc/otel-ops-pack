@@ -31,6 +31,7 @@ export default tseslint.config(
       'third_party/**',
       'artifacts/**',
       '.agent/**',
+      'archive/**',
       'validation-evidence-*/**',
       'logs/**',
       'reports/**',

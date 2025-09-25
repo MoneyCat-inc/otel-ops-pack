@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<test-results xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="nunit_schema_2.5.xsd" name="Pester" total="3" errors="0" failures="3" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2025-09-24" time="12:07:03">
+  <environment user-domain="D-MONOLITH" os-version="10.0.26220" machine-name="D-MONOLITH" user="fubum" nunit-version="2.5.8.0" platform="Microsoft Windows 11 Pro|C:\WINDOWS|\Device\Harddisk1\Partition3" clr-version="" cwd="C:\otel" />
+  <culture-info current-culture="en-GB" current-uiculture="en-US" />
+  <test-suite type="Powershell" name="Pester" executed="True" result="Failure" success="False" time="25.0173" asserts="0">
+    <results>
+      <test-suite type="TestFixture" name="Latency measurements" executed="True" result="Failure" success="False" time="25.0173" asserts="0" description="Latency measurements">
+        <results>
+          <test-case description="Measures OTLP HTTP ingest latency" name="Latency measurements.Measures OTLP HTTP ingest latency" time="8.641" asserts="0" success="False" result="Failure" executed="True">
+            <failure>
+              <message>Expected: {True}
+But was:  {False}</message>
+              <stack-trace>at line: 90 in C:\otel\tests\Latency.Tests.ps1
+90:     ($r.seen) | Should Be $true
+</stack-trace>
+            </failure>
+          </test-case>
+          <test-case description="Measures filelog ingest latency" name="Latency measurements.Measures filelog ingest latency" time="8.2825" asserts="0" success="False" result="Failure" executed="True">
+            <failure>
+              <message>Expected: {True}
+But was:  {False}</message>
+              <stack-trace>at line: 96 in C:\otel\tests\Latency.Tests.ps1
+96:     ($r.seen) | Should Be $true
+</stack-trace>
+            </failure>
+          </test-case>
+          <test-case description="Measures Windows Event Log ingest latency" name="Latency measurements.Measures Windows Event Log ingest latency" time="8.0938" asserts="0" success="False" result="Failure" executed="True">
+            <failure>
+              <message>Expected: {True}
+But was:  {False}</message>
+              <stack-trace>at line: 102 in C:\otel\tests\Latency.Tests.ps1
+102:     ($r.seen) | Should Be $true
+</stack-trace>
+            </failure>
+          </test-case>
+        </results>
+      </test-suite>
+    </results>
+  </test-suite>
+</test-results>

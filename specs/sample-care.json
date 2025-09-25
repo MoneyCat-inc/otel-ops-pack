@@ -1,0 +1,22 @@
+{
+  "mode": "Care",
+  "goal": "Monitor system health and perform maintenance tasks",
+  "inputs": {
+    "monitoringTarget": "OTel pipeline",
+    "healthChecks": ["collector", "SigNoz", "wiring"],
+    "maintenanceType": "routine"
+  },
+  "guardrails": {
+    "browsing": false,
+    "maxTokens": 2500,
+    "humorGating": false
+  },
+  "budgets": {
+    "maxJobs": 3,
+    "maxFiles": 8,
+    "maxLines": 400,
+    "ttlMs": 180000,
+    "maxAttempts": 3,
+    "backoffMs": 5000
+  }
+}

@@ -7,6 +7,9 @@ param(
     [int]$CheckIntervalSeconds = 30
 )
 
+# Import shared spinner toolkit
+. (Join-Path $PSScriptRoot 'spinner-toolkit.ps1')
+
 function Write-ColorOutput {
     param(
         [string]$Message,

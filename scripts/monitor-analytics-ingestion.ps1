@@ -3,6 +3,7 @@
 
 Set-StrictMode -Version 2
 $ErrorActionPreference = "Stop"
+. (Join-Path $PSScriptRoot 'spinner-toolkit.ps1')
 
 Write-Host "=== Resonai Analytics Live Monitoring ===" -ForegroundColor Green
 
@@ -115,9 +116,13 @@ try {
         $iteration++
         $timestamp = Get-Date -Format "HH:mm:ss"
         
+        Clear-Spinner
         Write-Host "[$timestamp] Monitoring iteration $iteration" -ForegroundColor Cyan
         
-        # Get current analytics count
+        # Get current analytics count with thinking animation
+        Show-ThinkingAnimation -Message "Analyzing analytics data..." -AnimationType "Analytics" -DurationMs 200
+        Clear-Spinner
+        
         $currentCount = Get-AnalyticsCount -MinutesBack 2
         
         if ($currentCount -eq -1) {
@@ -145,6 +150,9 @@ try {
         $lastCount = $currentCount
         
         # Check if Resonai dev server is still running
+        Show-ThinkingAnimation -Message "Verifying Resonai API connectivity..." -AnimationType "Processing" -DurationMs 150
+        Clear-Spinner
+        
         try {
             $apiResponse = Invoke-RestMethod -Uri "http://localhost:3003/api/events" -Method GET -TimeoutSec 3
             Write-Info "Resonai API responding (buffer: $($apiResponse.total) events)"
@@ -153,8 +161,11 @@ try {
         }
         
         # Check OTel Collector health
+        Show-ThinkingAnimation -Message "Validating OTel Collector health..." -AnimationType "Health" -DurationMs 150
+        Clear-Spinner
+        
         try {
-            $healthResponse = Invoke-WebRequest -Uri "http://localhost:13134/healthz" -TimeoutSec 3
+            $healthResponse = Invoke-WebRequest -Uri "http://localhost:13134" -TimeoutSec 3
             if ($healthResponse.StatusCode -eq 200) {
                 Write-Info "OTel Collector healthy"
             }
@@ -163,7 +174,8 @@ try {
         }
         
         Write-Host ""
-        Start-Sleep -Seconds 10
+        Wait-WithSpinner -Seconds 10 -Message 'Waiting for next poll...' -AnimationType 'Analytics'
+        Write-Host ""
     }
 } catch {
     Write-Host "`nMonitoring stopped." -ForegroundColor Yellow
@@ -175,3 +187,8 @@ Write-Host "1. Open SigNoz UI: http://localhost:8080" -ForegroundColor White
 Write-Host "2. Go to Logs section" -ForegroundColor White
 Write-Host "3. Filter: attributes.dataset = `"resonai_analytics`"" -ForegroundColor White
 Write-Host "4. Set up alerts using docs/QUERY_RECIPES.md" -ForegroundColor White
+
+
+
+
+

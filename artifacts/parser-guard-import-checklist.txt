@@ -1,0 +1,22 @@
+# SigNoz Parser Guard Import Prep
+Generated: 2025-09-23 23:43:25
+
+Assets:
+- Saved view JSON: signoz-parser-error-view.json
+- Alert JSON: signoz-parser-error-alert.json
+- Helper script: scripts/signoz/install-parser-guard.ps1
+
+Usage:
+1. Run pwsh -File scripts/signoz/install-parser-guard.ps1
+2. In SigNoz UI -> Logs, use the JSON pasted into the Saved View editor and save as provided.
+3. In SigNoz UI -> Alerts, switch to JSON mode, paste the alert payload, then Save & Enable.
+
+Verification:
+- Logs filter: body contains "expected { character for map value"
+- Alert filter: severity_text = "ERROR" + body contains "expected { character"
+- Health check command: Invoke-RestMethod -Uri http://localhost:8080/api/v1/health
+
+Expected Outcome:
+- Saved view "JSON Parser Error Monitor" appears under Saved Views.
+- Alert "JSON Parser Error Regression Alert" listed in Alerts (enabled).
+- Query returns recent parser error logs when errors are present.

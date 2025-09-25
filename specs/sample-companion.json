@@ -1,0 +1,22 @@
+{
+  "mode": "Companion",
+  "goal": "Provide conversational assistance with appropriate humor and context awareness",
+  "inputs": {
+    "context": "developer assistance",
+    "topic": "code review",
+    "mood": "professional"
+  },
+  "guardrails": {
+    "browsing": false,
+    "maxTokens": 2000,
+    "humorGating": true
+  },
+  "budgets": {
+    "maxJobs": 1,
+    "maxFiles": 5,
+    "maxLines": 200,
+    "ttlMs": 300000,
+    "maxAttempts": 2,
+    "backoffMs": 5000
+  }
+}

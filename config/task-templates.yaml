@@ -1,0 +1,216 @@
+# ECRR Task Templates
+# Templates for auto-generating tasks based on report categories and labels
+
+templates:
+  # Security-related reports
+  security:
+    category: security
+    required_skills: ['security', 'compliance']
+    tasks:
+      - kind: analysis
+        title: "Triage security report: {{title}}"
+        description: "Confirm impact, affected components, PoC, and reproducer. Assess if this is a false positive or requires immediate action."
+        default_assignee: "sec-triage"
+        priority_boost: 2
+        sla_override: 24 # hours
+      - kind: fix
+        title: "Remediate security issue: {{title}}"
+        description: "Implement fix for identified security vulnerability. Coordinate with team leads for deployment."
+        default_assignee: "owner:component"
+        priority_boost: 1
+      - kind: validation
+        title: "Verify security fix: {{title}}"
+        description: "Test and validate that the security fix works correctly and doesn't introduce regressions."
+        default_assignee: "qa"
+        priority_boost: 0
+
+  # Performance-related reports
+  performance:
+    category: performance
+    required_skills: ['performance', 'monitoring']
+    tasks:
+      - kind: analysis
+        title: "Analyze performance issue: {{title}}"
+        description: "Investigate performance degradation, identify root cause, and assess impact on users."
+        default_assignee: "perf-team"
+        priority_boost: 1
+      - kind: fix
+        title: "Optimize performance: {{title}}"
+        description: "Implement performance optimizations based on analysis findings."
+        default_assignee: "owner:component"
+        priority_boost: 0
+
+  # Infrastructure-related reports
+  infrastructure:
+    category: infrastructure
+    required_skills: ['infrastructure', 'ops']
+    tasks:
+      - kind: analysis
+        title: "Investigate infrastructure issue: {{title}}"
+        description: "Assess infrastructure problem, check logs, and determine scope of impact."
+        default_assignee: "ops-team"
+        priority_boost: 1
+      - kind: fix
+        title: "Resolve infrastructure issue: {{title}}"
+        description: "Fix infrastructure problem and restore normal operations."
+        default_assignee: "ops-team"
+        priority_boost: 0
+      - kind: validation
+        title: "Verify infrastructure fix: {{title}}"
+        description: "Confirm infrastructure is stable and operating normally."
+        default_assignee: "ops-team"
+        priority_boost: 0
+
+  # Frontend-related reports
+  frontend:
+    category: frontend
+    required_skills: ['frontend', 'ui']
+    tasks:
+      - kind: analysis
+        title: "Analyze frontend issue: {{title}}"
+        description: "Investigate frontend problem, check browser compatibility, and assess user impact."
+        default_assignee: "frontend-team"
+        priority_boost: 1
+      - kind: fix
+        title: "Fix frontend issue: {{title}}"
+        description: "Implement frontend fix and ensure cross-browser compatibility."
+        default_assignee: "frontend-team"
+        priority_boost: 0
+
+  # Backend/API-related reports
+  backend:
+    category: backend
+    required_skills: ['backend', 'api']
+    tasks:
+      - kind: analysis
+        title: "Investigate backend issue: {{title}}"
+        description: "Analyze backend problem, check logs, and assess API impact."
+        default_assignee: "backend-team"
+        priority_boost: 1
+      - kind: fix
+        title: "Fix backend issue: {{title}}"
+        description: "Implement backend fix and ensure API stability."
+        default_assignee: "backend-team"
+        priority_boost: 0
+
+  # Data-related reports
+  data:
+    category: data
+    required_skills: ['data', 'analytics']
+    tasks:
+      - kind: analysis
+        title: "Analyze data issue: {{title}}"
+        description: "Investigate data problem, check data integrity, and assess impact on analytics."
+        default_assignee: "data-team"
+        priority_boost: 1
+      - kind: fix
+        title: "Fix data issue: {{title}}"
+        description: "Resolve data problem and ensure data quality."
+        default_assignee: "data-team"
+        priority_boost: 0
+
+  # Compliance-related reports
+  compliance:
+    category: compliance
+    required_skills: ['compliance', 'legal']
+    tasks:
+      - kind: analysis
+        title: "Assess compliance issue: {{title}}"
+        description: "Review compliance concern, check regulatory requirements, and assess risk level."
+        default_assignee: "compliance-team"
+        priority_boost: 3
+        sla_override: 12 # hours
+      - kind: fix
+        title: "Address compliance issue: {{title}}"
+        description: "Implement compliance fix and document resolution."
+        default_assignee: "compliance-team"
+        priority_boost: 2
+
+  # General/Unknown category
+  default:
+    category: general
+    required_skills: ['general']
+    tasks:
+      - kind: analysis
+        title: "Triage report: {{title}}"
+        description: "Analyze report, determine category, and assign to appropriate team."
+        default_assignee: "triage-team"
+        priority_boost: 0
+        sla_override: 48 # hours
+
+# Label-based task additions
+label_tasks:
+  customer-impact:
+    - kind: communication
+      title: "Notify customers about: {{title}}"
+      description: "Prepare customer communication about the issue and resolution timeline."
+      default_assignee: "customer-support"
+      priority_boost: 2
+
+  production:
+    - kind: monitoring
+      title: "Monitor production impact: {{title}}"
+      description: "Set up additional monitoring and alerting for production issue."
+      default_assignee: "sre"
+      priority_boost: 1
+
+  database:
+    - kind: backup
+      title: "Verify database backups: {{title}}"
+      description: "Ensure database backups are current and can be restored if needed."
+      default_assignee: "dba"
+      priority_boost: 1
+
+  api:
+    - kind: documentation
+      title: "Update API documentation: {{title}}"
+      description: "Update API documentation to reflect any changes made."
+      default_assignee: "tech-writer"
+      priority_boost: -1
+
+# Assignment overrides based on specific conditions
+assignment_overrides:
+  # High severity + security category
+  - condition:
+      severity: ['high', 'critical']
+      category: 'security'
+    assign_to: 'security-lead'
+    priority_boost: 2
+
+  # Customer impact + production
+  - condition:
+      labels: ['customer-impact', 'production']
+    assign_to: 'incident-commander'
+    priority_boost: 3
+
+  # Compliance issues
+  - condition:
+      labels: ['compliance']
+    assign_to: 'compliance-officer'
+    priority_boost: 3
+
+# SLA overrides based on category and severity
+sla_overrides:
+  security:
+    critical: 4   # hours
+    high: 12      # hours
+    medium: 24    # hours
+    low: 72       # hours
+
+  compliance:
+    critical: 2   # hours
+    high: 8       # hours
+    medium: 24    # hours
+    low: 72       # hours
+
+  production:
+    critical: 2   # hours
+    high: 8       # hours
+    medium: 24    # hours
+    low: 72       # hours
+
+  default:
+    critical: 8   # hours
+    high: 24      # hours
+    medium: 72    # hours
+    low: 168      # hours (1 week)

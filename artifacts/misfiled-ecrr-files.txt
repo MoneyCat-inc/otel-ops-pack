@@ -1,0 +1,17 @@
+﻿.agent/ECRR_FILING_NOTE.md
+artifacts/ecrr-disk-cleanup-assessment-20250923-030000.md
+artifacts/ecrr-generation-summary-20250923-224130.md
+artifacts/ecrr-generation-summary-20250923-224526.md
+artifacts/ecrr-generation-summary-20250923-234141.md
+docs/comfort-cat/HANDOFF_ECRR01_AND_LOGS.md
+docs/ECRR_REVIEW_REQUEST_SUMMARY.md
+E2_RATIO_SWEEP_ECRR_COMPLETE.md
+ECRR_GATE_SUMMARY.md
+ECRR_TASK_AUTOMATION_SYSTEM_COMPLETE.md
+third_party/resonai/docs/ECRR.md
+third_party/resonai/docs/ecrr/ECRR-01.md
+third_party/resonai/docs/ECRR_REPORT_TEMPLATE.md
+third_party/resonai/docs/ECRR_REPORTS/2025-09-20-ecrr-framework-setup.md
+third_party/resonai/docs/ECRR_REPORTS/2025-09-22-ECRR-01-FINAL-REPORT.md
+third_party/resonai/docs/ECRR_REPORTS/2025-09-22-ecrr-01-merge-signoff.md
+third_party/resonai/ECRR-01-SMOKE-TEST-RESULTS.md
