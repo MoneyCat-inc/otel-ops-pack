@@ -11,7 +11,7 @@ if (-not (Test-Path -LiteralPath $SourcePath)) {
 }
 
 New-Item -ItemType Directory -Force -Path $DestPath | Out-Null
-New-Item -ItemType Directory -Force -Path (Split-Path -Parent $ReportPath) | Out-Null
+New-Item -ItemType Directory -Force -Path (Split-Path -Path -Parent $ReportPath) | Out-Null
 
 $sourceRoot = (Resolve-Path -LiteralPath $SourcePath).Path
 $log = New-Object System.Collections.Generic.List[string]
@@ -19,7 +19,7 @@ $log = New-Object System.Collections.Generic.List[string]
 Get-ChildItem -LiteralPath $SourcePath -Recurse -File | ForEach-Object {
     $relative = $_.FullName.Substring($sourceRoot.Length).TrimStart('\\','/')
     $target = Join-Path -Path $DestPath -ChildPath $relative
-    $targetDir = Split-Path -Parent $target
+    $targetDir = Split-Path -Path -Parent $target
     New-Item -ItemType Directory -Force -Path $targetDir | Out-Null
 
     if (Test-Path -LiteralPath $target) {
@@ -53,5 +53,6 @@ $summary = [pscustomobject]@{
 }
 
 $summary | ConvertTo-Json -Depth 3 | Write-Output
+
 
 

@@ -2,7 +2,7 @@
 # PowerShell wrapper for gpu-metrics-emitter.py
 
 param(
-    [string]$OtlpEndpoint = "http://localhost:4317",
+    [string]$OtlpEndpoint = "localhost:4317",
     [int]$Duration = 300,
     [int]$Interval = 15,
     [switch]$Background,
@@ -65,25 +65,25 @@ function Start-GPUMetricsEmission {
     }
     
     # Build command arguments
-    $args = @(
+    $pyArgs = @(
         "--endpoint", $Endpoint,
         "--duration", $Duration,
         "--interval", $Interval
     )
     
     if ($NoFile) {
-        $args += "--no-file"
+        $pyArgs += "--no-file"
     }
     
     try {
         if ($Background) {
             Write-Log "Starting GPU metrics in background..." "INFO"
-            Start-Process -FilePath "python" -ArgumentList $pythonScript, $args -WindowStyle Hidden
+            Start-Process -FilePath "python" -ArgumentList $pythonScript, $pyArgs -WindowStyle Hidden
             Write-Log "GPU metrics started in background process" "INFO"
             return $true
         } else {
             Write-Log "Executing GPU metrics emission..." "INFO"
-            & python $pythonScript @args
+            & python $pythonScript @pyArgs
             $exitCode = $LASTEXITCODE
             
             if ($exitCode -eq 0) {

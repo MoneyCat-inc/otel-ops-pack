@@ -23,7 +23,7 @@ function Move-TaskFile {
         [string]$SourcePath,
         [string]$DestinationStatus
     )
-    $fileName = Split-Path $SourcePath -Leaf
+    $fileName = Split-Path -Path $SourcePath -Leaf
     $destPath = "$TaskQueuePath\$DestinationStatus\$fileName"
     Move-Item $SourcePath $destPath
     Write-Host "📁 Moved task to $DestinationStatus`: $fileName" -ForegroundColor Yellow
@@ -63,17 +63,17 @@ function Process-Task {
         
         if ($result.success) {
             $task.status = "completed"
-            Move-TaskFile "$TaskQueuePath\processing\$(Split-Path $TaskFile -Leaf)" "completed"
+            Move-TaskFile "$TaskQueuePath\processing\$(Split-Path -Path $TaskFile -Leaf)" "completed"
             Write-Host "✅ Task completed successfully" -ForegroundColor Green
         } else {
             $task.status = "failed"
             $task.error = $result.error
-            Move-TaskFile "$TaskQueuePath\processing\$(Split-Path $TaskFile -Leaf)" "failed"
+            Move-TaskFile "$TaskQueuePath\processing\$(Split-Path -Path $TaskFile -Leaf)" "failed"
             Write-Host "❌ Task failed: $($result.error)" -ForegroundColor Red
         }
         
         # Save updated task
-        $updatedTaskFile = "$TaskQueuePath\$($task.status)\$(Split-Path $TaskFile -Leaf)"
+        $updatedTaskFile = "$TaskQueuePath\$($task.status)\$(Split-Path -Path $TaskFile -Leaf)"
         $task | ConvertTo-Json -Depth 10 | Out-File -FilePath $updatedTaskFile -Encoding UTF8
         
     } catch {
@@ -287,3 +287,4 @@ while ($processedCount -lt $maxTasksInt) {
 }
 
 Write-Host "`n🤖 Codex Agent processing complete. Processed $processedCount tasks." -ForegroundColor Green
+

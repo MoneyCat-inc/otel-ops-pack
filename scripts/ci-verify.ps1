@@ -16,6 +16,7 @@ if ($CronMode) {
 
 # Initialize results
 $results = @{
+    "Merge Conflicts" = @{ Status = "UNKNOWN"; Details = @() }
     "Windows Collector" = @{ Status = "UNKNOWN"; Details = @() }
     "SigNoz Stack" = @{ Status = "UNKNOWN"; Details = @() }
     "Synthetic Dataset" = @{ Status = "UNKNOWN"; Details = @() }
@@ -77,6 +78,46 @@ function Write-Result {
     $color = if ($Status -eq "PASS") { "Green" } else { "Red" }
     Write-Host "  $Component`: $Status" -ForegroundColor $color
     if ($Details) { $Details | ForEach-Object { Write-Host "    $_" -ForegroundColor Gray } }
+}
+
+# 0. Merge Conflict Scan
+Write-Host "`n0. Checking Merge Conflicts..." -ForegroundColor Yellow
+try {
+    $conflictScript = Join-Path $PSScriptRoot "auto-resolve-conflicts.ps1"
+    if (-not (Test-Path $conflictScript)) {
+        Write-Result "Merge Conflicts" "SKIP" @("auto-resolve-conflicts.ps1 not found ??")
+    } else {
+        $repoRoot = Resolve-Path (Join-Path $PSScriptRoot "..");
+        $reportPath = Join-Path $repoRoot "artifacts/ci-conflict-scan.txt"
+        $reportDir = Split-Path $reportPath -Parent
+        if (-not (Test-Path $reportDir)) {
+            New-Item -Path $reportDir -ItemType Directory -Force | Out-Null
+        }
+        $pwshExe = (Get-Command pwsh -ErrorAction Stop).Source
+        & $pwshExe -NoLogo -NoProfile -File $conflictScript -Mode detect -ReportPath $reportPath -Quiet | Out-Null
+        $exitCode = $LASTEXITCODE
+        $summaryLines = @()
+        if (Test-Path $reportPath) {
+            $summaryLines = Get-Content -Path $reportPath -TotalCount 10
+        }
+        switch ($exitCode) {
+            0 {
+                Write-Result "Merge Conflicts" "PASS" @("No merge markers detected ?", "Report: $reportPath")
+            }
+            2 {
+                if ($summaryLines) {
+                    Write-Host "`nConflict scan summary:" -ForegroundColor Red
+                    $summaryLines | ForEach-Object { Write-Host "  $_" -ForegroundColor Red }
+                }
+                Write-Result "Merge Conflicts" "FAIL" @("Unresolved merge markers detected ??", "See $reportPath for details")
+            }
+            default {
+                Write-Result "Merge Conflicts" "FAIL" @("Conflict scan error (exit $exitCode) ??", "See $reportPath for details")
+            }
+        }
+    }
+} catch {
+    Write-Result "Merge Conflicts" "FAIL" @("Conflict scan error: $($_.Exception.Message)")
 }
 
 # 1. Windows Collector Verification

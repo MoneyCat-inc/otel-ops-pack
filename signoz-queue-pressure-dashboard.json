@@ -1,0 +1,291 @@
+{
+  "dashboard": {
+    "title": "OTel Queue Pressure Monitoring",
+    "description": "Comprehensive monitoring dashboard for OpenTelemetry collector queue pressure and performance",
+    "tags": ["otel", "queue", "pressure", "monitoring"],
+    "panels": [
+      {
+        "id": 1,
+        "title": "Queue Size vs Capacity",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+        "targets": [
+          {
+            "expr": "otelcol_exporter_queue_size",
+            "legendFormat": "Current Queue Size",
+            "refId": "A"
+          },
+          {
+            "expr": "otelcol_exporter_queue_capacity",
+            "legendFormat": "Queue Capacity",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "color": {"mode": "palette-classic"},
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "yellow", "value": 0.7},
+                {"color": "red", "value": 0.9}
+              ]
+            }
+          }
+        },
+        "options": {
+          "legend": {"displayMode": "visible", "placement": "bottom"}
+        }
+      },
+      {
+        "id": 2,
+        "title": "Queue Utilization %",
+        "type": "stat",
+        "gridPos": {"h": 4, "w": 6, "x": 12, "y": 0},
+        "targets": [
+          {
+            "expr": "(otelcol_exporter_queue_size / otelcol_exporter_queue_capacity) * 100",
+            "legendFormat": "Queue Utilization %",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "color": {"mode": "thresholds"},
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "yellow", "value": 70},
+                {"color": "red", "value": 90}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 3,
+        "title": "Enqueue Failures",
+        "type": "stat",
+        "gridPos": {"h": 4, "w": 6, "x": 18, "y": 0},
+        "targets": [
+          {
+            "expr": "rate(otelcol_exporter_enqueue_failed_log_records[5m]) + rate(otelcol_exporter_enqueue_failed_metric_points[5m])",
+            "legendFormat": "Enqueue Failures/sec",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "reqps",
+            "color": {"mode": "thresholds"},
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "yellow", "value": 1},
+                {"color": "red", "value": 10}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 4,
+        "title": "Batch Processing Performance",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8},
+        "targets": [
+          {
+            "expr": "rate(otelcol_processor_batch_batch_size_trigger_send[5m])",
+            "legendFormat": "Batch Size Triggers/sec",
+            "refId": "A"
+          },
+          {
+            "expr": "rate(otelcol_processor_batch_timeout_trigger_send[5m])",
+            "legendFormat": "Timeout Triggers/sec",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "reqps",
+            "color": {"mode": "palette-classic"}
+          }
+        }
+      },
+      {
+        "id": 5,
+        "title": "Send Success Rate",
+        "type": "stat",
+        "gridPos": {"h": 4, "w": 6, "x": 12, "y": 8},
+        "targets": [
+          {
+            "expr": "(rate(otelcol_exporter_sent_log_records[5m]) + rate(otelcol_exporter_sent_metric_points[5m])) / (rate(otelcol_exporter_sent_log_records[5m]) + rate(otelcol_exporter_sent_metric_points[5m]) + rate(otelcol_exporter_send_failed_log_records[5m]) + rate(otelcol_exporter_send_failed_metric_points[5m])) * 100",
+            "legendFormat": "Success Rate %",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "color": {"mode": "thresholds"},
+            "thresholds": {
+              "steps": [
+                {"color": "red", "value": null},
+                {"color": "yellow", "value": 95},
+                {"color": "green", "value": 99}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 6,
+        "title": "Memory Pressure",
+        "type": "stat",
+        "gridPos": {"h": 4, "w": 6, "x": 18, "y": 8},
+        "targets": [
+          {
+            "expr": "otelcol_process_memory_rss / 1024 / 1024",
+            "legendFormat": "Memory Usage (MB)",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "MB",
+            "color": {"mode": "thresholds"},
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "yellow", "value": 512},
+                {"color": "red", "value": 1024}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 7,
+        "title": "Queue Pressure Heatmap",
+        "type": "heatmap",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 16},
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(otelcol_processor_batch_batch_send_size.bucket[5m]))",
+            "legendFormat": "P95 Batch Size",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "color": {"mode": "palette-classic"}
+          }
+        }
+      },
+      {
+        "id": 8,
+        "title": "Queue Health Status",
+        "type": "table",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 16},
+        "targets": [
+          {
+            "expr": "otelcol_exporter_queue_size",
+            "legendFormat": "Queue Size",
+            "refId": "A"
+          },
+          {
+            "expr": "otelcol_exporter_queue_capacity",
+            "legendFormat": "Queue Capacity",
+            "refId": "B"
+          },
+          {
+            "expr": "(otelcol_exporter_queue_size / otelcol_exporter_queue_capacity) * 100",
+            "legendFormat": "Utilization %",
+            "refId": "C"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "color": {"mode": "thresholds"}
+          }
+        },
+        "options": {
+          "showHeader": true,
+          "sortBy": [{"desc": true, "displayName": "Utilization %"}]
+        }
+      }
+    ],
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "refresh": "30s",
+    "schemaVersion": 27,
+    "version": 1
+  },
+  "alerts": [
+    {
+      "name": "High Queue Utilization",
+      "condition": "queue_utilization > 90",
+      "query": "(otelcol_exporter_queue_size / otelcol_exporter_queue_capacity) * 100",
+      "evaluation_window": "5m",
+      "severity": "critical",
+      "description": "Queue utilization exceeds 90% for 5 minutes"
+    },
+    {
+      "name": "Queue Enqueue Failures",
+      "condition": "enqueue_failures > 0",
+      "query": "rate(otelcol_exporter_enqueue_failed_log_records[5m]) + rate(otelcol_exporter_enqueue_failed_metric_points[5m])",
+      "evaluation_window": "2m",
+      "severity": "warning",
+      "description": "Enqueue failures detected in the last 2 minutes"
+    },
+    {
+      "name": "Low Send Success Rate",
+      "condition": "success_rate < 95",
+      "query": "(rate(otelcol_exporter_sent_log_records[5m]) + rate(otelcol_exporter_sent_metric_points[5m])) / (rate(otelcol_exporter_sent_log_records[5m]) + rate(otelcol_exporter_sent_metric_points[5m]) + rate(otelcol_exporter_send_failed_log_records[5m]) + rate(otelcol_exporter_send_failed_metric_points[5m])) * 100",
+      "evaluation_window": "5m",
+      "severity": "warning",
+      "description": "Send success rate below 95% for 5 minutes"
+    },
+    {
+      "name": "High Memory Usage",
+      "condition": "memory_usage > 1024",
+      "query": "otelcol_process_memory_rss / 1024 / 1024",
+      "evaluation_window": "5m",
+      "severity": "warning",
+      "description": "Memory usage exceeds 1GB for 5 minutes"
+    }
+  ],
+  "instructions": {
+    "import": [
+      "1. Navigate to SigNoz UI → Dashboards → New Dashboard",
+      "2. Name the dashboard: 'OTel Queue Pressure Monitoring'",
+      "3. Add each panel using the queries provided above",
+      "4. Set appropriate time ranges and refresh intervals",
+      "5. Configure alerts using the provided alert configurations",
+      "6. Save the dashboard"
+    ],
+    "copy_paste_queries": [
+      "otelcol_exporter_queue_size",
+      "otelcol_exporter_queue_capacity",
+      "(otelcol_exporter_queue_size / otelcol_exporter_queue_capacity) * 100",
+      "rate(otelcol_exporter_enqueue_failed_log_records[5m]) + rate(otelcol_exporter_enqueue_failed_metric_points[5m])",
+      "rate(otelcol_processor_batch_batch_size_trigger_send[5m])",
+      "rate(otelcol_processor_batch_timeout_trigger_send[5m])",
+      "otelcol_process_memory_rss / 1024 / 1024"
+    ],
+    "key_metrics_explanation": {
+      "otelcol_exporter_queue_size": "Current number of items waiting in the export queue",
+      "otelcol_exporter_queue_capacity": "Maximum capacity of the export queue",
+      "otelcol_exporter_enqueue_failed_*": "Number of items that failed to be added to the queue",
+      "otelcol_exporter_send_failed_*": "Number of items that failed to be sent from the queue",
+      "otelcol_processor_batch_*": "Batch processor metrics showing batching efficiency",
+      "otelcol_process_memory_rss": "Resident memory usage of the collector process"
+    }
+  }
+}

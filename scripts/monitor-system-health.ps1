@@ -7,6 +7,9 @@ param(
     [switch]$ExportToArtifacts = $true
 )
 
+# Import shared spinner toolkit
+. (Join-Path $PSScriptRoot 'spinner-toolkit.ps1')
+
 $ErrorActionPreference = "Continue"
 $StartTime = Get-Date
 $ArtifactPath = "artifacts/system-health-$(Get-Date -Format 'yyyyMMdd-HHmmss').json"
@@ -15,9 +18,11 @@ Write-Host "🔍 Monitoring system health for $DurationMinutes minutes..." -Fore
 Write-Host "  SigNoz endpoint: $SignozEndpoint" -ForegroundColor Blue
 
 # Create artifacts directory
+Show-Spinner -Message "Setting up monitoring environment..." -AnimationType "System"
 if (!(Test-Path "artifacts")) {
     New-Item -ItemType Directory -Path "artifacts" -Force | Out-Null
 }
+Clear-Spinner
 
 $HealthMetrics = @{
     Timestamp = $StartTime

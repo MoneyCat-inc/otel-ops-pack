@@ -75,7 +75,7 @@ if (-not (Test-Path $baselineFile)) {
         }
     }
     
-    $baselineDir = Split-Path $baselineFile -Parent
+    $baselineDir = Split-Path -Path $baselineFile -Parent
     if (-not (Test-Path $baselineDir)) {
         New-Item -ItemType Directory -Path $baselineDir -Force | Out-Null
     }
@@ -209,3 +209,4 @@ Write-Host "  # Manage baselines" -ForegroundColor White
 Write-Host "  pwsh -File scripts/manage-latency-baselines.ps1 -Action list" -ForegroundColor Gray
 
 Write-Host "`n[OK] Enhanced latency test example completed!" -ForegroundColor Green
+

@@ -1,0 +1,30 @@
+{
+  "name": "JSON Parser Error Monitor",
+  "description": "Saved view for monitoring JSON parser errors in real-time",
+  "type": "saved_view",
+  "query": {
+    "dataSource": "logs",
+    "queryType": "builder",
+    "filters": [
+      {
+        "key": "body",
+        "operator": "contains",
+        "value": "expected { character for map value"
+      }
+    ],
+    "timeRange": {
+      "from": "now-1h",
+      "to": "now"
+    }
+  },
+  "columns": [
+    "timestamp",
+    "severity_text",
+    "body",
+    "attributes_string",
+    "log.file.path"
+  ],
+  "sortBy": "timestamp",
+  "sortOrder": "desc",
+  "tags": ["parser", "filelog", "monitoring"]
+}

@@ -1,122 +1,133 @@
-#Requires -Version 7.0
-<#!
-.SYNOPSIS
-  Prune stale artifacts and logs with a dry-run by default (ECRR-compliant).
-
-.DESCRIPTION
-  Scans common output directories under C:\otel (artifacts, logs) and proposes deletions
-  based on age and patterns. Produces a JSON report in artifacts/ with actions taken or proposed.
-
-.PARAMETER Days
-  Age threshold in days. Files older than this are selected. Default: 14
-
-.PARAMETER IncludeLogs
-  Also include items under logs/. Default: false
-
-.PARAMETER Force
-  Execute deletions (not just dry-run). Default: false
-
-.EXAMPLE
-  pwsh -File scripts/cleanup-artifacts.ps1 -Days 7
-
-.EXAMPLE
-  pwsh -File scripts/cleanup-artifacts.ps1 -Days 30 -IncludeLogs -Force
-
-.NOTES
-  ECRR: Examine -> Clean -> Report -> Role
-  - Examine: inventory current files and sizes
-  - Clean: delete only when -Force is provided
-  - Report: write artifacts/cleanup-report-<timestamp>.json
-  - Role: Cursor Agent — Observability Copilot
-#>
+# OTel Artifacts Cleanup Script
+# ECRR Compliant: Examine → Clean → Report → Role
 
 param(
-  [int]$Days = 14,
-  [switch]$IncludeLogs,
-  [switch]$Force
+    [int]$RetentionDays = 7,
+    [switch]$IncludeLogs,
+    [switch]$Force,
+    [string]$ReportPath = "artifacts/cleanup-report.json"
 )
 
-$ErrorActionPreference = 'Stop'
-
-function New-Timestamp {
-  Get-Date -Format 'yyyyMMdd-HHmmss'
+# ECRR: Examine - Capture current state
+$examineStart = Get-Date
+$artifactsPath = Join-Path $PSScriptRoot "..\artifacts"
+$cleanupReport = @{
+    timestamp = $examineStart.ToString("yyyy-MM-dd HH:mm:ss")
+    retention_days = $RetentionDays
+    artifacts_path = $artifactsPath
+    examine = @{}
+    clean = @{}
+    report = @{}
+    role = "OTel Artifacts Cleanup Script"
 }
 
-function Write-Color($Message, [ConsoleColor]$Color = [ConsoleColor]::Gray) {
-  $orig = $Host.UI.RawUI.ForegroundColor
-  $Host.UI.RawUI.ForegroundColor = $Color
-  Write-Host $Message
-  $Host.UI.RawUI.ForegroundColor = $orig
+Write-Host "🔍 ECRR Examine: Analyzing artifacts directory..." -ForegroundColor Cyan
+
+if (-not (Test-Path $artifactsPath)) {
+    Write-Host "✅ No artifacts directory found - nothing to clean" -ForegroundColor Green
+    $cleanupReport.examine.directory_exists = $false
+    $cleanupReport.clean.files_removed = 0
+    $cleanupReport.clean.space_freed_gb = 0
+    $cleanupReport | ConvertTo-Json -Depth 3 | Out-File -FilePath $ReportPath -Encoding UTF8
+    exit 0
 }
 
-# Examine
-$root = Split-Path -Parent $MyInvocation.MyCommand.Path
-$repo = Resolve-Path (Join-Path $root '..')
-Set-Location $repo
+# Analyze current artifacts
+$allFiles = Get-ChildItem $artifactsPath -Recurse -File
+$cutoff = (Get-Date).AddDays(-$RetentionDays)
+$oldFiles = $allFiles | Where-Object { $_.LastWriteTime -lt $cutoff }
 
-$targets = @('artifacts')
-if ($IncludeLogs) { $targets += 'logs' }
-
-$ageThreshold = (Get-Date).AddDays(-$Days)
-$selected = @()
-
-foreach ($dir in $targets) {
-  $path = Join-Path $repo $dir
-  if (-not (Test-Path $path)) { continue }
-  Get-ChildItem -Path $path -Recurse -File -ErrorAction SilentlyContinue |
-    Where-Object { $_.LastWriteTime -lt $ageThreshold } |
-    ForEach-Object {
-      $selected += [pscustomobject]@{
-        path = $_.FullName
-        size_bytes = $_.Length
-        last_write = $_.LastWriteTime
-        target_dir = $dir
-      }
-    }
+$cleanupReport.examine = @{
+    total_files = $allFiles.Count
+    total_size_gb = [math]::Round(($allFiles | Measure-Object Length -Sum).Sum / 1GB, 2)
+    files_to_remove = $oldFiles.Count
+    space_to_free_gb = [math]::Round(($oldFiles | Measure-Object Length -Sum).Sum / 1GB, 2)
+    cutoff_date = $cutoff.ToString("yyyy-MM-dd HH:mm:ss")
 }
 
-$totalBytes = ($selected | Measure-Object -Property size_bytes -Sum).Sum
-$humanSize = if ($totalBytes -ge 1GB) { '{0:N2} GB' -f ($totalBytes/1GB) } elseif ($totalBytes -ge 1MB) { '{0:N2} MB' -f ($totalBytes/1MB) } elseif ($totalBytes -ge 1KB) { '{0:N2} KB' -f ($totalBytes/1KB) } else { '{0} B' -f $totalBytes }
+Write-Host "📊 Found $($allFiles.Count) files ($($cleanupReport.examine.total_size_gb) GB total)" -ForegroundColor Yellow
+Write-Host "🗑️  $($oldFiles.Count) files older than $RetentionDays days ($($cleanupReport.examine.space_to_free_gb) GB)" -ForegroundColor Yellow
 
-Write-Color "Found $($selected.Count) files older than $Days days (~$humanSize)." ([ConsoleColor]::Yellow)
+if ($oldFiles.Count -eq 0) {
+    Write-Host "✅ No files need cleanup" -ForegroundColor Green
+    $cleanupReport.clean.files_removed = 0
+    $cleanupReport.clean.space_freed_gb = 0
+    $cleanupReport | ConvertTo-Json -Depth 3 | Out-File -FilePath $ReportPath -Encoding UTF8
+    exit 0
+}
 
-# Clean (optional)
-$deleted = @()
-if ($Force) {
-  foreach ($item in $selected) {
-    try {
-      Remove-Item -LiteralPath $item.path -Force -ErrorAction Stop
-      $deleted += $item
-    } catch {
-      Write-Color "Failed to delete: $($item.path) -> $($_.Exception.Message)" ([ConsoleColor]::Red)
-    }
-  }
-  Write-Color "Deleted $($deleted.Count) files." ([ConsoleColor]::Green)
+# ECRR: Clean - Remove old files
+if (-not $Force) {
+    Write-Host "⚠️  Use -Force to actually remove files (dry run mode)" -ForegroundColor Yellow
+    $cleanupReport.clean.mode = "dry_run"
+    $cleanupReport.clean.files_removed = 0
+    $cleanupReport.clean.space_freed_gb = 0
 } else {
-  Write-Color 'Dry-run mode: no files deleted. Use -Force to apply.' ([ConsoleColor]::Cyan)
+    Write-Host "🧹 ECRR Clean: Removing old artifacts..." -ForegroundColor Cyan
+    
+    # Create backup archive if significant space will be freed
+    if ($cleanupReport.examine.space_to_free_gb -gt 0.1) {
+        $backupPath = Join-Path $artifactsPath "..\cleanup-backup"
+        New-Item -ItemType Directory -Path $backupPath -Force | Out-Null
+        $backupFile = Join-Path $backupPath ("artifacts-backup-" + (Get-Date -Format 'yyyyMMdd-HHmm') + ".zip")
+        
+        try {
+            Compress-Archive -Path $oldFiles.FullName -DestinationPath $backupFile -CompressionLevel Optimal
+            Write-Host "📦 Created backup: $backupFile" -ForegroundColor Green
+            $cleanupReport.clean.backup_created = $backupFile
+        } catch {
+            Write-Host "⚠️  Backup creation failed: $($_.Exception.Message)" -ForegroundColor Yellow
+        }
+    }
+    
+    # Remove old files
+    $removedCount = 0
+    $removedSize = 0
+    
+    foreach ($file in $oldFiles) {
+        try {
+            $removedSize += $file.Length
+            Remove-Item $file.FullName -Force
+            $removedCount++
+            
+            if ($removedCount % 10 -eq 0) {
+                Write-Host "⠋ Removed $removedCount files..." -NoNewline -ForegroundColor Cyan
+            }
+        } catch {
+            Write-Host "⚠️  Failed to remove $($file.FullName): $($_.Exception.Message)" -ForegroundColor Yellow
+        }
+    }
+    
+    Write-Host "`r✅ Removed $removedCount files" -ForegroundColor Green
+    
+    $cleanupReport.clean = @{
+        mode = "cleanup"
+        files_removed = $removedCount
+        space_freed_gb = [math]::Round($removedSize / 1GB, 2)
+        backup_created = $cleanupReport.clean.backup_created
+    }
 }
 
-# Report
-$artifactDir = Join-Path $repo 'artifacts'
-if (-not (Test-Path $artifactDir)) { New-Item -ItemType Directory -Path $artifactDir | Out-Null }
-
-$report = [pscustomobject]@{
-  timestamp = (Get-Date).ToString('o')
-  actor = 'Cursor Agent — Observability Copilot'
-  days_threshold = $Days
-  include_logs = [bool]$IncludeLogs
-  force = [bool]$Force
-  total_candidates = $selected.Count
-  total_size_bytes = $totalBytes
-  deleted_count = $deleted.Count
-  candidates = $selected
-  deleted = $deleted
+# ECRR: Report - Generate artifacts
+$cleanupReport.report = @{
+    report_path = $ReportPath
+    execution_time_seconds = [math]::Round(((Get-Date) - $examineStart).TotalSeconds, 2)
+    success = $true
 }
 
-$reportPath = Join-Path $artifactDir ("cleanup-report-{0}.json" -f (New-Timestamp))
-$report | ConvertTo-Json -Depth 5 | Set-Content -Path $reportPath -Encoding UTF8
+# Ensure artifacts directory exists for report
+$reportDir = Split-Path $ReportPath -Parent
+if (-not (Test-Path $reportDir)) {
+    New-Item -ItemType Directory -Path $reportDir -Force | Out-Null
+}
 
-Write-Color "Report written: $reportPath" ([ConsoleColor]::White)
+$cleanupReport | ConvertTo-Json -Depth 3 | Out-File -FilePath $ReportPath -Encoding UTF8
 
-# Verify hint
-Write-Host "Verification: `(Get-Content $reportPath | ConvertFrom-Json).total_candidates` should be >= 0"
+Write-Host "📝 ECRR Report: Cleanup report saved to $ReportPath" -ForegroundColor Green
+Write-Host "🎭 ECRR Role: $($cleanupReport.role)" -ForegroundColor Magenta
+
+# Summary
+Write-Host "`n=== CLEANUP SUMMARY ===" -ForegroundColor Cyan
+Write-Host "Files removed: $($cleanupReport.clean.files_removed)" -ForegroundColor White
+Write-Host "Space freed: $($cleanupReport.clean.space_freed_gb) GB" -ForegroundColor White
+Write-Host "Execution time: $($cleanupReport.report.execution_time_seconds) seconds" -ForegroundColor White

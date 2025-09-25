@@ -92,7 +92,7 @@ function main() {
   writeIndexMd(reports);
   writeIndexJson(reports);
   writeLatestMd(reports);
-  console.info(`Indexed ${reports.length} ECRR reports.`);
+  console.log(`Indexed ${reports.length} ECRR reports.`);
 }
 
 main();

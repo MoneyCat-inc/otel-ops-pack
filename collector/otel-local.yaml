@@ -11,12 +11,12 @@ receivers:
       - System
   filelog:
     include:
-      - C:\logs\**\*.log
+      - C:/logs/**/*.log
 processors:
   batch: {}
 exporters:
   otlp:
-    endpoint: http://localhost:4317
+    endpoint: localhost:4317
     tls:
       insecure: true
 service:

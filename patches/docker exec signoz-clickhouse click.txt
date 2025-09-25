@@ -1,0 +1,2 @@
+docker exec signoz-clickhouse clickhouse-client --query "SELECT count() FROM signoz_metrics.samples_v2 WHERE toDateTime(timestamp_ms/1000) > now() - INTERVAL 2 MINUTE;"
+docker exec signoz-clickhouse clickhouse-client --query "SELECT metric_name, max(toDateTime(timestamp_ms/1000)) AS last_ts FROM signoz_metrics.samples_v2 WHERE metric_name 

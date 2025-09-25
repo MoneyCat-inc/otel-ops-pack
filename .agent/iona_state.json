@@ -1,0 +1,15 @@
+{
+  "updatedAt": "2025-09-24T21:41:17.3344731+01:00",
+  "runner": {
+    "status": "running",
+    "activeJobs": [],
+    "lastHeartbeat": 1758746477334
+  },
+  "version": 1,
+  "statistics": {
+    "successfulJobs": 5,
+    "terminatedJobs": 0,
+    "failedJobs": 0,
+    "totalJobs": 0
+  }
+}

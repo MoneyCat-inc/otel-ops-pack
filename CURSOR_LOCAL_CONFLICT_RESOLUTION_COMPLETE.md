@@ -98,12 +98,9 @@ The system activates when any of these conditions are met:
 ### Documentation Conflicts
 **Common Pattern**: Different phrasing for same concept
 **Example Conflict**:
-```
-<<<<<<< feature-branch
-- **Weekly:** `setup-weekly-audit.ps1` → automated evidence trail (hands-off); run `make-audit-pack.ps1` on-demand for manual capture
-=======
-- **Weekly:** `setup-weekly-audit.ps1` → automated evidence trail; run `make-audit-pack.ps1` on-demand if you need a manual capture
->>>>>>> main
+```diff
+- [feature-branch] **Weekly:** `setup-weekly-audit.ps1` → automated evidence trail (hands-off); run `make-audit-pack.ps1` on-demand for manual capture
++ [main]          **Weekly:** `setup-weekly-audit.ps1` → automated evidence trail; run `make-audit-pack.ps1` on-demand if you need a manual capture
 ```
 
 **Canonical Resolution**:
@@ -173,11 +170,8 @@ We're normalizing wording in the **Periodic Maintenance** section. Preserve auto
 
 ### Conflict hunk
 ```diff
-<<<<<<< feature-branch
-- **Weekly:** `setup-weekly-audit.ps1` → automated evidence trail (hands-off); run `make-audit-pack.ps1` on-demand for manual capture
-=======
-- **Weekly:** `setup-weekly-audit.ps1` → automated evidence trail; run `make-audit-pack.ps1` on-demand if you need a manual capture
->>>>>>> main
+- [feature-branch] **Weekly:** `setup-weekly-audit.ps1` → automated evidence trail (hands-off); run `make-audit-pack.ps1` on-demand for manual capture
++ [main]          **Weekly:** `setup-weekly-audit.ps1` → automated evidence trail; run `make-audit-pack.ps1` on-demand if you need a manual capture
 ```
 
 ### Canonical resolution (apply exactly)

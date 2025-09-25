@@ -65,6 +65,7 @@ Your mandate: **implement scoped tasks** (monitoring, dashboards, alerts, agent 
 - `config.yaml` — Main collector configuration
 - `docker-compose.yml` — SigNoz stack
 - `scripts/verify-canary.ps1` — Canary test script
+- `scripts/spinner-toolkit.ps1` — Shared progress animation toolkit
 - `.agent/` — Agent system files
 
 ---
@@ -84,6 +85,47 @@ pwsh -File scripts/agent/health-gate.ps1
 # Collector management
 pwsh -File scripts/restart-collector.ps1
 pwsh -File scripts/safe-apply-config.ps1
+```
+
+## 🎨 Progress Animation Standards
+
+**For all long-running operations, use the shared spinner toolkit:**
+
+```powershell
+# Import the toolkit
+. (Join-Path $PSScriptRoot 'spinner-toolkit.ps1')
+
+# Basic spinner
+Show-Spinner -Message "Processing..." -AnimationType "Processing"
+
+# Wait with progress
+Wait-WithSpinner -Seconds 10 -Message "Waiting for service restart" -AnimationType "Health"
+
+# Progress bar
+Show-ProgressBar -Current $current -Total $total -Message "Processing items" -AnimationType "Analytics"
+
+# Clean completion
+Clear-Spinner
+Show-CompletionMessage -Message "Complete!" -Details "Processed 150 items"
+```
+
+**Available Animation Types:**
+- `Thinking` - General processing
+- `Loading` - File operations
+- `Processing` - System operations
+- `Analytics` - Data processing
+- `Health` - Health checks
+- `File` - File operations
+- `Bot` - Auto-bot operations
+- `Networking` - Network operations
+- `Database` - Database operations
+- `Security` - Security operations
+
+**All scripts should include this documentation snippet:**
+```powershell
+# NOTES: For long-running operations, this script uses the shared spinner toolkit:
+# . (Join-Path $PSScriptRoot 'spinner-toolkit.ps1')
+# Use Show-Spinner, Wait-WithSpinner, or Show-ProgressBar for consistent UX.
 ```
 
 ---

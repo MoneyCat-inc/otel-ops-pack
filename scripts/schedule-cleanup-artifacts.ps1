@@ -41,7 +41,7 @@ param(
 $ErrorActionPreference = 'Stop'
 
 $taskName = 'OTel-Artifacts-Cleanup'
-$repoRoot = Resolve-Path (Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) '..')
+$repoRoot = Resolve-Path (Join-Path (Split-Path -Path -Parent $MyInvocation.MyCommand.Path) '..')
 $scriptPath = Join-Path $repoRoot 'scripts/cleanup-artifacts.ps1'
 if (-not (Test-Path $scriptPath)) { throw "Missing script: $scriptPath" }
 
@@ -69,3 +69,4 @@ Write-Host ("Scheduled task '{0}' set for {1} at {2:D2}:{3:D2} (Days={4}, Includ
 
 # Verification hints
 Get-ScheduledTask -TaskName $taskName | Get-ScheduledTaskInfo | Format-List *
+

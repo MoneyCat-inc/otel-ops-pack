@@ -1,0 +1,119 @@
+[CmdletBinding()]
+param(
+    [string]$Drive = 'C:',
+    [ValidateRange(5, 99)]
+    [int]$WarningPercent = 80,
+    [ValidateRange(10, 100)]
+    [int]$CriticalPercent = 90,
+    [string]$LogDirectory = 'C:/logs/disk-monitor',
+    [switch]$DisableEventLog,
+    [switch]$AutoCleanup,
+    [string]$CleanupScriptPath = (Join-Path $PSScriptRoot 'disk-cleanup-audit.ps1')
+)
+
+Set-StrictMode -Version 2
+$ErrorActionPreference = 'Stop'
+
+# Import shared spinner toolkit
+. (Join-Path $PSScriptRoot 'spinner-toolkit.ps1')
+
+function Write-Info { param([string]$Message) Write-Host "[DiskMonitor] $Message" -ForegroundColor Cyan }
+function Write-Warn { param([string]$Message) Write-Host "[DiskMonitor] $Message" -ForegroundColor Yellow }
+function Write-ErrorMsg { param([string]$Message) Write-Host "[DiskMonitor] $Message" -ForegroundColor Red }
+
+if (-not $Drive.EndsWith(':')) { $Drive = "${Drive}:" }
+
+$driveId = $Drive.ToUpper()
+Write-Info "Checking disk usage for drive $driveId"
+
+Show-Spinner -Message "Analyzing disk usage..." -AnimationType "File"
+$wmiFilter = "DeviceID='${driveId}'"
+$disk = Get-WmiObject -Class Win32_LogicalDisk -Filter $wmiFilter
+if (-not $disk) { throw "Drive $driveId not found." }
+Clear-Spinner
+
+$totalGb = [math]::Round($disk.Size / 1GB, 2)
+$freeGb = [math]::Round($disk.FreeSpace / 1GB, 2)
+$usedGb = [math]::Round(($disk.Size - $disk.FreeSpace) / 1GB, 2)
+$percentUsed = if ($disk.Size -eq 0) { 0 } else { [math]::Round(($usedGb / $totalGb) * 100, 2) }
+$percentFree = [math]::Round(100 - $percentUsed, 2)
+
+$status = 'ok'
+$severityText = 'INFO'
+$eventType = 'Information'
+
+if ($percentUsed -ge $CriticalPercent) {
+    $status = 'critical'
+    $severityText = 'ERROR'
+    $eventType = 'Error'
+} elseif ($percentUsed -ge $WarningPercent) {
+    $status = 'warning'
+    $severityText = 'WARNING'
+    $eventType = 'Warning'
+}
+
+if ($WarningPercent -ge $CriticalPercent) { throw 'Warning threshold must be lower than critical threshold.' }
+
+if (-not (Test-Path $LogDirectory)) { New-Item -ItemType Directory -Force -Path $LogDirectory | Out-Null }
+
+$logFile = Join-Path $LogDirectory 'disk-usage.log'
+$timestamp = (Get-Date).ToUniversalTime().ToString('o')
+$message = "Drive $driveId usage ${percentUsed}% (status: $status)"
+
+$logEntry = [ordered]@{
+    timestamp = $timestamp
+    message = $message
+    drive = $driveId
+    total_gb = $totalGb
+    used_gb = $usedGb
+    free_gb = $freeGb
+    percent_used = $percentUsed
+    percent_free = $percentFree
+    warning_threshold = $WarningPercent
+    critical_threshold = $CriticalPercent
+    status = $status
+    severity = $severityText
+    dataset = 'disk-monitor'
+}
+
+$cleanupTriggered = $false
+$cleanupError = $null
+
+if ($AutoCleanup -and $status -eq 'critical' -and (Test-Path $CleanupScriptPath)) {
+    Write-Warn 'Critical threshold exceeded - invoking cleanup automation.'
+    Show-Spinner -Message "Running cleanup automation..." -AnimationType "Processing"
+    try {
+        & $CleanupScriptPath -AnalyzeOnly:$false -CleanTemp -CleanCache | Out-Null
+        $cleanupTriggered = $true
+        Clear-Spinner
+        Write-Info "Cleanup automation completed successfully"
+    } catch {
+        $cleanupError = $_.Exception.Message
+        Clear-Spinner
+        Write-ErrorMsg "Cleanup failed: $cleanupError"
+    }
+}
+
+$logEntry.cleanup_triggered = $cleanupTriggered
+if ($cleanupError) { $logEntry.cleanup_error = $cleanupError }
+
+$logEntry | ConvertTo-Json -Compress | Add-Content -Path $logFile -Encoding UTF8
+
+if (-not $DisableEventLog) {
+    Show-Spinner -Message "Writing to Windows Event Log..." -AnimationType "Processing"
+    $eventSource = 'DiskUsageMonitor'
+    if (-not [System.Diagnostics.EventLog]::SourceExists($eventSource)) {
+        [System.Diagnostics.EventLog]::CreateEventSource($eventSource, 'Application')
+        Start-Sleep -Milliseconds 200
+    }
+
+    $entryType = [System.Diagnostics.EventLogEntryType]::$eventType
+    Write-EventLog -LogName 'Application' -Source $eventSource -EntryType $entryType -EventId 8001 -Message $message
+    Clear-Spinner
+}
+
+switch ($status) {
+    'critical' { Write-ErrorMsg $message; exit 2 }
+    'warning'  { Write-Warn $message; exit 1 }
+    default    { Write-Info $message; exit 0 }
+}

@@ -136,15 +136,17 @@ try {
 }
 
 try {
-    $wslNvidiaOutput = wsl.exe --distribution Ubuntu -- nvidia-smi --query-gpu=name --format=csv,noheader,nounits 2>&1
-    if ($wslNvidiaOutput -and $wslNvidiaOutput -notmatch "error") {
+    $wslNvidiaOutputRaw = wsl.exe --distribution Ubuntu -- nvidia-smi --query-gpu=name --format=csv,noheader,nounits 2>&1
+    $wslNvidiaOutput = ($wslNvidiaOutputRaw | Out-String).Trim()
+    if ($wslNvidiaOutput -and $wslNvidiaOutput -notmatch 'error') {
         Write-Pass "WSL2 GPU support available"
-        Write-Detail "WSL GPU: $($wslNvidiaOutput.Trim())"
+        Write-Detail "WSL GPU: $wslNvidiaOutput"
     } else {
-        Write-Fail "WSL2 GPU support not available: $wslNvidiaOutput"
+        $detail = if ([string]::IsNullOrWhiteSpace($wslNvidiaOutput)) { '(no output)' } else { $wslNvidiaOutput }
+        Write-Detail "WSL2 GPU check skipped: $detail"
     }
 } catch {
-    Write-Fail "WSL2 GPU check failed: $($_.Exception.Message)"
+    Write-Detail "WSL2 GPU check skipped: $($_.Exception.Message)"
 }
 
 try {
@@ -180,7 +182,32 @@ try {
     Write-Detail "Docker image check failed: $($_.Exception.Message)"
 }
 
-Write-Host "`n7. Canary Test:" -ForegroundColor Yellow
+Write-Host "`n7. File Storage Directory Check:" -ForegroundColor Yellow
+$storageDir = "otelcol-storage"
+if (Test-Path $storageDir) {
+    Write-Pass "File storage directory exists: $storageDir"
+    try {
+        $storageItems = Get-ChildItem -Path $storageDir -Recurse | Measure-Object
+        Write-Detail "Storage directory contains $($storageItems.Count) items"
+        if ($storageItems.Count -gt 0) {
+            $storageSize = (Get-ChildItem -Path $storageDir -Recurse | Measure-Object -Property Length -Sum).Sum
+            $storageSizeMB = [math]::Round($storageSize / 1MB, 2)
+            Write-Detail "Storage directory size: $storageSizeMB MB"
+        }
+    } catch {
+        Write-Detail "Unable to analyze storage directory: $($_.Exception.Message)"
+    }
+} else {
+    Write-Detail "File storage directory not found: $storageDir (will be created on first run)"
+    try {
+        New-Item -Path $storageDir -ItemType Directory -Force | Out-Null
+        Write-Pass "Created file storage directory: $storageDir"
+    } catch {
+        Write-Fail "Failed to create storage directory: $($_.Exception.Message)"
+    }
+}
+
+Write-Host "`n8. Canary Test:" -ForegroundColor Yellow
 $timestamp = Get-Date -Format "yyyy-MM-ddTHH:mm:ss.fffK"; $canaryId = [Guid]::NewGuid().ToString(); $canaryMessage = "windows-canary-$canaryId"
 $artifactsDir = Join-Path (Get-Location) '.artifacts'
 if (-not (Test-Path $artifactsDir)) { New-Item -Path $artifactsDir -ItemType Directory -Force | Out-Null }

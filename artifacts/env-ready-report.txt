@@ -1,0 +1,11 @@
+== codex-local Environment Doctor ==
+Timestamp: 2025-09-24T14:48:08.544+01:00
+
+- [OK] Agent lock: No lock detected
+- [OK] pnpm: pnpm 10.15.1
+- [OK] node: node v22.18.0
+- [OK] node_modules: Dependencies directory present
+- [OK] Resonai API: Service not running (optional for OTel-only setup)
+- [OK] docker: Docker version 28.4.0, build d8eb465
+
+Overall: PASSED

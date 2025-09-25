@@ -35,13 +35,15 @@
 #>
 
 param(
-    [ValidateSet("create", "update", "compare", "list")]
+    [ValidateSet("create", "update", "compare", "list", "create-schedule", "apply")]
     [string]$Action = "list",
     [string]$BaselineName = "control",
     [string]$SourceRunId,
     [string]$SourceExperimentDir,
     [string]$BaselineFile = "artifacts/doe/baselines/latency.json",
-    [double]$Threshold = 10
+    [double]$Threshold = 10,
+    [string]$ScheduleTime = "02:00",
+    [switch]$DryRun
 )
 
 # Initialize script
@@ -52,7 +54,7 @@ Write-Host "Latency Baseline Management" -ForegroundColor Green
 Write-Host "===========================" -ForegroundColor Green
 
 # Ensure baselines directory exists
-$baselinesDir = Split-Path $BaselineFile -Parent
+$baselinesDir = Split-Path -Path $BaselineFile -Parent
 if (-not (Test-Path $baselinesDir)) {
     New-Item -ItemType Directory -Path $baselinesDir -Force | Out-Null
 }
@@ -288,6 +290,157 @@ switch ($Action) {
             }
         } else {
             Write-Host "  No baseline file found at $BaselineFile" -ForegroundColor Yellow
+        }
+    }
+    
+    "create-schedule" {
+        Write-Host "Creating daily baseline automation schedule" -ForegroundColor Cyan
+        
+        # Check administrator privileges
+        $isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
+        if (-not $isAdmin) {
+            Write-Host "ERROR: Administrator privileges required for scheduling" -ForegroundColor Red
+            Write-Host "   Please run PowerShell as Administrator and try again" -ForegroundColor Yellow
+            exit 1
+        }
+        
+        $taskName = "OTel-Latency-Baseline-Daily"
+        $scriptPath = $PSCommandPath
+        
+        # Define the scheduled task action
+        $action = New-ScheduledTaskAction -Execute "pwsh.exe" -Argument "-NoLogo -NonInteractive -File `"$scriptPath`" -Action apply -BaselineName $BaselineName" -WorkingDirectory "C:\otel"
+        
+        # Create daily trigger at specified time
+        $trigger = New-ScheduledTaskTrigger -Daily -At $ScheduleTime
+        
+        $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -MultipleInstances IgnoreNew
+        $principal = New-ScheduledTaskPrincipal -UserId "SYSTEM" -LogonType ServiceAccount -RunLevel Highest
+        
+        # Remove existing task if it exists
+        $existingTask = Get-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue
+        if ($existingTask) {
+            Write-Host "Removing existing scheduled task..." -ForegroundColor Yellow
+            Unregister-ScheduledTask -TaskName $taskName -Confirm:$false
+        }
+        
+        if ($DryRun) {
+            Write-Host "DRY RUN - Would create task with:" -ForegroundColor Cyan
+            Write-Host "  Task Name: $taskName" -ForegroundColor White
+            Write-Host "  Script: $scriptPath" -ForegroundColor White
+            Write-Host "  Schedule: Daily at $ScheduleTime" -ForegroundColor White
+            Write-Host "  Action: apply -BaselineName $BaselineName" -ForegroundColor White
+            Write-Host "  Principal: SYSTEM" -ForegroundColor White
+            exit 0
+        }
+        
+        # Create the new scheduled task
+        Write-Host "Creating scheduled task: $taskName" -ForegroundColor Yellow
+        Write-Host "   Script: $scriptPath" -ForegroundColor Gray
+        Write-Host "   Schedule: Daily at $ScheduleTime" -ForegroundColor Gray
+        Write-Host "   Action: apply -BaselineName $BaselineName" -ForegroundColor Gray
+        
+        try {
+            Register-ScheduledTask -TaskName $taskName -Action $action -Trigger $trigger -Settings $settings -Principal $principal -Description "Daily latency baseline management and SigNoz dashboard update"
+            Write-Host "SUCCESS: Daily baseline automation scheduled!" -ForegroundColor Green
+        } catch {
+            Write-Host "ERROR: Failed to create scheduled task: $($_.Exception.Message)" -ForegroundColor Red
+            exit 1
+        }
+        
+        # Verify the task was created
+        $task = Get-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue
+        if ($task) {
+            Write-Host "`nTask Details:" -ForegroundColor Cyan
+            Write-Host "  Name: $($task.TaskName)" -ForegroundColor White
+            Write-Host "  State: $($task.State)" -ForegroundColor White
+            
+            try {
+                $taskInfo = Get-ScheduledTaskInfo -TaskName $taskName
+                Write-Host "  Next Run: $($taskInfo.NextRunTime)" -ForegroundColor White
+                Write-Host "  Last Run: $($taskInfo.LastRunTime)" -ForegroundColor White
+                Write-Host "  Last Result: $($taskInfo.LastTaskResult)" -ForegroundColor White
+            } catch {
+                Write-Host "  Next Run: Not available yet" -ForegroundColor Yellow
+            }
+        }
+        
+        Write-Host "`nManagement Commands:" -ForegroundColor Cyan
+        Write-Host "  View task: Get-ScheduledTask -TaskName '$taskName'" -ForegroundColor Gray
+        Write-Host "  Run now: Start-ScheduledTask -TaskName '$taskName'" -ForegroundColor Gray
+        Write-Host "  Remove: Unregister-ScheduledTask -TaskName '$taskName' -Confirm:`$false" -ForegroundColor Gray
+    }
+    
+    "apply" {
+        Write-Host "Applying daily baseline automation" -ForegroundColor Cyan
+        
+        try {
+            # Find the latest experiment run to use as baseline source
+            $experimentDirs = Get-ChildItem -Path "artifacts/doe" -Directory | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+            if (-not $experimentDirs) {
+                Write-Host "No experiment directories found in artifacts/doe" -ForegroundColor Yellow
+                Write-Host "Skipping baseline update - no source data available" -ForegroundColor Yellow
+                exit 0
+            }
+            
+            $latestExperiment = $experimentDirs.FullName
+            Write-Host "Using latest experiment: $latestExperiment" -ForegroundColor White
+            
+            # Find control run in the latest experiment
+            $controlRunId = Find-ControlRun -ExperimentDir $latestExperiment
+            Write-Host "Found control run: $controlRunId" -ForegroundColor White
+            
+            # Update baseline with latest control run
+            Write-Host "Updating baseline '$BaselineName' with latest control run..." -ForegroundColor Yellow
+            $measurements = Get-RunMeasurements -RunId $controlRunId
+            
+            $baseline = @{
+                name = $BaselineName
+                sourceRunId = $controlRunId
+                created = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
+                updated = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
+                latency = @{
+                    p50_ms = $measurements.p50_ms
+                    p95_ms = $measurements.p95_ms
+                    p99_ms = $measurements.p99_ms
+                    sample_count = $measurements.sample_count
+                    source = $measurements.source
+                }
+                metadata = @{
+                    threshold = $Threshold
+                    description = "Daily automated baseline update from run $controlRunId"
+                    automation = @{
+                        scheduled = $true
+                        lastUpdate = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
+                        sourceExperiment = $latestExperiment
+                    }
+                }
+            }
+            
+            Set-Baseline -Path $BaselineFile -Baseline $baseline
+            
+            Write-Host "Baseline updated successfully:" -ForegroundColor Green
+            Write-Host "  p50: $($baseline.latency.p50_ms)ms" -ForegroundColor White
+            Write-Host "  p95: $($baseline.latency.p95_ms)ms" -ForegroundColor White
+            Write-Host "  p99: $($baseline.latency.p99_ms)ms" -ForegroundColor White
+            Write-Host "  Samples: $($baseline.latency.sample_count)" -ForegroundColor White
+            Write-Host "  Source: $($baseline.latency.source)" -ForegroundColor White
+            
+            # Export updated dashboard configuration
+            Write-Host "`nExporting updated dashboard configuration..." -ForegroundColor Yellow
+            & "pwsh" -File "scripts/export-dashboard-config.ps1" -BaselineFile $BaselineFile -OutputFile "artifacts/signoz-dashboard-config.json"
+            
+            # Import dashboard to SigNoz if available
+            Write-Host "Importing dashboard to SigNoz..." -ForegroundColor Yellow
+            & "pwsh" -File "scripts/import-dashboard.ps1" -DashboardFile "artifacts/signoz-dashboard-config.json" -ApplyMode
+            
+            Write-Host "`nDaily automation completed successfully!" -ForegroundColor Green
+            Write-Host "  Baseline updated: $BaselineFile" -ForegroundColor White
+            Write-Host "  Dashboard exported: artifacts/signoz-dashboard-config.json" -ForegroundColor White
+            Write-Host "  SigNoz import: Check artifacts for import status" -ForegroundColor White
+            
+        } catch {
+            Write-Error "Failed to apply daily automation: $($_.Exception.Message)"
+            exit 1
         }
     }
 }

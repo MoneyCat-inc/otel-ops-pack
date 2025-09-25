@@ -100,7 +100,7 @@ $browserDirs = @(
 )
 
 foreach ($pattern in $browserDirs) {
-    $dirs = Get-ChildItem (Split-Path $pattern -Parent) -Directory -ErrorAction SilentlyContinue | Where-Object { $_.Name -like (Split-Path $pattern -Leaf) }
+    $dirs = Get-ChildItem (Split-Path -Path $pattern -Parent) -Directory -ErrorAction SilentlyContinue | Where-Object { $_.Name -like (Split-Path -Path $pattern -Leaf) }
     foreach ($dir in $dirs) {
         try {
             $beforeSize = (Get-ChildItem $dir.FullName -Recurse -ErrorAction SilentlyContinue | Measure-Object -Property Length -Sum).Sum / 1GB
@@ -169,3 +169,4 @@ if ($finalUsagePercent -gt 85) {
 }
 
 Write-Host "`nAggressive cleanup complete!" -ForegroundColor Cyan
+

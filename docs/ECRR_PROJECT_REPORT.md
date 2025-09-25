@@ -88,6 +88,12 @@
 * Calibrate loudness/DTW thresholds with cohort testing.
 * Add community guardrails before scaling social features.
 
+### Recent ECRR Entries
+
+* 2025-09-24 — SigNoz Canary Proof & Scheduled Monitor  
+  See: `docs/ECRR_REPORTS/2025-09-24-signoz-canary-monitor.md`  
+  Summary: Canary ingestion verified end-to-end; `scripts/monitor-signoz-canary.ps1` enhanced (JSON artifacts, exit codes, optional emission); Task Scheduler recipe provided; noisy `.venv` profile hook silenced.
+
 ---
 
 ## **R — Role (Actor Declarations)**

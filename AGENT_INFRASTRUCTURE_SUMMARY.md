@@ -175,6 +175,7 @@ The agent infrastructure integrates seamlessly with our existing observability p
 - ✅ **Safety budgets**: 8 files, ~500 LOC, focused changes
 - ✅ **Tests/docs**: Validation scripts + comprehensive documentation
 - ✅ **Observability-as-code**: All changes validated and reversible
+- ✅ **Progress UX**: Long-running (>2s) jobs must surface Unicode spinner + % progress
 
 ---
 

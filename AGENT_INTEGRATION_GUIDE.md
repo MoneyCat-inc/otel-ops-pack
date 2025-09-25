@@ -59,6 +59,13 @@ The queue includes three integrated jobs:
 
 ## 🛡️ Failure Handling
 
+If any guardrail falters, both agents pause and record status in `.agent/status.json`.
+
+### Progress UX Guardrail
+
+Automation that runs longer than two seconds must emit the shared Unicode spinner (`⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏`) and percentage completion so Scheduler logs show movement. Reuse the helper from `AGENTS.md` when adding new loops or scans.
+
+
 ### Lock Respect
 - Both agents check `.agent/LOCK` before running
 - If lock exists, set status to `paused:lock` and exit gracefully

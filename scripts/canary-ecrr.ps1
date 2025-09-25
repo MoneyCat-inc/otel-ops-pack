@@ -121,20 +121,24 @@ if (-not $DryRun) {
     try {
         Add-ReportLine -Level 'INFO' -Message 'Executing canary test...'
         
-        # Create canary log entry
+        # Create canary log entry (single-line JSON)
         $canaryMessage = "ECRR-Canary-Test-$(Get-Date -Format 'yyyyMMdd-HHmmss')"
         $logFile = Join-Path $logDir 'ecrr-canary-test.log'
-        $logEntry = @{
+        $logObj = [ordered]@{
             timestamp = (Get-Date).ToUniversalTime().ToString('o')
             message   = $canaryMessage
             category  = 'ecrr-canary'
             level     = 'INFO'
-        } | ConvertTo-Json -Compress
-        Add-Content -Path $logFile -Value $logEntry
+        }
+        $logEntry = ($logObj | ConvertTo-Json -Compress)
+        Add-Content -Path $logFile -Value $logEntry -Encoding utf8
         Add-ReportLine -Level 'OK' -Message "Created canary log entry: $canaryMessage" -Color Green
         
-        # Create Windows Event Log entry
-        Write-EventLog -LogName Application -Source "SigNoz-Canary" -EventId 1001 -Message $canaryMessage -EntryType Information
+        # Ensure Windows Event Log source, then write entry
+        if (-not [System.Diagnostics.EventLog]::SourceExists('SigNoz-Canary')) {
+            try { New-EventLog -LogName Application -Source 'SigNoz-Canary' -ErrorAction Stop } catch {}
+        }
+        Write-EventLog -LogName Application -Source 'SigNoz-Canary' -EventId 1001 -Message $canaryMessage -EntryType Information
         Add-ReportLine -Level 'OK' -Message 'Created Windows Event Log entry' -Color Green
         
         # Send OTLP trace and log

@@ -1,205 +1,92 @@
 # ECRR Report Template
 
-**Date**: YYYY-MM-DD  
-**Agent**: [Agent Name]  
-**Role**: [Role - Orchestrator/Implementor/Coordinator/etc.]  
-**Session**: [Brief session description]  
+Copy this file, rename it to `docs/ECRR_REPORTS/<date>-<slug>.md`, and fill in all sections with actual data.
 
 ---
 
-## 🔍 **1. Examine**
+```markdown
+# ECRR Report — <Feature/PR Title>
 
-### **Initial State Captured**
-- **Environment**: [OS, tools, versions]
-- **Current State**: [What was observed before changes]
-- **Key Findings**: [Critical issues or opportunities identified]
-- **Attached Evidence**: [Screenshots, logs, configs, test outputs]
-
-### **Key Findings**
-- **[Finding 1]**: [Description and impact]
-- **[Finding 2]**: [Description and impact]
-- **[Finding 3]**: [Description and impact]
-
-### **Attached Evidence**
-- Screenshots: [What was captured visually]
-- Console logs: [Command outputs and errors]
-- Configuration files: [Files examined or modified]
-- Test outputs: [Validation results]
+- date: YYYY-MM-DD
+- actor: <Cursor Agent / Human>
+- severity: <info|warning|critical>
+- scope: <files/flows/user-journey>
+- related: [jobs/tasks/PRs/dashboard IDs]
+- time_spent: <e.g., 35m>
+- outcome: <resolved|partial|in-progress>
 
 ---
 
-## 🧹 **2. Clean**
-
-### **Drift Removal**
-- **[Issue 1]**: [What was cleaned/fixed]
-- **[Issue 2]**: [What was cleaned/fixed]
-- **[Issue 3]**: [What was cleaned/fixed]
-
-### **Guardrail Enforcement**
-- **Local-First**: [How local-first principle was maintained]
-- **Safety**: [Security measures implemented]
-- **Idempotence**: [How changes can be safely re-run]
-- **Verification**: [How changes were verified]
-
-### **Service Worker & Cache Management**
-- **Git Branches**: [Branch cleanup actions]
-- **Temporary Files**: [File cleanup performed]
-- **Port Conflicts**: [Port management actions]
-- **Process Management**: [Background process cleanup]
+## Examine (facts)
+- build/sha: <link or SHA>
+- urls: <http://localhost:8080 (SigNoz)>, OTLP http://localhost:5318/v1/logs
+- crossOriginIsolated: <true/false>
+- mic settings: { echoCancellation:false, noiseSuppression:false, autoGainControl:false }, sampleRate:<value>
+- flow integrity: warm-up → glide → phrase → reflection = <ok/fail>
+- local footprint: <size/state; reset?>
 
 ---
 
-## 📝 **3. Report**
-
-### **Actions Taken**
-
-#### **[Category 1]**
-1. **[Action 1]**: [Description]
-2. **[Action 2]**: [Description]
-3. **[Action 3]**: [Description]
-
-#### **[Category 2]**
-1. **[Action 1]**: [Description]
-2. **[Action 2]**: [Description]
-3. **[Action 3]**: [Description]
-
-### **Results Achieved**
-
-#### **Before/After Comparison**
-- **Before**: [Initial state]
-- **After**: [Final state]
-- **Improvement**: [Quantifiable improvement]
-
-#### **Regression Analysis**
-- **No Breaking Changes**: [Compatibility maintained]
-- **Enhanced Reliability**: [Reliability improvements]
-- **Improved Observability**: [Monitoring enhancements]
-- **Better User Experience**: [UX improvements]
-
-#### **TODOs Completed**
-- ✅ [Completed task 1]
-- ✅ [Completed task 2]
-- ✅ [Completed task 3]
+## Clean (actions)
+- SW/caches cleared: <yes/no>
+- IndexedDB/localStorage reset: <yes/no>
+- services/ports restarted: <which>
+- agent state: <running/stopped>, LOCK=<present/absent>
+- guardrails enforced: local-first, privacy, idempotence
 
 ---
 
-## 🎭 **4. Role**
-
-### **Actor Declaration**
-**[Agent Name]** acting as **[Role]**
-
-**Scope**: [Scope of responsibility]  
-**Responsibilities**: 
-- [Responsibility 1]
-- [Responsibility 2]
-- [Responsibility 3]
-
-**Guardrails Respected**:
-- Local-first (no external cloud dependencies)
-- Safety (no secrets exposed)
-- Idempotence (scripts re-runnable)
-- Verification (runnable checks for every change)
-
-**Integration**: 
-- [How this integrates with existing systems]
-- [Compatibility maintained]
-- [Environment considerations]
+## Verify (proof)
+- How to verify in SigNoz (UI):
+  - UI → Logs → filter: `message contains "canary test"` or `attributes.dataset = "resonai_analytics"`
+  - UI → Metrics → query: `otelcol_*` (ingest/receiver/exporter series)
+- Commands:
+  - `pwsh -File scripts\\verify-wiring.ps1`
+- Artifacts:
+  - `artifacts/<report-slug>-verify.txt`
+  - `artifacts/<report-slug>-screenshot.png` (optional)
 
 ---
 
-## ✅ **ECRR Gate**
-
-### **Examine**
-- ✅ Initial state captured
-- ✅ Environment documented
-- ✅ Key findings identified
-- ✅ Evidence attached
-
-### **Clean**
-- ✅ [Issue 1] fixed
-- ✅ [Issue 2] fixed
-- ✅ [Issue 3] fixed
-- ✅ Guardrails enforced
-
-### **Report**
-- ✅ Actions documented
-- ✅ Results achieved
-- ✅ TODOs completed
-- ✅ Comprehensive documentation created
-
-### **Role**
-- ✅ Actor declared
-- ✅ Scope defined
-- ✅ Guardrails respected
-- ✅ Integration maintained
+## Results
+- before → after: <3 bullets>
+- regressions: <none/list>
+- follow-ups: <tickets/TODOs/alerts/dashboards>
 
 ---
 
-## 📊 **Validation Results**
-
-### **[Validation Category 1]**
-- ✅ **[Result 1]**: [Description]
-- ✅ **[Result 2]**: [Description]
-- ✅ **[Result 3]**: [Description]
-
-### **[Validation Category 2]**
-- ✅ **[Result 1]**: [Description]
-- ✅ **[Result 2]**: [Description]
-- ✅ **[Result 3]**: [Description]
+## Root cause and prevention
+- cause: <1 line>
+- contributing: <1–2 bullets>
+- prevention: <1–2 bullets>
 
 ---
 
-## 🎯 **Success Criteria Met**
-
-### **[Criteria Category 1]**
-- ✅ [Success criterion 1]
-- ✅ [Success criterion 2]
-- ✅ [Success criterion 3]
-
-### **[Criteria Category 2]**
-- ✅ [Success criterion 1]
-- ✅ [Success criterion 2]
-- ✅ [Success criterion 3]
+## Role
+- who: <agent/human>
+- responsibilities: <short>
+- artifacts produced: <reports/tests/configs>
+- handoff notes: <next owner/step>
 
 ---
 
-## 🔄 **Next Actions**
+## ✅ ECRR Gate (required)
+- Examine: [ ] facts captured; [ ] env documented; [ ] evidence listed
+- Clean: [ ] guardrails enforced; [ ] actions recorded
+- Report: [ ] results; [ ] regressions; [ ] follow-ups
+- Role: [ ] actor declared; [ ] responsibilities; [ ] handoff
 
-### **Immediate**
-1. [Immediate action 1]
-2. [Immediate action 2]
-3. [Immediate action 3]
+## Progress Animation (operations >2s)
+For long-running operations, include animated progress indicators:
+```powershell
+$spinner = @('⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏')
+$progress = [math]::Round(($itemIndex / $totalItems) * 100)
+Write-Host "`r$($spinner[$spinnerIndex]) Processing... $itemIndex/$totalItems ($progress%)" -NoNewline -ForegroundColor Cyan
+```
 
-### **Short-term**
-1. [Short-term action 1]
-2. [Short-term action 2]
-3. [Short-term action 3]
-
-### **Long-term**
-1. [Long-term action 1]
-2. [Long-term action 2]
-3. [Long-term action 3]
-
----
-
-## 📋 **Artifacts Created**
-
-### **Configuration Files**
-- [File 1] - [Description]
-- [File 2] - [Description]
-- [File 3] - [Description]
-
-### **Scripts**
-- [Script 1] - [Description]
-- [Script 2] - [Description]
-- [Script 3] - [Description]
-
-### **Documentation**
-- [Doc 1] - [Description]
-- [Doc 2] - [Description]
-- [Doc 3] - [Description]
+Note: Comfort Cat aesthetic and a11y — see docs/comfort-cat/
+```
 
 ---
 
-**ECRR Report Complete**: [Brief summary of completion status]  
-**Status**: ✅ **SUCCESS** - [Final status and achievements]
+This pairs with `docs/ECRR.md`. Together they lock in **ECRR** as both philosophy and practice.

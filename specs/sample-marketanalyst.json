@@ -1,0 +1,22 @@
+{
+  "mode": "MarketAnalyst",
+  "goal": "Analyze business metrics and generate intelligence reports",
+  "inputs": {
+    "dataSource": "SigNoz metrics",
+    "analysisType": "performance trends",
+    "timeRange": "24h"
+  },
+  "guardrails": {
+    "browsing": false,
+    "maxTokens": 3500,
+    "humorGating": false
+  },
+  "budgets": {
+    "maxJobs": 2,
+    "maxFiles": 10,
+    "maxLines": 600,
+    "ttlMs": 450000,
+    "maxAttempts": 2,
+    "backoffMs": 8000
+  }
+}

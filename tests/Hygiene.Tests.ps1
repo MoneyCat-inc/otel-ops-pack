@@ -4,7 +4,7 @@ Describe "OTel Ops Pack - Hygiene Validation Tests" {
     
     BeforeAll {
         # Set up test environment
-        $script:RepoRoot = Split-Path -Parent $PSScriptRoot
+        $script:RepoRoot = Split-Path -Path -Parent $PSScriptRoot
         $script:ArtifactsPath = Join-Path $RepoRoot "artifacts"
         $script:HygieneScript = Join-Path $RepoRoot "tools\hygiene.ps1"
         

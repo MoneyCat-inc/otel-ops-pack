@@ -59,8 +59,8 @@ if ($RemoveTasks) {
 Write-Host "🔧 Creating scheduled monitoring tasks..." -ForegroundColor Cyan
 
 # Get current script directory
-$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$workingDir = Split-Path -Parent $scriptDir
+$scriptDir = Split-Path -Path -Parent $MyInvocation.MyCommand.Path
+$workingDir = Split-Path -Path -Parent $scriptDir
 
 # Task 1: Quick Health Check (every 5 minutes)
 Write-Host "📊 Creating Quick Health Check task (every 5 minutes)..." -ForegroundColor Yellow
@@ -133,3 +133,4 @@ Write-Host "   1. Verify tasks: Get-ScheduledTask -TaskName '*OTel*'" -Foregroun
 Write-Host "   2. Test manually: Start-ScheduledTask -TaskName 'OTel-QuickHealthCheck'" -ForegroundColor Gray
 Write-Host "   3. Check logs: Get-WinEvent -FilterHashtable @{LogName='Microsoft-Windows-TaskScheduler/Operational'; ID=200,201} | Where-Object {$_.Message -like '*OTel*'}" -ForegroundColor Gray
 Write-Host "   4. Monitor artifacts: Get-ChildItem artifacts\*.json | Sort-Object LastWriteTime -Descending" -ForegroundColor Gray
+

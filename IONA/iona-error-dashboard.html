@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IONA Error Dashboard - Cat Nap Control Room</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #2c3e50;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            color: #34495e;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.1em;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+            transform: translateY(-2px);
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: rgba(52, 73, 94, 0.05);
+            border-radius: 8px;
+        }
+
+        .metric-label {
+            font-weight: 600;
+            color: #34495e;
+        }
+
+        .metric-value {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .status-indicator {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .status-resolved {
+            background: #d5f4e6;
+            color: #27ae60;
+        }
+
+        .status-open {
+            background: #fef9e7;
+            color: #f39c12;
+        }
+
+        .status-failed {
+            background: #fadbd8;
+            color: #e74c3c;
+        }
+
+        .chart-container {
+            height: 200px;
+            margin-top: 15px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #ecf0f1;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+
+        .entries-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .entries-table th,
+        .entries-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .entries-table th {
+            background: #34495e;
+            color: white;
+            font-weight: 600;
+        }
+
+        .entries-table tr:hover {
+            background: rgba(52, 73, 94, 0.05);
+        }
+
+        .no-data {
+            text-align: center;
+            color: #7f8c8d;
+            font-style: italic;
+            padding: 40px;
+        }
+
+        .loading {
+            text-align: center;
+            color: #3498db;
+            padding: 20px;
+        }
+
+        .error-message {
+            background: #fadbd8;
+            color: #e74c3c;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .success-message {
+            background: #d5f4e6;
+            color: #27ae60;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🐾 IONA Error Dashboard</h1>
+            <p>Cat Nap Control Room - Error Monitoring & Analytics</p>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-primary" onclick="loadSampleData()">Load Sample Data</button>
+            <button class="btn btn-secondary" onclick="document.getElementById('fileInput').click()">Import JSON File</button>
+            <button class="btn btn-secondary" onclick="exportData()">Export Data</button>
+            <button class="btn btn-secondary" onclick="refreshData()">🔄 Refresh</button>
+            <input type="file" id="fileInput" class="file-input" accept=".json" onchange="handleFileImport(event)">
+            
+            <div style="margin-top: 15px; padding: 10px; background: rgba(52, 73, 94, 0.1); border-radius: 8px;">
+                <label for="intervalInput" style="margin-right: 10px; font-weight: 600;">Refresh interval (seconds):</label>
+                <input id="intervalInput" type="number" value="30" min="5" style="width: 60px; padding: 4px; border: 1px solid #bdc3c7; border-radius: 4px;" />
+                <button class="btn btn-secondary" onclick="setIntervalFromInput()" style="margin-left: 10px;">Update</button>
+                <button class="btn btn-secondary" onclick="loadErrorData()" style="margin-left: 5px;">Refresh Now</button>
+                <span id="lastUpdated" style="margin-left: 15px; font-weight: 600; color: #3498db;"></span>
+            </div>
+        </div>
+
+        <div id="messageContainer"></div>
+
+        <div class="dashboard">
+            <!-- Overview Card -->
+            <div class="card">
+                <h3>📊 Overview</h3>
+                <div class="metric">
+                    <span class="metric-label">Total Entries</span>
+                    <span class="metric-value" id="totalEntries">-</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Resolved</span>
+                    <span class="metric-value" id="resolvedEntries">-</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Open Issues</span>
+                    <span class="metric-value" id="openEntries">-</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Resolution Rate</span>
+                    <span class="metric-value" id="resolutionRate">-</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="resolutionProgress"></div>
+                </div>
+            </div>
+
+            <!-- Error Types Card -->
+            <div class="card">
+                <h3>🎯 Error Types</h3>
+                <div id="errorTypesContainer">
+                    <div class="no-data">No data available</div>
+                </div>
+            </div>
+
+            <!-- Status Breakdown Card -->
+            <div class="card">
+                <h3>📈 Status Breakdown</h3>
+                <div id="statusBreakdownContainer">
+                    <div class="no-data">No data available</div>
+                </div>
+            </div>
+
+            <!-- Recent Entries Card -->
+            <div class="card">
+                <h3>📝 Recent Entries</h3>
+                <div id="recentEntriesContainer">
+                    <div class="no-data">No data available</div>
+                </div>
+            </div>
+
+            <!-- SigNoz Integration Card -->
+            <div class="card">
+                <h3>📊 SigNoz Integration</h3>
+                <div class="metric">
+                    <span class="metric-label">Metrics Status</span>
+                    <span class="metric-value" id="signozMetricsStatus">Checking...</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Traces Status</span>
+                    <span class="metric-value" id="signozTracesStatus">Checking...</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Logs Status</span>
+                    <span class="metric-value" id="signozLogsStatus">Checking...</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">SigNoz Endpoint</span>
+                    <span class="metric-value" style="font-size: 0.9em;">http://localhost:14318</span>
+                </div>
+                <div style="margin-top: 15px;">
+                    <button class="btn btn-secondary" onclick="checkSigNozConnection()" style="margin-right: 10px;">Check Metrics</button>
+                    <button class="btn btn-secondary" onclick="checkSigNozTraces()" style="margin-right: 10px;">Check Traces</button>
+                    <button class="btn btn-secondary" onclick="checkSigNozLogs()" style="margin-right: 10px;">Check Logs</button>
+                    <button class="btn btn-secondary" onclick="openSigNozUI()">Open SigNoz UI</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detailed Entries Table -->
+        <div class="card">
+            <h3>📋 All Entries</h3>
+            <div id="entriesTableContainer">
+                <div class="no-data">No data available</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentData = null;
+        let refreshInterval = 30000; // 30s default
+        let timer;
+        let socket;
+
+        // Sample data for demonstration
+        const sampleData = {
+            metadata: {
+                exportDate: new Date().toISOString(),
+                totalEntries: 5,
+                sourceFile: "C:\\otel\\iona\\IONA_ERRORS.md",
+                filters: {}
+            },
+            entries: [
+                {
+                    id: "2025-01-27-001",
+                    date: "2025-01-27",
+                    type: "Guardrail Violation",
+                    context: "Cipher mode response contained sarcasm during sensitive query",
+                    impact: "Broke tone guardrails; could cause user discomfort",
+                    resolution: "Humor gate adjusted in Config v1.1",
+                    status: "✅ Fixed",
+                    evidence: "IONA_Config.json (v1.1 update), cipher-tone.spec.ts",
+                    isResolved: true,
+                    isOpen: false
+                },
+                {
+                    id: "2025-01-27-002",
+                    date: "2025-01-27",
+                    type: "System Error",
+                    context: "Mode drifted from Companion to Archivist without user cue",
+                    impact: "User confusion, inconsistent experience",
+                    resolution: "Strengthen mode etiquette rules",
+                    status: "🚧 Pending verification",
+                    evidence: "Mode etiquette section in System Prompt",
+                    isResolved: false,
+                    isOpen: true
+                },
+                {
+                    id: "2025-01-27-003",
+                    date: "2025-01-27",
+                    type: "Usage Error",
+                    context: "Unclear user prompt for Cipher mode",
+                    impact: "Generated inappropriate response",
+                    resolution: "Added prompt clarification examples",
+                    status: "✅ Fixed",
+                    evidence: "IONA_README.md examples section",
+                    isResolved: true,
+                    isOpen: false
+                },
+                {
+                    id: "2025-01-27-004",
+                    date: "2025-01-27",
+                    type: "System Error",
+                    context: "Citation integrity check failed",
+                    impact: "Potential misinformation risk",
+                    resolution: "Enhanced citation validation",
+                    status: "🔄 In Progress",
+                    evidence: "Citation integrity rules updated",
+                    isResolved: false,
+                    isOpen: true
+                },
+                {
+                    id: "2025-01-27-005",
+                    date: "2025-01-27",
+                    type: "Guardrail Violation",
+                    context: "Humor triggered during distress topic",
+                    impact: "Inappropriate tone for sensitive context",
+                    resolution: "Stricter mood check implementation",
+                    status: "✅ Fixed",
+                    evidence: "Humor gating rules in Config v1.1",
+                    isResolved: true,
+                    isOpen: false
+                }
+            ],
+            statistics: {
+                total: 5,
+                resolved: 3,
+                open: 2,
+                resolutionRate: 60.0,
+                byType: {
+                    "Guardrail Violation": 2,
+                    "System Error": 2,
+                    "Usage Error": 1
+                },
+                byStatus: {
+                    "✅ Fixed": 3,
+                    "🚧 Pending verification": 1,
+                    "🔄 In Progress": 1
+                }
+            }
+        };
+
+        function showMessage(message, type = 'info') {
+            const container = document.getElementById('messageContainer');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = type === 'error' ? 'error-message' : 'success-message';
+            messageDiv.textContent = message;
+            container.innerHTML = '';
+            container.appendChild(messageDiv);
+            
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 3000);
+        }
+
+        function loadSampleData() {
+            currentData = sampleData;
+            updateDashboard();
+            showMessage('Sample data loaded successfully!', 'success');
+        }
+
+        function handleFileImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    currentData = data;
+                    updateDashboard();
+                    showMessage(`Data imported from ${file.name}`, 'success');
+                } catch (error) {
+                    showMessage('Error parsing JSON file: ' + error.message, 'error');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function exportData() {
+            if (!currentData) {
+                showMessage('No data to export', 'error');
+                return;
+            }
+
+            const dataStr = JSON.stringify(currentData, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `iona-errors-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+            showMessage('Data exported successfully!', 'success');
+        }
+
+        function refreshData() {
+            if (!currentData) {
+                showMessage('No data to refresh', 'error');
+                return;
+            }
+            updateDashboard();
+            showMessage('Dashboard refreshed!', 'success');
+        }
+
+        // Live update functions
+        async function loadErrorData() {
+            try {
+                const response = await fetch("errors.json?_=" + Date.now()); // cache-busting
+                if (!response.ok) throw new Error("Failed to load errors.json");
+                const data = await response.json();
+                currentData = data;
+                updateDashboard();
+                document.getElementById("lastUpdated").textContent =
+                    "Last updated: " + new Date().toLocaleTimeString();
+                showMessage('Data refreshed from errors.json', 'success');
+            } catch (err) {
+                console.error("Error fetching error log:", err);
+                showMessage('Failed to load errors.json - check if file exists', 'error');
+            }
+        }
+
+        function startAutoRefresh() {
+            clearInterval(timer);
+            timer = setInterval(loadErrorData, refreshInterval);
+            showMessage(`Auto-refresh started (${refreshInterval/1000}s interval)`, 'success');
+        }
+
+        function stopAutoRefresh() {
+            clearInterval(timer);
+            showMessage('Auto-refresh stopped', 'success');
+        }
+
+        function setIntervalFromInput() {
+            const val = document.getElementById("intervalInput").value;
+            refreshInterval = parseInt(val, 10) * 1000;
+            startAutoRefresh();
+        }
+
+        // WebSocket functions
+        function initWebSocket() {
+            try {
+                socket = new WebSocket("ws://localhost:8080");
+
+                socket.onopen = () => {
+                    console.log("[WS] Connected to error server");
+                    document.getElementById("lastUpdated").textContent =
+                        "Live updates enabled (WebSocket)";
+                    showMessage('WebSocket connected - real-time updates active!', 'success');
+                };
+
+                socket.onmessage = event => {
+                    try {
+                        const data = JSON.parse(event.data);
+                        currentData = data;
+                        updateDashboard();
+                        document.getElementById("lastUpdated").textContent =
+                            "Last update: " + new Date().toLocaleTimeString() + " (WS)";
+                    } catch (err) {
+                        console.error("Invalid JSON from WS:", err);
+                        showMessage('Invalid data received from WebSocket', 'error');
+                    }
+                };
+
+                socket.onclose = () => {
+                    console.warn("[WS] Disconnected, retrying in 5s…");
+                    document.getElementById("lastUpdated").textContent =
+                        "WebSocket disconnected - retrying...";
+                    setTimeout(initWebSocket, 5000);
+                };
+
+                socket.onerror = err => {
+                    console.error("[WS] Error:", err);
+                    document.getElementById("lastUpdated").textContent =
+                        "WebSocket error - falling back to polling";
+                    socket.close();
+                    // Fallback to polling
+                    startAutoRefresh();
+                };
+            } catch (err) {
+                console.error("[WS] Failed to initialize WebSocket:", err);
+                document.getElementById("lastUpdated").textContent =
+                    "WebSocket unavailable - using polling";
+                // Fallback to polling
+                startAutoRefresh();
+            }
+        }
+
+        function updateDashboard() {
+            if (!currentData) return;
+
+            const stats = currentData.statistics;
+            
+            // Update overview metrics
+            document.getElementById('totalEntries').textContent = stats.total;
+            document.getElementById('resolvedEntries').textContent = stats.resolved;
+            document.getElementById('openEntries').textContent = stats.open;
+            document.getElementById('resolutionRate').textContent = stats.resolutionRate + '%';
+            
+            // Update progress bar
+            const progressBar = document.getElementById('resolutionProgress');
+            progressBar.style.width = stats.resolutionRate + '%';
+
+            // Update error types
+            updateErrorTypes(stats.byType);
+            
+            // Update status breakdown
+            updateStatusBreakdown(stats.byStatus);
+            
+            // Update recent entries
+            updateRecentEntries(currentData.entries);
+            
+            // Update entries table
+            updateEntriesTable(currentData.entries);
+        }
+
+        function updateErrorTypes(byType) {
+            const container = document.getElementById('errorTypesContainer');
+            if (!byType || Object.keys(byType).length === 0) {
+                container.innerHTML = '<div class="no-data">No data available</div>';
+                return;
+            }
+
+            let html = '';
+            for (const [type, count] of Object.entries(byType)) {
+                html += `
+                    <div class="metric">
+                        <span class="metric-label">${type}</span>
+                        <span class="metric-value">${count}</span>
+                    </div>
+                `;
+            }
+            container.innerHTML = html;
+        }
+
+        function updateStatusBreakdown(byStatus) {
+            const container = document.getElementById('statusBreakdownContainer');
+            if (!byStatus || Object.keys(byStatus).length === 0) {
+                container.innerHTML = '<div class="no-data">No data available</div>';
+                return;
+            }
+
+            let html = '';
+            for (const [status, count] of Object.entries(byStatus)) {
+                const statusClass = status.includes('✅') ? 'status-resolved' : 
+                                  status.includes('🚧') || status.includes('🔄') ? 'status-open' : 'status-failed';
+                
+                html += `
+                    <div class="metric">
+                        <span class="metric-label">${status}</span>
+                        <span class="metric-value status-indicator ${statusClass}">${count}</span>
+                    </div>
+                `;
+            }
+            container.innerHTML = html;
+        }
+
+        function updateRecentEntries(entries) {
+            const container = document.getElementById('recentEntriesContainer');
+            if (!entries || entries.length === 0) {
+                container.innerHTML = '<div class="no-data">No data available</div>';
+                return;
+            }
+
+            const recentEntries = entries.slice(0, 5);
+            let html = '';
+            recentEntries.forEach(entry => {
+                const statusClass = entry.isResolved ? 'status-resolved' : 'status-open';
+                html += `
+                    <div class="metric">
+                        <span class="metric-label">${entry.id}</span>
+                        <span class="metric-value status-indicator ${statusClass}">${entry.status}</span>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function updateEntriesTable(entries) {
+            const container = document.getElementById('entriesTableContainer');
+            if (!entries || entries.length === 0) {
+                container.innerHTML = '<div class="no-data">No data available</div>';
+                return;
+            }
+
+            let html = `
+                <table class="entries-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>Context</th>
+                            <th>Status</th>
+                            <th>Resolution</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            entries.forEach(entry => {
+                const statusClass = entry.isResolved ? 'status-resolved' : 'status-open';
+                html += `
+                    <tr>
+                        <td>${entry.id}</td>
+                        <td>${entry.date}</td>
+                        <td>${entry.type}</td>
+                        <td>${entry.context}</td>
+                        <td><span class="status-indicator ${statusClass}">${entry.status}</span></td>
+                        <td>${entry.resolution}</td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        // SigNoz integration functions
+        async function checkSigNozConnection() {
+            try {
+                const response = await fetch('http://localhost:14318/v1/metrics', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ test: 'connection' })
+                });
+                
+                if (response.ok) {
+                    document.getElementById('signozMetricsStatus').textContent = '✅ Connected';
+                    document.getElementById('signozMetricsStatus').style.color = '#27ae60';
+                    showMessage('SigNoz metrics connection successful!', 'success');
+                } else {
+                    document.getElementById('signozMetricsStatus').textContent = '❌ Error';
+                    document.getElementById('signozMetricsStatus').style.color = '#e74c3c';
+                    showMessage(`SigNoz metrics connection failed: ${response.status}`, 'error');
+                }
+            } catch (err) {
+                document.getElementById('signozMetricsStatus').textContent = '❌ Unavailable';
+                document.getElementById('signozMetricsStatus').style.color = '#e74c3c';
+                showMessage('SigNoz metrics endpoint unavailable - check if SigNoz is running', 'error');
+            }
+        }
+
+        async function checkSigNozTraces() {
+            try {
+                const response = await fetch('http://localhost:14318/v1/traces', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ test: 'connection' })
+                });
+                
+                if (response.ok) {
+                    document.getElementById('signozTracesStatus').textContent = '✅ Connected';
+                    document.getElementById('signozTracesStatus').style.color = '#27ae60';
+                    showMessage('SigNoz traces connection successful!', 'success');
+                } else {
+                    document.getElementById('signozTracesStatus').textContent = '❌ Error';
+                    document.getElementById('signozTracesStatus').style.color = '#e74c3c';
+                    showMessage(`SigNoz traces connection failed: ${response.status}`, 'error');
+                }
+            } catch (err) {
+                document.getElementById('signozTracesStatus').textContent = '❌ Unavailable';
+                document.getElementById('signozTracesStatus').style.color = '#e74c3c';
+                showMessage('SigNoz traces endpoint unavailable - check if SigNoz is running', 'error');
+            }
+        }
+
+        async function checkSigNozLogs() {
+            try {
+                const response = await fetch('http://localhost:14318/v1/logs', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ test: 'connection' })
+                });
+                
+                if (response.ok) {
+                    document.getElementById('signozLogsStatus').textContent = '✅ Connected';
+                    document.getElementById('signozLogsStatus').style.color = '#27ae60';
+                    showMessage('SigNoz logs connection successful!', 'success');
+                } else {
+                    document.getElementById('signozLogsStatus').textContent = '❌ Error';
+                    document.getElementById('signozLogsStatus').style.color = '#e74c3c';
+                    showMessage(`SigNoz logs connection failed: ${response.status}`, 'error');
+                }
+            } catch (err) {
+                document.getElementById('signozLogsStatus').textContent = '❌ Unavailable';
+                document.getElementById('signozLogsStatus').style.color = '#e74c3c';
+                showMessage('SigNoz logs endpoint unavailable - check if SigNoz is running', 'error');
+            }
+        }
+
+        function openSigNozUI() {
+            window.open('http://localhost:8080', '_blank');
+        }
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            showMessage('IONA Error Dashboard ready! Attempting WebSocket connection...', 'success');
+            
+            // Try WebSocket first, fallback to polling
+            initWebSocket();
+            
+            // Also try to load errors.json if it exists
+            loadErrorData();
+            
+            // Check SigNoz connections
+            checkSigNozConnection();
+            checkSigNozTraces();
+            checkSigNozLogs();
+        });
+    </script>
+</body>
+</html>

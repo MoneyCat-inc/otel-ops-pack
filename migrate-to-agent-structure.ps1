@@ -30,7 +30,7 @@ function Move-IfExists {
         } else {
             try {
                 # Ensure destination directory exists
-                $destDir = Split-Path $Destination -Parent
+                $destDir = Split-Path -Path $Destination -Parent
                 if (-not (Test-Path $destDir)) {
                     New-Item -ItemType Directory -Path $destDir -Force | Out-Null
                 }
@@ -62,7 +62,7 @@ function Copy-IfExists {
         } else {
             try {
                 # Ensure destination directory exists
-                $destDir = Split-Path $Destination -Parent
+                $destDir = Split-Path -Path $Destination -Parent
                 if (-not (Test-Path $destDir)) {
                     New-Item -ItemType Directory -Path $destDir -Force | Out-Null
                 }

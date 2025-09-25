@@ -3,3 +3,5 @@ pre-commit:
   commands:
     hygiene_fast:
       run: pwsh ./tools/hygiene-fast.ps1
+    ecrr_exclusions_check:
+      run: pwsh -NoLogo -NoProfile -File scripts/ci/ecrr-exclusions-check.ps1

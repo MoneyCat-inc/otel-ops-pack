@@ -1,0 +1,11 @@
+C:\otel\projects\sample\artifacts
+C:\otel\projects\sample\config
+C:\otel\projects\sample\docs
+C:\otel\projects\sample\logs
+C:\otel\projects\sample\scripts
+C:\otel\projects\sample\.env
+C:\otel\projects\sample\README.md
+C:\otel\projects\sample\config\collector.project.yaml
+C:\otel\projects\sample\config\otel-collector.yaml
+C:\otel\projects\sample\logs\canary.log
+C:\otel\projects\sample\scripts\enter.ps1

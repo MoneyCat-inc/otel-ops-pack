@@ -1,0 +1,148 @@
+name: SSOT Gate
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
+jobs:
+  ssot-gate:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8
+          
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        
+      - name: Run Vitest
+        run: pnpm test:vitest
+        
+      - name: Run Playwright SSOT
+        run: pnpm test:playwright:ssot
+        
+      - name: Generate SSOT Report
+        run: node scripts/generate-ssot.mjs
+        
+      - name: Upload SSOT Artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ssot-report
+          path: |
+            .artifacts/SSOT.md
+            .artifacts/vitest-report.json
+            .artifacts/playwright-report.json
+          retention-days: 30
+          
+      - name: Check Ready Label
+        id: check-label
+        run: |
+          if gh pr view ${{ github.event.pull_request.number }} --json labels --jq '.labels[].name' | grep -q "ready-for-gate"; then
+            echo "has-label=true" >> $GITHUB_OUTPUT
+          else
+            echo "has-label=false" >> $GITHUB_OUTPUT
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Post SSOT Gate Comment
+        uses: actions/github-script@v7
+        if: always()
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            
+            // Read SSOT report
+            let ssotContent = '';
+            try {
+              ssotContent = fs.readFileSync('.artifacts/SSOT.md', 'utf8');
+            } catch (error) {
+              ssotContent = 'SSOT report not found';
+            }
+            
+            // Extract status from report
+            const hasPass = ssotContent.includes('PASS');
+            const hasFail = ssotContent.includes('FAIL');
+            const status = hasPass && !hasFail ? '✅ PASS' : '❌ FAIL';
+            
+            // Check if ready-for-gate label exists
+            const hasLabel = '${{ steps.check-label.outputs.has-label }}' === 'true';
+            
+            const comment = `## 🔍 SSOT Gate Results
+            
+${status} **Overall Status**: ${hasPass && !hasFail ? 'All suites passing' : 'Failures detected'}
+
+### Test Results
+\`\`\`
+${ssotContent}
+\`\`\`
+
+### Gate Requirements
+- [${hasPass && !hasFail ? 'x' : ' '}] All test suites must pass
+- [${hasLabel ? 'x' : ' '}] PR must have \`ready-for-gate\` label
+
+${!hasLabel ? '⚠️ **Missing Label**: This PR requires the `ready-for-gate` label to proceed.' : ''}
+
+${hasFail ? '❌ **Gate Failed**: Fix failing tests before merging.' : hasLabel ? '✅ **Gate Passed**: Ready for merge!' : '⏳ **Waiting**: Add `ready-for-gate` label when ready.'}`;
+
+            // Find existing comment
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            
+            const existingComment = comments.data.find(comment => 
+              comment.body.includes('SSOT Gate Results') && 
+              comment.user.type === 'Bot'
+            );
+            
+            if (existingComment) {
+              // Update existing comment
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existingComment.id,
+                body: comment
+              });
+            } else {
+              // Create new comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: comment
+              });
+            }
+            
+      - name: Fail if Gate Requirements Not Met
+        if: steps.check-label.outputs.has-label != 'true'
+        run: |
+          echo "❌ SSOT Gate failed: Missing 'ready-for-gate' label"
+          exit 1
+          
+      - name: Check SSOT Report Status
+        run: |
+          if [ -f .artifacts/SSOT.md ]; then
+            if grep -q "FAIL" .artifacts/SSOT.md; then
+              echo "❌ SSOT Gate failed: Test failures detected"
+              exit 1
+            fi
+          else
+            echo "❌ SSOT Gate failed: SSOT report not generated"
+            exit 1
+          fi

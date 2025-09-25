@@ -1,0 +1,275 @@
+{
+  "dashboard": {
+    "title": "Windows Logs Canary Monitoring",
+    "description": "Dashboard for monitoring Windows Event Log canary ingestion and pipeline health",
+    "tags": ["windows", "logs", "canary", "observability"],
+    "refresh": "30s",
+    "timeRange": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "panels": [
+      {
+        "id": 1,
+        "title": "Windows Logs Canary Count (Last Hour)",
+        "type": "stat",
+        "targets": [
+          {
+            "query": "SELECT count() as value FROM logs WHERE attributes_string['dataset'] = 'windows' AND body LIKE '%windows-logs-canary%' AND timestamp >= now() - INTERVAL 1 HOUR",
+            "legend": "Canary Count"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "steps": [
+                {
+                  "color": "red",
+                  "value": 0
+                },
+                {
+                  "color": "yellow",
+                  "value": 1
+                },
+                {
+                  "color": "green",
+                  "value": 5
+                }
+              ]
+            },
+            "unit": "short",
+            "min": 0
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 6,
+          "x": 0,
+          "y": 0
+        }
+      },
+      {
+        "id": 2,
+        "title": "Canary Generation Rate (per hour)",
+        "type": "graph",
+        "targets": [
+          {
+            "query": "SELECT count() as value FROM logs WHERE attributes_string['dataset'] = 'windows' AND body LIKE '%windows-logs-canary%' AND timestamp >= now() - INTERVAL 1 HOUR GROUP BY timestamp ORDER BY timestamp",
+            "legend": "Canaries per Hour"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "unit": "short",
+            "min": 0
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 6,
+          "y": 0
+        }
+      },
+      {
+        "id": 3,
+        "title": "Recent Canary Entries",
+        "type": "table",
+        "targets": [
+          {
+            "query": "SELECT fromUnixTimestamp64Nano(timestamp) as timestamp, body FROM logs WHERE attributes_string['dataset'] = 'windows' AND body LIKE '%windows-logs-canary%' ORDER BY timestamp DESC LIMIT 10",
+            "legend": "Recent Canaries"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 6,
+          "x": 18,
+          "y": 0
+        }
+      },
+      {
+        "id": 4,
+        "title": "Windows Event Log Volume",
+        "type": "graph",
+        "targets": [
+          {
+            "query": "SELECT count() as value FROM logs WHERE attributes_string['dataset'] = 'windows' AND timestamp >= now() - INTERVAL 1 HOUR GROUP BY timestamp ORDER BY timestamp",
+            "legend": "Total Windows Logs"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "unit": "short",
+            "min": 0
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 8
+        }
+      },
+      {
+        "id": 5,
+        "title": "Canary Health Status",
+        "type": "stat",
+        "targets": [
+          {
+            "query": "SELECT CASE WHEN count() > 0 THEN 1 ELSE 0 END as value FROM logs WHERE attributes_string['dataset'] = 'windows' AND body LIKE '%windows-logs-canary%' AND timestamp >= now() - INTERVAL 15 MINUTE",
+            "legend": "Health Status"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "steps": [
+                {
+                  "color": "red",
+                  "value": 0
+                },
+                {
+                  "color": "green",
+                  "value": 1
+                }
+              ]
+            },
+            "mappings": [
+              {
+                "type": "value",
+                "value": "0",
+                "text": "UNHEALTHY"
+              },
+              {
+                "type": "value",
+                "value": "1",
+                "text": "HEALTHY"
+              }
+            ],
+            "unit": "short"
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 6,
+          "x": 12,
+          "y": 8
+        }
+      },
+      {
+        "id": 6,
+        "title": "Alert Status",
+        "type": "stat",
+        "targets": [
+          {
+            "query": "SELECT CASE WHEN count() < 1 THEN 1 ELSE 0 END as value FROM logs WHERE attributes_string['dataset'] = 'windows' AND body LIKE '%windows-logs-canary%' AND timestamp >= now() - INTERVAL 1 HOUR",
+            "legend": "Alert Status"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "steps": [
+                {
+                  "color": "green",
+                  "value": 0
+                },
+                {
+                  "color": "red",
+                  "value": 1
+                }
+              ]
+            },
+            "mappings": [
+              {
+                "type": "value",
+                "value": "0",
+                "text": "OK"
+              },
+              {
+                "type": "value",
+                "value": "1",
+                "text": "ALERT"
+              }
+            ],
+            "unit": "short"
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 6,
+          "x": 18,
+          "y": 8
+        }
+      },
+      {
+        "id": 7,
+        "title": "Canary Generation Timeline",
+        "type": "graph",
+        "targets": [
+          {
+            "query": "SELECT fromUnixTimestamp64Nano(timestamp) as timestamp, count() as value FROM logs WHERE attributes_string['dataset'] = 'windows' AND body LIKE '%windows-logs-canary%' AND timestamp >= now() - INTERVAL 6 HOUR GROUP BY timestamp ORDER BY timestamp",
+            "legend": "Canaries Generated"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "unit": "short",
+            "min": 0
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 24,
+          "x": 0,
+          "y": 16
+        }
+      }
+    ],
+    "annotations": {
+      "list": [
+        {
+          "name": "Canary Test Runs",
+          "datasource": "logs",
+          "enable": true,
+          "expr": "attributes_string['dataset'] = 'windows' AND body LIKE '%windows-logs-canary%'",
+          "titleFormat": "Canary Test",
+          "textFormat": "{{ .Body }}"
+        }
+      ]
+    },
+    "links": [
+      {
+        "title": "SigNoz Logs Query",
+        "url": "http://localhost:8080/logs?query=attributes_string['dataset']%20%3D%20'windows'%20AND%20body%20LIKE%20'%25windows-logs-canary%25'"
+      },
+      {
+        "title": "Windows Logs Canary Alert",
+        "url": "http://localhost:8080/alerts"
+      },
+      {
+        "title": "Task Scheduler Status",
+        "url": "http://localhost:8080/logs?query=body%20LIKE%20'%25Task%20Scheduler%25'"
+      }
+    ]
+  }
+}

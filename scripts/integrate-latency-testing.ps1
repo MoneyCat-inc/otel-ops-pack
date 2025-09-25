@@ -298,7 +298,7 @@ function Clear-OldData {
     
     # Clean up old alert files (keep last 10)
     if (Test-Path $config.paths.alerts) {
-        $alertDir = Split-Path $config.paths.alerts -Parent
+        $alertDir = Split-Path -Path $config.paths.alerts -Parent
         $alertFiles = Get-ChildItem $alertDir -Filter "latency-alerts*.json" | Sort-Object LastWriteTime -Descending
         if ($alertFiles.Count -gt 10) {
             $toDelete = $alertFiles | Select-Object -Skip 10
@@ -352,3 +352,4 @@ switch ($Action) {
 }
 
 Write-Host "`n[OK] Integration script completed" -ForegroundColor Green
+

@@ -14,8 +14,8 @@ services:
       - NVIDIA_DRIVER_CAPABILITIES=compute,utility
       - CUDA_VISIBLE_DEVICES=0
     volumes:
-      - ./gpu-buffers:/app/gpu-buffers
-      - ./sidecars/compression:/app/sidecars/compression
+      - C:/otel/gpu-buffers:/app/gpu-buffers
+      - C:/otel/sidecars/compression:/app/sidecars/compression
     working_dir: /app/sidecars/compression
     command: python3 compression_sidecar.py
     ports:
@@ -40,8 +40,8 @@ services:
       - NVIDIA_DRIVER_CAPABILITIES=compute,utility
       - CUDA_VISIBLE_DEVICES=0
     volumes:
-      - ./gpu-buffers:/app/gpu-buffers
-      - ./sidecars/aggregation:/app/sidecars/aggregation
+      - C:/otel/gpu-buffers:/app/gpu-buffers
+      - C:/otel/sidecars/aggregation:/app/sidecars/aggregation
     working_dir: /app/sidecars/aggregation
     command: python3 aggregation_sidecar.py
     ports:
@@ -66,8 +66,8 @@ services:
       - NVIDIA_DRIVER_CAPABILITIES=compute,utility
       - CUDA_VISIBLE_DEVICES=0
     volumes:
-      - ./gpu-buffers:/app/gpu-buffers
-      - ./sidecars/inference:/app/sidecars/inference
+      - C:/otel/gpu-buffers:/app/gpu-buffers
+      - C:/otel/sidecars/inference:/app/sidecars/inference
     working_dir: /app/sidecars/inference
     command: python3 inference_sidecar.py
     ports:

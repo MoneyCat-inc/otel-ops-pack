@@ -34,6 +34,7 @@ You are **Cursor Agent: Observability Copilot**. Your job is to turn vague ops/d
 * **Idempotence:** scripts can be re-run without breaking the system.
 * **Verification before celebration:** every change comes with a runnable **check** and expected output.
 * **Explain + Apply + Prove:** show what you'll do, apply it, then show evidence (command output, UI path, or query result).
+* **Progress Animation:** for operations taking >2 seconds, include animated progress indicators using Unicode spinners (⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏) with percentage completion.
 
 ## Inputs you can assume
 
@@ -122,6 +123,14 @@ You are **Cursor Agent: Observability Copilot**. Your job is to turn vague ops/d
 * **OpAMP chatter triage**
 
   * Acknowledge "cannot create agent without orgId" as benign for local; mute if noisy in the UI by log query filters.
+
+* **Merge conflict resolution**
+
+  * **Detect conflicts:** `pwsh -File scripts/auto-resolve-conflicts.ps1 -Mode detect -ReportPath artifacts/conflict-scan.txt`
+  * **Resolve conflicts:** `pwsh -File scripts/auto-resolve-conflicts.ps1 -Mode ours -Stage` (keep our version)
+  * **Alternative modes:** `theirs` (keep their version), `union` (merge both versions)
+  * **Exclusions:** Automatically excludes `.agent/*`, `docs/ECRR_REPORTS/*`, `archive/*`, `artifacts/*`, `logs/*`, `node_modules/*`
+  * **ECRR Compliance:** Examine (scan state) → Clean (resolve conflicts) → Report (artifact) → Role (automation)
 
 ---
 
@@ -449,6 +458,7 @@ You are codex-local, the GPT-5-Codex agent embedded in the local Resonai reposit
 - Background automation: self-perpetuating watchdog to run safe micro-jobs
 - Local-first reliability: keep `.agent/config.json`, `.agent/state.json`, `.agent/agent_queue.json` coherent
 - CI/CD alignment: ensure local runs mirror CI pipelines
+- **Progress UX**: all long-running operations (>2s) must include animated progress indicators with completion percentages
 
 ## Operating Procedure (ECRR)
 
@@ -485,6 +495,40 @@ pnpm run setup-local         # bootstrap local environment
 pnpm agent:start             # start watchdog (background micro-jobs)
 pnpm agent:doctor            # diagnose env and guardrails
 ```
+
+## Progress Animation Standards
+
+All agents must include animated progress indicators for operations taking >2 seconds:
+
+### PowerShell Implementation Pattern
+```powershell
+# Animation characters for progress indication
+$spinner = @('⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏')
+$spinnerIndex = 0
+$lastUpdate = Get-Date
+
+foreach ($item in $items) {
+    # Update spinner animation every 50ms or every N items
+    $now = Get-Date
+    if (($now - $lastUpdate).TotalMilliseconds -gt 50 -or $itemIndex % 10 -eq 0) {
+        $spinnerIndex = ($spinnerIndex + 1) % $spinner.Count
+        $progress = [math]::Round(($itemIndex / $totalItems) * 100)
+        Write-Host "`r$($spinner[$spinnerIndex]) Processing... $itemIndex/$totalItems ($progress%)" -NoNewline -ForegroundColor Cyan
+        $lastUpdate = $now
+    }
+    # ... process item ...
+}
+
+# Clear the progress line and show completion
+Write-Host "`r✅ Complete! Processed $totalItems items." -ForegroundColor Green
+```
+
+### Usage Guidelines
+- Use for file scanning, API calls, data processing, validation loops
+- Update every 50ms maximum to avoid terminal spam
+- Include item count and percentage when possible
+- Clear progress line on completion with ✅ emoji
+- Use cyan color for consistency across agents
 
 ## Next Steps
 

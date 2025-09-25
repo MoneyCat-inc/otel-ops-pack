@@ -4,7 +4,10 @@
 
 param(
   [string]$Candidate = "C:\otel\config.candidate.yaml",
-  [switch]$NoCanary
+  [switch]$NoCanary,
+  [int]$BatchTimeoutMs,
+  [int]$SendBatchSize,
+  [int]$SendBatchMaxSize
 )
 
 $ErrorActionPreference = "Stop"
@@ -27,6 +30,25 @@ if (-not (Test-Path $Candidate)) { Write-Error "Candidate not found: $Candidate"
 
 # Log the candidate path being used
 WL ("Candidate path: {0}" -f $Candidate)
+
+# Optionally rewrite batch settings in candidate for A/B runs
+if ($PSBoundParameters.ContainsKey('BatchTimeoutMs') -or $PSBoundParameters.ContainsKey('SendBatchSize') -or $PSBoundParameters.ContainsKey('SendBatchMaxSize')) {
+  WL "Applying batch overrides to candidate"
+  $raw = Get-Content -LiteralPath $Candidate -Raw
+  if ($PSBoundParameters.ContainsKey('BatchTimeoutMs')) {
+    $raw = [regex]::Replace($raw, "(?m)^(\s*batch:\s*[\s\S]*?^\s*timeout:)\s*\S+", ('$1 {0}ms' -f $BatchTimeoutMs))
+  }
+  if ($PSBoundParameters.ContainsKey('SendBatchSize')) {
+    $raw = [regex]::Replace($raw, "(?m)^(\s*batch:\s*[\s\S]*?^\s*send_batch_size:)\s*\d+", ('$1 {0}' -f $SendBatchSize))
+  }
+  if ($PSBoundParameters.ContainsKey('SendBatchMaxSize')) {
+    $raw = [regex]::Replace($raw, "(?m)^(\s*batch:\s*[\s\S]*?^\s*send_batch_max_size:)\s*\d+", ('$1 {0}' -f $SendBatchMaxSize))
+  }
+  $tmp = [System.IO.Path]::ChangeExtension($Candidate, '.ab.yaml')
+  $raw | Set-Content -LiteralPath $tmp -Encoding UTF8
+  WL ("Candidate overridden -> {0}" -f $tmp)
+  $Candidate = $tmp
+}
 
 # Validate config (newer collectors support 'validate')
 try {

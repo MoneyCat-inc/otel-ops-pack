@@ -226,7 +226,7 @@ switch ($OutputFormat) {
 
 # Save alerts to file
 if ($alerts.Count -gt 0) {
-    $alertDir = Split-Path $AlertFile -Parent
+    $alertDir = Split-Path -Path $AlertFile -Parent
     if (-not (Test-Path $alertDir)) {
         New-Item -ItemType Directory -Path $alertDir -Force | Out-Null
     }
@@ -250,3 +250,4 @@ if ($summary.regressions -gt 0 -or $summary.slaViolations -gt 0) {
     Write-Host "`n[OK] No regressions detected" -ForegroundColor Green
     exit 0
 }
+

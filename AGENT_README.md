@@ -39,6 +39,10 @@ To pause the agent, create a `.agent/LOCK` file:
 touch .agent/LOCK
 ```
 
+## Progress Feedback Standard
+
+Long-running tasks (>2 seconds) executed by Cursor-Assistant must stream progress using the shared Unicode spinner set (`⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏`) and percentage completion so operators can observe movement in CI logs. Mirror the sample implementation in `AGENTS.md` or wrap loops with a timer helper before new automation ships.
+
 To resume, simply delete the lock file:
 ```bash
 rm .agent/LOCK

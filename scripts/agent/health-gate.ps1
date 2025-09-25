@@ -19,7 +19,7 @@ try {
 # 2) OTel wiring health
 Write-Host "[health-gate] Running OTel wiring verification..."
 try {
-    pwsh -File scripts/verify-wiring.ps1 | Tee-Object -FilePath artifacts/wiring-verify.log
+    pwsh -File scripts/verify-wiring.ps1 -OtelOnly | Tee-Object -FilePath artifacts/wiring-verify.log
     Write-Host "[health-gate] OTel wiring: OK"
 } catch {
     Write-Host "[health-gate] OTel wiring: FAILED - $($_.Exception.Message)"
@@ -33,7 +33,7 @@ if (-not (Test-Path "artifacts/wiring-verify.txt")) {
 }
 
 $verifyContent = Get-Content "artifacts/wiring-verify.txt" -Raw
-if ($verifyContent -notmatch "== Wiring verification (PASSED|PARTIAL) ==") {
+if ($verifyContent -notmatch "== (Wiring|OTel wiring) verification (PASSED|PARTIAL) ==") {
     Write-Host "[health-gate] OTel wiring verification failed; not enqueuing monitoring job."
     Write-Host "[health-gate] Last 10 lines of verification:"
     $verifyContent -split "`n" | Select-Object -Last 10 | ForEach-Object { Write-Host "  $_" }

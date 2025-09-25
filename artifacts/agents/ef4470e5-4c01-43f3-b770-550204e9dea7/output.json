@@ -1,0 +1,15 @@
+{
+  "results": {
+    "tokensUsed": 300,
+    "healthChecks": 5,
+    "issuesFound": 0,
+    "maintenanceTasks": 2
+  },
+  "goal": "Monitor system health and perform maintenance tasks",
+  "logs": [
+    "Care agent completed health monitoring and maintenance"
+  ],
+  "executedAt": 1758746447078,
+  "mode": "Care",
+  "ticketId": "ef4470e5-4c01-43f3-b770-550204e9dea7"
+}

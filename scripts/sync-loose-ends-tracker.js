@@ -127,7 +127,7 @@ function serialize({ lines, rows }) {
   const md = fs.readFileSync(TRACKER, 'utf8');
   const parsed = parseTable(md);
   if (parsed.start === -1) {
-    console.info('Tracker table not found; no changes.');
+    console.log('Tracker table not found; no changes.');
     return;
   }
   const issues = await listAllIssues();
@@ -135,9 +135,9 @@ function serialize({ lines, rows }) {
   const output = serialize(parsed);
   if (output !== md) {
     fs.writeFileSync(TRACKER, output, 'utf8');
-    console.info('Tracker updated from issues.');
+    console.log('Tracker updated from issues.');
   } else {
-    console.info('No changes to tracker.');
+    console.log('No changes to tracker.');
   }
 })().catch(err => {
   console.error(err);

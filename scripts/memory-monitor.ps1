@@ -7,6 +7,9 @@ param(
     [string]$OtlpEndpoint = "http://localhost:5318/v1/logs"
 )
 
+# Import shared spinner toolkit
+. (Join-Path $PSScriptRoot 'spinner-toolkit.ps1')
+
 function Send-MemoryAlert {
     param(
         [double]$MemoryUsagePercent,

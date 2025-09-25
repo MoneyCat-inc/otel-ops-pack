@@ -1,0 +1,24 @@
+# Optional per-project Collector (NOT required). Default flow uses shared Windows Collector.
+# It tails this project's logs and forwards to SigNoz (WSL) at 14317.
+receivers:
+  filelog:
+    include: [ 'C:/otel/projects/payments-dev/logs/**/*.log' ]
+    start_at: beginning
+    operators:
+      - type: move
+        from: attributes[""log.file.path""]
+        to: resource[""log.file.path""]
+exporters:
+  otlp/signoz:
+    endpoint: http://localhost:14317
+    tls:
+      insecure: true
+processors:
+  batch:
+    timeout: 200ms
+service:
+  pipelines:
+    logs:
+      receivers: [filelog]
+      processors: [batch]
+      exporters: [otlp/signoz]

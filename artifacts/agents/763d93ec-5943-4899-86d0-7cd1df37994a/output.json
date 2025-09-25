@@ -1,0 +1,14 @@
+{
+  "results": {
+    "tokensUsed": 150,
+    "response": "Hello! I'm here to help with your Provide conversational assistance with appropriate humor and context awareness request.",
+    "humorEnabled": true
+  },
+  "goal": "Provide conversational assistance with appropriate humor and context awareness",
+  "logs": [
+    "Companion agent provided conversational assistance"
+  ],
+  "executedAt": 1758746444675,
+  "mode": "Companion",
+  "ticketId": "763d93ec-5943-4899-86d0-7cd1df37994a"
+}

@@ -1,0 +1,35 @@
+services:
+  clickhouse:
+    image: clickhouse/clickhouse-server:25.5.6
+    ports:
+      - "9000:9000"
+      - "8123:8123"
+    restart: unless-stopped
+
+  signoz-otel-collector:
+    image: signoz/signoz-otel-collector:0.95.0
+    depends_on:
+      - clickhouse
+    ports:
+      - "4317:4317"     # OTLP gRPC
+      - "4318:4318"     # OTLP HTTP
+    command:
+      # Build config entirely via --set overrides (no file mounts)
+      - --set=receivers.otlp.protocols.http.endpoint=0.0.0.0:4318
+      - --set=receivers.otlp.protocols.grpc.endpoint=0.0.0.0:4317
+      - --set=processors.batch.timeout=50ms
+      - --set=processors.batch.send_batch_max_size=1024
+      - --set=exporters.clickhouse.endpoint=tcp://clickhouse:9000?database=signoz_traces
+      - --set=exporters.clickhouse.logs_endpoint=tcp://clickhouse:9000?database=signoz_logs
+      - --set=exporters.clickhouse.metrics_endpoint=tcp://clickhouse:9000?database=signoz_metrics
+      - --set=exporters.clickhouse.ttl=168h
+      - --set=service.pipelines.metrics.receivers=[otlp]
+      - --set=service.pipelines.metrics.processors=[batch]
+      - --set=service.pipelines.metrics.exporters=[clickhouse]
+      - --set=service.pipelines.logs.receivers=[otlp]
+      - --set=service.pipelines.logs.processors=[batch]
+      - --set=service.pipelines.logs.exporters=[clickhouse]
+      - --set=service.pipelines.traces.receivers=[otlp]
+      - --set=service.pipelines.traces.processors=[batch]
+      - --set=service.pipelines.traces.exporters=[clickhouse]
+    restart: unless-stopped

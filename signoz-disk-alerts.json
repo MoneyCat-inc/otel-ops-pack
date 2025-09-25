@@ -1,0 +1,57 @@
+{
+  "alerts": [
+    {
+      "name": "Disk Usage Warning",
+      "description": "Alert when disk usage exceeds 80%",
+      "query": "count by (drive) (attributes.dataset=\"disk-monitor\" and attributes.status=\"warning\") > 0",
+      "severity": "warning",
+      "duration": "1m"
+    },
+    {
+      "name": "Disk Usage Critical",
+      "description": "Alert when disk usage exceeds 90%",
+      "query": "count by (drive) (attributes.dataset=\"disk-monitor\" and attributes.status=\"critical\") > 0",
+      "severity": "critical",
+      "duration": "30s"
+    },
+    {
+      "name": "Disk Monitor Offline",
+      "description": "Alert when disk monitoring stops reporting",
+      "query": "count by (attributes.dataset) (attributes.dataset=\"disk-monitor\") == 0",
+      "severity": "warning",
+      "duration": "5m"
+    }
+  ],
+  "dashboards": [
+    {
+      "name": "Disk Monitoring Dashboard",
+      "panels": [
+        {
+          "title": "Disk Usage by Drive",
+          "query": "attributes.percent_used by (attributes.drive) (attributes.dataset=\"disk-monitor\")",
+          "type": "gauge"
+        },
+        {
+          "title": "Disk Usage Trend (24h)",
+          "query": "attributes.percent_used by (attributes.drive) (attributes.dataset=\"disk-monitor\")",
+          "type": "line"
+        },
+        {
+          "title": "Free Space by Drive",
+          "query": "attributes.free_gb by (attributes.drive) (attributes.dataset=\"disk-monitor\")",
+          "type": "bar"
+        },
+        {
+          "title": "Disk Status Count",
+          "query": "count by (attributes.status) (attributes.dataset=\"disk-monitor\")",
+          "type": "pie"
+        },
+        {
+          "title": "Recent Disk Alerts",
+          "query": "attributes.message by (attributes.drive, attributes.status) (attributes.dataset=\"disk-monitor\" and attributes.status!=\"ok\")",
+          "type": "table"
+        }
+      ]
+    }
+  ]
+}

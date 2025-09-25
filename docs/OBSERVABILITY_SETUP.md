@@ -28,7 +28,7 @@ Resonai (Port 3003) → OTel Collector (14317/14318) → SigNoz (8080)
 - File logs (`C:\logs\**\*.log`)
 
 **Exporters**:
-- OTLP to SigNoz (port 4317)
+- OTLP to SigNoz (gRPC on 4317)
 
 ### 2. SigNoz (Docker/WSL2)
 
@@ -66,7 +66,7 @@ processors:
 
 exporters:
   otlp:
-    endpoint: http://localhost:4317
+    endpoint: localhost:4317
     tls: { insecure: true }
 
 service:

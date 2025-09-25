@@ -85,5 +85,5 @@ if (errors.length) {
   console.error(errors.join('\n'));
   process.exit(1);
 } else {
-  console.info(`✅ ECRR validation passed for ${files.length} report(s).`);
+  console.log(`✅ ECRR validation passed for ${files.length} report(s).`);
 }
