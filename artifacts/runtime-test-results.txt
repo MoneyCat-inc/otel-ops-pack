@@ -1,0 +1,17 @@
+# PowerShell Script Runtime Issues Report
+Generated: 2025-09-25 03:06:18
+Total Scripts Tested: 1
+Errors Found: 0
+
+## Summary
+0 scripts have runtime issues out of 1 tested scripts.
+
+## Detailed Results
+### quick-monitor.ps1
+- **Status**: ✅ Command found
+- **Path**: scripts\quick-monitor.ps1
+- **Warnings**:
+  - Syntax OK
+  - Hardcoded paths detected
+  - Limited parameter validation
+

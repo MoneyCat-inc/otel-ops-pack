@@ -1,0 +1,1037 @@
+# PowerShell Script Syntax Check Report
+Generated: 2025-09-25 03:05:12
+Total Scripts: 257
+Errors Found: 0
+
+## Summary
+0 scripts have syntax errors out of 257 total scripts.
+
+## Detailed Results
+### _bt.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\_bt.ps1
+
+### _debug.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\_debug.ps1
+
+### adaptive-canary-monitor.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\adaptive-canary-monitor.ps1
+
+### aggressive-disk-cleanup.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\aggressive-disk-cleanup.ps1
+
+### alert-escalation-manager.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\alert-escalation-manager.ps1
+
+### alert-testing-system.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\alert-testing-system.ps1
+
+### alert-threshold-manager.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\alert-threshold-manager.ps1
+
+### alert-webhook-server.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\alert-webhook-server.ps1
+
+### analyze-canary-baseline.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\analyze-canary-baseline.ps1
+
+### analyze-e2-results.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\analyze-e2-results.ps1
+
+### analyze-program-files.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\analyze-program-files.ps1
+
+### archive-tools-direct.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\archive-tools-direct.ps1
+
+### auto-bot.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\auto-bot.ps1
+
+### auto-resolve-conflicts.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\auto-resolve-conflicts.ps1
+
+### automated-conflict-detector.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\automated-conflict-detector.ps1
+
+### bq_export.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\bq_export.ps1
+
+### canary-ecrr.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\canary-ecrr.ps1
+
+### canary-monitor-action.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\canary-monitor-action.ps1
+
+### canary-pattern-drills.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\canary-pattern-drills.ps1
+
+### canary-pattern-library.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\canary-pattern-library.ps1
+
+### capture-dashboard-screenshot.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\capture-dashboard-screenshot.ps1
+
+### capture-wer-phoneexperience.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\capture-wer-phoneexperience.ps1
+
+### check-canary-logs.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\check-canary-logs.ps1
+
+### check-latency-readiness.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\check-latency-readiness.ps1
+
+### check-syntax-errors.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\check-syntax-errors.ps1
+
+### ci-verify.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\ci-verify.ps1
+
+### cleanup-artifacts.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\cleanup-artifacts.ps1
+
+### collector-health-monitor.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\collector-health-monitor.ps1
+
+### comfort-cat-sanity-sweep.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\comfort-cat-sanity-sweep.ps1
+
+### comfort-checklist.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\comfort-checklist.ps1
+
+### comprehensive-system-monitor.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\comprehensive-system-monitor.ps1
+
+### continuous-background-check.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\continuous-background-check.ps1
+
+### create-canary-task-simple.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\create-canary-task-simple.ps1
+
+### create-loose-end-issues.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\create-loose-end-issues.ps1
+
+### daily-iona-verification.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\daily-iona-verification.ps1
+
+### deep-clean.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\deep-clean.ps1
+
+### deploy-auto-bot.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\deploy-auto-bot.ps1
+
+### deploy-fractal-drift-monitors.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\deploy-fractal-drift-monitors.ps1
+
+### deploy-gpu-sidecars.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\deploy-gpu-sidecars.ps1
+
+### dev-up.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\dev-up.ps1
+
+### dev.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\dev.ps1
+
+### disk-cleanup-analyzer.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\disk-cleanup-analyzer.ps1
+
+### disk-cleanup-audit.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\disk-cleanup-audit.ps1
+
+### e2-ratio-monitoring-dashboard.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\e2-ratio-monitoring-dashboard.ps1
+
+### e2-ratio-sweep-enhanced.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\e2-ratio-sweep-enhanced.ps1
+
+### e2-ratio-sweep-simple.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\e2-ratio-sweep-simple.ps1
+
+### e2-ratio-sweep.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\e2-ratio-sweep.ps1
+
+### e2-ratio-test.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\e2-ratio-test.ps1
+
+### e2-test-simple.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\e2-test-simple.ps1
+
+### ecrr-doctor.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\ecrr-doctor.ps1
+
+### ecrr-exclusions.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\ecrr-exclusions.ps1
+
+### ecrr-export-checklist.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\ecrr-export-checklist.ps1
+
+### ecrr-failure-drill.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\ecrr-failure-drill.ps1
+
+### ecrr-manage.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\ecrr-manage.ps1
+
+### ecrr-task-automation.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\ecrr-task-automation.ps1
+
+### emergency-disk-cleanup-auto.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\emergency-disk-cleanup-auto.ps1
+
+### emergency-disk-cleanup.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\emergency-disk-cleanup.ps1
+
+### emit-signoz-logs.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\emit-signoz-logs.ps1
+
+### emit-signoz-metrics.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\emit-signoz-metrics.ps1
+
+### emit-signoz-traces.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\emit-signoz-traces.ps1
+
+### enable-dma-protection.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\enable-dma-protection.ps1
+
+### enable-kernel-dma-protection.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\enable-kernel-dma-protection.ps1
+
+### evaluate-dma-protection.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\evaluate-dma-protection.ps1
+
+### execute-cleanup.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\execute-cleanup.ps1
+
+### execute-pattern-drills.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\execute-pattern-drills.ps1
+
+### export-dashboard-config.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\export-dashboard-config.ps1
+
+### export-errors.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\export-errors.ps1
+
+### extract-doe-measurements.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\extract-doe-measurements.ps1
+
+### extract-latency-measurements.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\extract-latency-measurements.ps1
+
+### final-deployment-checklist.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\final-deployment-checklist.ps1
+
+### find-largest-files.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\find-largest-files.ps1
+
+### find-near-duplicate-paths.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\find-near-duplicate-paths.ps1
+
+### fix-docker-mount-issue.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\fix-docker-mount-issue.ps1
+
+### fix-monolith-d-issues.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\fix-monolith-d-issues.ps1
+
+### fix-scheduled-task.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\fix-scheduled-task.ps1
+
+### fix-signoz-alerts.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\fix-signoz-alerts.ps1
+
+### fractal-drift-monitor.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\fractal-drift-monitor.ps1
+
+### generate-alert-pack.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\generate-alert-pack.ps1
+
+### generate-dashboard.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\generate-dashboard.ps1
+
+### generate-e2-ratio-report-simple.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\generate-e2-ratio-report-simple.ps1
+
+### generate-e2-ratio-report.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\generate-e2-ratio-report.ps1
+
+### generate-ecrr-key.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\generate-ecrr-key.ps1
+
+### generate-synthetic-load.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\generate-synthetic-load.ps1
+
+### generate-tasks-from-ecrr.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\generate-tasks-from-ecrr.ps1
+
+### generate-weekly-report.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\generate-weekly-report.ps1
+
+### gpu-health-monitor.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\gpu-health-monitor.ps1
+
+### gpu-watchdog.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\gpu-watchdog.ps1
+
+### health-check-simple.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\health-check-simple.ps1
+
+### import-and-verify-alerts.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\import-and-verify-alerts.ps1
+
+### import-canary-alert.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\import-canary-alert.ps1
+
+### import-canary-dashboard.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\import-canary-dashboard.ps1
+
+### import-dashboard.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\import-dashboard.ps1
+
+### import-disk-alerts.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\import-disk-alerts.ps1
+
+### import-queue-pressure-dashboard.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\import-queue-pressure-dashboard.ps1
+
+### import-windows-logs-canary-alert.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\import-windows-logs-canary-alert.ps1
+
+### init-project-env.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\init-project-env.ps1
+
+### install-service.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\install-service.ps1
+
+### integrate-latency-testing.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\integrate-latency-testing.ps1
+
+### iona-supervisor-runner.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\iona-supervisor-runner.ps1
+
+### list-tasks.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\list-tasks.ps1
+
+### log-error.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\log-error.ps1
+
+### log-rotation.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\log-rotation.ps1
+
+### manage-gpu-sidecars.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\manage-gpu-sidecars.ps1
+
+### manage-latency-baselines.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\manage-latency-baselines.ps1
+
+### manage-tasks.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\manage-tasks.ps1
+
+### manual-cleanup-guide.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\manual-cleanup-guide.ps1
+
+### memory-monitor.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\memory-monitor.ps1
+
+### merge-comfort-cat.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\merge-comfort-cat.ps1
+
+### metrics.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\metrics.ps1
+
+### monitor-analytics-ingestion.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\monitor-analytics-ingestion.ps1
+
+### monitor-disk-usage.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\monitor-disk-usage.ps1
+
+### monitor-doe-progress.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\monitor-doe-progress.ps1
+
+### monitor-latency-regressions.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\monitor-latency-regressions.ps1
+
+### monitor-optimized-pipeline.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\monitor-optimized-pipeline.ps1
+
+### monitor-parser-errors.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\monitor-parser-errors.ps1
+
+### monitor-pipeline-health.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\monitor-pipeline-health.ps1
+
+### monitor-signoz-canary-remediate-wrapper.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\monitor-signoz-canary-remediate-wrapper.ps1
+
+### monitor-signoz-canary-remediate.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\monitor-signoz-canary-remediate.ps1
+
+### monitor-signoz-canary-scheduled.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\monitor-signoz-canary-scheduled.ps1
+
+### monitor-signoz-canary.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\monitor-signoz-canary.ps1
+
+### monitor-signoz-setup.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\monitor-signoz-setup.ps1
+
+### monitor-system-health.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\monitor-system-health.ps1
+
+### monitor-windows-logs-canary.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\monitor-windows-logs-canary.ps1
+
+### morning-coffee.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\morning-coffee.ps1
+
+### network-adapter-audit.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\network-adapter-audit.ps1
+
+### new-ab-chart.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\new-ab-chart.ps1
+
+### nightly-ecrr-validation.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\nightly-ecrr-validation.ps1
+
+### notification-manager.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\notification-manager.ps1
+
+### open-signoz-logs.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\open-signoz-logs.ps1
+
+### otel-health-check.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\otel-health-check.ps1
+
+### otel-health.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\otel-health.ps1
+
+### otel-listener-summary.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\otel-listener-summary.ps1
+
+### otel.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\otel.ps1
+
+### OTelHealthCanary.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\OTelHealthCanary.ps1
+
+### port-conflict-check.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\port-conflict-check.ps1
+
+### pre-commit-powershell.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\pre-commit-powershell.ps1
+
+### process-ecrr-reports.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\process-ecrr-reports.ps1
+
+### production-monitoring.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\production-monitoring.ps1
+
+### publish-e2-results.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\publish-e2-results.ps1
+
+### quarterly-archive-audit.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\quarterly-archive-audit.ps1
+
+### quick-disk-analysis.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\quick-disk-analysis.ps1
+
+### quick-monitor.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\quick-monitor.ps1
+
+### quick-tidy.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\quick-tidy.ps1
+
+### quick-verify.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\quick-verify.ps1
+
+### run-AB-batch.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\run-AB-batch.ps1
+
+### run-collector.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\run-collector.ps1
+
+### run-latency-test-example.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\run-latency-test-example.ps1
+
+### run-otel-doe-enhanced.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\run-otel-doe-enhanced.ps1
+
+### run-otel-doe.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\run-otel-doe.ps1
+
+### sanity-clean.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\sanity-clean.ps1
+
+### sanity-scan.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\sanity-scan.ps1
+
+### scaffold-comfort-cat.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\scaffold-comfort-cat.ps1
+
+### schedule-adaptive-monitor.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\schedule-adaptive-monitor.ps1
+
+### schedule-canary-ecrr.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\schedule-canary-ecrr.ps1
+
+### schedule-canary-simple.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\schedule-canary-simple.ps1
+
+### schedule-canary.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\schedule-canary.ps1
+
+### schedule-cleanup-artifacts.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\schedule-cleanup-artifacts.ps1
+
+### schedule-ecrr-generation.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\schedule-ecrr-generation.ps1
+
+### schedule-monitoring-no-admin.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\schedule-monitoring-no-admin.ps1
+
+### schedule-monitoring.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\schedule-monitoring.ps1
+
+### schedule-parser-monitoring.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\schedule-parser-monitoring.ps1
+
+### schedule-signoz-canary-monitor.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\schedule-signoz-canary-monitor.ps1
+
+### schedule-wer-phoneexperience.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\schedule-wer-phoneexperience.ps1
+
+### schedule-windows-logs-canary.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\schedule-windows-logs-canary.ps1
+
+### score-otel-doe-enhanced.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\score-otel-doe-enhanced.ps1
+
+### score-otel-doe.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\score-otel-doe.ps1
+
+### send-otlp-log.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\send-otlp-log.ps1
+
+### setup-automated-monitoring.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\setup-automated-monitoring.ps1
+
+### setup-automation.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\setup-automation.ps1
+
+### setup-branch-protection.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\setup-branch-protection.ps1
+
+### setup-canary-monitoring-schedule.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\setup-canary-monitoring-schedule.ps1
+
+### setup-collector-alerts.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\setup-collector-alerts.ps1
+
+### setup-comprehensive-monitoring.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\setup-comprehensive-monitoring.ps1
+
+### setup-daily-automation.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\setup-daily-automation.ps1
+
+### setup-disk-alerts.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\setup-disk-alerts.ps1
+
+### setup-disk-monitoring.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\setup-disk-monitoring.ps1
+
+### setup-e2-alerts.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\setup-e2-alerts.ps1
+
+### setup-gpu-monitoring.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\setup-gpu-monitoring.ps1
+
+### setup-gpu-sidecars.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\setup-gpu-sidecars.ps1
+
+### setup-iona-scheduled-verification.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\setup-iona-scheduled-verification.ps1
+
+### setup-monitoring.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\setup-monitoring.ps1
+
+### setup-no-admin.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\setup-no-admin.ps1
+
+### setup-notification-channels.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\setup-notification-channels.ps1
+
+### setup-quarterly-audit.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\setup-quarterly-audit.ps1
+
+### setup-scheduled-monitoring-admin.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\setup-scheduled-monitoring-admin.ps1
+
+### setup-scheduled-monitoring.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\setup-scheduled-monitoring.ps1
+
+### setup-signoz-auth.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\setup-signoz-auth.ps1
+
+### setup-signoz-dashboard.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\setup-signoz-dashboard.ps1
+
+### setup-signoz-saved-view.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\setup-signoz-saved-view.ps1
+
+### setup.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\setup.ps1
+
+### signoz-auth-helpers.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\signoz-auth-helpers.ps1
+
+### signoz-canary-failure-drill.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\signoz-canary-failure-drill.ps1
+
+### signoz-dashboard-integration.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\signoz-dashboard-integration.ps1
+
+### signoz-manual-setup-guide.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\signoz-manual-setup-guide.ps1
+
+### simple-archive-audit.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\simple-archive-audit.ps1
+
+### simple-cleanup.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\simple-cleanup.ps1
+
+### simple-memory-alert.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\simple-memory-alert.ps1
+
+### simple-task-generator.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\simple-task-generator.ps1
+
+### simple-task-manager.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\simple-task-manager.ps1
+
+### software-usage-audit.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\software-usage-audit.ps1
+
+### spinner-toolkit.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\spinner-toolkit.ps1
+
+### start-all.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\start-all.ps1
+
+### start-collector-simple.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\start-collector-simple.ps1
+
+### status-otel.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\status-otel.ps1
+
+### steam-games-cleanup.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\steam-games-cleanup.ps1
+
+### stop-all.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\stop-all.ps1
+
+### system-health-check.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\system-health-check.ps1
+
+### task-maintenance-scheduler.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\task-maintenance-scheduler.ps1
+
+### test-alerts.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\test-alerts.ps1
+
+### test-auto-bot.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\test-auto-bot.ps1
+
+### test-automation-simple.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\test-automation-simple.ps1
+
+### test-automation.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\test-automation.ps1
+
+### test-canary-alert.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\test-canary-alert.ps1
+
+### test-collector-status.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\test-collector-status.ps1
+
+### test-disk-alerts.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\test-disk-alerts.ps1
+
+### test-environment.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\test-environment.ps1
+
+### test-file-storage.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\test-file-storage.ps1
+
+### test-gpu-sidecars.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\test-gpu-sidecars.ps1
+
+### test-iona-metrics.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\test-iona-metrics.ps1
+
+### test-otel-integration.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\test-otel-integration.ps1
+
+### test-otlp-wiring.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\test-otlp-wiring.ps1
+
+### test-pattern-drills.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\test-pattern-drills.ps1
+
+### test-signoz-canary-view.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\test-signoz-canary-view.ps1
+
+### test-ssot-gate.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\test-ssot-gate.ps1
+
+### test-yaml-validation.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\test-yaml-validation.ps1
+
+### thinking-animations.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\thinking-animations.ps1
+
+### validate-all.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\validate-all.ps1
+
+### validate-dataset-coverage-24h.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\validate-dataset-coverage-24h.ps1
+
+### validate-production-gpu.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\validate-production-gpu.ps1
+
+### verify-automation.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\verify-automation.ps1
+
+### verify-comfort-cat-setup.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\verify-comfort-cat-setup.ps1
+
+### verify-disk-alerts-setup.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\verify-disk-alerts-setup.ps1
+
+### verify-disk-monitoring.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\verify-disk-monitoring.ps1
+
+### verify-e2-dashboard.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\verify-e2-dashboard.ps1
+
+### verify-full-stack.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\verify-full-stack.ps1
+
+### verify-gpu-pipeline.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\verify-gpu-pipeline.ps1
+
+### verify-hardening.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\verify-hardening.ps1
+
+### verify-integration.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\verify-integration.ps1
+
+### verify-monolith-d-fixes.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\verify-monolith-d-fixes.ps1
+
+### verify-scheduled-tasks.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\verify-scheduled-tasks.ps1
+
+### verify-wiring.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\verify-wiring.ps1
+
+### watch-severity.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\watch-severity.ps1
+
+### windows-logs-canary-test.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\windows-logs-canary-test.ps1
+
+### wire-publisher-to-sweep.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\wire-publisher-to-sweep.ps1
+
+### bringup.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\agent\bringup.ps1
+
+### doctor.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\agent\doctor.ps1
+
+### health-gate.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\agent\health-gate.ps1
+
+### update-status.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\agent\update-status.ps1
+
+### runner.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\agents\runner.ps1
+
+### supervisor.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\agents\supervisor.ps1
+
+### verify-supervisor.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\agents\verify-supervisor.ps1
+
+### ecrr-exclusions-check.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\ci\ecrr-exclusions-check.ps1
+
+### fix-splitpath.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\dev\fix-splitpath.ps1
+
+### collect-evidence.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\ecrr\collect-evidence.ps1
+
+### verify-headers.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\ecrr\verify-headers.ps1
+
+### install-ecrr-alert.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\signoz\install-ecrr-alert.ps1
+
+### install-parser-guard.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\signoz\install-parser-guard.ps1
+
