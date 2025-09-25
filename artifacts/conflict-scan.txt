@@ -1,5 +1,5 @@
 # Merge Conflict Scan Report
-Generated: 2025-09-25 00:54:13 UTC
+Generated: 2025-09-25 03:00:05 UTC
 Mode: detect
 Repository: C:\otel
 
