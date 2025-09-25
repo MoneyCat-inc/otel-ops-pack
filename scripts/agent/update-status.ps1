@@ -1,111 +1,55 @@
-# scripts/agent/update-status.ps1
-# Shared status updater for codex-local and OTel Steward agents
-# Updates .agent/status.json with section-specific health information
+# Status Update Script for Autopilot Agent
+# Updates .agent/status.json with section-specific information
+# Part of the push-button automation system
 
 param(
-    [Parameter(Mandatory=$true)][ValidateSet('env','otel','analytics')][string]$section,
-    [Parameter(Mandatory=$true)][object]$ok,
-    [Parameter(Mandatory=$true)][string]$detail
+    [Parameter(Mandatory=$true)]
+    [string]$Section,
+    
+    [Parameter(Mandatory=$true)]
+    [bool]$Ok,
+    
+    [string]$Detail = "",
+    
+    [string]$StatusFile = ".agent/status.json"
 )
 
-function Convert-ToBoolean {
-    param([object]$Value)
+$ErrorActionPreference = "Stop"
 
-    if ($null -eq $Value) {
-        throw 'Boolean value cannot be null.'
-    }
-
-    if ($Value -is [bool]) {
-        return $Value
-    }
-
-    if ($Value -is [int]) {
-        return $Value -ne 0
-    }
-
-    if ($Value -is [double]) {
-        return [math]::Abs($Value) -gt 0
-    }
-
-    if ($Value -is [string]) {
-        $normalized = $Value.Trim().ToLowerInvariant()
-        switch ($normalized) {
-            'true' { return $true }
-            'false' { return $false }
-            '1' { return $true }
-            '0' { return $false }
-            'ok' { return $true }
-            'pass' { return $true }
-            'passed' { return $true }
-            'success' { return $true }
-            'fail' { return $false }
-            'failed' { return $false }
-            'error' { return $false }
-            default { throw "Cannot convert string '$Value' to boolean. Use true/false or 1/0." }
-        }
-    }
-
-    throw "Cannot convert value of type '$($Value.GetType().FullName)' to boolean."
+# Create status update object
+$statusUpdate = @{
+    timestamp = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
+    section = $Section
+    status = if ($Ok) { "ok" } else { "fail" }
+    details = $Detail
 }
 
-$ErrorActionPreference = 'Stop'
-
-$path = '.agent/status.json'
-$now = (Get-Date).ToString('o')
-$okValue = Convert-ToBoolean -Value $ok
-
-# Initialize status file if it does not exist
-if (-not (Test-Path $path)) {
-    Write-Host '[update-status] Creating initial status file...'
-    $initial = @{
-        version = 1
-        updatedAt = $now
-        sections = @{}
+# Load existing status data
+$statusData = @{}
+if (Test-Path $StatusFile) {
+    try {
+        $statusData = Get-Content $StatusFile -Raw | ConvertFrom-Json
+    } catch {
+        Write-Warning "Could not parse existing status file, creating new one"
+        $statusData = @{}
     }
-    ($initial | ConvertTo-Json -Depth 6) | Set-Content $path -Encoding utf8NoBOM
-}
-
-# Read current status
-try {
-    $obj = Get-Content $path -Raw | ConvertFrom-Json
-} catch {
-    Write-Host '[update-status] Error reading status file, recreating...'
-    $obj = @{
-        version = 1
-        updatedAt = $now
-        sections = @{}
-    }
-}
-
-# Ensure sections object exists
-if (-not $obj.sections) {
-    $obj | Add-Member -NotePropertyName sections -NotePropertyValue (@{}) -Force
 }
 
 # Update the specific section
-$sectionData = @{
-    ok = $okValue
-    detail = $detail
-    ts = $now
+$statusData | Add-Member -NotePropertyName $Section -NotePropertyValue $statusUpdate -Force
+
+# Ensure .agent directory exists
+$agentDir = Split-Path $StatusFile -Parent
+if (-not (Test-Path $agentDir)) {
+    New-Item -ItemType Directory -Path $agentDir -Force | Out-Null
 }
 
-$obj.sections | Add-Member -Name $section -Value $sectionData -MemberType NoteProperty -Force
-$obj.updatedAt = $now
+# Save updated status
+$statusData | ConvertTo-Json -Depth 10 | Set-Content $StatusFile
 
-# Write back to file
-try {
-    ($obj | ConvertTo-Json -Depth 6) | Set-Content $path -Encoding utf8NoBOM
-    Write-Host "[update-status] Updated $section section: ok=$okValue, detail='$detail'"
-} catch {
-    Write-Host "[update-status] Error writing status file: $($_.Exception.Message)"
-    exit 1
+# Output confirmation
+$statusText = if ($Ok) { "✅ OK" } else { "❌ FAIL" }
+Write-Host "Updated $Section status: $statusText" -ForegroundColor $(if($Ok){"Green"}else{"Red"})
+if ($Detail) {
+    Write-Host "  Detail: $Detail" -ForegroundColor Gray
 }
-
-# Optional: Display current status summary
-Write-Host '[update-status] Current status summary:'
-foreach ($key in $obj.sections.PSObject.Properties.Name) {
-    $sec = $obj.sections.$key
-    $symbol = if ($sec.ok) { '+' } else { '-' }
-    Write-Host ("  {0} {1}: {2}" -f $symbol, $key, $sec.detail)
-}
-

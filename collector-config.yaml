@@ -196,23 +196,23 @@ service:
     metrics:
       receivers: [otlp]
       processors: [memory_limiter, batch]
-      exporters: [debug, otlp/sigz]
+      exporters: [otlp/sigz]
 
     traces:
       receivers: [otlp]
       processors: [memory_limiter, tail_sampling, batch]
-      exporters: [debug, otlp/sigz]
+      exporters: [otlp/sigz]
 
     # IONA Supervisor dedicated pipelines for optimized processing
     metrics/iona:
       receivers: [otlp]
       processors: [memory_limiter, resource/iona, batch/iona]
-      exporters: [debug, otlp/sigz]
+      exporters: [otlp/sigz]
 
     traces/iona:
       receivers: [otlp]
       processors: [memory_limiter, resource/iona, tail_sampling, batch/iona]
-      exporters: [debug, otlp/sigz]
+      exporters: [otlp/sigz]
 
 
 

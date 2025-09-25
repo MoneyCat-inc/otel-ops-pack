@@ -14,14 +14,16 @@ services:
     healthcheck:
       test:
         - CMD
-        - wget
-        - --spider
-        - -q
-        - 0.0.0.0:8123/ping
-      interval: 30s
-      timeout: 5s
-      retries: 3
+        - bash
+        - -lc
+        - "clickhouse-client --query 'select 1'"
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 30s
     restart: unless-stopped
+    networks:
+      - otel_default
   signoz:
     image: signoz/signoz:v0.95.0
     container_name: signoz
@@ -47,16 +49,19 @@ services:
         - --spider
         - -q
         - localhost:8080/api/v1/health
-      interval: 30s
-      timeout: 5s
-      retries: 3
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 60s
+    networks:
+      - otel_default
   otel-collector:
     image: signoz/signoz-otel-collector:v0.129.5
     container_name: signoz-otel-collector
     command:
       - --config=/etc/otel-collector-config.yaml
     volumes:
-      - ./signoz-collector-temp.yaml:/etc/otel-collector-config.yaml
+      - ./signoz-collector-fixed.yaml:/etc/otel-collector-config.yaml
     ports:
       - 4317:4317 # OTLP gRPC receiver
       - 4318:4318 # OTLP HTTP receiver
@@ -68,6 +73,22 @@ services:
       signoz:
         condition: service_healthy
     restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD
+        - wget
+        - -qO-
+        - http://localhost:13133/healthz
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 30s
+    networks:
+      - otel_default
 volumes:
   clickhouse_data:
   signoz_data:
+
+networks:
+  otel_default:
+    external: true

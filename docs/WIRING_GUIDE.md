@@ -2,6 +2,12 @@
 
 This guide documents the complete end-to-end wiring of the OTel observability pipeline.
 
+## Quick Reference
+
+- **Host Apps -> SigNoz**: See [OTLP_HOST_WIRING.md](OTLP_HOST_WIRING.md) for direct OTLP wiring
+- **Windows Collector -> SigNoz**: Standard pipeline configuration below
+- **Verification**: Use `scripts/test-otlp-wiring.ps1` for smoke testing
+
 ## Quick Start
 
 ```bash
@@ -45,6 +51,30 @@ pnpm agent:doctor
 - Agent infrastructure
 
 ## Components
+
+### OTLP Host App Wiring
+
+For direct host application -> SigNoz wiring (bypassing Windows collector):
+
+**Quick Test:**
+```powershell
+# Run automated smoke test
+pwsh -File scripts/test-otlp-wiring.ps1 -ServiceName "my-app"
+
+# Manual setup
+$env:OTEL_EXPORTER_OTLP_ENDPOINT = "http://127.0.0.1:4318"
+$env:OTEL_SERVICE_NAME = "my-service"
+```
+
+**Endpoints:**
+- HTTP: `http://127.0.0.1:4318/v1/traces`
+- gRPC: `127.0.0.1:4317`
+
+**Verification:**
+1. SigNoz UI -> Traces -> Search -> Filter: `resource.service.name = 'my-service'`
+2. Look for spans with your application's service name
+
+See [OTLP_HOST_WIRING.md](OTLP_HOST_WIRING.md) for complete documentation.
 
 ### IONA Supervisor Integration
 
@@ -165,3 +195,4 @@ cat ecrr/index.json
 - No external network access required
 - Kill-switch provides immediate control
 - All operations are logged and auditable
+
