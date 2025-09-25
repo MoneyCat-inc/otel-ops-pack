@@ -4,7 +4,7 @@ import path from 'node:path';
 
 test('crossOriginIsolated is true', async ({ page }) => {
   await page.goto('/');
-  const isolated = await page.evaluate(() => (window as any).crossOriginIsolated === true);
+  const isolated = await page.evaluate(() => (window as { crossOriginIsolated?: boolean }).crossOriginIsolated === true);
   const outDir = path.join(process.cwd(), '.artifacts');
   fs.mkdirSync(outDir, { recursive: true });
   fs.writeFileSync(path.join(outDir, 'isolation.txt'), isolated ? '✅' : '❌', 'utf8');
