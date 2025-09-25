@@ -1,0 +1,4 @@
+services:
+  otel-collector:
+    volumes:
+      - ./signoz-collector-fixed.yaml:/etc/otel-collector-config.yaml:ro
