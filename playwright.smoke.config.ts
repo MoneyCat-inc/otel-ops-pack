@@ -7,6 +7,26 @@ const firefoxPreferences = {
   'media.navigator.permission.disabled': true,
   'media.navigator.audio.full_duplex': true,
   'media.autoplay.default': 0,
+  'dom.webnotifications.enabled': false,
+  'media.peerconnection.enabled': false,
+  'browser.cache.disk.enable': false,
+  'browser.cache.memory.enable': false,
+  'network.http.use-cache': false,
+};
+
+const chromePreferences = {
+  'autoplay-policy': 'no-user-gesture-required',
+  'disable-web-security': false,
+  'disable-features': 'VizDisplayCompositor',
+  'disable-background-timer-throttling': true,
+  'disable-backgrounding-occluded-windows': true,
+  'disable-renderer-backgrounding': true,
+  'disable-ipc-flooding-protection': true,
+};
+
+const safariPreferences = {
+  'webkit.webprefs.media_capture_enabled': false,
+  'webkit.webprefs.media_stream_enabled': false,
 };
 
 export default defineConfig({
@@ -39,6 +59,42 @@ export default defineConfig({
           firefoxUserPrefs: {
             ...firefoxPreferences,
           },
+        },
+      },
+    },
+    {
+      name: 'chrome-deterministic',
+      use: {
+        ...devices['Desktop Chrome'],
+        launchOptions: {
+          args: Object.entries(chromePreferences).map(([key, value]) => `--${key}=${value}`),
+        },
+      },
+    },
+    {
+      name: 'webkit-deterministic',
+      use: {
+        ...devices['Desktop Safari'],
+        launchOptions: {
+          webkitArgs: Object.entries(safariPreferences).map(([key, value]) => `--${key}=${value}`),
+        },
+      },
+    },
+    {
+      name: 'mobile-chrome',
+      use: {
+        ...devices['Pixel 5'],
+        launchOptions: {
+          args: Object.entries(chromePreferences).map(([key, value]) => `--${key}=${value}`),
+        },
+      },
+    },
+    {
+      name: 'mobile-safari',
+      use: {
+        ...devices['iPhone 12'],
+        launchOptions: {
+          webkitArgs: Object.entries(safariPreferences).map(([key, value]) => `--${key}=${value}`),
         },
       },
     },
