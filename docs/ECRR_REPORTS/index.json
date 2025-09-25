@@ -79,5 +79,14 @@
     "outcome": "success",
     "branch": "main",
     "commit": "local"
+  },
+  {
+    "key": "ECRR-20250127-DETERMINISTIC-PLAYWRIGHT-SMOKE-LANE-ROLLOUT",
+    "file": "2025-01-27-deterministic-playwright-smoke-lane-rollout.md",
+    "timestamp": "2025-01-27T12:00:00Z",
+    "scope": "deterministic-playwright-smoke-lane-rollout",
+    "outcome": "success",
+    "branch": "docs/ecrr-refresh",
+    "commit": "6bcadc2"
   }
 ]
