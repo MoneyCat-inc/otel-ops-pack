@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Windows OTel to SigNoz observability pipeline with ECRR methodology",
   "scripts": {
+    "agent:doctor": "node scripts/agent/doctor.mjs",
     "pr:new": "node scripts/new-pr.mjs",
     "ecrr:template": "node scripts/ensure-pr-template.mjs",
     "ecrr:drill": "pwsh -File scripts/ecrr-failure-drill.ps1",
@@ -10,7 +11,12 @@
     "canary:report": "Get-Content artifacts/canary-ecrr-report.txt -Tail 10",
     "hygiene": "pwsh ./tools/hygiene.ps1",
     "test:smoke": "playwright test -c playwright.smoke.config.ts",
-    "test:smoke:ci": "playwright test -c playwright.smoke.config.ts --reporter=list",
+    "test:smoke:ci": "playwright test -c playwright.smoke.ci.config.ts",
+    "test:smoke:firefox": "playwright test -c playwright.smoke.config.ts --project=firefox-deterministic",
+    "test:smoke:chrome": "playwright test -c playwright.smoke.config.ts --project=chrome-deterministic",
+    "test:smoke:mobile": "playwright test -c playwright.smoke.config.ts --project=mobile-chrome --project=mobile-safari",
+    "test:vitest": "vitest run --reporter=default --reporter=json --outputFile=.artifacts/vitest-report.json",
+    "test:playwright:ssot": "node scripts/run-playwright-ssot.mjs",
     "tidy": "pwsh -File scripts/quick-tidy.ps1",
     "clean:deep": "pwsh -File scripts/deep-clean.ps1",
     "lint": "eslint . --ext .js,.ts",
@@ -20,13 +26,19 @@
     "monitor:quick": "pwsh -File scripts/quick-monitor.ps1",
     "monitor:full": "pwsh -File scripts/monitor-optimized-pipeline.ps1",
     "monitor:export": "pwsh -File scripts/monitor-optimized-pipeline.ps1 -ExportReport",
-    "preview:dev": "cd preview && npm run dev",
+    "preview:dev": "cd preview && npm install --no-audit --no-fund --silent && npm run dev",
     "preview:serve": "cd preview && npm run serve",
     "preview:build": "cd preview && npm run build",
     "comfort:sync": "pwsh -File scripts/scaffold-comfort-cat.ps1 -Force",
     "comfort:check": "pwsh -File scripts/comfort-checklist.ps1",
     "comfort:scaffold": "pwsh -File scripts/scaffold-comfort-cat.ps1",
-    "comfort:sanity": "pwsh -File scripts/comfort-cat-sanity-sweep.ps1"
+    "comfort:sanity": "pwsh -File scripts/comfort-cat-sanity-sweep.ps1",
+    "wire:init": "node scripts/wire/init.mjs",
+    "wire:verify": "node scripts/wire/verify.mjs",
+    "wire:health": "node scripts/wire/health-check.mjs",
+    "wire:demo": "node scripts/wire/demo.mjs",
+    "agent:start": "node scripts/agent/watchdog.js",
+    "ecrr:wire": "node scripts/ecrr/wire.mjs"
   },
   "keywords": [
     "observability",
@@ -48,6 +60,9 @@
     "jest": "^29.7.0",
     "prettier": "^3.3.3",
     "typescript": "^5.6.2",
-    "typescript-eslint": "^8.44.1"
+    "typescript-eslint": "^8.44.1",
+    "vitest": "^1.6.0"
   }
 }
+
+
