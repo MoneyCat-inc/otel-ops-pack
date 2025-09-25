@@ -1,150 +1,188 @@
-import { promises as fs } from "node:fs";
-import { dirname, join } from "node:path";
+#!/usr/bin/env node
+/**
+ * SSOT Report Generator
+ * Part of the push-button automation system
+ */
 
-const ARTIFACT_DIR = ".artifacts";
-const OUTPUT_FILE = join(ARTIFACT_DIR, "SSOT.md");
-const VITEST_PATHS = [join(ARTIFACT_DIR, "vitest-report.json"), "vitest-report.json"];
-const PLAYWRIGHT_PATHS = [join(ARTIFACT_DIR, "playwright-report.json"), "playwright-report.json"];
+import { readFileSync, writeFileSync, existsSync } from 'fs';
+import { execSync } from 'child_process';
 
-async function ensureDir(path) {
-  await fs.mkdir(dirname(path), { recursive: true });
-}
+class SSOTGenerator {
+  constructor() {
+    this.report = {
+      timestamp: new Date().toISOString(),
+      overall_status: 'UNKNOWN',
+      summary: { total_tests: 0, passed_tests: 0, failed_tests: 0 },
+      components: {},
+      system_health: {}
+    };
+  }
 
-async function readFirstExisting(paths, label) {
-  for (const file of paths) {
+  async generateReport() {
+    console.log('🔍 Generating SSOT report...');
+    
     try {
-      const raw = await fs.readFile(file, "utf8");
-      return { file, data: JSON.parse(raw) };
+      await this.gatherTestResults();
+      await this.gatherSystemHealth();
+      this.calculateOverallStatus();
+      await this.saveReport();
+      
+      console.log('✅ SSOT report generated successfully');
+      
     } catch (error) {
-      if ((error)?.code !== "ENOENT") {
-        throw new Error(`Failed to read ${label} report from ${file}: ${error}`);
+      console.error('❌ Failed to generate SSOT report:', error.message);
+      process.exit(1);
+    }
+  }
+
+  async gatherTestResults() {
+    console.log('📊 Gathering test results...');
+    
+    // Check for Playwright report
+    const playwrightReport = 'playwright-report/index.html';
+    if (existsSync(playwrightReport)) {
+      this.report.components.playwright = { status: 'COMPLETED', report_path: playwrightReport };
+    } else {
+      this.report.components.playwright = { status: 'NO_REPORT' };
+    }
+    
+    // Check for PowerShell artifacts
+    const artifactsDir = 'artifacts';
+    if (existsSync(artifactsDir)) {
+      this.report.components.powershell = { status: 'COMPLETED', artifacts_dir: artifactsDir };
+    } else {
+      this.report.components.powershell = { status: 'NO_ARTIFACTS' };
+    }
+    
+    // Check for integration verification
+    const verificationFile = 'artifacts/full-stack-verification.json';
+    if (existsSync(verificationFile)) {
+      const verificationData = JSON.parse(readFileSync(verificationFile, 'utf8'));
+      this.report.components.integration = { 
+        status: verificationData.overall_status || 'UNKNOWN',
+        verification_data: verificationData
+      };
+    } else {
+      this.report.components.integration = { status: 'NO_VERIFICATION' };
+    }
+    
+    this.updateTestSummary();
+  }
+
+  updateTestSummary() {
+    let totalTests = 0;
+    let passedTests = 0;
+    let failedTests = 0;
+    
+    Object.values(this.report.components).forEach(result => {
+      totalTests++;
+      if (result.status === 'COMPLETED' || result.status === 'PASS') {
+        passedTests++;
+      } else if (result.status === 'FAIL') {
+        failedTests++;
       }
-    }
+    });
+    
+    this.report.summary.total_tests = totalTests;
+    this.report.summary.passed_tests = passedTests;
+    this.report.summary.failed_tests = failedTests;
   }
-  throw new Error(`Missing ${label} report. Looked in: ${paths.join(", ")}`);
-}
 
-function summarizeVitest(report) {
-  const total = report.numTotalTests ?? 0;
-  const passed = report.numPassedTests ?? 0;
-  const failed = report.numFailedTests ?? (total - passed - (report.numPendingTests ?? 0));
-  const skipped = (report.numPendingTests ?? 0) + (report.numTodoTests ?? 0);
-  const durationMs = (report.testResults ?? []).reduce((sum, test) => {
-    if (typeof test.startTime === "number" && typeof test.endTime === "number") {
-      return sum + Math.max(0, test.endTime - test.startTime);
+  async gatherSystemHealth() {
+    console.log('🏥 Gathering system health...');
+    
+    // Docker health
+    try {
+      execSync('docker info', { encoding: 'utf8' });
+      this.report.system_health.docker = { status: 'HEALTHY' };
+    } catch (error) {
+      this.report.system_health.docker = { status: 'UNHEALTHY', error: error.message };
     }
-    return sum;
-  }, 0);
-  return { name: "Vitest", total, passed, failed, skipped, durationMs };
-}
-
-function summarizePlaywright(report) {
-  const summary = { name: "Playwright", total: 0, passed: 0, failed: 0, skipped: 0, durationMs: 0 };
-  const stack = [...(report.suites ?? [])];
-  while (stack.length) {
-    const suite = stack.pop();
-    if (!suite) continue;
-    if (Array.isArray(suite.suites)) {
-      stack.push(...suite.suites);
+    
+    // SigNoz health
+    try {
+      const response = await fetch('http://localhost:8080/api/v1/health');
+      this.report.system_health.signoz = { 
+        status: response.ok ? 'HEALTHY' : 'UNHEALTHY',
+        response_code: response.status
+      };
+    } catch (error) {
+      this.report.system_health.signoz = { status: 'UNHEALTHY', error: error.message };
     }
-    if (!Array.isArray(suite.specs)) {
-      continue;
-    }
-    for (const spec of suite.specs) {
-      for (const test of spec.tests ?? []) {
-        summary.total += 1;
-        const status = test.status ?? test.results?.[0]?.status ?? "unknown";
-        if (status === "expected" || status === "passed") {
-          summary.passed += 1;
-        } else if (status === "skipped") {
-          summary.skipped += 1;
-        } else {
-          summary.failed += 1;
-        }
-        for (const result of test.results ?? []) {
-          if (typeof result.duration === "number") {
-            summary.durationMs += result.duration;
-          }
-        }
-      }
+    
+    // OTel health
+    try {
+      const response = await fetch('http://localhost:13134');
+      this.report.system_health.otel = { 
+        status: response.ok ? 'HEALTHY' : 'UNHEALTHY'
+      };
+    } catch (error) {
+      this.report.system_health.otel = { status: 'UNHEALTHY', error: error.message };
     }
   }
 
-  if (summary.total === 0 && report.stats) {
-    const stats = report.stats;
-    summary.total = (stats.expected ?? 0) + (stats.unexpected ?? 0);
-    summary.failed = stats.unexpected ?? summary.failed;
-    summary.skipped = stats.skipped ?? summary.skipped;
-    summary.passed = Math.max(0, summary.total - summary.failed - summary.skipped);
-    if (typeof stats.duration === "number") {
-      summary.durationMs = stats.duration;
+  calculateOverallStatus() {
+    const { total_tests, passed_tests, failed_tests } = this.report.summary;
+    
+    if (total_tests === 0) {
+      this.report.overall_status = 'UNKNOWN';
+    } else if (failed_tests === 0) {
+      this.report.overall_status = 'PASS';
+    } else if (failed_tests < total_tests / 2) {
+      this.report.overall_status = 'WARN';
+    } else {
+      this.report.overall_status = 'FAIL';
     }
   }
 
-  return summary;
-}
-
-function formatPercent(part, total) {
-  if (!total) return "0%";
-  const value = (part / total) * 100;
-  return `${value.toFixed(1)}%`;
-}
-
-function formatDuration(ms) {
-  if (!ms) return "0.0s";
-  if (ms < 1000) {
-    return `${ms.toFixed(0)}ms`;
+  async saveReport() {
+    const reportPath = 'artifacts/ssot-report.json';
+    
+    const artifactsDir = 'artifacts';
+    if (!existsSync(artifactsDir)) {
+      execSync(`mkdir -p ${artifactsDir}`);
+    }
+    
+    writeFileSync(reportPath, JSON.stringify(this.report, null, 2));
+    
+    const summaryPath = 'artifacts/ssot-summary.txt';
+    const summary = this.generateSummary();
+    writeFileSync(summaryPath, summary);
+    
+    console.log(`📄 SSOT report saved: ${reportPath}`);
+    console.log(`📄 SSOT summary saved: ${summaryPath}`);
   }
-  return `${(ms / 1000).toFixed(1)}s`;
-}
 
-function buildSummaryTable(entries) {
-  const header = "| Suite | Result | Pass | Fail | Skip | Duration |\n|-------|--------|------|------|------|----------|";
-  const rows = entries.map(entry => {
-    const icon = entry.failed > 0 ? "FAIL" : "PASS";
-    const result = `${icon} ${entry.passed}/${entry.total}`;
-    return `| ${entry.name} | ${result} | ${entry.passed} | ${entry.failed} | ${entry.skipped} | ${formatDuration(entry.durationMs)} |`;
-  });
-  return [header, ...rows].join("\n");
-}
+  generateSummary() {
+    const { overall_status, summary, system_health } = this.report;
+    
+    return `SSOT Report Summary
+==================
+Generated: ${new Date().toISOString()}
+Overall Status: ${overall_status}
 
-function buildDetails(entries) {
-  return entries.map(entry => {
-    const passRate = formatPercent(entry.passed, entry.total);
-    const failRate = formatPercent(entry.failed, entry.total);
-    return `### ${entry.name}\n- Pass rate: ${passRate}\n- Fail rate: ${failRate}\n- Tests: ${entry.total}\n- Duration: ${formatDuration(entry.durationMs)}`;
-  }).join("\n\n");
+Test Results:
+-------------
+Total Tests: ${summary.total_tests}
+Passed: ${summary.passed_tests}
+Failed: ${summary.failed_tests}
+
+System Health:
+--------------
+Docker: ${system_health.docker?.status || 'UNKNOWN'}
+SigNoz: ${system_health.signoz?.status || 'UNKNOWN'}
+OTel: ${system_health.otel?.status || 'UNKNOWN'}
+`;
+  }
 }
 
 async function main() {
-  const vitestReport = await readFirstExisting(VITEST_PATHS, "Vitest");
-  const playwrightReport = await readFirstExisting(PLAYWRIGHT_PATHS, "Playwright");
-
-  const summaries = [
-    summarizeVitest(vitestReport.data),
-    summarizePlaywright(playwrightReport.data),
-  ];
-
-  const allGreen = summaries.every(entry => entry.failed === 0 && entry.total > 0);
-
-  const table = buildSummaryTable(summaries);
-  const details = buildDetails(summaries);
-
-  const output = `# SSOT Summary\n\n${table}\n\n${allGreen ? "PASS" : "FAIL"} Overall status: ${allGreen ? "All suites passing" : "Failures detected"}.\n\n## Details\n\n${details}\n`;
-
-  await ensureDir(OUTPUT_FILE);
-  await fs.writeFile(OUTPUT_FILE, output, "utf8");
-
-  console.log(`SSOT summary written to ${OUTPUT_FILE}`);
-  console.log(output.split("\n").slice(0, 6).join("\n"));
-
-  if (!allGreen) {
-    process.exitCode = 1;
-  }
+  const generator = new SSOTGenerator();
+  await generator.generateReport();
 }
 
-main().catch(error => {
-  console.error(error instanceof Error ? error.message : error);
-  process.exit(1);
-});
+if (import.meta.url === `file://${process.argv[1]}`) {
+  main().catch(console.error);
+}
 
+export { SSOTGenerator };

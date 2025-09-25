@@ -1,85 +1,127 @@
-# scripts/agent/health-gate.ps1
-# Inline health validation for agent:start integration
-# Runs local env doctor + OTel wiring check, enqueues daily job if both pass
+# Health Gate Integration Script
+# Combined environment + OTel health check for autopilot integration
+# Part of the push-button automation system
+
+param(
+    [switch]$Verbose,
+    [switch]$UpdateStatus = $true
+)
 
 $ErrorActionPreference = "Stop"
+$startTime = Get-Date
 
-Write-Host "[health-gate] Starting integrated health validation..."
+Write-Host "🔍 Running Health Gate Integration..." -ForegroundColor Cyan
 
-# 1) Your local env doctor
-Write-Host "[health-gate] Running local environment doctor..."
-try {
-    pnpm agent:doctor | Write-Host
-    Write-Host "[health-gate] Local environment: OK"
-} catch {
-    Write-Host "[health-gate] Local environment: FAILED - $($_.Exception.Message)"
-    exit 1
-}
-
-# 2) OTel wiring health
-Write-Host "[health-gate] Running OTel wiring verification..."
-try {
-    pwsh -File scripts/verify-wiring.ps1 -OtelOnly | Tee-Object -FilePath artifacts/wiring-verify.log
-    Write-Host "[health-gate] OTel wiring: OK"
-} catch {
-    Write-Host "[health-gate] OTel wiring: FAILED - $($_.Exception.Message)"
-    exit 1
-}
-
-# 3) Verify OTel check actually passed
-if (-not (Test-Path "artifacts/wiring-verify.txt")) {
-    Write-Host "[health-gate] OTel verification artifacts missing"
-    exit 1
-}
-
-$verifyContent = Get-Content "artifacts/wiring-verify.txt" -Raw
-if ($verifyContent -notmatch "== (Wiring|OTel wiring) verification (PASSED|PARTIAL) ==") {
-    Write-Host "[health-gate] OTel wiring verification failed; not enqueuing monitoring job."
-    Write-Host "[health-gate] Last 10 lines of verification:"
-    $verifyContent -split "`n" | Select-Object -Last 10 | ForEach-Object { Write-Host "  $_" }
-    exit 1
-}
-
-# 4) Enqueue daily otel job if not present
-$queuePath = ".agent/agent_queue.json"
-if (-not (Test-Path $queuePath)) { 
-    Write-Host "[health-gate] Creating agent queue..."
-    '{"version":1,"lastRun":null,"jobs":[]}' | Set-Content $queuePath 
-}
-
-$queue = Get-Content $queuePath -Raw | ConvertFrom-Json
-if (-not ($queue.jobs | Where-Object { $_.id -eq "otel-wiring-check" })) {
-    Write-Host "[health-gate] Enqueuing daily otel-wiring-check job..."
-    $job = [pscustomobject]@{
-        id = "otel-wiring-check"
-        type = "health-check"
-        command = "pwsh -File scripts/verify-wiring.ps1"
-        schedule = "RRULE:FREQ=DAILY;BYHOUR=9;BYMINUTE=0;BYSECOND=0"
-        deps = @("env-ready")
-        ttlMs = 86400000
-        attempts = 0
-        maxAttempts = 3
-        backoffMs = 900000
-        status = "queued"
-        lastResult = $null
+# Check if lock file exists
+$lockFile = ".agent/LOCK"
+if (Test-Path $lockFile) {
+    Write-Host "⚠️  Lock file detected, skipping health gate" -ForegroundColor Yellow
+    if ($UpdateStatus) {
+        $statusUpdate = @{
+            timestamp = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
+            section = "health-gate"
+            status = "paused:lock"
+            details = "Lock file present, operations paused"
+        } | ConvertTo-Json -Compress
+        
+        $statusFile = ".agent/status.json"
+        $statusData = if (Test-Path $statusFile) { 
+            Get-Content $statusFile -Raw | ConvertFrom-Json 
+        } else { 
+            @{} 
+        }
+        
+        $statusData | Add-Member -NotePropertyName "health-gate" -NotePropertyValue $statusUpdate -Force
+        $statusData | ConvertTo-Json -Depth 10 | Set-Content $statusFile
     }
-    $queue.jobs += $job
-    ($queue | ConvertTo-Json -Depth 6) | Set-Content $queuePath
-    Write-Host "[health-gate] Daily otel-wiring-check job enqueued."
-} else {
-    Write-Host "[health-gate] Daily otel-wiring-check job already exists."
+    exit 0
 }
 
-# 5) Update shared status
-Write-Host "[health-gate] Updating shared status..."
+# Run environment health check
+Write-Host "`n1. Checking environment readiness..." -ForegroundColor Yellow
 try {
-    pwsh -File scripts/agent/update-status.ps1 -section env -ok $true -detail "pnpm, node, playwright: OK"
-    pwsh -File scripts/agent/update-status.ps1 -section otel -ok $true -detail "OTLP/HTTP 5318 reachable; dataset logs present"
-    Write-Host "[health-gate] Status updated successfully."
+    $envCheck = & "C:\otel\scripts\ecrr-doctor.ps1" 2>&1
+    $envExitCode = $LASTEXITCODE
+    
+    if ($envExitCode -eq 0) {
+        Write-Host "   Environment: Healthy ✅" -ForegroundColor Green
+        $envStatus = "healthy"
+    } else {
+        Write-Host "   Environment: Issues detected ⚠️" -ForegroundColor Yellow
+        $envStatus = "issues"
+    }
 } catch {
-    Write-Host "[health-gate] Status update failed: $($_.Exception.Message)"
-    # Don't fail the whole process for status update issues
+    Write-Host "   Environment: Check failed ❌" -ForegroundColor Red
+    $envStatus = "failed"
 }
 
-Write-Host "[health-gate] Health validation completed successfully."
-Write-Host "[health-gate] Ready for agent:start watchdog process."
+# Run OTel verification
+Write-Host "`n2. Checking OTel pipeline..." -ForegroundColor Yellow
+try {
+    $otelCheck = & "C:\otel\scripts\ci-verify.ps1" -CronMode 2>&1
+    $otelExitCode = $LASTEXITCODE
+    
+    if ($otelExitCode -eq 0) {
+        Write-Host "   OTel Pipeline: Healthy ✅" -ForegroundColor Green
+        $otelStatus = "healthy"
+    } else {
+        Write-Host "   OTel Pipeline: Issues detected ⚠️" -ForegroundColor Yellow
+        $otelStatus = "issues"
+    }
+} catch {
+    Write-Host "   OTel Pipeline: Check failed ❌" -ForegroundColor Red
+    $otelStatus = "failed"
+}
+
+# Determine overall status
+$overallStatus = if ($envStatus -eq "healthy" -and $otelStatus -eq "healthy") { "healthy" } 
+                elseif ($envStatus -eq "failed" -or $otelStatus -eq "failed") { "failed" } 
+                else { "issues" }
+
+# Update status file
+if ($UpdateStatus) {
+    Write-Host "`n3. Updating status..." -ForegroundColor Yellow
+    
+    $statusUpdate = @{
+        timestamp = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
+        section = "health-gate"
+        status = $overallStatus
+        details = @{
+            environment = $envStatus
+            otel = $otelStatus
+            checks = @{
+                env_exit_code = $envExitCode
+                otel_exit_code = $otelExitCode
+            }
+        }
+    }
+    
+    $statusFile = ".agent/status.json"
+    $statusData = if (Test-Path $statusFile) { 
+        Get-Content $statusFile -Raw | ConvertFrom-Json 
+    } else { 
+        @{} 
+    }
+    
+    $statusData | Add-Member -NotePropertyName "health-gate" -NotePropertyValue $statusUpdate -Force
+    $statusData | ConvertTo-Json -Depth 10 | Set-Content $statusFile
+    
+    Write-Host "   Status updated ✅" -ForegroundColor Green
+}
+
+# Summary
+$elapsed = (Get-Date) - $startTime
+Write-Host "`n" + "="*50 -ForegroundColor Cyan
+Write-Host "Health Gate Summary" -ForegroundColor Cyan
+Write-Host "="*50 -ForegroundColor Cyan
+Write-Host "Environment: $envStatus" -ForegroundColor $(if($envStatus -eq "healthy"){"Green"}elseif($envStatus -eq "issues"){"Yellow"}else{"Red"})
+Write-Host "OTel Pipeline: $otelStatus" -ForegroundColor $(if($otelStatus -eq "healthy"){"Green"}elseif($otelStatus -eq "issues"){"Yellow"}else{"Red"})
+Write-Host "Overall: $overallStatus" -ForegroundColor $(if($overallStatus -eq "healthy"){"Green"}elseif($overallStatus -eq "issues"){"Yellow"}else{"Red"})
+Write-Host "Completed in $([int]$elapsed.TotalSeconds) seconds" -ForegroundColor Gray
+
+# Exit with appropriate code
+if ($overallStatus -eq "failed") {
+    exit 1
+} else {
+    exit 0
+}

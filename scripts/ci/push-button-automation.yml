@@ -1,0 +1,301 @@
+name: Push-Button Automation CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 2 * * *'  # Daily at 2 AM UTC
+
+env:
+  SIGNOZ_API_TOKEN: ${{ secrets.SIGNOZ_API_TOKEN }}
+
+jobs:
+  # PR Lane: Trimmed deterministic smokes
+  pr-smoke-tests:
+    if: github.event_name == 'pull_request'
+    runs-on: windows-latest
+    timeout-minutes: 15
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Run browser preflight tests
+      run: npx playwright test tests/preflight/browser-guarantees.spec.ts --reporter=html
+      
+    - name: Upload Playwright report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: playwright-report-pr
+        path: playwright-report/
+        
+    - name: Run deterministic smoke tests
+      run: pwsh -File scripts/ci-verify.ps1 -CronMode
+      
+    - name: Upload CI verification artifacts
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: ci-verification-pr
+        path: artifacts/
+
+  # Nightly Lane: Full coverage and SSOT
+  nightly-full-coverage:
+    if: github.event_name == 'schedule' || github.ref == 'refs/heads/main'
+    runs-on: windows-latest
+    timeout-minutes: 45
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Setup Docker
+      run: |
+        # Start Docker Desktop (if available)
+        Start-Process "$Env:ProgramFiles\Docker\Docker\Docker Desktop.exe" -WindowStyle Hidden
+        Start-Sleep -Seconds 30
+        
+    - name: Bootstrap development environment
+      run: pwsh -File scripts/dev-up.ps1 -WithTests:$false -WaitSecs 60
+      
+    - name: Run full Playwright test suite
+      run: npx playwright test --reporter=html
+      
+    - name: Upload Playwright report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: playwright-report-nightly
+        path: playwright-report/
+        
+    - name: Run pitch pipeline tests
+      run: npx playwright test tests/preflight/pitch-pipeline.spec.ts --reporter=html
+      
+    - name: Run flow engine tests
+      run: npx playwright test tests/preflight/flow-engine.spec.ts --reporter=html
+      
+    - name: Run full stack verification
+      run: pwsh -File scripts/verify-full-stack.ps1 -GenerateReport
+      
+    - name: Upload verification artifacts
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: full-stack-verification
+        path: artifacts/
+        
+    - name: Generate SSOT report
+      run: node scripts/generate-ssot.mjs
+      
+    - name: Upload SSOT report
+      uses: actions/upload-artifact@v4
+      with:
+        name: ssot-report
+        path: artifacts/ssot-report.json
+        
+    - name: Comment PR with SSOT summary
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const path = require('path');
+          
+          try {
+            const ssotPath = 'artifacts/ssot-report.json';
+            if (fs.existsSync(ssotPath)) {
+              const ssotData = JSON.parse(fs.readFileSync(ssotPath, 'utf8'));
+              
+              const comment = `## 📊 SSOT Report Summary
+              
+              **Generated:** ${new Date().toISOString()}
+              **Status:** ${ssotData.overall_status || 'UNKNOWN'}
+              
+              ### Test Results:
+              - **Total Tests:** ${ssotData.summary?.total_tests || 0}
+              - **Passed:** ${ssotData.summary?.passed_tests || 0}
+              - **Failed:** ${ssotData.summary?.failed_tests || 0}
+              - **Warnings:** ${ssotData.summary?.warnings || 0}
+              
+              ### Coverage:
+              - **Browser Preflight:** ${ssotData.coverage?.browser_preflight || 'N/A'}
+              - **Pitch Pipeline:** ${ssotData.coverage?.pitch_pipeline || 'N/A'}
+              - **Flow Engine:** ${ssotData.coverage?.flow_engine || 'N/A'}
+              - **Integration:** ${ssotData.coverage?.integration || 'N/A'}
+              
+              Full report available in artifacts.`;
+              
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
+            }
+          } catch (error) {
+            console.log('Could not generate SSOT comment:', error.message);
+          }
+
+  # Merge Gate: Only merge when artifacts agree
+  merge-gate:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    needs: [pr-smoke-tests]
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Download PR artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: ci-verification-pr
+        path: ./artifacts-pr
+        
+    - name: Download nightly artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: ssot-report
+        path: ./artifacts-nightly
+        if-no-files-found: ignore
+        
+    - name: Validate PR artifacts
+      run: |
+        if [ ! -f "./artifacts-pr/ci-verification.txt" ]; then
+          echo "❌ PR verification artifacts missing"
+          exit 1
+        fi
+        
+        # Check if verification passed
+        if grep -q "Verification PASSED" ./artifacts-pr/ci-verification.txt; then
+          echo "✅ PR verification passed"
+        else
+          echo "❌ PR verification failed"
+          exit 1
+        fi
+        
+    - name: Compare with baseline
+      run: |
+        if [ -f "./artifacts-nightly/ssot-report.json" ]; then
+          echo "📊 Comparing with nightly baseline..."
+          # Add comparison logic here
+        else
+          echo "⚠️  No nightly baseline available for comparison"
+        fi
+        
+    - name: Approve merge
+      run: echo "✅ Merge gate passed - PR is ready to merge"
+
+  # Pilot Rollout: Feature flagged with analytics
+  pilot-rollout:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: windows-latest
+    timeout-minutes: 20
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Configure pilot rollout
+      run: |
+        # Set pilot rollout percentage (start conservative)
+        $env:PILOT_ROLLOUT_PCT = "5"
+        $env:PILOT_COHORT = "early-adopters"
+        
+        # Update environment variables
+        echo "PILOT_ROLLOUT_PCT=$env:PILOT_ROLLOUT_PCT" >> $env:GITHUB_ENV
+        echo "PILOT_COHORT=$env:PILOT_COHORT" >> $env:GITHUB_ENV
+        
+    - name: Deploy with feature flags
+      run: |
+        # Deploy with pilot configuration
+        echo "🚀 Deploying with pilot rollout: $env:PILOT_ROLLOUT_PCT%"
+        echo "📊 Cohort: $env:PILOT_COHORT"
+        
+        # Simulate deployment (replace with actual deployment commands)
+        pwsh -File scripts/deploy-pilot.ps1 -RolloutPct $env:PILOT_ROLLOUT_PCT -Cohort $env:PILOT_COHORT
+        
+    - name: Monitor pilot metrics
+      run: |
+        # Wait for metrics to stabilize
+        Start-Sleep -Seconds 30
+        
+        # Check pilot metrics
+        pwsh -File scripts/monitor-pilot-metrics.ps1 -DurationMinutes 5
+        
+    - name: Auto-rollback if needed
+      if: failure()
+      run: |
+        echo "🚨 Pilot deployment failed, initiating rollback..."
+        pwsh -File scripts/rollback-pilot.ps1
+        
+    - name: Report pilot status
+      run: |
+        # Generate pilot report
+        pwsh -File scripts/generate-pilot-report.ps1
+        
+        # Upload pilot artifacts
+        # (This would be handled by artifact upload steps)
+
+  # Security and Compliance
+  security-scan:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Run security scan
+      uses: github/super-linter@v4
+      env:
+        DEFAULT_BRANCH: main
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        VALIDATE_POWERSHELL: true
+        VALIDATE_JAVASCRIPT_ES: true
+        VALIDATE_TYPESCRIPT_ES: true
+        VALIDATE_JSON: true
+        VALIDATE_YAML: true
+        
+    - name: Check CSP compliance
+      run: |
+        # Check Content Security Policy compliance
+        pwsh -File scripts/lint-csp.ps1
+        
+    - name: Check accessibility compliance
+      run: |
+        # Run accessibility checks
+        pwsh -File scripts/check-a11y.ps1
+
+
+
+

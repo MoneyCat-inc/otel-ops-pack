@@ -50,12 +50,12 @@ receivers:
     start_at: end
 
 exporters:
-  debug:
-    verbosity: normal
+  logging:
+    loglevel: info
 
   otlp/sigz:
     endpoint: "localhost:14317"
-    timeout: 2s
+    timeout: 10s
     tls:
       insecure: true
     retry_on_failure:
@@ -142,12 +142,12 @@ processors:
           - set(attributes["dataset"], "windows-gpu-metrics") where attributes["service"] == "gpu-metrics"
 
   batch:
-    timeout: 50ms
+    timeout: 200ms
     send_batch_size: 512
     send_batch_max_size: 1024
 
   batch/iona:
-    timeout: 500ms
+    timeout: 200ms
     send_batch_size: 256
     send_batch_max_size: 512
 
@@ -191,28 +191,34 @@ service:
     logs:
       receivers: [otlp, filelog, windowseventlog/application, windowseventlog/system]
       processors: [memory_limiter, filter/drop_noise, transform/sanitize, transform/enrich, attributes/redact, batch]
-      exporters: [debug, otlp/sigz]
+      exporters: [logging, otlp/sigz]
 
     metrics:
       receivers: [otlp]
       processors: [memory_limiter, batch]
-      exporters: [debug, otlp/sigz]
+      exporters: [otlp/sigz]
 
     traces:
       receivers: [otlp]
       processors: [memory_limiter, tail_sampling, batch]
-      exporters: [debug, otlp/sigz]
+      exporters: [otlp/sigz]
 
     # IONA Supervisor dedicated pipelines for optimized processing
     metrics/iona:
       receivers: [otlp]
       processors: [memory_limiter, resource/iona, batch/iona]
-      exporters: [debug, otlp/sigz]
+      exporters: [otlp/sigz]
 
     traces/iona:
       receivers: [otlp]
       processors: [memory_limiter, resource/iona, tail_sampling, batch/iona]
-      exporters: [debug, otlp/sigz]
+      exporters: [otlp/sigz]
+
+
+
+
+
+
 
 
 

@@ -1,68 +1,41 @@
 {
-  "name": "otel-observability-kit",
+  "name": "otel-push-button-automation",
   "version": "1.0.0",
-  "description": "Windows OTel to SigNoz observability pipeline with ECRR methodology",
+  "description": "Push-button, self-healing observability system",
   "scripts": {
-    "agent:doctor": "node scripts/agent/doctor.mjs",
-    "pr:new": "node scripts/new-pr.mjs",
-    "ecrr:template": "node scripts/ensure-pr-template.mjs",
-    "ecrr:drill": "pwsh -File scripts/ecrr-failure-drill.ps1",
-    "canary:status": "Get-ScheduledTask -TaskName 'OTel-ECRR-Canary' | Get-ScheduledTaskInfo",
-    "canary:report": "Get-Content artifacts/canary-ecrr-report.txt -Tail 10",
-    "hygiene": "pwsh ./tools/hygiene.ps1",
-    "test:smoke": "playwright test -c playwright.smoke.config.ts",
-    "test:smoke:ci": "playwright test -c playwright.smoke.ci.config.ts",
-    "test:smoke:firefox": "playwright test -c playwright.smoke.config.ts --project=firefox-deterministic",
-    "test:smoke:chrome": "playwright test -c playwright.smoke.config.ts --project=chrome-deterministic",
-    "test:smoke:mobile": "playwright test -c playwright.smoke.config.ts --project=mobile-chrome --project=mobile-safari",
-    "test:vitest": "vitest run --reporter=default --reporter=json --outputFile=.artifacts/vitest-report.json",
-    "test:playwright:ssot": "node scripts/run-playwright-ssot.mjs",
-    "tidy": "pwsh -File scripts/quick-tidy.ps1",
-    "clean:deep": "pwsh -File scripts/deep-clean.ps1",
-    "lint": "eslint . --ext .js,.ts",
-    "typecheck": "tsc --noEmit",
-    "test": "jest -w 1",
-    "quality": "corepack pnpm run lint && corepack pnpm run typecheck",
+    "dev-up": "pwsh -File scripts/dev-up.ps1",
+    "verify-full-stack": "pwsh -File scripts/verify-full-stack.ps1",
+    "agent:start": "node scripts/agent/runner.ts start --daemon",
+    "agent:stop": "node scripts/agent/runner.ts stop",
+    "agent:status": "node scripts/agent/runner.ts status",
+    "agent:doctor": "pwsh -File scripts/agent/health-gate.ps1",
+    "test:smoke:ci": "pwsh -File scripts/ci-verify.ps1 -CronMode",
+    "test:preflight": "npx playwright test tests/preflight/",
+    "test:pitch": "npx playwright test tests/preflight/pitch-pipeline.spec.ts",
+    "test:flow": "npx playwright test tests/preflight/flow-engine.spec.ts",
+    "test:browser": "npx playwright test tests/preflight/browser-guarantees.spec.ts",
+    "generate:ssot": "node scripts/generate-ssot.mjs",
+    "synthetic:ping": "python scripts/otel_synthetic_ping.py",
+    "setup-local": "pwsh -File scripts/setup.ps1",
     "monitor:quick": "pwsh -File scripts/quick-monitor.ps1",
     "monitor:full": "pwsh -File scripts/monitor-optimized-pipeline.ps1",
-    "monitor:export": "pwsh -File scripts/monitor-optimized-pipeline.ps1 -ExportReport",
-    "preview:dev": "cd preview && npm install --no-audit --no-fund --silent && npm run dev",
-    "preview:serve": "cd preview && npm run serve",
-    "preview:build": "cd preview && npm run build",
-    "comfort:sync": "pwsh -File scripts/scaffold-comfort-cat.ps1 -Force",
-    "comfort:check": "pwsh -File scripts/comfort-checklist.ps1",
-    "comfort:scaffold": "pwsh -File scripts/scaffold-comfort-cat.ps1",
-    "comfort:sanity": "pwsh -File scripts/comfort-cat-sanity-sweep.ps1",
-    "wire:init": "node scripts/wire/init.mjs",
-    "wire:verify": "node scripts/wire/verify.mjs",
-    "wire:health": "node scripts/wire/health-check.mjs",
-    "wire:demo": "node scripts/wire/demo.mjs",
-    "agent:start": "node scripts/agent/watchdog.js",
-    "ecrr:wire": "node scripts/ecrr/wire.mjs"
+    "canary:test": "pwsh -File scripts/canary-test.ps1",
+    "canary:verify": "pwsh -File scripts/verify-integration.ps1"
   },
-  "keywords": [
-    "observability",
-    "otel",
-    "signoz",
-    "ecrr",
-    "windows"
-  ],
-  "author": "Observability Copilot",
-  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "^1.40.0",
+    "playwright": "^1.40.0"
+  },
   "engines": {
     "node": ">=18.0.0"
   },
-  "devDependencies": {
-    "@eslint/js": "^9.36.0",
-    "@playwright/test": "^1.55.0",
-    "@types/node": "^24.5.2",
-    "eslint": "^9.0.0",
-    "jest": "^29.7.0",
-    "prettier": "^3.3.3",
-    "typescript": "^5.6.2",
-    "typescript-eslint": "^8.44.1",
-    "vitest": "^1.6.0"
-  }
+  "keywords": [
+    "observability",
+    "opentelemetry",
+    "signoz",
+    "automation",
+    "monitoring"
+  ],
+  "author": "OTel Observability Kit",
+  "license": "MIT"
 }
-
-

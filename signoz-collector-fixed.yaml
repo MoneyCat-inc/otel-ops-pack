@@ -1,0 +1,56 @@
+extensions:
+  health_check:
+    endpoint: 0.0.0.0:13134
+    path: /healthz
+
+receivers:
+  otlp:
+    protocols:
+      http:
+        endpoint: 0.0.0.0:4318
+      grpc:
+        endpoint: 0.0.0.0:4317
+
+exporters:
+  debug:
+    verbosity: normal
+
+  otlp/sigz:
+    endpoint: "signoz:4317"
+    timeout: 2s
+    tls:
+      insecure: true
+    retry_on_failure:
+      initial_interval: 5s
+      max_interval: 30s
+      max_elapsed_time: 10m
+
+processors:
+  memory_limiter:
+    check_interval: 2s
+    limit_percentage: 80
+    spike_limit_percentage: 25
+
+  batch:
+    timeout: 50ms
+    send_batch_size: 512
+    send_batch_max_size: 1024
+
+service:
+  extensions:
+    - health_check
+  pipelines:
+    logs:
+      receivers: [otlp]
+      processors: [memory_limiter, batch]
+      exporters: [debug, otlp/sigz]
+
+    metrics:
+      receivers: [otlp]
+      processors: [memory_limiter, batch]
+      exporters: [debug, otlp/sigz]
+
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, batch]
+      exporters: [debug, otlp/sigz]

@@ -1,0 +1,57 @@
+{
+  "maxJobs": 2,
+  "maxFiles": 10,
+  "maxLines": 200,
+  "backoffMinutes": 15,
+  "ttlHours": 12,
+  "logLevel": "info",
+  "jobs": {
+    "ssot-refresh": {
+      "enabled": true,
+      "priority": 1,
+      "schedule": "on-change"
+    },
+    "flake-quarantine": {
+      "enabled": true,
+      "priority": 2,
+      "schedule": "daily"
+    },
+    "csp-lint": {
+      "enabled": true,
+      "priority": 3,
+      "schedule": "on-change"
+    },
+    "a11y-check": {
+      "enabled": true,
+      "priority": 3,
+      "schedule": "on-change"
+    },
+    "cleanup": {
+      "enabled": true,
+      "priority": 4,
+      "schedule": "hourly"
+    }
+  },
+  "budgets": {
+    "maxConcurrentJobs": 2,
+    "maxFilesPerJob": 10,
+    "maxLinesPerJob": 200,
+    "maxMemoryMB": 512,
+    "maxCpuPercent": 25
+  },
+  "killSwitch": {
+    "lockFile": ".agent/LOCK",
+    "pauseOnLock": true,
+    "resumeOnUnlock": true
+  },
+  "logging": {
+    "level": "info",
+    "maxFileSizeMB": 10,
+    "retentionDays": 7,
+    "console": true
+  }
+}
+
+
+
+
