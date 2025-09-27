@@ -129,20 +129,22 @@ if (Test-Path $fileStorageDir) {
         Write-Pass "File storage directory exists: $fileStorageDir"
         Write-Detail "Storage items: $($storageInfo.Count) files/directories"
         
-        # Check for queue persistence files
-        $queueFiles = Get-ChildItem -Path $fileStorageDir -Filter "*queue*" -Recurse -Force
-        if ($queueFiles) {
-            Write-Pass "Queue persistence files found: $($queueFiles.Count)"
-            foreach ($file in $queueFiles) {
-                if ($file.Length) {
-                    Write-Detail "  - $($file.Name): $([Math]::Round($file.Length / 1KB, 2)) KB"
-                } else {
-                    Write-Detail "  - $($file.Name): directory"
-                }
-            }
-        } else {
-            Write-Detail "No queue persistence files found (normal for fresh start)"
-        }
+               # Check for queue persistence files
+               $queueFiles = Get-ChildItem -Path $fileStorageDir -Filter "*queue*" -Recurse -Force
+               if ($queueFiles) {
+                   Write-Pass "Queue persistence files found: $($queueFiles.Count)"
+                   foreach ($file in $queueFiles) {
+                       if ($file.PSIsContainer) {
+                           Write-Detail "  - $($file.Name): directory"
+                       } elseif ($file.Length) {
+                           Write-Detail "  - $($file.Name): $([Math]::Round($file.Length / 1KB, 2)) KB"
+                       } else {
+                           Write-Detail "  - $($file.Name): file (size unknown)"
+                       }
+                   }
+               } else {
+                   Write-Detail "No queue persistence files found (normal for fresh start)"
+               }
         
         # Check storage permissions
         try {
@@ -165,20 +167,25 @@ if (Test-Path $fileStorageDir) {
     Write-Detail "This may cause queue silent failures on restart"
 }
 
-# Check agent hygiene - ensure no stale processes
-try {
-    $otelProcesses = Get-Process | Where-Object { $_.ProcessName -like "*otel*" -and $_.Id -ne $PID }
-    if ($otelProcesses -and $otelProcesses.Count -gt 0) {
-        Write-Pass "OpenTelemetry processes found: $($otelProcesses.Count)"
-        foreach ($proc in $otelProcesses) {
-            Write-Detail "  - $($proc.ProcessName) (PID: $($proc.Id), CPU: $([Math]::Round($proc.CPU, 2))s)"
-        }
-    } else {
-        Write-Detail "No additional OpenTelemetry processes found"
-    }
-} catch {
-    Write-Detail "Process check failed: $($_.Exception.Message)"
-}
+       # Check agent hygiene - ensure no stale processes
+       try {
+           $otelProcesses = Get-Process | Where-Object { $_.ProcessName -like "*otel*" -and $_.Id -ne $PID }
+           if ($otelProcesses) {
+               $processCount = if ($otelProcesses -is [array]) { $otelProcesses.Count } else { 1 }
+               if ($processCount -gt 0) {
+                   Write-Pass "OpenTelemetry processes found: $processCount"
+                   foreach ($proc in $otelProcesses) {
+                       Write-Detail "  - $($proc.ProcessName) (PID: $($proc.Id), CPU: $([Math]::Round($proc.CPU, 2))s)"
+                   }
+               } else {
+                   Write-Detail "No additional OpenTelemetry processes found"
+               }
+           } else {
+               Write-Detail "No additional OpenTelemetry processes found"
+           }
+       } catch {
+           Write-Detail "Process check failed: $($_.Exception.Message)"
+       }
 
 # Check for stale lock files
 $lockFiles = @(".agent/LOCK", "otelcol-storage/.lock", "C:\otel\.lock")
