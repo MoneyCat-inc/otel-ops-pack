@@ -1,26 +1,36 @@
 # SigNoz Pipeline Verification Script
 # Run this after restarting the Windows collector service
+# Updated with progress indicators for better user experience
+
+# Import progress indicators module
+. .\scripts\progress-indicators.ps1
 
 Write-Host "=== SigNoz Pipeline Verification ===" -ForegroundColor Green
 
 # 1. Check service status
 Write-Host "`n1. Checking Windows collector service..." -ForegroundColor Yellow
+$spinnerJob = Start-SpinnerJob -Message "Checking service status..." -UpdateIntervalMs 150
 sc.exe query otelcol-contrib
+Stop-SpinnerJob -Job $spinnerJob
 
 # 2. Emit fresh canaries
 Write-Host "`n2. Emitting fresh canary logs..." -ForegroundColor Yellow
+$spinnerJob = Start-SpinnerJob -Message "Creating canary logs..." -UpdateIntervalMs 150
 Write-EventLog -LogName Application -Source SigNozTest -EventId 999 -EntryType Information -Message "SigNoz pipeline test event from Codex - $(Get-Date)"
 
 $timestamp = (Get-Date).ToString('o')
 $canary = '{"event":"signoz_canary","severity":"ERROR","message":"SigNoz file canary log","synthetic_id":"pipeline-check","timestamp":"' + $timestamp + '"}'
 Add-Content -Path 'C:/logs/app.json' -Value $canary
+Stop-SpinnerJob -Job $spinnerJob
 
 Write-Host "✓ Windows Event Log entry created" -ForegroundColor Green
 Write-Host "✓ File log entry created" -ForegroundColor Green
 
 # 3. Wait for processing
 Write-Host "`n3. Waiting for log processing (30 seconds)..." -ForegroundColor Yellow
+$spinnerJob = Start-SpinnerJob -Message "Waiting for log processing..." -UpdateIntervalMs 150
 Start-Sleep -Seconds 30
+Stop-SpinnerJob -Job $spinnerJob
 
 # 4. Query SigNoz for canaries
 Write-Host "`n4. Querying SigNoz for canary logs..." -ForegroundColor Yellow
@@ -34,7 +44,9 @@ LIMIT 3
 "@
 
 Write-Host "Windows Event Log canaries:" -ForegroundColor Cyan
+$spinnerJob = Start-SpinnerJob -Message "Querying ClickHouse for canaries..." -UpdateIntervalMs 150
 $result1 = docker exec signoz-clickhouse clickhouse-client --query "$query"
+Stop-SpinnerJob -Job $spinnerJob
 if ($result1) {
     Write-Host $result1 -ForegroundColor Green
 } else {
@@ -50,7 +62,9 @@ LIMIT 3
 "@
 
 Write-Host "`nFile log canaries:" -ForegroundColor Cyan
+$spinnerJob = Start-SpinnerJob -Message "Querying ClickHouse for file canaries..." -UpdateIntervalMs 150
 $result2 = docker exec signoz-clickhouse clickhouse-client --query "$query2"
+Stop-SpinnerJob -Job $spinnerJob
 if ($result2) {
     Write-Host $result2 -ForegroundColor Green
 } else {

@@ -1,0 +1,248 @@
+name: ECRR Compliance Check
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'docs/ECRR_REPORTS/**'
+      - 'docs/ECRR_REPORT_TEMPLATE.md'
+      - 'scripts/validate-ecrr-compliance.ps1'
+      - '.github/workflows/ecrr-compliance-check.yml'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'docs/ECRR_REPORTS/**'
+      - 'docs/ECRR_REPORT_TEMPLATE.md'
+      - 'scripts/validate-ecrr-compliance.ps1'
+      - '.github/workflows/ecrr-compliance-check.yml'
+  workflow_dispatch:
+    inputs:
+      report_path:
+        description: 'Path to ECRR reports directory'
+        required: false
+        default: 'docs/ECRR_REPORTS'
+        type: string
+      fail_on_warnings:
+        description: 'Fail on warnings (not just errors)'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  ecrr-compliance:
+    name: ECRR Compliance Validation
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Setup PowerShell
+      uses: actions/setup-powershell@v1
+      with:
+        version: '7.4'
+    
+    - name: Create artifacts directory
+      run: |
+        if (!(Test-Path "artifacts")) {
+          New-Item -ItemType Directory -Path "artifacts" -Force
+        }
+    
+    - name: Run ECRR Compliance Check
+      id: compliance-check
+      run: |
+        $reportPath = "${{ github.event.inputs.report_path || 'docs/ECRR_REPORTS' }}"
+        $failOnWarnings = "${{ github.event.inputs.fail_on_warnings || 'false' }}"
+        
+        Write-Host "🔍 Running ECRR Compliance Check..." -ForegroundColor Cyan
+        Write-Host "Report Path: $reportPath" -ForegroundColor Gray
+        Write-Host "Fail on Warnings: $failOnWarnings" -ForegroundColor Gray
+        
+        # Run compliance validation
+        $exitCode = 0
+        try {
+          pwsh -File scripts/validate-ecrr-compliance.ps1 -ReportPath $reportPath -OutputPath "artifacts/ecrr-compliance-ci-report.json"
+          
+          # Check if compliance report exists
+          if (Test-Path "artifacts/ecrr-compliance-ci-report.json") {
+            $complianceReport = Get-Content "artifacts/ecrr-compliance-ci-report.json" | ConvertFrom-Json
+            
+            # Extract compliance metrics
+            $totalReports = $complianceReport.Total_Reports
+            $compliantReports = $complianceReport.Compliant_Reports
+            $nonCompliantReports = $complianceReport.Non_Compliant_Reports
+            $complianceRate = if ($totalReports -gt 0) { [math]::Round(($compliantReports / $totalReports) * 100, 1) } else { 0 }
+            
+            # Check for critical issues
+            $criticalIssues = $complianceReport.Reports | Where-Object { 
+              $_.Compliance.Structure.ECRR_Gate -eq $false -or 
+              $_.Compliance.Structure.Four_Section_Structure -eq $false -or
+              $_.Compliance.Content.Actor_Declaration -eq $false
+            }
+            
+            $criticalCount = $criticalIssues.Count
+            
+            # Set outputs
+            Write-Host "Total Reports: $totalReports" -ForegroundColor White
+            Write-Host "Compliant Reports: $compliantReports" -ForegroundColor Green
+            Write-Host "Non-Compliant Reports: $nonCompliantReports" -ForegroundColor Yellow
+            Write-Host "Compliance Rate: $complianceRate%" -ForegroundColor $(if ($complianceRate -ge 90) { "Green" } elseif ($complianceRate -ge 70) { "Yellow" } else { "Red" })
+            Write-Host "Critical Issues: $criticalCount" -ForegroundColor $(if ($criticalCount -eq 0) { "Green" } else { "Red" })
+            
+            # Set GitHub outputs
+            echo "total_reports=$totalReports" >> $env:GITHUB_OUTPUT
+            echo "compliant_reports=$compliantReports" >> $env:GITHUB_OUTPUT
+            echo "non_compliant_reports=$nonCompliantReports" >> $env:GITHUB_OUTPUT
+            echo "compliance_rate=$complianceRate" >> $env:GITHUB_OUTPUT
+            echo "critical_issues=$criticalCount" >> $env:GITHUB_OUTPUT
+            
+            # Determine if we should fail
+            if ($criticalCount -gt 0) {
+              Write-Host "❌ FAILING: $criticalCount critical compliance issues found" -ForegroundColor Red
+              $exitCode = 1
+            } elseif ($complianceRate -lt 70) {
+              Write-Host "❌ FAILING: Compliance rate $complianceRate% is below 70% threshold" -ForegroundColor Red
+              $exitCode = 1
+            } elseif ($failOnWarnings -eq "true" -and $nonCompliantReports -gt 0) {
+              Write-Host "❌ FAILING: $nonCompliantReports non-compliant reports found (fail on warnings enabled)" -ForegroundColor Red
+              $exitCode = 1
+            } else {
+              Write-Host "✅ PASSING: ECRR compliance check passed" -ForegroundColor Green
+            }
+          } else {
+            Write-Host "❌ FAILING: Compliance report not generated" -ForegroundColor Red
+            $exitCode = 1
+          }
+        } catch {
+          Write-Host "❌ FAILING: Compliance check failed with error: $($_.Exception.Message)" -ForegroundColor Red
+          $exitCode = 1
+        }
+        
+        exit $exitCode
+    
+    - name: Upload compliance report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: ecrr-compliance-report
+        path: artifacts/ecrr-compliance-ci-report.json
+        retention-days: 30
+    
+    - name: Comment on PR
+      if: github.event_name == 'pull_request' && always()
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const path = require('path');
+          
+          try {
+            // Read compliance report
+            const reportPath = 'artifacts/ecrr-compliance-ci-report.json';
+            if (fs.existsSync(reportPath)) {
+              const report = JSON.parse(fs.readFileSync(reportPath, 'utf8'));
+              
+              const totalReports = report.Total_Reports || 0;
+              const compliantReports = report.Compliant_Reports || 0;
+              const nonCompliantReports = report.Non_Compliant_Reports || 0;
+              const complianceRate = totalReports > 0 ? Math.round((compliantReports / totalReports) * 100 * 10) / 10 : 0;
+              const criticalIssues = report.Reports ? report.Reports.filter(r => 
+                !r.Compliance.Structure.ECRR_Gate || 
+                !r.Compliance.Structure.Four_Section_Structure ||
+                !r.Compliance.Content.Actor_Declaration
+              ).length : 0;
+              
+              // Determine status
+              const status = criticalIssues > 0 ? '❌ FAILED' : 
+                           complianceRate < 70 ? '❌ FAILED' : 
+                           nonCompliantReports > 0 ? '⚠️ WARNING' : '✅ PASSED';
+              
+              // Create comment
+              const comment = ## ECRR Compliance Check Results
+              
+              **Status**: ${status}
+              
+              ### Compliance Metrics
+              - **Total Reports**: ${totalReports}
+              - **Compliant Reports**: ${compliantReports}
+              - **Non-Compliant Reports**: ${nonCompliantReports}
+              - **Compliance Rate**: ${complianceRate}%
+              - **Critical Issues**: ${criticalIssues}
+              
+              ### Next Steps
+              ${criticalIssues > 0 ? 
+                '🔧 **Action Required**: Fix critical compliance issues before merging' :
+                nonCompliantReports > 0 ? 
+                '⚠️ **Recommendation**: Consider fixing non-compliant reports for better quality' :
+                '🎉 **All Good**: ECRR compliance check passed successfully!'
+              }
+              
+              ---
+              *Generated by ECRR Compliance Check workflow*;
+              
+              // Post comment
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
+            } else {
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: '## ECRR Compliance Check Results\n\n❌ **FAILED**: Compliance report not generated\n\n---\n*Generated by ECRR Compliance Check workflow*'
+              });
+            }
+          } catch (error) {
+            console.error('Error creating PR comment:', error);
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: ## ECRR Compliance Check Results\n\n❌ **ERROR**: Failed to process compliance report\n\nError: ${error.message}\n\n---\n*Generated by ECRR Compliance Check workflow*
+            });
+          }
+    
+    - name: Create compliance summary
+      if: always()
+      run: |
+        $summary = @"
+        # ECRR Compliance Check Summary
+        
+        **Workflow**: ECRR Compliance Check
+        **Trigger**: ${{ github.event_name }}
+        **Branch**: ${{ github.ref_name }}
+        **Commit**: ${{ github.sha }}
+        **Date**: $(Get-Date -Format "yyyy-MM-dd HH:mm:ss")
+        
+        ## Results
+        - **Total Reports**: ${{ steps.compliance-check.outputs.total_reports }}
+        - **Compliant Reports**: ${{ steps.compliance-check.outputs.compliant_reports }}
+        - **Non-Compliant Reports**: ${{ steps.compliance-check.outputs.non_compliant_reports }}
+        - **Compliance Rate**: ${{ steps.compliance-check.outputs.compliance_rate }}%
+        - **Critical Issues**: ${{ steps.compliance-check.outputs.critical_issues }}
+        
+        ## Status
+        ${{ steps.compliance-check.outputs.critical_issues > 0 && '❌ FAILED - Critical issues found' || steps.compliance-check.outputs.compliance_rate < 70 && '❌ FAILED - Compliance rate below threshold' || '✅ PASSED - ECRR compliance check successful' }}
+        
+        ## Artifacts
+        - Compliance Report: rtifacts/ecrr-compliance-ci-report.json
+        - Workflow Logs: Available in GitHub Actions
+        
+        ---
+        *Generated by ECRR Compliance Check workflow*
+        "@
+        
+        $summary | Out-File -FilePath "artifacts/ecrr-compliance-summary.md" -Encoding UTF8
+    
+    - name: Upload compliance summary
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: ecrr-compliance-summary
+        path: artifacts/ecrr-compliance-summary.md
+        retention-days: 30

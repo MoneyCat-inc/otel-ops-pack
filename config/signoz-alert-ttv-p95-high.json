@@ -1,0 +1,21 @@
+{
+  "duration": "5m",
+  "condition": {
+    "operator": ">",
+    "value": 500,
+    "severity": "warning"
+  },
+  "query": "histogram_quantile(0.95, rate(attributes.ttv_ms_bucket{attributes.dataset=\"resonai_analytics\"}[5m]))",
+  "enabled": true,
+  "annotations": {
+    "summary": "TTV P95 latency exceeds 500ms threshold",
+    "description": "Alert triggered when ttv p95 latency exceeds 500ms threshold"
+  },
+  "name": "TTV P95 High",
+  "labels": {
+    "component": "resonai_analytics",
+    "alert_type": "performance",
+    "metric": "ttv_p95"
+  },
+  "description": "TTV P95 latency exceeds 500ms threshold"
+}

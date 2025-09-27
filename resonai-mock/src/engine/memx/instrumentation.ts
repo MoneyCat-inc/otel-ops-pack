@@ -137,8 +137,15 @@ export class MemxInstrumentation {
 
   /**
    * Collect SharedArrayBuffer usage for audio ring buffer
+   * Only attempts to access SAB when cross-origin isolation is enabled
    */
   private collectSabUsage(frame: MemxFrame): void {
+    // Gate SAB usage behind cross-origin isolation check
+    if (!window.crossOriginIsolated) {
+      console.debug('MEMX: SAB collection skipped - cross-origin isolation not enabled');
+      return;
+    }
+
     try {
       // Try to access audio ring buffer SAB
       const audioRingBuffer = this.getAudioRingBuffer();

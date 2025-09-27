@@ -1,8 +1,16 @@
+# Canary Test Script
+# Updated with progress indicators for better user experience
+
+# Import progress indicators module
+. .\scripts\progress-indicators.ps1
+
 Write-Host "== Starting Observability Canary Test ==" -ForegroundColor Cyan
 
 $logDir = "C:\\logs"
 if (-not (Test-Path $logDir)) {
+    $spinnerJob = Start-SpinnerJob -Message "Creating log directory..." -UpdateIntervalMs 150
     New-Item -ItemType Directory -Path $logDir -Force | Out-Null
+    Stop-SpinnerJob -Job $spinnerJob
 }
 
 $logFile = Join-Path $logDir "canary-test.log"
@@ -15,22 +23,28 @@ $logContent = @{
     error_code = "CANARY_001"
 } | ConvertTo-Json -Compress
 
+$spinnerJob = Start-SpinnerJob -Message "Writing canary log entry..." -UpdateIntervalMs 150
 try {
     Add-Content -Path $logFile -Value $logContent
+    Stop-SpinnerJob -Job $spinnerJob
     Write-Host "[OK] Wrote canary log entry to $logFile" -ForegroundColor Green
 } catch {
+    Stop-SpinnerJob -Job $spinnerJob
     Write-Host "[WARN] Failed to write canary log file: $($_.Exception.Message)" -ForegroundColor Yellow
 }
 
 # Windows Event Log entry
 $eventSource = "SigNoz-Canary"
+$spinnerJob = Start-SpinnerJob -Message "Creating Windows Event Log entry..." -UpdateIntervalMs 150
 try {
     if (-not [System.Diagnostics.EventLog]::SourceExists($eventSource)) {
         New-EventLog -LogName Application -Source $eventSource
     }
     Write-EventLog -LogName Application -Source $eventSource -EventId 1001 -EntryType Error -Message "SigNoz canary test - observability pipeline verification"
+    Stop-SpinnerJob -Job $spinnerJob
     Write-Host "[OK] Created Windows Event Log entry" -ForegroundColor Green
 } catch {
+    Stop-SpinnerJob -Job $spinnerJob
     Write-Host "[WARN] Unable to write Windows Event Log entry (permission required): $($_.Exception.Message)" -ForegroundColor Yellow
 }
 
@@ -46,10 +60,13 @@ function Invoke-OtlpPayload {
     )
 
     foreach ($endpoint in $endpoints) {
+        $spinnerJob = Start-SpinnerJob -Message "Sending OTLP payload to $endpoint..." -UpdateIntervalMs 150
         try {
             Invoke-RestMethod -Uri $endpoint -Method Post -Body $Body -ContentType "application/json" -TimeoutSec 5 | Out-Null
+            Stop-SpinnerJob -Job $spinnerJob
             return $endpoint
         } catch {
+            Stop-SpinnerJob -Job $spinnerJob
             $lastError = $_
         }
     }
@@ -89,10 +106,13 @@ $tracePayload = @{
     )
 } | ConvertTo-Json -Depth 10
 
+$spinnerJob = Start-SpinnerJob -Message "Sending OTLP trace payload..." -UpdateIntervalMs 150
 try {
     $traceEndpoint = Invoke-OtlpPayload -Suffix "v1/traces" -Body $tracePayload
+    Stop-SpinnerJob -Job $spinnerJob
     Write-Host "[OK] Sent OTLP trace ($traceEndpoint)" -ForegroundColor Green
 } catch {
+    Stop-SpinnerJob -Job $spinnerJob
     Write-Host "[WARN] Failed to send OTLP trace: $($_.Exception.Message)" -ForegroundColor Yellow
 }
 
@@ -125,10 +145,13 @@ $logPayload = @{
     )
 } | ConvertTo-Json -Depth 10
 
+$spinnerJob = Start-SpinnerJob -Message "Sending OTLP log payload..." -UpdateIntervalMs 150
 try {
     $logEndpoint = Invoke-OtlpPayload -Suffix "v1/logs" -Body $logPayload
+    Stop-SpinnerJob -Job $spinnerJob
     Write-Host "[OK] Sent OTLP log ($logEndpoint)" -ForegroundColor Green
 } catch {
+    Stop-SpinnerJob -Job $spinnerJob
     Write-Host "[WARN] Failed to send OTLP log: $($_.Exception.Message)" -ForegroundColor Yellow
 }
 

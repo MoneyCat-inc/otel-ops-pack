@@ -1,0 +1,61 @@
+{
+  "groups": [
+    {
+      "rules": [
+        {
+          "alert": "CodexLocalHighViolations",
+          "labels": {
+            "service": "codex-local",
+            "severity": "warning"
+          },
+          "for": "5m",
+          "expr": "increase(codex_guardrail_violations_total[1h]) > 10",
+          "annotations": {
+            "summary": "High number of guardrail violations detected",
+            "description": "Codex-local has detected {{  }} violations in the last hour"
+          }
+        },
+        {
+          "alert": "CodexLocalAgentDown",
+          "labels": {
+            "service": "codex-local",
+            "severity": "critical"
+          },
+          "for": "2m",
+          "expr": "codex_agent_status != 1",
+          "annotations": {
+            "summary": "Codex-local agent is down or locked",
+            "description": "Agent status is {{  }} (1=active, 0=locked, -1=error)"
+          }
+        },
+        {
+          "alert": "CodexLocalQueueBacklog",
+          "labels": {
+            "service": "codex-local",
+            "severity": "warning"
+          },
+          "for": "10m",
+          "expr": "codex_queue_queued > 50",
+          "annotations": {
+            "summary": "Codex-local task queue backlog",
+            "description": "Queue has {{  }} tasks waiting to be processed"
+          }
+        },
+        {
+          "alert": "CodexLocalHighFailureRate",
+          "labels": {
+            "service": "codex-local",
+            "severity": "warning"
+          },
+          "for": "5m",
+          "expr": "codex_queue_failed / codex_queue_total > 0.1",
+          "annotations": {
+            "summary": "High task failure rate in codex-local",
+            "description": "{{  | humanizePercentage }} of tasks are failing"
+          }
+        }
+      ],
+      "name": "codex-local"
+    }
+  ]
+}

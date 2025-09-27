@@ -155,7 +155,7 @@ Write-Host "🔗 Useful URLs:" -ForegroundColor Cyan
 Write-Host "   - SigNoz UI: http://localhost:8080" -ForegroundColor White
 Write-Host "   - Resonai App: http://localhost:3000" -ForegroundColor White
 Write-Host "   - Webhook Server: http://localhost:3003" -ForegroundColor White
-Write-Host "   - OTel Collector: http://localhost:13134" -ForegroundColor White
+Write-Host "   - OTel Collector: http://localhost:13134/healthz" -ForegroundColor White
 
 Write-Host ""
 Write-Host "📁 Configuration Files:" -ForegroundColor Cyan

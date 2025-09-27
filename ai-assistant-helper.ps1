@@ -93,7 +93,7 @@ switch ($Action) {
     
     # Health endpoint
     try {
-      $healthResp = Invoke-WebRequest -Uri http://127.0.0.1:13134 -UseBasicParsing -TimeoutSec 5
+      $healthResp = Invoke-WebRequest -Uri http://127.0.0.1:13134/healthz -UseBasicParsing -TimeoutSec 5
       Write-Host "  Health: $($healthResp.StatusCode)" -ForegroundColor $(if ($healthResp.StatusCode -eq 200) { "Green" } else { "Red" })
     } catch {
       Write-Host "  Health: Unavailable" -ForegroundColor Red

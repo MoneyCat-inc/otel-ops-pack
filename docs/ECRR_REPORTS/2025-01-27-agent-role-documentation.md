@@ -4,14 +4,14 @@
 - **Self-Reference**: This report documents its own creation process and serves as a template for future ECRR reports
 - **Meta-Artifact**: This file itself demonstrates the documentation standards established in the role definitions
 
-## Examine
+## 🔍 **1. Examine
 - SigNoz UI reachable at http://localhost:8080: yes
 - Windows collector service (`otelcol-contrib`): Running
 - OTLP endpoints (5317, 5318, 14317, 14318): responding
 - Canary run (`pwsh -File scripts/canary-test.ps1`): pass
 - Logs visible in SigNoz within 30s: yes + query `attributes.dataset = "resonai_analytics"`
 
-## Clean
+## 🧹 **2. Clean
 - Collector restarted: no (not required for documentation work)
 - SigNoz compose restarted: no (not required for documentation work)
 - Log files trimmed: no (not applicable)
@@ -32,7 +32,7 @@
   - Cross-link between role documents themselves
   - **Self-Reference**: This ECRR report should be referenced in future role documentation work as a template
 
-## Role declaration
+## 🎭 **4. Role declaration
 - Role: **Observability Copilot** (Cursor Agent)
 - Responsibilities: **execute** - Created comprehensive role documentation following ECRR framework
 - Artifacts delivered: 
@@ -47,8 +47,84 @@
   - Next owner: Any agent needing to understand role responsibilities or create additional role docs
   - **Self-Reference**: Use this ECRR report as a template for future documentation work
 
----
 
+## ✅ **ECRR Gate - MANDATORY VALIDATION**
+
+> **⚠️ CRITICAL**: This section is MANDATORY for all ECRR reports. All checkboxes must be completed for report compliance.
+
+### **🔍 Examine**
+- [ ] **Initial State Captured**: Environment state documented before changes
+- [ ] **Environment Documented**: OS, tools, versions, and system status recorded
+- [ ] **Key Findings Identified**: Critical issues or opportunities documented
+- [ ] **Evidence Attached**: Screenshots, logs, configs, test outputs included
+- [ ] **Root Cause Analysis**: Underlying causes identified and documented
+
+### **🧹 Clean**
+- [ ] **Drift Removed**: All identified issues addressed and resolved
+- [ ] **Guardrails Enforced**: Local-first, safety, idempotence, verification principles followed
+- [ ] **Service Management**: Services restarted, ports cleared, conflicts resolved
+- [ ] **File Cleanup**: Temporary files, caches, and artifacts cleaned
+- [ ] **Process Management**: Background processes and conflicts resolved
+
+### **📝 Report**
+- [ ] **Actions Documented**: All actions taken clearly described
+- [ ] **Results Achieved**: Before/after comparison with quantifiable improvements
+- [ ] **TODOs Completed**: All planned tasks marked as completed
+- [ ] **Comprehensive Documentation**: All changes and artifacts documented
+- [ ] **Validation Results**: All verification steps completed successfully
+
+### **🎭 Role**
+- [ ] **Actor Declared**: Agent name and role clearly stated in header and Role section
+- [ ] **Scope Defined**: Clear boundaries of responsibility established
+- [ ] **Guardrails Respected**: All ECRR principles followed throughout
+- [ ] **Integration Maintained**: Compatibility with existing systems preserved
+- [ ] **Accountability Established**: Clear ownership and responsibility declared
+
+### **📊 Quality Assurance**
+- [ ] **4-Section Structure**: Complete Examine → Clean → Report → Role format followed
+- [ ] **Status Declaration**: Clear success/failure/completion status specified
+- [ ] **Artifact Documentation**: All files, scripts, and changes documented
+- [ ] **Reproducible Validation**: Runnable checks provided for every change
+- [ ] **ECRR Compliance**: All mandatory elements included and validated
+- [ ] **Template Adherence**: Report follows enhanced ECRR template structure
+- [ ] **Evidence Quality**: All evidence is relevant, clear, and properly documented
+- [ ] **Action Clarity**: All actions taken are clearly described and justified
+
+------
+
+## 📝 **3. Report**
+
+### **Actions Taken**
+
+#### **[Category 1]**
+1. **[Action 1]**: [Description]
+2. **[Action 2]**: [Description]
+3. **[Action 3]**: [Description]
+
+#### **[Category 2]**
+1. **[Action 1]**: [Description]
+2. **[Action 2]**: [Description]
+3. **[Action 3]**: [Description]
+
+### **Results Achieved**
+
+#### **Before/After Comparison**
+- **Before**: [Initial state]
+- **After**: [Final state]
+- **Improvement**: [Quantifiable improvement]
+
+#### **Regression Analysis**
+- **No Breaking Changes**: [Compatibility maintained]
+- **Enhanced Reliability**: [Reliability improvements]
+- **Improved Observability**: [Monitoring enhancements]
+- **Better User Experience**: [UX improvements]
+
+#### **TODOs Completed**
+- ✅ [Completed task 1]
+- ✅ [Completed task 2]
+- ✅ [Completed task 3]
+
+---
 ## Detailed Implementation Summary
 
 ### Files Created
@@ -123,3 +199,5 @@ This ECRR report serves as a **self-documenting artifact** that:
 - Provides template for similar documentation work
 
 **Meta-Artifact Status**: ✅ **Self-Referential Documentation Complete**
+
+

@@ -3,9 +3,10 @@
   "max_files_per_job": 15,
   "max_lines_per_job": 500,
   "job_ttl_seconds": 86400,
-  "agent_name": "Cursor-Assistant",
+  "agent_name": "codex-local",
   "version": "1.0.0",
   "environment": "resonai-otel",
+  "role": "Local Workflow Custodian",
   "capabilities": [
     "code_navigation",
     "text_extraction",
@@ -14,7 +15,14 @@
     "reporting",
     "observability_analysis",
     "config_validation",
-    "integration_testing"
+    "integration_testing",
+    "environment_setup",
+    "health_diagnostics",
+    "guardrail_enforcement",
+    "csp_validation",
+    "accessibility_audit",
+    "background_watchdog",
+    "micro_task_processing"
   ],
   "safety_settings": {
     "read_only_by_default": true,
@@ -74,5 +82,20 @@
     "health_check_failures": true,
     "job_completion": false,
     "error_alerts": true
+  },
+  "guardrails": {
+    "enforce_no_inline_styles": true,
+    "enforce_csp_strict": true,
+    "enforce_cross_origin_isolation": true,
+    "enforce_aria_compliance": true,
+    "max_inline_style_violations": 0,
+    "max_csp_violations": 0,
+    "max_a11y_violations": 0
+  },
+  "watchdog": {
+    "cycle_interval_seconds": 300,
+    "max_tasks_per_cycle": 2,
+    "lock_check_interval_seconds": 30,
+    "auto_cleanup_days": 7
   }
 }

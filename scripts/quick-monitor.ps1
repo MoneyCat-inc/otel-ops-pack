@@ -1,11 +1,15 @@
 # See C:\otel\docs\comfort cat
 # Quick Monitor - Fast Pipeline Health Check
 # Lightweight version of the enhanced monitor for quick status checks
+# Updated with progress indicators for better user experience
 
 param(
     [switch]$ExportReport = $false,
     [string]$ReportPath = "artifacts\quick-monitor-$(Get-Date -Format 'yyyyMMdd-HHmmss').json"
 )
+
+# Import progress indicators module
+. .\scripts\progress-indicators.ps1
 
 Write-Host "⚡ Quick Pipeline Monitor" -ForegroundColor Cyan
 Write-Host "Fast health check with ECRR reporting" -ForegroundColor Gray
@@ -19,11 +23,14 @@ function Test-QuickHealth {
     $results = @{}
     
     # SigNoz health
+    $spinnerJob = Start-SpinnerJob -Message "Checking SigNoz health..." -UpdateIntervalMs 150
     try {
         $health = Invoke-RestMethod -Uri "http://localhost:8080/api/v1/health" -Method Get -TimeoutSec 3
+        Stop-SpinnerJob -Job $spinnerJob
         $results.SigNoz = @{ Status = "Healthy"; Color = "Green" }
     }
     catch {
+        Stop-SpinnerJob -Job $spinnerJob
         $results.SigNoz = @{ Status = "Unreachable"; Color = "Red"; Error = $_.Exception.Message }
     }
     
@@ -36,8 +43,10 @@ function Test-QuickHealth {
     }
     
     # Docker services
+    $spinnerJob = Start-SpinnerJob -Message "Checking Docker services..." -UpdateIntervalMs 150
     try {
         $dockerPs = docker ps --format "table {{.Names}}\t{{.Status}}" | Select-String "signoz"
+        Stop-SpinnerJob -Job $spinnerJob
         if ($dockerPs) {
             $results.Docker = @{ Status = "Running"; Color = "Green" }
         } else {
@@ -45,6 +54,7 @@ function Test-QuickHealth {
         }
     }
     catch {
+        Stop-SpinnerJob -Job $spinnerJob
         $results.Docker = @{ Status = "Unavailable"; Color = "Red" }
     }
     

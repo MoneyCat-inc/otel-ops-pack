@@ -1,15 +1,18 @@
 [INFO] ECRR-Enhanced Canary Test - Examine -> Clean -> Report -> Role
-[INFO] Timestamp: 2025-09-27 15:48:12
+[INFO] Timestamp: 2025-09-27 18:48:11
 [INFO] Working directory: C:\otel
 [SECTION] EXAMINE: Environment State
 [OK] SigNoz UI accessible at http://localhost:8080
 [OK] OTel Collector service: Running
 [OK] OTLP endpoint 14317 accessible
 [OK] OTLP endpoint 14318 accessible
-[OK] Found 11 OTel scheduled tasks
+[OK] Found 14 OTel scheduled tasks
 [INFO]   - OTel Monitor Optimized Pipeline Hourly: Running
+[INFO]   - OTel-Analytics-Monitoring: Ready
 [INFO]   - OTel-Artifacts-Cleanup: Ready
 [INFO]   - OTel-Canary-ECRR: Ready
+[INFO]   - OTel-Canary-Test: Ready
+[INFO]   - OTel-Daily-Health-Check: Ready
 [INFO]   - OTel-ECRR-Canary: Running
 [INFO]   - OTel-Parser-Error-Monitor: Ready
 [INFO]   - OTel-Parser-Monitoring: Ready
@@ -22,7 +25,7 @@
 [OK] Log file sizes are reasonable
 [SECTION] REPORT: Execute Canary Test
 [INFO] Executing canary test...
-[OK] Created canary log entry: ECRR-Canary-Test-20250927-154813
+[OK] Created canary log entry: ECRR-Canary-Test-20250927-184814
 [OK] Created Windows Event Log entry
 [OK] Sent OTLP log to collector
 [SECTION] ROLE: Agent Responsibilities

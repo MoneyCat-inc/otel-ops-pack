@@ -2,6 +2,7 @@
 # Monitor Optimized Pipeline Performance
 # Tracks the low-latency pipeline with 200ms batches and noise filtering
 # Enhanced with ECRR methodology, real-time metrics, and export capabilities
+# Updated with progress indicators for better user experience
 
 param(
     [int]$DurationMinutes = 10,
@@ -9,6 +10,9 @@ param(
     [switch]$ExportReport = $false,
     [string]$ReportPath = "artifacts\monitoring-report-$(Get-Date -Format 'yyyyMMdd-HHmmss').json"
 )
+
+# Import progress indicators module
+. .\scripts\progress-indicators.ps1
 
 Write-Host "🔍 Enhanced Pipeline Monitor (ECRR v2.0)" -ForegroundColor Cyan
 Write-Host "Monitoring: 200ms batches, noise filtering, sub-second latency" -ForegroundColor Gray
@@ -46,6 +50,8 @@ $script:ecrrReport = @{
 
 function Get-PipelineMetrics {
     # Enhanced pipeline health check with simplified SigNoz metrics
+    $spinnerJob = Start-SpinnerJob -Message "Collecting pipeline metrics..." -UpdateIntervalMs 150
+    
     try {
         # Check SigNoz health and version
         $health = Invoke-RestMethod -Uri "http://localhost:8080/api/v1/health" -Method Get -TimeoutSec 3
@@ -92,6 +98,7 @@ function Get-PipelineMetrics {
         }
     }
     catch {
+        Stop-SpinnerJob -Job $spinnerJob
         return @{
             Status = "degraded"
             Error = $_.Exception.Message
@@ -110,12 +117,15 @@ function Show-Status {
     $statusChecks = @()
     
     # Check SigNoz
+    $spinnerJob = Start-SpinnerJob -Message "Checking SigNoz health..." -UpdateIntervalMs 150
     try {
         $health = Invoke-RestMethod -Uri "http://localhost:8080/api/v1/health" -Method Get -TimeoutSec 3
+        Stop-SpinnerJob -Job $spinnerJob
         Write-Host "✅ SigNoz: Healthy" -ForegroundColor Green
         $statusChecks += @{ Component = "SigNoz"; Status = "Healthy"; Color = "Green" }
     }
     catch {
+        Stop-SpinnerJob -Job $spinnerJob
         Write-Host "❌ SigNoz: Unreachable" -ForegroundColor Red
         $statusChecks += @{ Component = "SigNoz"; Status = "Unreachable"; Color = "Red" }
     }

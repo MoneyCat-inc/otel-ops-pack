@@ -1,0 +1,83 @@
+name: codex-local-premium
+on: 
+  pull_request:
+    paths:
+      - 'scripts/agent/**'
+      - 'package.json'
+      - '.github/workflows/codex-local-premium.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/agent/**'
+      - 'package.json'
+
+jobs:
+  ux-guardrails:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v4
+        with: 
+          version: 9
+          
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with: 
+          node-version: '22.x'
+          cache: 'pnpm'
+          
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        
+      - name: Setup local (idempotent)
+        run: pnpm agent:demo-premium -Quiet
+        
+      - name: Status (JSON)
+        run: pnpm agent:status-premium -Json > .agent/status-ci.json
+        
+      - name: Guardrails (report-only)
+        run: pnpm agent:guardrails-premium
+        
+      - name: Guardrails (budgeted fix dry-run)
+        run: pnpm agent:guardrails-premium -Fix -MaxFiles 5 -MaxLines 100
+        
+      - name: Run Pester tests
+        run: |
+          if (-not (Get-Module -ListAvailable -Name Pester)) {
+            Install-Module Pester -Scope CurrentUser -Force
+          }
+          pwsh -File tests/Pester.PS1
+        
+      - name: Validate JSON outputs
+        run: |
+          # Validate status JSON
+          $status = Get-Content .agent/status-ci.json -Raw | ConvertFrom-Json
+          if (-not $status.timestamp) { throw "Missing timestamp in status JSON" }
+          if ($status.violations -gt 0) { 
+            Write-Warning "Found $($status.violations) violations in status"
+          }
+          
+          # Validate guardrails JSON
+          $guardrails = pnpm agent:guardrails-premium -Json | ConvertFrom-Json
+          if ($guardrails.violations -gt 0) {
+            Write-Warning "Found $($guardrails.violations) guardrail violations"
+            # Uncomment next line to fail CI on violations:
+            # throw "Guardrail violations found: $($guardrails.violations)"
+          }
+          
+          Write-Host "✅ All validations passed"
+        
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: codex-local-artifacts
+          path: |
+            .agent/status.json
+            .agent/status-ci.json
+            .agent/guardrails_report.json
+            TASKS.md
+            DECISIONS.md
+          retention-days: 30

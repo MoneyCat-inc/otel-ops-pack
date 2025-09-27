@@ -1,0 +1,95 @@
+{
+  "dashboard": {
+    "title": "codex-local Self-Telemetry",
+    "description": "Monitoring dashboard for codex-local Local Workflow Custodian",
+    "panels": [
+      {
+        "title": "Jobs Processed Rate",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(codex_jobs_processed_total[5m])",
+            "legendFormat": "Jobs/sec"
+          }
+        ],
+        "alert": {
+          "condition": "rate(codex_jobs_processed_total[5m]) == 0 and codex_queue_total > 0",
+          "message": "No jobs processed in last 5 minutes but queue is non-empty"
+        }
+      },
+      {
+        "title": "Guardrail Violations Delta",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "delta(codex_guardrail_violations_total[1h])",
+            "legendFormat": "Violations/hour"
+          }
+        ],
+        "alert": {
+          "condition": "delta(codex_guardrail_violations_total[1h]) > 10",
+          "message": "High guardrail violations detected: {{ $value }} violations in last hour"
+        }
+      },
+      {
+        "title": "Watchdog Cycle Duration P95",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(watchdog_cycle_duration_seconds_bucket[5m]))",
+            "legendFormat": "P95 Duration"
+          },
+          {
+            "expr": "histogram_quantile(0.50, rate(watchdog_cycle_duration_seconds_bucket[5m]))",
+            "legendFormat": "P50 Duration"
+          }
+        ],
+        "alert": {
+          "condition": "histogram_quantile(0.95, rate(watchdog_cycle_duration_seconds_bucket[5m])) > 300",
+          "message": "Watchdog cycles taking too long: P95 is {{ $value }}s (target: 300s)"
+        }
+      },
+      {
+        "title": "Agent Status",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "codex_agent_status",
+            "legendFormat": "Status"
+          }
+        ],
+        "alert": {
+          "condition": "codex_agent_status != 1",
+          "message": "Agent status is not active: {{ $value }}"
+        }
+      },
+      {
+        "title": "EMA Performance Metrics",
+        "type": "table",
+        "targets": [
+          {
+            "expr": "codex_ema_setup_seconds",
+            "legendFormat": "Setup EMA"
+          },
+          {
+            "expr": "codex_ema_doctor_seconds",
+            "legendFormat": "Doctor EMA"
+          },
+          {
+            "expr": "codex_ema_guardrails_seconds",
+            "legendFormat": "Guardrails EMA"
+          },
+          {
+            "expr": "codex_ema_sleep_seconds",
+            "legendFormat": "Sleep EMA"
+          }
+        ]
+      }
+    ],
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "refresh": "30s"
+  }
+}

@@ -1,4 +1,4 @@
-# green-sheet.ps1 — quick OTEL status summary
+# green-sheet.ps1 - quick OTEL status summary
 $ErrorActionPreference = "SilentlyContinue"
 
 Write-Host "== Service status ==" -ForegroundColor Cyan
@@ -8,9 +8,12 @@ Write-Host "`n== Process ==" -ForegroundColor Cyan
 Get-Process -Name otelcol-contrib -ErrorAction SilentlyContinue | Format-Table -Auto
 
 Write-Host "`n== Health endpoint ==" -ForegroundColor Cyan
+$healthUri = "http://127.0.0.1:13134/healthz"
 try {
-  $r = Invoke-WebRequest -Uri "http://127.0.0.1:13134" -TimeoutSec 5
-  $r.Content | Write-Output
+  $response = Invoke-WebRequest -Uri $healthUri -TimeoutSec 5
+  $payload = $response.Content | ConvertFrom-Json
+  Write-Host "Endpoint: $healthUri" -ForegroundColor DarkGray
+  $payload | ConvertTo-Json -Depth 3
 } catch {
   Write-Host "Health endpoint not responding: $($_.Exception.Message)" -ForegroundColor Yellow
 }
