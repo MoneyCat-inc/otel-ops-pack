@@ -1,121 +1,95 @@
 # SigNoz Authentication Setup Guide
 
 ## Overview
+SigNoz requires authentication for API access. This guide covers manual setup steps and automated configuration scripts.
 
-This guide covers setting up authentication for SigNoz API queries, particularly for `/api/v5/*` endpoints that require authentication.
+## Manual Setup Steps
 
-## Current Status
+### 1. Access SigNoz UI
+- Open browser: http://localhost:8080
+- Complete initial setup if prompted
+- Create admin account or use default credentials
 
-- **Public Endpoints** (no auth required):
-  - `/api/v1/health` ✅ Working
-  - `/api/v1/version` ✅ Working
-  - UI pages (http://localhost:8080/logs) ✅ Working
+### 2. Generate API Token
+1. Navigate to **Settings** → **API Keys**
+2. Click **Generate New Key**
+3. Name: `otel-monitoring`
+4. Permissions: `read:logs`, `read:metrics`, `read:traces`
+5. Copy the generated token
 
-- **Authenticated Endpoints** (auth required):
-  - `/api/v5/query_range` ❌ Returns 401 Unauthorized
-  - `/api/v5/query` ❌ Returns 401 Unauthorized
+### 3. Configure Environment Variables
+```powershell
+# Set API token for SigNoz authentication
+$env:SIGNOZ_API_TOKEN = "your-api-token-here"
 
-## Authentication Methods
+# Set webhook URL for alerts
+$env:ALERT_WEBHOOK_URL = "your-webhook-url"
 
-### Method 1: JWT Token (Attempted)
-**Status**: ❌ Not working with current setup
-```bash
-# Tested token from docker-compose.yml
-curl -H 'Authorization: Bearer YourSuperSecretJWTToken123!@#WithAtLeast32CharactersLong' \
-     http://localhost:8080/api/v5/query_range
-# Result: 401 Unauthorized
+# Optional: Set SigNoz base URL
+$env:SIGNOZ_BASE_URL = "http://localhost:8080"
 ```
 
-### Method 2: Session-based Authentication
-**Status**: ⚠️ Requires manual setup
-1. Visit http://localhost:8080 in browser
-2. Login if prompted (check if authentication is enabled)
-3. Extract session cookie from browser dev tools
-4. Use cookie in subsequent requests
-
-### Method 3: API Key Authentication
-**Status**: ⚠️ May need to be enabled
-1. Check SigNoz UI settings for API key configuration
-2. Generate API key if available
-3. Use header: `X-API-Key: <api-key>`
-
-### Method 4: Disable Authentication (Local Development)
-**Status**: ⚠️ May require configuration changes
-For local development, authentication might be disabled or configured differently.
-
-## Current Workaround
-
-The monitoring scripts have been updated to use public endpoints only:
-- Health checks via `/api/v1/health`
-- Version info via `/api/v1/version`
-- UI accessibility checks
-- OTLP endpoint connectivity tests
-
-## Helper Functions
-
-Created `scripts/signoz-auth-helpers.ps1` with functions for authenticated requests:
+### 4. Test Authentication
 ```powershell
-# Load helpers
-. scripts\signoz-auth-helpers.ps1
-
-# Use functions
-Get-SigNozLogs -Filter "message contains 'canary test'" -Limit 10
-Invoke-SigNozQuery -Query $queryJson -AuthToken $token
+# Test API access with token
+pwsh -File scripts/test-signoz-auth.ps1
 ```
 
-## Next Steps
+## Dashboard Import
 
-1. **Investigate SigNoz Configuration**:
-   - Check if authentication is enabled in local setup
-   - Review SigNoz documentation for local development auth
-   - Verify JWT configuration in docker-compose.yml
+### 1. Access Dashboard Management
+- Navigate to **Dashboards** in SigNoz UI
+- Click **Import Dashboard**
 
-2. **Alternative Approaches**:
-   - Use UI-based queries for manual verification
-   - Implement log file parsing as backup
-   - Consider ClickHouse direct queries for metrics
+### 2. Import Queue Pressure Dashboard
+- Use file: `artifacts/signoz-queue-pressure-dashboard.json`
+- Click **Import**
+- Verify panels are created correctly
 
-3. **Production Considerations**:
-   - Set up proper authentication for production
-   - Use API keys or service accounts
-   - Implement token rotation
+### 3. Configure Alerts
+- Navigate to **Alerts** → **New Alert**
+- Use queries from `docs/QUERY_RECIPES.md`
+- Set thresholds and notification channels
 
-## Files Created
+## Webhook Configuration
 
-- `scripts/setup-signoz-auth.ps1` - Authentication setup helper
-- `scripts/signoz-auth-helpers.ps1` - Helper functions for authenticated requests
-- `docs/SIGNOZ_AUTH_SETUP.md` - This documentation
-
-## Testing Commands
-
+### 1. Set Webhook URL
 ```powershell
-# Test authentication setup
-pwsh -File scripts\setup-signoz-auth.ps1 -TestAuth -AuthToken "YourSuperSecretJWTToken123!@#WithAtLeast32CharactersLong"
+# Example webhook URLs
+$env:ALERT_WEBHOOK_URL = "https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK"
+$env:ALERT_WEBHOOK_URL = "https://discord.com/api/webhooks/YOUR/DISCORD/WEBHOOK"
+$env:ALERT_WEBHOOK_URL = "http://localhost:3003/api/webhooks/alerts"
+```
 
-# Test helper functions
-. scripts\signoz-auth-helpers.ps1
-Get-SigNozLogs -Filter "canary test" -Limit 5
-
-# Manual UI verification
-Start-Process "http://localhost:8080/logs"
+### 2. Test Webhook
+```powershell
+# Test webhook delivery
+pwsh -File scripts/test-webhook.ps1
 ```
 
 ## Troubleshooting
 
-### 401 Unauthorized Errors
-- Check if authentication is required for the endpoint
-- Verify token format and validity
-- Try session-based authentication
-- Check SigNoz logs for authentication errors
+### Common Issues
+1. **HTML instead of JSON**: Authentication required
+2. **403 Forbidden**: Invalid or expired API token
+3. **Connection refused**: SigNoz not running or wrong port
+4. **Dashboard import fails**: Invalid JSON or missing permissions
 
-### No Data in Queries
-- Verify logs are actually being ingested
-- Check OTLP endpoint connectivity
-- Review collector configuration
-- Use UI to verify data exists
+### Verification Commands
+```powershell
+# Check SigNoz health
+curl http://localhost:8080/api/v1/health
 
-### Token Issues
-- Ensure token is from correct environment
-- Check token expiration
-- Verify token has required permissions
-- Try regenerating token
+# Test API with token
+curl -H "Authorization: Bearer $env:SIGNOZ_API_TOKEN" http://localhost:8080/api/v1/logs
+
+# Check webhook endpoint
+curl -X POST $env:ALERT_WEBHOOK_URL -H "Content-Type: application/json" -d '{"test": true}'
+```
+
+## Next Steps
+1. Complete manual authentication setup
+2. Import dashboard configuration
+3. Configure alert thresholds
+4. Test webhook notifications
+5. Verify Resonai startup on port 3003

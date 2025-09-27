@@ -52,7 +52,7 @@ processors:
         - attributes["winlog.event_id"] == 7036
         - IsMatch(body, "(?i)windows update|service control manager")
   batch/logs:
-    timeout: 5000ms
+    timeout: 2000ms
     send_batch_size: 512
   
 
@@ -85,7 +85,6 @@ service:
         - otlp
         - otlphttp
     
-
 
 
 

@@ -1,0 +1,28 @@
+{
+  "alerts": [
+    {
+      "description": "GPU sidecar service health check",
+      "duration": "5m",
+      "name": "GPU Sidecar Health",
+      "threshold": 1,
+      "query": "gpu.sidecar.health == 0",
+      "severity": "critical"
+    },
+    {
+      "description": "GPU temperature exceeds safe threshold",
+      "duration": "2m",
+      "name": "GPU Temperature High",
+      "threshold": 1,
+      "query": "gpu.temperature.celsius > 85",
+      "severity": "warning"
+    },
+    {
+      "description": "GPU memory usage exceeds 90%",
+      "duration": "5m",
+      "name": "GPU Memory Usage High",
+      "threshold": 1,
+      "query": "gpu.memory.utilization.percent > 90",
+      "severity": "warning"
+    }
+  ]
+}
