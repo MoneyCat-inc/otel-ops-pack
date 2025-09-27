@@ -8,6 +8,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { MemxExportButton, MemxExportPresets, MemxExportAllSessionsButton } from '../../components/MemxExportButton';
+import { MemxSessionStats } from '../../components/MemxSessionStats';
 
 // Feature flag check
 const isMemxEnabled = process.env.NEXT_PUBLIC_FEATURE_MEMX === '1';
@@ -76,7 +78,7 @@ export default function MemxLabsPage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Live Metrics */}
           <div className="bg-white rounded-lg shadow p-6">
             <h2 className="text-xl font-semibold mb-4">Live Metrics</h2>
@@ -123,19 +125,21 @@ export default function MemxLabsPage() {
                 </button>
               </div>
               
-              <div className="pt-4">
-                <button
-                  className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-                  onClick={() => {
-                    // TODO: Implement export in PR-3
-                    console.log('Export MEMX data');
-                  }}
-                >
-                  Export MEMX JSON
-                </button>
+              <div className="pt-4 space-y-3">
+                <MemxExportButton />
+                <MemxExportAllSessionsButton />
               </div>
             </div>
           </div>
+
+          {/* Session Statistics */}
+          <MemxSessionStats />
+        </div>
+
+        {/* Export Presets */}
+        <div className="mt-8 bg-white rounded-lg shadow p-6">
+          <h2 className="text-xl font-semibold mb-4">Export Presets</h2>
+          <MemxExportPresets />
         </div>
 
         {/* Sparklines placeholder */}
@@ -175,3 +179,4 @@ export default function MemxLabsPage() {
     </div>
   );
 }
+
