@@ -8,6 +8,56 @@ Reports awaiting review or initial triage.
 
 | Report | Status | Assigned | Priority | Timestamp | Notes |
 |--------|--------|----------|----------|-----------|-------|
+| ecrr-2025-09-25-045605.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| 2025-09-25-ecrr-system-health-audit.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| 2025-09-25-docker-mount-fix-implementation.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| 2025-09-24-signoz-canary-monitoring-rollout.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| 2025-09-24-sandbox-name-conflict-ecrr.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| 2025-09-24-otlp-endpoint-scheme-fix-ecrr.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| 2025-09-24-otel-project-sandboxes.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| 2025-09-24-otel-project-sandbox.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| 2025-09-24-multi-sandbox-sustainment.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| 2025-09-24-gpu-clients-and-yaml-normalization-ecrr.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| 2025-09-24-e2-ratio-sweep-analysis.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| 2025-09-24-e2-optimization-rollout-complete.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| 2025-09-24-conflict-resolution-ecrr.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| 2025-09-24-automation-demonstration-ecrr.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| 2025-09-24-automated-conflict-scan-ecrr.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| 2025-09-24-agent-integration-otel-only.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| 2025-09-25-gpu-metrics-pipeline-implementation.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| 2025-09-25-gpu-pipeline-ecrr-assessment.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| 2025-09-24-otel-only-verification.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| 2025-09-25-merge-marker-cleanup.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| 2025-09-25-gpu-sidecar-ecrr-assessment.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| ECRR_TASK_PROCESSING_COMPLETE_SUMMARY_2025-01-27.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| ECRR_TASK_ALIGNMENT_SUMMARY_2025-01-27.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| ECRR_ROLLOUT_PLAN_2025-01-27.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| ECRR_ROLLOUT_COMPLETE_SUMMARY_2025-01-27.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| ECRR_PROCESSING_SUMMARY_2025-09-25.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| ECRR_PROCESSING_COMPLETE_FINAL_SUMMARY_2025-01-27.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| ECRR_COMPREHENSIVE_PROCESSING_SUMMARY_2025-01-27.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| ECRR_ACTION_PLAN_PRIORITIZED_2025-01-27.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| ecrr-2025-09-25-045443.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| 2025-09-27-rollout-health-check-fix.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| 2025-09-25-task-completion-summary.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| 2025-09-25-ssot-gate-rollout.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| 2025-09-25-push-button-automation-rollout.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| 2025-09-25-post-rollout-ecrr-assessment.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| 2025-09-25-pipeline-health-assessment.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| 2025-09-25-otlp-pipeline-verification-complete.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| 2025-09-25-otel-gpu-pipeline-rollout-complete.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| 2025-01-24-auto-bot-rollout-with-thinking-animations.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| 2025-01-25-compliance-analysis.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| 2025-01-25-conflict-analysis.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| 2025-01-25-otlp-host-wiring.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| 2025-01-25-rollout-commit.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| 2025-01-26-troubleshooting-session.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| 2025-01-27-deterministic-playwright-smoke-lane-rollout.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| 2025-01-27-e2-ratio-sweep-implementation.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| 2025-01-27-task-list-processing-complete.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| 2025-01-25-wiring-verification.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| 2025-01-27-iona-readme-creation.md | Outstanding | cursor-agent | medium | 2025-09-27 02:45 | Batch review of outstanding reports for triage and assignment |
+| 2025-09-27-rollout-completion-ecrr.md | Outstanding | cursor-agent | medium | 2025-09-27 02:36 | Batch review of outstanding reports for triage and assignment |
 | 2025-01-27-easy-tasks-completion.md | Outstanding | team-lead | low | 2025-09-25 03:13 | Easy tasks completion - routine maintenance |
 | 2025-09-24-e2-optimization-implementation.md | Outstanding | performance-engineer | medium | 2025-09-25 03:13 | E2 optimization implementation - performance enhancement |
 | 2025-09-24-signoz-health-canary.md | Outstanding | observability-copilot | medium | 2025-09-25 03:12 | SigNoz health canary - monitoring health check |
@@ -22,46 +72,50 @@ Reports awaiting review or initial triage.
 | 2025-09-25-ssot-gate-implementation.md | Outstanding | system-architect | medium | 2025-09-25 03:11 | SSOT Gate implementation - quality gate enhancement |
 | 2025-09-25-signoz-alert-configuration-work.md | Outstanding | observability-copilot | medium | 2025-09-25 03:11 | SigNoz alert configuration work - monitoring enhancement |
 | 2025-09-25-ecrr-autobot-rollout-deployment.md | Outstanding | system-architect | medium | 2025-09-25 03:11 | ECRR Auto Bot rollout deployment - automation enhancement |
-| 2025-09-24-signoz-canary-automation.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| 2025-09-24-signoz-canary-monitor.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| 2025-09-24-signoz-multiline-json-stitching.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| 2025-09-24-signoz-canary-remediation-and-monthly-drill.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| 2025-09-24-signoz-disk-monitoring-activation.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| 2025-09-24-signoz-disk-monitoring-integration.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| 2025-09-24-signoz-parser-error-resolution-complete.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| LATEST.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| ECRR_PROCESSING_SUMMARY_2025-01-27.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| ECRR_PROCESSING_SUMMARY_2025-09-23-FINAL.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| ECRR-disk-monitoring-implementation-20250925-000500.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| INDEX.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| 2025-09-24-otel-analytics-monitor.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| README.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| ECRR_LEDGER_FRACTAL_DRIFT.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| PROCESS.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| 2025-09-24-e2-timeouts-confirmation.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| 2025-09-24-alert-thresholds-notifications.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| 2025-01-27-agent-hygiene-file-storage-cleanup.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| 2025-01-27-e2-ratio-sweep-analysis-complete.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| 2025-01-27-ecrr-process-evaluation-report.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| 2025-01-27-ecrr-report-trace-analysis.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| 2025-01-27-ecrr-reports-processing-complete.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| 2025-01-27-evaluation-process-summary.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| 2025-01-27-fractal-drift-monitors-dashboard-complete.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| 2025-09-24-e2-sweep-timeout-optimization.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| 2025-01-27-multiline-json-ingestion-restoration.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| 2025-01-27-task-queue-execution.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| 2025-01-27-fractal-drift-monitors-ecrr-final.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| 2025-09-23-223709-task-generation-framework.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| 2025-09-24-adaptive-canary-monitoring.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| 2025-01-27-windows-logs-canary-alert-implementation.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| 2025-09-23-parser-regression-monitoring.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| 2025-01-27-task-management-actions-complete.md | Outstanding | cursor-agent | medium | 2025-09-24 22:19 | Batch review of outstanding reports for triage and assignment |
+| 2025-09-24-nightly-validation-and-ci-guardrails.md | Outstanding | cursor-agent | medium | 2025-09-24 13:51 | Batch review of outstanding reports for triage and assignment |
+| 2025-09-24-analysis-system-health-ecrr.md | Outstanding | cursor-agent | medium | 2025-09-24 13:40 | Batch review of outstanding reports for triage and assignment |
+| 2025-09-24-system-stress-test-ecrr.md | Outstanding | cursor-agent | medium | 2025-09-24 13:36 | Batch review of outstanding reports for triage and assignment |
 | 2025-09-23-env-ready-restoration.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| 2025-09-23-signoz-parser-error-resolution.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| 2025-09-23-env-ready-job-restoration.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
 | 2025-09-23-disk-monitoring-verification-ecrr-report.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
 | 2025-09-23-234800-quick-tasks-completion.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
 | 2025-09-23-232924-parser-regression-monitoring-health-check.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
 | 2025-09-23-224500-ecrr-task-generation-framework-complete.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| 2025-09-23-env-ready-job-restoration.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| 2025-09-23-223709-task-generation-framework.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| 2025-01-27-windows-logs-canary-alert-implementation.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| 2025-01-27-fractal-drift-monitors-dashboard-complete.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| 2025-01-27-multiline-json-ingestion-restoration.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| 2025-01-27-fractal-drift-monitors-ecrr-final.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| 2025-09-23-parser-regression-monitoring.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| 2025-01-27-ecrr-reports-processing-complete.md | Outstanding | cursor-agent | medium | 2025-09-24 13:09 | Batch review of outstanding reports for triage and assignment |
+| 2025-01-27-ecrr-report-trace-analysis.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| 2025-01-27-ecrr-process-evaluation-report.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| 2025-01-27-e2-ratio-sweep-analysis-complete.md | Outstanding | cursor-agent | medium | 2025-09-24 13:09 | Batch review of outstanding reports for triage and assignment |
+| 2025-01-27-agent-hygiene-file-storage-cleanup.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| 2025-01-27-task-queue-execution.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| 2025-01-27-evaluation-process-summary.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| 2025-09-23-signoz-parser-error-resolution.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| 2025-09-24-alert-thresholds-notifications.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| README.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| PROCESS.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| LATEST.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| INDEX.md | Outstanding | cursor-agent | medium | 2025-09-24 13:09 | Second batch review - prioritizing high-impact reports |
+| 2025-09-24-adaptive-canary-monitoring.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| ECRR_PROCESSING_SUMMARY_2025-09-23-FINAL.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| ECRR_PROCESSING_SUMMARY_2025-01-27.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| ECRR_LEDGER_FRACTAL_DRIFT.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| 2025-09-24-signoz-parser-error-resolution-complete.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| ECRR-disk-monitoring-implementation-20250925-000500.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| 2025-09-24-signoz-disk-monitoring-integration.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| 2025-09-24-signoz-disk-monitoring-activation.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| 2025-09-24-signoz-canary-remediation-and-monthly-drill.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| 2025-09-24-signoz-canary-monitor.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| 2025-09-24-signoz-canary-automation.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| 2025-09-24-otel-analytics-monitor.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| 2025-09-24-e2-timeouts-confirmation.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| 2025-09-24-e2-sweep-timeout-optimization.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| 2025-09-24-signoz-multiline-json-stitching.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
 | 2025-09-24-signoz-canary-monitoring-automation-complete.md | Outstanding | - | medium | 2025-09-24 00:56 | Initial review recorded |
 | 2025-09-24-disk-monitoring-automation-complete.md | Outstanding | - | medium | 2025-09-24 00:30 | Initial review recorded |
 | ECRR-20250923-234500-collector-stability-monitoring.md | Outstanding | - | medium | 2025-09-23 23:45 | Initial review recorded |
@@ -69,6 +123,8 @@ Reports awaiting review or initial triage.
 | ECRR_TASK_ALIGNMENT_ANALYSIS_2025-09-23.md | Outstanding | - | medium | 2025-09-23 22:22 | Initial review recorded |
 | 2025-09-23-task-generation-system-implementation.md | Outstanding | - | medium | 2025-09-23 22:15 | Initial review recorded |
 | ECRR_PROCESSING_FINAL_SUMMARY_2025-09-23.md | Outstanding | - | medium | 2025-09-23 22:12 | Initial review recorded |
+| 2024-09-25-iona-signoz-rollout-deployment.md | Outstanding | cursor-agent | medium | 2024-09-25 22:00 | Batch review of outstanding reports for triage and assignment |
+| 2024-09-25-iona-supervisor-signoz-integration.md | Outstanding | cursor-agent | medium | 2024-09-25 21:50 | Batch review of outstanding reports for triage and assignment |
 
 ## In Progress
 
@@ -84,13 +140,8 @@ Reports resolved or archived.
 
 | Report | Status | Assigned | Priority | Timestamp | Notes |
 |--------|--------|----------|----------|-----------|-------|
-| 2025-09-27-rollout-completion-ecrr.md | Archived | cursor-agent | medium | 2025-09-27 02:37 | Resolved via lifecycle automation |
 | 2025-09-25-docker-container-analysis-and-workaround.md | Archived | observability-copilot | medium | 2025-09-25 03:12 | Resolved via lifecycle automation |
 | 2025-09-25-docker-collector-blocker-analysis-ecrr.md | Archived | observability-copilot | medium | 2025-09-25 03:12 | Resolved via lifecycle automation |
-| 2025-01-27-task-management-actions-complete.md | Archived | observability-copilot | medium | 2025-09-24 22:19 | Resolved via lifecycle automation |
-| 2025-09-24-nightly-validation-and-ci-guardrails.md | Archived | observability-copilot | medium | 2025-09-24 13:52 | Hooks installed; scheduled task ready; index/ledger healthy |
-| 2025-09-24-analysis-system-health-ecrr.md | Archived | observability-copilot | high | 2025-09-24 13:40 | Ready for CI hook + nightly validation tasks |
-| 2025-09-24-system-stress-test-ecrr.md | Archived | observability-copilot | high | 2025-09-24 13:37 | Artifacts present; SigNoz verification guidance embedded in template |
 | 2025-09-23-observability-pipeline-implementation-complete.md | Archived | observability-copilot | high | 2025-09-23 22:33 | Report completed and verified - all observability pipeline issues resolved |
 | 2025-09-23-observability-monitoring-readiness.md | Archived | observability-copilot | high | 2025-09-23 22:33 | Report completed and verified - observability monitoring is production-ready |
 | ECRR_PROCESSING_COMPLETE_2025-09-23.md | Archived | - | medium | 2025-09-23 22:12 | Resolved via lifecycle automation |
@@ -134,5 +185,5 @@ Reports resolved or archived.
 | archive/2025-09-23-llm-8080-otel.md | Archived | you | high | 2025-09-23 20:21 | wrapped |
 
 ---
-Last updated: 2025-09-27 02:37:07 UTC
+Last updated: 2025-09-27 02:47:30 UTC
 Generated by scripts/ecrr-manage.ps1
