@@ -1,5 +1,5 @@
 <!-- SSOT:BEGIN -->
-**Build**: `dev` • **Generated**: 2025-09-27T04:23:59.399Z
+**Build**: `dev` • **Generated**: 2025-09-27T04:32:33.944Z
 
 ### Agent Telemetry (OTel)
 - Jobs processed: **42**
@@ -10,4 +10,5 @@
 
 > SSOT is the single source of truth for gate decisions. Keep PRs artifact‑driven.
 <!-- SSOT:END -->
+
 
