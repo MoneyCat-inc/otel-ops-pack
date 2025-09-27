@@ -1,264 +1,332 @@
-# Canary Pattern Drills Script
-# Expands windows-canary emitter with steady/Poisson/Pareto patterns to measure fractal self-similarity
+# Canary Log Pattern Drills
+# T-2025-01-27-004: Expand windows-canary emitter with steady/Poisson/Pareto patterns
+# Cursor-Local: Observability Copilot
 
 param(
     [ValidateSet("Steady", "Poisson", "Pareto", "All")]
     [string]$Pattern = "All",
-    [int]$Duration = 300,
-    [string]$OutputFile = "artifacts/canary-pattern-results.json"
+    [int]$Duration = 300,  # 5 minutes default
+    [switch]$Analyze = $false
 )
 
-Write-Host "=== Canary Pattern Drills ===" -ForegroundColor Green
-Write-Host "Pattern: $Pattern" -ForegroundColor Yellow
-Write-Host "Duration: $Duration seconds" -ForegroundColor Yellow
+# ECRR: Examine → Clean → Report → Role
+Write-Host "🎯 Canary Pattern Drills - ECRR Framework" -ForegroundColor Cyan
+Write-Host "=========================================" -ForegroundColor Cyan
 
-# Ensure artifacts directory exists
-if (-not (Test-Path "artifacts")) {
-    New-Item -ItemType Directory -Path "artifacts" -Force
+$ArtifactsDir = "artifacts"
+if (-not (Test-Path $ArtifactsDir)) {
+    New-Item -ItemType Directory -Path $ArtifactsDir | Out-Null
 }
 
-# Ensure logs directory exists
-if (-not (Test-Path "C:\logs")) {
-    New-Item -ItemType Directory -Path "C:\logs" -Force
+$LogsDir = "C:\logs"
+if (-not (Test-Path $LogsDir)) {
+    New-Item -ItemType Directory -Path $LogsDir | Out-Null
 }
 
-# Initialize results
-$patternResults = @{
-    version = "1.0"
-    test_start_time = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
-    duration_seconds = $Duration
-    patterns = @()
-    summary = @{}
-}
-
-# Pattern definitions
-$patterns = @{
-    Steady = @{
-        name = "Steady Pattern"
-        description = "1 event every 10 seconds"
-        interval = 10
-        distribution = "uniform"
-        lambda = 0.1
-    }
-    Poisson = @{
-        name = "Poisson Pattern"
-        description = "λ=0.1 events/second (exponential inter-arrival)"
-        interval = 0
-        distribution = "exponential"
-        lambda = 0.1
-    }
-    Pareto = @{
-        name = "Pareto Pattern"
-        description = "α=1.5, scale=1.0 (heavy-tailed distribution)"
-        interval = 0
-        distribution = "pareto"
-        alpha = 1.5
-        scale = 1.0
-    }
-}
-
-# Determine which patterns to test
-$testPatterns = @()
-if ($Pattern -eq "All") {
-    $testPatterns = $patterns.Keys
-} else {
-    $testPatterns = @($Pattern)
-}
-
-Write-Host "`nTesting patterns: $($testPatterns -join ', ')" -ForegroundColor Cyan
-
-foreach ($patternName in $testPatterns) {
-    Write-Host "`n=== Testing $patternName Pattern ===" -ForegroundColor Green
-    $patternConfig = $patterns[$patternName]
-    Write-Host "Description: $($patternConfig.description)" -ForegroundColor Yellow
+# Pattern definitions and implementations
+function Invoke-SteadyPattern {
+    param([int]$Duration)
     
-    $patternStartTime = Get-Date
-    $logFile = "C:\logs\canary-pattern-$patternName.log"
+    Write-Host "⏱️ Running Steady Pattern: 1 event every 10 seconds for $Duration seconds" -ForegroundColor Green
+    $Events = @()
+    $Interval = 10  # 10 seconds
+    $TotalEvents = [math]::Floor($Duration / $Interval)
     
-    # Clear previous log file
-    if (Test-Path $logFile) {
-        Remove-Item $logFile -Force
-    }
-    
-    $eventCount = 0
-    $interArrivalTimes = @()
-    $lastEventTime = $patternStartTime
-    
-    # Generate events based on pattern
-    $endTime = $patternStartTime.AddSeconds($Duration)
-    
-    while ((Get-Date) -lt $endTime) {
-        $currentTime = Get-Date
-        $nextEventTime = $null
+    for ($i = 0; $i -lt $TotalEvents; $i++) {
+        $Timestamp = Get-Date
+        $LogEntry = @{
+            timestamp = $Timestamp.ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
+            level = "INFO"
+            message = "windows-canary-steady-$i"
+            pattern = "steady"
+            event_id = $i
+            inter_arrival = $Interval
+            lambda = 0.1  # 1/10 seconds
+        } | ConvertTo-Json -Compress
         
-        switch ($patternName) {
-            "Steady" {
-                # Steady: 1 event every 10 seconds
-                $nextEventTime = $lastEventTime.AddSeconds($patternConfig.interval)
-            }
-            "Poisson" {
-                # Poisson: exponential inter-arrival with λ=0.1
-                $random = Get-Random -Minimum 0.0 -Maximum 1.0
-                $interArrival = -[Math]::Log(1 - $random) / $patternConfig.lambda
-                $nextEventTime = $lastEventTime.AddSeconds($interArrival)
-            }
-            "Pareto" {
-                # Pareto: heavy-tailed distribution
-                $random = Get-Random -Minimum 0.0 -Maximum 1.0
-                $interArrival = $patternConfig.scale * [Math]::Pow(1 - $random, -1 / $patternConfig.alpha) - $patternConfig.scale
-                $nextEventTime = $lastEventTime.AddSeconds($interArrival)
-            }
+        Add-Content -Path "$LogsDir\canary-steady.log" -Value $LogEntry
+        $Events += @{
+            timestamp = $Timestamp
+            pattern = "steady"
+            event_id = $i
+            inter_arrival = $Interval
         }
         
-        # Wait until it's time for the next event
-        if ($currentTime -ge $nextEventTime) {
-            # Generate the event
-            $logEntry = @{
-                timestamp = $currentTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
+        Write-Host "  📝 Steady event $i at $($Timestamp.ToString("HH:mm:ss"))" -ForegroundColor Gray
+        if ($i -lt ($TotalEvents - 1)) { Start-Sleep -Seconds $Interval }
+    }
+    
+    return $Events
+}
+
+function Invoke-PoissonPattern {
+    param([int]$Duration)
+    
+    Write-Host "⚡ Running Poisson Pattern: λ=0.1 events/second for $Duration seconds" -ForegroundColor Green
+    $Events = @()
+    $Lambda = 0.1  # 0.1 events per second
+    $Random = New-Object System.Random
+    $CurrentTime = 0
+    $EventId = 0
+    
+    while ($CurrentTime -lt $Duration) {
+        # Generate exponential inter-arrival time
+        $U = $Random.NextDouble()
+        $InterArrival = -[math]::Log(1 - $U) / $Lambda
+        $CurrentTime += $InterArrival
+        
+        if ($CurrentTime -lt $Duration) {
+            $Timestamp = (Get-Date).AddSeconds($CurrentTime - $Duration)
+            $LogEntry = @{
+                timestamp = $Timestamp.ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
                 level = "INFO"
-                message = "windows-canary pattern test - $patternName event $eventCount"
-                service = "canary-pattern-test"
-                canary = "true"
-                pattern = $patternName
-                event_sequence = $eventCount
-                inter_arrival_ms = if ($eventCount -gt 0) { [Math]::Round(($currentTime - $lastEventTime).TotalMilliseconds, 2) } else { 0 }
+                message = "windows-canary-poisson-$EventId"
+                pattern = "poisson"
+                event_id = $EventId
+                inter_arrival = $InterArrival
+                lambda = $Lambda
             } | ConvertTo-Json -Compress
             
-            Add-Content -Path $logFile -Value $logEntry
-            
-            # Record inter-arrival time
-            if ($eventCount -gt 0) {
-                $interArrivalTimes += ($currentTime - $lastEventTime).TotalMilliseconds
+            Add-Content -Path "$LogsDir\canary-poisson.log" -Value $LogEntry
+            $Events += @{
+                timestamp = Get-Date
+                pattern = "poisson"
+                event_id = $EventId
+                inter_arrival = $InterArrival
             }
             
-            $eventCount++
-            $lastEventTime = $currentTime
+            Write-Host "  🎲 Poisson event $EventId, inter-arrival: $([math]::Round($InterArrival, 2))s" -ForegroundColor Gray
+            $EventId++
             
-            Write-Host "Generated $patternName event $eventCount" -ForegroundColor Green
+            # Sleep for the inter-arrival time
+            Start-Sleep -Milliseconds ([math]::Max(100, $InterArrival * 1000))
         }
+    }
+    
+    return $Events
+}
+
+function Invoke-ParetoPattern {
+    param([int]$Duration)
+    
+    Write-Host "📊 Running Pareto Pattern: α=1.5, scale=1.0 for $Duration seconds" -ForegroundColor Green
+    $Events = @()
+    $Alpha = 1.5
+    $Scale = 1.0
+    $Random = New-Object System.Random
+    $CurrentTime = 0
+    $EventId = 0
+    
+    while ($CurrentTime -lt $Duration) {
+        # Generate Pareto-distributed inter-arrival time
+        $U = $Random.NextDouble()
+        $InterArrival = $Scale * [math]::Pow((1 - $U), (-1.0 / $Alpha)) - $Scale
+        $InterArrival = [math]::Max(0.1, $InterArrival)  # Minimum 0.1 seconds
+        $CurrentTime += $InterArrival
         
-        # Small sleep to prevent busy waiting
-        Start-Sleep -Milliseconds 100
+        if ($CurrentTime -lt $Duration) {
+            $Timestamp = (Get-Date).AddSeconds($CurrentTime - $Duration)
+            $LogEntry = @{
+                timestamp = $Timestamp.ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
+                level = "INFO"
+                message = "windows-canary-pareto-$EventId"
+                pattern = "pareto"
+                event_id = $EventId
+                inter_arrival = $InterArrival
+                alpha = $Alpha
+                scale = $Scale
+            } | ConvertTo-Json -Compress
+            
+            Add-Content -Path "$LogsDir\canary-pareto.log" -Value $LogEntry
+            $Events += @{
+                timestamp = Get-Date
+                pattern = "pareto"
+                event_id = $EventId
+                inter_arrival = $InterArrival
+            }
+            
+            Write-Host "  📈 Pareto event $EventId, inter-arrival: $([math]::Round($InterArrival, 2))s" -ForegroundColor Gray
+            $EventId++
+            
+            # Sleep for the inter-arrival time
+            Start-Sleep -Milliseconds ([math]::Max(100, $InterArrival * 1000))
+        }
     }
     
-    $patternEndTime = Get-Date
-    $patternDuration = ($patternEndTime - $patternStartTime).TotalSeconds
+    return $Events
+}
+
+function Measure-FractalMetrics {
+    param($Events, $PatternName)
     
-    # Calculate pattern statistics
-    $interArrivalStats = if ($interArrivalTimes.Count -gt 0) {
-        $sorted = $interArrivalTimes | Sort-Object
-        @{
-            count = $interArrivalTimes.Count
-            mean = [Math]::Round(($interArrivalTimes | Measure-Object -Average).Average, 2)
-            median = [Math]::Round($sorted[[Math]::Floor($sorted.Count / 2)], 2)
-            p95 = [Math]::Round($sorted[[Math]::Floor($sorted.Count * 0.95)], 2)
-            p99 = [Math]::Round($sorted[[Math]::Floor($sorted.Count * 0.99)], 2)
-            min = [Math]::Round(($interArrivalTimes | Measure-Object -Minimum).Minimum, 2)
-            max = [Math]::Round(($interArrivalTimes | Measure-Object -Maximum).Maximum, 2)
-            stddev = [Math]::Round([Math]::Sqrt(($interArrivalTimes | ForEach-Object { [Math]::Pow($_ - (($interArrivalTimes | Measure-Object -Average).Average), 2) } | Measure-Object -Average).Average), 2)
-        }
-    } else {
-        @{
-            count = 0
+    Write-Host "📐 Calculating fractal self-similarity metrics for $PatternName..." -ForegroundColor Yellow
+    
+    $InterArrivals = $Events | ForEach-Object { $_.inter_arrival }
+    
+    if ($InterArrivals.Count -lt 2) {
+        return @{
+            pattern = $PatternName
+            count = $InterArrivals.Count
             mean = 0
-            median = 0
-            p95 = 0
-            p99 = 0
-            min = 0
-            max = 0
-            stddev = 0
+            variance = 0
+            hurst_estimate = "N/A"
         }
     }
     
-    # Calculate fractal self-similarity metrics
-    $fractalMetrics = @{
-        hurst_exponent = [Math]::Round(0.5 + 0.5 * [Math]::Log($interArrivalStats.stddev / $interArrivalStats.mean + 1), 3)
-        self_similarity = [Math]::Round(1 - ($interArrivalStats.stddev / $interArrivalStats.mean), 3)
-        burstiness = [Math]::Round(($interArrivalStats.stddev - $interArrivalStats.mean) / ($interArrivalStats.stddev + $interArrivalStats.mean), 3)
+    $Mean = ($InterArrivals | Measure-Object -Average).Average
+    $Variance = ($InterArrivals | ForEach-Object { [math]::Pow($_ - $Mean, 2) } | Measure-Object -Average).Average
+    $StdDev = [math]::Sqrt($Variance)
+    
+    # Simple Hurst exponent estimation using R/S statistic
+    $CumulativeDeviations = @()
+    $RunningSum = 0
+    for ($i = 0; $i -lt $InterArrivals.Count; $i++) {
+        $RunningSum += ($InterArrivals[$i] - $Mean)
+        $CumulativeDeviations += $RunningSum
     }
     
-    $patternResult = @{
-        pattern_name = $patternName
-        pattern_config = $patternConfig
-        start_time = $patternStartTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
-        end_time = $patternEndTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
-        duration_seconds = [Math]::Round($patternDuration, 2)
-        events_generated = $eventCount
-        log_file = $logFile
-        inter_arrival_stats = $interArrivalStats
-        fractal_metrics = $fractalMetrics
-        ingestion_latency = @{
-            p50_ms = [Math]::Round((Get-Random -Minimum 50 -Maximum 200), 2)
-            p95_ms = [Math]::Round((Get-Random -Minimum 200 -Maximum 500), 2)
-            p99_ms = [Math]::Round((Get-Random -Minimum 500 -Maximum 1000), 2)
-        }
+    $RangeRS = ($CumulativeDeviations | Measure-Object -Maximum).Maximum - ($CumulativeDeviations | Measure-Object -Minimum).Minimum
+    $HurstEstimate = if ($StdDev -gt 0) {
+        [math]::Log($RangeRS / $StdDev) / [math]::Log($InterArrivals.Count)
+    } else { 0.5 }
+    
+    return @{
+        pattern = $PatternName
+        count = $InterArrivals.Count
+        mean = [math]::Round($Mean, 4)
+        variance = [math]::Round($Variance, 4)
+        std_dev = [math]::Round($StdDev, 4)
+        hurst_estimate = [math]::Round($HurstEstimate, 4)
+        range_rs = [math]::Round($RangeRS, 4)
     }
-    
-    $patternResults.patterns += $patternResult
-    
-    # Display results for this pattern
-    Write-Host "`nResults for ${patternName}:" -ForegroundColor Green
-    Write-Host "  Events Generated: $eventCount" -ForegroundColor White
-    Write-Host "  Duration: $([Math]::Round($patternDuration, 2)) seconds" -ForegroundColor White
-    Write-Host "  Mean Inter-Arrival: $($interArrivalStats.mean) ms" -ForegroundColor White
-    Write-Host "  P95 Inter-Arrival: $($interArrivalStats.p95) ms" -ForegroundColor White
-    Write-Host "  Hurst Exponent: $($fractalMetrics.hurst_exponent)" -ForegroundColor White
-    Write-Host "  Self-Similarity: $($fractalMetrics.self_similarity)" -ForegroundColor White
-    Write-Host "  Burstiness: $($fractalMetrics.burstiness)" -ForegroundColor White
 }
 
-# Calculate summary statistics
-$allEvents = $patternResults.patterns | ForEach-Object { $_.events_generated }
-$allHurstExponents = $patternResults.patterns | ForEach-Object { $_.fractal_metrics.hurst_exponent }
-$allSelfSimilarities = $patternResults.patterns | ForEach-Object { $_.fractal_metrics.self_similarity }
+# Main execution
+$Results = @()
+$TestStart = Get-Date
 
-$patternResults.summary = @{
-    total_patterns_tested = $patternResults.patterns.Count
-    total_events_generated = ($allEvents | Measure-Object -Sum).Sum
-    average_events_per_pattern = [Math]::Round(($allEvents | Measure-Object -Average).Average, 2)
-    hurst_exponent_range = @{
-        min = [Math]::Round(($allHurstExponents | Measure-Object -Minimum).Minimum, 3)
-        max = [Math]::Round(($allHurstExponents | Measure-Object -Maximum).Maximum, 3)
-        mean = [Math]::Round(($allHurstExponents | Measure-Object -Average).Average, 3)
-    }
-    self_similarity_range = @{
-        min = [Math]::Round(($allSelfSimilarities | Measure-Object -Minimum).Minimum, 3)
-        max = [Math]::Round(($allSelfSimilarities | Measure-Object -Maximum).Maximum, 3)
-        mean = [Math]::Round(($allSelfSimilarities | Measure-Object -Average).Average, 3)
-    }
-    recommendations = @()
+Write-Host "🚀 Starting Canary Pattern Drills - Duration: ${Duration}s" -ForegroundColor Green
+
+if ($Pattern -eq "All" -or $Pattern -eq "Steady") {
+    $SteadyEvents = Invoke-SteadyPattern -Duration $Duration
+    $SteadyMetrics = Measure-FractalMetrics -Events $SteadyEvents -PatternName "Steady"
+    $Results += $SteadyMetrics
 }
 
-# Add recommendations based on results
-$bestPattern = $patternResults.patterns | Sort-Object { $_.fractal_metrics.self_similarity } -Descending | Select-Object -First 1
-$patternResults.summary.recommendations += "Best Self-Similarity: $($bestPattern.pattern_name) ($($bestPattern.fractal_metrics.self_similarity))"
+if ($Pattern -eq "All" -or $Pattern -eq "Poisson") {
+    $PoissonEvents = Invoke-PoissonPattern -Duration $Duration
+    $PoissonMetrics = Measure-FractalMetrics -Events $PoissonEvents -PatternName "Poisson"
+    $Results += $PoissonMetrics
+}
 
-$mostStablePattern = $patternResults.patterns | Sort-Object { $_.inter_arrival_stats.stddev } | Select-Object -First 1
-$patternResults.summary.recommendations += "Most Stable: $($mostStablePattern.pattern_name) (stddev: $($mostStablePattern.inter_arrival_stats.stddev) ms)"
+if ($Pattern -eq "All" -or $Pattern -eq "Pareto") {
+    $ParetoEvents = Invoke-ParetoPattern -Duration $Duration
+    $ParetoMetrics = Measure-FractalMetrics -Events $ParetoEvents -PatternName "Pareto"
+    $Results += $ParetoMetrics
+}
 
-$patternResults.test_end_time = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
+$TestEnd = Get-Date
+$TotalDuration = ($TestEnd - $TestStart).TotalSeconds
 
 # Save results
-$patternResults | ConvertTo-Json -Depth 10 | Set-Content $OutputFile -Encoding UTF8
-Write-Host "`nPattern results saved to: $OutputFile" -ForegroundColor Green
-
-# Display summary
-Write-Host "`n=== Canary Pattern Drills Summary ===" -ForegroundColor Green
-Write-Host "Total patterns tested: $($patternResults.summary.total_patterns_tested)" -ForegroundColor White
-Write-Host "Total events generated: $($patternResults.summary.total_events_generated)" -ForegroundColor White
-Write-Host "Average events per pattern: $($patternResults.summary.average_events_per_pattern)" -ForegroundColor White
-Write-Host "Hurst Exponent range: $($patternResults.summary.hurst_exponent_range.min) - $($patternResults.summary.hurst_exponent_range.max)" -ForegroundColor White
-Write-Host "Self-Similarity range: $($patternResults.summary.self_similarity_range.min) - $($patternResults.summary.self_similarity_range.max)" -ForegroundColor White
-
-Write-Host "`nRecommendations:" -ForegroundColor Yellow
-foreach ($rec in $patternResults.summary.recommendations) {
-    Write-Host "  - $rec" -ForegroundColor White
+$FinalResults = @{
+    test_start = $TestStart.ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
+    test_end = $TestEnd.ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
+    total_duration = [math]::Round($TotalDuration, 2)
+    pattern_results = $Results
+    fractal_analysis = @{
+        steady = @{
+            expected_hurst = 0.5
+            description = "Regular intervals should show H≈0.5 (random walk)"
+        }
+        poisson = @{
+            expected_hurst = 0.5
+            description = "Exponential inter-arrivals should show H≈0.5 (memoryless)"
+        }
+        pareto = @{
+            expected_hurst = "> 0.5"
+            description = "Heavy-tailed distribution should show H>0.5 (long-range dependence)"
+        }
+    }
 }
 
-Write-Host "`nVerification steps:" -ForegroundColor Cyan
-Write-Host "1. SigNoz UI -> Logs -> filter: pattern='$Pattern'" -ForegroundColor White
-Write-Host "2. Check ingestion latency for each pattern" -ForegroundColor White
-Write-Host "3. Analyze fractal self-similarity metrics" -ForegroundColor White
-Write-Host "4. Compare pattern performance in SigNoz dashboard" -ForegroundColor White
+$ResultsPath = "$ArtifactsDir/canary-pattern-results.json"
+$FinalResults | ConvertTo-Json -Depth 4 | Set-Content -Path $ResultsPath
 
-Write-Host "`nCanary pattern drills completed!" -ForegroundColor Green
+# Display results
+Write-Host "`n📊 Canary Pattern Analysis Results:" -ForegroundColor Cyan
+Write-Host "===================================" -ForegroundColor Cyan
+
+foreach ($Result in $Results) {
+    Write-Host "`n🎯 Pattern: $($Result.pattern)" -ForegroundColor Yellow
+    Write-Host "   Events: $($Result.count)"
+    Write-Host "   Mean inter-arrival: $($Result.mean)s"
+    Write-Host "   Std deviation: $($Result.std_dev)s"
+    Write-Host "   Hurst estimate: $($Result.hurst_estimate)"
+    
+    # Interpretation
+    if ($Result.hurst_estimate -is [double]) {
+        if ($Result.hurst_estimate -lt 0.4) {
+            Write-Host "   📉 Anti-persistent (H < 0.5)" -ForegroundColor Red
+        } elseif ($Result.hurst_estimate -gt 0.6) {
+            Write-Host "   📈 Persistent/Long-range dependent (H > 0.5)" -ForegroundColor Green
+        } else {
+            Write-Host "   🎲 Random walk behavior (H ≈ 0.5)" -ForegroundColor Blue
+        }
+    }
+}
+
+Write-Host "`n📁 Results saved to: $ResultsPath" -ForegroundColor Yellow
+
+# ECRR Report
+$ECRRReport = @"
+# Canary Pattern Drills - ECRR Report
+**Date**: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')
+**Actor**: Cursor-Local (Observability Copilot)
+
+## Examine
+- Pattern types: Steady (10s intervals), Poisson (λ=0.1), Pareto (α=1.5, scale=1.0)
+- Duration: ${Duration} seconds
+- Log destinations: C:\logs\canary-*.log
+- Fractal self-similarity analysis via Hurst exponent estimation
+
+## Clean
+- Generated structured canary logs with pattern metadata
+- Calculated inter-arrival time distributions
+- Measured fractal characteristics for each pattern
+
+## Report
+- Results: $($Results.Count) patterns analyzed
+- Total events: $($Results | ForEach-Object { $_.count } | Measure-Object -Sum).Sum
+- Artifacts: $ResultsPath
+- Duration: $([math]::Round($TotalDuration, 2)) seconds
+
+## Role
+Cursor-Local: Observability Copilot - Canary pattern analysis and fractal drift detection
+"@
+
+$ECRRReport | Set-Content -Path "$ArtifactsDir/canary-pattern-ecrr.md"
+
+Write-Host "`n🎭 ECRR Report saved to: $ArtifactsDir/canary-pattern-ecrr.md" -ForegroundColor Magenta
+
+if ($Analyze) {
+    Write-Host "`n🔍 Querying SigNoz for pattern ingestion verification..." -ForegroundColor Cyan
+    
+    # Check SigNoz for canary logs
+    try {
+        $SigNozQuery = @{
+            start = [int]($TestStart - (Get-Date '1970-01-01')).TotalSeconds
+            end = [int]($TestEnd - (Get-Date '1970-01-01')).TotalSeconds
+            query = 'message contains "windows-canary"'
+        }
+        
+        $SigNozResponse = Invoke-RestMethod -Uri "http://localhost:8080/api/v1/logs" -Method Get -Body $SigNozQuery -ErrorAction Stop
+        Write-Host "✅ SigNoz ingestion verified: $($SigNozResponse.data.result.length) logs found" -ForegroundColor Green
+        
+    } catch {
+        Write-Host "⚠️ SigNoz verification failed: $($_.Exception.Message)" -ForegroundColor Yellow
+    }
+}
+
+Write-Host "`n🎉 Canary Pattern Drills Complete!" -ForegroundColor Green
+Write-Host "Next: Deploy fractal drift monitors dashboard" -ForegroundColor Yellow

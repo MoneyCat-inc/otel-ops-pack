@@ -1,71 +1,116 @@
-# Import SigNoz Dashboard Script
-# Imports the OTel Queue Pressure dashboard configuration
+# Import Fractal Drift Monitors Dashboard to SigNoz
+# Cursor-Local: Observability Copilot
 
 param(
-    [string]$DashboardFile = "artifacts/signoz-dashboard-config.json",
+    [string]$DashboardPath = "artifacts/signoz-fractal-drift-dashboard.json",
     [string]$SigNozUrl = "http://localhost:8080"
 )
 
-Write-Host "=== Import SigNoz Dashboard ===" -ForegroundColor Green
-Write-Host "Dashboard file: $DashboardFile" -ForegroundColor Yellow
-Write-Host "SigNoz URL: $SigNozUrl" -ForegroundColor Yellow
+Write-Host "📊 Importing Fractal Drift Monitors Dashboard to SigNoz" -ForegroundColor Cyan
+Write-Host "=====================================================" -ForegroundColor Cyan
 
 # Check if dashboard file exists
-if (-not (Test-Path $DashboardFile)) {
-    Write-Error "Dashboard file not found: $DashboardFile"
+if (-not (Test-Path $DashboardPath)) {
+    Write-Host "❌ Dashboard file not found: $DashboardPath" -ForegroundColor Red
     exit 1
 }
 
-# Check if SigNoz is reachable
-Write-Host "Checking SigNoz connectivity..." -ForegroundColor Yellow
+# Check SigNoz connectivity
+Write-Host "🔍 Checking SigNoz connectivity..." -ForegroundColor Yellow
 try {
-    $response = Invoke-WebRequest -Uri "$SigNozUrl/api/health" -Method GET -TimeoutSec 10
-    if ($response.StatusCode -eq 200) {
-        Write-Host "SigNoz is reachable" -ForegroundColor Green
-    } else {
-        Write-Warning "SigNoz returned status code: $($response.StatusCode)"
-    }
+    $HealthResponse = Invoke-RestMethod -Uri "$SigNozUrl/api/v1/health" -Method Get -TimeoutSec 10
+    Write-Host "✅ SigNoz is healthy: $($HealthResponse.status)" -ForegroundColor Green
 } catch {
-    Write-Warning "Cannot reach SigNoz at $SigNozUrl. Please ensure SigNoz is running."
-    Write-Host "You can manually import the dashboard by:" -ForegroundColor Cyan
-    Write-Host "1. Open SigNoz UI at $SigNozUrl" -ForegroundColor Cyan
-    Write-Host "2. Go to Dashboards → Import" -ForegroundColor Cyan
-    Write-Host "3. Upload the file: $DashboardFile" -ForegroundColor Cyan
-    exit 0
+    Write-Host "❌ SigNoz not accessible: $($_.Exception.Message)" -ForegroundColor Red
+    exit 1
 }
 
 # Read dashboard configuration
-$dashboardConfig = Get-Content $DashboardFile -Raw | ConvertFrom-Json
+$DashboardConfig = Get-Content $DashboardPath -Raw | ConvertFrom-Json
+Write-Host "📋 Dashboard: $($DashboardConfig.title)" -ForegroundColor Yellow
+Write-Host "   Description: $($DashboardConfig.description)" -ForegroundColor Gray
+Write-Host "   Panels: $($DashboardConfig.panels.Count)" -ForegroundColor Gray
 
-Write-Host "Dashboard: $($dashboardConfig.name)" -ForegroundColor Green
-Write-Host "Description: $($dashboardConfig.description)" -ForegroundColor White
-Write-Host "Panels: $($dashboardConfig.panels.Count)" -ForegroundColor White
+# Import dashboard via SigNoz API
+Write-Host "`n🚀 Importing dashboard to SigNoz..." -ForegroundColor Green
 
-# Display dashboard panels
-Write-Host "`nDashboard Panels:" -ForegroundColor Yellow
-foreach ($panel in $dashboardConfig.panels) {
-    Write-Host "  - $($panel.title) ($($panel.type))" -ForegroundColor White
-}
-
-Write-Host "`n=== Import Instructions ===" -ForegroundColor Green
-Write-Host "To import this dashboard:" -ForegroundColor Yellow
-Write-Host "1. Open SigNoz UI: $SigNozUrl" -ForegroundColor Cyan
-Write-Host "2. Navigate to: Dashboards → Import" -ForegroundColor Cyan
-Write-Host "3. Upload file: $DashboardFile" -ForegroundColor Cyan
-Write-Host "4. Configure data sources if needed" -ForegroundColor Cyan
-Write-Host "5. Save dashboard" -ForegroundColor Cyan
-
-Write-Host "`n=== Dashboard Configuration ===" -ForegroundColor Green
-Write-Host "Time Range: $($dashboardConfig.time.from) to $($dashboardConfig.time.to)" -ForegroundColor White
-Write-Host "Refresh Interval: $($dashboardConfig.refresh)" -ForegroundColor White
-Write-Host "Tags: $($dashboardConfig.tags -join ', ')" -ForegroundColor White
-
-if ($dashboardConfig.annotations -and $dashboardConfig.annotations.list) {
-    Write-Host "`nAnnotations:" -ForegroundColor Yellow
-    foreach ($annotation in $dashboardConfig.annotations.list) {
-        Write-Host "  - $($annotation.name): $($annotation.titleFormat)" -ForegroundColor White
+try {
+    # Convert to SigNoz dashboard format
+    $SigNozDashboard = @{
+        title = $DashboardConfig.title
+        description = $DashboardConfig.description
+        tags = $DashboardConfig.tags
+        panels = @()
+        time = $DashboardConfig.time
+        refresh = $DashboardConfig.refresh
     }
+    
+    # Convert panels to SigNoz format
+    foreach ($Panel in $DashboardConfig.panels) {
+        $SigNozPanel = @{
+            title = $Panel.title
+            type = $Panel.type
+            targets = $Panel.targets
+            yAxes = $Panel.yAxes
+            thresholds = $Panel.thresholds
+            gridPos = @{
+                h = 8
+                w = 12
+                x = 0
+                y = 0
+            }
+        }
+        
+        if ($Panel.alert) {
+            $SigNozPanel.alert = $Panel.alert
+        }
+        
+        $SigNozDashboard.panels += $SigNozPanel
+    }
+    
+    # Import via SigNoz API
+    $ImportResponse = Invoke-RestMethod -Uri "$SigNozUrl/api/dashboards/db" -Method Post -Body ($SigNozDashboard | ConvertTo-Json -Depth 10) -ContentType "application/json" -TimeoutSec 30
+    
+    Write-Host "✅ Dashboard imported successfully!" -ForegroundColor Green
+    Write-Host "   Dashboard ID: $($ImportResponse.id)" -ForegroundColor Yellow
+    Write-Host "   URL: $SigNozUrl/dashboard/$($ImportResponse.slug)" -ForegroundColor Blue
+    
+    # Save import results
+    $ImportResults = @{
+        timestamp = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
+        dashboard_id = $ImportResponse.id
+        dashboard_slug = $ImportResponse.slug
+        dashboard_url = "$SigNozUrl/dashboard/$($ImportResponse.slug)"
+        panels_imported = $DashboardConfig.panels.Count
+        status = "success"
+    }
+    
+    $ImportResults | ConvertTo-Json -Depth 3 | Set-Content -Path "artifacts/dashboard-import-results.json"
+    
+    Write-Host "`n📁 Import results saved to: artifacts/dashboard-import-results.json" -ForegroundColor Yellow
+    
+} catch {
+    Write-Host "❌ Dashboard import failed: $($_.Exception.Message)" -ForegroundColor Red
+    
+    $ImportResults = @{
+        timestamp = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
+        status = "failed"
+        error = $_.Exception.Message
+    }
+    
+    $ImportResults | ConvertTo-Json -Depth 3 | Set-Content -Path "artifacts/dashboard-import-results.json"
+    exit 1
 }
 
-Write-Host "`nDashboard import instructions completed!" -ForegroundColor Green
-Write-Host "Dashboard file: $DashboardFile" -ForegroundColor Cyan
+# Verify dashboard is accessible
+Write-Host "`n🔍 Verifying dashboard accessibility..." -ForegroundColor Yellow
+try {
+    $DashboardResponse = Invoke-RestMethod -Uri "$SigNozUrl/api/dashboards/$($ImportResponse.slug)" -Method Get -TimeoutSec 10
+    Write-Host "✅ Dashboard verified: $($DashboardResponse.dashboard.title)" -ForegroundColor Green
+} catch {
+    Write-Host "⚠️ Dashboard verification failed: $($_.Exception.Message)" -ForegroundColor Yellow
+}
+
+Write-Host "`n🎉 Fractal Drift Monitors Dashboard Import Complete!" -ForegroundColor Green
+Write-Host "🌐 Access your dashboard at: $SigNozUrl/dashboard/$($ImportResponse.slug)" -ForegroundColor Blue
+Write-Host "📊 Monitor queue pressure, failure rates, and time-to-use latency" -ForegroundColor Cyan
