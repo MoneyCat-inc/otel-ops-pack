@@ -1,0 +1,167 @@
+# Minimal Prometheus Alert Rules for Agent System
+# ECRR Compliance: Examine → Clean → Report → Role
+
+groups:
+- name: agent-health
+  rules:
+  - alert: AgentJobFailures
+    expr: increase(jobs_failed_total[15m]) > 0
+    for: 5m
+    labels: 
+      severity: warning
+      component: agent
+      system: task-management
+    annotations:
+      summary: "Agent job failures detected"
+      description: "One or more agent jobs failed in the last 15 minutes. Check agent logs and system health."
+      runbook_url: "https://github.com/your-org/otel/blob/main/docs/troubleshooting.md#agent-job-failures"
+
+  - alert: AgentQueueBacklog
+    expr: max_over_time(queue_depth[10m]) > 3
+    for: 10m
+    labels: 
+      severity: warning
+      component: agent
+      system: task-management
+    annotations:
+      summary: "Agent queue depth sustained > 3"
+      description: "Queue may be backing up; investigate slowness or stuck jobs. Current depth: {{ $value }}"
+      runbook_url: "https://github.com/your-org/otel/blob/main/docs/troubleshooting.md#queue-backlog"
+
+  - alert: AgentHighLatency
+    expr: histogram_quantile(0.95, rate(job_duration_ms_bucket[5m])) > 15000
+    for: 5m
+    labels: 
+      severity: warning
+      component: agent
+      system: task-management
+    annotations:
+      summary: "Agent job latency P95 > 15s"
+      description: "Agent jobs are taking too long. P95 latency: {{ $value }}ms"
+      runbook_url: "https://github.com/your-org/otel/blob/main/docs/troubleshooting.md#high-latency"
+
+  - alert: AgentDown
+    expr: up{job="agent"} == 0
+    for: 1m
+    labels: 
+      severity: critical
+      component: agent
+      system: task-management
+    annotations:
+      summary: "Agent system is down"
+      description: "Agent system has been down for more than 1 minute. Check service status and logs."
+      runbook_url: "https://github.com/your-org/otel/blob/main/docs/troubleshooting.md#agent-down"
+
+- name: test-stability
+  rules:
+  - alert: FlakyTestsDetected
+    expr: ci_flaky_tests_count > 0
+    for: 1h
+    labels: 
+      severity: info
+      component: testing
+      system: ci
+    annotations:
+      summary: "Flaky tests present"
+      description: "There are {{ $value }} quarantined flaky tests; see dashboard for offenders."
+      runbook_url: "https://github.com/your-org/otel/blob/main/docs/troubleshooting.md#flaky-tests"
+
+  - alert: FlakyTestsSpike
+    expr: increase(ci_flaky_tests_count[24h]) > 3
+    for: 10m
+    labels: 
+      severity: warning
+      component: testing
+      system: ci
+    annotations:
+      summary: "Flaky tests spiking"
+      description: "Flaky test count increased by {{ $value }} in the last 24h."
+      runbook_url: "https://github.com/your-org/otel/blob/main/docs/troubleshooting.md#flaky-test-spike"
+
+  - alert: TestFailureRateHigh
+    expr: rate(test_failures_total[5m]) / rate(test_runs_total[5m]) > 0.01
+    for: 5m
+    labels: 
+      severity: warning
+      component: testing
+      system: ci
+    annotations:
+      summary: "Test failure rate > 1%"
+      description: "Test failure rate is {{ $value | humanizePercentage }} over the last 5 minutes."
+      runbook_url: "https://github.com/your-org/otel/blob/main/docs/troubleshooting.md#high-failure-rate"
+
+- name: system-health
+  rules:
+  - alert: ECRRReportBacklog
+    expr: ecrr_reports_pending > 5
+    for: 15m
+    labels: 
+      severity: warning
+      component: ecrr
+      system: reporting
+    annotations:
+      summary: "ECRR report backlog > 5"
+      description: "{{ $value }} ECRR reports are pending processing."
+      runbook_url: "https://github.com/your-org/otel/blob/main/docs/troubleshooting.md#ecrr-backlog"
+
+  - alert: SystemHealthDegraded
+    expr: system_health_score < 0.8
+    for: 5m
+    labels: 
+      severity: warning
+      component: system
+      system: health
+    annotations:
+      summary: "System health score < 80%"
+      description: "System health score is {{ $value | humanizePercentage }}. Check component status."
+      runbook_url: "https://github.com/your-org/otel/blob/main/docs/troubleshooting.md#system-health"
+
+  - alert: OTLPExporterDown
+    expr: otlp_exporter_up == 0
+    for: 2m
+    labels: 
+      severity: critical
+      component: otlp
+      system: telemetry
+    annotations:
+      summary: "OTLP exporter is down"
+      description: "OTLP exporter has been down for more than 2 minutes. Check collector status."
+      runbook_url: "https://github.com/your-org/otel/blob/main/docs/troubleshooting.md#otlp-exporter"
+
+- name: resource-usage
+  rules:
+  - alert: HighMemoryUsage
+    expr: process_resident_memory_bytes / 1024 / 1024 / 1024 > 2
+    for: 10m
+    labels: 
+      severity: warning
+      component: system
+      system: resources
+    annotations:
+      summary: "High memory usage"
+      description: "Memory usage is {{ $value }}GB, exceeding 2GB threshold."
+      runbook_url: "https://github.com/your-org/otel/blob/main/docs/troubleshooting.md#high-memory"
+
+  - alert: HighCPUUsage
+    expr: rate(process_cpu_seconds_total[5m]) > 0.8
+    for: 10m
+    labels: 
+      severity: warning
+      component: system
+      system: resources
+    annotations:
+      summary: "High CPU usage"
+      description: "CPU usage is {{ $value | humanizePercentage }} over the last 5 minutes."
+      runbook_url: "https://github.com/your-org/otel/blob/main/docs/troubleshooting.md#high-cpu"
+
+  - alert: DiskSpaceLow
+    expr: (node_filesystem_avail_bytes / node_filesystem_size_bytes) < 0.1
+    for: 5m
+    labels: 
+      severity: critical
+      component: system
+      system: resources
+    annotations:
+      summary: "Disk space low"
+      description: "Disk space is {{ $value | humanizePercentage }} available, below 10% threshold."
+      runbook_url: "https://github.com/your-org/otel/blob/main/docs/troubleshooting.md#disk-space"
