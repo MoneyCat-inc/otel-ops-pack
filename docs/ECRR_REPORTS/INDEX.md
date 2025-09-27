@@ -6,15 +6,16 @@
 
 | Status | Badge | Count |
 |--------|-------|-------|
-| Open | ![Open](../assets/badges/open.svg) | 113 |
+| Open | ![Open](../assets/badges/open.svg) | 114 |
 | Reviewed | ![Reviewed](../assets/badges/reviewed.svg) | 13 |
 | Not Working | ![Not Working](../assets/badges/not-working.svg) | 0 |
-| Resolved | ![Resolved](../assets/badges/resolved.svg) | 106 |
+| Resolved | ![Resolved](../assets/badges/resolved.svg) | 107 |
 
 ## Open
 
 ![Open](../assets/badges/open.svg)
 
+- [ECRR Rollout Report: SigNoz Collector Health Check Fix](./2025-09-27-rollout-health-check-fix.md) — 2025-09-27 01:35
 - [📋 ECRR Report - OTel Pipeline Troubleshooting Session](./2025-01-26-troubleshooting-session.md) — 2025-09-26 17:19
 - [ECRR Processing & Task Alignment Rollout Plan](./ECRR_ROLLOUT_PLAN_2025-01-27.md) — 2025-09-26 17:18
 - [ECRR Processing & Task Alignment Rollout Complete](./ECRR_ROLLOUT_COMPLETE_SUMMARY_2025-01-27.md) — 2025-09-26 17:18
@@ -157,6 +158,7 @@
 
 ![Resolved](../assets/badges/resolved.svg)
 
+- [ECRR Report: Rollout Completion and System Health Verification](./archive\2025-09-27-rollout-completion-ecrr.md) — 2025-09-27 01:37
 - [ECRR Report — System Analysis: Observability Pipeline Health & Recommendations](./archive\2025-09-24-analysis-system-health-ecrr.md) — 2025-09-25 04:48
 - [ECRR Report — System Analysis: Observability Pipeline Health & Recommendations](./2025-09-24-analysis-system-health-ecrr.md) — 2025-09-25 04:48
 - [ECRR Report: Docker Container Analysis and Workaround Implementation](./archive\2025-09-25-docker-container-analysis-and-workaround.md) — 2025-09-25 02:12
@@ -259,8 +261,8 @@
 - [ECRR Report - ECRR Canary Deployment Ready](./archive\2025-09-20-ecrr-canary-deployment-ready.md) — 2025-09-20 03:26
 - [ECRR Report - ECRR Canary Enhancement](./archive\2025-09-20-ecrr-canary-enhancement.md) — 2025-09-20 03:19
 - [ECRR Report - README ECRR Integration](./archive\2025-09-20-readme-ecrr-integration.md) — 2025-09-20 03:15
-- [ECRR Report - ECRR Verification and Cross-Project Setup](./archive\2025-09-20-ecrr-verification.md) — 2025-09-20 03:13
 - [ECRR Framework - Cross-Project Reference](./archive\ECRR_FRAMEWORK_README.md) — 2025-09-20 03:13
+- [ECRR Report - ECRR Verification and Cross-Project Setup](./archive\2025-09-20-ecrr-verification.md) — 2025-09-20 03:13
 - [ECRR Report - ECRR Implementation](./archive\2025-09-20-ecrr-implementation.md) — 2025-09-20 03:04
 - [Cursor Agent - Observability Copilot Role Definition](./archive\COPILOT_ROLE_DEFINITION.md) — 2025-09-20 01:24
 
@@ -268,6 +270,8 @@
 
 | Date | Status | Badge | Report |
 |------|--------|-------|--------|
+| 2025-09-27 01:37 | Resolved | ![Resolved](../assets/badges/resolved.svg) | [ECRR Report: Rollout Completion and System Health Verification](./archive\2025-09-27-rollout-completion-ecrr.md) |
+| 2025-09-27 01:35 | Open | ![Open](../assets/badges/open.svg) | [ECRR Rollout Report: SigNoz Collector Health Check Fix](./2025-09-27-rollout-health-check-fix.md) |
 | 2025-09-26 17:19 | Open | ![Open](../assets/badges/open.svg) | [📋 ECRR Report - OTel Pipeline Troubleshooting Session](./2025-01-26-troubleshooting-session.md) |
 | 2025-09-26 17:18 | Open | ![Open](../assets/badges/open.svg) | [ECRR Processing & Task Alignment Rollout Plan](./ECRR_ROLLOUT_PLAN_2025-01-27.md) |
 | 2025-09-26 17:18 | Open | ![Open](../assets/badges/open.svg) | [ECRR Processing & Task Alignment Rollout Complete](./ECRR_ROLLOUT_COMPLETE_SUMMARY_2025-01-27.md) |
@@ -284,8 +288,8 @@
 | 2025-09-25 04:41 | Open | ![Open](../assets/badges/open.svg) | [ECRR Report: GPU Sidecar Deployment Assessment](./2025-09-25-gpu-sidecar-ecrr-assessment.md) |
 | 2025-09-25 04:41 | Open | ![Open](../assets/badges/open.svg) | [ECRR Report — OTel GPU Pipeline Rollout Complete (2025-09-25)](./2025-09-25-otel-gpu-pipeline-rollout-complete.md) |
 | 2025-09-25 04:39 | Open | ![Open](../assets/badges/open.svg) | [ECRR Report — GPU Pipeline Assessment (2025-09-25)](./2025-09-25-gpu-pipeline-ecrr-assessment.md) |
-| 2025-09-25 04:03 | Open | ![Open](../assets/badges/open.svg) | [ECRR Report: Task Completion Summary](./2025-09-25-task-completion-summary.md) |
 | 2025-09-25 04:03 | Open | ![Open](../assets/badges/open.svg) | [ECRR Report: OTLP Pipeline Verification Complete](./2025-09-25-otlp-pipeline-verification-complete.md) |
+| 2025-09-25 04:03 | Open | ![Open](../assets/badges/open.svg) | [ECRR Report: Task Completion Summary](./2025-09-25-task-completion-summary.md) |
 | 2025-09-25 03:59 | Open | ![Open](../assets/badges/open.svg) | [ECRR Report: Pipeline Health Assessment](./2025-09-25-pipeline-health-assessment.md) |
 | 2025-09-25 03:56 | Open | ![Open](../assets/badges/open.svg) | [ECRR Report: ECRR Report](./ecrr-2025-09-25-045605.md) |
 | 2025-09-25 03:54 | Open | ![Open](../assets/badges/open.svg) | [ECRR Report: ECRR Report](./ecrr-2025-09-25-045443.md) |
