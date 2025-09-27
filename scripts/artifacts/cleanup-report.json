@@ -1,18 +1,24 @@
 {
-  "report": {},
-  "clean": {
-    "space_freed_gb": 0,
-    "files_removed": 0
-  },
-  "examine": {
-    "files_to_remove": 0,
-    "total_files": 514,
-    "space_to_free_gb": 0.0,
-    "total_size_gb": 0.01,
-    "cutoff_date": "2025-09-19 03:30:02"
-  },
+  "artifacts_path": "C:\\otel\\scripts\\..\\artifacts",
+  "timestamp": "2025-09-27 03:30:02",
   "role": "OTel Artifacts Cleanup Script",
   "retention_days": 7,
-  "artifacts_path": "C:\\otel\\scripts\\..\\artifacts",
-  "timestamp": "2025-09-26 03:30:02"
+  "examine": {
+    "files_to_remove": 6,
+    "space_to_free_gb": 0.0,
+    "total_files": 826,
+    "total_size_gb": 0.01,
+    "cutoff_date": "2025-09-20 03:30:02"
+  },
+  "clean": {
+    "backup_created": null,
+    "files_removed": 6,
+    "space_freed_gb": 0.0,
+    "mode": "cleanup"
+  },
+  "report": {
+    "report_path": "artifacts/cleanup-report.json",
+    "execution_time_seconds": 0.18,
+    "success": true
+  }
 }

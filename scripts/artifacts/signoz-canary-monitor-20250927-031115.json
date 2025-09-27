@@ -1,6 +1,6 @@
 {
-  "timestamp": "2025-09-27 03:26:21",
-  "emittedMessage": "SigNoz wiring canary sent 2025-09-27T03:26:15",
+  "timestamp": "2025-09-27 03:11:21",
+  "emittedMessage": "SigNoz wiring canary sent 2025-09-27T03:11:15",
   "timeWindowMinutes": 60,
   "canaryCount": 376,
   "earliestTimestamp": "2025-09-24 10:54:47.522811200",

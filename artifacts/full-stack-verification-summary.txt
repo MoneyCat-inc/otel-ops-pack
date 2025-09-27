@@ -1,22 +1,22 @@
 Full Stack Verification Report
 =============================
-Generated: 2025-09-25 02:51:04
-Duration: 41 seconds
+Generated: 2025-09-27 03:17:58
+Duration: 27 seconds
 Overall Status: WARN
 
 Summary:
 --------
-Total Checks: 15
-Passed: 9
-Failed: 5
+Total Checks: 16
+Passed: 13
+Failed: 2
 Warnings: 0
 
 Component Status:
 -----------------
-OTel: WARN (4/3 checks passed)
-Docker: PASS (2/2 checks passed)
 Autopilot: PASS (3/3 checks passed)
-Integration: FAIL (0/1 checks passed)
-SigNoz: FAIL (0/2 checks passed)
 Browser: PASS (2/2 checks passed)
+SigNoz: PASS (3/3 checks passed)
 Telemetry: WARN (4/2 checks passed)
+OTel: WARN (2/3 checks passed)
+Docker: PASS (2/2 checks passed)
+Integration: FAIL (0/1 checks passed)
