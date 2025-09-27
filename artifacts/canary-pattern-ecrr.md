@@ -1,5 +1,5 @@
 # Canary Pattern Drills - ECRR Report
-**Date**: 2025-09-27 07:04:03
+**Date**: 2025-09-27 15:46:28
 **Actor**: Cursor-Local (Observability Copilot)
 
 ## Examine
@@ -14,10 +14,10 @@
 - Measured fractal characteristics for each pattern
 
 ## Report
-- Results: 3 patterns analyzed
+- Results: 1 patterns analyzed
 - Total events: Microsoft.PowerShell.Commands.GenericMeasureInfo.Sum
 - Artifacts: artifacts/canary-pattern-results.json
-- Duration: 76.29 seconds
+- Duration: 29.6 seconds
 
 ## Role
 Cursor-Local: Observability Copilot - Canary pattern analysis and fractal drift detection

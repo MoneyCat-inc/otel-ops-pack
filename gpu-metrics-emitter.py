@@ -98,61 +98,113 @@ class GPUMetricsEmitter:
         self.gpu_util_gauge = self.meter.create_observable_gauge(
             name="gpu.utilization.percent",
             description="GPU utilization percentage",
-            unit="percent"
+            unit="percent",
+            callbacks=[self._get_gpu_utilization]
         )
         
         # Memory Utilization
         self.memory_used_gauge = self.meter.create_observable_gauge(
             name="gpu.memory.used.bytes",
             description="GPU memory used in bytes",
-            unit="bytes"
+            unit="bytes",
+            callbacks=[self._get_memory_used]
         )
         
         self.memory_total_gauge = self.meter.create_observable_gauge(
             name="gpu.memory.total.bytes",
             description="GPU total memory in bytes",
-            unit="bytes"
+            unit="bytes",
+            callbacks=[self._get_memory_total]
         )
         
         self.memory_util_gauge = self.meter.create_observable_gauge(
             name="gpu.memory.utilization.percent",
             description="GPU memory utilization percentage",
-            unit="percent"
+            unit="percent",
+            callbacks=[self._get_memory_utilization]
         )
         
         # Temperature
         self.temperature_gauge = self.meter.create_observable_gauge(
             name="gpu.temperature.celsius",
             description="GPU temperature in Celsius",
-            unit="celsius"
+            unit="celsius",
+            callbacks=[self._get_temperature]
         )
         
         # Power
         self.power_draw_gauge = self.meter.create_observable_gauge(
             name="gpu.power.draw.watts",
             description="GPU power draw in watts",
-            unit="watts"
+            unit="watts",
+            callbacks=[self._get_power_draw]
         )
         
         # Clock speeds
         self.graphics_clock_gauge = self.meter.create_observable_gauge(
             name="gpu.clock.graphics.mhz",
             description="GPU graphics clock in MHz",
-            unit="mhz"
+            unit="mhz",
+            callbacks=[self._get_graphics_clock]
         )
         
         self.memory_clock_gauge = self.meter.create_observable_gauge(
             name="gpu.clock.memory.mhz",
             description="GPU memory clock in MHz",
-            unit="mhz"
+            unit="mhz",
+            callbacks=[self._get_memory_clock]
         )
         
         # Fan speed
         self.fan_speed_gauge = self.meter.create_observable_gauge(
             name="gpu.fan.speed.percent",
             description="GPU fan speed percentage",
-            unit="percent"
+            unit="percent",
+            callbacks=[self._get_fan_speed]
         )
+    
+    def _get_gpu_utilization(self, callback_options=None):
+        """Callback for GPU utilization metric"""
+        util = pynvml.nvmlDeviceGetUtilizationRates(self.device_handle)
+        return util.gpu
+    
+    def _get_memory_used(self, callback_options=None):
+        """Callback for GPU memory used metric"""
+        memory_info = pynvml.nvmlDeviceGetMemoryInfo(self.device_handle)
+        return memory_info.used
+    
+    def _get_memory_total(self, callback_options=None):
+        """Callback for GPU memory total metric"""
+        memory_info = pynvml.nvmlDeviceGetMemoryInfo(self.device_handle)
+        return memory_info.total
+    
+    def _get_memory_utilization(self, callback_options=None):
+        """Callback for GPU memory utilization metric"""
+        memory_info = pynvml.nvmlDeviceGetMemoryInfo(self.device_handle)
+        return (memory_info.used / memory_info.total) * 100
+    
+    def _get_temperature(self, callback_options=None):
+        """Callback for GPU temperature metric"""
+        return pynvml.nvmlDeviceGetTemperature(self.device_handle, pynvml.NVML_TEMPERATURE_GPU)
+    
+    def _get_power_draw(self, callback_options=None):
+        """Callback for GPU power draw metric"""
+        return pynvml.nvmlDeviceGetPowerUsage(self.device_handle) / 1000.0  # Convert to watts
+    
+    def _get_graphics_clock(self, callback_options=None):
+        """Callback for GPU graphics clock metric"""
+        return pynvml.nvmlDeviceGetClockInfo(self.device_handle, pynvml.NVML_CLOCK_GRAPHICS)
+    
+    def _get_memory_clock(self, callback_options=None):
+        """Callback for GPU memory clock metric"""
+        return pynvml.nvmlDeviceGetClockInfo(self.device_handle, pynvml.NVML_CLOCK_MEM)
+    
+    def _get_fan_speed(self, callback_options=None):
+        """Callback for GPU fan speed metric"""
+        try:
+            return pynvml.nvmlDeviceGetFanSpeed(self.device_handle, 0)
+        except:
+            return 0  # Some GPUs don't support fan speed reading
     
     def get_gpu_metrics(self):
         """Get current GPU metrics"""
@@ -202,55 +254,10 @@ class GPUMetricsEmitter:
     
     def emit_metrics(self):
         """Emit current GPU metrics"""
-        metrics_data = self.get_gpu_metrics()
-        if not metrics_data:
-            return False
-        
         try:
-            # Create callback functions for observable gauges
-            def gpu_util_callback():
-                return [metrics.Observation(metrics_data['gpu_util'])]
-            
-            def memory_used_callback():
-                return [metrics.Observation(metrics_data['memory_used'])]
-            
-            def memory_total_callback():
-                return [metrics.Observation(metrics_data['memory_total'])]
-            
-            def memory_util_callback():
-                return [metrics.Observation(metrics_data['memory_util'])]
-            
-            def temperature_callback():
-                return [metrics.Observation(metrics_data['temperature'])]
-            
-            def power_draw_callback():
-                return [metrics.Observation(metrics_data['power_draw'])]
-            
-            def graphics_clock_callback():
-                return [metrics.Observation(metrics_data['graphics_clock'])]
-            
-            def memory_clock_callback():
-                return [metrics.Observation(metrics_data['memory_clock'])]
-            
-            def fan_speed_callback():
-                return [metrics.Observation(metrics_data['fan_speed'])]
-            
-            # Add callbacks to gauges
-            self.gpu_util_gauge.add_callback(gpu_util_callback)
-            self.memory_used_gauge.add_callback(memory_used_callback)
-            self.memory_total_gauge.add_callback(memory_total_callback)
-            self.memory_util_gauge.add_callback(memory_util_callback)
-            self.temperature_gauge.add_callback(temperature_callback)
-            self.power_draw_gauge.add_callback(power_draw_callback)
-            self.graphics_clock_gauge.add_callback(graphics_clock_callback)
-            self.memory_clock_gauge.add_callback(memory_clock_callback)
-            self.fan_speed_gauge.add_callback(fan_speed_callback)
-            
-            # Force export
+            # Force export - callbacks are automatically called
             self.meter_provider.force_flush()
-            
             return True
-            
         except Exception as e:
             print(f"Error emitting metrics: {e}")
             return False

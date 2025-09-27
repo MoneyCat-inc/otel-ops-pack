@@ -205,6 +205,59 @@ foreach ($lockFile in $lockFiles) {
     }
 }
 
+# Check file_storage directory for agent hygiene
+$fileStorageDir = "file_storage"
+if (Test-Path $fileStorageDir) {
+    try {
+        $fileStorageInfo = Get-ChildItem -Path $fileStorageDir -Recurse -Force | Measure-Object
+        Write-Pass "File storage directory exists: $fileStorageDir"
+        Write-Detail "File storage items: $($fileStorageInfo.Count) files/directories"
+        
+        # Check for agent state files
+        $agentFiles = Get-ChildItem -Path $fileStorageDir -Filter "*agent*" -Recurse -Force
+        if ($agentFiles) {
+            Write-Pass "Agent state files found: $($agentFiles.Count)"
+            foreach ($file in $agentFiles) {
+                if ($file.PSIsContainer) {
+                    Write-Detail "  - $($file.Name): directory"
+                } elseif ($file.Length) {
+                    Write-Detail "  - $($file.Name): $([Math]::Round($file.Length / 1KB, 2)) KB"
+                } else {
+                    Write-Detail "  - $($file.Name): file (size unknown)"
+                }
+            }
+        } else {
+            Write-Detail "No agent state files found (normal for fresh start)"
+        }
+        
+        # Check file_storage permissions
+        try {
+            $testFile = Join-Path $fileStorageDir "test-write.tmp"
+            "test" | Out-File -FilePath $testFile -Force
+            if (Test-Path $testFile) {
+                Remove-Item -Path $testFile -Force
+                Write-Pass "File storage directory is writable"
+            } else {
+                Write-Fail "Test file not created - directory not writable"
+            }
+        } catch {
+            Write-Fail "File storage directory not writable: $($_.Exception.Message)"
+        }
+    } catch {
+        Write-Fail "Failed to check file storage directory: $($_.Exception.Message)"
+    }
+} else {
+    Write-Fail "File storage directory missing: $fileStorageDir"
+    Write-Detail "This may cause agent state persistence issues"
+    Write-Detail "Creating file_storage directory..."
+    try {
+        New-Item -ItemType Directory -Path $fileStorageDir -Force | Out-Null
+        Write-Pass "File storage directory created: $fileStorageDir"
+    } catch {
+        Write-Fail "Failed to create file storage directory: $($_.Exception.Message)"
+    }
+}
+
 Write-Host "`n7. GPU Sidecar Prerequisites:" -ForegroundColor Yellow
 try {
     $nvidiaSmi = Get-Command nvidia-smi -ErrorAction Stop

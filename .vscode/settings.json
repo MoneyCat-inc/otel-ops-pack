@@ -22,5 +22,6 @@
   "typescript.tsserver.maxTsServerMemory": 4096,
   "typescript.tsserver.watchOptions": {
     "watchDirectory": "useFsEvents"
-  }
+  },
+  "chatgpt.openOnStartup": true
 }

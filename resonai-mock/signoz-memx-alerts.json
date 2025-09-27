@@ -1,0 +1,256 @@
+{
+  "version": "1.0",
+  "name": "MEMX Memory Observation Alerts",
+  "description": "Alert rules for MEMX memory metrics and performance thresholds",
+  "alerts": [
+    {
+      "id": "memx-high-memory-strain",
+      "name": "MEMX High Memory Strain",
+      "description": "Memory strain percentage exceeds 80% for more than 5 minutes",
+      "condition": {
+        "expr": "memx_memory_strain_percent > 80",
+        "duration": "5m",
+        "severity": "warning"
+      },
+      "annotations": {
+        "summary": "MEMX memory strain is high",
+        "description": "Memory strain has been above 80% for {{ $duration }}. Current value: {{ $value }}%",
+        "runbook_url": "https://docs.resonai.com/runbooks/memx-high-strain"
+      },
+      "labels": {
+        "service": "memx",
+        "component": "memory",
+        "severity": "warning"
+      }
+    },
+    {
+      "id": "memx-critical-memory-strain",
+      "name": "MEMX Critical Memory Strain",
+      "description": "Memory strain percentage exceeds 95% for more than 2 minutes",
+      "condition": {
+        "expr": "memx_memory_strain_percent > 95",
+        "duration": "2m",
+        "severity": "critical"
+      },
+      "annotations": {
+        "summary": "MEMX memory strain is critical",
+        "description": "Memory strain has been above 95% for {{ $duration }}. Current value: {{ $value }}%. Immediate action required.",
+        "runbook_url": "https://docs.resonai.com/runbooks/memx-critical-strain"
+      },
+      "labels": {
+        "service": "memx",
+        "component": "memory",
+        "severity": "critical"
+      }
+    },
+    {
+      "id": "memx-wasm-heap-growth",
+      "name": "MEMX WASM Heap Growth",
+      "description": "WASM heap size exceeds 20MB for more than 10 minutes",
+      "condition": {
+        "expr": "memx_wasm_heap_bytes > 20971520",
+        "duration": "10m",
+        "severity": "warning"
+      },
+      "annotations": {
+        "summary": "MEMX WASM heap is growing large",
+        "description": "WASM heap size has been above 20MB for {{ $duration }}. Current value: {{ $value }} bytes",
+        "runbook_url": "https://docs.resonai.com/runbooks/memx-wasm-heap"
+      },
+      "labels": {
+        "service": "memx",
+        "component": "wasm",
+        "severity": "warning"
+      }
+    },
+    {
+      "id": "memx-sab-backlog",
+      "name": "MEMX SAB Backlog",
+      "description": "SharedArrayBuffer usage exceeds 90% for more than 3 minutes",
+      "condition": {
+        "expr": "memx_sab_usage_percent > 90",
+        "duration": "3m",
+        "severity": "warning"
+      },
+      "annotations": {
+        "summary": "MEMX SAB usage is high",
+        "description": "SAB usage has been above 90% for {{ $duration }}. Current value: {{ $value }}%",
+        "runbook_url": "https://docs.resonai.com/runbooks/memx-sab-backlog"
+      },
+      "labels": {
+        "service": "memx",
+        "component": "sab",
+        "severity": "warning"
+      }
+    },
+    {
+      "id": "memx-worklet-lag",
+      "name": "MEMX AudioWorklet Lag",
+      "description": "AudioWorklet lag exceeds 100ms for more than 5 minutes",
+      "condition": {
+        "expr": "memx_worklet_lag_ms > 100",
+        "duration": "5m",
+        "severity": "warning"
+      },
+      "annotations": {
+        "summary": "MEMX AudioWorklet lag is high",
+        "description": "AudioWorklet lag has been above 100ms for {{ $duration }}. Current value: {{ $value }}ms",
+        "runbook_url": "https://docs.resonai.com/runbooks/memx-worklet-lag"
+      },
+      "labels": {
+        "service": "memx",
+        "component": "worklet",
+        "severity": "warning"
+      }
+    },
+    {
+      "id": "memx-frame-drops",
+      "name": "MEMX Frame Drops",
+      "description": "Frame drop rate exceeds 5% for more than 2 minutes",
+      "condition": {
+        "expr": "rate(memx_dropped_frames_total[5m]) / rate(memx_frames_total[5m]) * 100 > 5",
+        "duration": "2m",
+        "severity": "warning"
+      },
+      "annotations": {
+        "summary": "MEMX frame drop rate is high",
+        "description": "Frame drop rate has been above 5% for {{ $duration }}. Current value: {{ $value }}%",
+        "runbook_url": "https://docs.resonai.com/runbooks/memx-frame-drops"
+      },
+      "labels": {
+        "service": "memx",
+        "component": "performance",
+        "severity": "warning"
+      }
+    },
+    {
+      "id": "memx-export-failures",
+      "name": "MEMX Export Failures",
+      "description": "Export failure rate exceeds 10% for more than 5 minutes",
+      "condition": {
+        "expr": "rate(memx_export_failures_total[5m]) / rate(memx_exports_total[5m]) * 100 > 10",
+        "duration": "5m",
+        "severity": "warning"
+      },
+      "annotations": {
+        "summary": "MEMX export failure rate is high",
+        "description": "Export failure rate has been above 10% for {{ $duration }}. Current value: {{ $value }}%",
+        "runbook_url": "https://docs.resonai.com/runbooks/memx-export-failures"
+      },
+      "labels": {
+        "service": "memx",
+        "component": "export",
+        "severity": "warning"
+      }
+    },
+    {
+      "id": "memx-otel-disconnect",
+      "name": "MEMX OTel Disconnect",
+      "description": "OTel collector is not receiving MEMX metrics for more than 5 minutes",
+      "condition": {
+        "expr": "absent_over_time(memx_frames_total[5m])",
+        "duration": "5m",
+        "severity": "critical"
+      },
+      "annotations": {
+        "summary": "MEMX OTel integration is down",
+        "description": "No MEMX metrics received for {{ $duration }}. Check OTel collector and MEMX instrumentation.",
+        "runbook_url": "https://docs.resonai.com/runbooks/memx-otel-disconnect"
+      },
+      "labels": {
+        "service": "memx",
+        "component": "otel",
+        "severity": "critical"
+      }
+    },
+    {
+      "id": "memx-session-stall",
+      "name": "MEMX Session Stall",
+      "description": "No new frames received for more than 30 seconds",
+      "condition": {
+        "expr": "time() - memx_last_frame_timestamp > 30",
+        "duration": "30s",
+        "severity": "warning"
+      },
+      "annotations": {
+        "summary": "MEMX session appears stalled",
+        "description": "No new frames received for {{ $duration }}. Check browser instrumentation and MEMX store.",
+        "runbook_url": "https://docs.resonai.com/runbooks/memx-session-stall"
+      },
+      "labels": {
+        "service": "memx",
+        "component": "session",
+        "severity": "warning"
+      }
+    },
+    {
+      "id": "memx-cross-origin-isolation",
+      "name": "MEMX Cross-Origin Isolation",
+      "description": "Cross-origin isolation is disabled, affecting SAB/WASM functionality",
+      "condition": {
+        "expr": "memx_cross_origin_isolated == 0",
+        "duration": "1m",
+        "severity": "warning"
+      },
+      "annotations": {
+        "summary": "MEMX cross-origin isolation is disabled",
+        "description": "Cross-origin isolation is disabled for {{ $duration }}. SAB and WASM threads may not function properly.",
+        "runbook_url": "https://docs.resonai.com/runbooks/memx-cross-origin-isolation"
+      },
+      "labels": {
+        "service": "memx",
+        "component": "isolation",
+        "severity": "warning"
+      }
+    }
+  ],
+  "notification_channels": [
+    {
+      "name": "memx-alerts",
+      "type": "webhook",
+      "settings": {
+        "url": "https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK",
+        "title": "MEMX Alert",
+        "text": "{{ .GroupLabels.alertname }}: {{ .Annotations.summary }}"
+      }
+    },
+    {
+      "name": "memx-critical",
+      "type": "email",
+      "settings": {
+        "addresses": ["memx-team@resonai.com"],
+        "subject": "CRITICAL: MEMX Alert",
+        "body": "{{ .GroupLabels.alertname }}: {{ .Annotations.description }}"
+      }
+    }
+  ],
+  "alert_groups": [
+    {
+      "name": "memx-memory",
+      "alerts": [
+        "memx-high-memory-strain",
+        "memx-critical-memory-strain",
+        "memx-wasm-heap-growth"
+      ],
+      "notification_channels": ["memx-alerts"]
+    },
+    {
+      "name": "memx-performance",
+      "alerts": [
+        "memx-sab-backlog",
+        "memx-worklet-lag",
+        "memx-frame-drops"
+      ],
+      "notification_channels": ["memx-alerts"]
+    },
+    {
+      "name": "memx-infrastructure",
+      "alerts": [
+        "memx-otel-disconnect",
+        "memx-session-stall",
+        "memx-cross-origin-isolation"
+      ],
+      "notification_channels": ["memx-critical"]
+    }
+  ]
+}

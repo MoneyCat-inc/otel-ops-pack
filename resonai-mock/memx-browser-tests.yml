@@ -1,0 +1,76 @@
+name: MEMX Browser Compatibility Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'app/labs/memx/**'
+      - 'components/Memx*'
+      - 'next.config.js'
+      - 'tests/memx*.spec.ts'
+      - 'playwright*.config.ts'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'app/labs/memx/**'
+      - 'components/Memx*'
+      - 'next.config.js'
+      - 'tests/memx*.spec.ts'
+      - 'playwright*.config.ts'
+
+jobs:
+  memx-browser-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Install Playwright browsers
+      run: npx playwright install --with-deps
+      
+    - name: Set environment variables
+      run: |
+        echo "NEXT_PUBLIC_FEATURE_MEMX=1" >> .env.local
+        echo "NEXT_PUBLIC_MEMX_STREAM_DEFAULT=0" >> .env.local
+        
+    - name: Start development server
+      run: npm run dev &
+      
+    - name: Wait for server to be ready
+      run: |
+        timeout 60 bash -c 'until curl -f http://localhost:3000/labs/memx; do sleep 2; done'
+        
+    - name: Run MEMX smoke tests (Firefox/WebKit)
+      run: npx playwright test tests/memx.spec.ts --project=firefox --project=webkit
+      
+    - name: Run MEMX enhanced tests
+      run: npx playwright test tests/memx-enhanced.spec.ts
+      
+    - name: Run Chromium debug tests
+      run: npx playwright test --config=playwright.chromium.config.ts tests/memx-chromium-debug.spec.ts
+      continue-on-error: true # Chromium issues are expected in some environments
+      
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: playwright-report
+        path: playwright-report/
+        
+    - name: Upload Chromium test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: playwright-report-chromium
+        path: playwright-report-chromium/
