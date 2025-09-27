@@ -187,3 +187,5 @@ if ($UseClickHouse.IsPresent) {
 
 Write-Host 'Canary verification successful.' -ForegroundColor Green
 exit 0
+
+

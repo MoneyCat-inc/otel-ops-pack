@@ -1,0 +1,21 @@
+{
+  "timestamp": "20250926-020003",
+  "environment": "production",
+  "metrics": {
+    "queue_depth": 0,
+    "processing_efficiency": 0,
+    "fallback_rate": 0
+  },
+  "sidecar_health": {
+    "inference": {
+      "error": "Response status code does not indicate success: 404 (Not Found)."
+    },
+    "compression": {
+      "error": "Response status code does not indicate success: 404 (Not Found)."
+    },
+    "aggregation": {
+      "error": "Response status code does not indicate success: 404 (Not Found)."
+    }
+  },
+  "validation_success": true
+}

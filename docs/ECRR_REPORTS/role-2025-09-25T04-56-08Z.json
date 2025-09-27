@@ -1,0 +1,13 @@
+{
+  "timestamp": "2025-09-25T04:56:08Z",
+  "actor": "Cursor Agent - Observability Copilot",
+  "capabilities": [
+    "ECRR report processing",
+    "Task generation and management",
+    "PowerShell script execution",
+    "SigNoz integration verification",
+    "Documentation generation"
+  ],
+  "responsibility": "System monitoring and ECRR compliance",
+  "status": "active"
+}

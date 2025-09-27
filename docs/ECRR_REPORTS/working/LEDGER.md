@@ -8,46 +8,60 @@ Reports awaiting review or initial triage.
 
 | Report | Status | Assigned | Priority | Timestamp | Notes |
 |--------|--------|----------|----------|-----------|-------|
-| 2025-09-23-env-ready-job-restoration.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| 2025-09-23-parser-regression-monitoring.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| 2025-09-23-signoz-parser-error-resolution.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| 2025-09-24-adaptive-canary-monitoring.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| 2025-09-24-alert-thresholds-notifications.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| 2025-09-24-e2-sweep-timeout-optimization.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| 2025-09-24-e2-timeouts-confirmation.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| 2025-09-24-otel-analytics-monitor.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| 2025-01-27-easy-tasks-completion.md | Outstanding | team-lead | low | 2025-09-25 03:13 | Easy tasks completion - routine maintenance |
+| 2025-09-24-e2-optimization-implementation.md | Outstanding | performance-engineer | medium | 2025-09-25 03:13 | E2 optimization implementation - performance enhancement |
+| 2025-09-24-signoz-health-canary.md | Outstanding | observability-copilot | medium | 2025-09-25 03:12 | SigNoz health canary - monitoring health check |
+| 2025-09-24-spike-threshold-optimization.md | Outstanding | performance-engineer | medium | 2025-09-25 03:12 | Spike threshold optimization - performance tuning |
+| 2025-01-27-cat-nap-control-room-completion.md | Outstanding | system-architect | medium | 2025-09-25 03:12 | Cat Nap Control Room completion - observability system implementation |
+| 2025-09-24-windows-canary-monitor.md | Outstanding | observability-copilot | medium | 2025-09-25 03:12 | Windows logs canary monitor - monitoring enhancement |
+| 2025-09-24-otel-wiring-verification.md | Outstanding | observability-copilot | medium | 2025-09-25 03:11 | OTel wiring verification - infrastructure health check |
+| 2025-09-24-merge-conflict-detector-ecrr.md | Outstanding | system-architect | medium | 2025-09-25 03:11 | Merge conflict detector implementation - automation enhancement |
+| 2025-09-24-iona-signoz-integration.md | Outstanding | integration-engineer | medium | 2025-09-25 03:11 | IONA SigNoz integration - system integration work |
+| 2025-09-24-e2-optimization-complete.md | Outstanding | performance-engineer | medium | 2025-09-25 03:11 | E2 optimization complete - performance improvement |
+| 2025-09-24-signoz-canary-monitoring-enhancement.md | Outstanding | observability-copilot | medium | 2025-09-25 03:11 | SigNoz canary monitoring enhancement - monitoring improvement |
+| 2025-09-25-ssot-gate-implementation.md | Outstanding | system-architect | medium | 2025-09-25 03:11 | SSOT Gate implementation - quality gate enhancement |
+| 2025-09-25-signoz-alert-configuration-work.md | Outstanding | observability-copilot | medium | 2025-09-25 03:11 | SigNoz alert configuration work - monitoring enhancement |
+| 2025-09-25-ecrr-autobot-rollout-deployment.md | Outstanding | system-architect | medium | 2025-09-25 03:11 | ECRR Auto Bot rollout deployment - automation enhancement |
 | 2025-09-24-signoz-canary-automation.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
 | 2025-09-24-signoz-canary-monitor.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| 2025-09-23-env-ready-restoration.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| 2025-09-24-signoz-canary-remediation-and-monthly-drill.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| 2025-09-24-signoz-disk-monitoring-integration.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
 | 2025-09-24-signoz-multiline-json-stitching.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| 2025-09-24-signoz-canary-remediation-and-monthly-drill.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| 2025-09-24-signoz-disk-monitoring-activation.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| 2025-09-24-signoz-disk-monitoring-integration.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
 | 2025-09-24-signoz-parser-error-resolution-complete.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| ECRR_LEDGER_FRACTAL_DRIFT.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| LATEST.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
 | ECRR_PROCESSING_SUMMARY_2025-01-27.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
 | ECRR_PROCESSING_SUMMARY_2025-09-23-FINAL.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
 | ECRR-disk-monitoring-implementation-20250925-000500.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
 | INDEX.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| LATEST.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| 2025-09-24-signoz-disk-monitoring-activation.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| PROCESS.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| 2025-09-24-otel-analytics-monitor.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
 | README.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| 2025-09-23-234800-quick-tasks-completion.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| ECRR_LEDGER_FRACTAL_DRIFT.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| PROCESS.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| 2025-09-24-e2-timeouts-confirmation.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| 2025-09-24-alert-thresholds-notifications.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
 | 2025-01-27-agent-hygiene-file-storage-cleanup.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
 | 2025-01-27-e2-ratio-sweep-analysis-complete.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
 | 2025-01-27-ecrr-process-evaluation-report.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| 2025-09-23-disk-monitoring-verification-ecrr-report.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| 2025-01-27-ecrr-report-trace-analysis.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
 | 2025-01-27-ecrr-reports-processing-complete.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
 | 2025-01-27-evaluation-process-summary.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
 | 2025-01-27-fractal-drift-monitors-dashboard-complete.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| 2025-01-27-ecrr-report-trace-analysis.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| 2025-09-24-e2-sweep-timeout-optimization.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
 | 2025-01-27-multiline-json-ingestion-restoration.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
 | 2025-01-27-task-queue-execution.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| 2025-01-27-windows-logs-canary-alert-implementation.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| 2025-09-23-223709-task-generation-framework.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| 2025-09-23-224500-ecrr-task-generation-framework-complete.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
-| 2025-09-23-232924-parser-regression-monitoring-health-check.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
 | 2025-01-27-fractal-drift-monitors-ecrr-final.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| 2025-09-23-223709-task-generation-framework.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| 2025-09-24-adaptive-canary-monitoring.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| 2025-01-27-windows-logs-canary-alert-implementation.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| 2025-09-23-parser-regression-monitoring.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| 2025-09-23-env-ready-restoration.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| 2025-09-23-signoz-parser-error-resolution.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| 2025-09-23-disk-monitoring-verification-ecrr-report.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| 2025-09-23-234800-quick-tasks-completion.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| 2025-09-23-232924-parser-regression-monitoring-health-check.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| 2025-09-23-224500-ecrr-task-generation-framework-complete.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
+| 2025-09-23-env-ready-job-restoration.md | Outstanding | - | medium | 2025-09-24 13:09 | Initial review recorded |
 | 2025-09-24-signoz-canary-monitoring-automation-complete.md | Outstanding | - | medium | 2025-09-24 00:56 | Initial review recorded |
 | 2025-09-24-disk-monitoring-automation-complete.md | Outstanding | - | medium | 2025-09-24 00:30 | Initial review recorded |
 | ECRR-20250923-234500-collector-stability-monitoring.md | Outstanding | - | medium | 2025-09-23 23:45 | Initial review recorded |
@@ -70,6 +84,8 @@ Reports resolved or archived.
 
 | Report | Status | Assigned | Priority | Timestamp | Notes |
 |--------|--------|----------|----------|-----------|-------|
+| 2025-09-25-docker-container-analysis-and-workaround.md | Archived | observability-copilot | medium | 2025-09-25 03:12 | Resolved via lifecycle automation |
+| 2025-09-25-docker-collector-blocker-analysis-ecrr.md | Archived | observability-copilot | medium | 2025-09-25 03:12 | Resolved via lifecycle automation |
 | 2025-01-27-task-management-actions-complete.md | Archived | observability-copilot | medium | 2025-09-24 22:19 | Resolved via lifecycle automation |
 | 2025-09-24-nightly-validation-and-ci-guardrails.md | Archived | observability-copilot | medium | 2025-09-24 13:52 | Hooks installed; scheduled task ready; index/ledger healthy |
 | 2025-09-24-analysis-system-health-ecrr.md | Archived | observability-copilot | high | 2025-09-24 13:40 | Ready for CI hook + nightly validation tasks |
@@ -117,5 +133,5 @@ Reports resolved or archived.
 | archive/2025-09-23-llm-8080-otel.md | Archived | you | high | 2025-09-23 20:21 | wrapped |
 
 ---
-Last updated: 2025-09-25 02:00:07 UTC
+Last updated: 2025-09-27 02:00:09 UTC
 Generated by scripts/ecrr-manage.ps1

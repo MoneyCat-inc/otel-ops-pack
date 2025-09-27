@@ -21,7 +21,9 @@
 #>
 
 param(
+    [ValidateRange(1, 100)]
     [int]$Count = 5,
+    [ValidateSet("Application", "System", "Security")]
     [string]$LogName = "Application"
 )
 

@@ -15,16 +15,6 @@ exporters:
   debug:
     verbosity: normal
 
-  otlp/sigz:
-    endpoint: "signoz:4317"
-    timeout: 2s
-    tls:
-      insecure: true
-    retry_on_failure:
-      initial_interval: 5s
-      max_interval: 30s
-      max_elapsed_time: 10m
-
 processors:
   memory_limiter:
     check_interval: 2s
@@ -43,14 +33,14 @@ service:
     logs:
       receivers: [otlp]
       processors: [memory_limiter, batch]
-      exporters: [debug, otlp/sigz]
+      exporters: [debug]
 
     metrics:
       receivers: [otlp]
       processors: [memory_limiter, batch]
-      exporters: [debug, otlp/sigz]
+      exporters: [debug]
 
     traces:
       receivers: [otlp]
       processors: [memory_limiter, batch]
-      exporters: [debug, otlp/sigz]
+      exporters: [debug]

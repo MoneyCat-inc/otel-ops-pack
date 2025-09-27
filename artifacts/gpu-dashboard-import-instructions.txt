@@ -1,0 +1,303 @@
+=== GPU Dashboard Import Instructions ===
+
+1. Open SigNoz UI: http://localhost:8080
+2. Navigate to: Dashboards → Import Dashboard
+3. Upload file: artifacts/signoz-gpu-dashboard.json
+4. Or create manually using the panel configurations below:
+
+=== Panel Configurations ===
+
+1. GPU Utilization Overview
+   - Type: Time Series
+   - Query: gpu.utilization.percent
+   - Thresholds: 80% (yellow), 95% (red)
+
+2. GPU Memory Usage  
+   - Type: Time Series
+   - Query: gpu.memory.utilization.percent
+   - Threshold: 90% (red)
+
+3. GPU Temperature Monitoring
+   - Type: Time Series
+   - Query: gpu.temperature.celsius
+   - Thresholds: 75°C (yellow), 85°C (red)
+
+4. Sidecar Health Status
+   - Type: Stat
+   - Query: gpu.sidecar.health
+   - Colors: 0=red, 1=green
+
+5. GPU Metrics Summary
+   - Type: Table
+   - Queries: Multiple GPU metrics
+
+6. GPU Alert Status
+   - Type: Alert List
+   - Filter: GPU-related alerts
+
+7. GPU Performance Trends
+   - Type: Time Series
+   - Query: rate(gpu.utilization.percent[5m])
+
+8. GPU Resource Distribution
+   - Type: Pie Chart
+   - Query: gpu.utilization.percent
+
+=== API Import ===
+
+POST http://localhost:8080/api/v1/dashboards
+Content-Type: application/json
+Body: {
+  "description": "Comprehensive GPU monitoring dashboard for Cat Nap Control Room",
+  "panels": [
+    {
+      "title": "GPU Utilization Overview",
+      "type": "timeseries",
+      "gridPos": {
+        "w": 6,
+        "y": 0,
+        "h": 8,
+        "x": 0
+      },
+      "span": 6,
+      "thresholds": [
+        {
+          "value": 80,
+          "label": "High Usage",
+          "color": "yellow"
+        },
+        {
+          "value": 95,
+          "label": "Critical",
+          "color": "red"
+        }
+      ],
+      "id": "gpu-utilization-overview",
+      "targets": [
+        {
+          "legendFormat": "{{service.name}} - {{service.namespace}}",
+          "expr": "gpu.utilization.percent"
+        }
+      ],
+      "yAxes": [
+        {
+          "min": 0,
+          "unit": "%",
+          "max": 100
+        }
+      ]
+    },
+    {
+      "title": "GPU Memory Usage",
+      "type": "timeseries",
+      "gridPos": {
+        "w": 6,
+        "y": 0,
+        "h": 8,
+        "x": 6
+      },
+      "span": 6,
+      "thresholds": [
+        {
+          "value": 90,
+          "label": "High Memory",
+          "color": "red"
+        }
+      ],
+      "id": "gpu-memory-usage",
+      "targets": [
+        {
+          "legendFormat": "{{service.name}} Memory %",
+          "expr": "gpu.memory.utilization.percent"
+        },
+        {
+          "legendFormat": "{{service.name}} Used (GB)",
+          "expr": "gpu.memory.used.bytes / 1024 / 1024 / 1024"
+        }
+      ],
+      "yAxes": [
+        {
+          "min": 0,
+          "unit": "%",
+          "max": 100
+        }
+      ]
+    },
+    {
+      "title": "GPU Temperature Monitoring",
+      "type": "timeseries",
+      "gridPos": {
+        "w": 6,
+        "y": 8,
+        "h": 8,
+        "x": 0
+      },
+      "span": 6,
+      "thresholds": [
+        {
+          "value": 85,
+          "label": "Overheating",
+          "color": "red"
+        },
+        {
+          "value": 75,
+          "label": "Warm",
+          "color": "yellow"
+        }
+      ],
+      "id": "gpu-temperature",
+      "targets": [
+        {
+          "legendFormat": "{{service.name}} Temperature",
+          "expr": "gpu.temperature.celsius"
+        }
+      ],
+      "yAxes": [
+        {
+          "min": 0,
+          "unit": "°C",
+          "max": 100
+        }
+      ]
+    },
+    {
+      "targets": [
+        {
+          "legendFormat": "{{service.name}} Health",
+          "expr": "gpu.sidecar.health"
+        }
+      ],
+      "gridPos": {
+        "w": 6,
+        "y": 8,
+        "h": 8,
+        "x": 6
+      },
+      "type": "stat",
+      "id": "gpu-sidecar-health",
+      "title": "GPU Sidecar Health Status",
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "steps": [
+              "System.Collections.Hashtable",
+              "System.Collections.Hashtable"
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          }
+        }
+      },
+      "span": 6
+    },
+    {
+      "targets": [
+        {
+          "instant": true,
+          "expr": "gpu.utilization.percent",
+          "format": "table"
+        },
+        {
+          "instant": true,
+          "expr": "gpu.memory.utilization.percent",
+          "format": "table"
+        },
+        {
+          "instant": true,
+          "expr": "gpu.temperature.celsius",
+          "format": "table"
+        }
+      ],
+      "gridPos": {
+        "w": 12,
+        "y": 16,
+        "h": 8,
+        "x": 0
+      },
+      "type": "table",
+      "id": "gpu-metrics-summary",
+      "title": "GPU Metrics Summary",
+      "span": 12
+    },
+    {
+      "targets": [
+        {
+          "legendFormat": "GPU Alerts",
+          "expr": "ALERTS"
+        }
+      ],
+      "gridPos": {
+        "w": 6,
+        "y": 24,
+        "h": 8,
+        "x": 0
+      },
+      "type": "alertlist",
+      "id": "gpu-alert-status",
+      "title": "GPU Alert Status",
+      "span": 6
+    },
+    {
+      "targets": [
+        {
+          "legendFormat": "{{service.name}} Utilization Rate",
+          "expr": "rate(gpu.utilization.percent[5m])"
+        }
+      ],
+      "gridPos": {
+        "w": 6,
+        "y": 24,
+        "h": 8,
+        "x": 6
+      },
+      "type": "timeseries",
+      "id": "gpu-performance-trends",
+      "title": "GPU Performance Trends (24h)",
+      "span": 6
+    },
+    {
+      "targets": [
+        {
+          "legendFormat": "{{service.name}}",
+          "expr": "gpu.utilization.percent"
+        }
+      ],
+      "gridPos": {
+        "w": 12,
+        "y": 32,
+        "h": 8,
+        "x": 0
+      },
+      "type": "piechart",
+      "id": "gpu-resource-distribution",
+      "title": "GPU Resource Distribution",
+      "span": 12
+    }
+  ],
+  "refreshInterval": "30s",
+  "createdAt": "2025-09-25T06:07:04Z",
+  "timeRange": {
+    "to": "now",
+    "from": "now-1h"
+  },
+  "layout": {
+    "rows": [],
+    "columns": 12
+  },
+  "tags": [
+    "gpu",
+    "monitoring",
+    "observability",
+    "automated"
+  ],
+  "name": "GPU Monitoring Dashboard"
+}
+
+
+=== Verification ===
+
+After import, verify dashboard:
+- Go to Dashboards → GPU Monitoring Dashboard
+- Check all panels are loading data
+- Verify time range and refresh settings

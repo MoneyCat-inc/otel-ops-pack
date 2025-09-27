@@ -73,7 +73,7 @@ Artifacts (recommended to attach when executing the verification steps)
    - Emit canary log → verify in SigNoz (saved artifact).
    - Alert if p95 ingest latency exceeds threshold.
 4. Hardening: add a simple script to check port conflicts (5317/5318, 14317/14318, 8080) and suggest remediation.
-5. Documentation follow-up: add a short “SigNoz queries quick-reference” to `docs/QUERY_RECIPES.md` for common filters used in verification.
+5. Documentation follow-up: add a short "SigNoz queries quick-reference" to `docs/QUERY_RECIPES.md` for common filters used in verification.
 
 ---
 

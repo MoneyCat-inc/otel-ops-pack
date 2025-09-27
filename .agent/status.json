@@ -26,6 +26,6 @@
   "otel": {
     "ok": true,
     "detail": "Nightly ECRR validation OK: exclusions restored, index/ledger regenerated; port conflicts detected",
-    "stamp": "2025-09-25 02:00:09"
+    "stamp": "2025-09-27 02:00:11"
   }
 }

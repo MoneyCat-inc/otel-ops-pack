@@ -1,0 +1,44 @@
+{
+  "agent_goals": [
+    "Complete assigned task: TASK-20250925-041326-697",
+    "Maintain high code quality and documentation",
+    "Follow ECRR methodology (Examine → Clean → Report → Role)",
+    "Integrate with existing task management system",
+    "Provide clear progress updates and artifacts"
+  ],
+  "description": "Specialized Cursor agent for index-management",
+  "agent_id": "cursor-index-management-agent",
+  "specialization": "index-management",
+  "name": "Cursor Index Management Agent",
+  "status": "active",
+  "success_criteria": [
+    "Task completed successfully",
+    "All acceptance criteria met",
+    "Documentation updated",
+    "Verification commands executed",
+    "Task status updated to completed"
+  ],
+  "assigned_tasks": [
+    "TASK-20250925-041326-697"
+  ],
+  "version": "1.0.0",
+  "current_focus": "Task: TASK-20250925-041326-697",
+  "last_updated": "2025-09-25T04:15:55Z",
+  "capabilities": [
+    "index_management",
+    "data_organization",
+    "search_optimization",
+    "cataloging"
+  ],
+  "working_directory": "C:\\otel",
+  "preferred_tools": [
+    "run_terminal_cmd",
+    "read_file",
+    "write",
+    "search_replace",
+    "codebase_search",
+    "grep",
+    "list_dir"
+  ],
+  "created": "2025-09-25T04:15:55Z"
+}

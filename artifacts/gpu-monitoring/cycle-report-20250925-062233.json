@@ -1,0 +1,8 @@
+{
+  "timestamp": "2025-09-25T06:22:33.683305",
+  "cycle_duration_seconds": 1.865806,
+  "healthy_sidecars": "3/3",
+  "metrics_success": true,
+  "signoz_connectivity": true,
+  "overall_health": "healthy"
+}

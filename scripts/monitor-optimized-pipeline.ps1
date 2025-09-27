@@ -4,10 +4,13 @@
 # Enhanced with ECRR methodology, real-time metrics, and export capabilities
 
 param(
+    [ValidateRange(1, 1440)]
     [int]$DurationMinutes = 10,
     [switch]$Continuous = $false,
     [switch]$ExportReport = $false,
+    [ValidateNotNullOrEmpty()]
     [string]$ReportPath = "artifacts\monitoring-report-$(Get-Date -Format 'yyyyMMdd-HHmmss').json",
+    [ValidateRange(1, 60)]
     [int]$RefreshSeconds = 5
 )
 

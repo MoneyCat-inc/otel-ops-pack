@@ -1,0 +1,23 @@
+=== ECRR Assessment Summary ===
+Timestamp: 2025-09-25 06:03:19
+Scope: full
+Compliance Score: 75%
+
+EXAMINE Results:
+- GPU Sidecars: healthy
+- Monitoring Jobs: 0 active
+- Dependencies: SigNoz healthy
+- Performance: Metrics emission True
+
+CLEAN Actions:
+Restarted monitoring system
+
+REPORT Artifacts:
+- ECRR Report: artifacts\ecrr-assessment-20250925-0603.json
+- Summary: artifacts\ecrr-summary-20250925-0603.txt
+
+ROLE Declaration:
+- Actor: Cursor Agent - Observability Copilot
+- Responsibility: GPU monitoring system stewardship
+
+System Health: 75%

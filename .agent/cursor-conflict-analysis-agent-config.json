@@ -1,0 +1,44 @@
+{
+  "agent_goals": [
+    "Complete assigned task: TASK-20250925-041323-674",
+    "Maintain high code quality and documentation",
+    "Follow ECRR methodology (Examine → Clean → Report → Role)",
+    "Integrate with existing task management system",
+    "Provide clear progress updates and artifacts"
+  ],
+  "description": "Specialized Cursor agent for conflict-analysis",
+  "agent_id": "cursor-conflict-analysis-agent",
+  "specialization": "conflict-analysis",
+  "name": "Cursor Conflict Analysis Agent",
+  "status": "active",
+  "success_criteria": [
+    "Task completed successfully",
+    "All acceptance criteria met",
+    "Documentation updated",
+    "Verification commands executed",
+    "Task status updated to completed"
+  ],
+  "assigned_tasks": [
+    "TASK-20250925-041323-674"
+  ],
+  "version": "1.0.0",
+  "current_focus": "Task: TASK-20250925-041323-674",
+  "last_updated": "2025-09-25T04:15:52Z",
+  "capabilities": [
+    "conflict_detection",
+    "merge_resolution",
+    "git_analysis",
+    "documentation"
+  ],
+  "working_directory": "C:\\otel",
+  "preferred_tools": [
+    "run_terminal_cmd",
+    "read_file",
+    "write",
+    "search_replace",
+    "codebase_search",
+    "grep",
+    "list_dir"
+  ],
+  "created": "2025-09-25T04:15:52Z"
+}

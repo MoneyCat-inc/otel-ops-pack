@@ -1,37 +1,37 @@
 # Script Issues Fix Report
-Generated: 2025-09-25 03:07:16
-Mode: Dry Run (preview only)
+Generated: 2025-09-25 03:08:07
+Mode: Live fixes applied
 Total Scripts Processed: 259
-Scripts with Issues: 241
+Scripts with Issues: 240
 Scripts Fixed: 0
 
 ## Summary
-241 scripts have issues that can be improved.
+240 scripts have issues that can be improved.
 
 ## Detailed Results
 ### _bt.ps1
 - **Path**: C:\otel\scripts\_bt.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
 
 ### _debug.ps1
 - **Path**: C:\otel\scripts\_debug.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding progress indicators for loops
 
 ### adaptive-canary-monitor.ps1
 - **Path**: C:\otel\scripts\adaptive-canary-monitor.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
 
 ### aggressive-disk-cleanup.ps1
 - **Path**: C:\otel\scripts\aggressive-disk-cleanup.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider using Join-Path for dynamic paths
   - Consider adding progress indicators for loops
@@ -39,46 +39,46 @@ Scripts Fixed: 0
 
 ### alert-escalation-manager.ps1
 - **Path**: C:\otel\scripts\alert-escalation-manager.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding progress indicators for loops
 
 ### alert-testing-system.ps1
 - **Path**: C:\otel\scripts\alert-testing-system.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding progress indicators for loops
 
 ### alert-threshold-manager.ps1
 - **Path**: C:\otel\scripts\alert-threshold-manager.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding progress indicators for loops
 
 ### alert-webhook-server.ps1
 - **Path**: C:\otel\scripts\alert-webhook-server.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
 
 ### analyze-canary-baseline.ps1
 - **Path**: C:\otel\scripts\analyze-canary-baseline.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding progress indicators for loops
 
 ### analyze-e2-results.ps1
 - **Path**: C:\otel\scripts\analyze-e2-results.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
 
 ### analyze-program-files.ps1
 - **Path**: C:\otel\scripts\analyze-program-files.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider using Join-Path for dynamic paths
@@ -86,14 +86,14 @@ Scripts Fixed: 0
 
 ### archive-tools-direct.ps1
 - **Path**: C:\otel\scripts\archive-tools-direct.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding progress indicators for loops
   - Consider adding proper error logging in catch blocks
 
 ### auto-bot.ps1
 - **Path**: C:\otel\scripts\auto-bot.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -102,13 +102,13 @@ Scripts Fixed: 0
 
 ### auto-resolve-conflicts.ps1
 - **Path**: C:\otel\scripts\auto-resolve-conflicts.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding proper error logging in catch blocks
 
 ### automated-conflict-detector.ps1
 - **Path**: C:\otel\scripts\automated-conflict-detector.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
@@ -116,14 +116,14 @@ Scripts Fixed: 0
 
 ### bq_export.ps1
 - **Path**: C:\otel\scripts\bq_export.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
 
 ### canary-ecrr.ps1
 - **Path**: C:\otel\scripts\canary-ecrr.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
@@ -131,26 +131,26 @@ Scripts Fixed: 0
 
 ### canary-monitor-action.ps1
 - **Path**: C:\otel\scripts\canary-monitor-action.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding proper error logging in catch blocks
 
 ### canary-pattern-drills.ps1
 - **Path**: C:\otel\scripts\canary-pattern-drills.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding progress indicators for loops
 
 ### canary-pattern-library.ps1
 - **Path**: C:\otel\scripts\canary-pattern-library.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
 
 ### capture-dashboard-screenshot.ps1
 - **Path**: C:\otel\scripts\capture-dashboard-screenshot.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -158,7 +158,7 @@ Scripts Fixed: 0
 
 ### capture-wer-phoneexperience.ps1
 - **Path**: C:\otel\scripts\capture-wer-phoneexperience.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider using Join-Path for dynamic paths
   - Consider adding parameter validation
@@ -167,28 +167,28 @@ Scripts Fixed: 0
 
 ### check-canary-logs.ps1
 - **Path**: C:\otel\scripts\check-canary-logs.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding proper error logging in catch blocks
 
 ### check-latency-readiness.ps1
 - **Path**: C:\otel\scripts\check-latency-readiness.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
 
 ### check-syntax-errors.ps1
 - **Path**: C:\otel\scripts\check-syntax-errors.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding proper error logging in catch blocks
 
 ### ci-verify.ps1
 - **Path**: C:\otel\scripts\ci-verify.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -196,7 +196,7 @@ Scripts Fixed: 0
 
 ### cleanup-artifacts.ps1
 - **Path**: C:\otel\scripts\cleanup-artifacts.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
@@ -204,7 +204,7 @@ Scripts Fixed: 0
 
 ### collector-health-monitor.ps1
 - **Path**: C:\otel\scripts\collector-health-monitor.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider using Join-Path for dynamic paths
@@ -213,7 +213,7 @@ Scripts Fixed: 0
 
 ### comfort-cat-sanity-sweep.ps1
 - **Path**: C:\otel\scripts\comfort-cat-sanity-sweep.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider using Join-Path for dynamic paths
   - Consider adding parameter validation
@@ -222,13 +222,13 @@ Scripts Fixed: 0
 
 ### comfort-checklist.ps1
 - **Path**: C:\otel\scripts\comfort-checklist.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding progress indicators for loops
 
 ### comprehensive-system-monitor.ps1
 - **Path**: C:\otel\scripts\comprehensive-system-monitor.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -236,28 +236,28 @@ Scripts Fixed: 0
 
 ### continuous-background-check.ps1
 - **Path**: C:\otel\scripts\continuous-background-check.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding progress indicators for loops
   - Consider adding proper error logging in catch blocks
 
 ### create-canary-task-simple.ps1
 - **Path**: C:\otel\scripts\create-canary-task-simple.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding proper error logging in catch blocks
 
 ### create-loose-end-issues.ps1
 - **Path**: C:\otel\scripts\create-loose-end-issues.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
 
 ### daily-iona-verification.ps1
 - **Path**: C:\otel\scripts\daily-iona-verification.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
@@ -265,21 +265,21 @@ Scripts Fixed: 0
 
 ### deep-clean.ps1
 - **Path**: C:\otel\scripts\deep-clean.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
 
 ### deploy-auto-bot.ps1
 - **Path**: C:\otel\scripts\deploy-auto-bot.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
 
 ### deploy-fractal-drift-monitors.ps1
 - **Path**: C:\otel\scripts\deploy-fractal-drift-monitors.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -287,7 +287,7 @@ Scripts Fixed: 0
 
 ### deploy-gpu-sidecars.ps1
 - **Path**: C:\otel\scripts\deploy-gpu-sidecars.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -295,7 +295,7 @@ Scripts Fixed: 0
 
 ### dev-up.ps1
 - **Path**: C:\otel\scripts\dev-up.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider using Join-Path for dynamic paths
@@ -303,7 +303,7 @@ Scripts Fixed: 0
 
 ### disk-cleanup-analyzer.ps1
 - **Path**: C:\otel\scripts\disk-cleanup-analyzer.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
@@ -311,7 +311,7 @@ Scripts Fixed: 0
 
 ### disk-cleanup-audit.ps1
 - **Path**: C:\otel\scripts\disk-cleanup-audit.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
@@ -319,14 +319,14 @@ Scripts Fixed: 0
 
 ### e2-ratio-monitoring-dashboard.ps1
 - **Path**: C:\otel\scripts\e2-ratio-monitoring-dashboard.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
 
 ### e2-ratio-sweep-enhanced.ps1
 - **Path**: C:\otel\scripts\e2-ratio-sweep-enhanced.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider using Join-Path for dynamic paths
@@ -335,21 +335,21 @@ Scripts Fixed: 0
 
 ### e2-ratio-sweep-simple.ps1
 - **Path**: C:\otel\scripts\e2-ratio-sweep-simple.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
 
 ### e2-ratio-sweep.ps1
 - **Path**: C:\otel\scripts\e2-ratio-sweep.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
 
 ### e2-ratio-test.ps1
 - **Path**: C:\otel\scripts\e2-ratio-test.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider using Join-Path for dynamic paths
@@ -357,14 +357,14 @@ Scripts Fixed: 0
 
 ### e2-test-simple.ps1
 - **Path**: C:\otel\scripts\e2-test-simple.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider using Join-Path for dynamic paths
 
 ### ecrr-doctor.ps1
 - **Path**: C:\otel\scripts\ecrr-doctor.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -373,26 +373,26 @@ Scripts Fixed: 0
 
 ### ecrr-exclusions.ps1
 - **Path**: C:\otel\scripts\ecrr-exclusions.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding progress indicators for loops
 
 ### ecrr-manage.ps1
 - **Path**: C:\otel\scripts\ecrr-manage.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding progress indicators for loops
 
 ### ecrr-task-automation.ps1
 - **Path**: C:\otel\scripts\ecrr-task-automation.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding progress indicators for loops
 
 ### emergency-disk-cleanup-auto.ps1
 - **Path**: C:\otel\scripts\emergency-disk-cleanup-auto.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider using Join-Path for dynamic paths
   - Consider adding progress indicators for loops
@@ -400,7 +400,7 @@ Scripts Fixed: 0
 
 ### emergency-disk-cleanup.ps1
 - **Path**: C:\otel\scripts\emergency-disk-cleanup.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider using Join-Path for dynamic paths
   - Consider adding progress indicators for loops
@@ -408,7 +408,7 @@ Scripts Fixed: 0
 
 ### emit-signoz-logs.ps1
 - **Path**: C:\otel\scripts\emit-signoz-logs.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -417,7 +417,7 @@ Scripts Fixed: 0
 
 ### emit-signoz-metrics.ps1
 - **Path**: C:\otel\scripts\emit-signoz-metrics.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -426,7 +426,7 @@ Scripts Fixed: 0
 
 ### emit-signoz-traces.ps1
 - **Path**: C:\otel\scripts\emit-signoz-traces.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -435,27 +435,27 @@ Scripts Fixed: 0
 
 ### enable-dma-protection.ps1
 - **Path**: C:\otel\scripts\enable-dma-protection.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding proper error logging in catch blocks
 
 ### enable-kernel-dma-protection.ps1
 - **Path**: C:\otel\scripts\enable-kernel-dma-protection.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding proper error logging in catch blocks
 
 ### evaluate-dma-protection.ps1
 - **Path**: C:\otel\scripts\evaluate-dma-protection.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding proper error logging in catch blocks
 
 ### execute-cleanup.ps1
 - **Path**: C:\otel\scripts\execute-cleanup.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
@@ -463,20 +463,20 @@ Scripts Fixed: 0
 
 ### execute-pattern-drills.ps1
 - **Path**: C:\otel\scripts\execute-pattern-drills.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding progress indicators for loops
 
 ### export-dashboard-config.ps1
 - **Path**: C:\otel\scripts\export-dashboard-config.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
 
 ### export-errors.ps1
 - **Path**: C:\otel\scripts\export-errors.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider using Join-Path for dynamic paths
   - Consider adding parameter validation
@@ -485,7 +485,7 @@ Scripts Fixed: 0
 
 ### extract-doe-measurements.ps1
 - **Path**: C:\otel\scripts\extract-doe-measurements.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -493,7 +493,7 @@ Scripts Fixed: 0
 
 ### extract-latency-measurements.ps1
 - **Path**: C:\otel\scripts\extract-latency-measurements.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -501,7 +501,7 @@ Scripts Fixed: 0
 
 ### final-deployment-checklist.ps1
 - **Path**: C:\otel\scripts\final-deployment-checklist.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -509,27 +509,27 @@ Scripts Fixed: 0
 
 ### find-largest-files.ps1
 - **Path**: C:\otel\scripts\find-largest-files.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider using Join-Path for dynamic paths
   - Consider adding progress indicators for loops
 
 ### find-near-duplicate-paths.ps1
 - **Path**: C:\otel\scripts\find-near-duplicate-paths.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
 
 ### fix-common-script-issues.ps1
 - **Path**: C:\otel\scripts\fix-common-script-issues.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
 
 ### fix-docker-mount-issue.ps1
 - **Path**: C:\otel\scripts\fix-docker-mount-issue.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider using Join-Path for dynamic paths
@@ -537,7 +537,7 @@ Scripts Fixed: 0
 
 ### fix-monolith-d-issues.ps1
 - **Path**: C:\otel\scripts\fix-monolith-d-issues.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider using Join-Path for dynamic paths
   - Consider adding parameter validation
@@ -545,7 +545,7 @@ Scripts Fixed: 0
 
 ### fix-scheduled-task.ps1
 - **Path**: C:\otel\scripts\fix-scheduled-task.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider using Join-Path for dynamic paths
   - Consider adding parameter validation
@@ -553,7 +553,7 @@ Scripts Fixed: 0
 
 ### fractal-drift-monitor.ps1
 - **Path**: C:\otel\scripts\fractal-drift-monitor.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -561,54 +561,54 @@ Scripts Fixed: 0
 
 ### generate-alert-pack.ps1
 - **Path**: C:\otel\scripts\generate-alert-pack.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
 
 ### generate-dashboard.ps1
 - **Path**: C:\otel\scripts\generate-dashboard.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider using Join-Path for dynamic paths
 
 ### generate-e2-ratio-report-simple.ps1
 - **Path**: C:\otel\scripts\generate-e2-ratio-report-simple.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
 
 ### generate-e2-ratio-report.ps1
 - **Path**: C:\otel\scripts\generate-e2-ratio-report.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
 
 ### generate-ecrr-key.ps1
 - **Path**: C:\otel\scripts\generate-ecrr-key.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
 
 ### generate-synthetic-load.ps1
 - **Path**: C:\otel\scripts\generate-synthetic-load.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
 
 ### generate-tasks-from-ecrr.ps1
 - **Path**: C:\otel\scripts\generate-tasks-from-ecrr.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding progress indicators for loops
 
 ### generate-weekly-report.ps1
 - **Path**: C:\otel\scripts\generate-weekly-report.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -617,7 +617,7 @@ Scripts Fixed: 0
 
 ### gpu-health-monitor.ps1
 - **Path**: C:\otel\scripts\gpu-health-monitor.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -626,7 +626,7 @@ Scripts Fixed: 0
 
 ### gpu-watchdog.ps1
 - **Path**: C:\otel\scripts\gpu-watchdog.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -635,7 +635,7 @@ Scripts Fixed: 0
 
 ### health-check-simple.ps1
 - **Path**: C:\otel\scripts\health-check-simple.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider using Join-Path for dynamic paths
@@ -644,27 +644,27 @@ Scripts Fixed: 0
 
 ### import-and-verify-alerts.ps1
 - **Path**: C:\otel\scripts\import-and-verify-alerts.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding progress indicators for loops
 
 ### import-canary-alert.ps1
 - **Path**: C:\otel\scripts\import-canary-alert.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
 
 ### import-canary-dashboard.ps1
 - **Path**: C:\otel\scripts\import-canary-dashboard.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
 
 ### import-dashboard.ps1
 - **Path**: C:\otel\scripts\import-dashboard.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -672,7 +672,7 @@ Scripts Fixed: 0
 
 ### import-disk-alerts.ps1
 - **Path**: C:\otel\scripts\import-disk-alerts.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -680,7 +680,7 @@ Scripts Fixed: 0
 
 ### import-queue-pressure-dashboard.ps1
 - **Path**: C:\otel\scripts\import-queue-pressure-dashboard.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -688,39 +688,39 @@ Scripts Fixed: 0
 
 ### import-windows-logs-canary-alert.ps1
 - **Path**: C:\otel\scripts\import-windows-logs-canary-alert.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
 
 ### init-project-env.ps1
 - **Path**: C:\otel\scripts\init-project-env.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
 
 ### install-service.ps1
 - **Path**: C:\otel\scripts\install-service.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
 
 ### integrate-latency-testing.ps1
 - **Path**: C:\otel\scripts\integrate-latency-testing.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding progress indicators for loops
 
 ### iona-supervisor-runner.ps1
 - **Path**: C:\otel\scripts\iona-supervisor-runner.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
 
 ### list-tasks.ps1
 - **Path**: C:\otel\scripts\list-tasks.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
@@ -728,20 +728,20 @@ Scripts Fixed: 0
 
 ### log-error.ps1
 - **Path**: C:\otel\scripts\log-error.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding proper error logging in catch blocks
 
 ### log-rotation.ps1
 - **Path**: C:\otel\scripts\log-rotation.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider using Join-Path for dynamic paths
   - Consider adding progress indicators for loops
 
 ### manage-gpu-sidecars.ps1
 - **Path**: C:\otel\scripts\manage-gpu-sidecars.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding progress indicators for loops
@@ -749,28 +749,28 @@ Scripts Fixed: 0
 
 ### memory-monitor.ps1
 - **Path**: C:\otel\scripts\memory-monitor.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
 
 ### merge-comfort-cat.ps1
 - **Path**: C:\otel\scripts\merge-comfort-cat.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
 
 ### metrics.ps1
 - **Path**: C:\otel\scripts\metrics.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
 
 ### monitor-analytics-ingestion.ps1
 - **Path**: C:\otel\scripts\monitor-analytics-ingestion.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -778,27 +778,26 @@ Scripts Fixed: 0
 
 ### monitor-doe-progress.ps1
 - **Path**: C:\otel\scripts\monitor-doe-progress.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
 
 ### monitor-latency-regressions.ps1
 - **Path**: C:\otel\scripts\monitor-latency-regressions.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding progress indicators for loops
 
 ### monitor-optimized-pipeline.ps1
 - **Path**: C:\otel\scripts\monitor-optimized-pipeline.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
-  - Consider adding parameter validation
   - Consider adding progress indicators for loops
   - Consider adding proper error logging in catch blocks
 
 ### monitor-parser-errors.ps1
 - **Path**: C:\otel\scripts\monitor-parser-errors.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -806,7 +805,7 @@ Scripts Fixed: 0
 
 ### monitor-pipeline-health.ps1
 - **Path**: C:\otel\scripts\monitor-pipeline-health.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -815,32 +814,32 @@ Scripts Fixed: 0
 
 ### monitor-signoz-canary-remediate-wrapper.ps1
 - **Path**: C:\otel\scripts\monitor-signoz-canary-remediate-wrapper.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding progress indicators for loops
 
 ### monitor-signoz-canary-remediate.ps1
 - **Path**: C:\otel\scripts\monitor-signoz-canary-remediate.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
 
 ### monitor-signoz-canary-scheduled.ps1
 - **Path**: C:\otel\scripts\monitor-signoz-canary-scheduled.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
 
 ### monitor-signoz-canary.ps1
 - **Path**: C:\otel\scripts\monitor-signoz-canary.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
 
 ### monitor-signoz-setup.ps1
 - **Path**: C:\otel\scripts\monitor-signoz-setup.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -848,7 +847,7 @@ Scripts Fixed: 0
 
 ### monitor-system-health.ps1
 - **Path**: C:\otel\scripts\monitor-system-health.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -857,52 +856,52 @@ Scripts Fixed: 0
 
 ### monitor-windows-logs-canary.ps1
 - **Path**: C:\otel\scripts\monitor-windows-logs-canary.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
 
 ### morning-coffee.ps1
 - **Path**: C:\otel\scripts\morning-coffee.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding proper error logging in catch blocks
 
 ### network-adapter-audit.ps1
 - **Path**: C:\otel\scripts\network-adapter-audit.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
 
 ### new-ab-chart.ps1
 - **Path**: C:\otel\scripts\new-ab-chart.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
 
 ### nightly-ecrr-validation.ps1
 - **Path**: C:\otel\scripts\nightly-ecrr-validation.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
 
 ### notification-manager.ps1
 - **Path**: C:\otel\scripts\notification-manager.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding progress indicators for loops
 
 ### open-signoz-logs.ps1
 - **Path**: C:\otel\scripts\open-signoz-logs.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
 
 ### otel-health-check.ps1
 - **Path**: C:\otel\scripts\otel-health-check.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -910,7 +909,7 @@ Scripts Fixed: 0
 
 ### otel-health.ps1
 - **Path**: C:\otel\scripts\otel-health.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider using Join-Path for dynamic paths
@@ -920,7 +919,7 @@ Scripts Fixed: 0
 
 ### otel-listener-summary.ps1
 - **Path**: C:\otel\scripts\otel-listener-summary.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider using Join-Path for dynamic paths
@@ -930,28 +929,28 @@ Scripts Fixed: 0
 
 ### otel.ps1
 - **Path**: C:\otel\scripts\otel.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding progress indicators for loops
 
 ### port-conflict-check.ps1
 - **Path**: C:\otel\scripts\port-conflict-check.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding progress indicators for loops
   - Consider adding proper error logging in catch blocks
 
 ### pre-commit-powershell.ps1
 - **Path**: C:\otel\scripts\pre-commit-powershell.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
 
 ### process-ecrr-reports.ps1
 - **Path**: C:\otel\scripts\process-ecrr-reports.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
@@ -959,7 +958,7 @@ Scripts Fixed: 0
 
 ### production-monitoring.ps1
 - **Path**: C:\otel\scripts\production-monitoring.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -968,7 +967,7 @@ Scripts Fixed: 0
 
 ### publish-e2-results.ps1
 - **Path**: C:\otel\scripts\publish-e2-results.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -976,14 +975,14 @@ Scripts Fixed: 0
 
 ### quarterly-archive-audit.ps1
 - **Path**: C:\otel\scripts\quarterly-archive-audit.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
 
 ### quick-disk-analysis.ps1
 - **Path**: C:\otel\scripts\quick-disk-analysis.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider using Join-Path for dynamic paths
   - Consider adding progress indicators for loops
@@ -991,23 +990,22 @@ Scripts Fixed: 0
 
 ### quick-monitor.ps1
 - **Path**: C:\otel\scripts\quick-monitor.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
-  - Consider adding proper error logging in catch blocks
 
 ### quick-tidy.ps1
 - **Path**: C:\otel\scripts\quick-tidy.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
 
 ### quick-verify.ps1
 - **Path**: C:\otel\scripts\quick-verify.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider using Join-Path for dynamic paths
@@ -1015,7 +1013,7 @@ Scripts Fixed: 0
 
 ### run-AB-batch.ps1
 - **Path**: C:\otel\scripts\run-AB-batch.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
@@ -1023,20 +1021,20 @@ Scripts Fixed: 0
 
 ### run-collector.ps1
 - **Path**: C:\otel\scripts\run-collector.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
 
 ### run-latency-test-example.ps1
 - **Path**: C:\otel\scripts\run-latency-test-example.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
 
 ### run-otel-doe-enhanced.ps1
 - **Path**: C:\otel\scripts\run-otel-doe-enhanced.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -1044,7 +1042,7 @@ Scripts Fixed: 0
 
 ### run-otel-doe.ps1
 - **Path**: C:\otel\scripts\run-otel-doe.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -1052,92 +1050,92 @@ Scripts Fixed: 0
 
 ### sanity-clean.ps1
 - **Path**: C:\otel\scripts\sanity-clean.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding progress indicators for loops
   - Consider adding proper error logging in catch blocks
 
 ### sanity-scan.ps1
 - **Path**: C:\otel\scripts\sanity-scan.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding progress indicators for loops
 
 ### scaffold-comfort-cat.ps1
 - **Path**: C:\otel\scripts\scaffold-comfort-cat.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
 
 ### schedule-adaptive-monitor.ps1
 - **Path**: C:\otel\scripts\schedule-adaptive-monitor.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding progress indicators for loops
 
 ### schedule-canary-ecrr.ps1
 - **Path**: C:\otel\scripts\schedule-canary-ecrr.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding proper error logging in catch blocks
 
 ### schedule-canary.ps1
 - **Path**: C:\otel\scripts\schedule-canary.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding proper error logging in catch blocks
 
 ### schedule-ecrr-generation.ps1
 - **Path**: C:\otel\scripts\schedule-ecrr-generation.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding proper error logging in catch blocks
 
 ### schedule-parser-monitoring.ps1
 - **Path**: C:\otel\scripts\schedule-parser-monitoring.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding proper error logging in catch blocks
 
 ### schedule-signoz-canary-monitor.ps1
 - **Path**: C:\otel\scripts\schedule-signoz-canary-monitor.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding progress indicators for loops
 
 ### schedule-wer-phoneexperience.ps1
 - **Path**: C:\otel\scripts\schedule-wer-phoneexperience.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding proper error logging in catch blocks
 
 ### schedule-windows-logs-canary.ps1
 - **Path**: C:\otel\scripts\schedule-windows-logs-canary.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
 
 ### score-otel-doe-enhanced.ps1
 - **Path**: C:\otel\scripts\score-otel-doe-enhanced.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
 
 ### score-otel-doe.ps1
 - **Path**: C:\otel\scripts\score-otel-doe.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
 
 ### send-otlp-log.ps1
 - **Path**: C:\otel\scripts\send-otlp-log.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -1145,7 +1143,7 @@ Scripts Fixed: 0
 
 ### setup-automated-monitoring.ps1
 - **Path**: C:\otel\scripts\setup-automated-monitoring.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider using Join-Path for dynamic paths
   - Consider adding parameter validation
@@ -1153,20 +1151,20 @@ Scripts Fixed: 0
 
 ### setup-automation.ps1
 - **Path**: C:\otel\scripts\setup-automation.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding proper error logging in catch blocks
 
 ### setup-canary-monitoring-schedule.ps1
 - **Path**: C:\otel\scripts\setup-canary-monitoring-schedule.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
 
 ### setup-collector-alerts.ps1
 - **Path**: C:\otel\scripts\setup-collector-alerts.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -1174,13 +1172,13 @@ Scripts Fixed: 0
 
 ### setup-comprehensive-monitoring.ps1
 - **Path**: C:\otel\scripts\setup-comprehensive-monitoring.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
 
 ### setup-daily-automation.ps1
 - **Path**: C:\otel\scripts\setup-daily-automation.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -1188,27 +1186,27 @@ Scripts Fixed: 0
 
 ### setup-disk-alerts.ps1
 - **Path**: C:\otel\scripts\setup-disk-alerts.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
 
 ### setup-disk-monitoring.ps1
 - **Path**: C:\otel\scripts\setup-disk-monitoring.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
 
 ### setup-e2-alerts.ps1
 - **Path**: C:\otel\scripts\setup-e2-alerts.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
 
 ### setup-gpu-monitoring.ps1
 - **Path**: C:\otel\scripts\setup-gpu-monitoring.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -1216,7 +1214,7 @@ Scripts Fixed: 0
 
 ### setup-gpu-sidecars.ps1
 - **Path**: C:\otel\scripts\setup-gpu-sidecars.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -1225,14 +1223,14 @@ Scripts Fixed: 0
 
 ### setup-iona-scheduled-verification.ps1
 - **Path**: C:\otel\scripts\setup-iona-scheduled-verification.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding proper error logging in catch blocks
 
 ### setup-monitoring.ps1
 - **Path**: C:\otel\scripts\setup-monitoring.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -1240,26 +1238,26 @@ Scripts Fixed: 0
 
 ### setup-no-admin.ps1
 - **Path**: C:\otel\scripts\setup-no-admin.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
 
 ### setup-notification-channels.ps1
 - **Path**: C:\otel\scripts\setup-notification-channels.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding progress indicators for loops
 
 ### setup-quarterly-audit.ps1
 - **Path**: C:\otel\scripts\setup-quarterly-audit.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding proper error logging in catch blocks
 
 ### setup-scheduled-monitoring-admin.ps1
 - **Path**: C:\otel\scripts\setup-scheduled-monitoring-admin.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
@@ -1267,7 +1265,7 @@ Scripts Fixed: 0
 
 ### setup-scheduled-monitoring.ps1
 - **Path**: C:\otel\scripts\setup-scheduled-monitoring.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
@@ -1275,14 +1273,14 @@ Scripts Fixed: 0
 
 ### setup-signoz-auth.ps1
 - **Path**: C:\otel\scripts\setup-signoz-auth.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
 
 ### setup-signoz-dashboard.ps1
 - **Path**: C:\otel\scripts\setup-signoz-dashboard.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -1291,7 +1289,7 @@ Scripts Fixed: 0
 
 ### setup-signoz-saved-view.ps1
 - **Path**: C:\otel\scripts\setup-signoz-saved-view.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -1299,66 +1297,66 @@ Scripts Fixed: 0
 
 ### setup.ps1
 - **Path**: C:\otel\scripts\setup.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
 
 ### signoz-auth-helpers.ps1
 - **Path**: C:\otel\scripts\signoz-auth-helpers.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
 
 ### signoz-canary-failure-drill.ps1
 - **Path**: C:\otel\scripts\signoz-canary-failure-drill.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
 
 ### signoz-dashboard-integration.ps1
 - **Path**: C:\otel\scripts\signoz-dashboard-integration.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding proper error logging in catch blocks
 
 ### signoz-manual-setup-guide.ps1
 - **Path**: C:\otel\scripts\signoz-manual-setup-guide.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
 
 ### simple-archive-audit.ps1
 - **Path**: C:\otel\scripts\simple-archive-audit.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
 
 ### simple-cleanup.ps1
 - **Path**: C:\otel\scripts\simple-cleanup.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider using Join-Path for dynamic paths
 
 ### simple-memory-alert.ps1
 - **Path**: C:\otel\scripts\simple-memory-alert.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
 
 ### simple-task-generator.ps1
 - **Path**: C:\otel\scripts\simple-task-generator.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
 
 ### software-usage-audit.ps1
 - **Path**: C:\otel\scripts\software-usage-audit.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider using Join-Path for dynamic paths
@@ -1367,27 +1365,27 @@ Scripts Fixed: 0
 
 ### spinner-toolkit.ps1
 - **Path**: C:\otel\scripts\spinner-toolkit.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
 
 ### start-all.ps1
 - **Path**: C:\otel\scripts\start-all.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding proper error logging in catch blocks
 
 ### start-collector-simple.ps1
 - **Path**: C:\otel\scripts\start-collector-simple.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
 
 ### status-otel.ps1
 - **Path**: C:\otel\scripts\status-otel.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -1396,14 +1394,14 @@ Scripts Fixed: 0
 
 ### stop-all.ps1
 - **Path**: C:\otel\scripts\stop-all.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding proper error logging in catch blocks
 
 ### system-health-check.ps1
 - **Path**: C:\otel\scripts\system-health-check.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider using Join-Path for dynamic paths
@@ -1412,14 +1410,14 @@ Scripts Fixed: 0
 
 ### task-maintenance-scheduler.ps1
 - **Path**: C:\otel\scripts\task-maintenance-scheduler.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding progress indicators for loops
   - Consider adding proper error logging in catch blocks
 
 ### test-alerts.ps1
 - **Path**: C:\otel\scripts\test-alerts.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -1428,7 +1426,7 @@ Scripts Fixed: 0
 
 ### test-auto-bot.ps1
 - **Path**: C:\otel\scripts\test-auto-bot.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -1436,7 +1434,7 @@ Scripts Fixed: 0
 
 ### test-automation-simple.ps1
 - **Path**: C:\otel\scripts\test-automation-simple.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
@@ -1444,7 +1442,7 @@ Scripts Fixed: 0
 
 ### test-automation.ps1
 - **Path**: C:\otel\scripts\test-automation.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
@@ -1452,7 +1450,7 @@ Scripts Fixed: 0
 
 ### test-canary-alert.ps1
 - **Path**: C:\otel\scripts\test-canary-alert.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider using Join-Path for dynamic paths
@@ -1460,20 +1458,20 @@ Scripts Fixed: 0
 
 ### test-collector-status.ps1
 - **Path**: C:\otel\scripts\test-collector-status.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding proper error logging in catch blocks
 
 ### test-disk-alerts.ps1
 - **Path**: C:\otel\scripts\test-disk-alerts.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
 
 ### test-environment.ps1
 - **Path**: C:\otel\scripts\test-environment.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding progress indicators for loops
@@ -1481,7 +1479,7 @@ Scripts Fixed: 0
 
 ### test-file-storage.ps1
 - **Path**: C:\otel\scripts\test-file-storage.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
@@ -1489,7 +1487,7 @@ Scripts Fixed: 0
 
 ### test-gpu-sidecars.ps1
 - **Path**: C:\otel\scripts\test-gpu-sidecars.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -1498,7 +1496,7 @@ Scripts Fixed: 0
 
 ### test-iona-metrics.ps1
 - **Path**: C:\otel\scripts\test-iona-metrics.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -1507,7 +1505,7 @@ Scripts Fixed: 0
 
 ### test-otel-integration.ps1
 - **Path**: C:\otel\scripts\test-otel-integration.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -1515,7 +1513,7 @@ Scripts Fixed: 0
 
 ### test-otlp-wiring.ps1
 - **Path**: C:\otel\scripts\test-otlp-wiring.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -1523,28 +1521,28 @@ Scripts Fixed: 0
 
 ### test-pattern-drills.ps1
 - **Path**: C:\otel\scripts\test-pattern-drills.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding progress indicators for loops
 
 ### test-runtime-issues.ps1
 - **Path**: C:\otel\scripts\test-runtime-issues.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding proper error logging in catch blocks
 
 ### test-signoz-canary-view.ps1
 - **Path**: C:\otel\scripts\test-signoz-canary-view.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding proper error logging in catch blocks
 
 ### test-ssot-gate.ps1
 - **Path**: C:\otel\scripts\test-ssot-gate.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
@@ -1552,21 +1550,21 @@ Scripts Fixed: 0
 
 ### test-yaml-validation.ps1
 - **Path**: C:\otel\scripts\test-yaml-validation.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding progress indicators for loops
   - Consider adding proper error logging in catch blocks
 
 ### thinking-animations.ps1
 - **Path**: C:\otel\scripts\thinking-animations.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
 
 ### validate-all.ps1
 - **Path**: C:\otel\scripts\validate-all.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -1575,7 +1573,7 @@ Scripts Fixed: 0
 
 ### validate-dataset-coverage-24h.ps1
 - **Path**: C:\otel\scripts\validate-dataset-coverage-24h.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding progress indicators for loops
@@ -1583,7 +1581,7 @@ Scripts Fixed: 0
 
 ### validate-production-gpu.ps1
 - **Path**: C:\otel\scripts\validate-production-gpu.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -1591,7 +1589,7 @@ Scripts Fixed: 0
 
 ### verify-automation.ps1
 - **Path**: C:\otel\scripts\verify-automation.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
@@ -1599,21 +1597,21 @@ Scripts Fixed: 0
 
 ### verify-comfort-cat-setup.ps1
 - **Path**: C:\otel\scripts\verify-comfort-cat-setup.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
 
 ### verify-disk-alerts-setup.ps1
 - **Path**: C:\otel\scripts\verify-disk-alerts-setup.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
 
 ### verify-disk-monitoring.ps1
 - **Path**: C:\otel\scripts\verify-disk-monitoring.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -1621,14 +1619,14 @@ Scripts Fixed: 0
 
 ### verify-e2-dashboard.ps1
 - **Path**: C:\otel\scripts\verify-e2-dashboard.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding progress indicators for loops
   - Consider adding proper error logging in catch blocks
 
 ### verify-full-stack.ps1
 - **Path**: C:\otel\scripts\verify-full-stack.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider using Join-Path for dynamic paths
@@ -1636,7 +1634,7 @@ Scripts Fixed: 0
 
 ### verify-gpu-pipeline.ps1
 - **Path**: C:\otel\scripts\verify-gpu-pipeline.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -1645,13 +1643,13 @@ Scripts Fixed: 0
 
 ### verify-hardening.ps1
 - **Path**: C:\otel\scripts\verify-hardening.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding progress indicators for loops
 
 ### verify-monolith-d-fixes.ps1
 - **Path**: C:\otel\scripts\verify-monolith-d-fixes.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider using Join-Path for dynamic paths
@@ -1661,7 +1659,7 @@ Scripts Fixed: 0
 
 ### verify-scheduled-tasks.ps1
 - **Path**: C:\otel\scripts\verify-scheduled-tasks.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding progress indicators for loops
@@ -1669,7 +1667,7 @@ Scripts Fixed: 0
 
 ### verify-wiring.ps1
 - **Path**: C:\otel\scripts\verify-wiring.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -1678,31 +1676,25 @@ Scripts Fixed: 0
 
 ### watch-severity.ps1
 - **Path**: C:\otel\scripts\watch-severity.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
 
-### windows-logs-canary-test.ps1
-- **Path**: C:\otel\scripts\windows-logs-canary-test.ps1
-- **Status**: ⚠️ Preview
-- **Issues Found**:
-  - Consider adding parameter validation
-
 ### wire-publisher-to-sweep.ps1
 - **Path**: C:\otel\scripts\wire-publisher-to-sweep.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
 
 ### bringup.ps1
 - **Path**: C:\otel\scripts\agent\bringup.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
 
 ### doctor.ps1
 - **Path**: C:\otel\scripts\agent\doctor.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -1711,7 +1703,7 @@ Scripts Fixed: 0
 
 ### health-gate.ps1
 - **Path**: C:\otel\scripts\agent\health-gate.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider using Join-Path for dynamic paths
   - Consider adding parameter validation
@@ -1719,27 +1711,27 @@ Scripts Fixed: 0
 
 ### update-status.ps1
 - **Path**: C:\otel\scripts\agent\update-status.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
 
 ### runner.ps1
 - **Path**: C:\otel\scripts\agents\runner.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
 
 ### supervisor.ps1
 - **Path**: C:\otel\scripts\agents\supervisor.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding progress indicators for loops
   - Consider adding proper error logging in catch blocks
 
 ### verify-supervisor.ps1
 - **Path**: C:\otel\scripts\agents\verify-supervisor.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
@@ -1747,27 +1739,27 @@ Scripts Fixed: 0
 
 ### ecrr-exclusions-check.ps1
 - **Path**: C:\otel\scripts\ci\ecrr-exclusions-check.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding progress indicators for loops
 
 ### fix-splitpath.ps1
 - **Path**: C:\otel\scripts\dev\fix-splitpath.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding progress indicators for loops
 
 ### collect-evidence.ps1
 - **Path**: C:\otel\scripts\ecrr\collect-evidence.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding parameter validation
   - Consider adding proper error logging in catch blocks
 
 ### verify-headers.ps1
 - **Path**: C:\otel\scripts\ecrr\verify-headers.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation
@@ -1775,7 +1767,7 @@ Scripts Fixed: 0
 
 ### install-parser-guard.ps1
 - **Path**: C:\otel\scripts\signoz\install-parser-guard.ps1
-- **Status**: ⚠️ Preview
+- **Status**: ✅ Fixed
 - **Issues Found**:
   - Consider adding error handling for external commands
   - Consider adding parameter validation

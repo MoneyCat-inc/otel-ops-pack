@@ -11,15 +11,15 @@ def check_sidecar_health(port, name):
         response = requests.get(f"http://localhost:{port}/health", timeout=5)
         if response.status_code == 200:
             data = response.json()
-            print(f"✓ {name} (port {port}): {data.get('status', 'unknown')}")
+            print(f"[OK] {name} (port {port}): {data.get('status', 'unknown')}")
             if 'gpu_available' in data:
                 print(f"  GPU available: {data['gpu_available']}")
             return True
         else:
-            print(f"✗ {name} (port {port}): HTTP {response.status_code}")
+            print(f"[FAIL] {name} (port {port}): HTTP {response.status_code}")
             return False
     except Exception as e:
-        print(f"✗ {name} (port {port}): {e}")
+        print(f"[FAIL] {name} (port {port}): {e}")
         return False
 
 def main():
@@ -36,10 +36,10 @@ def main():
             all_healthy = False
     
     if all_healthy:
-        print("\n✓ All GPU sidecar services are healthy")
+        print("\n[SUCCESS] All GPU sidecar services are healthy")
         sys.exit(0)
     else:
-        print("\n✗ Some GPU sidecar services are unhealthy")
+        print("\n[ERROR] Some GPU sidecar services are unhealthy")
         sys.exit(1)
 
 if __name__ == "__main__":

@@ -1,5 +1,5 @@
 [INFO] ECRR-Enhanced Canary Test - Examine -> Clean -> Report -> Role
-[INFO] Timestamp: 2025-09-25 02:58:12
+[INFO] Timestamp: 2025-09-27 02:28:11
 [INFO] Working directory: C:\otel
 [SECTION] EXAMINE: Environment State
 [OK] SigNoz UI accessible at http://localhost:8080
@@ -22,7 +22,7 @@
 [OK] Log file sizes are reasonable
 [SECTION] REPORT: Execute Canary Test
 [INFO] Executing canary test...
-[OK] Created canary log entry: ECRR-Canary-Test-20250925-025813
+[OK] Created canary log entry: ECRR-Canary-Test-20250927-022812
 [OK] Created Windows Event Log entry
 [OK] Sent OTLP log to collector
 [SECTION] ROLE: Agent Responsibilities

@@ -250,4 +250,3 @@ if ($summary.regressions -gt 0 -or $summary.slaViolations -gt 0) {
     Write-Host "`n[OK] No regressions detected" -ForegroundColor Green
     exit 0
 }
-

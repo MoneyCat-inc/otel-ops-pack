@@ -4,6 +4,7 @@
 
 param(
     [switch]$ExportReport = $false,
+    [ValidateNotNullOrEmpty()]
     [string]$ReportPath = "artifacts\quick-monitor-$(Get-Date -Format 'yyyyMMdd-HHmmss').json"
 )
 
@@ -20,11 +21,12 @@ function Test-QuickHealth {
     
     # SigNoz health
     try {
-        $health = Invoke-RestMethod -Uri "http://localhost:8080/api/v1/health" -Method Get -TimeoutSec 3
+        $health = Invoke-RestMethod -Uri "http://localhost:8080/api/v1/health" -Method Get -TimeoutSec 3 -ErrorAction Stop
         $results.SigNoz = @{ Status = "Healthy"; Color = "Green" }
     }
     catch {
         $results.SigNoz = @{ Status = "Unreachable"; Color = "Red"; Error = $_.Exception.Message }
+        Write-Warning "SigNoz health check failed: $($_.Exception.Message)"
     }
     
     # Windows Collector
@@ -37,7 +39,7 @@ function Test-QuickHealth {
     
     # Docker services
     try {
-        $dockerPs = docker ps --format "table {{.Names}}\t{{.Status}}" | Select-String "signoz"
+        $dockerPs = docker ps --format "table {{.Names}}\t{{.Status}}" 2>$null | Select-String "signoz"
         if ($dockerPs) {
             $results.Docker = @{ Status = "Running"; Color = "Green" }
         } else {
@@ -46,6 +48,7 @@ function Test-QuickHealth {
     }
     catch {
         $results.Docker = @{ Status = "Unavailable"; Color = "Red" }
+        Write-Warning "Docker check failed: $($_.Exception.Message)"
     }
     
     return $results
