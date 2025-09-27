@@ -1,7 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Note: crossOriginIsolated is handled via headers, not experimental config
-  async headers() {
+  experimental: {
+    // Enable SharedArrayBuffer support for cross-origin isolation
+    crossOriginIsolated: true,
+  },
+  headers: async () => {
     return [
       {
         // Apply to all routes
@@ -39,7 +42,16 @@ const nextConfig = {
             key: 'Referrer-Policy',
             value: 'strict-origin-when-cross-origin',
           },
-          // Enhanced CSP for Chromium
+        ],
+      },
+    ];
+  },
+  // Enhanced CSP for Chromium
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
           {
             key: 'Content-Security-Policy',
             // More permissive CSP for development, but still secure

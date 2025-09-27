@@ -1,0 +1,51 @@
+<testsuites id="" name="" tests="2" failures="0" skipped="0" errors="0" time="3.5163320000000002">
+<testsuite name="memx-chromium-debug.spec.ts" timestamp="2025-09-27T14:48:21.078Z" hostname="chromium" tests="1" failures="0" skipped="0" time="1.361" errors="0">
+<testcase name="MEMX Chromium Debug Tests › Debug Chromium SharedArrayBuffer creation" classname="memx-chromium-debug.spec.ts" time="1.361">
+<system-out>
+<![CDATA[=== CHROMIUM SHAREDARRAYBUFFER DEBUG ===
+[REQUEST] GET http://localhost:3000/labs/memx
+[RESPONSE] 200 http://localhost:3000/labs/memx
+[REQUEST] GET http://localhost:3000/_next/static/css/app/layout.css?v=1758984502710
+[REQUEST] GET http://localhost:3000/_next/static/chunks/webpack.js?v=1758984502710
+[REQUEST] GET http://localhost:3000/_next/static/chunks/main-app.js?v=1758984502710
+[REQUEST] GET http://localhost:3000/_next/static/chunks/app-pages-internals.js
+[REQUEST] GET http://localhost:3000/_next/static/chunks/app/labs/memx/page.js
+[RESPONSE] 200 http://localhost:3000/_next/static/css/app/layout.css?v=1758984502710
+[RESPONSE] 200 http://localhost:3000/_next/static/chunks/webpack.js?v=1758984502710
+[RESPONSE] 200 http://localhost:3000/_next/static/chunks/app-pages-internals.js
+[RESPONSE] 200 http://localhost:3000/_next/static/chunks/app/labs/memx/page.js
+[RESPONSE] 200 http://localhost:3000/_next/static/chunks/main-app.js?v=1758984502710
+[info] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold
+[log] Testing SharedArrayBuffer creation...
+SharedArrayBuffer test result: { success: [33mfalse[39m, error: [32m'SharedArrayBuffer is undefined'[39m }
+SharedArrayBuffer creation failed: SharedArrayBuffer is undefined
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="memx-chromium-debug.spec.ts" timestamp="2025-09-27T14:48:21.078Z" hostname="chromium-debug" tests="1" failures="0" skipped="0" time="1.45" errors="0">
+<testcase name="MEMX Chromium Debug Tests › Debug Chromium SharedArrayBuffer creation" classname="memx-chromium-debug.spec.ts" time="1.45">
+<system-out>
+<![CDATA[=== CHROMIUM SHAREDARRAYBUFFER DEBUG ===
+[REQUEST] GET http://localhost:3000/labs/memx
+[RESPONSE] 200 http://localhost:3000/labs/memx
+[REQUEST] GET http://localhost:3000/_next/static/css/app/layout.css?v=1758984503038
+[REQUEST] GET http://localhost:3000/_next/static/chunks/webpack.js?v=1758984503038
+[REQUEST] GET http://localhost:3000/_next/static/chunks/main-app.js?v=1758984503038
+[REQUEST] GET http://localhost:3000/_next/static/chunks/app-pages-internals.js
+[REQUEST] GET http://localhost:3000/_next/static/chunks/app/labs/memx/page.js
+[RESPONSE] 200 http://localhost:3000/_next/static/css/app/layout.css?v=1758984503038
+[RESPONSE] 200 http://localhost:3000/_next/static/chunks/webpack.js?v=1758984503038
+[RESPONSE] 200 http://localhost:3000/_next/static/chunks/app-pages-internals.js
+[RESPONSE] 200 http://localhost:3000/_next/static/chunks/app/labs/memx/page.js
+[RESPONSE] 200 http://localhost:3000/_next/static/chunks/main-app.js?v=1758984503038
+[info] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold
+[error] Failed to load resource: the server responded with a status of 404 (Not Found)
+[log] Testing SharedArrayBuffer creation...
+SharedArrayBuffer test result: { success: [33mfalse[39m, error: [32m'SharedArrayBuffer is undefined'[39m }
+SharedArrayBuffer creation failed: SharedArrayBuffer is undefined
+]]>
+</system-out>
+</testcase>
+</testsuite>
+</testsuites>

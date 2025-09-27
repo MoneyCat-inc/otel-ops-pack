@@ -116,8 +116,12 @@ foreach ($Alert in $AlertConfigs) {
             $AlertRule.labels.channel = $Channel
         }
         
-        # Deploy via SigNoz API
-        $AlertResponse = Invoke-RestMethod -Uri "$SigNozUrl/api/v1/rules" -Method Post -Body ($AlertRule | ConvertTo-Json -Depth 5) -ContentType "application/json" -TimeoutSec 30
+        # Deploy via SigNoz API with authentication
+        $Headers = @{
+            "Authorization" = "Bearer $env:SIGNOZ_API_TOKEN"
+            "Content-Type" = "application/json"
+        }
+        $AlertResponse = Invoke-RestMethod -Uri "$SigNozUrl/api/v1/rules" -Method Post -Body ($AlertRule | ConvertTo-Json -Depth 5) -Headers $Headers -TimeoutSec 30
         
         Write-Host "  ✅ Alert deployed successfully" -ForegroundColor Green
         Write-Host "     Rule ID: $($AlertResponse.rule_id)" -ForegroundColor Gray
@@ -190,7 +194,11 @@ try {
         end = [int]((Get-Date) - (Get-Date '1970-01-01')).TotalSeconds
     }
     
-    $TestResponse = Invoke-RestMethod -Uri "$SigNozUrl/api/v1/logs" -Method Get -Body $TestQuery -TimeoutSec 10
+    $Headers = @{
+        "Authorization" = "Bearer $env:SIGNOZ_API_TOKEN"
+        "Content-Type" = "application/json"
+    }
+    $TestResponse = Invoke-RestMethod -Uri "$SigNozUrl/api/v1/logs" -Method Get -Body $TestQuery -Headers $Headers -TimeoutSec 10
     Write-Host "  ✅ Test log ingestion verified: $($TestResponse.data.result.length) logs found" -ForegroundColor Green
     
 } catch {

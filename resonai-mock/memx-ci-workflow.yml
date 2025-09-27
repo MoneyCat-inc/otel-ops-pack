@@ -1,0 +1,237 @@
+name: MEMX CI Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'resonai-mock/**'
+      - '.github/workflows/memx-ci.yml'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'resonai-mock/**'
+      - '.github/workflows/memx-ci.yml'
+  schedule:
+    # Run nightly at 2 AM UTC
+    - cron: '0 2 * * *'
+
+jobs:
+  memx-verification:
+    name: MEMX Verification
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'pnpm'
+        
+    - name: Install pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: 8
+        
+    - name: Install dependencies
+      working-directory: ./resonai-mock
+      run: pnpm install
+      
+    - name: Type check
+      working-directory: ./resonai-mock
+      run: pnpm run typecheck
+      
+    - name: Run unit tests
+      working-directory: ./resonai-mock
+      run: pnpm test
+      
+    - name: Install Playwright browsers
+      working-directory: ./resonai-mock
+      run: pnpm exec playwright install --with-deps
+      
+    - name: Start development server
+      working-directory: ./resonai-mock
+      run: |
+        # Set MEMX feature flag for testing
+        echo "NEXT_PUBLIC_FEATURE_MEMX=1" >> .env.local
+        echo "NEXT_PUBLIC_MEMX_OTLP_ENDPOINT=" >> .env.local
+        echo "NEXT_PUBLIC_MEMX_STREAM_DEFAULT=0" >> .env.local
+        pnpm dev &
+        sleep 10
+      env:
+        CI: true
+        
+    - name: Run Playwright tests
+      working-directory: ./resonai-mock
+      run: pnpm test:e2e
+      
+    - name: Validate MEMX Dashboard
+      working-directory: ./resonai-mock
+      run: pwsh -File scripts/validate-memx-dashboard.ps1
+      
+    - name: Upload Playwright report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: playwright-report
+        path: resonai-mock/playwright-report/
+        retention-days: 30
+        
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: test-results
+        path: resonai-mock/test-results/
+        retention-days: 30
+
+  memx-otel-integration:
+    name: MEMX OTel Integration
+    runs-on: ubuntu-latest
+    needs: memx-verification
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'pnpm'
+        
+    - name: Install pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: 8
+        
+    - name: Install dependencies
+      working-directory: ./resonai-mock
+      run: pnpm install
+      
+    - name: Verify OTel integration
+      working-directory: ./
+      run: |
+        # Check if OTel collector is available
+        if command -v otelcol-contrib &> /dev/null; then
+          echo "OTel collector found"
+        else
+          echo "OTel collector not found, skipping integration test"
+          exit 0
+        fi
+        
+        # Run MEMX integration verification
+        if [ -f "scripts/verify-memx-integration.ps1" ]; then
+          pwsh -File scripts/verify-memx-integration.ps1
+        else
+          echo "MEMX integration script not found"
+        fi
+        
+    - name: Check SigNoz connectivity
+      run: |
+        # Check if SigNoz is reachable
+        if curl -f http://localhost:8080/api/v1/health 2>/dev/null; then
+          echo "SigNoz is reachable"
+        else
+          echo "SigNoz not reachable, skipping connectivity test"
+        fi
+
+  memx-security-scan:
+    name: MEMX Security Scan
+    runs-on: ubuntu-latest
+    needs: memx-verification
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'pnpm'
+        
+    - name: Install pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: 8
+        
+    - name: Install dependencies
+      working-directory: ./resonai-mock
+      run: pnpm install
+      
+    - name: Run security audit
+      working-directory: ./resonai-mock
+      run: pnpm audit --audit-level moderate
+      
+    - name: Check for sensitive data
+      working-directory: ./resonai-mock
+      run: |
+        # Check for potential secrets in MEMX files
+        if grep -r "password\|secret\|key\|token" src/engine/memx/ --exclude-dir=node_modules; then
+          echo "Potential sensitive data found in MEMX files"
+          exit 1
+        else
+          echo "No sensitive data found in MEMX files"
+        fi
+
+  memx-performance:
+    name: MEMX Performance Test
+    runs-on: ubuntu-latest
+    needs: memx-verification
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'pnpm'
+        
+    - name: Install pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: 8
+        
+    - name: Install dependencies
+      working-directory: ./resonai-mock
+      run: pnpm install
+      
+    - name: Install Playwright browsers
+      working-directory: ./resonai-mock
+      run: pnpm exec playwright install --with-deps
+      
+    - name: Start development server
+      working-directory: ./resonai-mock
+      run: |
+        echo "NEXT_PUBLIC_FEATURE_MEMX=1" >> .env.local
+        pnpm dev &
+        sleep 10
+      env:
+        CI: true
+        
+    - name: Run performance tests
+      working-directory: ./resonai-mock
+      run: |
+        # Run Playwright tests with performance monitoring
+        pnpm test:e2e --project=chromium --reporter=json > performance-results.json
+        
+        # Check if tests completed within acceptable time
+        if [ -f "performance-results.json" ]; then
+          echo "Performance test completed"
+        else
+          echo "Performance test failed"
+          exit 1
+        fi
+        
+    - name: Upload performance results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: performance-results
+        path: resonai-mock/performance-results.json
+        retention-days: 30

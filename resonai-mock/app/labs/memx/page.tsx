@@ -10,6 +10,7 @@
 import React, { useState, useEffect } from 'react';
 import { MemxExportButton, MemxExportPresets, MemxExportAllSessionsButton } from '../../../components/MemxExportButton-simple';
 import { MemxSessionStats } from '../../../components/MemxSessionStats-simple';
+import { MemxDebugInfo } from '../../../components/MemxDebugInfo';
 
 // Feature flag check
 const isMemxEnabled = process.env.NEXT_PUBLIC_FEATURE_MEMX === '1';
@@ -80,7 +81,7 @@ export default function MemxLabsPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Live Metrics */}
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white rounded-lg shadow p-6" data-testid="memx-metrics">
             <h2 className="text-xl font-semibold mb-4">Live Metrics</h2>
             <div className="space-y-4">
               <div className="flex justify-between items-center">
@@ -132,8 +133,15 @@ export default function MemxLabsPage() {
             </div>
           </div>
 
-          {/* Session Statistics */}
-          <MemxSessionStats />
+          {/* Browser Compatibility */}
+          <MemxDebugInfo />
+        </div>
+
+        {/* Additional row for Session Statistics */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
+          <div className="lg:col-span-3">
+            <MemxSessionStats />
+          </div>
         </div>
 
         {/* Export Presets */}
