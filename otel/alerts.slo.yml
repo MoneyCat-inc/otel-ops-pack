@@ -1,0 +1,180 @@
+# Service SLOs + Burn-Rate Alerts
+# ECRR Compliance: Examine → Clean → Report → Role
+
+groups:
+- name: slo-burn
+  rules:
+  # Failure-rate SLO burn (1% SLO)
+  - record: job_fail_ratio:5m
+    expr: rate(jobs_failed_total[5m]) / rate(jobs_processed_total[5m])
+
+  # Multi-window, multi-burn alerts
+  - alert: SLOBurn_fast
+    expr: job_fail_ratio:5m > 0.05   # 5x SLO burn over 5m
+    for: 5m
+    labels: 
+      severity: critical
+      component: agent
+      system: slo
+      slo_type: failure_rate
+    annotations:
+      summary: "Agent job failures burning SLO fast"
+      description: "Job failure rate is 5x above SLO threshold (5% vs 1% target) for 5 minutes"
+      runbook: "docs/runbooks/agent-job-failures.md"
+      slo_target: "1%"
+      current_burn: "5x"
+      time_window: "5m"
+
+  - alert: SLOBurn_slow
+    expr: avg_over_time(job_fail_ratio:5m[1h]) > 0.02  # 2x burn over 1h
+    for: 30m
+    labels: 
+      severity: warning
+      component: agent
+      system: slo
+      slo_type: failure_rate
+    annotations:
+      summary: "Agent job failures burning SLO slowly"
+      description: "Job failure rate is 2x above SLO threshold (2% vs 1% target) for 1 hour"
+      runbook: "docs/runbooks/agent-job-failures.md"
+      slo_target: "1%"
+      current_burn: "2x"
+      time_window: "1h"
+
+  # Latency SLO burn (15s P95 target)
+  - record: job_latency_p95:5m
+    expr: histogram_quantile(0.95, sum by (le)(rate(job_duration_ms_bucket[5m])))
+
+  - alert: SLOBurn_latency_fast
+    expr: job_latency_p95:5m > 30000  # 2x SLO burn over 5m
+    for: 5m
+    labels: 
+      severity: critical
+      component: agent
+      system: slo
+      slo_type: latency
+    annotations:
+      summary: "Agent job latency burning SLO fast"
+      description: "Job latency P95 is 2x above SLO threshold (30s vs 15s target) for 5 minutes"
+      runbook: "docs/runbooks/agent-latency.md"
+      slo_target: "15s"
+      current_burn: "2x"
+      time_window: "5m"
+
+  - alert: SLOBurn_latency_slow
+    expr: avg_over_time(job_latency_p95:5m[1h]) > 22500  # 1.5x burn over 1h
+    for: 30m
+    labels: 
+      severity: warning
+      component: agent
+      system: slo
+      slo_type: latency
+    annotations:
+      summary: "Agent job latency burning SLO slowly"
+      description: "Job latency P95 is 1.5x above SLO threshold (22.5s vs 15s target) for 1 hour"
+      runbook: "docs/runbooks/agent-latency.md"
+      slo_target: "15s"
+      current_burn: "1.5x"
+      time_window: "1h"
+
+- name: latency
+  rules:
+  - alert: JobLatencyP95High
+    expr: histogram_quantile(0.95, sum by (le)(rate(job_duration_ms_bucket[5m]))) > 15000
+    for: 10m
+    labels: 
+      severity: warning
+      component: agent
+      system: performance
+    annotations:
+      summary: "agent.job.run P95 latency > 15s"
+      description: "Job latency P95 is above 15s threshold for 10 minutes"
+      runbook: "docs/runbooks/agent-latency.md"
+      threshold: "15s"
+      current_value: "{{ $value }}ms"
+
+- name: stability
+  rules:
+  - alert: FlakyTestsGrowing
+    expr: increase(ci_flaky_tests_count[24h]) > 3
+    for: 10m
+    labels: 
+      severity: warning
+      component: testing
+      system: stability
+    annotations:
+      summary: "Flaky test count is increasing"
+      description: "Flaky test count increased by {{ $value }} in the last 24 hours"
+      runbook: "docs/runbooks/flake-stability.md"
+      threshold: "3"
+      current_increase: "{{ $value }}"
+
+  - alert: FlakyTestsSLOBurn
+    expr: increase(ci_flaky_tests_count[7d]) > 0
+    for: 1h
+    labels: 
+      severity: warning
+      component: testing
+      system: slo
+      slo_type: stability
+    annotations:
+      summary: "Flaky test count burning stability SLO"
+      description: "Flaky test count increased over 7 days, violating stability SLO"
+      runbook: "docs/runbooks/flake-stability.md"
+      slo_target: "no increase"
+      time_window: "7d"
+
+- name: slo-summary
+  rules:
+  # SLO summary metrics for dashboards
+  - record: slo_availability:7d
+    expr: 1 - (sum(rate(jobs_failed_total[7d])) / sum(rate(jobs_processed_total[7d])))
+
+  - record: slo_latency_p95:7d
+    expr: histogram_quantile(0.95, sum by (le)(rate(job_duration_ms_bucket[7d])))
+
+  - record: slo_stability:7d
+    expr: ci_flaky_tests_count - ci_flaky_tests_count offset 7d
+
+  # SLO compliance alerts
+  - alert: SLOAvailabilityViolation
+    expr: slo_availability:7d < 0.99
+    for: 0m
+    labels: 
+      severity: critical
+      component: slo
+      system: compliance
+    annotations:
+      summary: "Availability SLO violation (7-day rolling)"
+      description: "Availability is {{ $value | humanizePercentage }} below 99% target"
+      runbook: "docs/runbooks/slo-compliance.md"
+      slo_target: "99%"
+      current_value: "{{ $value | humanizePercentage }}"
+
+  - alert: SLOLatencyViolation
+    expr: slo_latency_p95:7d > 15000
+    for: 0m
+    labels: 
+      severity: critical
+      component: slo
+      system: compliance
+    annotations:
+      summary: "Latency SLO violation (7-day rolling)"
+      description: "Latency P95 is {{ $value }}ms above 15s target"
+      runbook: "docs/runbooks/slo-compliance.md"
+      slo_target: "15s"
+      current_value: "{{ $value }}ms"
+
+  - alert: SLOStabilityViolation
+    expr: slo_stability:7d > 0
+    for: 0m
+    labels: 
+      severity: critical
+      component: slo
+      system: compliance
+    annotations:
+      summary: "Stability SLO violation (7-day rolling)"
+      description: "Flaky test count increased by {{ $value }} over 7 days"
+      runbook: "docs/runbooks/slo-compliance.md"
+      slo_target: "no increase"
+      current_increase: "{{ $value }}"

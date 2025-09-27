@@ -1,0 +1,68 @@
+{
+  "last_execution": {
+    "ecrr_report_created": "2025-09-27T04:28:08Z"
+  },
+  "triggers": {
+    "agent_task_completed": {
+      "enabled": true,
+      "action": "create_ecrr_report",
+      "template": "task_completion"
+    },
+    "ecrr_report_created": {
+      "enabled": true,
+      "action": "create_agent_task",
+      "priority_mapping": {
+        "critical": "C",
+        "high": "H",
+        "medium": "M",
+        "low": "L"
+      }
+    },
+    "overdue_tasks": {
+      "enabled": true,
+      "cooldown_minutes": 30,
+      "action": "escalate_priority"
+    },
+    "high_priority_backlog": {
+      "enabled": true,
+      "cooldown_minutes": 60,
+      "threshold": 5,
+      "action": "send_alert"
+    },
+    "system_health_degraded": {
+      "health_checks": [
+        "analytics",
+        "hygiene",
+        "env",
+        "otel"
+      ],
+      "enabled": true,
+      "action": "create_maintenance_task"
+    }
+  },
+  "cooldowns": {
+    "ecrr_report_created": "2025-09-27T04:28:09Z"
+  },
+  "actions": {
+    "send_alert": {
+      "script": ".agent/scripts/send-alert.ps1",
+      "timeout_seconds": 60
+    },
+    "escalate_priority": {
+      "script": ".agent/scripts/escalate-tasks.ps1",
+      "timeout_seconds": 120
+    },
+    "create_maintenance_task": {
+      "script": ".agent/scripts/create-maintenance-task.ps1",
+      "timeout_seconds": 180
+    },
+    "create_ecrr_report": {
+      "script": ".agent/scripts/ecrr-agent-bridge.ps1",
+      "timeout_seconds": 300
+    },
+    "create_agent_task": {
+      "script": ".agent/scripts/ecrr-agent-bridge.ps1",
+      "timeout_seconds": 300
+    }
+  }
+}

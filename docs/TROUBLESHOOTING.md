@@ -1,296 +1,434 @@
-# 🚨 Troubleshooting Guide
+# Troubleshooting Quick Hits Guide
+# ECRR Compliance: Examine → Clean → Report → Role
 
-Common issues and solutions for the OTel + Resonai observability stack.
+## 🔍 Common Issues and Solutions
 
-## Quick Diagnostics
+### No Traces/Metrics at All
 
-```powershell
-# Run comprehensive health check
-.\Test-ResonaiStack.ps1
+**Symptoms:**
+- No traces or metrics appearing in SigNoz
+- Empty dashboards and graphs
+- No data in observability pipeline
 
-# Check all services
-Get-Service otelcol-contrib
-wsl -e bash -lc "docker ps | grep signoz"
-Get-Process -Name "node" | Where-Object { $_.CommandLine -like "*next*" }
-```
+**Quick Checks:**
+```bash
+# Check OTEL environment variables
+echo $OTEL_ENABLED
+echo $OTEL_EXPORTER_OTLP_ENDPOINT
 
-## Service Issues
-
-### OTel Collector Not Running
-
-**Symptoms**: Ports 14317/14318 not listening, canaries failing
-
-**Solutions**:
-```powershell
-# Check service status
-Get-Service otelcol-contrib
-
-# Start service
-Start-Service otelcol-contrib
-
-# Check logs
-Get-EventLog -LogName Application -Source "otelcol-contrib" -Newest 10
-
-# Manual start (for debugging)
-otelcol-contrib --config collector\otel-local.yaml
-```
-
-### SigNoz Not Accessible
-
-**Symptoms**: http://localhost:8080 returns connection refused
-
-**Solutions**:
-```powershell
-# Check Docker containers
-wsl -e bash -lc "docker ps | grep signoz"
-
-# Restart SigNoz
-wsl -e bash -lc "cd ~/signoz/deploy && docker compose restart"
-
-# Check WSL2 status
-wsl --status
-```
-
-### Resonai Not Starting
-
-**Symptoms**: Port 3003 not listening, pnpm errors
-
-**Solutions**:
-```powershell
-# Navigate to correct directory
-cd third_party\resonai
-
-# Install dependencies
-pnpm install
-
-# Start dev server
-pnpm dev
-
-# Check for port conflicts
-netstat -ano | findstr "3003"
-```
-
-## Port Conflicts
-
-### Common Port Issues
-
-| Port | Service | Common Conflicts |
-|------|---------|------------------|
-| 14317 | OTel gRPC | Other OTel instances |
-| 14318 | OTel HTTP | Other OTel instances |
-| 3003 | Resonai | Other Next.js apps |
-| 8080 | SigNoz | Other web services |
-
-### Resolution
-
-```powershell
-# Find what's using a port
-netstat -ano | findstr "14317"
-
-# Kill process by PID
-taskkill /PID <PID> /F
-
-# Change port in config if needed
-# Edit collector/otel-local.yaml or next.config.js
-```
-
-## Audio/Microphone Issues
-
-### Firefox AudioWorklet Problems
-
-**Symptoms**: No mic prompt, audio not working, console errors
-
-**Solutions**:
-1. **Use localhost**: Ensure you're on http://localhost:3003 (not 127.0.0.1)
-2. **Check permissions**: Firefox → Settings → Privacy → Permissions → Microphone
-3. **Close other tabs**: Other apps might be holding the mic
-4. **Check COOP/COEP**: Look for `window.crossOriginIsolated` in console
-
-### Cross-Origin Isolation
-
-**Symptoms**: `SharedArrayBuffer` errors, AudioWorklet not working
-
-**Solutions**:
-```javascript
-// Add to next.config.js
-const nextConfig = {
-  async headers() {
-    return [
-      {
-        source: '/(.*)',
-        headers: [
-          {
-            key: 'Cross-Origin-Embedder-Policy',
-            value: 'require-corp',
-          },
-          {
-            key: 'Cross-Origin-Opener-Policy',
-            value: 'same-origin',
-          },
-        ],
-      },
-    ]
-  },
-}
-```
-
-## Network Issues
-
-### OTLP Canaries Failing
-
-**Symptoms**: POST to http://localhost:14318/v1/logs fails
-
-**Solutions**:
-```powershell
-# Test collector endpoint
-Test-NetConnection -ComputerName localhost -Port 14318
+# Verify collector is running
+docker ps | grep otel-collector
+sc query otelcol-contrib
 
 # Check collector logs
-Get-EventLog -LogName Application -Source "otelcol-contrib" -Newest 5
-
-# Verify config
-Get-Content collector\otel-local.yaml
+docker logs otel-collector
 ```
 
-### SigNoz Not Receiving Data
+**Solutions:**
+1. **Set environment variables:**
+   ```bash
+   export OTEL_ENABLED=1
+   export OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
+   ```
 
-**Symptoms**: No logs appear in SigNoz UI
+2. **Start collector:**
+   ```bash
+   # Docker
+   docker run -d --name otel-collector \
+     -p 4317:4317 -p 4318:4318 -p 8888:8888 \
+     -v $(pwd)/config.yaml:/etc/otelcol-contrib/config.yaml \
+     otel/opentelemetry-collector-contrib:latest
+   
+   # Windows Service
+   sc start otelcol-contrib
+   ```
 
-**Solutions**:
-1. **Check collector config**: Ensure exporter points to correct SigNoz port
-2. **Verify SigNoz OTLP receiver**: Check if port 4317 is listening
-3. **Test with canary**: Send test data and verify it appears
-4. **Check logs**: Look for collector export errors
+3. **Verify endpoint:**
+   ```bash
+   curl http://localhost:4318/v1/logs
+   curl http://localhost:8888/metrics
+   ```
 
-## Performance Issues
+### Trace Exists, Metrics Empty
 
-### High Latency
+**Symptoms:**
+- Traces visible in SigNoz
+- Metrics not appearing
+- Meter not created or process dies too early
 
-**Symptoms**: Slow audio processing, delayed feedback
+**Quick Checks:**
+```bash
+# Check if Meter is created
+grep -r "MeterProvider" scripts/
+grep -r "createMeter" scripts/
 
-**Solutions**:
-1. **Check CPU usage**: Monitor system resources
-2. **Optimize audio settings**: Reduce sample rate, buffer size
-3. **Check network**: Ensure localhost communication is fast
-4. **Profile code**: Use browser dev tools to identify bottlenecks
-
-### Memory Issues
-
-**Symptoms**: Browser crashes, slow performance
-
-**Solutions**:
-1. **Close unused tabs**: Free up browser memory
-2. **Restart services**: Clear accumulated state
-3. **Check for leaks**: Monitor memory usage over time
-4. **Optimize audio processing**: Reduce buffer sizes
-
-## Development Issues
-
-### Hot Reload Not Working
-
-**Symptoms**: Changes not reflected in browser
-
-**Solutions**:
-```powershell
-# Restart dev server
-cd third_party\resonai
-pnpm dev
-
-# Clear cache
-rm -rf .next
-pnpm dev
+# Verify process stays alive
+ps aux | grep node
+ps aux | grep pwsh
 ```
 
-### Environment Variables Not Loading
+**Solutions:**
+1. **Ensure Meter is created once (bootstrap):**
+   ```javascript
+   const meterProvider = new MeterProvider({
+     resource: new Resource({
+       [SemanticResourceAttributes.SERVICE_NAME]: 'your-service',
+     }),
+     readers: [new OTLPMetricExporter({ url: endpoint })],
+   });
+   
+   const meter = meterProvider.getMeter('your-service');
+   ```
 
-**Symptoms**: OTel config not applied
+2. **Keep process alive long enough for collection:**
+   ```javascript
+   // Add delay or keep process running
+   setTimeout(() => process.exit(0), 5000);
+   ```
 
-**Solutions**:
-1. **Check .env.local**: Ensure file exists and has correct format
-2. **Restart dev server**: Environment variables loaded on startup
-3. **Verify syntax**: No spaces around =, proper quoting
-4. **Check precedence**: .env.local overrides other env files
+3. **Force flush metrics:**
+   ```javascript
+   await meterProvider.forceFlush();
+   ```
 
-## Log Analysis
+### Cardinality Spikes
 
-### SigNoz Query Examples
+**Symptoms:**
+- High memory usage
+- Slow queries
+- Metrics storage issues
+- Performance degradation
 
-**Find errors**:
-```
-severity = "ERROR" AND service.name = "resonai-local"
-```
-
-**Track user sessions**:
-```
-message contains "session" AND service.name = "resonai-local"
-```
-
-**Monitor performance**:
-```
-service.name = "resonai-local" | rate(5m) | top(10)
-```
-
-### Windows Event Logs
-
-**Application logs**:
-```powershell
-Get-EventLog -LogName Application -Newest 10
-```
-
-**System logs**:
-```powershell
-Get-EventLog -LogName System -Newest 10
+**Quick Checks:**
+```bash
+# Check metric cardinality
+curl http://localhost:8888/metrics | grep -c "test_id"
+curl http://localhost:8888/metrics | grep -c "browser"
 ```
 
-## Recovery Procedures
+**Solutions:**
+1. **Hash long test IDs:**
+   ```javascript
+   const hashedTestId = crypto.createHash('md5')
+     .update(testId)
+     .digest('hex')
+     .substring(0, 8);
+   ```
 
-### Full Stack Restart
+2. **Limit labels to essential ones:**
+   ```javascript
+   // Good: Limited labels
+   counter.add(1, {
+     test_id: hashedTestId,
+     suite: 'smoke',
+     browser: 'chrome',
+     branch: 'main'
+   });
+   
+   // Bad: Too many labels
+   counter.add(1, {
+     test_id: longTestId,
+     suite: 'smoke',
+     browser: 'chrome',
+     branch: 'main',
+     timestamp: Date.now(),
+     user_id: userId,
+     session_id: sessionId
+   });
+   ```
 
-```powershell
-# Stop all services
-Stop-Service otelcol-contrib
-wsl -e bash -lc "cd ~/signoz/deploy && docker compose down"
-Get-Process -Name "node" | Where-Object { $_.CommandLine -like "*next*" } | Stop-Process
+3. **Use aggregation:**
+   ```javascript
+   // Aggregate by suite instead of individual tests
+   counter.add(1, {
+     suite: 'smoke',
+     browser: 'chrome',
+     branch: 'main'
+   });
+   ```
 
-# Start all services
-Start-Service otelcol-contrib
-wsl -e bash -lc "cd ~/signoz/deploy && docker compose up -d"
-cd third_party\resonai
-pnpm dev
+### Agent Stalls
 
-# Verify
-.\Test-ResonaiStack.ps1
+**Symptoms:**
+- Agent not processing tasks
+- Queue backing up
+- No new jobs running
+- System unresponsive
+
+**Quick Checks:**
+```bash
+# Check for lock file
+ls -la .agent/LOCK
+cat .agent/LOCK
+
+# Check agent status
+cat .agent/status.json
+ps aux | grep agent
+
+# Check queue depth
+wc -l .agent/state/queue.jsonl
 ```
 
-### Reset Configuration
+**Solutions:**
+1. **Remove lock file:**
+   ```bash
+   rm .agent/LOCK
+   ```
 
-```powershell
-# Reset OTel config
-git checkout collector\otel-local.yaml
+2. **Check budgets:**
+   ```bash
+   # Verify file count
+   find . -name "*.ps1" -o -name "*.js" -o -name "*.ts" | wc -l
+   
+   # Verify LOC count
+   find . -name "*.ps1" -o -name "*.js" -o -name "*.ts" -exec wc -l {} + | tail -1
+   ```
 
-# Reset Resonai env
-Remove-Item third_party\resonai\.env.local
-# Recreate with correct values
+3. **Restart agent:**
+   ```bash
+   # Kill existing processes
+   pkill -f "agent"
+   
+   # Restart agent
+   pwsh -File .agent/scripts/status-synchronizer.ps1
+   ```
 
-# Restart services
-# (Use full stack restart above)
+### Port Conflicts
+
+**Symptoms:**
+- "Address already in use" errors
+- Collector won't start
+- Connection refused errors
+
+**Quick Checks:**
+```bash
+# Check port usage
+netstat -tulpn | grep :4317
+netstat -tulpn | grep :4318
+lsof -i :4317
+lsof -i :4318
 ```
 
-## Getting Help
+**Solutions:**
+1. **Kill conflicting processes:**
+   ```bash
+   # Find and kill process using port
+   lsof -ti:4317 | xargs kill -9
+   lsof -ti:4318 | xargs kill -9
+   ```
 
-1. **Check logs**: Always start with service logs
-2. **Run diagnostics**: Use `.\Test-ResonaiStack.ps1`
-3. **Verify configs**: Ensure all config files are correct
-4. **Test components**: Isolate which service is failing
-5. **Document issues**: Note exact error messages and steps to reproduce
+2. **Use different ports:**
+   ```yaml
+   # config.yaml
+   receivers:
+     otlp:
+       protocols:
+         grpc:
+           endpoint: 0.0.0.0:14317
+         http:
+           endpoint: 0.0.0.0:14318
+   ```
 
-## Prevention
+3. **Update endpoint configuration:**
+   ```bash
+   export OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:14318
+   ```
 
-1. **Regular health checks**: Run diagnostics periodically
-2. **Monitor resources**: Watch CPU, memory, disk usage
-3. **Keep services updated**: Regular updates prevent issues
-4. **Backup configs**: Version control all configuration files
-5. **Test changes**: Verify after any configuration changes
+### OpAMP Chatter
 
+**Symptoms:**
+- "cannot create agent without orgId" errors
+- Noisy logs
+- Unnecessary network traffic
 
+**Quick Checks:**
+```bash
+# Check for OpAMP configuration
+grep -r "opamp" config.yaml
+grep -r "orgId" logs/
+```
 
+**Solutions:**
+1. **Disable OpAMP for local development:**
+   ```yaml
+   # config.yaml
+   extensions:
+     opamp:
+       # Disabled for local development
+       # server:
+       #   endpoint: wss://example.com:4320/v1/opamp
+   ```
+
+2. **Filter out OpAMP logs:**
+   ```yaml
+   # config.yaml
+   processors:
+     filter:
+       logs:
+         exclude:
+           match_type: regexp
+           record_attributes:
+             - key: message
+               value: ".*opamp.*"
+   ```
+
+### Cross-Origin Isolation Issues
+
+**Symptoms:**
+- Analytics pages not loading
+- Worker errors
+- CORS issues
+
+**Quick Checks:**
+```bash
+# Check COOP/COEP headers
+curl -I http://localhost:3000 | grep -i "cross-origin"
+```
+
+**Solutions:**
+1. **Add COOP/COEP headers:**
+   ```javascript
+   // Next.js config
+   module.exports = {
+     async headers() {
+       return [
+         {
+           source: '/(.*)',
+           headers: [
+             {
+               key: 'Cross-Origin-Opener-Policy',
+               value: 'same-origin',
+             },
+             {
+               key: 'Cross-Origin-Embedder-Policy',
+               value: 'require-corp',
+             },
+           ],
+         },
+       ];
+     },
+   };
+   ```
+
+2. **Configure service worker:**
+   ```javascript
+   // sw.js
+   self.addEventListener('fetch', (event) => {
+     event.respondWith(
+       fetch(event.request, {
+         mode: 'cors',
+         credentials: 'same-origin',
+       })
+     );
+   });
+   ```
+
+## 🚨 Emergency Procedures
+
+### System Down
+1. **Check kill-switch:**
+   ```bash
+   ls -la .agent/LOCK
+   ```
+
+2. **Restart services:**
+   ```bash
+   # Restart collector
+   docker restart otel-collector
+   sc restart otelcol-contrib
+   
+   # Restart agent
+   pwsh -File .agent/scripts/status-synchronizer.ps1
+   ```
+
+3. **Verify health:**
+   ```bash
+   curl http://localhost:8080/api/v1/health
+   curl http://localhost:8888/metrics
+   ```
+
+### Data Loss
+1. **Check backups:**
+   ```bash
+   ls -la .agent/state/queue.jsonl.backup*
+   ls -la artifacts/*.backup*
+   ```
+
+2. **Restore from backup:**
+   ```bash
+   cp .agent/state/queue.jsonl.backup.20250927-042809 .agent/state/queue.jsonl
+   ```
+
+3. **Verify restoration:**
+   ```bash
+   wc -l .agent/state/queue.jsonl
+   head -5 .agent/state/queue.jsonl
+   ```
+
+### Performance Issues
+1. **Check resource usage:**
+   ```bash
+   top
+   htop
+   docker stats
+   ```
+
+2. **Check queue depth:**
+   ```bash
+   wc -l .agent/state/queue.jsonl
+   ```
+
+3. **Scale resources:**
+   ```bash
+   # Increase memory
+   docker run --memory=4g otel-collector
+   
+   # Increase CPU
+   docker run --cpus=2 otel-collector
+   ```
+
+## 📞 Escalation
+
+### When to Escalate
+- System down for > 30 minutes
+- Data loss detected
+- Security incident
+- Performance degradation > 50%
+
+### Escalation Contacts
+- **Primary**: On-call engineer
+- **Secondary**: Team lead
+- **Emergency**: CTO
+
+### Information to Provide
+- Error messages
+- Log snippets
+- System state
+- Steps already taken
+- Impact assessment
+
+## 🔧 Maintenance
+
+### Daily Checks
+- [ ] System health status
+- [ ] Queue depth
+- [ ] Error rates
+- [ ] Performance metrics
+
+### Weekly Checks
+- [ ] Log rotation
+- [ ] Backup verification
+- [ ] Security updates
+- [ ] Capacity planning
+
+### Monthly Checks
+- [ ] Full system backup
+- [ ] Disaster recovery test
+- [ ] Performance review
+- [ ] Documentation update
+
+---
+
+**Last Updated**: 2025-09-27  
+**Version**: 1.0.0  
+**Maintainer**: Cursor Agent (Observability Copilot)

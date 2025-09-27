@@ -1,11 +1,11 @@
 {
   "version": 1,
-  "updatedAt": "2025-09-24T14:48:22.2552509+01:00",
+  "updatedAt": "2025-09-27T04:28:53.595Z",
   "sections": {
     "analytics": {
-      "ok": false,
-      "detail": "Not initialized",
-      "ts": null
+      "ok": true,
+      "detail": "Status synchronizer operational",
+      "ts": "2025-09-27T04:28:53.598Z"
     },
     "hygiene": {
       "ok": true,
