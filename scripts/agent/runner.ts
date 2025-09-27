@@ -9,6 +9,19 @@ import { AutopilotWatchdog } from './watchdog';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 
+// Initialize OpenTelemetry if enabled
+if (process.env.OTEL_ENABLED !== '0') {
+  try {
+    const { initializeOTel, getTracer } = require('./otel');
+    // Initialize OTel in background
+    initializeOTel().catch((error: Error) => {
+      console.warn('OTel initialization failed:', error.message);
+    });
+  } catch (error) {
+    console.warn('Failed to load OTel module:', error);
+  }
+}
+
 interface RunnerConfig {
   configPath: string;
   daemon: boolean;
@@ -61,7 +74,29 @@ class AutopilotRunner {
   }
 
   public async start(): Promise<void> {
+    // Create runner start span for telemetry
+    let runnerSpan: any = null;
+    
     try {
+      // Initialize OTel span if available
+      if (process.env.OTEL_ENABLED !== '0') {
+        try {
+          const { getTracer } = require('./otel');
+          const tracer = getTracer();
+          if (tracer) {
+            runnerSpan = tracer.startSpan('agent.runner.start', {
+              attributes: {
+                'runner.daemon': this.config.daemon,
+                'runner.config_path': this.config.configPath,
+                'runner.log_file': this.config.logFile || 'none'
+              }
+            });
+          }
+        } catch (otelError) {
+          // Ignore OTel errors - continue without telemetry
+        }
+      }
+
       console.log('Starting autopilot agent runner...');
       
       if (this.config.daemon) {
@@ -74,6 +109,12 @@ class AutopilotRunner {
       
       console.log('Autopilot agent runner started successfully');
       
+      // Mark span as successful
+      if (runnerSpan) {
+        runnerSpan.setStatus({ code: 0 });
+        runnerSpan.end();
+      }
+      
       if (!this.config.daemon) {
         // Keep the process alive in non-daemon mode
         process.stdin.resume();
@@ -82,6 +123,14 @@ class AutopilotRunner {
     } catch (error) {
       console.error('Failed to start autopilot agent runner:', error);
       await this.removePidFile();
+      
+      // Mark span as failed
+      if (runnerSpan) {
+        runnerSpan.recordException(error as Error);
+        runnerSpan.setStatus({ code: 2, message: (error as Error).message });
+        runnerSpan.end();
+      }
+      
       process.exit(1);
     }
   }

@@ -1,0 +1,300 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "Agent Telemetry Dashboard",
+    "description": "Comprehensive observability dashboard for agent worker and flake quarantine pipeline",
+    "tags": ["agent", "telemetry", "observability", "resonai"],
+    "style": "dark",
+    "timezone": "browser",
+    "refresh": "30s",
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "panels": [
+      {
+        "id": 1,
+        "title": "Agent Throughput",
+        "type": "stat",
+        "description": "Jobs processed vs failed per second",
+        "targets": [
+          {
+            "expr": "sum(rate(jobs_processed_total[5m]))",
+            "legendFormat": "Jobs/sec (Processed)",
+            "refId": "A"
+          },
+          {
+            "expr": "sum(rate(jobs_failed_total[5m]))", 
+            "legendFormat": "Jobs/sec (Failed)",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "displayMode": "basic",
+              "orientation": "horizontal"
+            },
+            "unit": "reqps"
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 0
+        }
+      },
+      {
+        "id": 2,
+        "title": "Job Duration P95",
+        "type": "stat",
+        "description": "95th percentile job execution time",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(job_duration_ms_bucket[5m]))",
+            "legendFormat": "P95 Duration (ms)",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "unit": "ms",
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "yellow", "value": 1000},
+                {"color": "red", "value": 5000}
+              ]
+            }
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 0
+        }
+      },
+      {
+        "id": 3,
+        "title": "Queue Depth Over Time",
+        "type": "graph",
+        "description": "Agent job queue depth monitoring",
+        "targets": [
+          {
+            "expr": "queue_depth",
+            "legendFormat": "Queue Depth",
+            "refId": "A"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Jobs",
+            "min": 0,
+            "max": null
+          }
+        ],
+        "legend": {
+          "show": true,
+          "values": false,
+          "current": false,
+          "max": false,
+          "min": false,
+          "avg": false
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 24,
+          "x": 0,
+          "y": 8
+        }
+      },
+      {
+        "id": 4,
+        "title": "Flake Status Overview",
+        "type": "stat",
+        "description": "Current flaky test counts and detection rates",
+        "targets": [
+          {
+            "expr": "ci_flaky_tests_count",
+            "legendFormat": "Active Flaky Tests",
+            "refId": "A"
+          },
+          {
+            "expr": "sum(rate(flake_detected_total[1h]))",
+            "legendFormat": "Flakes Detected/Hour",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "yellow", "value": 1},
+                {"color": "red", "value": 5}
+              ]
+            }
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 16
+        }
+      },
+      {
+        "id": 5,
+        "title": "Top Flake Offenders (7d)",
+        "type": "table",
+        "description": "Most frequently detected flaky tests",
+        "targets": [
+          {
+            "expr": "topk(10, sum by (test_id) (increase(flake_detected_total[7d])))",
+            "legendFormat": "Test ID",
+            "format": "table",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "displayMode": "table"
+            }
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 16
+        }
+      },
+      {
+        "id": 6,
+        "title": "Flake Lifecycle Events",
+        "type": "graph",
+        "description": "Flake detection, quarantine, and rehabilitation trends",
+        "targets": [
+          {
+            "expr": "sum(rate(flake_detected_total[5m]))",
+            "legendFormat": "Detected/min",
+            "refId": "A"
+          },
+          {
+            "expr": "sum(rate(flake_quarantined_total[5m]))",
+            "legendFormat": "Quarantined/min",
+            "refId": "B"
+          },
+          {
+            "expr": "sum(rate(flake_rehabilitated_total[5m]))",
+            "legendFormat": "Rehabilitated/min",
+            "refId": "C"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Events/min",
+            "min": 0
+          }
+        ],
+        "legend": {
+          "show": true,
+          "values": false,
+          "current": false,
+          "max": false,
+          "min": false,
+          "avg": false
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 24,
+          "x": 0,
+          "y": 24
+        }
+      },
+      {
+        "id": 7,
+        "title": "Agent Health Status",
+        "type": "stat",
+        "description": "Overall agent system health indicators",
+        "targets": [
+          {
+            "expr": "sum(jobs_processed_total) - sum(jobs_failed_total)",
+            "legendFormat": "Success Rate",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "steps": [
+                {"color": "red", "value": null},
+                {"color": "yellow", "value": 90},
+                {"color": "green", "value": 95}
+              ]
+            },
+            "unit": "percent"
+          }
+        },
+        "gridPos": {
+          "h": 6,
+          "w": 12,
+          "x": 0,
+          "y": 32
+        }
+      },
+      {
+        "id": 8,
+        "title": "Test Flake Age Distribution",
+        "type": "histogram",
+        "description": "Distribution of flaky test ages",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.5, test_flake_age_days)",
+            "legendFormat": "P50 Age",
+            "refId": "A"
+          },
+          {
+            "expr": "histogram_quantile(0.95, test_flake_age_days)",
+            "legendFormat": "P95 Age",
+            "refId": "B"
+          }
+        ],
+        "gridPos": {
+          "h": 6,
+          "w": 12,
+          "x": 12,
+          "y": 32
+        }
+      }
+    ],
+    "templating": {
+      "list": []
+    },
+    "annotations": {
+      "list": [
+        {
+          "name": "Agent Deployments",
+          "enable": true,
+          "iconColor": "blue",
+          "tags": ["agent", "deployment"]
+        }
+      ]
+    }
+  }
+}

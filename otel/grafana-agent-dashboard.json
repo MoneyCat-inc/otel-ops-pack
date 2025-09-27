@@ -1,0 +1,154 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "Agent Telemetry Dashboard",
+    "tags": ["agent", "telemetry", "observability"],
+    "style": "dark",
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Agent Throughput",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "sum(rate(jobs_processed_total[5m]))",
+            "legendFormat": "Jobs/sec (Processed)"
+          },
+          {
+            "expr": "sum(rate(jobs_failed_total[5m]))", 
+            "legendFormat": "Jobs/sec (Failed)"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "displayMode": "basic"
+            }
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 0
+        }
+      },
+      {
+        "id": 2,
+        "title": "Job Duration P95",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(job_duration_ms_bucket[5m]))",
+            "legendFormat": "P95 Duration (ms)"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "yellow", "value": 1000},
+                {"color": "red", "value": 5000}
+              ]
+            }
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 0
+        }
+      },
+      {
+        "id": 3,
+        "title": "Queue Depth Over Time",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "queue_depth",
+            "legendFormat": "Queue Depth"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Jobs",
+            "min": 0
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 24,
+          "x": 0,
+          "y": 8
+        }
+      },
+      {
+        "id": 4,
+        "title": "Flake Status",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "ci_flaky_tests_count",
+            "legendFormat": "Active Flaky Tests"
+          },
+          {
+            "expr": "sum(rate(flake_detected_total[1h]))",
+            "legendFormat": "Flakes Detected/Hour"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "yellow", "value": 1},
+                {"color": "red", "value": 5}
+              ]
+            }
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 16
+        }
+      },
+      {
+        "id": 5,
+        "title": "Top Flake Offenders (7d)",
+        "type": "table",
+        "targets": [
+          {
+            "expr": "topk(10, sum by (test_id) (increase(flake_detected_total[7d])))",
+            "legendFormat": "Test ID",
+            "format": "table"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 16
+        }
+      }
+    ],
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "refresh": "30s"
+  }
+}
