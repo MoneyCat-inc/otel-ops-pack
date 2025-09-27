@@ -1,0 +1,49 @@
+{
+  "rollback_commands": [
+    "copy config.backup.yaml config.yaml",
+    "sc restart otelcol-contrib"
+  ],
+  "status": "pending",
+  "acceptance": [
+    "Collector configuration validates",
+    "Collector health endpoint responds",
+    "Command 'powershell -ExecutionPolicy Bypass -File validation/validate-tail-sampling.ps1' executes successfully"
+  ],
+  "metrics": {
+    "latency_p95": 350,
+    "latency_p99": 800,
+    "trace_count": 1250,
+    "slow_traces": 45,
+    "timestamp": "2025-09-18T23:35:00Z"
+  },
+  "deadline": "2025-10-04",
+  "migration_source": "high-latency-task.json",
+  "source": "manual",
+  "title": "High Latency Traces Detected",
+  "tests": [
+    "otelcol --config=config.yaml --dry-run",
+    "curl -s http://localhost:13134/",
+    "powershell -ExecutionPolicy Bypass -File validation/validate-tail-sampling.ps1"
+  ],
+  "priority": "M",
+  "id": "T-2025-09-27-548",
+  "type": "alert",
+  "goal": "P95 latency exceeds 200ms threshold, requiring tail sampling policy adjustment",
+  "original_id": "high-latency-20250918",
+  "assigned_to": "codex",
+  "expected_output": "Tail sampling configured, slow traces captured",
+  "scope": {
+    "paths": [
+      "config.yaml"
+    ],
+    "excluded": []
+  },
+  "validation_commands": [
+    "otelcol --config=config.yaml --dry-run",
+    "curl -s http://localhost:13134/",
+    "powershell -ExecutionPolicy Bypass -File validation/validate-tail-sampling.ps1"
+  ],
+  "recipe": "high_latency",
+  "description": "P95 latency exceeds 200ms threshold, requiring tail sampling policy adjustment",
+  "created_at": "2025-09-18T23:35:00Z"
+}

@@ -1,0 +1,52 @@
+{
+  "rollback_commands": [
+    "copy config.backup.yaml config.yaml",
+    "sc restart otelcol-contrib"
+  ],
+  "status": "pending",
+  "acceptance": [
+    "Collector configuration validates",
+    "Collector health endpoint responds",
+    "Command 'powershell -ExecutionPolicy Bypass -File validation/validate-cardinality.ps1' executes successfully"
+  ],
+  "metrics": {
+    "series_count": 1250,
+    "max_series": 1000,
+    "hot_attributes": [
+      "pod.uid",
+      "container.id"
+    ],
+    "memory_usage": 0.75,
+    "timestamp": "2025-09-18T23:40:00Z"
+  },
+  "deadline": "2025-10-04",
+  "migration_source": "cardinality-task.json",
+  "source": "signoz",
+  "title": "Cardinality Spike Detected",
+  "tests": [
+    "otelcol --config=config.yaml --dry-run",
+    "curl -s http://localhost:13134/",
+    "powershell -ExecutionPolicy Bypass -File validation/validate-cardinality.ps1"
+  ],
+  "priority": "H",
+  "id": "T-2025-09-27-181",
+  "type": "alert",
+  "goal": "Metric series count exceeds 1000 threshold, indicating high cardinality attributes",
+  "original_id": "cardinality-spike-20250918",
+  "assigned_to": "codex",
+  "expected_output": "Cardinality controls active, hot attributes redacted",
+  "scope": {
+    "paths": [
+      "config.yaml"
+    ],
+    "excluded": []
+  },
+  "validation_commands": [
+    "otelcol --config=config.yaml --dry-run",
+    "curl -s http://localhost:13134/",
+    "powershell -ExecutionPolicy Bypass -File validation/validate-cardinality.ps1"
+  ],
+  "recipe": "cardinality_spike",
+  "description": "Metric series count exceeds 1000 threshold, indicating high cardinality attributes",
+  "created_at": "2025-09-18T23:40:00Z"
+}
