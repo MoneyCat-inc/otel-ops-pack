@@ -1,3 +1,53 @@
+# SigNoz Alert Import Guide
+
+## Canary Alert for Windows Logs
+
+### Alert Configuration
+
+**Alert Name**: Windows Canary Log Absence  
+**Description**: Alert when windows-canary logs are absent for more than 5 minutes  
+**Severity**: Critical  
+**Condition**: `count(logs) WHERE body contains 'windows-canary' AND timestamp >= now() - INTERVAL 5 MINUTE = 0`  
+**Duration**: 5 minutes  
+**Notification**: Email and Slack  
+
+### Import Steps
+
+1. **Open SigNoz UI**: http://localhost:8080
+2. **Navigate**: Alerts → Import
+3. **Upload**: `artifacts/signoz-alerts.json`
+4. **Configure**: Notification channels (email/Slack)
+5. **Enable**: All 5 alert rules
+6. **Test**: Run `pwsh -File scripts/test-canary-alert.ps1 -FullTest`
+
+### Testing the Canary Alert
+
+```powershell
+# Generate canary logs for 10 minutes
+pwsh -File scripts/test-canary-alert.ps1 -GenerateCanary -TestDurationMinutes 10
+
+# Stop canary generation and wait for alert
+pwsh -File scripts/test-canary-alert.ps1 -StopCanary
+
+# Run full test (generate + stop + verify)
+pwsh -File scripts/test-canary-alert.ps1 -FullTest -TestDurationMinutes 10
+```
+
+### Verification
+
+1. **SigNoz UI → Logs**: Filter `body contains 'windows-canary'`
+2. **SigNoz UI → Alerts**: Check "Windows Canary Log Absence" status
+3. **Alert should trigger**: After 5 minutes of no canary logs
+4. **Notification**: Email/Slack message received
+
+### Alert Rules Included
+
+1. **Windows Canary Log Absence** - Critical
+2. **Queue Pressure High** - Warning (>70% for 10m)
+3. **Send Failure Rate High** - Critical (>5% for 2m)
+4. **Trace Latency Spike** - Warning (p95 >8s for 5m)
+5. **Batch Efficiency Low** - Warning (<128 for 5m)
+
 # SigNoz Alert Import Guide - ECRR Canary
 
 ## Quick Import Steps

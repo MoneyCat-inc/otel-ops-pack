@@ -1,9 +1,19 @@
 # ECRR Report Template
 
 **Date**: YYYY-MM-DD  
-**Agent**: [Agent Name]  
-**Role**: [Role - Orchestrator/Implementor/Coordinator/etc.]  
+**Agent**: [Agent Name - Cursor Agent/Cursor-Local/ChatGPT Agent/Codex Agent/BossCat/QA Scribe]  
+**Role**: [Role - Observability Copilot/OTel Steward/Agent Coordinator/Local Worker/etc.]  
 **Session**: [Brief session description]  
+**ECRR ID**: [Optional - for tracking specific initiatives]
+
+---
+
+## 📋 **ECRR Compliance Checklist**
+- [ ] **Actor Declaration**: Agent and role clearly stated
+- [ ] **Evidence Attachment**: Screenshots, logs, configs, test outputs included
+- [ ] **ECRR Gate**: Formal validation section completed
+- [ ] **Status Declaration**: Success/failure/completion status specified
+- [ ] **4-Section Structure**: Examine → Clean → Report → Role format followed
 
 ---
 

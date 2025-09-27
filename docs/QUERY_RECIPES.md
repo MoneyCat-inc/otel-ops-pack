@@ -290,9 +290,215 @@ count by (attributes.event) WHERE attributes.dataset = "resonai_analytics" AND a
 - **Time Range**: 24 hours
 - **Events**: screen_view → permission_granted → mic_session_start → activation
 
+## Queue Pressure Monitoring
+
+### 12. Queue Utilization Ratio
+
+**Purpose**: Monitor OpenTelemetry collector queue pressure in real-time
+
+**Query**:
+```sql
+rate(otelcol_exporter_queue_size[5m]) / rate(otelcol_exporter_queue_capacity[5m]) * 100
+```
+
+**SigNoz UI Steps**:
+1. Go to Metrics → Query Builder
+2. Query: `rate(otelcol_exporter_queue_size[5m]) / rate(otelcol_exporter_queue_capacity[5m]) * 100`
+3. Visualization: Single Stat
+4. Unit: Percent (0-100)
+5. Thresholds: Green <70%, Yellow 70-80%, Red >80%
+
+**Dashboard Panel**:
+- **Title**: "Queue Utilization Ratio"
+- **Type**: Single Stat
+- **Time Range**: 5 minutes
+- **Thresholds**: Green <70%, Yellow 70-80%, Red >80%
+
+### 13. Queue Size vs Capacity Trend
+
+**Purpose**: Track queue size trends over time
+
+**Query**:
+```sql
+-- Current Queue Size
+rate(otelcol_exporter_queue_size[1m])
+
+-- Queue Capacity
+rate(otelcol_exporter_queue_capacity[1m])
+```
+
+**SigNoz UI Steps**:
+1. Go to Metrics → Query Builder
+2. Add both queries above
+3. Visualization: Time Series
+4. Unit: Short (count)
+5. Time Range: 24 hours
+
+**Dashboard Panel**:
+- **Title**: "Queue Size vs Capacity (24h Trend)"
+- **Type**: Time Series
+- **Time Range**: 24 hours
+- **Interval**: 1 minute
+
+### 14. Send Failure Rate
+
+**Purpose**: Monitor exporter send failure rates
+
+**Query**:
+```sql
+rate(otelcol_exporter_send_failed_spans[5m]) / rate(otelcol_exporter_sent_spans[5m]) * 100
+```
+
+**SigNoz UI Steps**:
+1. Go to Metrics → Query Builder
+2. Query: Above expression
+3. Visualization: Single Stat
+4. Unit: Percent (0-10)
+5. Thresholds: Green <1%, Yellow 1-5%, Red >5%
+
+**Dashboard Panel**:
+- **Title**: "Send Failure Rate"
+- **Type**: Single Stat
+- **Time Range**: 5 minutes
+- **Thresholds**: Green <1%, Yellow 1-5%, Red >5%
+
+### 15. Trace Time-to-Use Percentiles
+
+**Purpose**: Monitor batch processing latency
+
+**Query**:
+```sql
+-- p50 Latency
+histogram_quantile(0.5, rate(otelcol_processor_batch_batch_send_latency_bucket[5m]))
+
+-- p95 Latency
+histogram_quantile(0.95, rate(otelcol_processor_batch_batch_send_latency_bucket[5m]))
+
+-- p99 Latency
+histogram_quantile(0.99, rate(otelcol_processor_batch_batch_send_latency_bucket[5m]))
+```
+
+**SigNoz UI Steps**:
+1. Go to Metrics → Query Builder
+2. Add all three percentile queries
+3. Visualization: Time Series
+4. Unit: Milliseconds
+5. Time Range: 1 hour
+
+**Dashboard Panel**:
+- **Title**: "Trace Time-to-Use (p50/p95/p99)"
+- **Type**: Time Series
+- **Time Range**: 1 hour
+- **Thresholds**: p95 <2s, p99 <5s
+
+### 16. Fractal Drift Detection
+
+**Purpose**: Detect pattern variance in queue behavior
+
+**Query**:
+```sql
+-- Queue Size Variance
+stddev_over_time(rate(otelcol_exporter_queue_size[1m])[1h:1m])
+
+-- Send Failure Variance
+stddev_over_time(rate(otelcol_exporter_send_failed_spans[1m])[1h:1m])
+```
+
+**SigNoz UI Steps**:
+1. Go to Metrics → Query Builder
+2. Add both variance queries
+3. Visualization: Time Series
+4. Unit: Short (variance)
+5. Time Range: 24 hours
+
+**Dashboard Panel**:
+- **Title**: "Fractal Drift Detection (Pattern Variance)"
+- **Type**: Time Series
+- **Time Range**: 24 hours
+- **Alert**: Variance >2x baseline
+
+### 17. Batch Efficiency
+
+**Purpose**: Monitor batch processing efficiency
+
+**Query**:
+```sql
+rate(otelcol_processor_batch_batch_send_size_sum[5m]) / rate(otelcol_processor_batch_batch_send_size_count[5m])
+```
+
+**SigNoz UI Steps**:
+1. Go to Metrics → Query Builder
+2. Query: Above expression
+3. Visualization: Single Stat
+4. Unit: Short (average batch size)
+5. Thresholds: Green >200, Yellow 128-200, Red <128
+
+**Dashboard Panel**:
+- **Title**: "Batch Efficiency"
+- **Type**: Single Stat
+- **Time Range**: 5 minutes
+- **Thresholds**: Green >200, Yellow 128-200, Red <128
+
+## Fractal Drift Monitoring
+
+### 18. Fractal Drift Detection
+
+**Purpose**: Detect pattern variance in queue behavior and system performance
+
+**Query**:
+```sql
+-- Queue Size Variance
+stddev_over_time(rate(otelcol_exporter_queue_size[1m])[1h:1m])
+
+-- Send Failure Variance
+stddev_over_time(rate(otelcol_exporter_send_failed_spans[1m])[1h:1m])
+
+-- Latency Variance
+stddev_over_time(histogram_quantile(0.95, rate(otelcol_processor_batch_batch_send_latency_bucket[1m]))[1h:1m])
+```
+
+**SigNoz UI Steps**:
+1. Go to Metrics → Query Builder
+2. Add all three variance queries
+3. Visualization: Time Series
+4. Unit: Short (variance)
+5. Time Range: 24 hours
+
+**Dashboard Panel**:
+- **Title**: "Fractal Drift Detection (Pattern Variance Analysis)"
+- **Type**: Time Series
+- **Time Range**: 24 hours
+- **Alert**: Variance >2x baseline
+
+### 19. Memory Usage & Limits
+
+**Purpose**: Monitor collector memory consumption
+
+**Query**:
+```sql
+-- Memory Usage
+otelcol_memory_usage_bytes
+
+-- Memory Limit
+otelcol_memory_limit_bytes
+```
+
+**SigNoz UI Steps**:
+1. Go to Metrics → Query Builder
+2. Add both memory queries
+3. Visualization: Time Series
+4. Unit: Bytes
+5. Time Range: 1 hour
+
+**Dashboard Panel**:
+- **Title**: "Memory Usage & Limits"
+- **Type**: Time Series
+- **Time Range**: 1 hour
+- **Alert**: Usage >80% of limit
+
 ## Performance Monitoring
 
-### 12. TTV Distribution by Event
+### 18. TTV Distribution by Event
 
 **Purpose**: Identify which events have performance issues
 
