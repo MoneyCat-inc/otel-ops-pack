@@ -81,7 +81,7 @@ export class SessionManager {
    * Save session with optional MEMX data
    */
   static async saveSession(session: SessionSummary): Promise<number> {
-    return await db.sessions.add(session);
+    return await db.sessions.add(session) as number;
   }
 
   /**
@@ -102,7 +102,7 @@ export class SessionManager {
    * Get all sessions (for export)
    */
   static async getAllSessions(): Promise<SessionSummary[]> {
-    return await db.sessions.orderBy('ts').toArray();
+    return await db.sessions.toCollection().sortBy('ts');
   }
 
   /**
@@ -112,7 +112,6 @@ export class SessionManager {
     return await db.sessions
       .where('memx')
       .notEqual(undefined)
-      .orderBy('ts')
       .reverse()
       .limit(limit)
       .toArray();
@@ -172,7 +171,7 @@ export class SessionManager {
 // Flow management (existing functionality)
 export class FlowManager {
   static async saveFlow(flow: FlowV1): Promise<number> {
-    return await db.flows.add(flow);
+    return await db.flows.add(flow) as number;
   }
 
   static async getFlow(id: number): Promise<FlowV1 | undefined> {
@@ -180,7 +179,7 @@ export class FlowManager {
   }
 
   static async getAllFlows(): Promise<FlowV1[]> {
-    return await db.flows.orderBy('flowName').toArray();
+    return await db.flows.toCollection().sortBy('flowName');
   }
 
   static async deleteFlow(id: number): Promise<void> {
