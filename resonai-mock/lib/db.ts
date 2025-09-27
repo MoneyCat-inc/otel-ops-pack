@@ -109,12 +109,8 @@ export class SessionManager {
    * Get recent sessions with MEMX data
    */
   static async getRecentSessionsWithMemx(limit: number = 50): Promise<SessionSummary[]> {
-    return await db.sessions
-      .where('memx')
-      .notEqual(undefined)
-      .reverse()
-      .limit(limit)
-      .toArray();
+    // For PR-1, return empty array as we're not yet persisting MEMX data
+    return [];
   }
 
   /**
