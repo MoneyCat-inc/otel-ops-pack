@@ -1,0 +1,102 @@
+# OpenTelemetry Collector Development Configuration
+# For local development and testing of agent telemetry
+# Part of the observability infrastructure
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+        cors:
+          allowed_origins:
+            - "http://localhost:*"
+            - "http://127.0.0.1:*"
+          allowed_headers:
+            - "*"
+
+processors:
+  batch:
+    timeout: 1s
+    send_batch_size: 1024
+    send_batch_max_size: 2048
+
+  memory_limiter:
+    limit_mib: 512
+    spike_limit_mib: 128
+    check_interval: 5s
+
+  # Filter out sensitive data
+  attributes:
+    actions:
+      - key: "http.request.header.authorization"
+        action: delete
+      - key: "http.request.header.cookie"
+        action: delete
+      - key: "user.email"
+        action: delete
+      - key: "user.name"
+        action: delete
+
+  # Add resource attributes
+  resource:
+    attributes:
+      - key: "collector.name"
+        value: "otel-dev-collector"
+        action: insert
+      - key: "collector.version"
+        value: "dev"
+        action: insert
+
+exporters:
+  # Console exporter for debugging
+  logging:
+    loglevel: info
+    sampling_initial: 10
+    sampling_thereafter: 100
+
+  # Optional: Prometheus metrics exporter
+  prometheus:
+    endpoint: "0.0.0.0:8889"
+    namespace: "otel_agent"
+    const_labels:
+      environment: "development"
+
+  # Optional: Jaeger for distributed tracing
+  jaeger:
+    endpoint: jaeger:14250
+    tls:
+      insecure: true
+
+  # Optional: Zipkin for distributed tracing
+  zipkin:
+    endpoint: "http://zipkin:9411/api/v2/spans"
+
+extensions:
+  health_check:
+    endpoint: 0.0.0.0:13133
+
+  pprof:
+    endpoint: 0.0.0.0:1777
+
+  zpages:
+    endpoint: 0.0.0.0:55679
+
+service:
+  extensions: [health_check, pprof, zpages]
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, batch, attributes, resource]
+      exporters: [logging, jaeger, zipkin]
+
+    metrics:
+      receivers: [otlp]
+      processors: [memory_limiter, batch, attributes, resource]
+      exporters: [logging, prometheus]
+
+    logs:
+      receivers: [otlp]
+      processors: [memory_limiter, batch, attributes, resource]
+      exporters: [logging]

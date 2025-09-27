@@ -10,6 +10,19 @@ import * as fs from 'fs/promises';
 import * as path from 'path';
 import { EventEmitter } from 'events';
 
+// Initialize OpenTelemetry if enabled
+if (process.env.OTEL_ENABLED !== '0') {
+  try {
+    const { initializeOTel, createQueueTickSpan, recordQueueDepth, recordJobMetrics, getTracer } = require('./otel');
+    // Initialize OTel in background
+    initializeOTel().catch((error: Error) => {
+      console.warn('OTel initialization failed:', error.message);
+    });
+  } catch (error) {
+    console.warn('Failed to load OTel module:', error);
+  }
+}
+
 interface AgentConfig {
   maxJobs: number;
   maxFiles: number;
@@ -173,7 +186,26 @@ class AutopilotWatchdog extends EventEmitter {
     this.runningJobs.add(job.id);
     job.status = 'running';
     
+    // Create job execution span for telemetry
+    let jobSpan: any = null;
+    const startTime = Date.now();
+    
     try {
+      // Initialize OTel span if available
+      if (process.env.OTEL_ENABLED !== '0') {
+        try {
+          const { createJobRunSpan } = require('./otel');
+          jobSpan = createJobRunSpan(
+            job.id,
+            job.type,
+            1, // attempt
+            this.config.ttlHours * 60 * 60 * 1000 // ttl in ms
+          );
+        } catch (otelError) {
+          // Ignore OTel errors - continue without telemetry
+        }
+      }
+
       this.log('info', `Executing job ${job.id}: ${job.type}`);
       
       switch (job.type) {
@@ -200,11 +232,46 @@ class AutopilotWatchdog extends EventEmitter {
       this.state.jobsCompleted++;
       this.log('info', `Job ${job.id} completed successfully`);
       
+      // Record success metrics
+      if (process.env.OTEL_ENABLED !== '0') {
+        try {
+          const { recordJobMetrics } = require('./otel');
+          const duration = Date.now() - startTime;
+          recordJobMetrics(job.type, duration, true, false);
+        } catch (otelError) {
+          // Ignore OTel errors
+        }
+      }
+      
+      // Mark span as successful
+      if (jobSpan) {
+        jobSpan.setStatus({ code: 0 });
+        jobSpan.end();
+      }
+      
     } catch (error) {
       job.status = 'failed';
       job.error = error instanceof Error ? error.message : String(error);
       this.state.errors.push(`Job ${job.id} failed: ${job.error}`);
       this.log('error', `Job ${job.id} failed: ${job.error}`);
+      
+      // Record failure metrics
+      if (process.env.OTEL_ENABLED !== '0') {
+        try {
+          const { recordJobMetrics } = require('./otel');
+          const duration = Date.now() - startTime;
+          recordJobMetrics(job.type, duration, false, false);
+        } catch (otelError) {
+          // Ignore OTel errors
+        }
+      }
+      
+      // Mark span as failed
+      if (jobSpan) {
+        jobSpan.recordException(error as Error);
+        jobSpan.setStatus({ code: 2, message: (error as Error).message });
+        jobSpan.end();
+      }
     } finally {
       this.runningJobs.delete(job.id);
     }
@@ -336,11 +403,37 @@ class AutopilotWatchdog extends EventEmitter {
   }
 
   private async runCycle(): Promise<void> {
+    // Create queue tick span for telemetry
+    let queueTickSpan: any = null;
+    
     try {
+      // Initialize OTel span if available
+      if (process.env.OTEL_ENABLED !== '0') {
+        try {
+          const { createQueueTickSpan, recordQueueDepth } = require('./otel');
+          const lockPresent = await this.checkLockFile();
+          queueTickSpan = createQueueTickSpan(
+            this.jobs.length,
+            this.config.maxJobs,
+            lockPresent,
+            this.config
+          );
+          
+          // Record queue depth metric
+          recordQueueDepth(this.jobs.length);
+        } catch (otelError) {
+          // Ignore OTel errors - continue without telemetry
+        }
+      }
+
       // Check for lock file
       if (await this.checkLockFile()) {
         this.state.status = 'paused';
         this.log('info', 'Lock file detected, pausing operations');
+        if (queueTickSpan) {
+          queueTickSpan.setStatus({ code: 1, message: 'paused' });
+          queueTickSpan.end();
+        }
         return;
       }
       
@@ -359,9 +452,22 @@ class AutopilotWatchdog extends EventEmitter {
       // Save state
       await this.saveState();
       
+      // Mark span as successful
+      if (queueTickSpan) {
+        queueTickSpan.setStatus({ code: 0 });
+        queueTickSpan.end();
+      }
+      
     } catch (error) {
       this.log('error', `Run cycle error: ${error}`);
       this.state.errors.push(`Run cycle error: ${error}`);
+      
+      // Mark span as failed
+      if (queueTickSpan) {
+        queueTickSpan.recordException(error as Error);
+        queueTickSpan.setStatus({ code: 2, message: (error as Error).message });
+        queueTickSpan.end();
+      }
     }
   }
 

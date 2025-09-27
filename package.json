@@ -9,6 +9,12 @@
     "agent:stop": "node scripts/agent/runner.ts stop",
     "agent:status": "node scripts/agent/runner.ts status",
     "agent:doctor": "pwsh -File scripts/agent/health-gate.ps1",
+    "agent:flake-quarantine": "node scripts/agent/flake-quarantine.ts",
+    "agent:emit-gauges": "node scripts/agent/emit-flake-gauges.ts",
+    "agent:test-telemetry": "pwsh -File scripts/agent/test-telemetry.ps1",
+    "otel:up": "pwsh -File otel/start-dev-collector.ps1",
+    "otel:down": "pwsh -File otel/start-dev-collector.ps1 -Stop",
+    "otel:status": "pwsh -File otel/start-dev-collector.ps1 -Status",
     "test:smoke:ci": "pwsh -File scripts/ci-verify.ps1 -CronMode",
     "test:preflight": "npx playwright test tests/preflight/",
     "test:pitch": "npx playwright test tests/preflight/pitch-pipeline.spec.ts",
@@ -22,9 +28,22 @@
     "canary:test": "pwsh -File scripts/canary-test.ps1",
     "canary:verify": "pwsh -File scripts/verify-integration.ps1"
   },
+  "dependencies": {
+    "@opentelemetry/api": "^1.7.0",
+    "@opentelemetry/sdk-node": "^0.205.0",
+    "@opentelemetry/auto-instrumentations-node": "^0.40.3",
+    "@opentelemetry/exporter-otlp-http": "^0.26.0",
+    "@opentelemetry/resources": "^1.18.1",
+    "@opentelemetry/semantic-conventions": "^1.18.1",
+    "@opentelemetry/sdk-metrics": "^1.18.1",
+    "@opentelemetry/sdk-trace-node": "^1.18.1",
+    "@opentelemetry/sdk-trace-base": "^1.18.1"
+  },
   "devDependencies": {
     "@playwright/test": "^1.40.0",
-    "playwright": "^1.40.0"
+    "playwright": "^1.40.0",
+    "@types/node": "^20.10.0",
+    "typescript": "^5.3.0"
   },
   "engines": {
     "node": ">=18.0.0"
