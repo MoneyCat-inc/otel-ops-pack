@@ -4,7 +4,7 @@
  * PR-1: Simple tests for core functionality
  */
 
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { MemxFrame, MemxSession } from '../../src/engine/memx/types';
 import { MemxStore } from '../../src/engine/memx/store';
 
