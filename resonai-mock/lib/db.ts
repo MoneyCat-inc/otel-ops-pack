@@ -70,13 +70,6 @@ export class ResonaiDatabase extends Dexie {
       sessions: '++id, ts, medianF0, inBandPct, prosodyVar, voicedTimePct, jitterEma, comfort, fatigue, euphoria, orb, memx',
       flows: '++id, flowName, version',
     });
-    
-    // Handle version upgrade
-    this.version(2).upgrade(tx => {
-      // MEMX fields are added as nullable, so no migration needed
-      // Existing sessions will have memx: undefined
-      console.log('Database upgraded to v2 with MEMX support');
-    });
   }
 }
 
