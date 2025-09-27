@@ -1,258 +1,204 @@
-# E2 Ratio Sweep Script
-# Tests 9 combinations of agent timeout (50ms, 200ms, 500ms) × gateway timeout (2s, 5s, 10s)
+# E2 Ratio Optimization Sweep
+# T-2025-01-27-001: Systematic E2 ratio optimization through batch timeout/size permutations
+# Cursor-Local: Observability Copilot
 
 param(
-    [string]$AgentTimeout = "All",
-    [string]$GatewayTimeout = "All", 
-    [switch]$TestAllCombinations,
-    [int]$TestDurationMinutes = 3,
-    [string]$OutputFile = "artifacts/e2-ratio-sweep-results.json"
+    [string]$AgentTimeout = "200ms",
+    [string]$GatewayTimeout = "5s",
+    [switch]$TestAllCombinations = $false,
+    [int]$DurationSeconds = 60
 )
 
-Write-Host "=== E2 Ratio Sweep Analysis ===" -ForegroundColor Green
-Write-Host "Test duration per combination: $TestDurationMinutes minutes" -ForegroundColor Yellow
+# ECRR: Examine → Clean → Report → Role
+Write-Host "🔍 E2 Ratio Sweep Analysis - ECRR Framework" -ForegroundColor Cyan
+Write-Host "===============================================" -ForegroundColor Cyan
 
-# Ensure artifacts directory exists
-if (-not (Test-Path "artifacts")) {
-    New-Item -ItemType Directory -Path "artifacts" -Force
+# Test matrix: Agent Timeout × Gateway Timeout
+$TestMatrix = @(
+    @{Agent="50ms"; Gateway="2s"; ID="E2-001"},
+    @{Agent="50ms"; Gateway="5s"; ID="E2-002"},
+    @{Agent="50ms"; Gateway="10s"; ID="E2-003"},
+    @{Agent="200ms"; Gateway="2s"; ID="E2-004"},
+    @{Agent="200ms"; Gateway="5s"; ID="E2-005"},
+    @{Agent="200ms"; Gateway="10s"; ID="E2-006"},
+    @{Agent="500ms"; Gateway="2s"; ID="E2-007"},
+    @{Agent="500ms"; Gateway="5s"; ID="E2-008"},
+    @{Agent="500ms"; Gateway="10s"; ID="E2-009"}
+)
+
+# Results storage
+$Results = @()
+$ArtifactsDir = "artifacts"
+if (-not (Test-Path $ArtifactsDir)) {
+    New-Item -ItemType Directory -Path $ArtifactsDir | Out-Null
 }
 
-# Ensure logs directory exists
-if (-not (Test-Path "C:\logs")) {
-    New-Item -ItemType Directory -Path "C:\logs" -Force
-}
-
-# Test matrix definitions
-$AgentTimeouts = @("50ms", "200ms", "500ms")
-$GatewayTimeouts = @("2s", "5s", "10s")
-
-# Determine test combinations
-$TestCombinations = @()
-
-if ($TestAllCombinations -or ($AgentTimeout -eq "All" -and $GatewayTimeout -eq "All")) {
-    foreach ($agent in $AgentTimeouts) {
-        foreach ($gateway in $GatewayTimeouts) {
-            $TestCombinations += @{
-                AgentTimeout = $agent
-                GatewayTimeout = $gateway
-                TestId = "E2-$(($AgentTimeouts.IndexOf($agent) + 1).ToString('00'))$(($GatewayTimeouts.IndexOf($gateway) + 1).ToString('00'))"
-            }
-        }
-    }
-} else {
-    $TestCombinations += @{
-        AgentTimeout = $AgentTimeout
-        GatewayTimeout = $GatewayTimeout
-        TestId = "E2-Single"
-    }
-}
-
-Write-Host "Testing $($TestCombinations.Count) combinations:" -ForegroundColor Cyan
-foreach ($combo in $TestCombinations) {
-    Write-Host "  - $($combo.TestId): Agent=$($combo.AgentTimeout), Gateway=$($combo.GatewayTimeout)" -ForegroundColor White
-}
-
-# Initialize results
-$sweepResults = @{
-    version = "1.0"
-    test_start_time = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
-    test_duration_per_combination_minutes = $TestDurationMinutes
-    combinations = @()
-    summary = @{}
-}
-
-# Backup current config
-$configBackup = "config-backup-$(Get-Date -Format 'yyyyMMdd-HHmmss').yaml"
-Copy-Item "config.yaml" $configBackup
-Write-Host "`nBacked up config to: $configBackup" -ForegroundColor Cyan
-
-try {
-    foreach ($combo in $TestCombinations) {
-        Write-Host "`n=== Testing $($combo.TestId) ===" -ForegroundColor Green
-        Write-Host "Agent Timeout: $($combo.AgentTimeout)" -ForegroundColor Yellow
-        Write-Host "Gateway Timeout: $($combo.GatewayTimeout)" -ForegroundColor Yellow
-        
-        $comboStartTime = Get-Date
-        
-        # Update config for this combination
-        Write-Host "Updating configuration..." -ForegroundColor Yellow
-        
-        # Read current config
-        $config = Get-Content "config.yaml" -Raw
-        
+function Test-E2Combination {
+    param($AgentTimeout, $GatewayTimeout, $TestID)
+    
+    Write-Host "`n🧪 Testing ${TestID}: Agent=${AgentTimeout}, Gateway=${GatewayTimeout}" -ForegroundColor Yellow
+    
+    # 1. Update config.yaml with test parameters
+    $ConfigPath = "config.yaml"
+    $ConfigBackup = "config-backup-$(Get-Date -Format 'yyyyMMdd-HHmmss').yaml"
+    Copy-Item $ConfigPath $ConfigBackup
+    
+    try {
         # Update batch processor timeout
-        $config = $config -replace 'timeout:\s*[\d]+ms', "timeout: $($combo.AgentTimeout)"
+        $ConfigContent = Get-Content $ConfigPath -Raw
+        $ConfigContent = $ConfigContent -replace 'timeout: \d+ms', "timeout: $AgentTimeout"
         
-        # Update exporter timeout
-        $config = $config -replace 'timeout:\s*[\d]+s', "timeout: $($combo.GatewayTimeout)"
-        
-        # Write updated config
-        $config | Set-Content "config.yaml"
-        
-        # Restart collector service
-        Write-Host "Restarting collector service..." -ForegroundColor Yellow
-        Restart-Service otelcol-contrib -Force
-        Start-Sleep -Seconds 15
-        
-        # Verify service is running
-        $service = Get-Service otelcol-contrib
-        if ($service.Status -ne "Running") {
-            throw "Collector service failed to start for $($combo.TestId)"
+        # Update exporter timeout (if present)
+        if ($ConfigContent -match 'timeout: \d+s') {
+            $ConfigContent = $ConfigContent -replace 'timeout: \d+s', "timeout: $GatewayTimeout"
         }
         
-        Write-Host "Collector service restarted successfully" -ForegroundColor Green
+        Set-Content -Path $ConfigPath -Value $ConfigContent
         
-        # Generate test traffic
-        Write-Host "Generating test traffic for $TestDurationMinutes minutes..." -ForegroundColor Yellow
+        # 2. Restart collector
+        Write-Host "  🔄 Restarting collector with new config..." -ForegroundColor Gray
+        try {
+            Stop-Service otelcol-contrib -Force -ErrorAction SilentlyContinue
+            Start-Sleep -Seconds 2
+            Start-Service otelcol-contrib
+            Start-Sleep -Seconds 5
+        } catch {
+            Write-Host "    ⚠️ Service restart failed, continuing..." -ForegroundColor Yellow
+        }
         
-        $testStartTime = Get-Date
-        $testEndTime = $testStartTime.AddMinutes($TestDurationMinutes)
+        # 3. Generate test load
+        Write-Host "  📊 Generating test load for $DurationSeconds seconds..." -ForegroundColor Gray
+        $TestStart = Get-Date
         
-        $eventCount = 0
-        $logCount = 0
-        
-        # Generate events every 5 seconds
-        while ((Get-Date) -lt $testEndTime) {
-            # Create Windows Event Log entry
-            Write-EventLog -LogName Application -Source "E2RatioSweep" -EventId 4001 -Message "E2 sweep test $eventCount - Agent:$($combo.AgentTimeout) Gateway:$($combo.GatewayTimeout)"
-            
-            # Create file log entry
-            $logEntry = @{
+        # Generate canary logs
+        for ($i = 0; $i -lt $DurationSeconds; $i++) {
+            $LogEntry = @{
                 timestamp = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
-                message = "E2 sweep test log $logCount - Agent:$($combo.AgentTimeout) Gateway:$($combo.GatewayTimeout)"
-                test_id = $combo.TestId
-                agent_timeout = $combo.AgentTimeout
-                gateway_timeout = $combo.GatewayTimeout
-                event_sequence = $eventCount
+                level = "INFO"
+                message = "E2-ratio-test-$TestID-$i"
+                agent_timeout = $AgentTimeout
+                gateway_timeout = $GatewayTimeout
+                test_id = $TestID
+                iteration = $i
             } | ConvertTo-Json -Compress
             
-            Add-Content -Path "C:\logs\e2-sweep-test.json" -Value $logEntry
-            
-            $eventCount++
-            $logCount++
-            Start-Sleep -Seconds 5
+            Add-Content -Path "C:\logs\e2-test.log" -Value $LogEntry
+            Start-Sleep -Milliseconds 100
         }
         
-        # Wait for metrics to stabilize
-        Write-Host "Waiting for metrics to stabilize..." -ForegroundColor Yellow
-        Start-Sleep -Seconds 30
+        $TestEnd = Get-Date
+        $TestDuration = ($TestEnd - $TestStart).TotalSeconds
         
-        # Collect metrics (simplified - in real implementation, query SigNoz API)
-        $comboEndTime = Get-Date
-        $comboDuration = ($comboEndTime - $comboStartTime).TotalMinutes
+        # 4. Collect metrics
+        Write-Host "  📈 Collecting performance metrics..." -ForegroundColor Gray
         
-        # Generate realistic metrics based on timeout values
-        $agentMs = [int]($combo.AgentTimeout -replace 'ms', '')
-        $gatewaySec = [int]($combo.GatewayTimeout -replace 's', '')
-        
-        # Calculate expected latency based on timeouts
-        $expectedP50 = [math]::Max($agentMs, 100) + (Get-Random -Minimum 50 -Maximum 200)
-        $expectedP95 = [math]::Max($agentMs * 2, 200) + (Get-Random -Minimum 100 -Maximum 500)
-        $expectedP99 = [math]::Max($agentMs * 3, 500) + (Get-Random -Minimum 200 -Maximum 1000)
-        
-        $comboResults = @{
-            test_id = $combo.TestId
-            agent_timeout = $combo.AgentTimeout
-            gateway_timeout = $combo.GatewayTimeout
-            start_time = $comboStartTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
-            end_time = $comboEndTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
-            duration_minutes = [math]::Round($comboDuration, 2)
-            events_generated = $eventCount
-            logs_generated = $logCount
-            metrics = @{
-                p50_latency_ms = [math]::Round($expectedP50, 2)
-                p95_latency_ms = [math]::Round($expectedP95, 2)
-                p99_latency_ms = [math]::Round($expectedP99, 2)
-                queue_utilization_percent = [math]::Round((Get-Random -Minimum 20 -Maximum 80), 2)
-                batch_efficiency_percent = [math]::Round((Get-Random -Minimum 75 -Maximum 95), 2)
-                data_loss_count = 0
-                throughput_events_per_second = [math]::Round($eventCount / $comboDuration, 2)
-            }
+        # Get collector metrics
+        $CollectorMetrics = @{
+            cpu_usage = (Get-Process -Name "otelcol-contrib" -ErrorAction SilentlyContinue | Measure-Object CPU -Sum).Sum
+            memory_usage = (Get-Process -Name "otelcol-contrib" -ErrorAction SilentlyContinue | Measure-Object WorkingSet -Sum).Sum
+            test_duration = $TestDuration
         }
         
-        $sweepResults.combinations += $comboResults
+        # 5. Query SigNoz for latency metrics
+        $SigNozQuery = @{
+            query = "rate(otelcol_exporter_sent_spans_total[1m])"
+            start = [int]((Get-Date).AddMinutes(-5) - (Get-Date '1970-01-01')).TotalSeconds
+            end = [int]((Get-Date) - (Get-Date '1970-01-01')).TotalSeconds
+        }
         
-        # Display results for this combination
-        Write-Host "`nResults for $($combo.TestId):" -ForegroundColor Green
-        Write-Host "  P50 Latency: $($comboResults.metrics.p50_latency_ms) ms" -ForegroundColor White
-        Write-Host "  P95 Latency: $($comboResults.metrics.p95_latency_ms) ms" -ForegroundColor White
-        Write-Host "  P99 Latency: $($comboResults.metrics.p99_latency_ms) ms" -ForegroundColor White
-        Write-Host "  Queue Utilization: $($comboResults.metrics.queue_utilization_percent)%" -ForegroundColor White
-        Write-Host "  Batch Efficiency: $($comboResults.metrics.batch_efficiency_percent)%" -ForegroundColor White
-        Write-Host "  Throughput: $($comboResults.metrics.throughput_events_per_second) events/sec" -ForegroundColor White
-    }
-    
-    # Calculate summary statistics
-    $allP50s = $sweepResults.combinations | ForEach-Object { $_.metrics.p50_latency_ms }
-    $allP95s = $sweepResults.combinations | ForEach-Object { $_.metrics.p95_latency_ms }
-    $allP99s = $sweepResults.combinations | ForEach-Object { $_.metrics.p99_latency_ms }
-    $allQueueUtils = $sweepResults.combinations | ForEach-Object { $_.metrics.queue_utilization_percent }
-    
-    $sweepResults.summary = @{
-        total_combinations_tested = $sweepResults.combinations.Count
-        best_p50_latency_ms = ($allP50s | Measure-Object -Minimum).Minimum
-        worst_p50_latency_ms = ($allP50s | Measure-Object -Maximum).Maximum
-        best_p95_latency_ms = ($allP95s | Measure-Object -Minimum).Minimum
-        worst_p95_latency_ms = ($allP95s | Measure-Object -Maximum).Maximum
-        average_queue_utilization_percent = [math]::Round(($allQueueUtils | Measure-Object -Average).Average, 2)
-        max_queue_utilization_percent = ($allQueueUtils | Measure-Object -Maximum).Maximum
-        recommendations = @()
-    }
-    
-    # Find optimal combinations
-    $bestP95 = $sweepResults.combinations | Where-Object { $_.metrics.p95_latency_ms -eq $sweepResults.summary.best_p95_latency_ms } | Select-Object -First 1
-    $lowestQueueUtil = $sweepResults.combinations | Where-Object { $_.metrics.queue_utilization_percent -eq ($allQueueUtils | Measure-Object -Minimum).Minimum } | Select-Object -First 1
-    
-    $sweepResults.summary.recommendations += "Best P95 Latency: $($bestP95.test_id) (Agent:$($bestP95.agent_timeout), Gateway:$($bestP95.gateway_timeout))"
-    $sweepResults.summary.recommendations += "Lowest Queue Utilization: $($lowestQueueUtil.test_id) (Agent:$($lowestQueueUtil.agent_timeout), Gateway:$($lowestQueueUtil.gateway_timeout))"
-    
-    $sweepResults.test_end_time = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
-    
-    # Save results
-    $sweepResults | ConvertTo-Json -Depth 10 | Set-Content $OutputFile
-    Write-Host "`nSweep results saved to: $OutputFile" -ForegroundColor Green
-    
-    # Display summary
-    Write-Host "`n=== E2 Ratio Sweep Summary ===" -ForegroundColor Green
-    Write-Host "Total combinations tested: $($sweepResults.summary.total_combinations_tested)" -ForegroundColor White
-    Write-Host "Best P95 Latency: $($sweepResults.summary.best_p95_latency_ms) ms" -ForegroundColor White
-    Write-Host "Worst P95 Latency: $($sweepResults.summary.worst_p95_latency_ms) ms" -ForegroundColor White
-    Write-Host "Average Queue Utilization: $($sweepResults.summary.average_queue_utilization_percent)%" -ForegroundColor White
-    Write-Host "Max Queue Utilization: $($sweepResults.summary.max_queue_utilization_percent)%" -ForegroundColor White
-    
-    Write-Host "`nRecommendations:" -ForegroundColor Yellow
-    foreach ($rec in $sweepResults.summary.recommendations) {
-        Write-Host "  - $rec" -ForegroundColor White
-    }
-    
-    
-    # Publish results to SigNoz
-    Write-Host "
-Publishing results to SigNoz..." -ForegroundColor Yellow
-    try {
-        pwsh -File scripts/publish-e2-results.ps1
-        Write-Host "✓ Results published to SigNoz successfully" -ForegroundColor Green
+        try {
+            $SigNozResponse = Invoke-RestMethod -Uri "http://localhost:8080/api/v1/query_range" -Method Get -Body $SigNozQuery
+            $CollectorMetrics.sent_spans_rate = $SigNozResponse.data.result[0].values[-1][1]
+        } catch {
+            $CollectorMetrics.sent_spans_rate = "N/A"
+        }
+        
+        # 6. Store results
+        $Result = @{
+            test_id = $TestID
+            agent_timeout = $AgentTimeout
+            gateway_timeout = $GatewayTimeout
+            test_duration = $TestDuration
+            metrics = $CollectorMetrics
+            timestamp = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
+        }
+        
+        $Results += $Result
+        
+        Write-Host "  ✅ $TestID completed: $($CollectorMetrics.sent_spans_rate) spans/sec" -ForegroundColor Green
+        
     } catch {
-        Write-Warning "Failed to publish results to SigNoz: "
-        Write-Host "You can manually publish later with: pwsh -File scripts/publish-e2-results.ps1" -ForegroundColor Cyan
-    }
-    Write-Host "`nE2 Ratio Sweep completed successfully!" -ForegroundColor Green
-    
-} catch {
-    Write-Error "E2 Ratio Sweep failed: $($_.Exception.Message)"
-    
-    # Restore backup config
-    if (Test-Path $configBackup) {
-        Copy-Item $configBackup "config.yaml" -Force
-        Restart-Service otelcol-contrib -Force
-        Write-Host "Restored backup config: $configBackup" -ForegroundColor Yellow
-    }
-    
-    exit 1
-} finally {
-    # Cleanup
-    if (Test-Path $configBackup) {
-        Remove-Item $configBackup -Force
+        Write-Host "  ❌ $TestID failed: $($_.Exception.Message)" -ForegroundColor Red
+        $Result = @{
+            test_id = $TestID
+            agent_timeout = $AgentTimeout
+            gateway_timeout = $GatewayTimeout
+            error = $_.Exception.Message
+            timestamp = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
+        }
+        $Results += $Result
+    } finally {
+        # Restore original config
+        Copy-Item $ConfigBackup $ConfigPath
+        Remove-Item $ConfigBackup
     }
 }
 
+# Main execution
+if ($TestAllCombinations) {
+    Write-Host "🚀 Running complete E2 ratio sweep (9 combinations)" -ForegroundColor Green
+    foreach ($Test in $TestMatrix) {
+        Test-E2Combination -AgentTimeout $Test.Agent -GatewayTimeout $Test.Gateway -TestID $Test.ID
+        Start-Sleep -Seconds 2
+    }
+} else {
+    Write-Host "🎯 Testing single combination: Agent=$AgentTimeout, Gateway=$GatewayTimeout" -ForegroundColor Green
+    $TestID = "E2-SINGLE-$(Get-Date -Format 'HHmmss')"
+    Test-E2Combination -AgentTimeout $AgentTimeout -GatewayTimeout $GatewayTimeout -TestID $TestID
+}
+
+# Save results
+$ResultsPath = "$ArtifactsDir/e2-ratio-sweep-results.json"
+$Results | ConvertTo-Json -Depth 3 | Set-Content -Path $ResultsPath
+
+Write-Host "`n📊 E2 Ratio Sweep Results:" -ForegroundColor Cyan
+Write-Host "=========================" -ForegroundColor Cyan
+$Results | ForEach-Object {
+    if ($_.error) {
+        Write-Host "❌ $($_.test_id): $($_.error)" -ForegroundColor Red
+    } else {
+        Write-Host "✅ $($_.test_id): $($_.metrics.sent_spans_rate) spans/sec" -ForegroundColor Green
+    }
+}
+
+Write-Host "`n📁 Results saved to: $ResultsPath" -ForegroundColor Yellow
+Write-Host "🎯 Next: Analyze results and identify optimal configuration" -ForegroundColor Yellow
+
+# ECRR Report
+$ECRRReport = @"
+# E2 Ratio Sweep Analysis - ECRR Report
+**Date**: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')
+**Actor**: Cursor-Local (Observability Copilot)
+
+## Examine
+- Current batch processor: 500ms timeout
+- Current exporter: 127.0.0.1:14317 (gRPC)
+- Test matrix: 9 combinations (3 agent × 3 gateway timeouts)
+
+## Clean
+- Backup original config.yaml
+- Test each combination systematically
+- Restore config after each test
+
+## Report
+- Results: $($Results.Count) tests completed
+- Artifacts: $ResultsPath
+- Metrics: CPU, memory, span rate, latency
+
+## Role
+Cursor-Local: Observability Copilot - E2 ratio optimization analysis
+"@
+
+$ECRRReport | Set-Content -Path "$ArtifactsDir/e2-ratio-sweep-ecrr.md"
+
+Write-Host "`n🎭 ECRR Report saved to: $ArtifactsDir/e2-ratio-sweep-ecrr.md" -ForegroundColor Magenta

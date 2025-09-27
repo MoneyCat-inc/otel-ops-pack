@@ -2,8 +2,8 @@
 
 **Date**: YYYY-MM-DD  
 **Time**: HH:MM:SS UTC  
-**Agent**: [Agent Name - Cursor Agent/Cursor-Local/ChatGPT Agent/Codex Agent/BossCat/QA Scribe]  
-**Role**: [Role - Observability Copilot/OTel Steward/Agent Coordinator/Local Worker/etc.]  
+**Agent**: ChatGPT Agent  
+**Role**: Orchestration Coordinator  
 **Task**: [Brief task description]  
 **ECRR ID**: [Optional - for tracking specific initiatives]
 
@@ -230,6 +230,25 @@
 
 ---
 
+
+## 🎭 **ChatGPT Agent - Specific Guidelines**
+
+### **Primary Responsibilities**
+- [Add agent-specific responsibilities]
+- [Add agent-specific tasks]
+- [Add agent-specific ECRR focus areas]
+
+### **Common ECRR Patterns for ChatGPT Agent**
+- [Add common patterns and examples]
+- [Add typical artifacts and evidence]
+- [Add validation steps specific to this agent]
+
+### **ChatGPT Agent ECRR Checklist**
+- [ ] Agent-specific requirement 1
+- [ ] Agent-specific requirement 2
+- [ ] Agent-specific requirement 3
+
+
 ## 🏆 **Final ECRR Status**
 
 ### **Report Completion Status**
@@ -251,3 +270,4 @@
 > **📋 ECRR Compliance Note**: This report has been validated against the enhanced ECRR template requirements. All mandatory elements have been included and verified for compliance with the ECRR framework standards.
 
 **ECRR Mantra**: *Examine → Clean → Report → Role - Every change must begin with evidence, remove drift, leave an artifact, and declare its actor.*
+

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ECRR Compliance Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .header { text-align: center; margin-bottom: 30px; }
+        .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .metric { background: #f8f9fa; padding: 15px; border-radius: 6px; text-align: center; }
+        .metric-value { font-size: 2em; font-weight: bold; margin-bottom: 5px; }
+        .metric-label { color: #666; font-size: 0.9em; }
+        .chart-container { margin: 20px 0; }
+        .recommendations { background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 6px; margin-top: 20px; }
+        .recommendations h3 { margin-top: 0; color: #856404; }
+        .recommendations ul { margin: 0; padding-left: 20px; }
+        .recommendations li { margin-bottom: 5px; color: #856404; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>ECRR Compliance Dashboard</h1>
+            <p>Generated: 2025-09-27 06:59:02 UTC</p>
+        </div>
+        
+        <div class="metrics">
+            <div class="metric">
+                <div class="metric-value">59</div>
+                <div class="metric-label">Total Reports</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value" style="color: #dc3545">0%</div>
+                <div class="metric-label">ECRR Gate Compliance</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value" style="color: #ffc107">25.4%</div>
+                <div class="metric-label">4-Section Structure</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value" style="color: #ffc107">13.6%</div>
+                <div class="metric-label">Actor Declaration</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value" style="color: #28a745">96.6%</div>
+                <div class="metric-label">Evidence Attachment</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value" style="color: #dc3545">69.5%</div>
+                <div class="metric-label">Status Declaration</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value" style="color: #dc3545">0%</div>
+                <div class="metric-label">Overall Compliance</div>
+            </div>
+        </div>
+        
+        <div class="chart-container">
+            <canvas id="complianceChart" width="400" height="200"></canvas>
+        </div>
+        
+        <script>
+            const ctx = document.getElementById('complianceChart').getContext('2d');
+            const complianceChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['ECRR Gate', '4-Section Structure', 'Actor Declaration', 'Evidence Attachment', 'Status Declaration', 'Overall'],
+                    datasets: [{
+                        label: 'Compliance %',
+                        data: [0, 25.4, 13.6, 96.6, 69.5, 0],
+                        backgroundColor: [
+                            '#dc3545',
+                            '#ffc107',
+                            '#ffc107',
+                            '#28a745',
+                            '#dc3545',
+                            '#dc3545'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    }
+                }
+            });
+        </script>
+        
+        <div class="recommendations">
+            <h3>Recommendations</h3>
+            <ul><li>ECRR Gate compliance is below 80%. Ensure all reports include the mandatory ECRR Gate section.</li><li>4-section structure compliance is below 90%. Use the enhanced template to ensure proper structure.</li><li>Actor declaration compliance is below 95%. Ensure all reports clearly declare responsible agents.</li><li>Status declaration compliance is below 75%. Include clear success/failure status in all reports.</li>            </ul>
+        </div>
+    </div>
+</body>
+</html>
