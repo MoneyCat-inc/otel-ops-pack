@@ -1,0 +1,43 @@
+{
+  "expected_output": "ECRR report recommendations implemented successfully",
+  "description": "",
+  "scope": {
+    "paths": [
+      "config.yaml",
+      "scripts/",
+      "docs/ECRR_REPORTS/"
+    ],
+    "excluded": []
+  },
+  "id": "T-2025-09-27-149",
+  "priority": "H",
+  "ecrr_report_id": "ECRR_TASK_ALIGNMENT_ANALYSIS_2025-09-23",
+  "assigned_to": "codex",
+  "type": "remediation",
+  "status": "pending",
+  "acceptance": [
+    "ECRR report recommendations implemented",
+    "All acceptance criteria from report met",
+    "System state improved as documented",
+    "ECRR report marked as resolved"
+  ],
+  "title": "ECRR: ECRR_TASK_ALIGNMENT_ANALYSIS_2025-09-23",
+  "recipe": null,
+  "original_ecrr_report": "docs\\ECRR_REPORTS\\reviewed\\ECRR_TASK_ALIGNMENT_ANALYSIS_2025-09-23.md",
+  "deadline": "2025-10-04",
+  "rollback_commands": [
+    "git checkout HEAD~1"
+  ],
+  "tests": [
+    "pwsh -File scripts/verify-pipeline.ps1",
+    "pwsh -File scripts/ecrr-manage.ps1 -Action RegenerateIndex"
+  ],
+  "goal": "Implement recommendations from ECRR report: ECRR_TASK_ALIGNMENT_ANALYSIS_2025-09-23",
+  "metrics": {},
+  "validation_commands": [
+    "pwsh -File scripts/verify-pipeline.ps1",
+    "pwsh -File scripts/ecrr-manage.ps1 -Action RegenerateIndex"
+  ],
+  "created_at": "2025-09-27T03:12:31Z",
+  "source": "ecrr"
+}
