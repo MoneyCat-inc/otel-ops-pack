@@ -1,10 +1,10 @@
 == Resonai ↔ OTel Wiring Verification Results ==
-Timestamp: 2025-09-20T21:09:26.197+01:00
-Test Event ID: ff3fa61b-7880-4c4f-ae96-ec5e8062cc9e
+Timestamp: 2025-09-27T18:23:56.561+01:00
+Test Event ID: cf2c5f9c-8a08-4e6a-8562-f2b42b5a08ef
 
 API Test: PASSED
 - Event sent to /api/events successfully
-- Response: {"ok":true,"count":1}
+- Response: {"received_at":"2025-09-27T18:23:47.85Z","status":"success","timestamp":"2025-09-27T18:23:47.844Z","message":"Webhook received"}
 
 SigNoz Test: SKIPPED (Authentication required)
 - Set SIGNOZ_API_TOKEN environment variable for full verification

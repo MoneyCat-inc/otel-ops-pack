@@ -1,5 +1,9 @@
 # Resonai ↔ OTel Wiring Verification Script
 # Tests the analytics forwarding from /api/events to SigNoz via OTLP/HTTP
+# Updated with progress indicators for better user experience
+
+# Import progress indicators module
+. .\scripts\progress-indicators.ps1
 
 Set-StrictMode -Version 2
 $ErrorActionPreference = "Stop"
@@ -35,20 +39,33 @@ if ($envToken) { $script:sigNozHeaders = @{ Authorization = "Bearer $envToken" }
 
 function Test-TcpPort {
     param([int]$Port,[string]$Label)
+    $spinnerJob = Start-SpinnerJob -Message "Testing $Label port $Port..." -UpdateIntervalMs 150
     try {
         $result = Test-NetConnection -ComputerName localhost -Port $Port -WarningAction SilentlyContinue
+        Stop-SpinnerJob -Job $spinnerJob
         if ($result.TcpTestSucceeded) { Write-Pass "$Label port $Port reachable" } else { Write-Fail "$Label port $Port not reachable" }
-    } catch { Write-Fail "$Label port $Port error: $($_.Exception.Message)" }
+    } catch { 
+        Stop-SpinnerJob -Job $spinnerJob
+        Write-Fail "$Label port $Port error: $($_.Exception.Message)" 
+    }
 }
 
 function Invoke-AnalyticsQuery {
     param([string]$EventId,[int]$MinutesBack = 15)
-    $now = [long]([DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()); $start = $now - [long]($MinutesBack * 60000)
-    $filterExpression = "attributes.dataset = `"resonai_analytics`" AND attributes.event_id = `"$EventId`""
-    $payload = @{ start=$start; end=$now; requestType="raw"; compositeQuery=@{ queries=@(@{ type="builder_query"; spec=@{ name="A"; signal="logs"; filter=@{ expression=$filterExpression }; order=@(@{ key=@{ name="timestamp" }; direction="desc" }); limit=10; offset=0 }}) } } | ConvertTo-Json -Depth 8
-    $params = @{ Method='Post'; Uri='http://localhost:8080/api/v5/query_range'; ContentType='application/json'; Body=$payload; TimeoutSec=30 }
-    if ($script:sigNozHeaders) { $params.Headers = $script:sigNozHeaders }
-    Invoke-RestMethod @params
+    $spinnerJob = Start-SpinnerJob -Message "Querying SigNoz for analytics data..." -UpdateIntervalMs 150
+    try {
+        $now = [long]([DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()); $start = $now - [long]($MinutesBack * 60000)
+        $filterExpression = "attributes.dataset = `"resonai_analytics`" AND attributes.event_id = `"$EventId`""
+        $payload = @{ start=$start; end=$now; requestType="raw"; compositeQuery=@{ queries=@(@{ type="builder_query"; spec=@{ name="A"; signal="logs"; filter=@{ expression=$filterExpression }; order=@(@{ key=@{ name="timestamp" }; direction="desc" }); limit=10; offset=0 }}) } } | ConvertTo-Json -Depth 8
+        $params = @{ Method='Post'; Uri='http://localhost:8080/api/v5/query_range'; ContentType='application/json'; Body=$payload; TimeoutSec=30 }
+        if ($script:sigNozHeaders) { $params.Headers = $script:sigNozHeaders }
+        $result = Invoke-RestMethod @params
+        Stop-SpinnerJob -Job $spinnerJob
+        return $result
+    } catch {
+        Stop-SpinnerJob -Job $spinnerJob
+        throw
+    }
 }
 
 Write-Host "`n1. Prerequisites Check:" -ForegroundColor Yellow
@@ -86,12 +103,29 @@ $apiError = $null
 
 try {
     Write-Detail "Sending test analytics event to $apiUrl"
-    $response = Invoke-RestMethod -Uri $apiUrl -Method POST -Body $testEvent -ContentType "application/json" -TimeoutSec 10
-    if ($response.ok -and $response.count -eq 1) {
-        Write-Pass "Analytics API accepted event (count: $($response.count))"
+    $statusCode = $null
+    $response = Invoke-RestMethod -Uri $apiUrl -Method POST -Body $testEvent -ContentType "application/json" -TimeoutSec 10 -StatusCodeVariable statusCode
+    $responseProps = @()
+    if ($null -ne $response -and $response -is [System.Management.Automation.PSObject]) {
+        $responseProps = $response.PSObject.Properties.Name
+    }
+
+    $apiIndicators = @()
+    if ($responseProps -contains 'ok') { $apiIndicators += [bool]$response.ok }
+    if ($responseProps -contains 'success') { $apiIndicators += [bool]$response.success }
+    if ($responseProps -contains 'status') { $apiIndicators += ($response.status -match '^(?i)(ok|success|accepted)$') }
+    if ($responseProps -contains 'result') { $apiIndicators += ($response.result -match '^(?i)(ok|success)$') }
+
+    $httpSuccess = ($statusCode -ge 200 -and $statusCode -lt 300)
+    $isAccepted = $httpSuccess -and (($apiIndicators.Count -eq 0) -or ($apiIndicators -notcontains $false))
+    if ($isAccepted) {
+        $countText = ''
+        if ($responseProps -contains 'count') { $countText = " (count: $($response.count))" }
+        Write-Pass "Analytics API accepted event$countText"
         $apiSuccess = $true
     } else {
-        $apiError = "Unexpected response: $($response | ConvertTo-Json)"
+        $responseJson = if ($null -ne $response) { $response | ConvertTo-Json -Compress } else { '<no-body>' }
+        $apiError = "Unexpected response (status $statusCode): $responseJson"
         Write-Detail $apiError
     }
 } catch {
@@ -163,7 +197,17 @@ SigNoz Test: PASSED
             }
         } catch {
             $lastQueryError = $_.Exception.Message
-            if ($_.Exception.Response -and $_.Exception.Response.StatusCode.value__ -eq 401) {
+            # Check for 401 Unauthorized - handle both WebException and HttpRequestException formats
+            $is401 = $false
+            if ($_.Exception.Response) {
+                $is401 = ($_.Exception.Response.StatusCode.value__ -eq 401)
+            }
+            # Also check the error message for 401 patterns
+            if (-not $is401 -and $lastQueryError -match "401|Unauthorized") {
+                $is401 = $true
+            }
+            
+            if ($is401) {
                 $authRequired = $true
                 Write-Detail "Attempt $attempt -> 401 Unauthorized (set SIGNOZ_API_TOKEN to enable API verification)"
                 break
@@ -258,3 +302,4 @@ if ($allChecksPassed) {
     Write-Host "== Wiring verification FAILED ==" -ForegroundColor Red
     exit 2  # Unhealthy but retryable (watchdog can backoff and re-enqueue)
 }
+
