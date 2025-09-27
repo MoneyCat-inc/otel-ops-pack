@@ -190,10 +190,10 @@ function Stop-ProductionManager {
     Write-Log "Stopping production task manager"
     
     if (Test-Path $PidFile) {
-        $pid = Get-Content $PidFile
+        $processId = Get-Content $PidFile
         try {
-            Stop-Process -Id $pid -Force -ErrorAction SilentlyContinue
-            Write-Log "Production task manager stopped (PID: $pid)"
+            Stop-Process -Id $processId -Force -ErrorAction SilentlyContinue
+            Write-Log "Production task manager stopped (PID: $processId)"
         }
         catch {
             Write-Log "Failed to stop production task manager: $($_.Exception.Message)" "ERROR"
@@ -237,10 +237,10 @@ function Get-ProductionStatus {
     
     # Check manager status
     if (Test-Path $PidFile) {
-        $pid = Get-Content $PidFile
-        if (Get-Process -Id $pid -ErrorAction SilentlyContinue) {
+        $processId = Get-Content $PidFile
+        if (Get-Process -Id $processId -ErrorAction SilentlyContinue) {
             $status.manager.running = $true
-            $status.manager.pid = $pid
+            $status.manager.pid = $processId
         }
     }
     

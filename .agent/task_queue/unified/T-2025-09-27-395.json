@@ -1,0 +1,42 @@
+{
+  "expected_output": "ECRR report recommendations implemented successfully",
+  "id": "T-2025-09-27-395",
+  "status": "pending",
+  "acceptance": [
+    "ECRR report recommendations implemented",
+    "All acceptance criteria from report met",
+    "System state improved as documented",
+    "ECRR report marked as resolved"
+  ],
+  "scope": {
+    "excluded": [],
+    "paths": [
+      "docs/ECRR_REPORTS/",
+      "docs/"
+    ]
+  },
+  "recipe": null,
+  "metrics": {},
+  "tests": [
+    "pwsh -File scripts/verify-pipeline.ps1",
+    "pwsh -File scripts/ecrr-manage.ps1 -Action RegenerateIndex"
+  ],
+  "created_at": "2025-09-27T03:23:41Z",
+  "type": "review",
+  "description": "",
+  "deadline": "2025-10-04",
+  "priority": "L",
+  "source": "ecrr",
+  "assigned_to": "codex",
+  "validation_commands": [
+    "pwsh -File scripts/verify-pipeline.ps1",
+    "pwsh -File scripts/ecrr-manage.ps1 -Action RegenerateIndex"
+  ],
+  "rollback_commands": [
+    "git checkout HEAD~1"
+  ],
+  "title": "ECRR: 2025-09-30-lint-toolchain-gap",
+  "goal": "Implement recommendations from ECRR report: 2025-09-30-lint-toolchain-gap",
+  "original_ecrr_report": "C:\\otel\\docs\\ECRR_REPORTS\\working\\2025-09-30-lint-toolchain-gap.md",
+  "ecrr_report_id": "2025-09-30-lint-toolchain-gap"
+}
