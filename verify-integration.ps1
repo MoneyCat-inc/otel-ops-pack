@@ -120,7 +120,85 @@ if (Test-Path $configPath) {
     } catch { Write-Fail "Failed to read config.yaml: $($_.Exception.Message)" }
 } else { Write-Fail "Config file not found at $configPath" }
 
-Write-Host "`n6. GPU Sidecar Prerequisites:" -ForegroundColor Yellow
+Write-Host "`n6. File Storage & Agent Hygiene:" -ForegroundColor Yellow
+# Check file storage directory for queue persistence
+$fileStorageDir = "otelcol-storage"
+if (Test-Path $fileStorageDir) {
+    try {
+        $storageInfo = Get-ChildItem -Path $fileStorageDir -Recurse -Force | Measure-Object
+        Write-Pass "File storage directory exists: $fileStorageDir"
+        Write-Detail "Storage items: $($storageInfo.Count) files/directories"
+        
+        # Check for queue persistence files
+        $queueFiles = Get-ChildItem -Path $fileStorageDir -Filter "*queue*" -Recurse -Force
+        if ($queueFiles) {
+            Write-Pass "Queue persistence files found: $($queueFiles.Count)"
+            foreach ($file in $queueFiles) {
+                if ($file.Length) {
+                    Write-Detail "  - $($file.Name): $([Math]::Round($file.Length / 1KB, 2)) KB"
+                } else {
+                    Write-Detail "  - $($file.Name): directory"
+                }
+            }
+        } else {
+            Write-Detail "No queue persistence files found (normal for fresh start)"
+        }
+        
+        # Check storage permissions
+        try {
+            $testFile = Join-Path $fileStorageDir "test-write.tmp"
+            "test" | Out-File -FilePath $testFile -Force
+            if (Test-Path $testFile) {
+                Remove-Item -Path $testFile -Force
+                Write-Pass "File storage directory is writable"
+            } else {
+                Write-Fail "Test file not created - directory not writable"
+            }
+        } catch {
+            Write-Fail "File storage directory not writable: $($_.Exception.Message)"
+        }
+    } catch {
+        Write-Fail "Failed to check file storage directory: $($_.Exception.Message)"
+    }
+} else {
+    Write-Fail "File storage directory missing: $fileStorageDir"
+    Write-Detail "This may cause queue silent failures on restart"
+}
+
+# Check agent hygiene - ensure no stale processes
+try {
+    $otelProcesses = Get-Process | Where-Object { $_.ProcessName -like "*otel*" -and $_.Id -ne $PID }
+    if ($otelProcesses -and $otelProcesses.Count -gt 0) {
+        Write-Pass "OpenTelemetry processes found: $($otelProcesses.Count)"
+        foreach ($proc in $otelProcesses) {
+            Write-Detail "  - $($proc.ProcessName) (PID: $($proc.Id), CPU: $([Math]::Round($proc.CPU, 2))s)"
+        }
+    } else {
+        Write-Detail "No additional OpenTelemetry processes found"
+    }
+} catch {
+    Write-Detail "Process check failed: $($_.Exception.Message)"
+}
+
+# Check for stale lock files
+$lockFiles = @(".agent/LOCK", "otelcol-storage/.lock", "C:\otel\.lock")
+foreach ($lockFile in $lockFiles) {
+    if (Test-Path $lockFile) {
+        try {
+            $lockAge = (Get-Date) - (Get-Item $lockFile).LastWriteTime
+            if ($lockAge.TotalHours -gt 1) {
+                Write-Fail "Stale lock file found: $lockFile (age: $([Math]::Round($lockAge.TotalHours, 1)) hours)"
+                Write-Detail "Consider removing if no processes are using it"
+            } else {
+                Write-Pass "Lock file exists: $lockFile (age: $([Math]::Round($lockAge.TotalMinutes, 1)) minutes)"
+            }
+        } catch {
+            Write-Detail "Could not check lock file: $lockFile"
+        }
+    }
+}
+
+Write-Host "`n7. GPU Sidecar Prerequisites:" -ForegroundColor Yellow
 try {
     $nvidiaSmi = Get-Command nvidia-smi -ErrorAction Stop
     $nvidiaOutput = & nvidia-smi --query-gpu=name,driver_version --format=csv,noheader,nounits
@@ -180,7 +258,7 @@ try {
     Write-Detail "Docker image check failed: $($_.Exception.Message)"
 }
 
-Write-Host "`n7. Canary Test:" -ForegroundColor Yellow
+Write-Host "`n8. Canary Test:" -ForegroundColor Yellow
 $timestamp = Get-Date -Format "yyyy-MM-ddTHH:mm:ss.fffK"; $canaryId = [Guid]::NewGuid().ToString(); $canaryMessage = "windows-canary-$canaryId"
 $artifactsDir = Join-Path (Get-Location) '.artifacts'
 if (-not (Test-Path $artifactsDir)) { New-Item -Path $artifactsDir -ItemType Directory -Force | Out-Null }
