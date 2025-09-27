@@ -227,7 +227,7 @@ $Report = @"
 "@
 
 foreach ($Result in $Results) {
-    $Report += "`n| $($Result.test_id) | $($Result.agent_timeout) | $($Result.gateway_timeout) | $($Result.logs_generated) | $($Result.logs_processed) | $([math] -  - Round($Result.ingestion_success_rate, 2))% | $($Result.queue_size) | $($Result.queue_capacity) |"
+    $Report += "`n| $($Result.test_id) | $($Result.agent_timeout) | $($Result.gateway_timeout) | $($Result.logs_generated) | $($Result.logs_processed) | $([math]::Round($Result.ingestion_success_rate, 2))% | $($Result.queue_size) | $($Result.queue_capacity) |"
 }
 
 $Report += @"
@@ -271,6 +271,6 @@ Write-Host "`nTarget Next -  Review results and select optimal configuration" -F
 if ($Results.Count -gt 0) {
     Write-Host "`nStats Quick Summary - " -ForegroundColor Cyan
     $Results | ForEach-Object {
-        Write-Host "  $($_.test_id) -  $($_.logs_processed)/$($_.logs_generated) logs processed ($([math] -  - Round($_.ingestion_success_rate, 1))%)" -ForegroundColor White
+        Write-Host "  $($_.test_id) -  $($_.logs_processed)/$($_.logs_generated) logs processed ($([math]::Round($_.ingestion_success_rate, 1))%)" -ForegroundColor White
     }
 }
