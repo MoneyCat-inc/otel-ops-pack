@@ -1,5 +1,98 @@
 # TASKS.md — OTel Observability Pipeline
 
+## 📋 SSOT + MEMX Ops Enhancement Tasks
+
+## 🚨 Task 1 — Alerting Integration ✅ COMPLETED
+
+**Goal:** Pipe monitoring outputs into Slack/Teams/email for proactive notification.
+
+**Implementation:**
+- ✅ Added `scripts/notify-alert.ps1` → wrapper to send webhook payloads (Slack/Teams configurable URL)
+- ✅ Extended existing monitors (`direct-production-monitor.ps1`, `robust-production-monitor.ps1`) to call notifier on threshold breach
+- ✅ Environment variables: `ALERT_WEBHOOK_URL`, `ALERT_CHANNEL`
+- ✅ Updated `docs/SSOT_PRODUCTION_MONITORING_GUIDE.md` with alert setup
+
+**Acceptance Criteria Met:**
+- ✅ Triggering <100% health posts JSON payload into Slack test channel
+- ✅ No alerts if health ≥100%
+- ✅ Docs updated with comprehensive alert setup guide
+
+---
+
+## 📊 Task 2 — Dashboard Integration
+
+**Goal:** Visualize SSOT metrics live (Grafana/SigNoz).
+
+**Steps**
+- [ ] Extend monitors to emit metrics JSON to `out/ssot-metrics.json`
+- [ ] Configure OTLP exporter (optional) to send metrics into SigNoz collector
+- [ ] Add sample Grafana dashboard JSON (panel for Health%, Freshness, Error counts)
+- [ ] Doc: `docs/SSOT_DASHBOARD_SETUP.md`
+
+**Acceptance**
+- [ ] Grafana/SigNoz dashboard shows health% trending over time
+- [ ] Exporter OFF by default (privacy posture)
+- [ ] Local JSON file rotates hourly
+
+---
+
+## 🔄 Task 3 — Auto-Remediation Hooks
+
+**Goal:** Automatically attempt recovery when health <100%.
+
+**Steps**
+- [ ] Add `scripts/remediate.ps1` (restart agent, clear stale cache, regenerate SSOT)
+- [ ] Wire `robust-production-monitor.ps1` to invoke remediation once, log outcome
+- [ ] Safety: only run if `AUTO_REMEDIATE=1` env flag is set
+
+**Acceptance**
+- [ ] With `AUTO_REMEDIATE=0`: monitor logs warning only
+- [ ] With `AUTO_REMEDIATE=1`: monitor runs remediation and logs success
+- [ ] No infinite loops; backoff enforced
+
+---
+
+## 🧠 Task 4 — MEMX Alignment
+
+**Goal:** Extend ops surface to include memory observation metrics.
+
+**Steps**
+- [ ] Update MEMX exporter (`src/engine/memx/otelExporter.ts`) to align with SSOT metric schema
+- [ ] Add MEMX fields (`wasmHeapBytes`, `sabUsage%`, `p95WorkletLagMs`) into SSOT health JSON
+- [ ] Update `docs/SSOT_PRODUCTION_MONITORING_GUIDE.md` with MEMX integration section
+
+**Acceptance**
+- [ ] `ssot-metrics.json` includes MEMX aggregates when MEMX flag is ON
+- [ ] No data if MEMX disabled
+- [ ] MEMX metrics visible in dashboard
+
+---
+
+## 📅 Task 5 — Quarterly Threshold Review
+
+**Goal:** Keep alert thresholds tuned.
+
+**Steps**
+- [ ] Add `docs/SSOT_THRESHOLD_REVIEW.md` template with checklist (freshness, health%, MEMX lag)
+- [ ] Schedule quarterly job in CI to output last 90d metrics and open GH issue with review checklist
+
+**Acceptance**
+- [ ] Checklist generated automatically each quarter
+- [ ] GH issue tagged `ops-review`
+- [ ] Team can adjust thresholds in config and commit
+
+---
+
+### 🛡️ Guardrails
+
+- ≤200 LOC / ≤10 files per PR
+- Feature flags/env vars for all new behaviors
+- Alerting + streaming OFF by default (local-first policy)
+- Playwright/PowerShell smoke tests added for each new script
+- Respect `.agent/LOCK` kill-switch if background agent is running
+
+---
+
 ## 🎯 Current Sprint: E2 Ratio Optimization & Monitoring
 
 ### T-2025-01-27-001: E2 Ratio Sweep Analysis

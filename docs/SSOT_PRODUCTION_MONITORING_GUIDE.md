@@ -80,6 +80,18 @@ pwsh -ExecutionPolicy Bypass -File scripts/robust-production-monitor.ps1 -Genera
 
 # Continuous robust monitoring
 pwsh -ExecutionPolicy Bypass -File scripts/robust-production-monitor.ps1 -Continuous -IntervalMinutes 15 -GenerateMetrics
+
+# Robust monitoring with alerts enabled
+pwsh -ExecutionPolicy Bypass -File scripts/robust-production-monitor.ps1 -Continuous -GenerateMetrics -EnableAlerts -HealthThreshold 95
+```
+
+#### 5. Alert Integration
+```powershell
+# Direct monitoring with alerts
+pwsh -ExecutionPolicy Bypass -File scripts/direct-production-monitor.ps1 -Continuous -GenerateMetrics -EnableAlerts
+
+# Robust monitoring with alerts and custom thresholds
+pwsh -ExecutionPolicy Bypass -File scripts/robust-production-monitor.ps1 -Continuous -GenerateMetrics -EnableAlerts -HealthThreshold 90 -FreshnessThreshold 30
 ```
 
 ## 📈 Monitoring Procedures
@@ -156,32 +168,92 @@ pwsh -ExecutionPolicy Bypass -File scripts/ssot-performance-optimization.ps1 -Us
 
 ## 🚨 Alerting and Thresholds
 
+### Alert Setup
+
+#### Environment Variables
+```powershell
+# Set webhook URL for Slack/Teams notifications
+$env:ALERT_WEBHOOK_URL = "https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK"
+
+# Set alert channel (optional, defaults to #ssot-alerts)
+$env:ALERT_CHANNEL = "#production-alerts"
+```
+
+#### Alert Notification Script
+```powershell
+# Test alert notification (dry run)
+pwsh -ExecutionPolicy Bypass -File scripts/notify-alert.ps1 -AlertType "health" -AlertLevel "warning" -Message "Test alert" -HealthScore 85 -DryRun
+
+# Send actual alert
+pwsh -ExecutionPolicy Bypass -File scripts/notify-alert.ps1 -AlertType "health" -AlertLevel "critical" -Message "Health score critical" -HealthScore 75
+```
+
 ### Health Score Thresholds
 
-| Threshold | Action | Alert Level |
-|-----------|--------|-------------|
-| < 90% | Critical Alert | 🔴 Critical |
-| < 95% | Warning Alert | 🟡 Warning |
-| < 98% | Info Alert | 🔵 Info |
-| ≥ 98% | Normal | ✅ Healthy |
+| Threshold | Action | Alert Level | Monitoring Integration |
+|-----------|--------|-------------|----------------------|
+| < 80% | Critical Alert | 🔴 Critical | Auto-triggered |
+| < 90% | Warning Alert | 🟡 Warning | Auto-triggered |
+| < 95% | Info Alert | 🔵 Info | Auto-triggered |
+| ≥ 95% | Normal | ✅ Healthy | No alert |
 
 ### Freshness Thresholds
 
-| Threshold | Action | Alert Level |
-|-----------|--------|-------------|
-| > 60 minutes | Critical Alert | 🔴 Critical |
-| > 30 minutes | Warning Alert | 🟡 Warning |
-| > 15 minutes | Info Alert | 🔵 Info |
-| ≤ 15 minutes | Normal | ✅ Fresh |
+| Threshold | Action | Alert Level | Monitoring Integration |
+|-----------|--------|-------------|----------------------|
+| Error state | Critical Alert | 🔴 Critical | Auto-triggered |
+| Stale data | Warning Alert | 🟡 Warning | Auto-triggered |
+| > 15 minutes | Info Alert | 🔵 Info | Auto-triggered |
+| ≤ 15 minutes | Normal | ✅ Fresh | No alert |
 
 ### Error Rate Thresholds
 
-| Threshold | Action | Alert Level |
-|-----------|--------|-------------|
-| > 10% | Critical Alert | 🔴 Critical |
-| > 5% | Warning Alert | 🟡 Warning |
-| > 2% | Info Alert | 🔵 Info |
-| ≤ 2% | Normal | ✅ Low |
+| Threshold | Action | Alert Level | Monitoring Integration |
+|-----------|--------|-------------|----------------------|
+| > 10% | Critical Alert | 🔴 Critical | Auto-triggered |
+| > 5% | Warning Alert | 🟡 Warning | Auto-triggered |
+| > 2% | Info Alert | 🔵 Info | Auto-triggered |
+| ≤ 2% | Normal | ✅ Low | No alert |
+
+### Alert Types
+
+#### Health Alerts
+- **Type**: `health`
+- **Triggers**: Health score below threshold, health check failures, exceptions
+- **Payload**: Includes health score, timestamp, hostname
+- **Example**: "SSOT health score is 85%, below threshold of 95%"
+
+#### Freshness Alerts
+- **Type**: `freshness`
+- **Triggers**: SSOT block freshness issues, stale data detection
+- **Payload**: Includes freshness status, timestamp, hostname
+- **Example**: "SSOT block freshness issue detected: stale"
+
+#### Error Rate Alerts
+- **Type**: `error_rate`
+- **Triggers**: High error rates in monitoring operations
+- **Payload**: Includes error rate percentage, timestamp, hostname
+- **Example**: "SSOT error rate is 8%, above threshold of 5%"
+
+### Alert Integration with Monitoring Scripts
+
+#### Direct Production Monitor
+```powershell
+# Enable alerts with default thresholds (95% health, 60min freshness)
+pwsh -ExecutionPolicy Bypass -File scripts/direct-production-monitor.ps1 -Continuous -EnableAlerts
+
+# Custom thresholds
+pwsh -ExecutionPolicy Bypass -File scripts/direct-production-monitor.ps1 -Continuous -EnableAlerts -HealthThreshold 90 -FreshnessThreshold 30
+```
+
+#### Robust Production Monitor
+```powershell
+# Enable alerts with default thresholds
+pwsh -ExecutionPolicy Bypass -File scripts/robust-production-monitor.ps1 -Continuous -EnableAlerts
+
+# Custom thresholds for stricter monitoring
+pwsh -ExecutionPolicy Bypass -File scripts/robust-production-monitor.ps1 -Continuous -EnableAlerts -HealthThreshold 98 -FreshnessThreshold 15
+```
 
 ## 🔍 Troubleshooting
 

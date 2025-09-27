@@ -7,7 +7,10 @@ param(
     [string]$LogPath = ".artifacts/robust-production-monitoring.log",
     [switch]$GenerateMetrics,
     [string]$MetricsPath = ".artifacts/production-metrics.json",
-    [switch]$DryRun
+    [switch]$DryRun,
+    [switch]$EnableAlerts,
+    [string]$HealthThreshold = 95,
+    [string]$FreshnessThreshold = 60
 )
 
 Write-Host "🏭 Robust Production SSOT Monitoring" -ForegroundColor Cyan
@@ -60,15 +63,27 @@ function Get-RobustHealthScore {
             Write-Host "✅ Freshness: $freshness" -ForegroundColor Green
             "Health Check: SUCCESS - $healthScore% ($freshness) at $timestamp" | Out-File -FilePath $LogPath -Append -Encoding UTF8
             
-            # Check for issues
-            if ($healthScore -lt 95) {
-                Write-Host "⚠️ Warning: Health score below 95%" -ForegroundColor Yellow
-                "WARNING: Health score below 95% - $healthScore% at $timestamp" | Out-File -FilePath $LogPath -Append -Encoding UTF8
+            # Check for issues and trigger alerts
+            if ($healthScore -lt $HealthThreshold) {
+                $alertLevel = if ($healthScore -lt 80) { "critical" } elseif ($healthScore -lt 90) { "warning" } else { "info" }
+                Write-Host "⚠️ Warning: Health score below $HealthThreshold%" -ForegroundColor Yellow
+                "WARNING: Health score below $HealthThreshold% - $healthScore% at $timestamp" | Out-File -FilePath $LogPath -Append -Encoding UTF8
+                
+                if ($EnableAlerts) {
+                    $alertMessage = "SSOT health score is $healthScore%, below threshold of $HealthThreshold%"
+                    & pwsh -ExecutionPolicy Bypass -File "scripts/notify-alert.ps1" -AlertType "health" -AlertLevel $alertLevel -Message $alertMessage -HealthScore $healthScore
+                }
             }
             
             if ($freshness -ne "fresh" -and $freshness -ne "unknown") {
                 Write-Host "⚠️ Warning: SSOT block is $freshness" -ForegroundColor Yellow
                 "WARNING: SSOT block freshness - $freshness at $timestamp" | Out-File -FilePath $LogPath -Append -Encoding UTF8
+                
+                if ($EnableAlerts) {
+                    $alertLevel = if ($freshness -eq "error") { "critical" } else { "warning" }
+                    $alertMessage = "SSOT block freshness issue detected: $freshness"
+                    & pwsh -ExecutionPolicy Bypass -File "scripts/notify-alert.ps1" -AlertType "freshness" -AlertLevel $alertLevel -Message $alertMessage -FreshnessMinutes $freshness
+                }
             }
             
             return @{
@@ -88,6 +103,12 @@ function Get-RobustHealthScore {
                 "Error Details: $stderr" | Out-File -FilePath $LogPath -Append -Encoding UTF8
             }
             
+            # Send critical alert for health check failure
+            if ($EnableAlerts) {
+                $alertMessage = "SSOT health check failed with exit code $exitCode. System may be unhealthy."
+                & pwsh -ExecutionPolicy Bypass -File "scripts/notify-alert.ps1" -AlertType "health" -AlertLevel "critical" -Message $alertMessage -HealthScore 0
+            }
+            
             return @{
                 HealthScore = 0
                 Freshness = "error"
@@ -101,6 +122,12 @@ function Get-RobustHealthScore {
         $errorMessage = "Health check exception: $($_.Exception.Message)"
         Write-Host "❌ Health Check Exception: $errorMessage" -ForegroundColor Red
         "Health Check: EXCEPTION - $errorMessage at $timestamp" | Out-File -FilePath $LogPath -Append -Encoding UTF8
+        
+        # Send critical alert for health check exception
+        if ($EnableAlerts) {
+            $alertMessage = "SSOT health check threw exception: $errorMessage"
+            & pwsh -ExecutionPolicy Bypass -File "scripts/notify-alert.ps1" -AlertType "health" -AlertLevel "critical" -Message $alertMessage -HealthScore 0
+        }
         
         return @{
             HealthScore = 0
@@ -121,7 +148,6 @@ function Update-SSOTBlockRobust {
     try {
         $ssotProcess = Start-Process -FilePath "node" -ArgumentList @("scripts/ci-ssot-telemetry.ts") -RedirectStandardOutput -RedirectStandardError -PassThru -Wait -WindowStyle Hidden -NoNewWindow
         
-        $stdout = Get-Content $ssotProcess.StandardOutput -Raw -ErrorAction SilentlyContinue
         $stderr = Get-Content $ssotProcess.StandardError -Raw -ErrorAction SilentlyContinue
         $exitCode = $ssotProcess.ExitCode
         
@@ -148,7 +174,7 @@ function Update-SSOTBlockRobust {
     }
 }
 
-function Generate-ProductionMetrics {
+function New-ProductionMetrics {
     param([array]$HealthHistory, [string]$MetricsPath)
     
     if (-not $HealthHistory -or $HealthHistory.Count -eq 0) {
@@ -224,7 +250,7 @@ if ($Continuous) {
         
         # Generate metrics periodically
         if ($GenerateMetrics -and $cycleCount % 4 -eq 0) {  # Every 4 cycles (1 hour if 15min intervals)
-            Generate-ProductionMetrics -HealthHistory $healthHistory -MetricsPath $MetricsPath
+            New-ProductionMetrics -HealthHistory $healthHistory -MetricsPath $MetricsPath
         }
         
         # Summary
@@ -251,7 +277,7 @@ if ($Continuous) {
     
     # Generate metrics if requested
     if ($GenerateMetrics) {
-        Generate-ProductionMetrics -HealthHistory $healthHistory -MetricsPath $MetricsPath
+        New-ProductionMetrics -HealthHistory $healthHistory -MetricsPath $MetricsPath
     }
     
     # Summary

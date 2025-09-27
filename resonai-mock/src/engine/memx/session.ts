@@ -7,7 +7,7 @@
 
 import { MemxFrame, MemxSession } from './types';
 import { getMemxStore } from './store';
-import { SessionManager } from '../../lib/db';
+import { SessionManager, SessionSummary } from '../../../lib/db';
 
 export interface MemxExportData {
   version: string;
