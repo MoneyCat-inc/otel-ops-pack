@@ -1,11 +1,17 @@
 # Comprehensive pipeline validation script
+# Updated with progress indicators for better user experience
+
+# Import progress indicators module
+. .\scripts\progress-indicators.ps1
 
 Write-Host "=== OTel Windows -> SigNoz Pipeline Validation ===" -ForegroundColor Green
 
 # Test 1: Check Docker status
 Write-Host "`n[1] Checking Docker status..." -ForegroundColor Yellow
+$spinnerJob = Start-SpinnerJob -Message "Checking Docker status..." -UpdateIntervalMs 150
 try {
     $dockerVersion = docker --version 2>$null
+    Stop-SpinnerJob -Job $spinnerJob
     if ($dockerVersion) {
         Write-Host "OK Docker found: $dockerVersion" -ForegroundColor Green
     } else {
@@ -13,13 +19,16 @@ try {
         exit 1
     }
 } catch {
+    Stop-SpinnerJob -Job $spinnerJob
     Write-Host "ERROR Docker not accessible" -ForegroundColor Red
     exit 1
 }
 
 # Test 2: Start Docker stack
 Write-Host "`n[2] Starting Docker stack..." -ForegroundColor Yellow
+$spinnerJob = Start-SpinnerJob -Message "Starting Docker stack..." -UpdateIntervalMs 150
 docker compose -f .\docker-compose.yml up -d
+Stop-SpinnerJob -Job $spinnerJob
 if ($LASTEXITCODE -eq 0) {
     Write-Host "OK Docker stack started" -ForegroundColor Green
 } else {
@@ -29,11 +38,15 @@ if ($LASTEXITCODE -eq 0) {
 
 # Wait for services to be ready
 Write-Host "Waiting for services to be ready..." -ForegroundColor Yellow
+$spinnerJob = Start-SpinnerJob -Message "Waiting for services to be ready..." -UpdateIntervalMs 150
 Start-Sleep -Seconds 15
+Stop-SpinnerJob -Job $spinnerJob
 
 # Test 3: Check container status
 Write-Host "`n[3] Checking container status..." -ForegroundColor Yellow
+$spinnerJob = Start-SpinnerJob -Message "Checking container status..." -UpdateIntervalMs 150
 $containers = docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+Stop-SpinnerJob -Job $spinnerJob
 Write-Host $containers
 
 # Test 4: Check specific ports
@@ -48,6 +61,7 @@ $ports = @(
     @{Port=13134; Label="Collector Health"}
 )
 
+$spinnerJob = Start-SpinnerJob -Message "Checking critical ports..." -UpdateIntervalMs 150
 foreach ($portInfo in $ports) {
     $result = Test-NetConnection -ComputerName localhost -Port $portInfo.Port -InformationLevel Quiet -WarningAction SilentlyContinue
     if ($result) {
@@ -56,26 +70,33 @@ foreach ($portInfo in $ports) {
         Write-Host "ERROR $($portInfo.Label) port $($portInfo.Port) is not listening" -ForegroundColor Red
     }
 }
+Stop-SpinnerJob -Job $spinnerJob
 
 # Test 5: Check SigNoz UI
 Write-Host "`n[5] Checking SigNoz UI..." -ForegroundColor Yellow
+$spinnerJob = Start-SpinnerJob -Message "Checking SigNoz UI..." -UpdateIntervalMs 150
 try {
     $response = Invoke-WebRequest -Uri "http://localhost:8080" -TimeoutSec 10 -UseBasicParsing
+    Stop-SpinnerJob -Job $spinnerJob
     if ($response.StatusCode -eq 200) {
         Write-Host "OK SigNoz UI is accessible" -ForegroundColor Green
     } else {
         Write-Host "ERROR SigNoz UI returned status: $($response.StatusCode)" -ForegroundColor Red
     }
 } catch {
+    Stop-SpinnerJob -Job $spinnerJob
     Write-Host "ERROR SigNoz UI not accessible: $($_.Exception.Message)" -ForegroundColor Red
 }
 
 # Test 6: Check Windows OTel Collector service
 Write-Host "`n[6] Checking Windows OTel Collector service..." -ForegroundColor Yellow
+$spinnerJob = Start-SpinnerJob -Message "Checking Windows OTel Collector service..." -UpdateIntervalMs 150
 try {
     $service = Get-Service -Name "otelcol-contrib" -ErrorAction Stop
+    Stop-SpinnerJob -Job $spinnerJob
     Write-Host "OK Service status: $($service.Status)" -ForegroundColor Green
 } catch {
+    Stop-SpinnerJob -Job $spinnerJob
     Write-Host "ERROR Service not found or not accessible" -ForegroundColor Red
 }
 
@@ -119,10 +140,12 @@ $logPayload = [pscustomobject]@{
 
 $otlpEndpoints = @("http://localhost:5318/v1/logs", "http://localhost:4318/v1/logs")
 $sent = $false
+$spinnerJob = Start-SpinnerJob -Message "Sending test log..." -UpdateIntervalMs 150
 foreach ($endpoint in $otlpEndpoints) {
     try {
         $response = Invoke-WebRequest -Method Post -Uri $endpoint -ContentType "application/json" -Body $logPayload -TimeoutSec 5
         if ($response.StatusCode -eq 200) {
+            Stop-SpinnerJob -Job $spinnerJob
             Write-Host "OK Test log sent to $endpoint" -ForegroundColor Green
             $sent = $true
             break
@@ -130,6 +153,9 @@ foreach ($endpoint in $otlpEndpoints) {
     } catch {
         # Continue to next endpoint
     }
+}
+if (-not $sent) {
+    Stop-SpinnerJob -Job $spinnerJob
 }
 
 if (-not $sent) {

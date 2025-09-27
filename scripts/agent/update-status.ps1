@@ -3,7 +3,7 @@
 # Updates .agent/status.json with section-specific health information
 
 param(
-    [Parameter(Mandatory=$true)][ValidateSet("env","otel","analytics")]$section,
+    [Parameter(Mandatory=$true)][ValidateSet("env","otel","analytics","guardrails")]$section,
     [Parameter(Mandatory=$true)][bool]$ok,
     [Parameter(Mandatory=$true)][string]$detail
 )

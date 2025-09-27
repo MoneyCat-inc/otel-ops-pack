@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "codex-local.status",
+  "type": "object",
+  "required": ["version", "updatedAt", "sections"],
+  "properties": {
+    "version": { 
+      "type": "integer", 
+      "const": 1 
+    },
+    "updatedAt": { 
+      "type": "string", 
+      "format": "date-time" 
+    },
+    "sections": {
+      "type": "object",
+      "properties": {
+        "env": {
+          "type": "object",
+          "required": ["ok", "detail", "ts"],
+          "properties": {
+            "ok": { "type": "boolean" },
+            "detail": { "type": "string" },
+            "ts": { "type": ["string", "null"], "format": "date-time" }
+          }
+        },
+        "analytics": {
+          "type": "object",
+          "required": ["ok", "detail", "ts"],
+          "properties": {
+            "ok": { "type": "boolean" },
+            "detail": { "type": "string" },
+            "ts": { "type": ["string", "null"], "format": "date-time" }
+          }
+        },
+        "otel": {
+          "type": "object",
+          "required": ["ok", "detail", "ts"],
+          "properties": {
+            "ok": { "type": "boolean" },
+            "detail": { "type": "string" },
+            "ts": { "type": ["string", "null"], "format": "date-time" }
+          }
+        },
+        "guardrails": {
+          "type": "object",
+          "required": ["ok", "detail", "ts"],
+          "properties": {
+            "ok": { "type": "boolean" },
+            "detail": { "type": "string" },
+            "ts": { "type": ["string", "null"], "format": "date-time" }
+          }
+        }
+      }
+    },
+    "ema": {
+      "type": "object",
+      "properties": {
+        "setupSecs": { "type": "number", "minimum": 0 },
+        "doctorSecs": { "type": "number", "minimum": 0 },
+        "guardrailsSecs": { "type": "number", "minimum": 0 },
+        "sleepSecs": { "type": "number", "minimum": 0 },
+        "cycleSecs": { "type": "number", "minimum": 0 }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "properties": {
+        "cyclesCompleted": { "type": "integer", "minimum": 0 },
+        "tasksProcessed": { "type": "integer", "minimum": 0 },
+        "violationsFound": { "type": "integer", "minimum": 0 },
+        "lastCycleDuration": { "type": "number", "minimum": 0 }
+      }
+    }
+  }
+}

@@ -18,7 +18,7 @@
     SigNoz API endpoint. Default: http://localhost:8080
 
 .PARAMETER CollectorHealthEndpoint
-    Collector health check endpoint. Default: http://localhost:13134
+    Collector health check endpoint. Default: http://localhost:13134/healthz
 
 .PARAMETER RunId
     Test run ID for smoke mode. Default: latency-readiness-test
@@ -36,7 +36,7 @@ param(
     [switch]$SmokeMode,
     [string]$ClickHouseEndpoint = "http://localhost:8123",
     [string]$SigNozEndpoint = "http://localhost:8080",
-    [string]$CollectorHealthEndpoint = "http://localhost:13134",
+    [string]$CollectorHealthEndpoint = "http://localhost:13134/healthz",
     [string]$RunId = "latency-readiness-test"
 )
 

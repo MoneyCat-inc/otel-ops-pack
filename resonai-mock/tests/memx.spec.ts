@@ -38,17 +38,20 @@ test.describe('MEMX Labs Page', () => {
     
     // Check cross-origin isolation status
     const crossOriginIsolated = await page.evaluate(() => window.crossOriginIsolated);
-    // Note: crossOriginIsolated may be false in some browsers/environments
-    // This is expected behavior and not a failure condition
     console.log('Cross-origin isolated:', crossOriginIsolated);
     
     // Verify SharedArrayBuffer is available (when cross-origin isolation is enabled)
     const sabAvailable = await page.evaluate(() => typeof SharedArrayBuffer !== 'undefined');
+    console.log('SharedArrayBuffer available:', sabAvailable);
+    
+    // In development, Chromium may not enable cross-origin isolation
+    // This is expected behavior and not a failure condition
     if (crossOriginIsolated) {
       expect(sabAvailable).toBe(true);
     } else {
       // SharedArrayBuffer may not be available without cross-origin isolation
-      console.log('SharedArrayBuffer available:', sabAvailable);
+      // This is normal in development environments
+      console.log('Note: Cross-origin isolation disabled in development - SharedArrayBuffer unavailable');
     }
   });
 

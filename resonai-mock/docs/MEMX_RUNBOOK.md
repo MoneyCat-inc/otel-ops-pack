@@ -287,6 +287,6 @@ console.log('MEMX store:', window.memxStore);
 
 ### Useful Links
 - **SigNoz Dashboard**: http://localhost:8080/dashboards
-- **OTel Collector**: http://localhost:13134
+- **OTel Collector**: http://localhost:13134/healthz
 - **MEMX Labs**: http://localhost:3000/labs/memx
 - **Documentation**: docs/SIGNOZ_MEMX_SETUP.md

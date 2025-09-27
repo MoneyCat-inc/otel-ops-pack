@@ -1,5 +1,9 @@
 # Live monitoring script for Resonai analytics ingestion
 # Watches SigNoz for new analytics events and displays real-time stats
+# Updated with progress indicators for better user experience
+
+# Import progress indicators module
+. .\scripts\progress-indicators.ps1
 
 Set-StrictMode -Version 2
 $ErrorActionPreference = "Stop"
@@ -44,14 +48,17 @@ function Get-AnalyticsCount {
     $params = @{ Method='Post'; Uri='http://localhost:8080/api/v5/query_range'; ContentType='application/json'; Body=$payload; TimeoutSec=10 }
     if ($script:sigNozHeaders) { $params.Headers = $script:sigNozHeaders }
     
+    $spinnerJob = Start-SpinnerJob -Message "Querying analytics count..." -UpdateIntervalMs 150
     try {
         $response = Invoke-RestMethod @params
+        Stop-SpinnerJob -Job $spinnerJob
         if ($response -and $response.data -and $response.data.result) {
             $count = $response.data.result[0].values.Count
             return $count
         }
         return 0
     } catch {
+        Stop-SpinnerJob -Job $spinnerJob
         if ($_.Exception.Response -and $_.Exception.Response.StatusCode.value__ -eq 401) {
             Write-Warning "Authentication required - set SIGNOZ_API_TOKEN for live monitoring"
             return -1

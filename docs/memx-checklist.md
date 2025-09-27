@@ -8,9 +8,12 @@
 
 ## 2) Cross-origin isolation (required for SAB/WASM threads)
 
-* [ ] `crossOriginIsolated === true` in Firefox (open the devtools console on `/labs/memx`).
+* [ ] `crossOriginIsolated === true` in Firefox/WebKit (open the devtools console on `/labs/memx`).
 * [ ] COOP/COEP headers in place (e.g., `Cross-Origin-Opener-Policy: same-origin`, `Cross-Origin-Embedder-Policy: require-corp`) and any third-party assets compliant (CORP/CORS).
 * [ ] (If SW enabled) verify the SW preserves these headers on navigations/offline.
+* [ ] **Development Note**: Chromium may show `crossOriginIsolated === false` in development - this is expected behavior.
+* [ ] **Production Test**: Verify cross-origin isolation works in HTTPS production environment.
+* [ ] **Runtime Checks**: MEMX code gates SharedArrayBuffer usage behind `window.crossOriginIsolated` check.
 
 ## 3) Low-latency audio sanity (Firefox/Win11 baseline)
 

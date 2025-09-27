@@ -1,5 +1,9 @@
 # Restart Windows OTel Collector (requires elevated privileges)
 # This script must be run as Administrator
+# Updated with progress indicators for better user experience
+
+# Import progress indicators module
+. .\scripts\progress-indicators.ps1
 
 Write-Host "Restarting Windows OTel Collector..." -ForegroundColor Green
 
@@ -15,29 +19,37 @@ if (-not $isAdmin) {
 
 # Stop the service
 Write-Host "Stopping otelcol-contrib service..." -ForegroundColor Yellow
+$spinnerJob = Start-SpinnerJob -Message "Stopping service..." -UpdateIntervalMs 150
 try {
     Stop-Service -Name "otelcol-contrib" -Force
     Start-Sleep -Seconds 3
+    Stop-SpinnerJob -Job $spinnerJob
     Write-Host "Service stopped successfully" -ForegroundColor Green
 } catch {
+    Stop-SpinnerJob -Job $spinnerJob
     Write-Host "Error stopping service: $($_.Exception.Message)" -ForegroundColor Red
     exit 1
 }
 
 # Start the service
 Write-Host "Starting otelcol-contrib service..." -ForegroundColor Yellow
+$spinnerJob = Start-SpinnerJob -Message "Starting service..." -UpdateIntervalMs 150
 try {
     Start-Service -Name "otelcol-contrib"
     Start-Sleep -Seconds 5
+    Stop-SpinnerJob -Job $spinnerJob
     Write-Host "Service started successfully" -ForegroundColor Green
 } catch {
+    Stop-SpinnerJob -Job $spinnerJob
     Write-Host "Error starting service: $($_.Exception.Message)" -ForegroundColor Red
     exit 1
 }
 
 # Verify service status
 Write-Host "Verifying service status..." -ForegroundColor Yellow
+$spinnerJob = Start-SpinnerJob -Message "Verifying service status..." -UpdateIntervalMs 150
 $service = Get-Service -Name "otelcol-contrib"
+Stop-SpinnerJob -Job $spinnerJob
 if ($service.Status -eq "Running") {
     Write-Host "Service is running successfully" -ForegroundColor Green
 } else {
@@ -47,7 +59,9 @@ if ($service.Status -eq "Running") {
 
 # Check if ports are listening
 Write-Host "Checking OTLP ports..." -ForegroundColor Yellow
+$spinnerJob = Start-SpinnerJob -Message "Checking OTLP ports..." -UpdateIntervalMs 150
 Start-Sleep -Seconds 2
+Stop-SpinnerJob -Job $spinnerJob
 
 $port5317 = Test-NetConnection -ComputerName localhost -Port 5317 -InformationLevel Quiet -WarningAction SilentlyContinue
 $port5318 = Test-NetConnection -ComputerName localhost -Port 5318 -InformationLevel Quiet -WarningAction SilentlyContinue

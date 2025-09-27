@@ -1,12 +1,16 @@
 # C:\otel\health-check.ps1
 # Unified health check for OTel collector
 # ASCII only, PowerShell 5.1 compatible
+# Updated with progress indicators for better user experience
 
 param(
   [ValidateSet("quick", "full", "regression")]
   [string]$Mode = "quick",
   [switch]$Verbose
 )
+
+# Import progress indicators module
+. .\scripts\progress-indicators.ps1
 
 $ErrorActionPreference = 'Stop'
 
@@ -37,8 +41,10 @@ function Test-Service {
 }
 
 function Test-HealthEndpoint {
+  $spinnerJob = Start-SpinnerJob -Message "Checking health endpoint..." -UpdateIntervalMs 150
   try {
-    $health = Invoke-WebRequest -Uri 'http://127.0.0.1:13134' -TimeoutSec 5 | ConvertFrom-Json
+    $health = Invoke-WebRequest -Uri 'http://127.0.0.1:13134/healthz' -TimeoutSec 5 | ConvertFrom-Json
+    Stop-SpinnerJob -Job $spinnerJob
     if ($health.status -eq "Server available") {
       Write-Status "Health: $($health.status) (uptime $($health.uptime))" "OK"
       return $true
@@ -47,6 +53,7 @@ function Test-HealthEndpoint {
       return $false
     }
   } catch {
+    Stop-SpinnerJob -Job $spinnerJob
     Write-Status "Health: DOWN" "ERROR"
     return $false
   }

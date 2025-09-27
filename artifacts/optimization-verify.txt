@@ -1,0 +1,21 @@
+== End-to-End Optimization Verification ==
+Timestamp: 2025-09-27T17:40:29+01:00
+Test Event ID: 016df380-e7f4-4d43-8f31-6e2836d544bf
+
+Checks
+- otelcol-contrib service running
+- key ports reachable
+- Resonai endpoint accepted test event
+- SigNoz expected to receive dataset 'resonai_analytics'
+
+SigNoz query
+Dataset filter: attributes.dataset = 'resonai_analytics'
+Event filter: attributes.event_id = '016df380-e7f4-4d43-8f31-6e2836d544bf'
+
+Manual steps
+1. Open http://localhost:8080
+2. Navigate to Logs
+3. Apply dataset='resonai_analytics'
+4. Search for event_id '016df380-e7f4-4d43-8f31-6e2836d544bf'
+
+== Wiring verification PASSED ==

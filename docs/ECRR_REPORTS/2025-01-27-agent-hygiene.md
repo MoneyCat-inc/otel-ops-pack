@@ -98,7 +98,103 @@
 - Provides foundation for continuous agent hygiene
 
 ---
+
+## 🔍 **1. Examine**
 
+### **Initial State Captured**
+- **Environment**: [OS, tools, versions]
+- **Current State**: [What was observed before changes]
+- **Key Findings**: [Critical issues or opportunities identified]
+- **Attached Evidence**: [Screenshots, logs, configs, test outputs]
+
+### **Key Findings**
+- **[Finding 1]**: [Description and impact]
+- **[Finding 2]**: [Description and impact]
+- **[Finding 3]**: [Description and impact]
+
+### **Attached Evidence**
+- Screenshots: [What was captured visually]
+- Console logs: [Command outputs and errors]
+- Configuration files: [Files examined or modified]
+- Test outputs: [Validation results]
+
+---
+## 🧹 **2. Clean**
+
+### **Drift Removal**
+- **[Issue 1]**: [What was cleaned/fixed]
+- **[Issue 2]**: [What was cleaned/fixed]
+- **[Issue 3]**: [What was cleaned/fixed]
+
+### **Guardrail Enforcement**
+- **Local-First**: [How local-first principle was maintained]
+- **Safety**: [Security measures implemented]
+- **Idempotence**: [How changes can be safely re-run]
+- **Verification**: [How changes were verified]
+
+### **Service Worker & Cache Management**
+- **Git Branches**: [Branch cleanup actions]
+- **Temporary Files**: [File cleanup performed]
+- **Port Conflicts**: [Port management actions]
+- **Process Management**: [Background process cleanup]
+
+---
+## 📝 **3. Report**
+
+### **Actions Taken**
+
+#### **[Category 1]**
+1. **[Action 1]**: [Description]
+2. **[Action 2]**: [Description]
+3. **[Action 3]**: [Description]
+
+#### **[Category 2]**
+1. **[Action 1]**: [Description]
+2. **[Action 2]**: [Description]
+3. **[Action 3]**: [Description]
+
+### **Results Achieved**
+
+#### **Before/After Comparison**
+- **Before**: [Initial state]
+- **After**: [Final state]
+- **Improvement**: [Quantifiable improvement]
+
+#### **Regression Analysis**
+- **No Breaking Changes**: [Compatibility maintained]
+- **Enhanced Reliability**: [Reliability improvements]
+- **Improved Observability**: [Monitoring enhancements]
+- **Better User Experience**: [UX improvements]
+
+#### **TODOs Completed**
+- ✅ [Completed task 1]
+- ✅ [Completed task 2]
+- ✅ [Completed task 3]
+
+---
+## 🎭 **4. Role**
+
+### **Actor Declaration**
+**[Agent Name]** acting as **[Role]**
+
+**Scope**: [Scope of responsibility]  
+**Responsibilities**: 
+- [Responsibility 1]
+- [Responsibility 2]
+- [Responsibility 3]
+
+**Guardrails Respected**:
+- Local-first (no external cloud dependencies)
+- Safety (no secrets exposed)
+- Idempotence (scripts re-runnable)
+- Verification (runnable checks for every change)
+
+**Integration**: 
+- [How this integrates with existing systems]
+- [Compatibility maintained]
+- [Environment considerations]
+
+---
 ## ✅ **ECRR Gate**
 
 ### **Examine**
@@ -216,3 +312,4 @@ The agent hygiene system now provides comprehensive file storage validation, que
 ---
 
 **ECRR Mantra**: *Examine → Clean → Report → Role - Every change must begin with evidence, remove drift, leave an artifact, and declare its actor.*
+

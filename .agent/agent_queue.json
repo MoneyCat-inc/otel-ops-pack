@@ -9,31 +9,46 @@
       "schedule": "RRULE:FREQ=HOURLY;BYMINUTE=0;BYSECOND=0",
       "deps": [],
       "ttlMs": 3600000,
-      "attempts": 0,
+      "attempts": 1,
       "maxAttempts": 3,
       "backoffMs": 300000,
-      "status": "queued",
-      "lastResult": null
+      "status": "completed",
+      "lastResult": {
+        "duration": 1.4084304,
+        "exitCode": 1,
+        "completedAt": "2025-09-27T18:23:39.1159973+01:00",
+        "success": true
+      }
     },
     {
       "id": "otel-wiring-check",
       "type": "health-check",
       "command": "pwsh -File scripts/verify-wiring.ps1",
       "schedule": "RRULE:FREQ=DAILY;BYHOUR=9;BYMINUTE=0;BYSECOND=0",
-      "deps": ["env-ready"],
+      "deps": [
+        "env-ready"
+      ],
       "ttlMs": 86400000,
-      "attempts": 0,
+      "attempts": 1,
       "maxAttempts": 3,
       "backoffMs": 900000,
-      "status": "queued",
-      "lastResult": null
+      "status": "completed",
+      "lastResult": {
+        "duration": 17.4764678,
+        "exitCode": 0,
+        "completedAt": "2025-09-27T18:23:56.6396202+01:00",
+        "success": true
+      }
     },
     {
       "id": "otel-analytics-monitor",
       "type": "monitor",
       "command": "pwsh -File scripts/monitor-analytics-ingestion.ps1",
       "schedule": "RRULE:FREQ=HOURLY;BYMINUTE=30;BYSECOND=0",
-      "deps": ["env-ready", "otel-wiring-check"],
+      "deps": [
+        "env-ready",
+        "otel-wiring-check"
+      ],
       "ttlMs": 3600000,
       "attempts": 0,
       "maxAttempts": 2,

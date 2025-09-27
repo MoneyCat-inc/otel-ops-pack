@@ -55,7 +55,7 @@
       ></path>
     </svg>
   </clipboard-copy>`,i=(0,r.qy)`
-    <details class="details-reset details-overlay details-overlay-dark" style="display: contents">
+    <details class="details-reset details-overlay details-overlay-dark" class="style-1492"display: contents">
       <summary
         role="button"
         aria-label="Open dialog"
@@ -87,7 +87,7 @@
               height="24"
               viewBox="0 0 24 24"
               fill="currentColor"
-              style="display:inline-block;vertical-align:text-bottom"
+              class="style-1492"display:inline-block;vertical-align:text-bottom"
               class="octicon octicon-x"
             >
               <path

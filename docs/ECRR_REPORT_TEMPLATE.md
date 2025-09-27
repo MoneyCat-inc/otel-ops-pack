@@ -10,16 +10,26 @@
 ---
 
 ## 📋 **ECRR Compliance Checklist - MANDATORY**
+
+> **⚠️ CRITICAL**: All ECRR reports MUST follow the 4-section structure and include the ECRR Gate section with completed checkboxes. Reports without proper structure and ECRR Gate validation will be considered non-compliant.
+
+### **Structure Requirements**
+- [ ] **4-Section Structure**: Examine → Clean → Report → Role format followed
+- [ ] **ECRR Gate**: Formal validation section completed with all checkboxes
+- [ ] **Status Declaration**: Success/failure/completion status specified in header
+
+### **Content Requirements**
 - [ ] **Actor Declaration**: Agent and role clearly stated in header and Role section
 - [ ] **Evidence Attachment**: Screenshots, logs, configs, test outputs included
-- [ ] **ECRR Gate**: Formal validation section completed with all checkboxes
-- [ ] **Status Declaration**: Success/failure/completion status specified
-- [ ] **4-Section Structure**: Examine → Clean → Report → Role format followed
 - [ ] **Guardrail Compliance**: Local-first, safety, idempotence, verification principles followed
 - [ ] **Artifact Documentation**: All files, scripts, and changes documented
 - [ ] **Reproducible Validation**: Runnable checks provided for every change
 
-> **⚠️ CRITICAL**: All ECRR reports MUST include the ECRR Gate section with completed checkboxes. Reports without ECRR Gate validation will be considered non-compliant.
+### **Quality Requirements**
+- [ ] **Root Cause Analysis**: Underlying causes identified and documented
+- [ ] **Before/After Comparison**: Quantifiable improvements shown
+- [ ] **Validation Results**: All verification steps completed successfully
+- [ ] **Next Actions**: Clear follow-up steps defined
 
 ---
 
@@ -161,6 +171,9 @@
 - [ ] **Artifact Documentation**: All files, scripts, and changes documented
 - [ ] **Reproducible Validation**: Runnable checks provided for every change
 - [ ] **ECRR Compliance**: All mandatory elements included and validated
+- [ ] **Template Adherence**: Report follows enhanced ECRR template structure
+- [ ] **Evidence Quality**: All evidence is relevant, clear, and properly documented
+- [ ] **Action Clarity**: All actions taken are clearly described and justified
 
 ---
 
@@ -238,9 +251,16 @@
 - **Evidence Documentation**: [ ] ✅ COMPLETE / [ ] ❌ INCOMPLETE
 - **Actor Declaration**: [ ] ✅ COMPLETE / [ ] ❌ INCOMPLETE
 - **Validation Results**: [ ] ✅ ALL PASSED / [ ] ❌ FAILURES DETECTED
+- **Template Adherence**: [ ] ✅ COMPLETE / [ ] ❌ INCOMPLETE
+- **Quality Requirements**: [ ] ✅ COMPLETE / [ ] ❌ INCOMPLETE
 
 ### **Overall Assessment**
 **ECRR Report Status**: [ ] ✅ **COMPLETE AND COMPLIANT** / [ ] ❌ **NON-COMPLIANT**
+
+### **Compliance Score**
+- **Structure Compliance**: [ ] ✅ 100% / [ ] ⚠️ PARTIAL / [ ] ❌ NON-COMPLIANT
+- **Content Compliance**: [ ] ✅ 100% / [ ] ⚠️ PARTIAL / [ ] ❌ NON-COMPLIANT
+- **Quality Compliance**: [ ] ✅ 100% / [ ] ⚠️ PARTIAL / [ ] ❌ NON-COMPLIANT
 
 **Completion Summary**: [Brief summary of completion status and achievements]
 

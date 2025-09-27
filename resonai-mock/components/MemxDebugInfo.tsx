@@ -39,7 +39,7 @@ export function MemxDebugInfo() {
           errors.push('SharedArrayBuffer is not available');
         }
       } catch (error) {
-        errors.push(`SharedArrayBuffer error: ${error.message}`);
+        errors.push(`SharedArrayBuffer error: ${error instanceof Error ? error.message : String(error)}`);
       }
       
       // Detect browser
