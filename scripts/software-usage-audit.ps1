@@ -165,4 +165,3 @@ Write-Host "4. Consider moving large development tools to external storage" -For
 Write-Host "5. Archive old games and media files" -ForegroundColor White
 
 Write-Host "`nPotential space savings: $([math]::Round($totalUnusedSize, 2)) GB" -ForegroundColor Green
-

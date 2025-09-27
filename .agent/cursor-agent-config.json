@@ -1,0 +1,42 @@
+{
+  "agent_id": "cursor-ecrr-agent-001",
+  "name": "Cursor ECRR Task Agent",
+  "version": "1.0.0",
+  "description": "Specialized agent for ECRR task generation framework implementation",
+  "capabilities": [
+    "ecrr_report_processing",
+    "task_generation",
+    "powershell_automation",
+    "signoz_integration",
+    "documentation_generation"
+  ],
+  "assigned_tasks": [
+    "TASK-20250923-223956-864"
+  ],
+  "current_focus": "ECRR Task Generation Framework Implementation",
+  "working_directory": "C:\\otel",
+  "preferred_tools": [
+    "run_terminal_cmd",
+    "read_file",
+    "write",
+    "search_replace",
+    "codebase_search"
+  ],
+  "agent_goals": [
+    "Implement and validate ECRR task generation framework",
+    "Ensure seamless integration with existing task management CLI",
+    "Create comprehensive documentation for team adoption",
+    "Implement duplicate prevention mechanisms",
+    "Add robust error handling and logging"
+  ],
+  "success_criteria": [
+    "Framework processes ECRR reports without errors",
+    "Generated tasks integrate with manage-tasks.ps1 CLI",
+    "SigNoz verification queries execute successfully",
+    "Documentation is complete and actionable",
+    "Duplicate prevention works correctly"
+  ],
+  "status": "active",
+  "created": "2025-09-25T04:15:00Z",
+  "last_updated": "2025-09-25T04:15:00Z"
+}

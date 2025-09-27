@@ -76,9 +76,9 @@ services:
     healthcheck:
       test:
         - CMD
-        - wget
-        - -qO-
-        - http://localhost:13133/healthz
+        - sh
+        - -c
+        - "test -f /proc/1/cmdline && grep -q signoz-otel-collector /proc/1/cmdline"
       interval: 10s
       timeout: 3s
       retries: 10

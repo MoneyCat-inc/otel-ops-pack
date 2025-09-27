@@ -1,6 +1,6 @@
 param(
     [Parameter(Mandatory = $true)]
-    [ValidateSet('List','Status','Assign','Start','Complete','Summary','Help')]
+    [ValidateSet('List','Stat','Asgn','Star','Comp','Summ','Help')]
     [string]$Action,
 
     [Parameter(Mandatory = $false)]
@@ -499,6 +499,22 @@ try {
         'List' {
             Invoke-ListAction -Tasks $tasks -CategoryFilter $Category -PriorityFilter $Priority
         }
+        'Stat' {
+            Invoke-StatusAction -Tasks $tasks
+        }
+        'Asgn' {
+            Invoke-AssignAction -Tasks $tasks -TaskId $TaskId -Assignee $Assignee -JobsPath $JobsPath
+        }
+        'Star' {
+            Invoke-StartAction -Tasks $tasks -TaskId $TaskId -JobsPath $JobsPath
+        }
+        'Comp' {
+            Invoke-CompleteAction -Tasks $tasks -TaskId $TaskId -JobsPath $JobsPath
+        }
+        'Summ' {
+            Invoke-SummaryAction -Tasks $tasks
+        }
+        # Legacy support for old commands
         'Status' {
             Invoke-StatusAction -Tasks $tasks
         }

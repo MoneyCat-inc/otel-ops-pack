@@ -1,4 +1,4 @@
-﻿.agent/ECRR_FILING_NOTE.md
+.agent/ECRR_FILING_NOTE.md
 artifacts/ecrr-disk-cleanup-assessment-20250923-030000.md
 artifacts/ecrr-generation-summary-20250923-224130.md
 artifacts/ecrr-generation-summary-20250923-224526.md

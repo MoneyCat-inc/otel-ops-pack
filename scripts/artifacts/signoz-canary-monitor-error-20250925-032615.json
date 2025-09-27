@@ -1,0 +1,6 @@
+{
+  "timestamp": "2025-09-25 03:26:20",
+  "status": "error",
+  "error": "SigNoz canary monitor failed: ClickHouse returned no data. Query:\nSELECT\r\n    count(*) AS canary_count,\r\n    min(fromUnixTimestamp64Nano(timestamp)) AS earliest_ts,\r\n    max(fromUnixTimestamp64Nano(timestamp)) AS latest_ts\r\nFROM signoz_logs.distributed_logs_v2\r\nWHERE body LIKE '%SigNoz wiring canary%'\r\n  AND timestamp >= now() - INTERVAL 60 MINUTE\r\nFORMAT JSON",
+  "stack": "at Invoke-ClickHouseJson, C:\\otel\\scripts\\monitor-signoz-canary.ps1: line 83\r\nat <ScriptBlock>, C:\\otel\\scripts\\monitor-signoz-canary.ps1: line 142\r\nat <ScriptBlock>, C:\\otel\\scripts\\canary-monitor-action.ps1: line 10"
+}

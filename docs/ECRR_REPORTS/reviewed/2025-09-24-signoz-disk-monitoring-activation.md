@@ -167,7 +167,7 @@
 
 ### **Immediate**
 1. Import `artifacts/signoz-disk-alerts.json` via SigNoz UI Alerts → Import JSON
-2. Create “Disk Usage Monitoring” dashboard using documented queries
+2. Create "Disk Usage Monitoring" dashboard using documented queries
 3. Assign email/Slack notification channels to warning + critical alerts
 
 ### **Short-term**

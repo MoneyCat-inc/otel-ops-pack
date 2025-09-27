@@ -109,4 +109,3 @@ if ($finalUsagePercent -lt 85) {
 }
 
 Write-Host "`nArchive complete!" -ForegroundColor Cyan
-

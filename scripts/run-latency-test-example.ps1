@@ -209,4 +209,3 @@ Write-Host "  # Manage baselines" -ForegroundColor White
 Write-Host "  pwsh -File scripts/manage-latency-baselines.ps1 -Action list" -ForegroundColor Gray
 
 Write-Host "`n[OK] Enhanced latency test example completed!" -ForegroundColor Green
-

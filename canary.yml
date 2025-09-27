@@ -29,3 +29,5 @@ jobs:
 #     & "C:\otel\canary-check.ps1" -UseClickHouse -ClickHouseHttp "http://localhost:18123"
 
 #     if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+

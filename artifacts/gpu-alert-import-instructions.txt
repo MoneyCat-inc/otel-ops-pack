@@ -1,0 +1,132 @@
+=== GPU Alert Import Instructions ===
+
+1. Open SigNoz UI: http://localhost:8080
+2. Navigate to: Alerts → Create Alert
+  3. For each alert in artifacts/signoz-gpu-alerts.json:
+
+   Alert: GPU Monitoring Stalled
+   Query: absent(gpu.utilization.percent)
+   Threshold: absent
+   Duration: 5m
+   Severity: warning
+
+4. Or use SigNoz API:
+   POST http://localhost:8080/api/v1/alerts
+   Content-Type: application/json
+   Body: {
+  "alerts": [
+    {
+      "name": "High GPU Utilization",
+      "description": "GPU utilization exceeds 80%",
+      "threshold": 80,
+      "createdAt": "2025-09-25T06:06:32Z",
+      "enabled": true,
+      "severity": "WARNING",
+      "duration": "5m",
+      "tags": [
+        "gpu",
+        "monitoring",
+        "automated"
+      ],
+      "query": "gpu.utilization.percent > 80"
+    },
+    {
+      "name": "Critical GPU Utilization",
+      "description": "GPU utilization exceeds 95%",
+      "threshold": 95,
+      "createdAt": "2025-09-25T06:06:32Z",
+      "enabled": true,
+      "severity": "CRITICAL",
+      "duration": "2m",
+      "tags": [
+        "gpu",
+        "monitoring",
+        "automated"
+      ],
+      "query": "gpu.utilization.percent > 95"
+    },
+    {
+      "name": "High GPU Memory Usage",
+      "description": "GPU memory utilization exceeds 90%",
+      "threshold": 90,
+      "createdAt": "2025-09-25T06:06:32Z",
+      "enabled": true,
+      "severity": "WARNING",
+      "duration": "5m",
+      "tags": [
+        "gpu",
+        "monitoring",
+        "automated"
+      ],
+      "query": "gpu.memory.utilization.percent > 90"
+    },
+    {
+      "name": "GPU Overheating",
+      "description": "GPU temperature exceeds 85°C",
+      "threshold": 85,
+      "createdAt": "2025-09-25T06:06:32Z",
+      "enabled": true,
+      "severity": "CRITICAL",
+      "duration": "3m",
+      "tags": [
+        "gpu",
+        "monitoring",
+        "automated"
+      ],
+      "query": "gpu.temperature.celsius > 85"
+    },
+    {
+      "name": "GPU Sidecar Unhealthy",
+      "description": "GPU sidecar health status is unhealthy",
+      "threshold": 0,
+      "createdAt": "2025-09-25T06:06:32Z",
+      "enabled": true,
+      "severity": "CRITICAL",
+      "duration": "1m",
+      "tags": [
+        "gpu",
+        "monitoring",
+        "automated"
+      ],
+      "query": "gpu.sidecar.health == 0"
+    },
+    {
+      "name": "GPU Monitoring Stalled",
+      "description": "No GPU metrics received for 5 minutes",
+      "threshold": "absent",
+      "createdAt": "2025-09-25T06:06:32Z",
+      "enabled": true,
+      "severity": "WARNING",
+      "duration": "5m",
+      "tags": [
+        "gpu",
+        "monitoring",
+        "automated"
+      ],
+      "query": "absent(gpu.utilization.percent)"
+    }
+  ],
+  "metadata": {
+    "source": "gpu-monitoring-system",
+    "imported_at": "2025-09-25T06:06:32Z",
+    "imported_by": "OTel-GPU-Monitoring",
+    "version": "1.0"
+  }
+}
+
+
+=== Manual Import Commands ===
+
+# Import via PowerShell
+$alerts = Get-Content 'artifacts/signoz-gpu-alerts.json' | ConvertFrom-Json
+foreach ($alert in $alerts.alerts) {
+    $body = $alert | ConvertTo-Json -Depth 3
+    Invoke-WebRequest -Uri 'http://localhost:8080/api/v1/alerts' -Method Post -Body $body -ContentType 'application/json'
+}
+
+=== Verification ===
+
+After import, verify alerts in SigNoz:
+- Go to Alerts → List
+- Filter by tag: gpu
+- Check alert status: Active/Inactive

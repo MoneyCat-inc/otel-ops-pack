@@ -1,0 +1,11 @@
+.agent/ECRR_FILING_NOTE.md
+artifacts/misfiled-ecrr-files.txt
+artifacts/pester-latency.xml
+docs/ECRR_REPORTS/2025-09-24-analysis-system-health-ecrr.md
+docs/ECRR_REPORTS/archive/2025-09-24-analysis-system-health-ecrr.md
+docs/ECRR_REPORTS/reviewed/2025-09-24-signoz-disk-monitoring-activation.md
+IONA/IONA_Persona_OnePager.md
+IONA/IONA_System_Prompt.txt
+patches/LLM_8080_OTel_x86/8080 operating system.txt
+patches/LLM_8080_OTel_x86/OpenTelemetry_files/kapa-widget.bundle.js
+patches/LLM_8080_OTel_x86/OpenTelemetry.htm

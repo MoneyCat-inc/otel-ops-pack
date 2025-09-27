@@ -1,0 +1,41 @@
+=== GPU Trend Monitoring Guide ===
+
+## SigNoz Queries for GPU Trends
+
+### Real-time Monitoring Queries
+1. GPU Utilization: gpu.utilization.percent
+2. GPU Memory: gpu.memory.utilization.percent  
+3. GPU Temperature: gpu.temperature.celsius
+4. Sidecar Health: gpu.sidecar.health
+
+### Trend Analysis Queries
+1. 24h Utilization Trend: avg_over_time(gpu.utilization.percent[1h])
+2. Memory Growth Rate: rate(gpu.memory.utilization.percent[5m])
+3. Temperature Average: avg_over_time(gpu.temperature.celsius[1h])
+4. Performance Rate: rate(gpu.utilization.percent[5m])
+
+### Alert Queries
+1. High Memory: gpu.memory.utilization.percent > 85
+2. Overheating: gpu.temperature.celsius > 80
+3. High Utilization: gpu.utilization.percent > 90
+4. Sidecar Down: gpu.sidecar.health == 0
+
+## SigNoz Import Instructions
+
+### Import Alerts
+1. Open SigNoz: http://localhost:8080
+2. Navigate to: Alerts → Create Alert
+3. Use queries from artifacts/signoz-gpu-alerts.json
+4. Set thresholds and durations as specified
+
+### Import Dashboard
+1. Open SigNoz: http://localhost:8080
+2. Navigate to: Dashboards → Create Dashboard
+3. Add panels using queries from artifacts/signoz-gpu-dashboard.json
+4. Set refresh interval to 30s
+
+## Testing Commands
+- Check GPU sidecars: python scripts/check-gpu-sidecars.py
+- Emit GPU metrics: python scripts/gpu-metrics-emitter.py
+- Run monitoring: python scripts/gpu-monitor.py
+- Check scheduled task: Get-ScheduledTask -TaskName "OTel-GPU-Monitoring"

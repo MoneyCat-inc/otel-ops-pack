@@ -1,4 +1,4 @@
-﻿# ECRR Filing Note
+# ECRR Filing Note
 
 This note tracks misfiled ECRR reports and the correct filing rules.
 

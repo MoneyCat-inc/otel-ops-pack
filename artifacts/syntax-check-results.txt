@@ -1,10 +1,10 @@
 # PowerShell Script Syntax Check Report
-Generated: 2025-09-25 03:05:12
-Total Scripts: 257
+Generated: 2025-09-25 03:08:11
+Total Scripts: 259
 Errors Found: 0
 
 ## Summary
-0 scripts have syntax errors out of 257 total scripts.
+0 scripts have syntax errors out of 259 total scripts.
 
 ## Detailed Results
 ### _bt.ps1
@@ -294,6 +294,10 @@ Errors Found: 0
 ### find-near-duplicate-paths.ps1
 - **Status**: ✅ OK
 - **Path**: C:\otel\scripts\find-near-duplicate-paths.ps1
+
+### fix-common-script-issues.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\fix-common-script-issues.ps1
 
 ### fix-docker-mount-issue.ps1
 - **Status**: ✅ OK
@@ -894,6 +898,10 @@ Errors Found: 0
 ### test-pattern-drills.ps1
 - **Status**: ✅ OK
 - **Path**: C:\otel\scripts\test-pattern-drills.ps1
+
+### test-runtime-issues.ps1
+- **Status**: ✅ OK
+- **Path**: C:\otel\scripts\test-runtime-issues.ps1
 
 ### test-signoz-canary-view.ps1
 - **Status**: ✅ OK

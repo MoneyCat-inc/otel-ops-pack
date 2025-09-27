@@ -2,3 +2,13 @@ services:
   otel-collector:
     volumes:
       - ./signoz-collector-fixed.yaml:/etc/otel-collector-config.yaml:ro
+    healthcheck:
+      test:
+        - CMD
+        - sh
+        - -c
+        - "test -f /proc/1/cmdline && grep -q signoz-otel-collector /proc/1/cmdline"
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 30s
