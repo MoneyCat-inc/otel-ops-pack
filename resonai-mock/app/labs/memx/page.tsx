@@ -8,8 +8,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { MemxExportButton, MemxExportPresets, MemxExportAllSessionsButton } from '../../../components/MemxExportButton';
-import { MemxSessionStats } from '../../../components/MemxSessionStats';
+import { MemxExportButton, MemxExportPresets, MemxExportAllSessionsButton } from '../../../components/MemxExportButton-simple';
+import { MemxSessionStats } from '../../../components/MemxSessionStats-simple';
 
 // Feature flag check
 const isMemxEnabled = process.env.NEXT_PUBLIC_FEATURE_MEMX === '1';
