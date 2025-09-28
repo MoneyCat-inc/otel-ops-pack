@@ -9,6 +9,9 @@ services:
       - 8123:8123
     environment:
       - CLICKHOUSE_SKIP_USER_SETUP=1
+      - CLICKHOUSE_DB_DEFAULT=signoz_logs
+      - CLICKHOUSE_USER_DEFAULT=default
+      - CLICKHOUSE_PASSWORD_DEFAULT=
     volumes:
       - clickhouse_data:/var/lib/clickhouse
       - ./config/clickhouse-cluster.xml:/etc/clickhouse-server/config.d/cluster.xml
@@ -20,10 +23,18 @@ services:
         - --spider
         - -q
         - 0.0.0.0:8123/ping
-      interval: 30s
-      timeout: 5s
+      interval: 10s
+      timeout: 3s
       retries: 3
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+          cpus: '4.0'
+        reservations:
+          memory: 2G
+          cpus: '2.0'
   signoz:
     image: signoz/signoz:v0.95.0
     container_name: signoz
@@ -66,10 +77,24 @@ services:
       - 14318:4318 # OTLP HTTP for Windows collector
     environment:
       - OTEL_RESOURCE_ATTRIBUTES=host.name=signoz-host,os.type=linux
+      - OTEL_BATCH_PROCESSOR_TIMEOUT=200ms
+      - OTEL_BATCH_PROCESSOR_SEND_BATCH_SIZE=1024
+      - OTEL_BATCH_PROCESSOR_SEND_BATCH_MAX_SIZE=2048
+      - OTEL_MEMORY_LIMITER_LIMIT_MIB=1024
+      - OTEL_SENDING_QUEUE_NUM_CONSUMERS=8
+      - OTEL_SENDING_QUEUE_QUEUE_SIZE=2048
     depends_on:
       signoz:
         condition: service_healthy
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '2.0'
+        reservations:
+          memory: 1G
+          cpus: '1.0'
 volumes:
   clickhouse_data:
   signoz_data:

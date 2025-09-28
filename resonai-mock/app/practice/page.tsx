@@ -299,6 +299,12 @@ export default function PracticePage() {
                 Voice Analysis
               </Link>
               <Link 
+                href="/labs/prosody-scenarios" 
+                className="px-4 py-2 text-purple-600 hover:text-purple-700 font-medium transition-colors"
+              >
+                Prosody Scenarios
+              </Link>
+              <Link 
                 href="/labs/memx" 
                 className="px-4 py-2 text-gray-600 hover:text-gray-700 font-medium transition-colors"
               >
