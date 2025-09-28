@@ -108,3 +108,4 @@ export function useLowPowerMode(): boolean {
   const battery = useBattery();
   return battery.supported && battery.level < 0.2 && !battery.charging;
 }
+

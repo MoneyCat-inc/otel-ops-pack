@@ -43,6 +43,16 @@ export class ProsodyEngine {
   private isRecording = false;
   private scenarioConfig: ScenarioConfig | null = null;
 
+  // Classification thresholds - pinned for deterministic behavior
+  static readonly CLASSIFICATION_CONSTANTS = {
+    TRAILING_WINDOW_PCT: 0.3,        // Last 30% of frames for classification
+    MIN_VOICED_FRAMES: 10,            // Minimum frames for reliable classification
+    MIN_VOICED_DURATION_MS: 250,      // Minimum 250ms voiced duration
+    SLOPE_CONFIDENCE_THRESHOLD: 0.7,  // 70% confidence threshold
+    SLOPE_THRESHOLD: 0.5,             // Slope magnitude threshold for classification
+    EXPRESSIVENESS_CAP_MULTIPLIER: 2.0 // Cap expressiveness at 2x baseline
+  } as const;
+
   // Scenario configurations
   static readonly SCENARIOS: ScenarioConfig[] = [
     {
@@ -140,10 +150,18 @@ export class ProsodyEngine {
    * Classify end-rise vs end-fall using slope analysis
    */
   private classifyRiseFall(): 'rise' | 'fall' | 'neutral' {
-    if (this.frames.length < 10) return 'neutral';
+    const { MIN_VOICED_FRAMES, TRAILING_WINDOW_PCT, SLOPE_CONFIDENCE_THRESHOLD, SLOPE_THRESHOLD } = 
+      ProsodyEngine.CLASSIFICATION_CONSTANTS;
 
-    // Use last 30% of frames for end classification
-    const endStart = Math.floor(this.frames.length * 0.7);
+    // Check minimum frame requirement
+    if (this.frames.length < MIN_VOICED_FRAMES) return 'neutral';
+
+    // Check minimum voiced duration
+    const duration = this.frames[this.frames.length - 1].timestamp - this.frames[0].timestamp;
+    if (duration < ProsodyEngine.CLASSIFICATION_CONSTANTS.MIN_VOICED_DURATION_MS) return 'neutral';
+
+    // Use trailing window for end classification
+    const endStart = Math.floor(this.frames.length * (1 - TRAILING_WINDOW_PCT));
     const endFrames = this.frames.slice(endStart);
     
     if (endFrames.length < 3) return 'neutral';
@@ -152,10 +170,10 @@ export class ProsodyEngine {
     const slope = this.calculateSlope(endFrames.map(f => f.pitch));
     const confidence = this.calculateSlopeConfidence(endFrames);
 
-    // Threshold-based classification
-    if (confidence > 0.7) {
-      if (slope > 0.5) return 'rise';
-      if (slope < -0.5) return 'fall';
+    // Threshold-based classification with pinned constants
+    if (confidence > SLOPE_CONFIDENCE_THRESHOLD) {
+      if (slope > SLOPE_THRESHOLD) return 'rise';
+      if (slope < -SLOPE_THRESHOLD) return 'fall';
     }
 
     return 'neutral';
@@ -178,7 +196,8 @@ export class ProsodyEngine {
 
     // Expressiveness is the ratio of current to baseline variation
     const ratio = currentVariation / baselineVariation;
-    return Math.min(ratio, 2.0) / 2.0; // Cap at 2x and normalize to 0-1
+    const cap = ProsodyEngine.CLASSIFICATION_CONSTANTS.EXPRESSIVENESS_CAP_MULTIPLIER;
+    return Math.min(ratio, cap) / cap; // Cap at configured multiplier and normalize to 0-1
   }
 
   /**
