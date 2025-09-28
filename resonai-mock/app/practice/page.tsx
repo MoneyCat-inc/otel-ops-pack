@@ -12,6 +12,7 @@ import { useMicManager } from '../../src/components/MicManager';
 import { useAudioContext } from '../../src/components/AudioContextManager';
 import { useWorkletManager } from '../../src/components/WorkletManager';
 import Link from 'next/link';
+import { LocalEventSummary } from '../../src/components/LocalEventSummary';
 
 interface PracticeSession {
   id: string;
@@ -456,6 +457,11 @@ export default function PracticePage() {
             </div>
           </div>
         )}
+
+        {/* Cohort Event Summary */}
+        <div className="mb-8">
+          <LocalEventSummary />
+        </div>
 
         {/* Session Progress */}
         {session && (
