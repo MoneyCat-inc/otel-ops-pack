@@ -1,0 +1,42 @@
+{
+  "name": "windows-day2-ops-kit",
+  "version": "1.0.0",
+  "description": "Windows Day-2 Ops Kit for OpenTelemetry - Autonomous Reference Implementation",
+  "main": "index.js",
+  "scripts": {
+    "agent:status-fleet-ps": "pwsh -File scripts/status-fleet.ps1",
+    "agent:status-fleet-sh": "bash scripts/status-fleet.sh",
+    "policy:build": "pwsh -File scripts/policy/build-bundle.ps1",
+    "policy:sign": "pwsh -File scripts/policy/sign-bundle.ps1",
+    "policy:verify": "pwsh -File scripts/policy/verify-bundle.ps1",
+    "sbom:gen": "pwsh -File scripts/supplychain/generate-sbom.ps1",
+    "sbom:sign": "pwsh -File scripts/supplychain/sign-sbom.ps1",
+    "docker:watchdog:build": "docker build -f docker/Dockerfile.watchdog -t codex-local:latest .",
+    "helm:lint": "helm lint helm/codex-local",
+    "helm:install": "helm install codex-local ./helm/codex-local",
+    "helm:upgrade": "helm upgrade codex-local ./helm/codex-local"
+  },
+  "keywords": [
+    "opentelemetry",
+    "windows",
+    "day2-ops",
+    "observability",
+    "policy-as-code",
+    "fleet-management",
+    "autonomous-systems"
+  ],
+  "author": "OpenTelemetry Community",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/open-telemetry/opentelemetry-collector-contrib.git",
+    "directory": "examples/windows_day2_ops"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
