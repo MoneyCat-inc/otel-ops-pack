@@ -51,6 +51,18 @@ export default function RootLayout({
                   Practice
                 </a>
                 <a
+                  href="/progress"
+                  className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
+                >
+                  Progress
+                </a>
+                <a
+                  href="/data"
+                  className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
+                >
+                  Data Control
+                </a>
+                <a
                   href="/labs/memx"
                   className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
                 >

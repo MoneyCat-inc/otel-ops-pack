@@ -563,7 +563,96 @@ This document provides comprehensive testing guidelines for the Resonai voice pr
   - [ ] SharedArrayBuffer status visible
   - [ ] Debug information available
 
-## T5 A11y Polish Testing
+## C1 Progress Dashboard Testing
+
+### Data Aggregation
+- [ ] Daily aggregation groups sessions by date correctly
+- [ ] Weekly aggregation combines daily metrics properly
+- [ ] Monthly aggregation provides month-level summaries
+- [ ] Schema versioning handles data format changes gracefully
+- [ ] Edge cases handled (empty data, missing fields, invalid sessions)
+- [ ] Performance acceptable with large datasets (1000+ sessions)
+
+### Dashboard UI
+- [ ] Progress page loads without errors
+- [ ] Summary stats display correctly (sessions, time, trends)
+- [ ] Metric cards show current values and deltas
+- [ ] Trend sparklines render properly
+- [ ] Safety timeline displays color-coded events
+- [ ] Date range filter works (7/14/30 days, all time)
+- [ ] Metric toggles show/hide cards correctly
+- [ ] "What This Means" section provides helpful explanations
+
+### Accessibility
+- [ ] Single aria-live="polite" region for announcements
+- [ ] Proper heading structure (h1, h2, h3)
+- [ ] All form controls have proper labels
+- [ ] Keyboard navigation works (tab order, focus management)
+- [ ] Skip link functions correctly
+- [ ] Screen reader compatibility verified
+- [ ] Reduced motion respected (animations disabled)
+
+### Error Handling
+- [ ] Empty data state shows helpful message
+- [ ] Loading state displays spinner and message
+- [ ] Error state shows retry option
+- [ ] Network failures handled gracefully
+- [ ] Invalid data filtered out appropriately
+
+### Cross-browser Testing
+- [ ] Firefox: Full functionality verified
+- [ ] Chromium: Complete feature compatibility
+- [ ] Mobile: Responsive design works
+- [ ] IndexedDB: Graceful fallback for unsupported browsers
+
+## C2 Data Control Testing
+
+### Export Functionality
+- [ ] Export button downloads JSON file with correct filename format
+- [ ] JSON file contains all required fields (schemaVersion, exportedAt, build, sessions, summary)
+- [ ] No audio/blob data included in export
+- [ ] File structure matches expected schema
+- [ ] Large datasets export efficiently (< 500ms)
+- [ ] Export works with empty data (shows appropriate message)
+
+### Delete Functionality
+- [ ] Delete button opens confirmation modal
+- [ ] Modal has proper accessibility (focus trap, ARIA labels)
+- [ ] Type-to-confirm requires exact "DELETE" text
+- [ ] Delete button disabled until confirmation text entered
+- [ ] Deletion process shows progress feedback
+- [ ] Success message displayed after completion
+- [ ] Modal closes after successful deletion
+- [ ] Cancel button closes modal without deletion
+
+### Accessibility
+- [ ] Single aria-live="polite" region for announcements
+- [ ] Proper heading structure (h1, h2)
+- [ ] All buttons have descriptive aria-labels
+- [ ] Keyboard navigation works (tab order, focus management)
+- [ ] Skip link functions correctly
+- [ ] Screen reader compatibility verified
+- [ ] Reduced motion respected (animations disabled)
+- [ ] Modal focus trap works correctly
+
+### Error Handling
+- [ ] Empty data state shows appropriate messages
+- [ ] Loading state displays spinner and message
+- [ ] Error state shows retry option
+- [ ] Network failures handled gracefully
+- [ ] Invalid data filtered out appropriately
+
+### Cross-browser Testing
+- [ ] Firefox: Full functionality verified
+- [ ] Chromium: Complete feature compatibility
+- [ ] Mobile: Responsive design works
+- [ ] IndexedDB: Graceful fallback for unsupported browsers
+
+### Performance
+- [ ] Page loads in < 500ms
+- [ ] Export completes in < 500ms for large datasets
+- [ ] Delete operation completes in < 200ms
+- [ ] Memory usage stays within reasonable limits
 
 ### Live Regions Coverage
 - [ ] **Single Announcement Per Card**
