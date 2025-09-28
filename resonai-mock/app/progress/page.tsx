@@ -11,6 +11,8 @@ import React, { useState, useEffect } from 'react';
 import { ProgressAggregator, ProgressTrends, SessionSummaryV1 } from '../../src/engine/metrics/aggregate';
 import { MetricCard } from '../../src/components/progress/MetricCard';
 import { SafetyStrip } from '../../src/components/progress/SafetyStrip';
+import { FriendlySummary } from '../../src/components/progress/FriendlySummary';
+import { OrbV2 } from '../../src/components/OrbV2';
 import { useReducedMotion } from '../../src/hooks/useReducedMotion';
 import Link from 'next/link';
 

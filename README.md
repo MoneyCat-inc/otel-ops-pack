@@ -229,11 +229,43 @@ Get-Service -Name "otelcol-contrib"
 Invoke-WebRequest -Uri "http://localhost:8080/api/v1/health" -UseBasicParsing
 ```
 
+## 🟣 Beta Launch
+
+### **C8: Beta Launch Checklist**
+The Resonai beta cohort is ready for launch with comprehensive preflight validation, onboarding, and rollback procedures.
+
+**Key Documents:**
+- [Beta Launch Checklist](docs/BETA_LAUNCH_CHECKLIST.md) - Complete preflight validation and launch procedures
+- [Tester Onboarding Guide](docs/cohort-onboarding.md) - Beta tester setup and privacy FAQ
+- [Rollback Procedures](docs/rollback-procedures.md) - Emergency rollback playbook
+- [C8 Beta Launch Release Notes](docs/release-notes/c8-beta-launch.md) - Release documentation
+
+**Cohort Features (C1-C4):**
+- **C1 Progress Dashboard**: Local-first trends with sparklines
+- **C2 Export & Delete UX**: Complete data sovereignty
+- **C3 QA Release Runbook**: Deterministic pre-release gate
+- **C4 Cohort Analytics Toggles**: Controlled rollout, defaults OFF
+
+**Operations Tooling (C5-C8):**
+- **C5 Cohort Log & Tester Guide**: Local JSON logging with tester documentation
+- **C6 Beta Success Metrics**: Retention tracking and health metrics
+- **C7 Dashboard Polish & UX**: Orb v2 shimmer overlay with friendly summaries
+- **C8 Beta Launch Checklist**: Preflight validation and rollback procedures
+
+**Quality Gates:**
+- ✅ **Privacy-First**: No uploads, local-only data processing
+- ✅ **WCAG AA Accessible**: Screen readers, keyboard navigation, reduced motion
+- ✅ **Deterministic Testing**: Fixtures, tagged tests, one-command QA
+- ✅ **Security-Hardened**: COOP/COEP, CSP, offline isolation
+
+**Status**: Ready for 20-50 user beta cohort with complete operational excellence.
+
 ## Next steps
 
 1. Configure SigNoz alerts for missing canaries and high error rate.
 2. Schedule monitoring via `.\scripts\schedule-monitoring.ps1` (run as admin).
 3. Confirm canary logs continue to land in SigNoz at the expected cadence.
+4. **Beta Launch**: Execute C8 Beta Launch Checklist for cohort rollout.
 
 ## Status
 
