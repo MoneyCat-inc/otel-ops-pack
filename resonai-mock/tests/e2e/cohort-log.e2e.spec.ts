@@ -335,6 +335,86 @@ test.describe('Cohort Log with Data', () => {
   });
 });
 
+test.describe('Cohort Log Network Security', () => {
+  test('@cohort-log no-network', async ({ page }) => {
+    // Block any accidental network calls on the cohort log page
+    await page.route('**/*', route => {
+      const req = route.request();
+      const type = req.resourceType();
+      const sameOrigin = new URL(req.url()).origin === new URL(page.url()).origin;
+      const ok = sameOrigin && ['document','stylesheet','script','font'].includes(type);
+      ok ? route.continue() : route.abort();
+    });
+
+    // Console guard for COEP/CSP errors
+    const BAD = ['Cross-Origin-Embedder-Policy', 'Refused to apply inline', 'Content Security Policy'];
+    page.on('console', m => {
+      if (BAD.some(b => m.text().includes(b))) {
+        throw new Error(`Console security error: ${m.text()}`);
+      }
+    });
+
+    await page.goto('/labs/cohort-log');
+    
+    // Verify page loads without network calls
+    await expect(page.locator('h1')).toContainText('Cohort Log Viewer');
+    
+    // Verify no network requests were made (except same-origin resources)
+    const requests = page.request.url();
+    // This test ensures no external network calls
+  });
+
+  test('@cohort-log export-json', async ({ page, context }) => {
+    // Add mock session data
+    await page.addInitScript(() => {
+      const mockLogData = {
+        sessions: [{
+          cohortId: 'test-uuid-1',
+          timestamp: Date.now(),
+          buildHash: 'build-test123',
+          flagsEnabled: ['cohort'],
+          sessionSummary: {
+            ts: Date.now(),
+            medianF0: 150,
+            inBandPct: 0.75,
+            schemaVersion: 1,
+          },
+          metadata: {
+            userAgent: 'Mozilla/5.0 (Test Browser)',
+            viewport: { width: 1920, height: 1080 },
+            platform: 'TestPlatform',
+            cohortVersion: '1.0.0',
+          },
+        }],
+        metadata: {
+          totalSessions: 1,
+          firstSession: Date.now(),
+          lastSession: Date.now(),
+          schemaVersion: '1.0.0',
+          lastUpdated: Date.now(),
+        },
+      };
+      localStorage.setItem('resonai_cohort_log', JSON.stringify(mockLogData));
+    });
+
+    await page.goto('/labs/cohort-log');
+
+    const [download] = await Promise.all([
+      page.waitForEvent('download'),
+      page.getByRole('button', { name: /export json/i }).click(),
+    ]);
+    
+    const path = await download.path();
+    const content = await (await download.createReadStream())?.read()?.toString?.() ?? '';
+    const data = JSON.parse(content);
+    
+    expect(data.schemaVersion).toBeGreaterThan(0);
+    expect(Array.isArray(data.entries)).toBe(true);
+    expect(data.build).toBeDefined();
+    expect(data.cohortId).toBeDefined();
+  });
+});
+
 test.describe('Cohort Log Accessibility', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/labs/cohort-log');

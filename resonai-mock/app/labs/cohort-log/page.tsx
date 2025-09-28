@@ -25,6 +25,7 @@ export default function CohortLogPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [announcement, setAnnouncement] = useState<string>('');
 
   // Load log data on mount
   useEffect(() => {
@@ -54,8 +55,10 @@ export default function CohortLogPage() {
     try {
       setActionLoading('export');
       await cohortLogger.downloadLog();
+      setAnnouncement('Log data exported successfully');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to export log');
+      setAnnouncement('Export failed');
     } finally {
       setActionLoading(null);
     }
@@ -70,8 +73,10 @@ export default function CohortLogPage() {
       setActionLoading('clear');
       await cohortLogger.clearLog();
       await loadLogData(); // Reload to show empty state
+      setAnnouncement('All log data cleared');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to clear log');
+      setAnnouncement('Clear operation failed');
     } finally {
       setActionLoading(null);
     }
@@ -111,6 +116,11 @@ export default function CohortLogPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Screen reader announcements */}
+      <div aria-live="polite" aria-atomic="true" className="sr-only">
+        {announcement}
+      </div>
+      
       <div className="max-w-6xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
@@ -196,7 +206,8 @@ export default function CohortLogPage() {
             <button
               onClick={handleExport}
               disabled={actionLoading === 'export' || !logData?.sessions.length}
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              aria-label="Export cohort log data as JSON file"
+              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
               {actionLoading === 'export' ? (
                 <>
@@ -219,7 +230,8 @@ export default function CohortLogPage() {
             <button
               onClick={handleClear}
               disabled={actionLoading === 'clear' || !logData?.sessions.length}
-              className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              aria-label="Clear all cohort log data"
+              className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
             >
               {actionLoading === 'clear' ? (
                 <>
@@ -242,7 +254,8 @@ export default function CohortLogPage() {
             <button
               onClick={loadLogData}
               disabled={actionLoading !== null}
-              className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              aria-label="Refresh cohort log data"
+              className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
             >
               <svg className="-ml-1 mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
