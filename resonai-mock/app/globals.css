@@ -52,3 +52,47 @@ body {
 .memx-hud .value.error {
   color: #f87171; /* red-400 */
 }
+
+/* Progress bar utilities for CSP compliance */
+.progress-bar {
+  @apply h-2 rounded-full transition-all duration-300;
+}
+
+.progress-bar-blue {
+  @apply bg-blue-600;
+}
+
+.progress-bar-green {
+  @apply bg-green-500;
+}
+
+.progress-bar-yellow {
+  @apply bg-yellow-500;
+}
+
+.progress-bar-red {
+  @apply bg-red-500;
+}
+
+/* Dynamic width classes */
+.progress-0 { width: 0%; }
+.progress-5 { width: 5%; }
+.progress-10 { width: 10%; }
+.progress-15 { width: 15%; }
+.progress-20 { width: 20%; }
+.progress-25 { width: 25%; }
+.progress-30 { width: 30%; }
+.progress-35 { width: 35%; }
+.progress-40 { width: 40%; }
+.progress-45 { width: 45%; }
+.progress-50 { width: 50%; }
+.progress-55 { width: 55%; }
+.progress-60 { width: 60%; }
+.progress-65 { width: 65%; }
+.progress-70 { width: 70%; }
+.progress-75 { width: 75%; }
+.progress-80 { width: 80%; }
+.progress-85 { width: 85%; }
+.progress-90 { width: 90%; }
+.progress-95 { width: 95%; }
+.progress-100 { width: 100%; }

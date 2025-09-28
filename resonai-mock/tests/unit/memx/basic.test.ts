@@ -5,8 +5,8 @@
  */
 
 import { describe, it, expect, beforeEach } from 'vitest';
-import { MemxFrame, MemxSession } from '../../src/engine/memx/types';
-import { MemxStore } from '../../src/engine/memx/store';
+import { MemxFrame, MemxSession } from '../../../src/engine/memx/types';
+import { MemxStore } from '../../../src/engine/memx/store';
 
 describe('MEMX Core Types', () => {
   it('should create valid MemxFrame', () => {

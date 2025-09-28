@@ -1,4 +1,8 @@
 /** @type {import('next').NextConfig} */
+
+// CSP nonce scaffold - set at runtime via middleware if needed
+const nonce = undefined; // set at runtime via middleware if needed
+
 const nextConfig = {
   // Note: crossOriginIsolated is handled via headers, not experimental config
   async headers() {
@@ -30,34 +34,44 @@ const nextConfig = {
             key: 'X-Content-Type-Options',
             value: 'nosniff',
           },
-          // Security headers
-          {
-            key: 'X-Frame-Options',
-            value: 'SAMEORIGIN',
-          },
-          {
-            key: 'Referrer-Policy',
-            value: 'strict-origin-when-cross-origin',
-          },
-          // Enhanced CSP for Chromium
+          // Extra hardening (optional)
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+          { key: 'Permissions-Policy', value: 'microphone=(self), camera=(), geolocation=(), payment=()' },
+          // Strict CSP for prod; relaxed in dev via Next's overlay
           {
             key: 'Content-Security-Policy',
-            // More permissive CSP for development, but still secure
-            value: [
-              "default-src 'self'",
-              "script-src 'self' 'unsafe-eval' 'unsafe-inline' blob:",
-              "style-src 'self' 'unsafe-inline'",
-              "img-src 'self' data: https: blob:",
-              "connect-src 'self' http://localhost:* https:",
-              "worker-src 'self' blob:",
-              "child-src 'self' blob:",
-              "frame-src 'self'",
-              "object-src 'none'",
-              "base-uri 'self'",
-              "form-action 'self'",
-              "frame-ancestors 'self'",
-              "upgrade-insecure-requests"
-            ].join('; '),
+            value: process.env.NODE_ENV === 'production' 
+              ? [
+                  "default-src 'self'",
+                  `script-src 'self'${nonce ? ` 'nonce-${nonce}'` : ''}`, // add nonce at runtime
+                  "style-src 'self'",                               // no inline styles
+                  "img-src 'self' data: https: blob:",              // allow images from HTTPS
+                  "font-src 'self'",
+                  "connect-src 'self' blob:",                       // worklet/ONNX fetch if local
+                  "worker-src 'self' blob:",                        // Audio/Worklet compatibility
+                  "child-src 'self' blob:",                         // AudioWorklet support
+                  "frame-ancestors 'none'",
+                  "object-src 'none'",
+                  "base-uri 'self'",
+                  "form-action 'self'",
+                  "upgrade-insecure-requests"
+                ].join('; ')
+              : [
+                  "default-src 'self'",
+                  "script-src 'self' 'unsafe-eval' 'unsafe-inline' blob:",
+                  "style-src 'self' 'unsafe-inline'",
+                  "img-src 'self' data: https: blob:",
+                  "connect-src 'self' http://localhost:* https:",
+                  "worker-src 'self' blob:",
+                  "child-src 'self' blob:",
+                  "frame-src 'self'",
+                  "object-src 'none'",
+                  "base-uri 'self'",
+                  "form-action 'self'",
+                  "frame-ancestors 'self'",
+                  "upgrade-insecure-requests"
+                ].join('; '),
           },
         ],
       },
