@@ -21,7 +21,7 @@ function Invoke-OtlpRequest {
 
     $endpoints = @(
         "http://localhost:5318/$Path",
-        "http://localhost:4318/$Path"
+        "http://localhost:14318/$Path"
     )
 
     $lastError = $null

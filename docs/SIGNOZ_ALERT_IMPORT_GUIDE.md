@@ -1,167 +1,130 @@
 # SigNoz Alert Import Guide
 
-## Overview
+## Manual Import Method (Recommended for Local Development)
 
-This guide explains how to import and configure the ECRR Canary alert in SigNoz to monitor the health of the OpenTelemetry canary testing system.
+Since the API token authentication is not working for the local SigNoz instance, use the manual import method:
 
-## Prerequisites
+### Step 1: Access SigNoz UI
+1. Open your browser and go to: http://localhost:8080
+2. Log in to your SigNoz instance
 
-- SigNoz UI accessible at `http://localhost:8080`
-- Admin access to SigNoz
-- ECRR canary scheduler running (`OTel-ECRR-Canary` task)
-- Alert JSON file: `signoz-ecrr-canary-alert.json`
+### Step 2: Navigate to Alerts
+1. Click on "Alerts" in the left sidebar
+2. Click "Create Alert" or "New Alert"
 
-## Alert Configuration
+### Step 3: Configure Main Alert
+Use the following settings for the **Windows Canary Log Absence** alert:
 
-The ECRR Canary alert monitors for missing canary signals in the observability pipeline:
+**Basic Settings:**
+- **Name**: `Windows Canary Log Absence`
+- **Description**: `Alert when Windows canary logs stop appearing for more than 5 minutes`
+- **Severity**: `Critical`
 
-- **Alert Name**: ECRR Canary Missing
-- **Severity**: Warning
-- **Threshold**: Less than 1 canary in 15 minutes
-- **Evaluation Window**: 15 minutes
-- **Alert Frequency**: Every 5 minutes
-- **Query**: `service.name = 'ecrr-canary' AND attributes.canary.type = 'ecrr-enhanced'`
+**Query Configuration:**
+- **Query Type**: `Logs`
+- **Query**: 
+```
+log.file.path = 'C:/logs/windows-canary-test.log' AND body contains 'windows-canary' | stats count() as log_count by bin(1m)
+```
+- **Group By**: `log.file.path`
+- **Legend Format**: `{{log.file.path}}`
 
-## Import Steps
+**Alert Conditions:**
+- **Threshold**: `1`
+- **Operator**: `Below`
+- **Evaluation Window**: `5m`
+- **Alert Frequency**: `1m`
+- **Notification on Missing Data**: `Enabled`
+- **Minimum Data Points**: `1`
 
-### 1. Access SigNoz Alerts
+**Labels:**
+- `alert_type`: `canary`
+- `service`: `windows-logs`
+- `environment`: `local`
 
-1. Open SigNoz UI: `http://localhost:8080`
-2. Navigate to **Alerts** in the left sidebar
-3. Click **New Alert** button
+**Annotations:**
+- **Summary**: `Windows canary logs have stopped appearing`
+- **Description**: `No Windows canary logs detected for 5 minutes. This indicates potential issues with Windows log collection or processing.`
 
-### 2. Import Alert Configuration
+### Step 4: Configure Test Alert
+Repeat the process for the **Windows Canary Test Alert**:
 
-1. Click **Import JSON** or **Import** button
-2. Open the file `signoz-ecrr-canary-alert.json` from the project root
-3. Copy the entire JSON content
-4. Paste into the import dialog
-5. Click **Import** or **Save**
+**Basic Settings:**
+- **Name**: `Windows Canary Test Alert`
+- **Description**: `Test alert for Windows canary log absence detection`
+- **Severity**: `Warning`
 
-### 3. Configure Notification Channels
-
-1. After import, click on the **ECRR Canary Missing** alert
-2. Navigate to **Notifiers** tab
-3. Add notification channels:
-   - **email-default**: For email notifications
-   - **slack-default**: For Slack notifications (if configured)
-
-### 4. Save and Activate
-
-1. Click **Save** to save the alert configuration
-2. Ensure the alert is **Active** (toggle should be ON)
-3. The alert will start monitoring immediately
-
-## Verification
-
-### 1. Check Alert Status
-
-1. Go to **Alerts** → **Alert List**
-2. Find **ECRR Canary Missing** alert
-3. Verify status is **Active**
-4. Check last evaluation time
-
-### 2. Test Alert (Optional)
-
-To test the alert:
-
-1. Stop the ECRR canary scheduler:
-   ```powershell
-   Disable-ScheduledTask -TaskName 'OTel-ECRR-Canary'
-   ```
-
-2. Wait 15+ minutes for the alert to trigger
-
-3. Check alert status in SigNoz UI
-
-4. Re-enable the scheduler:
-   ```powershell
-   Enable-ScheduledTask -TaskName 'OTel-ECRR-Canary'
-   ```
-
-### 3. Verify Canary Data
-
-Check that canary data is flowing:
-
-1. Go to **Logs** in SigNoz UI
-2. Apply filter: `service.name = 'ecrr-canary' AND attributes.canary.type = 'ecrr-enhanced'`
-3. Should see recent canary entries every ~10 minutes
-
-## Alert Details
-
-### Query Breakdown
-
-```sql
-service.name = 'ecrr-canary' AND attributes.canary.type = 'ecrr-enhanced'
+**Query Configuration:**
+- **Query Type**: `Logs`
+- **Query**: 
+```
+log.file.path = 'C:/logs/windows-canary-test.log' AND body contains 'windows-canary' | stats count() as log_count by bin(1m)
 ```
 
-- **service.name**: Filters for the canary service
-- **attributes.canary.type**: Filters for ECRR-enhanced canary type
-- **Group By**: Groups by service name and canary type for counting
+**Alert Conditions:**
+- **Threshold**: `1`
+- **Operator**: `Below`
+- **Evaluation Window**: `2m`
+- **Alert Frequency**: `1m`
 
-### Condition Logic
+**Labels:**
+- `alert_type`: `canary_test`
+- `service`: `windows-logs`
+- `environment`: `local-test`
 
-- **Threshold**: 1 (minimum expected canaries)
-- **Operator**: below (alert when count is below threshold)
-- **Evaluation Window**: 15 minutes (looks back 15 minutes)
-- **Alert Frequency**: 5 minutes (re-evaluates every 5 minutes)
-- **Missing Data**: Alert if no data points in evaluation window
+### Step 5: Create Dashboard Panels
 
-### Expected Behavior
+Navigate to **Dashboards** and create a new dashboard called "Windows Canary Log Health":
 
-- **Normal**: Alert remains green, no notifications
-- **Missing Canary**: Alert triggers after 15 minutes of no canary data
-- **Recovery**: Alert resolves when canary data resumes
+**Panel 1: Canary Log Count**
+- **Title**: `Canary Log Count (Last Hour)`
+- **Type**: `Stat`
+- **Query**: 
+```
+log.file.path = 'C:/logs/windows-canary-test.log' AND body contains 'windows-canary' | stats count()
+```
+- **Thresholds**: Warning: 10, Critical: 5
+
+**Panel 2: Canary Log Rate**
+- **Title**: `Canary Log Rate (per minute)`
+- **Type**: `Line`
+- **Query**: 
+```
+log.file.path = 'C:/logs/windows-canary-test.log' AND body contains 'windows-canary' | stats count() by bin(1m)
+```
+
+**Panel 3: Last Timestamp**
+- **Title**: `Last Canary Log Timestamp`
+- **Type**: `Stat`
+- **Query**: 
+```
+log.file.path = 'C:/logs/windows-canary-test.log' AND body contains 'windows-canary' | stats latest(@timestamp)
+```
+
+### Step 6: Verify Setup
+
+1. **Check Log Ingestion**: Go to **Logs** → Apply filter: `log.file.path = 'C:/logs/windows-canary-test.log' AND body contains 'windows-canary'`
+2. **Verify Alerts**: Go to **Alerts** → Check that both alerts are active
+3. **Test Dashboard**: Go to **Dashboards** → Open "Windows Canary Log Health"
+
+## Alternative: Session Cookie Method
+
+If you prefer API automation, you can extract session cookies from your browser:
+
+1. Open browser dev tools (F12)
+2. Go to Application/Storage → Cookies → http://localhost:8080
+3. Find the session cookie (usually named `session` or similar)
+4. Use it in API calls instead of Bearer token
 
 ## Troubleshooting
 
-### Alert Not Triggering
+- **No logs visible**: Ensure the OpenTelemetry collector is running and canary logs are being generated
+- **Alerts not triggering**: Check that the query syntax is correct and logs are being ingested
+- **Dashboard empty**: Verify the time range and query filters
 
-1. **Check Query**: Verify the query matches actual log data
-2. **Check Time Range**: Ensure evaluation window covers recent data
-3. **Check Threshold**: Verify threshold is appropriate
-4. **Check Data Flow**: Confirm canary data is reaching SigNoz
+## Next Steps
 
-### Alert Triggering Too Often
-
-1. **Increase Threshold**: If canary frequency is lower than expected
-2. **Adjust Evaluation Window**: Increase window if canaries are irregular
-3. **Check Query**: Ensure query is not too broad
-
-### No Canary Data
-
-1. **Check Scheduler**: Verify `OTel-ECRR-Canary` task is running
-2. **Check Collector**: Ensure OTel collector is running and receiving data
-3. **Check Logs**: Look for errors in canary execution logs
-4. **Check Network**: Verify OTLP endpoint connectivity
-
-## Maintenance
-
-### Regular Checks
-
-- Monitor alert status weekly
-- Verify canary data is flowing
-- Check notification channels are working
-- Review alert frequency and thresholds
-
-### Updates
-
-- Alert configuration can be modified in SigNoz UI
-- JSON file can be updated and re-imported
-- Notification channels can be added/removed as needed
-
-## Related Files
-
-- `signoz-ecrr-canary-alert.json`: Alert configuration
-- `scripts/canary-ecrr.ps1`: Canary execution script
-- `C:\otel\artifacts\canary-ecrr-report.txt`: Latest canary report
-- `C:\logs\ecrr-canary-test.log`: Canary execution logs
-
-## Support
-
-For issues with this alert configuration:
-
-1. Check SigNoz documentation
-2. Review canary execution logs
-3. Verify OTel collector configuration
-4. Check Windows Event Log for canary entries
+1. Set up notification channels (email, Slack, etc.)
+2. Test alert triggering by stopping canary generation
+3. Monitor alert status and fine-tune thresholds
+4. Consider setting up alert rules for production use

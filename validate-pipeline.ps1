@@ -138,7 +138,7 @@ $logPayload = [pscustomobject]@{
     resourceLogs = @($resourceLog)
 } | ConvertTo-Json -Depth 10
 
-$otlpEndpoints = @("http://localhost:5318/v1/logs", "http://localhost:4318/v1/logs")
+$otlpEndpoints = @("http://localhost:5318/v1/logs", "http://localhost:14318/v1/logs")
 $sent = $false
 $spinnerJob = Start-SpinnerJob -Message "Sending test log..." -UpdateIntervalMs 150
 foreach ($endpoint in $otlpEndpoints) {

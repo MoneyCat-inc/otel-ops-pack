@@ -1,0 +1,104 @@
+{
+  "version": 1,
+  "defaults": {
+    "priority": 8,
+    "ttlMs": 43200000,
+    "maxAttempts": 3
+  },
+  "jobs": [
+    {
+      "id": "recur-a11y-scan",
+      "type": "a11y-scan",
+      "intervalMs": 86400000,
+      "priority": 9,
+      "payload": {
+        "description": "Run ARIA/live-region/keyboard focus sweep; add missing aria-live, roles, labels.",
+        "paths": ["app", "src/components", "src/app"],
+        "requirements": [
+          "Scan for unlabeled buttons and inputs",
+          "Add missing ARIA roles and labels",
+          "Implement aria-live regions for async feedback",
+          "Ensure keyboard focus order and reduced-motion fallbacks",
+          "Run NVDA/VoiceOver smoke tests"
+        ]
+      }
+    },
+    {
+      "id": "recur-csp-scan",
+      "type": "csp-scan",
+      "intervalMs": 86400000,
+      "priority": 8,
+      "payload": {
+        "description": "CSP & inline-style drift check; block dangerouslySetInnerHTML usage.",
+        "paths": ["app", "src", "public"],
+        "requirements": [
+          "Find and replace inline styles with utility classes",
+          "Remove or guard dangerouslySetInnerHTML usage",
+          "Update CSP documentation if needed",
+          "Ensure zero inline styles in changed files"
+        ]
+      }
+    },
+    {
+      "id": "recur-isolation-offline",
+      "type": "offline-isolation",
+      "intervalMs": 86400000,
+      "priority": 8,
+      "payload": {
+        "description": "Verify COOP/COEP headers are preserved via SW; ensure crossOriginIsolated=true offline.",
+        "tests": ["playwright/tests/isolation_headers.spec.ts"],
+        "requirements": [
+          "Verify crossOriginIsolated online and offline",
+          "Ensure service worker forwards/sets COOP/COEP headers",
+          "Add tests if missing",
+          "Ensure isolation spec passes in both modes"
+        ]
+      }
+    },
+    {
+      "id": "recur-ssot-refresh",
+      "type": "ssot-refresh",
+      "intervalMs": 43200000,
+      "priority": 7,
+      "payload": {
+        "description": "Regenerate .artifacts/SSOT.md and sync RUN_AND_VERIFY.md top block.",
+        "requirements": [
+          "Parse current test JSONs",
+          "Compare to .artifacts/SSOT.md",
+          "Regenerate SSOT and update RUN_AND_VERIFY.md",
+          "Keep SSOT and docs in sync"
+        ]
+      }
+    },
+    {
+      "id": "recur-flake-quarantine",
+      "type": "flake-quarantine",
+      "intervalMs": 86400000,
+      "priority": 6,
+      "payload": {
+        "description": "Parse nightly Playwright/Vitest reports; tag @flaky and open PR to quarantine.",
+        "artifacts": [".artifacts/test-reports/playwright.json", ".artifacts/test-reports/vitest.json"],
+        "requirements": [
+          "Read nightly test artifacts",
+          "Identify flaky specifications",
+          "Tag @flaky and open PR with reason",
+          "Ensure PR lane remains deterministic"
+        ]
+      }
+    },
+    {
+      "id": "recur-docs-drift",
+      "type": "docs-drift",
+      "intervalMs": 86400000,
+      "priority": 5,
+      "payload": {
+        "description": "Detect README / RUN_AND_VERIFY / TASKS drift from SSOT; propose doc updates.",
+        "requirements": [
+          "Detect divergence between SSOT and documentation",
+          "Update docs or open PR with suggested edits",
+          "Ensure docs match SSOT with minimal churn"
+        ]
+      }
+    }
+  ]
+}

@@ -1,273 +1,114 @@
-# ECRR Report Template - Enhanced 4-Section Structure
+# ECRR Report Template
 
-**Date**: YYYY-MM-DD  
-**Time**: HH:MM:SS UTC  
-**Agent**: [Agent Name - Cursor Agent/Cursor-Local/ChatGPT Agent/Codex Agent/BossCat/QA Scribe]  
-**Role**: [Role - Observability Copilot/OTel Steward/Agent Coordinator/Local Worker/etc.]  
-**Task**: [Brief task description]  
-**ECRR ID**: [Optional - for tracking specific initiatives]
+**Task**: *<Task Description>*  
+**Type**: *<Task Type (a11y-fix, audio-upgrade, ui-enhancement, etc.)>*  
+**Status**: *<completed|failed|in-progress>*  
+**Completed**: *<Timestamp>*  
+**Agent**: cursor-gap-closer  
 
----
+## 🔍 Examine
 
-## 📋 **ECRR Compliance Checklist - MANDATORY**
+### Environment State (Before)
+- **OS**: Windows 11
+- **IDE**: Cursor
+- **Agent Status**: *<running|idle|locked>*
+- **Queue Position**: *<Priority/Position>*
+- **Dependencies**: *<List any dependencies or prerequisites>*
 
-> **⚠️ CRITICAL**: All ECRR reports MUST follow the 4-section structure and include the ECRR Gate section with completed checkboxes. Reports without proper structure and ECRR Gate validation will be considered non-compliant.
+### Current State Capture
+- **Files to Modify**: *<List files from task payload>*
+- **Current Implementation**: *<Describe current state of target components>*
+- **Performance Baseline**: *<Audio latency, accessibility score, etc.>*
+- **Accessibility Audit**: *<Current WCAG compliance status>*
 
-### **Structure Requirements**
-- [ ] **4-Section Structure**: Examine → Clean → Report → Role format followed
-- [ ] **ECRR Gate**: Formal validation section completed with all checkboxes
-- [ ] **Status Declaration**: Success/failure/completion status specified in header
+### Evidence Collected
+- **Screenshots**: *<Before state screenshots>*
+- **Console Logs**: *<Relevant console output>*
+- **Performance Metrics**: *<Baseline measurements>*
+- **Accessibility Scan**: *<Current a11y issues>*
 
-### **Content Requirements**
-- [ ] **Actor Declaration**: Agent and role clearly stated in header and Role section
-- [ ] **Evidence Attachment**: Screenshots, logs, configs, test outputs included
-- [ ] **Guardrail Compliance**: Local-first, safety, idempotence, verification principles followed
-- [ ] **Artifact Documentation**: All files, scripts, and changes documented
-- [ ] **Reproducible Validation**: Runnable checks provided for every change
+## 🧹 Clean
 
-### **Quality Requirements**
-- [ ] **Root Cause Analysis**: Underlying causes identified and documented
-- [ ] **Before/After Comparison**: Quantifiable improvements shown
-- [ ] **Validation Results**: All verification steps completed successfully
-- [ ] **Next Actions**: Clear follow-up steps defined
+### Actions Taken
+- **Code Changes**: *<Specific modifications made>*
+- **File Updates**: *<Files modified with brief description>*
+- **Configuration Changes**: *<Any config updates>*
+- **Dependency Updates**: *<Package or library changes>*
 
----
+### Guardrails Enforced
+- ✅ **No Inline Styles**: Used `app/ui.css` utilities only
+- ✅ **WCAG AA Compliance**: Maintained accessibility standards
+- ✅ **ARIA Implementation**: Added proper labels and roles
+- ✅ **Performance Budget**: Stayed within latency targets
+- ✅ **Local-First**: No external network calls
+- ✅ **ECRR Compliance**: Followed Examine → Clean → Report → Role
 
-## 🔍 **1. Examine**
+### Quality Assurance
+- **Linting**: *<ESLint/TSLint results>*
+- **Type Checking**: *<TypeScript compilation status>*
+- **Accessibility Testing**: *<a11y audit results>*
+- **Performance Testing**: *<Latency/performance metrics>*
 
-### **Initial State Captured**
-- **Environment**: [OS, tools, versions]
-- **Current State**: [What was observed before changes]
-- **Key Findings**: [Critical issues or opportunities identified]
-- **Attached Evidence**: [Screenshots, logs, configs, test outputs]
+## 📝 Report
 
-### **Key Findings**
-- **[Finding 1]**: [Description and impact]
-- **[Finding 2]**: [Description and impact]
-- **[Finding 3]**: [Description and impact]
+### Changes Summary
+- **Files Modified**: *<List of changed files>*
+- **Lines Added**: *<Number of lines added>*
+- **Lines Removed**: *<Number of lines removed>*
+- **Lines Modified**: *<Number of lines changed>*
 
-### **Attached Evidence**
-- Screenshots: [What was captured visually]
-- Console logs: [Command outputs and errors]
-- Configuration files: [Files examined or modified]
-- Test outputs: [Validation results]
+### Implementation Details
+- **New Features**: *<Description of new functionality>*
+- **Bug Fixes**: *<Issues resolved>*
+- **Performance Improvements**: *<Optimizations made>*
+- **Accessibility Enhancements**: *<a11y improvements>*
 
----
+### Evidence of Success
+- **Screenshots**: *<After state screenshots>*
+- **Test Results**: *<Unit/integration test outcomes>*
+- **Performance Metrics**: *<Post-implementation measurements>*
+- **Accessibility Audit**: *<Final a11y compliance status>*
 
-## 🧹 **2. Clean**
+### Artifacts Generated
+- **ECRR Report**: *<This report file>*
+- **Code Changes**: *<Modified source files>*
+- **Documentation**: *<Updated docs if applicable>*
+- **Test Results**: *<Test output files>*
 
-### **Drift Removal**
-- **[Issue 1]**: [What was cleaned/fixed]
-- **[Issue 2]**: [What was cleaned/fixed]
-- **[Issue 3]**: [What was cleaned/fixed]
+## 🎭 Role
 
-### **Guardrail Enforcement**
-- **Local-First**: [How local-first principle was maintained]
-- **Safety**: [Security measures implemented]
-- **Idempotence**: [How changes can be safely re-run]
-- **Verification**: [How changes were verified]
+### Actor Declaration
+**Agent**: cursor-gap-closer (Cursor Agent)  
+**Responsibility**: UI/UX and audio-engine implementation  
+**Methodology**: ECRR (Examine → Clean → Report → Role)  
+**Guardrails**: WCAG AA, no inline styles, ARIA compliance, local-first  
 
-### **Service Worker & Cache Management**
-- **Git Branches**: [Branch cleanup actions]
-- **Temporary Files**: [File cleanup performed]
-- **Port Conflicts**: [Port management actions]
-- **Process Management**: [Background process cleanup]
+### Task Completion Criteria
+- [ ] **Accessibility**: All interactive elements have proper ARIA labels and keyboard support
+- [ ] **Performance**: Audio latency < 200ms, no frame drops during processing
+- [ ] **Mobile**: Touch targets ≥ 44px, responsive breakpoints working
+- [ ] **Standards**: WCAG AA compliance verified, no inline styles present
+- [ ] **Documentation**: ECRR report generated, component docs updated
 
----
+### Next Actions
+- **Follow-up Tasks**: *<Related tasks that should be queued>*
+- **Monitoring**: *<What to watch for in production>*
+- **Documentation**: *<Any docs that need updating>*
+- **Testing**: *<Additional testing needed>*
 
-## 📝 **3. Report**
-
-### **Actions Taken**
-
-#### **[Category 1]**
-1. **[Action 1]**: [Description]
-2. **[Action 2]**: [Description]
-3. **[Action 3]**: [Description]
-
-#### **[Category 2]**
-1. **[Action 1]**: [Description]
-2. **[Action 2]**: [Description]
-3. **[Action 3]**: [Description]
-
-### **Results Achieved**
-
-#### **Before/After Comparison**
-- **Before**: [Initial state]
-- **After**: [Final state]
-- **Improvement**: [Quantifiable improvement]
-
-#### **Regression Analysis**
-- **No Breaking Changes**: [Compatibility maintained]
-- **Enhanced Reliability**: [Reliability improvements]
-- **Improved Observability**: [Monitoring enhancements]
-- **Better User Experience**: [UX improvements]
-
-#### **TODOs Completed**
-- ✅ [Completed task 1]
-- ✅ [Completed task 2]
-- ✅ [Completed task 3]
+### Risk Assessment
+- **Low Risk**: *<Changes that are safe and reversible>*
+- **Medium Risk**: *<Changes that need monitoring>*
+- **High Risk**: *<Changes that require careful review>*
+- **Rollback Plan**: *<How to revert if issues arise>*
 
 ---
 
-## 🎭 **4. Role**
+## ✅ ECRR Gate Summary
 
-### **Actor Declaration**
-**[Agent Name]** acting as **[Role]**
+**Examine**: *<Brief summary of state captured>*  
+**Clean**: *<Brief summary of actions taken>*  
+**Report**: *<Brief summary of results>*  
+**Role**: *<Actor and responsibility declaration>*  
 
-**Scope**: [Scope of responsibility]  
-**Responsibilities**: 
-- [Responsibility 1]
-- [Responsibility 2]
-- [Responsibility 3]
-
-**Guardrails Respected**:
-- Local-first (no external cloud dependencies)
-- Safety (no secrets exposed)
-- Idempotence (scripts re-runnable)
-- Verification (runnable checks for every change)
-
-**Integration**: 
-- [How this integrates with existing systems]
-- [Compatibility maintained]
-- [Environment considerations]
-
----
-
-## ✅ **ECRR Gate - MANDATORY VALIDATION**
-
-> **⚠️ CRITICAL**: This section is MANDATORY for all ECRR reports. All checkboxes must be completed for report compliance.
-
-### **🔍 Examine**
-- [ ] **Initial State Captured**: Environment state documented before changes
-- [ ] **Environment Documented**: OS, tools, versions, and system status recorded
-- [ ] **Key Findings Identified**: Critical issues or opportunities documented
-- [ ] **Evidence Attached**: Screenshots, logs, configs, test outputs included
-- [ ] **Root Cause Analysis**: Underlying causes identified and documented
-
-### **🧹 Clean**
-- [ ] **Drift Removed**: All identified issues addressed and resolved
-- [ ] **Guardrails Enforced**: Local-first, safety, idempotence, verification principles followed
-- [ ] **Service Management**: Services restarted, ports cleared, conflicts resolved
-- [ ] **File Cleanup**: Temporary files, caches, and artifacts cleaned
-- [ ] **Process Management**: Background processes and conflicts resolved
-
-### **📝 Report**
-- [ ] **Actions Documented**: All actions taken clearly described
-- [ ] **Results Achieved**: Before/after comparison with quantifiable improvements
-- [ ] **TODOs Completed**: All planned tasks marked as completed
-- [ ] **Comprehensive Documentation**: All changes and artifacts documented
-- [ ] **Validation Results**: All verification steps completed successfully
-
-### **🎭 Role**
-- [ ] **Actor Declared**: Agent name and role clearly stated in header and Role section
-- [ ] **Scope Defined**: Clear boundaries of responsibility established
-- [ ] **Guardrails Respected**: All ECRR principles followed throughout
-- [ ] **Integration Maintained**: Compatibility with existing systems preserved
-- [ ] **Accountability Established**: Clear ownership and responsibility declared
-
-### **📊 Quality Assurance**
-- [ ] **4-Section Structure**: Complete Examine → Clean → Report → Role format followed
-- [ ] **Status Declaration**: Clear success/failure/completion status specified
-- [ ] **Artifact Documentation**: All files, scripts, and changes documented
-- [ ] **Reproducible Validation**: Runnable checks provided for every change
-- [ ] **ECRR Compliance**: All mandatory elements included and validated
-- [ ] **Template Adherence**: Report follows enhanced ECRR template structure
-- [ ] **Evidence Quality**: All evidence is relevant, clear, and properly documented
-- [ ] **Action Clarity**: All actions taken are clearly described and justified
-
----
-
-## 📊 **Validation Results**
-
-### **[Validation Category 1]**
-- ✅ **[Result 1]**: [Description]
-- ✅ **[Result 2]**: [Description]
-- ✅ **[Result 3]**: [Description]
-
-### **[Validation Category 2]**
-- ✅ **[Result 1]**: [Description]
-- ✅ **[Result 2]**: [Description]
-- ✅ **[Result 3]**: [Description]
-
----
-
-## 🎯 **Success Criteria Met**
-
-### **[Criteria Category 1]**
-- ✅ [Success criterion 1]
-- ✅ [Success criterion 2]
-- ✅ [Success criterion 3]
-
-### **[Criteria Category 2]**
-- ✅ [Success criterion 1]
-- ✅ [Success criterion 2]
-- ✅ [Success criterion 3]
-
----
-
-## 🔄 **Next Actions**
-
-### **Immediate**
-1. [Immediate action 1]
-2. [Immediate action 2]
-3. [Immediate action 3]
-
-### **Short-term**
-1. [Short-term action 1]
-2. [Short-term action 2]
-3. [Short-term action 3]
-
-### **Long-term**
-1. [Long-term action 1]
-2. [Long-term action 2]
-3. [Long-term action 3]
-
----
-
-## 📋 **Artifacts Created**
-
-### **Configuration Files**
-- [File 1] - [Description]
-- [File 2] - [Description]
-- [File 3] - [Description]
-
-### **Scripts**
-- [Script 1] - [Description]
-- [Script 2] - [Description]
-- [Script 3] - [Description]
-
-### **Documentation**
-- [Doc 1] - [Description]
-- [Doc 2] - [Description]
-- [Doc 3] - [Description]
-
----
-
-## 🏆 **Final ECRR Status**
-
-### **Report Completion Status**
-- **ECRR Gate Compliance**: [ ] ✅ COMPLETE / [ ] ❌ NON-COMPLIANT
-- **4-Section Structure**: [ ] ✅ COMPLETE / [ ] ❌ INCOMPLETE  
-- **Evidence Documentation**: [ ] ✅ COMPLETE / [ ] ❌ INCOMPLETE
-- **Actor Declaration**: [ ] ✅ COMPLETE / [ ] ❌ INCOMPLETE
-- **Validation Results**: [ ] ✅ ALL PASSED / [ ] ❌ FAILURES DETECTED
-- **Template Adherence**: [ ] ✅ COMPLETE / [ ] ❌ INCOMPLETE
-- **Quality Requirements**: [ ] ✅ COMPLETE / [ ] ❌ INCOMPLETE
-
-### **Overall Assessment**
-**ECRR Report Status**: [ ] ✅ **COMPLETE AND COMPLIANT** / [ ] ❌ **NON-COMPLIANT**
-
-### **Compliance Score**
-- **Structure Compliance**: [ ] ✅ 100% / [ ] ⚠️ PARTIAL / [ ] ❌ NON-COMPLIANT
-- **Content Compliance**: [ ] ✅ 100% / [ ] ⚠️ PARTIAL / [ ] ❌ NON-COMPLIANT
-- **Quality Compliance**: [ ] ✅ 100% / [ ] ⚠️ PARTIAL / [ ] ❌ NON-COMPLIANT
-
-**Completion Summary**: [Brief summary of completion status and achievements]
-
-**Final Status**: ✅ **SUCCESS** - [Final status and achievements]
-
----
-
-> **📋 ECRR Compliance Note**: This report has been validated against the enhanced ECRR template requirements. All mandatory elements have been included and verified for compliance with the ECRR framework standards.
-
-**ECRR Mantra**: *Examine → Clean → Report → Role - Every change must begin with evidence, remove drift, leave an artifact, and declare its actor.*
+*Generated by cursor-gap-closer agent on $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss UTC')*

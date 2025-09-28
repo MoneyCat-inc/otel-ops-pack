@@ -81,7 +81,17 @@
     "sbom:sign": "pwsh -File scripts/supplychain/sign-sbom.ps1",
     "docker:watchdog:build": "docker build -f docker/Dockerfile.watchdog -t codex-local:watchdog .",
     "helm:lint": "helm lint helm/codex-local",
-    "agent:auto-pr": "pwsh -File scripts/agent/auto-pr.ps1"
+    "agent:auto-pr": "pwsh -File scripts/agent/auto-pr.ps1",
+    "cursor:start": "pwsh -File scripts/agent/cursor-gap-closer.ps1",
+    "cursor:status": "pwsh -File scripts/agent/cursor-gap-closer.ps1 -Status",
+    "cursor:stop": "pwsh -File scripts/agent/cursor-gap-closer.ps1 -Stop",
+    "cursor:resume": "pwsh -File scripts/agent/cursor-gap-closer.ps1 -Resume",
+    "cursor:process": "pwsh -File scripts/cursor-agent-processor.ps1",
+    "cursor:process-all": "pwsh -File scripts/cursor-agent-processor.ps1 -ProcessAll",
+    "cursor:list-tasks": "pwsh -File scripts/cursor-agent-processor.ps1 -ListTasks",
+    "cursor:task": "pwsh -File scripts/cursor-agent-processor.ps1 -TaskId",
+    "cursor:inject": "pwsh -File scripts/agent/recurring-job-injector.ps1",
+    "cursor:inject-dry": "pwsh -File scripts/agent/recurring-job-injector.ps1 -DryRun"
   },
   "keywords": [
     "observability",

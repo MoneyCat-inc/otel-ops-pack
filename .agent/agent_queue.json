@@ -1,60 +1,202 @@
-{
-  "version": 1,
-  "lastRun": null,
-  "jobs": [
-    {
-      "id": "env-ready",
-      "type": "health-check",
-      "command": "pnpm agent:doctor",
-      "schedule": "RRULE:FREQ=HOURLY;BYMINUTE=0;BYSECOND=0",
-      "deps": [],
-      "ttlMs": 3600000,
-      "attempts": 1,
-      "maxAttempts": 3,
-      "backoffMs": 300000,
-      "status": "completed",
-      "lastResult": {
-        "duration": 1.4084304,
-        "exitCode": 1,
-        "completedAt": "2025-09-27T18:23:39.1159973+01:00",
-        "success": true
-      }
-    },
-    {
-      "id": "otel-wiring-check",
-      "type": "health-check",
-      "command": "pwsh -File scripts/verify-wiring.ps1",
-      "schedule": "RRULE:FREQ=DAILY;BYHOUR=9;BYMINUTE=0;BYSECOND=0",
-      "deps": [
-        "env-ready"
-      ],
-      "ttlMs": 86400000,
-      "attempts": 1,
-      "maxAttempts": 3,
-      "backoffMs": 900000,
-      "status": "completed",
-      "lastResult": {
-        "duration": 17.4764678,
-        "exitCode": 0,
-        "completedAt": "2025-09-27T18:23:56.6396202+01:00",
-        "success": true
-      }
-    },
-    {
-      "id": "otel-analytics-monitor",
-      "type": "monitor",
-      "command": "pwsh -File scripts/monitor-analytics-ingestion.ps1",
-      "schedule": "RRULE:FREQ=HOURLY;BYMINUTE=30;BYSECOND=0",
-      "deps": [
-        "env-ready",
-        "otel-wiring-check"
-      ],
-      "ttlMs": 3600000,
-      "attempts": 0,
-      "maxAttempts": 2,
-      "backoffMs": 600000,
-      "status": "queued",
-      "lastResult": null
+[
+  {
+    "id": "task-mobile-perf-stability-001",
+    "type": "test-maintenance",
+    "priority": 10,
+    "ttlMs": 86400000,
+    "maxAttempts": 3,
+    "createdAt": "2025-09-28T06:00:00Z",
+    "payload": {
+      "description": "Maintain mobile performance test stability across all browsers",
+      "files": "resonai-mock/tests/e2e/mobile-performance.spec.ts resonai-mock/playwright.config.ts",
+      "requirements": "Monitor test stability across chromium, firefox, android, ios Update browser-specific error handling as needed Ensure timeout configurations remain appropriate",
+      "evidence": "All 12 mobile performance tests currently passing - need ongoing maintenance"
     }
-  ]
-}
+  },
+  {
+    "id": "task-memx-integration-001",
+    "type": "integration-enhancement",
+    "priority": 9,
+    "ttlMs": 86400000,
+    "maxAttempts": 3,
+    "createdAt": "2025-09-28T06:00:00Z",
+    "payload": {
+      "description": "Enhance MEMX engine integration with audio processing components",
+      "files": "resonai-mock/src/engine/memx/session-simple.ts resonai-mock/src/engine/memx/store.ts resonai-mock/src/components/AudioContextManager.tsx resonai-mock/src/components/WorkletManager.tsx",
+      "requirements": "Integrate MEMX session tracking with audio worklets Add memory monitoring to audio processing pipeline Connect MEMX strain detection with audio performance metrics",
+      "evidence": "MEMX engine exists but integration with audio components needs enhancement"
+    }
+  },
+  {
+    "id": "task-accessibility-audit-001",
+    "type": "accessibility",
+    "priority": 8,
+    "ttlMs": 86400000,
+    "maxAttempts": 2,
+    "createdAt": "2025-09-28T06:00:00Z",
+    "payload": {
+      "description": "Complete accessibility audit across all app pages",
+      "files": "resonai-mock/app/practice/page.tsx resonai-mock/app/listen/page.tsx resonai-mock/app/page.tsx resonai-mock/app/layout.tsx",
+      "requirements": "Audit remaining pages for ARIA compliance Ensure keyboard navigation works on all interactive elements Add focus management for audio controls",
+      "evidence": "Practice page accessibility improved but other pages need audit"
+    }
+  },
+  {
+    "id": "task-audio-component-optimization-001",
+    "type": "performance",
+    "priority": 7,
+    "ttlMs": 86400000,
+    "maxAttempts": 3,
+    "createdAt": "2025-09-28T06:00:00Z",
+    "payload": {
+      "description": "Optimize audio component performance and error handling",
+      "files": "resonai-mock/src/components/AudioContextManager.tsx resonai-mock/src/components/MicManager.tsx resonai-mock/src/components/WorkletManager.tsx",
+      "requirements": "Add performance monitoring to audio components Implement better error recovery for audio context failures Optimize worklet loading and message handling",
+      "evidence": "Audio components functional but need performance optimization"
+    }
+  },
+  {
+    "id": "task-e2e-test-coverage-001",
+    "type": "test-expansion",
+    "priority": 6,
+    "ttlMs": 86400000,
+    "maxAttempts": 2,
+    "createdAt": "2025-09-28T06:00:00Z",
+    "payload": {
+      "description": "Expand E2E test coverage for remaining app functionality",
+      "files": "resonai-mock/tests/e2e/memx.spec.ts resonai-mock/tests/e2e/isolation_headers.spec.ts resonai-mock/tests/e2e/csp.spec.ts",
+      "requirements": "Add tests for MEMX functionality Expand cross-origin isolation tests Add CSP compliance tests",
+      "evidence": "Mobile performance tests complete but other functionality needs E2E coverage"
+    }
+  },
+  {
+    "id": "task-worklet-path-validation-001",
+    "type": "validation",
+    "priority": 5,
+    "ttlMs": 86400000,
+    "maxAttempts": 2,
+    "createdAt": "2025-09-28T06:00:00Z",
+    "payload": {
+      "description": "Validate and optimize audio worklet paths and loading",
+      "files": "resonai-mock/public/worklets/pitch-processor.js resonai-mock/public/worklets/energy-processor.js resonai-mock/public/worklets/lpc-processor.js resonai-mock/src/components/WorkletManager.tsx",
+      "requirements": "Verify worklet files are accessible from all environments Add worklet loading error handling Optimize worklet registration process",
+      "evidence": "Worklet files exist but loading paths need validation"
+    }
+  },
+  {
+    "id": "task-ci-workflow-enhancement-001",
+    "type": "ci-cd",
+    "priority": 4,
+    "ttlMs": 86400000,
+    "maxAttempts": 2,
+    "createdAt": "2025-09-28T06:00:00Z",
+    "payload": {
+      "description": "Enhance CI workflow with comprehensive test execution",
+      "files": "resonai-mock/.github/workflows/ci-pr.yml resonai-mock/.github/workflows/ci-nightly.yml resonai-mock/package.json resonai-mock/vitest.config.ts",
+      "requirements": "Add unit test execution to CI Configure parallel E2E test execution Add test result reporting",
+      "evidence": "CI workflow exists but needs enhancement for full test coverage"
+    }
+  },
+  {
+    "id": "task-performance-monitoring-001",
+    "type": "monitoring",
+    "priority": 3,
+    "ttlMs": 86400000,
+    "maxAttempts": 2,
+    "createdAt": "2025-09-28T06:00:00Z",
+    "payload": {
+      "description": "Implement comprehensive performance monitoring",
+      "files": "resonai-mock/src/components/PerfOverlay.tsx resonai-mock/app/labs/memx/page.tsx",
+      "requirements": "Enhance performance overlay with more metrics Add real-time performance alerts Connect performance monitoring with MEMX data",
+      "evidence": "Performance overlay exists but needs enhancement"
+    }
+  },
+  {
+    "payload": {
+      "description": "Run ARIA/live-region/keyboard focus sweep; add missing aria-live, roles, labels.",
+      "paths": "app src/components src/app",
+      "requirements": "Scan for unlabeled buttons and inputs Add missing ARIA roles and labels Implement aria-live regions for async feedback Ensure keyboard focus order and reduced-motion fallbacks Run NVDA/VoiceOver smoke tests"
+    },
+    "priority": 9,
+    "maxAttempts": 3,
+    "id": "recur-a11y-scan",
+    "createdAt": "2025-09-28T05:23:11Z",
+    "type": "a11y-scan",
+    "ttlMs": 43200000,
+    "attempts": 0,
+    "nextRunAt": "2025-09-28T05:23:11Z"
+  },
+  {
+    "payload": {
+      "description": "CSP & inline-style drift check; block dangerouslySetInnerHTML usage.",
+      "paths": "app src public",
+      "requirements": "Find and replace inline styles with utility classes Remove or guard dangerouslySetInnerHTML usage Update CSP documentation if needed Ensure zero inline styles in changed files"
+    },
+    "priority": 8,
+    "maxAttempts": 3,
+    "id": "recur-csp-scan",
+    "createdAt": "2025-09-28T05:23:11Z",
+    "type": "csp-scan",
+    "ttlMs": 43200000,
+    "attempts": 0,
+    "nextRunAt": "2025-09-28T05:23:11Z"
+  },
+  {
+    "payload": {
+      "description": "Verify COOP/COEP headers are preserved via SW; ensure crossOriginIsolated=true offline.",
+      "tests": "playwright/tests/isolation_headers.spec.ts",
+      "requirements": "Verify crossOriginIsolated online and offline Ensure service worker forwards/sets COOP/COEP headers Add tests if missing Ensure isolation spec passes in both modes"
+    },
+    "priority": 8,
+    "maxAttempts": 3,
+    "id": "recur-isolation-offline",
+    "createdAt": "2025-09-28T05:23:11Z",
+    "type": "offline-isolation",
+    "ttlMs": 43200000,
+    "attempts": 0,
+    "nextRunAt": "2025-09-28T05:23:11Z"
+  },
+  {
+    "payload": {
+      "description": "Regenerate .artifacts/SSOT.md and sync RUN_AND_VERIFY.md top block.",
+      "requirements": "Parse current test JSONs Compare to .artifacts/SSOT.md Regenerate SSOT and update RUN_AND_VERIFY.md Keep SSOT and docs in sync"
+    },
+    "priority": 7,
+    "maxAttempts": 3,
+    "id": "recur-ssot-refresh",
+    "createdAt": "2025-09-28T05:23:11Z",
+    "type": "ssot-refresh",
+    "ttlMs": 43200000,
+    "attempts": 0,
+    "nextRunAt": "2025-09-28T05:23:11Z"
+  },
+  {
+    "payload": {
+      "description": "Parse nightly Playwright/Vitest reports; tag @flaky and open PR to quarantine.",
+      "artifacts": ".artifacts/test-reports/playwright.json .artifacts/test-reports/vitest.json",
+      "requirements": "Read nightly test artifacts Identify flaky specifications Tag @flaky and open PR with reason Ensure PR lane remains deterministic"
+    },
+    "priority": 6,
+    "maxAttempts": 3,
+    "id": "recur-flake-quarantine",
+    "createdAt": "2025-09-28T05:23:11Z",
+    "type": "flake-quarantine",
+    "ttlMs": 43200000,
+    "attempts": 0,
+    "nextRunAt": "2025-09-28T05:23:11Z"
+  },
+  {
+    "payload": {
+      "description": "Detect README / RUN_AND_VERIFY / TASKS drift from SSOT; propose doc updates.",
+      "requirements": "Detect divergence between SSOT and documentation Update docs or open PR with suggested edits Ensure docs match SSOT with minimal churn"
+    },
+    "priority": 5,
+    "maxAttempts": 3,
+    "id": "recur-docs-drift",
+    "createdAt": "2025-09-28T05:23:11Z",
+    "type": "docs-drift",
+    "ttlMs": 43200000,
+    "attempts": 0,
+    "nextRunAt": "2025-09-28T05:23:11Z"
+  }
+]

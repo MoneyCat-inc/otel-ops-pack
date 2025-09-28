@@ -61,7 +61,7 @@ processors:
 
 exporters:
   otlphttp:
-    endpoint: http://127.0.0.1:14318
+    endpoint: http://localhost:14318
     tls:
       insecure: true
     retry_on_failure:

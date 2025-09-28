@@ -1,101 +1,18 @@
 {
-  "max_jobs_per_run": 3,
-  "max_files_per_job": 15,
-  "max_lines_per_job": 500,
-  "job_ttl_seconds": 86400,
-  "agent_name": "codex-local",
-  "version": "1.0.0",
-  "environment": "resonai-otel",
-  "role": "Local Workflow Custodian",
-  "capabilities": [
-    "code_navigation",
-    "text_extraction",
-    "script_execution",
-    "patch_preparation",
-    "reporting",
-    "observability_analysis",
-    "config_validation",
-    "integration_testing",
-    "environment_setup",
-    "health_diagnostics",
-    "guardrail_enforcement",
-    "csp_validation",
-    "accessibility_audit",
-    "background_watchdog",
-    "micro_task_processing"
-  ],
-  "safety_settings": {
-    "read_only_by_default": true,
-    "require_confirmation": true,
-    "max_file_size_mb": 25,
-    "excluded_directories": [
-      "node_modules",
-      ".git",
-      "third_party",
-      ".agent/logs",
-      ".agent/reports",
-      "audit"
-    ],
-    "allowed_file_extensions": [
-      ".ps1",
-      ".yaml",
-      ".yml",
-      ".json",
-      ".md",
-      ".txt",
-      ".log",
-      ".ts",
-      ".tsx",
-      ".js",
-      ".jsx",
-      ".py",
-      ".go",
-      ".rs"
-    ]
-  },
-  "resonai_integration": {
-    "otel_config_path": "C:\\otel\\config.yaml",
-    "ai_assistant_config": "C:\\otel\\ai-assistant-config.yaml",
-    "templates_path": "C:\\otel\\templates",
-    "logs_path": "C:\\otel\\logs",
-    "monitoring_enabled": true,
-    "runbook_reference": {
-      "path": "C:/otel/docs/observability/SIGNOZ_RUNBOOK_BUNDLE.md",
-      "last_verified_utc": "2025-09-20T21:14:00+01:00",
-      "latest_canary_id": "5806cb5d-00b5-4415-8373-87a3f94b9a6d"
-    }
-  },
-  "logging": {
-    "level": "INFO",
-    "log_to_file": true,
-    "include_timestamps": true,
-    "log_file_pattern": ".agent/logs/agent-{date}.log",
-    "max_log_files": 30,
-    "max_log_size_mb": 10
-  },
-  "performance": {
-    "timeout_seconds": 60,
-    "memory_limit_mb": 512,
-    "parallel_jobs": 2
-  },
-  "notifications": {
-    "health_check_failures": true,
-    "job_completion": false,
-    "error_alerts": true
-  },
+  "maxJobs": 2,
+  "maxFiles": 10,
+  "maxLines": 200,
+  "jobTtlMs": 43200000,
+  "maxAttempts": 3,
+  "backoffMs": 900000,
+  "agentName": "cursor-gap-closer",
+  "description": "Implement scoped UI/UX and audio-engine tasks from TASKS.md, following guardrails",
   "guardrails": {
-    "enforce_no_inline_styles": true,
-    "enforce_csp_strict": true,
-    "enforce_cross_origin_isolation": true,
-    "enforce_aria_compliance": true,
-    "max_inline_style_violations": 0,
-    "max_csp_violations": 0,
-    "max_a11y_violations": 0
-  },
-  "watchdog": {
-    "cycle_interval_seconds": 300,
-    "max_tasks_per_cycle": 2,
-    "lock_check_interval_seconds": 30,
-    "auto_cleanup_days": 7
+    "noInlineStyles": true,
+    "enforceAria": true,
+    "reducedMotion": true,
+    "wcagAA": true,
+    "localFirst": true,
+    "respectLock": true
   }
 }

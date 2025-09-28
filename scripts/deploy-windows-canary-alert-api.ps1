@@ -2,7 +2,7 @@
 # Implements T-2025-01-27-003: Canary Alert for Windows Logs with API integration
 
 param(
-    [string]$ApiToken = "eE5syxJUco90j8vq34YPlbHaUg3NpS0UUEYYCzgE7mc=",
+    [string]$ApiToken = "YMJnm6c+/poKMuEGsjOQZCKrOealu8NjX22QE66VdnQ=",
     [string]$SigNozUrl = "http://localhost:8080",
     [switch]$DeployAlert,
     [switch]$TestAlert,

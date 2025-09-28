@@ -92,7 +92,7 @@ try {
         )
     } | ConvertTo-Json -Depth 10
 
-    $response = Invoke-RestMethod -Uri "http://localhost:4318/v1/logs" -Method Post -Body $testPayload -ContentType "application/json" -TimeoutSec 10
+    $response = Invoke-RestMethod -Uri "http://localhost:14318/v1/logs" -Method Post -Body $testPayload -ContentType "application/json" -TimeoutSec 10
     Write-Host "✅ OTLP endpoint test passed" -ForegroundColor Green
 } catch {
     $issues += "OTLP endpoint test failed: $($_.Exception.Message)"

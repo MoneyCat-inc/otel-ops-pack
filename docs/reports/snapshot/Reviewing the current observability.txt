@@ -1,0 +1,258 @@
+Reviewing the current observability pipeline and telemetry setup to inform the MEMX memory observation layer plan.
+
+
+[5 tools called]
+
+## MEMX Memory Observation Layer - Architecture Plan
+
+### Current System Analysis
+
+**Existing Infrastructure:**
+- **SigNoz Pipeline**: OTLP/HTTP (5318) → SigNoz (8080) → ClickHouse
+- **Client Telemetry**: `/api/events` ring buffer → OTLP tee to SigNoz
+- **GPU Monitoring**: NVIDIA RTX 2080 SUPER metrics via `pynvml` → OTLP
+- **Audio Processing**: WASM (CREPE-tiny ONNX), AudioWorklets, SAB
+- **HUD Components**: `/try` practice HUD, `/analytics` KPIs, prosody overlays
+
+### MEMX Architecture Recommendations
+
+## 1. **Scope of Coverage**
+
+**Recommended: Hybrid Approach**
+- **Primary**: Browser-level memory flows (WASM, SAB, AudioWorklets, IndexedDB)
+- **Secondary**: System-level transfers (RAM↔VRAM via existing GPU monitoring)
+- **Exclude**: Pagefile activity, DMA (not accessible from browser)
+
+**Rationale**: Browser-level memory is most relevant for Resonai's audio processing pipeline, while system-level monitoring can leverage existing GPU infrastructure.
+
+## 2. **Granularity**
+
+**Recommended: Dual-Granularity**
+- **Per-Frame**: Critical audio processing (128-frame quanta, 60fps HUD)
+- **Session-Level**: Broader memory patterns and trends
+
+**Implementation**:
+```typescript
+// Per-frame (high frequency)
+interface FrameMemoryMetrics {
+  wasmHeapSize: number;
+  sabBufferUsage: number;
+  audioWorkletMemory: number;
+  timestamp: number;
+  frameId: string;
+}
+
+// Session-level (aggregated)
+interface SessionMemoryMetrics {
+  peakMemoryUsage: number;
+  averageMemoryUsage: number;
+  memoryLeaks: number;
+  gcEvents: number;
+  sessionDuration: number;
+}
+```
+
+## 3. **SigNoz Integration**
+
+**Current State**: ✅ **Already Ingesting**
+- **Client**: `/api/events` → OTLP/HTTP 5318 → SigNoz
+- **Data**: Voice training metrics, user interactions, audio processing
+- **Format**: OTLP JSON with `dataset="resonai_analytics"`
+
+**MEMX Integration**:
+```typescript
+// Extend existing analytics pipeline
+const memxMetrics = {
+  dataset: "resonai_analytics",
+  event: "memory_observation",
+  variant: "frame" | "session",
+  memory_type: "wasm" | "sab" | "audioworklet" | "indexeddb",
+  // ... memory-specific fields
+};
+```
+
+## 4. **Storage & Analysis**
+
+**Recommended: Hybrid Storage**
+- **Local**: IndexedDB for real-time HUD display (existing pattern)
+- **Stream**: Live to SigNoz for analysis and alerting
+- **Export**: Periodic bulk exports for offline analysis
+
+**Implementation**:
+```typescript
+// Local storage (existing pattern)
+const memxStore = new Dexie('MemxStore');
+memxStore.version(1).stores({
+  frameMetrics: '++id, timestamp, frameId',
+  sessionMetrics: '++id, sessionId, timestamp'
+});
+
+// Live streaming (extend existing)
+const memxStream = new MemoryObservationStream({
+  endpoint: 'http://localhost:5318/v1/logs',
+  batchSize: 100,
+  flushInterval: 1000
+});
+```
+
+## 5. **UX Integration**
+
+**Recommended: Integrated HUD Approach**
+- **Primary**: Extend existing `/try` practice HUD with memory overlay
+- **Secondary**: New `/labs/memx` tab for detailed analysis
+- **Tertiary**: Integrate with existing prosody/performance overlays
+
+**Implementation**:
+```typescript
+// Extend existing HUD
+const MemoryOverlay = () => (
+  <div className="memory-overlay">
+    <MemoryGauge type="wasm" />
+    <MemoryGauge type="sab" />
+    <MemoryGauge type="audioworklet" />
+  </div>
+);
+
+// New labs tab
+const MemxLab = () => (
+  <div className="memx-lab">
+    <MemoryTimeline />
+    <MemoryHeatmap />
+    <MemoryAlerts />
+  </div>
+);
+```
+
+### Detailed Implementation Plan
+
+## Phase 1: Browser Memory Monitoring
+
+**Components**:
+1. **WASM Memory Tracker**: Monitor CREPE-tiny ONNX memory usage
+2. **SAB Monitor**: Track SharedArrayBuffer usage in AudioWorklets
+3. **AudioWorklet Memory**: Monitor pitch/spectral processing memory
+4. **IndexedDB Monitor**: Track session storage usage
+
+**Integration Points**:
+- Extend existing `/api/events` endpoint
+- Use existing OTLP/HTTP 5318 pipeline
+- Leverage existing IndexedDB patterns
+
+## Phase 2: System Memory Integration
+
+**Components**:
+1. **GPU Memory Bridge**: Connect browser metrics with existing GPU monitoring
+2. **RAM Monitoring**: System-level memory via existing PowerShell scripts
+3. **Cross-Platform Metrics**: Unified memory view across browser/system
+
+**Integration Points**:
+- Extend existing GPU monitoring scripts
+- Use existing SigNoz dashboard infrastructure
+- Leverage existing alerting system
+
+## Phase 3: Advanced Analytics
+
+**Components**:
+1. **Memory Leak Detection**: Pattern recognition in memory usage
+2. **Performance Correlation**: Memory vs. audio processing performance
+3. **Predictive Analytics**: Memory usage forecasting
+
+**Integration Points**:
+- Use existing ClickHouse queries
+- Extend existing dashboard panels
+- Leverage existing alerting rules
+
+### Technical Specifications
+
+## Memory Metrics Schema
+
+```typescript
+interface MemxMetrics {
+  // Core metrics
+  wasmHeapSize: number;           // WASM memory usage
+  sabBufferUsage: number;         // SharedArrayBuffer usage
+  audioWorkletMemory: number;     // AudioWorklet memory
+  indexeddbUsage: number;         // IndexedDB storage
+  
+  // System metrics (via existing GPU monitoring)
+  gpuMemoryUsage: number;         // VRAM usage
+  systemMemoryUsage: number;      // System RAM usage
+  
+  // Performance metrics
+  gcEvents: number;               // Garbage collection events
+  memoryLeaks: number;            // Detected memory leaks
+  performanceScore: number;       // Overall memory performance
+  
+  // Metadata
+  timestamp: number;
+  sessionId: string;
+  frameId?: string;
+  variant: 'frame' | 'session';
+}
+```
+
+## SigNoz Queries
+
+```sql
+-- Memory usage trends
+SELECT timestamp, wasmHeapSize, sabBufferUsage 
+FROM logs 
+WHERE dataset = 'resonai_analytics' 
+  AND event = 'memory_observation'
+  AND timestamp >= now() - INTERVAL 1 HOUR
+
+-- Memory leak detection
+SELECT sessionId, count(*) as leakCount
+FROM logs 
+WHERE dataset = 'resonai_analytics' 
+  AND event = 'memory_observation'
+  AND memoryLeaks > 0
+GROUP BY sessionId
+
+-- Performance correlation
+SELECT avg(wasmHeapSize), avg(ttv_ms)
+FROM logs 
+WHERE dataset = 'resonai_analytics' 
+  AND event IN ('memory_observation', 'audio_processing')
+  AND timestamp >= now() - INTERVAL 1 HOUR
+```
+
+## Dashboard Panels
+
+1. **Memory Usage Timeline**: WASM, SAB, AudioWorklet usage over time
+2. **Memory Heatmap**: Session-based memory usage patterns
+3. **Performance Correlation**: Memory vs. audio processing performance
+4. **Leak Detection**: Memory leak alerts and trends
+5. **System Overview**: Browser + system memory unified view
+
+### Implementation Timeline
+
+## Week 1: Foundation
+- Browser memory monitoring components
+- Integration with existing `/api/events` pipeline
+- Basic HUD overlay
+
+## Week 2: System Integration
+- GPU memory bridge
+- System memory monitoring
+- Unified metrics schema
+
+## Week 3: Analytics & Visualization
+- SigNoz dashboard panels
+- Memory leak detection
+- Performance correlation analysis
+
+## Week 4: Advanced Features
+- Predictive analytics
+- Advanced alerting
+- Performance optimization recommendations
+
+### Success Metrics
+
+1. **Coverage**: 100% of browser memory flows monitored
+2. **Latency**: <100ms memory metric collection
+3. **Accuracy**: 99%+ memory usage measurement accuracy
+4. **Integration**: Seamless integration with existing HUD
+5. **Performance**: <5% overhead on audio processing
+
+This plan leverages your existing SigNoz pipeline, GPU monitoring, and HUD components while adding comprehensive memory observation capabilities.
