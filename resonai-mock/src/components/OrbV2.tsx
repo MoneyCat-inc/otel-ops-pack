@@ -92,7 +92,7 @@ export const OrbV2: React.FC<OrbV2Props> = ({
       aria-hidden="false"
     >
       {/* Main orb */}
-      <div className="orb-v2-main">
+      <div className="orb-v2-main" style={orbMainStyle}>
         {/* Shimmer overlay */}
         <div className={`orb-v2-shimmer ${motionSafe ? 'motion-safe' : ''}`} />
         
