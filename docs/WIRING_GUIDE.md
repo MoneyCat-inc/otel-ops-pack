@@ -164,27 +164,49 @@ count by (attributes.session_id, attributes.event) (attributes.dataset="resonai_
 
 ### Common Issues
 
-#### 1. Port Conflicts
-**Symptom**: Connection refused on port 5318
+#### 1. Port Conflicts & Mismatches
+**Symptom**: Connection refused on port 5318 or logs not appearing in SigNoz
 **Solution**: 
 - Check if another service is using port 5318: `netstat -an | findstr 5318`
 - Verify OTel Collector config uses correct ports
+- **CRITICAL**: Ensure application instrumentation uses remapped ports (14317/14318) not default ports (4317/4318)
 - Restart otelcol-contrib service: `Restart-Service otelcol-contrib`
 
-#### 2. Missing Receivers in Collector Config
+#### 1.1 Port Mapping Issue (FIXED 2025-09-28)
+**Symptom**: "No logs yet" in SigNoz UI despite collector running
+**Root Cause**: Applications configured for default ports (4317/4318) but SigNoz running on remapped ports (14317/14318)
+**Solution**: Updated all instrumentation to use remapped ports:
+- `http://localhost:4317` → `http://localhost:14317`
+- `http://localhost:4318` → `http://localhost:14318`
+
+#### 2. OTLP Endpoint Double-Path Error (FIXED 2025-09-28)
+**Symptom**: HTTP Status Code 404, "request to http://localhost:14318/v1/logs/v1/logs"
+**Root Cause**: Windows collector config had `/v1/logs` appended to endpoint, causing double path
+**Solution**: Fixed `config.yaml` OTLP exporter endpoint:
+```yaml
+# Before (causing double path)
+otlphttp:
+  endpoint: http://localhost:14318/v1/logs
+
+# After (correct)
+otlphttp:
+  endpoint: http://localhost:14318
+```
+
+#### 3. Missing Receivers in Collector Config
 **Symptom**: Events not appearing in SigNoz
 **Solution**:
 - Verify `config.yaml` has OTLP HTTP receiver on port 5318
 - Check logs pipeline includes the OTLP receiver
 - Ensure no typos in receiver names
 
-#### 3. CORS Issues
+#### 4. CORS Issues
 **Symptom**: Browser blocks requests to OTLP endpoint
 **Solution**:
 - OTLP forwarding happens server-side, not browser-side
 - If testing from browser, use `/api/events` endpoint, not direct OTLP
 
-#### 4. Service Down
+#### 5. Service Down
 **Symptom**: Health checks fail
 **Solution**:
 - Check OTel Collector service: `Get-Service otelcol-contrib`
@@ -193,7 +215,7 @@ count by (attributes.session_id, attributes.event) (attributes.dataset="resonai_
   - Collector: `curl http://localhost:13134/healthz`
   - SigNoz UI: `curl http://localhost:8080`
 
-#### 5. Authentication Required
+#### 6. Authentication Required
 **Symptom**: 401 Unauthorized from SigNoz API
 **Solution**:
 - Set `SIGNOZ_API_TOKEN` environment variable

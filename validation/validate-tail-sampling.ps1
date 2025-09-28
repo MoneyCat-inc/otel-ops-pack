@@ -93,7 +93,7 @@ try {
         )
     } | ConvertTo-Json -Depth 10
 
-    $response = Invoke-RestMethod -Uri "http://localhost:4318/v1/traces" -Method Post -Body $errorTracePayload -ContentType "application/json" -TimeoutSec 10
+    $response = Invoke-RestMethod -Uri "http://localhost:14318/v1/traces" -Method Post -Body $errorTracePayload -ContentType "application/json" -TimeoutSec 10
     Write-Host "✅ Error trace sent successfully" -ForegroundColor Green
 } catch {
     $issues += "Error trace test failed: $($_.Exception.Message)"
@@ -132,7 +132,7 @@ try {
         )
     } | ConvertTo-Json -Depth 10
 
-    $response = Invoke-RestMethod -Uri "http://localhost:4318/v1/traces" -Method Post -Body $canaryTracePayload -ContentType "application/json" -TimeoutSec 10
+    $response = Invoke-RestMethod -Uri "http://localhost:14318/v1/traces" -Method Post -Body $canaryTracePayload -ContentType "application/json" -TimeoutSec 10
     Write-Host "✅ Canary trace sent successfully" -ForegroundColor Green
 } catch {
     $issues += "Canary trace test failed: $($_.Exception.Message)"
@@ -170,7 +170,7 @@ try {
         )
     } | ConvertTo-Json -Depth 10
 
-    $response = Invoke-RestMethod -Uri "http://localhost:4318/v1/traces" -Method Post -Body $latencyTracePayload -ContentType "application/json" -TimeoutSec 10
+    $response = Invoke-RestMethod -Uri "http://localhost:14318/v1/traces" -Method Post -Body $latencyTracePayload -ContentType "application/json" -TimeoutSec 10
     Write-Host "✅ High latency trace sent successfully" -ForegroundColor Green
 } catch {
     $issues += "High latency trace test failed: $($_.Exception.Message)"
