@@ -360,6 +360,11 @@ export default function ProgressPage() {
           </div>
         </div>
 
+        {/* Beta Success Metrics */}
+        <div className="mb-8">
+          <BetaMetricsPanel trends={trends} />
+        </div>
+
         {/* Safety timeline */}
         {selectedMetrics.safety && (
           <div className="mb-8">
@@ -389,6 +394,18 @@ export default function ProgressPage() {
             </div>
             <div>
               <strong>Safety Timeline:</strong> Tracks vocal strain events to help you practice safely and avoid injury.
+            </div>
+            <div>
+              <strong>Retention:</strong> Shows how consistently you practice over time. Higher percentages indicate better habit formation.
+            </div>
+            <div>
+              <strong>Comfort Level:</strong> Your subjective comfort rating during practice. Improving trends suggest better technique.
+            </div>
+            <div>
+              <strong>Strain Health:</strong> Normalized strain rate per 100 minutes. Lower values indicate safer practice patterns.
+            </div>
+            <div>
+              <strong>Session Frequency:</strong> Average sessions per week. Consistent frequency supports skill development.
             </div>
           </div>
         </div>

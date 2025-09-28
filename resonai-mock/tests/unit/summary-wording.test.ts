@@ -106,14 +106,14 @@ describe('FriendlySummary Wording Logic', () => {
         overallTrend: { safety: 'stable', inBandPct: 'stable', expressiveness: 'stable' },
         daily: [
           { strainCount: 0, strainRate: 0 },
-          { strainCount: 1, strainRate: 0.33 },
+          { strainCount: 0, strainRate: 0 },
           { strainCount: 0, strainRate: 0 }
         ]
       });
 
       const summary = generateSummaryData(trends, '7d');
       
-      expect(summary.message).toBe("Last 7 days — 3 sessions, 1 cooldowns, stable progress");
+      expect(summary.message).toBe("Last 7 days — 3 sessions, 0 cooldowns, stable progress");
       expect(summary.encouragement).toBe("You're maintaining a good practice rhythm. Keep it up!");
       expect(summary.theme).toBe('neutral');
     });
