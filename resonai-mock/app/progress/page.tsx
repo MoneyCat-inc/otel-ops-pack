@@ -295,33 +295,23 @@ export default function ProgressPage() {
           </div>
         </div>
 
-        {/* Summary stats */}
-        <div className="mb-8 bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Summary</h2>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div className="text-center">
-              <div className="text-3xl font-bold text-blue-600">{trends.totalSessions}</div>
-              <div className="text-sm text-gray-600">Total Sessions</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-green-600">
-                {Math.round(trends.totalDurationMs / (1000 * 60 * 60))}h
-              </div>
-              <div className="text-sm text-gray-600">Practice Time</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-purple-600">
-                {Math.round(trends.averageSessionDurationMs / (1000 * 60))}m
-              </div>
-              <div className="text-sm text-gray-600">Avg Session</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-orange-600">
-                {trends.overallTrend.safety === 'improving' ? '↗' : 
-                 trends.overallTrend.safety === 'declining' ? '↘' : '→'}
-              </div>
-              <div className="text-sm text-gray-600">Safety Trend</div>
-            </div>
+        {/* Friendly Summary */}
+        <div className="mb-8">
+          <FriendlySummary 
+            trends={trends} 
+            dateRange={dateRange}
+            className="mb-6"
+          />
+          
+          {/* Orb Visualization */}
+          <div className="flex justify-center">
+            <OrbV2
+              resonance={latestDay.expressiveness01.mean}
+              strain={latestDay.strainRate}
+              size={120}
+              visible={!reducedMotion || true} // Always show, but with motion-safe animations
+              aria-label={`Resonance visualization: ${Math.round(latestDay.expressiveness01.mean * 100)}% expressiveness, ${Math.round(latestDay.strainRate * 100)}% strain`}
+            />
           </div>
         </div>
 
