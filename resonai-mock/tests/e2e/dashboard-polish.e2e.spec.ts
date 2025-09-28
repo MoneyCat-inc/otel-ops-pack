@@ -9,6 +9,14 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Dashboard Polish & UX', () => {
   test.beforeEach(async ({ page }) => {
+    // Console guard for CSP violations
+    page.on('console', msg => {
+      const text = msg.text();
+      if (/Cross-Origin-Embedder-Policy|Refused to apply inline|Content Security Policy/.test(text)) {
+        throw new Error(`Console security error: ${text}`);
+      }
+    });
+
     // Navigate to progress page
     await page.goto('/progress');
     
@@ -19,7 +27,7 @@ test.describe('Dashboard Polish & UX', () => {
   test.describe('OrbV2 Shimmer Overlay', () => {
     test('should render OrbV2 with resonance-based shimmer effects', async ({ page }) => {
       // Check that OrbV2 component is present
-      const orbContainer = page.locator('.orb-v2-container');
+      const orbContainer = page.locator('.orb-v2');
       await expect(orbContainer).toBeVisible();
       
       // Check for main orb element
@@ -39,8 +47,31 @@ test.describe('Dashboard Polish & UX', () => {
       await expect(innerGlow).toBeVisible();
     });
 
+    test('should have no inline styles (CSP compliance)', async ({ page }) => {
+      // Check that OrbV2 has no inline style attribute
+      const orbContainer = page.locator('.orb-v2');
+      await expect(orbContainer).toBeVisible();
+      
+      const styleAttr = await orbContainer.getAttribute('style');
+      expect(styleAttr).toBeNull(); // CSP guard - no inline styles
+      
+      // Check that orb main also has no inline styles
+      const orbMain = page.locator('.orb-v2-main');
+      const mainStyleAttr = await orbMain.getAttribute('style');
+      expect(mainStyleAttr).toBeNull(); // CSP guard - no inline styles
+    });
+
+    test('should use class-based hue selection', async ({ page }) => {
+      // Check that OrbV2 has a hue class
+      const orbContainer = page.locator('.orb-v2');
+      await expect(orbContainer).toBeVisible();
+      
+      const classList = await orbContainer.getAttribute('class');
+      expect(classList).toMatch(/orb-v2--h\d+|orb-v2--(front|central|back)/);
+    });
+
     test('should have proper accessibility attributes', async ({ page }) => {
-      const orbContainer = page.locator('.orb-v2-container');
+      const orbContainer = page.locator('.orb-v2');
       
       // Check for proper ARIA attributes
       await expect(orbContainer).toHaveAttribute('role', 'img');
@@ -54,32 +85,8 @@ test.describe('Dashboard Polish & UX', () => {
       expect(ariaLabel).toContain('strain');
     });
 
-    test('should apply dynamic CSS custom properties', async ({ page }) => {
-      const orbContainer = page.locator('.orb-v2-container');
-      
-      // Check for CSS custom properties
-      const style = await orbContainer.evaluate((el) => {
-        const computedStyle = window.getComputedStyle(el);
-        return {
-          orbSize: computedStyle.getPropertyValue('--orb-size'),
-          resonanceHue: computedStyle.getPropertyValue('--resonance-hue'),
-          resonanceSaturation: computedStyle.getPropertyValue('--resonance-saturation'),
-          resonanceLightness: computedStyle.getPropertyValue('--resonance-lightness'),
-          shimmerIntensity: computedStyle.getPropertyValue('--shimmer-intensity'),
-          pulseFrequency: computedStyle.getPropertyValue('--pulse-frequency')
-        };
-      });
-      
-      expect(style.orbSize).toBe('120px');
-      expect(style.resonanceHue).toBeTruthy();
-      expect(style.resonanceSaturation).toBeTruthy();
-      expect(style.resonanceLightness).toBeTruthy();
-      expect(style.shimmerIntensity).toBeTruthy();
-      expect(style.pulseFrequency).toBeTruthy();
-    });
-
     test('should be focusable for keyboard navigation', async ({ page }) => {
-      const orbContainer = page.locator('.orb-v2-container');
+      const orbContainer = page.locator('.orb-v2');
       
       // Focus the orb
       await orbContainer.focus();
@@ -104,21 +111,20 @@ test.describe('Dashboard Polish & UX', () => {
       await page.reload();
       await expect(page.getByRole('heading', { name: /Your Progress/i })).toBeVisible();
       
-      // Check that shimmer has motion-safe class
-      const shimmerOverlay = page.locator('.orb-v2-shimmer');
-      await expect(shimmerOverlay).toHaveClass(/motion-safe/);
-      
-      // Check that pulse has motion-safe class
-      const pulseRing = page.locator('.orb-v2-pulse');
-      await expect(pulseRing).toHaveClass(/motion-safe/);
+      // Check that orb container doesn't have shimmer/pulse animation classes
+      const orbContainer = page.locator('.orb-v2');
+      const classList = await orbContainer.getAttribute('class');
+      expect(classList).not.toMatch(/orb-v2__shimmer|orb-v2__pulse--strain/);
       
       // Verify animations are disabled via CSS
+      const shimmerOverlay = page.locator('.orb-v2-shimmer');
       const shimmerAnimation = await shimmerOverlay.evaluate((el) => {
         const computedStyle = window.getComputedStyle(el);
         return computedStyle.animation === 'none';
       });
       expect(shimmerAnimation).toBe(true);
       
+      const pulseRing = page.locator('.orb-v2-pulse');
       const pulseAnimation = await pulseRing.evaluate((el) => {
         const computedStyle = window.getComputedStyle(el);
         return computedStyle.animation === 'none';
@@ -309,15 +315,12 @@ test.describe('Dashboard Polish & UX', () => {
       }
       
       // Check that OrbV2 renders correctly
-      const orbContainer = page.locator('.orb-v2-container');
+      const orbContainer = page.locator('.orb-v2');
       await expect(orbContainer).toBeVisible();
       
-      // Check that CSS custom properties work
-      const orbSize = await orbContainer.evaluate((el) => {
-        const computedStyle = window.getComputedStyle(el);
-        return computedStyle.getPropertyValue('--orb-size');
-      });
-      expect(orbSize).toBe('120px');
+      // Check that hue classes work
+      const classList = await orbContainer.getAttribute('class');
+      expect(classList).toMatch(/orb-v2--h\d+|orb-v2--(front|central|back)/);
       
       // Check that animations work
       const shimmerOverlay = page.locator('.orb-v2-shimmer');
@@ -330,15 +333,12 @@ test.describe('Dashboard Polish & UX', () => {
       }
       
       // Check that OrbV2 renders correctly
-      const orbContainer = page.locator('.orb-v2-container');
+      const orbContainer = page.locator('.orb-v2');
       await expect(orbContainer).toBeVisible();
       
-      // Check that CSS custom properties work
-      const orbSize = await orbContainer.evaluate((el) => {
-        const computedStyle = window.getComputedStyle(el);
-        return computedStyle.getPropertyValue('--orb-size');
-      });
-      expect(orbSize).toBe('120px');
+      // Check that hue classes work
+      const classList = await orbContainer.getAttribute('class');
+      expect(classList).toMatch(/orb-v2--h\d+|orb-v2--(front|central|back)/);
       
       // Check that animations work
       const shimmerOverlay = page.locator('.orb-v2-shimmer');
@@ -382,7 +382,7 @@ test.describe('Dashboard Polish & UX', () => {
       await expect(page.getByRole('heading', { name: /Your Progress/i })).toBeVisible();
       
       // OrbV2 should still be visible
-      const orbContainer = page.locator('.orb-v2-container');
+      const orbContainer = page.locator('.orb-v2');
       await expect(orbContainer).toBeVisible();
     });
   });
@@ -393,7 +393,7 @@ test.describe('Dashboard Polish & UX', () => {
       await expect(page.getByRole('heading', { name: /Your Progress/i })).toBeVisible();
       
       // OrbV2 should be visible
-      const orbContainer = page.locator('.orb-v2-container');
+      const orbContainer = page.locator('.orb-v2');
       await expect(orbContainer).toBeVisible();
       
       // FriendlySummary should be visible
