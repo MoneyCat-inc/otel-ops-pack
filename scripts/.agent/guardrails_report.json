@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2025-09-27T18:48:58.2958306+01:00",
+  "generatedAt": "2025-09-27T23:25:47.9823459+01:00",
   "summary": {
-    "linesChanged": 0,
     "filesModified": 0,
-    "duration": 0.0476984,
     "violations": 0,
-    "filesProcessed": 3
+    "filesProcessed": 3,
+    "linesChanged": 0,
+    "duration": 0.0266628
   },
   "counts": "",
   "items": [],

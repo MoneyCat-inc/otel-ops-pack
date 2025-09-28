@@ -1,0 +1,22 @@
+
+> otel-observability-kit@1.0.0 agent:guardrails-premium C:\otel
+> pwsh -File scripts/agent/enforce-guardrails-premium.ps1 "-Json"
+
+OpenTelemetry functions loaded:
+  canary           - Run canary test
+  otel-status      - Quick status check
+  otel-restart-test - Test auto-restart functionality
+  otel-health      - Check health endpoint
+  otel-start       - Start service
+  otel-stop        - Stop service
+  otel-restart     - Restart service
+1
+{
+  "violations": 0,
+  "linesChanged": 0,
+  "needsFollowup": [],
+  "filesModified": 0,
+  "exitCode": 0,
+  "items": [],
+  "filesProcessed": 3
+}

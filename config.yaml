@@ -42,7 +42,7 @@ processors:
         value: local
         action: upsert
       - key: service.name
-        value: windows-gpu-metrics
+        value: windows-logs
         action: upsert
   filter/drop_noise:
     logs:
