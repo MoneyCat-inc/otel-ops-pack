@@ -126,9 +126,13 @@ body {
 .progress-95 { width: 95%; }
 .progress-100 { width: 100%; }
 
-/* OrbV2 Component Styles */
-.orb-v2-container {
+/* OrbV2 Component Styles - CSP Compliant */
+.orb-v2 {
   position: relative;
+  width: clamp(120px, 24vw, 240px);
+  aspect-ratio: 1/1;
+  border-radius: 9999px;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -151,11 +155,10 @@ body {
   background: linear-gradient(
     45deg,
     transparent 30%,
-    hsla(var(--resonance-hue), var(--resonance-saturation), calc(var(--resonance-lightness) + 30%), 0.6) 50%,
+    rgba(255, 255, 255, 0.3) 50%,
     transparent 70%
   );
-  animation: orb-shimmer 2s ease-in-out infinite;
-  animation-delay: calc(var(--shimmer-intensity) * -0.5s);
+  opacity: 0.4;
 }
 
 .orb-v2-pulse {
@@ -165,8 +168,8 @@ body {
   right: -10px;
   bottom: -10px;
   border-radius: 50%;
-  border: 2px solid hsla(var(--resonance-hue), var(--resonance-saturation), var(--resonance-lightness), 0.4);
-  animation: orb-pulse var(--pulse-frequency) ease-in-out infinite;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  opacity: 0.6;
 }
 
 .orb-v2-glow {
@@ -178,49 +181,85 @@ body {
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    hsla(var(--resonance-hue), var(--resonance-saturation), calc(var(--resonance-lightness) + 40%), 0.3),
+    rgba(255, 255, 255, 0.2),
     transparent 70%
   );
 }
 
+/* Discrete hue buckets - Blue to Purple spectrum */
+.orb-v2--h0  { background: radial-gradient(circle at 30% 30%, #5ecbff 0%, #7c5cff 60%, #2a155a 100%); }
+.orb-v2--h1  { background: radial-gradient(circle at 30% 30%, #53c2ff 0%, #765eff 60%, #2a155a 100%); }
+.orb-v2--h2  { background: radial-gradient(circle at 30% 30%, #49b9ff 0%, #6f61ff 60%, #2a155a 100%); }
+.orb-v2--h3  { background: radial-gradient(circle at 30% 30%, #3eb0ff 0%, #6863ff 60%, #2a155a 100%); }
+.orb-v2--h4  { background: radial-gradient(circle at 30% 30%, #33a7ff 0%, #6165ff 60%, #2a155a 100%); }
+.orb-v2--h5  { background: radial-gradient(circle at 30% 30%, #289eff 0%, #5a67ff 60%, #2a155a 100%); }
+.orb-v2--h6  { background: radial-gradient(circle at 30% 30%, #1d95ff 0%, #5369ff 60%, #2a155a 100%); }
+.orb-v2--h7  { background: radial-gradient(circle at 30% 30%, #128cff 0%, #4c6bff 60%, #2a155a 100%); }
+.orb-v2--h8  { background: radial-gradient(circle at 30% 30%, #0783ff 0%, #456dff 60%, #2a155a 100%); }
+.orb-v2--h9  { background: radial-gradient(circle at 30% 30%, #007aff 0%, #3e6fff 60%, #2a155a 100%); }
+.orb-v2--h10 { background: radial-gradient(circle at 30% 30%, #0071ff 0%, #3771ff 60%, #2a155a 100%); }
+.orb-v2--h11 { background: radial-gradient(circle at 30% 30%, #0068ff 0%, #3073ff 60%, #2a155a 100%); }
+
+/* Resonance bucket classes */
+.orb-v2--front   { background: radial-gradient(circle at 30% 30%, #69eaff 0%, #7c5cff 60%, #2a155a 100%); }
+.orb-v2--central { background: radial-gradient(circle at 30% 30%, #7dc8ff 0%, #7c5cff 60%, #2a155a 100%); }
+.orb-v2--back    { background: radial-gradient(circle at 30% 30%, #a3a5ff 0%, #7c5cff 60%, #2a155a 100%); }
+
+/* Motion-safe animations */
+@media (prefers-reduced-motion: no-preference) {
+  .orb-v2__shimmer {
+    animation: orbShimmer 4s linear infinite;
+  }
+  .orb-v2__pulse--strain {
+    animation: orbPulse 1.8s ease-in-out infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orb-v2__shimmer,
+  .orb-v2__pulse--strain { 
+    animation: none !important; 
+  }
+  .orb-v2__shimmer {
+    opacity: 0.5;
+    transform: rotate(45deg);
+  }
+  .orb-v2__pulse--strain {
+    opacity: 0.6;
+    transform: scale(1.02);
+  }
+}
+
 /* Orb Animations */
-@keyframes orb-shimmer {
-  0%, 100% {
-    transform: rotate(0deg) scale(1);
-    opacity: 0.3;
-  }
-  50% {
-    transform: rotate(180deg) scale(1.1);
-    opacity: calc(0.3 + var(--shimmer-intensity) * 0.7);
-  }
+@keyframes orbShimmer {
+  0% { filter: brightness(1) rotate(0deg); }
+  50% { filter: brightness(1.07) rotate(180deg); }
+  100% { filter: brightness(1) rotate(360deg); }
 }
 
-@keyframes orb-pulse {
-  0%, 100% {
+@keyframes orbPulse {
+  0%, 100% { 
     transform: scale(1);
-    opacity: 0.4;
+    box-shadow: 0 0 0 0 rgba(255, 86, 86, 0.35);
   }
-  50% {
+  50% { 
     transform: scale(1.05);
-    opacity: 0.8;
+    box-shadow: 0 0 24px 12px rgba(255, 86, 86, 0.15);
   }
-}
-
-/* Motion-safe overrides */
-.orb-v2-shimmer.motion-safe {
-  animation: none !important;
-  opacity: 0.5;
-  transform: rotate(45deg);
-}
-
-.orb-v2-pulse.motion-safe {
-  animation: none !important;
-  opacity: 0.6;
-  transform: scale(1.02);
 }
 
 /* Focus styles for keyboard navigation */
-.orb-v2-container:focus-visible {
-  outline: 2px solid hsl(var(--resonance-hue), var(--resonance-saturation), var(--resonance-lightness));
+.orb-v2:focus-visible {
+  outline: 2px solid #7c5cff;
   outline-offset: 4px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .orb-v2-main {
+    border: 2px solid #000;
+  }
+  .orb-v2-pulse {
+    border-color: #000;
+  }
 }
