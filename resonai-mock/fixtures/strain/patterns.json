@@ -1,0 +1,130 @@
+{
+  "loud": {
+    "description": "Loud passage that should trigger strain detection",
+    "frames": [
+      {"timestamp": 0, "rms": 0.8, "pitch": 180, "confidence": 0.9, "voiced": true},
+      {"timestamp": 100, "rms": 0.85, "pitch": 185, "confidence": 0.9, "voiced": true},
+      {"timestamp": 200, "rms": 0.9, "pitch": 190, "confidence": 0.9, "voiced": true},
+      {"timestamp": 300, "rms": 0.88, "pitch": 188, "confidence": 0.9, "voiced": true},
+      {"timestamp": 400, "rms": 0.92, "pitch": 192, "confidence": 0.9, "voiced": true},
+      {"timestamp": 500, "rms": 0.89, "pitch": 189, "confidence": 0.9, "voiced": true},
+      {"timestamp": 600, "rms": 0.91, "pitch": 191, "confidence": 0.9, "voiced": true},
+      {"timestamp": 700, "rms": 0.87, "pitch": 187, "confidence": 0.9, "voiced": true},
+      {"timestamp": 800, "rms": 0.93, "pitch": 193, "confidence": 0.9, "voiced": true},
+      {"timestamp": 900, "rms": 0.88, "pitch": 188, "confidence": 0.9, "voiced": true},
+      {"timestamp": 1000, "rms": 0.9, "pitch": 190, "confidence": 0.9, "voiced": true},
+      {"timestamp": 1100, "rms": 0.89, "pitch": 189, "confidence": 0.9, "voiced": true},
+      {"timestamp": 1200, "rms": 0.91, "pitch": 191, "confidence": 0.9, "voiced": true},
+      {"timestamp": 1300, "rms": 0.87, "pitch": 187, "confidence": 0.9, "voiced": true},
+      {"timestamp": 1400, "rms": 0.92, "pitch": 192, "confidence": 0.9, "voiced": true}
+    ],
+    "expectedStrain": true,
+    "expectedReasons": ["Loudness exceeded -12 dBFS for 1200ms"],
+    "duration": 1500
+  },
+  "rising-jitter": {
+    "description": "Rising jitter pattern that should trigger strain detection",
+    "frames": [
+      {"timestamp": 0, "rms": 0.3, "pitch": 180, "confidence": 0.9, "voiced": true},
+      {"timestamp": 100, "rms": 0.32, "pitch": 185, "confidence": 0.9, "voiced": true},
+      {"timestamp": 200, "rms": 0.31, "pitch": 190, "confidence": 0.9, "voiced": true},
+      {"timestamp": 300, "rms": 0.33, "pitch": 195, "confidence": 0.9, "voiced": true},
+      {"timestamp": 400, "rms": 0.32, "pitch": 200, "confidence": 0.9, "voiced": true},
+      {"timestamp": 500, "rms": 0.34, "pitch": 205, "confidence": 0.9, "voiced": true},
+      {"timestamp": 600, "rms": 0.33, "pitch": 210, "confidence": 0.9, "voiced": true},
+      {"timestamp": 700, "rms": 0.35, "pitch": 215, "confidence": 0.9, "voiced": true},
+      {"timestamp": 800, "rms": 0.34, "pitch": 220, "confidence": 0.9, "voiced": true},
+      {"timestamp": 900, "rms": 0.36, "pitch": 225, "confidence": 0.9, "voiced": true},
+      {"timestamp": 1000, "rms": 0.35, "pitch": 230, "confidence": 0.9, "voiced": true},
+      {"timestamp": 1100, "rms": 0.37, "pitch": 235, "confidence": 0.9, "voiced": true},
+      {"timestamp": 1200, "rms": 0.36, "pitch": 240, "confidence": 0.9, "voiced": true},
+      {"timestamp": 1300, "rms": 0.38, "pitch": 245, "confidence": 0.9, "voiced": true},
+      {"timestamp": 1400, "rms": 0.37, "pitch": 250, "confidence": 0.9, "voiced": true}
+    ],
+    "expectedStrain": true,
+    "expectedReasons": ["Jitter trend increased by 20.0 cents/ms"],
+    "duration": 1500
+  },
+  "neutral": {
+    "description": "Neutral passage that should NOT trigger strain detection",
+    "frames": [
+      {"timestamp": 0, "rms": 0.2, "pitch": 180, "confidence": 0.9, "voiced": true},
+      {"timestamp": 100, "rms": 0.21, "pitch": 181, "confidence": 0.9, "voiced": true},
+      {"timestamp": 200, "rms": 0.19, "pitch": 179, "confidence": 0.9, "voiced": true},
+      {"timestamp": 300, "rms": 0.22, "pitch": 182, "confidence": 0.9, "voiced": true},
+      {"timestamp": 400, "rms": 0.2, "pitch": 180, "confidence": 0.9, "voiced": true},
+      {"timestamp": 500, "rms": 0.21, "pitch": 181, "confidence": 0.9, "voiced": true},
+      {"timestamp": 600, "rms": 0.19, "pitch": 179, "confidence": 0.9, "voiced": true},
+      {"timestamp": 700, "rms": 0.22, "pitch": 182, "confidence": 0.9, "voiced": true},
+      {"timestamp": 800, "rms": 0.2, "pitch": 180, "confidence": 0.9, "voiced": true},
+      {"timestamp": 900, "rms": 0.21, "pitch": 181, "confidence": 0.9, "voiced": true},
+      {"timestamp": 1000, "rms": 0.19, "pitch": 179, "confidence": 0.9, "voiced": true},
+      {"timestamp": 1100, "rms": 0.22, "pitch": 182, "confidence": 0.9, "voiced": true},
+      {"timestamp": 1200, "rms": 0.2, "pitch": 180, "confidence": 0.9, "voiced": true},
+      {"timestamp": 1300, "rms": 0.21, "pitch": 181, "confidence": 0.9, "voiced": true},
+      {"timestamp": 1400, "rms": 0.19, "pitch": 179, "confidence": 0.9, "voiced": true}
+    ],
+    "expectedStrain": false,
+    "expectedReasons": [],
+    "duration": 1500
+  },
+  "short-voiced": {
+    "description": "Short voiced passage that should NOT trigger strain (insufficient duration)",
+    "frames": [
+      {"timestamp": 0, "rms": 0.8, "pitch": 180, "confidence": 0.9, "voiced": true},
+      {"timestamp": 100, "rms": 0.85, "pitch": 185, "confidence": 0.9, "voiced": true},
+      {"timestamp": 200, "rms": 0.9, "pitch": 190, "confidence": 0.9, "voiced": true},
+      {"timestamp": 300, "rms": 0.88, "pitch": 188, "confidence": 0.9, "voiced": true},
+      {"timestamp": 400, "rms": 0.92, "pitch": 192, "confidence": 0.9, "voiced": true}
+    ],
+    "expectedStrain": false,
+    "expectedReasons": [],
+    "duration": 500
+  },
+  "mixed-pattern": {
+    "description": "Mixed pattern with both loudness and jitter that should trigger strain",
+    "frames": [
+      {"timestamp": 0, "rms": 0.7, "pitch": 180, "confidence": 0.9, "voiced": true},
+      {"timestamp": 100, "rms": 0.75, "pitch": 185, "confidence": 0.9, "voiced": true},
+      {"timestamp": 200, "rms": 0.8, "pitch": 190, "confidence": 0.9, "voiced": true},
+      {"timestamp": 300, "rms": 0.85, "pitch": 195, "confidence": 0.9, "voiced": true},
+      {"timestamp": 400, "rms": 0.9, "pitch": 200, "confidence": 0.9, "voiced": true},
+      {"timestamp": 500, "rms": 0.88, "pitch": 205, "confidence": 0.9, "voiced": true},
+      {"timestamp": 600, "rms": 0.92, "pitch": 210, "confidence": 0.9, "voiced": true},
+      {"timestamp": 700, "rms": 0.89, "pitch": 215, "confidence": 0.9, "voiced": true},
+      {"timestamp": 800, "rms": 0.91, "pitch": 220, "confidence": 0.9, "voiced": true},
+      {"timestamp": 900, "rms": 0.87, "pitch": 225, "confidence": 0.9, "voiced": true},
+      {"timestamp": 1000, "rms": 0.93, "pitch": 230, "confidence": 0.9, "voiced": true},
+      {"timestamp": 1100, "rms": 0.88, "pitch": 235, "confidence": 0.9, "voiced": true},
+      {"timestamp": 1200, "rms": 0.9, "pitch": 240, "confidence": 0.9, "voiced": true},
+      {"timestamp": 1300, "rms": 0.89, "pitch": 245, "confidence": 0.9, "voiced": true},
+      {"timestamp": 1400, "rms": 0.91, "pitch": 250, "confidence": 0.9, "voiced": true}
+    ],
+    "expectedStrain": true,
+    "expectedReasons": ["Loudness exceeded -12 dBFS for 1200ms", "Jitter trend increased by 20.0 cents/ms"],
+    "duration": 1500
+  },
+  "creaky-voice": {
+    "description": "Creaky voice pattern with low confidence that should trigger strain",
+    "frames": [
+      {"timestamp": 0, "rms": 0.3, "pitch": 180, "confidence": 0.9, "voiced": true},
+      {"timestamp": 100, "rms": 0.32, "pitch": 185, "confidence": 0.9, "voiced": true},
+      {"timestamp": 200, "rms": 0.31, "pitch": 190, "confidence": 0.9, "voiced": true},
+      {"timestamp": 300, "rms": 0.33, "pitch": 195, "confidence": 0.9, "voiced": true},
+      {"timestamp": 400, "rms": 0.32, "pitch": 200, "confidence": 0.9, "voiced": true},
+      {"timestamp": 500, "rms": 0.34, "pitch": 205, "confidence": 0.9, "voiced": true},
+      {"timestamp": 600, "rms": 0.33, "pitch": 210, "confidence": 0.9, "voiced": true},
+      {"timestamp": 700, "rms": 0.35, "pitch": 215, "confidence": 0.9, "voiced": true},
+      {"timestamp": 800, "rms": 0.34, "pitch": 220, "confidence": 0.9, "voiced": true},
+      {"timestamp": 900, "rms": 0.36, "pitch": 225, "confidence": 0.9, "voiced": true},
+      {"timestamp": 1000, "rms": 0.35, "pitch": 230, "confidence": 0.9, "voiced": true},
+      {"timestamp": 1100, "rms": 0.37, "pitch": 235, "confidence": 0.9, "voiced": true},
+      {"timestamp": 1200, "rms": 0.36, "pitch": 240, "confidence": 0.9, "voiced": true},
+      {"timestamp": 1300, "rms": 0.38, "pitch": 245, "confidence": 0.9, "voiced": true},
+      {"timestamp": 1400, "rms": 0.37, "pitch": 250, "confidence": 0.4, "voiced": true}
+    ],
+    "expectedStrain": true,
+    "expectedReasons": ["Jitter trend increased by 20.0 cents/ms"],
+    "duration": 1500
+  }
+}

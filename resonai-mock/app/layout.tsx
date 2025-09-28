@@ -7,6 +7,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { PerfOverlay } from '../src/components/PerfOverlay';
+import { ServiceWorkerProvider } from '../src/components/ServiceWorkerProvider';
 
 export const metadata: Metadata = {
   title: 'Resonai - Voice Practice',
@@ -21,7 +22,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
-        <nav className="bg-white shadow-sm border-b">
+        <ServiceWorkerProvider>
+          <nav className="bg-white shadow-sm border-b">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between h-16">
               <div className="flex items-center">
@@ -58,8 +60,9 @@ export default function RootLayout({
             </div>
           </div>
         </nav>
-        <main>{children}</main>
-        {process.env.NEXT_PUBLIC_PERF_OVERLAY === '1' && <PerfOverlay />}
+          <main>{children}</main>
+          {process.env.NEXT_PUBLIC_PERF_OVERLAY === '1' && <PerfOverlay />}
+        </ServiceWorkerProvider>
       </body>
     </html>
   );
