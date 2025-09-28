@@ -1,5 +1,5 @@
 [INFO] ECRR Doctor - Environment Examination
-[INFO] Timestamp: 2025-09-20 04:17:26
+[INFO] Timestamp: 2025-09-28 02:33:45
 [INFO] Working directory: C:\otel
 [INFO] PowerShell version: 7.5.3
 [SECTION] Tooling availability
@@ -7,22 +7,22 @@
 [OK] WSL command available
 [SECTION] SigNoz and collector endpoints
 [OK] SigNoz UI responded on http://localhost:8080
-[OK] Port 5317 accepts TCP connections
-[OK] Port 5318 accepts TCP connections
-[WARN] Port 14317 not reachable
-[WARN] Port 14318 not reachable
+[WARN] Port 5317 not reachable
+[WARN] Port 5318 not reachable
+[OK] Port 14317 accepts TCP connections
+[OK] Port 14318 accepts TCP connections
 [SECTION] Windows collector service
 [OK] otelcol-contrib status: Running
 [SECTION] Agent workflow files
 [OK] .agent directory present
 [OK] .agent/status.json found
 [SECTION] ECRR report storage
-[OK] docs/ECRR_REPORTS present with 3 markdown files
+[OK] docs/ECRR_REPORTS present with 80 markdown files
 [SECTION] Manual follow-up checks
 [NOTE] Run pwsh -File scripts/canary-test.ps1 and confirm SigNoz logs show the canary message within 30 seconds.
 [NOTE] Inspect config.yaml to confirm OTLP exporters target http://localhost:14317.
 [NOTE] Review SigNoz Logs with filter: message contains "SigNoz test".
 [SECTION] Summary
 [OK] No critical issues detected
-[WARN] Port 14317 not reachable
-[WARN] Port 14318 not reachable
+[WARN] Port 5317 not reachable
+[WARN] Port 5318 not reachable

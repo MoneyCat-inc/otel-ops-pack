@@ -21,14 +21,13 @@ receivers:
     poll_interval: 1s
   filelog/canary:
     include:
+      - C:/logs/windows-canary-test.log
       - C:/logs/**/*.log
     start_at: end
     include_file_path: true
     include_file_name: true
     poll_interval: 1s
-    operators:
-      - type: json_parser
-        parse_from: body
+    encoding: utf-16le
   
 
 processors:
