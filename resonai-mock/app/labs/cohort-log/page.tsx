@@ -9,8 +9,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { cohortLogger, CohortLogData, CohortSessionLog } from '../../src/engine/metrics/cohortLog';
-import { flags, getEnabledFeatures } from '../../src/config/flags';
+import { cohortLogger, CohortLogData, CohortSessionLog } from '../../../src/engine/metrics/cohortLog';
+import { flags, getEnabledFeatures } from '../../../src/config/flags';
 
 interface LogStats {
   totalSessions: number;

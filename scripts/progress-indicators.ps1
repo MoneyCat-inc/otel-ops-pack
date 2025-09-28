@@ -181,7 +181,9 @@ function Start-NetworkOperation {
 }
 
 # Export functions for use in other scripts
+# Only export when the script is imported as a module
 if ($null -ne $MyInvocation.MyCommand.Module) {
     Export-ModuleMember -Function Write-ProgressBar, Write-Spinner, Start-SpinnerJob, Stop-SpinnerJob, Start-TimedOperation, Start-FileOperation, Start-NetworkOperation
 }
+
 

@@ -192,7 +192,7 @@ test.describe('Offline Isolation Tests', () => {
     expect(headers.sharedArrayBuffer).toBe(true);
   });
 
-  test('should handle Service Worker updates without breaking isolation', async ({ page }) {
+  test('should handle Service Worker updates without breaking isolation', async ({ page }) => {
     // Navigate and wait for Service Worker
     await page.goto('/');
     await page.waitForFunction(() => {
