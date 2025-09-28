@@ -89,20 +89,23 @@ describe('CohortLogger', () => {
       expect(logData.sessions[0].flagsEnabled).toEqual(['cohort', 'dashboard-entry', 'event-summary']);
     });
 
-    it('should respect cohort feature flags', async () => {
-      // This test verifies that the logger checks flags.enabled
-      // The actual flag checking is tested in integration tests
+    it('should not log when cohort features are disabled', async () => {
+      // Mock flags to be disabled
+      vi.doMock('../../src/config/flags', () => ({
+        flags: { enabled: false },
+        getEnabledFeatures: () => [],
+      }));
+
       const sessionSummary: SessionSummaryV1 = {
         ts: Date.now(),
         medianF0: 150,
         schemaVersion: 1,
       };
 
-      // With flags enabled (from beforeEach mock), session should be logged
       await logger.logSession(sessionSummary);
 
       const logData = await logger.getLogData();
-      expect(logData.sessions).toHaveLength(1);
+      expect(logData.sessions).toHaveLength(0);
     });
 
     it('should handle logging errors gracefully', async () => {
