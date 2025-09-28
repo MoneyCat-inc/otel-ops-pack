@@ -1,0 +1,68 @@
+name: GitLeaks Security Scan
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 3 * * 1' # Weekly on Monday at 3 AM
+
+jobs:
+  scan:
+    name: GitLeaks Scan
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 # Full history for better detection
+
+    - name: Run GitLeaks
+      uses: gitleaks/gitleaks-action@v2
+      with:
+        args: --redact --no-banner --verbose
+        config-path: .gitleaks.toml # Optional: custom config
+        fail-on-error: true
+
+    - name: Upload GitLeaks results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: gitleaks-results
+        path: |
+          gitleaks-report.json
+          gitleaks-report.txt
+        retention-days: 30
+
+    - name: Comment PR with results
+      if: github.event_name == 'pull_request' && always()
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          if (fs.existsSync('gitleaks-report.json')) {
+            const report = JSON.parse(fs.readFileSync('gitleaks-report.json', 'utf8'));
+            if (report.findings && report.findings.length > 0) {
+              const comment = `## 🚨 GitLeaks Security Scan Results
+              
+              **${report.findings.length}** potential secrets detected:
+              
+              ${report.findings.map(f => `- **${f.rule}**: \`${f.file}:${f.startLine}\``).join('\n')}
+              
+              Please review and remove any exposed secrets.`;
+              
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
+            } else {
+              console.log('No secrets detected by GitLeaks');
+            }
+          }

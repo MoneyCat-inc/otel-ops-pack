@@ -80,9 +80,9 @@ function Show-ProgressMode {
     } else {
         # Show simple progress
         $percent = [Math]::Round(($Current / $Total) * 100)
-        Write-Host "$Activity: $percent% - $Status"
+        Write-Host "${Activity}: ${percent}% - ${Status}"
     }
 }
 
-# Initialize output mode
-Initialize-OutputMode -Json:$Json -Quiet:$Quiet -Verbose:$Verbose
+# Functions are now available for dot-sourcing
+# Usage: . "$PSScriptRoot\utils\output-guard.ps1" -Json:$Json -Quiet:$Quiet

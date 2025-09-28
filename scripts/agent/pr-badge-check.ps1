@@ -3,6 +3,7 @@
 param(
     [switch]$CheckOnly,
     [switch]$UpdateTemplate,
+    [switch]$Json,
     [string]$TemplatePath = ".github/pull_request_template.md"
 )
 
@@ -42,6 +43,8 @@ function Get-GuardrailStatus {
             filesProcessed = $result.filesProcessed
             success = $result.violations -eq 0
             timestamp = (Get-Date).ToString("o")
+            status = if ($result.violations -eq 0) { "passing" } else { "failing" }
+            color = if ($result.violations -eq 0) { "brightgreen" } else { "red" }
         }
     } catch {
         return @{
@@ -50,6 +53,8 @@ function Get-GuardrailStatus {
             success = $false
             timestamp = (Get-Date).ToString("o")
             error = $_.Exception.Message
+            status = "error"
+            color = "red"
         }
     }
 }
@@ -84,23 +89,48 @@ function Get-StatusBadge {
     }
 }
 
-Write-Host "🔍 codex-local Pre-merge Badge Check" -ForegroundColor Cyan
-Write-Host "=====================================" -ForegroundColor Cyan
+# Import hardening utilities
+. "$PSScriptRoot\utils\output-guard.ps1" -Json:$Json -Quiet:$CheckOnly
+
+if (-not $Json -and -not $CheckOnly) {
+    Write-Host "🔍 codex-local Pre-merge Badge Check" -ForegroundColor Cyan
+    Write-Host "=====================================" -ForegroundColor Cyan
+}
 
 # Get guardrail status
-Write-Host "`n📊 Checking guardrail status..." -ForegroundColor Yellow
+if (-not $Json -and -not $CheckOnly) {
+    Write-Host "`n📊 Checking guardrail status..." -ForegroundColor Yellow
+}
 $guardrailStatus = Get-GuardrailStatus
 $badge = Get-StatusBadge -GuardrailStatus $guardrailStatus
 
-# Display results
-Write-Host "`n📈 Guardrail Status:" -ForegroundColor White
-Write-Host "   Files Processed: $($guardrailStatus.filesProcessed)" -ForegroundColor Gray
-Write-Host "   Violations: $($guardrailStatus.violations)" -ForegroundColor $(if ($guardrailStatus.success) { "Green" } else { "Red" })
-Write-Host "   Status: $($badge.message)" -ForegroundColor $(if ($guardrailStatus.success) { "Green" } else { "Red" })
+# JSON output mode
+if ($Json) {
+    $jsonOutput = @{
+        status = $guardrailStatus.status
+        color = $guardrailStatus.color
+        lastDoctor = $guardrailStatus.timestamp
+        violDelta = $guardrailStatus.violations
+        filesProcessed = $guardrailStatus.filesProcessed
+        success = $guardrailStatus.success
+        badgeUrl = $badge.url
+    }
+    
+    $jsonOutput | ConvertTo-Json -Depth 3
+    exit $(if ($guardrailStatus.success) { 0 } else { 1 })
+}
 
-Write-Host "`n🎖️ Badge Information:" -ForegroundColor White
-Write-Host "   Status: $($badge.status)" -ForegroundColor $badge.color
-Write-Host "   URL: $($badge.url)" -ForegroundColor Gray
+# Display results (non-JSON mode)
+if (-not $CheckOnly) {
+    Write-Host "`n📈 Guardrail Status:" -ForegroundColor White
+    Write-Host "   Files Processed: $($guardrailStatus.filesProcessed)" -ForegroundColor Gray
+    Write-Host "   Violations: $($guardrailStatus.violations)" -ForegroundColor $(if ($guardrailStatus.success) { "Green" } else { "Red" })
+    Write-Host "   Status: $($badge.message)" -ForegroundColor $(if ($guardrailStatus.success) { "Green" } else { "Red" })
+
+    Write-Host "`n🎖️ Badge Information:" -ForegroundColor White
+    Write-Host "   Status: $($badge.status)" -ForegroundColor $badge.color
+    Write-Host "   URL: $($badge.url)" -ForegroundColor Gray
+}
 
 if ($UpdateTemplate) {
     Write-Host "`n📝 Updating PR template..." -ForegroundColor Yellow
