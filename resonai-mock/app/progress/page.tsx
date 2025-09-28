@@ -309,8 +309,8 @@ export default function ProgressPage() {
             <OrbV2
               resonance={latestDay.expressiveness01.mean}
               strain={latestDay.strainRate}
-              size={120}
-              visible={!reducedMotion || true} // Always show, but with motion-safe animations
+              bucket={latestDay.bucketBias.dominant as 'front' | 'central' | 'back'}
+              visible={true}
               aria-label={`Resonance visualization: ${Math.round(latestDay.expressiveness01.mean * 100)}% expressiveness, ${Math.round(latestDay.strainRate * 100)}% strain`}
             />
           </div>
