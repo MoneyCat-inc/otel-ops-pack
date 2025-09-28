@@ -50,17 +50,21 @@ export function ScenarioCard({
     };
   }, []);
 
-  // Mock data generation for testing
+  // Deterministic mock data generation using scenario-specific contours
   const generateMockResult = (): ScenarioResult => {
-    const riseFallOptions: ('rise' | 'fall' | 'neutral')[] = ['rise', 'fall', 'neutral'];
-    const randomRiseFall = riseFallOptions[Math.floor(Math.random() * riseFallOptions.length)];
-    const randomExpressiveness = Math.random();
+    // Deterministic result based on scenario target
+    const targetRiseFall = scenario.targetRiseFall;
+    const riseFallLabel = targetRiseFall; // Mock mode always "passes" the target
     
-    const pass = randomRiseFall === scenario.targetRiseFall && 
-                 randomExpressiveness >= scenario.expressivenessThreshold;
+    // Deterministic expressiveness based on scenario threshold
+    const baseExpressiveness = scenario.expressivenessThreshold + 0.1; // Slightly above threshold
+    const expressiveness01 = Math.min(baseExpressiveness, 0.8); // Cap at 80%
+    
+    const pass = riseFallLabel === scenario.targetRiseFall && 
+                 expressiveness01 >= scenario.expressivenessThreshold;
 
     const feedback: string[] = [];
-    if (randomRiseFall === scenario.targetRiseFall) {
+    if (riseFallLabel === scenario.targetRiseFall) {
       if (scenario.targetRiseFall === 'fall') {
         feedback.push('✅ Gentle fall detected — clear statement');
       } else {
@@ -74,9 +78,9 @@ export function ScenarioCard({
       }
     }
 
-    if (randomExpressiveness >= 0.6) {
+    if (expressiveness01 >= 0.6) {
       feedback.push('✅ Nice variety in pitch — expressive delivery');
-    } else if (randomExpressiveness >= 0.3) {
+    } else if (expressiveness01 >= 0.3) {
       feedback.push('👍 Good expressiveness — keep it natural');
     } else {
       feedback.push('💡 Try adding a bit more pitch variety for expressiveness');
@@ -84,15 +88,15 @@ export function ScenarioCard({
 
     return {
       scenarioId: scenario.id,
-      riseFallLabel: randomRiseFall,
-      expressiveness01: randomExpressiveness,
+      riseFallLabel,
+      expressiveness01,
       pass,
       feedback,
       metrics: {
-        pitchRange: Math.random() * 100,
-        pitchVariation: Math.random() * 50,
-        energyVariation: Math.random() * 0.3,
-        duration: scenario.expectedDuration + (Math.random() - 0.5) * 2
+        pitchRange: 50 + expressiveness01 * 30, // Deterministic based on expressiveness
+        pitchVariation: 15 + expressiveness01 * 20,
+        energyVariation: 0.1 + expressiveness01 * 0.15,
+        duration: scenario.expectedDuration // Exact duration for deterministic testing
       }
     };
   };

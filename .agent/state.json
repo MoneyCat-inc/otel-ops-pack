@@ -1,9 +1,9 @@
 {
-  "lastRun": "2025-09-28T05:36:27Z",
-  "uptime": 0,
-  "killSwitch": false,
-  "agentName": "cursor-agent-observability-copilot",
   "status": "completed",
+  "killSwitch": false,
+  "uptime": 0,
+  "jobsProcessed": 8,
+  "agentName": "cursor-agent-observability-copilot",
   "lastError": null,
-  "jobsProcessed": 7
+  "lastRun": "2025-09-28T05:58:17Z"
 }

@@ -173,6 +173,40 @@ test.describe('Prosody Scenarios', () => {
     await expect(liveRegion).toContainText(/Passed|Try again/);
   });
 
+  test('should have exactly one aria-live region per scenario card', async ({ page }) => {
+    // Check that each scenario card has exactly one aria-live region
+    const scenarioCards = page.locator('[data-testid="scenario-card"]');
+    await expect(scenarioCards).toHaveCount(2);
+
+    for (let i = 0; i < 2; i++) {
+      const card = scenarioCards.nth(i);
+      const liveRegions = card.locator('[aria-live="polite"]');
+      await expect(liveRegions).toHaveCount(1);
+    }
+  });
+
+  test('should not duplicate announcements across cards', async ({ page }) => {
+    // Enable mock mode
+    await page.getByLabel(/Mock Mode/i).click();
+
+    // Start both scenarios simultaneously
+    const voicemailCard = page.locator('[data-testid="scenario-card"]').first();
+    const meetingCard = page.locator('[data-testid="scenario-card"]').last();
+    
+    await voicemailCard.getByRole('button', { name: /Start Recording/i }).click();
+    await meetingCard.getByRole('button', { name: /Start Recording/i }).click();
+
+    // Wait for both to complete
+    await expect(page.getByText('Scenario complete')).toBeVisible({ timeout: 10000 });
+
+    // Check that each card has its own announcement
+    const voicemailLiveRegion = voicemailCard.locator('[aria-live="polite"]');
+    const meetingLiveRegion = meetingCard.locator('[aria-live="polite"]');
+    
+    await expect(voicemailLiveRegion).toContainText(/voicemail|Voicemail/);
+    await expect(meetingLiveRegion).toContainText(/meeting|Meeting/);
+  });
+
   test('should respect reduced motion preference', async ({ page }) => {
     // Mock reduced motion preference
     await page.emulateMedia({ reducedMotion: 'reduce' });
@@ -189,6 +223,26 @@ test.describe('Prosody Scenarios', () => {
     // Verify animations are reduced (no transition classes should be present)
     const progressBar = page.locator('[style*="transition-all duration-500"]');
     await expect(progressBar).not.toBeVisible();
+  });
+
+  test('should disable animations when reduced motion is preferred', async ({ page }) => {
+    // Mock reduced motion preference
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+
+    // Check that scenario cards don't have transition animations
+    const scenarioCards = page.locator('[data-testid="scenario-card"]');
+    await expect(scenarioCards).toHaveCount(2);
+
+    // Verify no transition classes are applied
+    for (let i = 0; i < 2; i++) {
+      const card = scenarioCards.nth(i);
+      const element = await card.elementHandle();
+      if (element) {
+        const className = await element.getAttribute('class');
+        expect(className).not.toContain('transition-all');
+        expect(className).not.toContain('duration-500');
+      }
+    }
   });
 
   test('should handle URL parameters for mock scenarios', async ({ page }) => {
@@ -257,5 +311,89 @@ test.describe('Accessibility', () => {
     // This would typically be tested with axe-core or similar tool
     // For now, we'll just verify the page loads without accessibility errors
     await expect(page.getByRole('heading', { name: /Applied Prosody Scenarios/i })).toBeVisible();
+  });
+});
+
+test.describe('Security & Isolation', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/labs/prosody-scenarios');
+  });
+
+  test('should maintain CSP compliance', async ({ page }) => {
+    // Check that no inline styles are present
+    const inlineStyleElements = page.locator('[style]');
+    const inlineStyleCount = await inlineStyleElements.count();
+    expect(inlineStyleCount).toBe(0);
+
+    // Check that no inline scripts are present
+    const inlineScripts = page.locator('script:not([src])');
+    const inlineScriptCount = await inlineScripts.count();
+    expect(inlineScriptCount).toBe(0);
+
+    // Verify page loads without CSP violations
+    const cspViolations: string[] = [];
+    page.on('console', msg => {
+      if (msg.type() === 'error' && msg.text().includes('Content Security Policy')) {
+        cspViolations.push(msg.text());
+      }
+    });
+
+    // Wait for page to fully load
+    await page.waitForLoadState('networkidle');
+    
+    // No CSP violations should occur
+    expect(cspViolations).toHaveLength(0);
+  });
+
+  test('should maintain cross-origin isolation', async ({ page }) => {
+    // Check that crossOriginIsolated is true
+    const isCrossOriginIsolated = await page.evaluate(() => window.crossOriginIsolated);
+    expect(isCrossOriginIsolated).toBe(true);
+
+    // Check that SharedArrayBuffer is available
+    const hasSharedArrayBuffer = await page.evaluate(() => typeof SharedArrayBuffer !== 'undefined');
+    expect(hasSharedArrayBuffer).toBe(true);
+  });
+
+  test('should have proper COOP/COEP headers', async ({ page }) => {
+    // Navigate to the page and check response headers
+    const response = await page.goto('/labs/prosody-scenarios');
+    expect(response).toBeTruthy();
+
+    const headers = response!.headers();
+    
+    // Check for COOP header
+    expect(headers['cross-origin-opener-policy']).toBeDefined();
+    
+    // Check for COEP header
+    expect(headers['cross-origin-embedder-policy']).toBeDefined();
+  });
+
+  test('should not leak audio data', async ({ page }) => {
+    // Enable mock mode to test data handling
+    await page.getByLabel(/Mock Mode/i).click();
+    
+    // Complete a scenario
+    const voicemailCard = page.locator('[data-testid="scenario-card"]').first();
+    await voicemailCard.getByRole('button', { name: /Start Recording/i }).click();
+    await expect(page.getByText('Scenario complete')).toBeVisible({ timeout: 10000 });
+
+    // Export results and verify no audio data
+    const downloadPromise = page.waitForEvent('download');
+    await page.getByRole('button', { name: /Export Results/i }).click();
+    const download = await downloadPromise;
+    
+    // Read the downloaded file
+    const path = await download.path();
+    expect(path).toBeTruthy();
+    
+    const fs = require('fs');
+    const content = fs.readFileSync(path, 'utf8');
+    const data = JSON.parse(content);
+    
+    // Verify no audio data is present
+    expect(JSON.stringify(data)).not.toContain('audio');
+    expect(JSON.stringify(data)).not.toContain('blob');
+    expect(JSON.stringify(data)).not.toContain('ArrayBuffer');
   });
 });
