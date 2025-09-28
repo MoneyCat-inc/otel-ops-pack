@@ -12,6 +12,7 @@ import { ProgressAggregator, ProgressTrends, SessionSummaryV1 } from '../../src/
 import { MetricCard } from '../../src/components/progress/MetricCard';
 import { SafetyStrip } from '../../src/components/progress/SafetyStrip';
 import { FriendlySummary } from '../../src/components/progress/FriendlySummary';
+import { BetaMetricsPanel } from '../../src/components/progress/BetaMetricsPanel';
 import { OrbV2 } from '../../src/components/OrbV2';
 import { useReducedMotion } from '../../src/hooks/useReducedMotion';
 import Link from 'next/link';
