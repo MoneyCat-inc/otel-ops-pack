@@ -1,44 +1,44 @@
 {
+  "Metrics": {
+    "Overall_Score": {
+      "Target": 80,
+      "Weight": 0.3
+    },
+    "Quality_Compliance": {
+      "Target": 80,
+      "Weight": 0.2
+    },
+    "Content_Compliance": {
+      "Target": 80,
+      "Weight": 0.25
+    },
+    "Structure_Compliance": {
+      "Target": 80,
+      "Weight": 0.25
+    }
+  },
+  "Thresholds": {
+    "Target": 80,
+    "Warning": 70,
+    "Excellent": 90,
+    "Critical": 50
+  },
   "Dashboard": {
+    "Retention_Days": 30,
     "Export_Formats": [
       "json",
       "html",
       "csv"
     ],
-    "Update_Interval": 300,
-    "Retention_Days": 30
-  },
-  "Thresholds": {
-    "Warning": 70,
-    "Critical": 50,
-    "Excellent": 90,
-    "Target": 80
+    "Update_Interval": 300
   },
   "Alerts": {
+    "Critical_Threshold": 50,
     "Notification_Channels": [
       "console",
       "file",
       "webhook"
     ],
-    "Regression_Threshold": 5,
-    "Critical_Threshold": 50
-  },
-  "Metrics": {
-    "Structure_Compliance": {
-      "Weight": 0.25,
-      "Target": 80
-    },
-    "Overall_Score": {
-      "Weight": 0.3,
-      "Target": 80
-    },
-    "Content_Compliance": {
-      "Weight": 0.25,
-      "Target": 80
-    },
-    "Quality_Compliance": {
-      "Weight": 0.2,
-      "Target": 80
-    }
+    "Regression_Threshold": 5
   }
 }
