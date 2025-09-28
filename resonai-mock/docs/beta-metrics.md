@@ -8,7 +8,7 @@ The Beta Success Metrics feature provides comprehensive tracking of user engagem
 
 ### 1. Retention Percentage
 
-**What it measures:** Days with ≥1 practice session / Days since install
+**What it measures:** Days with ≥1 practice session / Days since first session
 
 **How to read it:**
 - **80-100%**: Excellent retention - practicing almost daily
