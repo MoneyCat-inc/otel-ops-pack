@@ -163,6 +163,7 @@ export default function ListenPage() {
               {!isAnalyzing ? (
                 <button
                   onClick={handleStartListening}
+                  onKeyDown={handleKeyDown}
                   disabled={!micManager.isSupported || !audioContext.isSupported}
                   className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-400 disabled:cursor-not-allowed font-medium transition-all duration-200 shadow-sm hover:shadow-md focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                   aria-label="Start voice analysis and begin recording"
@@ -172,6 +173,7 @@ export default function ListenPage() {
               ) : (
                 <button
                   onClick={handleStopListening}
+                  onKeyDown={handleKeyDown}
                   className="px-6 py-3 bg-gradient-to-r from-red-600 to-pink-600 text-white rounded-lg hover:from-red-700 hover:to-pink-700 font-medium transition-all duration-200 shadow-sm hover:shadow-md focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
                   aria-label="Stop voice analysis and end recording"
                 >

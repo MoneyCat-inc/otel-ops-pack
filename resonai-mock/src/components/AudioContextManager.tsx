@@ -16,6 +16,12 @@ interface AudioContextState {
   sampleRate: number;
   contextState: 'closed' | 'running' | 'suspended' | 'interrupted';
   error: string | null;
+  performanceMetrics: {
+    creationTime: number;
+    recoveryAttempts: number;
+    lastError: string | null;
+    totalUptime: number;
+  };
 }
 
 export function useAudioContext() {
@@ -26,6 +32,12 @@ export function useAudioContext() {
     sampleRate: 0,
     contextState: 'closed',
     error: null,
+    performanceMetrics: {
+      creationTime: 0,
+      recoveryAttempts: 0,
+      lastError: null,
+      totalUptime: 0,
+    },
   });
 
   const contextRef = useRef<AudioContext | null>(null);
@@ -43,7 +55,15 @@ export function useAudioContext() {
     }
 
     try {
-      setState(prev => ({ ...prev, error: null }));
+      const startTime = performance.now();
+      setState(prev => ({ 
+        ...prev, 
+        error: null,
+        performanceMetrics: {
+          ...prev.performanceMetrics,
+          creationTime: startTime
+        }
+      }));
 
       // Create AudioContext with latencyHint: 0 for low latency
       const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
@@ -79,7 +99,19 @@ export function useAudioContext() {
       setState(prev => ({
         ...prev,
         error: error instanceof Error ? error.message : 'Unknown error',
+        performanceMetrics: {
+          ...prev.performanceMetrics,
+          lastError: error instanceof Error ? error.message : 'Unknown error'
+        }
       }));
+      
+      // Auto-recovery attempt
+      setTimeout(async () => {
+        if (state.performanceMetrics.recoveryAttempts < 3) {
+          console.log('Attempting AudioContext recovery...');
+          await createContext();
+        }
+      }, 2000);
     }
   };
 
