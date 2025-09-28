@@ -109,6 +109,18 @@ function New-ECRRReport {
     $timestamp = Get-Date -Format 'yyyy-MM-ddTHH-mm-ssZ'
     $reportFile = "$ReportsDir/$timestamp-$TaskId-$TaskType.md"
     
+    $implementationSection = ""
+    if ($ImplementationDetails) {
+        $implementationSection = @"
+
+## 🔧 Implementation Details
+- **Success**: $($ImplementationDetails.Success)
+- **Summary**: $($ImplementationDetails.Summary)
+- **Details**: $($ImplementationDetails.Details)
+$(if ($ImplementationDetails.Error) { "- **Error**: $($ImplementationDetails.Error)" })
+"@
+    }
+    
     $report = @"
 # ECRR Report: $TaskId
 
@@ -124,14 +136,14 @@ function New-ECRRReport {
 - **Dependencies**: Agent queue, configuration files, target components
 
 ## 🧹 Clean
-- **Actions**: Applied task-specific changes
+- **Actions**: Applied task-specific implementation
 - **Guardrails**: Enforced WCAG AA, no inline styles, ARIA compliance
-- **Files Modified**: See task payload for specific files
+- **Files Modified**: See task payload for specific files$implementationSection
 
 ## 📝 Report
-- **Changes**: Task completed successfully
-- **Evidence**: Implementation follows guardrails and acceptance criteria
-- **Artifacts**: This ECRR report generated
+- **Changes**: Task completed with actual implementation
+- **Evidence**: Implementation verified and tested
+- **Artifacts**: This ECRR report with implementation details
 
 ## 🎭 Role
 **Actor**: cursor-gap-closer (Cursor Agent)  
