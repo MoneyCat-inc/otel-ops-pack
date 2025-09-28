@@ -1,0 +1,373 @@
+// Resonai Backend Schema - Privacy-Aware Data Model
+// Local-first, consent-first architecture
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql" // or "sqlite" for Turso
+  url      = env("DATABASE_URL")
+}
+
+// =============================================================================
+// CORE USER MANAGEMENT
+// =============================================================================
+
+model User {
+  id        String   @id @default(ulid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Optional email only if user opts into account features
+  email String? @unique
+
+  // Consent settings - all false by default
+  consentShareMetrics Boolean @default(false)
+  consentShareClips   Boolean @default(false) // Always false for now
+  consentCoachPortal  Boolean @default(false)
+
+  // Hashed identifier for cohort grouping (not reversible)
+  userIdHash String @unique
+
+  // Relations
+  engagementProfile EngagementProfile?
+  events            Event[]
+  coachGrants       CoachGrant[]
+  consentAuditLog   ConsentAuditLog[]
+  storyProgress     StoryProgress[]
+  feedbackReports   FeedbackReport[]
+
+  @@map("users")
+}
+
+// =============================================================================
+// ENGAGEMENT & PROGRESS TRACKING
+// =============================================================================
+
+model EngagementProfile {
+  id        String   @id @default(ulid())
+  userId    String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Streak and badge data (client remains source of truth)
+  streakDays        Int      @default(0)
+  lastPracticeAt    DateTime?
+  lastSyncAt        DateTime @default(now())
+
+  // User preferences
+  reducedMotion     Boolean  @default(false)
+  theme             String   @default("auto") // "light" | "dark" | "auto"
+  preferredLanguage String   @default("en")
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("engagement_profiles")
+}
+
+model Badge {
+  id          String @id @default(ulid())
+  userId      String
+  badgeType   String // "first_session", "week_1", "month_1", etc.
+  unlockedAt  DateTime @default(now())
+  metadata    Json?   // Additional badge-specific data
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, badgeType])
+  @@map("badges")
+}
+
+// =============================================================================
+// COHORT ANALYTICS (PRIVACY-SAFE)
+// =============================================================================
+
+model Event {
+  id         String   @id @default(ulid())
+  userId     String
+  ts         DateTime @default(now())
+  kind       EventKind
+  props      Json     // Record<string, number | string | boolean>
+  schema     String   @default("v1")
+  cohort     String   // Derived from userIdHash for grouping
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([cohort, ts])
+  @@index([kind, ts])
+  @@map("events")
+}
+
+enum EventKind {
+  SESSION_START
+  SESSION_END
+  STREAK_TICK
+  BADGE_UNLOCK
+  A11Y_TOGGLE
+  CONSENT_CHANGE
+  FEATURE_FLAG_TOGGLE
+}
+
+// =============================================================================
+// NARRATIVE CONTENT (STATIC, VERSIONED)
+// =============================================================================
+
+model StoryChapter {
+  id          String   @id @default(ulid())
+  chapterId   String   @unique // Human-readable identifier
+  version     String   // Immutable version identifier
+  title       String
+  body        String   @db.Text
+  choices     Json     // Array of { id, label, next }
+  publishedAt DateTime @default(now())
+  isActive    Boolean  @default(true)
+
+  // Relations
+  storyProgress StoryProgress[]
+
+  @@unique([chapterId, version])
+  @@map("story_chapters")
+}
+
+model StoryProgress {
+  id          String   @id @default(ulid())
+  userId      String
+  chapterId   String
+  completedAt DateTime @default(now())
+  choices     Json?    // User's choice history for this chapter
+
+  // Relations
+  user    User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chapter StoryChapter @relation(fields: [chapterId], references: [id])
+
+  @@unique([userId, chapterId])
+  @@map("story_progress")
+}
+
+// =============================================================================
+// COACH PORTAL (E2E ENCRYPTED)
+// =============================================================================
+
+model CoachGrant {
+  id            String    @id @default(ulid())
+  userId        String
+  coachId       String    // Coach identifier
+  scope         CoachScope
+  encryptedBlob String    @db.Text // E2E encrypted summary
+  expiresAt     DateTime
+  createdAt     DateTime  @default(now())
+  isActive      Boolean   @default(true)
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([coachId, isActive])
+  @@index([expiresAt])
+  @@map("coach_grants")
+}
+
+enum CoachScope {
+  METRICS // View engagement metrics only
+  NOTES   // View coach notes and progress
+}
+
+// =============================================================================
+// CONSENT & PRIVACY AUDIT
+// =============================================================================
+
+model ConsentAuditLog {
+  id        String   @id @default(ulid())
+  userId    String
+  field     String   // "shareMetrics", "shareClips", "coachPortal"
+  oldValue  Boolean
+  newValue  Boolean
+  changedAt DateTime @default(now())
+  ipAddress String?
+  userAgent String?
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, changedAt])
+  @@map("consent_audit_log")
+}
+
+// =============================================================================
+// FEEDBACK & MODERATION
+// =============================================================================
+
+model FeedbackReport {
+  id        String   @id @default(ulid())
+  userId    String?  // Optional - may be anonymous
+  type      FeedbackType
+  content   String   @db.Text
+  metadata  Json?    // Additional context
+  createdAt DateTime @default(now())
+  status    FeedbackStatus @default(OPEN)
+
+  // Relations
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([type, status])
+  @@index([createdAt])
+  @@map("feedback_reports")
+}
+
+enum FeedbackType {
+  GENERAL
+  BUG_REPORT
+  FEATURE_REQUEST
+  ACCESSIBILITY
+  PRIVACY_CONCERN
+}
+
+enum FeedbackStatus {
+  OPEN
+  IN_REVIEW
+  RESOLVED
+  CLOSED
+}
+
+// =============================================================================
+// FEATURE FLAGS & COHORTS
+// =============================================================================
+
+model FeatureFlag {
+  id          String   @id @default(ulid())
+  name        String   @unique
+  description String?
+  isActive    Boolean  @default(false)
+  rollout     Float    @default(0.0) // 0.0 to 1.0
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  cohortAssignments CohortAssignment[]
+
+  @@map("feature_flags")
+}
+
+model CohortAssignment {
+  id             String @id @default(ulid())
+  userIdHash     String // Hashed user identifier
+  cohort         String // Cohort identifier
+  featureFlags   Json   // Array of feature flag names
+  assignedAt     DateTime @default(now())
+
+  @@unique([userIdHash, cohort])
+  @@index([cohort])
+  @@map("cohort_assignments")
+}
+
+// =============================================================================
+// DATA EXPORT & DELETION TRACKING
+// =============================================================================
+
+model DataExport {
+  id        String   @id @default(ulid())
+  userId    String
+  status    ExportStatus @default(PENDING)
+  filePath  String?  // Path to exported file
+  expiresAt DateTime // Auto-cleanup after download
+  createdAt DateTime @default(now())
+  completedAt DateTime?
+
+  @@index([userId, status])
+  @@index([expiresAt])
+  @@map("data_exports")
+}
+
+enum ExportStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  EXPIRED
+}
+
+model DeletionLog {
+  id        String   @id @default(ulid())
+  userId    String
+  deletedAt DateTime @default(now())
+  reason    String?  // Optional reason for deletion
+  dataTypes Json     // Array of data types deleted
+
+  @@index([deletedAt])
+  @@map("deletion_log")
+}
+
+// =============================================================================
+// SESSIONS & AUTHENTICATION
+// =============================================================================
+
+model Session {
+  id        String   @id @default(ulid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  ipAddress String?
+  userAgent String?
+
+  @@index([token])
+  @@index([expiresAt])
+  @@map("sessions")
+}
+
+// =============================================================================
+// BACKGROUND JOB TRACKING
+// =============================================================================
+
+model BackgroundJob {
+  id        String   @id @default(ulid())
+  type      JobType
+  status    JobStatus @default(PENDING)
+  payload   Json?
+  startedAt DateTime?
+  completedAt DateTime?
+  error     String?
+  retryCount Int @default(0)
+
+  @@index([type, status])
+  @@index([startedAt])
+  @@map("background_jobs")
+}
+
+enum JobType {
+  STREAK_ROLLOVER
+  COHORT_ROLLUP
+  DATA_CLEANUP
+  RETENTION_SNAPSHOT
+  EXPIRED_GRANT_CLEANUP
+}
+
+enum JobStatus {
+  PENDING
+  RUNNING
+  COMPLETED
+  FAILED
+  RETRYING
+}
+
+// =============================================================================
+// INDEXES FOR PERFORMANCE
+// =============================================================================
+
+// Additional composite indexes for common query patterns
+// These will be added by Prisma during migration
+
+// Events by user and time range
+// @@index([userId, ts]) - already covered by relation
+
+// Cohort analytics queries
+// @@index([cohort, kind, ts]) - already covered above
+
+// User engagement queries
+// @@index([userId, lastPracticeAt]) - covered by relation
+
+// Coach grant lookups
+// @@index([coachId, isActive, expiresAt]) - already covered above
