@@ -1,0 +1,44 @@
+{
+  "Dashboard": {
+    "Export_Formats": [
+      "json",
+      "html",
+      "csv"
+    ],
+    "Update_Interval": 300,
+    "Retention_Days": 30
+  },
+  "Thresholds": {
+    "Warning": 70,
+    "Critical": 50,
+    "Excellent": 90,
+    "Target": 80
+  },
+  "Alerts": {
+    "Notification_Channels": [
+      "console",
+      "file",
+      "webhook"
+    ],
+    "Regression_Threshold": 5,
+    "Critical_Threshold": 50
+  },
+  "Metrics": {
+    "Structure_Compliance": {
+      "Weight": 0.25,
+      "Target": 80
+    },
+    "Overall_Score": {
+      "Weight": 0.3,
+      "Target": 80
+    },
+    "Content_Compliance": {
+      "Weight": 0.25,
+      "Target": 80
+    },
+    "Quality_Compliance": {
+      "Weight": 0.2,
+      "Target": 80
+    }
+  }
+}
