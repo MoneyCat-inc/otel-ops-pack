@@ -101,11 +101,34 @@ export class CohortLogger {
   }
 
   /**
-   * Export log data as JSON string
+   * Export log data as JSON string with standardized schema
    */
   async exportLog(): Promise<string> {
     const logData = await this.getLogData();
-    return JSON.stringify(logData, null, 2);
+    
+    // Transform to reviewer-specified export schema
+    const exportData = {
+      schemaVersion: 1,
+      exportedAt: new Date().toISOString(),
+      build: this.BUILD_HASH,
+      flags: {
+        cohortEnabled: flags.enabled,
+        dashboardEntry: flags.dashboardEntry,
+        eventSummary: flags.eventSummary,
+      },
+      cohortId: this.getOrCreateCohortId(),
+      entries: logData.sessions.map(session => ({
+        ts: session.timestamp,
+        durationSec: this.estimateDurationSec(session.sessionSummary),
+        inBandPct: session.sessionSummary.inBandPct ? session.sessionSummary.inBandPct * 100 : null,
+        expressiveness01: session.sessionSummary.prosodyVar || null,
+        bucketBias: session.sessionSummary.memx?.bucketBias || null,
+        strainFlag: (session.sessionSummary.memx?.memoryStrainPct || 0) > 0.1,
+        notes: null, // Reserved for future optional short notes (max 120 chars)
+      }))
+    };
+    
+    return JSON.stringify(exportData, null, 2);
   }
 
   /**
@@ -263,6 +286,32 @@ export class CohortLogger {
     // For now, use a simple hash based on timestamp
     const timestamp = Date.now().toString(36);
     return `build-${timestamp}`;
+  }
+
+  /**
+   * Get or create persistent cohort ID
+   */
+  private getOrCreateCohortId(): string {
+    if (typeof window === 'undefined') {
+      return this.generateCohortId();
+    }
+
+    const stored = localStorage.getItem('resonai_cohort_id');
+    if (stored) {
+      return stored;
+    }
+
+    const newId = this.generateCohortId();
+    localStorage.setItem('resonai_cohort_id', newId);
+    return newId;
+  }
+
+  /**
+   * Estimate session duration in seconds
+   */
+  private estimateDurationSec(sessionSummary: SessionSummaryV1): number {
+    // Default to 5 minutes if no duration available
+    return 300; // 5 minutes
   }
 }
 

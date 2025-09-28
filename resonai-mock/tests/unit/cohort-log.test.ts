@@ -177,9 +177,13 @@ describe('CohortLogger', () => {
       const exported = await logger.exportLog();
       const parsed = JSON.parse(exported);
 
-      expect(parsed.sessions).toHaveLength(1);
-      expect(parsed.metadata.schemaVersion).toBe('1.0.0');
-      expect(parsed.sessions[0].sessionSummary).toEqual(sessionSummary);
+      expect(parsed.schemaVersion).toBe(1);
+      expect(parsed.entries).toHaveLength(1);
+      expect(parsed.build).toBeDefined();
+      expect(parsed.cohortId).toBeDefined();
+      expect(parsed.flags).toBeDefined();
+      expect(parsed.entries[0].ts).toBe(sessionSummary.ts);
+      expect(parsed.entries[0].inBandPct).toBe(75); // Converted to percentage
     });
 
     it('should handle export errors', async () => {
