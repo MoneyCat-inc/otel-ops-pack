@@ -151,6 +151,51 @@ npm run test:e2e
 npm run ci
 ```
 
+## 🚀 Release QA
+
+### **Complete QA Suite**
+```bash
+# Run full QA suite (all tests)
+pnpm run qa:full
+# Expected runtime: 8-12 minutes
+```
+
+### **Individual Test Suites**
+```bash
+# Run specific test suites
+pnpm run qa:a11y        # Accessibility smoke tests
+pnpm run qa:isolation   # Offline isolation tests
+pnpm run qa:prosody     # Prosody scenario tests
+pnpm run qa:strain      # Strain detection tests
+pnpm run qa:progress    # Progress dashboard tests
+pnpm run qa:data        # Data control tests
+```
+
+### **QA Summary & Reporting**
+```bash
+# Generate test report
+pnpm test:e2e --reporter=json > playwright-report.json || true
+pnpm run qa:summary
+
+# Environment check
+pnpm run qa:env-check
+
+# Cleanup test artifacts
+pnpm run qa:cleanup
+```
+
+### **QA Runbook**
+For detailed QA procedures, troubleshooting, and release processes, see:
+- **[QA Release Runbook](./docs/QA_RELEASE_RUNBOOK.md)** - Complete QA process documentation
+- **[QA Checklist](./docs/qa-checklist.md)** - Feature-specific testing checklists
+
+### **Test Coverage**
+- **Unit Tests**: Aggregation, export schema, strain detection
+- **E2E Tests**: Progress dashboard, data control, prosody scenarios, strain detection, offline isolation, accessibility
+- **Cross-Browser**: Firefox, Chromium, WebKit
+- **Accessibility**: WCAG AA compliance, screen reader support, reduced motion
+- **Security**: COOP/COEP headers, CSP compliance, offline isolation
+
 ## 🚀 Development
 
 ### Project Structure
