@@ -71,7 +71,17 @@
     "agent:cutover-validate-json": "pwsh -File scripts/agent/cutover-validation.ps1 json-purity",
     "agent:cutover-validate-killswitch": "pwsh -File scripts/agent/cutover-validation.ps1 kill-switch",
     "agent:cutover-validate-policy": "pwsh -File scripts/agent/cutover-validation.ps1 policy-gate",
-    "agent:cutover-validate-service": "pwsh -File scripts/agent/cutover-validation.ps1 service-health"
+    "agent:cutover-validate-service": "pwsh -File scripts/agent/cutover-validation.ps1 service-health",
+    "agent:status-fleet-ps": "pwsh -File scripts/agent/status-fleet.ps1 -Json",
+    "agent:status-fleet-sh": "bash scripts/agent/status-fleet.sh ..",
+    "policy:build": "pwsh -File scripts/policy/build-bundle.ps1",
+    "policy:sign": "pwsh -File scripts/policy/sign-bundle.ps1",
+    "policy:verify": "pwsh -File scripts/policy/verify-bundle.ps1",
+    "sbom:gen": "pwsh -File scripts/supplychain/generate-sbom.ps1",
+    "sbom:sign": "pwsh -File scripts/supplychain/sign-sbom.ps1",
+    "docker:watchdog:build": "docker build -f docker/Dockerfile.watchdog -t codex-local:watchdog .",
+    "helm:lint": "helm lint helm/codex-local",
+    "agent:auto-pr": "pwsh -File scripts/agent/auto-pr.ps1"
   },
   "keywords": [
     "observability",

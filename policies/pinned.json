@@ -1,0 +1,6 @@
+{
+  "bundle": "codex-policy-bundle.tar.gz",
+  "version": "v1.0.0",
+  "sha256": "<FILL_SHA256>",
+  "signature": "codex-policy-bundle.sig"
+}
