@@ -244,22 +244,29 @@ function Invoke-TestMaintenance {
     param([object]$Task)
     
     try {
-        # Run the mobile performance tests to verify stability
-        $testResult = & npx playwright test tests/e2e/mobile-performance.spec.ts --reporter=list 2>&1
-        $exitCode = $LASTEXITCODE
+        # Change to resonai-mock directory and run the mobile performance tests
+        $originalLocation = Get-Location
+        Set-Location "resonai-mock"
         
-        if ($exitCode -eq 0) {
-            return @{
-                Success = $true
-                Summary = "Mobile performance tests verified - all 12 tests passing"
-                Details = "Test stability maintained across chromium, firefox, android, ios"
+        try {
+            $testResult = & npx playwright test tests/e2e/mobile-performance.spec.ts --reporter=list 2>&1
+            $exitCode = $LASTEXITCODE
+            
+            if ($exitCode -eq 0) {
+                return @{
+                    Success = $true
+                    Summary = "Mobile performance tests verified - all 12 tests passing"
+                    Details = "Test stability maintained across chromium, firefox, android, ios"
+                }
+            } else {
+                return @{
+                    Success = $false
+                    Error = "Mobile performance tests failed with exit code $exitCode"
+                    Summary = "Test failures detected: $($testResult -join ' ')"
+                }
             }
-        } else {
-            return @{
-                Success = $false
-                Error = "Mobile performance tests failed"
-                Summary = "Test failures detected"
-            }
+        } finally {
+            Set-Location $originalLocation
         }
     } catch {
         return @{
@@ -274,24 +281,50 @@ function Invoke-AccessibilityFix {
     param([object]$Task)
     
     try {
-        # Verify accessibility improvements are in place
-        $accessibilityFeatures = @(
-            "Skip links for keyboard navigation",
-            "ARIA labels and roles",
-            "Focus management",
-            "Screen reader announcements"
-        )
+        # Check if accessibility improvements are actually implemented
+        $listenPageFile = "resonai-mock/app/listen/page.tsx"
+        $practicePageFile = "resonai-mock/app/practice/page.tsx"
         
-        return @{
-            Success = $true
-            Summary = "Accessibility improvements implemented"
-            Details = "Added skip links, ARIA labels, keyboard navigation, and focus management"
+        if (-not (Test-Path $listenPageFile)) {
+            return @{
+                Success = $false
+                Error = "Listen page file not found"
+                Summary = "Cannot verify accessibility implementation"
+            }
+        }
+        
+        # Check for specific accessibility features
+        $listenPageContent = Get-Content $listenPageFile -Raw
+        $accessibilityChecks = @{
+            "Skip link" = $listenPageContent -match "Skip to main content"
+            "ARIA labels" = $listenPageContent -match "aria-label"
+            "Focus rings" = $listenPageContent -match "focus:ring"
+            "ARIA live regions" = $listenPageContent -match "aria-live"
+            "Keyboard navigation" = $listenPageContent -match "onKeyDown"
+        }
+        
+        $passedChecks = ($accessibilityChecks.Values | Where-Object { $_ }).Count
+        $totalChecks = $accessibilityChecks.Count
+        
+        if ($passedChecks -eq $totalChecks) {
+            return @{
+                Success = $true
+                Summary = "All accessibility features verified ($passedChecks/$totalChecks)"
+                Details = "Skip links, ARIA labels, focus management, and keyboard navigation implemented"
+            }
+        } else {
+            $failedChecks = $accessibilityChecks.GetEnumerator() | Where-Object { -not $_.Value } | ForEach-Object { $_.Key }
+            return @{
+                Success = $false
+                Error = "Missing accessibility features: $($failedChecks -join ', ')"
+                Summary = "Only $passedChecks/$totalChecks accessibility features found"
+            }
         }
     } catch {
         return @{
             Success = $false
             Error = $_.Exception.Message
-            Summary = "Accessibility implementation failed"
+            Summary = "Accessibility verification failed"
         }
     }
 }
@@ -300,17 +333,49 @@ function Invoke-PerformanceOptimization {
     param([object]$Task)
     
     try {
-        # Verify audio component optimizations
-        return @{
-            Success = $true
-            Summary = "Audio component performance optimized"
-            Details = "Added performance monitoring, error recovery, and auto-retry mechanisms"
+        # Check if audio component optimizations are actually implemented
+        $audioContextFile = "resonai-mock/src/components/AudioContextManager.tsx"
+        
+        if (-not (Test-Path $audioContextFile)) {
+            return @{
+                Success = $false
+                Error = "AudioContextManager file not found"
+                Summary = "Cannot verify performance optimizations"
+            }
+        }
+        
+        # Check for specific performance features
+        $audioContextContent = Get-Content $audioContextFile -Raw
+        $performanceChecks = @{
+            "Performance metrics" = $audioContextContent -match "performanceMetrics"
+            "Recovery attempts" = $audioContextContent -match "recoveryAttempts"
+            "Error tracking" = $audioContextContent -match "lastError"
+            "Auto-recovery" = $audioContextContent -match "Auto-recovery|setTimeout.*recovery|recoveryAttempts.*3"
+            "Creation timing" = $audioContextContent -match "performance\.now"
+        }
+        
+        $passedChecks = ($performanceChecks.Values | Where-Object { $_ }).Count
+        $totalChecks = $performanceChecks.Count
+        
+        if ($passedChecks -eq $totalChecks) {
+            return @{
+                Success = $true
+                Summary = "All performance optimizations verified ($passedChecks/$totalChecks)"
+                Details = "Performance monitoring, error recovery, and auto-retry mechanisms implemented"
+            }
+        } else {
+            $failedChecks = $performanceChecks.GetEnumerator() | Where-Object { -not $_.Value } | ForEach-Object { $_.Key }
+            return @{
+                Success = $false
+                Error = "Missing performance features: $($failedChecks -join ', ')"
+                Summary = "Only $passedChecks/$totalChecks performance features found"
+            }
         }
     } catch {
         return @{
             Success = $false
             Error = $_.Exception.Message
-            Summary = "Performance optimization failed"
+            Summary = "Performance optimization verification failed"
         }
     }
 }
@@ -319,17 +384,49 @@ function Invoke-TestExpansion {
     param([object]$Task)
     
     try {
-        # Verify E2E test coverage expansion
-        return @{
-            Success = $true
-            Summary = "E2E test coverage expanded"
-            Details = "Added CSP compliance tests, security header validation, and violation detection"
+        # Check if E2E test coverage expansion is actually implemented
+        $cspTestFile = "resonai-mock/tests/e2e/csp.spec.ts"
+        
+        if (-not (Test-Path $cspTestFile)) {
+            return @{
+                Success = $false
+                Error = "CSP test file not found"
+                Summary = "Cannot verify E2E test expansion"
+            }
+        }
+        
+        # Check for specific test coverage features
+        $cspTestContent = Get-Content $cspTestFile -Raw
+        $testChecks = @{
+            "CSP header validation" = $cspTestContent -match "content-security-policy"
+            "Security headers check" = $cspTestContent -match "x-frame-options"
+            "CSP violation detection" = $cspTestContent -match "Content Security Policy"
+            "Header presence validation" = $cspTestContent -match "headers.*present"
+            "CSP directive checks" = $cspTestContent -match "default-src"
+        }
+        
+        $passedChecks = ($testChecks.Values | Where-Object { $_ }).Count
+        $totalChecks = $testChecks.Count
+        
+        if ($passedChecks -eq $totalChecks) {
+            return @{
+                Success = $true
+                Summary = "All E2E test expansions verified ($passedChecks/$totalChecks)"
+                Details = "CSP compliance tests, security header validation, and violation detection implemented"
+            }
+        } else {
+            $failedChecks = $testChecks.GetEnumerator() | Where-Object { -not $_.Value } | ForEach-Object { $_.Key }
+            return @{
+                Success = $false
+                Error = "Missing test features: $($failedChecks -join ', ')"
+                Summary = "Only $passedChecks/$totalChecks test features found"
+            }
         }
     } catch {
         return @{
             Success = $false
             Error = $_.Exception.Message
-            Summary = "Test expansion failed"
+            Summary = "Test expansion verification failed"
         }
     }
 }
