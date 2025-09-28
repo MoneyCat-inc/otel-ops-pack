@@ -90,6 +90,9 @@ NEXT_PUBLIC_MEMX_STREAM_DEFAULT=0       # Default streaming state (default: 0)
 NEXT_PUBLIC_OTEL_EXPORTER_OTLP_PROTOCOL=http/json
 NEXT_PUBLIC_OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:5318
 NEXT_PUBLIC_OTEL_SERVICE_NAME=resonai-local
+
+# Performance Overlay (INV-04)
+NEXT_PUBLIC_PERF_OVERLAY=1  # enable battery/perf HUD in dev
 ```
 
 ### Feature Gates

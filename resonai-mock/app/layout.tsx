@@ -6,6 +6,7 @@
 
 import type { Metadata } from 'next';
 import './globals.css';
+import { PerfOverlay } from '../src/components/PerfOverlay';
 
 export const metadata: Metadata = {
   title: 'Resonai - Voice Practice',
@@ -36,6 +37,18 @@ export default function RootLayout({
                   Home
                 </a>
                 <a
+                  href="/listen"
+                  className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
+                >
+                  Listen
+                </a>
+                <a
+                  href="/practice"
+                  className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
+                >
+                  Practice
+                </a>
+                <a
                   href="/labs/memx"
                   className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
                 >
@@ -46,6 +59,7 @@ export default function RootLayout({
           </div>
         </nav>
         <main>{children}</main>
+        {process.env.NEXT_PUBLIC_PERF_OVERLAY === '1' && <PerfOverlay />}
       </body>
     </html>
   );

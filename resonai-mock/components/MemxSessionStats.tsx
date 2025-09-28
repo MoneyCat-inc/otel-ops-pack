@@ -18,6 +18,12 @@ interface SessionStats {
   peakStrainSessionId?: number;
 }
 
+// Helper function to get progress bar width class
+const getProgressWidthClass = (percentage: number): string => {
+  const rounded = Math.round(percentage / 5) * 5; // Round to nearest 5%
+  return `progress-${Math.min(Math.max(rounded, 0), 100)}`;
+};
+
 export function MemxSessionStats({ className = '' }: { className?: string }) {
   const [stats, setStats] = useState<SessionStats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -118,8 +124,7 @@ export function MemxSessionStats({ className = '' }: { className?: string }) {
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2">
             <div
-              className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-              style={{ width: `${Math.min(stats.memxEnabledPct, 100)}%` }}
+              className={`progress-bar progress-bar-blue ${getProgressWidthClass(stats.memxEnabledPct)}`}
             ></div>
           </div>
         </div>
@@ -131,11 +136,10 @@ export function MemxSessionStats({ className = '' }: { className?: string }) {
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2">
             <div
-              className={`h-2 rounded-full transition-all duration-300 ${
-                stats.averageStrain > 70 ? 'bg-red-500' :
-                stats.averageStrain > 40 ? 'bg-yellow-500' : 'bg-green-500'
-              }`}
-              style={{ width: `${Math.min(stats.averageStrain, 100)}%` }}
+              className={`progress-bar ${
+                stats.averageStrain > 70 ? 'progress-bar-red' :
+                stats.averageStrain > 40 ? 'progress-bar-yellow' : 'progress-bar-green'
+              } ${getProgressWidthClass(stats.averageStrain)}`}
             ></div>
           </div>
         </div>
@@ -147,11 +151,10 @@ export function MemxSessionStats({ className = '' }: { className?: string }) {
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2">
             <div
-              className={`h-2 rounded-full transition-all duration-300 ${
-                stats.peakStrain > 80 ? 'bg-red-500' :
-                stats.peakStrain > 60 ? 'bg-yellow-500' : 'bg-green-500'
-              }`}
-              style={{ width: `${Math.min(stats.peakStrain, 100)}%` }}
+              className={`progress-bar ${
+                stats.peakStrain > 80 ? 'progress-bar-red' :
+                stats.peakStrain > 60 ? 'progress-bar-yellow' : 'progress-bar-green'
+              } ${getProgressWidthClass(stats.peakStrain)}`}
             ></div>
           </div>
           {stats.peakStrainSessionId && (
