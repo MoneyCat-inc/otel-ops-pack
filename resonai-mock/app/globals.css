@@ -14,6 +14,35 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+  
+  /* Motion-safe utility class */
+  .motion-safe {
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  /* Specific animation overrides */
+  .animate-spin {
+    animation: none !important;
+  }
+  
+  .animate-pulse {
+    animation: none !important;
+  }
+  
+  .animate-bounce {
+    animation: none !important;
+  }
+  
+  /* Progress ring animations */
+  [style*="transition"] {
+    transition: none !important;
+  }
+  
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: auto !important;
+  }
 }
 
 /* MEMX HUD styles (for future PR-3) */

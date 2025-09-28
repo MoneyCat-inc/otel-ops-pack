@@ -18,6 +18,20 @@ test.describe('Offline Isolation Tests', () => {
         });
       }
     });
+
+    // Console guard for COEP/Isolation errors
+    const ERR_PATTERNS = [
+      'Cross-Origin-Embedder-Policy',
+      'blocked by COEP',
+      'SharedArrayBuffer is not defined',
+    ];
+
+    page.on('console', msg => {
+      const t = msg.text();
+      if (ERR_PATTERNS.some(p => t.includes(p))) {
+        throw new Error(`COEP/Isolation console error: ${t}`);
+      }
+    });
   });
 
   test('should maintain cross-origin isolation online', async ({ page }) => {

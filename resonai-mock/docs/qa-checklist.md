@@ -562,3 +562,139 @@ This document provides comprehensive testing guidelines for the Resonai voice pr
   - [ ] Isolation status visible
   - [ ] SharedArrayBuffer status visible
   - [ ] Debug information available
+
+## T5 A11y Polish Testing
+
+### Live Regions Coverage
+- [ ] **Single Announcement Per Card**
+  - [ ] Exactly one `aria-live="polite"` region per dynamic card
+  - [ ] No duplicate announcements during single result
+  - [ ] Announcements are short and human-readable
+  - [ ] Debounced announcements (500ms minimum)
+
+- [ ] **Dynamic Content Announcements**
+  - [ ] Prosody scenario verdicts announced
+  - [ ] Strain detection announcements
+  - [ ] Cooldown exercise changes announced
+  - [ ] Practice session status changes announced
+
+- [ ] **Screen Reader Support**
+  - [ ] Verdict lines announced via aria-live
+  - [ ] Status changes communicated clearly
+  - [ ] Error messages announced appropriately
+  - [ ] Progress updates announced
+
+### Reduced Motion Support
+- [ ] **Animation Disabling**
+  - [ ] All animations disabled when `prefers-reduced-motion: reduce`
+  - [ ] Progress rings provide static fallback
+  - [ ] Transition effects removed
+  - [ ] Smooth scrolling disabled
+
+- [ ] **Component-Specific Motion**
+  - [ ] Scenario cards respect reduced motion
+  - [ ] Cooldown card animations disabled
+  - [ ] Practice metrics animations disabled
+  - [ ] Button hover effects disabled
+
+- [ ] **Functionality Preservation**
+  - [ ] All features work without animations
+  - [ ] UI remains responsive and functional
+  - [ ] No performance degradation
+  - [ ] User experience maintained
+
+### Keyboard Navigation
+- [ ] **Focus Management**
+  - [ ] Visible focus rings on all interactive elements
+  - [ ] Logical tab order throughout interface
+  - [ ] Focus trapped in modal components
+  - [ ] Focus restored after interactions
+
+- [ ] **Keyboard Activation**
+  - [ ] Space and Enter activate buttons
+  - [ ] Arrow keys navigate menus
+  - [ ] Escape closes modals
+  - [ ] Tab navigation works throughout
+
+- [ ] **Skip Links**
+  - [ ] Skip to main content links present
+  - [ ] Skip links visible on focus
+  - [ ] Skip links work correctly
+  - [ ] Multiple skip options where appropriate
+
+### Focus Management
+- [ ] **Dynamic Focus**
+  - [ ] Focus managed during content changes
+  - [ ] Focus restored after modal interactions
+  - [ ] Focus trapped in interactive components
+  - [ ] Focus indicators visible and clear
+
+- [ ] **Form Focus**
+  - [ ] Logical focus order in forms
+  - [ ] Focus management during validation
+  - [ ] Error focus handling
+  - [ ] Success focus handling
+
+### Screen Reader Support
+- [ ] **ARIA Implementation**
+  - [ ] Proper ARIA labels on all controls
+  - [ ] ARIA roles assigned correctly
+  - [ ] ARIA states managed properly
+  - [ ] ARIA live regions working
+
+- [ ] **Semantic HTML**
+  - [ ] Proper heading hierarchy (h1, h2, h3)
+  - [ ] Semantic elements used correctly
+  - [ ] Landmark roles assigned
+  - [ ] Form labels associated correctly
+
+- [ ] **Descriptive Content**
+  - [ ] Button labels descriptive and clear
+  - [ ] Link text descriptive
+  - [ ] Image alt text provided
+  - [ ] Status messages clear and informative
+
+### Color and Contrast
+- [ ] **Color Contrast**
+  - [ ] Text meets WCAG AA contrast ratios
+  - [ ] Interactive elements have sufficient contrast
+  - [ ] Status indicators use color + text
+  - [ ] Error states clearly distinguishable
+
+- [ ] **Color Independence**
+  - [ ] Information not conveyed by color alone
+  - [ ] Status communicated through text
+  - [ ] Error states have text indicators
+  - [ ] Success states have text indicators
+
+### Error Handling
+- [ ] **Accessibility During Errors**
+  - [ ] Error messages announced to screen readers
+  - [ ] Focus managed during error states
+  - [ ] Error recovery maintains accessibility
+  - [ ] No accessibility regressions during errors
+
+- [ ] **Graceful Degradation**
+  - [ ] Features work without JavaScript
+  - [ ] Fallbacks provided for missing features
+  - [ ] Progressive enhancement maintained
+  - [ ] Core functionality accessible
+
+### Testing Coverage
+- [ ] **Automated Testing**
+  - [ ] A11y smoke tests pass
+  - [ ] Live region tests pass
+  - [ ] Reduced motion tests pass
+  - [ ] Keyboard navigation tests pass
+
+- [ ] **Manual Testing**
+  - [ ] Screen reader testing completed
+  - [ ] Keyboard-only navigation tested
+  - [ ] High contrast mode tested
+  - [ ] Zoom testing completed
+
+- [ ] **Cross-Browser Testing**
+  - [ ] Firefox accessibility features
+  - [ ] Chromium accessibility features
+  - [ ] WebKit accessibility features
+  - [ ] Mobile accessibility features

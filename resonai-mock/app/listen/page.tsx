@@ -103,6 +103,18 @@ export default function ListenPage() {
         Skip to main content
       </a>
       
+      {/* Screen reader announcements */}
+      <div 
+        aria-live="polite" 
+        aria-atomic="true" 
+        className="sr-only"
+        role="status"
+      >
+        {micManager.isActive ? 'Microphone active and recording' : 'Microphone ready to start'}
+        {audioContext.contextState === 'running' ? ', Audio engine processing' : ', Audio engine standby'}
+        {workletManager.isActive ? ', Analysis engine active' : ', Analysis engine waiting'}
+      </div>
+      
       {/* Header */}
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -192,8 +204,6 @@ export default function ListenPage() {
                   : 'bg-gray-50 border-gray-200 text-gray-600'
               }`}
               role="status"
-              aria-live="polite"
-              aria-atomic="true"
             >
               <div className="flex items-center space-x-3">
                 <div className="text-2xl">🎤</div>
@@ -211,8 +221,6 @@ export default function ListenPage() {
                   : 'bg-gray-50 border-gray-200 text-gray-600'
               }`}
               role="status"
-              aria-live="polite"
-              aria-atomic="true"
             >
               <div className="flex items-center space-x-3">
                 <div className="text-2xl">🎵</div>
@@ -230,8 +238,6 @@ export default function ListenPage() {
                   : 'bg-gray-50 border-gray-200 text-gray-600'
               }`}
               role="status"
-              aria-live="polite"
-              aria-atomic="true"
             >
               <div className="flex items-center space-x-3">
                 <div className="text-2xl">⚡</div>

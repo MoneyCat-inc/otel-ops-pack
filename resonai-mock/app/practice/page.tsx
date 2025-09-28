@@ -424,8 +424,6 @@ export default function PracticePage() {
               <div 
                 className="text-center p-6 bg-blue-50 rounded-lg"
                 role="status"
-                aria-live="polite"
-                aria-atomic="true"
               >
                 <div className="text-3xl font-bold text-blue-600 mb-2">
                   {metrics.voicedTimePct.toFixed(1)}%
@@ -437,8 +435,6 @@ export default function PracticePage() {
               <div 
                 className="text-center p-6 bg-green-50 rounded-lg"
                 role="status"
-                aria-live="polite"
-                aria-atomic="true"
               >
                 <div className="text-3xl font-bold text-green-600 mb-2">
                   {metrics.jitterEma.toFixed(3)}
@@ -450,8 +446,6 @@ export default function PracticePage() {
               <div 
                 className="text-center p-6 bg-purple-50 rounded-lg"
                 role="status"
-                aria-live="polite"
-                aria-atomic="true"
               >
                 <div className="text-3xl font-bold text-purple-600 mb-2">
                   {metrics.tiltEma.toFixed(3)}
