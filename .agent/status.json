@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2025-09-20T03:23:01.7873341+01:00",
+  "updatedAt": "2025-09-28T02:45:00.0000000+01:00",
   "sections": {
     "env": {
       "ok": false,
@@ -16,6 +16,11 @@
       "ok": true,
       "detail": "OTLP/HTTP 5318 OK",
       "ts": "2025-09-20T03:23:01.7873341+01:00"
+    },
+    "ecrr": {
+      "ok": true,
+      "detail": "ECRR Processing Complete - 77 reports analyzed, framework enhanced",
+      "ts": "2025-09-28T02:45:00.0000000+01:00"
     }
   }
 }
