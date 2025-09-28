@@ -8,6 +8,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { PerfOverlay } from '../src/components/PerfOverlay';
 import { ServiceWorkerProvider } from '../src/components/ServiceWorkerProvider';
+import { CohortCTA } from '../src/components/CohortCTA';
 
 export const metadata: Metadata = {
   title: 'Resonai - Voice Practice',
@@ -62,6 +63,7 @@ export default function RootLayout({
                 >
                   Data Control
                 </a>
+                <CohortCTA />
                 <a
                   href="/labs/memx"
                   className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
