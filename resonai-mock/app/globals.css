@@ -125,3 +125,105 @@ body {
 .progress-90 { width: 90%; }
 .progress-95 { width: 95%; }
 .progress-100 { width: 100%; }
+
+/* OrbV2 Component Styles */
+.orb-v2-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.orb-v2-main {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  box-shadow: 
+    0 0 20px hsla(var(--resonance-hue), var(--resonance-saturation), var(--resonance-lightness), 0.3),
+    inset 0 0 20px hsla(var(--resonance-hue), var(--resonance-saturation), calc(var(--resonance-lightness) + 10%), 0.2);
+}
+
+.orb-v2-shimmer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 50%;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    hsla(var(--resonance-hue), var(--resonance-saturation), calc(var(--resonance-lightness) + 30%), 0.6) 50%,
+    transparent 70%
+  );
+  animation: orb-shimmer 2s ease-in-out infinite;
+  animation-delay: calc(var(--shimmer-intensity) * -0.5s);
+}
+
+.orb-v2-pulse {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  border-radius: 50%;
+  border: 2px solid hsla(var(--resonance-hue), var(--resonance-saturation), var(--resonance-lightness), 0.4);
+  animation: orb-pulse var(--pulse-frequency) ease-in-out infinite;
+}
+
+.orb-v2-glow {
+  position: absolute;
+  top: 20%;
+  left: 20%;
+  width: 60%;
+  height: 60%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    hsla(var(--resonance-hue), var(--resonance-saturation), calc(var(--resonance-lightness) + 40%), 0.3),
+    transparent 70%
+  );
+}
+
+/* Orb Animations */
+@keyframes orb-shimmer {
+  0%, 100% {
+    transform: rotate(0deg) scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: rotate(180deg) scale(1.1);
+    opacity: calc(0.3 + var(--shimmer-intensity) * 0.7);
+  }
+}
+
+@keyframes orb-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.4;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+}
+
+/* Motion-safe overrides */
+.orb-v2-shimmer.motion-safe {
+  animation: none !important;
+  opacity: 0.5;
+  transform: rotate(45deg);
+}
+
+.orb-v2-pulse.motion-safe {
+  animation: none !important;
+  opacity: 0.6;
+  transform: scale(1.02);
+}
+
+/* Focus styles for keyboard navigation */
+.orb-v2-container:focus-visible {
+  outline: 2px solid hsl(var(--resonance-hue), var(--resonance-saturation), var(--resonance-lightness));
+  outline-offset: 4px;
+}
