@@ -91,6 +91,22 @@ DRILL completed at 09/27/2025 18:59:43 - Result: PASS
 - **Integration**: Full integration with existing agent system (.agent/ directory)
 - **Status**: Ready for immediate deployment - copy system prompt to Cursor and start with T1
 
+## 2025-01-27 19:45:00 - Cohort Launch Pack Complete (C1-C4)
+- **C1 Progress Dashboard**: Local-first trends with sparklines, privacy-preserving aggregation
+- **C2 Export & Delete UX**: Complete data sovereignty with JSON export and one-click deletion
+- **C3 QA Release Runbook**: Deterministic pre-release gate with `pnpm qa:full` command
+- **C4 Cohort Analytics Toggles**: Controlled rollout with flags defaulting OFF
+- **Technical Infrastructure**: Production-ready for 20-50 user beta cohort
+- **Status**: Beta-ready foundation complete - privacy-first, WCAG AA accessible, deterministic
+
+## 2025-01-27 20:00:00 - Cohort Ops Kit Documented (C5-C8)
+- **C5 Cohort Log & Tester Guide**: Local JSON logging with tester documentation
+- **C6 Beta Success Metrics**: Retention tracking and health metrics (local-only)
+- **C7 Dashboard Polish & UX**: Orb v2 shimmer overlay with friendly summaries
+- **C8 Beta Launch Checklist**: Preflight validation and rollback procedures
+- **Operations Tooling**: Complete beta readiness with measurement and launch procedures
+- **Status**: Ready for Cursor implementation - full operational excellence documented
+
 ## 2025-09-28 05:39:25 - Cursor Agent Rollout Complete (ECRR)
 - **ECRR Process**: Examine → Clean → Report → Role completed successfully
 - **Documentation**: 6 files created/updated (~1,200 lines of system documentation)
