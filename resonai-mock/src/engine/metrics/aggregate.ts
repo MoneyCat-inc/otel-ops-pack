@@ -644,6 +644,9 @@ export class ProgressAggregator {
 
     const bucketBias = this.calculateWeeklyBucketBias(weekDays);
 
+    // Calculate beta metrics for the week
+    const weekBetaMetrics = this.calculateWeeklyBetaMetrics(weekDays);
+
     return {
       date: weekStart,
       sessions: totalSessions,
@@ -671,6 +674,8 @@ export class ProgressAggregator {
       strainCount: totalStrainCount,
       strainRate: totalSessions > 0 ? totalStrainCount / totalSessions : 0,
       
+      betaMetrics: weekBetaMetrics,
+      
       schemaVersion: this.SCHEMA_VERSION,
       aggregatedAt: Date.now()
     };
@@ -689,6 +694,9 @@ export class ProgressAggregator {
     const expressivenessValues = monthDays.flatMap(day => [day.expressiveness01.mean, day.expressiveness01.median]);
 
     const bucketBias = this.calculateMonthlyBucketBias(monthDays);
+
+    // Calculate beta metrics for the month
+    const monthBetaMetrics = this.calculateMonthlyBetaMetrics(monthDays);
 
     return {
       date: monthStart,
@@ -716,6 +724,8 @@ export class ProgressAggregator {
       
       strainCount: totalStrainCount,
       strainRate: totalSessions > 0 ? totalStrainCount / totalSessions : 0,
+      
+      betaMetrics: monthBetaMetrics,
       
       schemaVersion: this.SCHEMA_VERSION,
       aggregatedAt: Date.now()
@@ -753,6 +763,100 @@ export class ProgressAggregator {
       front: totalFront / monthDays.length,
       central: totalCentral / monthDays.length,
       back: totalBack / monthDays.length
+    };
+  }
+
+  /**
+   * Calculate weekly beta metrics
+   */
+  private calculateWeeklyBetaMetrics(weekDays: AggregatedMetrics[]): AggregatedMetrics['betaMetrics'] {
+    if (weekDays.length === 0) {
+      return {
+        retentionPct: 0,
+        retentionTrend: 'stable',
+        comfortTrend: { mean: 0, median: 0, trend: 'stable' },
+        fatigueTrend: { mean: 0, median: 0, trend: 'stable' },
+        strainPer100Min: 0,
+        strainHealth: 'excellent',
+        sessionFrequency: 0,
+        frequencyTrend: 'stable'
+      };
+    }
+
+    const retentionValues = weekDays.map(d => d.betaMetrics.retentionPct);
+    const comfortValues = weekDays.flatMap(d => [d.betaMetrics.comfortTrend.mean, d.betaMetrics.comfortTrend.median]);
+    const fatigueValues = weekDays.flatMap(d => [d.betaMetrics.fatigueTrend.mean, d.betaMetrics.fatigueTrend.median]);
+    const strainValues = weekDays.map(d => d.betaMetrics.strainPer100Min);
+    const frequencyValues = weekDays.map(d => d.betaMetrics.sessionFrequency);
+
+    return {
+      retentionPct: this.calculateMean(retentionValues),
+      retentionTrend: this.calculateTrend(retentionValues, 'mean'),
+      
+      comfortTrend: {
+        mean: this.calculateMean(comfortValues),
+        median: this.calculateMedian(comfortValues),
+        trend: this.calculateTrend(comfortValues, 'mean')
+      },
+      
+      fatigueTrend: {
+        mean: this.calculateMean(fatigueValues),
+        median: this.calculateMedian(fatigueValues),
+        trend: this.calculateTrend(fatigueValues, 'mean')
+      },
+      
+      strainPer100Min: this.calculateMean(strainValues),
+      strainHealth: this.getStrainHealth(this.calculateMean(strainValues)),
+      
+      sessionFrequency: this.calculateMean(frequencyValues),
+      frequencyTrend: this.calculateTrend(frequencyValues, 'mean')
+    };
+  }
+
+  /**
+   * Calculate monthly beta metrics
+   */
+  private calculateMonthlyBetaMetrics(monthDays: AggregatedMetrics[]): AggregatedMetrics['betaMetrics'] {
+    if (monthDays.length === 0) {
+      return {
+        retentionPct: 0,
+        retentionTrend: 'stable',
+        comfortTrend: { mean: 0, median: 0, trend: 'stable' },
+        fatigueTrend: { mean: 0, median: 0, trend: 'stable' },
+        strainPer100Min: 0,
+        strainHealth: 'excellent',
+        sessionFrequency: 0,
+        frequencyTrend: 'stable'
+      };
+    }
+
+    const retentionValues = monthDays.map(d => d.betaMetrics.retentionPct);
+    const comfortValues = monthDays.flatMap(d => [d.betaMetrics.comfortTrend.mean, d.betaMetrics.comfortTrend.median]);
+    const fatigueValues = monthDays.flatMap(d => [d.betaMetrics.fatigueTrend.mean, d.betaMetrics.fatigueTrend.median]);
+    const strainValues = monthDays.map(d => d.betaMetrics.strainPer100Min);
+    const frequencyValues = monthDays.map(d => d.betaMetrics.sessionFrequency);
+
+    return {
+      retentionPct: this.calculateMean(retentionValues),
+      retentionTrend: this.calculateTrend(retentionValues, 'mean'),
+      
+      comfortTrend: {
+        mean: this.calculateMean(comfortValues),
+        median: this.calculateMedian(comfortValues),
+        trend: this.calculateTrend(comfortValues, 'mean')
+      },
+      
+      fatigueTrend: {
+        mean: this.calculateMean(fatigueValues),
+        median: this.calculateMedian(fatigueValues),
+        trend: this.calculateTrend(fatigueValues, 'mean')
+      },
+      
+      strainPer100Min: this.calculateMean(strainValues),
+      strainHealth: this.getStrainHealth(this.calculateMean(strainValues)),
+      
+      sessionFrequency: this.calculateMean(frequencyValues),
+      frequencyTrend: this.calculateTrend(frequencyValues, 'mean')
     };
   }
 
