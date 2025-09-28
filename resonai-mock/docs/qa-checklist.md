@@ -251,3 +251,314 @@ This document provides comprehensive testing guidelines for the Resonai voice pr
 - [ ] **Advanced Analytics**: More sophisticated pattern recognition
 - [ ] **Personalization**: Adaptive thresholds based on user progress
 - [ ] **Offline Isolation**: Service Worker improvements for offline use
+
+## T3 Safety Guardrails Testing
+
+### Strain Detection Coverage
+- [ ] **Loudness Detection**
+  - [ ] Detects sustained loud speech above threshold (-12 dBFS)
+  - [ ] Requires minimum duration (1.2 seconds) for accuracy
+  - [ ] Handles short loud bursts without false positives
+  - [ ] Mock fixtures produce deterministic results
+
+- [ ] **Jitter Trend Detection**
+  - [ ] Monitors pitch instability over time window (1.5 seconds)
+  - [ ] Detects rising jitter patterns (>20 cents change)
+  - [ ] Calculates exponential moving average correctly
+  - [ ] Handles stable pitch without false positives
+
+- [ ] **Minimum Voiced Duration**
+  - [ ] Requires 800ms minimum voiced time for detection
+  - [ ] Prevents false positives from short utterances
+  - [ ] Accurately calculates voiced duration from frames
+
+### Cooldown Flow Testing
+- [ ] **SOVT Cooldown Card**
+  - [ ] Displays when strain is detected
+  - [ ] Shows supportive messaging: "Let's reset and keep it comfy"
+  - [ ] Includes progress ring (no motion under reduced-motion)
+  - [ ] Rotates through exercises (lip trill, straw phonation, breathing)
+
+- [ ] **Exercise Rotation**
+  - [ ] Changes exercises every 15 seconds
+  - [ ] Provides clear instructions for each exercise
+  - [ ] Announces exercise changes via aria-live
+  - [ ] Completes after configured cooldown duration (45 seconds)
+
+### Configuration & Tuning
+- [ ] **Threshold Controls**
+  - [ ] Loudness threshold adjustable (-30 to 0 dBFS)
+  - [ ] Duration threshold adjustable (500-3000ms)
+  - [ ] Jitter threshold adjustable (10-50 cents)
+  - [ ] Cooldown duration adjustable (15-120 seconds)
+
+- [ ] **Preset Management**
+  - [ ] Default preset (balanced sensitivity)
+  - [ ] Conservative preset (more sensitive)
+  - [ ] Relaxed preset (less sensitive)
+  - [ ] Dynamic configuration updates
+
+### Mock Data & Fixtures
+- [ ] **Deterministic Fixtures**
+  - [ ] Loud passage triggers strain detection
+  - [ ] Rising jitter pattern triggers strain detection
+  - [ ] Neutral passage does NOT trigger strain
+  - [ ] Short voiced passage does NOT trigger strain
+  - [ ] Mixed pattern triggers strain with multiple reasons
+
+- [ ] **Fixture Testing**
+  - [ ] All fixtures produce expected results
+  - [ ] URL parameters work (?mock=loud|rising-jitter|neutral)
+  - [ ] Mock mode enables testing without microphone
+  - [ ] Results are reproducible across test runs
+
+### Accessibility Testing
+- [ ] **Screen Reader Support**
+  - [ ] aria-live="polite" for strain announcements
+  - [ ] Proper ARIA labels on all controls
+  - [ ] Keyboard navigation throughout interface
+  - [ ] Skip links for efficient navigation
+
+- [ ] **Reduced Motion**
+  - [ ] Respects `prefers-reduced-motion: reduce`
+  - [ ] Disables animations when preference detected
+  - [ ] Shows reduced motion indicator
+  - [ ] Maintains functionality without motion
+
+- [ ] **Color & Contrast**
+  - [ ] Meets WCAG AA standards (4.5:1 ratio)
+  - [ ] Status colors distinguishable without color alone
+  - [ ] High contrast mode support
+
+### Data & Privacy
+- [ ] **Local-First Storage**
+  - [ ] Strain events stored in IndexedDB only
+  - [ ] No audio data uploaded to servers
+  - [ ] Export functionality works offline
+  - [ ] Clear data option for privacy
+
+- [ ] **Event Schema**
+  - [ ] strainFlag field present (boolean)
+  - [ ] strainReasons field present (string array)
+  - [ ] cooldownSec field present (number)
+  - [ ] Event versioning and build info included
+
+### Performance Testing
+- [ ] **Real-time Processing**
+  - [ ] <100ms latency for frame processing
+  - [ ] Smooth UI updates during monitoring
+  - [ ] No frame drops during detection
+  - [ ] Efficient memory usage
+
+- [ ] **Cooldown Performance**
+  - [ ] Progress ring updates smoothly
+  - [ ] Exercise rotation works reliably
+  - [ ] Timer accuracy within 1 second
+  - [ ] No memory leaks during extended use
+
+### Edge Cases
+- [ ] **Audio Edge Cases**
+  - [ ] Handles frames with zero RMS
+  - [ ] Handles frames with no voiced content
+  - [ ] Handles frames with low confidence
+  - [ ] Handles empty frame lists gracefully
+
+- [ ] **Detection Edge Cases**
+  - [ ] Short utterances don't trigger false positives
+  - [ ] Creaky voice endings handled correctly
+  - [ ] Mixed patterns detected appropriately
+  - [ ] Configuration changes applied immediately
+
+### Integration Testing
+- [ ] **Labs Integration**
+  - [ ] Strain labs page loads correctly
+  - [ ] Navigation links work properly
+  - [ ] Mock mode toggles correctly
+  - [ ] Preset switching works reliably
+
+- [ ] **Cooldown Integration**
+  - [ ] Cooldown card displays when strain detected
+  - [ ] Practice flow pauses during cooldown
+  - [ ] Resumes practice after cooldown completion
+  - [ ] Skip option works (if implemented)
+
+### Security & Isolation
+- [ ] **CSP Compliance**
+  - [ ] No inline styles or scripts
+  - [ ] Strict Content Security Policy enforced
+  - [ ] No CSP violations in console
+
+- [ ] **Cross-Origin Isolation**
+  - [ ] COOP/COEP headers configured
+  - [ ] SharedArrayBuffer support available
+  - [ ] crossOriginIsolated returns true
+
+- [ ] **Privacy Protection**
+  - [ ] No audio data leaked to external services
+  - [ ] All processing happens in browser
+  - [ ] Export data contains no sensitive information
+
+## T4 Offline Isolation Testing
+
+### Cross-Origin Isolation Coverage
+- [ ] **Online Isolation**
+  - [ ] `window.crossOriginIsolated === true` on all routes
+  - [ ] SharedArrayBuffer available when isolation is enabled
+  - [ ] COOP/COEP headers present on all responses
+  - [ ] No COEP/CORS console errors for assets
+
+- [ ] **Service Worker Integration**
+  - [ ] Service Worker registers successfully on first visit
+  - [ ] Headers preserved when serving offline content
+  - [ ] Cross-origin isolation maintained in offline mode
+  - [ ] Service Worker updates don't break isolation
+
+- [ ] **Offline Mode Testing**
+  - [ ] Isolation maintained when going offline
+  - [ ] Page reloads successfully offline
+  - [ ] Navigation between pages works offline
+  - [ ] Mixed online/offline scenarios handled correctly
+
+### Header Configuration
+- [ ] **COOP/COEP Headers**
+  - [ ] Cross-Origin-Opener-Policy: same-origin
+  - [ ] Cross-Origin-Embedder-Policy: require-corp
+  - [ ] Cross-Origin-Resource-Policy: cross-origin
+  - [ ] Permissions-Policy: cross-origin-isolated=()
+
+- [ ] **Security Headers**
+  - [ ] X-Content-Type-Options: nosniff
+  - [ ] Referrer-Policy: strict-origin-when-cross-origin
+  - [ ] X-Frame-Options: SAMEORIGIN
+  - [ ] Content-Security-Policy configured correctly
+
+- [ ] **Service Worker Headers**
+  - [ ] Service-Worker-Allowed: /
+  - [ ] Cache-Control: no-cache, no-store, must-revalidate
+  - [ ] COOP/COEP headers preserved in offline responses
+
+### Asset Loading
+- [ ] **Worklet Files**
+  - [ ] Content-Type: application/javascript
+  - [ ] COOP/COEP headers present
+  - [ ] No COEP errors when loading worklets
+  - [ ] Blob: support enabled in CSP
+
+- [ ] **Font Files**
+  - [ ] Font-src 'self' in CSP
+  - [ ] No cross-origin font loading issues
+  - [ ] Proper MIME type handling
+
+- [ ] **Image Assets**
+  - [ ] Img-src 'self' data: https: blob: in CSP
+  - [ ] No COEP errors for images
+  - [ ] Proper CORS handling for external images
+
+### Browser Compatibility
+- [ ] **Firefox Support**
+  - [ ] Cross-origin isolation enabled
+  - [ ] SharedArrayBuffer available
+  - [ ] Service Worker functions correctly
+  - [ ] No console errors
+
+- [ ] **Chromium Support**
+  - [ ] Cross-origin isolation enabled
+  - [ ] SharedArrayBuffer available
+  - [ ] Service Worker functions correctly
+  - [ ] No console errors
+
+- [ ] **WebKit Support**
+  - [ ] Cross-origin isolation enabled
+  - [ ] SharedArrayBuffer available
+  - [ ] Service Worker functions correctly
+  - [ ] No console errors
+
+### Service Worker Functionality
+- [ ] **Registration & Activation**
+  - [ ] Registers on first visit
+  - [ ] Activates successfully
+  - [ ] Handles updates gracefully
+  - [ ] Unregisters old versions
+
+- [ ] **Offline Caching**
+  - [ ] Caches offline pages correctly
+  - [ ] Serves cached content with headers
+  - [ ] Handles cache misses gracefully
+  - [ ] Updates cache when online
+
+- [ ] **Header Preservation**
+  - [ ] Critical headers preserved offline
+  - [ ] CSP headers maintained
+  - [ ] Security headers intact
+  - [ ] Isolation headers preserved
+
+### Error Handling
+- [ ] **Service Worker Errors**
+  - [ ] Handles registration failures gracefully
+  - [ ] Continues working if SW fails
+  - [ ] Logs errors appropriately
+  - [ ] Doesn't break page functionality
+
+- [ ] **Network Errors**
+  - [ ] Handles offline scenarios
+  - [ ] Provides fallback content
+  - [ ] Maintains isolation during errors
+  - [ ] Recovers when back online
+
+- [ ] **Asset Loading Errors**
+  - [ ] Handles missing assets gracefully
+  - [ ] No COEP errors in console
+  - [ ] Continues functioning with missing assets
+  - [ ] Logs appropriate warnings
+
+### Performance Testing
+- [ ] **Service Worker Performance**
+  - [ ] Fast registration and activation
+  - [ ] Efficient caching strategy
+  - [ ] Minimal impact on page load
+  - [ ] Memory usage within limits
+
+- [ ] **Offline Performance**
+  - [ ] Fast offline page serving
+  - [ ] Responsive navigation offline
+  - [ ] Efficient cache utilization
+  - [ ] No memory leaks
+
+### Integration Testing
+- [ ] **Page Integration**
+  - [ ] All pages work offline
+  - [ ] Navigation works offline
+  - [ ] Forms and interactions work offline
+  - [ ] Audio worklets function offline
+
+- [ ] **Feature Integration**
+  - [ ] MEMX functionality offline
+  - [ ] Prosody scenarios offline
+  - [ ] Strain detection offline
+  - [ ] Practice flows offline
+
+### Security Testing
+- [ ] **Header Security**
+  - [ ] All security headers present
+  - [ ] CSP properly configured
+  - [ ] No security vulnerabilities
+  - [ ] Proper CORS handling
+
+- [ ] **Isolation Security**
+  - [ ] Cross-origin isolation maintained
+  - [ ] SharedArrayBuffer properly secured
+  - [ ] No cross-origin leaks
+  - [ ] Proper resource policies
+
+### Monitoring & Debugging
+- [ ] **Console Monitoring**
+  - [ ] No COEP/CORS errors
+  - [ ] No Service Worker errors
+  - [ ] Appropriate debug logging
+  - [ ] Clean console output
+
+- [ ] **Status Monitoring**
+  - [ ] Service Worker status visible
+  - [ ] Isolation status visible
+  - [ ] SharedArrayBuffer status visible
+  - [ ] Debug information available

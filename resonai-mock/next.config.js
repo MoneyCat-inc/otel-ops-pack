@@ -5,8 +5,45 @@ const nonce = undefined; // set at runtime via middleware if needed
 
 const nextConfig = {
   // Note: crossOriginIsolated is handled via headers, not experimental config
+  // Webpack configuration for better Chromium support
+  webpack: (config, { dev, isServer }) => {
+    if (!isServer) {
+      // Enable SharedArrayBuffer support in webpack
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+      };
+      
+      // Add support for SharedArrayBuffer in the browser bundle
+      config.experiments = {
+        ...config.experiments,
+        syncWebAssembly: true,
+        asyncWebAssembly: true,
+      };
+    }
+    
+    return config;
+  },
+  // Service Worker configuration
+  async rewrites() {
+    const rewrites = [];
+    
+    // Proxy for local development to avoid CORS issues
+    if (process.env.NODE_ENV === 'development') {
+      rewrites.push({
+        source: '/api/otel/:path*',
+        destination: 'http://localhost:5318/:path*',
+      });
+    }
+    
+    return rewrites;
+  },
+  
+  // Ensure Service Worker is served with correct headers
   async headers() {
-    return [
+    const baseHeaders = [
       {
         // Apply to all routes
         source: '/(.*)',
@@ -76,40 +113,59 @@ const nextConfig = {
         ],
       },
     ];
-  },
-  // Webpack configuration for better Chromium support
-  webpack: (config, { dev, isServer }) => {
-    if (!isServer) {
-      // Enable SharedArrayBuffer support in webpack
-      config.resolve.fallback = {
-        ...config.resolve.fallback,
-        fs: false,
-        net: false,
-        tls: false,
-      };
-      
-      // Add support for SharedArrayBuffer in the browser bundle
-      config.experiments = {
-        ...config.experiments,
-        syncWebAssembly: true,
-        asyncWebAssembly: true,
-      };
-    }
     
-    return config;
-  },
-  // Development server configuration
-  ...(process.env.NODE_ENV === 'development' && {
-    async rewrites() {
-      return [
-        // Proxy for local development to avoid CORS issues
+    // Add specific headers for Service Worker
+    baseHeaders.push({
+      source: '/sw.js',
+      headers: [
         {
-          source: '/api/otel/:path*',
-          destination: 'http://localhost:5318/:path*',
+          key: 'Cross-Origin-Opener-Policy',
+          value: 'same-origin',
         },
-      ];
-    },
-  }),
+        {
+          key: 'Cross-Origin-Embedder-Policy',
+          value: 'require-corp',
+        },
+        {
+          key: 'Cross-Origin-Resource-Policy',
+          value: 'cross-origin',
+        },
+        {
+          key: 'Service-Worker-Allowed',
+          value: '/',
+        },
+        {
+          key: 'Cache-Control',
+          value: 'no-cache, no-store, must-revalidate',
+        },
+      ],
+    });
+    
+    // Add headers for worklet files
+    baseHeaders.push({
+      source: '/worklets/:path*',
+      headers: [
+        {
+          key: 'Cross-Origin-Opener-Policy',
+          value: 'same-origin',
+        },
+        {
+          key: 'Cross-Origin-Embedder-Policy',
+          value: 'require-corp',
+        },
+        {
+          key: 'Cross-Origin-Resource-Policy',
+          value: 'cross-origin',
+        },
+        {
+          key: 'Content-Type',
+          value: 'application/javascript',
+        },
+      ],
+    });
+    
+    return baseHeaders;
+  },
 };
 
 module.exports = nextConfig;
