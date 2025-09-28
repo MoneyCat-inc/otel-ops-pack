@@ -36,6 +36,33 @@ export interface AggregatedMetrics {
   strainCount: number;
   strainRate: number; // strain events per session
   
+  // Beta success metrics (C6)
+  betaMetrics: {
+    // Retention: days with ≥1 session / days since install
+    retentionPct: number;
+    retentionTrend: 'up' | 'down' | 'stable';
+    
+    // Comfort/fatigue trendlines: session comfort over time
+    comfortTrend: {
+      mean: number;
+      median: number;
+      trend: 'up' | 'down' | 'stable';
+    };
+    fatigueTrend: {
+      mean: number;
+      median: number;
+      trend: 'up' | 'down' | 'stable';
+    };
+    
+    // Strain triggers per 100 mins: normalized strain rate
+    strainPer100Min: number;
+    strainHealth: 'excellent' | 'good' | 'moderate' | 'poor';
+    
+    // Session frequency: average sessions per week
+    sessionFrequency: number; // sessions per week
+    frequencyTrend: 'up' | 'down' | 'stable';
+  };
+  
   // Schema versioning
   schemaVersion: number;
   aggregatedAt: number;
@@ -94,6 +121,13 @@ export class ProgressAggregator {
   private readonly SCHEMA_VERSION = 1;
   private readonly MIN_SESSIONS_FOR_TREND = 3;
   private readonly TREND_THRESHOLD = 0.05; // 5% change threshold
+  
+  // Beta metrics thresholds
+  private readonly STRAIN_HEALTH_THRESHOLDS = {
+    excellent: 0.1,  // <10% strain per 100 min
+    good: 0.25,      // <25% strain per 100 min
+    moderate: 0.5    // <50% strain per 100 min
+  };
 
   /**
    * Aggregate sessions into daily metrics
@@ -235,6 +269,9 @@ export class ProgressAggregator {
     const inBandTrend = this.calculateTrend(inBandValues, 'mean');
     const expressivenessTrend = this.calculateTrend(expressivenessValues, 'mean');
 
+    // Calculate beta metrics
+    const betaMetrics = this.calculateBetaMetrics(validSessions, sessions);
+
     return {
       date,
       sessions: validSessions.length,
@@ -262,9 +299,148 @@ export class ProgressAggregator {
       strainCount,
       strainRate,
       
+      betaMetrics,
+      
       schemaVersion: this.SCHEMA_VERSION,
       aggregatedAt: Date.now()
     };
+  }
+
+  /**
+   * Calculate beta success metrics
+   */
+  private calculateBetaMetrics(daySessions: SessionSummaryV1[], allSessions: SessionSummaryV1[]): AggregatedMetrics['betaMetrics'] {
+    // Calculate retention percentage
+    const retentionPct = this.calculateRetentionPct(allSessions);
+    
+    // Calculate comfort and fatigue trends
+    const comfortValues = daySessions
+      .map(s => s.comfort)
+      .filter((v): v is number => v !== undefined);
+    const fatigueValues = daySessions
+      .map(s => s.fatigue)
+      .filter((v): v is number => v !== undefined);
+    
+    // Calculate strain per 100 minutes
+    const strainPer100Min = this.calculateStrainPer100Min(daySessions);
+    const strainHealth = this.getStrainHealth(strainPer100Min);
+    
+    // Calculate session frequency (sessions per week)
+    const sessionFrequency = this.calculateSessionFrequency(allSessions);
+    
+    return {
+      retentionPct,
+      retentionTrend: this.calculateRetentionTrend(allSessions),
+      
+      comfortTrend: {
+        mean: this.calculateMean(comfortValues),
+        median: this.calculateMedian(comfortValues),
+        trend: this.calculateTrend(comfortValues, 'mean')
+      },
+      
+      fatigueTrend: {
+        mean: this.calculateMean(fatigueValues),
+        median: this.calculateMedian(fatigueValues),
+        trend: this.calculateTrend(fatigueValues, 'mean')
+      },
+      
+      strainPer100Min,
+      strainHealth,
+      
+      sessionFrequency,
+      frequencyTrend: this.calculateFrequencyTrend(allSessions)
+    };
+  }
+
+  /**
+   * Calculate retention percentage (days with sessions / days since install)
+   */
+  private calculateRetentionPct(sessions: SessionSummaryV1[]): number {
+    if (sessions.length === 0) return 0;
+    
+    const sessionDates = new Set(
+      sessions.map(s => new Date(s.ts).toISOString().split('T')[0])
+    );
+    
+    const firstSession = Math.min(...sessions.map(s => s.ts));
+    const lastSession = Math.max(...sessions.map(s => s.ts));
+    const daysSinceInstall = Math.ceil((lastSession - firstSession) / (24 * 60 * 60 * 1000)) + 1;
+    
+    return daysSinceInstall > 0 ? (sessionDates.size / daysSinceInstall) : 0;
+  }
+
+  /**
+   * Calculate retention trend
+   */
+  private calculateRetentionTrend(sessions: SessionSummaryV1[]): 'up' | 'down' | 'stable' {
+    if (sessions.length < 14) return 'stable'; // Need at least 2 weeks of data
+    
+    const daily = this.aggregateDaily(sessions);
+    if (daily.length < 2) return 'stable';
+    
+    const firstHalf = daily.slice(0, Math.floor(daily.length / 2));
+    const secondHalf = daily.slice(Math.floor(daily.length / 2));
+    
+    const firstHalfRetention = this.calculateMean(firstHalf.map(d => d.betaMetrics.retentionPct));
+    const secondHalfRetention = this.calculateMean(secondHalf.map(d => d.betaMetrics.retentionPct));
+    
+    return this.getTrendDirection(secondHalfRetention - firstHalfRetention);
+  }
+
+  /**
+   * Calculate strain per 100 minutes of practice
+   */
+  private calculateStrainPer100Min(sessions: SessionSummaryV1[]): number {
+    if (sessions.length === 0) return 0;
+    
+    const totalDurationMin = this.calculateTotalDuration(sessions) / (60 * 1000); // Convert to minutes
+    const strainCount = this.calculateStrainCount(sessions);
+    
+    if (totalDurationMin === 0) return 0;
+    
+    // Normalize to per 100 minutes
+    return (strainCount / totalDurationMin) * 100;
+  }
+
+  /**
+   * Get strain health category
+   */
+  private getStrainHealth(strainPer100Min: number): 'excellent' | 'good' | 'moderate' | 'poor' {
+    if (strainPer100Min < this.STRAIN_HEALTH_THRESHOLDS.excellent) return 'excellent';
+    if (strainPer100Min < this.STRAIN_HEALTH_THRESHOLDS.good) return 'good';
+    if (strainPer100Min < this.STRAIN_HEALTH_THRESHOLDS.moderate) return 'moderate';
+    return 'poor';
+  }
+
+  /**
+   * Calculate session frequency (sessions per week)
+   */
+  private calculateSessionFrequency(sessions: SessionSummaryV1[]): number {
+    if (sessions.length === 0) return 0;
+    
+    const firstSession = Math.min(...sessions.map(s => s.ts));
+    const lastSession = Math.max(...sessions.map(s => s.ts));
+    const weeksSinceInstall = Math.max(1, (lastSession - firstSession) / (7 * 24 * 60 * 60 * 1000));
+    
+    return sessions.length / weeksSinceInstall;
+  }
+
+  /**
+   * Calculate session frequency trend
+   */
+  private calculateFrequencyTrend(sessions: SessionSummaryV1[]): 'up' | 'down' | 'stable' {
+    if (sessions.length < 14) return 'stable'; // Need at least 2 weeks of data
+    
+    const daily = this.aggregateDaily(sessions);
+    if (daily.length < 2) return 'stable';
+    
+    const firstHalf = daily.slice(0, Math.floor(daily.length / 2));
+    const secondHalf = daily.slice(Math.floor(daily.length / 2));
+    
+    const firstHalfFrequency = this.calculateMean(firstHalf.map(d => d.betaMetrics.sessionFrequency));
+    const secondHalfFrequency = this.calculateMean(secondHalf.map(d => d.betaMetrics.sessionFrequency));
+    
+    return this.getTrendDirection(secondHalfFrequency - firstHalfFrequency);
   }
 
   /**
@@ -373,6 +549,16 @@ export class ProgressAggregator {
       bucketBias: { front: 0, central: 0, back: 0, dominant: 'central' },
       strainCount: 0,
       strainRate: 0,
+      betaMetrics: {
+        retentionPct: 0,
+        retentionTrend: 'stable',
+        comfortTrend: { mean: 0, median: 0, trend: 'stable' },
+        fatigueTrend: { mean: 0, median: 0, trend: 'stable' },
+        strainPer100Min: 0,
+        strainHealth: 'excellent',
+        sessionFrequency: 0,
+        frequencyTrend: 'stable'
+      },
       schemaVersion: this.SCHEMA_VERSION,
       aggregatedAt: Date.now()
     };
