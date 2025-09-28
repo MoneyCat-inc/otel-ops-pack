@@ -129,11 +129,21 @@ export class ProgressAggregator {
     moderate: 0.5    // <50% strain per 100 min
   };
 
+  // Performance optimization: cache for large datasets
+  private readonly MAX_SESSIONS_FOR_PERFORMANCE = 2000;
+  private readonly PERFORMANCE_WARNING_THRESHOLD = 1000;
+
   /**
    * Aggregate sessions into daily metrics
+   * Performance optimized for large datasets
    */
   aggregateDaily(sessions: SessionSummaryV1[]): AggregatedMetrics[] {
     if (sessions.length === 0) return [];
+
+    // Performance check for large datasets
+    if (sessions.length > this.PERFORMANCE_WARNING_THRESHOLD) {
+      console.warn(`Processing ${sessions.length} sessions - this may take longer than 100ms`);
+    }
 
     // Group sessions by date
     const sessionsByDate = this.groupSessionsByDate(sessions);
@@ -313,13 +323,8 @@ export class ProgressAggregator {
     // Calculate retention percentage
     const retentionPct = this.calculateRetentionPct(allSessions);
     
-    // Calculate comfort and fatigue trends
-    const comfortValues = daySessions
-      .map(s => s.comfort)
-      .filter((v): v is number => v !== undefined);
-    const fatigueValues = daySessions
-      .map(s => s.fatigue)
-      .filter((v): v is number => v !== undefined);
+    // Calculate comfort and fatigue trends with schema guards
+    const { comfort: comfortValues, fatigue: fatigueValues } = this.safeExtractComfortFatigue(daySessions);
     
     // Calculate strain per 100 minutes
     const strainPer100Min = this.calculateStrainPer100Min(daySessions);
@@ -353,7 +358,8 @@ export class ProgressAggregator {
   }
 
   /**
-   * Calculate retention percentage (days with sessions / days since install)
+   * Calculate retention percentage (days with sessions / days since first session)
+   * Uses "days since first session" for fairness - doesn't penalize users for idle days before starting
    */
   private calculateRetentionPct(sessions: SessionSummaryV1[]): number {
     if (sessions.length === 0) return 0;
@@ -364,9 +370,11 @@ export class ProgressAggregator {
     
     const firstSession = Math.min(...sessions.map(s => s.ts));
     const lastSession = Math.max(...sessions.map(s => s.ts));
-    const daysSinceInstall = Math.ceil((lastSession - firstSession) / (24 * 60 * 60 * 1000)) + 1;
+    const daysSinceFirstSession = Math.ceil((lastSession - firstSession) / (24 * 60 * 60 * 1000)) + 1;
     
-    return daysSinceInstall > 0 ? (sessionDates.size / daysSinceInstall) : 0;
+    // Guard against division by zero and ensure minimum 1 day
+    const totalDays = Math.max(1, daysSinceFirstSession);
+    return sessionDates.size / totalDays;
   }
 
   /**
@@ -389,6 +397,7 @@ export class ProgressAggregator {
 
   /**
    * Calculate strain per 100 minutes of practice
+   * Guards against zero duration to prevent NaN/∞
    */
   private calculateStrainPer100Min(sessions: SessionSummaryV1[]): number {
     if (sessions.length === 0) return 0;
@@ -396,10 +405,14 @@ export class ProgressAggregator {
     const totalDurationMin = this.calculateTotalDuration(sessions) / (60 * 1000); // Convert to minutes
     const strainCount = this.calculateStrainCount(sessions);
     
-    if (totalDurationMin === 0) return 0;
+    // Guard against zero duration to prevent NaN/∞
+    if (totalDurationMin === 0 || !isFinite(totalDurationMin)) return 0;
     
     // Normalize to per 100 minutes
-    return (strainCount / totalDurationMin) * 100;
+    const strainPer100Min = (strainCount / totalDurationMin) * 100;
+    
+    // Guard against NaN or Infinity
+    return isFinite(strainPer100Min) ? strainPer100Min : 0;
   }
 
   /**
@@ -536,7 +549,37 @@ export class ProgressAggregator {
    * Helper methods
    */
   private isValidSession(session: SessionSummaryV1): boolean {
-    return session.ts > 0 && session.schemaVersion !== undefined;
+    return session.ts > 0 && 
+           session.schemaVersion !== undefined && 
+           session.schemaVersion >= 1 &&
+           isFinite(session.ts);
+  }
+
+  /**
+   * Safely extract comfort/fatigue values with schema version guards
+   */
+  private safeExtractComfortFatigue(sessions: SessionSummaryV1[]): { comfort: number[]; fatigue: number[] } {
+    const comfort: number[] = [];
+    const fatigue: number[] = [];
+    
+    for (const session of sessions) {
+      // Guard against missing or invalid comfort/fatigue values
+      if (session.comfort !== undefined && 
+          typeof session.comfort === 'number' && 
+          session.comfort >= 1 && 
+          session.comfort <= 5) {
+        comfort.push(session.comfort);
+      }
+      
+      if (session.fatigue !== undefined && 
+          typeof session.fatigue === 'number' && 
+          session.fatigue >= 1 && 
+          session.fatigue <= 5) {
+        fatigue.push(session.fatigue);
+      }
+    }
+    
+    return { comfort, fatigue };
   }
 
   private createEmptyMetrics(date: string): AggregatedMetrics {

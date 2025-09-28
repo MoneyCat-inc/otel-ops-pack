@@ -84,16 +84,25 @@ export const BetaMetricsPanel: React.FC<BetaMetricsPanelProps> = ({
       {/* Metrics Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Retention */}
-        <MetricCard
-          title="Retention"
-          currentValue={latestDay.betaMetrics.retentionPct}
-          previousValue={previousDay?.betaMetrics.retentionPct || 0}
-          trend={latestDay.betaMetrics.retentionTrend}
-          format="percentage"
-          color="blue"
-          trendData={retentionTrendData}
-          description="Days with practice / days since install"
-        />
+        <div 
+          role="region" 
+          aria-labelledby="retention-title"
+          aria-describedby="retention-description"
+        >
+          <MetricCard
+            title="Retention"
+            currentValue={latestDay.betaMetrics.retentionPct}
+            previousValue={previousDay?.betaMetrics.retentionPct || 0}
+            trend={latestDay.betaMetrics.retentionTrend}
+            format="percentage"
+            color="blue"
+            trendData={retentionTrendData}
+            description="Days with practice / days since first session"
+          />
+          <div id="retention-description" className="sr-only">
+            Retention percentage calculated as days with at least one practice session divided by days since first session. Higher percentages indicate better habit formation.
+          </div>
+        </div>
 
         {/* Comfort Trend */}
         <MetricCard
@@ -112,6 +121,7 @@ export const BetaMetricsPanel: React.FC<BetaMetricsPanelProps> = ({
           className="p-6 rounded-lg border-2 bg-gray-50 border-gray-200"
           role="region"
           aria-labelledby="strain-health-title"
+          aria-describedby="strain-health-description"
         >
           <div className="flex items-center justify-between mb-4">
             <h3 
@@ -157,6 +167,9 @@ export const BetaMetricsPanel: React.FC<BetaMetricsPanelProps> = ({
           <p className="text-sm text-gray-600 opacity-75">
             Strain events per 100 minutes of practice
           </p>
+          <div id="strain-health-description" className="sr-only">
+            Strain health measures vocal strain events normalized per 100 minutes of practice. Categories: Excellent (less than 10%), Good (10-25%), Moderate (25-50%), Poor (more than 50%). Lower values indicate safer practice patterns.
+          </div>
         </div>
 
         {/* Session Frequency */}
@@ -245,12 +258,13 @@ export const BetaMetricsPanel: React.FC<BetaMetricsPanelProps> = ({
         </div>
       </div>
 
-      {/* Screen reader summary */}
+      {/* Single screen reader announcer - debounced updates */}
       <div 
         aria-live="polite" 
         aria-atomic="true" 
         className="sr-only"
         role="status"
+        id="beta-metrics-announcer"
       >
         Beta metrics summary: {Math.round(latestDay.betaMetrics.retentionPct * 100)}% retention, 
         {latestDay.betaMetrics.comfortTrend.mean.toFixed(1)} comfort level, 

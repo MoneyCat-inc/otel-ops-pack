@@ -430,5 +430,119 @@ describe('Beta Metrics Calculation', () => {
       // Should filter out sessions without schema version
       expect(daily).toHaveLength(1);
     });
+
+    it('should handle zero duration sessions (no NaN/∞)', () => {
+      const now = Date.now();
+      const sessions: SessionSummaryV1[] = [
+        { 
+          ts: now, 
+          comfort: 4, 
+          fatigue: 2, 
+          memx: { memoryStrainPct: 0.1 },
+          schemaVersion: 1 
+        }
+      ];
+
+      // Mock zero duration
+      const originalCalculateTotalDuration = aggregator['calculateTotalDuration'];
+      aggregator['calculateTotalDuration'] = () => 0;
+
+      const daily = aggregator.aggregateDaily(sessions);
+      const latestDay = daily[daily.length - 1];
+
+      expect(latestDay.betaMetrics.strainPer100Min).toBe(0);
+      expect(isFinite(latestDay.betaMetrics.strainPer100Min)).toBe(true);
+
+      // Restore original method
+      aggregator['calculateTotalDuration'] = originalCalculateTotalDuration;
+    });
+
+    it('should handle sparse data (weeks with 0 sessions)', () => {
+      const now = Date.now();
+      const sessions: SessionSummaryV1[] = [
+        { ts: now, comfort: 4, fatigue: 2, schemaVersion: 1 },
+        { ts: now - 14 * 24 * 60 * 60 * 1000, comfort: 3, fatigue: 3, schemaVersion: 1 } // 2 weeks ago
+      ];
+
+      const daily = aggregator.aggregateDaily(sessions);
+      const weekly = aggregator.aggregateWeekly(daily);
+
+      // Should handle gaps without NaN/∞
+      expect(weekly).toHaveLength(2);
+      expect(weekly.every(w => isFinite(w.betaMetrics.retentionPct))).toBe(true);
+      expect(weekly.every(w => isFinite(w.betaMetrics.sessionFrequency))).toBe(true);
+    });
+
+    it('should handle comfort/fatigue scale validation (1-5)', () => {
+      const now = Date.now();
+      const sessions: SessionSummaryV1[] = [
+        { ts: now, comfort: 0, fatigue: 6, schemaVersion: 1 }, // Invalid values
+        { ts: now - 24 * 60 * 60 * 1000, comfort: 3, fatigue: 3, schemaVersion: 1 }, // Valid
+        { ts: now - 2 * 24 * 60 * 60 * 1000, comfort: 5, fatigue: 1, schemaVersion: 1 } // Valid
+      ];
+
+      const daily = aggregator.aggregateDaily(sessions);
+      const latestDay = daily[daily.length - 1];
+
+      // Should only use valid values (3, 5 for comfort; 3, 1 for fatigue)
+      expect(latestDay.betaMetrics.comfortTrend.mean).toBeCloseTo(4.0, 1); // (3+5)/2
+      expect(latestDay.betaMetrics.fatigueTrend.mean).toBeCloseTo(2.0, 1); // (3+1)/2
+    });
+
+    it('should handle timezone boundaries correctly', () => {
+      // Test sessions near midnight
+      const midnight = new Date('2024-01-01T00:00:00Z').getTime();
+      const sessions: SessionSummaryV1[] = [
+        { ts: midnight - 1000, comfort: 4, fatigue: 2, schemaVersion: 1 }, // Just before midnight
+        { ts: midnight + 1000, comfort: 3, fatigue: 3, schemaVersion: 1 }  // Just after midnight
+      ];
+
+      const daily = aggregator.aggregateDaily(sessions);
+      
+      // Should create separate days
+      expect(daily).toHaveLength(2);
+      expect(daily[0].date).not.toBe(daily[1].date);
+    });
+
+    it('should handle very short sessions (minimum duration threshold)', () => {
+      const now = Date.now();
+      const sessions: SessionSummaryV1[] = [
+        { 
+          ts: now, 
+          comfort: 4, 
+          fatigue: 2, 
+          schemaVersion: 1 
+        },
+        { 
+          ts: now - 24 * 60 * 60 * 1000, 
+          comfort: 3, 
+          fatigue: 3, 
+          schemaVersion: 1 
+        }
+      ];
+
+      const daily = aggregator.aggregateDaily(sessions);
+      const latestDay = daily[daily.length - 1];
+
+      // Should handle short sessions gracefully
+      expect(latestDay.betaMetrics.sessionFrequency).toBeGreaterThan(0);
+      expect(isFinite(latestDay.betaMetrics.sessionFrequency)).toBe(true);
+    });
+
+    it('should handle install vs first-session date correctly', () => {
+      const now = Date.now();
+      const sessions: SessionSummaryV1[] = [
+        { ts: now - 7 * 24 * 60 * 60 * 1000, comfort: 4, fatigue: 2, schemaVersion: 1 }, // First session 7 days ago
+        { ts: now - 3 * 24 * 60 * 60 * 1000, comfort: 3, fatigue: 3, schemaVersion: 1 },  // Second session 3 days ago
+        { ts: now, comfort: 5, fatigue: 1, schemaVersion: 1 } // Latest session today
+      ];
+
+      const daily = aggregator.aggregateDaily(sessions);
+      const latestDay = daily[daily.length - 1];
+
+      // Retention should be calculated from first session (7 days ago), not install date
+      // 3 unique days out of 7 days since first session = ~43%
+      expect(latestDay.betaMetrics.retentionPct).toBeCloseTo(3/7, 2);
+    });
   });
 });

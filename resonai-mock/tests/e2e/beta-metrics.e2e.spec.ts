@@ -251,4 +251,33 @@ test.describe('Beta Metrics Panel', () => {
     await expect(page.locator('text=Strain Health')).toBeVisible();
     await expect(page.locator('text=Session Frequency')).toBeVisible();
   });
+
+  test('should not make any network calls', async ({ page }) => {
+    let networkCalls: string[] = [];
+    
+    // Intercept all network requests
+    await page.route('**', (route) => {
+      networkCalls.push(route.request().url());
+      route.continue();
+    });
+    
+    // Navigate to progress page
+    await page.goto('/progress');
+    await page.waitForLoadState('networkidle');
+    
+    // Wait a bit more to catch any delayed requests
+    await page.waitForTimeout(2000);
+    
+    // Filter out expected requests (page load, assets, etc.)
+    const unexpectedRequests = networkCalls.filter(url => 
+      !url.includes('localhost') && 
+      !url.includes('127.0.0.1') &&
+      !url.includes('chrome-extension') &&
+      !url.includes('data:') &&
+      !url.includes('blob:')
+    );
+    
+    // Should have no unexpected network calls
+    expect(unexpectedRequests).toHaveLength(0);
+  });
 });
