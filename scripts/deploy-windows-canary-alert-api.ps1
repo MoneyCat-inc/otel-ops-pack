@@ -52,7 +52,11 @@ if ($DeployAlert -or $FullDeployment) {
     Write-Host "`n=== Deploying Windows Canary Alert via API ===" -ForegroundColor Yellow
     
     # Create alert configuration
-    $canaryLogsQuery = "log.file.path = 'C:/logs/windows-canary-test.log' AND body contains 'windows-canary'"
+    $canaryLogsFilter = "log.file.path = 'C:/logs/windows-canary-test.log' AND body contains 'windows-canary'"
+    $canaryLogsQuery = "$canaryLogsFilter | stats count() as log_count by bin(1m)"
+    $canaryLogCountQuery = "$canaryLogsFilter | stats count()"
+    $canaryLogRateQuery = "$canaryLogsFilter | stats count() by bin(1m)"
+    $canaryLogLastTimestampQuery = "$canaryLogsFilter | stats latest(@timestamp)"
     
     # Main Alert Configuration for SigNoz API
     $alertPayload = @{
@@ -78,7 +82,7 @@ if ($DeployAlert -or $FullDeployment) {
         labels = @{
             alert_type = "canary"
             service = "windows-logs"
-            environment = "production"
+            environment = "local"
         }
         annotations = @{
             summary = "Windows canary logs have stopped appearing"
@@ -112,7 +116,7 @@ if ($DeployAlert -or $FullDeployment) {
         labels = @{
             alert_type = "canary_test"
             service = "windows-logs"
-            environment = "test"
+            environment = "local-test"
         }
     }
     
@@ -123,7 +127,7 @@ if ($DeployAlert -or $FullDeployment) {
         panels = @(
             @{
                 title = "Canary Log Count (Last Hour)"
-                query = $canaryLogsQuery
+                query = $canaryLogCountQuery
                 type = "stat"
                 thresholds = @{
                     warning = 10
@@ -132,12 +136,12 @@ if ($DeployAlert -or $FullDeployment) {
             },
             @{
                 title = "Canary Log Rate (per minute)"
-                query = $canaryLogsQuery
+                query = $canaryLogRateQuery
                 type = "line"
             },
             @{
                 title = "Last Canary Log Timestamp"
-                query = $canaryLogsQuery
+                query = $canaryLogLastTimestampQuery
                 type = "stat"
             }
         )
@@ -156,14 +160,26 @@ if ($DeployAlert -or $FullDeployment) {
         Write-Host "📋 Deploying main alert: $($alertPayload.name)" -ForegroundColor Cyan
         try {
             $alertResponse = Invoke-RestMethod -Uri "$SigNozUrl/api/v1/alerts" -Method Post -Body ($alertPayload | ConvertTo-Json -Depth 6) -Headers $Headers -TimeoutSec 30
+            if ($alertResponse -is [string]) { 
+                throw "Unexpected non-JSON response from SigNoz: $alertResponse" 
+            }
+            $alertId = $alertResponse.id
+            if (-not $alertId -and $alertResponse.data) {
+                if ($alertResponse.data.id) { $alertId = $alertResponse.data.id }
+                elseif ($alertResponse.data.alertId) { $alertId = $alertResponse.data.alertId }
+            }
+            if (-not $alertId) { 
+                $raw = $alertResponse | ConvertTo-Json -Depth 6 -Compress
+                throw "SigNoz API returned no alert id. Response: $raw" 
+            }
             Write-Host "  ✅ Main alert deployed successfully" -ForegroundColor Green
-            Write-Host "     Alert ID: $($alertResponse.id)" -ForegroundColor Gray
-            
+            Write-Host "     Alert ID: $alertId" -ForegroundColor Gray
+
             $deploymentResults.alerts_deployed++
             $deploymentResults.results += @{
                 alert_name = $alertPayload.name
                 status = "success"
-                alert_id = $alertResponse.id
+                alert_id = $alertId
                 timestamp = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
             }
         } catch {
@@ -181,14 +197,26 @@ if ($DeployAlert -or $FullDeployment) {
         Write-Host "📋 Deploying test alert: $($testAlertPayload.name)" -ForegroundColor Cyan
         try {
             $testAlertResponse = Invoke-RestMethod -Uri "$SigNozUrl/api/v1/alerts" -Method Post -Body ($testAlertPayload | ConvertTo-Json -Depth 6) -Headers $Headers -TimeoutSec 30
+            if ($testAlertResponse -is [string]) { 
+                throw "Unexpected non-JSON response from SigNoz: $testAlertResponse" 
+            }
+            $testAlertId = $testAlertResponse.id
+            if (-not $testAlertId -and $testAlertResponse.data) {
+                if ($testAlertResponse.data.id) { $testAlertId = $testAlertResponse.data.id }
+                elseif ($testAlertResponse.data.alertId) { $testAlertId = $testAlertResponse.data.alertId }
+            }
+            if (-not $testAlertId) { 
+                $raw = $testAlertResponse | ConvertTo-Json -Depth 6 -Compress
+                throw "SigNoz API returned no alert id. Response: $raw" 
+            }
             Write-Host "  ✅ Test alert deployed successfully" -ForegroundColor Green
-            Write-Host "     Alert ID: $($testAlertResponse.id)" -ForegroundColor Gray
-            
+            Write-Host "     Alert ID: $testAlertId" -ForegroundColor Gray
+
             $deploymentResults.alerts_deployed++
             $deploymentResults.results += @{
                 alert_name = $testAlertPayload.name
                 status = "success"
-                alert_id = $testAlertResponse.id
+                alert_id = $testAlertId
                 timestamp = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
             }
         } catch {
@@ -252,7 +280,7 @@ if ($DeployAlert -or $FullDeployment) {
     Write-Host "Alerts deployed: $($deploymentResults.alerts_deployed)" -ForegroundColor Green
     Write-Host "Alerts failed: $($deploymentResults.alerts_failed)" -ForegroundColor Red
     Write-Host "API URL: $SigNozUrl" -ForegroundColor Gray
-    Write-Host "Log Filter: $canaryLogsQuery" -ForegroundColor Gray
+    Write-Host "Log Filter: $canaryLogsFilter" -ForegroundColor Gray
 }
 
 if ($GenerateCanary -or $FullDeployment) {
@@ -282,7 +310,7 @@ if ($TestAlert -or $FullDeployment) {
     Write-Host "`n=== Testing Canary Alert ===" -ForegroundColor Yellow
     
     Write-Host "Verification steps:" -ForegroundColor Cyan
-    Write-Host "1. Check SigNoz UI -> Logs -> filter: $canaryLogsQuery" -ForegroundColor White
+    Write-Host "1. Check SigNoz UI -> Logs -> filter: $canaryLogsFilter" -ForegroundColor White
     Write-Host "2. Verify canary logs are visible in SigNoz" -ForegroundColor White
     Write-Host "3. Check Alerts section for deployed alerts" -ForegroundColor White
     Write-Host "4. Test alert by stopping canary generation for 5+ minutes" -ForegroundColor White
@@ -297,13 +325,13 @@ if ($TestAlert -or $FullDeployment) {
         canary_log_file = $logFile
         status = "deployed_via_api"
         verification_steps = @(
-            "Check SigNoz UI -> Logs with filter: $canaryLogsQuery",
+            "Check SigNoz UI -> Logs with filter: $canaryLogsFilter",
             "Verify alerts are active in SigNoz Alerts section",
             "Test alert triggers after 5 minutes of no canary logs",
             "Test alert resolution when canary logs resume"
         )
         signoz_ui_url = $SigNozUrl
-        alert_query = $canaryLogsQuery
+        alert_query = $canaryLogsFilter
     }
     
     $reportFile = "artifacts/canary-alert-api-test-$(Get-Date -Format 'yyyyMMdd-HHmmss').json"
