@@ -1,0 +1,99 @@
+name: Auto-PR Bot
+on:
+  schedule:
+    - cron: '0 9 * * 1'  # Every Monday at 9 AM UTC
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  auto-pr:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+      
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+      
+      - name: Install dependencies
+        run: pnpm install
+      
+      - name: Setup PowerShell
+        uses: actions/setup-powershell@v1
+      
+      - name: Run guardrails check
+        run: pnpm agent:guardrails-premium -Json > .agent/guardrails_report.json
+      
+      - name: Check for violations
+        id: violations
+        run: |
+          violations=$(jq -r '.violations' .agent/guardrails_report.json)
+          echo "violations=$violations" >> $GITHUB_OUTPUT
+          if [ "$violations" -gt 0 ]; then
+            echo "has_violations=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_violations=false" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Run doc refresh
+        run: pnpm agent:doc-refresh
+      
+      - name: Check for changes
+        id: changes
+        run: |
+          if git diff --quiet; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Create Auto-PR
+        if: steps.violations.outputs.has_violations == 'true' || steps.changes.outputs.has_changes == 'true'
+        run: |
+          # Set up GitHub CLI
+          echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
+          
+          # Create auto-PR
+          pnpm agent:auto-pr
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Update status badge
+        if: steps.violations.outputs.has_violations == 'true' || steps.changes.outputs.has_changes == 'true'
+        run: |
+          # Update README badge with latest status
+          pnpm agent:pr-badge-update
+          
+          # Commit badge update
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add README.md
+          git commit -m "🤖 Auto-update: Status badge refresh" || exit 0
+          git push
+      
+      - name: Post summary
+        run: |
+          echo "## Auto-PR Bot Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- **Violations Found**: ${{ steps.violations.outputs.violations }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Changes Made**: ${{ steps.changes.outputs.has_changes }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **PR Created**: ${{ steps.violations.outputs.has_violations == 'true' || steps.changes.outputs.has_changes == 'true' }}" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ steps.violations.outputs.has_violations == 'true' || steps.changes.outputs.has_changes == 'true' }}" == "true" ]; then
+            echo "✅ Auto-PR created successfully!" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "ℹ️ No changes detected, skipping PR creation." >> $GITHUB_STEP_SUMMARY
+          fi

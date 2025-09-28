@@ -1,0 +1,15 @@
+image:
+  repository: ghcr.io/yourorg/codex-local
+  tag: latest
+  pullPolicy: IfNotPresent
+
+watchdog:
+  enabled: true
+  args: []
+  env: []
+  mountPath: /var/lib/codex
+
+resources: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}
