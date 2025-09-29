@@ -1,0 +1,54 @@
+{
+  "name": "ECRR Compliance Threshold Breach",
+  "description": "Alert when ECRR compliance rate drops below 80% for 5 minutes",
+  "state": "active",
+  "labels": {
+    "service": "ecrr-compliance",
+    "component": "monitoring",
+    "severity": "warning",
+    "dataset": "ecrr_compliance"
+  },
+  "compositeQuery": {
+    "queryType": "builder",
+    "panelType": "time_series",
+    "builderQueries": {
+      "A": {
+        "queryName": "A",
+        "dataSource": "logs",
+        "aggregateOperator": "avg",
+        "aggregateAttribute": "json.compliance_rate",
+        "expression": "",
+        "filters": {
+          "items": [
+            {
+              "op": "=",
+              "disabled": false,
+              "id": "dataset",
+              "key": "json.dataset",
+              "value": "ecrr_compliance"
+            },
+            {
+              "op": "=",
+              "disabled": false,
+              "id": "path",
+              "key": "log.file.path",
+              "value": "C:/logs/ecrr/compliance-trends.log"
+            }
+          ],
+          "op": "AND"
+        },
+        "groupBy": [],
+        "stepInterval": 60
+      }
+    }
+  },
+  "condition": {
+    "op": "<",
+    "lhs": "A",
+    "rhs": 80
+  },
+  "evaluationWindow": "5m",
+  "checkFrequency": "1m",
+  "notifications": [],
+  "disabled": false
+}

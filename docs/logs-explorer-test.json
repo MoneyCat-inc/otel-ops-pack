@@ -1,0 +1,36 @@
+{
+  "title": "Logs Explorer Test",
+  "description": "Simple dashboard to validate ClickHouse logs access",
+  "tags": [
+    "logs",
+    "test"
+  ],
+  "layout": [
+    {
+      "x": 0,
+      "y": 0,
+      "w": 12,
+      "h": 6,
+      "i": "logs-total"
+    }
+  ],
+  "widgets": [
+    {
+      "id": "logs-total",
+      "title": "Total Logs",
+      "description": "Count of all log records in signoz_logs.logs_v2",
+      "panelTypes": "value",
+      "queryType": "clickhouse_sql",
+      "query": {
+        "clickhouse_sql": [
+          {
+            "name": "Total Logs",
+            "legend": "Total Logs",
+            "query": "SELECT count() AS value FROM signoz_logs.logs_v2"
+          }
+        ]
+      },
+      "yAxisUnit": "short"
+    }
+  ]
+}

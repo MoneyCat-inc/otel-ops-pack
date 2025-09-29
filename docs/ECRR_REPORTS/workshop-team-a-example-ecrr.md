@@ -433,3 +433,46 @@ Test outputs: ECRR compliance results, health check reports, canary monitoring d
 **ECRR Report Generated**: 2025-01-27 20:15 UTC  
 **Status**: Rollout merge complete, ECRR framework enhanced  
 **Next**: Execute git commit and push to production
+
+## 📊 **Status Declaration**
+
+**Status**: [✅ COMPLETE | ❌ FAILED | ⚠️ PARTIAL]  
+**Completion Date**: [YYYY-MM-DD HH:mm:ss UTC]  
+**Agent**: [Agent Name]  
+**Role**: [Role Description]  
+**Mission**: [Mission Description]  
+**Result**: [Result Description]
+
+### **Success Criteria Met**
+- ✅ [Success criterion 1]
+- ✅ [Success criterion 2]
+- ✅ [Success criterion 3]
+
+### **Quality Gates Passed**
+- ✅ **ECRR Compliance**: Full 4-section framework implementation
+- ✅ **Evidence Documentation**: Complete with metrics, logs, and verification steps
+- ✅ **Guardrail Adherence**: Local-first, safety, idempotence, verification maintained
+- ✅ **Production Readiness**: [Production status]
+
+---
+
+## ECRR Gate
+
+### Examine
+- Facts:
+- Evidence:
+
+### Clean
+- Actions:
+- Guardrails:
+
+### Report
+- Artifacts:
+- Verification:
+
+### Role
+- Actor:
+- Scope:
+
+---
+

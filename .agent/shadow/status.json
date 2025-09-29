@@ -1,0 +1,20 @@
+{
+  "timestamp": "2025-09-28T23:19:38.519Z",
+  "config": {
+    "driver": "json",
+    "wal": false,
+    "shadow": true,
+    "maxJobs": 2,
+    "maxFiles": 10,
+    "maxLines": 200
+  },
+  "admissionControl": {
+    "maxJobs": 2,
+    "maxFiles": 10,
+    "maxLines": 200,
+    "concurrency": 2
+  },
+  "runningJobs": [],
+  "queueDepth": 0,
+  "recentRuns": []
+}

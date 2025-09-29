@@ -188,3 +188,30 @@ Playwright stats:
 
 ---
 
+
+## 🎭 **4. Role**
+
+### **Actor Declaration**
+**Cursor Agent - Observability Copilot** acting as **Implementation Agent**
+
+**Scope**: General Task execution and ECRR compliance  
+**Responsibilities**: 
+- Execute General Task according to ECRR framework
+- Ensure Examine → Clean → Report → Role methodology
+- Maintain local-first, safety, idempotence, verification principles
+- Document all actions, results, and evidence
+- Declare accountability and responsibility
+
+**Guardrails Respected**:
+- **Local-first**: All operations focus on local observability infrastructure
+- **Safety**: No sensitive data exposed, all configurations documented
+- **Idempotence**: All scripts and processes are re-runnable
+- **Verification**: Every change includes validation steps and evidence
+
+**Integration**: 
+- Compatible with existing ECRR framework and documentation
+- Maintains consistency with ECRR methodology principles
+- Provides foundation for future improvements and automation
+- Integrates with observability stack and monitoring systems
+
+---

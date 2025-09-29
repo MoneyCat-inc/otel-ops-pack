@@ -34,7 +34,7 @@ Scope: Build reproducible ECRR‑01 evidence tooling; normalize/verify artifacts
     - `artifacts/ecrr-01-playwright-isolation.json`
     - `artifacts/ecrr-01-playwright-offline.json`
     - `ECRR-01-SMOKE-TEST-RESULTS.md`
-    - `docs/ECRR_REPORTS/2025-09-22-terminal-session-ecrr-01.md`
+    - `docs/ECRR_REPORTS/2025-09-29-ecrr-01-consolidated.md`
 - Comfort Cat folder merge
   - Created `scripts/merge-comfort-cat.ps1` for safe copy with `.conflict` suffix on differences
   - Archived conflicts to `artifacts/comfort-cat-conflicts/`
@@ -75,7 +75,7 @@ Scope: Build reproducible ECRR‑01 evidence tooling; normalize/verify artifacts
 - Commands
 ```
 # Verify bundle quickly
-$files = 'artifacts/ecrr-01-verification.log','artifacts/ecrr-01-playwright-isolation.json','artifacts/ecrr-01-playwright-offline.json','ECRR-01-SMOKE-TEST-RESULTS.md','docs/ECRR_REPORTS/2025-09-22-terminal-session-ecrr-01.md'
+$files = 'artifacts/ecrr-01-verification.log','artifacts/ecrr-01-playwright-isolation.json','artifacts/ecrr-01-playwright-offline.json','ECRR-01-SMOKE-TEST-RESULTS.md','docs/ECRR_REPORTS/2025-09-29-ecrr-01-consolidated.md'
 $files | % { "{0} => {1}" -f $_, (Test-Path $_) }
 (Get-Content 'artifacts/ecrr-01-playwright-isolation.json' -Raw | ConvertFrom-Json).stats.unexpected
 (Get-Content 'artifacts/ecrr-01-playwright-offline.json' -Raw | ConvertFrom-Json).stats.unexpected
@@ -191,3 +191,31 @@ $files | % { "{0} => {1}" -f $_, (Test-Path $_) }
 
 ---
 
+
+
+## 🎭 **4. Role**
+
+### **Actor Declaration**
+**Codex Agent - CI/CD Coordinator** acting as **CI/CD Coordinator**
+
+**Scope**: General Task execution and ECRR compliance  
+**Responsibilities**: 
+- Execute General Task according to ECRR framework
+- Ensure Examine → Clean → Report → Role methodology
+- Maintain local-first, safety, idempotence, verification principles
+- Document all actions, results, and evidence
+- Declare accountability and responsibility
+
+**Guardrails Respected**:
+- **Local-first**: All operations focus on local observability infrastructure
+- **Safety**: No sensitive data exposed, all configurations documented
+- **Idempotence**: All scripts and processes are re-runnable
+- **Verification**: Every change includes validation steps and evidence
+
+**Integration**: 
+- Compatible with existing ECRR framework and documentation
+- Maintains consistency with ECRR methodology principles
+- Provides foundation for future improvements and automation
+- Integrates with observability stack and monitoring systems
+
+---

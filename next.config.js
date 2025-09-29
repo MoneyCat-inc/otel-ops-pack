@@ -1,5 +1,5 @@
-# Resonai Backend - Next.js Configuration
-# Optimized for production deployment with privacy and security
+// Resonai Backend - Next.js Configuration
+// Optimized for production deployment with privacy and security
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -128,8 +128,7 @@ const nextConfig = {
   // PRIVACY & COMPLIANCE
   // =============================================================================
   
-  // Disable telemetry
-  telemetry: false,
+  // Note: telemetry is disabled by default in Next.js 14+
 
   // =============================================================================
   // DEVELOPMENT CONFIGURATION

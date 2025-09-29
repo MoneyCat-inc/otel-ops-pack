@@ -1,0 +1,6 @@
+# ECRR Compliance Trend Monitoring
+# Add this line to your crontab (run 'crontab -e' to edit)
+0 6 * * * pwsh -File "C:\otel\scripts\visualize-ecrr-trends.ps1"
+
+# To add to crontab, run:
+# echo '0 6 * * * pwsh -File "C:\otel\scripts\visualize-ecrr-trends.ps1"' | crontab -

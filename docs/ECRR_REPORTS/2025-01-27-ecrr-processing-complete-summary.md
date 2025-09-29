@@ -279,3 +279,78 @@ The ECRR processing provides complete coverage of all reports and tasks with com
 **Next Phase**: ECRR monitoring and processing optimization
 
 *ECRR or it didn't happen.*
+
+## 🏁 Production Readiness
+- Status: Pending (add ✅ Ready / ❌ Not Ready)
+- Risks: (list known risks)
+- Verification: (link to checks/evidence)
+
+
+## 📊 **Status Declaration**
+
+**Status**: [✅ COMPLETE | ❌ FAILED | ⚠️ PARTIAL]  
+**Completion Date**: [YYYY-MM-DD HH:mm:ss UTC]  
+**Agent**: [Agent Name]  
+**Role**: [Role Description]  
+**Mission**: [Mission Description]  
+**Result**: [Result Description]
+
+### **Success Criteria Met**
+- ✅ [Success criterion 1]
+- ✅ [Success criterion 2]
+- ✅ [Success criterion 3]
+
+### **Quality Gates Passed**
+- ✅ **ECRR Compliance**: Full 4-section framework implementation
+- ✅ **Evidence Documentation**: Complete with metrics, logs, and verification steps
+- ✅ **Guardrail Adherence**: Local-first, safety, idempotence, verification maintained
+- ✅ **Production Readiness**: [Production status]
+
+---
+## 🎭 **4. Role**
+
+### **Actor Declaration**
+**Cursor Agent - Observability Copilot** acting as **Implementation Agent**
+
+**Scope**: General Task execution and ECRR compliance  
+**Responsibilities**: 
+- Execute General Task according to ECRR framework
+- Ensure Examine → Clean → Report → Role methodology
+- Maintain local-first, safety, idempotence, verification principles
+- Document all actions, results, and evidence
+- Declare accountability and responsibility
+
+**Guardrails Respected**:
+- **Local-first**: All operations focus on local observability infrastructure
+- **Safety**: No sensitive data exposed, all configurations documented
+- **Idempotence**: All scripts and processes are re-runnable
+- **Verification**: Every change includes validation steps and evidence
+
+**Integration**: 
+- Compatible with existing ECRR framework and documentation
+- Maintains consistency with ECRR methodology principles
+- Provides foundation for future improvements and automation
+- Integrates with observability stack and monitoring systems
+
+---
+
+## ECRR Gate
+
+### Examine
+- Facts:
+- Evidence:
+
+### Clean
+- Actions:
+- Guardrails:
+
+### Report
+- Artifacts:
+- Verification:
+
+### Role
+- Actor:
+- Scope:
+
+---
+

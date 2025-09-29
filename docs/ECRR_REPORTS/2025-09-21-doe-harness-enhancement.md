@@ -146,7 +146,7 @@
 - [Environment considerations]
 
 ---
-## ?? **1. Examine**
+## [SECTION] **1. Examine**
 
 ### **Initial State Captured**
 - **Environment**: Windows 11, PowerShell 7.4, SigNoz localhost (8080), OpenTelemetry Collector (otelcol-contrib) on Windows service.
@@ -169,7 +169,7 @@
 
 ---
 
-## ?? **2. Clean**
+## [SECTION] **2. Clean**
 
 ### **Drift Removal**
 - **Measurement Automation**: Added `scripts/extract-doe-measurements.ps1` to standardize ClickHouse data pulls.
@@ -190,7 +190,7 @@
 
 ---
 
-## ?? **3. Report**
+## [SECTION] **3. Report**
 
 ### **Actions Taken**
 
@@ -224,7 +224,7 @@
 
 ---
 
-## ?? **4. Role**
+## [SECTION] **4. Role**
 
 ### **Actor Declaration**
 **Cursor Agent: Observability Copilot** acting as **Implementor**
@@ -276,7 +276,7 @@
 
 ---
 
-## ?? **Validation Results**
+## [SECTION] **Validation Results**
 
 ### **Harness Validations**
 - ✔ `pwsh -File scripts/run-otel-doe.ps1 -DryRun` → 72 Stage-1 runs planned (artifacts/doe/stage1-20250921-190945).
@@ -288,7 +288,7 @@
 
 ---
 
-## ?? **Success Criteria Met**
+## [SECTION] **Success Criteria Met**
 
 ### **Automation**
 - ✔ Measurement extraction script operational.
@@ -302,7 +302,7 @@
 
 ---
 
-## ?? **Next Actions**
+## [SECTION] **Next Actions**
 
 ### **Immediate**
 1. Execute Stage-1 runs (without `-DryRun`) and allow collectors to complete.
@@ -321,7 +321,7 @@
 
 ---
 
-## ?? **Artifacts Created**
+## [SECTION] **Artifacts Created**
 
 ### **Configuration Files**
 - `experiments/doe/stage2-focus.csv` – Focused Stage-2 factor matrix.
@@ -358,6 +358,55 @@
 - ✅ **Evidence Documentation**: Complete with metrics, logs, and verification steps
 - ✅ **Guardrail Adherence**: Local-first, safety, idempotence, verification maintained
 - ✅ **Production Readiness**: [Production status]
+
+---
+
+
+
+## 🎭 **4. Role**
+
+### **Actor Declaration**
+**Cursor Agent - Observability Copilot** acting as **Implementation Agent**
+
+**Scope**: General Task execution and ECRR compliance  
+**Responsibilities**: 
+- Execute General Task according to ECRR framework
+- Ensure Examine → Clean → Report → Role methodology
+- Maintain local-first, safety, idempotence, verification principles
+- Document all actions, results, and evidence
+- Declare accountability and responsibility
+
+**Guardrails Respected**:
+- **Local-first**: All operations focus on local observability infrastructure
+- **Safety**: No sensitive data exposed, all configurations documented
+- **Idempotence**: All scripts and processes are re-runnable
+- **Verification**: Every change includes validation steps and evidence
+
+**Integration**: 
+- Compatible with existing ECRR framework and documentation
+- Maintains consistency with ECRR methodology principles
+- Provides foundation for future improvements and automation
+- Integrates with observability stack and monitoring systems
+
+---
+
+## ECRR Gate
+
+### Examine
+- Facts:
+- Evidence:
+
+### Clean
+- Actions:
+- Guardrails:
+
+### Report
+- Artifacts:
+- Verification:
+
+### Role
+- Actor:
+- Scope:
 
 ---
 

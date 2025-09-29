@@ -247,3 +247,23 @@ Process all ECRR reports in the repository and analyze framework compliance.
 
 ---
 
+## ECRR Gate
+
+### Examine
+- Facts:
+- Evidence:
+
+### Clean
+- Actions:
+- Guardrails:
+
+### Report
+- Artifacts:
+- Verification:
+
+### Role
+- Actor:
+- Scope:
+
+---
+

@@ -1,0 +1,147 @@
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "5"
+
+services:
+  signoz-zookeeper:
+    image: signoz/zookeeper:3.9.3
+    container_name: signoz-zookeeper
+    restart: unless-stopped
+    environment:
+      ZOO_SERVER_ID: "1"
+      ALLOW_ANONYMOUS_LOGIN: "yes"
+      ZOO_ENABLE_PROMETHEUS_METRICS: "yes"
+      ZOO_PROMETHEUS_METRICS_PORT_NUMBER: "9141"
+    volumes:
+      - signoz_zookeeper_data:/bitnami/zookeeper
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s -m 2 http://localhost:8080/commands/ruok | grep -q 'error.*null'"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    networks:
+      - signoz
+    logging: *default-logging
+
+  signoz-clickhouse:
+    image: clickhouse/clickhouse-server:25.5.6
+    container_name: signoz-clickhouse
+    restart: unless-stopped
+    depends_on:
+      signoz-zookeeper:
+        condition: service_healthy
+    environment:
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: "1"
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+      - ./clickhouse-cluster-config.xml:/etc/clickhouse-server/config.d/signoz-cluster.xml:ro
+      - ./clickhouse-zookeeper-config.xml:/etc/clickhouse-server/config.d/zookeeper.xml:ro
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "0.0.0.0:8123/ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+    networks:
+      - signoz
+    logging: *default-logging
+
+  signoz-schema-migrator-sync:
+    image: signoz/signoz-schema-migrator:v0.129.6
+    container_name: signoz-schema-migrator-sync
+    command: ["sync", "--dsn=tcp://signoz-clickhouse:9000", "--up="]
+    depends_on:
+      signoz-clickhouse:
+        condition: service_healthy
+    restart: on-failure
+    networks:
+      - signoz
+    logging: *default-logging
+
+  signoz-schema-migrator-async:
+    image: signoz/signoz-schema-migrator:v0.129.6
+    container_name: signoz-schema-migrator-async
+    command: ["async", "--dsn=tcp://signoz-clickhouse:9000", "--up="]
+    depends_on:
+      signoz-clickhouse:
+        condition: service_healthy
+    restart: on-failure
+    networks:
+      - signoz
+    logging: *default-logging
+
+  signoz:
+    image: signoz/signoz:v0.96.1
+    container_name: signoz
+    restart: unless-stopped
+    depends_on:
+      signoz-clickhouse:
+        condition: service_healthy
+      signoz-schema-migrator-sync:
+        condition: service_completed_successfully
+    ports:
+      - "8080:8080"
+    volumes:
+      - signoz_data:/var/lib/signoz
+      - ./configs/prometheus/prometheus.yml:/root/config/prometheus.yml:ro
+      - ./configs/dashboards:/root/config/dashboards:ro
+    environment:
+      SIGNOZ_ALERTMANAGER_PROVIDER: signoz
+      SIGNOZ_TELEMETRYSTORE_CLICKHOUSE_DSN: tcp://signoz-clickhouse:9000
+      SIGNOZ_SQLSTORE_SQLITE_PATH: /var/lib/signoz/signoz.db
+      SIGNOZ_JWT_SECRET: '${SIGNOZ_JWT_SECRET:-local-signoz-jwt-secret-rotate}'
+      STORAGE: clickhouse
+      GODEBUG: netdns=go
+      DOT_METRICS_ENABLED: "true"
+      DEPLOYMENT_TYPE: docker-local
+      SIGNOZ_USAGE_ENABLED: "false"
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8080/api/v1/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+    networks:
+      - signoz
+    logging: *default-logging
+
+  signoz-otel-collector:
+    image: signoz/signoz-otel-collector:v0.129.6
+    container_name: signoz-otel-collector
+    restart: unless-stopped
+    depends_on:
+      signoz:
+        condition: service_healthy
+    command:
+      - --config=/etc/otel-collector-config.yaml
+      - --feature-gates=-pkg.translator.prometheus.NormalizeName
+    volumes:
+      - ./signoz-collector-config.yaml:/etc/otel-collector-config.yaml:ro
+    ports:
+      - "14317:4317"
+      - "14318:4318"
+      - "18888:8888"
+      - "18889:8889"
+    environment:
+      OTEL_RESOURCE_ATTRIBUTES: host.name=signoz-host,os.type=linux
+      LOW_CARDINAL_EXCEPTION_GROUPING: "false"
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/13133'"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    networks:
+      - signoz
+    logging: *default-logging
+
+volumes:
+  clickhouse_data:
+  signoz_data:
+  signoz_zookeeper_data:
+
+networks:
+  signoz:
+    name: signoz-net
+    driver: bridge
+
+

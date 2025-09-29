@@ -28,6 +28,39 @@ const CRITICAL_HEADERS = [
   'X-Frame-Options'
 ];
 
+// Helper function to ensure critical headers are present
+function ensureCriticalHeaders(headers) {
+  const newHeaders = new Headers(headers);
+  
+  // Set critical headers for cross-origin isolation
+  newHeaders.set('Cross-Origin-Opener-Policy', 'same-origin');
+  newHeaders.set('Cross-Origin-Embedder-Policy', 'require-corp');
+  newHeaders.set('Cross-Origin-Resource-Policy', 'cross-origin');
+  newHeaders.set('Permissions-Policy', 'cross-origin-isolated=()');
+  newHeaders.set('X-Content-Type-Options', 'nosniff');
+  newHeaders.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  newHeaders.set('X-Frame-Options', 'SAMEORIGIN');
+  
+  // Set CSP for offline mode
+  newHeaders.set('Content-Security-Policy', [
+    "default-src 'self'",
+    "script-src 'self'",
+    "style-src 'self'",
+    "img-src 'self' data: https: blob:",
+    "font-src 'self'",
+    "connect-src 'self' blob:",
+    "worker-src 'self' blob:",
+    "child-src 'self' blob:",
+    "frame-ancestors 'none'",
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+    "upgrade-insecure-requests"
+  ].join('; '));
+  
+  return newHeaders;
+}
+
 // Install event - cache offline pages
 self.addEventListener('install', (event) => {
   console.log('Service Worker: Installing...');
@@ -70,8 +103,12 @@ self.addEventListener('activate', (event) => {
 
 // Fetch event - serve from cache with preserved headers
 self.addEventListener('fetch', (event) => {
-  // Only handle navigation requests
-  if (event.request.mode !== 'navigate') {
+  // Handle navigation requests and critical resources
+  if (event.request.mode !== 'navigate' && 
+      !event.request.url.includes('/worklets/') &&
+      !event.request.url.includes('/api/') &&
+      !event.request.destination.includes('script') &&
+      !event.request.destination.includes('style')) {
     return;
   }
 
@@ -96,33 +133,7 @@ self.addEventListener('fetch', (event) => {
               console.log('Service Worker: Serving offline page:', event.request.url);
               
               // Create a new response with preserved headers
-              const headers = new Headers(cachedResponse.headers);
-              
-              // Ensure critical headers are present for cross-origin isolation
-              headers.set('Cross-Origin-Opener-Policy', 'same-origin');
-              headers.set('Cross-Origin-Embedder-Policy', 'require-corp');
-              headers.set('Cross-Origin-Resource-Policy', 'cross-origin');
-              headers.set('Permissions-Policy', 'cross-origin-isolated=()');
-              headers.set('X-Content-Type-Options', 'nosniff');
-              headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
-              headers.set('X-Frame-Options', 'SAMEORIGIN');
-              
-              // Set CSP for offline mode
-              headers.set('Content-Security-Policy', [
-                "default-src 'self'",
-                "script-src 'self'",
-                "style-src 'self'",
-                "img-src 'self' data: https: blob:",
-                "font-src 'self'",
-                "connect-src 'self' blob:",
-                "worker-src 'self' blob:",
-                "child-src 'self' blob:",
-                "frame-ancestors 'none'",
-                "object-src 'none'",
-                "base-uri 'self'",
-                "form-action 'self'",
-                "upgrade-insecure-requests"
-              ].join('; '));
+              const headers = ensureCriticalHeaders(cachedResponse.headers);
               
               return new Response(cachedResponse.body, {
                 status: cachedResponse.status,
@@ -138,14 +149,7 @@ self.addEventListener('fetch', (event) => {
                   console.log('Service Worker: Serving offline fallback page');
                   
                   // Create response with headers for offline page
-                  const headers = new Headers(offlinePage.headers);
-                  headers.set('Cross-Origin-Opener-Policy', 'same-origin');
-                  headers.set('Cross-Origin-Embedder-Policy', 'require-corp');
-                  headers.set('Cross-Origin-Resource-Policy', 'cross-origin');
-                  headers.set('Permissions-Policy', 'cross-origin-isolated=()');
-                  headers.set('X-Content-Type-Options', 'nosniff');
-                  headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
-                  headers.set('X-Frame-Options', 'SAMEORIGIN');
+                  const headers = ensureCriticalHeaders(offlinePage.headers);
                   
                   return new Response(offlinePage.body, {
                     status: 200,
@@ -155,7 +159,7 @@ self.addEventListener('fetch', (event) => {
                 }
                 
                 // Last resort - return a basic offline page
-                return new Response(`
+                const offlinePageContent = `
                   <!DOCTYPE html>
                   <html>
                     <head>
@@ -168,19 +172,16 @@ self.addEventListener('fetch', (event) => {
                       <p>This page will be available when you're back online.</p>
                     </body>
                   </html>
-                `, {
+                `;
+                
+                const headers = new Headers();
+                headers.set('Content-Type', 'text/html');
+                ensureCriticalHeaders(headers);
+                
+                return new Response(offlinePageContent, {
                   status: 200,
                   statusText: 'OK',
-                  headers: {
-                    'Content-Type': 'text/html',
-                    'Cross-Origin-Opener-Policy': 'same-origin',
-                    'Cross-Origin-Embedder-Policy': 'require-corp',
-                    'Cross-Origin-Resource-Policy': 'cross-origin',
-                    'Permissions-Policy': 'cross-origin-isolated=()',
-                    'X-Content-Type-Options': 'nosniff',
-                    'Referrer-Policy': 'strict-origin-when-cross-origin',
-                    'X-Frame-Options': 'SAMEORIGIN'
-                  }
+                  headers: headers
                 });
               });
           });

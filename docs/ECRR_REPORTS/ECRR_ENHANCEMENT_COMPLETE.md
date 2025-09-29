@@ -202,7 +202,7 @@
 
 ### **Consolidated Reports**
 - `2025-01-27-gpu-automation-final-consolidated.md` - GPU automation consolidation
-- `2025-01-21-ecrr-01-cross-origin-isolation-complete.md` - ECRR-01 consolidation
+- `2025-09-29-ecrr-01-consolidated.md` - ECRR-01 consolidation
 - `2025-09-27-production-deployment-final-consolidated.md` - Production deployment consolidation
 - `2025-09-22-signoz-alerts-implementation-complete.md` - SigNoz alerts consolidation
 
@@ -273,6 +273,26 @@
 - ✅ **Evidence Documentation**: Complete with metrics, logs, and verification steps
 - ✅ **Guardrail Adherence**: Local-first, safety, idempotence, verification maintained
 - ✅ **Production Readiness**: [Production status]
+
+---
+
+## ECRR Gate
+
+### Examine
+- Facts:
+- Evidence:
+
+### Clean
+- Actions:
+- Guardrails:
+
+### Report
+- Artifacts:
+- Verification:
+
+### Role
+- Actor:
+- Scope:
 
 ---
 

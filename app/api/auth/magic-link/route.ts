@@ -175,7 +175,5 @@ async function sendSendGridEmail(email: string, magicLinkUrl: string, redirectUr
   console.log(`SendGrid: Sending magic link to ${email}: ${magicLinkUrl}`);
 }
 
-// Export config for Edge Runtime
-export const config = {
-  runtime: 'edge',
-};
+// Export runtime configuration for Edge Runtime
+export const runtime = 'edge';

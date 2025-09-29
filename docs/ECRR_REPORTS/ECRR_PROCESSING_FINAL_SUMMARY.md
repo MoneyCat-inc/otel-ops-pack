@@ -84,17 +84,17 @@ Codex Agent: 1 report (2%) - Coordination and CI/CD
 ### **High-Priority Consolidations (12 reports → 3 reports)**
 
 #### **1. Rollout Merge Reports (3 reports)**
-- `2025-01-27-rollout-merge-complete.md`
-- `2025-01-27-rollout-merge-ecrr-complete.md`
+- `2025-09-29-rollout-merge-consolidated.md`
+- `2025-09-29-rollout-merge-consolidated.md`
 - `2025-01-27-final-rollout-merge-ecrr-complete.md`
 - **→ Consolidate to**: Single comprehensive rollout report
 - **Content Overlap**: 85%+ similarity
 
 #### **2. ECRR-01 Reports (4 reports)**
-- `2025-01-21-ecrr-01-final-completion.md`
-- `2025-01-21-ecrr-01-final-report.md`
-- `2025-01-21-ecrr-01-isolation-hardening.md`
-- `2025-01-21-ecrr-01-verification-complete.md`
+- `2025-09-29-ecrr-01-consolidated.md`
+- `2025-09-29-ecrr-01-consolidated.md`
+- `2025-09-29-ecrr-01-consolidated.md`
+- `2025-09-29-ecrr-01-consolidated.md`
 - **→ Consolidate to**: Single ECRR-01 implementation report
 - **Content Overlap**: 70%+ similarity
 
@@ -308,6 +308,26 @@ The ECRR processing analysis provides complete visibility into framework usage, 
 - ✅ **Evidence Documentation**: Complete with metrics, logs, and verification steps
 - ✅ **Guardrail Adherence**: Local-first, safety, idempotence, verification maintained
 - ✅ **Production Readiness**: [Production status]
+
+---
+
+## ECRR Gate
+
+### Examine
+- Facts:
+- Evidence:
+
+### Clean
+- Actions:
+- Guardrails:
+
+### Report
+- Artifacts:
+- Verification:
+
+### Role
+- Actor:
+- Scope:
 
 ---
 
