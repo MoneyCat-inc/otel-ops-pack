@@ -1,0 +1,19 @@
+# Commit Message - Archive Lifecycle Guidelines
+
+# Type: feat/fix/docs/update/archive + brief description
+# 
+# Archive Updates Required:
+# [ ] [CHRONICLE]: Update docs/RESONAI_CHRONICLE.md executive summary
+# [ ] [INDEX]: Update archive/ARCHIVE_INDEX.md counts/references  
+# [ ] [BACKUP]: Archive original files (preserve emoji artifacts)
+#
+# Archive Policy: See docs/ECRR_REPORTS/backup/ARCHIVE_POLICY.md
+#
+# Examples:
+# feat/docs: Add beta launch milestone
+# update/docs: Sync archive counts after consolidation
+# archive: Move completed reports to milestone-reports/
+#
+# DO NOT modify backup files - preserve original formatting
+# DO update both Chronicle AND Index together
+# DO use ASCII-only formatting in active docs
