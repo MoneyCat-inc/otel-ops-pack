@@ -1,0 +1,25 @@
+name: ECRR Compliance
+
+on:
+  pull_request:
+    paths:
+      - 'docs/ECRR_REPORTS/**'
+      - 'scripts/**'
+  schedule:
+    - cron: '0 6 * * 1'
+
+jobs:
+  validate:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate ECRR Compliance
+        shell: pwsh
+        run: pwsh -File scripts/validate-ecrr-compliance.ps1
+      - name: Upload Compliance Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ecrr-compliance
+          path: |
+            artifacts/ecrr-compliance-report.json
+            artifacts/ecrr-compliance-report.md
