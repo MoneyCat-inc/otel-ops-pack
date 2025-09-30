@@ -328,7 +328,8 @@ test.describe('Accessibility Smoke Tests', () => {
       const focusedElement = page.locator(':focus');
       
       // Focus should be within practice interface
-      await expect(practiceInterface).toContainElement(focusedElement);
+      await expect(focusedElement).toBeVisible();
+      await expect(practiceInterface.locator(':focus')).toHaveCount(1);
     });
   });
 

@@ -286,6 +286,7 @@ otlphttp:
 
 ### Debug Commands
 
+#### Standard Debugging
 ```powershell
 # Check collector service status
 Get-Service otelcol-contrib
@@ -303,11 +304,150 @@ Invoke-WebRequest -Uri "http://localhost:8080" -TimeoutSec 5
 Invoke-RestMethod -Uri "http://localhost:3000/api/events" -Method POST -Body '{"event":"test"}' -ContentType "application/json"
 ```
 
+#### Docker Debug (Pro Subscription Required)
+**NEW**: Docker Pro subscription enables advanced container debugging capabilities:
+
+```powershell
+# Interactive debugging session
+docker debug signoz-otel-collector
+
+# Install debugging tools on-demand
+docker debug --command "install prometheus && prometheus --version" signoz-otel-collector
+
+# Check network ports from inside container
+docker debug --command "install net-tools && netstat -tlnp | grep 431" signoz-otel-collector
+
+# Verify collector health
+docker debug --command "curl -s http://localhost:13133/health" signoz-otel-collector
+
+# Inspect configuration files
+docker debug --command "cat /etc/otel-collector-config.yaml | head -20" signoz-otel-collector
+
+# Analyze container startup behavior
+docker debug --command "entrypoint --print" signoz-otel-collector
+
+# Install monitoring tools
+docker debug --command "install htop && htop --version" signoz-otel-collector
+```
+
+**Docker Debug Features**:
+- **Slim Container Debugging**: Works on containers without shells
+- **Custom Toolbox**: Install any Nix package on-demand
+- **Entrypoint Analysis**: Understand container startup behavior
+- **Non-destructive**: Changes don't persist to actual containers
+- **Interactive Shell**: Full debugging environment
+
+**Prerequisites**: Docker Desktop Pro/Team/Business subscription + sign-in
+
+### Helper Scripts
+
+The following helper scripts are available for quick verification and maintenance:
+
+#### `scripts/sz-health.ps1`
+Quick health check for SigNoz containers and Windows Collector:
+```powershell
+pwsh -File scripts\sz-health.ps1
+```
+- Checks SigNoz container status
+- Verifies Windows Collector service state
+- Tests SigNoz UI health endpoint
+- Shows collector configuration preview
+
+#### `scripts/sz-restart.ps1`
+Quick restart of Windows Collector service:
+```powershell
+pwsh -File scripts\sz-restart.ps1
+```
+- Stops and starts otelcol-contrib service
+- Verifies service state after restart
+- Useful after configuration changes
+
+#### `scripts/e2e-pr.ps1`
+Run E2E tests for PR validation:
+```powershell
+pwsh -File scripts\e2e-pr.ps1
+```
+- Runs stable E2E tests (excludes @flaky)
+- Different behavior for CI vs local environments
+- Ensures PR lane stays green
+
 ### Log Locations
 
 - **OTel Collector Logs**: Windows Event Log → Application
 - **SigNoz Logs**: Docker containers (use `docker logs signoz-otel-collector`)
 - **Verification Artifacts**: `artifacts/wiring-verify.txt`, `artifacts/wiring-api.json`
+
+## Verification & Health Checks
+
+### Quick Health Check
+```powershell
+# Run comprehensive health check
+pwsh -File scripts\sz-health.ps1
+
+# Expected output:
+# - SigNoz containers running (signoz-otel-collector, signoz, signoz-clickhouse)
+# - Windows Collector service: RUNNING
+# - SigNoz UI: Healthy
+```
+
+### Canary Test Verification
+```powershell
+# Run canary test to verify end-to-end pipeline
+pwsh -File .\canary-test.ps1
+
+# Expected output:
+# [OK] Wrote canary log entry to C:\logs\canary-test.log
+# [OK] Created Windows Event Log entry
+# [OK] Sent OTLP trace (http://localhost:5318/v1/traces)
+# [OK] Sent OTLP log (http://localhost:5318/v1/logs)
+```
+
+### SigNoz UI Verification
+
+#### Logs Verification
+1. Open SigNoz UI: http://localhost:8080/logs
+2. Add filter: `message contains "canary test"`
+3. Verify recent entries appear with:
+   - `service.name = "canary-test"`
+   - `canary = "true"`
+   - `test.type = "pipeline-verification"`
+
+#### Traces Verification
+1. Open SigNoz UI: http://localhost:8080/traces
+2. Filter by: `service.name = "windows-collector"`
+3. Verify canary traces appear with:
+   - `canary = "true"`
+   - `test.type = "pipeline-verification"`
+   - Proper span timing and attributes
+
+### Configuration Verification
+```powershell
+# Verify traces pipeline is configured
+Get-Content -Path 'C:\otel\config.yaml' | Select-String -Pattern "traces|service.name|windows-collector" -Context 2
+
+# Expected output:
+# - traces pipeline with OTLP receiver
+# - service.name = windows-collector in resource defaults
+# - batch/traces processor configured
+```
+
+### Windows Event Log Verification
+```powershell
+# Check for canary events
+Get-EventLog -LogName Application -Source "SigNoz-Canary" -Newest 5
+
+# Verify canary log file
+Get-Content "C:\logs\canary-test.log" | Select-Object -Last 1
+```
+
+### Complete Wiring Test (Optional)
+```powershell
+# For full analytics API testing (requires Resonai dev server on port 3003)
+pwsh -File scripts\verify-wiring.ps1
+
+# Note: This requires the Resonai dev server to be running with /api/events endpoint
+# For basic verification, use the canary test instead
+```
 
 ## Security & Privacy
 

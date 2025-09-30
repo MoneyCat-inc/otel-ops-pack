@@ -1,0 +1,20 @@
+=== Resonai ↔ OTel Wiring Verification Report ===
+Date: 09/30/2025 21:25:19
+Test ID: 5bf943b1-932c-4e3c-8b91-4d5cf1dba079
+
+Prerequisites:
+- Windows Collector Service: RUNNING
+- OTLP/HTTP Port 5318: REACHABLE
+- SigNoz UI Port 8080: REACHABLE
+
+Pipeline Verification:
+- Canary Test: COMPLETED
+- OTel Endpoints: VERIFIED
+- SigNoz Integration: VERIFIED
+
+Notes:
+- Resonai mock server on port 3000 may not implement /api/events endpoint
+- OTel pipeline verification completed via canary test
+- SigNoz integration verified via health check and logs query
+
+Status: FAILED

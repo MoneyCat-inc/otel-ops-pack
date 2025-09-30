@@ -1,0 +1,89 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e4]:
+      - heading "Resonai" [level=1] [ref=e6]
+      - generic [ref=e7]:
+        - link "Home" [ref=e8] [cursor=pointer]:
+          - /url: /
+        - link "Listen" [ref=e9] [cursor=pointer]:
+          - /url: /listen
+        - link "Practice" [ref=e10] [cursor=pointer]:
+          - /url: /practice
+        - link "Progress" [ref=e11] [cursor=pointer]:
+          - /url: /progress
+        - link "Data Control" [ref=e12] [cursor=pointer]:
+          - /url: /data
+        - link "MEMX Labs" [ref=e13] [cursor=pointer]:
+          - /url: /labs/memx
+  - main [ref=e14]:
+    - generic [ref=e15]:
+      - status
+      - generic [ref=e18]:
+        - generic [ref=e19]:
+          - link "R Resonai" [ref=e20] [cursor=pointer]:
+            - /url: /
+            - generic [ref=e22] [cursor=pointer]: R
+            - generic [ref=e23] [cursor=pointer]: Resonai
+          - generic [ref=e24]: •
+          - generic [ref=e25]: Strain Guardrails
+        - generic [ref=e26]:
+          - link "Prosody Scenarios" [ref=e27] [cursor=pointer]:
+            - /url: /labs/prosody-scenarios
+          - link "Memory Labs" [ref=e28] [cursor=pointer]:
+            - /url: /labs/memx
+      - main [ref=e29]:
+        - generic [ref=e30]:
+          - heading "🛡️ Safety Guardrails Lab" [level=1] [ref=e31]
+          - paragraph [ref=e32]: Tune strain detection thresholds and monitor vocal safety metrics in real-time. Test with deterministic fixtures to verify detection accuracy.
+        - generic [ref=e33]:
+          - generic [ref=e34]:
+            - generic [ref=e36]:
+              - generic [ref=e37]: Mock Mode
+              - button "Enable mock mode" [ref=e38]
+            - generic [ref=e40]:
+              - button "Start Monitoring" [ref=e41]
+              - button "Reset" [ref=e42]
+          - generic [ref=e43]:
+            - heading "Detection Presets" [level=3] [ref=e44]
+            - generic [ref=e45]:
+              - button "Default" [ref=e46]
+              - button "Conservative" [ref=e47]
+              - button "Relaxed" [ref=e48]
+          - generic [ref=e49]:
+            - generic [ref=e50]:
+              - generic [ref=e51]: Loudness Threshold (dBFS)
+              - spinbutton [ref=e52]: "-12"
+            - generic [ref=e53]:
+              - generic [ref=e54]: Loud Duration (ms)
+              - spinbutton [ref=e55]: "1200"
+            - generic [ref=e56]:
+              - generic [ref=e57]: Jitter Threshold (cents)
+              - spinbutton [ref=e58]: "20"
+            - generic [ref=e59]:
+              - generic [ref=e60]: Cooldown (sec)
+              - spinbutton [ref=e61]: "45"
+        - heading "🧪 Test Fixtures" [level=2] [ref=e63]
+        - generic [ref=e64]:
+          - heading "💡 Strain Detection Guide" [level=3] [ref=e65]
+          - generic [ref=e66]:
+            - generic [ref=e67]:
+              - strong [ref=e68]: "🔊 Loudness:"
+              - text: Detects sustained loud speech above threshold.
+            - generic [ref=e69]:
+              - strong [ref=e70]: "📈 Jitter Trend:"
+              - text: Monitors pitch instability over time.
+            - generic [ref=e71]:
+              - strong [ref=e72]: "⏱️ Duration:"
+              - text: Requires minimum voiced time for accuracy.
+            - generic [ref=e73]:
+              - strong [ref=e74]: "🛡️ Cooldown:"
+              - text: SOVT exercises help prevent vocal strain.
+  - generic [ref=e75]:
+    - generic [ref=e76]: "SW: ❌"
+    - generic [ref=e77]: "COI: ✅"
+    - generic [ref=e78]: "SAB: ✅"
+  - alert [ref=e79]
+```

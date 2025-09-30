@@ -1,0 +1,107 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e4]:
+      - heading "Resonai" [level=1] [ref=e6]
+      - generic [ref=e7]:
+        - link "Home" [ref=e8] [cursor=pointer]:
+          - /url: /
+        - link "Listen" [ref=e9] [cursor=pointer]:
+          - /url: /listen
+        - link "Practice" [ref=e10] [cursor=pointer]:
+          - /url: /practice
+        - link "Progress" [ref=e11] [cursor=pointer]:
+          - /url: /progress
+        - link "Data Control" [ref=e12] [cursor=pointer]:
+          - /url: /data
+        - link "MEMX Labs" [ref=e13] [cursor=pointer]:
+          - /url: /labs/memx
+  - main [ref=e14]:
+    - generic [ref=e15]:
+      - status [ref=e16]: Warmup phase started. Take a few deep breaths and gently hum to warm up your voice. This helps prepare your vocal cords for practice.
+      - link "Skip to main content" [ref=e17] [cursor=pointer]:
+        - /url: "#main-content"
+      - generic [ref=e20]:
+        - link "R Resonai" [ref=e22] [cursor=pointer]:
+          - /url: /
+          - generic [ref=e24] [cursor=pointer]: R
+          - generic [ref=e25] [cursor=pointer]: Resonai
+        - generic [ref=e26]:
+          - link "Voice Analysis" [ref=e27] [cursor=pointer]:
+            - /url: /listen
+          - link "Prosody Scenarios" [ref=e28] [cursor=pointer]:
+            - /url: /labs/prosody-scenarios
+          - link "Memory Labs" [ref=e29] [cursor=pointer]:
+            - /url: /labs/memx
+      - main [ref=e30]:
+        - generic [ref=e31]:
+          - heading "🎯 Practice Session" [level=1] [ref=e32]
+          - paragraph [ref=e33]: Guided voice practice with structured warmup, practice, and reflection phases. Get real-time feedback and track your progress over time.
+        - generic [ref=e34]:
+          - generic [ref=e35]:
+            - heading "🌅 Warmup Phase" [level=2] [ref=e36]
+            - paragraph [ref=e37]: Take a few deep breaths and gently hum to warm up your voice. This helps prepare your vocal cords for practice.
+            - paragraph [ref=e38]: "Duration: 2-3 minutes"
+          - progressbar "Practice session progress" [ref=e40]:
+            - 'img "Phase 1: warmup (current)" [ref=e41]': "1"
+            - 'img "Phase 2: practice (pending)" [ref=e42]': "2"
+            - 'img "Phase 3: reflection (pending)" [ref=e43]': "3"
+          - generic [ref=e44]:
+            - heading "💡 Tips for this phase:" [level=4] [ref=e45]
+            - list [ref=e46]:
+              - listitem [ref=e47]:
+                - generic [ref=e48]: •
+                - text: Breathe deeply from your diaphragm
+              - listitem [ref=e49]:
+                - generic [ref=e50]: •
+                - text: Start with gentle humming
+              - listitem [ref=e51]:
+                - generic [ref=e52]: •
+                - text: Don't strain your voice
+              - listitem [ref=e53]:
+                - generic [ref=e54]: •
+                - text: Focus on relaxation
+          - button "Move to next phase from warmup" [ref=e56]: ➡️ Next Phase
+        - generic [ref=e57]:
+          - heading "📈 Session Progress" [level=2] [ref=e58]
+          - generic [ref=e59]:
+            - generic [ref=e60]:
+              - generic [ref=e61]:
+                - generic [ref=e62]: "Session ID:"
+                - generic [ref=e63]: session_1759257541171
+              - generic [ref=e64]:
+                - generic [ref=e65]: "Total Time:"
+                - generic [ref=e66]: 0s
+              - generic [ref=e67]:
+                - generic [ref=e68]: "Current Phase:"
+                - generic [ref=e69]: warmup
+            - generic [ref=e70]:
+              - generic [ref=e71]:
+                - generic [ref=e72]: ✅ Completed Phases
+                - generic [ref=e73]: None yet
+              - generic [ref=e74]:
+                - generic [ref=e75]: 🎯 Current Focus
+                - generic [ref=e76]: Voice preparation and relaxation
+        - generic [ref=e77]:
+          - heading "💡 Practice Session Guide" [level=3] [ref=e78]
+          - generic [ref=e79]:
+            - generic [ref=e80]:
+              - strong [ref=e81]: "🌅 Warmup:"
+              - text: Prepare your voice with gentle exercises and breathing.
+            - generic [ref=e82]:
+              - strong [ref=e83]: "🎯 Practice:"
+              - text: Focus on specific voice techniques with real-time feedback.
+            - generic [ref=e84]:
+              - strong [ref=e85]: "🤔 Reflection:"
+              - text: Review your performance and plan improvements.
+            - generic [ref=e86]:
+              - strong [ref=e87]: "💾 Save:"
+              - text: Store your session data for tracking progress over time.
+  - generic [ref=e88]:
+    - generic [ref=e89]: "SW: ✅"
+    - generic [ref=e90]: "COI: ✅"
+    - generic [ref=e91]: "SAB: ✅"
+  - alert [ref=e92]
+```

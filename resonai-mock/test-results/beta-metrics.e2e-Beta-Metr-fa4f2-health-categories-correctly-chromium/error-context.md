@@ -1,0 +1,287 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e4]:
+      - heading "Resonai" [level=1] [ref=e6]
+      - generic [ref=e7]:
+        - link "Home" [ref=e8] [cursor=pointer]:
+          - /url: /
+        - link "Listen" [ref=e9] [cursor=pointer]:
+          - /url: /listen
+        - link "Practice" [ref=e10] [cursor=pointer]:
+          - /url: /practice
+        - link "Progress" [ref=e11] [cursor=pointer]:
+          - /url: /progress
+        - link "Data Control" [ref=e12] [cursor=pointer]:
+          - /url: /data
+        - link "MEMX Labs" [ref=e13] [cursor=pointer]:
+          - /url: /labs/memx
+  - main [ref=e14]:
+    - generic [ref=e15]:
+      - status [ref=e16]: Progress dashboard loaded. 52 sessions analyzed.
+      - link "Skip to main content" [ref=e17] [cursor=pointer]:
+        - /url: "#main-content"
+      - generic [ref=e20]:
+        - link "R Resonai" [ref=e22] [cursor=pointer]:
+          - /url: /
+          - generic [ref=e24] [cursor=pointer]: R
+          - generic [ref=e25] [cursor=pointer]: Resonai
+        - navigation [ref=e26]:
+          - link "Practice" [ref=e27] [cursor=pointer]:
+            - /url: /practice
+          - link "Listen" [ref=e28] [cursor=pointer]:
+            - /url: /listen
+          - link "Progress" [ref=e29] [cursor=pointer]:
+            - /url: /progress
+      - main [ref=e30]:
+        - generic [ref=e31]:
+          - heading "Your Progress" [level=1] [ref=e32]
+          - paragraph [ref=e33]: Track your voice practice trends and improvements over time.
+        - generic [ref=e34]:
+          - heading "View Options" [level=2] [ref=e35]
+          - generic [ref=e36]:
+            - generic [ref=e37]:
+              - generic [ref=e38]: Time Period
+              - combobox "Time Period" [ref=e39]:
+                - option "Last 7 days"
+                - option "Last 14 days"
+                - option "Last 30 days" [selected]
+                - option "All time"
+            - generic [ref=e40]:
+              - generic [ref=e41]: Show Metrics
+              - generic [ref=e42]:
+                - generic [ref=e43]:
+                  - checkbox "Pitch Accuracy" [checked] [ref=e44]
+                  - generic [ref=e45]: Pitch Accuracy
+                - generic [ref=e46]:
+                  - checkbox "Expressiveness" [checked] [ref=e47]
+                  - generic [ref=e48]: Expressiveness
+                - generic [ref=e49]:
+                  - checkbox "Resonance" [checked] [ref=e50]
+                  - generic [ref=e51]: Resonance
+                - generic [ref=e52]:
+                  - checkbox "Safety" [checked] [ref=e53]
+                  - generic [ref=e54]: Safety
+        - generic [ref=e55]:
+          - region "Your Practice Summary" [ref=e56]:
+            - status [ref=e57]: "Progress summary: Last month — 52 safe sessions, 33 cooldowns, steady progress. Your consistent practice is paying off! Keep up the great work."
+            - heading "Your Practice Summary" [level=2] [ref=e58]
+            - paragraph [ref=e59]: Last month — 52 safe sessions, 33 cooldowns, steady progress
+            - paragraph [ref=e60]: Your consistent practice is paying off! Keep up the great work.
+            - generic [ref=e61]:
+              - generic [ref=e62]:
+                - generic [ref=e63]: "52"
+                - generic [ref=e64]: Sessions
+              - generic [ref=e65]:
+                - generic [ref=e66]: 4h 20m
+                - generic [ref=e67]: Practice Time
+              - generic [ref=e68]:
+                - generic [ref=e69]: 5 minutes
+                - generic [ref=e70]: Avg Session
+              - generic [ref=e71]:
+                - generic [ref=e72]: 🛡️
+                - generic [ref=e73]: Safety
+            - paragraph [ref=e75]: You have completed 52 practice sessions totaling 4h 20m of practice time. Your average session length is 5 minutes. Your safety trend is getting safer.
+          - 'img "Resonance visualization: 77% expressiveness, 100% strain" [ref=e77]'
+        - generic [ref=e82]:
+          - heading "Key Metrics" [level=2] [ref=e83]
+          - generic [ref=e84]:
+            - region "Pitch Accuracy" [ref=e85]:
+              - generic [ref=e86]:
+                - heading "Pitch Accuracy" [level=3] [ref=e87]
+                - generic [ref=e88]:
+                  - generic [ref=e89]: →
+                  - generic [ref=e90]: Stable
+              - generic [ref=e91]:
+                - generic [ref=e92]: 67.4%
+                - generic [ref=e93]:
+                  - text: "-6.5%"
+                  - generic [ref=e94]: (-8.7%)
+              - img "Pitch Accuracy trend over time" [ref=e96]:
+                - img [ref=e97]
+              - paragraph [ref=e129]: Percentage of time spent in target pitch range
+            - region "Expressiveness" [ref=e130]:
+              - generic [ref=e131]:
+                - heading "Expressiveness" [level=3] [ref=e132]
+                - generic [ref=e133]:
+                  - generic [ref=e134]: →
+                  - generic [ref=e135]: Stable
+              - generic [ref=e136]:
+                - generic [ref=e137]: "0.77"
+                - generic [ref=e138]:
+                  - text: "+0.26"
+                  - generic [ref=e139]: (+50.8%)
+              - img "Expressiveness trend over time" [ref=e141]:
+                - img [ref=e142]
+              - paragraph [ref=e174]: Variety and expressiveness in pitch delivery
+            - region "Resonance Balance" [ref=e175]:
+              - generic [ref=e176]:
+                - heading "Resonance Balance" [level=3] [ref=e177]
+                - generic [ref=e178]:
+                  - generic [ref=e179]: →
+                  - generic [ref=e180]: Stable
+              - generic [ref=e181]:
+                - generic [ref=e182]: 23.8%
+                - generic [ref=e183]:
+                  - text: "-15.1%"
+                  - generic [ref=e184]: (-38.9%)
+              - paragraph [ref=e185]: "Dominant resonance: central"
+        - region "Beta Success Metrics" [ref=e187]:
+          - generic [ref=e188]:
+            - heading "Beta Success Metrics" [level=2] [ref=e189]
+            - paragraph [ref=e190]: Track your engagement, comfort, and practice health over time.
+          - generic [ref=e191]:
+            - region "Retention" [ref=e192]:
+              - region "Retention" [ref=e193]:
+                - generic [ref=e194]:
+                  - heading "Retention" [level=3] [ref=e195]
+                  - generic [ref=e196]:
+                    - generic [ref=e197]: →
+                    - generic [ref=e198]: Stable
+                - generic [ref=e199]:
+                  - generic [ref=e200]: 100.0%
+                  - generic [ref=e201]:
+                    - text: +50.0%
+                    - generic [ref=e202]: (+100.0%)
+                - img "Retention trend over time" [ref=e204]:
+                  - img [ref=e205]
+                - paragraph [ref=e237]: Days with practice / days since first session
+              - generic [ref=e238]: Retention percentage calculated as days with at least one practice session divided by days since first session. Higher percentages indicate better habit formation.
+            - region "Comfort Level" [ref=e239]:
+              - generic [ref=e240]:
+                - heading "Comfort Level" [level=3] [ref=e241]
+                - generic [ref=e242]:
+                  - generic [ref=e243]: →
+                  - generic [ref=e244]: Stable
+              - generic [ref=e245]:
+                - generic [ref=e246]: "4.00"
+                - generic [ref=e247]:
+                  - text: "+1.67"
+                  - generic [ref=e248]: (+71.4%)
+              - img "Comfort Level trend over time" [ref=e250]:
+                - img [ref=e251]
+              - paragraph [ref=e283]: Average comfort rating (1-5 scale)
+            - region "Strain Health" [ref=e284]:
+              - generic [ref=e285]:
+                - heading "Strain Health" [level=3] [ref=e286]
+                - generic [ref=e287]:
+                  - generic [ref=e288]: 🔴
+                  - generic [ref=e289]: poor
+              - generic [ref=e290]:
+                - generic [ref=e291]:
+                  - text: "20.0"
+                  - generic [ref=e292]: per 100min
+                - generic [ref=e293]:
+                  - text: "+20.0"
+                  - generic [ref=e294]: from yesterday
+              - img "Strain rate trend over time" [ref=e296]:
+                - img [ref=e297]
+              - paragraph [ref=e329]: Strain events per 100 minutes of practice
+              - generic [ref=e330]: "Strain health measures vocal strain events normalized per 100 minutes of practice. Categories: Excellent (less than 10%), Good (10-25%), Moderate (25-50%), Poor (more than 50%). Lower values indicate safer practice patterns."
+            - region "Session Frequency" [ref=e331]:
+              - generic [ref=e332]:
+                - heading "Session Frequency" [level=3] [ref=e333]
+                - generic [ref=e334]:
+                  - generic [ref=e335]: →
+                  - generic [ref=e336]: Stable
+              - generic [ref=e337]:
+                - generic [ref=e338]: "1.00"
+                - generic [ref=e339]:
+                  - text: "-2.00"
+                  - generic [ref=e340]: (-66.7%)
+              - img "Session Frequency trend over time" [ref=e342]:
+                - img [ref=e343]
+              - paragraph [ref=e375]: Average sessions per week
+          - generic [ref=e376]:
+            - heading "Health Insights" [level=3] [ref=e377]
+            - generic [ref=e378]:
+              - generic [ref=e379]:
+                - heading "Comfort vs Fatigue" [level=4] [ref=e380]
+                - generic [ref=e381]:
+                  - generic [ref=e382]:
+                    - generic [ref=e383]: "Comfort:"
+                    - generic [ref=e384]: 4.0/5
+                  - generic [ref=e385]:
+                    - generic [ref=e386]: "Fatigue:"
+                    - generic [ref=e387]: 1.0/5
+                  - paragraph [ref=e389]: "Comfort level: Stable"
+              - generic [ref=e390]:
+                - heading "Practice Consistency" [level=4] [ref=e391]
+                - generic [ref=e392]:
+                  - generic [ref=e393]:
+                    - generic [ref=e394]: "Retention:"
+                    - generic [ref=e395]: 100.0%
+                  - generic [ref=e396]:
+                    - generic [ref=e397]: "Frequency:"
+                    - generic [ref=e398]: 1.0/week
+                  - paragraph [ref=e400]: "Retention trend: Stable"
+          - status [ref=e401]: "Beta metrics summary: 100% retention,4.0 comfort level,poor strain health,1.0 sessions per week."
+        - generic [ref=e402]:
+          - heading "Safety Timeline" [level=2] [ref=e403]
+          - generic [ref=e404]:
+            - heading "Safety Timeline" [level=3] [ref=e405]
+            - generic [ref=e406]:
+              - generic [ref=e407]:
+                - generic [ref=e408]: Aug 31
+                - generic [ref=e409]: 8 events
+              - generic [ref=e410]:
+                - generic [ref=e411]: Sep 7
+                - generic [ref=e412]: 9 events
+              - generic [ref=e413]:
+                - generic [ref=e414]: Sep 14
+                - generic [ref=e415]: 9 events
+              - generic [ref=e416]:
+                - generic [ref=e417]: Sep 21
+                - generic [ref=e418]: 6 events
+              - generic [ref=e419]:
+                - generic [ref=e420]: Sep 28
+                - generic [ref=e421]: 1 events
+            - generic [ref=e423]:
+              - generic [ref=e425]: Low risk
+              - generic [ref=e427]: Moderate risk
+              - generic [ref=e429]: High risk
+            - generic [ref=e431]:
+              - generic [ref=e432]:
+                - generic [ref=e433]: "33"
+                - generic [ref=e434]: Total Events
+              - generic [ref=e435]:
+                - generic [ref=e436]: 62.1%
+                - generic [ref=e437]: Avg Rate
+              - generic [ref=e438]:
+                - generic [ref=e439]: "20"
+                - generic [ref=e440]: Active Days
+        - generic [ref=e441]:
+          - heading "What This Means" [level=3] [ref=e442]
+          - generic [ref=e443]:
+            - generic [ref=e444]:
+              - strong [ref=e445]: "Pitch Accuracy:"
+              - text: Higher percentages mean you're spending more time in your target pitch range.
+            - generic [ref=e446]:
+              - strong [ref=e447]: "Expressiveness:"
+              - text: Higher values indicate more variety and natural expression in your voice.
+            - generic [ref=e448]:
+              - strong [ref=e449]: "Resonance Balance:"
+              - text: Shows which part of your vocal tract you're using most (front, central, or back).
+            - generic [ref=e450]:
+              - strong [ref=e451]: "Safety Timeline:"
+              - text: Tracks vocal strain events to help you practice safely and avoid injury.
+            - generic [ref=e452]:
+              - strong [ref=e453]: "Retention:"
+              - text: Shows how consistently you practice over time. Higher percentages indicate better habit formation.
+            - generic [ref=e454]:
+              - strong [ref=e455]: "Comfort Level:"
+              - text: Your subjective comfort rating during practice. Improving trends suggest better technique.
+            - generic [ref=e456]:
+              - strong [ref=e457]: "Strain Health:"
+              - text: Normalized strain rate per 100 minutes. Lower values indicate safer practice patterns.
+            - generic [ref=e458]:
+              - strong [ref=e459]: "Session Frequency:"
+              - text: Average sessions per week. Consistent frequency supports skill development.
+  - generic [ref=e460]:
+    - generic [ref=e461]: "SW: ✅"
+    - generic [ref=e462]: "COI: ✅"
+    - generic [ref=e463]: "SAB: ✅"
+  - alert [ref=e464]
+```

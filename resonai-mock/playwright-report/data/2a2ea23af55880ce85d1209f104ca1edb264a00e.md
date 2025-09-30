@@ -1,0 +1,97 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e4]:
+      - heading "Resonai" [level=1] [ref=e6]
+      - generic [ref=e7]:
+        - link "Home" [ref=e8] [cursor=pointer]:
+          - /url: /
+        - link "Listen" [ref=e9] [cursor=pointer]:
+          - /url: /listen
+        - link "Practice" [ref=e10] [cursor=pointer]:
+          - /url: /practice
+        - link "Progress" [ref=e11] [cursor=pointer]:
+          - /url: /progress
+        - link "Data Control" [ref=e12] [cursor=pointer]:
+          - /url: /data
+        - link "MEMX Labs" [ref=e13] [cursor=pointer]:
+          - /url: /labs/memx
+  - main [ref=e14]:
+    - generic [ref=e15]:
+      - status
+      - generic [ref=e18]:
+        - generic [ref=e19]:
+          - link "R Resonai" [ref=e20] [cursor=pointer]:
+            - /url: /
+            - generic [ref=e22] [cursor=pointer]: R
+            - generic [ref=e23] [cursor=pointer]: Resonai
+          - generic [ref=e24]: •
+          - generic [ref=e25]: Prosody Scenarios
+        - generic [ref=e26]:
+          - link "Practice" [ref=e27] [cursor=pointer]:
+            - /url: /practice
+          - link "Memory Labs" [ref=e28] [cursor=pointer]:
+            - /url: /labs/memx
+      - main [ref=e29]:
+        - generic [ref=e30]:
+          - heading "🎭 Applied Prosody Scenarios" [level=1] [ref=e31]
+          - paragraph [ref=e32]: Practice real-world scenarios with voicemail and meeting introductions. Get feedback on end-rise/fall patterns and expressiveness.
+        - generic [ref=e33]:
+          - generic [ref=e34]:
+            - generic [ref=e36]:
+              - generic [ref=e37]: Mock Mode
+              - button "Disable mock mode" [active] [ref=e38]
+            - generic [ref=e40]: "Progress: 0/2 scenarios"
+          - generic [ref=e43]: 0%
+        - generic [ref=e44]:
+          - generic [ref=e45]:
+            - status
+            - generic [ref=e46]:
+              - generic [ref=e47]:
+                - img "Voicemail Intro scenario" [ref=e48]: 🎯
+                - generic [ref=e49]:
+                  - heading "Voicemail Intro" [level=3] [ref=e50]
+                  - paragraph [ref=e51]: "Target: fall • Duration: 4s"
+              - generic [ref=e52]: Mock Mode
+            - generic [ref=e53]:
+              - paragraph [ref=e54]: "Practice phrase:"
+              - paragraph [ref=e55]: "\"Hi, this is [your name]. I'm calling about...\""
+            - button "Start Voicemail Intro scenario" [ref=e57]: Start Recording
+            - generic [ref=e60]: Ready
+          - generic [ref=e61]:
+            - status
+            - generic [ref=e62]:
+              - generic [ref=e63]:
+                - img "Meeting Intro scenario" [ref=e64]: 🎯
+                - generic [ref=e65]:
+                  - heading "Meeting Intro" [level=3] [ref=e66]
+                  - paragraph [ref=e67]: "Target: rise • Duration: 5s"
+              - generic [ref=e68]: Mock Mode
+            - generic [ref=e69]:
+              - paragraph [ref=e70]: "Practice phrase:"
+              - paragraph [ref=e71]: "\"Good morning everyone, thanks for joining today's call.\""
+            - button "Start Meeting Intro scenario" [ref=e73]: Start Recording
+            - generic [ref=e76]: Ready
+        - generic [ref=e77]:
+          - heading "💡 How to Use Prosody Scenarios" [level=3] [ref=e78]
+          - generic [ref=e79]:
+            - generic [ref=e80]:
+              - strong [ref=e81]: "🎤 Voicemail Intro:"
+              - text: Practice ending with a gentle fall for clear, confident statements.
+            - generic [ref=e82]:
+              - strong [ref=e83]: "🤝 Meeting Intro:"
+              - text: Practice ending with a slight rise to sound engaging and welcoming.
+            - generic [ref=e84]:
+              - strong [ref=e85]: "📊 Expressiveness:"
+              - text: Add pitch variety naturally - avoid exaggerated swoops.
+            - generic [ref=e86]:
+              - strong [ref=e87]: "🔄 Mock Mode:"
+              - text: Test the interface without microphone access.
+  - generic [ref=e88]:
+    - generic [ref=e89]: "SW: ✅"
+    - generic [ref=e90]: "COI: ✅"
+    - generic [ref=e91]: "SAB: ✅"
+  - alert [ref=e92]
+```

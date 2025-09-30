@@ -1,5 +1,4 @@
 import { test, expect } from '@playwright/test';
-import { logError, safeGet } from '../e2e/playwright-helpers';
 
 test.describe('MEMX Chromium Debug Tests', () => {
   test.beforeEach(async ({ page }) => {
@@ -134,10 +133,11 @@ test.describe('MEMX Chromium Debug Tests', () => {
           crossOriginIsolated: window.crossOriginIsolated
         };
       } catch (error) {
-        console.log('SharedArrayBuffer creation failed:', error);
+        const message = error instanceof Error ? error.message : String(error);
+        console.log('SharedArrayBuffer creation failed:', message);
         return { 
           success: false, 
-          error: error.message,
+          error: message,
           crossOriginIsolated: window.crossOriginIsolated
         };
       }
@@ -172,14 +172,15 @@ test.describe('MEMX Chromium Debug Tests', () => {
       // Check if we can access headers via fetch
       return fetch(window.location.href, { method: 'HEAD' })
         .then(response => {
-          const headers = {};
+          const headers: Record<string, string> = {};
           for (const [key, value] of response.headers.entries()) {
             headers[key] = value;
           }
           return { success: true, headers };
         })
         .catch(error => {
-          return { success: false, error: error.message };
+          const message = error instanceof Error ? error.message : String(error);
+          return { success: false, error: message };
         });
     });
     

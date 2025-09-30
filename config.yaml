@@ -62,6 +62,9 @@ processors:
       - key: deployment.env
         value: local
         action: upsert
+      - key: service.name
+        value: windows-collector
+        action: upsert
   transform/queue_attributes:
     log_statements:
       - context: log
@@ -69,6 +72,10 @@ processors:
           - set(resource.attributes["service.name"], "queue-steward") where attributes["log.file.path"] == "C:\\logs\\queue\\health.log"
           - set(attributes["log.source"], "win-filelog") where attributes["log.file.path"] == "C:\\logs\\queue\\health.log"
   batch/logs:
+    timeout: 200ms
+    send_batch_size: 128
+    send_batch_max_size: 256
+  batch/traces:
     timeout: 200ms
     send_batch_size: 128
     send_batch_max_size: 256
@@ -106,6 +113,15 @@ service:
         - resource/defaults
         - transform/queue_attributes
         - batch/logs
+      exporters:
+        - otlp
+    traces:
+      receivers:
+        - otlp
+      processors:
+        - memory_limiter
+        - resource/defaults
+        - batch/traces
       exporters:
         - otlp
 

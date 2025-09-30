@@ -363,6 +363,16 @@ function createMockDailyMetrics(date: string, overrides: Partial<AggregatedMetri
     bucketBias: { front: 0.4, central: 0.4, back: 0.2, dominant: 'front' },
     strainCount: 0,
     strainRate: 0,
+    betaMetrics: {
+      retentionPct: 0.8,
+      retentionTrend: 'stable',
+      comfortTrend: { mean: 4, median: 4, trend: 'stable' },
+      fatigueTrend: { mean: 2, median: 2, trend: 'stable' },
+      strainPer100Min: 0,
+      strainHealth: 'excellent',
+      sessionFrequency: 5,
+      frequencyTrend: 'stable'
+    },
     schemaVersion: 1,
     aggregatedAt: Date.now(),
     ...overrides

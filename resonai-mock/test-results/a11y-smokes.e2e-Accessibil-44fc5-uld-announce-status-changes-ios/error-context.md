@@ -1,0 +1,86 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e4]:
+      - heading "Resonai" [level=1] [ref=e6]
+      - generic [ref=e7]:
+        - link "Home" [ref=e8]:
+          - /url: /
+        - link "Listen" [ref=e9]:
+          - /url: /listen
+        - link "Practice" [ref=e10]:
+          - /url: /practice
+        - link "Progress" [ref=e11]:
+          - /url: /progress
+        - link "Data Control" [ref=e12]:
+          - /url: /data
+        - link "MEMX Labs" [ref=e13]:
+          - /url: /labs/memx
+  - main [ref=e14]:
+    - generic [ref=e15]:
+      - link "Skip to main content" [ref=e16]:
+        - /url: "#main-content"
+      - status [ref=e17]: Microphone ready to start, Audio engine standby, Analysis engine waiting
+      - generic [ref=e20]:
+        - link "R Resonai" [ref=e22]:
+          - /url: /
+          - generic [ref=e24]: R
+          - generic [ref=e25]: Resonai
+        - generic [ref=e26]:
+          - link "Practice Session" [ref=e27]:
+            - /url: /practice
+          - link "Memory Labs" [ref=e28]:
+            - /url: /labs/memx
+      - main [ref=e29]:
+        - generic [ref=e30]:
+          - heading "🎤 Voice Analysis" [level=1] [ref=e31]
+          - paragraph [ref=e32]: Real-time voice analysis with live pitch, energy, and formant tracking. Perfect for monitoring your voice characteristics and getting instant feedback.
+        - generic [ref=e33]:
+          - generic [ref=e34]:
+            - heading "Audio Pipeline" [level=2] [ref=e35]
+            - generic [ref=e36]:
+              - generic [ref=e37]:
+                - checkbox "Science Mode" [ref=e38]
+                - generic [ref=e39]: Science Mode
+              - button "Start voice analysis and begin recording" [disabled] [ref=e40]: 🎤 Start Analysis
+          - generic [ref=e41]:
+            - status [ref=e42]:
+              - generic [ref=e43]:
+                - generic [ref=e44]: 🎤
+                - generic [ref=e45]:
+                  - generic [ref=e46]: Microphone
+                  - generic [ref=e47]: Ready to Start
+            - status [ref=e48]:
+              - generic [ref=e49]:
+                - generic [ref=e50]: 🎵
+                - generic [ref=e51]:
+                  - generic [ref=e52]: Audio Engine
+                  - generic [ref=e53]: Standby
+            - status [ref=e54]:
+              - generic [ref=e55]:
+                - generic [ref=e56]: ⚡
+                - generic [ref=e57]:
+                  - generic [ref=e58]: Analysis Engine
+                  - generic [ref=e59]: Waiting
+        - generic [ref=e60]:
+          - heading "💡 How to Use Voice Analysis" [level=3] [ref=e61]
+          - generic [ref=e62]:
+            - generic [ref=e63]:
+              - strong [ref=e64]: "1. Start Analysis:"
+              - text: Click "Start Analysis" and allow microphone access when prompted.
+            - generic [ref=e65]:
+              - strong [ref=e66]: "2. Speak Normally:"
+              - text: Talk naturally - the system will analyze your voice in real-time.
+            - generic [ref=e67]:
+              - strong [ref=e68]: "3. Monitor Feedback:"
+              - text: Watch the live pitch and energy displays for instant feedback.
+            - generic [ref=e69]:
+              - strong [ref=e70]: "4. Science Mode:"
+              - text: Enable for detailed technical information and advanced metrics.
+  - generic [ref=e71]:
+    - generic [ref=e72]: "SW: ❌"
+    - generic [ref=e73]: "COI: ❌"
+    - generic [ref=e74]: "SAB: ❌"
+```
