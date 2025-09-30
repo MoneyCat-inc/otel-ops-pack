@@ -1,0 +1,269 @@
+/*!*************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[12].oneOf[12].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[12].oneOf[12].use[3]!./app/globals.css ***!
+  \*************************************************************************************************************************************************************************************************************************************************************/
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* MEMX Demo Styles */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Accessibility - Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  /* Motion-safe utility class */
+  .motion-safe {
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  /* Specific animation overrides */
+  .animate-spin {
+    animation: none !important;
+  }
+  
+  .animate-pulse {
+    animation: none !important;
+  }
+  
+  .animate-bounce {
+    animation: none !important;
+  }
+  
+  /* Progress ring animations */
+  [style*="transition"] {
+    transition: none !important;
+  }
+  
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: auto !important;
+  }
+}
+
+/* MEMX HUD styles (for future PR-3) */
+.memx-hud {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 12px;
+  border-radius: 8px;
+  font-family: monospace;
+  font-size: 12px;
+  z-index: 1000;
+  -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: blur(10px);
+}
+
+.memx-hud .metric {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.memx-hud .metric:last-child {
+  margin-bottom: 0;
+}
+
+.memx-hud .value {
+  color: #4ade80; /* green-400 */
+}
+
+.memx-hud .value.warning {
+  color: #fbbf24; /* amber-400 */
+}
+
+.memx-hud .value.error {
+  color: #f87171; /* red-400 */
+}
+
+/* Progress bar utilities for CSP compliance */
+.progress-bar {
+  @apply h-2 rounded-full transition-all duration-300;
+}
+
+.progress-bar-blue {
+  @apply bg-blue-600;
+}
+
+.progress-bar-green {
+  @apply bg-green-500;
+}
+
+.progress-bar-yellow {
+  @apply bg-yellow-500;
+}
+
+.progress-bar-red {
+  @apply bg-red-500;
+}
+
+/* Dynamic width classes */
+.progress-0 { width: 0%; }
+.progress-5 { width: 5%; }
+.progress-10 { width: 10%; }
+.progress-15 { width: 15%; }
+.progress-20 { width: 20%; }
+.progress-25 { width: 25%; }
+.progress-30 { width: 30%; }
+.progress-35 { width: 35%; }
+.progress-40 { width: 40%; }
+.progress-45 { width: 45%; }
+.progress-50 { width: 50%; }
+.progress-55 { width: 55%; }
+.progress-60 { width: 60%; }
+.progress-65 { width: 65%; }
+.progress-70 { width: 70%; }
+.progress-75 { width: 75%; }
+.progress-80 { width: 80%; }
+.progress-85 { width: 85%; }
+.progress-90 { width: 90%; }
+.progress-95 { width: 95%; }
+.progress-100 { width: 100%; }
+
+/* OrbV2 Component Styles - CSP Compliant */
+.orb-v2 {
+  position: relative;
+  width: clamp(120px, 24vw, 240px);
+  aspect-ratio: 1/1;
+  border-radius: 9999px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.orb-v2-main {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.orb-v2-shimmer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 50%;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 70%
+  );
+  opacity: 0.4;
+}
+
+.orb-v2-pulse {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  opacity: 0.6;
+}
+
+.orb-v2-glow {
+  position: absolute;
+  top: 20%;
+  left: 20%;
+  width: 60%;
+  height: 60%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.2),
+    transparent 70%
+  );
+}
+
+/* Discrete hue buckets - Blue to Purple spectrum */
+.orb-v2--h0  { background: radial-gradient(circle at 30% 30%, #5ecbff 0%, #7c5cff 60%, #2a155a 100%); }
+.orb-v2--h1  { background: radial-gradient(circle at 30% 30%, #53c2ff 0%, #765eff 60%, #2a155a 100%); }
+.orb-v2--h2  { background: radial-gradient(circle at 30% 30%, #49b9ff 0%, #6f61ff 60%, #2a155a 100%); }
+.orb-v2--h3  { background: radial-gradient(circle at 30% 30%, #3eb0ff 0%, #6863ff 60%, #2a155a 100%); }
+.orb-v2--h4  { background: radial-gradient(circle at 30% 30%, #33a7ff 0%, #6165ff 60%, #2a155a 100%); }
+.orb-v2--h5  { background: radial-gradient(circle at 30% 30%, #289eff 0%, #5a67ff 60%, #2a155a 100%); }
+.orb-v2--h6  { background: radial-gradient(circle at 30% 30%, #1d95ff 0%, #5369ff 60%, #2a155a 100%); }
+.orb-v2--h7  { background: radial-gradient(circle at 30% 30%, #128cff 0%, #4c6bff 60%, #2a155a 100%); }
+.orb-v2--h8  { background: radial-gradient(circle at 30% 30%, #0783ff 0%, #456dff 60%, #2a155a 100%); }
+.orb-v2--h9  { background: radial-gradient(circle at 30% 30%, #007aff 0%, #3e6fff 60%, #2a155a 100%); }
+.orb-v2--h10 { background: radial-gradient(circle at 30% 30%, #0071ff 0%, #3771ff 60%, #2a155a 100%); }
+.orb-v2--h11 { background: radial-gradient(circle at 30% 30%, #0068ff 0%, #3073ff 60%, #2a155a 100%); }
+
+/* Resonance bucket classes */
+.orb-v2--front   { background: radial-gradient(circle at 30% 30%, #69eaff 0%, #7c5cff 60%, #2a155a 100%); }
+.orb-v2--central { background: radial-gradient(circle at 30% 30%, #7dc8ff 0%, #7c5cff 60%, #2a155a 100%); }
+.orb-v2--back    { background: radial-gradient(circle at 30% 30%, #a3a5ff 0%, #7c5cff 60%, #2a155a 100%); }
+
+/* Motion-safe animations */
+@media (prefers-reduced-motion: no-preference) {
+  .orb-v2__shimmer {
+    animation: orbShimmer 4s linear infinite;
+  }
+  .orb-v2__pulse--strain {
+    animation: orbPulse 1.8s ease-in-out infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orb-v2__shimmer,
+  .orb-v2__pulse--strain { 
+    animation: none !important; 
+  }
+  .orb-v2__shimmer {
+    opacity: 0.5;
+    transform: rotate(45deg);
+  }
+  .orb-v2__pulse--strain {
+    opacity: 0.6;
+    transform: scale(1.02);
+  }
+}
+
+/* Orb Animations */
+@keyframes orbShimmer {
+  0% { filter: brightness(1) rotate(0deg); }
+  50% { filter: brightness(1.07) rotate(180deg); }
+  100% { filter: brightness(1) rotate(360deg); }
+}
+
+@keyframes orbPulse {
+  0%, 100% { 
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(255, 86, 86, 0.35);
+  }
+  50% { 
+    transform: scale(1.05);
+    box-shadow: 0 0 24px 12px rgba(255, 86, 86, 0.15);
+  }
+}
+
+/* Focus styles for keyboard navigation */
+.orb-v2:focus-visible {
+  outline: 2px solid #7c5cff;
+  outline-offset: 4px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .orb-v2-main {
+    border: 2px solid #000;
+  }
+  .orb-v2-pulse {
+    border-color: #000;
+  }
+}

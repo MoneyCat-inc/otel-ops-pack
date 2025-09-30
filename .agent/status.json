@@ -1,10 +1,22 @@
 {
-  "timestamp": "2025-09-30T02:28:03.967Z",
-  "queueDepth": 21,
+  "timestamp": "2025-09-30T02:34:39.381Z",
+  "queueDepth": 0,
   "runningCount": 0,
-  "lastRuns": [],
-  "admissionCap": 10,
+  "lastRuns": [
+    {
+      "id": "job_1759199482273_0l0khueyw",
+      "kind": "bulk-job",
+      "status": "completed",
+      "durationMs": 21
+    },
+    {
+      "id": "job_1759199482276_33z92yfy6",
+      "kind": "bulk-job",
+      "status": "completed",
+      "durationMs": 15
+    }
+  ],
+  "admissionCap": 200,
   "shadowMode": true,
-  "driver": "sqlite",
-  "lockPresent": false
+  "driver": "sqlite"
 }

@@ -1,0 +1,14 @@
+{
+  "jobId": "job_1759199422141_zxdtlc60k",
+  "kind": "slow-job",
+  "timestamp": "2025-09-30T02:34:13.753Z",
+  "result": {
+    "success": true,
+    "metrics": {
+      "duration_ms": 2012,
+      "memory_mb": 113,
+      "cpu_percent": 19,
+      "retry_count": -1
+    }
+  }
+}

@@ -45,6 +45,18 @@ This file contains a chronological log of all significant actions taken by the c
 - [x] Metrics exported to SigNoz: queue_depth, running, p95_job_ms, failures_total visible in ClickHouse
 - [x] All safety rails respected: local-first only, SSOT markers unchanged, canonical artifacts untouched
 
+`WORKING` 2025-01-30 16:45:00 – PR-C: Offline Cross-Origin Isolation (SW shim) + Playwright (In Progress)
+- [x] Enhanced Service Worker (`public/sw.js`) with passthrough header preservation logic
+- [x] Added feature flag `self.COOP_COEP_ENFORCED = true` for COOP/COEP enforcement
+- [x] Implemented `preserveOrAddCriticalHeaders()` function to preserve existing headers while adding missing ones
+- [x] Updated fetch event handler to use passthrough approach (preserve online headers, enhance offline responses)
+- [x] Created comprehensive Playwright test suite (`tests/e2e/isolation_offline.spec.ts`) for offline isolation
+- [x] Tests include: offline isolation maintenance, AudioWorklet loading, mixed online/offline scenarios
+- [x] Existing isolation headers tests still pass (online functionality verified)
+- [ ] Service Worker registration issues identified - tests timing out waiting for SW controller
+- [ ] Need to investigate SW registration failure and fix offline functionality
+- [ ] All safety rails respected: local-first only, CSP/COOP/COEP maintained, no real-time audio changes
+
 
 `FINISHED` 2025-01-27 23:50:00 – PR-D: Flip from Shadow to Canonical Writes (Complete)
 - Created shadow vs canonical verification system (`scripts/agent/verify-shadow-canonical.ts`)

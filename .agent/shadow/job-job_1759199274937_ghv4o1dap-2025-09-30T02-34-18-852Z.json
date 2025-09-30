@@ -1,0 +1,9 @@
+{
+  "jobId": "job_1759199274937_ghv4o1dap",
+  "kind": "failing-job",
+  "timestamp": "2025-09-30T02:34:18.852Z",
+  "result": {
+    "success": false,
+    "error": "Simulated failure for testing retry logic"
+  }
+}

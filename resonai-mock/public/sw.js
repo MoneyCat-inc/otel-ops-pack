@@ -1,10 +1,13 @@
 /**
- * Service Worker - Offline Isolation Support
+ * Service Worker - Offline Cross-Origin Isolation Support
  * 
- * T4: Offline Isolation
+ * PR-C: Offline COOP/COEP via SW + Playwright
  * Ensures cross-origin isolation headers are preserved when serving
- * offline content. Critical for Firefox SharedArrayBuffer support.
+ * offline content. Critical for SharedArrayBuffer and AudioWorklet support.
  */
+
+// Feature flag for COOP/COEP enforcement
+self.COOP_COEP_ENFORCED = true;
 
 const CACHE_NAME = 'resonai-offline-v1';
 const OFFLINE_PAGES = [
@@ -28,35 +31,57 @@ const CRITICAL_HEADERS = [
   'X-Frame-Options'
 ];
 
-// Helper function to ensure critical headers are present
-function ensureCriticalHeaders(headers) {
+// Helper function to preserve or add critical headers (passthrough approach)
+function preserveOrAddCriticalHeaders(headers) {
   const newHeaders = new Headers(headers);
   
-  // Set critical headers for cross-origin isolation
-  newHeaders.set('Cross-Origin-Opener-Policy', 'same-origin');
-  newHeaders.set('Cross-Origin-Embedder-Policy', 'require-corp');
-  newHeaders.set('Cross-Origin-Resource-Policy', 'cross-origin');
-  newHeaders.set('Permissions-Policy', 'cross-origin-isolated=()');
-  newHeaders.set('X-Content-Type-Options', 'nosniff');
-  newHeaders.set('Referrer-Policy', 'strict-origin-when-cross-origin');
-  newHeaders.set('X-Frame-Options', 'SAMEORIGIN');
+  // Only add headers if they don't already exist (preserve existing ones)
+  if (!newHeaders.has('Cross-Origin-Opener-Policy')) {
+    newHeaders.set('Cross-Origin-Opener-Policy', 'same-origin');
+  }
   
-  // Set CSP for offline mode
-  newHeaders.set('Content-Security-Policy', [
-    "default-src 'self'",
-    "script-src 'self'",
-    "style-src 'self'",
-    "img-src 'self' data: https: blob:",
-    "font-src 'self'",
-    "connect-src 'self' blob:",
-    "worker-src 'self' blob:",
-    "child-src 'self' blob:",
-    "frame-ancestors 'none'",
-    "object-src 'none'",
-    "base-uri 'self'",
-    "form-action 'self'",
-    "upgrade-insecure-requests"
-  ].join('; '));
+  if (!newHeaders.has('Cross-Origin-Embedder-Policy')) {
+    newHeaders.set('Cross-Origin-Embedder-Policy', 'require-corp');
+  }
+  
+  if (!newHeaders.has('Cross-Origin-Resource-Policy')) {
+    newHeaders.set('Cross-Origin-Resource-Policy', 'cross-origin');
+  }
+  
+  if (!newHeaders.has('Permissions-Policy')) {
+    newHeaders.set('Permissions-Policy', 'cross-origin-isolated=()');
+  }
+  
+  if (!newHeaders.has('X-Content-Type-Options')) {
+    newHeaders.set('X-Content-Type-Options', 'nosniff');
+  }
+  
+  if (!newHeaders.has('Referrer-Policy')) {
+    newHeaders.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  }
+  
+  if (!newHeaders.has('X-Frame-Options')) {
+    newHeaders.set('X-Frame-Options', 'SAMEORIGIN');
+  }
+  
+  // Only set CSP if it doesn't exist (preserve server-set CSP)
+  if (!newHeaders.has('Content-Security-Policy')) {
+    newHeaders.set('Content-Security-Policy', [
+      "default-src 'self'",
+      "script-src 'self'",
+      "style-src 'self'",
+      "img-src 'self' data: https: blob:",
+      "font-src 'self'",
+      "connect-src 'self' blob:",
+      "worker-src 'self' blob:",
+      "child-src 'self' blob:",
+      "frame-ancestors 'none'",
+      "object-src 'none'",
+      "base-uri 'self'",
+      "form-action 'self'",
+      "upgrade-insecure-requests"
+    ].join('; '));
+  }
   
   return newHeaders;
 }
@@ -101,7 +126,7 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Fetch event - serve from cache with preserved headers
+// Fetch event - serve from cache with preserved headers (passthrough approach)
 self.addEventListener('fetch', (event) => {
   // Handle navigation requests and critical resources
   if (event.request.mode !== 'navigate' && 
@@ -115,7 +140,7 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     fetch(event.request)
       .then((response) => {
-        // If online, cache the response and return it
+        // If online, preserve original response headers and cache it
         if (response.status === 200) {
           const responseClone = response.clone();
           caches.open(CACHE_NAME)
@@ -123,17 +148,18 @@ self.addEventListener('fetch', (event) => {
               cache.put(event.request, responseClone);
             });
         }
+        // Return original response with original headers (passthrough)
         return response;
       })
       .catch(() => {
-        // If offline, serve from cache with preserved headers
+        // If offline, serve from cache with preserved/added headers
         return caches.match(event.request)
           .then((cachedResponse) => {
             if (cachedResponse) {
               console.log('Service Worker: Serving offline page:', event.request.url);
               
-              // Create a new response with preserved headers
-              const headers = ensureCriticalHeaders(cachedResponse.headers);
+              // Create a new response with preserved/added headers
+              const headers = preserveOrAddCriticalHeaders(cachedResponse.headers);
               
               return new Response(cachedResponse.body, {
                 status: cachedResponse.status,
@@ -148,8 +174,8 @@ self.addEventListener('fetch', (event) => {
                 if (offlinePage) {
                   console.log('Service Worker: Serving offline fallback page');
                   
-                  // Create response with headers for offline page
-                  const headers = ensureCriticalHeaders(offlinePage.headers);
+                  // Create response with preserved/added headers for offline page
+                  const headers = preserveOrAddCriticalHeaders(offlinePage.headers);
                   
                   return new Response(offlinePage.body, {
                     status: 200,
@@ -176,12 +202,12 @@ self.addEventListener('fetch', (event) => {
                 
                 const headers = new Headers();
                 headers.set('Content-Type', 'text/html');
-                ensureCriticalHeaders(headers);
+                const enhancedHeaders = preserveOrAddCriticalHeaders(headers);
                 
                 return new Response(offlinePageContent, {
                   status: 200,
                   statusText: 'OK',
-                  headers: headers
+                  headers: enhancedHeaders
                 });
               });
           });
