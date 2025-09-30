@@ -266,7 +266,7 @@ export default function CohortLogPage() {
         </div>
 
         {/* Enabled Features */}
-        {stats?.enabledFeatures.length > 0 && (
+        {stats?.enabledFeatures?.length && stats.enabledFeatures.length > 0 && (
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
             <h3 className="text-lg font-medium text-gray-900 mb-4">Enabled Features</h3>
             <div className="flex flex-wrap gap-2">
