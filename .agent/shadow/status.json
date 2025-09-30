@@ -16,5 +16,8 @@
   },
   "runningJobs": [],
   "queueDepth": 0,
-  "recentRuns": []
+  "recentRuns": [],
+  "lastProcessed": "job_1759199252996_os371osbc",
+  "lastProcessedAt": "2025-09-30T02:27:35.056Z",
+  "totalProcessed": 4
 }

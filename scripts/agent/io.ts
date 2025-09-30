@@ -1,231 +1,287 @@
 /**
- * Idempotent IO utilities for agent operations
- * Provides atomic file operations and JSON upsert helpers
+ * Idempotent IO Helpers for Agent Queue
+ * 
+ * Provides atomic file operations and JSON merge utilities
+ * to prevent race conditions and ensure data consistency.
  */
 
-import { writeFileSync, readFileSync, existsSync, mkdirSync } from 'fs';
+import { promises as fs } from 'fs';
 import { dirname, join } from 'path';
 import { createHash } from 'crypto';
 
-export interface AtomicWriteOptions {
-  backup?: boolean;
-  createDir?: boolean;
+export interface JsonUpsertOptions {
+  /** Key selector function to determine uniqueness */
+  keySelector: (item: any) => string | number;
+  /** Whether to preserve existing items (true) or replace them (false) */
+  preserveExisting?: boolean;
+  /** Maximum number of items to keep (for rotation) */
+  maxItems?: number;
 }
 
-export function writeFileAtomicIfChanged(
-  filePath: string, 
-  content: string, 
-  options: AtomicWriteOptions = {}
-): boolean {
-  const { backup = false, createDir = true } = options;
-  
-  try {
-    // Ensure directory exists
-    if (createDir) {
-      const dir = dirname(filePath);
-      if (!existsSync(dir)) {
-        mkdirSync(dir, { recursive: true });
-      }
-    }
-    
-    // Check if file exists and content is the same
-    if (existsSync(filePath)) {
-      const existingContent = readFileSync(filePath, 'utf8');
-      if (existingContent === content) {
-        return false; // No change needed
-      }
-      
-      // Create backup if requested
-      if (backup) {
-        const backupPath = `${filePath}.backup.${Date.now()}`;
-        writeFileSync(backupPath, existingContent, 'utf8');
-      }
-    }
-    
-    // Write new content
-    writeFileSync(filePath, content, 'utf8');
-    return true; // File was written
-    
-  } catch (error) {
-    console.error(`Failed to write file ${filePath}:`, error);
-    throw error;
-  }
-}
-
-export function jsonUpsert<T extends Record<string, any>>(
+/**
+ * Write file atomically only if content has changed
+ * Uses a temporary file + rename for atomicity
+ */
+export async function writeFileAtomicIfChanged(
   filePath: string,
-  key: string,
-  value: any,
-  options: AtomicWriteOptions = {}
-): boolean {
+  content: Buffer | string,
+  options: { encoding?: BufferEncoding; mode?: number } = {}
+): Promise<{ written: boolean; hash: string }> {
+  const { encoding = 'utf8', mode } = options;
+  const contentBuffer = Buffer.isBuffer(content) ? content : Buffer.from(content, encoding);
+  const newHash = createHash('sha256').update(contentBuffer).digest('hex');
+
   try {
-    let data: Record<string, any> = {};
+    // Read existing file and compare hash
+    const existingBuffer = await fs.readFile(filePath);
+    const existingHash = createHash('sha256').update(existingBuffer).digest('hex');
+
+    if (existingHash === newHash) {
+      return { written: false, hash: newHash };
+    }
+  } catch (error) {
+    // File doesn't exist, which is fine - we'll create it
+  }
+
+  // Ensure directory exists
+  await fs.mkdir(dirname(filePath), { recursive: true });
+
+  // Write to temporary file first
+  const tempPath = `${filePath}.tmp.${Date.now()}.${Math.random().toString(36).substr(2, 9)}`;
+  
+  try {
+    await fs.writeFile(tempPath, contentBuffer, { mode });
     
-    // Read existing data
-    if (existsSync(filePath)) {
-      const content = readFileSync(filePath, 'utf8');
+    // For Windows, use copy + unlink instead of rename for better compatibility
+    try {
+      // Try atomic rename first
+      await fs.rename(tempPath, filePath);
+    } catch (renameError) {
+      // If rename fails (common on Windows), use copy + unlink
       try {
-        data = JSON.parse(content);
-      } catch {
-        // If JSON is invalid, start fresh
-        data = {};
+        await fs.copyFile(tempPath, filePath);
+        await fs.unlink(tempPath);
+      } catch (copyError) {
+        // Clean up temp file
+        await fs.unlink(tempPath);
+        throw copyError;
       }
     }
     
-    // Update the key
-    data[key] = value;
-    
-    // Write back
-    const newContent = JSON.stringify(data, null, 2);
-    return writeFileAtomicIfChanged(filePath, newContent, options);
-    
+    return { written: true, hash: newHash };
   } catch (error) {
-    console.error(`Failed to upsert JSON ${filePath}:`, error);
+    // Clean up temp file on error
+    try {
+      await fs.unlink(tempPath);
+    } catch {
+      // Ignore cleanup errors
+    }
     throw error;
   }
 }
 
-export function jsonArrayAppend<T>(
+/**
+ * JSON upsert - merge new items into existing JSON array without duplicates
+ */
+export async function jsonUpsert<T>(
   filePath: string,
-  item: T,
-  options: AtomicWriteOptions = {}
-): boolean {
+  newItems: T[],
+  options: JsonUpsertOptions
+): Promise<{ added: number; total: number }> {
+  const { keySelector, preserveExisting = true, maxItems } = options;
+
+  let existingItems: T[] = [];
+
   try {
-    let array: T[] = [];
+    const content = await fs.readFile(filePath, 'utf8');
+    existingItems = JSON.parse(content);
     
-    // Read existing array
-    if (existsSync(filePath)) {
-      const content = readFileSync(filePath, 'utf8');
-      try {
-        array = JSON.parse(content);
-        if (!Array.isArray(array)) {
-          array = [];
-        }
-      } catch {
-        array = [];
-      }
+    if (!Array.isArray(existingItems)) {
+      throw new Error(`Expected array in ${filePath}, got ${typeof existingItems}`);
     }
-    
-    // Append item
-    array.push(item);
-    
-    // Write back
-    const newContent = JSON.stringify(array, null, 2);
-    return writeFileAtomicIfChanged(filePath, newContent, options);
-    
   } catch (error) {
-    console.error(`Failed to append to JSON array ${filePath}:`, error);
-    throw error;
+    // File doesn't exist or is invalid - start with empty array
+    existingItems = [];
   }
-}
 
-export function getContentHash(content: string): string {
-  return createHash('sha256').update(content).digest('hex').substring(0, 16);
-}
+  // Create a map of existing items by key
+  const existingMap = new Map<string | number, T>();
+  existingItems.forEach(item => {
+    const key = keySelector(item);
+    existingMap.set(key, item);
+  });
 
-export function ensureShadowPath(canonicalPath: string): string {
-  // Convert canonical path to shadow path
-  // .agent/status.json -> .agent/shadow/status.json
-  if (canonicalPath.startsWith('.agent/')) {
-    return canonicalPath.replace('.agent/', '.agent/shadow/');
-  }
-  
-  // For other paths, create shadow directory structure
-  const parts = canonicalPath.split('/');
-  parts.splice(-1, 0, 'shadow');
-  return parts.join('/');
-}
-
-export function writeShadowArtifact(
-  canonicalPath: string,
-  content: string,
-  options: AtomicWriteOptions = {}
-): boolean {
-  const shadowPath = ensureShadowPath(canonicalPath);
-  return writeFileAtomicIfChanged(shadowPath, content, options);
-}
-
-export function readShadowArtifact(canonicalPath: string): string | null {
-  const shadowPath = ensureShadowPath(canonicalPath);
-  
-  if (!existsSync(shadowPath)) {
-    return null;
-  }
-  
-  try {
-    return readFileSync(shadowPath, 'utf8');
-  } catch (error) {
-    console.error(`Failed to read shadow artifact ${shadowPath}:`, error);
-    return null;
-  }
-}
-
-export function compareShadowVsCanonical(canonicalPath: string): {
-  identical: boolean;
-  canonicalExists: boolean;
-  shadowExists: boolean;
-  differences?: string[];
-} {
-  const shadowPath = ensureShadowPath(canonicalPath);
-  
-  const canonicalExists = existsSync(canonicalPath);
-  const shadowExists = existsSync(shadowPath);
-  
-  if (!canonicalExists && !shadowExists) {
-    return { identical: true, canonicalExists: false, shadowExists: false };
-  }
-  
-  if (!canonicalExists || !shadowExists) {
-    return { 
-      identical: false, 
-      canonicalExists, 
-      shadowExists,
-      differences: ['One file missing']
-    };
-  }
-  
-  try {
-    const canonicalContent = readFileSync(canonicalPath, 'utf8');
-    const shadowContent = readFileSync(shadowPath, 'utf8');
+  // Merge new items
+  let addedCount = 0;
+  newItems.forEach(newItem => {
+    const key = keySelector(newItem);
     
-    const identical = canonicalContent === shadowContent;
-    
-    if (identical) {
-      return { identical: true, canonicalExists: true, shadowExists: true };
+    if (!existingMap.has(key)) {
+      existingMap.set(key, newItem);
+      addedCount++;
+    } else if (!preserveExisting) {
+      existingMap.set(key, newItem);
     }
-    
-    // Find differences
-    const differences: string[] = [];
-    const canonicalLines = canonicalContent.split('\n');
-    const shadowLines = shadowContent.split('\n');
-    
-    const maxLines = Math.max(canonicalLines.length, shadowLines.length);
-    
-    for (let i = 0; i < maxLines; i++) {
-      const canonicalLine = canonicalLines[i] || '';
-      const shadowLine = shadowLines[i] || '';
+  });
+
+  // Convert back to array
+  const mergedItems = Array.from(existingMap.values());
+
+  // Apply max items limit if specified
+  const finalItems = maxItems && mergedItems.length > maxItems 
+    ? mergedItems.slice(-maxItems) 
+    : mergedItems;
+
+  // Write back to file atomically
+  const content = JSON.stringify(finalItems, null, 2);
+  await writeFileAtomicIfChanged(filePath, content);
+
+  return {
+    added: addedCount,
+    total: finalItems.length
+  };
+}
+
+/**
+ * Read JSON file with fallback to default value
+ */
+export async function readJsonFile<T>(
+  filePath: string,
+  defaultValue: T
+): Promise<T> {
+  try {
+    const content = await fs.readFile(filePath, 'utf8');
+    return JSON.parse(content);
+  } catch (error) {
+    return defaultValue;
+  }
+}
+
+/**
+ * Ensure directory exists
+ */
+export async function ensureDir(dirPath: string): Promise<void> {
+  try {
+    await fs.mkdir(dirPath, { recursive: true });
+  } catch (error) {
+    if ((error as any).code !== 'EEXIST') {
+      throw error;
+    }
+  }
+}
+
+/**
+ * Get file size in bytes
+ */
+export async function getFileSize(filePath: string): Promise<number> {
+  try {
+    const stats = await fs.stat(filePath);
+    return stats.size;
+  } catch (error) {
+    return 0;
+  }
+}
+
+/**
+ * Check if file exists
+ */
+export async function fileExists(filePath: string): Promise<boolean> {
+  try {
+    await fs.access(filePath);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
+/**
+ * List files in directory with optional pattern
+ */
+export async function listFiles(
+  dirPath: string,
+  pattern?: RegExp
+): Promise<string[]> {
+  try {
+    const entries = await fs.readdir(dirPath, { withFileTypes: true });
+    const files = entries
+      .filter(entry => entry.isFile())
+      .map(entry => entry.name);
+
+    if (pattern) {
+      return files.filter(file => pattern.test(file));
+    }
+
+    return files;
+  } catch (error) {
+    return [];
+  }
+}
+
+/**
+ * Clean up old files based on age or count
+ */
+export async function cleanupOldFiles(
+  dirPath: string,
+  options: {
+    maxAge?: number; // milliseconds
+    maxCount?: number;
+    pattern?: RegExp;
+  }
+): Promise<number> {
+  const { maxAge, maxCount, pattern } = options;
+  
+  try {
+    const files = await listFiles(dirPath, pattern);
+    const fileInfos = await Promise.all(
+      files.map(async (file) => {
+        const filePath = join(dirPath, file);
+        const stats = await fs.stat(filePath);
+        return {
+          name: file,
+          path: filePath,
+          mtime: stats.mtime.getTime(),
+          size: stats.size
+        };
+      })
+    );
+
+    // Sort by modification time (oldest first)
+    fileInfos.sort((a, b) => a.mtime - b.mtime);
+
+    let toDelete: string[] = [];
+    const now = Date.now();
+
+    // Filter by age
+    if (maxAge) {
+      toDelete = fileInfos
+        .filter(info => now - info.mtime > maxAge)
+        .map(info => info.path);
+    }
+
+    // Filter by count
+    if (maxCount && fileInfos.length > maxCount) {
+      const excessCount = fileInfos.length - maxCount;
+      const excessFiles = fileInfos
+        .slice(0, excessCount)
+        .map(info => info.path);
       
-      if (canonicalLine !== shadowLine) {
-        differences.push(`Line ${i + 1}: canonical="${canonicalLine}" shadow="${shadowLine}"`);
+      toDelete = [...new Set([...toDelete, ...excessFiles])];
+    }
+
+    // Delete files
+    let deletedCount = 0;
+    for (const filePath of toDelete) {
+      try {
+        await fs.unlink(filePath);
+        deletedCount++;
+      } catch (error) {
+        console.warn(`Failed to delete ${filePath}:`, error);
       }
     }
-    
-    return {
-      identical: false,
-      canonicalExists: true,
-      shadowExists: true,
-      differences: differences.slice(0, 10) // Limit to first 10 differences
-    };
-    
+
+    return deletedCount;
   } catch (error) {
-    return {
-      identical: false,
-      canonicalExists: true,
-      shadowExists: true,
-      differences: [`Error comparing files: ${error}`]
-    };
+    console.warn(`Failed to cleanup files in ${dirPath}:`, error);
+    return 0;
   }
 }
-
-
-

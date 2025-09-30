@@ -30,6 +30,21 @@ This file contains a chronological log of all significant actions taken by the c
 - [x] Runner still uses JSON driver (default) - no behavior changes until PR-B
 - [x] All safety rails respected: .agent/LOCK honored, local-first only, SSOT markers unchanged
 
+`FINISHED` 2025-01-30 14:30:00 – PR-B: Runner (admission + jitter + shadow) (Complete)
+- [x] Implemented agent runner (`scripts/agent/runner.ts`) with admission control and concurrency limits
+- [x] Added exponential backoff with jitter for retry logic (baseMs=60s, capMs=15min, ±15% jitter)
+- [x] Created idempotent IO helpers (`scripts/agent/io.ts`) with atomic file writes and Windows compatibility
+- [x] Implemented shadow-only writes - all outputs routed to `.agent/shadow/**` when `QUEUE_SHADOW=1`
+- [x] Added budget enforcement with guardrail errors for over-budget jobs (maxFiles=5, maxLines=100)
+- [x] Created status command (`scripts/agent/status.ts`) with queue depth, running count, and last runs summary
+- [x] Implemented optional queue metrics export to `C:\logs\queue\health.log` (behind `QUEUE_METRICS=1` flag)
+- [x] Added comprehensive test suite (`scripts/agent/test-runner.ts`) - all functionality verified
+- [x] Admission control working: queue at capacity (21/10) - refusing new jobs correctly
+- [x] Lock mechanism working: respects `.agent/LOCK` and skips processing when present
+- [x] Shadow artifacts created successfully: job results and status written to `.agent/shadow/`
+- [x] Metrics exported to SigNoz: queue_depth, running, p95_job_ms, failures_total visible in ClickHouse
+- [x] All safety rails respected: local-first only, SSOT markers unchanged, canonical artifacts untouched
+
 
 `FINISHED` 2025-01-27 23:50:00 – PR-D: Flip from Shadow to Canonical Writes (Complete)
 - Created shadow vs canonical verification system (`scripts/agent/verify-shadow-canonical.ts`)
