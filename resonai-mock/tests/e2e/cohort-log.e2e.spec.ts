@@ -6,6 +6,7 @@
  */
 
 import { test, expect } from '@playwright/test';
+import { getApiUrl } from '../e2e/playwright-helpers';
 
 test.describe('Cohort Log UI', () => {
   test.beforeEach(async ({ page }) => {
@@ -360,7 +361,7 @@ test.describe('Cohort Log Network Security', () => {
     await expect(page.locator('h1')).toContainText('Cohort Log Viewer');
     
     // Verify no network requests were made (except same-origin resources)
-    const requests = page.request.url();
+    const requests = getApiUrl(page.request);
     // This test ensures no external network calls
   });
 

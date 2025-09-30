@@ -6,6 +6,7 @@
  */
 
 import { test, expect, devices } from '@playwright/test';
+import { logError } from '../e2e/playwright-helpers';
 
 test.describe('Mobile Performance Tests', () => {
   test('@flaky should maintain audio processing performance on mobile', async ({ page }) => {
@@ -32,7 +33,10 @@ test.describe('Mobile Performance Tests', () => {
           AudioWorklet: false,
           SharedArrayBuffer: false,
           crossOriginIsolated: false,
-          error: error.message
+          error: (error: unknown) => {
+            logError(error, 'Audio processing error');
+            return error instanceof Error ? error.message : String(error);
+          }
         };
       }
     });
@@ -44,10 +48,12 @@ test.describe('Mobile Performance Tests', () => {
     console.log('Audio Support Details:', audioSupport);
     
     // Check if we're in a test environment where APIs might be limited
-    const isTestEnvironmentLimited = audioSupport.error && (
-      audioSupport.error.includes('Illegal invocation') ||
-      audioSupport.error.includes('get audioWorklet') ||
-      audioSupport.error.includes('not available')
+    const errorMessage = audioSupport.error ? 
+      (typeof audioSupport.error === 'function' ? audioSupport.error() : audioSupport.error) : '';
+    const isTestEnvironmentLimited = errorMessage && (
+      errorMessage.includes('Illegal invocation') ||
+      errorMessage.includes('get audioWorklet') ||
+      errorMessage.includes('not available')
     ) || (!audioSupport.getUserMedia || !audioSupport.AudioContext);
     
     if (isTestEnvironmentLimited) {

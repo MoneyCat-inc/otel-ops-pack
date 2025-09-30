@@ -7,6 +7,7 @@
 
 import { describe, it, expect } from 'vitest';
 import { ProgressTrends } from '../../src/engine/metrics/aggregate';
+import { createTestProgressTrends, createTestAggregatedMetrics } from './test-fixtures';
 
 describe('FriendlySummary Wording Logic', () => {
   describe('Message Generation', () => {
@@ -62,11 +63,11 @@ describe('FriendlySummary Wording Logic', () => {
         averageSessionDurationMs: 300000,
         overallTrend: { safety: 'improving', inBandPct: 'stable', expressiveness: 'stable' },
         daily: [
-          { strainCount: 0, strainRate: 0 },
-          { strainCount: 0, strainRate: 0 },
-          { strainCount: 1, strainRate: 0.2 },
-          { strainCount: 0, strainRate: 0 },
-          { strainCount: 0, strainRate: 0 }
+          createTestAggregatedMetrics({ strainCount: 0, strainRate: 0 }),
+          createTestAggregatedMetrics({ strainCount: 0, strainRate: 0 }),
+          createTestAggregatedMetrics({ strainCount: 1, strainRate: 0.2 }),
+          createTestAggregatedMetrics({ strainCount: 0, strainRate: 0 }),
+          createTestAggregatedMetrics({ strainCount: 0, strainRate: 0 })
         ]
       });
 
@@ -84,10 +85,10 @@ describe('FriendlySummary Wording Logic', () => {
         averageSessionDurationMs: 300000,
         overallTrend: { safety: 'declining', inBandPct: 'stable', expressiveness: 'stable' },
         daily: [
-          { strainCount: 2, strainRate: 0.5 },
-          { strainCount: 1, strainRate: 0.25 },
-          { strainCount: 2, strainRate: 0.5 },
-          { strainCount: 1, strainRate: 0.25 }
+          createTestAggregatedMetrics({ strainCount: 2, strainRate: 0.5 }),
+          createTestAggregatedMetrics({ strainCount: 1, strainRate: 0.25 }),
+          createTestAggregatedMetrics({ strainCount: 2, strainRate: 0.5 }),
+          createTestAggregatedMetrics({ strainCount: 1, strainRate: 0.25 })
         ]
       });
 
@@ -105,9 +106,9 @@ describe('FriendlySummary Wording Logic', () => {
         averageSessionDurationMs: 300000,
         overallTrend: { safety: 'stable', inBandPct: 'stable', expressiveness: 'stable' },
         daily: [
-          { strainCount: 0, strainRate: 0 },
-          { strainCount: 1, strainRate: 0.33 },
-          { strainCount: 0, strainRate: 0 }
+          createTestAggregatedMetrics({ strainCount: 0, strainRate: 0 }),
+          createTestAggregatedMetrics({ strainCount: 1, strainRate: 0.33 }),
+          createTestAggregatedMetrics({ strainCount: 0, strainRate: 0 })
         ]
       });
 
@@ -209,7 +210,7 @@ describe('FriendlySummary Wording Logic', () => {
       const trends = createMockTrends({
         totalSessions: 3,
         overallTrend: { safety: 'declining', inBandPct: 'stable', expressiveness: 'stable' },
-        daily: [{ strainCount: 1, strainRate: 0.33 }]
+        daily: [createTestAggregatedMetrics({ strainCount: 1, strainRate: 0.33 })]
       });
 
       const summary = generateSummaryData(trends, '7d');
@@ -221,10 +222,10 @@ describe('FriendlySummary Wording Logic', () => {
         totalSessions: 4,
         overallTrend: { safety: 'stable', inBandPct: 'stable', expressiveness: 'stable' },
         daily: [
-          { strainCount: 1, strainRate: 0.25 },
-          { strainCount: 1, strainRate: 0.25 },
-          { strainCount: 1, strainRate: 0.25 },
-          { strainCount: 1, strainRate: 0.25 }
+          createTestAggregatedMetrics({ strainCount: 1, strainRate: 0.25 }),
+          createTestAggregatedMetrics({ strainCount: 1, strainRate: 0.25 }),
+          createTestAggregatedMetrics({ strainCount: 1, strainRate: 0.25 }),
+          createTestAggregatedMetrics({ strainCount: 1, strainRate: 0.25 })
         ]
       });
 
@@ -236,7 +237,7 @@ describe('FriendlySummary Wording Logic', () => {
       const trends = createMockTrends({
         totalSessions: 3,
         overallTrend: { safety: 'stable', inBandPct: 'stable', expressiveness: 'stable' },
-        daily: [{ strainCount: 0, strainRate: 0 }]
+        daily: [createTestAggregatedMetrics({ strainCount: 0, strainRate: 0 })]
       });
 
       const summary = generateSummaryData(trends, '7d');
@@ -290,6 +291,10 @@ function createMockTrends(overrides: Partial<ProgressTrends> = {}): ProgressTren
     daily: [],
     weekly: [],
     monthly: [],
+    dateRange: {
+      start: new Date().toISOString().split('T')[0],
+      end: new Date().toISOString().split('T')[0]
+    },
     ...overrides
   };
 }

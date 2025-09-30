@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { logError, safeGet } from '../e2e/playwright-helpers';
 
 test.describe('MEMX Chromium Debug Tests', () => {
   test.beforeEach(async ({ page }) => {

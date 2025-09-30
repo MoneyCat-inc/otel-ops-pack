@@ -6,6 +6,7 @@
  */
 
 import { test, expect } from '@playwright/test';
+import '../e2e/playwright-helpers';
 
 test.describe('Cohort Flags E2E Tests', () => {
   test.describe('Flags OFF (Default)', () => {

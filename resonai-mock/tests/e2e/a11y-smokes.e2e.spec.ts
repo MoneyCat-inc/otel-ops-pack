@@ -7,6 +7,7 @@
  */
 
 import { test, expect } from '@playwright/test';
+import '../e2e/playwright-helpers';
 
 test.describe('Accessibility Smoke Tests', () => {
   test.beforeEach(async ({ page }) => {
