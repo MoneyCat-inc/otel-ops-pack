@@ -1,0 +1,9 @@
+{
+  "jobId": "job_1759199255092_y66tvd105",
+  "kind": "bulk-job",
+  "timestamp": "2025-09-30T02:34:24.037Z",
+  "result": {
+    "success": false,
+    "error": "Random failure for testing"
+  }
+}

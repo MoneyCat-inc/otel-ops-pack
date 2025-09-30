@@ -170,3 +170,118 @@ TimeCreated        Id ProviderName  Message
 - ✅ Windows Event Log contains fresh SigNoz-Canary entries (ECRR-Canary-Test-YYYYMMDD-HHMMSS)
 
 **Result**: Observability stack (collector, ClickHouse, UI, otel-gpu helpers) remains healthy with OTLP ports 14317/14318 exposed, and Windows otelcol-contrib service is RUNNING. Three successive canary runs each added the expected metric delta; latest token bf92b7070c1f47dba835580cd50116d2 is present in Windows Event Log. Token generation is random, so the exact earlier token cannot be reproduced on demand, but verifiable telemetry exists for the latest run.
+
+## 🏁 Production Readiness
+- Status: Pending (add ✅ Ready / ❌ Not Ready)
+- Risks: (list known risks)
+- Verification: (link to checks/evidence)
+
+
+## ✅ **ECRR Gate - MANDATORY VALIDATION**
+
+> **⚠️ CRITICAL**: This section is MANDATORY for all ECRR reports. All checkboxes must be completed for report compliance.
+
+### **🔍 Examine**
+- [ ] **Initial State Captured**: Environment state documented before changes
+- [ ] **Environment Documented**: OS, tools, versions, and system status recorded
+- [ ] **Key Findings Identified**: Critical issues or opportunities documented
+- [ ] **Evidence Attached**: Screenshots, logs, configs, test outputs included
+- [ ] **Root Cause Analysis**: Underlying causes identified and documented
+
+### **🧹 Clean**
+- [ ] **Drift Removed**: All identified issues addressed and resolved
+- [ ] **Guardrails Enforced**: Local-first, safety, idempotence, verification principles followed
+- [ ] **Service Management**: Services restarted, ports cleared, conflicts resolved
+- [ ] **File Cleanup**: Temporary files, caches, and artifacts cleaned
+- [ ] **Process Management**: Background processes and conflicts resolved
+
+### **📝 Report**
+- [ ] **Actions Documented**: All actions taken clearly described
+- [ ] **Results Achieved**: Before/after comparison with quantifiable improvements
+- [ ] **TODOs Completed**: All planned tasks marked as completed
+- [ ] **Comprehensive Documentation**: All changes and artifacts documented
+- [ ] **Validation Results**: All verification steps completed successfully
+
+### **🎭 Role**
+- [ ] **Actor Declared**: Agent name and role clearly stated in header and Role section
+- [ ] **Scope Defined**: Clear boundaries of responsibility established
+- [ ] **Guardrails Respected**: All ECRR principles followed throughout
+- [ ] **Integration Maintained**: Compatibility with existing systems preserved
+- [ ] **Accountability Established**: Clear ownership and responsibility declared
+
+### **📊 Quality Assurance**
+- [ ] **4-Section Structure**: Complete Examine → Clean → Report → Role format followed
+- [ ] **Status Declaration**: Clear success/failure/completion status specified
+- [ ] **Artifact Documentation**: All files, scripts, and changes documented
+- [ ] **Reproducible Validation**: Runnable checks provided for every change
+- [ ] **ECRR Compliance**: All mandatory elements included and validated
+
+---
+## 📊 **Status Declaration**
+
+**Status**: [✅ COMPLETE | ❌ FAILED | ⚠️ PARTIAL]  
+**Completion Date**: [YYYY-MM-DD HH:mm:ss UTC]  
+**Agent**: [Agent Name]  
+**Role**: [Role Description]  
+**Mission**: [Mission Description]  
+**Result**: [Result Description]
+
+### **Success Criteria Met**
+- ✅ [Success criterion 1]
+- ✅ [Success criterion 2]
+- ✅ [Success criterion 3]
+
+### **Quality Gates Passed**
+- ✅ **ECRR Compliance**: Full 4-section framework implementation
+- ✅ **Evidence Documentation**: Complete with metrics, logs, and verification steps
+- ✅ **Guardrail Adherence**: Local-first, safety, idempotence, verification maintained
+- ✅ **Production Readiness**: [Production status]
+
+---
+## 🎭 **4. Role**
+
+### **Actor Declaration**
+**Cursor Agent - Observability Copilot** acting as **Implementation Agent**
+
+**Scope**: Verification and Testing execution and ECRR compliance  
+**Responsibilities**: 
+- Execute Verification and Testing according to ECRR framework
+- Ensure Examine → Clean → Report → Role methodology
+- Maintain local-first, safety, idempotence, verification principles
+- Document all actions, results, and evidence
+- Declare accountability and responsibility
+
+**Guardrails Respected**:
+- **Local-first**: All operations focus on local observability infrastructure
+- **Safety**: No sensitive data exposed, all configurations documented
+- **Idempotence**: All scripts and processes are re-runnable
+- **Verification**: Every change includes validation steps and evidence
+
+**Integration**: 
+- Compatible with existing ECRR framework and documentation
+- Maintains consistency with ECRR methodology principles
+- Provides foundation for future improvements and automation
+- Integrates with observability stack and monitoring systems
+
+---
+
+## ECRR Gate
+
+### Examine
+- Facts:
+- Evidence:
+
+### Clean
+- Actions:
+- Guardrails:
+
+### Report
+- Artifacts:
+- Verification:
+
+### Role
+- Actor:
+- Scope:
+
+---
+

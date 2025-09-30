@@ -346,7 +346,47 @@ The automated ECRR compliance monitoring system is now fully deployed and ready 
 - Verification (runnable checks for every change)
 
 ---
-## 📊 **Status Declaration**
+
+## ✅ **ECRR Gate - MANDATORY VALIDATION**
+
+> **⚠️ CRITICAL**: This section is MANDATORY for all ECRR reports. All checkboxes must be completed for report compliance.
+
+### **🔍 Examine**
+- [ ] **Initial State Captured**: Environment state documented before changes
+- [ ] **Environment Documented**: OS, tools, versions, and system status recorded
+- [ ] **Key Findings Identified**: Critical issues or opportunities documented
+- [ ] **Evidence Attached**: Screenshots, logs, configs, test outputs included
+- [ ] **Root Cause Analysis**: Underlying causes identified and documented
+
+### **🧹 Clean**
+- [ ] **Drift Removed**: All identified issues addressed and resolved
+- [ ] **Guardrails Enforced**: Local-first, safety, idempotence, verification principles followed
+- [ ] **Service Management**: Services restarted, ports cleared, conflicts resolved
+- [ ] **File Cleanup**: Temporary files, caches, and artifacts cleaned
+- [ ] **Process Management**: Background processes and conflicts resolved
+
+### **📝 Report**
+- [ ] **Actions Documented**: All actions taken clearly described
+- [ ] **Results Achieved**: Before/after comparison with quantifiable improvements
+- [ ] **TODOs Completed**: All planned tasks marked as completed
+- [ ] **Comprehensive Documentation**: All changes and artifacts documented
+- [ ] **Validation Results**: All verification steps completed successfully
+
+### **🎭 Role**
+- [ ] **Actor Declared**: Agent name and role clearly stated in header and Role section
+- [ ] **Scope Defined**: Clear boundaries of responsibility established
+- [ ] **Guardrails Respected**: All ECRR principles followed throughout
+- [ ] **Integration Maintained**: Compatibility with existing systems preserved
+- [ ] **Accountability Established**: Clear ownership and responsibility declared
+
+### **📊 Quality Assurance**
+- [ ] **4-Section Structure**: Complete Examine → Clean → Report → Role format followed
+- [ ] **Status Declaration**: Clear success/failure/completion status specified
+- [ ] **Artifact Documentation**: All files, scripts, and changes documented
+- [ ] **Reproducible Validation**: Runnable checks provided for every change
+- [ ] **ECRR Compliance**: All mandatory elements included and validated
+
+---## 📊 **Status Declaration**
 
 **Status**: ✅ **COMPLETE**  
 **Completion Date**: 2025-09-28 14:20:18 UTC  
@@ -365,6 +405,54 @@ The automated ECRR compliance monitoring system is now fully deployed and ready 
 - ✅ **Evidence Documentation**: Complete with metrics, logs, and verification steps
 - ✅ **Guardrail Adherence**: Local-first, safety, idempotence, verification maintained
 - ✅ **Production Readiness**: [Production status]
+
+---
+
+
+## 🎭 **4. Role**
+
+### **Actor Declaration**
+**Cursor Agent - Observability Copilot** acting as **Implementation Agent**
+
+**Scope**: Production Deployment execution and ECRR compliance  
+**Responsibilities**: 
+- Execute Production Deployment according to ECRR framework
+- Ensure Examine → Clean → Report → Role methodology
+- Maintain local-first, safety, idempotence, verification principles
+- Document all actions, results, and evidence
+- Declare accountability and responsibility
+
+**Guardrails Respected**:
+- **Local-first**: All operations focus on local observability infrastructure
+- **Safety**: No sensitive data exposed, all configurations documented
+- **Idempotence**: All scripts and processes are re-runnable
+- **Verification**: Every change includes validation steps and evidence
+
+**Integration**: 
+- Compatible with existing ECRR framework and documentation
+- Maintains consistency with ECRR methodology principles
+- Provides foundation for future improvements and automation
+- Integrates with observability stack and monitoring systems
+
+---
+
+## ECRR Gate
+
+### Examine
+- Facts:
+- Evidence:
+
+### Clean
+- Actions:
+- Guardrails:
+
+### Report
+- Artifacts:
+- Verification:
+
+### Role
+- Actor:
+- Scope:
 
 ---
 

@@ -1,0 +1,14 @@
+{
+  "jobId": "job_1759199274958_ou19cteo8",
+  "kind": "bulk-job",
+  "timestamp": "2025-09-30T02:34:24.063Z",
+  "result": {
+    "success": true,
+    "metrics": {
+      "duration_ms": 0,
+      "memory_mb": 121,
+      "cpu_percent": 17,
+      "retry_count": -1
+    }
+  }
+}

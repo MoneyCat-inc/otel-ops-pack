@@ -1,88 +1,47 @@
-# Resonai Backend - SigNoz Collector Configuration
-# OpenTelemetry collector configuration for observability
-
 receivers:
-  # =============================================================================
-  # OTLP RECEIVERS
-  # =============================================================================
   otlp:
     protocols:
       grpc:
         endpoint: 0.0.0.0:4317
       http:
         endpoint: 0.0.0.0:4318
-
-  # =============================================================================
-  # HOST METRICS RECEIVER
-  # =============================================================================
   hostmetrics:
     collection_interval: 30s
     scrapers:
-      cpu:
-        metrics:
-          system.cpu.time: true
-          system.cpu.utilization: true
-      memory:
-        metrics:
-          system.memory.usage: true
-          system.memory.utilization: true
-      disk:
-        metrics:
-          system.disk.io: true
-          system.disk.io_time: true
-      network:
-        metrics:
-          system.network.io: true
-          system.network.packets: true
-
-  # =============================================================================
-  # PROMETHEUS RECEIVER
-  # =============================================================================
+      cpu: {}
+      memory: {}
+      disk: {}
+      network: {}
   prometheus:
     config:
       scrape_configs:
-        - job_name: 'resonai-backend'
+        - job_name: signoz-otel-collector
           static_configs:
-            - targets: ['resonai-backend:3000']
-          metrics_path: '/api/metrics'
+            - targets: ['localhost:8889']
+          metrics_path: /metrics
           scrape_interval: 30s
 
 processors:
-  # =============================================================================
-  # BATCH PROCESSOR
-  # =============================================================================
   batch:
     timeout: 1s
     send_batch_size: 1024
     send_batch_max_size: 2048
-
-  # =============================================================================
-  # MEMORY LIMITER
-  # =============================================================================
   memory_limiter:
-    limit_mib: 512
-    spike_limit_mib: 128
+    limit_mib: 4096
+    spike_limit_mib: 1024
     check_interval: 5s
-
-  # =============================================================================
-  # RESOURCE PROCESSOR
-  # =============================================================================
-  resource:
+  resourcedetection:
+    detectors: [env, system]
+    timeout: 2s
+  resource/defaults:
     attributes:
       - key: service.name
         value: resonai-backend
         action: upsert
-      - key: service.version
-        value: 1.0.0
-        action: upsert
       - key: deployment.environment
         value: production
         action: upsert
-
-  # =============================================================================
-  # ATTRIBUTE PROCESSOR
-  # =============================================================================
-  attributes:
+  attributes/redact_sensitive:
     actions:
       - key: http.request.header.user-agent
         action: delete
@@ -96,109 +55,68 @@ processors:
         action: delete
       - key: user.phone
         action: delete
-
-  # =============================================================================
-  # FILTER PROCESSOR
-  # =============================================================================
-  filter:
-    traces:
-      span:
-        - 'attributes["http.route"] == "/api/health"'
-        - 'attributes["http.route"] == "/api/health/detailed"'
-    metrics:
-      metric:
-        - 'name == "http_requests_total"'
-        - 'name == "http_request_duration_seconds"'
-        - 'name == "resonai_engagement_events_total"'
-        - 'name == "resonai_privacy_events_total"'
+  signozspanmetrics/delta:
+    metrics_exporter: signozclickhousemetrics
+    metrics_flush_interval: 60s
+    latency_histogram_buckets: [100us, 1ms, 2ms, 6ms, 10ms, 50ms, 100ms, 250ms, 500ms, 1000ms, 1400ms, 2000ms, 5s, 10s, 20s, 40s, 60s]
+    dimensions_cache_size: 100000
+    aggregation_temporality: AGGREGATION_TEMPORALITY_DELTA
+    enable_exp_histogram: true
+    dimensions:
+      - name: service.namespace
+        default: default
+      - name: deployment.environment
+        default: default
+      - name: signoz.collector.id
+      - name: service.version
+      - name: browser.platform
+      - name: browser.mobile
+      - name: k8s.cluster.name
+      - name: k8s.node.name
+      - name: k8s.namespace.name
+      - name: host.name
+      - name: host.type
+      - name: container.name
 
 exporters:
-  # =============================================================================
-  # CLICKHOUSE EXPORTER
-  # =============================================================================
-  clickhouse:
-    endpoint: tcp://clickhouse:9000
-    database: signoz
-    table_name: otel_traces
-    timeout_settings:
-      timeout: 5s
-    retry_on_failure:
-      enabled: true
-      initial_interval: 5s
-      max_interval: 30s
-      max_elapsed_time: 300s
-
-  # =============================================================================
-  # PROMETHEUS EXPORTER
-  # =============================================================================
-  prometheus:
-    endpoint: "0.0.0.0:8889"
-    namespace: resonai
-    const_labels:
-      service: resonai-backend
-      version: 1.0.0
-      environment: production
-
-  # =============================================================================
-  # LOGGING EXPORTER
-  # =============================================================================
-  logging:
-    loglevel: info
-    sampling_initial: 2
-    sampling_thereafter: 500
+  clickhousetraces:
+    datasource: tcp://signoz-clickhouse:9000/signoz_traces
+    low_cardinal_exception_grouping: ${env:LOW_CARDINAL_EXCEPTION_GROUPING}
+    use_new_schema: true
+  signozclickhousemetrics:
+    dsn: tcp://signoz-clickhouse:9000/signoz_metrics
+  clickhouselogsexporter:
+    dsn: tcp://signoz-clickhouse:9000/signoz_logs
+    timeout: 10s
+    use_new_schema: true
+  # prometheus:
+  #   endpoint: 0.0.0.0:8889
 
 service:
-  # =============================================================================
-  # PIPELINES
-  # =============================================================================
-  pipelines:
-    # Traces pipeline
-    traces:
-      receivers: [otlp]
-      processors: [memory_limiter, batch, resource, attributes, filter]
-      exporters: [clickhouse, logging]
-
-    # Metrics pipeline
-    metrics:
-      receivers: [otlp, hostmetrics, prometheus]
-      processors: [memory_limiter, batch, resource, attributes, filter]
-      exporters: [prometheus, logging]
-
-    # Logs pipeline
-    logs:
-      receivers: [otlp]
-      processors: [memory_limiter, batch, resource, attributes]
-      exporters: [logging]
-
-  # =============================================================================
-  # EXTENSIONS
-  # =============================================================================
-  extensions: [health_check, pprof, zpages]
-
-  # =============================================================================
-  # TELEMETRY
-  # =============================================================================
   telemetry:
     logs:
-      level: info
+      encoding: json
+  extensions: [health_check, pprof]
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, resourcedetection, resource/defaults, signozspanmetrics/delta, batch]
+      exporters: [clickhousetraces]
     metrics:
-      address: 0.0.0.0:8888
+      receivers: [otlp, hostmetrics, prometheus]
+      processors: [memory_limiter, resourcedetection, batch]
+      exporters: [signozclickhousemetrics]
+    logs:
+      receivers: [otlp]
+      processors: [memory_limiter, resourcedetection, attributes/redact_sensitive, batch]
+      exporters: [clickhouselogsexporter]
 
 extensions:
-  # =============================================================================
-  # HEALTH CHECK EXTENSION
-  # =============================================================================
   health_check:
     endpoint: 0.0.0.0:13133
-
-  # =============================================================================
-  # PPROF EXTENSION
-  # =============================================================================
   pprof:
     endpoint: 0.0.0.0:1777
 
-  # =============================================================================
-  # ZPAGES EXTENSION
-  # =============================================================================
-  zpages:
-    endpoint: 0.0.0.0:55679
+
+
+

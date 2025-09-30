@@ -147,8 +147,7 @@ export const OPTIONS = async () => {
   });
 };
 
-// Export config for Edge Runtime
-export const config = {
-  runtime: 'edge',
-  regions: ['iad1', 'sfo1', 'lhr1', 'sin1'], // Global edge locations
-};
+// Export runtime configuration for Edge Runtime
+export const runtime = 'edge';
+export const preferredRegion = ['iad1', 'sfo1', 'lhr1', 'sin1']; // Global edge locations
+

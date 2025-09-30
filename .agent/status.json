@@ -1,31 +1,22 @@
 {
-  "version": 1,
-  "updatedAt": "2025-09-28T15:46:53.1025165+01:00",
-  "sections": {
-    "env": {
-      "ok": true,
-      "detail": "Environment bootstrap completed successfully - Node.js v22.18.0, PNPM 10.15.1",
-      "ts": "2025-01-27T15:50:00+00:00"
+  "timestamp": "2025-09-30T02:34:39.381Z",
+  "queueDepth": 0,
+  "runningCount": 0,
+  "lastRuns": [
+    {
+      "id": "job_1759199482273_0l0khueyw",
+      "kind": "bulk-job",
+      "status": "completed",
+      "durationMs": 21
     },
-    "analytics": {
-      "ok": false,
-      "detail": "Not initialized",
-      "ts": null
-    },
-    "otel": {
-      "ok": true,
-      "detail": "OTLP/HTTP 5318 OK",
-      "ts": "2025-09-20T03:23:01.7873341+01:00"
-    },
-    "ecrr": {
-      "ok": true,
-      "detail": "ECRR Processing Complete - 81 reports analyzed, 4 task reports completed",
-      "ts": "2025-01-27T15:45:00+00:00"
-    },
-    "tetragrammaton": {
-      "ok": true,
-      "ts": "2025-09-28T15:46:53.0962540+01:00",
-      "detail": "Tetragrammaton Agent Boilerplate deployed - ORCH/IMPL/CORD system operational"
+    {
+      "id": "job_1759199482276_33z92yfy6",
+      "kind": "bulk-job",
+      "status": "completed",
+      "durationMs": 15
     }
-  }
+  ],
+  "admissionCap": 200,
+  "shadowMode": true,
+  "driver": "sqlite"
 }

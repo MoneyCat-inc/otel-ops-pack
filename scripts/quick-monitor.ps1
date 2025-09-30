@@ -5,6 +5,7 @@
 
 param(
     [switch]$ExportReport = $false,
+    [switch]$PreflightCheck = $false,
     [string]$ReportPath = "artifacts\quick-monitor-$(Get-Date -Format 'yyyyMMdd-HHmmss').json"
 )
 
@@ -13,6 +14,9 @@ param(
 
 Write-Host "⚡ Quick Pipeline Monitor" -ForegroundColor Cyan
 Write-Host "Fast health check with ECRR reporting" -ForegroundColor Gray
+if ($PreflightCheck) {
+    Write-Host "🔍 Including preflight OTLP endpoint checks" -ForegroundColor Yellow
+}
 Write-Host ""
 
 $startTime = Get-Date
@@ -59,6 +63,23 @@ function Test-QuickHealth {
     }
     
     return $results
+}
+
+# Run preflight check if requested
+if ($PreflightCheck) {
+    Write-Host "🔍 Running Preflight OTLP Endpoint Check" -ForegroundColor Cyan
+    try {
+        $preflightResult = & ".\scripts\preflight-health-check.ps1" -Verbose
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host "✅ Preflight check passed" -ForegroundColor Green
+        } else {
+            Write-Host "❌ Preflight check failed" -ForegroundColor Red
+        }
+    }
+    catch {
+        Write-Host "❌ Preflight check error: $($_.Exception.Message)" -ForegroundColor Red
+    }
+    Write-Host ""
 }
 
 # Run quick health check

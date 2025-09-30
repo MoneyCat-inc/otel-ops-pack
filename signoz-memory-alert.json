@@ -1,0 +1,58 @@
+{
+  "alert": {
+    "name": "SigNoz Collector Memory Pressure",
+    "description": "Alert when SigNoz collector memory usage exceeds 80% of limit (3.3 GiB)",
+    "condition": {
+      "query": "otelcol_process_memory_rss{job=\"signoz-otel-collector\"} > 3300000000",
+      "threshold": "3.3 GiB",
+      "duration": "2m"
+    },
+    "severity": "warning",
+    "labels": {
+      "service": "signoz-otel-collector",
+      "component": "memory-limiter",
+      "threshold": "80%"
+    },
+    "annotations": {
+      "summary": "SigNoz collector memory usage high",
+      "description": "SigNoz collector memory usage is above 3.3 GiB (80% of 4 GiB limit). This may cause data refusals and retry storms.",
+      "runbook": "Check collector logs for memory pressure warnings. Consider increasing memory limits or investigating memory leaks."
+    },
+    "actions": {
+      "notify": ["#observability-alerts"],
+      "escalate_after": "10m"
+    }
+  },
+  "dashboard_panel": {
+    "title": "SigNoz Collector Memory Usage",
+    "type": "graph",
+    "targets": [
+      {
+        "expr": "otelcol_process_memory_rss{job=\"signoz-otel-collector\"}",
+        "legendFormat": "Memory RSS"
+      },
+      {
+        "expr": "4096000000",
+        "legendFormat": "Memory Limit (4 GiB)"
+      },
+      {
+        "expr": "3300000000",
+        "legendFormat": "Alert Threshold (3.3 GiB)"
+      }
+    ],
+    "yAxes": [
+      {
+        "unit": "bytes",
+        "min": 0,
+        "max": "4G"
+      }
+    ],
+    "thresholds": [
+      {
+        "value": 3300000000,
+        "colorMode": "critical",
+        "op": "gt"
+      }
+    ]
+  }
+}

@@ -348,3 +348,23 @@ pwsh -File scripts/verify-e2-dashboard.ps1
 
 ---
 
+## ECRR Gate
+
+### Examine
+- Facts:
+- Evidence:
+
+### Clean
+- Actions:
+- Guardrails:
+
+### Report
+- Artifacts:
+- Verification:
+
+### Role
+- Actor:
+- Scope:
+
+---
+

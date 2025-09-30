@@ -1,119 +1,111 @@
-[CmdletBinding()]
+# SigNoz Dashboard Import Helper
+# This script helps import the ECRR dashboard into SigNoz
+
 param(
-    [Parameter()]
-    [string]$DashboardPath = "config/signoz-optimization-dashboard.json",
-
-    [Parameter()]
-    [string]$Endpoint = "http://localhost:8080/api/v1/dashboards",
-
-    [Parameter()]
-    [string]$ApiToken,
-
-    [switch]$DryRun
+    [string]$SignozUrl = "http://localhost:8080",
+    [string]$DashboardFile = "artifacts/signoz-ecrr-dashboard.json",
+    [string]$ApiKey = "",
+    [switch]$DryRun = $false
 )
 
-# Import progress indicators module
-. .\scripts\progress-indicators.ps1
-
-Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
-function Get-SigNozHeaders {
-    param([string]$Token)
+Write-Host "SigNoz ECRR Dashboard Import" -ForegroundColor Cyan
+Write-Host "=============================" -ForegroundColor Cyan
 
-    $resolved = if ($Token) { $Token } elseif ($env:SIGNOZ_API_TOKEN) { $env:SIGNOZ_API_TOKEN } elseif ($env:SIGNOZ_API_BEARER) { $env:SIGNOZ_API_BEARER } elseif ($env:SIGNOZ_JWT) { $env:SIGNOZ_JWT } else { $null }
-
-    $headers = @{ "Content-Type" = "application/json" }
-    if ($resolved) {
-        $headers["Authorization"] = "Bearer $resolved"
-    }
-    return @{ Token = $resolved; Headers = $headers }
+# Check if dashboard file exists
+if (-not (Test-Path $DashboardFile)) {
+    Write-Host "❌ Dashboard file not found: $DashboardFile" -ForegroundColor Red
+    Write-Host "Run: pwsh -File scripts/visualize-ecrr-trends.ps1 first" -ForegroundColor Yellow
+    exit 1
 }
 
-function Test-SigNozEndpoint {
-    param(
-        [string]$Url,
-        [hashtable]$Headers
-    )
-
-    $spinnerJob = Start-SpinnerJob -Message "Testing SigNoz endpoint..." -UpdateIntervalMs 150
-    try {
-        Invoke-WebRequest -Uri $Url -Method Head -Headers $Headers -TimeoutSec 5 | Out-Null
-        Stop-SpinnerJob -Job $spinnerJob
-        return $true
-    } catch {
-        Stop-SpinnerJob -Job $spinnerJob
-        return $false
-    }
-}
-
-Write-Host "[INFO] SigNoz dashboard import" -ForegroundColor Cyan
-
-if (-not (Test-Path -LiteralPath $DashboardPath)) {
-    Write-Host "[ERROR] Dashboard file not found: $DashboardPath" -ForegroundColor Red
-    throw "Missing dashboard file"
-}
-
-$dashboardFullPath = (Resolve-Path -LiteralPath $DashboardPath).Path
-$dashboardJson = Get-Content -LiteralPath $dashboardFullPath -Raw
-$dashboardObject = $null
+# Check SigNoz connectivity
+Write-Host "`n🔍 Checking SigNoz connectivity..." -ForegroundColor Yellow
 try {
-    $dashboardObject = $dashboardJson | ConvertFrom-Json -ErrorAction Stop
+    $HealthResponse = Invoke-RestMethod -Uri "$SignozUrl/api/v1/health" -Method Get -TimeoutSec 10
+    Write-Host "✅ SigNoz is accessible at: $SignozUrl" -ForegroundColor Green
 } catch {
-    throw "Dashboard JSON is not valid: $($_.Exception.Message)"
+    Write-Host "❌ Cannot connect to SigNoz at: $SignozUrl" -ForegroundColor Red
+    Write-Host "Error: $($_.Exception.Message)" -ForegroundColor Red
+    Write-Host "`nPlease ensure SigNoz is running:" -ForegroundColor Yellow
+    Write-Host "1. Check Docker: docker ps | findstr signoz" -ForegroundColor White
+    Write-Host "2. Check logs: docker logs signoz-otel-collector" -ForegroundColor White
+    Write-Host "3. Verify URL: http://localhost:8080" -ForegroundColor White
+    exit 1
 }
 
-$title = $dashboardObject.title
-$panelCount = 0
-if ($dashboardObject.panels -is [System.Collections.IEnumerable]) {
-    $panelCount = ($dashboardObject.panels | Measure-Object).Count
-}
-
-Write-Host "[INFO] Using file: $dashboardFullPath" -ForegroundColor Green
-Write-Host "[INFO] Dashboard title: $title" -ForegroundColor Green
-Write-Host "[INFO] Panel count: $panelCount" -ForegroundColor Green
-
-$headerInfo = Get-SigNozHeaders -Token $ApiToken
-if ($headerInfo.Token) {
-    Write-Host "[INFO] Authentication token detected" -ForegroundColor Green
-} else {
-    Write-Host "[WARN] No authentication token found; import may require manual confirmation" -ForegroundColor Yellow
-}
-
-$apiHealthy = Test-SigNozEndpoint -Url $Endpoint -Headers $headerInfo.Headers
-if ($apiHealthy) {
-    Write-Host "[INFO] SigNoz endpoint reachable: $Endpoint" -ForegroundColor Green
-} else {
-    Write-Host "[WARN] Unable to reach SigNoz endpoint. Verify SigNoz UI is running." -ForegroundColor Yellow
-}
-
-$timestamp = (Get-Date).ToString("yyyyMMdd-HHmmss")
-$reportPath = "artifacts/dashboard-import-$timestamp.json"
+# Load dashboard configuration
+Write-Host "`n📊 Loading dashboard configuration..." -ForegroundColor Yellow
+$DashboardConfig = Get-Content $DashboardFile | ConvertFrom-Json
+Write-Host "✅ Dashboard loaded: $($DashboardConfig.name)" -ForegroundColor Green
+Write-Host "   Panels: $($DashboardConfig.panels.Count)" -ForegroundColor White
+Write-Host "   Description: $($DashboardConfig.description)" -ForegroundColor White
 
 if ($DryRun) {
-    Write-Host "[INFO] Dry run enabled. Skipping API call." -ForegroundColor Cyan
-} else {
-    Write-Host "[INFO] Importing dashboard via POST $Endpoint" -ForegroundColor Cyan
-    try {
-        $response = Invoke-RestMethod -Uri $Endpoint -Method Post -Headers $headerInfo.Headers -Body $dashboardJson
-        Write-Host "[INFO] Dashboard import request accepted" -ForegroundColor Green
-    } catch {
-        Write-Host "[ERROR] Dashboard import failed: $($_.Exception.Message)" -ForegroundColor Red
-        throw
+    Write-Host "`n🔍 Dry Run - Dashboard Preview:" -ForegroundColor Cyan
+    Write-Host "Name: $($DashboardConfig.name)" -ForegroundColor White
+    Write-Host "Description: $($DashboardConfig.description)" -ForegroundColor White
+    Write-Host "Panels:" -ForegroundColor White
+    foreach ($Panel in $DashboardConfig.panels) {
+        Write-Host "  - $($Panel.title): $($Panel.type)" -ForegroundColor Gray
     }
+    Write-Host "`nTo import, run without -DryRun flag" -ForegroundColor Yellow
+    exit 0
 }
 
-$report = [pscustomobject]@{
-    timestamp = (Get-Date).ToString("o")
-    dashboardPath = $dashboardFullPath
-    endpoint = $Endpoint
-    panelCount = $panelCount
-    dryRun = [bool]$DryRun
-    apiReachable = $apiHealthy
+# Prepare API headers
+$Headers = @{
+    "Content-Type" = "application/json"
+}
+if ($ApiKey) {
+    $Headers["Authorization"] = "Bearer $ApiKey"
 }
 
-$report | ConvertTo-Json -Depth 5 | Out-File -FilePath $reportPath -Encoding utf8NoBOM
-Write-Host "[INFO] Report saved to $reportPath" -ForegroundColor Green
+# Import dashboard
+Write-Host "`n📤 Importing dashboard to SigNoz..." -ForegroundColor Yellow
+try {
+    $ImportResponse = Invoke-RestMethod -Uri "$SignozUrl/api/v1/dashboards/import" -Method Post -Headers $Headers -Body ($DashboardConfig | ConvertTo-Json -Depth 10) -TimeoutSec 30
+    Write-Host "✅ Dashboard imported successfully!" -ForegroundColor Green
+    Write-Host "   Dashboard ID: $($ImportResponse.id)" -ForegroundColor White
+    Write-Host "   Dashboard URL: $SignozUrl/dashboards/$($ImportResponse.id)" -ForegroundColor White
+} catch {
+    Write-Host "❌ Dashboard import failed: $($_.Exception.Message)" -ForegroundColor Red
+    if ($_.Exception.Response) {
+        $ErrorResponse = $_.Exception.Response.GetResponseStream()
+        $Reader = New-Object System.IO.StreamReader($ErrorResponse)
+        $ErrorBody = $Reader.ReadToEnd()
+        Write-Host "Error details: $ErrorBody" -ForegroundColor Red
+    }
+    Write-Host "`nManual import steps:" -ForegroundColor Yellow
+    Write-Host "1. Open SigNoz: $SignozUrl" -ForegroundColor White
+    Write-Host "2. Go to Dashboards → + New Dashboard" -ForegroundColor White
+    Write-Host "3. Click Import JSON" -ForegroundColor White
+    Write-Host "4. Upload: $DashboardFile" -ForegroundColor White
+    exit 1
+}
 
-Write-Host "[NEXT] Open SigNoz UI at http://localhost:8080/dashboards to confirm the dashboard" -ForegroundColor White
-Write-Host "[NEXT] If dry run, rerun without -DryRun to import" -ForegroundColor White
+# Verify dashboard
+Write-Host "`n🔍 Verifying dashboard..." -ForegroundColor Yellow
+try {
+    $VerifyResponse = Invoke-RestMethod -Uri "$SignozUrl/api/v1/dashboards/$($ImportResponse.id)" -Method Get -Headers $Headers -TimeoutSec 10
+    Write-Host "✅ Dashboard verification successful!" -ForegroundColor Green
+    Write-Host "   Name: $($VerifyResponse.name)" -ForegroundColor White
+    Write-Host "   Panels: $($VerifyResponse.panels.Count)" -ForegroundColor White
+} catch {
+    Write-Host "⚠️ Dashboard verification failed, but import may have succeeded" -ForegroundColor Yellow
+}
+
+Write-Host "`n🎉 SigNoz Dashboard Import Complete!" -ForegroundColor Cyan
+Write-Host "`n📋 Next Steps:" -ForegroundColor Yellow
+Write-Host "1. Open dashboard: $SignozUrl/dashboards/$($ImportResponse.id)" -ForegroundColor White
+Write-Host "2. Set up alert rules for compliance drops" -ForegroundColor White
+Write-Host "3. Configure notification channels (email/Slack)" -ForegroundColor White
+Write-Host "4. Test metrics: $SignozUrl/metrics" -ForegroundColor White
+Write-Host "5. Monitor compliance trends daily" -ForegroundColor White
+
+Write-Host "`n📊 Dashboard Features:" -ForegroundColor Cyan
+Write-Host "- ECRR Compliance Trend (Four-section structure)" -ForegroundColor White
+Write-Host "- ECRR Gates Compliance" -ForegroundColor White
+Write-Host "- Total Reports Counter" -ForegroundColor White
+Write-Host "- Real-time metrics from OTLP export" -ForegroundColor White

@@ -1,5 +1,32 @@
 # RUN_AND_VERIFY.md
 
+## 🚀 Initial Setup (One-Time)
+
+Before running any verification, ensure your development environment is properly configured:
+
+### Quick Bootstrap
+```powershell
+# Run in elevated PowerShell (recommended)
+pwsh scripts/setup-local.ps1
+
+# If native modules fail, use fallback mode
+pwsh scripts/setup-local.ps1 -SkipNativeModules
+```
+
+### Manual Setup Checklist
+- [ ] Node.js 20.x+ installed (`node -v`)
+- [ ] pnpm 9.x+ available (`pnpm -v`)
+- [ ] Python 3.11+ in PATH (`py -3 --version`)
+- [ ] Visual Studio Build Tools installed (for native modules)
+- [ ] Dependencies installed (`pnpm install`)
+- [ ] Playwright browsers installed (`pnpm exec playwright install --with-deps`)
+
+### Troubleshooting
+If you encounter issues with native modules (like `better-sqlite3`):
+1. See [docs/NATIVE_MODULES_TROUBLESHOOTING.md](../docs/NATIVE_MODULES_TROUBLESHOOTING.md)
+2. Use JSON queue driver fallback: `$env:QUEUE_DRIVER="json"`
+3. Run with `--SkipNativeModules` flag
+
 ## ✅ Verification (artifact-first)
 
 - **Units**: `pnpm test:unit` → must pass.

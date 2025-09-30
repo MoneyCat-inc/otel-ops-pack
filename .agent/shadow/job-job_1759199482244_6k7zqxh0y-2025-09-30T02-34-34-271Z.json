@@ -1,0 +1,9 @@
+{
+  "jobId": "job_1759199482244_6k7zqxh0y",
+  "kind": "over-budget-job",
+  "timestamp": "2025-09-30T02:34:34.271Z",
+  "result": {
+    "success": false,
+    "error": "GUARDRAIL ERROR: Job exceeds budget limits (files: 10/10, lines: 2000/1000)"
+  }
+}

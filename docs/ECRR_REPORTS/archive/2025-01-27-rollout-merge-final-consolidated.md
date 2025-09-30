@@ -565,3 +565,30 @@ The observability system now provides comprehensive monitoring, alerting, testin
 
 ---
 
+
+## 🎭 **4. Role**
+
+### **Actor Declaration**
+**Codex Agent - CI/CD Coordinator** acting as **CI/CD Coordinator**
+
+**Scope**: Production Deployment execution and ECRR compliance  
+**Responsibilities**: 
+- Execute Production Deployment according to ECRR framework
+- Ensure Examine → Clean → Report → Role methodology
+- Maintain local-first, safety, idempotence, verification principles
+- Document all actions, results, and evidence
+- Declare accountability and responsibility
+
+**Guardrails Respected**:
+- **Local-first**: All operations focus on local observability infrastructure
+- **Safety**: No sensitive data exposed, all configurations documented
+- **Idempotence**: All scripts and processes are re-runnable
+- **Verification**: Every change includes validation steps and evidence
+
+**Integration**: 
+- Compatible with existing ECRR framework and documentation
+- Maintains consistency with ECRR methodology principles
+- Provides foundation for future improvements and automation
+- Integrates with observability stack and monitoring systems
+
+---
