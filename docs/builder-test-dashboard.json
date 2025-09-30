@@ -1,0 +1,28 @@
+{
+  "title": "Queue Builder Test",
+  "description": "Test dashboard using query builder",
+  "tags": ["queue", "builder"],
+  "layout": [
+    {
+      "x": 0,
+      "y": 0,
+      "w": 12,
+      "h": 6,
+      "i": "builder-test"
+    }
+  ],
+  "widgets": [
+    {
+      "id": "builder-test",
+      "title": "Log Count Builder",
+      "description": "Using query builder instead of raw SQL",
+      "panelTypes": "value",
+      "query": {
+        "queryType": "builder",
+        "promql": "sum(logs)",
+        "legend": "Log Count"
+      },
+      "yAxisUnit": "short"
+    }
+  ]
+}

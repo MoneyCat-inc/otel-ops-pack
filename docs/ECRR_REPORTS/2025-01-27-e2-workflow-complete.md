@@ -365,3 +365,23 @@ pwsh -File scripts/e2-ratio-sweep.ps1 -AgentTimeout 200ms -GatewayTimeout 5s
 
 ---
 
+## ECRR Gate
+
+### Examine
+- Facts:
+- Evidence:
+
+### Clean
+- Actions:
+- Guardrails:
+
+### Report
+- Artifacts:
+- Verification:
+
+### Role
+- Actor:
+- Scope:
+
+---
+

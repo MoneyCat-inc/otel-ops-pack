@@ -1,141 +1,199 @@
-[CmdletBinding()]
+# SigNoz Alert Configuration for ECRR Compliance Monitoring
+# Generates alert artifacts and provides verification helpers
+
 param(
-    [string]$AlertDirectory = "config",
-    [string]$Pattern = "signoz-alert-*.json",
-    [string]$Endpoint = "http://localhost:8080/api/v1/alerts",
-    [string]$ApiToken,
-    [switch]$DryRun
+    [string]$SigNozBaseURL = "http://localhost:8080",
+    [switch]$CreateAlerts,
+    [switch]$ListAlerts,
+    [switch]$CopyJson,
+    [switch]$TestAlerts,
+    [string]$SigNozApiToken = $env:SIGNOZ_API_TOKEN
 )
 
-# Import progress indicators module
-. .\scripts\progress-indicators.ps1
+$script:RepoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
+$script:AlertsDirectory = Join-Path $script:RepoRoot 'alerts'
+$script:ThresholdAlertPath = Join-Path $script:AlertsDirectory 'ecrr-compliance-threshold.json'
 
-Set-StrictMode -Version Latest
-$ErrorActionPreference = "Stop"
+Write-Host "?? SigNoz ECRR Compliance Alert Configuration" -ForegroundColor Cyan
+Write-Host "=============================================" -ForegroundColor Cyan
+Write-Host "   Base URL : $SigNozBaseURL" -ForegroundColor Gray
+Write-Host "   Alerts   : $script:AlertsDirectory" -ForegroundColor Gray
+Write-Host ""
 
-function Get-PropertyValue {
+function Get-ComplianceThresholdAlert {
     param(
-        $Object,
-        [string]$Name
+        [int]$ThresholdPercent = 80,
+        [int]$DurationMinutes = 5
     )
 
-    if ($null -eq $Object) { return $null }
-    $prop = $Object.PSObject.Properties[$Name]
-    if ($prop) { return $prop.Value }
-    return $null
-}
-
-function Get-SigNozHeaders {
-    param([string]$Token)
-
-    $resolved = if ($Token) { $Token } elseif ($env:SIGNOZ_API_TOKEN) { $env:SIGNOZ_API_TOKEN } elseif ($env:SIGNOZ_API_BEARER) { $env:SIGNOZ_API_BEARER } elseif ($env:SIGNOZ_JWT) { $env:SIGNOZ_JWT } else { $null }
-
-    $headers = @{ "Content-Type" = "application/json" }
-    if ($resolved) {
-        $headers["Authorization"] = "Bearer $resolved"
+    return [ordered]@{
+        name = "ECRR Compliance Threshold Breach"
+        description = "Alert when ECRR compliance rate drops below 80% for 5 minutes"
+        state = "active"
+        labels = [ordered]@{
+            service = "ecrr-compliance"
+            component = "monitoring"
+            severity = "warning"
+            dataset = "ecrr_compliance"
+        }
+        compositeQuery = [ordered]@{
+            queryType = "builder"
+            panelType = "time_series"
+            builderQueries = [ordered]@{
+                A = [ordered]@{
+                    queryName = "A"
+                    dataSource = "logs"
+                    aggregateOperator = "avg"
+                    aggregateAttribute = "json.compliance_rate"
+                    expression = ""
+                    filters = [ordered]@{
+                        items = @(
+                            @{ id = "dataset"; key = "json.dataset"; op = "="; value = "ecrr_compliance"; disabled = $false },
+                            @{ id = "path"; key = "log.file.path"; op = "="; value = "C:/logs/ecrr/compliance-trends.log"; disabled = $false }
+                        )
+                        op = "AND"
+                    }
+                    groupBy = @()
+                    stepInterval = 60
+                }
+            }
+        }
+        condition = [ordered]@{
+            op = "<"
+            lhs = "A"
+            rhs = $ThresholdPercent
+        }
+        evaluationWindow = "${DurationMinutes}m"
+        checkFrequency = "1m"
+        notifications = @()
+        disabled = $false
     }
-    return @{ Token = $resolved; Headers = $headers }
 }
 
-function Test-SigNozEndpoint {
+function Write-AlertArtifact {
     param(
-        [string]$Url,
-        [hashtable]$Headers
+        [Parameter(Mandatory = $true)]$AlertDefinition,
+        [Parameter(Mandatory = $true)][string]$Destination
     )
 
-    $spinnerJob = Start-SpinnerJob -Message "Testing SigNoz endpoint..." -UpdateIntervalMs 150
-    try {
-        Invoke-WebRequest -Uri $Url -Method Head -Headers $Headers -TimeoutSec 5 | Out-Null
-        Stop-SpinnerJob -Job $spinnerJob
-        return $true
-    } catch {
-        Stop-SpinnerJob -Job $spinnerJob
-        return $false
+    if (-not (Test-Path $script:AlertsDirectory)) {
+        New-Item -Path $script:AlertsDirectory -ItemType Directory -Force | Out-Null
+    }
+
+    $AlertDefinition | ConvertTo-Json -Depth 6 | Set-Content -Path $Destination -Encoding UTF8
+    Write-Host "?? Alert JSON written: $Destination" -ForegroundColor Green
+}
+
+function Copy-AlertJsonToClipboard {
+    param([string]$FilePath)
+
+    if (-not (Test-Path $FilePath)) {
+        throw "Alert file not found: $FilePath"
+    }
+
+    $json = Get-Content -Path $FilePath -Raw
+    Set-Clipboard -Value $json
+    Write-Host "?? Alert JSON copied to clipboard" -ForegroundColor Green
+    Write-Host "   Paste into SigNoz -> Alerts -> Create Alert (JSON mode)" -ForegroundColor White
+}
+
+function Show-AlertArtifacts {
+    if (-not (Test-Path $script:AlertsDirectory)) {
+        Write-Host "No alert artifacts generated yet." -ForegroundColor Yellow
+        return
+    }
+
+    Get-ChildItem -Path $script:AlertsDirectory -Filter 'ecrr-compliance-*.json' | ForEach-Object {
+        Write-Host " - $($_.FullName)" -ForegroundColor White
     }
 }
 
-Write-Host "[INFO] SigNoz alert setup" -ForegroundColor Cyan
-
-if (-not (Test-Path -LiteralPath $AlertDirectory)) {
-    throw "Alert directory not found: $AlertDirectory"
-}
-
-$alertFiles = Get-ChildItem -Path $AlertDirectory -Filter $Pattern -File | Sort-Object Name
-if (-not $alertFiles) {
-    throw "No alert definition files matching $Pattern were found in $AlertDirectory"
-}
-
-Write-Host "[INFO] Found $($alertFiles.Count) alert definitions" -ForegroundColor Green
-
-$headerInfo = Get-SigNozHeaders -Token $ApiToken
-if ($headerInfo.Token) {
-    Write-Host "[INFO] Authentication token detected" -ForegroundColor Green
-} else {
-    Write-Host "[WARN] No authentication token found; API calls may fail" -ForegroundColor Yellow
-}
-
-$apiHealthy = Test-SigNozEndpoint -Url $Endpoint -Headers $headerInfo.Headers
-if ($apiHealthy) {
-    Write-Host "[INFO] SigNoz endpoint reachable: $Endpoint" -ForegroundColor Green
-} else {
-    Write-Host "[WARN] Unable to reach SigNoz endpoint" -ForegroundColor Yellow
-}
-
-$timestamp = (Get-Date).ToString("yyyyMMdd-HHmmss")
-$reportPath = "artifacts/alerts-setup-$timestamp.json"
-$results = @()
-
-foreach ($file in $alertFiles) {
-    $raw = Get-Content -LiteralPath $file.FullName -Raw
-    $obj = $null
-    try {
-        $obj = $raw | ConvertFrom-Json -ErrorAction Stop
-    } catch {
-        throw "Alert JSON is invalid in $($file.Name): $($_.Exception.Message)"
-    }
-
-    $alertName = Get-PropertyValue -Object $obj -Name 'name'
-    if (-not $alertName) {
-        $alertName = Get-PropertyValue -Object (Get-PropertyValue -Object $obj -Name 'spec') -Name 'name'
-    }
-    if (-not $alertName) { $alertName = $file.BaseName }
-
-    $severity = Get-PropertyValue -Object $obj -Name 'severity'
-    if (-not $severity) {
-        $severity = Get-PropertyValue -Object (Get-PropertyValue -Object $obj -Name 'spec') -Name 'severity'
-    }
-    if (-not $severity) {
-        $severity = Get-PropertyValue -Object (Get-PropertyValue -Object $obj -Name 'condition') -Name 'severity'
-    }
-
-    Write-Host "[INFO] Alert: $alertName ($severity) from $($file.Name)" -ForegroundColor White
-
-    $entry = [pscustomobject]@{
-        file = $file.FullName
-        name = $alertName
-        severity = $severity
-        dryRun = [bool]$DryRun
-        imported = $false
-    }
-
-    if ($DryRun) {
-        Write-Host "[INFO] Dry run - skipping import for $alertName" -ForegroundColor Cyan
+function Show-VerificationTips {
+    $logFile = 'C:/logs/ecrr/compliance-trends.log'
+    Write-Host "?? Verification" -ForegroundColor Cyan
+    if (Test-Path $logFile) {
+        $latest = Get-Content -Path $logFile -Tail 1 | ConvertFrom-Json
+        Write-Host ("   Latest compliance_rate : {0}%" -f $latest.compliance_rate) -ForegroundColor White
+        Write-Host ("   Threshold               : {0}%" -f $latest.threshold) -ForegroundColor White
     } else {
-        try {
-            Invoke-RestMethod -Uri $Endpoint -Method Post -Headers $headerInfo.Headers -Body $raw | Out-Null
-            Write-Host "[INFO] Created or updated alert $alertName" -ForegroundColor Green
-            $entry.imported = $true
-        } catch {
-            Write-Host ("[ERROR] Failed to create alert {0}: {1}" -f $alertName, $_.Exception.Message) -ForegroundColor Red
-            throw
+        Write-Host "   Log file not found at $logFile" -ForegroundColor Yellow
+    }
+
+    Write-Host ""
+    Write-Host "   SigNoz UI -> Alerts" -ForegroundColor White
+    Write-Host "     - Click 'Create Alert Rule' -> 'Logs'" -ForegroundColor Gray
+    Write-Host '     - Query: avg_over_time(({dataset="ecrr_compliance"} | json | unwrap compliance_rate [5m]))' -ForegroundColor Gray
+    Write-Host "     - Condition: < 80, Evaluation window: 5m, Frequency: 1m" -ForegroundColor Gray
+    Write-Host "     - Labels: severity=warning, dataset=ecrr_compliance" -ForegroundColor Gray
+    Write-Host ""
+    Write-Host "   Logs Explorer filter" -ForegroundColor White
+    Write-Host '     log.file.path = "C:/logs/ecrr/compliance-trends.log"' -ForegroundColor Gray
+    Write-Host '     Quick search: body contains "compliance_trend_calculated"' -ForegroundColor Gray
+}
+
+try {
+    Write-Host "?? Starting SigNoz alert configuration..." -ForegroundColor Green
+
+    if ($CreateAlerts) {
+        $alert = Get-ComplianceThresholdAlert
+        Write-AlertArtifact -AlertDefinition $alert -Destination $script:ThresholdAlertPath
+        Write-Host ""
+        Write-Host "Next step: import JSON in SigNoz or use UI builder with the query above." -ForegroundColor Yellow
+    }
+    elseif ($CopyJson) {
+        Copy-AlertJsonToClipboard -FilePath $script:ThresholdAlertPath
+    }
+    elseif ($ListAlerts) {
+        Show-AlertArtifacts
+    }
+    elseif ($TestAlerts) {
+        Show-VerificationTips
+        if ($SigNozApiToken) {
+            Write-Host ""
+            Write-Host "Attempting API query (requires valid SigNoz API token)..." -ForegroundColor Gray
+            $headers = @{
+                'Content-Type' = 'application/json'
+                'Accept' = 'application/json'
+                'X-Signoz-API-Key' = $SigNozApiToken
+            }
+            $payload = @{
+                query = 'body contains "compliance_trend_calculated" AND json.compliance_rate < 80'
+                start = (Get-Date).AddHours(-1).ToString('yyyy-MM-ddTHH:mm:ss.fffZ')
+                end = (Get-Date).ToString('yyyy-MM-ddTHH:mm:ss.fffZ')
+                limit = 5
+            } | ConvertTo-Json
+            try {
+                $response = Invoke-RestMethod -Uri "$SigNozBaseURL/api/v1/logs" -Method Post -Headers $headers -Body $payload -TimeoutSec 10
+                Write-Host "   API query succeeded. Logs returned: $($response.logs.Count)" -ForegroundColor Green
+            }
+            catch {
+                Write-Host "   Could not query SigNoz API: $($_.Exception.Message)" -ForegroundColor Yellow
+            }
         }
     }
+    else {
+        Write-Host "?? Available Operations:" -ForegroundColor Cyan
+        Write-Host "   -CreateAlerts : Generate/refresh JSON artifact for threshold alert" -ForegroundColor White
+        Write-Host "   -ListAlerts   : Show generated alert JSON files" -ForegroundColor White
+        Write-Host "   -CopyJson     : Copy threshold alert JSON to clipboard" -ForegroundColor White
+        Write-Host "   -TestAlerts   : Show verification tips (optionally query API)" -ForegroundColor White
+        Write-Host ""
+        Write-Host "Example: pwsh -File scripts/setup-signoz-alerts.ps1 -CreateAlerts" -ForegroundColor Yellow
+    }
 
-    $results += $entry
+    Write-Host ""
+    Write-Host "?? SigNoz Alert Configuration Complete!" -ForegroundColor Green
+    exit 0
+}
+catch {
+    Write-Error "Alert configuration failed: $($_.Exception.Message)"
+    Write-Error "Stack trace: $($_.ScriptStackTrace)"
+    exit 1
 }
 
-$results | ConvertTo-Json -Depth 5 | Out-File -FilePath $reportPath -Encoding utf8NoBOM
-Write-Host "[INFO] Report saved to $reportPath" -ForegroundColor Green
 
-Write-Host "[NEXT] Review alerts in SigNoz UI at http://localhost:8080/alerts" -ForegroundColor White
-Write-Host "[NEXT] Use scripts/simple-optimization-test.ps1 to trigger sample data" -ForegroundColor White
+
+
+
+
+

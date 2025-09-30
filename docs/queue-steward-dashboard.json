@@ -1,0 +1,187 @@
+{
+  "title": "Queue Steward Dashboard",
+  "description": "Agent queue monitoring dashboard for SigNoz observability",
+  "tags": [
+    "queue",
+    "agent",
+    "monitoring"
+  ],
+  "layout": [
+    {
+      "x": 0,
+      "y": 0,
+      "w": 6,
+      "h": 4,
+      "i": "queue-depth-overview"
+    },
+    {
+      "x": 6,
+      "y": 0,
+      "w": 6,
+      "h": 4,
+      "i": "ready-vs-pending"
+    },
+    {
+      "x": 0,
+      "y": 4,
+      "w": 4,
+      "h": 4,
+      "i": "kill-switch-status"
+    },
+    {
+      "x": 4,
+      "y": 4,
+      "w": 8,
+      "h": 4,
+      "i": "per-lane-performance"
+    },
+    {
+      "x": 0,
+      "y": 8,
+      "w": 8,
+      "h": 4,
+      "i": "queue-depth-trend"
+    },
+    {
+      "x": 8,
+      "y": 8,
+      "w": 4,
+      "h": 4,
+      "i": "agent-health"
+    }
+  ],
+  "widgets": [
+    {
+      "id": "queue-depth-overview",
+      "title": "Queue Depth Overview",
+      "description": "Latest queue depth with thresholds",
+      "panelTypes": "value",
+      "queryType": "clickhouse_sql",
+      "query": {
+        "clickhouse_sql": [
+          {
+            "name": "Queue Depth",
+            "legend": "Queue Depth",
+            "query": "SELECT JSONExtractInt(body, 'queueLength') AS value FROM signoz_logs.logs_v2 WHERE position(body, 'agent_queue') > 0 ORDER BY timestamp DESC LIMIT 1"
+          }
+        ]
+      },
+      "yAxisUnit": "short",
+      "thresholds": [
+        {
+          "color": "green",
+          "value": 0
+        },
+        {
+          "color": "yellow",
+          "value": 10
+        },
+        {
+          "color": "red",
+          "value": 50
+        }
+      ]
+    },
+    {
+      "id": "ready-vs-pending",
+      "title": "Ready vs Pending Jobs",
+      "description": "Time series of ready and pending counts (last hour)",
+      "panelTypes": "graph",
+      "queryType": "clickhouse_sql",
+      "query": {
+        "clickhouse_sql": [
+          {
+            "name": "Ready",
+            "legend": "Ready",
+            "query": "SELECT toStartOfMinute(fromUnixTimestamp64Nano(timestamp)) AS ts, avg(JSONExtractInt(body, 'readyCount')) AS value FROM signoz_logs.logs_v2 WHERE position(body, 'agent_queue') > 0 AND fromUnixTimestamp64Nano(timestamp) >= now() - INTERVAL 1 HOUR GROUP BY ts ORDER BY ts"
+          },
+          {
+            "name": "Pending",
+            "legend": "Pending",
+            "query": "SELECT toStartOfMinute(fromUnixTimestamp64Nano(timestamp)) AS ts, avg(JSONExtractInt(body, 'pendingCount')) AS value FROM signoz_logs.logs_v2 WHERE position(body, 'agent_queue') > 0 AND fromUnixTimestamp64Nano(timestamp) >= now() - INTERVAL 1 HOUR GROUP BY ts ORDER BY ts"
+          }
+        ]
+      },
+      "yAxisUnit": "short"
+    },
+    {
+      "id": "kill-switch-status",
+      "title": "Kill Switch Status",
+      "description": "Latest kill switch flag",
+      "panelTypes": "value",
+      "queryType": "clickhouse_sql",
+      "query": {
+        "clickhouse_sql": [
+          {
+            "name": "Kill Switch",
+            "legend": "Kill Switch",
+            "query": "SELECT JSONExtractBool(body, 'killSwitch') AS value FROM signoz_logs.logs_v2 WHERE position(body, 'agent_queue') > 0 ORDER BY timestamp DESC LIMIT 1"
+          }
+        ]
+      },
+      "mappings": [
+        {
+          "type": "value",
+          "color": "red",
+          "value": 1,
+          "text": "ACTIVE"
+        },
+        {
+          "type": "value",
+          "color": "green",
+          "value": 0,
+          "text": "INACTIVE"
+        }
+      ]
+    },
+    {
+      "id": "per-lane-performance",
+      "title": "Per-Lane Performance",
+      "description": "Latest lane readiness snapshot",
+      "panelTypes": "table",
+      "queryType": "clickhouse_sql",
+      "query": {
+        "clickhouse_sql": [
+          {
+            "name": "Lane Snapshot",
+            "legend": "Lane Snapshot",
+            "query": "SELECT\n  JSONExtractString(lane, ''type'') AS lane_name,\n  toInt32(JSONExtractRaw(lane, ''ready'')) AS ready,\n  toInt32(JSONExtractRaw(lane, ''pending'')) AS pending,\n  toFloat64(JSONExtractRaw(lane, ''avgPriority'')) AS avg_priority,\n  toInt32(JSONExtractRaw(lane, ''prioritySum'')) AS priority_sum,\n  toDateTime(fromUnixTimestamp64Nano(timestamp)) AS ts\nFROM signoz_logs.logs_v2\nARRAY JOIN JSONExtractArrayRaw(body, ''lanes'') AS lane\nWHERE position(body, ''agent_queue'') > 0\n  AND fromUnixTimestamp64Nano(timestamp) >= now() - INTERVAL 1 HOUR\nORDER BY ts DESC\nLIMIT 50"
+          }
+        ]
+      }
+    },
+    {
+      "id": "queue-depth-trend",
+      "title": "Queue Depth Trend (24h)",
+      "description": "Rolling average queue depth",
+      "panelTypes": "graph",
+      "queryType": "clickhouse_sql",
+      "query": {
+        "clickhouse_sql": [
+          {
+            "name": "Queue Depth",
+            "legend": "Queue Depth",
+            "query": "SELECT toStartOfMinute(fromUnixTimestamp64Nano(timestamp)) AS ts, avg(JSONExtractInt(body, 'queueLength')) AS value FROM signoz_logs.logs_v2 WHERE position(body, 'agent_queue') > 0 AND fromUnixTimestamp64Nano(timestamp) >= now() - INTERVAL 24 HOUR GROUP BY ts ORDER BY ts"
+          }
+        ]
+      },
+      "yAxisUnit": "short"
+    },
+    {
+      "id": "agent-health",
+      "title": "Agent Health",
+      "description": "Latest agent metadata",
+      "panelTypes": "table",
+      "queryType": "clickhouse_sql",
+      "query": {
+        "clickhouse_sql": [
+          {
+            "name": "Agent",
+            "legend": "Agent",
+            "query": "SELECT JSONExtractString(body, 'agentName') AS agent_name, JSONExtractInt(body, 'jobsProcessed') AS jobs_processed, JSONExtractString(body, 'lastRun') AS last_run, toDateTime(fromUnixTimestamp64Nano(timestamp)) AS ts FROM signoz_logs.logs_v2 WHERE position(body, 'agent_queue') > 0 ORDER BY timestamp DESC LIMIT 1"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -461,6 +461,5 @@ export const stats = withOTel(
 );
 
 // Export config for Edge Runtime
-export const config = {
-  runtime: 'edge',
-};
+export const runtime = 'edge';
+

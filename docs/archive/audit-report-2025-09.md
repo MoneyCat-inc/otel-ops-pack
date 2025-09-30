@@ -1,9 +1,9 @@
 # Archive Audit Report - 2025-09
 
 ## Summary
-- **Date**: 2025-09-20 20:31:55
+- **Date**: 2025-09-29 18:50:25
 - **Archived Files**: 4
-- **Active References**: 5
+- **Active References**: 2
 
 ## Archived Files
 - audit-report-2025-09.md (Modified: 2025-09-20)
@@ -13,9 +13,6 @@
 
 
 ## Active References
-- C:\otel\SCREENSHOT_SPECIFICATION.md → RUNBOOK_EXECUTION_SUMMARY.md
-- C:\otel\SIGNOZ_VERIFICATION_RECORD.md → RUNBOOK_EXECUTION_SUMMARY.md
-- C:\otel\SIGNOZ_VERIFICATION_RECORD.md → WINDOWS_COLLECTOR_SIGNOZ_RUNBOOK.md
 - C:\otel\docs\RUNBOOK_INDEX.md → RUNBOOK_EXECUTION_SUMMARY.md
 - C:\otel\docs\RUNBOOK_INDEX.md → WINDOWS_COLLECTOR_SIGNOZ_RUNBOOK.md
 

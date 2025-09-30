@@ -1,0 +1,28 @@
+{
+  "title": "Queue Test Dashboard",
+  "description": "Simple test dashboard for queue telemetry",
+  "tags": ["queue", "test"],
+  "layout": [
+    {
+      "x": 0,
+      "y": 0,
+      "w": 12,
+      "h": 6,
+      "i": "queue-count"
+    }
+  ],
+  "widgets": [
+    {
+      "id": "queue-count",
+      "title": "Queue Entry Count",
+      "description": "Total number of agent_queue entries",
+      "panelTypes": "value",
+      "query": {
+        "queryType": "clickhouse_sql",
+        "query": "SELECT count() FROM signoz_logs.logs_v2 WHERE position(body, 'agent_queue') > 0",
+        "legend": "Total Entries"
+      },
+      "yAxisUnit": "short"
+    }
+  ]
+}

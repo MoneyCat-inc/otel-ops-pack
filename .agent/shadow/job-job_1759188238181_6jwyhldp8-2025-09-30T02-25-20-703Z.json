@@ -1,0 +1,14 @@
+{
+  "jobId": "job_1759188238181_6jwyhldp8",
+  "kind": "cleanup-task",
+  "timestamp": "2025-09-30T02:25:20.703Z",
+  "result": {
+    "success": true,
+    "metrics": {
+      "duration_ms": 0,
+      "memory_mb": 95,
+      "cpu_percent": 12,
+      "retry_count": -1
+    }
+  }
+}

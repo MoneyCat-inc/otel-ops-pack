@@ -1,0 +1,27 @@
+pipeline {
+    agent any
+    
+    triggers {
+        cron('0 6 * * *')  // Daily at 6 AM
+    }
+    
+    stages {
+        stage('ECRR Compliance Check') {
+            steps {
+                script {
+                    if (isUnix()) {
+                        sh 'pwsh -File scripts/ci-ecrr-compliance.ps1 -FailOnThreshold'
+                    } else {
+                        powershell 'pwsh -File scripts/ci-ecrr-compliance.ps1 -FailOnThreshold'
+                    }
+                }
+            }
+        }
+    }
+    
+    post {
+        always {
+            archiveArtifacts artifacts: 'artifacts/ecrr-ci-validation.json, artifacts/ecrr-ci-report.md', fingerprint: true
+        }
+    }
+}

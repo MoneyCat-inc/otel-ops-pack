@@ -1,0 +1,14 @@
+{
+  "jobId": "job_1759199253002_mmbtl2h80",
+  "kind": "slow-job",
+  "timestamp": "2025-09-30T02:27:35.031Z",
+  "result": {
+    "success": true,
+    "metrics": {
+      "duration_ms": 2002,
+      "memory_mb": 130,
+      "cpu_percent": 23,
+      "retry_count": -1
+    }
+  }
+}

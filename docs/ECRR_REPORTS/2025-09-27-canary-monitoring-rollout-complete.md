@@ -330,3 +330,23 @@ Tests:
 
 ---
 
+## ECRR Gate
+
+### Examine
+- Facts:
+- Evidence:
+
+### Clean
+- Actions:
+- Guardrails:
+
+### Report
+- Artifacts:
+- Verification:
+
+### Role
+- Actor:
+- Scope:
+
+---
+

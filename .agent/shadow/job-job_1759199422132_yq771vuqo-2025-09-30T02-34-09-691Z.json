@@ -1,0 +1,14 @@
+{
+  "jobId": "job_1759199422132_yq771vuqo",
+  "kind": "test-job",
+  "timestamp": "2025-09-30T02:34:09.691Z",
+  "result": {
+    "success": true,
+    "metrics": {
+      "duration_ms": 0,
+      "memory_mb": 76,
+      "cpu_percent": 13,
+      "retry_count": -1
+    }
+  }
+}

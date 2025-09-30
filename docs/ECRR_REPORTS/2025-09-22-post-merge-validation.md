@@ -92,7 +92,7 @@ The session data implicitly confirms all four required spot checks:
 
 ### Artifact Links
 - **Session Data**: [`artifacts/resonai-session-2025-09-22.json`](../../artifacts/resonai-session-2025-09-22.json)
-- **ECRR-01 Report**: [`docs/ECRR_REPORTS/2025-09-22-ecrr-01-gate-validation.md`](2025-09-22-ecrr-01-gate-validation.md)
+- **ECRR-01 Report**: [`docs/ECRR_REPORTS/2025-09-29-ecrr-01-consolidated.md`](2025-09-29-ecrr-01-consolidated.md)
 - **Verification Logs**: [`artifacts/ecrr-01-verification.log`](../../artifacts/ecrr-01-verification.log)
 
 ## 🎭 Role
@@ -305,6 +305,26 @@ The observability pipeline continues its serene operation at sub-200ms cadence. 
 - ✅ **Evidence Documentation**: Complete with metrics, logs, and verification steps
 - ✅ **Guardrail Adherence**: Local-first, safety, idempotence, verification maintained
 - ✅ **Production Readiness**: [Production status]
+
+---
+
+## ECRR Gate
+
+### Examine
+- Facts:
+- Evidence:
+
+### Clean
+- Actions:
+- Guardrails:
+
+### Report
+- Artifacts:
+- Verification:
+
+### Role
+- Actor:
+- Scope:
 
 ---
 

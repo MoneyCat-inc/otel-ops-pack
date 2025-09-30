@@ -1,0 +1,106 @@
+extensions:
+  health_check:
+    endpoint: 0.0.0.0:13134
+    path: /healthz
+
+receivers:
+  # OTLP receivers for direct application log ingestion
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 127.0.0.1:5317
+      http:
+        endpoint: 0.0.0.0:5318
+  windowseventlog/application:
+    channel: Application
+    start_at: end
+    poll_interval: 200ms
+  windowseventlog/system:
+    channel: System
+    start_at: end
+    poll_interval: 200ms
+  filelog/queue:
+    include:
+      - C:/logs/queue/*.log
+    start_at: end
+    include_file_path: true
+    include_file_name: true
+    poll_interval: 200ms
+    operators:
+      - type: json_parser
+        parse_from: body
+  filelog/canary:
+    include:
+      - C:/logs/**/*.log
+    start_at: end
+    include_file_path: true
+    include_file_name: true
+    poll_interval: 200ms
+
+processors:
+  memory_limiter:
+    limit_mib: 1024
+    check_interval: 500ms
+    spike_limit_mib: 512
+  filter/drop_noise:
+    logs:
+      log_record:
+        - attributes["winlog.event_id"] == 6005
+        - attributes["winlog.event_id"] == 6006
+        - attributes["winlog.event_id"] == 7036
+        - IsMatch(body, "(?i)windows update|service control manager")
+  attributes/redact_sensitive:
+    actions:
+      - key: http.request.header.authorization
+        action: delete
+      - key: http.response.header.authorization
+        action: delete
+      - key: http.request.header.x-api-key
+        action: delete
+  resource/defaults:
+    attributes:
+      - key: deployment.env
+        value: local
+        action: upsert
+      - key: service.name
+        value: windows-logs
+        action: upsert
+  batch/logs:
+    timeout: 200ms
+    send_batch_size: 1024
+    send_batch_max_size: 2048
+
+exporters:
+  otlp:
+    endpoint: localhost:14317
+    tls:
+      insecure: true
+    retry_on_failure:
+      enabled: true
+      initial_interval: 100ms
+      max_interval: 5s
+      max_elapsed_time: 30s
+    sending_queue:
+      enabled: true
+      num_consumers: 8
+      queue_size: 2048
+
+service:
+  extensions:
+    - health_check
+  pipelines:
+    logs:
+      receivers:
+        - otlp
+        - windowseventlog/application
+        - windowseventlog/system
+        - filelog/queue
+        - filelog/canary
+      processors:
+        - memory_limiter
+        - filter/drop_noise
+        - attributes/redact_sensitive
+        - resource/defaults
+        - batch/logs
+      exporters:
+        - otlp

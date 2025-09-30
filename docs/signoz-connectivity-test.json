@@ -1,0 +1,48 @@
+{
+  "title": "SigNoz Basic Connectivity Test",
+  "description": "Test if SigNoz is receiving any logs at all",
+  "tags": ["test", "connectivity"],
+  "layout": [
+    {
+      "x": 0,
+      "y": 0,
+      "w": 6,
+      "h": 4,
+      "i": "total-logs"
+    },
+    {
+      "x": 6,
+      "y": 0,
+      "w": 6,
+      "h": 4,
+      "i": "recent-logs"
+    }
+  ],
+  "widgets": [
+    {
+      "id": "total-logs",
+      "title": "Total Logs (Any)",
+      "description": "Count of ALL logs in SigNoz",
+      "panelTypes": "value",
+      "query": {
+        "queryType": "clickhouse_sql",
+        "query": "SELECT count(*) FROM signoz_logs.distributed_logs_v2",
+        "legend": "Total Logs"
+      },
+      "yAxisUnit": "short"
+    },
+    {
+      "id": "recent-logs",
+      "title": "Recent Logs Sample",
+      "description": "Sample of recent log entries",
+      "panelTypes": "table",
+      "query": {
+        "queryType": "clickhouse_sql",
+        "query": "SELECT timestamp, body, message FROM signoz_logs.distributed_logs_v2 ORDER BY timestamp DESC LIMIT 5",
+        "legend": "Recent Logs"
+      }
+    }
+  ]
+}
+
+

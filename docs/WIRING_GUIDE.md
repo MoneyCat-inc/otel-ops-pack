@@ -108,6 +108,7 @@ The script will:
    - Navigate to Logs
    - Filter: `attributes.dataset = "resonai_analytics"`
    - Look for recent entries
+   - Optional: add filter `attributes.log.source = "win-filelog"` to isolate Windows queue logs (upserted by the Windows collector attributes/label_source processor)
 
 3. **API verification** (if SIGNOZ_API_TOKEN is set):
    ```bash
@@ -158,7 +159,68 @@ histogram_quantile(0.5, sum(rate(attributes.ttv_ms[5m])) by (le))
 
 -- Session analytics
 count by (attributes.session_id, attributes.event) (attributes.dataset="resonai_analytics")
+   ```
+
+### Legacy schema (logs_v2) — sanity checks
+
+Use these ClickHouse queries to verify recent ingestion under the legacy schema. Run from the host via Docker exec or a ClickHouse client.
+
+```bash
+docker exec signoz-clickhouse clickhouse-client --query "
+  SELECT count() FROM signoz_logs.logs_v2
+  WHERE position(body,'agent_queue')>0
+    AND fromUnixTimestamp64Nano(timestamp) >= now() - INTERVAL 60 MINUTE;"
 ```
+
+```bash
+docker exec signoz-clickhouse clickhouse-client --query "
+  SELECT * FROM signoz_logs.logs_v2
+  WHERE position(body,'agent_queue')>0
+    AND fromUnixTimestamp64Nano(timestamp) >= now() - INTERVAL 60 MINUTE
+  ORDER BY timestamp DESC
+  LIMIT 1;"
+```
+
+Filter equivalent in SigNoz UI → Logs (Last 1 hour):
+
+- message contains `agent_queue`
+- or attributes: `service.name = queue-steward` (after adding filelog attributes)
+
+### Current storage toggle state
+
+- `clickhouselogsexporter.use_new_schema: false` (legacy schema active)
+- Do not flip to new schema until the migrator has been run successfully and new tables show fresh rows.
+
+### Safe migration path to new schema
+
+1. Sync schemas:
+
+```bash
+docker compose -f docker-compose-signoz.yml run --rm signoz-schema-migrator-sync
+```
+
+2. Dual-check for last 10 minutes:
+
+```bash
+# Legacy
+docker exec signoz-clickhouse clickhouse-client --query "
+  SELECT count() FROM signoz_logs.logs_v2
+  WHERE position(body,'agent_queue')>0
+    AND fromUnixTimestamp64Nano(timestamp) >= now() - INTERVAL 10 MINUTE;"
+
+# New
+docker exec signoz-clickhouse clickhouse-client --query "
+  SELECT count() FROM signoz_logs.distributed_logs_v2
+  WHERE position(body,'agent_queue')>0
+    AND fromUnixTimestamp64Nano(timestamp) >= now() - INTERVAL 10 MINUTE;"
+```
+
+3. Flip and restart SigNoz collector:
+
+- Edit `signoz-collector-config.yaml`: set `use_new_schema: true`
+- Restart: `docker compose -f docker-compose-signoz.yml restart signoz-otel-collector`
+
+4. Re-emit canary and re-validate against `signoz_logs.distributed_logs_v2` (Last 30 minutes).
 
 ## Troubleshooting
 

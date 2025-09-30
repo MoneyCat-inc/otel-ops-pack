@@ -246,4 +246,112 @@ GROUP BY ts ORDER BY ts;
 
 **ECRR Compliance**: ✅ Complete - Dashboard import process documented, live telemetry verified, and ready for manual UI setup.
 
+## 🏁 Production Readiness
+- Status: Pending (add ✅ Ready / ❌ Not Ready)
+- Risks: (list known risks)
+- Verification: (link to checks/evidence)
+
+### Actor Declaration
+**Agent**: Cursor Agent - Observability Copilot  
+**Role**: ECRR Contributor  
+**Scope**: As per report context
+
+## 🔍 **1. Examine**
+- State: 
+- Evidence:
+
+## 🧹 **2. Clean**
+- Changes: 
+- Guardrails:
+
+## 📝 **3. Report**
+- Actions: 
+- Results:
+
+## 🎭 **4. Role**
+- Actor: 
+- Scope: 
+
+
+## ✅ **ECRR Gate - MANDATORY VALIDATION**
+
+> **⚠️ CRITICAL**: This section is MANDATORY for all ECRR reports. All checkboxes must be completed for report compliance.
+
+### **🔍 Examine**
+- [ ] **Initial State Captured**: Environment state documented before changes
+- [ ] **Environment Documented**: OS, tools, versions, and system status recorded
+- [ ] **Key Findings Identified**: Critical issues or opportunities documented
+- [ ] **Evidence Attached**: Screenshots, logs, configs, test outputs included
+- [ ] **Root Cause Analysis**: Underlying causes identified and documented
+
+### **🧹 Clean**
+- [ ] **Drift Removed**: All identified issues addressed and resolved
+- [ ] **Guardrails Enforced**: Local-first, safety, idempotence, verification principles followed
+- [ ] **Service Management**: Services restarted, ports cleared, conflicts resolved
+- [ ] **File Cleanup**: Temporary files, caches, and artifacts cleaned
+- [ ] **Process Management**: Background processes and conflicts resolved
+
+### **📝 Report**
+- [ ] **Actions Documented**: All actions taken clearly described
+- [ ] **Results Achieved**: Before/after comparison with quantifiable improvements
+- [ ] **TODOs Completed**: All planned tasks marked as completed
+- [ ] **Comprehensive Documentation**: All changes and artifacts documented
+- [ ] **Validation Results**: All verification steps completed successfully
+
+### **🎭 Role**
+- [ ] **Actor Declared**: Agent name and role clearly stated in header and Role section
+- [ ] **Scope Defined**: Clear boundaries of responsibility established
+- [ ] **Guardrails Respected**: All ECRR principles followed throughout
+- [ ] **Integration Maintained**: Compatibility with existing systems preserved
+- [ ] **Accountability Established**: Clear ownership and responsibility declared
+
+### **📊 Quality Assurance**
+- [ ] **4-Section Structure**: Complete Examine → Clean → Report → Role format followed
+- [ ] **Status Declaration**: Clear success/failure/completion status specified
+- [ ] **Artifact Documentation**: All files, scripts, and changes documented
+- [ ] **Reproducible Validation**: Runnable checks provided for every change
+- [ ] **ECRR Compliance**: All mandatory elements included and validated
+
+---
+## 📊 **Status Declaration**
+
+**Status**: [✅ COMPLETE | ❌ FAILED | ⚠️ PARTIAL]  
+**Completion Date**: [YYYY-MM-DD HH:mm:ss UTC]  
+**Agent**: [Agent Name]  
+**Role**: [Role Description]  
+**Mission**: [Mission Description]  
+**Result**: [Result Description]
+
+### **Success Criteria Met**
+- ✅ [Success criterion 1]
+- ✅ [Success criterion 2]
+- ✅ [Success criterion 3]
+
+### **Quality Gates Passed**
+- ✅ **ECRR Compliance**: Full 4-section framework implementation
+- ✅ **Evidence Documentation**: Complete with metrics, logs, and verification steps
+- ✅ **Guardrail Adherence**: Local-first, safety, idempotence, verification maintained
+- ✅ **Production Readiness**: [Production status]
+
+---
+
+## ECRR Gate
+
+### Examine
+- Facts:
+- Evidence:
+
+### Clean
+- Actions:
+- Guardrails:
+
+### Report
+- Artifacts:
+- Verification:
+
+### Role
+- Actor:
+- Scope:
+
+---
 

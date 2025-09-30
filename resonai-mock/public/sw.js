@@ -1,10 +1,13 @@
 /**
- * Service Worker - Offline Isolation Support
+ * Service Worker - Offline Cross-Origin Isolation Support
  * 
- * T4: Offline Isolation
+ * PR-C: Offline COOP/COEP via SW + Playwright
  * Ensures cross-origin isolation headers are preserved when serving
- * offline content. Critical for Firefox SharedArrayBuffer support.
+ * offline content. Critical for SharedArrayBuffer and AudioWorklet support.
  */
+
+// Feature flag for COOP/COEP enforcement
+self.COOP_COEP_ENFORCED = true;
 
 const CACHE_NAME = 'resonai-offline-v1';
 const OFFLINE_PAGES = [
@@ -28,6 +31,61 @@ const CRITICAL_HEADERS = [
   'X-Frame-Options'
 ];
 
+// Helper function to preserve or add critical headers (passthrough approach)
+function preserveOrAddCriticalHeaders(headers) {
+  const newHeaders = new Headers(headers);
+  
+  // Only add headers if they don't already exist (preserve existing ones)
+  if (!newHeaders.has('Cross-Origin-Opener-Policy')) {
+    newHeaders.set('Cross-Origin-Opener-Policy', 'same-origin');
+  }
+  
+  if (!newHeaders.has('Cross-Origin-Embedder-Policy')) {
+    newHeaders.set('Cross-Origin-Embedder-Policy', 'require-corp');
+  }
+  
+  if (!newHeaders.has('Cross-Origin-Resource-Policy')) {
+    newHeaders.set('Cross-Origin-Resource-Policy', 'cross-origin');
+  }
+  
+  if (!newHeaders.has('Permissions-Policy')) {
+    newHeaders.set('Permissions-Policy', 'cross-origin-isolated=()');
+  }
+  
+  if (!newHeaders.has('X-Content-Type-Options')) {
+    newHeaders.set('X-Content-Type-Options', 'nosniff');
+  }
+  
+  if (!newHeaders.has('Referrer-Policy')) {
+    newHeaders.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  }
+  
+  if (!newHeaders.has('X-Frame-Options')) {
+    newHeaders.set('X-Frame-Options', 'SAMEORIGIN');
+  }
+  
+  // Only set CSP if it doesn't exist (preserve server-set CSP)
+  if (!newHeaders.has('Content-Security-Policy')) {
+    newHeaders.set('Content-Security-Policy', [
+      "default-src 'self'",
+      "script-src 'self'",
+      "style-src 'self'",
+      "img-src 'self' data: https: blob:",
+      "font-src 'self'",
+      "connect-src 'self' blob:",
+      "worker-src 'self' blob:",
+      "child-src 'self' blob:",
+      "frame-ancestors 'none'",
+      "object-src 'none'",
+      "base-uri 'self'",
+      "form-action 'self'",
+      "upgrade-insecure-requests"
+    ].join('; '));
+  }
+  
+  return newHeaders;
+}
+
 // Install event - cache offline pages
 self.addEventListener('install', (event) => {
   console.log('Service Worker: Installing...');
@@ -36,7 +94,15 @@ self.addEventListener('install', (event) => {
     caches.open(CACHE_NAME)
       .then((cache) => {
         console.log('Service Worker: Caching offline pages');
-        return cache.addAll(OFFLINE_PAGES);
+        // Cache pages individually to handle failures gracefully
+        return Promise.allSettled(
+          OFFLINE_PAGES.map(page => 
+            cache.add(page).catch(error => {
+              console.warn(`Service Worker: Failed to cache ${page}:`, error);
+              return null; // Continue with other pages
+            })
+          )
+        );
       })
       .then(() => {
         console.log('Service Worker: Installation complete');
@@ -68,17 +134,21 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Fetch event - serve from cache with preserved headers
+// Fetch event - serve from cache with preserved headers (passthrough approach)
 self.addEventListener('fetch', (event) => {
-  // Only handle navigation requests
-  if (event.request.mode !== 'navigate') {
+  // Handle navigation requests and critical resources
+  if (event.request.mode !== 'navigate' && 
+      !event.request.url.includes('/worklets/') &&
+      !event.request.url.includes('/api/') &&
+      !event.request.destination.includes('script') &&
+      !event.request.destination.includes('style')) {
     return;
   }
 
   event.respondWith(
     fetch(event.request)
       .then((response) => {
-        // If online, cache the response and return it
+        // If online, preserve original response headers and cache it
         if (response.status === 200) {
           const responseClone = response.clone();
           caches.open(CACHE_NAME)
@@ -86,68 +156,38 @@ self.addEventListener('fetch', (event) => {
               cache.put(event.request, responseClone);
             });
         }
+        // Return original response with original headers (passthrough)
         return response;
       })
       .catch(() => {
-        // If offline, serve from cache with preserved headers
+        // If offline, serve from cache with preserved/added headers
         return caches.match(event.request)
-          .then((cachedResponse) => {
+          .then(async (cachedResponse) => {
             if (cachedResponse) {
               console.log('Service Worker: Serving offline page:', event.request.url);
               
-              // Create a new response with preserved headers
-              const headers = new Headers(cachedResponse.headers);
+              // Clone the cached response to avoid consuming the body
+              const offlineClone = cachedResponse.clone();
+              const headers = preserveOrAddCriticalHeaders(offlineClone.headers);
               
-              // Ensure critical headers are present for cross-origin isolation
-              headers.set('Cross-Origin-Opener-Policy', 'same-origin');
-              headers.set('Cross-Origin-Embedder-Policy', 'require-corp');
-              headers.set('Cross-Origin-Resource-Policy', 'cross-origin');
-              headers.set('Permissions-Policy', 'cross-origin-isolated=()');
-              headers.set('X-Content-Type-Options', 'nosniff');
-              headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
-              headers.set('X-Frame-Options', 'SAMEORIGIN');
-              
-              // Set CSP for offline mode
-              headers.set('Content-Security-Policy', [
-                "default-src 'self'",
-                "script-src 'self'",
-                "style-src 'self'",
-                "img-src 'self' data: https: blob:",
-                "font-src 'self'",
-                "connect-src 'self' blob:",
-                "worker-src 'self' blob:",
-                "child-src 'self' blob:",
-                "frame-ancestors 'none'",
-                "object-src 'none'",
-                "base-uri 'self'",
-                "form-action 'self'",
-                "upgrade-insecure-requests"
-              ].join('; '));
-              
-              return new Response(cachedResponse.body, {
-                status: cachedResponse.status,
-                statusText: cachedResponse.statusText,
+              return new Response(await offlineClone.arrayBuffer(), {
+                status: offlineClone.status,
+                statusText: offlineClone.statusText,
                 headers: headers
               });
             }
             
             // If no cached version, return offline page
             return caches.match('/')
-              .then((offlinePage) => {
+              .then(async (offlinePage) => {
                 if (offlinePage) {
                   console.log('Service Worker: Serving offline fallback page');
                   
-                  // Create response with headers for offline page
-                  const headers = new Headers(offlinePage.headers);
-                  headers.set('Cross-Origin-Opener-Policy', 'same-origin');
-                  headers.set('Cross-Origin-Embedder-Policy', 'require-corp');
-                  headers.set('Cross-Origin-Resource-Policy', 'cross-origin');
-                  headers.set('Permissions-Policy', 'cross-origin-isolated=()');
-                  headers.set('X-Content-Type-Options', 'nosniff');
-                  headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
-                  headers.set('X-Frame-Options', 'SAMEORIGIN');
+                  // Clone the offline page response to avoid consuming the body
+                  const offlinePageClone = offlinePage.clone();
+                  const headers = preserveOrAddCriticalHeaders(offlinePageClone.headers);
                   
-                  return new Response(offlinePage.body, {
+                  return new Response(await offlinePageClone.arrayBuffer(), {
                     status: 200,
                     statusText: 'OK',
                     headers: headers
@@ -155,7 +195,7 @@ self.addEventListener('fetch', (event) => {
                 }
                 
                 // Last resort - return a basic offline page
-                return new Response(`
+                const offlinePageContent = `
                   <!DOCTYPE html>
                   <html>
                     <head>
@@ -168,19 +208,16 @@ self.addEventListener('fetch', (event) => {
                       <p>This page will be available when you're back online.</p>
                     </body>
                   </html>
-                `, {
+                `;
+                
+                const headers = new Headers();
+                headers.set('Content-Type', 'text/html');
+                const enhancedHeaders = preserveOrAddCriticalHeaders(headers);
+                
+                return new Response(offlinePageContent, {
                   status: 200,
                   statusText: 'OK',
-                  headers: {
-                    'Content-Type': 'text/html',
-                    'Cross-Origin-Opener-Policy': 'same-origin',
-                    'Cross-Origin-Embedder-Policy': 'require-corp',
-                    'Cross-Origin-Resource-Policy': 'cross-origin',
-                    'Permissions-Policy': 'cross-origin-isolated=()',
-                    'X-Content-Type-Options': 'nosniff',
-                    'Referrer-Policy': 'strict-origin-when-cross-origin',
-                    'X-Frame-Options': 'SAMEORIGIN'
-                  }
+                  headers: enhancedHeaders
                 });
               });
           });

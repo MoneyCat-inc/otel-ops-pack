@@ -19,6 +19,16 @@ receivers:
     channel: System
     start_at: end
     poll_interval: 200ms
+  filelog/queue:
+    include:
+      - C:/logs/queue/*.log
+    start_at: end
+    include_file_path: true
+    include_file_name: true
+    poll_interval: 200ms
+    operators:
+      - type: json_parser
+        parse_from: body
   filelog/canary:
     include:
       - C:/logs/**/*.log
@@ -29,7 +39,7 @@ receivers:
 
 processors:
   memory_limiter:
-    limit_mib: 1024
+    limit_mib: 1536
     check_interval: 500ms
     spike_limit_mib: 512
   filter/drop_noise:
@@ -52,17 +62,20 @@ processors:
       - key: deployment.env
         value: local
         action: upsert
-      - key: service.name
-        value: windows-logs
-        action: upsert
+  transform/queue_attributes:
+    log_statements:
+      - context: log
+        statements:
+          - set(resource.attributes["service.name"], "queue-steward") where attributes["log.file.path"] == "C:\\logs\\queue\\health.log"
+          - set(attributes["log.source"], "win-filelog") where attributes["log.file.path"] == "C:\\logs\\queue\\health.log"
   batch/logs:
     timeout: 200ms
-    send_batch_size: 1024
-    send_batch_max_size: 2048
+    send_batch_size: 128
+    send_batch_max_size: 256
 
 exporters:
-  otlphttp:
-    endpoint: http://localhost:14318
+  otlp:
+    endpoint: localhost:14317
     tls:
       insecure: true
     retry_on_failure:
@@ -72,8 +85,8 @@ exporters:
       max_elapsed_time: 30s
     sending_queue:
       enabled: true
-      num_consumers: 8
-      queue_size: 2048
+      num_consumers: 2
+      queue_size: 256
 
 service:
   extensions:
@@ -84,12 +97,17 @@ service:
         - otlp
         - windowseventlog/application
         - windowseventlog/system
+        - filelog/queue
         - filelog/canary
       processors:
         - memory_limiter
         - filter/drop_noise
         - attributes/redact_sensitive
         - resource/defaults
+        - transform/queue_attributes
         - batch/logs
       exporters:
-        - otlphttp
+        - otlp
+
+
+

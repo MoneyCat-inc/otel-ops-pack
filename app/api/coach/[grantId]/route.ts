@@ -328,7 +328,5 @@ export const DELETE = withOTel(
   )
 );
 
-// Export config for Edge Runtime
-export const config = {
-  runtime: 'edge',
-};
+// Export runtime configuration for Edge Runtime
+export const runtime = 'edge';

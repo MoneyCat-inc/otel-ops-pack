@@ -1,0 +1,14 @@
+{
+  "jobId": "job_1759199482238_rfbxpbg2u",
+  "kind": "test-job",
+  "timestamp": "2025-09-30T02:34:09.714Z",
+  "result": {
+    "success": true,
+    "metrics": {
+      "duration_ms": 0,
+      "memory_mb": 131,
+      "cpu_percent": 10,
+      "retry_count": -1
+    }
+  }
+}
