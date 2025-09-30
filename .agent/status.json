@@ -1,22 +1,21 @@
 {
-  "timestamp": "2025-09-30T02:34:39.381Z",
-  "queueDepth": 0,
+  "timestamp": "2025-09-30T05:58:44.042Z",
+  "queueDepth": 2,
   "runningCount": 0,
   "lastRuns": [
     {
-      "id": "job_1759199482273_0l0khueyw",
-      "kind": "bulk-job",
-      "status": "completed",
-      "durationMs": 21
+      "id": "test-job-1",
+      "kind": "test-task",
+      "status": "pending"
     },
     {
-      "id": "job_1759199482276_33z92yfy6",
-      "kind": "bulk-job",
-      "status": "completed",
-      "durationMs": 15
+      "id": "test-job-2",
+      "kind": "cleanup-task",
+      "status": "pending"
     }
   ],
   "admissionCap": 200,
   "shadowMode": true,
-  "driver": "sqlite"
+  "driver": "json",
+  "lockPresent": false
 }

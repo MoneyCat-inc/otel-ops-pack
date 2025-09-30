@@ -33,6 +33,8 @@
     "agent:test-runner": "tsx scripts/agent/test-runner.ts",
     "agent:verify": "tsx scripts/agent/verify-shadow-canonical.ts",
     "agent:flip": "tsx scripts/agent/flip-shadow-canonical.ts",
+    "agent:nightly-verify": "pwsh scripts/agent/nightly-verify.ps1",
+    "agent:nightly-diagnostics": "pwsh scripts/nightly-queue-diagnostics.ps1",
     "test:isolation-offline": "playwright test tests/isolation_offline.spec.ts"
   },
   "dependencies": {

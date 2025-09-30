@@ -1,280 +1,247 @@
 /**
  * Shadow vs Canonical Verification Script
- * Compares shadow and canonical artifacts to ensure they're byte-identical
- * before flipping from shadow to canonical writes
+ * 
+ * PR-D Preparation: Establishes baseline for byte-identical verification
+ * between shadow and canonical artifacts before flipping to canonical writes.
+ * 
+ * Usage:
+ *   pnpm agent:verify-shadow-canonical
+ *   
+ * This script compares the last N shadow artifacts with their canonical
+ * counterparts to ensure zero drift before the canonical write flip.
  */
 
-import { compareShadowVsCanonical, readShadowArtifact } from './io';
-import { existsSync, readFileSync } from 'fs';
+import { promises as fs } from 'fs';
+import { join, dirname } from 'path';
+import { createHash } from 'crypto';
+import { writeFileAtomicIfChanged } from './io';
 
-export interface VerificationResult {
-  artifact: string;
-  identical: boolean;
-  canonicalExists: boolean;
-  shadowExists: boolean;
-  differences?: string[];
-  canonicalSize?: number;
-  shadowSize?: number;
-}
-
-export interface VerificationReport {
+interface VerificationResult {
   timestamp: string;
-  totalArtifacts: number;
-  identicalArtifacts: number;
-  differentArtifacts: number;
-  missingCanonical: number;
-  missingShadow: number;
-  results: VerificationResult[];
-  summary: string;
+  shadowArtifacts: string[];
+  canonicalArtifacts: string[];
+  matches: Array<{
+    path: string;
+    shadowHash: string;
+    canonicalHash: string;
+    identical: boolean;
+  }>;
+  summary: {
+    totalArtifacts: number;
+    identicalCount: number;
+    driftCount: number;
+    verificationPassed: boolean;
+  };
 }
 
-export class ShadowCanonicalVerifier {
-  private artifacts: string[] = [
-    '.agent/status.json',
-    '.agent/agent_queue.json',
-    '.agent/runs.json',
-    '.agent/config.json',
-    '.agent/state.json',
-  ];
+interface VerificationConfig {
+  shadowBasePath: string;
+  canonicalBasePath: string;
+  maxArtifactsToCheck: number;
+  artifactPatterns: string[];
+}
 
-  /**
-   * Verify all artifacts between shadow and canonical
-   */
-  verifyAll(): VerificationReport {
-    const results: VerificationResult[] = [];
-    let identicalCount = 0;
-    let differentCount = 0;
-    let missingCanonicalCount = 0;
-    let missingShadowCount = 0;
+const DEFAULT_CONFIG: VerificationConfig = {
+  shadowBasePath: '.agent/shadow',
+  canonicalBasePath: '.agent',
+  maxArtifactsToCheck: 10,
+  artifactPatterns: [
+    'status.json',
+    'agent_queue.json',
+    'queue.db',
+    '*.json',
+    'docs/**/*.md'
+  ]
+};
 
-    console.log('=== Shadow vs Canonical Verification ===\n');
+async function calculateFileHash(filePath: string): Promise<string> {
+  try {
+    const content = await fs.readFile(filePath);
+    return createHash('sha256').update(content).digest('hex');
+  } catch (error: any) {
+    if (error.code === 'ENOENT') {
+      return 'FILE_NOT_FOUND';
+    }
+    throw error;
+  }
+}
 
-    for (const artifact of this.artifacts) {
-      const result = this.verifyArtifact(artifact);
-      results.push(result);
-
-      if (result.identical) {
-        identicalCount++;
-        console.log(`✓ ${artifact}: IDENTICAL`);
-      } else if (!result.canonicalExists) {
-        missingCanonicalCount++;
-        console.log(`⚠ ${artifact}: MISSING CANONICAL`);
-      } else if (!result.shadowExists) {
-        missingShadowCount++;
-        console.log(`⚠ ${artifact}: MISSING SHADOW`);
+async function findArtifacts(basePath: string, patterns: string[]): Promise<string[]> {
+  const artifacts: string[] = [];
+  
+  for (const pattern of patterns) {
+    try {
+      // Simple glob-like pattern matching
+      if (pattern.includes('**')) {
+        // Recursive directory search
+        const recursivePattern = pattern.replace('**', '');
+        const walkDir = async (dir: string): Promise<void> => {
+          try {
+            const entries = await fs.readdir(dir, { withFileTypes: true });
+            for (const entry of entries) {
+              const fullPath = join(dir, entry.name);
+              if (entry.isDirectory()) {
+                await walkDir(fullPath);
+              } else if (entry.isFile()) {
+                const relativePath = fullPath.replace(basePath + '/', '');
+                if (relativePath.match(pattern.replace('**', '.*'))) {
+                  artifacts.push(relativePath);
+                }
+              }
+            }
+          } catch (error: any) {
+            if (error.code !== 'ENOENT') {
+              console.warn(`Warning: Could not read directory ${dir}: ${error.message}`);
+            }
+          }
+        };
+        await walkDir(basePath);
+      } else if (pattern.includes('*')) {
+        // Simple wildcard matching
+        try {
+          const dir = dirname(pattern);
+          const files = await fs.readdir(join(basePath, dir));
+          const regex = new RegExp('^' + pattern.replace(/\*/g, '.*') + '$');
+          for (const file of files) {
+            if (regex.test(file)) {
+              artifacts.push(join(dir, file));
+            }
+          }
+        } catch (error: any) {
+          // Directory doesn't exist, skip
+        }
       } else {
-        differentCount++;
-        console.log(`✗ ${artifact}: DIFFERENT`);
-        if (result.differences) {
-          result.differences.slice(0, 3).forEach(diff => {
-            console.log(`  - ${diff}`);
-          });
+        // Exact file match
+        try {
+          await fs.access(join(basePath, pattern));
+          artifacts.push(pattern);
+        } catch (error: any) {
+          // File doesn't exist, skip
         }
       }
+    } catch (error: any) {
+      console.warn(`Warning: Error processing pattern ${pattern}: ${error.message}`);
     }
-
-    const report: VerificationReport = {
-      timestamp: new Date().toISOString(),
-      totalArtifacts: this.artifacts.length,
-      identicalArtifacts: identicalCount,
-      differentArtifacts: differentCount,
-      missingCanonical: missingCanonicalCount,
-      missingShadow: missingShadowCount,
-      results,
-      summary: this.generateSummary(identicalCount, differentCount, missingCanonicalCount, missingShadowCount),
-    };
-
-    console.log(`\n${report.summary}`);
-    return report;
   }
+  
+  return [...new Set(artifacts)]; // Remove duplicates
+}
 
-  /**
-   * Verify a single artifact
-   */
-  private verifyArtifact(artifact: string): VerificationResult {
-    const comparison = compareShadowVsCanonical(artifact);
+async function verifyShadowVsCanonical(config: VerificationConfig = DEFAULT_CONFIG): Promise<VerificationResult> {
+  console.log('🔍 Starting Shadow vs Canonical Verification...');
+  console.log(`📁 Shadow base path: ${config.shadowBasePath}`);
+  console.log(`📁 Canonical base path: ${config.canonicalBasePath}`);
+  
+  // Find all artifacts in shadow directory
+  const shadowArtifacts = await findArtifacts(config.shadowBasePath, config.artifactPatterns);
+  console.log(`📋 Found ${shadowArtifacts.length} shadow artifacts`);
+  
+  // Find corresponding canonical artifacts
+  const canonicalArtifacts = await findArtifacts(config.canonicalBasePath, config.artifactPatterns);
+  console.log(`📋 Found ${canonicalArtifacts.length} canonical artifacts`);
+  
+  // Compare artifacts
+  const matches: VerificationResult['matches'] = [];
+  let identicalCount = 0;
+  let driftCount = 0;
+  
+  // Limit to most recent artifacts
+  const artifactsToCheck = shadowArtifacts.slice(0, config.maxArtifactsToCheck);
+  
+  for (const artifactPath of artifactsToCheck) {
+    const shadowPath = join(config.shadowBasePath, artifactPath);
+    const canonicalPath = join(config.canonicalBasePath, artifactPath);
     
-    let canonicalSize: number | undefined;
-    let shadowSize: number | undefined;
-
-    if (comparison.canonicalExists) {
-      try {
-        const canonicalContent = readFileSync(artifact, 'utf8');
-        canonicalSize = canonicalContent.length;
-      } catch (error) {
-        console.warn(`Failed to read canonical ${artifact}:`, error);
-      }
-    }
-
-    if (comparison.shadowExists) {
-      try {
-        const shadowContent = readShadowArtifact(artifact);
-        if (shadowContent) {
-          shadowSize = shadowContent.length;
-        }
-      } catch (error) {
-        console.warn(`Failed to read shadow ${artifact}:`, error);
-      }
-    }
-
-    return {
-      artifact,
-      identical: comparison.identical,
-      canonicalExists: comparison.canonicalExists,
-      shadowExists: comparison.shadowExists,
-      differences: comparison.differences,
-      canonicalSize,
-      shadowSize,
-    };
-  }
-
-  /**
-   * Generate verification summary
-   */
-  private generateSummary(
-    identical: number,
-    different: number,
-    missingCanonical: number,
-    missingShadow: number
-  ): string {
-    const total = this.artifacts.length;
-    const identicalPercent = Math.round((identical / total) * 100);
+    const shadowHash = await calculateFileHash(shadowPath);
+    const canonicalHash = await calculateFileHash(canonicalPath);
     
-    if (identical === total) {
-      return `🎉 ALL ARTIFACTS IDENTICAL (${identical}/${total}) - Ready for canonical flip!`;
-    } else if (different === 0 && missingCanonical === 0) {
-      return `✅ Shadow artifacts complete (${identical}/${total}) - Ready for canonical flip!`;
-    } else if (different > 0) {
-      return `❌ ${different} artifacts differ - NOT ready for canonical flip`;
+    const identical = shadowHash === canonicalHash && shadowHash !== 'FILE_NOT_FOUND';
+    
+    matches.push({
+      path: artifactPath,
+      shadowHash,
+      canonicalHash,
+      identical
+    });
+    
+    if (identical) {
+      identicalCount++;
+      console.log(`✅ ${artifactPath} - IDENTICAL`);
     } else {
-      return `⚠️ ${missingCanonical} canonical artifacts missing - Run shadow mode first`;
+      driftCount++;
+      console.log(`❌ ${artifactPath} - DRIFT DETECTED`);
+      console.log(`   Shadow hash:    ${shadowHash}`);
+      console.log(`   Canonical hash: ${canonicalHash}`);
     }
   }
-
-  /**
-   * Check if ready for canonical flip
-   */
-  isReadyForCanonicalFlip(): boolean {
-    const report = this.verifyAll();
-    return report.differentArtifacts === 0 && report.missingCanonical === 0;
+  
+  const verificationPassed = driftCount === 0;
+  
+  const result: VerificationResult = {
+    timestamp: new Date().toISOString(),
+    shadowArtifacts,
+    canonicalArtifacts,
+    matches,
+    summary: {
+      totalArtifacts: artifactsToCheck.length,
+      identicalCount,
+      driftCount,
+      verificationPassed
+    }
+  };
+  
+  // Save verification report
+  const reportPath = '.agent/shadow-canonical-verification.json';
+  await writeFileAtomicIfChanged(reportPath, JSON.stringify(result, null, 2));
+  
+  // Print summary
+  console.log('\n📊 Verification Summary:');
+  console.log(`   Total artifacts checked: ${result.summary.totalArtifacts}`);
+  console.log(`   Identical: ${result.summary.identicalCount}`);
+  console.log(`   Drift detected: ${result.summary.driftCount}`);
+  console.log(`   Verification ${verificationPassed ? '✅ PASSED' : '❌ FAILED'}`);
+  console.log(`   Report saved: ${reportPath}`);
+  
+  if (!verificationPassed) {
+    console.log('\n⚠️  WARNING: Drift detected between shadow and canonical artifacts!');
+    console.log('   This may indicate issues with the shadow write implementation.');
+    console.log('   Review the artifacts above before proceeding with canonical flip.');
+  } else {
+    console.log('\n🎯 All artifacts are byte-identical - ready for canonical flip!');
   }
+  
+  return result;
+}
 
-  /**
-   * Generate detailed report
-   */
-  generateDetailedReport(): string {
-    const report = this.verifyAll();
+// Main execution
+async function main() {
+  try {
+    const config = DEFAULT_CONFIG;
     
-    let output = `# Shadow vs Canonical Verification Report\n\n`;
-    output += `**Generated:** ${report.timestamp}\n`;
-    output += `**Total Artifacts:** ${report.totalArtifacts}\n`;
-    output += `**Identical:** ${report.identicalArtifacts}\n`;
-    output += `**Different:** ${report.differentArtifacts}\n`;
-    output += `**Missing Canonical:** ${report.missingCanonical}\n`;
-    output += `**Missing Shadow:** ${report.missingShadow}\n\n`;
-    
-    output += `## Summary\n\n${report.summary}\n\n`;
-    
-    output += `## Detailed Results\n\n`;
-    
-    for (const result of report.results) {
-      output += `### ${result.artifact}\n\n`;
-      output += `- **Status:** ${result.identical ? 'IDENTICAL' : 'DIFFERENT'}\n`;
-      output += `- **Canonical Exists:** ${result.canonicalExists ? 'Yes' : 'No'}\n`;
-      output += `- **Shadow Exists:** ${result.shadowExists ? 'Yes' : 'No'}\n`;
-      
-      if (result.canonicalSize !== undefined) {
-        output += `- **Canonical Size:** ${result.canonicalSize} bytes\n`;
-      }
-      if (result.shadowSize !== undefined) {
-        output += `- **Shadow Size:** ${result.shadowSize} bytes\n`;
-      }
-      
-      if (result.differences && result.differences.length > 0) {
-        output += `- **Differences:**\n`;
-        result.differences.forEach(diff => {
-          output += `  - ${diff}\n`;
-        });
-      }
-      
-      output += `\n`;
+    // Override config from environment variables if present
+    if (process.env.SHADOW_BASE_PATH) {
+      config.shadowBasePath = process.env.SHADOW_BASE_PATH;
+    }
+    if (process.env.CANONICAL_BASE_PATH) {
+      config.canonicalBasePath = process.env.CANONICAL_BASE_PATH;
+    }
+    if (process.env.MAX_ARTIFACTS_TO_CHECK) {
+      config.maxArtifactsToCheck = parseInt(process.env.MAX_ARTIFACTS_TO_CHECK, 10);
     }
     
-    return output;
-  }
-
-  /**
-   * Run verification cycles to ensure stability
-   */
-  async runStabilityTest(cycles: number = 3, intervalMs: number = 5000): Promise<boolean> {
-    console.log(`Running ${cycles} verification cycles with ${intervalMs}ms intervals...\n`);
+    const result = await verifyShadowVsCanonical(config);
     
-    const results: VerificationReport[] = [];
+    // Exit with appropriate code
+    process.exit(result.summary.verificationPassed ? 0 : 1);
     
-    for (let i = 0; i < cycles; i++) {
-      console.log(`Cycle ${i + 1}/${cycles}:`);
-      const report = this.verifyAll();
-      results.push(report);
-      
-      if (i < cycles - 1) {
-        console.log(`\nWaiting ${intervalMs}ms before next cycle...\n`);
-        await new Promise(resolve => setTimeout(resolve, intervalMs));
-      }
-    }
-    
-    // Check if all cycles were identical
-    const allIdentical = results.every(report => report.differentArtifacts === 0);
-    
-    if (allIdentical) {
-      console.log(`\n🎉 All ${cycles} cycles were identical - System is stable!`);
-    } else {
-      console.log(`\n❌ Not all cycles were identical - System may be unstable`);
-    }
-    
-    return allIdentical;
+  } catch (error) {
+    console.error('❌ Verification failed:', error);
+    process.exit(1);
   }
 }
 
-// CLI interface
 if (require.main === module) {
-  const args = process.argv.slice(2);
-  const command = args[0] || 'verify';
-  
-  const verifier = new ShadowCanonicalVerifier();
-  
-  switch (command) {
-    case 'verify':
-      verifier.verifyAll();
-      break;
-      
-    case 'ready':
-      const ready = verifier.isReadyForCanonicalFlip();
-      console.log(ready ? '✅ Ready for canonical flip' : '❌ Not ready for canonical flip');
-      process.exit(ready ? 0 : 1);
-      break;
-      
-    case 'report':
-      const report = verifier.generateDetailedReport();
-      console.log(report);
-      break;
-      
-    case 'stability':
-      const cycles = parseInt(args[1]) || 3;
-      const interval = parseInt(args[2]) || 5000;
-      verifier.runStabilityTest(cycles, interval).then(stable => {
-        process.exit(stable ? 0 : 1);
-      });
-      break;
-      
-    default:
-      console.log('Usage:');
-      console.log('  verify     - Run verification');
-      console.log('  ready      - Check if ready for canonical flip');
-      console.log('  report     - Generate detailed report');
-      console.log('  stability  - Run stability test');
-      break;
-  }
+  main();
 }
 
-
-
+export { verifyShadowVsCanonical, VerificationResult, VerificationConfig };

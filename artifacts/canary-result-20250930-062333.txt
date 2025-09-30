@@ -1,0 +1,20 @@
+The argument 'scripts/canary-test.ps1' is not recognized as the name of a script file. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+
+Usage: pwsh[.exe] [-Login] [[-File] <filePath> [args]]
+                  [-Command { - | <script-block> [-args <arg-array>]
+                                | <string> [<CommandParameters>] } ]
+                  [-CommandWithArgs <string> [<CommandParameters>]
+                  [-ConfigurationName <string>] [-ConfigurationFile <filePath>]
+                  [-CustomPipeName <string>] [-EncodedCommand <Base64EncodedCommand>]
+                  [-ExecutionPolicy <ExecutionPolicy>] [-InputFormat {Text | XML}]
+                  [-Interactive] [-MTA] [-NoExit] [-NoLogo] [-NonInteractive] [-NoProfile]
+                  [-NoProfileLoadTime] [-OutputFormat {Text | XML}] 
+                  [-SettingsFile <filePath>] [-SSHServerMode] [-STA] 
+                  [-Version] [-WindowStyle <style>] 
+                  [-WorkingDirectory <directoryPath>]
+
+       pwsh[.exe] -h | -Help | -? | /?
+
+PowerShell Online Help https://aka.ms/powershell-docs
+
+All parameters are case-insensitive.

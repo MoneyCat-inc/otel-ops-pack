@@ -1,276 +1,372 @@
 # Queue Crash Recovery Runbook
 
-This runbook provides step-by-step procedures for recovering from queue system crashes and failures.
+**Purpose**: Recovery procedures for the queue steward system in case of crashes, corruption, or operational issues.
 
-## Quick Recovery Commands
+**Scope**: Covers SQLite database recovery, driver fallback, emergency pause procedures, and canonical/shadow mode transitions.
 
-### Check Queue Health
+**Current Mode**: **CANONICAL WRITES** (default since PR-D completion)
+- New jobs write directly to `.agent/` canonical paths
+- Shadow mode available for rollback via `QUEUE_SHADOW=1`
+
+---
+
+## 🚨 Emergency Procedures
+
+### Immediate Pause
 ```bash
-# Check SQLite database integrity
-npm run agent:status
+# Halt all queue processing instantly
+touch .agent/LOCK
 
-# Verify shadow vs canonical artifacts
-tsx scripts/agent/verify-shadow-canonical.ts ready
-
-# Test SQLite functionality
-npm run agent:test-sqlite
+# Verify pause is active
+pnpm agent:status
+# Should show: "Lock Present: YES"
 ```
 
-### Emergency Rollback
+### Resume After Investigation
 ```bash
-# Rollback to shadow mode
-export QUEUE_SHADOW=1
-npm run agent:status
+# Remove lock to resume processing
+rm .agent/LOCK
 
-# Rollback to JSON queue
-export QUEUE_DRIVER=json
-npm run agent:status
+# Verify resume
+pnpm agent:status
+# Should show: "Lock Present: NO"
 ```
 
-## Detailed Recovery Procedures
+---
 
-### 1. SQLite Database Corruption
+## 🔧 Database Recovery
 
-**Symptoms:**
-- Agent status shows errors
-- Jobs not processing
-- Database integrity check fails
+### SQLite Integrity Check
+```bash
+# Check database integrity
+cd C:\otel
+pnpm exec tsx -e "
+const Database = require('better-sqlite3');
+const db = new Database('.agent/queue.db');
+const result = db.prepare('PRAGMA integrity_check').get();
+console.log('Integrity check result:', result);
+db.close();
+"
 
-**Recovery Steps:**
+# Expected output: { integrity_check: 'ok' }
+```
 
-1. **Check Database Integrity**
+### SQLite Corruption Recovery
+If integrity check fails:
+
+1. **Backup corrupted database**:
    ```bash
-   tsx -e "
-   import { AgentDatabase } from './scripts/agent/db';
-   const db = new AgentDatabase('.agent/queue.db', false);
-   const integrity = db.integrityCheck();
-   console.log('Integrity check:', integrity ? 'PASS' : 'FAIL');
-   db.close();
-   "
-   ```
-
-2. **If Integrity Check Fails:**
-   ```bash
-   # Backup corrupted database
    cp .agent/queue.db .agent/queue.db.corrupted.$(date +%Y%m%d_%H%M%S)
+   ```
+
+2. **Restore from backup**:
+   ```bash
+   # Check for recent backups
+   ls -la .agent/queue.db.backup.*
    
-   # Remove corrupted database
-   rm .agent/queue.db
-   
-   # Recreate from JSON queue
-   npm run agent:migrate
+   # Restore most recent backup
+   cp .agent/queue.db.backup.$(ls -t .agent/queue.db.backup.* | head -1 | cut -d. -f4) .agent/queue.db
    ```
 
-3. **Verify Recovery:**
+3. **Fallback to JSON driver**:
    ```bash
-   npm run agent:status
-   npm run agent:test-sqlite
-   ```
-
-### 2. WAL File Issues
-
-**Symptoms:**
-- Database locked errors
-- WAL file growing large
-- Performance degradation
-
-**Recovery Steps:**
-
-1. **Check WAL Size**
-   ```bash
-   tsx -e "
-   import { AgentDatabase } from './scripts/agent/db';
-   const db = new AgentDatabase('.agent/queue.db', true);
-   const walSize = db.getWalSize();
-   console.log('WAL size:', walSize, 'pages');
-   db.close();
-   "
-   ```
-
-2. **Force WAL Checkpoint**
-   ```bash
-   tsx -e "
-   import { AgentDatabase } from './scripts/agent/db';
-   const db = new AgentDatabase('.agent/queue.db', true);
-   db.checkpoint();
-   console.log('WAL checkpoint completed');
-   db.close();
-   "
-   ```
-
-3. **If WAL Issues Persist:**
-   ```bash
-   # Disable WAL mode temporarily
-   export QUEUE_WAL=0
-   npm run agent:status
-   ```
-
-### 3. Shadow vs Canonical Mismatch
-
-**Symptoms:**
-- Verification fails
-- Inconsistent artifacts
-- Flip operation fails
-
-**Recovery Steps:**
-
-1. **Run Full Verification**
-   ```bash
-   tsx scripts/agent/verify-shadow-canonical.ts report
-   ```
-
-2. **If Differences Found:**
-   ```bash
-   # Force shadow mode
-   export QUEUE_SHADOW=1
-   
-   # Run jobs to regenerate shadow artifacts
-   npm run agent:runner
-   
-   # Verify again
-   tsx scripts/agent/verify-shadow-canonical.ts verify
-   ```
-
-3. **Manual Artifact Sync:**
-   ```bash
-   # Copy canonical to shadow
-   cp .agent/status.json .agent/shadow/status.json
-   cp .agent/agent_queue.json .agent/shadow/agent_queue.json
-   cp .agent/runs.json .agent/shadow/runs.json
-   ```
-
-### 4. Service Worker Offline Issues
-
-**Symptoms:**
-- Offline isolation tests fail
-- CrossOriginIsolated=false when offline
-- AudioWorklet loading fails offline
-
-**Recovery Steps:**
-
-1. **Check Service Worker Registration**
-   ```bash
-   # Test offline isolation
-   npm run test:isolation-offline
-   ```
-
-2. **Clear Service Worker Cache**
-   ```bash
-   # In browser dev tools:
-   # Application > Storage > Clear storage > Clear site data
-   ```
-
-3. **Re-register Service Worker**
-   ```bash
-   # Restart development server
-   npm run dev
-   ```
-
-### 5. Complete System Reset
-
-**When to Use:**
-- Multiple components failing
-- Unrecoverable corruption
-- Need clean slate
-
-**Recovery Steps:**
-
-1. **Stop All Services**
-   ```bash
-   # Stop any running agents
-   pkill -f "agent:runner"
-   pkill -f "watchdog"
-   ```
-
-2. **Clean All Artifacts**
-   ```bash
-   # Remove all queue artifacts
-   rm -rf .agent/queue.db*
-   rm -rf .agent/shadow/
-   rm -f .agent/status.json
-   rm -f .agent/runs.json
-   
-   # Keep agent_queue.json as backup
-   cp .agent/agent_queue.json .agent/agent_queue.json.backup
-   ```
-
-3. **Reset Environment**
-   ```bash
+   # Set environment variable
    export QUEUE_DRIVER=json
-   export QUEUE_WAL=0
-   export QUEUE_SHADOW=1
-   ```
-
-4. **Reinitialize System**
-   ```bash
-   # Start with JSON queue
-   npm run agent:status
    
-   # Migrate to SQLite when ready
-   export QUEUE_DRIVER=sqlite
-   npm run agent:migrate
+   # Or create .env.local with:
+   echo "QUEUE_DRIVER=json" >> .env.local
    
-   # Test functionality
-   npm run agent:test-sqlite
+   # Restart runner
+   pnpm agent:runner
    ```
 
-## Prevention Measures
+---
 
-### Regular Maintenance
+## 🔄 Driver Fallback Procedures
 
-1. **Daily Health Checks**
-   ```bash
-   # Add to cron or scheduled task
-   npm run agent:status > .agent/health-$(date +%Y%m%d).log
-   ```
+### SQLite → JSON Fallback
+```bash
+# 1. Pause processing
+touch .agent/LOCK
 
-2. **Weekly Integrity Checks**
-   ```bash
-   # Add to weekly maintenance
-   tsx scripts/agent/verify-shadow-canonical.ts stability 5 10000
-   ```
+# 2. Set JSON driver
+export QUEUE_DRIVER=json
 
-3. **Monthly Cleanup**
-   ```bash
-   # Clean old artifacts
-   find .agent -name "*.backup.*" -mtime +30 -delete
-   ```
+# 3. Migrate existing jobs (if needed)
+pnpm agent:migrate
 
-### Monitoring Alerts
+# 4. Resume processing
+rm .agent/LOCK
+pnpm agent:runner
+```
 
-1. **Queue Depth Monitoring**
-   - Alert if queue depth > 100
-   - Alert if no jobs processed in 1 hour
+### JSON → SQLite Recovery
+```bash
+# 1. Pause processing
+touch .agent/LOCK
 
-2. **Database Health Monitoring**
-   - Alert if integrity check fails
-   - Alert if WAL size > 1000 pages
+# 2. Set SQLite driver
+export QUEUE_DRIVER=sqlite
 
-3. **Shadow/Canonical Monitoring**
-   - Alert if verification fails
-   - Alert if artifacts differ
+# 3. Migrate JSON jobs to SQLite
+pnpm agent:migrate
 
-## Emergency Contacts
+# 4. Verify migration
+pnpm agent:status
 
-- **Primary:** DevOps Team
-- **Secondary:** Backend Team
-- **Escalation:** Engineering Manager
+# 5. Resume processing
+rm .agent/LOCK
+pnpm agent:runner
+```
 
-## Recovery Time Objectives
+---
 
-- **Critical Issues:** < 15 minutes
-- **Major Issues:** < 1 hour
-- **Minor Issues:** < 4 hours
-- **Complete Reset:** < 2 hours
+## 📊 Health Monitoring
 
-## Post-Recovery Checklist
+### Queue Status Check
+```bash
+# Comprehensive status
+pnpm agent:status
 
-- [ ] Queue processing resumes
-- [ ] All tests pass
-- [ ] Monitoring alerts clear
-- [ ] Documentation updated
-- [ ] Root cause analysis completed
-- [ ] Prevention measures implemented
+# Expected output:
+# - Lock Present: NO
+# - Driver: sqlite (or json)
+# - Shadow Mode: ON/OFF
+# - Queue Depth: <number>
+# - Running Jobs: <number>
+```
 
+### Database Statistics
+```bash
+# SQLite stats
+pnpm exec tsx -e "
+const Database = require('better-sqlite3');
+const db = new Database('.agent/queue.db');
+const stats = db.prepare('SELECT status, COUNT(*) as count FROM jobs GROUP BY status').all();
+console.log('Job status counts:', stats);
+const runs = db.prepare('SELECT COUNT(*) as total_runs FROM runs').get();
+console.log('Total runs:', runs);
+db.close();
+"
+```
 
+### Shadow vs Canonical Verification
+```bash
+# Run verification script
+pnpm agent:verify-shadow-canonical
 
+# Or PowerShell version
+pwsh -File scripts/verify-shadow-canonical.ps1
+```
+
+---
+
+## 🔄 Canonical/Shadow Mode Management
+
+### Current Configuration
+```bash
+# Check current mode
+pnpm agent:status
+# Look for: "Shadow Mode: OFF" (canonical) or "Shadow Mode: ON" (shadow)
+```
+
+### Rollback to Shadow Mode (Emergency)
+```bash
+# Set environment variable
+export QUEUE_SHADOW=1
+# Or add to .env.local: QUEUE_SHADOW=1
+
+# Restart runner to pick up new config
+taskkill /F /IM node.exe  # Kill any running processes
+pnpm agent:runner         # Restart with shadow mode
+
+# Verify rollback
+pnpm agent:status
+# Should show: "Shadow Mode: ON"
+```
+
+### Return to Canonical Mode (Normal Operation)
+```bash
+# Set environment variable
+export QUEUE_SHADOW=0
+# Or add to .env.local: QUEUE_SHADOW=0
+
+# Restart runner
+taskkill /F /IM node.exe  # Kill any running processes
+pnpm agent:runner         # Restart with canonical mode
+
+# Verify canonical mode
+pnpm agent:status
+# Should show: "Shadow Mode: OFF"
+```
+
+### Verify Mode Transition
+```bash
+# Run verification to check canonical vs shadow artifacts
+pnpm agent:verify
+# Expected: Shows drift between shadow and canonical (normal after transition)
+```
+
+---
+
+## 🛠️ Troubleshooting Guide
+
+### Common Issues
+
+#### 1. "Database is locked" Error
+**Cause**: Multiple processes accessing SQLite database
+**Solution**:
+```bash
+# Check for running processes
+ps aux | grep agent:runner
+
+# Kill stuck processes
+pkill -f "agent:runner"
+
+# Restart runner
+pnpm agent:runner
+```
+
+#### 2. "No space left on device" Error
+**Cause**: Disk space exhaustion
+**Solution**:
+```bash
+# Check disk space
+df -h
+
+# Clean up old artifacts
+find .agent/shadow -name "*.json" -mtime +7 -delete
+find .agent -name "*.tmp" -delete
+
+# Check database size
+ls -lh .agent/queue.db
+```
+
+#### 3. "Permission denied" Error
+**Cause**: File permission issues
+**Solution**:
+```bash
+# Fix permissions
+chmod 755 .agent
+chmod 644 .agent/queue.db
+chmod 755 .agent/shadow
+
+# On Windows, run as administrator if needed
+```
+
+#### 4. Shadow Artifacts Not Created
+**Cause**: Shadow mode disabled or path issues
+**Solution**:
+```bash
+# Check shadow mode
+echo $QUEUE_SHADOW
+
+# Enable shadow mode
+export QUEUE_SHADOW=1
+
+# Verify shadow directory exists
+ls -la .agent/shadow/
+```
+
+---
+
+## 📋 Recovery Checklist
+
+### Before Recovery
+- [ ] Pause queue processing (`touch .agent/LOCK`)
+- [ ] Document error messages and symptoms
+- [ ] Check system resources (disk space, memory)
+- [ ] Identify last known good state
+
+### During Recovery
+- [ ] Backup current state
+- [ ] Run integrity checks
+- [ ] Apply appropriate recovery procedure
+- [ ] Verify database consistency
+- [ ] Test queue operations
+
+### After Recovery
+- [ ] Resume queue processing (`rm .agent/LOCK`)
+- [ ] Monitor for 24 hours
+- [ ] Update documentation if new procedure discovered
+- [ ] Report incident if critical
+
+---
+
+## 🔍 Diagnostic Commands
+
+### System Health
+```bash
+# Check queue steward status
+pnpm agent:status
+
+# Check SigNoz metrics
+curl -s http://localhost:8080/api/v1/health
+
+# Check Windows collector
+sc query otelcol-contrib
+
+# Check queue metrics log
+tail -f C:\logs\queue\health.log
+```
+
+### Database Diagnostics
+```bash
+# SQLite database info
+pnpm exec tsx -e "
+const Database = require('better-sqlite3');
+const db = new Database('.agent/queue.db');
+console.log('Database page count:', db.prepare('PRAGMA page_count').get());
+console.log('Database page size:', db.prepare('PRAGMA page_size').get());
+console.log('Database version:', db.prepare('PRAGMA user_version').get());
+db.close();
+"
+```
+
+### Log Analysis
+```bash
+# Check runner logs
+grep -i error .agent/shadow/*.json
+
+# Check metrics export
+grep -i error C:\logs\queue\health.log
+
+# Check SigNoz ingestion
+curl -s "http://localhost:8080/api/v1/logs?query=dataset%3D%22agent_queue%22" | jq
+```
+
+---
+
+## 📞 Escalation
+
+### When to Escalate
+- Database corruption that cannot be recovered
+- Data loss detected
+- System-wide queue processing failure
+- Security incident suspected
+
+### Contact Information
+- **Primary**: Queue Steward Team
+- **Secondary**: Platform Engineering
+- **Emergency**: On-call Engineer
+
+### Information to Provide
+- Error messages and stack traces
+- System state before failure
+- Recovery steps attempted
+- Current queue status output
+- Database integrity check results
+
+---
+
+## 📚 Related Documentation
+
+- [Queue Configuration Guide](../queue-configuration.md)
+- [Shadow vs Canonical Verification](../shadow-canonical-verification.md)
+- [SigNoz Integration Guide](../signoz-integration.md)
+- [ECRR Compliance Report](../ECRR_REPORTS/)
+
+---
+
+*Last Updated: 2025-01-30*
+*Version: 1.0*

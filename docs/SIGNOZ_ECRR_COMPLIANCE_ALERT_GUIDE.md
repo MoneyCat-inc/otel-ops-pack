@@ -1,283 +1,350 @@
-# SigNoz ECRR Compliance Alert Configuration Guide
+# SigNoz ECRR Compliance Alert Guide
 
-## Overview
-This guide provides step-by-step instructions for configuring a SigNoz log-based alert to monitor ECRR compliance rates and trigger notifications when compliance drops below 80% for 5 minutes.
+**Purpose**: SigNoz alert configuration for Queue Steward ECRR compliance monitoring.
 
-## Prerequisites
-- SigNoz instance running and accessible
-- ECRR compliance monitoring script generates logs in `C:/logs/ecrr/compliance-trends.log`
-- Log entries contain JSON fields including `dataset="ecrr_compliance"` and `compliance_rate`
+**Scope**: Alert rules, dashboards, and queries to ensure Queue Steward operates within ECRR guardrails.
+
+---
+
+## Alert Rules Configuration
+
+### 1. Queue Depth Critical Alert
+
+**Alert Name**: `queue-depth-critical`
+**Severity**: Critical
+**Query**:
+```sql
+SELECT 
+  max(JSON_EXTRACT(body, '$.queueLength')) as max_queue_depth
+FROM logs 
+WHERE dataset = 'agent_queue'
+  AND timestamp > now() - INTERVAL 5 MINUTES
+GROUP BY toStartOfMinute(timestamp)
+HAVING max_queue_depth > 200
+```
+
+**Threshold**: `max_queue_depth > 200`
+**Duration**: 15 minutes
+**Action**: Page on-call engineer
+
+### 2. Queue Depth Warning Alert
+
+**Alert Name**: `queue-depth-warning`
+**Severity**: Warning
+**Query**:
+```sql
+SELECT 
+  max(JSON_EXTRACT(body, '$.queueLength')) as max_queue_depth
+FROM logs 
+WHERE dataset = 'agent_queue'
+  AND timestamp > now() - INTERVAL 5 MINUTES
+GROUP BY toStartOfMinute(timestamp)
+HAVING max_queue_depth > 100
+```
+
+**Threshold**: `max_queue_depth > 100`
+**Duration**: 10 minutes
+**Action**: Slack notification
+
+### 3. Error Rate Alert
+
+**Alert Name**: `queue-error-rate-critical`
+**Severity**: Critical
+**Query**:
+```sql
+SELECT 
+  countIf(JSON_EXTRACT(body, '$.lastError') IS NOT NULL) as error_count,
+  count() as total_count,
+  error_count / total_count as error_rate
+FROM logs 
+WHERE dataset = 'agent_queue'
+  AND timestamp > now() - INTERVAL 5 MINUTES
+GROUP BY toStartOfMinute(timestamp)
+HAVING error_rate > 0.10
+```
+
+**Threshold**: `error_rate > 0.10` (10%)
+**Duration**: 10 minutes
+**Action**: Page on-call engineer
+
+### 4. Processing Stall Alert
+
+**Alert Name**: `queue-processing-stall`
+**Severity**: Critical
+**Query**:
+```sql
+SELECT 
+  count() as jobs_processed
+FROM logs 
+WHERE dataset = 'agent_queue'
+  AND JSON_EXTRACT(body, '$.jobsProcessed') > 0
+  AND timestamp > now() - INTERVAL 15 MINUTES
+GROUP BY toStartOfMinute(timestamp)
+HAVING jobs_processed = 0
+```
+
+**Threshold**: `jobs_processed = 0`
+**Duration**: 15 minutes
+**Action**: Page on-call engineer
+
+### 5. Kill Switch Active Alert
+
+**Alert Name**: `queue-kill-switch-active`
+**Severity**: Warning
+**Query**:
+```sql
+SELECT 
+  JSON_EXTRACT(body, '$.killSwitch') as kill_switch_active
+FROM logs 
+WHERE dataset = 'agent_queue'
+  AND timestamp > now() - INTERVAL 1 MINUTE
+HAVING kill_switch_active = true
+```
+
+**Threshold**: `kill_switch_active = true`
+**Duration**: 1 minute
+**Action**: Slack notification
+
+---
+
+## Dashboard Panels
+
+### Queue Health Overview Panel
+
+**Panel Title**: Queue Health Overview
+**Query**:
+```sql
+SELECT 
+  timestamp,
+  JSON_EXTRACT(body, '$.queueLength') as queue_length,
+  JSON_EXTRACT(body, '$.readyCount') as ready_count,
+  JSON_EXTRACT(body, '$.running') as running_jobs,
+  JSON_EXTRACT(body, '$.jobsProcessed') as jobs_processed,
+  JSON_EXTRACT(body, '$.killSwitch') as kill_switch
+FROM logs 
+WHERE dataset = 'agent_queue'
+  AND timestamp > now() - INTERVAL 1 HOUR
+ORDER BY timestamp DESC
+LIMIT 100
+```
+
+**Visualization**: Time series graph
+**Metrics**: queue_length, ready_count, running_jobs, jobs_processed
+
+### Error Rate Trend Panel
+
+**Panel Title**: Error Rate Trend
+**Query**:
+```sql
+SELECT 
+  toStartOfMinute(timestamp) as minute,
+  countIf(JSON_EXTRACT(body, '$.lastError') IS NOT NULL) as error_count,
+  count() as total_count,
+  error_count / total_count as error_rate
+FROM logs 
+WHERE dataset = 'agent_queue'
+  AND timestamp > now() - INTERVAL 24 HOUR
+GROUP BY minute
+ORDER BY minute DESC
+```
+
+**Visualization**: Time series graph
+**Metrics**: error_rate (percentage)
+
+### Processing Rate Panel
+
+**Panel Title**: Jobs Processed Per Minute
+**Query**:
+```sql
+SELECT 
+  toStartOfMinute(timestamp) as minute,
+  max(JSON_EXTRACT(body, '$.jobsProcessed')) as jobs_processed
+FROM logs 
+WHERE dataset = 'agent_queue'
+  AND timestamp > now() - INTERVAL 24 HOUR
+GROUP BY minute
+ORDER BY minute DESC
+```
+
+**Visualization**: Time series graph
+**Metrics**: jobs_processed
+
+---
+
+## Compliance Monitoring Queries
+
+### ECRR Gate Compliance Check
+
+**Query Name**: ECRR Gate Status
+**Purpose**: Verify Queue Steward operates within ECRR guardrails
+**Query**:
+```sql
+SELECT 
+  timestamp,
+  JSON_EXTRACT(body, '$.queueLength') as queue_length,
+  JSON_EXTRACT(body, '$.killSwitch') as kill_switch,
+  JSON_EXTRACT(body, '$.lastError') as last_error,
+  CASE 
+    WHEN queue_length < 50 AND kill_switch = false AND last_error IS NULL 
+    THEN 'ECRR_COMPLIANT'
+    ELSE 'ECRR_VIOLATION'
+  END as ecrr_status
+FROM logs 
+WHERE dataset = 'agent_queue'
+  AND timestamp > now() - INTERVAL 1 HOUR
+ORDER BY timestamp DESC
+```
+
+**Expected Result**: All rows should show `ECRR_COMPLIANT`
+
+### Shadow vs Canonical Verification
+
+**Query Name**: Shadow Canonical Drift Detection
+**Purpose**: Monitor for drift between shadow and canonical writes
+**Query**:
+```sql
+SELECT 
+  timestamp,
+  JSON_EXTRACT(body, '$.shadowMode') as shadow_mode,
+  JSON_EXTRACT(body, '$.driver') as driver,
+  CASE 
+    WHEN shadow_mode = false AND driver = 'sqlite' 
+    THEN 'CANONICAL_MODE'
+    WHEN shadow_mode = true 
+    THEN 'SHADOW_MODE'
+    ELSE 'MIXED_MODE'
+  END as mode_status
+FROM logs 
+WHERE dataset = 'agent_queue'
+  AND timestamp > now() - INTERVAL 1 HOUR
+ORDER BY timestamp DESC
+```
+
+**Expected Result**: All rows should show `CANONICAL_MODE`
+
+### Performance Budget Compliance
+
+**Query Name**: Performance Budget Check
+**Purpose**: Verify jobs complete within performance budgets
+**Query**:
+```sql
+SELECT 
+  timestamp,
+  JSON_EXTRACT(body, '$.queueLength') as queue_length,
+  JSON_EXTRACT(body, '$.p95JobMs') as p95_job_ms,
+  CASE 
+    WHEN queue_length < 100 AND p95_job_ms < 300000 
+    THEN 'BUDGET_COMPLIANT'
+    ELSE 'BUDGET_EXCEEDED'
+  END as budget_status
+FROM logs 
+WHERE dataset = 'agent_queue'
+  AND timestamp > now() - INTERVAL 1 HOUR
+ORDER BY timestamp DESC
+```
+
+**Expected Result**: All rows should show `BUDGET_COMPLIANT`
+
+---
 
 ## Alert Configuration Steps
 
-### 1. Navigate to SigNoz Alerts
-1. Open SigNoz UI (typically `http://localhost:8080`).
-2. Go to **Alerts -> New Alert**.
-3. Select **Logs Based Alert**.
+### 1. Create Alert Rules
 
-### 2. Configure Query
-**Recommended: ClickHouse query**
+1. Navigate to SigNoz UI: http://localhost:8080
+2. Go to **Alerts** -> **Create Alert**
+3. For each alert above:
+   - Copy the query
+   - Set the threshold and duration
+   - Configure notification channels (Slack, PagerDuty, etc.)
+
+### 2. Create Dashboard
+
+1. Go to **Dashboards** -> **Create Dashboard**
+2. Add panels using the queries above
+3. Configure visualization types and refresh intervals
+4. Save as "Queue Steward ECRR Compliance"
+
+### 3. Set Up Notifications
+
+**Slack Integration**:
+- Channel: `#queue-steward-alerts`
+- Severity mapping:
+  - Critical: `@channel` mention
+  - Warning: No mention
+
+**PagerDuty Integration**:
+- Service: Queue Steward
+- Escalation policy: Engineering Team
+- Severity mapping:
+  - Critical: P1 incident
+  - Warning: P2 incident
+
+---
+
+## Compliance Checklist
+
+### Daily Checks
+
+- [ ] Queue depth < 100 (warning threshold)
+- [ ] Error rate < 5%
+- [ ] Jobs processing steadily
+- [ ] Kill switch remains false
+- [ ] Canonical mode active (shadow mode off)
+
+### Weekly Reviews
+
+- [ ] Review alert history and false positives
+- [ ] Update thresholds based on workload patterns
+- [ ] Verify ECRR compliance queries return expected results
+- [ ] Test alert notification channels
+
+### Monthly Audits
+
+- [ ] Review dashboard performance and relevance
+- [ ] Update compliance queries as system evolves
+- [ ] Document any threshold adjustments
+- [ ] Verify backup and recovery procedures
+
+---
+
+## Troubleshooting Alert Issues
+
+### Common Problems
+
+1. **Alerts not firing**: Check query syntax and data availability
+2. **False positives**: Adjust thresholds based on historical data
+3. **Missing data**: Verify collector and SigNoz connectivity
+4. **Notification failures**: Test Slack/PagerDuty integrations
+
+### Debug Queries
+
+**Check Data Availability**:
 ```sql
-SELECT
-  toStartOfMinute(fromUnixTimestamp64Nano(timestamp)) AS ts_minute,
-  avg(JSONExtractFloat(body, 'compliance_rate')) AS compliance_rate
-FROM signoz_logs.logs_v2
-WHERE JSONExtractString(body, 'dataset') = 'ecrr_compliance'
-  AND replaceAll(attributes_string['log.file.path'], '\\', '/') = 'C:/logs/ecrr/compliance-trends.log'
-  AND fromUnixTimestamp64Nano(timestamp) >= now() - INTERVAL 30 MINUTE
-GROUP BY ts_minute
-ORDER BY ts_minute DESC
-LIMIT 10;
+SELECT 
+  count() as log_count,
+  min(timestamp) as earliest,
+  max(timestamp) as latest
+FROM logs 
+WHERE dataset = 'agent_queue'
+  AND timestamp > now() - INTERVAL 1 HOUR
 ```
-**Key Points**:
-- **Table**: `signoz_logs.logs_v2` (not `logs`)
-- **JSON extraction**: `JSONExtractFloat(body, 'compliance_rate')` (not `json.compliance_rate`)
-- **Dataset filter**: `JSONExtractString(body, 'dataset')` (not `json.dataset`)
-- **Path normalization**: `replaceAll(attributes_string['log.file.path'], '\\', '/')` handles Windows path separators
-- **Timestamp handling**: `fromUnixTimestamp64Nano(timestamp)` converts nanoseconds to datetime
 
-**Optional: Enable Query Builder (requires JSON parsing in the collector)**
-1. Edit `C:/otel/config.yaml` under `filelog/canary` to parse JSON and promote keys to attributes:
-   ```yaml
-   filelog/canary:
-     include:
-       - C:/logs/**/**/*.log
-     start_at: end
-     include_file_path: true
-     include_file_name: true
-     poll_interval: 200ms
-     operators:
-       - type: json_parser
-         parse_from: body
-       - type: move
-         from: attributes.compliance_rate
-         to: attributes['compliance_rate']
-       - type: move
-         from: attributes.dataset
-         to: attributes['dataset']
-   ```
-2. Restart the Windows collector: `Restart-Service otelcol-contrib` (PowerShell with admin rights).
-3. After restart, the SigNoz Query Builder can target `attributes.compliance_rate` and filter on `attributes.dataset` and `attributes['log.file.path']` without custom SQL.
-
-### 3. Set Alert Conditions
-- **Evaluate**: Use the query result (Query A).
-- **Condition**: Below.
-- **Threshold**: 80 (percent).
-- **Match Type**: all the times (or on average, depending on noise tolerance).
-- **For**: 5 minutes.
-- **Evaluation Frequency**: 1 minute.
-- **Missing data notification**: Enable if the compliance script should emit continuously.
-- **Minimum data points**: 3 (guards against sparse samples).
-
-### 4. Configure Alert Metadata
-- **Severity**: Warning.
-- **Name**: ECRR Compliance Threshold Breach.
-- **Description**: Alert when ECRR compliance rate drops below 80% for 5 consecutive minutes.
-- **Labels**:
-  - `service=ecrr-compliance`
-  - `dataset=ecrr_compliance`
-  - `component=monitoring`
-
-### 5. Set Up Notifications
-1. Choose a notification channel (Slack, Email, Webhook, etc.).
-2. Send a test notification to verify delivery.
-3. Save the alert to activate it.
-
-## Verification Steps
-
-### 1. Preview Data
-Use SigNoz **Logs -> ClickHouse** tab and run:
+**Verify Alert Query Logic**:
 ```sql
-SELECT
-  toFloat32(JSONExtractFloat(body, 'compliance_rate')) AS compliance_rate,
-  JSONExtractString(body, 'dataset') AS dataset,
-  replaceAll(attributes_string['log.file.path'], '\\', '/') AS log_path,
-  fromUnixTimestamp64Nano(timestamp) AS event_time
-FROM signoz_logs.logs_v2
-WHERE JSONExtractString(body, 'dataset') = 'ecrr_compliance'
+SELECT 
+  timestamp,
+  JSON_EXTRACT(body, '$.queueLength') as queue_length,
+  queue_length > 200 as exceeds_threshold
+FROM logs 
+WHERE dataset = 'agent_queue'
+  AND timestamp > now() - INTERVAL 1 HOUR
 ORDER BY timestamp DESC
-LIMIT 5;
-```
-Expected: Rows show `compliance_rate` near the latest value (e.g., 0.11) with `log_path` equal to `C:/logs/ecrr/compliance-trends.log`.
-
-### 2. Test Alert Trigger
-Generate a sample with low compliance to confirm the alert fires:
-```powershell
-pwsh -File scripts/monitor-ecrr-compliance-trends.ps1 -GenerateReport
-```
-The alert should enter the Firing state within 1-2 evaluation intervals because the sample rate is 0.11% (<80%).
-
-### 3. Monitor Alert Status
-- **Alerts dashboard**: Verify the alert status (Active/Firing) and recent evaluation values.
-- **Alert history**: Review trigger and recovery timestamps.
-- **Notification logs**: Confirm upstream channels received the event.
-
-## Expected Behavior
-- **Current sample**: compliance rate ~0.11% (below threshold).
-- **Alert status after creation**: Firing.
-- **Recovery condition**: compliance rate must remain >=80% for 5 consecutive minutes.
-
-## Troubleshooting
-1. **"Unknown table expression identifier 'logs'"**
-   - Root cause: SigNoz stores log data in `signoz_logs.logs_v2`; the `logs` alias does not exist.
-   - Fix: Use the fully-qualified table name in your query (`FROM signoz_logs.logs_v2`).
-2. **Empty results**
-   - Confirm the log file exists and contains fresh JSON entries.
-   - Ensure the dataset filter uses `JSONExtractString(body, 'dataset') = 'ecrr_compliance'`.
-   - Remove or adjust the time window (`now() - INTERVAL ...`) if you expect older data.
-3. **Alert never fires**
-   - Check that the threshold is set to 80 and match type is `all the times`.
-   - Verify the evaluation window is 5 minutes and minimum data points is 3.
-   - Confirm notification channels are enabled and not muted.
-
-## Data Validation
-```powershell
-# Confirm the log file contains recent JSON entries
-Get-Content C:/logs/ecrr/compliance-trends.log -Tail 5
-
-# Check the scheduled task that generates the compliance data
-Get-ScheduledTaskInfo -TaskName 'ECRR Compliance Monitoring'
+LIMIT 10
 ```
 
-## Integration with ECRR Workflow
-- **Automated monitoring**: Scheduled task appends to `C:/logs/ecrr/compliance-trends.log` every 30 minutes and emits Application Event ID 4100.
-- **Dashboards**: The SigNoz ECRR Compliance dashboard references the same dataset and query.
-- **Trend tracking**: Historical compliance rates stay accessible in SigNoz for comparisons and audits.
+---
 
-## Next Steps
-1. Save the alert using the query above.
-2. Generate a compliance sample below 80% to validate alert firing.
-3. Document the alert in `docs/QUERY_RECIPES.md` (already updated) and `docs/ECRR_PROJECT_REPORT.md` as needed.
-4. Configure additional notifications or escalation paths if required.
-
-## Queue Monitoring Integration
-
-### Agent Queue Telemetry
-The agent queue system emits structured telemetry to `C:\logs\queue\health.log` for SigNoz monitoring.
-
-#### Data Pipeline
-| Source Files | Processing | Output | SigNoz Filter | Query Target |
-|--------------|------------|--------|---------------|--------------|
-| `.agent/agent_queue.json`, `.agent/state.json` | PowerShell script -> `C:/logs/queue/health.log` | `filelog/canary` | Logs -> `message` contains `"dataset":"agent_queue"` | `signoz_logs.logs_v2` |
-
-#### Telemetry Emission
-```powershell
-# Manual emission (scheduled task runs automatically every minute)
-pwsh -File scripts/observability/emit-queue-telemetry.ps1 -RepoRoot . -OutputPath C:\logs\queue\health.log
-```
-
-#### SigNoz UI Navigation
-UI -> Logs -> Explorer -> filter `log.file.path contains "C:/logs/queue/health.log"`
-
-#### Queue Metrics Dashboard
-**SigNoz Query for Queue Depth Trends:**
-```sql
-SELECT 
-  toStartOfMinute(fromUnixTimestamp64Nano(timestamp)) AS ts,
-  avg(JSONExtractInt(message, 'queueLength')) AS avg_queue_depth,
-  avg(JSONExtractInt(message, 'readyCount')) AS avg_ready_count,
-  avg(JSONExtractInt(message, 'pendingCount')) AS avg_pending_count,
-  any(JSONExtractBool(message, 'killSwitch')) AS kill_switch_active
-FROM signoz_logs.logs_v2
-WHERE message LIKE '%"dataset":"agent_queue"%'
-  AND attributes_string['log.file.path'] LIKE '%C:/logs/queue/health.log%'
-  AND fromUnixTimestamp64Nano(timestamp) >= now() - INTERVAL 1 HOUR
-GROUP BY ts
-ORDER BY ts DESC;
-```
-
-**Verification Query - Count Queue Telemetry:**
-```sql
-SELECT count(*) FROM signoz_logs.logs_v2 
-WHERE message LIKE '%"dataset":"agent_queue"%' 
-AND fromUnixTimestamp64Nano(timestamp) >= now() - INTERVAL 1 HOUR;
-```
-
-**Verification Query - Current Queue Depth:**
-```sql
-SELECT avg(JSONExtractInt(message, 'queueLength')) AS queue_depth 
-FROM signoz_logs.logs_v2 
-WHERE message LIKE '%"dataset":"agent_queue"%' 
-AND fromUnixTimestamp64Nano(timestamp) >= now() - INTERVAL 5 MINUTE;
-```
-
-#### Queue Health Alerts
-**High Queue Depth Alert:**
-```sql
-SELECT 
-  JSONExtractInt(message, 'queueLength') AS queue_length,
-  JSONExtractString(message, 'agentName') AS agent_name,
-  fromUnixTimestamp64Nano(timestamp) AS alert_time
-FROM signoz_logs.logs_v2
-WHERE message LIKE '%"dataset":"agent_queue"%'
-  AND JSONExtractInt(message, 'queueLength') > 50
-  AND fromUnixTimestamp64Nano(timestamp) >= now() - INTERVAL 5 MINUTE;
-```
-
-**Kill Switch Activated Alert:**
-```sql
-SELECT 
-  JSONExtractString(message, 'agentName') AS agent_name,
-  fromUnixTimestamp64Nano(timestamp) AS alert_time
-FROM signoz_logs.logs_v2
-WHERE message LIKE '%"dataset":"agent_queue"%'
-  AND JSONExtractBool(message, 'killSwitch') = true
-  AND fromUnixTimestamp64Nano(timestamp) >= now() - INTERVAL 5 MINUTE;
-```
-
-**Stuck Jobs Alert:**
-```sql
-SELECT 
-  JSONExtractString(message, 'agentName') AS agent_name,
-  JSONExtractString(message, 'lastRun') AS last_run,
-  fromUnixTimestamp64Nano(timestamp) AS alert_time
-FROM signoz_logs.logs_v2
-WHERE message LIKE '%"dataset":"agent_queue"%'
-  AND JSONExtractString(message, 'lastRun') < toString(now() - INTERVAL 30 MINUTE)
-  AND fromUnixTimestamp64Nano(timestamp) >= now() - INTERVAL 5 MINUTE;
-```
-
-#### Per-Lane Monitoring
-**Lane Performance Dashboard:**
-```sql
-SELECT 
-  JSONExtractString(message, 'lanes') AS lanes_data,
-  fromUnixTimestamp64Nano(timestamp) AS ts
-FROM signoz_logs.logs_v2
-WHERE message LIKE '%"dataset":"agent_queue"%'
-  AND fromUnixTimestamp64Nano(timestamp) >= now() - INTERVAL 1 HOUR
-ORDER BY ts DESC
-LIMIT 100;
-```
-
-### Queue Monitoring Setup
-1. **Schedule Telemetry Emission**: Set up a scheduled task to run every minute:
-   ```powershell
-   # Create scheduled task for queue telemetry
-   $action = New-ScheduledTaskAction -Execute "pwsh.exe" -Argument "-File C:\otel\scripts\observability\emit-queue-telemetry.ps1 -RepoRoot C:\otel"
-   $trigger = New-ScheduledTaskTrigger -Once -At (Get-Date) -RepetitionInterval (New-TimeSpan -Minutes 1) -RepetitionDuration (New-TimeSpan -Days 365)
-   Register-ScheduledTask -TaskName "AgentQueueTelemetry" -Action $action -Trigger $trigger -User "SYSTEM"
-   ```
-
-2. **Configure Collector**: Ensure `C:/otel/config.yaml` includes queue log processing:
-   ```yaml
-   filelog/queue:
-     include:
-       - C:/logs/queue/*.log
-     start_at: end
-     include_file_path: true
-     operators:
-       - type: json_parser
-         parse_from: body
-         output: body
-   ```
-
-## Related Documentation
-- `docs/ECRR_COMPLIANCE_DEPLOYMENT_GUIDE.md`
-- `docs/SIGNOZ_DASHBOARD_IMPORT_GUIDE.md`
-- `scripts/monitor-ecrr-compliance-trends.ps1`
-- `scripts/observability/emit-queue-telemetry.ps1`
-- `alerts/ecrr-compliance-threshold.json`
-
-
-
+**Last Updated**: 2025-09-30  
+**Maintainer**: Observability Copilot  
+**Related**: `docs/QUEUE_STEWARD_OPERATOR_QUICK_REFERENCE.md`

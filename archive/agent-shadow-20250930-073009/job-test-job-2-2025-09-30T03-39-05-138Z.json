@@ -1,0 +1,9 @@
+{
+  "jobId": "test-job-2",
+  "kind": "cleanup-task",
+  "timestamp": "2025-09-30T03:39:05.138Z",
+  "result": {
+    "success": false,
+    "error": "\"undefined\" is not valid JSON"
+  }
+}

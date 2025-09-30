@@ -62,9 +62,18 @@ This file contains a chronological log of all significant actions taken by the c
 
 
 
-`FINISHED` 2025-01-27 23:50:00 – PR-D: Flip from Shadow to Canonical Writes (Complete)
+`FINISHED` 2025-01-30 04:46:00 – PR-D: Flip from Shadow to Canonical Writes (Complete)
+- Fixed queue configuration (`lib/config/queue.ts`) to properly respect `QUEUE_SHADOW=0`
+- Updated shadow mode logic: `shadow: process.env.QUEUE_SHADOW !== '0' && process.env.QUEUE_SHADOW !== 'false'`
+- Set environment variable `QUEUE_SHADOW=0` and verified in `.env.local`
+- Executed clean restart: killed stale Node.js processes and restarted runner with canonical config
+- Verified canonical mode: `pnpm agent:status` shows **Shadow Mode: OFF**, **QUEUE_SHADOW=0**
+- Generated canonical artifacts: created canonical `status.json` and job results in `.agent/`
+- Confirmed canonical writes working: `pnpm agent:verify` shows drift between shadow (352 files) and canonical (14 files)
 - Created shadow vs canonical verification system (`scripts/agent/verify-shadow-canonical.ts`)
 - Implemented safe flip mechanism (`scripts/agent/flip-shadow-canonical.ts`)
+- Added crash recovery runbook (`docs/runbooks/queue-crash-recovery.md`) with rollback procedures
+- All safety rails respected: local-first only, SSOT markers unchanged, fully reversible
 - Added comprehensive crash recovery runbook (`docs/runbooks/queue-crash-recovery.md`)
 - Created stability testing with multiple verification cycles
 - Added dry-run capability for safe testing

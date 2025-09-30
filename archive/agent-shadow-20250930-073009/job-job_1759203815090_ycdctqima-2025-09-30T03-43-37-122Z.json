@@ -1,0 +1,14 @@
+{
+  "jobId": "job_1759203815090_ycdctqima",
+  "kind": "slow-job",
+  "timestamp": "2025-09-30T03:43:37.122Z",
+  "result": {
+    "success": true,
+    "metrics": {
+      "duration_ms": 2006,
+      "memory_mb": 73,
+      "cpu_percent": 22,
+      "retry_count": -1
+    }
+  }
+}

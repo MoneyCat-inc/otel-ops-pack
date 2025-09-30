@@ -43,7 +43,7 @@ export function getQueueConfig(): QueueConfig {
   return {
     driver: (process.env.QUEUE_DRIVER as 'json' | 'sqlite') || 'json',
     wal: process.env.QUEUE_WAL === '1' || process.env.QUEUE_WAL === 'true',
-    shadow: process.env.QUEUE_SHADOW === '1' || process.env.QUEUE_SHADOW === 'true' || true, // Default to true for safety
+    shadow: process.env.QUEUE_SHADOW !== '0' && process.env.QUEUE_SHADOW !== 'false', // Default to true for safety, but allow explicit disable
     enabled: process.env.QUEUE_ENABLED !== '0' && process.env.QUEUE_ENABLED !== 'false',
     maxJobs: parseInt(process.env.QUEUE_MAX_JOBS || '10', 10),
     maxConcurrency: parseInt(process.env.QUEUE_MAX_CONCURRENCY || (isDev ? '3' : '2'), 10),

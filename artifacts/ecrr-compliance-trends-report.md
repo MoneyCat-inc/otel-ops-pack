@@ -1,7 +1,7 @@
 # ECRR Compliance Trends Report
 
-**Generated**: 2025-09-30 04:07:00
-**Report Period**: Last 17 measurements
+**Generated**: 2025-09-30 07:07:01
+**Report Period**: Last 23 measurements
 
 ## ?? Current Compliance Status
 
@@ -14,9 +14,9 @@
 
 - **Trend Direction**: Flat
 - **Trend Status**: Stable
-- **Change**: -0.03%
+- **Change**: -0.02%
 - **Recent Average**: 0%
-- **Historical Average**: 0.03%
+- **Historical Average**: 0.02%
 
 ## ?? Recommendations
 
@@ -27,13 +27,13 @@ Maintain current practices
 ### Reports with Issues
 *All reports are compliant!* ??
 ### Historical Compliance Rate
-- **09/29/2025 23:36:59**: 0%
-- **09/30/2025 00:06:59**: 0%
-- **09/30/2025 00:36:59**: 0%
-- **09/30/2025 01:06:59**: 0%
-- **09/30/2025 01:36:59**: 0%
-- **09/30/2025 02:06:59**: 0%
 - **09/30/2025 02:36:59**: 0%
 - **09/30/2025 03:07:00**: 0%
 - **09/30/2025 03:36:59**: 0%
-- **2025-09-30T04:06:59Z**: 0%
+- **09/30/2025 04:06:59**: 0%
+- **09/30/2025 04:36:59**: 0%
+- **09/30/2025 05:06:59**: 0%
+- **09/30/2025 05:36:59**: 0%
+- **09/30/2025 06:06:59**: 0%
+- **09/30/2025 06:36:59**: 0%
+- **2025-09-30T07:06:59Z**: 0%

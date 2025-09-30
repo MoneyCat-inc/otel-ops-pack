@@ -1,0 +1,26 @@
+
+> resonai-backend@1.0.0 agent:status C:\otel
+> tsx scripts/agent/status.ts
+
+≡ƒôè Agent Queue Status
+ΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ
+ΓÅ░ Timestamp: 2025-09-30T05:23:50.686Z
+≡ƒöÆ Lock Present: NO
+ΓÜÖ∩╕Å  Driver: json
+≡ƒæ╗ Shadow Mode: OFF
+≡ƒôï Queue Depth: 2
+≡ƒÅâ Running: 0
+≡ƒÜ¬ Admission Cap: 200
+
+≡ƒô¥ Last 5 Runs:
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+1. ≡ƒöä test-job-1 [test-task] pending
+2. ≡ƒöä test-job-2 [cleanup-task] pending
+
+≡ƒöº Environment:
+   QUEUE_DRIVER=json
+   QUEUE_SHADOW=0
+   QUEUE_ADMISSION_CAP=200
+   QUEUE_METRICS=0
+
+≡ƒÆ╛ Status written to .agent/status.json

@@ -1,0 +1,15 @@
+{
+  "device_index": 0,
+  "device_name": "NVIDIA GeForce RTX 2080 SUPER",
+  "gpu_util": 20,
+  "memory_used": 3506610176,
+  "memory_total": 8589934592,
+  "memory_util": 40.82231521606445,
+  "temperature": 55,
+  "power_draw": 90.497,
+  "graphics_clock": 1980,
+  "memory_clock": 7500,
+  "fan_speed": 45,
+  "timestamp": "2025-09-27T08:25:43.846491",
+  "gpu_name": "NVIDIA GeForce RTX 2080 SUPER"
+}

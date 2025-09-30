@@ -100,8 +100,8 @@ describe('Beta Metrics Calculation', () => {
     it('should handle missing comfort/fatigue values', () => {
       const now = Date.now();
       const sessions: SessionSummaryV1[] = [
-        { ts: now, comfort: 4, schemaVersion: 1 }, // missing fatigue
-        { ts: now - 24 * 60 * 60 * 1000, fatigue: 2, schemaVersion: 1 }, // missing comfort
+        { ts: now, medianF0: 150, comfort: 4, fatigue: 3, schemaVersion: 1 }, // missing fatigue
+        { ts: now - 24 * 60 * 60 * 1000, medianF0: 150, comfort: 3, fatigue: 2, schemaVersion: 1 }, // missing comfort
         { ts: now - 2 * 24 * 60 * 60 * 1000, medianF0: 150, comfort: 3, fatigue: 3, schemaVersion: 1 }
       ];
 
@@ -120,14 +120,14 @@ describe('Beta Metrics Calculation', () => {
       // Test excellent strain health (<10%)
       const excellentSessions: SessionSummaryV1[] = [
         { 
-          ts: now, 
+          ts: now, medianF0: 150, 
           comfort: 4, 
           fatigue: 2, 
           memx: { memoryStrainPct: 0.05 },
           schemaVersion: 1 
         },
         { 
-          ts: now - 24 * 60 * 60 * 1000, 
+          ts: now - 24 * 60 * 60 * 1000, medianF0: 150, 
           comfort: 4, 
           fatigue: 2, 
           memx: { memoryStrainPct: 0.08 },
@@ -141,14 +141,14 @@ describe('Beta Metrics Calculation', () => {
       // Test good strain health (10-25%)
       const goodSessions: SessionSummaryV1[] = [
         { 
-          ts: now, 
+          ts: now, medianF0: 150, 
           comfort: 3, 
           fatigue: 3, 
           memx: { memoryStrainPct: 0.15 },
           schemaVersion: 1 
         },
         { 
-          ts: now - 24 * 60 * 60 * 1000, 
+          ts: now - 24 * 60 * 60 * 1000, medianF0: 150, 
           comfort: 3, 
           fatigue: 3, 
           memx: { memoryStrainPct: 0.20 },
@@ -162,14 +162,14 @@ describe('Beta Metrics Calculation', () => {
       // Test moderate strain health (25-50%)
       const moderateSessions: SessionSummaryV1[] = [
         { 
-          ts: now, 
+          ts: now, medianF0: 150, 
           comfort: 2, 
           fatigue: 4, 
           memx: { memoryStrainPct: 0.30 },
           schemaVersion: 1 
         },
         { 
-          ts: now - 24 * 60 * 60 * 1000, 
+          ts: now - 24 * 60 * 60 * 1000, medianF0: 150, 
           comfort: 2, 
           fatigue: 4, 
           memx: { memoryStrainPct: 0.35 },
@@ -183,14 +183,14 @@ describe('Beta Metrics Calculation', () => {
       // Test poor strain health (>50%)
       const poorSessions: SessionSummaryV1[] = [
         { 
-          ts: now, 
+          ts: now, medianF0: 150, 
           comfort: 1, 
           fatigue: 5, 
           memx: { memoryStrainPct: 0.60 },
           schemaVersion: 1 
         },
         { 
-          ts: now - 24 * 60 * 60 * 1000, 
+          ts: now - 24 * 60 * 60 * 1000, medianF0: 150, 
           comfort: 1, 
           fatigue: 5, 
           memx: { memoryStrainPct: 0.70 },
@@ -206,14 +206,14 @@ describe('Beta Metrics Calculation', () => {
       const now = Date.now();
       const sessions: SessionSummaryV1[] = [
         { 
-          ts: now, 
+          ts: now, medianF0: 150, 
           comfort: 4, 
           fatigue: 2, 
           memx: { memoryStrainPct: 0.1 },
           schemaVersion: 1 
         },
         { 
-          ts: now - 24 * 60 * 60 * 1000, 
+          ts: now - 24 * 60 * 60 * 1000, medianF0: 150, 
           comfort: 4, 
           fatigue: 2, 
           memx: { memoryStrainPct: 0.1 },
@@ -256,6 +256,7 @@ describe('Beta Metrics Calculation', () => {
       for (let i = 0; i < 6; i++) {
         sessions.push({
           ts: now - i * 2 * 24 * 60 * 60 * 1000, // Every other day
+          medianF0: 150,
           comfort: 4,
           fatigue: 2,
           schemaVersion: 1
@@ -320,6 +321,7 @@ describe('Beta Metrics Calculation', () => {
       for (let i = 0; i < 5; i++) {
         sessions.push({
           ts: now - i * 24 * 60 * 60 * 1000,
+          medianF0: 150,
           comfort: 3, // All the same
           fatigue: 3, // All the same
           schemaVersion: 1
@@ -342,7 +344,7 @@ describe('Beta Metrics Calculation', () => {
       // Create sessions for 2 weeks
       for (let i = 0; i < 14; i++) {
         sessions.push({
-          ts: now - i * 24 * 60 * 60 * 1000,
+          ts: now - i * 24 * 60 * 60 * 1000, medianF0: 150,
           comfort: 4,
           fatigue: 2,
           memx: { memoryStrainPct: 0.1 },
@@ -365,7 +367,7 @@ describe('Beta Metrics Calculation', () => {
       // Create sessions for 2 months
       for (let i = 0; i < 60; i++) {
         sessions.push({
-          ts: now - i * 24 * 60 * 60 * 1000,
+          ts: now - i * 24 * 60 * 60 * 1000, medianF0: 150,
           comfort: 4,
           fatigue: 2,
           memx: { memoryStrainPct: 0.1 },
@@ -426,7 +428,7 @@ describe('Beta Metrics Calculation', () => {
       const now = Date.now();
       const sessions: SessionSummaryV1[] = [
         { 
-          ts: now, 
+          ts: now, medianF0: 150, 
           comfort: 4, 
           fatigue: 2, 
           memx: { memoryStrainPct: 0.1 },
