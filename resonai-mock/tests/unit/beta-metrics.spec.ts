@@ -279,8 +279,9 @@ describe('Beta Metrics Calculation', () => {
       for (let i = 0; i < 5; i++) {
         sessions.push({
           ts: now - i * 24 * 60 * 60 * 1000,
-          comfort: 2 + i, // 2, 3, 4, 5, 6
-          fatigue: 5 - i, // 5, 4, 3, 2, 1
+          medianF0: 150,
+          comfort: (2 + i) as 1 | 2 | 3 | 4 | 5, // 2, 3, 4, 5, 6 -> cast to valid range
+          fatigue: (5 - i) as 1 | 2 | 3 | 4 | 5, // 5, 4, 3, 2, 1
           schemaVersion: 1
         });
       }
@@ -300,8 +301,9 @@ describe('Beta Metrics Calculation', () => {
       for (let i = 0; i < 5; i++) {
         sessions.push({
           ts: now - i * 24 * 60 * 60 * 1000,
-          comfort: 5 - i, // 5, 4, 3, 2, 1
-          fatigue: 1 + i, // 1, 2, 3, 4, 5
+          medianF0: 150,
+          comfort: (5 - i) as 1 | 2 | 3 | 4 | 5, // 5, 4, 3, 2, 1
+          fatigue: (1 + i) as 1 | 2 | 3 | 4 | 5, // 1, 2, 3, 4, 5
           schemaVersion: 1
         });
       }
@@ -469,7 +471,7 @@ describe('Beta Metrics Calculation', () => {
     it('should handle comfort/fatigue scale validation (1-5)', () => {
       const now = Date.now();
       const sessions: SessionSummaryV1[] = [
-        { ts: now, medianF0: 150, comfort: 0, fatigue: 6, schemaVersion: 1 }, // Invalid values
+        { ts: now, medianF0: 150, comfort: 0 as any, fatigue: 6 as any, schemaVersion: 1 }, // Invalid values for testing
         { ts: now - 24 * 60 * 60 * 1000, medianF0: 150, comfort: 3, fatigue: 3, schemaVersion: 1 }, // Valid
         { ts: now - 2 * 24 * 60 * 60 * 1000, medianF0: 150, comfort: 5, fatigue: 1, schemaVersion: 1 } // Valid
       ];

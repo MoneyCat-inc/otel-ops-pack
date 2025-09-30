@@ -539,9 +539,9 @@ export class ProgressAggregator {
     const strainSecond = this.calculateMean(secondHalf.map(d => d.strainRate));
 
     return {
-      inBandPct: this.getTrendDirection(inBandSecond - inBandFirst),
-      expressiveness: this.getTrendDirection(expressivenessSecond - expressivenessFirst),
-      safety: this.getTrendDirection(strainFirst - strainSecond) // Lower strain is better
+      inBandPct: this.getOverallTrendDirection(inBandSecond - inBandFirst),
+      expressiveness: this.getOverallTrendDirection(expressivenessSecond - expressivenessFirst),
+      safety: this.getOverallTrendDirection(strainFirst - strainSecond) // Lower strain is better
     };
   }
 
@@ -628,7 +628,12 @@ export class ProgressAggregator {
     return 'back';
   }
 
-  private getTrendDirection(change: number): 'improving' | 'declining' | 'stable' {
+  private getTrendDirection(change: number): 'up' | 'down' | 'stable' {
+    if (Math.abs(change) < this.TREND_THRESHOLD) return 'stable';
+    return change > 0 ? 'up' : 'down';
+  }
+
+  private getOverallTrendDirection(change: number): 'improving' | 'declining' | 'stable' {
     if (Math.abs(change) < this.TREND_THRESHOLD) return 'stable';
     return change > 0 ? 'improving' : 'declining';
   }

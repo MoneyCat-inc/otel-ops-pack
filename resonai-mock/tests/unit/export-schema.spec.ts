@@ -322,12 +322,12 @@ describe('Export Schema Validation', () => {
       const sessionWithNulls = {
         ...mockSessions[0],
         medianF0: null,
-        orb: null
+        orb: undefined
       };
 
       const exportData = createExportData([sessionWithNulls]);
       expect(exportData.sessions[0].medianF0).toBeNull();
-      expect(exportData.sessions[0].orb).toBeNull();
+      expect(exportData.sessions[0].orb).toBeUndefined();
     });
 
     it('should handle extreme values', () => {
