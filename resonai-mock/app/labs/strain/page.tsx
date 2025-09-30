@@ -8,7 +8,8 @@
 
 'use client';
 
-import React, { useState, useEffect, useSearchParams } from 'next/navigation';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { StrainDetector, AudioFrame, StrainMetrics } from '../../../src/engine/audio/strain';
 import { STRAIN_CONSTANTS, CONSERVATIVE_STRAIN_CONSTANTS, RELAXED_STRAIN_CONSTANTS, StrainPreset } from '../../../src/engine/audio/constants';
 import Link from 'next/link';

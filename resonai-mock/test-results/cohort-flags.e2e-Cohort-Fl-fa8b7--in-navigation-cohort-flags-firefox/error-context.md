@@ -1,0 +1,138 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e4]:
+      - heading "Resonai" [level=1] [ref=e6]
+      - generic [ref=e7]:
+        - link "Home" [ref=e8] [cursor=pointer]:
+          - /url: /
+        - link "Listen" [ref=e9] [cursor=pointer]:
+          - /url: /listen
+        - link "Practice" [ref=e10] [cursor=pointer]:
+          - /url: /practice
+        - link "Progress" [ref=e11] [cursor=pointer]:
+          - /url: /progress
+        - link "Data Control" [ref=e12] [cursor=pointer]:
+          - /url: /data
+        - link "View your progress dashboard" [ref=e13] [cursor=pointer]:
+          - /url: /progress
+          - generic [ref=e14] [cursor=pointer]: 📊
+          - text: Progress
+        - link "MEMX Labs" [ref=e15] [cursor=pointer]:
+          - /url: /labs/memx
+  - main [ref=e16]:
+    - generic [ref=e17]:
+      - generic [ref=e20]:
+        - generic [ref=e21]:
+          - generic [ref=e23]: R
+          - generic [ref=e24]:
+            - heading "Resonai" [level=1] [ref=e25]
+            - paragraph [ref=e26]: Voice Analysis Platform
+        - generic [ref=e28]: System Online
+      - generic [ref=e29]:
+        - generic [ref=e30]:
+          - heading "Welcome to Resonai" [level=2] [ref=e31]
+          - paragraph [ref=e32]: Your voice analysis and practice platform. Choose from the options below to get started with voice monitoring, practice sessions, or advanced memory analysis.
+        - generic [ref=e33]:
+          - generic [ref=e35]:
+            - generic [ref=e36]:
+              - paragraph [ref=e37]: System Status
+              - paragraph [ref=e38]: Online
+            - generic [ref=e39]: ✅
+          - generic [ref=e41]:
+            - generic [ref=e42]:
+              - paragraph [ref=e43]: Audio Pipeline
+              - paragraph [ref=e44]: Ready
+            - generic [ref=e45]: 🎵
+          - generic [ref=e47]:
+            - generic [ref=e48]:
+              - paragraph [ref=e49]: Memory Monitoring
+              - paragraph [ref=e50]: Active
+            - generic [ref=e51]: 🧠
+          - generic [ref=e53]:
+            - generic [ref=e54]:
+              - paragraph [ref=e55]: Cross-Origin Isolation
+              - paragraph [ref=e56]: Enabled
+            - generic [ref=e57]: 🔒
+        - generic [ref=e58]:
+          - link "📊 Overview System status and quick stats Get Started" [ref=e59] [cursor=pointer]:
+            - /url: /
+            - generic [ref=e61] [cursor=pointer]:
+              - generic [ref=e62] [cursor=pointer]: 📊
+              - generic [ref=e63] [cursor=pointer]:
+                - heading "Overview" [level=3] [ref=e64] [cursor=pointer]
+                - paragraph [ref=e65] [cursor=pointer]: System status and quick stats
+                - generic [ref=e66] [cursor=pointer]:
+                  - generic [ref=e67] [cursor=pointer]: Get Started
+                  - img [ref=e68] [cursor=pointer]
+          - link "🎤 Voice Analysis Real-time voice analysis and monitoring Get Started" [ref=e70] [cursor=pointer]:
+            - /url: /listen
+            - generic [ref=e72] [cursor=pointer]:
+              - generic [ref=e73] [cursor=pointer]: 🎤
+              - generic [ref=e74] [cursor=pointer]:
+                - heading "Voice Analysis" [level=3] [ref=e75] [cursor=pointer]
+                - paragraph [ref=e76] [cursor=pointer]: Real-time voice analysis and monitoring
+                - generic [ref=e77] [cursor=pointer]:
+                  - generic [ref=e78] [cursor=pointer]: Get Started
+                  - img [ref=e79] [cursor=pointer]
+          - link "🎯 Practice Session Guided voice practice with feedback Get Started" [ref=e81] [cursor=pointer]:
+            - /url: /practice
+            - generic [ref=e83] [cursor=pointer]:
+              - generic [ref=e84] [cursor=pointer]: 🎯
+              - generic [ref=e85] [cursor=pointer]:
+                - heading "Practice Session" [level=3] [ref=e86] [cursor=pointer]
+                - paragraph [ref=e87] [cursor=pointer]: Guided voice practice with feedback
+                - generic [ref=e88] [cursor=pointer]:
+                  - generic [ref=e89] [cursor=pointer]: Get Started
+                  - img [ref=e90] [cursor=pointer]
+          - link "🧪 Memory Labs Advanced memory monitoring and analysis Get Started" [ref=e92] [cursor=pointer]:
+            - /url: /labs/memx
+            - generic [ref=e94] [cursor=pointer]:
+              - generic [ref=e95] [cursor=pointer]: 🧪
+              - generic [ref=e96] [cursor=pointer]:
+                - heading "Memory Labs" [level=3] [ref=e97] [cursor=pointer]
+                - paragraph [ref=e98] [cursor=pointer]: Advanced memory monitoring and analysis
+                - generic [ref=e99] [cursor=pointer]:
+                  - generic [ref=e100] [cursor=pointer]: Get Started
+                  - img [ref=e101] [cursor=pointer]
+        - generic [ref=e103]:
+          - heading "🚀 Getting Started" [level=3] [ref=e104]
+          - generic [ref=e105]:
+            - generic [ref=e106]:
+              - generic [ref=e108]: "1"
+              - generic [ref=e109]:
+                - heading "Start Voice Analysis" [level=4] [ref=e110]
+                - paragraph [ref=e111]: Click "Voice Analysis" to begin real-time voice monitoring with live feedback.
+            - generic [ref=e112]:
+              - generic [ref=e114]: "2"
+              - generic [ref=e115]:
+                - heading "Practice Your Voice" [level=4] [ref=e116]
+                - paragraph [ref=e117]: Use "Practice Session" for guided voice exercises with structured feedback.
+            - generic [ref=e118]:
+              - generic [ref=e120]: "3"
+              - generic [ref=e121]:
+                - heading "Advanced Analysis" [level=4] [ref=e122]
+                - paragraph [ref=e123]: Explore "Memory Labs" for detailed memory monitoring and performance metrics.
+        - generic [ref=e124]:
+          - heading "ℹ️ System Information" [level=3] [ref=e125]
+          - generic [ref=e126]:
+            - generic [ref=e127]:
+              - generic [ref=e128]: "Platform:"
+              - generic [ref=e129]: Next.js 14 + WebAudio
+            - generic [ref=e130]:
+              - generic [ref=e131]: "Audio Pipeline:"
+              - generic [ref=e132]: AudioWorklet + Low Latency
+            - generic [ref=e133]:
+              - generic [ref=e134]: "Security:"
+              - generic [ref=e135]: COOP/COEP Enabled
+            - generic [ref=e136]:
+              - generic [ref=e137]: "Storage:"
+              - generic [ref=e138]: IndexedDB Local Storage
+  - generic [ref=e139]:
+    - generic [ref=e140]: "SW: ❌"
+    - generic [ref=e141]: "COI: ✅"
+    - generic [ref=e142]: "SAB: ✅"
+  - alert [ref=e143]
+```

@@ -22,10 +22,7 @@ describe('Beta Metrics Calculation', () => {
       // Create sessions for 7 consecutive days
       for (let i = 0; i < 7; i++) {
         sessions.push({
-          ts: now - i * 24 * 60 * 60 * 1000,
-          comfort: 4,
-          fatigue: 2,
-          schemaVersion: 1
+          ts: now - i * 24 * 60 * 60 * 1000, medianF0: 150, comfort: 4, fatigue: 2, schemaVersion: 1
         });
       }
 
@@ -40,9 +37,9 @@ describe('Beta Metrics Calculation', () => {
       const sessions: SessionSummaryV1[] = [];
       
       // Create sessions for 3 out of 7 days
-      sessions.push({ ts: now, comfort: 4, fatigue: 2, schemaVersion: 1 });
-      sessions.push({ ts: now - 2 * 24 * 60 * 60 * 1000, comfort: 3, fatigue: 3, schemaVersion: 1 });
-      sessions.push({ ts: now - 5 * 24 * 60 * 60 * 1000, comfort: 4, fatigue: 2, schemaVersion: 1 });
+      sessions.push({ ts: now, medianF0: 150, comfort: 4, fatigue: 2, schemaVersion: 1 });
+      sessions.push({ ts: now - 2 * 24 * 60 * 60 * 1000, medianF0: 150, comfort: 3, fatigue: 3, schemaVersion: 1 });
+      sessions.push({ ts: now - 5 * 24 * 60 * 60 * 1000, medianF0: 150, comfort: 4, fatigue: 2, schemaVersion: 1 });
 
       const daily = aggregator.aggregateDaily(sessions);
       const retention = daily[0].betaMetrics.retentionPct;
@@ -59,10 +56,7 @@ describe('Beta Metrics Calculation', () => {
 
     it('should handle single session', () => {
       const sessions: SessionSummaryV1[] = [{
-        ts: Date.now(),
-        comfort: 4,
-        fatigue: 2,
-        schemaVersion: 1
+        ts: Date.now(), medianF0: 150, comfort: 4, fatigue: 2, schemaVersion: 1
       }];
 
       const daily = aggregator.aggregateDaily(sessions);
@@ -76,9 +70,9 @@ describe('Beta Metrics Calculation', () => {
     it('should calculate comfort trend correctly', () => {
       const now = Date.now();
       const sessions: SessionSummaryV1[] = [
-        { ts: now, comfort: 3, fatigue: 3, schemaVersion: 1 },
-        { ts: now - 24 * 60 * 60 * 1000, comfort: 4, fatigue: 2, schemaVersion: 1 },
-        { ts: now - 2 * 24 * 60 * 60 * 1000, comfort: 5, fatigue: 1, schemaVersion: 1 }
+        { ts: now, medianF0: 150, comfort: 3, fatigue: 3, schemaVersion: 1 },
+        { ts: now - 24 * 60 * 60 * 1000, medianF0: 150, comfort: 4, fatigue: 2, schemaVersion: 1 },
+        { ts: now - 2 * 24 * 60 * 60 * 1000, medianF0: 150, comfort: 5, fatigue: 1, schemaVersion: 1 }
       ];
 
       const daily = aggregator.aggregateDaily(sessions);
@@ -91,9 +85,9 @@ describe('Beta Metrics Calculation', () => {
     it('should calculate fatigue trend correctly', () => {
       const now = Date.now();
       const sessions: SessionSummaryV1[] = [
-        { ts: now, comfort: 4, fatigue: 2, schemaVersion: 1 },
-        { ts: now - 24 * 60 * 60 * 1000, comfort: 3, fatigue: 3, schemaVersion: 1 },
-        { ts: now - 2 * 24 * 60 * 60 * 1000, comfort: 2, fatigue: 4, schemaVersion: 1 }
+        { ts: now, medianF0: 150, comfort: 4, fatigue: 2, schemaVersion: 1 },
+        { ts: now - 24 * 60 * 60 * 1000, medianF0: 150, comfort: 3, fatigue: 3, schemaVersion: 1 },
+        { ts: now - 2 * 24 * 60 * 60 * 1000, medianF0: 150, comfort: 2, fatigue: 4, schemaVersion: 1 }
       ];
 
       const daily = aggregator.aggregateDaily(sessions);
@@ -108,7 +102,7 @@ describe('Beta Metrics Calculation', () => {
       const sessions: SessionSummaryV1[] = [
         { ts: now, comfort: 4, schemaVersion: 1 }, // missing fatigue
         { ts: now - 24 * 60 * 60 * 1000, fatigue: 2, schemaVersion: 1 }, // missing comfort
-        { ts: now - 2 * 24 * 60 * 60 * 1000, comfort: 3, fatigue: 3, schemaVersion: 1 }
+        { ts: now - 2 * 24 * 60 * 60 * 1000, medianF0: 150, comfort: 3, fatigue: 3, schemaVersion: 1 }
       ];
 
       const daily = aggregator.aggregateDaily(sessions);
@@ -244,10 +238,7 @@ describe('Beta Metrics Calculation', () => {
       // Create 14 sessions over 2 weeks (1 per day)
       for (let i = 0; i < 14; i++) {
         sessions.push({
-          ts: now - i * 24 * 60 * 60 * 1000,
-          comfort: 4,
-          fatigue: 2,
-          schemaVersion: 1
+          ts: now - i * 24 * 60 * 60 * 1000, medianF0: 150, comfort: 4, fatigue: 2, schemaVersion: 1
         });
       }
 
@@ -395,8 +386,8 @@ describe('Beta Metrics Calculation', () => {
     it('should handle sessions with missing memx data', () => {
       const now = Date.now();
       const sessions: SessionSummaryV1[] = [
-        { ts: now, comfort: 4, fatigue: 2, schemaVersion: 1 },
-        { ts: now - 24 * 60 * 60 * 1000, comfort: 3, fatigue: 3, schemaVersion: 1 }
+        { ts: now, medianF0: 150, comfort: 4, fatigue: 2, schemaVersion: 1 },
+        { ts: now - 24 * 60 * 60 * 1000, medianF0: 150, comfort: 3, fatigue: 3, schemaVersion: 1 }
       ];
 
       const daily = aggregator.aggregateDaily(sessions);
@@ -408,8 +399,8 @@ describe('Beta Metrics Calculation', () => {
 
     it('should handle sessions with invalid timestamps', () => {
       const sessions: SessionSummaryV1[] = [
-        { ts: 0, comfort: 4, fatigue: 2, schemaVersion: 1 },
-        { ts: -1, comfort: 3, fatigue: 3, schemaVersion: 1 }
+        { ts: 0, medianF0: 150, comfort: 4, fatigue: 2, schemaVersion: 1 },
+        { ts: -1, medianF0: 150, comfort: 3, fatigue: 3, schemaVersion: 1 }
       ];
 
       const daily = aggregator.aggregateDaily(sessions);
@@ -421,8 +412,8 @@ describe('Beta Metrics Calculation', () => {
     it('should handle sessions with missing schema version', () => {
       const now = Date.now();
       const sessions: SessionSummaryV1[] = [
-        { ts: now, comfort: 4, fatigue: 2 }, // missing schemaVersion
-        { ts: now - 24 * 60 * 60 * 1000, comfort: 3, fatigue: 3, schemaVersion: 1 }
+        { ts: now, medianF0: 150, comfort: 4, fatigue: 2 }, // missing schemaVersion
+        { ts: now - 24 * 60 * 60 * 1000, medianF0: 150, comfort: 3, fatigue: 3, schemaVersion: 1 }
       ];
 
       const daily = aggregator.aggregateDaily(sessions);
@@ -460,8 +451,8 @@ describe('Beta Metrics Calculation', () => {
     it('should handle sparse data (weeks with 0 sessions)', () => {
       const now = Date.now();
       const sessions: SessionSummaryV1[] = [
-        { ts: now, comfort: 4, fatigue: 2, schemaVersion: 1 },
-        { ts: now - 14 * 24 * 60 * 60 * 1000, comfort: 3, fatigue: 3, schemaVersion: 1 } // 2 weeks ago
+        { ts: now, medianF0: 150, comfort: 4, fatigue: 2, schemaVersion: 1 },
+        { ts: now - 14 * 24 * 60 * 60 * 1000, medianF0: 150, comfort: 3, fatigue: 3, schemaVersion: 1 } // 2 weeks ago
       ];
 
       const daily = aggregator.aggregateDaily(sessions);
@@ -476,9 +467,9 @@ describe('Beta Metrics Calculation', () => {
     it('should handle comfort/fatigue scale validation (1-5)', () => {
       const now = Date.now();
       const sessions: SessionSummaryV1[] = [
-        { ts: now, comfort: 0, fatigue: 6, schemaVersion: 1 }, // Invalid values
-        { ts: now - 24 * 60 * 60 * 1000, comfort: 3, fatigue: 3, schemaVersion: 1 }, // Valid
-        { ts: now - 2 * 24 * 60 * 60 * 1000, comfort: 5, fatigue: 1, schemaVersion: 1 } // Valid
+        { ts: now, medianF0: 150, comfort: 0, fatigue: 6, schemaVersion: 1 }, // Invalid values
+        { ts: now - 24 * 60 * 60 * 1000, medianF0: 150, comfort: 3, fatigue: 3, schemaVersion: 1 }, // Valid
+        { ts: now - 2 * 24 * 60 * 60 * 1000, medianF0: 150, comfort: 5, fatigue: 1, schemaVersion: 1 } // Valid
       ];
 
       const daily = aggregator.aggregateDaily(sessions);
@@ -493,8 +484,8 @@ describe('Beta Metrics Calculation', () => {
       // Test sessions near midnight
       const midnight = new Date('2024-01-01T00:00:00Z').getTime();
       const sessions: SessionSummaryV1[] = [
-        { ts: midnight - 1000, comfort: 4, fatigue: 2, schemaVersion: 1 }, // Just before midnight
-        { ts: midnight + 1000, comfort: 3, fatigue: 3, schemaVersion: 1 }  // Just after midnight
+        { ts: midnight - 1000, medianF0: 150, comfort: 4, fatigue: 2, schemaVersion: 1 }, // Just before midnight
+        { ts: midnight + 1000, medianF0: 150, comfort: 3, fatigue: 3, schemaVersion: 1 }  // Just after midnight
       ];
 
       const daily = aggregator.aggregateDaily(sessions);
@@ -508,16 +499,10 @@ describe('Beta Metrics Calculation', () => {
       const now = Date.now();
       const sessions: SessionSummaryV1[] = [
         { 
-          ts: now, 
-          comfort: 4, 
-          fatigue: 2, 
-          schemaVersion: 1 
+          ts: now, medianF0: 150, comfort: 4, fatigue: 2, schemaVersion: 1 
         },
         { 
-          ts: now - 24 * 60 * 60 * 1000, 
-          comfort: 3, 
-          fatigue: 3, 
-          schemaVersion: 1 
+          ts: now - 24 * 60 * 60 * 1000, medianF0: 150, comfort: 3, fatigue: 3, schemaVersion: 1 
         }
       ];
 
@@ -532,9 +517,9 @@ describe('Beta Metrics Calculation', () => {
     it('should handle install vs first-session date correctly', () => {
       const now = Date.now();
       const sessions: SessionSummaryV1[] = [
-        { ts: now - 7 * 24 * 60 * 60 * 1000, comfort: 4, fatigue: 2, schemaVersion: 1 }, // First session 7 days ago
-        { ts: now - 3 * 24 * 60 * 60 * 1000, comfort: 3, fatigue: 3, schemaVersion: 1 },  // Second session 3 days ago
-        { ts: now, comfort: 5, fatigue: 1, schemaVersion: 1 } // Latest session today
+        { ts: now - 7 * 24 * 60 * 60 * 1000, medianF0: 150, comfort: 4, fatigue: 2, schemaVersion: 1 }, // First session 7 days ago
+        { ts: now - 3 * 24 * 60 * 60 * 1000, medianF0: 150, comfort: 3, fatigue: 3, schemaVersion: 1 },  // Second session 3 days ago
+        { ts: now, medianF0: 150, comfort: 5, fatigue: 1, schemaVersion: 1 } // Latest session today
       ];
 
       const daily = aggregator.aggregateDaily(sessions);

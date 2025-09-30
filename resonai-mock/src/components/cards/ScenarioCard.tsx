@@ -10,6 +10,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { ProsodyEngine, ScenarioConfig, ScenarioResult } from '../../engine/audio/prosody';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
 
 interface ScenarioCardProps {
   scenario: ScenarioConfig;
@@ -37,6 +38,7 @@ export function ScenarioCard({
   const prosodyEngine = useRef(new ProsodyEngine());
   const countdownInterval = useRef<NodeJS.Timeout | null>(null);
   const recordingTimeout = useRef<NodeJS.Timeout | null>(null);
+  const reducedMotion = useReducedMotion();
 
   // Cleanup on unmount
   useEffect(() => {
