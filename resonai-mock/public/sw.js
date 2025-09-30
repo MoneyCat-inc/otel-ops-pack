@@ -94,7 +94,15 @@ self.addEventListener('install', (event) => {
     caches.open(CACHE_NAME)
       .then((cache) => {
         console.log('Service Worker: Caching offline pages');
-        return cache.addAll(OFFLINE_PAGES);
+        // Cache pages individually to handle failures gracefully
+        return Promise.allSettled(
+          OFFLINE_PAGES.map(page => 
+            cache.add(page).catch(error => {
+              console.warn(`Service Worker: Failed to cache ${page}:`, error);
+              return null; // Continue with other pages
+            })
+          )
+        );
       })
       .then(() => {
         console.log('Service Worker: Installation complete');
@@ -154,30 +162,32 @@ self.addEventListener('fetch', (event) => {
       .catch(() => {
         // If offline, serve from cache with preserved/added headers
         return caches.match(event.request)
-          .then((cachedResponse) => {
+          .then(async (cachedResponse) => {
             if (cachedResponse) {
               console.log('Service Worker: Serving offline page:', event.request.url);
               
-              // Create a new response with preserved/added headers
-              const headers = preserveOrAddCriticalHeaders(cachedResponse.headers);
+              // Clone the cached response to avoid consuming the body
+              const offlineClone = cachedResponse.clone();
+              const headers = preserveOrAddCriticalHeaders(offlineClone.headers);
               
-              return new Response(cachedResponse.body, {
-                status: cachedResponse.status,
-                statusText: cachedResponse.statusText,
+              return new Response(await offlineClone.arrayBuffer(), {
+                status: offlineClone.status,
+                statusText: offlineClone.statusText,
                 headers: headers
               });
             }
             
             // If no cached version, return offline page
             return caches.match('/')
-              .then((offlinePage) => {
+              .then(async (offlinePage) => {
                 if (offlinePage) {
                   console.log('Service Worker: Serving offline fallback page');
                   
-                  // Create response with preserved/added headers for offline page
-                  const headers = preserveOrAddCriticalHeaders(offlinePage.headers);
+                  // Clone the offline page response to avoid consuming the body
+                  const offlinePageClone = offlinePage.clone();
+                  const headers = preserveOrAddCriticalHeaders(offlinePageClone.headers);
                   
-                  return new Response(offlinePage.body, {
+                  return new Response(await offlinePageClone.arrayBuffer(), {
                     status: 200,
                     statusText: 'OK',
                     headers: headers

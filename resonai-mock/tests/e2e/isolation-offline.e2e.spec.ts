@@ -11,13 +11,15 @@ import { test, expect } from '@playwright/test';
 test.describe('Offline Isolation Tests', () => {
   test.beforeEach(async ({ page }) => {
     // Clear any existing Service Worker
-    await page.evaluate(() => {
+    await page.evaluate(async () => {
       if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.getRegistrations().then(registrations => {
-          registrations.forEach(registration => registration.unregister());
-        });
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(registrations.map(registration => registration.unregister()));
       }
     });
+    
+    // Wait for cleanup to complete
+    await page.waitForTimeout(500);
 
     // Console guard for COEP/Isolation errors
     const ERR_PATTERNS = [
@@ -101,7 +103,7 @@ test.describe('Offline Isolation Tests', () => {
     expect(sabAvailable).toBe(true);
     
     // Check that page loaded successfully offline
-    await expect(page.getByText('Resonai')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Welcome to Resonai' })).toBeVisible();
   });
 
   test('should handle worklet loading without COEP errors', async ({ page }) => {
@@ -200,10 +202,9 @@ test.describe('Offline Isolation Tests', () => {
     }, { timeout: 10000 });
     
     // Simulate Service Worker update by unregistering and re-registering
-    await page.evaluate(() => {
-      return navigator.serviceWorker.getRegistrations().then(registrations => {
-        return Promise.all(registrations.map(registration => registration.unregister()));
-      });
+    await page.evaluate(async () => {
+      const registrations = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(registrations.map(registration => registration.unregister()));
     });
     
     // Wait a moment
@@ -300,13 +301,15 @@ test.describe('Offline Isolation Tests', () => {
 test.describe('Service Worker Registration', () => {
   test('should register Service Worker on first visit', async ({ page }) => {
     // Clear any existing registrations
-    await page.evaluate(() => {
+    await page.evaluate(async () => {
       if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.getRegistrations().then(registrations => {
-          registrations.forEach(registration => registration.unregister());
-        });
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(registrations.map(registration => registration.unregister()));
       }
     });
+    
+    // Wait for cleanup to complete
+    await page.waitForTimeout(500);
     
     // Navigate to home page
     await page.goto('/');
