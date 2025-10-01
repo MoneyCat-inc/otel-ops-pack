@@ -44,9 +44,10 @@
   .kpi .value { font-size: 22px; font-weight: 700; }
   .kpi .spark { display:block; margin-top:4px; }
   .pill { display:inline-block; padding: 3px 8px; border-radius: 999px; font-weight: 600; font-size: 12px; }
-  .pill.green{ background: rgba(76,175,80,.15); color: var(--green); border: 1px solid rgba(76,175,80,.3);}
-  .pill.yellow{ background: rgba(255,193,7,.15); color: var(--yellow); border: 1px solid rgba(255,193,7,.3);}
-  .pill.red{ background: rgba(244,67,54,.15); color: var(--red); border: 1px solid rgba(244,67,54,.3);}
+  /* Status pills: ensure strong contrast by using foreground text color on tinted backgrounds */
+  .pill.green{ background: rgba(76,175,80,.18); color: var(--fg); border: 1px solid rgba(76,175,80,.35);} 
+  .pill.yellow{ background: rgba(255,193,7,.20); color: var(--fg); border: 1px solid rgba(255,193,7,.40);} 
+  .pill.red{ background: rgba(244,67,54,.18); color: var(--fg); border: 1px solid rgba(244,67,54,.35);} 
   @keyframes fadeIn { from { opacity: 0; transform: translateY(2px); } to { opacity: 1; transform: translateY(0); } }
   .fade-in { animation: fadeIn .28s ease-out; }
   .pill { animation: fadeIn .24s ease-out; }
@@ -77,6 +78,15 @@
   .fine { font-size: 12px; color: var(--muted); }
   footer { border-top: 1px solid var(--border); border-bottom: none; }
   code { background: rgba(255,255,255,.06); padding: 2px 4px; border-radius: 6px; }
+  /* Print-friendly PDF export: hide controls, simplify layout, ensure contrast */
+  @media print {
+    header .toolbar, #tab-kanban, #tab-swim, #auto, #endpoint, #refresh, #loadFiles, #exportMd, #exportMdDetailed, #exportCsvBuckets, #exportCsvHistory, #exportPdf { display: none !important; }
+    body { background: #fff; color: #000; }
+    .card, .col, .kpi, table, th, td { border-color: #555 !important; }
+    .pill.green{ background: #e7f4ea !important; color: #0b5d1e !important; border-color: #a8d5b5 !important; }
+    .pill.yellow{ background: #fff4d6 !important; color: #6b4e00 !important; border-color: #f3d38a !important; }
+    .pill.red{ background: #fde4e2 !important; color: #7a0b0b !important; border-color: #f0a3a3 !important; }
+  }
 
   /* Persona accents */
   :root { --pm:#4aa3ff; --imp:#9b59b6; --ver:#00c2b2; --stk:#ff8a4a; --you:#f2c94c; }
@@ -139,28 +149,36 @@
   <!-- PERSONA VIEWS -->
   <section class="card grid2" aria-labelledby="personaTitle">
     <h2 id="personaTitle">Persona Views</h2>
+    <div class="hstack" aria-label="Persona filters">
+      <label class="muted">Show:</label>
+      <label class="hstack"><input type="checkbox" class="pf" data-p="pm" checked /> PM</label>
+      <label class="hstack"><input type="checkbox" class="pf" data-p="imp" checked /> Implication</label>
+      <label class="hstack"><input type="checkbox" class="pf" data-p="ver" checked /> Verifier</label>
+      <label class="hstack"><input type="checkbox" class="pf" data-p="stk" checked /> Stakeholder</label>
+      <label class="hstack"><input type="checkbox" class="pf" data-p="you" checked /> You</label>
+    </div>
 
-    <div class="vstack persona pm">
+    <div class="vstack persona pm" data-persona="pm">
       <h3>Project Manager</h3>
       <ul class="list" id="pmList"></ul>
     </div>
 
-    <div class="vstack persona imp">
+    <div class="vstack persona imp" data-persona="imp">
       <h3>Project Implication Agent</h3>
       <ul class="list" id="impList"></ul>
     </div>
 
-    <div class="vstack persona ver">
+    <div class="vstack persona ver" data-persona="ver">
       <h3>Project Verifier</h3>
       <ul class="list" id="verList"></ul>
     </div>
 
-    <div class="vstack persona stk">
+    <div class="vstack persona stk" data-persona="stk">
       <h3>Stakeholder</h3>
       <ul class="list" id="stkList"></ul>
     </div>
 
-    <div class="vstack persona you">
+    <div class="vstack persona you" data-persona="you">
       <h3>You (Operator)</h3>
       <ul class="list" id="youList"></ul>
     </div>
@@ -289,11 +307,18 @@ function taskItem(persona, index, text) {
 
 document.addEventListener('change', (e)=>{
   const t = e.target;
+  // Persona task toggles
   if (t && t.matches && t.matches('input[type="checkbox"][data-task]')) {
     const key = t.getAttribute('data-task');
     const tasks = getTasks();
     if (t.checked) tasks[key] = true; else delete tasks[key];
     setTasks(tasks);
+  }
+  // Persona filter toggles
+  if (t && t.matches && t.matches('input.pf[data-p]')) {
+    const p = t.getAttribute('data-p');
+    const els = document.querySelectorAll(`.persona[data-persona="${p}"]`);
+    els.forEach(el=>{ el.style.display = t.checked ? '' : 'none'; });
   }
 });
 
