@@ -85,12 +85,13 @@
     </div>
     <div class="toolbar" role="toolbar" aria-label="Controls">
       <label class="muted" for="endpoint">Endpoint</label>
-      <input id="endpoint" type="text" size="34" class="btn" value="http://localhost:3003/status/" title="Base URL for JSON: roadmap.json, tests.json, ssot.json" />
+      <input id="endpoint" type="text" size="34" class="btn" value="http://localhost:3003/status/" title="HTTP base URL for roadmap.json, tests.json, ssot.json (only needed when serving over HTTP)" />
       <button class="btn" id="refresh">Refresh</button>
       <label class="hstack muted"><input id="auto" type="checkbox" /> auto (30s)</label>
-      <button class="btn" id="loadFiles" title="Load JSON files when opened as file://">Load files</button>
+      <button class="btn" id="loadFiles" title="Preferred: in file mode, click to choose docs/status/*.json">Load files</button>
     </div>
   </div>
+  <p class="fine" id="modeHint">File mode is default: open this file directly and click "Load files" when it opens as file://. Use the Endpoint field only if a server exposes docs/status/*.json.</p>
 </header>
 
 <main class="row" id="app" aria-live="polite">
@@ -186,6 +187,15 @@ const state = {
     roadmap: null, tests: null, ssot: null
   }
 };
+const modeHint = document.getElementById('modeHint');
+if (modeHint) {
+  if (location.protocol === 'file:') {
+    modeHint.innerHTML = 'File mode active: click <strong>Load files</strong> to choose docs/status/*.json (preferred workflow).';
+  } else {
+    modeHint.innerHTML = 'Serving over HTTP: ensure the Endpoint exposes docs/status/roadmap.json, tests.json, and ssot.json.';
+  }
+}
+
 
 // Fallback demo data (used if fetch fails and no files loaded)
 const DEMO = {
@@ -459,6 +469,20 @@ $('#auto').addEventListener('change',(e)=>{
 });
 
 /* ---------------------------
+   MODE HINT
+----------------------------*/
+function updateModeHint() {
+  const modeHint = document.getElementById('modeHint');
+  if (modeHint) {
+    if (location.protocol === 'file:') {
+      modeHint.innerHTML = '✅ File mode active: click <strong>Load files</strong> to choose docs/status/*.json (preferred workflow).';
+    } else {
+      modeHint.innerHTML = '🌐 Serving over HTTP: ensure the Endpoint exposes docs/status/roadmap.json, tests.json, and ssot.json.';
+    }
+  }
+}
+
+/* ---------------------------
    MAIN
 ----------------------------*/
 function renderAll() {
@@ -469,6 +493,7 @@ function renderAll() {
   renderPersonas();
   renderECRR();
 }
+updateModeHint(); // show file/http mode hint
 refreshData(); // initial load
 </script>
 </body>
