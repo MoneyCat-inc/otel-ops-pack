@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Your Dashboard Title - Resonai</title>
+    
+    <!-- Favicon + app icons (hi-dpi + cache-safe) -->
+    <link rel="icon" type="image/png" sizes="32x32" href="LOGO/Resonai_LOGO_ICONonly.png?v=1">
+    <link rel="icon" type="image/png" sizes="192x192" href="LOGO/Resonai_LOGO_ICONonly.png?v=1">
+    <link rel="apple-touch-icon" href="LOGO/Resonai_LOGO_ICONonly.png?v=1">
+    <meta name="theme-color" content="#0b0d12">
+    <meta name="application-name" content="Resonai Dashboard">
+    
+    <!-- Shared Brand System -->
+    <link rel="stylesheet" href="assets/resonai-tokens.css">
+    
+    <!-- Dashboard-Specific Styles -->
+    <style>
+        :root {
+            /* Dashboard-specific theme (extends shared tokens) */
+            --dashboard-bg: #f5f5f5;
+            --dashboard-surface: #ffffff;
+            --dashboard-text: #1d2233;
+            --dashboard-muted: #5b6274;
+            --dashboard-border: #e0e6f2;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --dashboard-bg: #0b0d12;
+                --dashboard-surface: #121520;
+                --dashboard-text: #f1f4ff;
+                --dashboard-muted: #9aa2be;
+                --dashboard-border: #252b3a;
+            }
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--dashboard-bg);
+            color: var(--dashboard-text);
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .page {
+            width: 100%;
+            max-width: 1080px;
+            background: var(--dashboard-surface);
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            border: 1px solid var(--dashboard-border);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--rsn-grad-blue) 0%, var(--rsn-grad-purple) 55%, var(--rsn-grad-magenta) 100%);
+            color: var(--rsn-fg);
+            padding: 32px 28px 24px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 16px 0 0 0;
+            font-size: 2.2rem;
+            font-weight: 300;
+        }
+
+        header p {
+            margin: 8px 0 0 0;
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        main {
+            padding: 28px;
+        }
+
+        .content-section {
+            background: var(--dashboard-surface);
+            border: 1px solid var(--dashboard-border);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .content-section h2 {
+            margin-top: 0;
+            color: var(--rsn-grad-purple);
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+
+        .metric-card {
+            background: var(--dashboard-bg);
+            border: 1px solid var(--dashboard-border);
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--rsn-grad-blue);
+            margin-bottom: 4px;
+        }
+
+        .metric-label {
+            color: var(--dashboard-muted);
+            font-size: 0.9rem;
+        }
+
+        footer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 20px;
+            background: var(--dashboard-bg);
+            color: var(--dashboard-muted);
+            border-top: 1px solid var(--dashboard-border);
+        }
+
+        /* Print optimizations */
+        @media print {
+            body { background: #fff; }
+            .page { box-shadow: none; border-color: #bbb; }
+            header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            footer { display: none !important; }
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            header { padding: 20px 16px 16px; }
+            header h1 { font-size: 1.8rem; }
+            main { padding: 16px; }
+            .metric-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <header role="banner">
+            <picture class="logo-container" aria-hidden="true">
+                <source media="(prefers-color-scheme: light)" srcset="LOGO/Resonai_LOGO_B.png">
+                <img src="LOGO/Resonai_LOGO_A.png" alt="" class="logo-wordmark" decoding="async" aria-hidden="true">
+            </picture>
+            <h1>Your Dashboard Title</h1>
+            <p>Dashboard description and purpose</p>
+        </header>
+
+        <main>
+            <section class="content-section" aria-label="Overview">
+                <h2>Overview</h2>
+                <p>Add your dashboard content here. This template provides:</p>
+                <ul>
+                    <li>Consistent Resonai branding</li>
+                    <li>Dark/light mode support</li>
+                    <li>Responsive design</li>
+                    <li>Accessibility compliance</li>
+                    <li>Print optimization</li>
+                </ul>
+            </section>
+
+            <section class="content-section" aria-label="Metrics">
+                <h2>Key Metrics</h2>
+                <div class="metric-grid">
+                    <div class="metric-card">
+                        <div class="metric-value">95%</div>
+                        <div class="metric-label">Success Rate</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">1.2s</div>
+                        <div class="metric-label">Response Time</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">1,247</div>
+                        <div class="metric-label">Total Requests</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">99.9%</div>
+                        <div class="metric-label">Uptime</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="content-section" aria-label="Additional Content">
+                <h2>Additional Content</h2>
+                <p>Add charts, tables, or other dashboard elements here.</p>
+                
+                <!-- Example: Brand color usage -->
+                <div style="margin: 20px 0;">
+                    <h3>Brand Color Examples</h3>
+                    <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+                        <div style="background: var(--rsn-grad-blue); color: white; padding: 8px 16px; border-radius: 4px;">Blue</div>
+                        <div style="background: var(--rsn-grad-purple); color: white; padding: 8px 16px; border-radius: 4px;">Purple</div>
+                        <div style="background: var(--rsn-grad-magenta); color: white; padding: 8px 16px; border-radius: 4px;">Magenta</div>
+                        <div style="background: var(--rsn-grad-orange); color: white; padding: 8px 16px; border-radius: 4px;">Orange</div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer role="contentinfo">
+            <img src="LOGO/Resonai_LOGO_monochrome.png" alt="" class="logo-mono" decoding="async" aria-hidden="true">
+            <p>Local-first observability platform • Generated: <span id="timestamp"></span></p>
+        </footer>
+    </div>
+
+    <script>
+        // Add timestamp to footer
+        document.getElementById('timestamp').textContent = new Date().toISOString();
+        
+        // Example: Add your dashboard JavaScript here
+        console.log('Dashboard loaded successfully');
+    </script>
+</body>
+</html>
