@@ -1,0 +1,189 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "version": "1.0.0",
+  "lastUpdated": "2025-10-01T00:00:00Z",
+  "milestones": {
+    "M1_Foundations": {
+      "label": "M1 Foundations",
+      "status": "complete",
+      "targetDate": "2025-07-15",
+      "features": {
+        "instant_practice": {
+          "name": "Instant Practice (/try)",
+          "description": "Instant Practice flow + Pitch Meter",
+          "testTags": ["@smoke", "@pilot-core"],
+          "testFiles": ["instant-practice.spec.ts", "pitch-meter.spec.ts"],
+          "status": "green",
+          "completedDate": "2025-07-10"
+        },
+        "warmup_fsm": {
+          "name": "Warmup FSM + Reflection",
+          "description": "Warmup finite state machine + reflection orbs",
+          "testTags": ["@smoke", "@pilot-core"],
+          "testFiles": ["warmup.spec.ts", "reflection.spec.ts"],
+          "status": "green",
+          "completedDate": "2025-07-12"
+        },
+        "indexeddb_storage": {
+          "name": "Local IndexedDB storage",
+          "description": "Local-first IndexedDB persistence",
+          "testTags": ["@smoke", "@offline"],
+          "testFiles": ["storage.spec.ts"],
+          "status": "green",
+          "completedDate": "2025-07-08"
+        },
+        "safety": {
+          "name": "Safety (silence pause, clipping)",
+          "description": "Silence detection, audio clipping guard",
+          "testTags": ["@smoke", "@pilot-core"],
+          "testFiles": ["safety.spec.ts"],
+          "status": "green",
+          "completedDate": "2025-07-15"
+        }
+      }
+    },
+    "M1_5_Hardening": {
+      "label": "M1.5 Hardening",
+      "status": "deployed",
+      "targetDate": "2025-08-20",
+      "features": {
+        "pr_test_lane": {
+          "name": "PR Test Lane (smoke+pilot-core)",
+          "description": "Fast PR test suite with core features",
+          "testTags": ["@smoke", "@pilot-core"],
+          "testFiles": [],
+          "status": "green",
+          "completedDate": "2025-08-15"
+        },
+        "analytics_dashboard": {
+          "name": "Analytics + Live Dashboard",
+          "description": "Real-time analytics ingestion and dashboard",
+          "testTags": ["@smoke"],
+          "testFiles": ["analytics.spec.ts"],
+          "status": "green",
+          "completedDate": "2025-08-15"
+        },
+        "cohort_gating": {
+          "name": "Cohort gating + rollback",
+          "description": "Feature gating by cohort with rollback controls",
+          "testTags": ["@smoke", "@cohort-gating"],
+          "testFiles": ["cohort-gating.spec.ts"],
+          "status": "green",
+          "completedDate": "2025-08-20"
+        },
+        "a11y_smokes": {
+          "name": "Accessibility smokes",
+          "description": "ARIA labels, skip links, keyboard navigation",
+          "testTags": ["@a11y-smoke"],
+          "testFiles": ["a11y.spec.ts"],
+          "status": "yellow",
+          "notes": "Failing tests: ARIA labels, skip link detection"
+        }
+      }
+    },
+    "M2_Core_Drills": {
+      "label": "M2 Core Drills",
+      "status": "in_progress",
+      "targetDate": "2025-10-31",
+      "features": {
+        "pitch_band": {
+          "name": "Pitch Band drill",
+          "description": "Time-in-band percentage tracking + adaptive bands",
+          "testTags": ["@nightly", "@pitch-band"],
+          "testFiles": ["pitch-band.spec.ts"],
+          "status": "yellow",
+          "notes": "Time-in-band calculation in progress"
+        },
+        "resonance_buckets": {
+          "name": "Resonance buckets",
+          "description": "LPC/F1-F2 formant tracking for resonance",
+          "testTags": ["@nightly", "@resonance"],
+          "testFiles": ["resonance.spec.ts"],
+          "status": "yellow",
+          "notes": "LPC stabilization needed, ML fallback option"
+        },
+        "prosody": {
+          "name": "Prosody mini-phrases",
+          "description": "Expressiveness meter + end-rise detection",
+          "testTags": ["@prosody"],
+          "testFiles": ["prosody.spec.ts"],
+          "status": "green",
+          "completedDate": "2025-09-15"
+        },
+        "orb_v2": {
+          "name": "Orb v2 (shimmer, hue)",
+          "description": "Shimmer effect + resonance hue visualization",
+          "testTags": ["@nightly", "@polish"],
+          "testFiles": ["orb-v2.spec.ts"],
+          "status": "yellow",
+          "notes": "Visual integration pending"
+        },
+        "strain_guardrails": {
+          "name": "Strain guardrails",
+          "description": "Vocal strain detection + fatigue heuristics",
+          "testTags": ["@strain"],
+          "testFiles": ["strain.spec.ts"],
+          "status": "yellow",
+          "notes": "Heuristics need cohort calibration"
+        }
+      }
+    },
+    "M3_Adaptive": {
+      "label": "M3 Adaptive",
+      "status": "planned",
+      "targetDate": "2025-12-31",
+      "features": {
+        "adaptive_planner": {
+          "name": "Adaptive planner",
+          "description": "Mastery-driven flow engine + adaptive exercises",
+          "testTags": ["@future", "@dashboard"],
+          "testFiles": ["adaptive-planner.spec.ts"],
+          "status": "red",
+          "notes": "Mastery criteria + flow engine not started"
+        },
+        "progress_dashboard": {
+          "name": "Progress dashboard v1",
+          "description": "Metrics cards, trends, IndexedDB-backed",
+          "testTags": ["@future", "@dashboard"],
+          "testFiles": ["dashboard.spec.ts"],
+          "status": "red",
+          "notes": "UI components not implemented"
+        },
+        "carryover_drills": {
+          "name": "Carryover drills",
+          "description": "Phrase → scenario flows (voicemail, intros)",
+          "testTags": ["@future", "@carryover"],
+          "testFiles": ["carryover.spec.ts"],
+          "status": "red",
+          "notes": "Feature not started"
+        },
+        "cohort_analytics": {
+          "name": "Cohort analytics & data-control",
+          "description": "Cohort logs, user data controls, privacy UX",
+          "testTags": ["@future", "@cohort-analytics", "@data-control"],
+          "testFiles": ["cohort-analytics.spec.ts", "data-control.spec.ts"],
+          "status": "red",
+          "notes": "Feature not started"
+        }
+      }
+    }
+  },
+  "statusMapping": {
+    "green": {
+      "label": "✅ Green",
+      "description": "Complete & stable",
+      "criteria": "All tests passing, feature deployed"
+    },
+    "yellow": {
+      "label": "🟨 Yellow",
+      "description": "In progress / partial",
+      "criteria": "Some tests passing, feature partially implemented"
+    },
+    "red": {
+      "label": "🟥 Red",
+      "description": "Not yet started / future",
+      "criteria": "Tests failing or not implemented"
+    }
+  }
+}
+
