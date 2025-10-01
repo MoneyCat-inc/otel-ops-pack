@@ -20,7 +20,7 @@ The status dashboard provides **persona-tailored views** of project status:
 
 ## 🚀 Quick Start
 
-### Option A: File Mode (No Server)
+### ✅ Recommended: File Mode (Works Perfectly!)
 
 ```powershell
 # Open the HTML file directly in Firefox
@@ -28,12 +28,23 @@ start firefox docs/status.html
 
 # Click "Load files" button
 # Select: docs/status/roadmap.json, tests.json, ssot.json
+
+# That's it! 🎉
 ```
 
-### Option B: Server Mode (Auto-Refresh)
+**Why file mode?**
+- ✅ No server needed
+- ✅ No port conflicts
+- ✅ Works offline
+- ✅ True local-first
+- ✅ No Next.js interference
+
+### Alternative: Server Mode (Static Server Only)
+
+⚠️ **Don't use Next.js dev server** — it interferes with the HTML.
 
 ```powershell
-# Serve from docs/ directory (Python 3)
+# Use Python HTTP server or similar (NOT npm run dev)
 cd docs
 python -m http.server 3003
 
