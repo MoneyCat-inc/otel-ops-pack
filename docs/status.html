@@ -86,6 +86,14 @@
     .pill.green{ background: #e7f4ea !important; color: #0b5d1e !important; border-color: #a8d5b5 !important; }
     .pill.yellow{ background: #fff4d6 !important; color: #6b4e00 !important; border-color: #f3d38a !important; }
     .pill.red{ background: #fde4e2 !important; color: #7a0b0b !important; border-color: #f0a3a3 !important; }
+    /* Condensed heatmap for print */
+    .row { grid-template-columns: 1fr !important; }
+    .grid2 { grid-template-columns: 1fr !important; }
+    .kanban { grid-template-columns: 1fr !important; }
+    .col { margin-bottom: 8px; }
+    .cardlet { margin: 4px 0; padding: 6px; }
+    table { font-size: 11px; }
+    th, td { padding: 4px 6px; }
   }
 
   /* Persona accents */
@@ -319,6 +327,12 @@ document.addEventListener('change', (e)=>{
     const p = t.getAttribute('data-p');
     const els = document.querySelectorAll(`.persona[data-persona="${p}"]`);
     els.forEach(el=>{ el.style.display = t.checked ? '' : 'none'; });
+    // Persist filter state
+    const filters = {};
+    document.querySelectorAll('input.pf[data-p]').forEach(cb => {
+      filters[cb.getAttribute('data-p')] = cb.checked;
+    });
+    localStorage.setItem('status:personaFilters', JSON.stringify(filters));
   }
 });
 
@@ -798,6 +812,22 @@ function renderAll() {
 }
 updateModeHint(); // show file/http mode hint
 refreshData(); // initial load
+
+// Restore persona filter state on page load
+function restorePersonaFilters() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('status:personaFilters') || '{}');
+    document.querySelectorAll('input.pf[data-p]').forEach(cb => {
+      const p = cb.getAttribute('data-p');
+      if (saved[p] !== undefined) {
+        cb.checked = saved[p];
+        const els = document.querySelectorAll(`.persona[data-persona="${p}"]`);
+        els.forEach(el=>{ el.style.display = saved[p] ? '' : 'none'; });
+      }
+    });
+  } catch {}
+}
+restorePersonaFilters();
 </script>
 </body>
 </html>
