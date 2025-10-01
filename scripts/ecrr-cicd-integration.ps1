@@ -1,165 +1,179 @@
 # ECRR CI/CD Integration Script
-# Integrates ECRR compliance monitoring with CI/CD pipeline
+# Integrates ECRR compliance checking into CI/CD pipelines
 
 param(
-    [string]$Action = "check",
-    [string]$Branch = "main",
-    [string]$CommitHash = "",
-    [string]$WebhookUrl = "",
-    [switch]$FailOnRegression,
-    [switch]$GenerateReport,
-    [int]$RegressionThreshold = 5
+    [string]$ComplianceThreshold = "95",
+    [switch]$GenerateWorkflow,
+    [switch]$Test
 )
 
-# CI/CD Configuration
-$CICD_CONFIG = @{
-    "Thresholds" = @{
-        "Critical" = 50
-        "Warning" = 70
-        "Target" = 80
-        "Regression" = 5
-    }
+# Configuration
+$Config = @{
+    ComplianceThreshold = $ComplianceThreshold
+    MonitorScript = "scripts/continuous-ecrr-compliance-monitor.ps1"
+    SetupScript = "scripts/setup-ecrr-compliance-tracking.ps1"
+    ArtifactsPath = "artifacts"
 }
 
-function Get-GitInfo {
-    try {
-        $branch = if ($Branch -eq "main") { 
-            git rev-parse --abbrev-ref HEAD 2>$null
-        } else { 
-            $Branch 
-        }
-        
-        $commitHash = if ($CommitHash -eq "") { 
-            git rev-parse HEAD 2>$null
-        } else { 
-            $CommitHash 
-        }
-        
-        return @{
-            "Branch" = $branch
-            "CommitHash" = $commitHash
-            "Timestamp" = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
-        }
+function Write-ECRRLog {
+    param([string]$Message, [string]$Level = "INFO")
+    $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+    $color = switch ($Level) {
+        "ERROR" { "Red" }
+        "WARN" { "Yellow" }
+        "SUCCESS" { "Green" }
+        default { "White" }
     }
-    catch {
-        return @{
-            "Branch" = "unknown"
-            "CommitHash" = "unknown"
-            "Timestamp" = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
-        }
-    }
+    Write-Host "[$timestamp] [$Level] $Message" -ForegroundColor $color
 }
 
-function Invoke-ComplianceCheck {
-    param([hashtable]$GitInfo)
+function Generate-GitHubWorkflow {
+    Write-ECRRLog "Generating GitHub Actions workflow..." "INFO"
     
-    Write-Host "🔍 Running ECRR Compliance Check for CI/CD..." -ForegroundColor Cyan
-    
-    # Run compliance validation
-    $complianceResults = & "$PSScriptRoot/validate-ecrr-compliance.ps1" -ReportPath "docs/ECRR_REPORTS" -OutputPath "artifacts/ci-compliance-report.json"
-    
-    $overallScore = $complianceResults.Overall_Score
-    $totalReports = $complianceResults.Total_Reports
-    
-    # Load previous score
-    $previousScore = 0
-    $statePath = "artifacts/ecrr-compliance-monitoring/monitoring-state.json"
-    if (Test-Path $statePath) {
-        $monitoringState = Get-Content $statePath | ConvertFrom-Json
-        $previousScore = $monitoringState.LastScore
-    }
-    
-    $regression = $previousScore - $overallScore
-    $hasRegression = $regression -gt $RegressionThreshold
-    
-    $status = if ($overallScore -lt $CICD_CONFIG.Thresholds.Critical) {
-        "CRITICAL"
-    } elseif ($overallScore -lt $CICD_CONFIG.Thresholds.Warning) {
-        "WARNING"
-    } elseif ($hasRegression) {
-        "REGRESSION"
-    } else {
-        "PASS"
-    }
-    
-    $cicdReport = @{
-        "GitInfo" = $GitInfo
-        "Compliance" = @{
-            "OverallScore" = $overallScore
-            "PreviousScore" = $previousScore
-            "Regression" = $regression
-            "HasRegression" = $hasRegression
-            "TotalReports" = $totalReports
-            "Status" = $status
-        }
-        "Timestamp" = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
-    }
-    
-    $reportPath = "artifacts/cicd-compliance-report-$(Get-Date -Format 'yyyyMMdd-HHmmss').json"
-    $cicdReport | ConvertTo-Json -Depth 10 | Out-File -FilePath $reportPath -Encoding UTF8
-    
-    Write-Host "📊 CI/CD Compliance Results:" -ForegroundColor Green
-    Write-Host "   Status: $status" -ForegroundColor $(if ($status -eq "PASS") { "Green" } elseif ($status -eq "WARNING") { "Yellow" } else { "Red" })
-    Write-Host "   Overall Score: $([math]::Round($overallScore, 1))%" -ForegroundColor $(if ($overallScore -lt 50) { "Red" } elseif ($overallScore -lt 70) { "Yellow" } else { "Green" })
-    Write-Host "   Regression: $([math]::Round($regression, 1))%" -ForegroundColor $(if ($hasRegression) { "Red" } else { "Green" })
-    
-    return $cicdReport
-}
+    $workflowContent = @"
+name: ECRR Compliance Check
 
-function Invoke-ComplianceGate {
-    param([hashtable]$CICDReport)
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'docs/ECRR_REPORTS/**'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'docs/ECRR_REPORTS/**'
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      compliance_threshold:
+        description: 'Compliance threshold (default: 95)'
+        required: false
+        default: '95'
+        type: string
+
+env:
+  COMPLIANCE_THRESHOLD: `${{ github.event.inputs.compliance_threshold || '$($Config.ComplianceThreshold)' }}
+
+jobs:
+  ecrr-compliance-check:
+    name: ECRR Compliance Check
+    runs-on: windows-latest
     
-    $status = $CICDReport.Compliance.Status
-    $score = $CICDReport.Compliance.OverallScore
-    $hasRegression = $CICDReport.Compliance.HasRegression
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
     
-    Write-Host "🚪 ECRR Compliance Gate Check..." -ForegroundColor Cyan
+    - name: Setup PowerShell
+      uses: actions/setup-powershell@v1
     
-    $gatePassed = $true
-    $gateMessage = ""
+    - name: Create Artifacts Directory
+      run: |
+        if (-not (Test-Path "$($Config.ArtifactsPath)")) {
+          New-Item -ItemType Directory -Path "$($Config.ArtifactsPath)" -Force
+        }
     
-    if ($score -lt $CICD_CONFIG.Thresholds.Critical) {
-        $gatePassed = $false
-        $gateMessage = "CRITICAL: Compliance score $([math]::Round($score, 1))% is below critical threshold"
-    }
-    elseif ($FailOnRegression -and $hasRegression) {
-        $gatePassed = $false
-        $gateMessage = "REGRESSION: Compliance decreased by $([math]::Round($CICDReport.Compliance.Regression, 1))%"
-    }
-    else {
-        $gateMessage = "PASS: Compliance score $([math]::Round($score, 1))% meets requirements"
-    }
+    - name: Run ECRR Compliance Analysis
+      id: compliance-check
+      run: |
+        Write-Host "🔍 Running ECRR Compliance Analysis..." -ForegroundColor Cyan
+        `$complianceRate = pwsh -File "$($Config.MonitorScript)" -Verbose -GenerateReport
+        if (`$LASTEXITCODE -eq 0) {
+          Write-Host "✅ Compliance analysis completed successfully" -ForegroundColor Green
+          echo "compliance-rate=`$complianceRate" >> `$env:GITHUB_OUTPUT
+          echo "compliance-success=true" >> `$env:GITHUB_OUTPUT
+        } else {
+          Write-Host "❌ Compliance analysis failed" -ForegroundColor Red
+          echo "compliance-rate=0" >> `$env:GITHUB_OUTPUT
+          echo "compliance-success=false" >> `$env:GITHUB_OUTPUT
+        }
     
-    Write-Host "🚪 Compliance Gate: $(if ($gatePassed) { 'PASS' } else { 'FAIL' })" -ForegroundColor $(if ($gatePassed) { 'Green' } else { 'Red' })
-    Write-Host "   $gateMessage" -ForegroundColor $(if ($gatePassed) { 'Green' } else { 'Red' })
+    - name: Check Compliance Threshold
+      id: threshold-check
+      run: |
+        `$complianceRate = `${{ steps.compliance-check.outputs.compliance-rate }}
+        `$threshold = `${{ env.COMPLIANCE_THRESHOLD }}
+        if ([int]`$complianceRate -ge [int]`$threshold) {
+          Write-Host "✅ Compliance threshold met" -ForegroundColor Green
+          echo "threshold-met=true" >> `$env:GITHUB_OUTPUT
+        } else {
+          Write-Host "❌ Compliance threshold not met" -ForegroundColor Red
+          echo "threshold-met=false" >> `$env:GITHUB_OUTPUT
+        }
     
-    if (-not $gatePassed) {
-        Write-Host "❌ CI/CD pipeline will fail due to compliance gate" -ForegroundColor Red
+    - name: Fail on Compliance Threshold
+      if: steps.threshold-check.outputs.threshold-met == 'false'
+      run: |
+        Write-Host "❌ ECRR compliance threshold not met" -ForegroundColor Red
         exit 1
+    
+    - name: Success Message
+      if: steps.threshold-check.outputs.threshold-met == 'true'
+      run: |
+        Write-Host "✅ ECRR compliance check passed!" -ForegroundColor Green
+"@
+    
+    $workflowFile = ".github/workflows/ecrr-compliance-check.yml"
+    if (-not (Test-Path ".github/workflows")) {
+        New-Item -ItemType Directory -Path ".github/workflows" -Force | Out-Null
     }
-    else {
-        Write-Host "✅ CI/CD pipeline can proceed" -ForegroundColor Green
-        exit 0
+    
+    $workflowContent | Out-File -FilePath $workflowFile -Encoding UTF8
+    Write-ECRRLog "GitHub Actions workflow generated: $workflowFile" "SUCCESS"
+    return $workflowFile
+}
+
+function Test-CICDIntegration {
+    Write-ECRRLog "Testing CI/CD integration..." "INFO"
+    
+    if (-not (Test-Path $Config.MonitorScript)) {
+        Write-ECRRLog "Monitor script not found: $($Config.MonitorScript)" "ERROR"
+        return $false
+    }
+    
+    try {
+        Write-ECRRLog "Testing compliance monitor script..." "INFO"
+        $complianceRate = & $Config.MonitorScript -Verbose
+        if ($LASTEXITCODE -eq 0) {
+            Write-ECRRLog "Monitor script test successful. Compliance rate: $complianceRate%" "SUCCESS"
+            return $true
+        } else {
+            Write-ECRRLog "Monitor script test failed" "ERROR"
+            return $false
+        }
+    } catch {
+        Write-ECRRLog "Monitor script test error: $($_.Exception.Message)" "ERROR"
+        return $false
     }
 }
 
 # Main execution
-Write-Host "🚀 Starting ECRR CI/CD Integration..." -ForegroundColor Cyan
-
-$gitInfo = Get-GitInfo
-$cicdReport = Invoke-ComplianceCheck -GitInfo $gitInfo
-
-switch ($Action.ToLower()) {
-    "check" {
-        Write-Host "✅ Compliance check completed" -ForegroundColor Green
+try {
+    if ($GenerateWorkflow) {
+        $workflowFile = Generate-GitHubWorkflow
+        Write-ECRRLog "GitHub Actions workflow generated: $workflowFile" "SUCCESS"
     }
-    "gate" {
-        Invoke-ComplianceGate -CICDReport $cicdReport
+    
+    if ($Test) {
+        $success = Test-CICDIntegration
+        if ($success) {
+            Write-ECRRLog "CI/CD integration test passed" "SUCCESS"
+        } else {
+            Write-ECRRLog "CI/CD integration test failed" "ERROR"
+            exit 1
+        }
     }
-    default {
-        Write-Host "❌ Unknown action: $Action" -ForegroundColor Red
-        exit 1
+    
+    if (-not $GenerateWorkflow -and -not $Test) {
+        Write-Host "ECRR CI/CD Integration" -ForegroundColor Cyan
+        Write-Host "Usage: $($MyInvocation.MyCommand.Name) [-GenerateWorkflow] [-Test]" -ForegroundColor Yellow
+        Write-Host ""
+        Write-Host "Options:" -ForegroundColor Cyan
+        Write-Host "  -GenerateWorkflow    Generate GitHub Actions workflow" -ForegroundColor White
+        Write-Host "  -Test                Test CI/CD integration components" -ForegroundColor White
     }
+    
+} catch {
+    Write-ECRRLog "CI/CD integration failed: $($_.Exception.Message)" "ERROR"
+    exit 1
 }
-
-Write-Host "✅ ECRR CI/CD Integration Complete" -ForegroundColor Green
