@@ -20,46 +20,48 @@ The status dashboard provides **persona-tailored views** of project status:
 
 ## 🚀 Quick Start
 
-### ✅ Recommended: File Mode (Works Perfectly!)
+> **Default workflow:** open `docs/status.html` directly from disk. The dashboard is built for local-first "file mode"; handing it to the Next.js dev server triggers routing errors.
+
+### ✅ Primary: File Mode (works perfectly)
 
 ```powershell
-# Open the HTML file directly in Firefox
+# Open the HTML file directly (Firefox or any modern browser)
 start firefox docs/status.html
 
-# Click "Load files" button
+# Click "Load files"
 # Select: docs/status/roadmap.json, tests.json, ssot.json
-
-# That's it! 🎉
 ```
 
 **Why file mode?**
-- ✅ No server needed
-- ✅ No port conflicts
-- ✅ Works offline
-- ✅ True local-first
-- ✅ No Next.js interference
+- ✅ No server to run or stop
+- ✅ Zero port conflicts or CORS surprises
+- ✅ Works completely offline
+- ✅ Keeps the dashboard 100% local-first
+- ℹ️ `Load files` reads the JSON straight from `docs/status/` when the page is `file://`
 
-### Alternative: Server Mode (Static Server Only)
+### 🪄 Static file server (optional)
 
-⚠️ **Don't use Next.js dev server** — it interferes with the HTML.
+Use this only if you want auto-refresh without clicking `Load files`.
 
 ```powershell
-# Use Python HTTP server or similar (NOT npm run dev)
+# Serve the docs directory with a dumb static server
 cd docs
 python -m http.server 3003
 
 # Open in browser
 start firefox http://localhost:3003/status.html
 
-# Enable "auto (30s)" checkbox for live updates
+# Then enable the "auto (30s)" checkbox for live polling
 ```
 
-### Option C: Integrated with Dev Server
+> ⚠️ Skip `npm run dev` / Next.js here. The framework tries to hydrate `status.html` as an app route and returns HTTP 500.
+
+### ⚙️ Integrating with another host
 
 ```powershell
-# If using Next.js or similar, ensure docs/ is served
-# Update endpoint field to match your server location
-# Default: http://localhost:3003/status/
+# If you must proxy through another server, expose docs/status/*.json
+# Update the Endpoint field inside the dashboard to match that base URL
+# Default expectation remains: http://localhost:3003/status/
 ```
 
 ---
@@ -367,4 +369,5 @@ kpi('Custom KPI', value, hint, color)
 **Created:** 2025-10-01  
 **Status:** ✅ Integrated and generating JSON  
 **Role:** Cursor Agent (Observability Copilot)
+
 
