@@ -1,0 +1,35 @@
+{
+  "alert": {
+    "name": "Windows Logs Canary Absence",
+    "description": "Windows canary logs missing from pipeline. Expected canary logs every 5 minutes from Windows Event Log and file log sources, but none received in last 10 minutes. Current value: {{$value}} canary logs in last 10 minutes. Threshold: {{$threshold}} (minimum expected).",
+    "severity": "critical",
+    "labels": {
+      "service": "windows-logs",
+      "component": "canary-detection",
+      "severity": "critical",
+      "environment": "local",
+      "framework": "ecrr",
+      "log_source": "windows_event_log"
+    },
+    "query": {
+      "queryType": "logs",
+      "logsQuery": {
+        "query": "(log.source = 'windows_event_log' AND body contains 'windows-canary') OR (log.file.path contains 'windows-canary-test.log' AND body contains 'windows-canary')",
+        "groupBy": ["log.source", "log.file.path"],
+        "legendFormat": "{{log.source}} - {{log.file.path}} Canaries"
+      }
+    },
+    "condition": {
+      "threshold": 1,
+      "operator": "below",
+      "evaluationWindow": "10m",
+      "alertFrequency": "2m",
+      "notificationOnMissingData": true,
+      "minimumDataPoints": 1
+    },
+    "notificationChannels": [
+      "email-default",
+      "slack-default"
+    ]
+  }
+}
