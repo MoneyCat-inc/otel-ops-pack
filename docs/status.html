@@ -104,6 +104,7 @@
       <label class="hstack muted"><input id="auto" type="checkbox" /> auto (30s)</label>
       <button class="btn" id="loadFiles" title="Preferred: in file mode, click to choose docs/status/*.json">Load files</button>
       <button class="btn" id="exportMd" title="Export a Markdown snapshot">Export MD</button>
+      <button class="btn" id="exportMdDetailed" title="Export a detailed Markdown report">Export MD (detailed)</button>
       <button class="btn" id="exportPdf" title="Print/Save as PDF">Save as PDF</button>
     </div>
   </div>
@@ -315,6 +316,143 @@ function exportMarkdown() {
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = `status-${new Date().toISOString().replace(/[:.]/g,'-')}.md`;
+  document.body.appendChild(a); a.click(); a.remove();
+}
+
+// Export Detailed Markdown snapshot (buckets, personas, tasks, history, roadmap)
+function exportMarkdownDetailed() {
+  const t = state.data.tests || {};
+  const rm = state.data.roadmap || {};
+  const ssot = state.data.ssot || {};
+  const heat = summarizeHeat();
+  const hist = getHistory();
+  const tasks = getTasks();
+
+  const prPassPct = t.prLane ? Math.round(100*(t.prLane.passed/t.prLane.total)) : 0;
+  const nightlyPassPct = t.nightly ? Math.round(100*(t.nightly.passed/t.nightly.total)) : 0;
+  const top = (t.buckets?.[0]?.tag)||'-';
+
+  // Persona insights (reuse strings from renderPersonas)
+  function personaLines() {
+    const lines = {};
+    const pm = [
+      `PR lane pass: ${t.prLane?Math.round(100*(t.prLane.passed/t.prLane.total)):0}% • target ≥ 95%`,
+      `Nightly pass: ${t.nightly?Math.round(100*(t.nightly.passed/t.nightly.total)):0}% (can fail)`,
+      `Roadmap: ${heat.green} Green / ${heat.yellow} Yellow / ${heat.red} Red`,
+      `Top failing bucket: ${(t.buckets?.[0]?.tag)||'-'} (${(t.buckets?.[0]?.failed)||0})`,
+    ];
+    const imp = [
+      `If @dashboard stays Red → delay Progress v1 + Beta gating`,
+      `@data-control Red → privacy UX blocked (export/delete flows)`,
+      `@prosody/ @strain Yellow → labs not in PR lane; customer experience limited to Instant Practice + Prosody v1`,
+    ];
+    const ver = [
+      `Gates (must pass in PR): @smoke, @pilot-core, @a11y-smoke, @security`,
+      `Quarantined nightly: @dashboard @cohort-* @data-control @prosody @strain @offline @polish @future`,
+      `Flake watch: stop run after 20 fails; keep artifacts and traces`,
+    ];
+    const stk = [
+      `What's shipped: Instant Practice + Warmup + IndexedDB + Safety + Prosody v1`,
+      `In progress: Pitch Band • Resonance • Orb v2 • Strain guardrails`,
+      `Planned: Adaptive coach • Progress dashboard • Cohort analytics`,
+    ];
+    const you = [
+      `Fix a11y smokes (skip link, focus, live regions)`,
+      `Implement Pitch Band (time-in-band%) + Resonance buckets (LPC)`,
+      `Add Orb v2 shimmer/hue; wire strain heuristics + cohort calibration`,
+      `Keep PR lane clean and enforce tags on new tests`,
+    ];
+    lines.pm = pm; lines.imp = imp; lines.ver = ver; lines.stk = stk; lines.you = you; return lines;
+  }
+
+  // Tasks summary
+  function tasksSummary() {
+    const all = tasks || {};
+    const byPersona = { pm:[], imp:[], ver:[], stk:[], you:[] };
+    Object.keys(all).forEach(k=>{
+      const [p, idx] = k.split(':');
+      if (byPersona[p]) byPersona[p].push(Number(idx));
+    });
+    return byPersona;
+  }
+
+  // Roadmap detailed list
+  function roadmapSection() {
+    const lines = [];
+    for (const [stage, items] of Object.entries(rm)) {
+      lines.push(`### ${stage}`);
+      (items||[]).forEach(([feature,status])=>{
+        lines.push(`- ${status==='green'?'✅':'🟨'===status?'🟨':'🟥'} ${feature} — ${status}`);
+      });
+      lines.push('');
+    }
+    return lines.join('\n');
+  }
+
+  // Failing buckets table
+  function bucketsSection() {
+    const buckets = (t.buckets||[]);
+    if (!buckets.length) return '_No failing buckets._\n';
+    const head = `| Bucket | Failed | Examples |\n|---|---:|---|`;
+    const rows = buckets.map(b=>`| ${b.tag} | ${b.failed} | ${(b.examples||[]).slice(0,2).join(' • ')} |`).join('\n');
+    return head + '\n' + rows + '\n';
+  }
+
+  // History snapshot (last up to 10)
+  function historySection() {
+    const last = hist.slice(-10);
+    if (!last.length) return '_No history yet._\n';
+    const head = `| PR% | Nightly% | Green | Yellow | Red |\n|---:|---:|---:|---:|---:|`;
+    const rows = last.map(h=>`| ${h.prPct||0} | ${h.nightlyPct||0} | ${h.green||0} | ${h.yellow||0} | ${h.red||0} |`).join('\n');
+    return head + '\n' + rows + '\n';
+  }
+
+  const personas = personaLines();
+  const taskIdx = tasksSummary();
+
+  const md = [
+    `# Status Report (Detailed)`,
+    ``,
+    `Updated: ${new Date(t.updatedAt||Date.now()).toISOString()}`,
+    `Build: ${ssot.buildSha||'dev'}  •  Cohort: ${ssot.cohort||'local'}`,
+    ``,
+    `## KPIs`,
+    `- PR lane pass %: ${prPassPct}%`,
+    `- Nightly pass %: ${nightlyPassPct}%`,
+    `- Roadmap: ${heat.green} Green / ${heat.yellow} Yellow / ${heat.red} Red`,
+    `- Top failing bucket: ${top}`,
+    ``,
+    `## Failing Buckets`,
+    bucketsSection(),
+    `## Personas`,
+    `### Project Manager`,
+    ...personas.pm.map(x=>`- ${x}`),
+    `### Project Implication Agent`,
+    ...personas.imp.map(x=>`- ${x}`),
+    `### Project Verifier`,
+    ...personas.ver.map(x=>`- ${x}`),
+    `### Stakeholder`,
+    ...personas.stk.map(x=>`- ${x}`),
+    `### You (Operator)`,
+    ...personas.you.map(x=>`- ${x}`),
+    ``,
+    `## Tasks (Completed Indexes)`,
+    `- PM: ${taskIdx.pm.sort((a,b)=>a-b).join(', ')||'—'}`,
+    `- Implication Agent: ${taskIdx.imp.sort((a,b)=>a-b).join(', ')||'—'}`,
+    `- Verifier: ${taskIdx.ver.sort((a,b)=>a-b).join(', ')||'—'}`,
+    `- Stakeholder: ${taskIdx.stk.sort((a,b)=>a-b).join(', ')||'—'}`,
+    `- You: ${taskIdx.you.sort((a,b)=>a-b).join(', ')||'—'}`,
+    ``,
+    `## History (Last ${Math.min(10,hist.length)} samples)`,
+    historySection(),
+    `## Roadmap`,
+    roadmapSection(),
+  ].join('\n');
+
+  const blob = new Blob([md], { type:'text/markdown;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `status-detailed-${new Date().toISOString().replace(/[:.]/g,'-')}.md`;
   document.body.appendChild(a); a.click(); a.remove();
 }
 
@@ -561,6 +699,7 @@ $('#tab-swim').addEventListener('click', ()=>setTab('tab-swim'));
 $('#refresh').addEventListener('click', refreshData);
   document.getElementById('exportPdf').addEventListener('click', ()=>window.print());
   document.getElementById('exportMd').addEventListener('click', exportMarkdown);
+  document.getElementById('exportMdDetailed').addEventListener('click', exportMarkdownDetailed);
 $('#endpoint').addEventListener('change', (e)=>{
   state.endpoint = e.target.value; localStorage.setItem('status:endpoint', state.endpoint);
   refreshData();
