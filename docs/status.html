@@ -105,6 +105,8 @@
       <button class="btn" id="loadFiles" title="Preferred: in file mode, click to choose docs/status/*.json">Load files</button>
       <button class="btn" id="exportMd" title="Export a Markdown snapshot">Export MD</button>
       <button class="btn" id="exportMdDetailed" title="Export a detailed Markdown report">Export MD (detailed)</button>
+      <button class="btn" id="exportCsvBuckets" title="Export failing buckets as CSV">Export CSV (buckets)</button>
+      <button class="btn" id="exportCsvHistory" title="Export KPI history as CSV">Export CSV (history)</button>
       <button class="btn" id="exportPdf" title="Print/Save as PDF">Save as PDF</button>
     </div>
   </div>
@@ -317,6 +319,38 @@ function exportMarkdown() {
   a.href = URL.createObjectURL(blob);
   a.download = `status-${new Date().toISOString().replace(/[:.]/g,'-')}.md`;
   document.body.appendChild(a); a.click(); a.remove();
+}
+
+// CSV helpers
+function toCsvRow(values) {
+  return values.map(v => {
+    const s = (v==null?'':String(v));
+    return /[",\n]/.test(s) ? '"' + s.replace(/"/g,'""') + '"' : s;
+  }).join(',');
+}
+function downloadCsv(filename, rows) {
+  const blob = new Blob([rows.join('\n')+'\n'], { type:'text/csv;charset=utf-8' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = filename; document.body.appendChild(a); a.click(); a.remove();
+}
+
+// Export buckets as CSV
+function exportCsvBuckets() {
+  const buckets = (state.data.tests?.buckets)||[];
+  const rows = [ toCsvRow(['tag','failed','examples']) ];
+  for (const b of buckets) {
+    rows.push(toCsvRow([b.tag, b.failed, (b.examples||[]).slice(0,3).join(' | ')]));
+  }
+  downloadCsv(`buckets-${new Date().toISOString().replace(/[:.]/g,'-')}.csv`, rows);
+}
+
+// Export KPI history as CSV
+function exportCsvHistory() {
+  const hist = getHistory();
+  const rows = [ toCsvRow(['prPct','nightlyPct','green','yellow','red']) ];
+  for (const h of hist) {
+    rows.push(toCsvRow([h.prPct||0, h.nightlyPct||0, h.green||0, h.yellow||0, h.red||0]));
+  }
+  downloadCsv(`history-${new Date().toISOString().replace(/[:.]/g,'-')}.csv`, rows);
 }
 
 // Export Detailed Markdown snapshot (buckets, personas, tasks, history, roadmap)
@@ -700,6 +734,8 @@ $('#refresh').addEventListener('click', refreshData);
   document.getElementById('exportPdf').addEventListener('click', ()=>window.print());
   document.getElementById('exportMd').addEventListener('click', exportMarkdown);
   document.getElementById('exportMdDetailed').addEventListener('click', exportMarkdownDetailed);
+  document.getElementById('exportCsvBuckets').addEventListener('click', exportCsvBuckets);
+  document.getElementById('exportCsvHistory').addEventListener('click', exportCsvHistory);
 $('#endpoint').addEventListener('change', (e)=>{
   state.endpoint = e.target.value; localStorage.setItem('status:endpoint', state.endpoint);
   refreshData();
