@@ -4,10 +4,20 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Resonai — Project Status Dashboard (Local-First)</title>
+<!-- Favicon + app icons (hi-dpi + cache-safe) -->
+<link rel="icon" type="image/png" sizes="32x32" href="LOGO/Resonai_LOGO_ICONonly.png?v=1">
+<link rel="icon" type="image/png" sizes="192x192" href="LOGO/Resonai_LOGO_ICONonly.png?v=1">
+<link rel="apple-touch-icon" href="LOGO/Resonai_LOGO_ICONonly.png?v=1">
+<meta name="theme-color" content="#0b0d12">
+<meta name="application-name" content="Resonai Dashboard">
 
-<!-- ======= Styles: compact, accessible, dark/light aware ======= -->
+<!-- ======= Shared Brand System ======= -->
+<link rel="stylesheet" href="assets/resonai-tokens.css">
+
+<!-- ======= Dashboard-Specific Styles ======= -->
 <style>
   :root {
+    /* Dashboard Theme (extends shared tokens) */
     --bg: #0b0d12;
     --card: #121520;
     --muted: #77809a;
@@ -41,7 +51,10 @@
   .kpis { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); }
   .kpi { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 10px; padding: 10px; }
   .kpi .label { color: var(--muted); font-size: 12px; }
-  .kpi .value { font-size: 22px; font-weight: 700; }
+  .kpi .value { font-size: 22px; font-weight: 700; color: var(--fg); transition: color .2s ease; }
+  .kpi .value.value-ok { color: var(--ok); }
+  .kpi .value.value-warn { color: var(--warn); }
+  .kpi .value.value-bad { color: var(--bad); }
   .kpi .spark { display:block; margin-top:4px; }
   .pill { display:inline-block; padding: 3px 8px; border-radius: 999px; font-weight: 600; font-size: 12px; }
   /* Status pills: ensure strong contrast by using foreground text color on tinted backgrounds */
@@ -62,6 +75,7 @@
   @media (min-width: 1200px){ .grid2 { grid-template-columns: 1fr 1fr; } }
   .hstack { display:flex; gap:8px; align-items:center; flex-wrap: wrap; }
   .vstack { display:flex; flex-direction:column; gap:8px; }
+  .flex-fill { flex: 1 1 auto; }
   .list { display:flex; flex-direction:column; gap:6px; margin:0; padding:0; list-style:none; }
   table { width: 100%; border-collapse: collapse; }
   th, td { padding: 8px; border-bottom: 1px solid var(--border); text-align: left; }
@@ -96,6 +110,8 @@
     th, td { padding: 4px 6px; }
   }
 
+  /* Logo system classes now provided by assets/resonai-tokens.css */
+
   /* Persona accents */
   :root { --pm:#4aa3ff; --imp:#9b59b6; --ver:#00c2b2; --stk:#ff8a4a; --you:#f2c94c; }
   .persona { border-left: 3px solid var(--border); padding-left: 10px; }
@@ -111,8 +127,11 @@
 <body>
 <header>
   <div class="hstack" role="navigation" aria-label="Global">
-    <div class="vstack" style="flex: 1 1 auto">
-      <h1>Resonai — Local Status Dashboard</h1>
+    <div class="vstack flex-fill">
+      <picture class="logo-container">
+        <source media="(prefers-color-scheme: light)" srcset="LOGO/Resonai_LOGO_B.png">
+        <img src="LOGO/Resonai_LOGO_A.png" alt="" class="logo-wordmark" decoding="async" aria-hidden="true">
+      </picture>
       <div class="muted">Local-first overview for: Project Manager • Implication Agent • Verifier • Stakeholder • You</div>
     </div>
     <div class="toolbar" role="toolbar" aria-label="Controls">
@@ -212,6 +231,7 @@
 </main>
 
 <footer class="hstack">
+  <img src="LOGO/Resonai_LOGO_monochrome.png" alt="" class="logo-mono" aria-hidden="true">
   <div class="muted" id="footerNote">Local-first. No network calls beyond your configured <code>endpoint</code>.</div>
 </footer>
 
@@ -344,6 +364,9 @@ function exportMarkdown() {
   const nightlyPassPct = t.nightly ? Math.round(100*(t.nightly.passed/t.nightly.total)) : 0;
   const top = (t.buckets?.[0]?.tag)||'—';
   const md = [
+    `<p align="left">`,
+    `  <img src="../LOGO/Resonai_Wordmark_shimmer_grad.png" alt="Resonai" class="logo-wordmark">`,
+    `</p>`,
     `# Status Snapshot`,
     ``,
     `Updated: ${new Date(t.updatedAt||Date.now()).toISOString()}`,
@@ -484,6 +507,9 @@ function exportMarkdownDetailed() {
   const taskIdx = tasksSummary();
 
   const md = [
+    `<p align="left">`,
+    `  <img src="../LOGO/Resonai_Wordmark_shimmer_grad.png" alt="Resonai" class="logo-wordmark">`,
+    `</p>`,
     `# Status Report (Detailed)`,
     ``,
     `Updated: ${new Date(t.updatedAt||Date.now()).toISOString()}`,
@@ -581,10 +607,11 @@ document.getElementById('loadFiles').addEventListener('click', async () => {
 /* ---------------------------
    RENDER: KPIs
 ----------------------------*/
-function kpi(label, value, hint, color, sparkSvg) {
+function kpi(label, value, hint, tone, sparkSvg) {
+  const toneClass = tone ? ` value-${tone}` : '';
   return `<div class="kpi fade-in" role="group" aria-label="${esc(label)}">
     <div class="label">${esc(label)}</div>
-    <div class="value" style="color:${color||'inherit'}">${esc(value)}</div>
+    <div class="value${toneClass}">${esc(value)}</div>
     ${sparkSvg?`<div class="spark" aria-hidden="true">${sparkSvg}</div>`:''}
     ${hint?`<div class="fine">${esc(hint)}</div>`:''}
   </div>`;
@@ -604,9 +631,12 @@ function renderKPIs() {
   const ntSpark = sparkline(ntSeries, 'var(--warn)');
   const rmSpark = sparkline(gSeries, 'var(--ok)');
 
+  const prTone = prPassPct>=95 ? 'ok' : (prPassPct>=80 ? 'warn' : 'bad');
+  const nightlyTone = nightlyPassPct>=50 ? 'ok' : (nightlyPassPct>=30 ? 'warn' : 'bad');
+
   $('#kpis').innerHTML =
-    kpi('PR lane pass %', prPassPct+'%', 'Fast gate — must stay green', prPassPct>=95?'var(--ok)':(prPassPct>=80?'var(--warn)':'var(--bad)'), prSpark) +
-    kpi('Nightly pass %', nightlyPassPct+'%', 'Broad coverage (can fail)', nightlyPassPct>=50?'var(--ok)':(nightlyPassPct>=30?'var(--warn)':'var(--bad)'), ntSpark) +
+    kpi('PR lane pass %', prPassPct+'%', 'Fast gate — must stay green', prTone, prSpark) +
+    kpi('Nightly pass %', nightlyPassPct+'%', 'Broad coverage (can fail)', nightlyTone, ntSpark) +
     kpi('Roadmap status', `${heat.green}✓ / ${heat.yellow}~ / ${heat.red}×`, 'Green/Yellow/Red features', undefined, rmSpark) +
     kpi('Top failing bucket', (state.data.tests.buckets?.[0]?.tag)||'—', (state.data.tests.buckets?.[0]?.failed||0)+' fails') +
     kpi('Last snapshot', new Date(state.data.tests.updatedAt||Date.now()).toLocaleString(), 'Local time');
