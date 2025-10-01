@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Resonai — Project Status Dashboard (Local-First)</title>
+
+<!-- ======= Styles: compact, accessible, dark/light aware ======= -->
+<style>
+  :root {
+    --bg: #0b0d12;
+    --card: #121520;
+    --muted: #77809a;
+    --fg: #e9edf7;
+    --green: #4caf50;
+    --yellow: #ffc107;
+    --red: #f44336;
+    --blue: #7c5cff;
+    --border: #252b3a;
+    --accent: #9aa2be;
+    --ok: var(--green); --warn: var(--yellow); --bad: var(--red);
+  }
+  @media (prefers-color-scheme: light) {
+    :root { --bg:#f7f8fb; --card:#ffffff; --fg:#0c1022; --border:#dde1ee; --muted:#66708a; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+  html,body { height: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--fg);
+    font: 14px/1.4 system-ui, -apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+  }
+  header, footer { padding: 12px 16px; border-bottom: 1px solid var(--border); }
+  header { position: sticky; top: 0; background: linear-gradient(180deg,var(--bg),rgba(0,0,0,0)); z-index: 10; }
+  h1 { margin: 0 0 6px 0; font-size: 18px; }
+  .muted { color: var(--muted); }
+  .row { display: grid; grid-template-columns: 1fr; gap: 12px; padding: 12px; }
+  @media (min-width: 1000px) { .row { grid-template-columns: 1fr 1fr; } }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px; }
+  .kpis { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); }
+  .kpi { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 10px; padding: 10px; }
+  .kpi .label { color: var(--muted); font-size: 12px; }
+  .kpi .value { font-size: 22px; font-weight: 700; }
+  .pill { display:inline-block; padding: 3px 8px; border-radius: 999px; font-weight: 600; font-size: 12px; }
+  .pill.green{ background: rgba(76,175,80,.15); color: var(--green); border: 1px solid rgba(76,175,80,.3);}
+  .pill.yellow{ background: rgba(255,193,7,.15); color: var(--yellow); border: 1px solid rgba(255,193,7,.3);}
+  .pill.red{ background: rgba(244,67,54,.15); color: var(--red); border: 1px solid rgba(244,67,54,.3);}
+  .toolbar { display:flex; gap:8px; align-items:center; flex-wrap: wrap; }
+  .toolbar > * { margin: 0; }
+  .btn {
+    appearance: none; border: 1px solid var(--border); background: var(--card);
+    color: var(--fg); padding: 8px 10px; border-radius: 8px; cursor: pointer;
+  }
+  .btn:hover { border-color: var(--accent); }
+  .grid2 { display:grid; gap:12px; grid-template-columns: 1fr; }
+  @media (min-width: 1200px){ .grid2 { grid-template-columns: 1fr 1fr; } }
+  .hstack { display:flex; gap:8px; align-items:center; flex-wrap: wrap; }
+  .vstack { display:flex; flex-direction:column; gap:8px; }
+  .list { display:flex; flex-direction:column; gap:6px; margin:0; padding:0; list-style:none; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { padding: 8px; border-bottom: 1px solid var(--border); text-align: left; }
+  th { color: var(--muted); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .02em; }
+  svg { max-width: 100%; height: auto; }
+  .tabs { display:flex; gap:6px; flex-wrap: wrap; margin: 6px 0 10px; }
+  .tab { padding:6px 10px; border:1px solid var(--border); background:var(--card); border-radius:8px; cursor:pointer;}
+  .tab[aria-selected="true"] { outline: 2px solid var(--blue); }
+  .panel[hidden] { display:none !important; }
+  .kanban { display:grid; gap:10px; grid-template-columns: repeat(3,1fr); }
+  .col { background: rgba(255,255,255,0.02); border:1px solid var(--border); border-radius:10px; padding:10px; }
+  .col h4{ margin:4px 0 10px; }
+  .cardlet { border:1px solid var(--border); background:#0000; border-radius:8px; padding:8px; margin:6px 0; }
+  .fine { font-size: 12px; color: var(--muted); }
+  footer { border-top: 1px solid var(--border); border-bottom: none; }
+  code { background: rgba(255,255,255,.06); padding: 2px 4px; border-radius: 6px; }
+</style>
+</head>
+
+<body>
+<header>
+  <div class="hstack" role="navigation" aria-label="Global">
+    <div class="vstack" style="flex: 1 1 auto">
+      <h1>Resonai — Local Status Dashboard</h1>
+      <div class="muted">Local-first overview for: Project Manager • Implication Agent • Verifier • Stakeholder • You</div>
+    </div>
+    <div class="toolbar" role="toolbar" aria-label="Controls">
+      <label class="muted" for="endpoint">Endpoint</label>
+      <input id="endpoint" type="text" size="34" class="btn" value="http://localhost:3003/status/" title="Base URL for JSON: roadmap.json, tests.json, ssot.json" />
+      <button class="btn" id="refresh">Refresh</button>
+      <label class="hstack muted"><input id="auto" type="checkbox" /> auto (30s)</label>
+      <button class="btn" id="loadFiles" title="Load JSON files when opened as file://">Load files</button>
+    </div>
+  </div>
+</header>
+
+<main class="row" id="app" aria-live="polite">
+  <!-- KPI SUMMARY -->
+  <section class="card" aria-labelledby="kpiTitle">
+    <h2 id="kpiTitle">Summary KPIs</h2>
+    <div class="kpis" id="kpis">
+      <!-- Populated by JS -->
+    </div>
+    <div class="fine" id="snapshotMeta"></div>
+  </section>
+
+  <!-- ROADMAP HEATMAP -->
+  <section class="card" aria-labelledby="roadmapTitle">
+    <h2 id="roadmapTitle">Roadmap Heatmap</h2>
+    <div class="tabs" role="tablist" aria-label="Heatmap views">
+      <button class="tab" role="tab" aria-selected="true" aria-controls="heat-table" id="tab-table">Table</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="heat-kanban" id="tab-kanban">Kanban</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="heat-swim" id="tab-swim">Swimlane</button>
+    </div>
+    <div id="heat-table" class="panel" role="tabpanel" aria-labelledby="tab-table"></div>
+    <div id="heat-kanban" class="panel" role="tabpanel" aria-labelledby="tab-kanban" hidden></div>
+    <div id="heat-swim" class="panel" role="tabpanel" aria-labelledby="tab-swim" hidden></div>
+  </section>
+
+  <!-- PERSONA VIEWS -->
+  <section class="card grid2" aria-labelledby="personaTitle">
+    <h2 id="personaTitle">Persona Views</h2>
+
+    <div class="vstack">
+      <h3>Project Manager</h3>
+      <ul class="list" id="pmList"></ul>
+    </div>
+
+    <div class="vstack">
+      <h3>Project Implication Agent</h3>
+      <ul class="list" id="impList"></ul>
+    </div>
+
+    <div class="vstack">
+      <h3>Project Verifier</h3>
+      <ul class="list" id="verList"></ul>
+    </div>
+
+    <div class="vstack">
+      <h3>Stakeholder</h3>
+      <ul class="list" id="stkList"></ul>
+    </div>
+
+    <div class="vstack">
+      <h3>You (Operator)</h3>
+      <ul class="list" id="youList"></ul>
+    </div>
+
+    <div class="vstack">
+      <h3>Failing Buckets (Nightly)</h3>
+      <table id="failTable" aria-label="Failing buckets">
+        <thead><tr><th>Bucket</th><th>Count</th><th>Top Examples</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ACTIONS + ECRR -->
+  <section class="card" aria-labelledby="ecrrTitle">
+    <h2 id="ecrrTitle">ECRR — Examine • Clean • Report • Role</h2>
+    <ol id="ecrrList" class="list"></ol>
+    <div class="hstack">
+      <span class="muted">Hook this dashboard to your scripts:</span>
+      <code>scripts/roadmap/examine.ts</code> → <code>clean.ts</code> → <code>report.ts</code>
+    </div>
+  </section>
+</main>
+
+<footer class="hstack">
+  <div class="muted" id="footerNote">Local-first. No network calls beyond your configured <code>endpoint</code>.</div>
+</footer>
+
+<!-- ======= Data & Rendering Logic (no external libs) ======= -->
+<script>
+/* ---------------------------
+   CONFIG + FALLBACK SAMPLES
+----------------------------*/
+const state = {
+  endpoint: localStorage.getItem('status:endpoint') || document.getElementById('endpoint').value,
+  auto: false,
+  timer: null,
+  data: {
+    // Expect these served as JSON from <endpoint>:
+    // - roadmap.json (milestones, features, status)
+    // - tests.json (pass/fail/skip per tag)
+    // - ssot.json (last CI snapshot; optional)
+    roadmap: null, tests: null, ssot: null
+  }
+};
+
+// Fallback demo data (used if fetch fails and no files loaded)
+const DEMO = {
+  roadmap: {
+    M1: [["Instant Practice (/try)","green"],["Warmup FSM + Reflection","green"],["Local IndexedDB storage","green"],["Safety (silence pause, clipping)","green"]],
+    "M1.5": [["PR Test Lane","green"],["Analytics + Live Dashboard","green"],["Cohort gating + rollback","green"],["Accessibility smokes","yellow"]],
+    M2: [["Pitch Band drill","yellow"],["Resonance buckets","yellow"],["Prosody mini-phrases","green"],["Orb v2 (shimmer, hue)","yellow"],["Strain guardrails","yellow"]],
+    M3: [["Adaptive planner","red"],["Progress dashboard v1","red"],["Carryover drills","red"],["Cohort analytics & data-control","red"]]
+  },
+  tests: {
+    updatedAt: new Date().toISOString(),
+    prLane: { total: 120, passed: 118, failed: 0, skipped: 2 },
+    nightly: { total: 520, passed: 150, failed: 340, skipped: 30 },
+    buckets: [
+      { tag:"@dashboard", failed: 80, examples:["Total Sessions not found","Region count mismatch"] },
+      { tag:"@data-control", failed: 70, examples:["Loading text missing","Focus mgmt strict-mode"] },
+      { tag:"@prosody", failed: 110, examples:["Start Recording timeout","Mock toggle not checkbox"] },
+      { tag:"@strain", failed: 60, examples:["Fixture buttons not visible","Threshold input missing"] },
+      { tag:"@offline", failed: 20, examples:["Worklet load timeout offline"] }
+    ]
+  },
+  ssot: { buildSha:"dev", when:new Date().toISOString(), cohort:"pilot", notes:"Local demo snapshot" }
+};
+
+/* ---------------------------
+   UTIL
+----------------------------*/
+const $ = sel => document.querySelector(sel);
+const $$ = sel => Array.from(document.querySelectorAll(sel));
+const esc = s => (s??'').toString().replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+
+/* ---------------------------
+   FETCH or FILE LOAD
+----------------------------*/
+async function getJSON(url) {
+  const r = await fetch(url, { cache:'no-store' });
+  if (!r.ok) throw new Error(`HTTP ${r.status} for ${url}`);
+  return r.json();
+}
+async function refreshData() {
+  const base = state.endpoint.replace(/\/?$/, '/'); // ensure trailing slash
+  try {
+    const [roadmap, tests, ssot] = await Promise.all([
+      getJSON(base + 'roadmap.json').catch(()=>null),
+      getJSON(base + 'tests.json').catch(()=>null),
+      getJSON(base + 'ssot.json').catch(()=>null),
+    ]);
+    state.data.roadmap = roadmap || DEMO.roadmap;
+    state.data.tests = tests || DEMO.tests;
+    state.data.ssot = ssot || DEMO.ssot;
+  } catch (e) {
+    // Use demo data if anything explodes
+    state.data = JSON.parse(JSON.stringify(DEMO));
+  }
+  renderAll();
+}
+
+document.getElementById('loadFiles').addEventListener('click', async () => {
+  // Firefox doesn't support File System Access; use <input type=file> fallback.
+  const input = document.createElement('input');
+  input.type = 'file'; input.multiple = true; input.accept = '.json,application/json';
+  input.onchange = () => {
+    const files = Array.from(input.files);
+    for (const f of files) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const json = JSON.parse(reader.result);
+          if (f.name.includes('roadmap')) state.data.roadmap = json;
+          if (f.name.includes('tests')) state.data.tests = json;
+          if (f.name.includes('ssot')) state.data.ssot = json;
+          renderAll();
+        } catch {}
+      };
+      reader.readAsText(f);
+    }
+  };
+  input.click();
+});
+
+/* ---------------------------
+   RENDER: KPIs
+----------------------------*/
+function kpi(label, value, hint, color) {
+  return `<div class="kpi" role="group" aria-label="${esc(label)}">
+    <div class="label">${esc(label)}</div>
+    <div class="value" style="color:${color||'inherit'}">${esc(value)}</div>
+    ${hint?`<div class="fine">${esc(hint)}</div>`:''}
+  </div>`;
+}
+
+function renderKPIs() {
+  const t = state.data.tests;
+  const heat = summarizeHeat();
+  const prPassPct = t.prLane ? Math.round(100*(t.prLane.passed/t.prLane.total)) : 0;
+  const nightlyPassPct = t.nightly ? Math.round(100*(t.nightly.passed/t.nightly.total)) : 0;
+
+  $('#kpis').innerHTML =
+    kpi('PR lane pass %', prPassPct+'%', 'Fast gate — must stay green', prPassPct>=95?'var(--ok)':(prPassPct>=80?'var(--warn)':'var(--bad)')) +
+    kpi('Nightly pass %', nightlyPassPct+'%', 'Broad coverage (can fail)', nightlyPassPct>=50?'var(--ok)':(nightlyPassPct>=30?'var(--warn)':'var(--bad)')) +
+    kpi('Roadmap status', `${heat.green}✓ / ${heat.yellow}~ / ${heat.red}×`, 'Green/Yellow/Red features') +
+    kpi('Top failing bucket', (state.data.tests.buckets?.[0]?.tag)||'—', (state.data.tests.buckets?.[0]?.failed||0)+' fails') +
+    kpi('Last snapshot', new Date(state.data.tests.updatedAt||Date.now()).toLocaleString(), 'Local time');
+
+  $('#snapshotMeta').textContent =
+    `Build: ${(state.data.ssot?.buildSha)||'dev'} • Cohort: ${(state.data.ssot?.cohort)||'local'} • ` +
+    `SSOT when: ${new Date(state.data.ssot?.when||Date.now()).toLocaleString()}`;
+}
+
+/* ---------------------------
+   HEATMAP DATA
+----------------------------*/
+function summarizeHeat() {
+  const rm = state.data.roadmap || {};
+  const counts = { green:0, yellow:0, red:0 };
+  Object.values(rm).forEach(arr => (arr||[]).forEach(([name,status]) => { if(counts[status]!==undefined) counts[status]++; }));
+  return counts;
+}
+
+function statusPill(status) {
+  const map = { green:'green', yellow:'yellow', red:'red' };
+  return `<span class="pill ${map[status]||''}">${status==='green'?'✅ Green':status==='yellow'?'🟨 Yellow':'🟥 Red'}</span>`;
+}
+
+function renderHeatmapTable() {
+  const rm = state.data.roadmap || {};
+  const rows = [];
+  for (const [stage, items] of Object.entries(rm)) {
+    (items||[]).forEach(([feature, status]) => {
+      rows.push(`<tr><td>${esc(feature)}</td><td>${esc(stage)}</td><td>${statusPill(status)}</td></tr>`);
+    });
+  }
+  $('#heat-table').innerHTML = `
+    <table aria-label="Roadmap table">
+      <thead><tr><th>Feature</th><th>Stage</th><th>Status</th></tr></thead>
+      <tbody>${rows.join('')}</tbody>
+    </table>`;
+}
+
+function renderKanban() {
+  const rm = state.data.roadmap || {};
+  const col = { green:[], yellow:[], red:[] };
+  for (const [stage, items] of Object.entries(rm)) {
+    (items||[]).forEach(([feature,status]) => col[status].push({feature,stage}));
+  }
+  $('#heat-kanban').innerHTML = `
+    <div class="kanban" role="region" aria-label="Kanban">
+      <div class="col">
+        <h4>✅ Green</h4>
+        ${col.green.map(x=>`<div class="cardlet"><strong>${esc(x.feature)}</strong><div class="fine">${esc(x.stage)}</div></div>`).join('')||'<div class="fine">None</div>'}
+      </div>
+      <div class="col">
+        <h4>🟨 Yellow</h4>
+        ${col.yellow.map(x=>`<div class="cardlet"><strong>${esc(x.feature)}</strong><div class="fine">${esc(x.stage)}</div></div>`).join('')||'<div class="fine">None</div>'}
+      </div>
+      <div class="col">
+        <h4>🟥 Red</h4>
+        ${col.red.map(x=>`<div class="cardlet"><strong>${esc(x.feature)}</strong><div class="fine">${esc(x.stage)}</div></div>`).join('')||'<div class="fine">None</div>'}
+      </div>
+    </div>`;
+}
+
+function renderSwimlane() {
+  const rm = state.data.roadmap || {};
+  // Simple SVG: each lane is a row; features become colored rounded rects
+  const stages = Object.keys(rm);
+  const h = 50 * Math.max(2, stages.length);
+  const W = 1000, H = 20 + stages.length * 110;
+  let y = 20; let svg = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Timeline swimlane">`;
+  for (const stage of stages) {
+    svg += `<rect x="10" y="${y}" width="${W-20}" height="90" rx="12" fill="none" stroke="var(--border)"/>`;
+    svg += `<text x="20" y="${y+22}" fill="var(--muted)" font-size="14" font-weight="600">${esc(stage)}</text>`;
+    const items = (rm[stage]||[]);
+    const gap = (W-120) / Math.max(1, items.length);
+    let x = 60;
+    for (const [feature,status] of items) {
+      const color = status==='green'?'var(--green)':status==='yellow'?'var(--yellow)':'var(--red)';
+      svg += `<rect x="${x}" y="${y+34}" width="180" height="42" rx="8" fill="${color}" opacity="0.85" stroke="var(--border)"/>`;
+      svg += `<text x="${x+10}" y="${y+60}" fill="${status==='red'?'#fff':'#000'}" font-size="12">${esc(feature)}</text>`;
+      x += gap;
+    }
+    y += 110;
+  }
+  svg += `</svg>`;
+  $('#heat-swim').innerHTML = svg;
+}
+
+/* ---------------------------
+   PERSONAS + FAILING BUCKETS
+----------------------------*/
+function renderPersonas() {
+  const t = state.data.tests;
+  const heat = summarizeHeat();
+
+  const pm = [
+    `PR lane pass: ${Math.round(100*(t.prLane.passed/t.prLane.total))}% • target ≥ 95%`,
+    `Nightly pass: ${Math.round(100*(t.nightly.passed/t.nightly.total))}% (can fail)`,
+    `Roadmap: ${heat.green} Green / ${heat.yellow} Yellow / ${heat.red} Red`,
+    `Top failing bucket: ${(t.buckets?.[0]?.tag)||'—'} (${(t.buckets?.[0]?.failed)||0})`,
+  ];
+  $('#pmList').innerHTML = pm.map(x=>`<li>${esc(x)}</li>`).join('');
+
+  const imp = [
+    `If @dashboard stays Red → delay Progress v1 + Beta gating`,
+    `@data-control Red → privacy UX blocked (export/delete flows)`,
+    `@prosody/ @strain Yellow → labs not in PR lane; customer experience limited to Instant Practice + Prosody v1`,
+  ];
+  $('#impList').innerHTML = imp.map(x=>`<li>${esc(x)}</li>`).join('');
+
+  const ver = [
+    `Gates (must pass in PR): @smoke, @pilot-core, @a11y-smoke, @security`,
+    `Quarantined nightly: @dashboard @cohort-* @data-control @prosody @strain @offline @polish @future`,
+    `Flake watch: stop run after 20 fails; keep artifacts and traces`,
+  ];
+  $('#verList').innerHTML = ver.map(x=>`<li>${esc(x)}</li>`).join('');
+
+  const stk = [
+    `What's shipped: Instant Practice + Warmup + IndexedDB + Safety + Prosody v1`,
+    `In progress: Pitch Band • Resonance • Orb v2 • Strain guardrails`,
+    `Planned: Adaptive coach • Progress dashboard • Cohort analytics`,
+  ];
+  $('#stkList').innerHTML = stk.map(x=>`<li>${esc(x)}</li>`).join('');
+
+  const you = [
+    `Fix a11y smokes (skip link, focus, live regions)`,
+    `Implement Pitch Band (time-in-band%) + Resonance buckets (LPC)`,
+    `Add Orb v2 shimmer/hue; wire strain heuristics + cohort calibration`,
+    `Keep PR lane clean and enforce tags on new tests`,
+  ];
+  $('#youList').innerHTML = you.map(x=>`<li>${esc(x)}</li>`).join('');
+
+  // Failing buckets table
+  const tb = (t.buckets||[]).map(b=>`<tr><td>${esc(b.tag)}</td><td>${b.failed}</td><td class="fine">${esc((b.examples||[]).slice(0,2).join(' • '))}</td></tr>`).join('');
+  document.querySelector('#failTable tbody').innerHTML = tb || '<tr><td colspan="3" class="fine">No data</td></tr>';
+}
+
+/* ---------------------------
+   ECRR ROLLUP
+----------------------------*/
+function renderECRR() {
+  const lines = [
+    `Examine: parse Playwright/Vitest JSON → tag buckets`,
+    `Clean: normalize to <endpoint>/roadmap.json + tests.json`,
+    `Report: regenerate docs (ROADMAP.md, SSOT.md) + this dashboard`,
+    `Role: agents enforce gates, open PRs, and schedule cohort checks`,
+  ];
+  $('#ecrrList').innerHTML = lines.map(x=>`<li>${esc(x)}</li>`).join('');
+}
+
+/* ---------------------------
+   TABS + EVENTS
+----------------------------*/
+function setTab(which) {
+  $$('#roadmapTitle ~ .tabs .tab').forEach(btn=>btn.setAttribute('aria-selected', String(btn.id === which)));
+  ['heat-table','heat-kanban','heat-swim'].forEach(id => $(`#${id}`).hidden = (('tab-'+id.split('-')[1]) !== which));
+}
+
+$('#tab-table').addEventListener('click', ()=>setTab('tab-table'));
+$('#tab-kanban').addEventListener('click', ()=>setTab('tab-kanban'));
+$('#tab-swim').addEventListener('click', ()=>setTab('tab-swim'));
+
+$('#refresh').addEventListener('click', refreshData);
+$('#endpoint').addEventListener('change', (e)=>{
+  state.endpoint = e.target.value; localStorage.setItem('status:endpoint', state.endpoint);
+  refreshData();
+});
+$('#auto').addEventListener('change',(e)=>{
+  state.auto = e.target.checked;
+  if (state.timer) { clearInterval(state.timer); state.timer = null; }
+  if (state.auto) state.timer = setInterval(refreshData, 30000);
+});
+
+/* ---------------------------
+   MAIN
+----------------------------*/
+function renderAll() {
+  renderKPIs();
+  renderHeatmapTable();
+  renderKanban();
+  renderSwimlane();
+  renderPersonas();
+  renderECRR();
+}
+refreshData(); // initial load
+</script>
+</body>
+</html>
+

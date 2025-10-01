@@ -1,0 +1,16 @@
+{
+  "updatedAt": "2025-10-01T07:38:01.692Z",
+  "prLane": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0
+  },
+  "nightly": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0
+  },
+  "buckets": []
+}
