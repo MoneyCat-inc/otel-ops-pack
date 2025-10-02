@@ -7,6 +7,7 @@ Processes telemetry batches using NVIDIA nvCOMP for high-throughput compression
 import os
 import json
 import time
+import argparse
 import asyncio
 import logging
 from pathlib import Path
@@ -274,6 +275,11 @@ class GPUCompressionSidecar:
 
 def main():
     """Main entry point"""
+    parser = argparse.ArgumentParser(description="GPU Compression Sidecar")
+    parser.add_argument("--host", default=os.getenv("COMPRESSION_SIDECAR_HOST", "0.0.0.0"), help="Bind host")
+    parser.add_argument("--port", type=int, default=int(os.getenv("COMPRESSION_SIDECAR_PORT", "8001")), help="Bind port")
+    args = parser.parse_args()
+
     config = CompressionConfig()
     sidecar = GPUCompressionSidecar(config)
     
@@ -281,8 +287,8 @@ def main():
     import uvicorn
     uvicorn.run(
         sidecar.app,
-        host="0.0.0.0",
-        port=8001,
+        host=args.host,
+        port=args.port,
         log_level="info"
     )
 

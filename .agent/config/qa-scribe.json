@@ -1,0 +1,13 @@
+{
+  "id": "qa-scribe",
+  "enabled": true,
+  "schedule": {
+    "interval": 900000,
+    "maxRetries": 3
+  },
+  "budget": {
+    "maxJobsPerPass": 1,
+    "maxFilesPerJob": 3,
+    "maxLinesPerJob": 50
+  }
+}

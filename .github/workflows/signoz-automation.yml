@@ -1,0 +1,59 @@
+name: SigNoz Automation
+
+on:
+  schedule:
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+  push:
+    branches: [main, develop]
+    paths:
+      - tests/signoz.final.spec.ts
+      - playwright.signoz.config.ts
+      - scripts/automate-signoz-setup.ps1
+      - docs/SIGNOZ_AUTOMATION_SETUP.md
+      - .github/workflows/signoz-automation.yml
+
+jobs:
+  signoz-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15  # Add timeout to prevent hanging
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        run: |
+          curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+          sudo apt-get install -y nodejs
+      - name: Install pnpm
+        run: npm install -g pnpm@9.12.0
+      - run: npm install --legacy-peer-deps
+      - run: npx playwright install --with-deps
+      - name: Start SigNoz with timeout and health check
+        timeout-minutes: 10
+        run: |
+          docker compose -f docker-compose-signoz.yml up -d
+          echo "Waiting for SigNoz to be ready..."
+          timeout 300 bash -c 'until curl -sf http://localhost:8080/api/v1/health; do echo "Waiting for SigNoz..."; sleep 5; done'
+          echo "SigNoz is ready!"
+        env:
+          SIGNOZ_URL: http://localhost:8080
+      - run: npm run test:signoz
+        env:
+          SIGNOZ_URL: http://localhost:8080
+          SIGNOZ_USER: ${{ secrets.SIGNOZ_USER }}
+          SIGNOZ_PASS: ${{ secrets.SIGNOZ_PASS }}
+      - name: Run automation suite
+        shell: pwsh
+        run: ./scripts/automate-signoz-setup.ps1 -SignozUrl $env:SIGNOZ_URL
+        env:
+          SIGNOZ_URL: http://localhost:8080
+          SIGNOZ_USER: ${{ secrets.SIGNOZ_USER }}
+          SIGNOZ_PASS: ${{ secrets.SIGNOZ_PASS }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          if-no-files-found: ignore
+      - name: Cleanup
+        if: always()
+        run: docker compose -f docker-compose-signoz.yml down -v

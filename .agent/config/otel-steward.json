@@ -1,0 +1,13 @@
+{
+  "id": "otel-steward",
+  "enabled": true,
+  "schedule": {
+    "interval": 180000,
+    "maxRetries": 3
+  },
+  "budget": {
+    "maxJobsPerPass": 2,
+    "maxFilesPerJob": 8,
+    "maxLinesPerJob": 150
+  }
+}

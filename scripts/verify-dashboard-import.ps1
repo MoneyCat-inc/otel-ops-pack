@@ -48,12 +48,12 @@ foreach ($Metric in $Metrics) {
     try {
         $QueryResponse = Invoke-RestMethod -Uri "$SigNozUrl/api/v1/query?query=$Metric" -Method Get -TimeoutSec 10
         if ($QueryResponse.data.result -and $QueryResponse.data.result.Count -gt 0) {
-            Write-Host "   ✅ ${Metric}: Available" -ForegroundColor Green
+            Write-Host "   ✅ $Metric: Available" -ForegroundColor Green
         } else {
-            Write-Host "   ⚠️ ${Metric}: No data" -ForegroundColor Yellow
+            Write-Host "   ⚠️ $Metric: No data" -ForegroundColor Yellow
         }
     } catch {
-        Write-Host "   ❌ ${Metric}: Query failed" -ForegroundColor Red
+        Write-Host "   ❌ $Metric: Query failed" -ForegroundColor Red
     }
 }
 

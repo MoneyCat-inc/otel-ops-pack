@@ -1,0 +1,13 @@
+{
+  "id": "cursor-local",
+  "enabled": true,
+  "schedule": {
+    "interval": 300000,
+    "maxRetries": 3
+  },
+  "budget": {
+    "maxJobsPerPass": 2,
+    "maxFilesPerJob": 10,
+    "maxLinesPerJob": 200
+  }
+}

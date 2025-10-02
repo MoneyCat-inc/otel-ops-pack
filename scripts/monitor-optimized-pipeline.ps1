@@ -12,7 +12,13 @@ param(
 )
 
 # Import progress indicators module
-. .\scripts\progress-indicators.ps1
+$scriptRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
+$progressModule = Join-Path $scriptRoot 'progress-indicators.ps1'
+if (-not (Test-Path $progressModule)) {
+    throw "Progress indicators module not found at $progressModule"
+}
+
+Import-Module $progressModule -Force
 
 Write-Host "🔍 Enhanced Pipeline Monitor (ECRR v2.0)" -ForegroundColor Cyan
 Write-Host "Monitoring: 200ms batches, noise filtering, sub-second latency" -ForegroundColor Gray

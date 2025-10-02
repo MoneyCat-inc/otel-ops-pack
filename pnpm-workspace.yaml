@@ -1,3 +1,7 @@
+packages:
+  - '.'
+  - 'resonai-mock'
+
 onlyBuiltDependencies:
   - '@prisma/client'
   - '@prisma/engines'

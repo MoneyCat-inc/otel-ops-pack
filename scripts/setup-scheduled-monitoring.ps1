@@ -1,135 +1,62 @@
-# See C:\otel\docs\comfort cat
-# Scheduled Monitoring Setup
-# Creates Windows scheduled tasks for continuous canary and monitoring coverage
+# Create Scheduled Task for Automated Service Monitoring
+# This script sets up a Windows scheduled task to run continuous monitoring
 
 param(
-    [switch]$RemoveTasks = $false,
-    [switch]$ListTasks = $false,
-    [string]$TaskUser = "SYSTEM"
+    [string]$TaskName = "OTel-Service-Monitoring",
+    [string]$ScriptPath = "C:\otel\scripts\automated-service-monitoring.ps1",
+    [int]$IntervalMinutes = 5
 )
 
-Write-Host "⏰ Scheduled Monitoring Setup" -ForegroundColor Cyan
-Write-Host "Configure continuous monitoring with Windows scheduled tasks" -ForegroundColor Gray
-Write-Host ""
+Write-Host "📅 Setting up Scheduled Task for Service Monitoring" -ForegroundColor Cyan
+Write-Host "=================================================" -ForegroundColor Cyan
 
 # Check if running as administrator
-$isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
-
-if (-not $isAdmin) {
-    Write-Host "⚠️  Warning: Not running as Administrator" -ForegroundColor Yellow
-    Write-Host "   Some scheduled task operations may require elevated privileges" -ForegroundColor Gray
-    Write-Host ""
+if (-NOT ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
+    Write-Host "❌ This script requires administrator privileges" -ForegroundColor Red
+    Write-Host "Please run PowerShell as Administrator and try again" -ForegroundColor Yellow
+    exit 1
 }
 
-# List existing tasks
-if ($ListTasks) {
-    Write-Host "📋 Existing OTel Monitoring Tasks:" -ForegroundColor Cyan
-    $existingTasks = Get-ScheduledTask -TaskName "*OTel*" -ErrorAction SilentlyContinue
-    if ($existingTasks) {
-        foreach ($task in $existingTasks) {
-            Write-Host "   - $($task.TaskName): $($task.State)" -ForegroundColor White
-        }
-    } else {
-        Write-Host "   No existing OTel tasks found" -ForegroundColor Gray
-    }
-    Write-Host ""
-}
+# Create the scheduled task action
+$action = New-ScheduledTaskAction -Execute "PowerShell.exe" -Argument "-File `"$ScriptPath`" -Continuous -CheckIntervalSeconds 300"
 
-# Remove existing tasks
-if ($RemoveTasks) {
-    Write-Host "🗑️  Removing existing OTel monitoring tasks..." -ForegroundColor Yellow
-    $existingTasks = Get-ScheduledTask -TaskName "*OTel*" -ErrorAction SilentlyContinue
-    foreach ($task in $existingTasks) {
-        try {
-            Unregister-ScheduledTask -TaskName $task.TaskName -Confirm:$false
-            Write-Host "   ✅ Removed: $($task.TaskName)" -ForegroundColor Green
-        } catch {
-            Write-Host "   ❌ Failed to remove: $($task.TaskName) - $($_.Exception.Message)" -ForegroundColor Red
-        }
-    }
-    Write-Host ""
-}
+# Create the scheduled task trigger (every 5 minutes)
+$trigger = New-ScheduledTaskTrigger -Once -At (Get-Date) -RepetitionInterval (New-TimeSpan -Minutes $IntervalMinutes) -RepetitionDuration (New-TimeSpan -Days 365)
 
-if ($RemoveTasks) {
-    Write-Host "✅ Task removal complete" -ForegroundColor Green
-    exit 0
-}
+# Create the scheduled task settings
+$settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -RunOnlyIfNetworkAvailable
 
-# Create scheduled tasks
-Write-Host "🔧 Creating scheduled monitoring tasks..." -ForegroundColor Cyan
+# Create the scheduled task principal (run as SYSTEM)
+$principal = New-ScheduledTaskPrincipal -UserId "SYSTEM" -LogonType ServiceAccount -RunLevel Highest
 
-# Get current script directory
-$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$workingDir = Split-Path -Parent $scriptDir
-
-# Task 1: Quick Health Check (every 5 minutes)
-Write-Host "📊 Creating Quick Health Check task (every 5 minutes)..." -ForegroundColor Yellow
-$quickMonitorAction = New-ScheduledTaskAction -Execute "pwsh.exe" -Argument "-File `"$scriptDir\quick-monitor.ps1`"" -WorkingDirectory $workingDir
-$quickMonitorTrigger = New-ScheduledTaskTrigger -Once -At (Get-Date) -RepetitionInterval (New-TimeSpan -Minutes 5) -RepetitionDuration (New-TimeSpan -Days 365)
-$quickMonitorSettings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -RunOnlyIfNetworkAvailable -ExecutionTimeLimit (New-TimeSpan -Minutes 2)
-
+# Register the scheduled task
 try {
-    Register-ScheduledTask -TaskName "OTel-QuickHealthCheck" -Action $quickMonitorAction -Trigger $quickMonitorTrigger -Settings $quickMonitorSettings -User $TaskUser -Description "Quick OTel pipeline health check every 5 minutes" -Force
-    Write-Host "   ✅ Created: OTel-QuickHealthCheck" -ForegroundColor Green
+    Register-ScheduledTask -TaskName $TaskName -Action $action -Trigger $trigger -Settings $settings -Principal $principal -Description "Automated monitoring of OTel observability stack services"
+    
+    Write-Host "✅ Scheduled task '$TaskName' created successfully" -ForegroundColor Green
+    Write-Host "   - Runs every $IntervalMinutes minutes" -ForegroundColor Gray
+    Write-Host "   - Monitors SigNoz, Windows Collector, and Docker services" -ForegroundColor Gray
+    Write-Host "   - Logs to artifacts/service-monitoring.log" -ForegroundColor Gray
+    Write-Host "   - Alerts saved to artifacts/alerts-*.json" -ForegroundColor Gray
+    
+    # Start the task immediately
+    Start-ScheduledTask -TaskName $TaskName
+    Write-Host "✅ Task started successfully" -ForegroundColor Green
+    
 } catch {
-    Write-Host "   ❌ Failed to create OTel-QuickHealthCheck: $($_.Exception.Message)" -ForegroundColor Red
+    Write-Host "❌ Failed to create scheduled task: $($_.Exception.Message)" -ForegroundColor Red
+    exit 1
 }
 
-# Task 2: Canary Test (every 15 minutes)
-Write-Host "🧪 Creating Canary Test task (every 15 minutes)..." -ForegroundColor Yellow
-$canaryAction = New-ScheduledTaskAction -Execute "pwsh.exe" -Argument "-File `"$scriptDir\canary-ecrr.ps1`"" -WorkingDirectory $workingDir
-$canaryTrigger = New-ScheduledTaskTrigger -Once -At (Get-Date) -RepetitionInterval (New-TimeSpan -Minutes 15) -RepetitionDuration (New-TimeSpan -Days 365)
-$canarySettings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -RunOnlyIfNetworkAvailable -ExecutionTimeLimit (New-TimeSpan -Minutes 5)
+Write-Host "`n📋 Management Commands:" -ForegroundColor Cyan
+Write-Host "  View task: Get-ScheduledTask -TaskName '$TaskName'" -ForegroundColor White
+Write-Host "  Start task: Start-ScheduledTask -TaskName '$TaskName'" -ForegroundColor White
+Write-Host "  Stop task: Stop-ScheduledTask -TaskName '$TaskName'" -ForegroundColor White
+Write-Host "  Remove task: Unregister-ScheduledTask -TaskName '$TaskName' -Confirm:`$false" -ForegroundColor White
 
-try {
-    Register-ScheduledTask -TaskName "OTel-CanaryTest" -Action $canaryAction -Trigger $canaryTrigger -Settings $canarySettings -User $TaskUser -Description "ECRR canary test every 15 minutes" -Force
-    Write-Host "   ✅ Created: OTel-CanaryTest" -ForegroundColor Green
-} catch {
-    Write-Host "   ❌ Failed to create OTel-CanaryTest: $($_.Exception.Message)" -ForegroundColor Red
-}
+Write-Host "`n📊 Monitoring Output:" -ForegroundColor Cyan
+Write-Host "  Log file: artifacts/service-monitoring.log" -ForegroundColor White
+Write-Host "  Alerts: artifacts/alerts-*.json" -ForegroundColor White
+Write-Host "  Health checks: artifacts/health-check-*.json" -ForegroundColor White
 
-# Task 3: Detailed Monitor (every hour for 10 minutes)
-Write-Host "📈 Creating Detailed Monitor task (every hour for 10 minutes)..." -ForegroundColor Yellow
-$detailedMonitorAction = New-ScheduledTaskAction -Execute "pwsh.exe" -Argument "-File `"$scriptDir\monitor-optimized-pipeline.ps1`" -DurationMinutes 10 -ExportReport" -WorkingDirectory $workingDir
-$detailedMonitorTrigger = New-ScheduledTaskTrigger -Once -At (Get-Date) -RepetitionInterval (New-TimeSpan -Hours 1) -RepetitionDuration (New-TimeSpan -Days 365)
-$detailedMonitorSettings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -RunOnlyIfNetworkAvailable -ExecutionTimeLimit (New-TimeSpan -Minutes 15)
-
-try {
-    Register-ScheduledTask -TaskName "OTel-DetailedMonitor" -Action $detailedMonitorAction -Trigger $detailedMonitorTrigger -Settings $detailedMonitorSettings -User $TaskUser -Description "Detailed OTel pipeline monitoring every hour for 10 minutes with report export" -Force
-    Write-Host "   ✅ Created: OTel-DetailedMonitor" -ForegroundColor Green
-} catch {
-    Write-Host "   ❌ Failed to create OTel-DetailedMonitor: $($_.Exception.Message)" -ForegroundColor Red
-}
-
-# Task 4: Weekly Report (every Sunday at 9 AM)
-Write-Host "📊 Creating Weekly Report task (every Sunday at 9 AM)..." -ForegroundColor Yellow
-$weeklyReportAction = New-ScheduledTaskAction -Execute "pwsh.exe" -Argument "-File `"$scriptDir\generate-weekly-report.ps1`"" -WorkingDirectory $workingDir
-$weeklyReportTrigger = New-ScheduledTaskTrigger -Weekly -DaysOfWeek Sunday -At 9:00AM
-$weeklyReportSettings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -RunOnlyIfNetworkAvailable -ExecutionTimeLimit (New-TimeSpan -Minutes 10)
-
-try {
-    Register-ScheduledTask -TaskName "OTel-WeeklyReport" -Action $weeklyReportAction -Trigger $weeklyReportTrigger -Settings $weeklyReportSettings -User $TaskUser -Description "Weekly OTel pipeline report generation" -Force
-    Write-Host "   ✅ Created: OTel-WeeklyReport" -ForegroundColor Green
-} catch {
-    Write-Host "   ❌ Failed to create OTel-WeeklyReport: $($_.Exception.Message)" -ForegroundColor Red
-}
-
-Write-Host ""
-Write-Host "📋 Task Summary:" -ForegroundColor Cyan
-Write-Host "   OTel-QuickHealthCheck: Every 5 minutes" -ForegroundColor White
-Write-Host "   OTel-CanaryTest: Every 15 minutes" -ForegroundColor White
-Write-Host "   OTel-DetailedMonitor: Every hour for 10 minutes" -ForegroundColor White
-Write-Host "   OTel-WeeklyReport: Every Sunday at 9 AM" -ForegroundColor White
-
-Write-Host ""
-Write-Host "🔍 Management Commands:" -ForegroundColor Blue
-Write-Host "   List tasks: pwsh -File scripts\setup-scheduled-monitoring.ps1 -ListTasks" -ForegroundColor Gray
-Write-Host "   Remove tasks: pwsh -File scripts\setup-scheduled-monitoring.ps1 -RemoveTasks" -ForegroundColor Gray
-Write-Host "   View task history: Get-WinEvent -FilterHashtable @{LogName='Microsoft-Windows-TaskScheduler/Operational'; ID=200,201}" -ForegroundColor Gray
-
-Write-Host ""
-Write-Host "💡 Next Steps:" -ForegroundColor Blue
-Write-Host "   1. Verify tasks: Get-ScheduledTask -TaskName '*OTel*'" -ForegroundColor Gray
-Write-Host "   2. Test manually: Start-ScheduledTask -TaskName 'OTel-QuickHealthCheck'" -ForegroundColor Gray
-Write-Host "   3. Check logs: Get-WinEvent -FilterHashtable @{LogName='Microsoft-Windows-TaskScheduler/Operational'; ID=200,201} | Where-Object {$_.Message -like '*OTel*'}" -ForegroundColor Gray
-Write-Host "   4. Monitor artifacts: Get-ChildItem artifacts\*.json | Sort-Object LastWriteTime -Descending" -ForegroundColor Gray
+Write-Host "`n✅ Automated Service Monitoring Setup Complete!" -ForegroundColor Green

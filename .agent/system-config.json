@@ -1,0 +1,40 @@
+{
+  "orchestrator": {
+    "enabled": true,
+    "interval": 30000,
+    "maxJobsPerPass": 2,
+    "maxFilesPerJob": 10,
+    "maxLinesPerJob": 200
+  },
+  "queue": {
+    "dbPath": ".agent/queue.db",
+    "walMode": true,
+    "maxRetries": 3,
+    "retryDelay": 5000,
+    "maxConcurrentJobs": 5,
+    "offlineMode": false
+  },
+  "compliance": {
+    "enabled": true,
+    "reportInterval": 300000,
+    "strictMode": true
+  },
+  "agents": {
+    "cursor-local": true,
+    "codex-cloud": true,
+    "otel-steward": true,
+    "qa-scribe": true,
+    "bosscat": true
+  },
+  "features": {
+    "sqliteQueue": true,
+    "ecrrCompliance": true,
+    "offlineIsolation": true,
+    "observability": true
+  },
+  "safety": {
+    "enableKillSwitch": true,
+    "enableBudgets": true,
+    "enableRollback": true
+  }
+}

@@ -1,130 +1,233 @@
-# SigNoz Alert Import Guide
+# SigNoz Alert Import Guide: Hurst Exponent Drift Alert
 
-## Manual Import Method (Recommended for Local Development)
+**Date**: 2025-10-01  
+**Purpose**: Step-by-step guide to manually import the Hurst Exponent Drift Alert into SigNoz UI
 
-Since the API token authentication is not working for the local SigNoz instance, use the manual import method:
+---
+
+## 🎯 Overview
+
+This guide provides detailed instructions for importing the Hurst Exponent Drift Alert into SigNoz UI. The alert monitors fractal pattern analysis for significant drift in Hurst exponent values, detecting persistent behavior (H > 0.7) that may indicate system instability.
+
+---
+
+## 📋 Prerequisites
+
+- SigNoz running and accessible at http://localhost:8080
+- Admin access to SigNoz UI
+- Pattern drill logs being generated (from daily automation)
+
+---
+
+## 🚀 Step-by-Step Import Process
 
 ### Step 1: Access SigNoz UI
-1. Open your browser and go to: http://localhost:8080
-2. Log in to your SigNoz instance
+1. Open your web browser
+2. Navigate to: `http://localhost:8080`
+3. Log in to SigNoz (if authentication is enabled)
 
 ### Step 2: Navigate to Alerts
-1. Click on "Alerts" in the left sidebar
-2. Click "Create Alert" or "New Alert"
+1. In the SigNoz UI, locate the **Alerts** section in the navigation menu
+2. Click on **Alerts** or **Create Alert** (depending on your SigNoz version)
 
-### Step 3: Configure Main Alert
-Use the following settings for the **Windows Canary Log Absence** alert:
+### Step 3: Create New Alert
+1. Click **"Create Alert"** or **"New Alert"** button
+2. You'll see a form with multiple sections to configure
 
-**Basic Settings:**
-- **Name**: `Windows Canary Log Absence`
-- **Description**: `Alert when Windows canary logs stop appearing for more than 5 minutes`
-- **Severity**: `Critical`
+### Step 4: Basic Alert Configuration
+Fill in the following fields:
 
-**Query Configuration:**
-- **Query Type**: `Logs`
-- **Query**: 
 ```
-log.file.path = 'C:/logs/windows-canary-test.log' AND body contains 'windows-canary' | stats count() as log_count by bin(1m)
-```
-- **Group By**: `log.file.path`
-- **Legend Format**: `{{log.file.path}}`
+Alert Name: Hurst Exponent Drift Alert
 
-**Alert Conditions:**
-- **Threshold**: `1`
-- **Operator**: `Below`
-- **Evaluation Window**: `5m`
-- **Alert Frequency**: `1m`
-- **Notification on Missing Data**: `Enabled`
-- **Minimum Data Points**: `1`
+Description: Detects significant drift in Hurst exponent values from fractal pattern analysis. Indicates potential changes in system behavior patterns - persistence (H>0.7), anti-persistence (H<0.3), or deviation from expected random walk behavior (H≈0.5).
 
-**Labels:**
-- `alert_type`: `canary`
-- `service`: `windows-logs`
-- `environment`: `local`
-
-**Annotations:**
-- **Summary**: `Windows canary logs have stopped appearing`
-- **Description**: `No Windows canary logs detected for 5 minutes. This indicates potential issues with Windows log collection or processing.`
-
-### Step 4: Configure Test Alert
-Repeat the process for the **Windows Canary Test Alert**:
-
-**Basic Settings:**
-- **Name**: `Windows Canary Test Alert`
-- **Description**: `Test alert for Windows canary log absence detection`
-- **Severity**: `Warning`
-
-**Query Configuration:**
-- **Query Type**: `Logs`
-- **Query**: 
-```
-log.file.path = 'C:/logs/windows-canary-test.log' AND body contains 'windows-canary' | stats count() as log_count by bin(1m)
+Severity: Warning
 ```
 
-**Alert Conditions:**
-- **Threshold**: `1`
-- **Operator**: `Below`
-- **Evaluation Window**: `2m`
-- **Alert Frequency**: `1m`
+### Step 5: Query Configuration
+Set up the query section:
 
-**Labels:**
-- `alert_type`: `canary_test`
-- `service`: `windows-logs`
-- `environment`: `local-test`
-
-### Step 5: Create Dashboard Panels
-
-Navigate to **Dashboards** and create a new dashboard called "Windows Canary Log Health":
-
-**Panel 1: Canary Log Count**
-- **Title**: `Canary Log Count (Last Hour)`
-- **Type**: `Stat`
-- **Query**: 
 ```
-log.file.path = 'C:/logs/windows-canary-test.log' AND body contains 'windows-canary' | stats count()
-```
-- **Thresholds**: Warning: 10, Critical: 5
+Query Type: Logs
 
-**Panel 2: Canary Log Rate**
-- **Title**: `Canary Log Rate (per minute)`
-- **Type**: `Line`
-- **Query**: 
-```
-log.file.path = 'C:/logs/windows-canary-test.log' AND body contains 'windows-canary' | stats count() by bin(1m)
+Query:
+message contains "hurst_estimate" AND log.file.path contains "canary-pattern-results.json"
+
+Group By: pattern
+
+Legend Format: {{pattern}} Pattern Hurst Drift
 ```
 
-**Panel 3: Last Timestamp**
-- **Title**: `Last Canary Log Timestamp`
-- **Type**: `Stat`
-- **Query**: 
+### Step 6: Alert Conditions
+Configure the alert conditions:
+
 ```
-log.file.path = 'C:/logs/windows-canary-test.log' AND body contains 'windows-canary' | stats latest(@timestamp)
+Threshold: 0.7
+
+Operator: above
+
+Evaluation Window: 15m
+
+Alert Frequency: 5m
+
+Notification on Missing Data: False
+
+Minimum Data Points: 3
 ```
 
-### Step 6: Verify Setup
+### Step 7: Labels Configuration
+Add the following labels (if your SigNoz version supports labels):
 
-1. **Check Log Ingestion**: Go to **Logs** → Apply filter: `log.file.path = 'C:/logs/windows-canary-test.log' AND body contains 'windows-canary'`
-2. **Verify Alerts**: Go to **Alerts** → Check that both alerts are active
-3. **Test Dashboard**: Go to **Dashboards** → Open "Windows Canary Log Health"
+```
+service: fractal-analysis
+component: hurst-exponent
+severity: warning
+environment: local
+framework: ecrr
+metric_type: fractal_drift
+```
 
-## Alternative: Session Cookie Method
+### Step 8: Notification Channels
+Configure notification channels:
 
-If you prefer API automation, you can extract session cookies from your browser:
+```
+Primary: email-default
+Secondary: slack-default
+```
 
-1. Open browser dev tools (F12)
-2. Go to Application/Storage → Cookies → http://localhost:8080
-3. Find the session cookie (usually named `session` or similar)
-4. Use it in API calls instead of Bearer token
+### Step 9: Save and Activate
+1. Review all configuration settings
+2. Click **"Save"** or **"Create Alert"**
+3. Ensure the alert is **"Active"** or **"Enabled"**
 
-## Troubleshooting
+---
 
-- **No logs visible**: Ensure the OpenTelemetry collector is running and canary logs are being generated
-- **Alerts not triggering**: Check that the query syntax is correct and logs are being ingested
-- **Dashboard empty**: Verify the time range and query filters
+## ✅ Verification Steps
 
-## Next Steps
+### Step 1: Alert Status Check
+1. Navigate back to the **Alerts** section
+2. Locate your **"Hurst Exponent Drift Alert"**
+3. Verify it shows as **"Active"** or **"Enabled"**
 
-1. Set up notification channels (email, Slack, etc.)
-2. Test alert triggering by stopping canary generation
-3. Monitor alert status and fine-tune thresholds
-4. Consider setting up alert rules for production use
+### Step 2: Test Alert Query
+1. Go to **Logs** section in SigNoz
+2. Use the query: `message contains "hurst_estimate"`
+3. Verify you can see pattern drill results
+4. Check that the query returns relevant log entries
+
+### Step 3: Generate Test Data
+Run a pattern drill to generate test data:
+
+```powershell
+# Run pattern drills to generate data
+pwsh -File scripts/canary-pattern-drills.ps1 -Pattern All -Duration 300 -Analyze
+
+# Check for results
+pwsh -File scripts/monitor-fractal-drift.ps1
+```
+
+### Step 4: Monitor Alert Status
+1. Wait 15-20 minutes for the evaluation window
+2. Check the alert status in SigNoz UI
+3. Verify no false positives with normal patterns
+
+---
+
+## 🔧 Troubleshooting
+
+### Issue: No Logs Found
+**Symptoms**: Alert query returns no results
+**Solutions**:
+1. Verify pattern drills are running: `pwsh -File scripts/manage-daily-pattern-drills.ps1 -Action status`
+2. Check logs directory: `Get-ChildItem C:\logs\canary-*.log`
+3. Run manual pattern drill: `pwsh -File scripts/canary-pattern-drills.ps1 -Pattern All -Duration 120`
+
+### Issue: Alert Not Triggering
+**Symptoms**: Alert remains in "OK" state despite high Hurst values
+**Solutions**:
+1. Verify query syntax matches exactly
+2. Check minimum data points requirement
+3. Ensure evaluation window has sufficient data
+
+### Issue: False Positives
+**Symptoms**: Alert triggers with normal patterns (H ≈ 0.5)
+**Solutions**:
+1. Review threshold setting (should be 0.7)
+2. Check sample size in pattern drills
+3. Verify statistical significance of results
+
+---
+
+## 📊 Expected Behavior
+
+### Normal Operation
+- **Steady Pattern**: H ≈ 0.5 (no alert)
+- **Poisson Pattern**: H ≈ 0.5 (no alert)
+- **Pareto Pattern**: H ≈ 0.5-0.6 (no alert)
+
+### Alert Conditions
+- **Persistent Behavior**: H > 0.7 (alert triggers)
+- **Anti-persistent**: H < 0.3 (manual investigation needed)
+- **Significant Drift**: Deviation > 0.2 from expected values
+
+---
+
+## 📈 Monitoring Dashboard
+
+### Recommended Dashboard Panels
+1. **Hurst Exponent Trends**: Time series of H values by pattern
+2. **Alert Status**: Current status of drift alert
+3. **Pattern Event Counts**: Volume of events per pattern type
+4. **Drift Detection**: Historical drift incidents
+
+### Dashboard Import
+Use the dashboard configuration from:
+`artifacts/fractal-drift-dashboard.json`
+
+---
+
+## 🔄 Maintenance
+
+### Daily Checks
+1. Verify alert status in SigNoz UI
+2. Check for any drift alerts
+3. Review pattern drill results
+
+### Weekly Reviews
+1. Analyze Hurst exponent trends
+2. Review alert effectiveness
+3. Adjust thresholds if needed
+
+### Monthly Analysis
+1. Statistical validation of patterns
+2. Performance optimization
+3. Alert tuning based on data
+
+---
+
+## 📞 Support
+
+### Scripts for Verification
+- `scripts/verify-hurst-drift-alert.ps1` - Alert verification
+- `scripts/monitor-fractal-drift.ps1` - Ongoing monitoring
+- `scripts/manage-daily-pattern-drills.ps1` - Pattern drill management
+
+### Documentation
+- `artifacts/poisson-anomaly-analysis-report.md` - Statistical analysis
+- `docs/ECRR_REPORTS/2025-10-01-log-pattern-fractal-validation.md` - Pattern validation
+- `docs/ECRR_REPORTS/2025-10-01-comprehensive-implementation-summary.md` - Complete overview
+
+---
+
+## 🎯 Success Criteria
+
+✅ **Alert Imported**: Hurst drift alert visible in SigNoz UI  
+✅ **Alert Active**: Status shows "Active" or "Enabled"  
+✅ **Query Working**: Logs query returns pattern drill results  
+✅ **No False Positives**: Alert doesn't trigger with normal patterns (H ≈ 0.5)  
+✅ **Drift Detection**: Alert triggers appropriately with H > 0.7  
+
+---
+
+*Generated by Cursor-Local (Observability Copilot) for SigNoz Alert Import*

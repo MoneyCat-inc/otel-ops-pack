@@ -95,7 +95,7 @@
 
 - [x] **MEMX logs schema**
   - Dataset: `resonai_analytics`
-  - Metrics: `memx.wasm_heap.bytes`, `memx.sab.usage.pct`, etc.
+  - Metrics: `resonai_memx_wasm_heap_bytes`, `resonai_memx_sab_used_bytes`, `resonai_memx_sab_capacity_bytes`, `resonai_memx_strain_pct`, `resonai_memx_worklet_ui_lag`.
   - Log events: `SAB_BACKLOG`, `WASM_GROW`, `WORKLET_LAG`
 
 ### ✅ Acceptance Criteria - COMPLETE

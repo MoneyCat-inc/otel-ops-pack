@@ -1,0 +1,20 @@
+{
+  "metrics": {
+    "enabled": true,
+    "interval": 60000,
+    "exportPath": "C:/logs/queue/health.log"
+  },
+  "logging": {
+    "enabled": true,
+    "level": "info",
+    "path": ".agent/logs"
+  },
+  "alerts": {
+    "enabled": true,
+    "thresholds": {
+      "failureRate": 0.1,
+      "complianceRate": 0.9,
+      "queueDepth": 50
+    }
+  }
+}

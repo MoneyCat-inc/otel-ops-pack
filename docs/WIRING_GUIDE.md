@@ -23,6 +23,10 @@ graph LR
     E -->|http://localhost:14317| F[SigNoz Collector]
     F --> G[ClickHouse Storage]
     G --> H[SigNoz UI - Logs]
+    
+    I[MEMX Memory Monitoring] -->|OTLP/HTTP Metrics| E
+    I --> J[MEMX Store]
+    J --> K[Session Aggregates]
 ```
 
 ## Event → LogRecord Mapping
@@ -79,6 +83,63 @@ interface OtlpLogRecord {
 - **14317**: SigNoz Collector OTLP/gRPC endpoint (collector export target)
 - **14318**: SigNoz Collector OTLP/HTTP endpoint (alternative export target)
 
+## MEMX Memory Metrics
+
+The MEMX (Memory Observation Layer) system provides real-time browser memory monitoring via OTLP metrics:
+
+### MEMX Metrics Schema
+
+```typescript
+interface MemxMetrics {
+  // Observable Gauges
+  "resonai_memx_wasm_heap_bytes": number;           // WASM linear memory usage
+  "resonai_memx_sab_used_bytes": number;            // SharedArrayBuffer occupancy
+  "resonai_memx_sab_capacity_bytes": number;        // SharedArrayBuffer total capacity
+  "resonai_memx_strain_pct": number;                // Memory strain percentage
+  
+  // Histogram
+  "resonai_memx_worklet_ui_lag": number;            // UI-to-AudioWorklet lag (ms)
+}
+```
+
+### MEMX Configuration
+
+```typescript
+interface MemxConfig {
+  enabled: boolean;                    // Feature flag
+  streamDefault: boolean;             // Enable OTLP streaming by default
+  otlpEndpoint?: string;              // OTLP/HTTP endpoint (default: http://localhost:5318)
+  exportIntervalMs: number;          // Export interval (default: 5000ms)
+}
+```
+
+### Environment Variables
+
+```bash
+# Enable MEMX feature
+NEXT_PUBLIC_FEATURE_MEMX=1
+
+# Enable OTLP streaming by default
+NEXT_PUBLIC_MEMX_STREAM_DEFAULT=1
+
+# OTLP endpoint (optional, defaults to http://localhost:5318)
+NEXT_PUBLIC_MEMX_OTLP_ENDPOINT=http://localhost:5318
+```
+
+### MEMX Metrics Attributes
+
+All MEMX metrics include standard resource attributes:
+- `service.name`: "resonai-frontend"
+- `service.version`: "1.0.0"
+- `telemetry.sdk.language`: "webjs"
+- `telemetry.sdk.name`: "memx-otel"
+- `component`: "memx"
+
+Additional metric-specific attributes:
+- `component`: "wasm" | "audio"
+- `ring`: "worklet_io" (for SAB metrics)
+- `kind`: "memory_strain" | "none" (for strain metrics)
+
 ## Verification
 
 ### Automated Verification Script
@@ -92,7 +153,8 @@ The script will:
 2. Verify port connectivity (5318, 8080)
 3. Send a test analytics event to `/api/events`
 4. Query SigNoz for the test event
-5. Generate artifacts: `artifacts/wiring-verify.txt` and `artifacts/wiring-api.json`
+5. Test MEMX metrics export (if enabled)
+6. Generate artifacts: `artifacts/wiring-verify.txt` and `artifacts/wiring-api.json`
 
 ### Manual Verification Steps
 
@@ -136,6 +198,17 @@ The script will:
      }'
    ```
 
+4. **MEMX Metrics Verification** (if MEMX is enabled):
+   - Navigate to SigNoz UI → Metrics
+   - Filter: `service.name = "resonai-frontend"` AND `component = "memx"`
+   - Look for MEMX metrics:
+     - `resonai_memx_wasm_heap_bytes`
+     - `resonai_memx_sab_used_bytes`
+     - `resonai_memx_sab_capacity_bytes`
+     - `resonai_memx_strain_pct`
+     - `resonai_memx_worklet_ui_lag`
+   - Verify metrics are updating every 5 seconds (export interval)
+
 ## SigNoz Dashboard Seeds
 
 ### Key Metrics to Track
@@ -144,6 +217,9 @@ The script will:
 2. **Event Volume**: `count by (attributes.event)`
 3. **TTV Percentiles**: `quantile(0.5, attributes.ttv_ms)`, `quantile(0.9, attributes.ttv_ms)`
 4. **Activation Rate**: `count(attributes.event="activation") / count(attributes.event="screen_view")`
+5. **MEMX Memory Strain**: `resonai_memx_strain_pct`
+6. **MEMX WASM Heap**: `resonai_memx_wasm_heap_bytes`
+7. **MEMX Worklet Lag**: `resonai_memx_worklet_ui_lag`
 
 ### Sample Dashboard Queries
 
@@ -159,6 +235,18 @@ histogram_quantile(0.5, sum(rate(attributes.ttv_ms[5m])) by (le))
 
 -- Session analytics
 count by (attributes.session_id, attributes.event) (attributes.dataset="resonai_analytics")
+
+-- MEMX Memory Strain over time
+resonai_memx_strain_pct{service_name="resonai-frontend"}
+
+-- MEMX WASM Heap Usage
+resonai_memx_wasm_heap_bytes{service_name="resonai-frontend"}
+
+-- MEMX Worklet Lag Percentiles
+histogram_quantile(0.95, sum(rate(resonai_memx_worklet_ui_lag_bucket[5m])) by (le))
+
+-- MEMX SAB Utilization
+resonai_memx_sab_used_bytes{service_name="resonai-frontend"} / resonai_memx_sab_capacity_bytes{service_name="resonai-frontend"} * 100
    ```
 
 ### Legacy schema (logs_v2) — sanity checks
@@ -267,6 +355,17 @@ otlphttp:
 **Solution**:
 - OTLP forwarding happens server-side, not browser-side
 - If testing from browser, use `/api/events` endpoint, not direct OTLP
+
+#### 5. Windows Collector Service Issues (FIXED 2025-10-02)
+**Symptom**: Service shows "Stopped" status or exit code 1064
+**Root Cause**: Broken service registration pointing to non-existent binary path
+**Solution**: 
+- **Standalone Mode**: Collector runs as standalone process instead of Windows service
+- Check running processes: `Get-Process -Name otelcol-contrib`
+- Verify health endpoint: `Invoke-WebRequest http://127.0.0.1:13134/healthz`
+- Confirm OTLP ports: `Get-NetTCPConnection -State Listen -LocalPort 5317,5318`
+- **Note**: Standalone mode is normal and preferred for development environments
+- **Service Cleanup**: Remove broken service: `sc delete otelcol-contrib`
 
 #### 5. Service Down
 **Symptom**: Health checks fail

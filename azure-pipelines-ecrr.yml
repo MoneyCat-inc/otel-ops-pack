@@ -1,0 +1,93 @@
+# ECRR Compliance Pipeline
+trigger:
+  branches:
+    include:
+    - main
+    - develop
+
+pr:
+  branches:
+    include:
+    - main
+
+schedules:
+- cron: "0 */6 * * *"  # Every 6 hours
+  displayName: ECRR Compliance Check
+  branches:
+    include:
+    - main
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  complianceThreshold: 95
+
+stages:
+- stage: ECRRCompliance
+  displayName: 'ECRR Compliance Check'
+  jobs:
+  - job: ComplianceCheck
+    displayName: 'Run Compliance Monitor'
+    steps:
+    - checkout: self
+      fetchDepth: 0
+      
+    - task: PowerShell@2
+      displayName: 'Show PowerShell Version'
+      inputs:
+        targetType: 'inline'
+        script: |
+          Write-Host "PowerShell Version: $($PSVersionTable.PSVersion)"
+          Write-Host "Artifacts directory: $(System.DefaultWorkingDirectory)\\artifacts"
+          
+    - task: PowerShell@2
+      displayName: 'Run ECRR Compliance Monitor'
+      inputs:
+        targetType: 'filePath'
+        filePath: 'scripts/ecrr-compliance-monitor.ps1'
+        arguments: '-OutputPath artifacts -Threshold $(complianceThreshold)'
+        pwsh: true
+        
+    - task: PowerShell@2
+      displayName: 'Check Compliance Threshold'
+      inputs:
+        targetType: 'inline'
+        pwsh: true
+        script: |
+          $reports = Get-ChildItem -Path 'artifacts' -Filter 'ecrr-compliance-report-*.json' | Sort-Object LastWriteTime -Descending
+          if (-not $reports) {
+            Write-Host "##vso[task.logissue type=error]No compliance report found"
+            exit 1
+          }
+
+          $latest = $reports[0]
+          Write-Host "Using compliance report: $($latest.FullName)"
+          $data = Get-Content -Path $latest.FullName -Raw | ConvertFrom-Json
+
+          $threshold = [double]'$(complianceThreshold)'
+          $rate = [double]$data.Summary.ComplianceRate
+          Write-Host "Compliance Rate: $rate% (threshold $threshold%)"
+
+          if ($rate -lt $threshold) {
+            Write-Host "##vso[task.logissue type=error]Compliance below threshold"
+            if ($data.NonCompliantFiles.Count -gt 0) {
+              Write-Host "Non-compliant reports:"
+              foreach ($item in $data.NonCompliantFiles) {
+                $path = if ($item.Path) { $item.Path } else { $item.File }
+                $issues = if ($item.Issues) { ($item.Issues -join ', ') } else { 'No issues recorded' }
+                Write-Host "  - $path : $issues"
+              }
+            }
+            exit 1
+          }
+
+          Write-Host "Compliance meets threshold"
+          
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Compliance Artifacts'
+      condition: always()
+      inputs:
+        pathToPublish: 'artifacts'
+        artifactName: 'ecrr-compliance-report'
+        publishLocation: 'Container'
