@@ -16,6 +16,7 @@ on:
 jobs:
   signoz-smoke:
     runs-on: ubuntu-latest
+    timeout-minutes: 15  # Add timeout to prevent hanging
     steps:
       - uses: actions/checkout@v4
       - name: Setup Node.js
@@ -23,15 +24,18 @@ jobs:
           curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
           sudo apt-get install -y nodejs
       - name: Install pnpm
-        run: # npm install --legacy-peer-deps -g pnpm@9.12.0  # Using npm instead
+        run: npm install -g pnpm@9.12.0
       - run: npm install --legacy-peer-deps
       - run: npx playwright install --with-deps
-      - run: |
+      - name: Start SigNoz with timeout and health check
+        run: |
           docker compose -f docker-compose-signoz.yml up -d
-          timeout 300 bash -c 'until curl -sf ${SIGNOZ_URL}/api/v1/health; do sleep 5; done'
+          echo "Waiting for SigNoz to be ready..."
+          timeout 300 bash -c 'until curl -sf http://localhost:8080/api/v1/health; do echo "Waiting for SigNoz..."; sleep 5; done'
+          echo "SigNoz is ready!"
         env:
           SIGNOZ_URL: http://localhost:8080
-      - run: pnpm run test:signoz
+      - run: npm run test:signoz
         env:
           SIGNOZ_URL: http://localhost:8080
           SIGNOZ_USER: ${{ secrets.SIGNOZ_USER }}
@@ -52,6 +56,3 @@ jobs:
       - name: Cleanup
         if: always()
         run: docker compose -f docker-compose-signoz.yml down -v
-
-
-
