@@ -34,44 +34,55 @@ stages:
       fetchDepth: 0
       
     - task: PowerShell@2
-      displayName: 'Setup PowerShell'
+      displayName: 'Show PowerShell Version'
       inputs:
         targetType: 'inline'
         script: |
           Write-Host "PowerShell Version: $($PSVersionTable.PSVersion)"
+          Write-Host "Artifacts directory: $(System.DefaultWorkingDirectory)\\artifacts"
           
     - task: PowerShell@2
       displayName: 'Run ECRR Compliance Monitor'
       inputs:
         targetType: 'filePath'
         filePath: 'scripts/ecrr-compliance-monitor.ps1'
-        arguments: '-GenerateReport'
+        arguments: '-OutputPath artifacts -Threshold $(complianceThreshold)'
+        pwsh: true
         
     - task: PowerShell@2
       displayName: 'Check Compliance Threshold'
       inputs:
         targetType: 'inline'
+        pwsh: true
         script: |
-          $jsonFiles = Get-ChildItem artifacts/ecrr-compliance-report-*.json
-          if ($jsonFiles.Count -eq 0) {
-            Write-Host "❌ No compliance report found" -ForegroundColor Red
+          $reports = Get-ChildItem -Path 'artifacts' -Filter 'ecrr-compliance-report-*.json' | Sort-Object LastWriteTime -Descending
+          if (-not $reports) {
+            Write-Host "##vso[task.logissue type=error]No compliance report found"
             exit 1
           }
-          
-          $data = Get-Content $jsonFiles[0].FullName | ConvertFrom-Json
-          $rate = $data.Summary.ComplianceRate
-          Write-Host "Compliance Rate: $rate%"
-          
-          if ($rate -lt $(complianceThreshold)) {
-            Write-Host "❌ Compliance below $(complianceThreshold)% threshold" -ForegroundColor Red
-            Write-Host "Non-compliant reports:" -ForegroundColor Red
-            foreach ($nc in $data.Summary.NonCompliantFiles) {
-              Write-Host "  - $($nc.File): $($nc.Issues -join ', ')" -ForegroundColor Red
+
+          $latest = $reports[0]
+          Write-Host "Using compliance report: $($latest.FullName)"
+          $data = Get-Content -Path $latest.FullName -Raw | ConvertFrom-Json
+
+          $threshold = [double]'$(complianceThreshold)'
+          $rate = [double]$data.Summary.ComplianceRate
+          Write-Host "Compliance Rate: $rate% (threshold $threshold%)"
+
+          if ($rate -lt $threshold) {
+            Write-Host "##vso[task.logissue type=error]Compliance below threshold"
+            if ($data.NonCompliantFiles.Count -gt 0) {
+              Write-Host "Non-compliant reports:"
+              foreach ($item in $data.NonCompliantFiles) {
+                $path = if ($item.Path) { $item.Path } else { $item.File }
+                $issues = if ($item.Issues) { ($item.Issues -join ', ') } else { 'No issues recorded' }
+                Write-Host "  - $path : $issues"
+              }
             }
             exit 1
-          } else {
-            Write-Host "✅ Compliance meets $(complianceThreshold)% threshold" -ForegroundColor Green
           }
+
+          Write-Host "Compliance meets threshold"
           
     - task: PublishBuildArtifacts@1
       displayName: 'Publish Compliance Artifacts'
