@@ -57,7 +57,11 @@
     "test:smoke": "playwright test -c playwright.noweb.config.ts --grep \"@smoke\"",
     "test:pilot": "playwright test -c playwright.noweb.config.ts --grep \"@pilot-core\"",
     "test:a11y": "playwright test -c playwright.noweb.config.ts --grep \"@a11y-smoke\"",
-    "test:security": "playwright test -c playwright.noweb.config.ts --grep \"@security\""
+    "test:security": "playwright test -c playwright.noweb.config.ts --grep \"@security\"",
+    "install:pinned": "corepack enable && corepack prepare pnpm@9.12.0 --activate && pnpm install",
+    "test:signoz": "playwright test tests/signoz.final.spec.ts -c playwright.signoz.config.ts",
+    "test:signoz:debug": "playwright test tests/signoz.final.spec.ts -c playwright.signoz.config.ts --debug",
+    "automate:signoz": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/automate-signoz-setup.ps1"
   },
   "dependencies": {
     "@opentelemetry/api": "^1.8.0",
