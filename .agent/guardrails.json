@@ -1,0 +1,19 @@
+{
+  "budgets": {
+    "maxJobsPerPass": 2,
+    "maxFilesPerJob": 10,
+    "maxLinesPerJob": 200,
+    "maxMemoryMB": 100,
+    "maxExecutionTimeMs": 30000
+  },
+  "killSwitch": {
+    "enabled": true,
+    "lockFile": ".agent/LOCK",
+    "respectLock": true
+  },
+  "rollback": {
+    "enabled": true,
+    "backupDir": ".agent/backups",
+    "maxBackups": 10
+  }
+}

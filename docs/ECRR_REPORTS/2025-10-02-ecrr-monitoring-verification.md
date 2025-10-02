@@ -10,7 +10,7 @@ Documenting the end-to-end health check confirming the ECRR automated monitoring
 ## 🔍 Examine
 - Confirmed available monitor scripts: `continuous-ecrr-compliance-monitor.ps1`, `ecrr-compliance-monitor.ps1`, `ecrr-compliance-monitoring.ps1`.
 - Initial attempt with `continuous-ecrr-compliance-monitor.ps1 -GenerateReport` returned `A hash table can only be added to another hash table.` indicating a pending bug in that workflow.
-- Fallback script `ecrr-compliance-monitor.ps1 -GenerateReport` executed successfully and reported 55/55 compliant active reports (100% rate).
+- Fallback script `ecrr-compliance-monitor.ps1 -GenerateReport` executed successfully and reported 57/57 compliant active reports (100% rate).
 - Windows Scheduled Task `ECRR Compliance Monitor` is registered and in `Ready` state, awaiting its next timed run.
 
 ## 🧹 Clean
@@ -19,7 +19,7 @@ Documenting the end-to-end health check confirming the ECRR automated monitoring
 - Ensured artifacts directory received regenerated JSON + HTML outputs for traceability.
 
 ## 📝 Report
-- Generated artifacts: `artifacts/ecrr-compliance-report-2025-10-02_01-01-23.json`, `artifacts/ecrr-compliance-dashboard.html` (100% compliance confirmed).
+- Generated artifacts: `artifacts/ecrr-compliance-report-2025-10-02_01-10-58.json`, `artifacts/ecrr-compliance-dashboard.html` (100% compliance confirmed).
 - This verification report (`docs/ECRR_REPORTS/2025-10-02-ecrr-monitoring-verification.md`) captures the current operational evidence.
 - Scheduled-task state captured via `Get-ScheduledTask -TaskName 'ECRR Compliance Monitor'` for audit trail.
 - Recommended verification command: `pwsh -File scripts/ecrr-compliance-monitor.ps1 -GenerateReport` (expect 100% compliance summary).

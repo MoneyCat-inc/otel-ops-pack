@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTel Observability Kit - Quick Reference</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 10px;
+            line-height: 1.2;
+            color: #333;
+            background: white;
+        }
+        
+        .page {
+            width: 8.5in;
+            height: 11in;
+            padding: 0.5in;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto 1fr;
+            gap: 0.3in;
+        }
+        
+        .header {
+            grid-column: 1 / -1;
+            text-align: center;
+            border-bottom: 3px solid #2563eb;
+            padding-bottom: 0.2in;
+            margin-bottom: 0.2in;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            color: #2563eb;
+            margin-bottom: 0.1in;
+        }
+        
+        .header p {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .column {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2in;
+        }
+        
+        .section {
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            padding: 0.15in;
+            background: #f9fafb;
+        }
+        
+        .section h3 {
+            font-size: 11px;
+            color: #1f2937;
+            margin-bottom: 0.1in;
+            border-bottom: 1px solid #d1d5db;
+            padding-bottom: 0.05in;
+        }
+        
+        .code {
+            background: #1f2937;
+            color: #f9fafb;
+            padding: 0.1in;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 8px;
+            margin: 0.05in 0;
+            overflow-x: auto;
+        }
+        
+        .warning {
+            background: #fef2f2;
+            border-left: 3px solid #ef4444;
+            padding: 0.1in;
+            margin: 0.05in 0;
+        }
+        
+        .success {
+            background: #f0fdf4;
+            border-left: 3px solid #10b981;
+            padding: 0.1in;
+            margin: 0.05in 0;
+        }
+        
+        .checklist {
+            list-style: none;
+        }
+        
+        .checklist li {
+            margin: 0.03in 0;
+            font-size: 9px;
+        }
+        
+        .checklist li:before {
+            content: "☐ ";
+            color: #6b7280;
+        }
+        
+        .emoji {
+            font-size: 12px;
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.1in;
+        }
+        
+        .footer {
+            grid-column: 1 / -1;
+            text-align: center;
+            font-size: 8px;
+            color: #6b7280;
+            border-top: 1px solid #e5e7eb;
+            padding-top: 0.1in;
+            margin-top: 0.2in;
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div class="header">
+            <h1>🚀 OTel Observability Kit - Quick Reference</h1>
+            <p>One-stop debugging guide • Check docs/cheatsheets/ for full details</p>
+        </div>
+        
+        <div class="column">
+            <div class="section">
+                <h3><span class="emoji">🔒</span> Cross-Origin Isolation</h3>
+                <div class="code">Cross-Origin-Opener-Policy: same-origin<br>Cross-Origin-Embedder-Policy: require-corp</div>
+                <div class="warning"><strong>Workaround:</strong> Use coi-serviceworker if Service Worker strips headers</div>
+            </div>
+            
+            <div class="section">
+                <h3><span class="emoji">🎤</span> Low-Latency Audio</h3>
+                <div class="code">getUserMedia({ audio: { 
+  echoCancellation: false,    // ❌ Disable
+  noiseSuppression: false,    // ❌ Disable  
+  autoGainControl: false      // ❌ Disable
+}})</div>
+                <div class="success"><strong>Target:</strong> &lt; 20ms end-to-end with AudioContext({ latencyHint: 0 })</div>
+            </div>
+            
+            <div class="section">
+                <h3><span class="emoji">🎵</span> Pitch Tracking</h3>
+                <div class="grid-2">
+                    <div>
+                        <strong>Primary:</strong> CREPE-tiny (ONNX/WASM)<br>
+                        <strong>Fallback:</strong> YIN algorithm<br>
+                        <strong>Smoothing:</strong> Median + Kalman
+                    </div>
+                    <div class="warning">
+                        <strong>Workaround:</strong> Auto-fallback to YIN on low-end mobile
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3><span class="emoji">📊</span> Practice Flow JSON</h3>
+                <div class="code">{ "id": "glide", "type": "drill", "title": "Pitch Glide", 
+  "metrics": ["timeInTargetPct"], "successThreshold": { "timeInTargetPct": 0.7 } }</div>
+                <div class="success"><strong>Storage:</strong> IndexedDB local-first, 60 FPS metrics</div>
+            </div>
+            
+            <div class="section">
+                <h3><span class="emoji">📈</span> Analytics A/B Tests</h3>
+                <div class="grid-2">
+                    <div>
+                        <strong>E1:</strong> Signup timing<br>
+                        <strong>E2:</strong> Permission primer<br>
+                        <strong>Events:</strong> screen_view, permission_requested, mic_session_start/end, activation
+                    </div>
+                    <div class="success">
+                        <strong>Delivery:</strong> sendBeacon with ring buffer to prevent data loss
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3><span class="emoji">🔊</span> Loudness Guardrails</h3>
+                <div class="grid-2">
+                    <div>
+                        <strong>Heuristic:</strong> ≥ 5s @ 0.8 RMS = strain<br>
+                        <strong>Calibration:</strong> Device-specific thresholds<br>
+                        <strong>Bluetooth:</strong> 20% sensitivity reduction
+                    </div>
+                    <div class="warning">
+                        <strong>Never push volume</strong> - always provide cooldown prompts
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="column">
+            <div class="section">
+                <h3><span class="emoji">⚙️</span> Background Workers</h3>
+                <div class="grid-2">
+                    <div>
+                        <strong>Budgets:</strong> ≤ 2 jobs/pass, ≤ 10 files, ≤ 200 LOC<br>
+                        <strong>Kill Switch:</strong> .agent/LOCK → stops immediately<br>
+                        <strong>Bootstrap:</strong> pnpm agent:doctor if agent:start fails
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3><span class="emoji">♿</span> UI & A11y</h3>
+                <div class="grid-2">
+                    <div>
+                        <strong>Never:</strong> Inline styles, dangerouslySetInnerHTML<br>
+                        <strong>Always:</strong> ARIA live regions, proper labels, keyboard nav<br>
+                        <strong>Colors:</strong> WCAG AA contrast ratios<br>
+                        <strong>Motion:</strong> Respect prefers-reduced-motion
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3><span class="emoji">📉</span> SigNoz Dashboard</h3>
+                <div class="code">Data Source: LOGS (not Prometheus!)<br>Query: body contains "agent_queue" | json | unwrap fieldName<br>Time Range: "Last 24 hours" or "Last 7 days"</div>
+                <div class="warning"><strong>Test First:</strong> Go to Logs → Explorer before creating panels</div>
+            </div>
+            
+            <div class="section">
+                <h3><span class="emoji">🔍</span> SigNoz Queries</h3>
+                <div class="code">-- Queue data<br>body contains "agent_queue"<br><br>-- Recent activity<br>timestamp > now() - 15m<br><br>-- Service logs<br>service.name = "windows-host"</div>
+            </div>
+            
+            <div class="section">
+                <h3><span class="emoji">🚨</span> Emergency Fixes</h3>
+                <div class="grid-2">
+                    <div>
+                        <strong>Dashboard No Panels:</strong><br>
+                        1. Check time range (24h+)<br>
+                        2. Verify LOGS data source<br>
+                        3. Test in Logs Explorer
+                    </div>
+                    <div>
+                        <strong>Audio Latency High:</strong><br>
+                        1. Disable all DSP<br>
+                        2. Use latencyHint: 0<br>
+                        3. Monitor baseLatency
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3><span class="emoji">📋</span> Testing Checklist</h3>
+                <ul class="checklist">
+                    <li>No inline styles used</li>
+                    <li>ARIA labels on all interactive elements</li>
+                    <li>Keyboard navigation works</li>
+                    <li>Color contrast meets WCAG AA</li>
+                    <li>SigNoz uses LOGS data source</li>
+                    <li>Audio DSP disabled</li>
+                    <li>Worker budgets enforced</li>
+                    <li>Kill switch functional</li>
+                </ul>
+            </div>
+            
+            <div class="section">
+                <h3><span class="emoji">🎯</span> Quick Commands</h3>
+                <div class="code"># SigNoz health<br>curl http://localhost:8080/api/v1/health<br><br># Check worker status<br>cat .agent/status.json<br><br># Test audio<br>pwsh -File scripts/test-audio-latency.ps1<br><br># Verify dashboard<br>pwsh -File scripts/verify-dashboard-import.ps1</div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <strong>📂 Full Details:</strong> docs/cheatsheets/ • <strong>🚨 Rule:</strong> Check cheat sheets FIRST before implementing solutions!
+        </div>
+    </div>
+</body>
+</html>
