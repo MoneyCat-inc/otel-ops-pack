@@ -23,8 +23,8 @@ jobs:
           curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
           sudo apt-get install -y nodejs
       - name: Install pnpm
-        run: # npm install -g pnpm@9.12.0  # Using npm instead
-      - run: npm install
+        run: # npm install --legacy-peer-deps -g pnpm@9.12.0  # Using npm instead
+      - run: npm install --legacy-peer-deps
       - run: npx playwright install --with-deps
       - run: |
           docker compose -f docker-compose-signoz.yml up -d
@@ -52,5 +52,6 @@ jobs:
       - name: Cleanup
         if: always()
         run: docker compose -f docker-compose-signoz.yml down -v
+
 
 
