@@ -1,0 +1,59 @@
+[
+  {
+    "id": "prod-task-1759367999114-a2dd53d4",
+    "type": "monitoring",
+    "priority": 1,
+    "payload": {
+      "check": "signoz-health",
+      "interval": 60000
+    },
+    "status": "completed",
+    "createdAt": "2025-10-02T01:19:59.114Z",
+    "metadata": {
+      "source": "system",
+      "category": "health",
+      "urgency": "medium",
+      "estimatedDuration": 5000
+    },
+    "agentId": "otel-steward",
+    "completedAt": "2025-10-02T01:19:59.170Z"
+  },
+  {
+    "id": "prod-task-1759367999118-13f3a32a",
+    "type": "monitoring",
+    "priority": 2,
+    "payload": {
+      "check": "collector-metrics",
+      "interval": 30000
+    },
+    "status": "completed",
+    "createdAt": "2025-10-02T01:19:59.118Z",
+    "metadata": {
+      "source": "system",
+      "category": "metrics",
+      "urgency": "medium",
+      "estimatedDuration": 3000
+    },
+    "agentId": "otel-steward",
+    "completedAt": "2025-10-02T01:19:59.208Z"
+  },
+  {
+    "id": "prod-task-1759367999120-7ff3d6dc",
+    "type": "monitoring",
+    "priority": 3,
+    "payload": {
+      "check": "queue-pressure",
+      "interval": 120000
+    },
+    "status": "completed",
+    "createdAt": "2025-10-02T01:19:59.120Z",
+    "metadata": {
+      "source": "system",
+      "category": "performance",
+      "urgency": "low",
+      "estimatedDuration": 8000
+    },
+    "agentId": "otel-steward",
+    "completedAt": "2025-10-02T01:19:59.208Z"
+  }
+]

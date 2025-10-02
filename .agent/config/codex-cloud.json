@@ -1,0 +1,13 @@
+{
+  "id": "codex-cloud",
+  "enabled": true,
+  "schedule": {
+    "interval": 600000,
+    "maxRetries": 3
+  },
+  "budget": {
+    "maxJobsPerPass": 1,
+    "maxFilesPerJob": 5,
+    "maxLinesPerJob": 100
+  }
+}

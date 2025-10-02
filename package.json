@@ -33,7 +33,36 @@
     "agent:test-runner": "tsx scripts/agent/test-runner.ts",
     "agent:verify": "tsx scripts/agent/verify-shadow-canonical.ts",
     "agent:flip": "tsx scripts/agent/flip-shadow-canonical.ts",
-    "test:isolation-offline": "playwright test tests/isolation_offline.spec.ts"
+    "agent:start": "tsx scripts/agent/production-agent-system.ts start",
+    "agent:stop": "tsx scripts/agent/production-agent-system.ts stop",
+    "agent:status-system": "tsx scripts/agent/production-agent-system.ts status",
+    "agent:health": "tsx scripts/agent/production-agent-system.ts health",
+    "agent:report": "tsx scripts/agent/production-agent-system.ts report",
+    "agent:add-task": "tsx scripts/agent/production-agent-system.ts add-task",
+    "agent:add-realtime": "tsx scripts/agent/production-agent-system.ts add-realtime",
+    "agent:orchestrator": "tsx scripts/agent/orchestrator.ts",
+    "agent:queue": "tsx scripts/agent/sqlite-queue.ts",
+    "agent:compliance": "tsx scripts/agent/ecrr-compliance.ts",
+    "agent:deploy": "tsx scripts/agent/deploy.ts",
+    "agent:rollback": "tsx scripts/agent/rollback.ts",
+    "agent:doctor": "pwsh -File scripts/agent/doctor.ps1",
+    "roadmap:examine": "tsx scripts/roadmap/examine.ts",
+    "roadmap:clean": "tsx scripts/roadmap/clean.ts",
+    "roadmap:report": "tsx scripts/roadmap/report.ts",
+    "roadmap:update": "tsx scripts/roadmap/index.ts",
+    "ci:roadmap": "pnpm test:pr && pnpm test:nightly && pnpm roadmap:update",
+    "test:isolation-offline": "playwright test tests/isolation_offline.spec.ts",
+    "test:pr": "playwright test -c playwright.noweb.config.ts --grep \"@(smoke|pilot-core|a11y-smoke|security)\"",
+    "test:nightly": "playwright test -c playwright.config.ts --grep \"@(dashboard|cohort-.*|data-control|prosody|strain|offline|polish|future)\" --max-failures=20",
+    "test:all": "playwright test -c playwright.config.ts",
+    "test:smoke": "playwright test -c playwright.noweb.config.ts --grep \"@smoke\"",
+    "test:pilot": "playwright test -c playwright.noweb.config.ts --grep \"@pilot-core\"",
+    "test:a11y": "playwright test -c playwright.noweb.config.ts --grep \"@a11y-smoke\"",
+    "test:security": "playwright test -c playwright.noweb.config.ts --grep \"@security\"",
+    "install:pinned": "corepack enable && corepack prepare pnpm@9.12.0 --activate && pnpm install",
+    "test:signoz": "playwright test tests/signoz.final.spec.ts -c playwright.signoz.config.ts",
+    "test:signoz:debug": "playwright test tests/signoz.final.spec.ts -c playwright.signoz.config.ts --debug",
+    "automate:signoz": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/automate-signoz-setup.ps1"
   },
   "dependencies": {
     "@opentelemetry/api": "^1.8.0",
@@ -41,17 +70,21 @@
     "@opentelemetry/exporter-jaeger": "^1.18.1",
     "@opentelemetry/exporter-otlp-http": "^0.26.0",
     "@opentelemetry/instrumentation": "^0.45.0",
+    "@opentelemetry/instrumentation-fs": "^0.25.2",
     "@opentelemetry/instrumentation-http": "^0.45.0",
-    "@opentelemetry/instrumentation-fs": "^0.11.0",
     "@opentelemetry/resources": "^1.18.1",
     "@opentelemetry/sdk-node": "^0.45.1",
     "@opentelemetry/semantic-conventions": "^1.18.1",
     "@prisma/client": "^5.7.1",
+    "@upstash/ratelimit": "^2.0.6",
+    "@upstash/redis": "^1.35.4",
+    "@vercel/otel": "^2.0.1",
     "better-sqlite3": "^9.2.2",
-    "next": "^14.0.4",
+    "jsonwebtoken": "^9.0.2",
+    "next": "^15.5.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "zod": "^3.22.4"
+    "zod": "^4.1.11"
   },
   "devDependencies": {
     "@jest/globals": "^29.7.0",
@@ -69,7 +102,7 @@
     "prisma": "^5.7.1",
     "tsx": "^4.6.2",
     "typescript": "^5.3.3",
-    "wait-on": "^7.2.0"
+    "wait-on": "^9.0.1"
   },
   "engines": {
     "node": ">=18.0.0",
@@ -109,3 +142,4 @@
   "author": "Resonai Team",
   "license": "MIT"
 }
+

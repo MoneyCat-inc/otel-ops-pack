@@ -63,9 +63,9 @@ function Test-Configuration {
         
         Set-Content "config.yaml" $ConfigContent -Encoding UTF8
         
-        # Restart collector
-        Write-Host "  Restart Restarting collector with new config..." -ForegroundColor Yellow
-        Restart-Service otelcol-contrib -Force
+        # Start collector if stopped
+        Write-Host "  Starting collector with new config..." -ForegroundColor Yellow
+        Start-Service otelcol-contrib -ErrorAction SilentlyContinue
         Start-Sleep -Seconds 5
         
         # Wait for collector to be ready
@@ -73,9 +73,9 @@ function Test-Configuration {
         $RetryCount = 0
         do {
             try {
-                $HealthResponse = Invoke-RestMethod -Uri "http - //localhost - 13134/healthz" -TimeoutSec 5
+                $HealthResponse = Invoke-RestMethod -Uri "http://localhost:13134/healthz" -TimeoutSec 5
                 if ($HealthResponse -eq "OK") {
-                    Write-Host "  OK Collector ready" -ForegroundColor Green
+                    Write-Host "  ✓ Collector ready" -ForegroundColor Green
                     break
                 }
             } catch {
@@ -85,18 +85,18 @@ function Test-Configuration {
         } while ($RetryCount -lt $MaxRetries)
         
         if ($RetryCount -eq $MaxRetries) {
-            Write-Host "  ERROR Collector failed to start" -ForegroundColor Red
+            Write-Host "  ✗ Collector failed to start" -ForegroundColor Red
             return $null
         }
         
         # Generate test load
-        Write-Host "  Metrics Generating test load for $DurationSeconds seconds..." -ForegroundColor Yellow
+        Write-Host "  Generating test load for $DurationSeconds seconds..." -ForegroundColor Yellow
         $TestStartTime = Get-Date
         
         # Create canary logs for the duration
-        $LogFile = "C - \logs\e2-test-$TestId.log"
-        if (-not (Test-Path "C - \logs")) {
-            New-Item -ItemType Directory -Path "C - \logs" -Force | Out-Null
+        $LogFile = "C:\logs\e2-test-$TestId.log"
+        if (-not (Test-Path "C:\logs")) {
+            New-Item -ItemType Directory -Path "C:\logs" -Force | Out-Null
         }
         
         $TestEndTime = $TestStartTime.AddSeconds($DurationSeconds)
@@ -104,7 +104,7 @@ function Test-Configuration {
         
         while ((Get-Date) -lt $TestEndTime) {
             $LogEntry = @{
-                timestamp = (Get-Date).ToString("yyyy-MM-ddTHH - mm - ss.fffZ")
+                timestamp = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
                 test_id = $TestId
                 agent_timeout = $AgentTimeout
                 gateway_timeout = $GatewayTimeout
@@ -118,11 +118,11 @@ function Test-Configuration {
         }
         
         # Wait for processing
-        Write-Host "  Wait Waiting for log processing..." -ForegroundColor Yellow
+        Write-Host "  Waiting for log processing..." -ForegroundColor Yellow
         Start-Sleep -Seconds 10
         
         # Collect metrics
-        Write-Host "  Stats Collecting performance metrics..." -ForegroundColor Yellow
+        Write-Host "  Collecting performance metrics..." -ForegroundColor Yellow
         
         # Get collector metrics
         $Metrics = @{
@@ -131,12 +131,12 @@ function Test-Configuration {
             gateway_timeout = $GatewayTimeout
             test_duration_seconds = $DurationSeconds
             logs_generated = $LogCount
-            timestamp = (Get-Date).ToString("yyyy-MM-ddTHH - mm - ss.fffZ")
+            timestamp = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
         }
         
         # Try to get queue metrics from collector
         try {
-            $CollectorMetrics = Invoke-RestMethod -Uri "http - //localhost - 8888/metrics" -TimeoutSec 10
+            $CollectorMetrics = Invoke-RestMethod -Uri "http://localhost:8888/metrics" -TimeoutSec 10
             $QueueSize = ($CollectorMetrics | Select-String "otelcol_exporter_queue_size").Line
             $QueueCapacity = ($CollectorMetrics | Select-String "otelcol_exporter_queue_capacity").Line
             
@@ -147,7 +147,7 @@ function Test-Configuration {
                 $Metrics.queue_capacity = $QueueCapacity
             }
         } catch {
-            Write-Host "  WARNING Could not collect queue metrics" -ForegroundColor Yellow
+            Write-Host "  WARNING: Could not collect queue metrics" -ForegroundColor Yellow
         }
         
         # Check SigNoz for processed logs
@@ -158,14 +158,14 @@ function Test-Configuration {
                 end = [int64]((Get-Date) - (Get-Date "1970-01-01")).TotalSeconds
             }
             
-            $SigNozResponse = Invoke-RestMethod -Uri "http - //localhost - 8080/api/v1/logs" -Method POST -Body ($SigNozQuery | ConvertTo-Json) -ContentType "application/json" -TimeoutSec 10
+            $SigNozResponse = Invoke-RestMethod -Uri "http://localhost:8080/api/v1/logs" -Method POST -Body ($SigNozQuery | ConvertTo-Json) -ContentType "application/json" -TimeoutSec 10
             
             if ($SigNozResponse -and $SigNozResponse.data) {
                 $Metrics.logs_processed = $SigNozResponse.data.Count
                 $Metrics.ingestion_success_rate = if ($LogCount -gt 0) { ($SigNozResponse.data.Count / $LogCount) * 100 } else { 0 }
             }
         } catch {
-            Write-Host "  WARNING Could not query SigNoz for processed logs" -ForegroundColor Yellow
+            Write-Host "  WARNING: Could not query SigNoz for processed logs" -ForegroundColor Yellow
             $Metrics.logs_processed = 0
             $Metrics.ingestion_success_rate = 0
         }
@@ -178,7 +178,7 @@ function Test-Configuration {
         Remove-Item $ConfigBackup -Force
         
         # Restart collector with original config
-        Restart-Service otelcol-contrib -Force
+        Restart-Service otelcol-contrib -Force -ErrorAction SilentlyContinue
         Start-Sleep -Seconds 5
     }
 }
@@ -187,7 +187,7 @@ function Test-Configuration {
 $Results = @()
 
 if ($TestAllCombinations) {
-    Write-Host "Start Running all 9 E2 ratio combinations..." -ForegroundColor Cyan
+    Write-Host "Running all 9 E2 ratio combinations..." -ForegroundColor Cyan
     
     foreach ($Test in $TestMatrix) {
         $Result = Test-Configuration -AgentTimeout $Test.Agent -GatewayTimeout $Test.Gateway -TestId $Test.TestId -DurationSeconds $DurationSeconds
@@ -262,15 +262,15 @@ Based on the results, the optimal configuration should have -
 
 Set-Content $ReportFile $Report -Encoding UTF8
 
-Write-Host "`nOK E2 Ratio Sweep Analysis Complete!" -ForegroundColor Green
-Write-Host "Metrics Results saved to -  $ResultsFile" -ForegroundColor Cyan
-Write-Host "Report Report saved to -  $ReportFile" -ForegroundColor Cyan
-Write-Host "`nTarget Next -  Review results and select optimal configuration" -ForegroundColor Yellow
+Write-Host "`n✓ E2 Ratio Sweep Analysis Complete!" -ForegroundColor Green
+Write-Host "Results saved to: $ResultsFile" -ForegroundColor Cyan
+Write-Host "Report saved to: $ReportFile" -ForegroundColor Cyan
+Write-Host "`nNext: Review results and select optimal configuration" -ForegroundColor Yellow
 
 # Display summary
 if ($Results.Count -gt 0) {
-    Write-Host "`nStats Quick Summary - " -ForegroundColor Cyan
+    Write-Host "`nQuick Summary:" -ForegroundColor Cyan
     $Results | ForEach-Object {
-        Write-Host "  $($_.test_id) -  $($_.logs_processed)/$($_.logs_generated) logs processed ($([math]::Round($_.ingestion_success_rate, 1))%)" -ForegroundColor White
+        Write-Host "  $($_.test_id): $($_.logs_processed)/$($_.logs_generated) logs processed ($([math]::Round($_.ingestion_success_rate, 1))%)" -ForegroundColor White
     }
 }

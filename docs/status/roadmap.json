@@ -1,0 +1,78 @@
+{
+  "M1 Foundations": [
+    [
+      "Instant Practice (/try)",
+      "red"
+    ],
+    [
+      "Warmup FSM + Reflection",
+      "red"
+    ],
+    [
+      "Local IndexedDB storage",
+      "red"
+    ],
+    [
+      "Safety (silence pause, clipping)",
+      "red"
+    ]
+  ],
+  "M1.5 Hardening": [
+    [
+      "PR Test Lane (smoke+pilot-core)",
+      "red"
+    ],
+    [
+      "Analytics + Live Dashboard",
+      "red"
+    ],
+    [
+      "Cohort gating + rollback",
+      "red"
+    ],
+    [
+      "Accessibility smokes",
+      "red"
+    ]
+  ],
+  "M2 Core Drills": [
+    [
+      "Pitch Band drill",
+      "red"
+    ],
+    [
+      "Resonance buckets",
+      "red"
+    ],
+    [
+      "Prosody mini-phrases",
+      "red"
+    ],
+    [
+      "Orb v2 (shimmer, hue)",
+      "red"
+    ],
+    [
+      "Strain guardrails",
+      "red"
+    ]
+  ],
+  "M3 Adaptive": [
+    [
+      "Adaptive planner",
+      "red"
+    ],
+    [
+      "Progress dashboard v1",
+      "red"
+    ],
+    [
+      "Carryover drills",
+      "red"
+    ],
+    [
+      "Cohort analytics & data-control",
+      "red"
+    ]
+  ]
+}

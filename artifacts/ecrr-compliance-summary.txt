@@ -1,0 +1,10 @@
+# ECRR Compliance Summary
+Generated: 2025-10-02T00:38:11Z
+
+Total Reports: 162
+Compliant Reports: 157
+Compliance Rate: 96.91%
+Health Status: OK
+
+Recommendations:
+Add production markers to 5 reports.

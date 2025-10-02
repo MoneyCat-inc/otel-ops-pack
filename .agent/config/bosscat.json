@@ -1,0 +1,13 @@
+{
+  "id": "bosscat",
+  "enabled": true,
+  "schedule": {
+    "interval": 1800000,
+    "maxRetries": 3
+  },
+  "budget": {
+    "maxJobsPerPass": 3,
+    "maxFilesPerJob": 15,
+    "maxLinesPerJob": 300
+  }
+}
