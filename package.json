@@ -70,7 +70,7 @@
     "@opentelemetry/exporter-jaeger": "^1.18.1",
     "@opentelemetry/exporter-otlp-http": "^0.26.0",
     "@opentelemetry/instrumentation": "^0.45.0",
-    "@opentelemetry/instrumentation-fs": "^0.11.0",
+    "@opentelemetry/instrumentation-fs": "^0.25.2",
     "@opentelemetry/instrumentation-http": "^0.45.0",
     "@opentelemetry/resources": "^1.18.1",
     "@opentelemetry/sdk-node": "^0.45.1",
