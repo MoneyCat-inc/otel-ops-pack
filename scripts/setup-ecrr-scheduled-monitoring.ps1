@@ -46,8 +46,9 @@ if ($existingTask) {
 # Create the action
 $action = New-ScheduledTaskAction -Execute "pwsh.exe" -Argument "-File `"$fullScriptPath`"" -WorkingDirectory $WorkingDirectory
 
-# Create the trigger (every 6 hours)
-$trigger = New-ScheduledTaskTrigger -Once -At (Get-Date) -RepetitionInterval (New-TimeSpan -Hours $IntervalHours) -RepetitionDuration ([TimeSpan]::MaxValue)
+# Create the trigger (every $IntervalHours hours)
+$repetitionDuration = New-TimeSpan -Days 3650
+$trigger = New-ScheduledTaskTrigger -Once -At (Get-Date) -RepetitionInterval (New-TimeSpan -Hours $IntervalHours) -RepetitionDuration $repetitionDuration
 
 # Create the settings
 $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -RunOnlyIfNetworkAvailable
@@ -60,9 +61,17 @@ Write-Host "🔧 Creating scheduled task: $TaskName" -ForegroundColor Cyan
 $task = New-ScheduledTask -Action $action -Trigger $trigger -Settings $settings -Principal $principal -Description "Automated ECRR compliance monitoring and reporting"
 
 # Register the task
-Register-ScheduledTask -TaskName $TaskName -InputObject $task | Out-Null
+try {
+    Register-ScheduledTask -TaskName $TaskName -InputObject $task -ErrorAction Stop | Out-Null
+    Write-Host "✅ Scheduled task created successfully!" -ForegroundColor Green
+} catch {
+    Write-Host "❌ Failed to register scheduled task: $($_.Exception.Message)" -ForegroundColor Red
+    if ($_.Exception.InnerException) {
+        Write-Host "   → $($_.Exception.InnerException.Message)" -ForegroundColor DarkRed
+    }
+    exit 1
+}
 
-Write-Host "✅ Scheduled task created successfully!" -ForegroundColor Green
 Write-Host ""
 Write-Host "📋 Task Details:" -ForegroundColor Cyan
 Write-Host "  Name: $TaskName" -ForegroundColor Gray
@@ -75,12 +84,12 @@ Write-Host ""
 # Test the task
 Write-Host "🧪 Testing the task..." -ForegroundColor Cyan
 try {
-    Start-ScheduledTask -TaskName $TaskName
+    Start-ScheduledTask -TaskName $TaskName -ErrorAction Stop
     Write-Host "✅ Task started successfully!" -ForegroundColor Green
-    
+
     # Wait a moment and check status
     Start-Sleep -Seconds 3
-    $taskInfo = Get-ScheduledTaskInfo -TaskName $TaskName
+    $taskInfo = Get-ScheduledTaskInfo -TaskName $TaskName -ErrorAction Stop
     Write-Host "  Last Run Time: $($taskInfo.LastRunTime)" -ForegroundColor Gray
     Write-Host "  Last Result: $($taskInfo.LastTaskResult)" -ForegroundColor Gray
 } catch {
