@@ -268,6 +268,17 @@ otlphttp:
 - OTLP forwarding happens server-side, not browser-side
 - If testing from browser, use `/api/events` endpoint, not direct OTLP
 
+#### 5. Windows Collector Service Issues (FIXED 2025-10-02)
+**Symptom**: Service shows "Stopped" status or exit code 1064
+**Root Cause**: Broken service registration pointing to non-existent binary path
+**Solution**: 
+- **Standalone Mode**: Collector runs as standalone process instead of Windows service
+- Check running processes: `Get-Process -Name otelcol-contrib`
+- Verify health endpoint: `Invoke-WebRequest http://127.0.0.1:13134/healthz`
+- Confirm OTLP ports: `Get-NetTCPConnection -State Listen -LocalPort 5317,5318`
+- **Note**: Standalone mode is normal and preferred for development environments
+- **Service Cleanup**: Remove broken service: `sc delete otelcol-contrib`
+
 #### 5. Service Down
 **Symptom**: Health checks fail
 **Solution**:

@@ -1,12 +1,12 @@
 [INFO] ECRR-Enhanced Canary Test - Examine -> Clean -> Report -> Role
-[INFO] Timestamp: 2025-10-02 11:45:39
+[INFO] Timestamp: 2025-10-02 12:15:39
 [INFO] Working directory: C:\otel
 [SECTION] EXAMINE: Environment State
 [OK] SigNoz UI accessible at http://localhost:8080
-[OK] OTel Collector service: Stopped
+[FAIL] OTel Collector service not found
 [OK] OTLP endpoint 14317 accessible
 [OK] OTLP endpoint 14318 accessible
-[OK] Found 15 OTel scheduled tasks
+[OK] Found 16 OTel scheduled tasks
 [INFO]   - OTel Monitor Optimized Pipeline Hourly: Ready
 [INFO]   - OTel-Analytics-Monitoring: Ready
 [INFO]   - OTel-Artifacts-Cleanup: Ready
@@ -16,6 +16,7 @@
 [INFO]   - OTel-ECRR-Canary: Running
 [INFO]   - OTel-Parser-Error-Monitor: Ready
 [INFO]   - OTel-Parser-Monitoring: Ready
+[INFO]   - OTel-Service-Monitoring: Ready
 [INFO]   - OTel-Test-Task: Ready
 [INFO]   - OTel-Wiring-Verification-Weekly: Ready
 [INFO]   - otel_canary_10m: Ready
@@ -26,7 +27,7 @@
 [OK] Log file sizes are reasonable
 [SECTION] REPORT: Execute Canary Test
 [INFO] Executing canary test...
-[OK] Created canary log entry: ECRR-Canary-Test-20251002-114540
+[OK] Created canary log entry: ECRR-Canary-Test-20251002-121540
 [OK] Created Windows Event Log entry
 [OK] Sent OTLP log to collector
 [SECTION] ROLE: Agent Responsibilities
@@ -34,4 +35,4 @@
 [INFO] Responsibilities: Examine environment, clean drift, report canary execution, document role
 [INFO] Artifacts: This report, canary logs, OTLP traces, Windows Event Log entries
 [SECTION] Summary
-[FAIL] OTel Collector service not running
+[FAIL] OTel Collector service not found
