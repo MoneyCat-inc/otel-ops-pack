@@ -1,0 +1,114 @@
+{
+  "version": "v4",
+  "title": "MEMX — Low-Latency Memory & Audio",
+  "description": "MEMX metrics dashboard adapted from SigNoz APM template.",
+  "tags": ["memx", "apm", "audio", "otel"],
+  "image": "",
+  "layout": [
+    { "i": "sab_backlog", "x": 0, "y": 0, "w": 12, "h": 6 },
+    { "i": "lag_p95", "x": 12, "y": 0, "w": 12, "h": 6 },
+    { "i": "wasm_heap_peak", "x": 0, "y": 6, "w": 8, "h": 6 },
+    { "i": "strain_pct", "x": 8, "y": 6, "w": 16, "h": 6 }
+  ],
+  "panelMap": {},
+  "variables": {
+    "service_name": {
+      "id": "service_name",
+      "name": "service.name",
+      "type": "QUERY",
+      "order": 0,
+      "multiSelect": false,
+      "showALLOption": false,
+      "allSelected": false,
+      "queryValue": "SELECT JSONExtractString(labels, 'service.name') AS `service.name` FROM signoz_metrics.time_series_v4_1day WHERE (unix_milli >= (toUnixTimestamp(now() - toIntervalDay(1)) * 1000)) GROUP BY `service.name`",
+      "textboxValue": "",
+      "customValue": "",
+      "description": "Service filter",
+      "sort": "DISABLED"
+    }
+  },
+  "widgets": [
+    {
+      "id": "sab_backlog",
+      "panelTypes": "graph",
+      "title": "SAB Backlog %",
+      "description": "SharedArrayBuffer backlog ratio (used/capacity)",
+      "query": {
+        "promql": [
+          {
+            "name": "A",
+            "legend": "Backlog %",
+            "disabled": false,
+            "query": "100 * max(resonai_memx_sab_used_bytes{service_name=\"resonai-frontend\"}) / max(resonai_memx_sab_capacity_bytes{service_name=\"resonai-frontend\"})"
+          }
+        ],
+        "queryType": "promql",
+        "id": "sab_backlog_prom"
+      },
+      "yAxisUnit": "percent",
+      "thresholds": []
+    },
+    {
+      "id": "lag_p95",
+      "panelTypes": "graph",
+      "title": "AudioWorklet Lag p95",
+      "description": "p95 lag over 5m window",
+      "query": {
+        "promql": [
+          {
+            "name": "A",
+            "legend": "p95 lag",
+            "disabled": false,
+            "query": "histogram_quantile(0.95, sum(rate(resonai_memx_worklet_ui_lag_bucket{service_name=\"resonai-frontend\"}[5m])) by (le))"
+          }
+        ],
+        "queryType": "promql",
+        "id": "lag_p95_prom"
+      },
+      "yAxisUnit": "ms",
+      "thresholds": []
+    },
+    {
+      "id": "wasm_heap_peak",
+      "panelTypes": "graph",
+      "title": "WASM Heap Peak",
+      "description": "Peak MEMX WASM heap in window",
+      "query": {
+        "promql": [
+          {
+            "name": "A",
+            "legend": "peak bytes",
+            "disabled": false,
+            "query": "max(resonai_memx_wasm_heap_bytes{service_name=\"resonai-frontend\"})"
+          }
+        ],
+        "queryType": "promql",
+        "id": "wasm_heap_prom"
+      },
+      "yAxisUnit": "bytes",
+      "thresholds": []
+    },
+    {
+      "id": "strain_pct",
+      "panelTypes": "graph",
+      "title": "MEMX Strain %",
+      "description": "Average MEMX strain percentage",
+      "query": {
+        "promql": [
+          {
+            "name": "A",
+            "legend": "strain %",
+            "disabled": false,
+            "query": "avg(resonai_memx_strain_pct{service_name=\"resonai-frontend\"})"
+          }
+        ],
+        "queryType": "promql",
+        "id": "strain_pct_prom"
+      },
+      "yAxisUnit": "percent",
+      "thresholds": []
+    }
+  ],
+  "uuid": "memx-dashboard-v1"
+}
+
