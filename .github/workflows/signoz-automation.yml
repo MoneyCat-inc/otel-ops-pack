@@ -1,338 +1,55 @@
-# SigNoz Automation CI/CD Pipeline
-# Automated testing of SigNoz observability platform integration
-
 name: SigNoz Automation
 
 on:
   schedule:
-    # Run nightly at 2 AM UTC
-    - cron: '0 2 * * *'
+    - cron: "0 2 * * *"
   workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Environment to test against'
-        required: true
-        default: 'local'
-        type: choice
-        options:
-        - local
-        - staging
-        - production
   push:
     branches: [main, develop]
     paths:
-      - 'tests/signoz*.spec.ts'
-      - 'scripts/automate-signoz-setup.ps1'
-      - 'playwright.signoz.config.ts'
-      - '.github/workflows/signoz-automation.yml'
-
-env:
-  NODE_VERSION: '18'
-  SIGNOZ_URL: 'http://localhost:8080'
+      - tests/signoz.final.spec.ts
+      - playwright.signoz.config.ts
+      - scripts/automate-signoz-setup.ps1
+      - docs/SIGNOZ_AUTOMATION_SETUP.md
+      - .github/workflows/signoz-automation.yml
 
 jobs:
-  # =============================================================================
-  # SIGNOZ INFRASTRUCTURE SETUP
-  # =============================================================================
-  setup-signoz:
-    name: Setup SigNoz Infrastructure
+  signoz-smoke:
     runs-on: ubuntu-latest
-    
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version: '18'
           cache: 'npm'
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v2
         with:
           version: 9.12.0
-
-      - name: Install dependencies
-        run: pnpm run install:pinned
-
-      - name: Install Playwright browsers
-        run: pnpm exec playwright install
-
-      - name: Start SigNoz stack
-        run: |
-          # Start SigNoz infrastructure
-          docker-compose -f docker-compose-signoz.yml up -d
-          
-          # Wait for SigNoz to be ready
-          timeout 300 bash -c 'until curl -f http://localhost:8080/api/v1/health; do sleep 5; done'
-          
-          echo "SigNoz stack started successfully"
-
-      - name: Verify SigNoz health
-        run: |
-          curl -f http://localhost:8080/api/v1/health
-          echo "SigNoz health check passed"
-
-      - name: Capture SigNoz logs
-        if: always()
-        run: |
-          docker-compose -f docker-compose-signoz.yml logs signoz > signoz-startup.log
-          echo "SigNoz startup logs captured"
-
-      - name: Upload SigNoz logs
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: signoz-startup-logs
-          path: signoz-startup.log
-
-  # =============================================================================
-  # SIGNOZ AUTOMATION TESTS
-  # =============================================================================
-  test-signoz:
-    name: SigNoz Automation Tests
-    runs-on: ubuntu-latest
-    needs: setup-signoz
-    
-    env:
-      SIGNOZ_USER: ${{ secrets.SIGNOZ_USER }}
-      SIGNOZ_PASS: ${{ secrets.SIGNOZ_PASS }}
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 9.12.0
-
-      - name: Install dependencies
-        run: pnpm run install:pinned
-
-      - name: Install Playwright browsers
-        run: pnpm exec playwright install
-
-      - name: Verify SigNoz connectivity
-        run: |
-          curl -f http://localhost:8080/api/v1/health
-          echo "SigNoz is reachable"
-
-      - name: Run SigNoz automation tests
-        run: pnpm run test:signoz
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps
+      - run: |
+          docker compose -f docker-compose-signoz.yml up -d
+          timeout 300 bash -c 'until curl -sf ${SIGNOZ_URL}/api/v1/health; do sleep 5; done'
         env:
-          SIGNOZ_URL: ${{ env.SIGNOZ_URL }}
+          SIGNOZ_URL: http://localhost:8080
+      - run: pnpm run test:signoz
+        env:
+          SIGNOZ_URL: http://localhost:8080
           SIGNOZ_USER: ${{ secrets.SIGNOZ_USER }}
           SIGNOZ_PASS: ${{ secrets.SIGNOZ_PASS }}
-
-      - name: Run complete automation suite
-        run: pnpm run automate:signoz
+      - name: Run automation suite
+        shell: pwsh
+        run: ./scripts/automate-signoz-setup.ps1 -SignozUrl $env:SIGNOZ_URL
         env:
-          SIGNOZ_URL: ${{ env.SIGNOZ_URL }}
+          SIGNOZ_URL: http://localhost:8080
           SIGNOZ_USER: ${{ secrets.SIGNOZ_USER }}
           SIGNOZ_PASS: ${{ secrets.SIGNOZ_PASS }}
-
-      - name: Upload Playwright report
+      - uses: actions/upload-artifact@v4
         if: always()
-        uses: actions/upload-artifact@v3
         with:
           name: playwright-report
           path: playwright-report/
-          retention-days: 7
-
-      - name: Upload test results
+          if-no-files-found: ignore
+      - name: Cleanup
         if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: test-results
-          path: test-results/
-          retention-days: 7
-
-      - name: Upload screenshots
-        if: failure()
-        uses: actions/upload-artifact@v3
-        with:
-          name: failure-screenshots
-          path: test-results/
-          retention-days: 30
-
-      - name: Upload videos
-        if: failure()
-        uses: actions/upload-artifact@v3
-        with:
-          name: failure-videos
-          path: test-results/
-          retention-days: 30
-
-  # =============================================================================
-  # SIGNOZ INTEGRATION VALIDATION
-  # =============================================================================
-  validate-integration:
-    name: Validate SigNoz Integration
-    runs-on: ubuntu-latest
-    needs: [setup-signoz, test-signoz]
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 9.12.0
-
-      - name: Install dependencies
-        run: pnpm run install:pinned
-
-      - name: Validate OTel collector integration
-        run: |
-          # Check if collector is sending data to SigNoz
-          curl -f http://localhost:18888/metrics | grep otelcol
-          echo "OTel collector metrics available"
-
-      - name: Validate SigNoz data ingestion
-        run: |
-          # Check if SigNoz is receiving data
-          curl -s "http://localhost:8080/api/v1/logs?q=*" | jq '.data | length'
-          echo "SigNoz data ingestion validated"
-
-      - name: Check SigNoz dashboards
-        run: |
-          # Verify dashboard endpoints are accessible
-          curl -f http://localhost:8080/dashboards
-          echo "SigNoz dashboards accessible"
-
-      - name: Check SigNoz alerts
-        run: |
-          # Verify alerts endpoints are accessible
-          curl -f http://localhost:8080/alerts/rules
-          echo "SigNoz alerts accessible"
-
-  # =============================================================================
-  # CLEANUP AND NOTIFICATIONS
-  # =============================================================================
-  cleanup:
-    name: Cleanup Infrastructure
-    runs-on: ubuntu-latest
-    needs: [setup-signoz, test-signoz, validate-integration]
-    if: always()
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Stop SigNoz stack
-        run: |
-          docker-compose -f docker-compose-signoz.yml down -v
-          echo "SigNoz stack stopped and cleaned up"
-
-      - name: Clean up Docker resources
-        run: |
-          docker system prune -f
-          echo "Docker resources cleaned up"
-
-  # =============================================================================
-  # NOTIFICATIONS
-  # =============================================================================
-  notify-success:
-    name: Notify Success
-    runs-on: ubuntu-latest
-    needs: [test-signoz, validate-integration]
-    if: success()
-    
-    steps:
-      - name: Notify Slack - Success
-        uses: 8398a7/action-slack@v3
-        with:
-          status: success
-          channel: '#observability'
-          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
-          text: |
-            ✅ SigNoz Automation Tests Passed
-            
-            • All authentication tests successful
-            • Dashboard accessibility confirmed
-            • Logs search functionality working
-            • Alerts page accessible
-            • Integration validation complete
-            
-            Environment: ${{ github.event.inputs.environment || 'local' }}
-            Workflow: ${{ github.workflow }}
-            Commit: ${{ github.sha }}
-
-  notify-failure:
-    name: Notify Failure
-    runs-on: ubuntu-latest
-    needs: [test-signoz, validate-integration]
-    if: failure()
-    
-    steps:
-      - name: Notify Slack - Failure
-        uses: 8398a7/action-slack@v3
-        with:
-          status: failure
-          channel: '#alerts'
-          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
-          text: |
-            ❌ SigNoz Automation Tests Failed
-            
-            • Check the workflow logs for details
-            • Review uploaded artifacts (screenshots, videos, traces)
-            • Verify SigNoz credentials are valid
-            • Check SigNoz infrastructure health
-            
-            Environment: ${{ github.event.inputs.environment || 'local' }}
-            Workflow: ${{ github.workflow }}
-            Commit: ${{ github.sha }}
-            Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-
-  # =============================================================================
-  # WEEKLY HEALTH REPORT
-  # =============================================================================
-  weekly-report:
-    name: Weekly SigNoz Health Report
-    runs-on: ubuntu-latest
-    if: github.event_name == 'schedule' && github.ref == 'refs/heads/main'
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Generate weekly report
-        run: |
-          echo "# SigNoz Weekly Health Report" > weekly-report.md
-          echo "" >> weekly-report.md
-          echo "## Test Results" >> weekly-report.md
-          echo "- Date: $(date)" >> weekly-report.md
-          echo "- Environment: Local" >> weekly-report.md
-          echo "- Status: ✅ All tests passing" >> weekly-report.md
-          echo "" >> weekly-report.md
-          echo "## Infrastructure Health" >> weekly-report.md
-          echo "- SigNoz: Healthy" >> weekly-report.md
-          echo "- OTel Collector: Healthy" >> weekly-report.md
-          echo "- ClickHouse: Healthy" >> weekly-report.md
-          echo "" >> weekly-report.md
-          echo "## Recommendations" >> weekly-report.md
-          echo "- Continue monitoring authentication credentials" >> weekly-report.md
-          echo "- Regular SigNoz version updates" >> weekly-report.md
-          echo "- Monitor storage usage in ClickHouse" >> weekly-report.md
-
-      - name: Upload weekly report
-        uses: actions/upload-artifact@v3
-        with:
-          name: weekly-signoz-report
-          path: weekly-report.md
-          retention-days: 30
+        run: docker compose -f docker-compose-signoz.yml down -v
