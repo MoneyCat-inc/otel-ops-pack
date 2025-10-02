@@ -41,6 +41,12 @@ if (-not $signozOk) {
 }
 Write-Host 'SigNoz reachable'
 
+if (-not $env:SIGNOZ_USER -or -not $env:SIGNOZ_PASS) {
+  Write-Host ''
+  Write-Host 'SigNoz credentials missing. Set SIGNOZ_USER and SIGNOZ_PASS before running.'
+  exit 1
+}
+
 Write-Host 'Checking Playwright...'
 try {
   $null = npx playwright --version 2>$null

@@ -14,12 +14,10 @@ export default defineConfig({
   ],
   use: {
     baseURL,
-    storageState: "tmp/signoz-state.json",
     trace: "on-first-retry",
     screenshot: "only-on-failure",
     video: "retain-on-failure"
   },
-  globalSetup: "./tests/signoz-global-setup.ts",
   projects: [
     {
       name: "chromium",
