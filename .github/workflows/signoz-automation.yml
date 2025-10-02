@@ -16,7 +16,7 @@ on:
 jobs:
   signoz-smoke:
     runs-on: ubuntu-latest
-    timeout-minutes: 15  # Add timeout to prevent hanging
+    timeout-minutes: 25  # Increased for schema migrator
     steps:
       - uses: actions/checkout@v4
       - name: Setup Node.js
@@ -27,13 +27,25 @@ jobs:
         run: npm install -g pnpm@9.12.0
       - run: npm install --legacy-peer-deps
       - run: npx playwright install --with-deps
-      - name: Start SigNoz with timeout and health check
-        timeout-minutes: 10
+      - name: Start SigNoz with improved health check
+        timeout-minutes: 20  # Increased timeout for schema migrator
         run: |
           docker compose -f docker-compose-signoz.yml up -d
+          echo "Waiting for ClickHouse to be ready..."
+          timeout 300 bash -c 'until docker exec signoz-clickhouse clickhouse-client --query "SELECT 1"; do echo "Waiting for ClickHouse..."; sleep 5; done'
+          echo "ClickHouse is ready!"
+          
+          echo "Waiting for schema migrator to complete..."
+          timeout 300 bash -c 'until docker ps --filter "name=signoz-schema-migrator-sync" --filter "status=exited" --format "table {{.Names}}\t{{.Status}}" | grep -q "Exited (0)"; do echo "Waiting for schema migrator..."; docker logs --tail 5 signoz-schema-migrator-sync 2>/dev/null || echo "Container not found yet"; sleep 10; done'
+          echo "Schema migrator completed successfully!"
+          
           echo "Waiting for SigNoz to be ready..."
           timeout 300 bash -c 'until curl -sf http://localhost:8080/api/v1/health; do echo "Waiting for SigNoz..."; sleep 5; done'
           echo "SigNoz is ready!"
+          
+          # Debug: Show container status
+          echo "=== Container Status ==="
+          docker ps -a --filter "name=signoz" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
         env:
           SIGNOZ_URL: http://localhost:8080
       - run: npm run test:signoz
@@ -54,6 +66,15 @@ jobs:
           name: playwright-report
           path: playwright-report/
           if-no-files-found: ignore
+      - name: Debug: Print container logs on failure
+        if: failure()
+        run: |
+          echo "=== Schema Migrator Logs ==="
+          docker logs signoz-schema-migrator-sync 2>/dev/null || echo "Schema migrator logs not available"
+          echo "=== SigNoz Backend Logs ==="
+          docker logs signoz 2>/dev/null || echo "SigNoz backend logs not available"
+          echo "=== All Container Status ==="
+          docker ps -a --filter "name=signoz"
       - name: Cleanup
         if: always()
         run: docker compose -f docker-compose-signoz.yml down -v
