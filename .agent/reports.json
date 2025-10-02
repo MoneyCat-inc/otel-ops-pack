@@ -1,1 +1,72 @@
-[]
+[
+  {
+    "id": "task-1759367842409-db6f73b5",
+    "taskId": "task-1759367801891-c622b0b2",
+    "agentId": "system",
+    "examine": {
+      "timestamp": "2025-10-02T01:17:22.409Z",
+      "environment": {
+        "nodeVersion": "v22.18.0",
+        "platform": "win32"
+      },
+      "state": {
+        "taskType": "test",
+        "priority": 1
+      },
+      "evidence": [
+        "Task task-1759367801891-c622b0b2 processed successfully"
+      ]
+    },
+    "clean": {
+      "actions": [
+        "Processed test task"
+      ],
+      "changes": [
+        {
+          "task": "task-1759367801891-c622b0b2",
+          "status": "completed"
+        }
+      ],
+      "rollback": [
+        {
+          "task": "task-1759367801891-c622b0b2",
+          "status": "pending"
+        }
+      ],
+      "guardrails": [
+        "Budget limits respected",
+        "Kill switch checked"
+      ],
+      "budget": {
+        "files": 1,
+        "lines": 10,
+        "jobs": 1
+      }
+    },
+    "report": {
+      "artifacts": [
+        "task-task-1759367801891-c622b0b2-report.md"
+      ],
+      "metrics": {
+        "duration": 1500,
+        "success": true
+      },
+      "compliance": true,
+      "violations": [],
+      "recommendations": [
+        "Continue monitoring"
+      ]
+    },
+    "role": {
+      "actor": "Simplified Agent System",
+      "responsibility": "Execute test task",
+      "signature": "agent-system-1759367842409",
+      "accountability": [
+        "Task completion",
+        "ECRR compliance"
+      ]
+    },
+    "compliance": true,
+    "createdAt": "2025-10-02T01:17:22.409Z"
+  }
+]
