@@ -4,7 +4,8 @@ param(
     [string]$OutputPath = "artifacts",
     [switch]$Verbose = $false,
     [switch]$FailOnNonCompliant = $false,
-    [int]$Threshold = 95
+    [int]$Threshold = 95,
+    [switch]$IncludeArchived = $false
 )
 
 # Configuration
@@ -12,6 +13,7 @@ $Config = @{
     ReportsPath = $ReportsPath
     OutputPath = $OutputPath
     Threshold = $Threshold
+    IncludeArchived = $IncludeArchived.IsPresent
     Timestamp = Get-Date -Format "yyyy-MM-dd_HH-mm-ss"
 }
 
@@ -25,15 +27,29 @@ Write-Host "=========================" -ForegroundColor Cyan
 Write-Host "📅 Timestamp: $($Config.Timestamp)" -ForegroundColor Gray
 Write-Host "📁 Reports Path: $($Config.ReportsPath)" -ForegroundColor Gray
 Write-Host "🎯 Compliance Threshold: $($Config.Threshold)%" -ForegroundColor Gray
+Write-Host "📦 Include Archived: $($Config.IncludeArchived)" -ForegroundColor Gray
 Write-Host ""
 
-# Get all ECRR report files (main directory only, exclude duplicates and archive)
-$reportFiles = Get-ChildItem -Path $Config.ReportsPath -Filter "*.md" | Where-Object { 
-    $_.Name -match '\d{4}-\d{2}-\d{2}' -and 
+if (-not (Test-Path $Config.ReportsPath)) {
+    Write-Host "❌ Reports path not found: $($Config.ReportsPath)" -ForegroundColor Red
+    if ($FailOnNonCompliant) { exit 1 } else { exit 0 }
+}
+
+# Get all ECRR report files (optionally include archived copies)
+$searchScope = if ($Config.IncludeArchived) {
+    Get-ChildItem -Path $Config.ReportsPath -Filter "*.md" -Recurse -File
+} else {
+    Get-ChildItem -Path $Config.ReportsPath -Filter "*.md" -File
+}
+
+$reportFiles = $searchScope | Where-Object {
+    $_.Name -match '\d{4}-\d{2}-\d{2}' -and
+    $_.Name -ne '.gitkeep' -and
     $_.Name -notmatch 'backup' -and
     $_.Name -notmatch '20250929-200755-' -and  # Exclude duplicate prefixed files
-    $_.FullName -notmatch '\\archive\\'
+    ($Config.IncludeArchived -or $_.FullName -notmatch '(?i)[\\/](archive|backup)[\\/]')
 }
+
 
 $totalFiles = $reportFiles.Count
 Write-Host "📊 Total ECRR Reports Found: $totalFiles" -ForegroundColor Yellow
@@ -149,6 +165,7 @@ foreach ($file in $reportFiles) {
         }
     } else {
         $nonCompliantFiles += @{
+            Path = $file.FullName
             File = $file.Name
             Issues = $result.Issues
             Score = $result.Score
@@ -332,3 +349,8 @@ if ($FailOnNonCompliant -and -not $thresholdMet) {
 }
 
 exit 0
+
+
+
+
+
