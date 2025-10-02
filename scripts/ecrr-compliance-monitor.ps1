@@ -165,8 +165,8 @@ foreach ($file in $reportFiles) {
         }
     } else {
         $nonCompliantFiles += @{
-            Path = $file.FullName
             File = $file.Name
+            Path = $file.FullName
             Issues = $result.Issues
             Score = $result.Score
         }
@@ -203,6 +203,12 @@ $report = @{
         AverageScore = $averageScore
         Threshold = $Config.Threshold
         Passed = $complianceRate -ge $Config.Threshold
+    }
+    Settings = @{
+        ReportsPath = $Config.ReportsPath
+        OutputPath = $Config.OutputPath
+        IncludeArchived = $Config.IncludeArchived
+        Threshold = $Config.Threshold
     }
     Files = $complianceData
     NonCompliantFiles = $nonCompliantFiles
