@@ -14,7 +14,12 @@ from typing import List, Dict, Any, Optional
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 
-import cudf
+try:
+    import cudf
+    HAS_CUDF = True
+except ImportError:
+    cudf = None
+    HAS_CUDF = False
 import pandas as pd
 import numpy as np
 from fastapi import FastAPI, HTTPException
@@ -58,6 +63,9 @@ class GPUAggregationSidecar:
     
     def __init__(self, config: AggregationConfig):
         self.config = config
+        self.use_cudf = HAS_CUDF
+        if not self.use_cudf:
+            logger.warning("cuDF not available; falling back to pandas for aggregation")
         self.app = FastAPI(title="GPU Aggregation Sidecar", version="1.0.0")
         self.setup_routes()
         self.setup_directories()
@@ -85,8 +93,8 @@ class GPUAggregationSidecar:
                         aggregation_type=request.aggregation_type
                     )
                 
-                # Convert to cuDF DataFrame
-                df = cudf.DataFrame(request.data)
+                # Convert to DataFrame using available backend
+                df = self._to_dataframe(request.data)
                 original_count = len(df)
                 
                 # Perform aggregation based on type
@@ -136,109 +144,139 @@ class GPUAggregationSidecar:
                 "buffer_size": len(self.metrics_buffer)
             }
     
-    def _aggregate_summary(self, df: cudf.DataFrame, group_by: Optional[List[str]] = None) -> List[Dict[str, Any]]:
+    def _to_dataframe(self, records: List[Dict[str, Any]]):
+        """Return a DataFrame using cuDF when available, otherwise pandas"""
+        if self.use_cudf and cudf is not None:
+            return cudf.DataFrame(records)
+        return pd.DataFrame(records)
+
+    def _ensure_pandas(self, frame):
+        """Convert a DataFrame-like object to pandas"""
+        if hasattr(frame, 'to_pandas'):
+            return frame.to_pandas()
+        if isinstance(frame, pd.DataFrame):
+            return frame
+        return pd.DataFrame(frame)
+
+
+    def _aggregate_summary(self, df, group_by: Optional[List[str]] = None) -> List[Dict[str, Any]]:
         """Perform summary aggregation (count, sum, mean, min, max)"""
         try:
-            if group_by and all(col in df.columns for col in group_by):
-                # Group by specified columns
-                grouped = df.groupby(group_by)
-                result = grouped.agg({
-                    col: ['count', 'sum', 'mean', 'min', 'max'] 
-                    for col in df.select_dtypes(include=['int64', 'float64']).columns
-                }).reset_index()
-                
-                # Flatten multi-level column names
-                result.columns = ['_'.join(col).strip() if isinstance(col, tuple) else col for col in result.columns]
-            else:
-                # Global aggregation
+            if self.use_cudf and cudf is not None and isinstance(df, cudf.DataFrame):
                 numeric_cols = df.select_dtypes(include=['int64', 'float64']).columns
-                result = df[numeric_cols].agg(['count', 'sum', 'mean', 'min', 'max'])
-                
-                # Flatten multi-level column names
-                result.columns = ['_'.join(col).strip() if isinstance(col, tuple) else col for col in result.columns]
-                result = result.reset_index()
-            
-            # Convert to list of dictionaries
-            return result.to_pandas().to_dict('records')
-            
+                if group_by and all(col in df.columns for col in group_by):
+                    grouped = df.groupby(group_by)
+                    result = grouped.agg({
+                        col: ['count', 'sum', 'mean', 'min', 'max']
+                        for col in numeric_cols
+                    }).reset_index()
+                    result.columns = ['_'.join(col).strip('_') if isinstance(col, tuple) else col for col in result.columns]
+                    return result.to_pandas().to_dict('records')
+                else:
+                    if len(numeric_cols) == 0:
+                        return []
+                    result = df[numeric_cols].agg(['count', 'sum', 'mean', 'min', 'max'])
+                    result = result.transpose().reset_index()
+                    result.columns = ['column', 'count', 'sum', 'mean', 'min', 'max']
+                    return result.to_pandas().to_dict('records')
+            else:
+                df_pd = self._ensure_pandas(df)
+                numeric_cols = df_pd.select_dtypes(include='number').columns
+                if len(numeric_cols) == 0:
+                    return []
+                if group_by and all(col in df_pd.columns for col in group_by):
+                    grouped = df_pd.groupby(group_by)
+                    agg_map = {col: ['count', 'sum', 'mean', 'min', 'max'] for col in numeric_cols}
+                    result = grouped.agg(agg_map).reset_index()
+                    result.columns = ['_'.join(col).strip('_') if isinstance(col, tuple) else col for col in result.columns]
+                    return result.to_dict('records')
+                else:
+                    result_rows = []
+                    for col in numeric_cols:
+                        stats = df_pd[col].agg(['count', 'sum', 'mean', 'min', 'max']).to_dict()
+                        stats['column'] = col
+                        result_rows.append(stats)
+                    return result_rows
         except Exception as e:
             logger.error(f"Summary aggregation failed: {e}")
             return []
-    
-    def _aggregate_histogram(self, df: cudf.DataFrame, group_by: Optional[List[str]] = None) -> List[Dict[str, Any]]:
+
+
+    def _aggregate_histogram(self, df, group_by: Optional[List[str]] = None) -> List[Dict[str, Any]]:
         """Perform histogram aggregation"""
         try:
-            # For now, create simple histograms for numeric columns
-            numeric_cols = df.select_dtypes(include=['int64', 'float64']).columns
+            df_pd = self._ensure_pandas(df)
+            numeric_cols = df_pd.select_dtypes(include='number').columns
             histograms = []
-            
             for col in numeric_cols:
-                if group_by and all(gb_col in df.columns for gb_col in group_by):
-                    # Grouped histograms
-                    for group_values, group_df in df.groupby(group_by):
-                        hist, bins = np.histogram(group_df[col].to_pandas(), bins=10)
+                if group_by and all(gb_col in df_pd.columns for gb_col in group_by):
+                    for group_values, group_df in df_pd.groupby(group_by):
+                        series = group_df[col].dropna()
+                        if series.empty:
+                            continue
+                        hist, bins = np.histogram(series.to_numpy(), bins=10)
                         histograms.append({
-                            "column": col,
-                            "group": dict(zip(group_by, group_values)) if isinstance(group_values, tuple) else {group_by[0]: group_values},
-                            "histogram": hist.tolist(),
-                            "bins": bins.tolist()
+                            'column': col,
+                            'group': dict(zip(group_by, group_values)) if isinstance(group_values, tuple) else {group_by[0]: group_values},
+                            'histogram': hist.tolist(),
+                            'bins': bins.tolist()
                         })
                 else:
-                    # Global histogram
-                    hist, bins = np.histogram(df[col].to_pandas(), bins=10)
+                    series = df_pd[col].dropna()
+                    if series.empty:
+                        continue
+                    hist, bins = np.histogram(series.to_numpy(), bins=10)
                     histograms.append({
-                        "column": col,
-                        "histogram": hist.tolist(),
-                        "bins": bins.tolist()
+                        'column': col,
+                        'histogram': hist.tolist(),
+                        'bins': bins.tolist()
                     })
-            
             return histograms
-            
         except Exception as e:
             logger.error(f"Histogram aggregation failed: {e}")
             return []
-    
-    def _aggregate_percentiles(self, df: cudf.DataFrame, group_by: Optional[List[str]] = None) -> List[Dict[str, Any]]:
+
+
+    def _aggregate_percentiles(self, df, group_by: Optional[List[str]] = None) -> List[Dict[str, Any]]:
         """Perform percentile aggregation (p50, p90, p95, p99)"""
         try:
-            numeric_cols = df.select_dtypes(include=['int64', 'float64']).columns
+            df_pd = self._ensure_pandas(df)
+            numeric_cols = df_pd.select_dtypes(include='number').columns
+            if len(numeric_cols) == 0:
+                return []
             percentiles = [50, 90, 95, 99]
             results = []
-            
-            if group_by and all(col in df.columns for col in group_by):
-                # Grouped percentiles
-                for group_values, group_df in df.groupby(group_by):
+            if group_by and all(col in df_pd.columns for col in group_by):
+                for group_values, group_df in df_pd.groupby(group_by):
                     group_result = {
-                        "group": dict(zip(group_by, group_values)) if isinstance(group_values, tuple) else {group_by[0]: group_values}
+                        'group': dict(zip(group_by, group_values)) if isinstance(group_values, tuple) else {group_by[0]: group_values}
                     }
-                    
                     for col in numeric_cols:
-                        col_percentiles = {}
-                        for p in percentiles:
-                            col_percentiles[f"p{p}"] = group_df[col].quantile(p/100.0)
+                        series = group_df[col].dropna()
+                        if series.empty:
+                            continue
+                        col_percentiles = {f'p{p}': float(series.quantile(p/100.0)) for p in percentiles}
                         group_result[col] = col_percentiles
-                    
                     results.append(group_result)
             else:
-                # Global percentiles
                 result = {}
                 for col in numeric_cols:
-                    col_percentiles = {}
-                    for p in percentiles:
-                        col_percentiles[f"p{p}"] = df[col].quantile(p/100.0)
-                    result[col] = col_percentiles
-                results.append(result)
-            
+                    series = df_pd[col].dropna()
+                    if series.empty:
+                        continue
+                    result[col] = {f'p{p}': float(series.quantile(p/100.0)) for p in percentiles}
+                if result:
+                    results.append(result)
             return results
-            
         except Exception as e:
             logger.error(f"Percentile aggregation failed: {e}")
             return []
-    
+
     def _check_gpu_availability(self) -> bool:
         """Check if GPU is available for aggregation"""
+        if not self.use_cudf or cudf is None:
+            return False
         try:
-            # Test cuDF functionality
             test_df = cudf.DataFrame({'a': [1, 2, 3], 'b': [4, 5, 6]})
             test_df.groupby('a').sum()
             return True

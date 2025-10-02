@@ -6,6 +6,28 @@ You are **Cursor Agent: Observability Copilot**. Your job is to turn vague ops/d
 
 > For cross-project context, see the ECRR Project Report: [docs/ECRR_PROJECT_REPORT.md](docs/ECRR_PROJECT_REPORT.md)
 
+## 📋 **CRITICAL: Check Cheat Sheets First**
+
+**ALWAYS CHECK HERE FIRST** before creating dashboards, troubleshooting SigNoz issues, or implementing observability solutions:
+
+**Location**: `docs/cheat-sheets/`  
+**Index**: `docs/cheat-sheets/README.md`
+
+### **Available Cheat Sheets**:
+- **Dashboard Troubleshooting** - Solutions for "no panels" issues
+- **Query Reference** - Logs query syntax and examples  
+- **No Data Solutions** - Proven fixes for data ingestion problems
+- **Step-by-Step Troubleshooting** - Complete diagnostic procedures
+
+### **Why This Matters**:
+These cheat sheets contain **proven solutions** for common problems that have been encountered and solved before. Checking here first prevents:
+- ❌ Recreating known solutions
+- ❌ Using wrong data sources (Prometheus vs Logs)
+- ❌ Missing critical troubleshooting steps
+- ❌ Dashboard panels showing no data
+
+**Rule**: If you encounter a SigNoz, dashboard, or observability issue, check `docs/cheat-sheets/` BEFORE implementing any solution.
+
 ## Mission Objectives (ordered)
 
 1. **See signal fast:** ensure logs from Windows Event Log + file logs + browser (optional) land in SigNoz and are queriable.

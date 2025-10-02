@@ -1,0 +1,202 @@
+{
+  "dashboard": {
+    "title": "Queue Steward Dashboard",
+    "description": "Agent queue monitoring dashboard for SigNoz observability - monitors queue depth, performance, and health metrics",
+    "tags": ["queue", "agent", "monitoring", "signoz"],
+    "timezone": "browser",
+    "refresh": "30s",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Queue Depth Overview",
+        "type": "stat",
+        "targets": [
+          {
+            "queryType": "clickhouse_sql",
+            "query": "SELECT JSONExtractInt(body, 'queueLength') AS value FROM signoz_logs.logs_v2 WHERE position(body, 'agent_queue') > 0 ORDER BY timestamp DESC LIMIT 1",
+            "legendFormat": "Queue Depth"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "min": 0,
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": 0},
+                {"color": "yellow", "value": 10},
+                {"color": "red", "value": 50}
+              ]
+            }
+          }
+        },
+        "gridPos": {"h": 8, "w": 6, "x": 0, "y": 0}
+      },
+      {
+        "id": 2,
+        "title": "Ready vs Pending Jobs",
+        "type": "timeseries",
+        "targets": [
+          {
+            "queryType": "clickhouse_sql",
+            "query": "SELECT toStartOfMinute(fromUnixTimestamp64Nano(timestamp)) AS ts, avg(JSONExtractInt(body, 'readyCount')) AS value FROM signoz_logs.logs_v2 WHERE position(body, 'agent_queue') > 0 AND fromUnixTimestamp64Nano(timestamp) >= now() - INTERVAL 1 HOUR GROUP BY ts ORDER BY ts",
+            "legendFormat": "Ready"
+          },
+          {
+            "queryType": "clickhouse_sql",
+            "query": "SELECT toStartOfMinute(fromUnixTimestamp64Nano(timestamp)) AS ts, avg(JSONExtractInt(body, 'pendingCount')) AS value FROM signoz_logs.logs_v2 WHERE position(body, 'agent_queue') > 0 AND fromUnixTimestamp64Nano(timestamp) >= now() - INTERVAL 1 HOUR GROUP BY ts ORDER BY ts",
+            "legendFormat": "Pending"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "custom": {
+              "drawStyle": "line",
+              "lineInterpolation": "linear",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "gradientMode": "none",
+              "spanNulls": false,
+              "insertNulls": false,
+              "showPoints": "auto",
+              "pointSize": 5,
+              "stacking": {
+                "mode": "none",
+                "group": "A"
+              },
+              "axisPlacement": "auto",
+              "scaleDistribution": {
+                "type": "linear"
+              }
+            }
+          }
+        },
+        "gridPos": {"h": 8, "w": 12, "x": 6, "y": 0}
+      },
+      {
+        "id": 3,
+        "title": "Kill Switch Status",
+        "type": "stat",
+        "targets": [
+          {
+            "queryType": "clickhouse_sql",
+            "query": "SELECT JSONExtractBool(body, 'killSwitch') AS value FROM signoz_logs.logs_v2 WHERE position(body, 'agent_queue') > 0 ORDER BY timestamp DESC LIMIT 1",
+            "legendFormat": "Kill Switch"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "mappings": [
+              {
+                "type": "value",
+                "color": "red",
+                "value": 1,
+                "text": "ACTIVE"
+              },
+              {
+                "type": "value",
+                "color": "green",
+                "value": 0,
+                "text": "INACTIVE"
+              }
+            ]
+          }
+        },
+        "gridPos": {"h": 8, "w": 6, "x": 18, "y": 0}
+      },
+      {
+        "id": 4,
+        "title": "Per-Lane Performance",
+        "type": "table",
+        "targets": [
+          {
+            "queryType": "clickhouse_sql",
+            "query": "SELECT JSONExtractString(lane, 'type') AS lane_name, toInt32(JSONExtractRaw(lane, 'ready')) AS ready, toInt32(JSONExtractRaw(lane, 'pending')) AS pending, toFloat64(JSONExtractRaw(lane, 'avgPriority')) AS avg_priority, toInt32(JSONExtractRaw(lane, 'prioritySum')) AS priority_sum, toDateTime(fromUnixTimestamp64Nano(timestamp)) AS ts FROM signoz_logs.logs_v2 ARRAY JOIN JSONExtractArrayRaw(body, 'lanes') AS lane WHERE position(body, 'agent_queue') > 0 AND fromUnixTimestamp64Nano(timestamp) >= now() - INTERVAL 1 HOUR ORDER BY ts DESC LIMIT 50",
+            "legendFormat": "Lane Snapshot"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "displayMode": "table",
+              "inspect": false
+            }
+          }
+        },
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8}
+      },
+      {
+        "id": 5,
+        "title": "Queue Depth Trend (24h)",
+        "type": "timeseries",
+        "targets": [
+          {
+            "queryType": "clickhouse_sql",
+            "query": "SELECT toStartOfMinute(fromUnixTimestamp64Nano(timestamp)) AS ts, avg(JSONExtractInt(body, 'queueLength')) AS value FROM signoz_logs.logs_v2 WHERE position(body, 'agent_queue') > 0 AND fromUnixTimestamp64Nano(timestamp) >= now() - INTERVAL 24 HOUR GROUP BY ts ORDER BY ts",
+            "legendFormat": "Queue Depth"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "custom": {
+              "drawStyle": "line",
+              "lineInterpolation": "linear",
+              "lineWidth": 2,
+              "fillOpacity": 20,
+              "gradientMode": "opacity",
+              "spanNulls": false,
+              "insertNulls": false,
+              "showPoints": "auto",
+              "pointSize": 5,
+              "stacking": {
+                "mode": "none",
+                "group": "A"
+              },
+              "axisPlacement": "auto",
+              "scaleDistribution": {
+                "type": "linear"
+              }
+            }
+          }
+        },
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8}
+      },
+      {
+        "id": 6,
+        "title": "Agent Health",
+        "type": "table",
+        "targets": [
+          {
+            "queryType": "clickhouse_sql",
+            "query": "SELECT JSONExtractString(body, 'agentName') AS agent_name, JSONExtractInt(body, 'jobsProcessed') AS jobs_processed, JSONExtractString(body, 'lastRun') AS last_run, toDateTime(fromUnixTimestamp64Nano(timestamp)) AS ts FROM signoz_logs.logs_v2 WHERE position(body, 'agent_queue') > 0 ORDER BY timestamp DESC LIMIT 1",
+            "legendFormat": "Agent"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "displayMode": "table",
+              "inspect": false
+            }
+          }
+        },
+        "gridPos": {"h": 8, "w": 6, "x": 0, "y": 16}
+      }
+    ],
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "timepicker": {
+      "refresh_intervals": ["5s", "10s", "30s", "1m", "5m", "15m", "30m", "1h", "2h", "1d"]
+    },
+    "templating": {
+      "list": []
+    },
+    "annotations": {
+      "list": []
+    }
+  }
+}
