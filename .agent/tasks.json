@@ -1,13 +1,1 @@
-[
-  {
-    "id": "task-1759367801891-c622b0b2",
-    "type": "test",
-    "priority": 1,
-    "payload": {
-      "message": "Test task"
-    },
-    "status": "completed",
-    "createdAt": "2025-10-02T01:16:41.892Z",
-    "completedAt": "2025-10-02T01:17:22.408Z"
-  }
-]
+[]
