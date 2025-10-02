@@ -6,10 +6,17 @@ This guide explains how to set up automated testing for the SigNoz observability
 
 ## Prerequisites
 
+### Local Development
 - Node.js 18+
 - pnpm package manager
 - Docker and Docker Compose
 - SigNoz instance running (local or remote)
+
+### CI/CD Requirements
+- **GitHub Actions runners** with Docker Compose support
+- **Repository secrets** configured (SIGNOZ_USER, SIGNOZ_PASS)
+- **Docker Compose** available in CI environment
+- **Alternative**: Use hosted SigNoz endpoint if Docker Compose unavailable
 
 ## Repository Secrets
 
@@ -149,7 +156,20 @@ pnpm run test:signoz:debug
 
 # View Playwright traces
 pnpm exec playwright show-trace test-results/*/trace.zip
+
+# Check Docker Compose availability
+docker compose version
 ```
+
+#### Docker Compose Issues in CI
+```
+Error: docker compose command not found
+```
+**Solutions**:
+- Ensure CI runner has Docker Compose installed
+- Use `ubuntu-latest` runner for GitHub Actions (includes Docker Compose)
+- Alternative: Modify workflow to use hosted SigNoz endpoint instead of local Docker setup
+- Check if `docker-compose` (legacy) vs `docker compose` (newer) is available
 
 ## Security Considerations
 
