@@ -130,7 +130,7 @@ Write-Host ""
 Write-Host "🔗 OTel Integration Points:" -ForegroundColor White
 Write-Host "   • MEMX OTLP endpoint: http://localhost:5318/v1/logs" -ForegroundColor Gray
 Write-Host "   • Dataset: resonai_analytics" -ForegroundColor Gray
-Write-Host "   • Metrics: memx.wasm_heap.bytes, memx.sab.usage.pct, etc." -ForegroundColor Gray
+Write-Host "   • Metrics: resonai_memx_wasm_heap_bytes, resonai_memx_sab_used_bytes, resonai_memx_sab_capacity_bytes, resonai_memx_worklet_ui_lag, resonai_memx_strain_pct" -ForegroundColor Gray
 Write-Host "   • Log events: SAB_BACKLOG, WASM_GROW, WORKLET_LAG" -ForegroundColor Gray
 
 Write-Host ""
