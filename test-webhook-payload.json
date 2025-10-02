@@ -1,0 +1,16 @@
+{
+  "alerts": [
+    {
+      "status": "firing",
+      "labels": {
+        "alertname": "Production Agent Hung Daemon",
+        "severity": "critical",
+        "system": "production-agent-system"
+      },
+      "annotations": {
+        "summary": "Production Agent daemon appears hung",
+        "description": "Heartbeat age exceeds 5 minutes"
+      }
+    }
+  ]
+}
