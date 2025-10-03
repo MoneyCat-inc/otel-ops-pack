@@ -37,14 +37,14 @@ jobs:
         id: check-secrets
         run: |
           if [ -z "$SIGNOZ_USER" ] || [ -z "$SIGNOZ_PASS" ]; then
-            echo "❌ Missing required secrets: SIGNOZ_USER or SIGNOZ_PASS"
+            echo "[ERROR] Missing required secrets: SIGNOZ_USER or SIGNOZ_PASS"
             echo "valid=false" >> $GITHUB_OUTPUT
             echo "Please add these secrets in repository settings:"
-            echo "  - Go to Settings → Secrets and variables → Actions"
+            echo "  - Go to Settings -> Secrets and variables -> Actions"
             echo "  - Add SIGNOZ_USER and SIGNOZ_PASS"
             exit 1
           else
-            echo "✅ Required secrets are present"
+            echo "[OK] Required secrets are present"
             echo "valid=true" >> $GITHUB_OUTPUT
           fi
 
@@ -74,18 +74,18 @@ jobs:
       - name: Verify Docker Compose availability
         run: |
           if ! command -v docker &> /dev/null; then
-            echo "❌ Docker not available in this runner"
+            echo "[ERROR] Docker not available in this runner"
             exit 1
           fi
           if ! command -v docker-compose &> /dev/null && ! docker compose version &> /dev/null; then
-            echo "❌ Docker Compose not available in this runner"
+            echo "[ERROR] Docker Compose not available in this runner"
             echo "Available commands:"
             which docker || echo "docker: not found"
             which docker-compose || echo "docker-compose: not found"
             docker compose version || echo "docker compose: not found"
             exit 1
           fi
-          echo "✅ Docker and Docker Compose are available"
+          echo "[OK] Docker and Docker Compose are available"
 
       - name: Start SigNoz infrastructure
         timeout-minutes: 25
@@ -106,7 +106,7 @@ jobs:
             echo "Waiting for ClickHouse... ($(date))"
             sleep 5
           done'
-          echo "✅ ClickHouse is healthy!"
+          echo "[OK] ClickHouse is healthy!"
           
           echo "Waiting for schema migrator to complete..."
           timeout 300 bash -c 'until docker ps --filter "name=signoz-schema-migrator-sync" --filter "status=exited" --format "table {{.Names}}\t{{.Status}}" | grep -q "Exited (0)"; do 
@@ -114,14 +114,14 @@ jobs:
             docker logs --tail 3 signoz-schema-migrator-sync 2>/dev/null || echo "Container not found yet"
             sleep 10
           done'
-          echo "✅ Schema migrator completed successfully!"
+          echo "[OK] Schema migrator completed successfully!"
           
           echo "Waiting for SigNoz API to be ready..."
           timeout 300 bash -c 'until curl -sf $SIGNOZ_URL/api/v1/health; do 
             echo "Waiting for SigNoz API... ($(date))"
             sleep 5
           done'
-          echo "✅ SigNoz API is ready!"
+          echo "[OK] SigNoz API is ready!"
 
       - name: Run Playwright tests
         run: |
@@ -176,7 +176,7 @@ jobs:
           else
             docker compose -f docker-compose-signoz.yml down -v
           fi
-          echo "✅ Cleanup complete"
+          echo "[OK] Cleanup complete"
 
   # Fallback job when secrets are missing
   missing-secrets-notification:
@@ -186,10 +186,10 @@ jobs:
     steps:
       - name: Notify missing secrets
         run: |
-          echo "❌ SigNoz automation skipped due to missing secrets"
+          echo "[ERROR] SigNoz automation skipped due to missing secrets"
           echo ""
           echo "To enable SigNoz automation:"
-          echo "1. Go to repository Settings → Secrets and variables → Actions"
+          echo "1. Go to repository Settings -> Secrets and variables -> Actions"
           echo "2. Add the following secrets:"
           echo "   - SIGNOZ_USER: Your SigNoz login email"
           echo "   - SIGNOZ_PASS: Your SigNoz login password"
@@ -197,4 +197,5 @@ jobs:
           echo ""
           echo "Repository: ${{ github.repository }}"
           echo "Run ID: ${{ github.run_id }}"
+
 

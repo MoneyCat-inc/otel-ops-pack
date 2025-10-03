@@ -23,27 +23,27 @@ This guide covers the **fresh SigNoz automation** system that addresses all the 
 
 ## Key Improvements
 
-### ✅ **Secret Validation**
+### [OK] **Secret Validation**
 - Pre-flight check for `SIGNOZ_USER` and `SIGNOZ_PASS`
 - Clear error messages when secrets are missing
 - Graceful fallback job with setup instructions
 
-### ✅ **Docker Compose Compatibility**
+### [OK] **Docker Compose Compatibility**
 - Detects both `docker-compose` and `docker compose` commands
 - Verifies Docker availability before attempting to start services
 - Clear error messages if Docker is not available
 
-### ✅ **Enhanced Health Checks**
-- Multi-stage health verification (ClickHouse → Schema Migrator → SigNoz API)
+### [OK] **Enhanced Health Checks**
+- Multi-stage health verification (ClickHouse -> Schema Migrator -> SigNoz API)
 - Detailed logging with timestamps
 - Proper timeout handling for each stage
 
-### ✅ **Better Error Handling**
+### [OK] **Better Error Handling**
 - Comprehensive container log collection on failure
 - Detailed troubleshooting steps in error messages
 - Always cleanup infrastructure, even on failure
 
-### ✅ **Improved Logging**
+### [OK] **Improved Logging**
 - Verbose mode support (`-Verbose` flag)
 - Progress indicators with emojis
 - Clear success/failure messaging
@@ -78,19 +78,19 @@ The fresh workflow will automatically:
 
 ### Missing Secrets
 ```
-❌ Missing required secrets: SIGNOZ_USER or SIGNOZ_PASS
+[ERROR] Missing required secrets: SIGNOZ_USER or SIGNOZ_PASS
 ```
-**Solution**: Add secrets in GitHub → Settings → Secrets and variables → Actions
+**Solution**: Add secrets in GitHub -> Settings -> Secrets and variables -> Actions
 
 ### Docker Not Available
 ```
-❌ Docker not available in this runner
+[ERROR] Docker not available in this runner
 ```
 **Solution**: Use `ubuntu-latest` runner or enable Docker in self-hosted runners
 
 ### SigNoz Not Reachable
 ```
-❌ SigNoz not reachable at http://localhost:8080
+[ERROR] SigNoz not reachable at http://localhost:8080
 ```
 **Solution**: 
 1. Start SigNoz: `docker compose -f docker-compose-signoz.yml up -d`
@@ -98,7 +98,7 @@ The fresh workflow will automatically:
 
 ### Tests Failing
 ```
-❌ Some tests failed
+[ERROR] Some tests failed
 ```
 **Solution**:
 1. Check Playwright report: `npx playwright show-report`
@@ -139,4 +139,5 @@ The fresh workflow triggers on the same paths, so existing CI will automatically
 4. **Monitor results**: Check workflow runs and artifacts for any remaining issues
 
 The fresh system is designed to be robust, maintainable, and provide clear feedback when issues occur. It incorporates all the lessons learned from our previous automation attempts.
+
 
