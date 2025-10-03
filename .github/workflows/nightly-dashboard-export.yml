@@ -1,0 +1,96 @@
+name: Nightly Dashboard Export
+
+on:
+  schedule:
+    - cron: "30 2 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  export:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set env
+        shell: pwsh
+        run: |
+          echo "SIGNOZ_URL=${{ secrets.SIGNOZ_URL }}" | Out-File -FilePath $env:GITHUB_ENV -Append
+          echo "SIGNOZ_SESSION=${{ secrets.SIGNOZ_SESSION }}" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+      - name: Export PDFs with Edge headless
+        shell: pwsh
+        run: |
+          pwsh -File scripts/nightly-dashboard-export.ps1
+
+      - name: Upload snapshot PDFs
+        uses: actions/upload-artifact@v4
+        with:
+          name: signoz-dashboard-pdfs
+          path: docs/observability/snapshots/**/**/*.pdf
+          if-no-files-found: warn
+
+      - name: Upload ECRR report
+        uses: actions/upload-artifact@v4
+        with:
+          name: ecrr-nightly
+          path: docs/ecrr/ECRR_REPORTS/*_nightly_dashboard_export.md
+          if-no-files-found: warn
+
+  export_playwright:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install deps
+        run: pnpm i --frozen-lockfile
+
+      - name: Install Playwright browser
+        run: pnpm exec playwright install chromium
+
+      - name: Set env
+        shell: pwsh
+        run: |
+          echo "SIGNOZ_URL=${{ secrets.SIGNOZ_URL }}" | Out-File -FilePath $env:GITHUB_ENV -Append
+          echo "SIGNOZ_SESSION=${{ secrets.SIGNOZ_SESSION }}" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+      - name: Export with Playwright
+        run: pnpm run export:signoz:playwright
+
+      - name: Upload PDFs
+        uses: actions/upload-artifact@v4
+        with:
+          name: signoz-dashboard-pdfs-playwright
+          path: docs/observability/snapshots/**/**/*.pdf
+          if-no-files-found: warn
+
+      - name: Upload ECRR report
+        uses: actions/upload-artifact@v4
+        with:
+          name: ecrr-nightly-playwright
+          path: docs/ecrr/ECRR_REPORTS/*_nightly_dashboard_export_playwright.md
+          if-no-files-found: warn
+
+      - name: Update docs index
+        shell: pwsh
+        run: pwsh -File scripts/update-docs-index.ps1
+
+      - name: Commit updated docs index
+        shell: pwsh
+        run: |
+          git config user.name  "moneycat-bot"
+          git config user.email "bot@moneycat.inc"
+          git add docs/README.md
+          git commit -m "docs(report): update docs index with latest snapshot" || echo "No changes"
+
+      - name: Upload docs index
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs-index
+          path: docs/README.md
+          if-no-files-found: warn
