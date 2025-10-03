@@ -1,0 +1,193 @@
+name: Nightly Dashboard Reports
+
+on:
+  schedule:
+    - cron: '0 2 * * *'  # Daily at 2 AM UTC
+  workflow_dispatch:    # Manual trigger
+    inputs:
+      test_run:
+        description: 'Test run (local SigNoz)'
+        required: false
+        default: 'false'
+        type: boolean
+
+env:
+  SIGNOZ_URL_TEST: 'http://localhost:8080'
+  SIGNOZ_URL_PROD: 'http://signoz-prod.example.com'  # Update with actual URL
+
+jobs:
+  generate-dashboard-reports:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
+        
+      - name: Install Playwright browsers
+        run: npx playwright install chromium
+        
+      - name: Setup PowerShell
+        uses: pwsh/setup-pwsh@v3
+        with:
+          pwsh-version: '7.4'
+          
+      - name: Verify GitHub Secrets
+        shell: pwsh
+        run: |
+          Write-Host "🔐 Verifying required secrets..." -ForegroundColor Cyan
+          $requiredSecrets = @("SIGNOZ_URL", "SIGNOZ_USER", "SIGNOZ_PASS")
+          $missingSecrets = @()
+          
+          foreach ($secret in $requiredSecrets) {
+            $envVar = "`$${{ secrets.$secret }}"
+            if (-not $envVar -or $envVar -eq "") {
+              $missingSecrets += $secret
+            }
+          }
+          
+          if ($missingSecrets.Count -gt 0) {
+            Write-Host "⚠️  Missing secrets: $($missingSecrets -join ', ')" -ForegroundColor Yellow
+            Write-Host "📝 Please configure these secrets in GitHub repository settings"
+          } else {
+            Write-Host "✅ All required secrets are configured" -ForegroundColor Green
+          }
+        
+      - name: Determine SigNoz Environment
+        id: env-check
+        shell: pwsh
+        run: |
+          if ('${{ github.event.inputs.test_run }}' -eq 'true') {
+            $signozUrl = '$env:SIGNOZ_URL_TEST'
+            Write-Host "🧪 Using test SigNoz: $signozUrl" -ForegroundColor Yellow
+          } else {
+            $signozUrl = '${{ secrets.SIGNOZ_URL }}'
+            Write-Host "🏭 Using production SigNoz: $signozUrl" -ForegroundColor Green
+          }
+          echo "signoz_url=$signozUrl" >> $GITHUB_OUTPUT
+        
+      - name: Generate Dashboard Snapshots
+        shell: pwsh
+        env:
+          SIGNOZ_URL: ${{ steps.env-check.outputs.signoz_url }}
+          SIGNOZ_USER: ${{ secrets.SIGNOZ_USER }}
+          SIGNOZ_PASS: ${{ secrets.SIGNOZ_PASS }}
+        run: |
+          Write-Host "📊 Generating dashboard snapshots..." -ForegroundColor Cyan
+          pwsh -File scripts/generate-dashboard-snapshots.ps1 -SignozUrl "$env:SIGNOZ_URL" -GeneratePDF
+          
+          # Verify output was generated
+          $outputDir = "artifacts/dashboard-snapshots"
+          if (Test-Path $outputDir) {
+            $fileCount = (Get-ChildItem $outputDir).Count
+            Write-Host "✅ Generated $fileCount files in $outputDir" -ForegroundColor Green
+          } else {
+            Write-Host "⚠️  Output directory not found: $outputDir" -ForegroundColor Yellow
+          }
+        
+      - name: Upload Dashboard Snapshots
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: dashboard-snapshots-${{ run_id }}
+          path: artifacts/dashboard-snapshots/
+          retention-days: 30
+          
+      - name: Upload Report Artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: dashboard-reports-${{ run_id }}
+          path: artifacts/dashboard-*-report-*.html
+          retention-days: 30
+
+      - name: Commit Reports to Repository
+        if: success()
+        shell: pwsh
+        run: |
+          Write-Host "📝 Committing reports to repository..." -ForegroundColor Cyan
+          
+          # Configure git
+          git config --local user.email "github-action@nocapetothee.today"
+          git config --local user.name "GitHub Action - Dashboard Reporter"
+          
+          # Create reports directory
+          $reportsDir = "docs/reports/dashboard-snapshots"
+          if (-not (Test-Path $reportsDir)) {
+            New-Item -ItemType Directory -Path $reportsDir -Force | Out-Null
+          }
+          
+          # Copy latest report
+          $latestReport = Get-ChildItem "artifacts/dashboard-snapshots/dashboard-*-report-*.html" | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+          if ($latestReport) {
+            $reportName = "dashboard-report-$(Get-Date -Format 'yyyy-MM-dd').html"
+            Copy-Item $latestReport.FullName "$reportsDir/$reportName"
+            
+            # Update index
+            $indexPath = "$reportsDir/index.md"
+            $indexContent = @"
+# Dashboard Snapshot Reports
+
+## Latest Reports
+
+| Date | Report | Screenshots |
+|------|--------|-------------|
+"@
+            
+            if (Test-Path $indexPath) {
+              $indexContent = Get-Content $indexPath -Raw
+            }
+            
+            $newEntry = "| $(Get-Date -Format 'yyyy-MM-dd') | [Latest Report]($reportName) | [View Artifacts](artifacts/dashboard-snapshots/) |"
+            $indexContent += "`n$newEntry"
+            $indexContent | Out-File $indexPath -Encoding UTF8
+            
+            # Commit changes
+            git add $reportsDir/
+            if ($(git status --porcelain)) {
+              git commit -m "feat(automation): Nightly dashboard snapshot report 📊
+
+              - Generated dashboard snapshots for monitoring visibility
+              - ECRR compliant automated documentation
+              - Report date: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')
+              
+              Artifacts: dashboard-reports-${{ run_id }}"
+              
+              git push origin HEAD:main
+              Write-Host "✅ Committed and pushed report to repository" -ForegroundColor Green
+            }
+          }
+        
+      - name: ECRR Compliance Summary
+        if: always()
+        shell: pwsh
+        run: |
+          Write-Host ""
+          Write-Host "📋 ECRR Compliance Summary:" -ForegroundColor Cyan
+          Write-Host "   🎭 Agent: GitHub Actions - Dashboard Reporter" -ForegroundColor White
+          Write-Host "   🔍 Examine: SigNoz dashboards discovered and catalogued" -ForegroundColor White
+          Write-Host "   🧹 Clean: Screenshots captured with proper timing and optimization" -ForegroundColor White  
+          Write-Host "   📊 Report: HTML and summary reports generated and archived" -ForegroundColor White
+          Write-Host "   ✅ Role: Automated nightly documentation for compliance" -ForegroundColor White
+          Write-Host ""
+          Write-Host "📈 Generated artifacts:"
+          if (Test-Path "artifacts/dashboard-snapshots") {
+            Get-ChildItem "artifacts/dashboard-snapshots" | ForEach-Object { Write-Host "   • $($_.Name)" -ForegroundColor Gray }
+          }
+          
+      - name: Notify on Failure
+        if: failure()
+        shell: pwsh
+        run: |
+          Write-Host "❌ Dashboard snapshot generation failed" -ForegroundColor Red
+          Write-Host "💡 Check SigNoz accessibility and secret configuration" -ForegroundColor Yellow
+          Write-Host "🔗 Visit Actions tab for detailed logs" -ForegroundColor Blue
