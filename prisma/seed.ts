@@ -2,7 +2,7 @@
 // Populates database with initial data for development and testing
 
 import { PrismaClient } from '@prisma/client';
-import { createHash } from 'crypto';
+import { createHash, randomBytes } from 'crypto';
 
 const prisma = new PrismaClient();
 
@@ -168,7 +168,7 @@ async function main() {
         const eventType = eventTypes[Math.floor(Math.random() * eventTypes.length)];
         const props: any = {
           userId: user.userIdHash,
-          sessionId: `session_${Math.random().toString(36).substring(7)}`,
+          sessionId: `session_${randomBytes(8).toString('hex')}`,
         };
 
         if (eventType === 'session_end') {
