@@ -50,7 +50,7 @@ class TestRunner {
     this.printSummary();
   }
 
-  private printSummary() {
+  printSummary() {
     const passed = this.results.filter(r => r.passed).length;
     const failed = this.results.filter(r => !r.passed).length;
     const totalDuration = this.results.reduce((sum, r) => sum + r.duration, 0);
