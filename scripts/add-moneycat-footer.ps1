@@ -17,6 +17,13 @@ $footerTemplate = Get-Content "docs/templates/MONEYCAT_FOOTER.md" -Raw
 $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss UTC"
 $footer = $footerTemplate -replace '\{timestamp\}', $timestamp
 
+# Check if file exists
+if (-not (Test-Path $FilePath)) {
+    Write-Host "❌ File not found: $FilePath" -ForegroundColor Red
+    Write-Host "   Use .\scripts\generate-moneycat-doc.ps1 to create a new document instead" -ForegroundColor Yellow
+    exit 1
+}
+
 # Read the current file
 $content = Get-Content $FilePath -Raw
 
