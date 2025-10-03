@@ -1,16 +1,17 @@
 # ECRR Compliance Report
 
-Generated: 2025-10-02T19:36:59Z
+Generated: 2025-10-03T07:36:59Z
 
 ## Metrics
-- Total Reports: 66
+- Total Reports: 67
 - Four-Section Compliance: 100%
-- ECRR Gate Compliance: 77.3%
-- Actor Declaration Compliance: 93.9%
+- ECRR Gate Compliance: 76.1%
+- Actor Declaration Compliance: 94%
 - Production Marker Presence: 100%
-- Fully Compliant: 74.2% (49/66)
+- Fully Compliant: 73.1% (49/67)
 
 ## Top Non-compliance Samples (up to 20)
+- `C:\otel\docs\ECRR_REPORTS\2025-01-02-agent-doctor-rollout-merge.md`: missing_ecrr_gate
 - `C:\otel\docs\ECRR_REPORTS\2025-09-29-queue-steward-verification.md`: missing_ecrr_gate
 - `C:\otel\docs\ECRR_REPORTS\2025-10-01-comprehensive-implementation-summary.md`: missing_ecrr_gate
 - `C:\otel\docs\ECRR_REPORTS\2025-10-01-final-implementation-summary.md`: missing_ecrr_gate
