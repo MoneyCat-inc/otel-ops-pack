@@ -5,6 +5,7 @@
 const http = require('http');
 const https = require('https');
 const { URL } = require('url');
+const crypto = require('crypto');
 
 // Configuration
 const BASE_URL = process.env.TEST_BASE_URL || 'http://localhost:3000';
@@ -271,9 +272,9 @@ runner.addTest('Feedback Endpoint', async () => {
 runner.addTest('PII Prevention', async () => {
   // Test that PII is not accepted in event properties
   const testEvent = {
-    id: `test_${Date.now()}_${Math.random().toString(36).substring(7)}`,
+    id: `test_${Date.now()}_${crypto.randomBytes(6).toString('hex')}`,
     ts: Date.now(),
-    userId: `test_user_${Math.random().toString(36).substring(7)}`,
+    userId: `test_user_${crypto.randomBytes(6).toString('hex')}`,
     kind: 'session_start',
     props: {
       email: 'test@example.com', // This should be rejected
@@ -301,9 +302,9 @@ runner.addTest('PII Prevention', async () => {
 runner.addTest('Data Minimization', async () => {
   // Test that too many properties are rejected
   const testEvent = {
-    id: `test_${Date.now()}_${Math.random().toString(36).substring(7)}`,
+    id: `test_${Date.now()}_${crypto.randomBytes(6).toString('hex')}`,
     ts: Date.now(),
-    userId: `test_user_${Math.random().toString(36).substring(7)}`,
+    userId: `test_user_${crypto.randomBytes(6).toString('hex')}`,
     kind: 'session_start',
     props: {},
     schema: 'v1',
