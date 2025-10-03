@@ -1,3 +1,13 @@
+# OTel-Ops-Pack / Resonai
+
+🚀 **Note on Ownership & Structure**  
+This repository is now owned and maintained by the **MoneyCat-inc** organization.  
+The **Resonai** local-first voice training application is developed **inside this repo** as part of the `otel-ops-pack` stack.  
+
+All documentation, agents, CI/CD guardrails, and artifacts (ECRR reports, SSOTs, handoff docs) live here under the MoneyCat umbrella.
+
+---
+
 # OTel Windows -> SigNoz Observability Kit
 
 > Creative source of truth: **C:\otel\docs\comfort cat** — start with `README.md` in that folder.
@@ -7,11 +17,10 @@
 
 [![ECRR](https://img.shields.io/badge/ECRR-Examine→Clean→Report→Role-7c5cff?style=for-the-badge&logo=gitbook&logoColor=white)](./AGENTS.md#-agents--ecrr-mantra)
 [![ECRR Project Report](https://img.shields.io/badge/ECRR%20Project%20Report-available-7c5cff?style=for-the-badge)](docs/ECRR_PROJECT_REPORT.md)
-[![CI — quality gates](https://github.com/fubumaki/otel-ops-pack/actions/workflows/ci.yml/badge.svg)](../../actions/workflows/ci.yml)
-[![Hygiene](https://github.com/fubumaki/otel-ops-pack/actions/workflows/hygiene.yml/badge.svg)](../../actions/workflows/hygiene.yml)
-[![CodeQL](https://github.com/fubumaki/otel-ops-pack/actions/workflows/codeql.yml/badge.svg)](../../actions/workflows/codeql.yml)
-[![Gitleaks](https://github.com/fubumaki/otel-ops-pack/actions/workflows/gitleaks.yml/badge.svg)](../../actions/workflows/gitleaks.yml)
-[![Pester](https://github.com/fubumaki/otel-ops-pack/actions/workflows/pester.yml/badge.svg)](../../actions/workflows/pester.yml)
+[![SigNoz Automation](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/signoz-automation.yml/badge.svg)](../../actions/workflows/signoz-automation.yml)
+[![CodeQL](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/codeql.yml/badge.svg)](../../actions/workflows/codeql.yml)
+[![Gitleaks](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/gitleaks.yml/badge.svg)](../../actions/workflows/gitleaks.yml)
+[![Maintained by MoneyCat-inc](https://img.shields.io/badge/Maintained%20by-MoneyCat--inc-00aa88?style=for-the-badge&logo=github&logoColor=white)](https://github.com/MoneyCat-inc)
 
 A complete Windows-to-SigNoz observability pipeline with automated monitoring, alerting, and agent workflows for repeatable operations.
 
