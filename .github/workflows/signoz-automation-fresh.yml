@@ -1,0 +1,200 @@
+name: SigNoz Automation (Fresh)
+
+on:
+  schedule:
+    - cron: "0 2 * * *"  # Daily at 2 AM UTC
+  workflow_dispatch:
+    inputs:
+      signoz_url:
+        description: 'SigNoz URL (default: http://localhost:8080)'
+        required: false
+        default: 'http://localhost:8080'
+        type: string
+  push:
+    branches: [main, develop]
+    paths:
+      - tests/signoz.final.spec.ts
+      - playwright.signoz.config.ts
+      - scripts/automate-signoz-setup-fresh.ps1
+      - docs/SIGNOZ_AUTOMATION_SETUP.md
+      - .github/workflows/signoz-automation*.yml
+
+# Ensure secrets are available before starting
+env:
+  SIGNOZ_URL: ${{ github.event.inputs.signoz_url || 'http://localhost:8080' }}
+  SIGNOZ_USER: ${{ secrets.SIGNOZ_USER }}
+  SIGNOZ_PASS: ${{ secrets.SIGNOZ_PASS }}
+
+jobs:
+  # Pre-flight checks
+  validate-secrets:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      secrets-valid: ${{ steps.check-secrets.outputs.valid }}
+    steps:
+      - name: Check required secrets
+        id: check-secrets
+        run: |
+          if [ -z "$SIGNOZ_USER" ] || [ -z "$SIGNOZ_PASS" ]; then
+            echo "❌ Missing required secrets: SIGNOZ_USER or SIGNOZ_PASS"
+            echo "valid=false" >> $GITHUB_OUTPUT
+            echo "Please add these secrets in repository settings:"
+            echo "  - Go to Settings → Secrets and variables → Actions"
+            echo "  - Add SIGNOZ_USER and SIGNOZ_PASS"
+            exit 1
+          else
+            echo "✅ Required secrets are present"
+            echo "valid=true" >> $GITHUB_OUTPUT
+          fi
+
+  # Main SigNoz automation
+  signoz-automation:
+    runs-on: ubuntu-latest
+    needs: validate-secrets
+    if: needs.validate-secrets.outputs.secrets-valid == 'true'
+    timeout-minutes: 30  # Increased timeout for Docker setup
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        run: |
+          curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+          sudo apt-get install -y nodejs
+
+      - name: Install pnpm
+        run: npm install -g pnpm@9.12.0
+
+      - name: Install dependencies
+        run: |
+          npm install --legacy-peer-deps
+          npx playwright install --with-deps
+
+      - name: Verify Docker Compose availability
+        run: |
+          if ! command -v docker &> /dev/null; then
+            echo "❌ Docker not available in this runner"
+            exit 1
+          fi
+          if ! command -v docker-compose &> /dev/null && ! docker compose version &> /dev/null; then
+            echo "❌ Docker Compose not available in this runner"
+            echo "Available commands:"
+            which docker || echo "docker: not found"
+            which docker-compose || echo "docker-compose: not found"
+            docker compose version || echo "docker compose: not found"
+            exit 1
+          fi
+          echo "✅ Docker and Docker Compose are available"
+
+      - name: Start SigNoz infrastructure
+        timeout-minutes: 25
+        run: |
+          echo "Starting SigNoz with Docker Compose..."
+          
+          # Use docker-compose if available, otherwise docker compose
+          if command -v docker-compose &> /dev/null; then
+            COMPOSE_CMD="docker-compose"
+          else
+            COMPOSE_CMD="docker compose"
+          fi
+          
+          $COMPOSE_CMD -f docker-compose-signoz.yml up -d
+          
+          echo "Waiting for ClickHouse to be healthy..."
+          timeout 300 bash -c 'until docker exec signoz-clickhouse clickhouse-client --query "SELECT 1" > /dev/null 2>&1; do 
+            echo "Waiting for ClickHouse... ($(date))"
+            sleep 5
+          done'
+          echo "✅ ClickHouse is healthy!"
+          
+          echo "Waiting for schema migrator to complete..."
+          timeout 300 bash -c 'until docker ps --filter "name=signoz-schema-migrator-sync" --filter "status=exited" --format "table {{.Names}}\t{{.Status}}" | grep -q "Exited (0)"; do 
+            echo "Waiting for schema migrator... ($(date))"
+            docker logs --tail 3 signoz-schema-migrator-sync 2>/dev/null || echo "Container not found yet"
+            sleep 10
+          done'
+          echo "✅ Schema migrator completed successfully!"
+          
+          echo "Waiting for SigNoz API to be ready..."
+          timeout 300 bash -c 'until curl -sf $SIGNOZ_URL/api/v1/health; do 
+            echo "Waiting for SigNoz API... ($(date))"
+            sleep 5
+          done'
+          echo "✅ SigNoz API is ready!"
+
+      - name: Run Playwright tests
+        run: |
+          echo "Running SigNoz automation tests..."
+          npx playwright test tests/signoz.final.spec.ts -c playwright.signoz.config.ts --reporter=line
+        env:
+          SIGNOZ_URL: ${{ env.SIGNOZ_URL }}
+          SIGNOZ_USER: ${{ secrets.SIGNOZ_USER }}
+          SIGNOZ_PASS: ${{ secrets.SIGNOZ_PASS }}
+
+      - name: Run PowerShell automation script
+        shell: pwsh
+        run: |
+          echo "Running PowerShell automation script..."
+          ./scripts/automate-signoz-setup-fresh.ps1 -SignozUrl $env:SIGNOZ_URL
+        env:
+          SIGNOZ_URL: ${{ env.SIGNOZ_URL }}
+          SIGNOZ_USER: ${{ secrets.SIGNOZ_USER }}
+          SIGNOZ_PASS: ${{ secrets.SIGNOZ_PASS }}
+
+      - name: Upload test artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report-${{ github.run_id }}
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
+
+      - name: Print container logs on failure
+        if: failure()
+        run: |
+          echo "=== SigNoz Container Status ==="
+          docker ps -a --filter "name=signoz"
+          echo ""
+          echo "=== Schema Migrator Logs ==="
+          docker logs signoz-schema-migrator-sync 2>/dev/null || echo "Schema migrator logs not available"
+          echo ""
+          echo "=== SigNoz Backend Logs ==="
+          docker logs signoz 2>/dev/null || echo "SigNoz backend logs not available"
+          echo ""
+          echo "=== ClickHouse Logs ==="
+          docker logs signoz-clickhouse 2>/dev/null || echo "ClickHouse logs not available"
+
+      - name: Cleanup infrastructure
+        if: always()
+        run: |
+          echo "Cleaning up SigNoz infrastructure..."
+          if command -v docker-compose &> /dev/null; then
+            docker-compose -f docker-compose-signoz.yml down -v
+          else
+            docker compose -f docker-compose-signoz.yml down -v
+          fi
+          echo "✅ Cleanup complete"
+
+  # Fallback job when secrets are missing
+  missing-secrets-notification:
+    runs-on: ubuntu-latest
+    needs: validate-secrets
+    if: needs.validate-secrets.outputs.secrets-valid == 'false'
+    steps:
+      - name: Notify missing secrets
+        run: |
+          echo "❌ SigNoz automation skipped due to missing secrets"
+          echo ""
+          echo "To enable SigNoz automation:"
+          echo "1. Go to repository Settings → Secrets and variables → Actions"
+          echo "2. Add the following secrets:"
+          echo "   - SIGNOZ_USER: Your SigNoz login email"
+          echo "   - SIGNOZ_PASS: Your SigNoz login password"
+          echo "3. Re-run this workflow"
+          echo ""
+          echo "Repository: ${{ github.repository }}"
+          echo "Run ID: ${{ github.run_id }}"
+
