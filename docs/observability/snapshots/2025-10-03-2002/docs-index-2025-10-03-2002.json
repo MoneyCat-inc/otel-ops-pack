@@ -1,0 +1,13 @@
+{
+  "dashboard_count": 0,
+  "export_type": "nightly_dashboard_export",
+  "directory": "docs\\observability\\snapshots\\2025-10-03-2002",
+  "agent": "PowerShell Nightly Export Agent",
+  "files_generated": [
+    null,
+    "docs\\observability\\snapshots\\2025-10-03-2002/export-summary-2025-10-03-2002.json",
+    "docs/ecrr/ECRR_REPORTS/ECRR-2025-10-03-200230.md"
+  ],
+  "export_id": "ECRR-2025-10-03-200230",
+  "timestamp": "2025-10-03T20:02:30.1713686+01:00"
+}
