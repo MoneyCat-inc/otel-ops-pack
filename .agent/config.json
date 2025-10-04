@@ -29,5 +29,13 @@
     "persistentErrorThreshold": 50,
     "timeWindowHours": 1,
     "notificationChannels": ["sigNoz", "console"]
+  },
+  "gpu": {
+    "enabled": false,
+    "provider": "cuda",
+    "modelGlobs": ["models/**/*.onnx"],
+    "benchBatches": [1, 4, 8],
+    "ecrrOutDir": "docs/ecrr/ECRR_REPORTS",
+    "allowCpuFallback": true
   }
 }
