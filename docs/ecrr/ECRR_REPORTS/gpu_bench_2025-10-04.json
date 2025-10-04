@@ -1,0 +1,33 @@
+{
+  "date": "2025-10-04",
+  "results": [
+    {
+      "timestamp": "2025-10-04T04:54:52.086532+00:00",
+      "algorithm": "rolling",
+      "gpuMs": 55.89999999999999,
+      "cpuMs": 2.0447599999897648,
+      "speedup": 0.0365788908763822,
+      "parity": 0,
+      "provider": "cuda",
+      "fellBackToCpu": false,
+      "note": null
+    },
+    {
+      "timestamp": "2025-10-04T04:54:52.780136+00:00",
+      "algorithm": "pfac",
+      "gpuMs": 25.2,
+      "cpuMs": 40.16724999892176,
+      "speedup": 1.593938492020705,
+      "matches": 350,
+      "provider": "cuda",
+      "fellBackToCpu": false,
+      "note": null
+    }
+  ],
+  "summary": {
+    "totalTests": 2,
+    "avgSpeedup": 0.8152586914485436,
+    "gpuAvailable": true,
+    "fallbackCount": 0
+  }
+}
