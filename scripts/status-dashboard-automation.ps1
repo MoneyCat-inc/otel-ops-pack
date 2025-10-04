@@ -81,7 +81,7 @@ function New-ScheduledTask {
         $Settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -RunOnlyIfNetworkAvailable
         
         # Create the principal (run as current user)
-        $Principal = New-ScheduledTaskPrincipal -UserId $env:USERNAME -LogonType InteractiveToken
+        $Principal = New-ScheduledTaskPrincipal -UserId $env:USERNAME -LogonType Interactive
         
         # Register the task
         Register-ScheduledTask -TaskName $TaskName -Action $Action -Trigger $Trigger -Settings $Settings -Principal $Principal -Description $TaskDescription -Force
