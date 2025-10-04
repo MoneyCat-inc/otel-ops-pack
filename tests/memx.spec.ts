@@ -1,25 +1,33 @@
 import { test, expect } from '@playwright/test';
+import { setupErrorCapture, waitForMinimumErrors } from './helpers/error-capture';
 
 test.describe('MEMX Labs Smoke Tests', () => {
   test.beforeEach(async ({ page }) => {
+    // Setup shared error capture system
+    await setupErrorCapture(page);
+    
     // Navigate to MEMX labs page
     await page.goto('/labs/memx');
   });
 
   test('MEMX page loads without console errors', async ({ page }) => {
-    // Check for console errors
-    const errors: string[] = [];
-    page.on('console', msg => {
-      if (msg.type() === 'error') {
-        errors.push(msg.text());
-      }
-    });
-
     // Wait for page to fully load
     await page.waitForLoadState('networkidle');
     
-    // Verify no console errors
-    expect(errors).toHaveLength(0);
+    // Use shared error capture system to check for errors
+    const errorData = await page.evaluate(() => {
+      const capture = (window as any).__ERROR_CAPTURE_TEST__;
+      return capture ? {
+        errors: capture.errors.length,
+        consoleErrors: capture.consoleErrors.length,
+        promiseRejections: capture.promiseRejections.length
+      } : { errors: 0, consoleErrors: 0, promiseRejections: 0 };
+    });
+    
+    // Verify no errors were captured
+    expect(errorData.errors).toBe(0);
+    expect(errorData.consoleErrors).toBe(0);
+    expect(errorData.promiseRejections).toBe(0);
   });
 
   test('Cross-origin isolation is enabled', async ({ page }) => {

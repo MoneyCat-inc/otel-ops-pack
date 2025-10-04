@@ -1,0 +1,66 @@
+[
+  {
+    "name": "Windows Logs Dashboard",
+    "slug": "windows-logs",
+    "priority": "high",
+    "description": "Windows Event Logs and System Event monitoring for BossCat compliance",
+    "expected_metrics": ["event_count", "error_rate", "log_volume"],
+    "ac_key": "windows_logs"
+  },
+  {
+    "name": "Queue Pressure Dashboard", 
+    "slug": "queue-pressure",
+    "priority": "high",
+    "description": "Pipeline queue monitoring and pressure indicators for BossCat oversight",
+    "expected_metrics": ["queue_size", "processing_time", "throughput"],
+    "ac_key": "queue_pressure"
+  },
+  {
+    "name": "OTel Metrics Dashboard",
+    "slug": "otel-metrics", 
+    "priority": "medium",
+    "description": "OpenTelemetry collector metrics and pipeline performance",
+    "expected_metrics": ["otelcol_receiver", "otelcol_exporter", "batch_size"],
+    "ac_key": "otel_metrics"
+  },
+  {
+    "name": "SigNoz System Performance",
+    "slug": "system-performance",
+    "priority": "medium", 
+    "description": "SigNoz infrastructure health and resource utilization",
+    "expected_metrics": ["cpu_usage", "memory_usage", "disk_io", "clickhouse_metrics"],
+    "ac_key": "system_perf"
+  },
+  {
+    "name": "Pipeline Latency Dashboard",
+    "slug": "pipeline-latency",
+    "priority": "high",
+    "description": "Real-time latency monitoring (<200ms target) for BossCat compliance",
+    "expected_metrics": ["p95_latency", "p99_latency", "batch_duration"],
+    "ac_key": "latency_monitor"
+  },
+  {
+    "name": "Error Rate Dashboard",
+    "slug": "error-rates",
+    "priority": "medium",
+    "description": "Application and infrastructure error rate analysis",
+    "expected_metrics": ["error_count", "4xx_rate", "5xx_rate", "exception_rate"],
+    "ac_key": "error_monitor"
+  },
+  {
+    "name": "ECRR Compliance Dashboard",
+    "slug": "ecrr-compliance", 
+    "priority": "medium",
+    "description": "Agent activity and ECRR methodology compliance tracking",
+    "expected_metrics": ["agent_activity", "report_generated", "compliance_score"],
+    "ac_key": "ecrr_compliance"
+  },
+  {
+    "name": "BossCat Executive Overview",
+    "slug": "bosscat-executive",
+    "priority": "high",
+    "description": "High-level executive dashboard for BossCat OEM oversight",
+    "expected_metrics": ["overall_health", "key_sl1s", "compliance_status"],
+    "ac_key": "executive_overview"
+  }
+]

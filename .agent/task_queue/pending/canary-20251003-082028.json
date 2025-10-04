@@ -1,0 +1,27 @@
+{
+  "description": "Observability canary detected health problems",
+  "status": "pending",
+  "rollback_commands": [
+    "copy config.backup.yaml config.yaml",
+    "sc stop otelcol-contrib",
+    "sc start otelcol-contrib"
+  ],
+  "created_at": "2025-10-03T07:20:28Z",
+  "source": "canary",
+  "assigned_to": "codex",
+  "metrics": {
+    "timestamp": "2025-10-03T07:20:28Z",
+    "health_issues": 1,
+    "data_flow_ok": true
+  },
+  "validation_commands": [
+    "powershell -ExecutionPolicy Bypass -File verify-pipeline.ps1",
+    "powershell -ExecutionPolicy Bypass -File verify-integration.ps1"
+  ],
+  "recipe": "otlp_exporter_failure",
+  "priority": "high",
+  "id": "canary-20251003-082028",
+  "expected_output": "Collector healthy, canary test passes, signals flowing to SigNoz",
+  "title": "Canary Health Issues",
+  "type": "alert"
+}

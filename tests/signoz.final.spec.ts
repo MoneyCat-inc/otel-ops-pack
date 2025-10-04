@@ -1,4 +1,5 @@
 import { test, expect, Page } from "@playwright/test";
+import { setupErrorCapture } from './helpers/error-capture';
 
 const baseURL = process.env.SIGNOZ_URL || "http://localhost:8080";
 
@@ -56,6 +57,13 @@ async function ensureAuthenticated(page: Page) {
 }
 
 test.describe("SigNoz Final Automation", () => {
+  test.beforeEach(async ({ page }) => {
+    // Setup shared error capture system for page-based tests
+    if (page) {
+      await setupErrorCapture(page);
+    }
+  });
+
   test("SigNoz health check", async ({ request }) => {
     const response = await request.get("/api/v1/health");
     expect(response.status()).toBe(200);

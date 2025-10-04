@@ -1,59 +1,33 @@
 {
-  "maxJobs": 2,
-  "maxFiles": 10,
-  "maxLines": 200,
-  "jobTtlMs": 43200000,
-  "maxAttempts": 3,
-  "backoffMs": 900000,
-  "agentName": "tetragrammaton-orchestrator",
-  "description": "Tetragrammaton Agent Boilerplate - ORCH/IMPL/CORD role-based development system",
-  "role": "ORCH (Orchestrator) - Spec Authoring",
-  "capabilities": [
-    "spec_authoring",
-    "acceptance_criteria_definition",
-    "test_planning",
-    "guardrail_enforcement",
-    "performance_budget_management",
-    "ticket_template_generation"
-  ],
-  "guardrails": {
-    "noInlineStyles": true,
-    "enforceAria": true,
-    "reducedMotion": true,
-    "wcagAA": true,
-    "localFirst": true,
-    "respectLock": true,
-    "strictCSP": true,
-    "coopCoep": true
+  "errorRadar": {
+    "renotifyWindowHours": 6,
+    "maxLoudPerHourPerFp": 1,
+    "aggregateFlushIntervalSec": 60,
+    "registryTtlDays": 21,
+    "browserHook": true,
+    "enableProcessWarnings": true,
+    "enableUnhandledRejections": true,
+    "enableUncaughtExceptions": true,
+    "capture4xx": false,
+    "capture5xx": true
   },
-  "tetragrammaton": {
-    "roles": {
-      "ORCH": {
-        "name": "Orchestrator",
-        "goal": "Turn intent into small, testable work",
-        "owns": ["Specs", "Acceptance criteria", "Single source of truth (TASKS.md, DECISIONS.md)"],
-        "outputs": ["Tiny tickets with DoD", "Test notes", "Guardrails (CSP/a11y)", "Hand-off instructions"],
-        "neverDoes": ["Code changes", "Merges"]
-      },
-      "IMPL": {
-        "name": "Implementer", 
-        "goal": "Write code that meets the spec",
-        "owns": ["Scoped UI/engine changes", "PRs", "Guardrails (no inline styles, strict CSP, ARIA)"],
-        "outputs": ["PRs that satisfy acceptance criteria", "Unit/e2e tests"],
-        "neverDoes": ["Change spec", "Merge"]
-      },
-      "CORD": {
-        "name": "Coordinator",
-        "goal": "Keep repo healthy and pipeline green", 
-        "owns": ["CI/CD", "CSP/COOP/COEP headers", "Flaky-test quarantine", "SSOT generation", "Merges"],
-        "outputs": ["Merge approvals when PR + CI + SSOT align", "Hygiene PRs"],
-        "neverDoes": ["Feature ideation", "Large product refactors"]
-      }
-    },
-    "ticketTemplates": {
-      "ORCH": "ORCH-XXXX: Draft Spec + DoD for [Feature]",
-      "IMPL": "IMPL-XXXX: Implement [Feature] per spec ORCH-XXXX", 
-      "CORD": "CORD-XXXX: Review & merge [Feature] PR"
+  "services": {
+    "default": {
+      "serviceName": "otel-app",
+      "buildSha": "dev",
+      "environment": "development"
     }
+  },
+  "otel": {
+    "endpoint": "http://localhost:4318/v1/logs",
+    "serviceName": "error-radar",
+    "batchTimeout": 1000,
+    "batchSize": 512
+  },
+  "alerts": {
+    "newErrorThreshold": 1,
+    "persistentErrorThreshold": 50,
+    "timeWindowHours": 1,
+    "notificationChannels": ["sigNoz", "console"]
   }
 }

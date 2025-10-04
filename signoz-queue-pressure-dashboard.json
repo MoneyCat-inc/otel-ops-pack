@@ -199,6 +199,29 @@
           }
         },
         "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8}
+      },
+      {
+        "id": 6,
+        "title": "Canary Count (15m) — BossCat",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "sum_over_time((log_body_contains_windows_canary{dataset=\"resonai_analytics\"})[15m])",
+            "legendFormat": "canary_count_15m"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "thresholds": {
+              "steps": [
+                {"color": "red", "value": 0},
+                {"color": "green", "value": 1}
+              ]
+            }
+          }
+        },
+        "gridPos": {"h": 8, "w": 6, "x": 0, "y": 16}
       }
     ],
     "time": {

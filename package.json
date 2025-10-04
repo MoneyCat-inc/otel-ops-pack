@@ -46,6 +46,8 @@
     "agent:deploy": "tsx scripts/agent/deploy.ts",
     "agent:rollback": "tsx scripts/agent/rollback.ts",
     "agent:doctor": "pwsh -File scripts/agent/doctor.ps1",
+    "build:error-watcher": "tsc -p tsconfig.error-watcher.json",
+    "verify:error-watcher": "node scripts/agent/error-watcher/dist/smoke.js || true",
     "roadmap:examine": "tsx scripts/roadmap/examine.ts",
     "roadmap:clean": "tsx scripts/roadmap/clean.ts",
     "roadmap:report": "tsx scripts/roadmap/report.ts",
@@ -62,17 +64,21 @@
     "install:pinned": "corepack enable && corepack prepare pnpm@9.12.0 --activate && pnpm install",
     "test:signoz": "playwright test tests/signoz.final.spec.ts -c playwright.signoz.config.ts",
     "test:signoz:debug": "playwright test tests/signoz.final.spec.ts -c playwright.signoz.config.ts --debug",
-    "automate:signoz": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/automate-signoz-setup.ps1"
+    "automate:signoz": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/automate-signoz-setup.ps1",
+    "export:signoz:playwright": "node scripts/signoz-export.mjs"
   },
   "dependencies": {
-    "@opentelemetry/api": "^1.8.0",
+    "@opentelemetry/api": "^1.9.0",
+    "@opentelemetry/api-logs": "^0.205.0",
     "@opentelemetry/auto-instrumentations-node": "^0.64.1",
     "@opentelemetry/exporter-jaeger": "^1.18.1",
+    "@opentelemetry/exporter-logs-otlp-http": "^0.205.0",
     "@opentelemetry/exporter-otlp-http": "^0.26.0",
     "@opentelemetry/instrumentation": "^0.45.0",
     "@opentelemetry/instrumentation-fs": "^0.25.2",
     "@opentelemetry/instrumentation-http": "^0.45.0",
     "@opentelemetry/resources": "^1.18.1",
+    "@opentelemetry/sdk-logs": "^0.205.0",
     "@opentelemetry/sdk-node": "^0.45.1",
     "@opentelemetry/semantic-conventions": "^1.18.1",
     "@prisma/client": "^5.7.1",
@@ -142,4 +148,3 @@
   "author": "Resonai Team",
   "license": "MIT"
 }
-

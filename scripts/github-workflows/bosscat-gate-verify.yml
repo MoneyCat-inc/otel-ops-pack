@@ -1,0 +1,61 @@
+name: BossCat Gate Verify
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - synthetic/**.py
+      - scripts/**.ps1
+      - scripts/**.ts
+      - docs/BossCat/**.md
+jobs:
+  verify:
+    runs-on: windows-latest
+    env:
+      SIGNOZ_URL: http://localhost:8080
+      SERVICE_NAME: synthetic-windows-check
+      # prefer API key in Actions secrets (Settings → Secrets → Actions)
+      SIGNOZ_API_KEY: ${{ secrets.SIGNOZ_API_KEY }}
+      # or use cookie if you must:
+      # SIGNOZ_SESSION_COOKIE: ${{ secrets.SIGNOZ_SESSION_COOKIE }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node & PNPM
+        uses: pnpm/action-setup@v4
+        with: { version: 9 }
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+
+      - name: Install Python deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install opentelemetry-sdk opentelemetry-exporter-otlp-proto-grpc opentelemetry-instrumentation
+
+      - name: Install JS deps & Playwright
+        run: |
+          pnpm install
+          npx playwright install --with-deps
+
+      - name: Fire synthetic (local OTLP → collector)
+        run: python synthetic/send_synthetic_otel_simple.py
+
+      - name: Verify ingestion via SigNoz UI (API key or cookie)
+        shell: pwsh
+        run: .\scripts\verify-synthetic-ingestion-enhanced.ps1
+
+      - name: Capture SigNoz screenshots
+        run: pnpm playwright test scripts/signoz-snapshot.spec.ts
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: bosscat-gate-evidence
+          path: |
+            artifacts/**
+            logs/**/*
+            docs/BossCat/*_SUCCESS_REPORT.md
+            docs/BossCat/gate_readiness_test_report.md

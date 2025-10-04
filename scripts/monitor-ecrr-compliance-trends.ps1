@@ -33,8 +33,8 @@ function Get-CurrentComplianceMetrics {
     Write-Host "?? Running compliance validation..." -ForegroundColor Yellow
 
     $reportOutput = $script:ComplianceReportPath
-    $validationScript = Join-Path $PSScriptRoot 'validate-ecrr-compliance.ps1'
-    $validationResult = & $validationScript -ReportPath $script:ReportsDirectory -OutputPath $reportOutput
+    $validationScript = Join-Path $PSScriptRoot 'unified-ecrr-compliance.ps1'
+    $validationResult = & $validationScript -ReportsPath $script:ReportsDirectory -OutputPath (Split-Path $reportOutput -Parent)
 
     if ($LASTEXITCODE -gt 2) {
         Write-Warning "Compliance validation failed with exit code $LASTEXITCODE"
@@ -48,22 +48,20 @@ function Get-CurrentComplianceMetrics {
 
     $report = Get-Content $reportOutput -Raw | ConvertFrom-Json
 
-    $totalPossible = $report.Total_Reports * 12
-    $overallScore = $report.Overall_Score
-    $complianceRate = if ($totalPossible -gt 0) {
-        [math]::Round(($overallScore / $totalPossible) * 100, 2)
-    } else {
-        0
-    }
+    # Use unified compliance data structure
+    $totalReports = $report.metrics.totalReports
+    $compliantReports = $report.fullyCompliantCount
+    $nonCompliantReports = $report.nonCompliant.Count
+    $complianceRate = $report.complianceRates.fullyCompliant
 
     return [ordered]@{
         Timestamp = Get-Date -Format "yyyy-MM-ddTHH:mm:ssZ"
-        OverallScore = $overallScore
-        TotalReports = $report.Total_Reports
-        PassedReports = ($report.Reports | Where-Object { $_.Score -eq $_.Total }).Count
-        FailedReports = ($report.Reports | Where-Object { $_.Score -lt $_.Total }).Count
+        OverallScore = $report.metrics.hasFourSection + $report.metrics.hasEcrrGate + $report.metrics.hasActor + $report.metrics.hasProductionMarker
+        TotalReports = $totalReports
+        PassedReports = $compliantReports
+        FailedReports = $nonCompliantReports
         ComplianceRate = $complianceRate
-        Reports = $report.Reports
+        Reports = $report.files
     }
 }
 
@@ -170,12 +168,12 @@ $($TrendAnalysis.Recommendation)
 ### Reports with Issues
 "@
 
-    $failedReports = $CurrentMetrics.Reports | Where-Object { $_.Score -lt $_.Total }
+    $failedReports = $CurrentMetrics.Reports | Where-Object { -not $_.Compliant }
     if ($failedReports.Count -gt 0) {
         foreach ($failedReport in $failedReports) {
             $report += @"
 
-**$($failedReport.File)** - Score: $($failedReport.Score)/$($failedReport.Total)
+**$($failedReport.File)** - Score: $($failedReport.Score)/100
 Issues: $($failedReport.Issues.Count)
 "@
         }

@@ -26,6 +26,22 @@ processors:
       - env
       - system
     timeout: 2s
+  # Error processing processors
+  attributes/error_tags:
+    actions:
+      - key: error.fp
+        action: upsert
+        from_attribute: error.fp
+      - key: error.known
+        action: upsert
+        from_attribute: error.known
+  filter/error_noise_reduction:
+    logs:
+      # Example: drop ultra-chatty known warnings (we already aggregate in-app)
+      exclude:
+        match_type: strict
+        expressions:
+          - 'resource.attributes["error.known"] == true and body == "Error occurred again"'
   signozspanmetrics/delta:
     metrics_exporter: signozclickhousemetrics
     metrics_flush_interval: 60s
@@ -119,6 +135,8 @@ service:
       receivers:
         - otlp
       processors:
+        - attributes/error_tags
+        - filter/error_noise_reduction
         - batch
       exporters:
         - clickhouselogsexporter
