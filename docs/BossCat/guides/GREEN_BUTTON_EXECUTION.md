@@ -39,7 +39,7 @@ CI is green and all checks are satisfied.
 - **Action:** Auto-runs BossCat verification lane
 
 ### **Lessons Learned Log**
-- **File:** `docs/BossCat/BOSSCAT_LOG.md`
+- **File:** `docs/BossCat/reports/BOSSCAT_LOG.md`
 - **Entry:** "UI lag mitigated via 90s polling; API-key/cookie fallback verified"
 
 ### **Auto-merge Tag**

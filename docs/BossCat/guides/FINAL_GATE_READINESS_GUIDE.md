@@ -133,9 +133,9 @@ pwsh -File scripts\bosscat-gate-verification-complete.ps1
 
 ### **Documentation:**
 - ✅ **Windows Collector Runbook:** `docs/README-Windows-Collector.md`
-- ✅ **Success Report:** `docs/BossCat/WINDOWS_COLLECTOR_SUCCESS_REPORT.md`
-- ✅ **Gate Readiness:** `docs/BossCat/gate_readiness_test_report.md`
-- ✅ **Final Guide:** `docs/BossCat/FINAL_GATE_READINESS_GUIDE.md`
+- ✅ **Success Report:** `docs/BossCat/reports/WINDOWS_COLLECTOR_SUCCESS_REPORT.md`
+- ✅ **Gate Readiness:** `docs/BossCat/reports/gate_readiness_test_report.md`
+- ✅ **Final Guide:** `docs/BossCat/guides/FINAL_GATE_READINESS_GUIDE.md`
 
 ---
 

@@ -58,10 +58,10 @@ The BossCat gate protocol has been successfully aligned across all documentation
 ## 📋 **Documentation Alignment Status**
 
 ### **Updated Documents**
-- ✅ **`docs/BossCat/IMMUTABLE_PERSONA_v1.1.md`** — New authoritative persona
-- ✅ **`docs/BossCat/pr_template_example.md`** — PR template with gate signal
-- ✅ **`docs/BossCat/gate_readiness_test_report.md`** — Gate readiness assessment
-- ✅ **`docs/BossCat/GATE_PROTOCOL_ALIGNMENT_REPORT.md`** — This alignment report
+- ✅ **`docs/BossCat/persona/IMMUTABLE_PERSONA_v1.1.md`** — New authoritative persona
+- ✅ **`docs/BossCat/templates/pr_template_example.md`** — PR template with gate signal
+- ✅ **`docs/BossCat/reports/gate_readiness_test_report.md`** — Gate readiness assessment
+- ✅ **`docs/BossCat/reports/GATE_PROTOCOL_ALIGNMENT_REPORT.md`** — This alignment report
 
 ### **Consistent References**
 - ✅ **AGENTS.md** — BossCat charter and governance framework
