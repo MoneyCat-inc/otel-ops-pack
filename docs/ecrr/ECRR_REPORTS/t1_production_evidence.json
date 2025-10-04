@@ -1,6 +1,6 @@
 {
   "ok": true,
-  "ts": "2025-10-04T21:57:46.795105+00:00",
+  "ts": "2025-10-04T22:23:29.893673+00:00",
   "algo": "rolling",
   "params": {
     "window": 256,
@@ -14,8 +14,8 @@
     "kernelMs": 0.0,
     "d2hMs": 0.0,
     "gpuMs": 0.0,
-    "cpuMs": 1.5060799996717833,
-    "accMs": 1.5060799996717833
+    "cpuMs": 1.3437800007523037,
+    "accMs": 1.3437800007523037
   },
   "parity": {
     "maxAbsDiff": 0.0,
@@ -42,8 +42,8 @@
   "deployment": {
     "environment": "production",
     "version": "1.0.0",
-    "deployed_at": "2025-10-04T21:57:46.567597+00:00",
-    "gitSha": "b8d9761f893210ef1be4b89b7076ed784b64472b",
+    "deployed_at": "2025-10-04T22:23:29.716828+00:00",
+    "gitSha": "e6dda800e2e12c97cccb58aee1891c4990053cef",
     "deployedBy": "fubum"
   }
 }

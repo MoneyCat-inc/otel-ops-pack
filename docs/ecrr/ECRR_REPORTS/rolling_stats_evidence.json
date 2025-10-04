@@ -1,6 +1,6 @@
 {
   "ok": true,
-  "ts": "2025-10-04T21:56:54.179322+00:00",
+  "ts": "2025-10-04T22:23:27.661459+00:00",
   "algo": "rolling",
   "params": {
     "window": 256,
@@ -14,8 +14,8 @@
     "kernelMs": 0.0,
     "d2hMs": 0.0,
     "gpuMs": 0.0,
-    "cpuMs": 2.3558699977002107,
-    "accMs": 2.3558699977002107
+    "cpuMs": 1.3525800008210354,
+    "accMs": 1.3525800008210354
   },
   "parity": {
     "maxAbsDiff": 0.0,
@@ -42,6 +42,6 @@
   "deployment": {
     "environment": "development",
     "version": "dev-local",
-    "deployed_at": "2025-10-04T21:56:54.179295+00:00"
+    "deployed_at": "2025-10-04T22:23:27.661441+00:00"
   }
 }
