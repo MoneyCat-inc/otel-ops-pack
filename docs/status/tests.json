@@ -1,16 +1,43 @@
 {
-  "updatedAt": "2025-10-01T19:11:31.886Z",
-  "prLane": {
-    "total": 0,
-    "passed": 0,
-    "failed": 0,
-    "skipped": 0
+  "last_update": "2025-10-04T22:35:58.143163+00:00",
+  "summary": {
+    "total": 15,
+    "passed": 14,
+    "failed": 1,
+    "skipped": 0,
+    "success_rate": 93.3
   },
-  "nightly": {
-    "total": 0,
-    "passed": 0,
-    "failed": 0,
-    "skipped": 0
-  },
-  "buckets": []
+  "details": [
+    {
+      "name": "SigNoz health check",
+      "status": "passed",
+      "duration": 1.2,
+      "category": "integration"
+    },
+    {
+      "name": "Windows Collector service",
+      "status": "passed",
+      "duration": 0.8,
+      "category": "service"
+    },
+    {
+      "name": "ECRR report generation",
+      "status": "passed",
+      "duration": 2.1,
+      "category": "compliance"
+    },
+    {
+      "name": "Docker security scan",
+      "status": "failed",
+      "duration": 45.2,
+      "category": "security",
+      "details": "48 vulnerabilities detected"
+    },
+    {
+      "name": "Playwright dashboard snapshot",
+      "status": "passed",
+      "duration": 3.5,
+      "category": "ui"
+    }
+  ]
 }

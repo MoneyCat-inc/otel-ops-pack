@@ -1,78 +1,37 @@
 {
-  "M1 Foundations": [
-    [
-      "Instant Practice (/try)",
-      "red"
-    ],
-    [
-      "Warmup FSM + Reflection",
-      "red"
-    ],
-    [
-      "Local IndexedDB storage",
-      "red"
-    ],
-    [
-      "Safety (silence pause, clipping)",
-      "red"
-    ]
-  ],
-  "M1.5 Hardening": [
-    [
-      "PR Test Lane (smoke+pilot-core)",
-      "red"
-    ],
-    [
-      "Analytics + Live Dashboard",
-      "red"
-    ],
-    [
-      "Cohort gating + rollback",
-      "red"
-    ],
-    [
-      "Accessibility smokes",
-      "red"
-    ]
-  ],
-  "M2 Core Drills": [
-    [
-      "Pitch Band drill",
-      "red"
-    ],
-    [
-      "Resonance buckets",
-      "red"
-    ],
-    [
-      "Prosody mini-phrases",
-      "red"
-    ],
-    [
-      "Orb v2 (shimmer, hue)",
-      "red"
-    ],
-    [
-      "Strain guardrails",
-      "red"
-    ]
-  ],
-  "M3 Adaptive": [
-    [
-      "Adaptive planner",
-      "red"
-    ],
-    [
-      "Progress dashboard v1",
-      "red"
-    ],
-    [
-      "Carryover drills",
-      "red"
-    ],
-    [
-      "Cohort analytics & data-control",
-      "red"
-    ]
+  "last_update": "2025-10-04T22:35:58.142819+00:00",
+  "items": [
+    {
+      "title": "Implement automated status dashboard updates",
+      "owner": "BossCat OEM",
+      "status": "In Progress",
+      "persona": "pm",
+      "priority": "High",
+      "description": "Real-time monitoring of SigNoz and Windows Collector"
+    },
+    {
+      "title": "Implement security remediation plan",
+      "owner": "BossCat OEM",
+      "status": "Planned",
+      "persona": "imp",
+      "priority": "Critical",
+      "description": "Address 48 detected vulnerabilities in Docker images"
+    },
+    {
+      "title": "Enhance T1 rolling-stats automation",
+      "owner": "BossCat OEM",
+      "status": "Completed",
+      "persona": "dev",
+      "priority": "High",
+      "description": "SigNoz integration improvements and ECRR reporting"
+    },
+    {
+      "title": "BossCat documentation reorganization",
+      "owner": "BossCat OEM",
+      "status": "Completed",
+      "persona": "docs",
+      "priority": "Medium",
+      "description": "Structured subdirectories for better navigation"
+    }
   ]
 }

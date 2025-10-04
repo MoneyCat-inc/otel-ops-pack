@@ -1,0 +1,29 @@
+{
+  "last_update": "2025-10-04T22:35:58.142382+00:00",
+  "kpis": [
+    {
+      "label": "SigNoz Status",
+      "value": "unhealthy: ok",
+      "status": "bad",
+      "details": "Version: v0.96.1"
+    },
+    {
+      "label": "Windows Collector",
+      "value": "running",
+      "status": "ok",
+      "details": "Service: otelcol-contrib"
+    },
+    {
+      "label": "ECRR Compliance",
+      "value": "Active",
+      "status": "ok",
+      "details": "**Agent:** BossCat OEM (Executive Overseer Manager) | **Operation:** Directory Structure Reorganization | **Status:** ✅ **COMPLETED SUCCESSFULLY**"
+    },
+    {
+      "label": "Repository Health",
+      "value": "Excellent",
+      "status": "ok",
+      "details": "BossCat OEM monitoring active"
+    }
+  ]
+}
