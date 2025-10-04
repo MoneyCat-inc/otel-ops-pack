@@ -1,0 +1,97 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "BossCat GPU Pattern-Sifter Evidence Schema",
+  "description": "Schema for validating evidence JSON from GPU Pattern-Sifter EPIC lanes",
+  "type": "object",
+  "required": [
+    "ok",
+    "ts",
+    "algo",
+    "params",
+    "timings",
+    "parity",
+    "env",
+    "run"
+  ],
+  "properties": {
+    "ok": {
+      "type": "boolean",
+      "description": "Whether the operation completed successfully"
+    },
+    "ts": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of operation completion"
+    },
+    "algo": {
+      "type": "string",
+      "enum": ["rolling", "pfac", "benchmark", "validation"],
+      "description": "Algorithm type being executed"
+    },
+    "params": {
+      "type": "object",
+      "description": "Algorithm-specific parameters",
+      "properties": {
+        "window": {"type": "integer", "minimum": 1},
+        "stride": {"type": "integer", "minimum": 1},
+        "patterns": {"type": "integer", "minimum": 1},
+        "iterations": {"type": "integer", "minimum": 1}
+      }
+    },
+    "timings": {
+      "type": "object",
+      "required": ["gpuMs", "cpuMs"],
+      "properties": {
+        "h2dMs": {"type": "number", "minimum": 0},
+        "kernelMs": {"type": "number", "minimum": 0},
+        "d2hMs": {"type": "number", "minimum": 0},
+        "gpuMs": {"type": "number", "minimum": 0},
+        "cpuMs": {"type": "number", "minimum": 0},
+        "accMs": {"type": "number", "minimum": 0}
+      }
+    },
+    "parity": {
+      "type": "object",
+      "properties": {
+        "maxAbsDiff": {"type": "number", "minimum": 0},
+        "matches": {"type": "integer", "minimum": 0},
+        "accuracy": {"type": "number", "minimum": 0, "maximum": 1}
+      }
+    },
+    "env": {
+      "type": "object",
+      "required": ["providers"],
+      "properties": {
+        "providers": {
+          "type": "array",
+          "items": {"type": "string"},
+          "contains": {"enum": ["cuda", "cpu"]}
+        },
+        "cudaVersion": {"type": "string"},
+        "wsl_detected": {"type": "boolean"}
+      }
+    },
+    "run": {
+      "type": "object",
+      "required": ["providerFinal", "fellBackToCpu"],
+      "properties": {
+        "providerFinal": {
+          "type": "string",
+          "enum": ["cuda", "cpu"]
+        },
+        "fellBackToCpu": {"type": "boolean"},
+        "gpu_fallback": {"type": "boolean"},
+        "note": {"type": "string"}
+      }
+    },
+    "hashes": {
+      "type": "object",
+      "properties": {
+        "inputSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "patternsSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "outputSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      }
+    }
+  },
+  "additionalProperties": false
+}
