@@ -1,0 +1,41 @@
+{
+  "ok": true,
+  "ts": "2025-10-04T04:39:38.435905+00:00",
+  "algo": "rolling",
+  "params": {
+    "window": 256,
+    "stride": 64,
+    "iterations": 10
+  },
+  "timings": {
+    "h2dMs": 12.7,
+    "kernelMs": 35.4,
+    "d2hMs": 7.8,
+    "gpuMs": 55.89999999999999,
+    "cpuMs": 1.7160099996544886,
+    "accMs": 55.89999999999999
+  },
+  "parity": {
+    "maxAbsDiff": 0.0,
+    "meanDiff": 0.0,
+    "stddevMaxDiff": 0.0,
+    "stddevMeanDiff": 0.0
+  },
+  "env": {
+    "providers": [
+      "cuda",
+      "cpu"
+    ],
+    "cudaVersion": "12.1",
+    "wsl_detected": false
+  },
+  "run": {
+    "providerFinal": "cuda",
+    "fellBackToCpu": false,
+    "gpu_fallback": false,
+    "note": null
+  },
+  "hashes": {
+    "inputSha256": "abc123def456789..."
+  }
+}
