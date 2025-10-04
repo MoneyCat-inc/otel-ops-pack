@@ -1,6 +1,6 @@
 {
   "ok": true,
-  "ts": "2025-10-04T21:56:54.179322+00:00",
+  "ts": "2025-10-04T21:57:46.795105+00:00",
   "algo": "rolling",
   "params": {
     "window": 256,
@@ -14,8 +14,8 @@
     "kernelMs": 0.0,
     "d2hMs": 0.0,
     "gpuMs": 0.0,
-    "cpuMs": 2.3558699977002107,
-    "accMs": 2.3558699977002107
+    "cpuMs": 1.5060799996717833,
+    "accMs": 1.5060799996717833
   },
   "parity": {
     "maxAbsDiff": 0.0,
@@ -40,8 +40,10 @@
     "inputSha256": "5ee68e1c8179dd07ee40b57a9634696c74e907ab18baa9a08fd6fb8e2996b27d"
   },
   "deployment": {
-    "environment": "development",
-    "version": "dev-local",
-    "deployed_at": "2025-10-04T21:56:54.179295+00:00"
+    "environment": "production",
+    "version": "1.0.0",
+    "deployed_at": "2025-10-04T21:57:46.567597+00:00",
+    "gitSha": "b8d9761f893210ef1be4b89b7076ed784b64472b",
+    "deployedBy": "fubum"
   }
 }
