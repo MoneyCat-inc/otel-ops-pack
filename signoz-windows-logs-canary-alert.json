@@ -14,7 +14,7 @@
     "query": {
       "queryType": "logs",
       "logsQuery": {
-        "query": "(log.source = 'windows_event_log' AND body contains 'windows-canary') OR (log.file.path contains 'windows-canary-test.log' AND body contains 'windows-canary')",
+        "query": "((log.source = 'windows_event_log' AND body contains 'windows-canary') OR (log.file.path contains 'windows-canary-test.log' AND body contains 'windows-canary')) AND attributes['dataset'] = 'resonai_analytics'",
         "groupBy": ["log.source", "log.file.path"],
         "legendFormat": "{{log.source}} - {{log.file.path}} Canaries"
       }
@@ -29,7 +29,8 @@
     },
     "notificationChannels": [
       "email-default",
-      "slack-default"
+      "slack-default",
+      "webhook-default"
     ]
   }
 }

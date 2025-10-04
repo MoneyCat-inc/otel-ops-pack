@@ -1,7 +1,11 @@
 import { test, expect } from '@playwright/test';
+import { setupErrorCapture } from './helpers/error-capture';
 
 test.describe('MEMX Chromium Debug Tests', () => {
   test.beforeEach(async ({ page }) => {
+    // Setup shared error capture system
+    await setupErrorCapture(page);
+    
     // Enable console logging for debugging
     page.on('console', msg => {
       console.log(`[${msg.type()}] ${msg.text()}`);
@@ -31,14 +35,17 @@ test.describe('MEMX Chromium Debug Tests', () => {
     const title = await page.title();
     console.log(`Page title: ${title}`);
     
-    // Check for console errors
-    const errors: string[] = [];
-    page.on('console', msg => {
-      if (msg.type() === 'error') {
-        errors.push(msg.text());
-        console.log(`[CONSOLE ERROR] ${msg.text()}`);
-      }
+    // Check for console errors using shared error capture
+    const errorData = await page.evaluate(() => {
+      const capture = (window as any).__ERROR_CAPTURE_TEST__;
+      return capture ? {
+        errors: capture.errors.length,
+        consoleErrors: capture.consoleErrors.length,
+        promiseRejections: capture.promiseRejections.length
+      } : { errors: 0, consoleErrors: 0, promiseRejections: 0 };
     });
+    
+    console.log(`[ERROR CAPTURE] Errors: ${errorData.errors}, Console Errors: ${errorData.consoleErrors}, Promise Rejections: ${errorData.promiseRejections}`);
     
     // Wait for page to load
     await page.waitForLoadState('networkidle');

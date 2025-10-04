@@ -1,6 +1,6 @@
 # Windows Canary Alert Import Summary
 
-**Generated**: 2025-10-01 21:59:58  
+**Generated**: 2025-10-03 16:25:11  
 **Actor**: Cursor-Local (Observability Copilot)  
 **Alert**: Windows Logs Canary Absence Detection
 
@@ -14,7 +14,7 @@
 ## Query Details
 
 \\\
-(log.source = 'windows_event_log' AND body contains 'windows-canary') OR (log.file.path contains 'windows-canary-test.log' AND body contains 'windows-canary')
+((log.source = 'windows_event_log' AND body contains 'windows-canary') OR (log.file.path contains 'windows-canary-test.log' AND body contains 'windows-canary')) AND attributes['dataset'] = 'resonai_analytics'
 \\\
 
 ## Import Status

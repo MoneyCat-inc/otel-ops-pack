@@ -64,3 +64,6 @@ queryex/
 *.png
 *.svg
 
+# SigNoz local artifacts and secrets
+scripts/secrets/*.ps1
+artifacts/signoz/

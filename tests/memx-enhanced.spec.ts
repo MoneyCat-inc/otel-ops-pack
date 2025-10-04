@@ -1,7 +1,11 @@
 import { test, expect } from '@playwright/test';
+import { setupErrorCapture } from './helpers/error-capture';
 
 test.describe('MEMX Enhanced Tests', () => {
   test.beforeEach(async ({ page }) => {
+    // Setup shared error capture system
+    await setupErrorCapture(page);
+    
     // Navigate to MEMX labs page
     await page.goto('/labs/memx');
   });

@@ -1,0 +1,21 @@
+{
+  "alert": {
+    "name": "Collector Memory Pressure >80%",
+    "description": "Alert when OTel collector memory usage exceeds 80%",
+    "query": {
+      "metricsQuery": {
+        "query": "sum(otelcol_process_memory_rss) / clamp_max(sum(otelcol_process_memory_limit), 1) * 100"
+      }
+    },
+    "condition": {
+      "threshold": 80,
+      "operator": "above",
+      "evaluationWindow": "5m"
+    },
+    "labels": {
+      "severity": "warning",
+      "component": "collector",
+      "metric": "memory_pressure"
+    }
+  }
+}

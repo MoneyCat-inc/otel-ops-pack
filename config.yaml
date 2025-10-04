@@ -1,16 +1,18 @@
 extensions:
   health_check:
-    endpoint: 0.0.0.0:13134
+    endpoint: 0.0.0.0:13133
     path: /healthz
+  zpages:
+    endpoint: 0.0.0.0:55679
 
 receivers:
   # OTLP receivers for direct application log ingestion
   otlp:
     protocols:
       grpc:
-        endpoint: 127.0.0.1:5317
+        endpoint: 0.0.0.0:4317
       http:
-        endpoint: 0.0.0.0:5318
+        endpoint: 0.0.0.0:4318
   windowseventlog/application:
     channel: Application
     start_at: end
@@ -49,6 +51,8 @@ processors:
         - attributes["winlog.event_id"] == 6006
         - attributes["winlog.event_id"] == 7036
         - IsMatch(body, "(?i)windows update|service control manager")
+        - attributes["winlog.event_id"] == 10016
+        - (attributes["service.name"] == "otelcol" and IsMatch(body, "(?i)cannot create agent without orgId"))
   attributes/redact_sensitive:
     actions:
       - key: http.request.header.authorization
@@ -57,11 +61,18 @@ processors:
         action: delete
       - key: http.request.header.x-api-key
         action: delete
+      - key: http.request.header.cookie
+        action: delete
   resource/defaults:
     attributes:
       - key: deployment.env
         value: local
         action: upsert
+  transform/canary_dataset:
+    log_statements:
+      - context: log
+        statements:
+          - set(attributes["dataset"], "resonai_analytics") where IsMatch(body, "(?i)windows-canary") or attributes["log.file.path"] == "C\\logs\\windows-canary-test.log"
   transform/queue_attributes:
     log_statements:
       - context: log
@@ -91,7 +102,17 @@ exporters:
 service:
   extensions:
     - health_check
+    - zpages
   pipelines:
+    traces:
+      receivers:
+        - otlp
+      processors:
+        - memory_limiter
+        - resource/defaults
+        - batch/logs
+      exporters:
+        - otlp
     logs:
       receivers:
         - otlp
@@ -104,6 +125,7 @@ service:
         - filter/drop_noise
         - attributes/redact_sensitive
         - resource/defaults
+        - transform/canary_dataset
         - transform/queue_attributes
         - batch/logs
       exporters:
