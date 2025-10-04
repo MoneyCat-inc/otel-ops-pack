@@ -66,8 +66,8 @@ Successfully enabled and configured the Windows Collector service, achieving **1
 - **`docs/README-Windows-Collector.md`** — Operations runbook
 
 ### **Reports Updated**
-- **`docs/BossCat/gate_readiness_test_report.md`** — Updated to 100/100 score
-- **`docs/BossCat/WINDOWS_COLLECTOR_SUCCESS_REPORT.md`** — This success report
+- **`docs/BossCat/reports/gate_readiness_test_report.md`** — Updated to 100/100 score
+- **`docs/BossCat/reports/WINDOWS_COLLECTOR_SUCCESS_REPORT.md`** — This success report
 
 ### **Configuration Updated**
 - **`config.yaml`** — Updated endpoints and health check configuration

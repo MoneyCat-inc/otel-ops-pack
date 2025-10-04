@@ -38,9 +38,9 @@ Files added:
 - scripts/bosscat-gate-one-liner.ps1
 - scripts/verify-synthetic-ingestion-enhanced.ps1
 - synthetic/send_synthetic_otel_simple.py
-- docs/BossCat/FINAL_GATE_READINESS_GUIDE.md
-- docs/BossCat/CI_INTEGRATION_GUIDE.md
-- docs/BossCat/FINAL_COPY_PASTE_COMMANDS.md
+- docs/BossCat/guides/FINAL_GATE_READINESS_GUIDE.md
+- docs/BossCat/guides/CI_INTEGRATION_GUIDE.md
+- docs/BossCat/templates/FINAL_COPY_PASTE_COMMANDS.md
 
 Configuration updated:
 - config.yaml: Added traces pipeline for complete observability
