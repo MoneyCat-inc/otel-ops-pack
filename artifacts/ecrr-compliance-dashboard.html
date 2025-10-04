@@ -28,25 +28,25 @@
     <div class="container">
         <div class="header">
             <h1>🔍 ECRR Compliance Dashboard</h1>
-            <p>Automated compliance monitoring and reporting</p>
+            <p>Unified compliance monitoring and reporting</p>
         </div>
         
         <div class="metrics">
             <div class="metric">
-                <div class="metric-value warning">93.15%</div>
+                <div class="metric-value fail">67.1%</div>
                 <div class="metric-label">Compliance Rate</div>
             </div>
             <div class="metric">
-                <div class="metric-value">68</div>
+                <div class="metric-value">49</div>
                 <div class="metric-label">Compliant Files</div>
             </div>
             <div class="metric">
-                <div class="metric-value">5</div>
+                <div class="metric-value">24</div>
                 <div class="metric-label">Non-Compliant Files</div>
             </div>
             <div class="metric">
-                <div class="metric-value pass">97.26</div>
-                <div class="metric-label">Average Score</div>
+                <div class="metric-value">73</div>
+                <div class="metric-label">Total Reports</div>
             </div>
         </div>
         
@@ -56,454 +56,602 @@
                 <tr>
                     <th>File</th>
                     <th>Status</th>
-                    <th>Score</th>
+                    <th>Four Section</th>
+                    <th>ECRR Gate</th>
+                    <th>Actor</th>
+                    <th>Production</th>
                     <th>Issues</th>
-                    <th>Last Modified</th>
                 </tr>
             </thead>
             <tbody>                <tr>
                     <td>2025-01-02-agent-doctor-rollout-merge.md</td>
-                    <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
-                    <td class="issues">None</td>
-                    <td>2025-10-03 06:52</td>
+                    <td><span class="status-fail">❌ FAIL</span></td>
+                    <td>✅</td>
+                    <td>❌</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td class="issues">missing_ecrr_gate</td>
                 </tr>                <tr>
                     <td>2025-09-20-ecrr-canary-deployment-ready.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-02 00:26</td>
                 </tr>                <tr>
                     <td>2025-09-20-ecrr-canary-enhancement.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-02 00:26</td>
                 </tr>                <tr>
                     <td>2025-09-20-ecrr-canary-scheduled-run.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-02 00:26</td>
                 </tr>                <tr>
                     <td>2025-09-20-ecrr-implementation.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-02 00:26</td>
                 </tr>                <tr>
                     <td>2025-09-20-ecrr-verification.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-02 00:26</td>
                 </tr>                <tr>
                     <td>2025-09-20-readme-ecrr-integration.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-02 00:26</td>
                 </tr>                <tr>
                     <td>2025-09-21-ci-validation.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-02 00:26</td>
                 </tr>                <tr>
                     <td>2025-09-21-doe-harness-enhancement.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-02 00:26</td>
                 </tr>                <tr>
                     <td>2025-09-22-codex-local-docs-integration.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-02 00:34</td>
                 </tr>                <tr>
                     <td>2025-09-22-comfort-cat-compliance.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-02 00:34</td>
                 </tr>                <tr>
                     <td>2025-09-22-comfort-cat-folder-duplication.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-02 00:26</td>
                 </tr>                <tr>
                     <td>2025-09-22-monitoring-automation.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-02 00:26</td>
                 </tr>                <tr>
                     <td>2025-09-22-monitoring-enhancement.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-02 00:26</td>
                 </tr>                <tr>
                     <td>2025-09-22-monitoring-infrastructure-setup.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-02 00:26</td>
                 </tr>                <tr>
                     <td>2025-09-22-observability-copilot-health-check.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-02 00:26</td>
                 </tr>                <tr>
                     <td>2025-09-22-observability-copilot-setup.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-02 00:26</td>
                 </tr>                <tr>
                     <td>2025-09-22-optimized-pipeline-deployment.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-02 00:26</td>
                 </tr>                <tr>
                     <td>2025-09-22-post-merge-validation.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-02 00:26</td>
                 </tr>                <tr>
                     <td>2025-09-22-resonai-session-validation.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-02 00:34</td>
                 </tr>                <tr>
                     <td>2025-09-22-signoz-ui-and-drilldown-assets.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-02 00:26</td>
                 </tr>                <tr>
                     <td>2025-09-22-stakeholder-map-validation.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-02 00:26</td>
                 </tr>                <tr>
                     <td>2025-09-22-terminal-commands-summary.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-02 00:26</td>
                 </tr>                <tr>
                     <td>2025-09-22-windows-collector-reset-and-canary.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-02 00:26</td>
                 </tr>                <tr>
                     <td>2025-09-27-component-verification-ecrr.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-02 00:26</td>
                 </tr>                <tr>
                     <td>2025-09-27-e2-ratio-optimization-sprint.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-02 00:26</td>
                 </tr>                <tr>
                     <td>2025-09-27-health-endpoint-consistency-rollout-ecrr.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-02 00:26</td>
                 </tr>                <tr>
                     <td>2025-09-27-memx-chromium-compatibility-rollout-ecrr.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-02 00:26</td>
                 </tr>                <tr>
                     <td>2025-09-27-pressure-monitoring-deployment.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-02 00:26</td>
                 </tr>                <tr>
                     <td>2025-09-27-rollout-merge-api-token-dashboard-ecrr.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-02 00:26</td>
                 </tr>                <tr>
                     <td>2025-09-28-automated-compliance-monitoring-implementation.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-02 00:26</td>
                 </tr>                <tr>
                     <td>2025-09-28-compliance-alert-verification.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-02 00:26</td>
                 </tr>                <tr>
                     <td>2025-09-28-cursor-agent-deployment.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-02 00:26</td>
                 </tr>                <tr>
                     <td>2025-09-28-phase4-rollout.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-02 00:26</td>
                 </tr>                <tr>
                     <td>2025-09-28-post-launch-ecrr-verification.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-02 00:26</td>
                 </tr>                <tr>
                     <td>2025-09-28-queue-telemetry-signoz-validation.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-02 00:11</td>
                 </tr>                <tr>
                     <td>2025-09-28-task-task-a11y-001.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-02 00:26</td>
                 </tr>                <tr>
                     <td>2025-09-29-ecrr-action-items-and-recommendations.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-02 00:26</td>
                 </tr>                <tr>
                     <td>2025-09-29-ecrr-consolidation-and-redaction.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-02 00:11</td>
                 </tr>                <tr>
                     <td>2025-09-29-ecrr-orchestrator-rollout-merge.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-09-30 23:59</td>
                 </tr>                <tr>
                     <td>2025-09-29-otel-windows-diagnosis.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-02 00:11</td>
                 </tr>                <tr>
                     <td>2025-09-29-queue-steward-rollout-merge.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-02 00:34</td>
                 </tr>                <tr>
                     <td>2025-09-29-queue-steward-verification.md</td>
-                    <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
-                    <td class="issues">None</td>
-                    <td>2025-10-02 00:26</td>
+                    <td><span class="status-fail">❌ FAIL</span></td>
+                    <td>✅</td>
+                    <td>❌</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td class="issues">missing_ecrr_gate</td>
                 </tr>                <tr>
                     <td>2025-09-29-signoz-collector-cleanup.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-02 00:11</td>
                 </tr>                <tr>
                     <td>2025-09-29-signoz-collector-config.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-02 00:26</td>
                 </tr>                <tr>
                     <td>2025-09-29-signoz-dashboard-import.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-02 00:11</td>
                 </tr>                <tr>
                     <td>2025-09-29-signoz-dashboard-verification.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-02 00:11</td>
                 </tr>                <tr>
                     <td>2025-10-01-comprehensive-implementation-summary.md</td>
-                    <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
-                    <td class="issues">None</td>
-                    <td>2025-10-02 00:19</td>
+                    <td><span class="status-fail">❌ FAIL</span></td>
+                    <td>✅</td>
+                    <td>❌</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td class="issues">missing_ecrr_gate</td>
                 </tr>                <tr>
                     <td>2025-10-01-ecrr-processing-final-consolidated-report.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-02 00:26</td>
                 </tr>                <tr>
                     <td>2025-10-01-final-implementation-summary.md</td>
-                    <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
-                    <td class="issues">None</td>
-                    <td>2025-10-02 00:19</td>
+                    <td><span class="status-fail">❌ FAIL</span></td>
+                    <td>✅</td>
+                    <td>❌</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td class="issues">missing_ecrr_gate</td>
                 </tr>                <tr>
                     <td>2025-10-01-final-rollout-ecrr-report.md</td>
-                    <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
-                    <td class="issues">None</td>
-                    <td>2025-10-02 00:19</td>
+                    <td><span class="status-fail">❌ FAIL</span></td>
+                    <td>✅</td>
+                    <td>❌</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td class="issues">missing_ecrr_gate</td>
                 </tr>                <tr>
                     <td>2025-10-01-log-pattern-fractal-validation.md</td>
-                    <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
-                    <td class="issues">None</td>
-                    <td>2025-10-02 00:19</td>
+                    <td><span class="status-fail">❌ FAIL</span></td>
+                    <td>✅</td>
+                    <td>❌</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td class="issues">missing_ecrr_gate</td>
                 </tr>                <tr>
                     <td>2025-10-02-ecrr-automated-monitoring-rollout-merge.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-02 00:36</td>
                 </tr>                <tr>
                     <td>2025-10-02-ecrr-current-state-assessment.md</td>
-                    <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
-                    <td class="issues">None</td>
-                    <td>2025-10-02 12:29</td>
+                    <td><span class="status-fail">❌ FAIL</span></td>
+                    <td>✅</td>
+                    <td>❌</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td class="issues">missing_ecrr_gate</td>
                 </tr>                <tr>
                     <td>2025-10-02-ecrr-monitoring-status-report.md</td>
-                    <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
-                    <td class="issues">None</td>
-                    <td>2025-10-02 12:33</td>
+                    <td><span class="status-fail">❌ FAIL</span></td>
+                    <td>✅</td>
+                    <td>❌</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td class="issues">missing_ecrr_gate</td>
                 </tr>                <tr>
                     <td>2025-10-02-ecrr-monitoring-verification.md</td>
-                    <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
-                    <td class="issues">None</td>
-                    <td>2025-10-02 01:12</td>
+                    <td><span class="status-fail">❌ FAIL</span></td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>❌</td>
+                    <td>✅</td>
+                    <td class="issues">missing_actor_declaration</td>
                 </tr>                <tr>
                     <td>2025-10-02-ecrr-operational-status.md</td>
-                    <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
-                    <td class="issues">None</td>
-                    <td>2025-10-02 00:59</td>
+                    <td><span class="status-fail">❌ FAIL</span></td>
+                    <td>✅</td>
+                    <td>❌</td>
+                    <td>❌</td>
+                    <td>✅</td>
+                    <td class="issues">missing_ecrr_gate, missing_actor_declaration</td>
                 </tr>                <tr>
                     <td>2025-10-02-ecrr-rollout-merge-complete.md</td>
-                    <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
-                    <td class="issues">None</td>
-                    <td>2025-10-03 06:52</td>
+                    <td><span class="status-fail">❌ FAIL</span></td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>❌</td>
+                    <td>✅</td>
+                    <td class="issues">missing_actor_declaration</td>
                 </tr>                <tr>
                     <td>2025-10-02-ecrr-rollout-merge-ecrr-complete.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-03 06:52</td>
                 </tr>                <tr>
                     <td>2025-10-02-ecrr-rollout-merge-final.md</td>
-                    <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
-                    <td class="issues">None</td>
-                    <td>2025-10-02 12:44</td>
+                    <td><span class="status-fail">❌ FAIL</span></td>
+                    <td>✅</td>
+                    <td>❌</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td class="issues">missing_ecrr_gate</td>
                 </tr>                <tr>
                     <td>2025-10-02-ecrr-rollout-merge-plan.md</td>
-                    <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
-                    <td class="issues">None</td>
-                    <td>2025-10-02 01:01</td>
+                    <td><span class="status-fail">❌ FAIL</span></td>
+                    <td>✅</td>
+                    <td>❌</td>
+                    <td>❌</td>
+                    <td>✅</td>
+                    <td class="issues">missing_ecrr_gate, missing_actor_declaration</td>
                 </tr>                <tr>
                     <td>2025-10-02-ecrr-system-assessment.md</td>
-                    <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
-                    <td class="issues">None</td>
-                    <td>2025-10-02 12:22</td>
+                    <td><span class="status-fail">❌ FAIL</span></td>
+                    <td>✅</td>
+                    <td>❌</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td class="issues">missing_ecrr_gate</td>
                 </tr>                <tr>
                     <td>2025-10-02-ecrr-task-execution-complete.md</td>
-                    <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
-                    <td class="issues">None</td>
-                    <td>2025-10-03 06:52</td>
+                    <td><span class="status-fail">❌ FAIL</span></td>
+                    <td>✅</td>
+                    <td>❌</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td class="issues">missing_ecrr_gate</td>
                 </tr>                <tr>
                     <td>2025-10-02-ecrr-verification-complete.md</td>
-                    <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
-                    <td class="issues">None</td>
-                    <td>2025-10-03 06:52</td>
+                    <td><span class="status-fail">❌ FAIL</span></td>
+                    <td>✅</td>
+                    <td>❌</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td class="issues">missing_ecrr_gate</td>
                 </tr>                <tr>
                     <td>2025-10-02-windows-collector-rollout-merge-ecrr.md</td>
-                    <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
-                    <td class="issues">None</td>
-                    <td>2025-10-02 05:20</td>
+                    <td><span class="status-fail">❌ FAIL</span></td>
+                    <td>✅</td>
+                    <td>❌</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td class="issues">missing_ecrr_gate</td>
                 </tr>                <tr>
                     <td>2025-10-03-ecrr-rollout-merge-complete.md</td>
-                    <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
-                    <td class="issues">None</td>
-                    <td>2025-10-03 07:52</td>
+                    <td><span class="status-fail">❌ FAIL</span></td>
+                    <td>✅</td>
+                    <td>❌</td>
+                    <td>❌</td>
+                    <td>✅</td>
+                    <td class="issues">missing_ecrr_gate, missing_actor_declaration</td>
                 </tr>                <tr>
                     <td>2025-10-04-compliance-remediation-action-plan.md</td>
                     <td><span class="status-fail">❌ FAIL</span></td>
-                    <td>50/100</td>
-                    <td class="issues">Missing production marker, Missing actor declaration</td>
-                    <td>2025-10-04 00:11</td>
+                    <td>✅</td>
+                    <td>❌</td>
+                    <td>✅</td>
+                    <td>❌</td>
+                    <td class="issues">missing_ecrr_gate, missing_production_marker</td>
                 </tr>                <tr>
                     <td>2025-10-04-ecrr-system-health-assessment.md</td>
                     <td><span class="status-fail">❌ FAIL</span></td>
-                    <td>50/100</td>
-                    <td class="issues">Missing production marker, Missing actor declaration</td>
-                    <td>2025-10-04 00:25</td>
+                    <td>✅</td>
+                    <td>❌</td>
+                    <td>❌</td>
+                    <td>❌</td>
+                    <td class="issues">missing_ecrr_gate, missing_actor_declaration, missing_production_marker</td>
                 </tr>                <tr>
                     <td>2025-10-04-error-radar-implementation-complete.md</td>
                     <td><span class="status-fail">❌ FAIL</span></td>
-                    <td>75/100</td>
-                    <td class="issues">Missing actor declaration</td>
-                    <td>2025-10-04 00:35</td>
+                    <td>✅</td>
+                    <td>❌</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td class="issues">missing_ecrr_gate</td>
                 </tr>                <tr>
                     <td>2025-10-04-trends-export-fix-complete.md</td>
                     <td><span class="status-fail">❌ FAIL</span></td>
-                    <td>75/100</td>
-                    <td class="issues">Missing actor declaration</td>
-                    <td>2025-10-04 00:27</td>
+                    <td>❌</td>
+                    <td>❌</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td class="issues">missing_four_section, missing_ecrr_gate</td>
                 </tr>                <tr>
                     <td>2025-10-04-validation-logic-fix-complete.md</td>
                     <td><span class="status-fail">❌ FAIL</span></td>
-                    <td>50/100</td>
-                    <td class="issues">Missing production marker, Missing actor declaration</td>
-                    <td>2025-10-04 00:25</td>
+                    <td>✅</td>
+                    <td>❌</td>
+                    <td>✅</td>
+                    <td>❌</td>
+                    <td class="issues">missing_ecrr_gate, missing_production_marker</td>
                 </tr>                <tr>
                     <td>ecrr-processing-comprehensive-analysis-2025-10-02.md</td>
                     <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td>✅</td>
                     <td class="issues">None</td>
-                    <td>2025-10-02 05:26</td>
                 </tr>                <tr>
                     <td>ecrr-report-2025-10-02.md</td>
-                    <td><span class="status-pass">✅ PASS</span></td>
-                    <td>100/100</td>
-                    <td class="issues">None</td>
-                    <td>2025-10-02 11:47</td>
+                    <td><span class="status-fail">❌ FAIL</span></td>
+                    <td>✅</td>
+                    <td>❌</td>
+                    <td>✅</td>
+                    <td>✅</td>
+                    <td class="issues">missing_ecrr_gate</td>
                 </tr>            </tbody>
         </table>
         
         <div class="timestamp">
-            Generated on 2025-10-04_01-29-05
+            Generated on 2025-10-04T23:06:59Z
         </div>
     </div>
 </body>

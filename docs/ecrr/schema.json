@@ -13,6 +13,21 @@
     "env",
     "run"
   ],
+  "additionalProperties": false,
+  "definitions": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^(?!0{64})[a-f0-9]{64}$"
+    },
+    "nonNegativeNumber": {
+      "type": "number",
+      "minimum": 0
+    },
+    "nonNegativeInteger": {
+      "type": "integer",
+      "minimum": 0
+    }
+  },
   "properties": {
     "ok": {
       "type": "boolean",
@@ -32,31 +47,94 @@
       "type": "object",
       "description": "Algorithm-specific parameters",
       "properties": {
-        "window": {"type": "integer", "minimum": 1},
-        "stride": {"type": "integer", "minimum": 1},
-        "patterns": {"type": "integer", "minimum": 1},
-        "iterations": {"type": "integer", "minimum": 1}
-      }
+        "window": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "stride": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "patterns": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "iterations": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "schema_version": {
+          "type": "string",
+          "pattern": "^v\\d+\\.\\d+$"
+        },
+        "validation_tests": {
+          "$ref": "#/definitions/nonNegativeInteger"
+        },
+        "pattern_batch_size": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "seed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "text_length": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "additionalProperties": true
     },
     "timings": {
       "type": "object",
       "required": ["gpuMs", "cpuMs"],
       "properties": {
-        "h2dMs": {"type": "number", "minimum": 0},
-        "kernelMs": {"type": "number", "minimum": 0},
-        "d2hMs": {"type": "number", "minimum": 0},
-        "gpuMs": {"type": "number", "minimum": 0},
-        "cpuMs": {"type": "number", "minimum": 0},
-        "accMs": {"type": "number", "minimum": 0}
-      }
+        "h2dMs": {
+          "$ref": "#/definitions/nonNegativeNumber"
+        },
+        "kernelMs": {
+          "$ref": "#/definitions/nonNegativeNumber"
+        },
+        "d2hMs": {
+          "$ref": "#/definitions/nonNegativeNumber"
+        },
+        "gpuMs": {
+          "$ref": "#/definitions/nonNegativeNumber"
+        },
+        "cpuMs": {
+          "$ref": "#/definitions/nonNegativeNumber"
+        },
+        "accMs": {
+          "$ref": "#/definitions/nonNegativeNumber"
+        }
+      },
+      "additionalProperties": false
     },
     "parity": {
       "type": "object",
       "properties": {
-        "maxAbsDiff": {"type": "number", "minimum": 0},
-        "matches": {"type": "integer", "minimum": 0},
-        "accuracy": {"type": "number", "minimum": 0, "maximum": 1}
-      }
+        "maxAbsDiff": {
+          "$ref": "#/definitions/nonNegativeNumber"
+        },
+        "matches": {
+          "$ref": "#/definitions/nonNegativeInteger"
+        },
+        "accuracy": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "meanDiff": {
+          "$ref": "#/definitions/nonNegativeNumber"
+        },
+        "stddevMaxDiff": {
+          "$ref": "#/definitions/nonNegativeNumber"
+        },
+        "stddevMeanDiff": {
+          "$ref": "#/definitions/nonNegativeNumber"
+        }
+      },
+      "additionalProperties": false
     },
     "env": {
       "type": "object",
@@ -64,11 +142,25 @@
       "properties": {
         "providers": {
           "type": "array",
-          "items": {"type": "string"},
-          "contains": {"enum": ["cuda", "cpu"]}
+          "items": {
+            "type": "string",
+            "enum": ["cuda", "cpu"]
+          },
+          "minItems": 1,
+          "uniqueItems": true
         },
-        "cudaVersion": {"type": "string"},
-        "wsl_detected": {"type": "boolean"}
+        "cudaVersion": {
+          "type": "string"
+        },
+        "wsl_detected": {
+          "type": "boolean"
+        },
+        "gpu_model": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {
+        "type": ["string", "number", "boolean"]
       }
     },
     "run": {
@@ -79,19 +171,197 @@
           "type": "string",
           "enum": ["cuda", "cpu"]
         },
-        "fellBackToCpu": {"type": "boolean"},
-        "gpu_fallback": {"type": "boolean"},
-        "note": {"type": "string"}
-      }
+        "fellBackToCpu": {
+          "type": "boolean"
+        },
+        "gpu_fallback": {
+          "type": "boolean"
+        },
+        "note": {
+          "type": ["string", "null"]
+        }
+      },
+      "additionalProperties": false
     },
     "hashes": {
       "type": "object",
       "properties": {
-        "inputSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
-        "patternsSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
-        "outputSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+        "inputSha256": {
+          "type": ["string", "null"]
+        },
+        "patternsSha256": {
+          "$ref": "#/definitions/sha256"
+        },
+        "outputSha256": {
+          "type": ["string", "null"]
+        }
+      },
+      "additionalProperties": false
+    },
+    "deployment": {
+      "type": "object",
+      "properties": {
+        "environment": {
+          "type": "string",
+          "enum": ["production", "staging", "development"]
+        },
+        "version": {
+          "type": "string"
+        },
+        "deployed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "gitSha": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "releaseTag": {
+          "type": "string"
+        },
+        "buildId": {
+          "type": ["string", "integer"]
+        },
+        "pipelineUrl": {
+          "type": "string",
+          "format": "uri"
+        },
+        "deployedBy": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {
+        "type": ["string", "number", "boolean"]
       }
     }
   },
-  "additionalProperties": false
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "algo": {
+            "const": "rolling"
+          }
+        },
+        "required": ["algo"]
+      },
+      "then": {
+        "properties": {
+          "params": {
+            "required": ["window", "stride"],
+            "properties": {
+              "window": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "stride": {
+                "type": "integer",
+                "minimum": 1
+              }
+            }
+          },
+          "parity": {
+            "required": ["maxAbsDiff"],
+            "properties": {
+              "maxAbsDiff": {
+                "type": "number",
+                "minimum": 0
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "algo": {
+            "const": "pfac"
+          }
+        },
+        "required": ["algo"]
+      },
+      "then": {
+        "properties": {
+          "params": {
+            "required": ["patterns"],
+            "properties": {
+              "patterns": {
+                "type": "integer",
+                "minimum": 1
+              }
+            }
+          },
+          "parity": {
+            "required": ["matches", "accuracy"],
+            "properties": {
+              "matches": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "accuracy": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            }
+          },
+          "hashes": {
+            "required": ["patternsSha256"],
+            "properties": {
+              "patternsSha256": {
+                "$ref": "#/definitions/sha256"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "algo": {
+            "const": "benchmark"
+          }
+        },
+        "required": ["algo"]
+      },
+      "then": {
+        "properties": {
+          "params": {
+            "required": ["iterations"],
+            "properties": {
+              "iterations": {
+                "type": "integer",
+                "minimum": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "algo": {
+            "const": "validation"
+          }
+        },
+        "required": ["algo"]
+      },
+      "then": {
+        "properties": {
+          "params": {
+            "required": ["validation_tests"],
+            "properties": {
+              "validation_tests": {
+                "type": "integer",
+                "minimum": 1
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
 }

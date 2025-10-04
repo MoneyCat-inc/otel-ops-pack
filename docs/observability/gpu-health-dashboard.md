@@ -1,6 +1,6 @@
 # 🐾 BossCat GPU Health Dashboard - SigNoz Integration
 
-**Generated:** 2025-10-04T04:58:57.300Z  
+**Generated:** 2025-10-04T06:12:45.082Z  
 **Report Date:** 2025-10-04  
 **Epic:** [GPU Pattern-Sifter EPIC](../ecrr/ECRR_REPORTS/GPU_PATTERN_SIFTER_EPIC.md)
 
@@ -57,7 +57,7 @@ ALERT GPUPPerformanceDegradation
 - **Provider:** cuda
 - **Algorithm:** system
 - **Environment:** windows
-- **Timestamp:** 2025-10-04T04:58:56.224Z
+- **Timestamp:** 2025-10-04T06:12:44.224Z
 
 
 ### rolling_stats_harness
@@ -70,20 +70,20 @@ ALERT GPUPPerformanceDegradation
 - **Provider:** cuda
 - **Algorithm:** rolling
 - **Environment:** windows
-- **Timestamp:** 2025-10-04T04:58:56.622715+00:00
+- **Timestamp:** 2025-10-04T06:12:44.512018+00:00
 
 
 ### pfac_scan_harness
 
 - **Level:** INFO
-- **Message:** PFAC running on GPU - 1.4x speedup, 350 matches
+- **Message:** PFAC running on GPU - 1.3x speedup, 350 matches
 - **GPU Available:** ✅
 - **Fallback:** ✅ No
-- **Performance:** 1.4x
+- **Performance:** 1.3x
 - **Provider:** cuda
 - **Algorithm:** pfac
 - **Environment:** windows
-- **Timestamp:** 2025-10-04T04:58:57.259196+00:00
+- **Timestamp:** 2025-10-04T06:12:45.065508+00:00
 
 
 ## 🎯 **SigNoz Dashboard Configuration**

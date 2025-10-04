@@ -1,13 +1,13 @@
 # 🐾 BossCat GPU Performance Dashboard
 
-**Generated:** 2025-10-04T04:54:52.802Z  
+**Generated:** 2025-10-04T06:12:43.559Z  
 **Date:** 2025-10-04  
 **Epic:** [GPU Pattern-Sifter EPIC](../ecrr/ECRR_REPORTS/GPU_PATTERN_SIFTER_EPIC.md)
 
 ## 📊 **Summary**
 
 - **Total Tests:** 2
-- **Average Speedup:** 0.8x
+- **Average Speedup:** 0.7x
 - **GPU Available:** ✅
 - **Fallback Events:** 0
 
@@ -17,7 +17,7 @@
 ### ROLLING
 
 - **GPU Time:** 55.9ms
-- **CPU Time:** 2.0ms
+- **CPU Time:** 1.7ms
 - **Speedup:** 0.0x
 - **Provider:** cuda
 - **Status:** ✅ GPU Accelerated
@@ -29,8 +29,8 @@
 ### PFAC
 
 - **GPU Time:** 25.2ms
-- **CPU Time:** 40.2ms
-- **Speedup:** 1.6x
+- **CPU Time:** 33.0ms
+- **Speedup:** 1.3x
 - **Provider:** cuda
 - **Status:** ✅ GPU Accelerated
 - **Matches:** 350
