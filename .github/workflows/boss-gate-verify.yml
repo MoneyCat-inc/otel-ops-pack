@@ -1,0 +1,151 @@
+name: Boss Gate Verify
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to verify'
+        required: true
+        default: 'main'
+        type: string
+
+jobs:
+  verify-gate:
+    name: Boss Gate Verification
+    runs-on: ubuntu-latest
+    outputs:
+      verification_status: ${{ steps.verify.outputs.status }}
+      compliance_score: ${{ steps.verify.outputs.score }}
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Boss Gate Verification
+      id: verify
+      run: |
+        echo "🔍 Running Boss Gate verification..."
+        
+        # Initialize compliance score
+        COMPLIANCE_SCORE=0
+        TOTAL_CHECKS=5
+        
+        # Check 1: ECRR compliance
+        echo "📋 Checking ECRR compliance..."
+        if [ -f "docs/ECRR_COMPLIANCE_REPORT_2025-01-05.md" ] || [ -f "docs/ECRR_RESOLUTION_COMPLETE_2025-10-05.md" ]; then
+          echo "✅ ECRR documentation found"
+          COMPLIANCE_SCORE=$((COMPLIANCE_SCORE + 1))
+        else
+          echo "❌ ECRR documentation missing"
+        fi
+        
+        # Check 2: BossCat OEM status
+        echo "🐾 Checking BossCat OEM status..."
+        if [ -f "docs/ECRR_ROLE_ASSIGNMENT_COMPLETE_2025-01-05.md" ]; then
+          echo "✅ BossCat OEM role assignment documented"
+          COMPLIANCE_SCORE=$((COMPLIANCE_SCORE + 1))
+        else
+          echo "❌ BossCat OEM role assignment missing"
+        fi
+        
+        # Check 3: Monitoring artifacts
+        echo "📊 Checking monitoring artifacts..."
+        if [ -d "docs/status" ] && [ -f "docs/status/kpis.json" ]; then
+          echo "✅ Monitoring artifacts present"
+          COMPLIANCE_SCORE=$((COMPLIANCE_SCORE + 1))
+        else
+          echo "❌ Monitoring artifacts missing"
+        fi
+        
+        # Check 4: SigNoz configuration
+        echo "🔧 Checking SigNoz configuration..."
+        if [ -f "signoz-collector-config.yaml" ] && [ -f "docker-compose-signoz.yml" ]; then
+          echo "✅ SigNoz configuration present"
+          COMPLIANCE_SCORE=$((COMPLIANCE_SCORE + 1))
+        else
+          echo "❌ SigNoz configuration missing"
+        fi
+        
+        # Check 5: Windows Collector status
+        echo "🪟 Checking Windows Collector configuration..."
+        if [ -f "config.yaml" ]; then
+          echo "✅ Windows Collector configuration present"
+          COMPLIANCE_SCORE=$((COMPLIANCE_SCORE + 1))
+        else
+          echo "❌ Windows Collector configuration missing"
+        fi
+        
+        # Calculate percentage
+        COMPLIANCE_PERCENTAGE=$((COMPLIANCE_SCORE * 100 / TOTAL_CHECKS))
+        
+        echo "score=$COMPLIANCE_PERCENTAGE" >> $GITHUB_OUTPUT
+        
+        if [ $COMPLIANCE_SCORE -eq $TOTAL_CHECKS ]; then
+          echo "status=passed" >> $GITHUB_OUTPUT
+          echo "🎉 Boss Gate verification PASSED ($COMPLIANCE_PERCENTAGE%)"
+        elif [ $COMPLIANCE_SCORE -ge 3 ]; then
+          echo "status=warning" >> $GITHUB_OUTPUT
+          echo "⚠️ Boss Gate verification WARNING ($COMPLIANCE_PERCENTAGE%)"
+        else
+          echo "status=failed" >> $GITHUB_OUTPUT
+          echo "❌ Boss Gate verification FAILED ($COMPLIANCE_PERCENTAGE%)"
+          exit 1
+        fi
+    
+    - name: Upload verification artifacts
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: boss-gate-verification-${{ github.run_number }}
+        path: |
+          docs/status/
+          docs/ECRR_*.md
+          signoz-collector-config.yaml
+          config.yaml
+        retention-days: 30
+    
+    - name: Comment PR with verification results
+      if: github.event_name == 'pull_request' && always()
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const status = '${{ steps.verify.outputs.status }}';
+          const score = '${{ steps.verify.outputs.compliance_score }}';
+          
+          let badgeUrl, message, color;
+          if (status === 'passed') {
+            badgeUrl = 'https://img.shields.io/badge/boss--gate-PASSED-green.svg';
+            message = '✅ Boss Gate verification PASSED - Ready for merge!';
+            color = 'green';
+          } else if (status === 'warning') {
+            badgeUrl = 'https://img.shields.io/badge/boss--gate-WARNING-yellow.svg';
+            message = '⚠️ Boss Gate verification WARNING - Review required';
+            color = 'yellow';
+          } else {
+            badgeUrl = 'https://img.shields.io/badge/boss--gate-FAILED-red.svg';
+            message = '❌ Boss Gate verification FAILED - Fix required';
+            color = 'red';
+          }
+          
+          const comment = `## 🎯 Boss Gate Verification Results
+          
+          ![Boss Gate Status](${badgeUrl})
+          
+          **Compliance Score:** ${score}%
+          
+          ${message}
+          
+          ---
+          
+          *BossCat OEM (Executive Overseer Manager) - ECRR Framework v2.0*`;
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: comment
+          });
