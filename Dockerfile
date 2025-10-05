@@ -28,7 +28,7 @@ FROM base AS deps
 RUN npm install -g pnpm
 
 # Install dependencies
-RUN pnpm install --frozen-lockfile --prod
+RUN pnpm install --no-frozen-lockfile
 
 # =============================================================================
 # STAGE 3: Builder

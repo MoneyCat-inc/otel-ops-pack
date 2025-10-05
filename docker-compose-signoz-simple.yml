@@ -1,0 +1,123 @@
+services:
+  zookeeper:
+    image: zookeeper:3.9
+    container_name: signoz-zookeeper-simple
+    ports:
+      - "2181:2181"
+    environment:
+      ZOO_MY_ID: 1
+      ZOO_SERVERS: server.1=0.0.0.0:2888:3888;2181
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "zkServer.sh", "status"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:25.5.6-alpine
+    container_name: signoz-clickhouse-simple
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    environment:
+      CLICKHOUSE_DB: signoz
+      CLICKHOUSE_USER: default
+      CLICKHOUSE_PASSWORD: ""
+    volumes:
+      - ./clickhouse-cluster-config.xml:/etc/clickhouse-server/config.d/signoz-cluster.xml:ro
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "0.0.0.0:8123/ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+
+  signoz-schema-migrator:
+    image: signoz/signoz-schema-migrator:v0.129.6
+    container_name: signoz-schema-migrator-simple
+    command: ["sync", "--dsn=tcp://clickhouse:9000", "--dev"]
+    depends_on:
+      clickhouse:
+        condition: service_healthy
+    restart: "no"
+
+  signoz:
+    image: signoz/signoz:v0.96.1
+    container_name: signoz-simple
+    ports:
+      - "8080:8080"
+    volumes:
+      - signoz_data:/var/lib/signoz
+    environment:
+      SIGNOZ_TELEMETRYSTORE_CLICKHOUSE_DSN: tcp://clickhouse:9000
+      SIGNOZ_SQLSTORE_SQLITE_PATH: /var/lib/signoz/signoz.db
+      SIGNOZ_JWT_SECRET: 'local-signoz-jwt-secret'
+      STORAGE: clickhouse
+      DEPLOYMENT_TYPE: docker-local
+    depends_on:
+      clickhouse:
+        condition: service_healthy
+      signoz-schema-migrator:
+        condition: service_completed_successfully
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8080/api/v1/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+
+  signoz-otel-collector:
+    image: signoz/signoz-otel-collector:v0.129.6
+    container_name: signoz-otel-collector-simple
+    command:
+      - --config=/etc/otel-collector-config.yaml
+    volumes:
+      - ./signoz-collector-config.yaml:/etc/otel-collector-config.yaml:ro
+    ports:
+      - "4317:4317"
+      - "4318:4318"
+      - "18888:8888"
+      - "18889:8889"
+    environment:
+      OTEL_RESOURCE_ATTRIBUTES: host.name=signoz-host,os.type=linux
+    depends_on:
+      signoz:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/13133'"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  otel-demo-app:
+    build:
+      context: .
+      dockerfile: Dockerfile.demo
+    container_name: otel-demo-app
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://signoz-otel-collector-simple:4318
+      - OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
+      - OTEL_SERVICE_NAME=otel-demo-app
+      - OTEL_SERVICE_VERSION=1.0.0
+      - OTEL_ENVIRONMENT=production
+    depends_on:
+      signoz-otel-collector:
+        condition: service_started
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+volumes:
+  signoz_data:
