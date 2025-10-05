@@ -37,6 +37,16 @@ SigNoz UI reference: see [docs/observability/SIGNOZ_UI_MAP.md](docs/observabilit
 ## Operational Runbook
 Start with [docs/observability/SIGNOZ_RUNBOOK_BUNDLE.md](docs/observability/SIGNOZ_RUNBOOK_BUNDLE.md) for timestamped end-to-end verification. The latest pass (2025-09-20T21:14+01:00) recorded canary `5806cb5d-00b5-4415-8373-87a3f94b9a6d` and includes repeatable health/verification steps.
 
+## Tetragrammaton Cross-Language Benchmarks
+Advanced cross-language capability validation with Tetragrammaton YHWH (Yod-He-Vav-He) architecture:
+
+- **`-hehe` Integration**: Dual HE (Interface + Integration) elements for comprehensive testing
+- **Cross-Language Validation**: NodeJS Tetragrammaton + Python logfilter benchmarks
+- **BossCat Compliance**: ECRR framework with automated evidence collection
+- **Nightly CI**: Automated execution with governance visibility
+
+See [docs/TETRAGRAMMATON_HEHE_INTEGRATION_COMPLETE.md](docs/TETRAGRAMMATON_HEHE_INTEGRATION_COMPLETE.md) for full documentation.
+
 ## ECRR or it did not happen
 Examine -> Clean -> Report -> Role on every change. Evidence belongs in the PR body, artifacts in `docs/ECRR_REPORTS`, and verification steps in the description.
 
