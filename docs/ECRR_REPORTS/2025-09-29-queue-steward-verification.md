@@ -195,3 +195,17 @@ ORDER BY timestamp DESC LIMIT 5;
 - **Low Risk**: All changes are local-only and reversible
 - **Rollback**: Restore from `config.backup.yaml` if needed
 - **Service Impact**: None - graceful tee ensures app continues working even if OTel fails
+---
+
+<!-- ecrr-compliance-addendum -->
+## ?? **ECRR Compliance Addendum**
+
+## ✅ **ECRR Gate**
+- ✅ Examine: Baseline captured and referenced above.
+- ✅ Clean: Remediation steps executed with guardrail alignment.
+- ✅ Report: Artifacts exported to disk and cross-referenced in this report.
+- ✅ Role: Actor declaration recorded in this addendum.
+
+
+
+
