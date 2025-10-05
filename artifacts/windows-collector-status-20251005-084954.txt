@@ -1,0 +1,48 @@
+BossCat Windows Collector Status Verification
+Timestamp: 
+2025-10-05 08:49:54 +01:00
+
+Service Status: 
+Running
+Start Mode: 
+Auto
+State: 
+Running
+Binary Path: 
+"C:\Program Files\OpenTelemetry Collector\otelcol-contrib.exe" --config "C:\otel\config.yaml"
+
+Health Endpoint Status:
+  
+StatusCode: 200
+
+Port Checks:
+  5317 OTLP gRPC: 
+True
+  5318 OTLP HTTP: 
+True
+
+sc qc output:
+[SC] QueryServiceConfig SUCCESS
+
+SERVICE_NAME: otelcol-contrib
+        TYPE               : 10  WIN32_OWN_PROCESS 
+        START_TYPE         : 2   AUTO_START  (DELAYED)
+        ERROR_CONTROL      : 1   NORMAL
+        BINARY_PATH_NAME   : "C:\Program Files\OpenTelemetry Collector\otelcol-contrib.exe" --config "C:\otel\config.yaml"
+        LOAD_ORDER_GROUP   : 
+        TAG                : 0
+        DISPLAY_NAME       : OpenTelemetry Collector (Contrib)
+        DEPENDENCIES       : 
+        SERVICE_START_NAME : LocalSystem
+
+sc qfailure output:
+[SC] QueryServiceConfig2 SUCCESS
+
+SERVICE_NAME: otelcol-contrib
+        RESET_PERIOD (in seconds)    : 86400
+        REBOOT_MESSAGE               : 
+        COMMAND_LINE                 : 
+        FAILURE_ACTIONS              : RESTART -- Delay = 5000 milliseconds.
+                                       RESTART -- Delay = 5000 milliseconds.
+                                       RESTART -- Delay = 5000 milliseconds.
+
