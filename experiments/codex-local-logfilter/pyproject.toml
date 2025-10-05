@@ -1,0 +1,19 @@
+[project]
+name = "logfilter"
+version = "0.1.0"
+description = "Simple CLI to filter log files by level and keyword"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = []
+
+[project.scripts]
+logfilter = "logfilter.main:main"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = { find = { include = ["logfilter*"], exclude = ["tests*", "artifacts*"] } }
+
+
