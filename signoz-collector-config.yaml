@@ -108,7 +108,7 @@ service:
       exporters: [signozclickhousemetrics]
   # logs:
   #   receivers: [otlp]
-  #   processors: [memory_limiter, resourcedetection, attributes/redact_sensitive, batch]
+  #   processors: [batch]
   #   exporters: [clickhouselogsexporter]
 
 extensions:
