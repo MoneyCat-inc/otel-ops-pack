@@ -1,0 +1,110 @@
+name: Boss Gate Signal and Merge
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_branch:
+        description: 'Target branch to merge to'
+        required: true
+        default: 'main'
+        type: string
+      source_branch:
+        description: 'Source branch to merge from'
+        required: true
+        default: 'develop'
+        type: string
+      auto_merge:
+        description: 'Enable auto-merge after checks pass'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  signal-gate:
+    name: Signal Boss Gate
+    runs-on: ubuntu-latest
+    outputs:
+      gate_status: ${{ steps.gate_check.outputs.status }}
+      merge_approved: ${{ steps.gate_check.outputs.approved }}
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Boss Gate Check
+      id: gate_check
+      run: |
+        echo "🔍 Checking Boss Gate requirements..."
+        
+        # Check if source branch exists
+        if git show-ref --verify --quiet refs/heads/${{ github.event.inputs.source_branch }}; then
+          echo "✅ Source branch ${{ github.event.inputs.source_branch }} exists"
+          echo "status=ready" >> $GITHUB_OUTPUT
+        else
+          echo "❌ Source branch ${{ github.event.inputs.source_branch }} does not exist"
+          echo "status=failed" >> $GITHUB_OUTPUT
+          echo "approved=false" >> $GITHUB_OUTPUT
+          exit 1
+        fi
+        
+        # Check if target branch exists
+        if git show-ref --verify --quiet refs/heads/${{ github.event.inputs.target_branch }}; then
+          echo "✅ Target branch ${{ github.event.inputs.target_branch }} exists"
+        else
+          echo "❌ Target branch ${{ github.event.inputs.target_branch }} does not exist"
+          echo "status=failed" >> $GITHUB_OUTPUT
+          echo "approved=false" >> $GITHUB_OUTPUT
+          exit 1
+        fi
+        
+        # Check for merge conflicts
+        git fetch origin ${{ github.event.inputs.source_branch }}:${{ github.event.inputs.source_branch }}
+        git fetch origin ${{ github.event.inputs.target_branch }}:${{ github.event.inputs.target_branch }}
+        
+        if git merge-base --is-ancestor ${{ github.event.inputs.source_branch }} ${{ github.event.inputs.target_branch }}; then
+          echo "✅ No merge conflicts detected"
+          echo "approved=true" >> $GITHUB_OUTPUT
+        else
+          echo "⚠️ Potential merge conflicts - manual review required"
+          echo "approved=false" >> $GITHUB_OUTPUT
+        fi
+        
+        echo "status=completed" >> $GITHUB_OUTPUT
+
+  merge-execution:
+    name: Execute Merge
+    runs-on: ubuntu-latest
+    needs: signal-gate
+    if: needs.signal-gate.outputs.gate_status == 'completed' && needs.signal-gate.outputs.merge_approved == 'true'
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Merge branches
+      run: |
+        echo "🔄 Merging ${{ github.event.inputs.source_branch }} into ${{ github.event.inputs.target_branch }}"
+        
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        
+        git checkout ${{ github.event.inputs.target_branch }}
+        git merge ${{ github.event.inputs.source_branch }} --no-ff -m "Boss Gate: Merge ${{ github.event.inputs.source_branch }} into ${{ github.event.inputs.target_branch }}"
+        
+        git push origin ${{ github.event.inputs.target_branch }}
+        
+        echo "✅ Merge completed successfully"
+    
+    - name: Create merge summary
+      run: |
+        echo "## 🎯 Boss Gate Merge Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "- **Source Branch:** ${{ github.event.inputs.source_branch }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Target Branch:** ${{ github.event.inputs.target_branch }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Status:** ✅ Successfully merged" >> $GITHUB_STEP_SUMMARY
+        echo "- **Timestamp:** $(date -u)" >> $GITHUB_STEP_SUMMARY
