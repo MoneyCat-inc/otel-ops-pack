@@ -38,7 +38,7 @@ jobs:
       uses: actions/checkout@v4
       
     - name: Setup PowerShell
-      uses: actions/setup-powershell@v1
+      uses: PowerShell/PowerShell-For-GitHub-Actions@v1
       with:
         version: '7.4'
         

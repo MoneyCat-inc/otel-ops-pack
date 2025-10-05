@@ -33,7 +33,7 @@ jobs:
         run: pnpm install
       
       - name: Setup PowerShell
-        uses: actions/setup-powershell@v1
+        uses: PowerShell/PowerShell-For-GitHub-Actions@v1
       
       - name: Run guardrails check
         run: pnpm agent:guardrails-premium -Json > .agent/guardrails_report.json
