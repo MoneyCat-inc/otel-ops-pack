@@ -1,0 +1,27 @@
+name: Nightly GPU Smoke
+
+on:
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch: {}
+
+jobs:
+  gpu-smoke:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PowerShell 7
+        uses: PowerShell/PowerShell-For-GitHub-Actions@v1
+
+      - name: Run GPU smoke test
+        shell: pwsh
+        run: |
+          pwsh -File scripts/verify-gpu-codex.ps1
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: gpu_diag
+          path: artifacts/gpu_diag/**
