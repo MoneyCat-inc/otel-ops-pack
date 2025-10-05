@@ -232,7 +232,7 @@
 
 <footer class="hstack">
   <img src="LOGO/Resonai_LOGO_monochrome.png" alt="" class="logo-mono" aria-hidden="true">
-  <div class="muted" id="footerNote">Local-first. No network calls beyond your configured <code>endpoint</code>.</div>
+  <div class="muted" id="footerNote">Local-first. No network calls beyond your configured <code>endpoint</code>. Tip: when opened as <code>file://</code>, this dashboard auto-loads <code>docs/status/*.json</code>. To automate refreshing those JSONs, run <code>scripts/status-dashboard-automation.ps1</code> (or <code>scripts/generate_status_jsons.py</code>).</div>
 </footer>
 
 <!-- ======= Data & Rendering Logic (no external libs) ======= -->
@@ -568,12 +568,15 @@ async function getJSON(url) {
   return r.json();
 }
 async function refreshData() {
+  // If opened locally (file://), prefer loading bundled repo status files directly
+  const isFile = location.protocol === 'file:';
   const base = state.endpoint.replace(/\/?$/, '/'); // ensure trailing slash
   try {
+    const localBase = new URL('./status/', location.href).href;
     const [roadmap, tests, ssot] = await Promise.all([
-      getJSON(base + 'roadmap.json').catch(()=>null),
-      getJSON(base + 'tests.json').catch(()=>null),
-      getJSON(base + 'ssot.json').catch(()=>null),
+      (isFile ? getJSON(localBase + 'roadmap.json') : getJSON(base + 'roadmap.json')).catch(()=>null),
+      (isFile ? getJSON(localBase + 'tests.json')   : getJSON(base + 'tests.json')).catch(()=>null),
+      (isFile ? getJSON(localBase + 'ssot.json')    : getJSON(base + 'ssot.json')).catch(()=>null),
     ]);
     state.data.roadmap = roadmap || DEMO.roadmap;
     state.data.tests = tests || DEMO.tests;
@@ -828,7 +831,7 @@ function updateModeHint() {
   const modeHint = document.getElementById('modeHint');
   if (modeHint) {
     if (location.protocol === 'file:') {
-      modeHint.innerHTML = '✅ File mode active: click <strong>Load files</strong> to choose docs/status/*.json (preferred workflow).';
+      modeHint.innerHTML = '✅ File mode active: auto-loading <code>docs/status/*.json</code>. You can also click <strong>Load files</strong> to override.';
     } else {
       modeHint.innerHTML = '🌐 Serving over HTTP: ensure the Endpoint exposes docs/status/roadmap.json, tests.json, and ssot.json.';
     }
