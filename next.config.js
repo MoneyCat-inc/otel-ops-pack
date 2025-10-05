@@ -9,7 +9,7 @@ const nextConfig = {
   
   // Enable experimental features
   experimental: {
-    serverComponentsExternalPackages: ['@prisma/client'],
+    serverExternalPackages: ['@prisma/client'],
   },
 
   // Output configuration
@@ -112,8 +112,25 @@ const nextConfig = {
         fs: false,
         net: false,
         tls: false,
+        stream: false,
+        crypto: false,
+        util: false,
+        url: false,
+        assert: false,
+        http: false,
+        https: false,
+        os: false,
+        buffer: false,
+        dgram: false,
       };
     }
+
+    // Prevent bundling gRPC exporter in client builds to avoid 'stream' errors
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@opentelemetry/exporter-trace-otlp-grpc': false,
+      '@opentelemetry/exporter-jaeger': false,
+    };
 
     // Add custom webpack plugins
     config.module.rules.push({
@@ -136,8 +153,7 @@ const nextConfig = {
   
   // Development server configuration
   devIndicators: {
-    buildActivity: true,
-    buildActivityPosition: 'bottom-right',
+    position: 'bottom-right',
   },
 
   // =============================================================================
@@ -146,9 +162,6 @@ const nextConfig = {
   
   // Enable compression
   compress: true,
-
-  // Optimize bundle
-  swcMinify: true,
 
   // =============================================================================
   // RUNTIME CONFIGURATION

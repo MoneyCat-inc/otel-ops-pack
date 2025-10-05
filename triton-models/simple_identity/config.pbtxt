@@ -1,0 +1,17 @@
+name: "simple_identity"
+backend: "python"
+max_batch_size: 8 
+input [ 
+  { 
+    name: "INPUT_0"
+    data_type: TYPE_FP32 
+    dims: [ -1 ] 
+  } 
+] 
+output [ 
+  { 
+    name: "OUTPUT_0"
+    data_type: TYPE_FP32 
+    dims: [ -1 ] 
+  } 
+] 

@@ -32,7 +32,7 @@ class InferenceConfig:
     """Configuration for GPU inference sidecar"""
     input_dir: str = "/app/gpu-buffers/inference"
     output_endpoint: str = "http://localhost:14318/v1/logs"
-    triton_url: str = "localhost:8000"
+    triton_url: str = os.getenv("TRITON_URL", "triton:8000")
     batch_size: int = 1000  # records
     batch_timeout: float = 30.0  # seconds
     poll_interval: float = 2.0  # seconds
@@ -122,6 +122,26 @@ class GPUInferenceSidecar:
                 "triton_available": self._check_triton_availability(),
                 "available_models": self.available_models
             }
+
+        @self.app.get("/health/deep")
+        async def deep_health_check():
+            """Deep health with Triton repository status"""
+            triton_ok = self._check_triton_availability()
+            details = {"triton_url": self.config.triton_url, "available_models": self.available_models}
+            try:
+                if self.triton_client:
+                    # Try fetching the metadata for each model to ensure they are queryable
+                    meta = []
+                    for model_name in self.available_models:
+                        try:
+                            info = self.triton_client.get_model_metadata(model_name=model_name)
+                            meta.append({"name": model_name, "ok": True, "metadata": info})
+                        except Exception as e:
+                            meta.append({"name": model_name, "ok": False, "error": str(e)})
+                    details["model_metadata"] = meta
+            except Exception as e:
+                details["error"] = str(e)
+            return {"status": "healthy" if triton_ok else "degraded", "triton_available": triton_ok, "details": details}
         
         @self.app.get("/models")
         async def list_models():
@@ -258,8 +278,17 @@ class GPUInferenceSidecar:
             # Check if server is ready
             is_ready = self.triton_client.is_server_ready()
             if is_ready:
-                # Get available models
-                self.available_models = self.triton_client.get_model_repository_index().model_names
+                # Get available models; tritonclient returns a list of entries (dicts or objects)
+                repo_index = self.triton_client.get_model_repository_index()
+                names = []
+                for entry in (repo_index or []):
+                    if isinstance(entry, dict):
+                        name = entry.get('name')
+                    else:
+                        name = getattr(entry, 'name', None)
+                    if name:
+                        names.append(name)
+                self.available_models = names
             else:
                 self.available_models = []
             

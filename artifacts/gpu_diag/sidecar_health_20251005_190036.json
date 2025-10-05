@@ -1,0 +1,7 @@
+{
+  "status": "healthy",
+  "triton_available": true,
+  "available_models": [
+    "simple_identity"
+  ]
+}

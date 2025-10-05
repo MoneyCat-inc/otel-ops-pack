@@ -1,5 +1,4 @@
 # GPU Sidecar Services for OpenTelemetry Workloads
-version: '3.8'
 
 services:
   gpu-compression-sidecar:
@@ -8,7 +7,7 @@ services:
       dockerfile: Dockerfile.gpu-base
     image: otel-gpu-sidecar:latest
     container_name: otel-gpu-compression
-    runtime: nvidia
+    gpus: all
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
       - NVIDIA_DRIVER_CAPABILITIES=compute,utility
@@ -19,7 +18,7 @@ services:
     working_dir: /app/sidecars/compression
     command: python3 compression_sidecar.py
     ports:
-      - "8001:8001"
+      - "18001:8001"
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
@@ -34,7 +33,7 @@ services:
       dockerfile: Dockerfile.gpu-base
     image: otel-gpu-sidecar:latest
     container_name: otel-gpu-aggregation
-    runtime: nvidia
+    gpus: all
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
       - NVIDIA_DRIVER_CAPABILITIES=compute,utility
@@ -45,7 +44,7 @@ services:
     working_dir: /app/sidecars/aggregation
     command: python3 aggregation_sidecar.py
     ports:
-      - "8002:8002"
+      - "18002:8002"
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8002/health"]
@@ -60,11 +59,12 @@ services:
       dockerfile: Dockerfile.gpu-base
     image: otel-gpu-sidecar:latest
     container_name: otel-gpu-inference
-    runtime: nvidia
+    gpus: all
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
       - NVIDIA_DRIVER_CAPABILITIES=compute,utility
       - CUDA_VISIBLE_DEVICES=0
+      - TRITON_URL=triton:8000
     volumes:
       - ./gpu-buffers:/app/gpu-buffers
       - ./sidecars/inference:/app/sidecars/inference

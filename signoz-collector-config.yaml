@@ -14,12 +14,23 @@ receivers:
       network: {}
   prometheus:
     config:
+      global:
+        scrape_interval: 30s
       scrape_configs:
         - job_name: signoz-otel-collector
-          static_configs:
-            - targets: ['localhost:8889']
           metrics_path: /metrics
-          scrape_interval: 30s
+          static_configs:
+            - targets:
+                - localhost:8888
+              labels:
+                job_name: signoz-otel-collector
+        - job_name: windows-otel-collector
+          metrics_path: /metrics
+          static_configs:
+            - targets:
+                - host.docker.internal:8888
+              labels:
+                job_name: windows-otel-collector
 
 processors:
   batch:
@@ -89,34 +100,38 @@ exporters:
     dsn: tcp://signoz-clickhouse:9000/signoz_logs
     timeout: 10s
     use_new_schema: true
-  # prometheus:
-  #   endpoint: 0.0.0.0:8889
+    sending_queue:
+      enabled: true
+      num_consumers: 8
+      queue_size: 2048
 
 service:
   telemetry:
     logs:
       encoding: json
-  extensions: [health_check, pprof]
+  extensions:
+    - health_check
+    - pprof
   pipelines:
     traces:
       receivers: [otlp]
       processors: [memory_limiter, resourcedetection, resource/defaults, signozspanmetrics/delta, batch]
       exporters: [clickhousetraces]
     metrics:
-      receivers: [otlp, hostmetrics, prometheus]
+      receivers: [otlp, hostmetrics]
       processors: [memory_limiter, resourcedetection, batch]
       exporters: [signozclickhousemetrics]
-  # logs:
-  #   receivers: [otlp]
-  #   processors: [batch]
-  #   exporters: [clickhouselogsexporter]
+    metrics/prometheus:
+      receivers: [prometheus]
+      processors: [batch]
+      exporters: [signozclickhousemetrics]
+    logs:
+      receivers: [otlp]
+      processors: [memory_limiter, resourcedetection, attributes/redact_sensitive, batch]
+      exporters: [clickhouselogsexporter]
 
 extensions:
   health_check:
     endpoint: 0.0.0.0:13133
   pprof:
     endpoint: 0.0.0.0:1777
-
-
-
-

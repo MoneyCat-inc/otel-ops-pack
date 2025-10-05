@@ -1,5 +1,5 @@
 {
-  "last_update": "2025-10-05T07:50:23.825753+00:00",
+  "last_update": "2025-10-05T18:05:23.707117+00:00",
   "summary": {
     "total": 15,
     "passed": 14,
@@ -18,8 +18,7 @@
       "name": "Windows Collector service",
       "status": "passed",
       "duration": 0.8,
-      "category": "service",
-      "details": "Service running with auto-delayed start, OTLP endpoints operational (5317/5318), health check: 200 OK"
+      "category": "service"
     },
     {
       "name": "ECRR report generation",
