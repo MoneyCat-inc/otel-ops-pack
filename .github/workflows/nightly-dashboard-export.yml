@@ -19,6 +19,31 @@ jobs:
           echo "SIGNOZ_URL=${{ secrets.SIGNOZ_URL }}" | Out-File -FilePath $env:GITHUB_ENV -Append
           echo "SIGNOZ_SESSION=${{ secrets.SIGNOZ_SESSION }}" | Out-File -FilePath $env:GITHUB_ENV -Append
 
+      - name: Start SigNoz with Docker Compose
+        shell: pwsh
+        run: |
+          # Start SigNoz stack
+          docker-compose -f docker-compose-signoz.yml up -d
+          
+          # Wait for SigNoz to be ready
+          $maxAttempts = 30
+          $attempt = 0
+          do {
+            Start-Sleep -Seconds 2
+            $attempt++
+            try {
+              $response = Invoke-RestMethod -Uri "http://localhost:8080/api/v1/health" -Method Get -TimeoutSec 5
+              Write-Host "SigNoz is ready!"
+              break
+            } catch {
+              Write-Host "Waiting for SigNoz... (attempt $attempt/$maxAttempts)"
+            }
+          } while ($attempt -lt $maxAttempts)
+          
+          if ($attempt -eq $maxAttempts) {
+            throw "SigNoz failed to start within timeout"
+          }
+
       - name: Export PDFs with Edge headless
         shell: pwsh
         run: |
@@ -38,6 +63,12 @@ jobs:
           path: docs/ecrr/ECRR_REPORTS/*_nightly_dashboard_export.md
           if-no-files-found: warn
 
+      - name: Cleanup SigNoz
+        if: always()
+        shell: pwsh
+        run: |
+          docker-compose -f docker-compose-signoz.yml down -v
+
   export_playwright:
     runs-on: windows-latest
     steps:
@@ -52,6 +83,31 @@ jobs:
 
       - name: Install Playwright browser
         run: pnpm exec playwright install chromium
+
+      - name: Start SigNoz with Docker Compose
+        shell: pwsh
+        run: |
+          # Start SigNoz stack
+          docker-compose -f docker-compose-signoz.yml up -d
+          
+          # Wait for SigNoz to be ready
+          $maxAttempts = 30
+          $attempt = 0
+          do {
+            Start-Sleep -Seconds 2
+            $attempt++
+            try {
+              $response = Invoke-RestMethod -Uri "http://localhost:8080/api/v1/health" -Method Get -TimeoutSec 5
+              Write-Host "SigNoz is ready!"
+              break
+            } catch {
+              Write-Host "Waiting for SigNoz... (attempt $attempt/$maxAttempts)"
+            }
+          } while ($attempt -lt $maxAttempts)
+          
+          if ($attempt -eq $maxAttempts) {
+            throw "SigNoz failed to start within timeout"
+          }
 
       - name: Set env
         shell: pwsh
@@ -76,6 +132,20 @@ jobs:
           path: docs/ecrr/ECRR_REPORTS/*_nightly_dashboard_export_playwright.md
           if-no-files-found: warn
 
+      - name: Cleanup SigNoz
+        if: always()
+        shell: pwsh
+        run: |
+          docker-compose -f docker-compose-signoz.yml down -v
+
+  update_docs:
+    runs-on: windows-latest
+    needs: [export, export_playwright]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Update docs index
         shell: pwsh
         run: pwsh -File scripts/update-docs-index.ps1
@@ -83,7 +153,7 @@ jobs:
       - name: Commit updated docs index
         shell: pwsh
         run: |
-          git config user.name  "moneycat-bot"
+          git config user.name "moneycat-bot"
           git config user.email "bot@moneycat.inc"
           git add docs/README.md
           git commit -m "docs(report): update docs index with latest snapshot" || echo "No changes"
