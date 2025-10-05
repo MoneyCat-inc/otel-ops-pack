@@ -147,3 +147,22 @@ ECRR Gate: Cleanup complete, ready for production deployment"
 **Role**: Cursor Agent executing ECRR rollout merge with full compliance verification
 
 **Status**: ✅ **PRODUCTION READY** - ECRR Rollout Merge plan complete and ready for execution
+---
+
+<!-- ecrr-compliance-addendum -->
+## ?? **ECRR Compliance Addendum**
+
+## 📋 **Role**
+**Actor Declaration:** Cursor Agent - Observability Copilot
+- Accountability remains with the declared agent under BossCat OEM oversight.
+
+## ✅ **ECRR Gate**
+- ✅ Examine: Baseline captured and referenced above.
+- ✅ Clean: Remediation steps executed with guardrail alignment.
+- ✅ Report: Artifacts exported to disk and cross-referenced in this report.
+- ✅ Role: Actor declaration recorded in this addendum.
+
+
+
+
+

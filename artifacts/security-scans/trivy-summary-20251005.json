@@ -1,0 +1,39 @@
+[
+  {
+    "Image": "clickhouse/clickhouse-server:25.5.6",
+    "Vulnerabilities": []
+  },
+  {
+    "Image": "signoz/signoz:v0.96.1",
+    "Vulnerabilities": {
+      "Severity": "HIGH",
+      "Count": 2
+    }
+  },
+  {
+    "Image": "signoz/signoz-otel-collector:v0.129.6",
+    "Vulnerabilities": [
+      {
+        "Severity": "CRITICAL",
+        "Count": 1
+      },
+      {
+        "Severity": "HIGH",
+        "Count": 11
+      }
+    ]
+  },
+  {
+    "Image": "signoz/zookeeper:3.9.3",
+    "Vulnerabilities": [
+      {
+        "Severity": "CRITICAL",
+        "Count": 3
+      },
+      {
+        "Severity": "HIGH",
+        "Count": 16
+      }
+    ]
+  }
+]

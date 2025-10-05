@@ -1,0 +1,5 @@
+
+Name                           Value
+----                           -----
+ExcludeRules                   {PSAvoidUsingWriteHost}
+

@@ -598,5 +598,5 @@ function convertToCSV(data: any): string {
 }
 
 // Export config for Edge Runtime
-export const runtime = 'edge';
+export const runtime = 'nodejs';
 

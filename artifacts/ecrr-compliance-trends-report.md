@@ -1,62 +1,42 @@
 # ECRR Compliance Trends Report
 
-**Generated**: 2025-10-05 06:37:02
-**Report Period**: Last 2 measurements
+**Generated**: 2025-10-05 20:07:01
+**Report Period**: Last 29 measurements
 
 ## ?? Current Compliance Status
 
-- **Overall Score**: 235/768
-- **Compliance Rate**: 75%
-- **Passed Reports**: 48/64
-- **Failed Reports**: 16/64
+- **Overall Score**: 260/792
+- **Compliance Rate**: 97%
+- **Passed Reports**: 64/66
+- **Failed Reports**: 2/66
 
 ## ?? Trend Analysis
 
-- **Trend Direction**: Flat
-- **Trend Status**: Stable
-- **Change**: 0%
-- **Recent Average**: 75%
-- **Historical Average**: 75%
+- **Trend Direction**: Upward
+- **Trend Status**: Improving
+- **Change**: 2.48%
+- **Recent Average**: 97%
+- **Historical Average**: 94.52%
 
 ## ?? Recommendations
 
-Maintain current practices
+Continue current practices - compliance trending upward
 
 ## ?? Detailed Report Analysis
 
 ### Reports with Issues
-**2025-09-29-queue-steward-verification.md** - Score: /100
-Issues: 1
-**2025-10-01-comprehensive-implementation-summary.md** - Score: /100
-Issues: 1
-**2025-10-01-final-implementation-summary.md** - Score: /100
-Issues: 1
-**2025-10-01-final-rollout-ecrr-report.md** - Score: /100
-Issues: 1
-**2025-10-01-log-pattern-fractal-validation.md** - Score: /100
-Issues: 1
-**2025-10-02-ecrr-current-state-assessment.md** - Score: /100
-Issues: 1
-**2025-10-02-ecrr-monitoring-status-report.md** - Score: /100
-Issues: 1
-**2025-10-02-ecrr-monitoring-verification.md** - Score: /100
-Issues: 1
-**2025-10-02-ecrr-operational-status.md** - Score: /100
+**2025-01-29-windows-collector-recovery-ecrr.md** - Score: /100
 Issues: 2
-**2025-10-02-ecrr-rollout-merge-final.md** - Score: /100
-Issues: 1
-**2025-10-02-ecrr-rollout-merge-plan.md** - Score: /100
+**ECRR_COMPLIANCE_REPORT_2025-10-05.md** - Score: /100
 Issues: 2
-**2025-10-02-ecrr-system-assessment.md** - Score: /100
-Issues: 1
-**2025-10-02-windows-collector-rollout-merge-ecrr.md** - Score: /100
-Issues: 1
-**2025-10-04-compliance-remediation-action-plan.md** - Score: /100
-Issues: 2
-**2025-10-04-ecrr-system-health-assessment.md** - Score: /100
-Issues: 3
-**ecrr-report-2025-10-02.md** - Score: /100
-Issues: 1
 ### Historical Compliance Rate
-- **10/05/2025 06:06:59**: 75%
-- **2025-10-05T06:36:59Z**: 75%
+- **10/05/2025 15:37:00**: 98.5%
+- **10/05/2025 16:06:58**: 98.5%
+- **10/05/2025 16:36:58**: 97%
+- **10/05/2025 17:06:59**: 97%
+- **10/05/2025 17:36:58**: 97%
+- **10/05/2025 18:06:59**: 97%
+- **10/05/2025 18:36:58**: 97%
+- **10/05/2025 19:06:58**: 97%
+- **10/05/2025 19:36:58**: 97%
+- **2025-10-05T20:06:58Z**: 97%
