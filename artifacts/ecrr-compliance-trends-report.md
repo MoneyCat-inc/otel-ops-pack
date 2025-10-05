@@ -1,7 +1,7 @@
 # ECRR Compliance Trends Report
 
-**Generated**: 2025-10-05 05:07:02
-**Report Period**: Last 47 measurements
+**Generated**: 2025-10-05 05:37:02
+**Report Period**: Last 48 measurements
 
 ## ?? Current Compliance Status
 
@@ -14,9 +14,9 @@
 
 - **Trend Direction**: Upward
 - **Trend Status**: Improving
-- **Change**: 7.25%
+- **Change**: 7.08%
 - **Recent Average**: 75%
-- **Historical Average**: 67.75%
+- **Historical Average**: 67.92%
 
 ## ?? Recommendations
 
@@ -58,7 +58,6 @@ Issues: 3
 **ecrr-report-2025-10-02.md** - Score: /100
 Issues: 1
 ### Historical Compliance Rate
-- **10/05/2025 00:37:00**: 67.1%
 - **10/05/2025 01:06:59**: 66.2%
 - **10/05/2025 01:36:59**: 66.2%
 - **10/05/2025 02:06:59**: 75%
@@ -67,4 +66,5 @@ Issues: 1
 - **10/05/2025 03:36:59**: 75%
 - **10/05/2025 04:07:00**: 75%
 - **10/05/2025 04:36:59**: 75%
-- **2025-10-05T05:06:59Z**: 75%
+- **10/05/2025 05:06:59**: 75%
+- **2025-10-05T05:36:59Z**: 75%
