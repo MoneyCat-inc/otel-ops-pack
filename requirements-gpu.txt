@@ -19,7 +19,7 @@ numpy==2.3.3
 pillow==11.0.0
 
 # CUDA-accelerated PyTorch packages (requires special index)
-torch==2.5.1+cu121
+torch==2.8.0
 torchaudio==2.5.1+cu121
 torchvision==0.20.1+cu121
 
