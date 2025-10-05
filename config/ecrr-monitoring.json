@@ -4,6 +4,10 @@
       "Target": 80,
       "Weight": 0.3
     },
+    "Structure_Compliance": {
+      "Target": 80,
+      "Weight": 0.25
+    },
     "Quality_Compliance": {
       "Target": 80,
       "Weight": 0.2
@@ -11,34 +15,30 @@
     "Content_Compliance": {
       "Target": 80,
       "Weight": 0.25
-    },
-    "Structure_Compliance": {
-      "Target": 80,
-      "Weight": 0.25
     }
   },
-  "Thresholds": {
-    "Target": 80,
-    "Warning": 70,
-    "Excellent": 90,
-    "Critical": 50
-  },
-  "Dashboard": {
-    "Retention_Days": 30,
-    "Export_Formats": [
-      "json",
-      "html",
-      "csv"
-    ],
-    "Update_Interval": 300
-  },
   "Alerts": {
+    "Regression_Threshold": 5,
     "Critical_Threshold": 50,
     "Notification_Channels": [
       "console",
       "file",
       "webhook"
+    ]
+  },
+  "Dashboard": {
+    "Update_Interval": 300,
+    "Export_Formats": [
+      "json",
+      "html",
+      "csv"
     ],
-    "Regression_Threshold": 5
+    "Retention_Days": 30
+  },
+  "Thresholds": {
+    "Target": 80,
+    "Critical": 50,
+    "Warning": 70,
+    "Excellent": 90
   }
 }

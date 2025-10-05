@@ -5,6 +5,7 @@ param(
     [switch]$SystemHealth,
     [switch]$Performance,
     [switch]$Application,
+    [switch]$Triton,
     [switch]$All,
     [switch]$DryRun
 )
@@ -260,6 +261,43 @@ $ApplicationDashboard = @{
     }
 }
 
+# Triton Health Dashboard (uses placeholder expressions; wire to your metrics/logs as needed)
+$TritonHealthDashboard = @{
+    dashboard = @{
+        title = "Triton Health"
+        description = "Triton availability and model status from gpu-inference-sidecar"
+        panels = @(
+            @{
+                title = "Triton Available"
+                type = "stat"
+                gridPos = @{ h = 8; w = 6; x = 0; y = 0 }
+                targets = @(
+                    @{ expr = "triton_available"; legendFormat = "Available (1/0)" }
+                )
+                fieldConfig = @{ defaults = @{ color = @{ mode = "thresholds" }; thresholds = @{ steps = @(@{ color = "red"; value = 0 }, @{ color = "green"; value = 1 }) } } }
+            },
+            @{
+                title = "Model Count"
+                type = "stat"
+                gridPos = @{ h = 8; w = 6; x = 6; y = 0 }
+                targets = @(
+                    @{ expr = "model_count"; legendFormat = "Models" }
+                )
+            },
+            @{
+                title = "Inference Sidecar Health"
+                type = "table"
+                gridPos = @{ h = 10; w = 12; x = 0; y = 8 }
+                targets = @(
+                    @{ expr = "sidecar_health_deep"; legendFormat = "Deep Health (wire to logs query)" }
+                )
+            }
+        )
+        refresh = "30s"
+        time = @{ from = "now-1h"; to = "now" }
+    }
+}
+
 function Test-SigNozConnection {
     try {
         $response = Invoke-WebRequest -Uri "$SigNozApiUrl/health" -UseBasicParsing -TimeoutSec 10 -ErrorAction Stop
@@ -319,11 +357,12 @@ if (-not (Test-SigNozConnection)) {
 $dashboardsToImport = @()
 
 if ($All) {
-    $dashboardsToImport = @("SystemHealth", "Performance", "Application")
+    $dashboardsToImport = @("SystemHealth", "Performance", "Application", "Triton")
 } else {
     if ($SystemHealth) { $dashboardsToImport += "SystemHealth" }
     if ($Performance) { $dashboardsToImport += "Performance" }
     if ($Application) { $dashboardsToImport += "Application" }
+    if ($Triton) { $dashboardsToImport += "Triton" }
 }
 
 # If no specific dashboards selected, import all
@@ -345,6 +384,9 @@ foreach ($dashboard in $dashboardsToImport) {
         }
         "Application" {
             if (Import-Dashboard "Application" $ApplicationDashboard) { $successCount++ }
+        }
+        "Triton" {
+            if (Import-Dashboard "Triton Health" $TritonHealthDashboard) { $successCount++ }
         }
     }
 }
