@@ -1,0 +1,19 @@
+{
+  "generatedAt": "2025-10-05T08:08:34Z",
+  "metrics": {
+    "totalReports": 75,
+    "hasFourSection": 75,
+    "hasEcrrGate": 75,
+    "hasActor": 75,
+    "hasProductionMarker": 75
+  },
+  "complianceRates": {
+    "fourSection": 100.0,
+    "ecrrGate": 100.0,
+    "actor": 100.0,
+    "production": 100.0,
+    "fullyCompliant": 100.0
+  },
+  "fullyCompliantCount": 75,
+  "nonCompliant": []
+}

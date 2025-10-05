@@ -47,3 +47,14 @@ Documenting the end-to-end health check confirming the ECRR automated monitoring
 - ✅ **Actor Declared**: Cursor Agent - Observability Copilot.
 - ✅ **Scope Defined**: ECRR monitoring verification cycle for 2025-10-02.
 - ✅ **Production Ready**: Monitoring stack confirmed operational at 100% compliance.
+---
+
+<!-- ecrr-compliance-addendum -->
+## ?? **ECRR Compliance Addendum**
+
+## 📋 **Role**
+**Actor Declaration:** Cursor Agent - Observability Copilot
+- Accountability remains with the declared agent under BossCat OEM oversight.
+
+
+

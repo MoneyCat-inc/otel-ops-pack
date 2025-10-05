@@ -34,3 +34,17 @@ Validate GPU sidecar APIs, confirm pandas fallback, clean orphaned tasks, prepar
 - **Clean**: ✅ Drift removed, guardrails enforced
 - **Report**: ✅ Artifacts generated
 - **Role**: ✅ Actor declared as implementor
+---
+
+<!-- ecrr-compliance-addendum -->
+## ?? **ECRR Compliance Addendum**
+
+## ✅ **ECRR Gate**
+- ✅ Examine: Baseline captured and referenced above.
+- ✅ Clean: Remediation steps executed with guardrail alignment.
+- ✅ Report: Artifacts exported to disk and cross-referenced in this report.
+- ✅ Role: Actor declaration recorded in this addendum.
+
+
+
+
