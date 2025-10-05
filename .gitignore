@@ -67,3 +67,9 @@ queryex/
 # SigNoz local artifacts and secrets
 scripts/secrets/*.ps1
 artifacts/signoz/
+
+# Development tools and binaries
+artifacts/tools/
+tools/
+*.exe
+*.bin
