@@ -1,0 +1,84 @@
+{
+  "description": "YHWH (Yod-He-Vav-He) architecture validation and cross-language capability metrics",
+  "annotations": [
+    {
+      "name": "Tetragrammaton Executions",
+      "titleFormat": "Execution Completed",
+      "expr": "tetragrammaton_execution_completed",
+      "textFormat": "HE-HE Integration Validated"
+    }
+  ],
+  "name": "Tetragrammaton Cross-Language Benchmarks",
+  "timeRange": "1h",
+  "panels": [
+    {
+      "title": "Tetragrammaton Architecture Status",
+      "type": "stat",
+      "targets": [
+        {
+          "expr": "tetragrammaton_architecture_status",
+          "legendFormat": "YOD Foundation"
+        },
+        {
+          "expr": "tetragrammaton_architecture_status",
+          "legendFormat": "HE Interface"
+        },
+        {
+          "expr": "tetragrammaton_architecture_status",
+          "legendFormat": "VAV Validation"
+        },
+        {
+          "expr": "tetragrammaton_architecture_status",
+          "legendFormat": "HE Integration"
+        }
+      ]
+    },
+    {
+      "title": "Cross-Language Performance Comparison",
+      "type": "graph",
+      "targets": [
+        {
+          "expr": "tetragrammaton_execution_duration_seconds",
+          "legendFormat": "NodeJS (Tetragrammaton)"
+        },
+        {
+          "expr": "tetragrammaton_execution_duration_seconds",
+          "legendFormat": "Python (logfilter)"
+        }
+      ]
+    },
+    {
+      "title": "Test Coverage Metrics",
+      "type": "graph",
+      "targets": [
+        {
+          "expr": "tetragrammaton_test_count",
+          "legendFormat": "NodeJS Tests"
+        },
+        {
+          "expr": "tetragrammaton_test_count",
+          "legendFormat": "Python Tests"
+        }
+      ]
+    },
+    {
+      "title": "BossCat Compliance Status",
+      "type": "stat",
+      "targets": [
+        {
+          "expr": "tetragrammaton_bosscat_compliance_score",
+          "legendFormat": "ECRR Reporting"
+        },
+        {
+          "expr": "tetragrammaton_bosscat_compliance_score",
+          "legendFormat": "Evidence Collection"
+        },
+        {
+          "expr": "tetragrammaton_bosscat_compliance_score",
+          "legendFormat": "Governance Visibility"
+        }
+      ]
+    }
+  ],
+  "refresh": "30s"
+}
