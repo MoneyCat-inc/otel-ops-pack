@@ -1,9 +1,0 @@
-README.md
-pyproject.toml
-logfilter/main.py
-logfilter.egg-info/PKG-INFO
-logfilter.egg-info/SOURCES.txt
-logfilter.egg-info/dependency_links.txt
-logfilter.egg-info/entry_points.txt
-logfilter.egg-info/top_level.txt
-tests/test_logfilter.py
