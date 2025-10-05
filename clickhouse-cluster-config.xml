@@ -1,14 +1,21 @@
+<?xml version="1.0"?>
 <clickhouse>
-  <remote_servers>
-    <cluster>
-      <shard>
-        <replica>
-          <host>signoz-clickhouse</host>
-          <port>9000</port>
-        </replica>
-      </shard>
-    </cluster>
-  </remote_servers>
+    <remote_servers>
+        <cluster>
+            <shard>
+                <replica>
+                    <host>signoz-clickhouse</host>
+                    <port>9000</port>
+                </replica>
+            </shard>
+        </cluster>
+    </remote_servers>
+
+    <!-- Enable cluster replication -->
+    <distributed_ddl>
+        <path>/clickhouse/task_queue/ddl</path>
+    </distributed_ddl>
+
+    <!-- Basic storage path -->
+    <path>/var/lib/clickhouse/</path>
 </clickhouse>
-
-

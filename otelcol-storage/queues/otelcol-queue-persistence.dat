@@ -1,6 +1,0 @@
-{
-  "test_data": "Queue persistence test",
-  "timestamp": "2025-09-27T06:40:27.267Z",
-  "queue_size": 0,
-  "queue_capacity": 1000
-}

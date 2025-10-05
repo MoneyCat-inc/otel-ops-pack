@@ -81,7 +81,7 @@ processors:
 exporters:
   clickhousetraces:
     datasource: tcp://signoz-clickhouse:9000/signoz_traces
-    low_cardinal_exception_grouping: ${env:LOW_CARDINAL_EXCEPTION_GROUPING}
+    low_cardinal_exception_grouping: false
     use_new_schema: true
   signozclickhousemetrics:
     dsn: tcp://signoz-clickhouse:9000/signoz_metrics
@@ -106,10 +106,10 @@ service:
       receivers: [otlp, hostmetrics, prometheus]
       processors: [memory_limiter, resourcedetection, batch]
       exporters: [signozclickhousemetrics]
-    logs:
-      receivers: [otlp]
-      processors: [memory_limiter, resourcedetection, attributes/redact_sensitive, batch]
-      exporters: [clickhouselogsexporter]
+  # logs:
+  #   receivers: [otlp]
+  #   processors: [memory_limiter, resourcedetection, attributes/redact_sensitive, batch]
+  #   exporters: [clickhouselogsexporter]
 
 extensions:
   health_check:
