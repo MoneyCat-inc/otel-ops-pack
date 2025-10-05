@@ -1,11 +1,11 @@
 [INFO] ECRR-Enhanced Canary Test - Examine -> Clean -> Report -> Role
-[INFO] Timestamp: 2025-10-05 05:45:43
+[INFO] Timestamp: 2025-10-05 06:35:38
 [INFO] Working directory: C:\otel
 [SECTION] EXAMINE: Environment State
-[FAIL] SigNoz UI not accessible at http://localhost:8080
+[OK] SigNoz UI accessible at http://localhost:8080
 [OK] OTel Collector service: Running
-[WARN] OTLP endpoint 14317 not reachable
-[WARN] OTLP endpoint 14318 not reachable
+[OK] OTLP endpoint 14317 accessible
+[OK] OTLP endpoint 14318 accessible
 [OK] Found 16 OTel scheduled tasks
 [INFO]   - OTel Monitor Optimized Pipeline Hourly: Ready
 [INFO]   - OTel-Analytics-Monitoring: Ready
@@ -27,7 +27,7 @@
 [OK] Log file sizes are reasonable
 [SECTION] REPORT: Execute Canary Test
 [INFO] Executing canary test...
-[OK] Created canary log entry: ECRR-Canary-Test-20251005-054551
+[OK] Created canary log entry: ECRR-Canary-Test-20251005-063540
 [OK] Created Windows Event Log entry
 [WARN] Failed to send OTLP log to collector
 [SECTION] ROLE: Agent Responsibilities
@@ -35,7 +35,5 @@
 [INFO] Responsibilities: Examine environment, clean drift, report canary execution, document role
 [INFO] Artifacts: This report, canary logs, OTLP traces, Windows Event Log entries
 [SECTION] Summary
-[FAIL] SigNoz UI not accessible
-[WARN] OTLP endpoint 14317 not reachable
-[WARN] OTLP endpoint 14318 not reachable
+[OK] ECRR Canary Test completed successfully
 [WARN] Failed to send OTLP log

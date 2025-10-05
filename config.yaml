@@ -1,6 +1,6 @@
 extensions:
   health_check:
-    endpoint: 0.0.0.0:13133
+    endpoint: 127.0.0.1:13134
     path: /healthz
   zpages:
     endpoint: 0.0.0.0:55679
@@ -10,9 +10,9 @@ receivers:
   otlp:
     protocols:
       grpc:
-        endpoint: 0.0.0.0:4317
+        endpoint: 127.0.0.1:5317
       http:
-        endpoint: 0.0.0.0:4318
+        endpoint: 127.0.0.1:5318
   windowseventlog/application:
     channel: Application
     start_at: end
@@ -86,7 +86,7 @@ processors:
 
 exporters:
   otlp:
-    endpoint: localhost:14317
+    endpoint: localhost:4317
     tls:
       insecure: true
     retry_on_failure:

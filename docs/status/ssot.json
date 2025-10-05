@@ -1,5 +1,5 @@
 {
-  "last_update": "2025-10-05T04:40:23.655772+00:00",
+  "last_update": "2025-10-05T05:40:23.471001+00:00",
   "authoritative_sources": {
     "ecrr_reports": {
       "path": "docs/BossCat/reports\\ECRR_STATUS_DASHBOARD_IMPLEMENTATION_2025-01-04.md",
@@ -9,7 +9,7 @@
     "signoz_health": {
       "status": "unhealthy: ok",
       "version": "v0.96.1",
-      "last_check": "2025-10-05T04:40:23.655778+00:00"
+      "last_check": "2025-10-05T05:40:23.471006+00:00"
     },
     "collector_status": "running"
   },
