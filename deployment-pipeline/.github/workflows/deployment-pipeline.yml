@@ -35,7 +35,7 @@ env:
   IMAGE_NAME: ${{ github.repository }}/deployment-pipeline-api
   NODE_VERSION: "18"
   SERVICE_PORT: 3000
-  HEALTH_CHECK_URL: http://localhost:${{ env.SERVICE_PORT }}/health
+  HEALTH_CHECK_URL: http://localhost:8080/health
 
 jobs:
   build-and-test:
@@ -186,34 +186,62 @@ jobs:
           
           # Wait for service to be ready
           echo "⏳ Waiting for service to be ready..."
-          timeout 60 bash -c "until curl -f ${{ env.HEALTH_CHECK_URL }}; do sleep 2; done"
+          timeout 60 bash -c "until curl -f http://localhost:3000/health; do sleep 2; done"
           
           # Verify deployment
           echo "✅ Service deployed successfully"
-          curl -f ${{ env.HEALTH_CHECK_URL }}
+          curl -f http://localhost:3000/health
           
-      - name: Setup kubectl for Kubernetes
-        if: ${{ inputs.environment == "staging" || inputs.environment == "production" }}
+      # GKE Authentication and Deployment
+      - name: Authenticate to GKE
+        if: ${{ (inputs.environment == "staging" || inputs.environment == "production") && secrets.GCP_PROJECT_ID }}
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+          
+      - name: Set up Cloud SDK for GKE
+        if: ${{ (inputs.environment == "staging" || inputs.environment == "production") && secrets.GCP_PROJECT_ID }}
+        uses: google-github-actions/setup-gcloud@v1
+          
+      - name: Configure kubectl for GKE
+        if: ${{ (inputs.environment == "staging" || inputs.environment == "production") && secrets.GCP_PROJECT_ID }}
         run: |
-          echo "🔧 Setting up kubectl for Kubernetes deployment"
+          gcloud container clusters get-credentials ${{ secrets.GKE_CLUSTER_NAME }} \
+            --zone ${{ secrets.GKE_ZONE }} \
+            --project ${{ secrets.GCP_PROJECT_ID }}
+            
+      # EKS Authentication and Deployment  
+      - name: Configure AWS credentials for EKS
+        if: ${{ (inputs.environment == "staging" || inputs.environment == "production") && secrets.AWS_ACCESS_KEY_ID }}
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
           
-          # Install kubectl
-          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-          chmod +x kubectl
-          sudo mv kubectl /usr/local/bin/
+      - name: Update kubeconfig for EKS
+        if: ${{ (inputs.environment == "staging" || inputs.environment == "production") && secrets.AWS_ACCESS_KEY_ID }}
+        run: |
+          aws eks update-kubeconfig \
+            --region ${{ secrets.AWS_REGION }} \
+            --name ${{ secrets.EKS_CLUSTER_NAME }}
+            
+      # AKS Authentication and Deployment
+      - name: Azure Login for AKS
+        if: ${{ (inputs.environment == "staging" || inputs.environment == "production") && secrets.AZURE_CLIENT_ID }}
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           
-          # Verify installation
-          kubectl version --client
-          
-          # In a real scenario, you would configure kubeconfig here
-          # For example, for GKE:
-          # gcloud container clusters get-credentials CLUSTER_NAME --zone ZONE --project PROJECT_ID
-          # Or for EKS:
-          # aws eks update-kubeconfig --region REGION --name CLUSTER_NAME
-          # Or for AKS:
-          # az aks get-credentials --resource-group RESOURCE_GROUP --name CLUSTER_NAME
-          
-          echo "✅ kubectl setup completed"
+      - name: Configure kubectl for AKS
+        if: ${{ (inputs.environment == "staging" || inputs.environment == "production") && secrets.AZURE_CLIENT_ID }}
+        run: |
+          az aks get-credentials \
+            --resource-group ${{ secrets.AKS_RESOURCE_GROUP }} \
+            --name ${{ secrets.AKS_CLUSTER_NAME }}
           
       - name: Deploy to Kubernetes (Staging)
         if: ${{ inputs.environment == "staging" || (inputs.environment == "" && github.ref == "refs/heads/main") }}
@@ -234,14 +262,12 @@ jobs:
           kubectl get pods -l app=deployment-pipeline-api
           kubectl get services deployment-pipeline-api-service
           
-          # Get service external URL (for cloud providers)
-          # SERVICE_URL=$(kubectl get service deployment-pipeline-api-service -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
-          # Or for port-forward testing:
+          # Port forward for health check (aligned with HEALTH_CHECK_URL)
           kubectl port-forward service/deployment-pipeline-api-service 8080:80 &
           sleep 10
           
-          # Health check against service
-          curl -f http://localhost:8080/health || echo "Health check failed - service may still be starting"
+          # Health check against forwarded port
+          curl -f ${{ env.HEALTH_CHECK_URL }} || echo "Health check failed - service may still be starting"
           
           echo "✅ Kubernetes staging deployment completed"
           
@@ -264,16 +290,12 @@ jobs:
           kubectl get pods -l app=deployment-pipeline-api
           kubectl get services deployment-pipeline-api-service
           
-          # Get service external URL
-          # SERVICE_URL=$(kubectl get service deployment-pipeline-api-service -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
-          # HEALTH_URL="http://$SERVICE_URL/health"
-          
-          # For port-forward testing:
+          # Port forward for health check (aligned with HEALTH_CHECK_URL)
           kubectl port-forward service/deployment-pipeline-api-service 8080:80 &
           sleep 15
           
-          # Health check against service
-          curl -f http://localhost:8080/health || echo "Health check failed - service may still be starting"
+          # Health check against forwarded port
+          curl -f ${{ env.HEALTH_CHECK_URL }} || echo "Health check failed - service may still be starting"
           
           echo "✅ Kubernetes production deployment completed"
           
@@ -282,8 +304,8 @@ jobs:
           echo "⏳ Waiting for deployment to be ready"
           sleep 10
           
-          # Verify service is responding
-          curl -f ${{ env.HEALTH_CHECK_URL }} || echo "Health check failed - service may still be starting"
+          # Verify service is responding (check both local and forwarded ports)
+          curl -f http://localhost:3000/health || curl -f ${{ env.HEALTH_CHECK_URL }} || echo "Health check failed - service may still be starting"
 
   smoke-tests:
     name: Smoke Tests
@@ -297,29 +319,42 @@ jobs:
       - name: Wait for service readiness
         run: |
           echo "⏳ Waiting for service to be fully ready..."
-          timeout 60 bash -c "until curl -f ${{ env.HEALTH_CHECK_URL }}; do sleep 2; done"
+          # Check both local Docker Compose and forwarded Kubernetes ports
+          timeout 60 bash -c "until curl -f http://localhost:3000/health || curl -f ${{ env.HEALTH_CHECK_URL }}; do sleep 2; done"
           
       - name: Run comprehensive smoke tests
         run: |
           echo "🧪 Running comprehensive smoke tests against deployed service"
           
+          # Determine which service endpoint to use
+          if curl -f http://localhost:3000/health >/dev/null 2>&1; then
+            SERVICE_BASE="http://localhost:3000"
+            echo "Testing against Docker Compose service"
+          elif curl -f ${{ env.HEALTH_CHECK_URL }} >/dev/null 2>&1; then
+            SERVICE_BASE="http://localhost:8080"
+            echo "Testing against Kubernetes port-forwarded service"
+          else
+            echo "❌ No service endpoint available for testing"
+            exit 1
+          fi
+          
           # Health check
           echo "Testing health endpoint..."
-          curl -f ${{ env.HEALTH_CHECK_URL }}
+          curl -f $SERVICE_BASE/health
           
           # Status check
           echo "Testing status endpoint..."
-          curl -f http://localhost:${{ env.SERVICE_PORT }}/api/v1/status
+          curl -f $SERVICE_BASE/api/v1/status
           
           # Echo test
           echo "Testing echo endpoint..."
-          curl -f -X POST http://localhost:${{ env.SERVICE_PORT }}/api/v1/echo \
+          curl -f -X POST $SERVICE_BASE/api/v1/echo \
             -H "Content-Type: application/json" \
             -d "{\"message\":\"Smoke Test - Tetragrammaton Validation\"}"
           
           # Metrics check
           echo "Testing metrics endpoint..."
-          curl -f http://localhost:${{ env.SERVICE_PORT }}/api/v1/metrics
+          curl -f $SERVICE_BASE/api/v1/metrics
           
           echo "✅ All smoke tests completed successfully"
           
@@ -327,7 +362,17 @@ jobs:
         run: |
           echo "🐾 Validating Tetragrammaton YHWH architecture..."
           
-          METRICS_RESPONSE=$(curl -s -f http://localhost:${{ env.SERVICE_PORT }}/api/v1/metrics)
+          # Determine which service endpoint to use
+          if curl -f http://localhost:3000/health >/dev/null 2>&1; then
+            SERVICE_BASE="http://localhost:3000"
+          elif curl -f ${{ env.HEALTH_CHECK_URL }} >/dev/null 2>&1; then
+            SERVICE_BASE="http://localhost:8080"
+          else
+            echo "❌ No service endpoint available for validation"
+            exit 1
+          fi
+          
+          METRICS_RESPONSE=$(curl -s -f $SERVICE_BASE/api/v1/metrics)
           
           # Check for Tetragrammaton components in metrics
           if echo "$METRICS_RESPONSE" | grep -q "tetragrammaton"; then
@@ -364,7 +409,8 @@ jobs:
       - name: Wait for service readiness
         run: |
           echo "⏳ Ensuring service is ready for metrics collection..."
-          timeout 60 bash -c "until curl -f ${{ env.HEALTH_CHECK_URL }}; do sleep 2; done"
+          # Check both local Docker Compose and forwarded Kubernetes ports
+          timeout 60 bash -c "until curl -f http://localhost:3000/health || curl -f ${{ env.HEALTH_CHECK_URL }}; do sleep 2; done"
           
       - name: Capture deployment metrics
         run: |
@@ -372,11 +418,23 @@ jobs:
           
           cd deployment-pipeline
           
+          # Determine service base URL for metrics collection
+          if curl -f http://localhost:3000/health >/dev/null 2>&1; then
+            SERVICE_BASE_URL="http://localhost:3000"
+            echo "Collecting metrics from Docker Compose service"
+          elif curl -f ${{ env.HEALTH_CHECK_URL }} >/dev/null 2>&1; then
+            SERVICE_BASE_URL="http://localhost:8080"
+            echo "Collecting metrics from Kubernetes port-forwarded service"
+          else
+            echo "⚠️ No service endpoint available for metrics collection"
+            SERVICE_BASE_URL="http://localhost:3000"
+          fi
+          
           # Capture metrics using the deployment metrics script
-          pwsh scripts/deployment-metrics.ps1 -Action capture -Environment ${{ inputs.environment || "staging" }} -OutputPath "docs/metrics"
+          pwsh scripts/deployment-metrics.ps1 -Action capture -Environment ${{ inputs.environment || "staging" }} -BaseUrl $SERVICE_BASE_URL -OutputPath "docs/metrics"
           
           # Generate ECRR report
-          pwsh scripts/deployment-metrics.ps1 -Action ecrr -Environment ${{ inputs.environment || "staging" }} -ECRRReportDir "docs/ecrr/ECRR_REPORTS"
+          pwsh scripts/deployment-metrics.ps1 -Action ecrr -Environment ${{ inputs.environment || "staging" }} -BaseUrl $SERVICE_BASE_URL -ECRRReportDir "docs/ecrr/ECRR_REPORTS"
           
       - name: Upload ECRR artifacts
         uses: actions/upload-artifact@v4
