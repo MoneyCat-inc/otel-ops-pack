@@ -1,0 +1,261 @@
+name: Deployment Pipeline CI/CD - Complete
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - "deployment-pipeline/**"
+  pull_request:
+    branches: [ main ]
+    paths:
+      - "deployment-pipeline/**"
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Deployment environment"
+        required: true
+        default: "staging"
+        type: choice
+        options:
+          - staging
+          - production
+      skip_tests:
+        description: "Skip tests"
+        required: false
+        default: false
+        type: boolean
+      skip_security:
+        description: "Skip security scans"
+        required: false
+        default: false
+        type: boolean
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}/deployment-pipeline-api
+  NODE_VERSION: "18"
+  SERVICE_PORT: 3000
+  HEALTH_CHECK_URL: http://localhost:${{ env.SERVICE_PORT }}/health
+
+jobs:
+  build-and-test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+          cache-dependency-path: deployment-pipeline/package-lock.json
+          
+      - name: Install dependencies
+        working-directory: deployment-pipeline
+        run: npm ci
+        
+      - name: Run linting
+        working-directory: deployment-pipeline
+        run: npm run lint
+        if: ${{ !inputs.skip_tests }}
+        
+      - name: Run tests
+        working-directory: deployment-pipeline
+        run: npm run test:coverage
+        if: ${{ !inputs.skip_tests }}
+        
+      - name: Build application
+        working-directory: deployment-pipeline
+        run: npm run build
+
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    if: ${{ !inputs.skip_security }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+          cache-dependency-path: deployment-pipeline/package-lock.json
+          
+      - name: Install dependencies
+        working-directory: deployment-pipeline
+        run: npm ci
+        
+      - name: Run npm audit
+        working-directory: deployment-pipeline
+        run: npm audit --audit-level=high
+        continue-on-error: true
+
+  docker-build:
+    name: Docker Build and Push
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    if: github.event_name != "pull_request"
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: deployment-pipeline
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  deploy:
+    name: Deploy to Environment
+    runs-on: ubuntu-latest
+    needs: [docker-build]
+    if: github.event_name != "pull_request"
+    environment: ${{ inputs.environment || "staging" }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Deploy to Docker Compose
+        run: |
+          echo "🚀 Deploying to Docker Compose for local testing"
+          cd deployment-pipeline
+          
+          # Stop any existing containers
+          docker-compose down --remove-orphans || true
+          
+          # Build and start services
+          docker-compose up -d --build
+          
+          # Wait for service to be ready
+          echo "⏳ Waiting for service to be ready..."
+          timeout 60 bash -c "until curl -f ${{ env.HEALTH_CHECK_URL }}; do sleep 2; done"
+          
+          # Verify deployment
+          echo "✅ Service deployed successfully"
+          curl -f ${{ env.HEALTH_CHECK_URL }}
+
+  smoke-tests:
+    name: Smoke Tests
+    runs-on: ubuntu-latest
+    needs: deploy
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Wait for service readiness
+        run: |
+          echo "⏳ Waiting for service to be fully ready..."
+          timeout 60 bash -c "until curl -f ${{ env.HEALTH_CHECK_URL }}; do sleep 2; done"
+          
+      - name: Run comprehensive smoke tests
+        run: |
+          echo "🧪 Running comprehensive smoke tests against deployed service"
+          
+          # Health check
+          echo "Testing health endpoint..."
+          curl -f ${{ env.HEALTH_CHECK_URL }}
+          
+          # Status check
+          echo "Testing status endpoint..."
+          curl -f http://localhost:${{ env.SERVICE_PORT }}/api/v1/status
+          
+          # Echo test
+          echo "Testing echo endpoint..."
+          curl -f -X POST http://localhost:${{ env.SERVICE_PORT }}/api/v1/echo \
+            -H "Content-Type: application/json" \
+            -d "{\"message\":\"Smoke Test - Tetragrammaton Validation\"}"
+          
+          # Metrics check
+          echo "Testing metrics endpoint..."
+          curl -f http://localhost:${{ env.SERVICE_PORT }}/api/v1/metrics
+          
+          echo "✅ All smoke tests completed successfully"
+          
+      - name: Validate Tetragrammaton architecture
+        run: |
+          echo "🐾 Validating Tetragrammaton YHWH architecture..."
+          
+          METRICS_RESPONSE=$(curl -s -f http://localhost:${{ env.SERVICE_PORT }}/api/v1/metrics)
+          
+          # Check for Tetragrammaton components in metrics
+          if echo "$METRICS_RESPONSE" | grep -q "tetragrammaton"; then
+            echo "✅ Tetragrammaton architecture detected in metrics"
+          else
+            echo "❌ Tetragrammaton architecture not found in metrics"
+            exit 1
+          fi
+          
+          if echo "$METRICS_RESPONSE" | grep -q "YHWH"; then
+            echo "✅ YHWH structure validated"
+          else
+            echo "❌ YHWH structure not found"
+            exit 1
+          fi
+          
+          echo "✅ Tetragrammaton YHWH architecture validation completed"
+
+  ecrr-evidence:
+    name: ECRR Evidence Collection
+    runs-on: ubuntu-latest
+    needs: [build-and-test, security-scan, docker-build, deploy, smoke-tests]
+    if: always()
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup PowerShell
+        uses: actions/setup-powershell@v1
+        with:
+          version: "7.x"
+          
+      - name: Wait for service readiness
+        run: |
+          echo "⏳ Ensuring service is ready for metrics collection..."
+          timeout 60 bash -c "until curl -f ${{ env.HEALTH_CHECK_URL }}; do sleep 2; done"
+          
+      - name: Capture deployment metrics
+        run: |
+          echo "📊 Capturing comprehensive deployment metrics..."
+          
+          cd deployment-pipeline
+          
+          # Capture metrics using the deployment metrics script
+          pwsh scripts/deployment-metrics.ps1 -Action capture -Environment ${{ inputs.environment || "staging" }} -OutputPath "docs/metrics"
+          
+          # Generate ECRR report
+          pwsh scripts/deployment-metrics.ps1 -Action ecrr -Environment ${{ inputs.environment || "staging" }} -ECRRReportDir "docs/ecrr/ECRR_REPORTS"
+          
+      - name: Upload ECRR artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ecrr-deployment-artifacts
+          path: |
+            deployment-pipeline/docs/metrics/
+            deployment-pipeline/docs/ecrr/
+          retention-days: 30
+        if: always()
