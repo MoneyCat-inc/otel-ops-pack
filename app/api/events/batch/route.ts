@@ -148,6 +148,6 @@ export const OPTIONS = async () => {
 };
 
 // Export runtime configuration for Edge Runtime
-export const runtime = 'edge';
+export const runtime = 'nodejs';
 export const preferredRegion = ['iad1', 'sfo1', 'lhr1', 'sin1']; // Global edge locations
 

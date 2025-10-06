@@ -1,9 +1,10 @@
 ---
 name: Hygiene debt tracker
 about: Track lint and pipeline cleanup tasks surfaced by CI
-labels: [hygiene]
-title: "🧹 Hygiene Debt Cleanup Tracker"
-assignees: []
+title: "\U0001F9F9 Hygiene Debt Cleanup Tracker"
+labels: ''
+assignees: ''
+
 ---
 
 This issue tracks cleanup tasks surfaced by CI (Hygiene, CodeQL, Gitleaks, Pester).

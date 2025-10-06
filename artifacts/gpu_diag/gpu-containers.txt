@@ -1,0 +1,3 @@
+1de8b4e6a645 gpu-aggregation otel-gpu-sidecar:latest
+385b68a0e70f gpu-compression otel-gpu-sidecar:latest
+8a7f56a2924f gpu-inference otel-gpu-sidecar:latest

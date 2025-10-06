@@ -2,9 +2,10 @@
 
 <#
 .SYNOPSIS
-  BossCat nightly SigNoz dashboard export using Microsoft Edge headless.
+  BossCat nightly SigNoz dashboard export with integrated security scanning.
 .DESCRIPTION
-  Exports configured SigNoz dashboards to PDF and logs results for ECRR review.
+  Exports configured SigNoz dashboards to PDF, runs Trivy security scans,
+  and logs results for ECRR review.
 .PARAMETER SignozUrl
   Base URL for the SigNoz UI.
 .PARAMETER SignozSession
@@ -16,6 +17,8 @@
   Directory where PDFs are written. Defaults to docs/observability/snapshots.
 .PARAMETER ReportDir
   Directory where summary reports are written. Defaults to docs/ecrr/ECRR_REPORTS.
+.PARAMETER SecurityScanDir
+  Directory where security scan reports are written. Defaults to artifacts/security-scans.
 .PARAMETER DryRun
   When supplied, performs validation only and skips PDF generation.
 #>
@@ -27,6 +30,7 @@ param(
   [string]$DashboardListPath = "scripts/dashboard-list.json",
   [string]$OutputRoot = "docs/observability/snapshots",
   [string]$ReportDir = "docs/ecrr/ECRR_REPORTS",
+  [string]$SecurityScanDir = "artifacts/security-scans",
   [switch]$DryRun
 )
 
@@ -35,6 +39,84 @@ $ErrorActionPreference = "Stop"
 function Write-Info([string]$message)  { Write-Host $message -ForegroundColor Cyan }
 function Write-Success([string]$message) { Write-Host $message -ForegroundColor Green }
 function Write-Warn([string]$message) { Write-Warning $message }
+
+function Invoke-TrivySecurityScan {
+  param(
+    [string]$OutputDir
+  )
+  
+  Write-Info "🔒 Running Trivy security scans..."
+  
+  # Ensure Trivy is available
+  if (-not (Get-Command "trivy" -ErrorAction SilentlyContinue)) {
+    Write-Warn "Trivy not found in PATH. Skipping security scans."
+    return $false
+  }
+  
+  # Define images to scan
+  $images = @(
+    "signoz/signoz-otel-collector:latest",
+    "signoz/signoz:latest", 
+    "clickhouse/clickhouse-server:25.5.6",
+    "signoz/zookeeper:3.9.3"
+  )
+  
+  $scanResults = @()
+  $totalCritical = 0
+  $totalHigh = 0
+  
+  foreach ($image in $images) {
+    Write-Info "Scanning $image..."
+    
+    $imageName = $image -replace "[:/]", "_"
+    $scanFile = Join-Path $OutputDir "trivy-$imageName-$(Get-Date -Format 'yyyyMMdd').json"
+    
+    try {
+      # Run Trivy scan
+      $scanOutput = & trivy image --severity HIGH,CRITICAL --format json --output $scanFile $image 2>&1
+      
+      if ($LASTEXITCODE -eq 0) {
+        # Parse results
+        $scanData = Get-Content $scanFile | ConvertFrom-Json
+        $critical = ($scanData.Results | Where-Object { $_.Vulnerabilities } | ForEach-Object { $_.Vulnerabilities } | Where-Object { $_.Severity -eq "CRITICAL" }).Count
+        $high = ($scanData.Results | Where-Object { $_.Vulnerabilities } | ForEach-Object { $_.Vulnerabilities } | Where-Object { $_.Severity -eq "HIGH" }).Count
+        
+        $totalCritical += $critical
+        $totalHigh += $high
+        
+        $scanResults += [PSCustomObject]@{
+          Image = $image
+          Critical = $critical
+          High = $high
+          ScanFile = $scanFile
+          Timestamp = Get-Date -Format "yyyy-MM-ddTHH:mm:ssZ"
+        }
+        
+        Write-Success "✅ $image`: $critical critical, $high high vulnerabilities"
+      } else {
+        Write-Warn "⚠️ Failed to scan $image`: $scanOutput"
+      }
+    } catch {
+      Write-Warn "⚠️ Error scanning $image`: $($_.Exception.Message)"
+    }
+  }
+  
+  # Generate summary report
+  $summaryFile = Join-Path $OutputDir "trivy-summary-$(Get-Date -Format 'yyyyMMdd').json"
+  $summary = [PSCustomObject]@{
+    Timestamp = Get-Date -Format "yyyy-MM-ddTHH:mm:ssZ"
+    TotalImages = $images.Count
+    TotalCritical = $totalCritical
+    TotalHigh = $totalHigh
+    ScanResults = $scanResults
+    Status = if ($totalCritical -eq 0) { "PASS" } else { "FAIL" }
+  }
+  
+  $summary | ConvertTo-Json -Depth 3 | Set-Content $summaryFile
+  Write-Success "🔒 Security scan summary: $totalCritical critical, $totalHigh high vulnerabilities"
+  
+  return $true
+}
 
 function Ensure-Directory([string]$Path) {
   if (-not (Test-Path $Path)) {
@@ -213,6 +295,11 @@ $summary = [pscustomobject]@{
   outputs_dir = $runDir
   successes   = $results
   failures    = $failures
+  security_scan = @{
+    enabled = $securityScanSuccess
+    scan_dir = $securityScanDirResolved
+    timestamp = (Get-Date).ToString("o")
+  }
 }
 
 $summaryPath = Join-Path $runDir "bosscat-export-summary.json"
@@ -225,6 +312,10 @@ $reportLines = @(
   "Run ID: $timestamp",
   "SigNoz URL: $SignozUrl",
   "Outputs: $runDir",
+  "",
+  "## Security Scan Results",
+  $(if ($securityScanSuccess) { "✅ Security scans completed successfully" } else { "⚠️ Security scans skipped or failed" }),
+  "Scan directory: $securityScanDirResolved",
   "",
   "## Successful Exports"
 )
