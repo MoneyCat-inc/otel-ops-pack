@@ -1,0 +1,30 @@
+[
+  {
+    "Scenario": "max-1234681216",
+    "Iteration": 1,
+    "MaxParallel": 1234681216,
+    "UsedAutoParallel": false,
+    "TotalMilliseconds": 15717.48,
+    "TotalSeconds": 15.717,
+    "Timestamp": "2025-10-06T09:37:20.3035447+01:00",
+    "OutputDir": "artifacts\\benchmarks\\process-all-ecrr-reports\\20251006-093702\\max-1234681216-run1",
+    "IssuesFound": 0,
+    "MissingFourSection": 0,
+    "MissingStatus": 0,
+    "QualityIssueCount": 0
+  },
+  {
+    "Scenario": "auto-parallel",
+    "Iteration": 1,
+    "MaxParallel": null,
+    "UsedAutoParallel": true,
+    "TotalMilliseconds": 1381.34,
+    "TotalSeconds": 1.381,
+    "Timestamp": "2025-10-06T09:37:21.6963587+01:00",
+    "OutputDir": "artifacts\\benchmarks\\process-all-ecrr-reports\\20251006-093702\\auto-parallel-run1",
+    "IssuesFound": 0,
+    "MissingFourSection": 0,
+    "MissingStatus": 0,
+    "QualityIssueCount": 0
+  }
+]

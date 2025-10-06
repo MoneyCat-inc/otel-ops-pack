@@ -1,0 +1,58 @@
+[
+  {
+    "Scenario": "max-14681216",
+    "Iteration": 1,
+    "MaxParallel": 14681216,
+    "UsedAutoParallel": false,
+    "TotalMilliseconds": 1169.46,
+    "TotalSeconds": 1.169,
+    "Timestamp": "2025-10-06T09:45:29.4872705+01:00",
+    "OutputDir": "artifacts\\benchmarks\\process-all-ecrr-reports\\20251006-094523\\max-14681216-run1",
+    "IssuesFound": 0,
+    "MissingFourSection": 0,
+    "MissingStatus": 0,
+    "QualityIssueCount": 0
+  },
+  {
+    "Scenario": "max-14681216",
+    "Iteration": 2,
+    "MaxParallel": 14681216,
+    "UsedAutoParallel": false,
+    "TotalMilliseconds": 1218.9,
+    "TotalSeconds": 1.219,
+    "Timestamp": "2025-10-06T09:45:30.7199711+01:00",
+    "OutputDir": "artifacts\\benchmarks\\process-all-ecrr-reports\\20251006-094523\\max-14681216-run2",
+    "IssuesFound": 0,
+    "MissingFourSection": 0,
+    "MissingStatus": 0,
+    "QualityIssueCount": 0
+  },
+  {
+    "Scenario": "auto-parallel",
+    "Iteration": 1,
+    "MaxParallel": null,
+    "UsedAutoParallel": true,
+    "TotalMilliseconds": 1198.67,
+    "TotalSeconds": 1.199,
+    "Timestamp": "2025-10-06T09:45:31.9268458+01:00",
+    "OutputDir": "artifacts\\benchmarks\\process-all-ecrr-reports\\20251006-094523\\auto-parallel-run1",
+    "IssuesFound": 0,
+    "MissingFourSection": 0,
+    "MissingStatus": 0,
+    "QualityIssueCount": 0
+  },
+  {
+    "Scenario": "auto-parallel",
+    "Iteration": 2,
+    "MaxParallel": null,
+    "UsedAutoParallel": true,
+    "TotalMilliseconds": 1086.6,
+    "TotalSeconds": 1.087,
+    "Timestamp": "2025-10-06T09:45:33.0192793+01:00",
+    "OutputDir": "artifacts\\benchmarks\\process-all-ecrr-reports\\20251006-094523\\auto-parallel-run2",
+    "IssuesFound": 0,
+    "MissingFourSection": 0,
+    "MissingStatus": 0,
+    "QualityIssueCount": 0
+  }
+]
