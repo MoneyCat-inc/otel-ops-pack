@@ -23,7 +23,7 @@
     "@opentelemetry/instrumentation-xml-http-request": "0.206.0",
     "@opentelemetry/resources": "^1.18.1",
     "@opentelemetry/sdk-node": "0.206.0",
-    "@opentelemetry/sdk-trace-web": "^1.18.1",
+    "@opentelemetry/sdk-trace-web": "^2.1.0",
     "@opentelemetry/semantic-conventions": "^1.18.1",
     "@prisma/client": "^5.7.1",
     
