@@ -1,9 +1,10 @@
 ---
 name: BossCat ECRR Task
 about: Create an ECRR-compliant agent task following BossCat governance
-title: '[ECRR] '
-labels: ['bosscat-approved', 'agent-task', 'pending']
-assignees: []
+title: "[ECRR] "
+labels: ''
+assignees: ''
+
 ---
 
 ## 🎯 BossCat ECRR Task Assignment
@@ -73,7 +74,8 @@ assignees: []
 
 **Log Queries**:
 `
-dataset = esonai_analytics AND message contains 	ask-relevance
+dataset = 
+esonai_analytics AND message contains 	ask-relevance
 `
 
 ---
