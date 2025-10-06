@@ -165,11 +165,17 @@ function Capture-DeployMetrics {
     }
     
     try {
-        # Test service endpoints
+        # Test service endpoints - configurable base URL
+        $baseUrl = if ($env:HEALTH_CHECK_URL) { 
+            $env:HEALTH_CHECK_URL -replace '/health$', ''
+        } else { 
+            "http://localhost:3000" 
+        }
+        
         $endpoints = @(
-            "http://localhost:3000/health",
-            "http://localhost:3000/api/v1/status",
-            "http://localhost:3000/api/v1/metrics"
+            "$baseUrl/health",
+            "$baseUrl/api/v1/status",
+            "$baseUrl/api/v1/metrics"
         )
         
         foreach ($endpoint in $endpoints) {
