@@ -244,7 +244,7 @@ jobs:
             --name ${{ secrets.AKS_CLUSTER_NAME }}
           
       - name: Deploy to Kubernetes (Staging)
-        if: ${{ inputs.environment == "staging" || (inputs.environment == "" && github.ref == "refs/heads/main") }}
+        if: ${{ (inputs.environment == "staging" || (inputs.environment == "" && github.ref == "refs/heads/main")) && (secrets.GCP_PROJECT_ID || secrets.AWS_ACCESS_KEY_ID || secrets.AZURE_CLIENT_ID) }}
         run: |
           echo "🚀 Deploying to Kubernetes staging environment"
           echo "Image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest"
@@ -272,7 +272,7 @@ jobs:
           echo "✅ Kubernetes staging deployment completed"
           
       - name: Deploy to Kubernetes (Production)
-        if: ${{ inputs.environment == "production" }}
+        if: ${{ inputs.environment == "production" && (secrets.GCP_PROJECT_ID || secrets.AWS_ACCESS_KEY_ID || secrets.AZURE_CLIENT_ID) }}
         run: |
           echo "🚀 Deploying to Kubernetes production environment"
           echo "Image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest"
