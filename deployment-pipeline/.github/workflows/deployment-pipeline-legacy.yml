@@ -1,29 +1,36 @@
-name: Deployment Pipeline CI/CD
+name: Deployment Pipeline CI/CD - LEGACY (DISABLED)
 
-on:
-  push:
-    branches: [ main, develop ]
-    paths:
-      - "deployment-pipeline/**"
-  pull_request:
-    branches: [ main ]
-    paths:
-      - "deployment-pipeline/**"
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: "Deployment environment"
-        required: true
-        default: "staging"
-        type: choice
-        options:
-          - staging
-          - production
-      skip_tests:
-        description: "Skip tests"
-        required: false
-        default: false
-        type: boolean
+# DISABLED: This workflow is kept for reference only
+# Use deployment-pipeline.yml for the complete 6-phase pipeline
+# on:
+#   push:
+#     branches: [ main, develop ]
+#     paths:
+#       - "deployment-pipeline/**"
+#   pull_request:
+#     branches: [ main ]
+#     paths:
+#       - "deployment-pipeline/**"
+#   workflow_dispatch:
+#     inputs:
+#       environment:
+#         description: "Deployment environment"
+#         required: true
+#         default: "staging"
+#         type: choice
+#         options:
+#           - staging
+#           - production
+#       skip_tests:
+#         description: "Skip tests"
+#         required: false
+#         default: false
+#         type: boolean
+#       skip_security:
+#         description: "Skip security scans"
+#         required: false
+#         default: false
+#         type: boolean
 
 env:
   REGISTRY: ghcr.io
@@ -84,25 +91,13 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           
-      - name: Extract metadata
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=sha,prefix={{branch}}-
-            type=raw,value=latest,enable={{is_default_branch}}
-            
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: deployment-pipeline
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
