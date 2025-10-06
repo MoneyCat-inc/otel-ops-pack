@@ -8,9 +8,9 @@ on:
   workflow_dispatch:
     inputs:
       test_types:
-        description: 'Test types to run (comma-separated)'
+        description: 'Test types to run (space-separated)'
         required: false
-        default: 'baseline,load'
+        default: 'baseline load'
         type: string
       use_mock:
         description: 'Use mock SigNoz API'
@@ -71,7 +71,7 @@ jobs:
       run: |
         python scripts/run-local-pipeline.py \
           --use-mock \
-          --test-types="${{ github.event.inputs.test_types || 'baseline,load' }}" \
+          --test-types baseline load \
           --verbose
           
     - name: Upload artifacts
