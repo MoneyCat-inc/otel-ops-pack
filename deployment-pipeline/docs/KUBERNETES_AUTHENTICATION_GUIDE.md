@@ -91,7 +91,7 @@ EKS_CLUSTER_NAME: your-cluster-name
 3. **GitHub Actions Workflow:**
 ```yaml
 - name: Configure AWS credentials
-  uses: aws-actions/configure-aws-credentials@v2
+  uses: aws-actions/configure-aws-credentials@v1
   with:
     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -102,6 +102,10 @@ EKS_CLUSTER_NAME: your-cluster-name
     aws eks update-kubeconfig \
       --region ${{ secrets.AWS_REGION }} \
       --name ${{ secrets.EKS_CLUSTER_NAME }}
+
+- name: Verify cluster connectivity
+  run: |
+    kubectl get nodes
 ```
 
 ### Azure Kubernetes Service (AKS)
@@ -191,8 +195,59 @@ kubectl get nodes
 
 ### Environment-Specific Configuration
 
-**Staging Environment:**
+**EKS Staging Environment:**
 ```yaml
+- name: Configure AWS credentials for EKS
+  if: ${{ inputs.environment == "staging" }}
+  uses: aws-actions/configure-aws-credentials@v1
+  with:
+    aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    aws-region: ${{ secrets.AWS_REGION }}
+
+- name: Update kubeconfig for EKS staging
+  if: ${{ inputs.environment == "staging" }}
+  run: |
+    aws eks update-kubeconfig \
+      --region ${{ secrets.AWS_REGION }} \
+      --name ${{ secrets.EKS_CLUSTER_NAME_STAGING }}
+
+- name: Deploy to Kubernetes (Staging)
+  if: ${{ inputs.environment == "staging" }}
+  run: |
+    # Update image in deployment manifest
+    sed -i "s|image: .*|image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest|g" k8s/deployment.yaml
+    
+    # Apply Kubernetes manifests
+    kubectl apply -f k8s/deployment.yaml
+    
+    # Wait for deployment rollout
+    kubectl rollout status deployment/deployment-pipeline-api --timeout=300s
+    
+    # Verify deployment
+    kubectl get pods -l app=deployment-pipeline-api
+    kubectl get services deployment-pipeline-api-service
+```
+
+**GKE Staging Environment:**
+```yaml
+- name: Authenticate to GKE staging
+  if: ${{ inputs.environment == "staging" }}
+  uses: google-github-actions/auth@v1
+  with:
+    credentials_json: ${{ secrets.GCP_SA_KEY_STAGING }}
+
+- name: Set up Cloud SDK for staging
+  if: ${{ inputs.environment == "staging" }}
+  uses: google-github-actions/setup-gcloud@v1
+
+- name: Configure kubectl for GKE staging
+  if: ${{ inputs.environment == "staging" }}
+  run: |
+    gcloud container clusters get-credentials ${{ secrets.GKE_CLUSTER_NAME_STAGING }} \
+      --zone ${{ secrets.GKE_ZONE_STAGING }} \
+      --project ${{ secrets.GCP_PROJECT_ID_STAGING }}
+
 - name: Deploy to Kubernetes (Staging)
   if: ${{ inputs.environment == "staging" }}
   run: |
