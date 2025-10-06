@@ -252,6 +252,34 @@ app.get('/metrics', (req, res) => {
 });
 ```
 
+### Deployment Metrics Script
+
+Use the deployment metrics capture script for comprehensive reporting:
+
+```powershell
+# Capture all metrics (default localhost:3000)
+pwsh scripts/deployment-metrics.ps1 -Action capture
+
+# Capture metrics from specific environment
+pwsh scripts/deployment-metrics.ps1 -Action capture -Environment production -BaseUrl "https://api.example.com"
+
+# Capture metrics from Kubernetes cluster
+pwsh scripts/deployment-metrics.ps1 -Action capture -Environment staging -BaseUrl "http://deployment-pipeline-api-service:3000"
+
+# Generate ECRR report with custom base URL
+pwsh scripts/deployment-metrics.ps1 -Action ecrr -Environment production -BaseUrl "https://api.example.com" -Port 443
+
+# Validate pipeline configuration
+pwsh scripts/deployment-metrics.ps1 -Action validate
+```
+
+**Configuration Parameters:**
+- `-BaseUrl`: Service base URL (overrides default localhost)
+- `-Port`: Service port (default: 3000)
+- `-Environment`: Target environment (staging/production)
+- `-OutputPath`: Metrics output directory
+- `-ECRRReportDir`: ECRR reports directory
+
 **Grafana Dashboard:**
 - Import dashboard configuration
 - Configure data source (Prometheus)
