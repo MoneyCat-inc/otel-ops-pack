@@ -25,6 +25,6 @@ $entry = @{
     passed = $data.passed
 }
 
-($entry | ConvertTo-Json -Depth 4) | Add-Content -Path $HistoryFile -Encoding UTF8
+($entry | ConvertTo-Json -Depth 4 -Compress) | Add-Content -Path $HistoryFile -Encoding UTF8
 
 Write-Host ("Appended compliance entry: four={0}%, gates={1}%" -f $entry.fourSectionPct,$entry.gatePct) -ForegroundColor Green
