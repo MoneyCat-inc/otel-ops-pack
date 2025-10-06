@@ -27,6 +27,8 @@ param(
     
     [string]$OutputPath = "docs/metrics",
     [string]$ECRRReportDir = "docs/ecrr/ECRR_REPORTS",
+    [string]$BaseUrl = "",
+    [int]$Port = 3000,
     [switch]$DryRun
 )
 
@@ -166,16 +168,18 @@ function Capture-DeployMetrics {
     
     try {
         # Test service endpoints - configurable base URL
-        $baseUrl = if ($env:HEALTH_CHECK_URL) { 
+        $serviceBaseUrl = if ($BaseUrl) {
+            $BaseUrl
+        } elseif ($env:HEALTH_CHECK_URL) { 
             $env:HEALTH_CHECK_URL -replace '/health$', ''
         } else { 
-            "http://localhost:3000" 
+            "http://localhost:$Port" 
         }
         
         $endpoints = @(
-            "$baseUrl/health",
-            "$baseUrl/api/v1/status",
-            "$baseUrl/api/v1/metrics"
+            "$serviceBaseUrl/health",
+            "$serviceBaseUrl/api/v1/status",
+            "$serviceBaseUrl/api/v1/metrics"
         )
         
         foreach ($endpoint in $endpoints) {
@@ -322,7 +326,7 @@ function New-ECRRDeploymentReport {
 
 # Main execution
 Write-Host "🐾 Deployment Pipeline Metrics Capture - ECRR Evidence Collection" -ForegroundColor Cyan
-Write-Host "Action: $Action | Environment: $Environment | DryRun: $($DryRun.IsPresent)" -ForegroundColor Gray
+Write-Host "Action: $Action | Environment: $Environment | BaseUrl: $(if($BaseUrl){$BaseUrl}else{'default'}) | Port: $Port | DryRun: $($DryRun.IsPresent)" -ForegroundColor Gray
 Write-Host ""
 
 try {
