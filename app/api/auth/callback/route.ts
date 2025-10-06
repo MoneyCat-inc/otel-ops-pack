@@ -249,5 +249,5 @@ export const GET = withOTel(async (req: NextRequest) => {
 });
 
 // Export config for Edge Runtime
-export const runtime = 'edge';
+export const runtime = 'nodejs';
 

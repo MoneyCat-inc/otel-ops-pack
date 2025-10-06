@@ -7,17 +7,51 @@ on:
 
 jobs:
   export:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Install Microsoft Edge
+        shell: bash
+        run: |
+          curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | sudo gpg --dearmor -o /usr/share/keyrings/microsoft-edge.gpg
+          echo "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft-edge.gpg] https://packages.microsoft.com/repos/edge/ stable main" | sudo tee /etc/apt/sources.list.d/microsoft-edge.list
+          sudo apt-get update
+          sudo apt-get install -y microsoft-edge-stable
 
       - name: Set env
         shell: pwsh
         run: |
           echo "SIGNOZ_URL=${{ secrets.SIGNOZ_URL }}" | Out-File -FilePath $env:GITHUB_ENV -Append
           echo "SIGNOZ_SESSION=${{ secrets.SIGNOZ_SESSION }}" | Out-File -FilePath $env:GITHUB_ENV -Append
+          echo "SIGNOZ_BROWSER_PATH=/usr/bin/microsoft-edge" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+      - name: Start SigNoz with Docker Compose
+        shell: pwsh
+        run: |
+          # Start SigNoz stack using modern docker compose syntax
+          docker compose -f docker-compose-signoz.yml up -d
+          
+          # Wait for SigNoz to be ready
+          $maxAttempts = 30
+          $attempt = 0
+          do {
+            Start-Sleep -Seconds 2
+            $attempt++
+            try {
+              $response = Invoke-RestMethod -Uri "http://localhost:8080/api/v1/health" -Method Get -TimeoutSec 5
+              Write-Host "SigNoz is ready!"
+              break
+            } catch {
+              Write-Host "Waiting for SigNoz... (attempt $attempt/$maxAttempts)"
+            }
+          } while ($attempt -lt $maxAttempts)
+          
+          if ($attempt -eq $maxAttempts) {
+            throw "SigNoz failed to start within timeout"
+          }
 
       - name: Export PDFs with Edge headless
         shell: pwsh
@@ -38,8 +72,14 @@ jobs:
           path: docs/ecrr/ECRR_REPORTS/*_nightly_dashboard_export.md
           if-no-files-found: warn
 
+      - name: Cleanup SigNoz
+        if: always()
+        shell: pwsh
+        run: |
+          docker compose -f docker-compose-signoz.yml down -v
+
   export_playwright:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -47,11 +87,39 @@ jobs:
         with:
           node-version: "22"
 
+      - name: Install pnpm
+        run: npm install -g pnpm
+
       - name: Install deps
         run: pnpm i --frozen-lockfile
 
       - name: Install Playwright browser
         run: pnpm exec playwright install chromium
+
+      - name: Start SigNoz with Docker Compose
+        shell: pwsh
+        run: |
+          # Start SigNoz stack using modern docker compose syntax
+          docker compose -f docker-compose-signoz.yml up -d
+          
+          # Wait for SigNoz to be ready
+          $maxAttempts = 30
+          $attempt = 0
+          do {
+            Start-Sleep -Seconds 2
+            $attempt++
+            try {
+              $response = Invoke-RestMethod -Uri "http://localhost:8080/api/v1/health" -Method Get -TimeoutSec 5
+              Write-Host "SigNoz is ready!"
+              break
+            } catch {
+              Write-Host "Waiting for SigNoz... (attempt $attempt/$maxAttempts)"
+            }
+          } while ($attempt -lt $maxAttempts)
+          
+          if ($attempt -eq $maxAttempts) {
+            throw "SigNoz failed to start within timeout"
+          }
 
       - name: Set env
         shell: pwsh
@@ -76,6 +144,20 @@ jobs:
           path: docs/ecrr/ECRR_REPORTS/*_nightly_dashboard_export_playwright.md
           if-no-files-found: warn
 
+      - name: Cleanup SigNoz
+        if: always()
+        shell: pwsh
+        run: |
+          docker compose -f docker-compose-signoz.yml down -v
+
+  update_docs:
+    runs-on: ubuntu-latest
+    needs: [export, export_playwright]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Update docs index
         shell: pwsh
         run: pwsh -File scripts/update-docs-index.ps1
@@ -83,7 +165,7 @@ jobs:
       - name: Commit updated docs index
         shell: pwsh
         run: |
-          git config user.name  "moneycat-bot"
+          git config user.name "moneycat-bot"
           git config user.email "bot@moneycat.inc"
           git add docs/README.md
           git commit -m "docs(report): update docs index with latest snapshot" || echo "No changes"
