@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resonai — MoneyCat Inc. Project Hub</title>
+<style>
+  :root {
+    --bg: #0b0d12;
+    --card: #121520;
+    --muted: #77809a;
+    --fg: #e9edf7;
+    --green: #4caf50;
+    --yellow: #ffc107;
+    --red: #f44336;
+    --blue: #7c5cff;
+    --teal: #00c2b2;
+    --border: #252b3a;
+    --gradient-primary: linear-gradient(135deg, #7c5cff 0%, #4caf50 100%);
+    --gradient-secondary: linear-gradient(135deg, #00c2b2 0%, #7c5cff 100%);
+    --gradient-tertiary: linear-gradient(135deg, #ffc107 0%, #f44336 100%);
+  }
+  
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f7f8fb;
+      --card: #ffffff;
+      --fg: #0c1022;
+      --border: #dde1ee;
+      --muted: #66708a;
+    }
+  }
+  
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  body {
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    line-height: 1.6;
+  }
+  
+  /* Header */
+  .hero {
+    background: var(--gradient-primary);
+    padding: 80px 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -50%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    animation: shimmer 8s infinite;
+  }
+  
+  @keyframes shimmer {
+    to { left: 50%; }
+  }
+  
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  
+  .hero h1 {
+    font-size: 56px;
+    font-weight: 800;
+    color: white;
+    margin-bottom: 16px;
+    text-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  
+  .hero p {
+    font-size: 20px;
+    color: rgba(255,255,255,0.95);
+    margin-bottom: 32px;
+  }
+  
+  .hero-badges {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .badge {
+    padding: 8px 16px;
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: white;
+    backdrop-filter: blur(10px);
+  }
+  
+  /* Container */
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 48px 24px;
+  }
+  
+  .section {
+    margin-bottom: 64px;
+  }
+  
+  .section-header {
+    margin-bottom: 32px;
+  }
+  
+  .section-title {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  
+  .section-subtitle {
+    color: var(--muted);
+    font-size: 16px;
+  }
+  
+  /* Project Cards */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 24px;
+  }
+  
+  .project-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .project-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: var(--gradient-primary);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .project-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 32px rgba(0,0,0,0.3);
+    border-color: var(--blue);
+  }
+  
+  .project-card:hover::before {
+    opacity: 1;
+  }
+  
+  .project-card.observability::before { background: var(--gradient-primary); }
+  .project-card.voice::before { background: var(--gradient-secondary); }
+  .project-card.security::before { background: var(--gradient-tertiary); }
+  
+  .project-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    display: block;
+  }
+  
+  .project-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  
+  .project-description {
+    color: var(--muted);
+    margin-bottom: 24px;
+    font-size: 14px;
+  }
+  
+  .project-stats {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .stat-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  
+  .stat-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--fg);
+  }
+  
+  .stat-value.ok { color: var(--green); }
+  .stat-value.warn { color: var(--yellow); }
+  .stat-value.bad { color: var(--red); }
+  
+  .project-links {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .link-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: rgba(124,92,255,0.1);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--fg);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+  }
+  
+  .link-btn:hover {
+    background: var(--blue);
+    color: white;
+    border-color: var(--blue);
+    transform: translateX(4px);
+  }
+  
+  .link-btn .icon {
+    opacity: 0.7;
+  }
+  
+  /* Quick Links */
+  .quick-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+  }
+  
+  .quick-link-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    transition: all 0.2s ease;
+  }
+  
+  .quick-link-card:hover {
+    border-color: var(--blue);
+    transform: translateY(-2px);
+  }
+  
+  .quick-link-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .quick-link-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .quick-link-list a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13px;
+    transition: color 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  
+  .quick-link-list a:hover {
+    color: var(--blue);
+  }
+  
+  /* Footer */
+  .footer {
+    background: var(--card);
+    border-top: 1px solid var(--border);
+    padding: 48px 24px;
+    text-align: center;
+  }
+  
+  .footer-content {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  
+  .footer-logo {
+    font-size: 24px;
+    font-weight: 700;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 16px;
+  }
+  
+  .footer-text {
+    color: var(--muted);
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+  
+  .footer-links {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .footer-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13px;
+    transition: color 0.2s ease;
+  }
+  
+  .footer-links a:hover {
+    color: var(--blue);
+  }
+  
+  /* Status Indicator */
+  .status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  
+  .status-indicator.live {
+    background: rgba(76,175,80,.18);
+    color: var(--green);
+    border: 1px solid rgba(76,175,80,.35);
+  }
+  
+  .status-indicator.beta {
+    background: rgba(0,194,178,.18);
+    color: var(--teal);
+    border: 1px solid rgba(0,194,178,.35);
+  }
+  
+  .status-indicator.dev {
+    background: rgba(255,193,7,.20);
+    color: var(--yellow);
+    border: 1px solid rgba(255,193,7,.40);
+  }
+  
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 36px; }
+    .hero p { font-size: 16px; }
+    .section-title { font-size: 24px; }
+    .projects-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-content">
+    <h1>🐾 Resonai Project Hub</h1>
+    <p>MoneyCat Inc. · Observability, Voice Training & Security Operations</p>
+    <div class="hero-badges">
+      <span class="badge">ECRR Compliant</span>
+      <span class="badge">BossCat OEM Certified</span>
+      <span class="badge">77× Throughput Uplift</span>
+      <span class="badge">Local-First</span>
+    </div>
+  </div>
+</div>
+
+<!-- Main Container -->
+<div class="container">
+
+  <!-- Active Projects -->
+  <section class="section">
+    <div class="section-header">
+      <h2 class="section-title">🚀 Active Projects</h2>
+      <p class="section-subtitle">Production-ready applications and monitoring dashboards</p>
+    </div>
+    
+    <div class="projects-grid">
+      
+      <!-- OTel Observability Pipeline -->
+      <div class="project-card observability">
+        <span class="project-icon">📊</span>
+        <h3 class="project-title">OTel Observability Pipeline</h3>
+        <div style="margin-bottom: 12px;">
+          <span class="status-indicator live">
+            <span class="status-dot"></span>
+            Production
+          </span>
+        </div>
+        <p class="project-description">
+          Windows → OTel Collector → SigNoz observability stack with GPU-accelerated processing, 
+          77× throughput uplift, and sub-200ms latency.
+        </p>
+        <div class="project-stats">
+          <div class="stat">
+            <span class="stat-label">Throughput</span>
+            <span class="stat-value ok">196.7/s</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Latency</span>
+            <span class="stat-value ok">&lt;200ms</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Success</span>
+            <span class="stat-value ok">99.97%</span>
+          </div>
+        </div>
+        <div class="project-links">
+          <a href="docs/status.html" class="link-btn">
+            <span>📈 Status Dashboard</span>
+            <span class="icon">→</span>
+          </a>
+          <a href="docs/BossCat/signoz_dashboard_mockup_v2.html" class="link-btn">
+            <span>🎛️ Cat Nap Control Room</span>
+            <span class="icon">→</span>
+          </a>
+          <a href="docs/BossCat/SYSTEM_ARCHITECTURE_DIAGRAM.html" class="link-btn">
+            <span>📐 System Architecture</span>
+            <span class="icon">→</span>
+          </a>
+          <a href="http://localhost:8080" class="link-btn" target="_blank">
+            <span>🔍 SigNoz UI</span>
+            <span class="icon">↗</span>
+          </a>
+        </div>
+      </div>
+      
+      <!-- Resonai Voice Training -->
+      <div class="project-card voice">
+        <span class="project-icon">🎤</span>
+        <h3 class="project-title">Resonai Voice Training</h3>
+        <div style="margin-bottom: 12px;">
+          <span class="status-indicator beta">
+            <span class="status-dot"></span>
+            Beta
+          </span>
+        </div>
+        <p class="project-description">
+          Local-first voice training application with instant practice, prosody coaching, 
+          pitch detection, and comprehensive accessibility support (WCAG AA).
+        </p>
+        <div class="project-stats">
+          <div class="stat">
+            <span class="stat-label">Cohort</span>
+            <span class="stat-value ok">C1-C8</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Privacy</span>
+            <span class="stat-value ok">100%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">A11y</span>
+            <span class="stat-value ok">AA</span>
+          </div>
+        </div>
+        <div class="project-links">
+          <a href="resonai-mock/index.html" class="link-btn">
+            <span>🎯 Launch Application</span>
+            <span class="icon">→</span>
+          </a>
+          <a href="docs/BETA_LAUNCH_CHECKLIST.md" class="link-btn">
+            <span>✅ Beta Checklist</span>
+            <span class="icon">→</span>
+          </a>
+          <a href="docs/cohort-onboarding.md" class="link-btn">
+            <span>📚 Tester Guide</span>
+            <span class="icon">→</span>
+          </a>
+          <a href="docs/rollback-procedures.md" class="link-btn">
+            <span>🔄 Rollback Procedures</span>
+            <span class="icon">→</span>
+          </a>
+        </div>
+      </div>
+      
+      <!-- BossCat Operations -->
+      <div class="project-card security">
+        <span class="project-icon">🐱</span>
+        <h3 class="project-title">BossCat Operations</h3>
+        <div style="margin-bottom: 12px;">
+          <span class="status-indicator live">
+            <span class="status-dot"></span>
+            Active
+          </span>
+        </div>
+        <p class="project-description">
+          Executive oversight and governance framework with ECRR compliance, 
+          automated monitoring, security scanning, and agent coordination.
+        </p>
+        <div class="project-stats">
+          <div class="stat">
+            <span class="stat-label">ECRR</span>
+            <span class="stat-value ok">100%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Health</span>
+            <span class="stat-value ok">98/100</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Drift</span>
+            <span class="stat-value ok">0</span>
+          </div>
+        </div>
+        <div class="project-links">
+          <a href="docs/BossCat/README.md" class="link-btn">
+            <span>📖 BossCat Guide</span>
+            <span class="icon">→</span>
+          </a>
+          <a href="docs/AGENTS.md" class="link-btn">
+            <span>🤖 Agent Framework</span>
+            <span class="icon">→</span>
+          </a>
+          <a href="docs/BossCat/SECURITY_MAINTENANCE_MASTER_GUIDE.md" class="link-btn">
+            <span>🔒 Security Guide</span>
+            <span class="icon">→</span>
+          </a>
+          <a href="docs/IONA_ERRORS.md" class="link-btn">
+            <span>📋 IONA Error Ledger</span>
+            <span class="icon">→</span>
+          </a>
+        </div>
+      </div>
+      
+    </div>
+  </section>
+
+  <!-- Quick Links -->
+  <section class="section">
+    <div class="section-header">
+      <h2 class="section-title">⚡ Quick Links</h2>
+      <p class="section-subtitle">Frequently accessed documentation and tools</p>
+    </div>
+    
+    <div class="quick-links">
+      
+      <div class="quick-link-card">
+        <div class="quick-link-title">📚 Documentation</div>
+        <ul class="quick-link-list">
+          <li><a href="README.md">→ Main README</a></li>
+          <li><a href="docs/RUNBOOK_INDEX.md">→ Runbook Index</a></li>
+          <li><a href="docs/ECRR_PROJECT_REPORT.md">→ ECRR Project Report</a></li>
+          <li><a href="docs/QUICK_REFERENCE.md">→ Quick Reference</a></li>
+        </ul>
+      </div>
+      
+      <div class="quick-link-card">
+        <div class="quick-link-title">🔧 Operations</div>
+        <ul class="quick-link-list">
+          <li><a href="docs/BossCat/QUICK_START_CARD.md">→ Quick Start Card</a></li>
+          <li><a href="docs/TROUBLESHOOTING.md">→ Troubleshooting</a></li>
+          <li><a href="docs/MONITORING_SETUP_GUIDE.md">→ Monitoring Setup</a></li>
+          <li><a href="docs/DEPLOYMENT_CHECKLIST.md">→ Deployment Checklist</a></li>
+        </ul>
+      </div>
+      
+      <div class="quick-link-card">
+        <div class="quick-link-title">🎨 Design System</div>
+        <ul class="quick-link-list">
+          <li><a href="docs/comfort-cat/README.md">→ Comfort Cat Guidelines</a></li>
+          <li><a href="docs/assets/resonai-tokens.css">→ Design Tokens</a></li>
+          <li><a href="docs/CREATIVE_HANDOFF.md">→ Creative Handoff</a></li>
+          <li><a href="docs/LOGO/">→ Brand Assets</a></li>
+        </ul>
+      </div>
+      
+      <div class="quick-link-card">
+        <div class="quick-link-title">🧪 Testing & QA</div>
+        <ul class="quick-link-list">
+          <li><a href="docs/qa-checklist.md">→ QA Checklist</a></li>
+          <li><a href="docs/TETRAGRAMMATON_USER_GUIDE.md">→ Tetragrammaton Guide</a></li>
+          <li><a href="docs/smoke-test-results.md">→ Smoke Test Results</a></li>
+          <li><a href="playwright-report/index.html">→ Playwright Reports</a></li>
+        </ul>
+      </div>
+      
+      <div class="quick-link-card">
+        <div class="quick-link-title">🔐 Security</div>
+        <ul class="quick-link-list">
+          <li><a href="docs/SECURITY.md">→ Security Policy</a></li>
+          <li><a href="docs/BossCat/CREDENTIAL_ROTATION_CALENDAR.md">→ Rotation Calendar</a></li>
+          <li><a href="docs/BossCat/DEPENDABOT_SECURITY_GUIDE.md">→ Dependabot Guide</a></li>
+          <li><a href="docs/SECURITY_VULNERABILITY_REMEDIATION_PLAN.md">→ Remediation Plan</a></li>
+        </ul>
+      </div>
+      
+      <div class="quick-link-card">
+        <div class="quick-link-title">📊 Reports</div>
+        <ul class="quick-link-list">
+          <li><a href="docs/reports/ECRR_REPORT.md">→ ECRR Report</a></li>
+          <li><a href="docs/BossCat/STAKEHOLDER_EVIDENCE_PACKAGE.md">→ Evidence Package</a></li>
+          <li><a href="docs/CI_PIPELINE_STATUS_FINAL.md">→ CI Pipeline Status</a></li>
+          <li><a href="artifacts/">→ Artifacts Directory</a></li>
+        </ul>
+      </div>
+      
+    </div>
+  </section>
+
+</div>
+
+<!-- Footer -->
+<div class="footer">
+  <div class="footer-content">
+    <div class="footer-logo">🐾 Resonai • MoneyCat Inc.</div>
+    <p class="footer-text">
+      Local-First • Privacy-Focused • ECRR-Compliant • BossCat OEM Certified
+    </p>
+    <div class="footer-links">
+      <a href="https://github.com/MoneyCat-inc/otel-ops-pack" target="_blank">GitHub</a>
+      <a href="docs/REPO_HYGIENE.md">Repo Hygiene</a>
+      <a href="docs/COMMIT_GUIDE.md">Commit Guide</a>
+      <a href="docs/MAINTENANCE.md">Maintenance</a>
+      <a href="docs/ROADMAP.md">Roadmap</a>
+    </div>
+    <p style="margin-top: 24px; font-size: 12px; color: var(--muted);">
+      Last updated: <span id="timestamp">--:--:--</span>
+    </p>
+  </div>
+</div>
+
+<script>
+  // Update timestamp
+  function updateTimestamp() {
+    const now = new Date();
+    document.getElementById('timestamp').textContent = now.toLocaleString();
+  }
+  updateTimestamp();
+  
+  // Check if running on localhost
+  if (window.location.protocol === 'file:') {
+    console.log('Running in file:// mode - all links should work locally');
+  }
+</script>
+
+</body>
+</html>
+
