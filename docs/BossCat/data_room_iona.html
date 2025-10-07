@@ -533,9 +533,25 @@
         })
       });
       
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      // Check content-type before parsing
+      const contentType = response.headers.get('Content-Type') || '';
+      const responseText = await response.text();
       
-      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${responseText.substring(0, 100)}`);
+      }
+      
+      if (!contentType.includes('application/json')) {
+        throw new Error(`Expected JSON, got ${contentType}. SigNoz may not be running. Response: ${responseText.substring(0, 100)}`);
+      }
+      
+      let data;
+      try {
+        data = JSON.parse(responseText);
+      } catch (parseError) {
+        throw new Error(`JSON parse failed. SigNoz returned: ${responseText.substring(0, 200)}`);
+      }
+      
       updateLogsTable(data.logs || []);
       updateMetricsFromLogs(data.logs || []);
       updateStatus('✅ Connected to SigNoz', 'success');
@@ -544,8 +560,25 @@
       updateIONAHealth(data.logs || []);
       
     } catch (error) {
-      updateStatus(`⚠️ SigNoz connection error: ${error.message}`, 'error');
+      updateStatus(`⚠️ SigNoz error: ${error.message}`, 'error');
       console.error('SigNoz fetch error:', error);
+      
+      // Show helpful message in logs table
+      const tbody = document.getElementById('logsBody');
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="5" style="text-align: center; padding: 32px;">
+            <div style="color: var(--red); margin-bottom: 12px; font-weight: 600;">❌ SigNoz Connection Failed</div>
+            <div style="color: var(--muted); font-size: 13px; margin-bottom: 8px;">${error.message}</div>
+            <div style="font-size: 12px; color: var(--muted);">
+              Troubleshooting:<br>
+              1. Check if SigNoz is running: <code style="background: rgba(255,255,255,0.05); padding: 2px 4px;">docker ps | findstr signoz</code><br>
+              2. Verify endpoint: <code style="background: rgba(255,255,255,0.05); padding: 2px 4px;">${config.signozEndpoint}</code><br>
+              3. Open debug mode: <a href="data_room_iona_debug.html" style="color: var(--blue);">Debug Tool</a>
+            </div>
+          </td>
+        </tr>
+      `;
     }
   }
   
