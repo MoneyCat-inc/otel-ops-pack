@@ -1,0 +1,78 @@
+# Gitleaks configuration for IONA-GATE-002 security hardening
+title = "Gitleaks Config for OTel Observability Kit"
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "signoz-api-key"
+description = "SigNoz API Key"
+regex = '''(?i)(signoz[_-]?api[_-]?key|SIGNOZ_API_KEY)[\s]*[:=][\s]*['"]*([a-zA-Z0-9+/=]{40,})['"]*'''
+tags = ["signoz", "api-key", "secret"]
+
+[[rules]]
+id = "generic-api-key"
+description = "Generic API Key"
+regex = '''(?i)(api[_-]?key|apikey|api_key|access[_-]?key)[\s]*[:=][\s]*['"]*([a-zA-Z0-9+/=]{32,})['"]*'''
+tags = ["api-key", "secret"]
+[rules.allowlist]
+  paths = [
+    '''env\.template''',
+    '''.*\.example$''',
+    '''.*\.md$''',
+    '''docs/.*'''
+  ]
+  regexes = [
+    '''your-.*-here''',
+    '''<.*>''',
+    '''PLACEHOLDER''',
+    '''EXAMPLE'''
+  ]
+
+[[rules]]
+id = "private-key"
+description = "Private Key"
+regex = '''-----BEGIN [A-Z ]*PRIVATE KEY-----'''
+tags = ["private-key", "secret"]
+
+[[rules]]
+id = "github-pat"
+description = "GitHub Personal Access Token"
+regex = '''ghp_[0-9a-zA-Z]{36,}'''
+tags = ["github", "token"]
+
+[[rules]]
+id = "aws-access-key"
+description = "AWS Access Key ID"
+regex = '''AKIA[0-9A-Z]{16}'''
+tags = ["aws", "access-key"]
+
+[[rules]]
+id = "jwt-token"
+description = "JWT Token"
+regex = '''eyJ[A-Za-z0-9-_=]+\.eyJ[A-Za-z0-9-_=]+\.[A-Za-z0-9-_.+/=]+'''
+tags = ["jwt", "token"]
+[rules.allowlist]
+  regexes = [
+    '''example\.jwt''',
+    '''sample\.token'''
+  ]
+
+[allowlist]
+  description = "Global allowlist"
+  paths = [
+    '''^\.git/''',
+    '''node_modules/''',
+    '''vendor/''',
+    '''third_party/''',
+    '''.*\.md$''',
+    '''.*\.example$''',
+    '''.*\.template$''',
+    '''LICENSE''',
+    '''README'''
+  ]
+  commits = []
+  regexes = [
+    '''(your|placeholder|example|sample|test|dummy)-[a-zA-Z0-9-]+''',
+  ]
+
