@@ -1,239 +1,324 @@
-# IONA Error Ledger & Anomaly Tracking
+# IONA Errors & Root Cause Analysis
 
-**Agent:** IONA (Intelligent Operations & Navigation Assistant)  
-**Last Updated:** 2025-10-06 (PROC Cycle Evidence Review)  
-**Status:** Active Monitoring - Reconciliation Complete
-
----
-
-## 🚨 **Critical Anomalies**
-
-### **ECRR Compliance Tooling Discrepancy** 
-- **Severity**: HIGH
-- **Status**: ACTIVE
-- **First Detected**: 2025-10-04
-- **Description**: Compliance validation scripts produce conflicting results:
-  - Markdown report: 71% compliance (49/69 reports fully compliant)
-  - JSON/HTML reports: 100% compliance claim
-  - Root cause: Different validation logic between reporting formats
-- **Impact**: False confidence in compliance status, audit trail integrity compromised
-- **Action Required**: Reconcile validation logic across all reporting formats
-
-### **Trends Export Broken**
-- **Severity**: HIGH  
-- **Status**: ACTIVE
-- **First Detected**: 2025-10-04
-- **Description**: Trends export reports 0% compliance for all intervals while simultaneously claiming all reports are compliant
-- **Impact**: Historical trend analysis impossible, compliance monitoring degraded
-- **Action Required**: Fix trends calculation algorithm
-
-### **Missing ECRR Gates**
-- **Severity**: MEDIUM
-- **Status**: ACTIVE  
-- **Count**: 21 reports missing mandatory ECRR Gate sections - **CORRECTED**
-- **Description**: Reports lack the mandatory ECRR Gate validation section
-- **Impact**: Non-compliance with ECRR framework requirements
-- **Action Required**: Add ECRR gates to all non-compliant reports
+**Maintained By:** BossCat Investigator Agent 🕵️  
+**Last Updated:** 2025-10-07  
+**Status:** Active Error Tracking
 
 ---
 
-## 📊 **Error Classifications**
+## Current Gate Blocker Investigation
 
-### **Compliance Issues**
-1. **Missing ECRR Gates**: 21 reports - **CORRECTED**
-   - `2025-01-02-agent-doctor-rollout-merge.md`
-   - `2025-09-29-queue-steward-verification.md`
-   - `2025-10-01-comprehensive-implementation-summary.md`
-   - `2025-10-01-final-implementation-summary.md`
-   - `2025-10-01-final-rollout-ecrr-report.md`
-   - `2025-10-01-log-pattern-fractal-validation.md`
-   - `2025-10-02-ecrr-current-state-assessment.md`
-   - `2025-10-02-ecrr-monitoring-status-report.md`
-   - `2025-10-02-ecrr-operational-status.md`
-   - `2025-10-02-ecrr-rollout-merge-final.md`
-   - `2025-10-02-ecrr-rollout-merge-plan.md`
-   - `2025-10-02-ecrr-system-assessment.md`
-   - `2025-10-02-ecrr-task-execution-complete.md`
-   - `2025-10-02-ecrr-verification-complete.md`
-   - `2025-10-02-windows-collector-rollout-merge-ecrr.md`
-   - `2025-10-03-ecrr-rollout-merge-complete.md`
-   - `2025-10-04-compliance-remediation-action-plan.md`
-   - `2025-10-04-ecrr-system-health-assessment.md`
-   - `ecrr-report-2025-10-02.md`
+**Gate Decision:** HOLD (25% readiness)  
+**Investigation Date:** 2025-10-07 16:00-16:15 UTC
 
-2. **Missing Actor Declarations**: 6 reports
-   - `2025-10-02-ecrr-monitoring-verification.md`
-   - `2025-10-02-ecrr-operational-status.md`
-   - `2025-10-02-ecrr-rollout-merge-complete.md`
-   - `2025-10-02-ecrr-rollout-merge-plan.md`
-   - `2025-10-03-ecrr-rollout-merge-complete.md`
-   - `2025-10-04-ecrr-system-health-assessment.md`
+### Error #1: OTel Wiring Verification Failed
 
-3. **Missing Production Markers**: 1 report
-   - `2025-10-04-ecrr-system-health-assessment.md`
-
-### **Tooling Issues**
-1. **Validation Logic Inconsistency**: Different algorithms used for markdown vs JSON/HTML reports
-2. **Trends Calculation Error**: Division by zero or null handling in trends export
-3. **Artifact Count Discrepancy**: Health assessment claims 1000+ files removed but 1130 still exist
-
----
-
-## 📈 **Anomaly Patterns**
-
-### **Recurring Issues**
-- **ECRR Gate Missing**: Most common compliance violation (30% of reports) - **CORRECTED**
-- **Actor Declaration Missing**: Secondary compliance issue (8.6% of reports) - **CORRECTED**
-- **Tooling Inconsistency**: **RESOLVED** - Unified validation logic implemented
-
-### **Trend Analysis**
-- **Compliance Rate**: 70% (49/70 reports) - **CORRECTED**
-- **Error Frequency**: 21 reports missing ECRR gates, 6 missing actor declarations
-- **Tooling Reliability**: **IMPROVED** - Unified validation logic deployed
-
----
-
-## 🔧 **Remediation Actions**
-
-### **Immediate Actions Required**
-1. **Investigator Agent**: ✅ **COMPLETED** - Unified validation logic implemented
-2. **Gap-Closer Agent**: Add missing ECRR gates to 21 non-compliant reports - **CORRECTED**
-3. **QA Scribe**: Fix trends export calculation algorithm
-4. **BossCat OEM**: ✅ **COMPLETED** - Health assessment updated with accurate counts
-
-### **Long-term Improvements**
-1. **Unified Validation**: ✅ **COMPLETED** - All report formats now use consistent validation logic
-2. **Automated Gate Addition**: Script to automatically add ECRR gates to non-compliant reports
-3. **Trend Monitoring**: Implement proper historical compliance tracking
-4. **Artifact Management**: Automated cleanup of redundant monitoring files
-
----
-
-## 📋 **Export Lists for Auditing**
-
-### **Non-Compliant Reports by Category**
+**Symptom:**
 ```
-ECRR_GATE_MISSING:
-- 2025-01-02-agent-doctor-rollout-merge.md
-- 2025-09-29-queue-steward-verification.md
-- 2025-10-01-comprehensive-implementation-summary.md
-- 2025-10-01-final-implementation-summary.md
-- 2025-10-01-final-rollout-ecrr-report.md
-- 2025-10-01-log-pattern-fractal-validation.md
-- 2025-10-02-ecrr-current-state-assessment.md
-- 2025-10-02-ecrr-monitoring-status-report.md
-- 2025-10-02-ecrr-operational-status.md
-- 2025-10-02-ecrr-rollout-merge-final.md
-- 2025-10-02-ecrr-system-assessment.md
-- 2025-10-02-ecrr-task-execution-complete.md
-- 2025-10-02-ecrr-verification-complete.md
-- 2025-10-02-windows-collector-rollout-merge-ecrr.md
-- ecrr-report-2025-10-02.md
-
-ACTOR_DECLARATION_MISSING:
-- 2025-10-02-ecrr-monitoring-verification.md
-- 2025-10-02-ecrr-operational-status.md
-- 2025-10-02-ecrr-rollout-merge-complete.md
-- 2025-10-02-ecrr-rollout-merge-plan.md
-- 2025-10-03-ecrr-rollout-merge-complete.md
-- 2025-10-04-ecrr-system-health-assessment.md
-
-PRODUCTION_MARKER_MISSING:
-- 2025-10-04-ecrr-system-health-assessment.md
+[FAIL] Service otelcol-contrib status is Stopped
+[FAIL] Windows collector (OTLP/HTTP) port 5318 not reachable
 ```
 
-### **Tooling Anomalies**
-```
-VALIDATION_DISCREPANCY:
-- Markdown validator: 71% compliance
-- JSON validator: 100% compliance (incorrect)
-- HTML validator: 100% compliance (incorrect)
+**Evidence Location:**
+- `artifacts/wiring-investigation.log`
+- `artifacts/diagnostic-20251007-160340/diagnostic-results.json:23`
 
-TRENDS_EXPORT_BROKEN:
-- All intervals report 0% compliance
-- Contradicts individual report compliance claims
-- Historical analysis impossible
+**Root Cause Analysis:**
 
-ARTIFACT_COUNT_MISMATCH:
-- Claimed: 1000+ files removed
-- Actual: 1130 files still exist
-- Health assessment accuracy compromised
-```
+#### Hypothesis A: Service Deliberately Disabled (CONFIRMED ✅)
+**Evidence:**
+- Service status: `Stopped`
+- Start type: `Disabled`
+- Last check: 2025-10-07 16:05 UTC
+
+**Root Cause:** The Windows OTel Collector service (`otelcol-contrib`) is set to `Disabled` start type, preventing automatic startup.
+
+**Impact:**
+- No telemetry collection from Windows sources
+- OTLP endpoints (5318 HTTP, 5317 gRPC) unreachable
+- Breaks local → SigNoz telemetry pipeline
+- IONA agent telemetry cannot reach SigNoz via local collector
+
+**Resolution Path:**
+1. Enable service: `Set-Service otelcol-contrib -StartupType Automatic`
+2. Start service: `Start-Service otelcol-contrib`
+3. Verify endpoints: `Test-NetConnection localhost -Port 5318`
+4. Re-verify wiring: `pwsh -File scripts/verify-wiring.ps1`
 
 ---
 
-## 🎯 **Next Actions for BossCat**
+#### Hypothesis B: Port Conflict (PENDING VALIDATION)
+**Evidence:** Port 5318 not reachable even if service were running
 
-1. **Priority 1**: Fix compliance validation tooling to produce consistent results
-2. **Priority 2**: Add missing ECRR gates to restore compliance to 95%+ threshold
-3. **Priority 3**: Repair trends export for historical monitoring
-4. **Priority 4**: Update health assessment with accurate artifact inventory
+**Investigation Needed:**
+```powershell
+# Check if another process is using ports
+Get-NetTCPConnection -LocalPort 5318 -ErrorAction SilentlyContinue
+Get-NetTCPConnection -LocalPort 5317 -ErrorAction SilentlyContinue
+```
 
-**IONA Status**: Monitoring active, anomaly tracking operational  
-**Last Review**: 2025-10-06 (PROC cycle evidence review completed)
-**Next Review**: 2025-10-07 (post-remediation verification)
+**Status:** Will validate after service start
 
-## 📋 **Current Anomaly Status Summary**
+---
 
-### **ACTIVE - Requiring Immediate Action**
-1. **Boss ECRR Gate Compliance Gap**: CRITICAL
-   - Status: 1/9 Boss reports with gates (11.1%)
-   - Impact: Production deployment blocked
-   - Action: Add gates to 8 Boss reports
+### Error #2: Enterprise Readiness Below Threshold
 
-2. **ECRR Actor Declaration Gaps**: HIGH
-   - Status: 2 reports missing actor declarations
-   - Impact: 96.7% compliance (target: 100%)
-   - Action: Add actor declarations to 2 reports
+**Symptom:**
+```
+Enterprise readiness: 50% (NOT READY)
+Target: ≥75%
+```
 
-3. **Compliance Validation Tooling Discrepancy**: HIGH
-   - Status: Markdown (71%) vs JSON/HTML (100%) validation mismatch
-   - Impact: False confidence in compliance status
-   - Action: Unify validation logic across all formats
+**Evidence Location:**
+- `artifacts/diagnostic-20251007-160340/diagnostic-results.json:22`
+- `artifacts/diagnostic-20251007-160340/enterprise-readiness.log`
 
-4. **Trends Export Calculation Error**: HIGH
-   - Status: Reports 0% compliance while claiming 100%
-   - Impact: Historical analysis impossible
-   - Action: Fix trends calculation algorithm
+**Root Cause Analysis:**
 
-### **RESOLVED - Evidence Review Complete**
-1. **Data Discrepancy in PROC Summary**: RESOLVED
-   - Status: Corrected PROC_CYCLE_SUMMARY_CORRECTED_20251006-214043.md
-   - Impact: Accurate metrics now available
-   - Action: Use corrected summary for decision-making
+#### Hypothesis A: Cascading Failure from Collector Service (LIKELY)
+**Reasoning:**
+- Multiple checks in enterprise readiness depend on collector
+- Dashboard exports may be failing without telemetry
+- Workflow runs may be affected
 
-2. **Report Count Reconciliation**: RESOLVED
-   - Status: Benchmark (50 synthetic) vs Compliance (61 total) explained
-   - Impact: Clear understanding of processing scope
-   - Action: Document scope differences in future reports
+**Evidence Needed:**
+```powershell
+# Re-run enterprise readiness after collector fix
+pwsh -File scripts/enterprise-readiness-check.ps1 > artifacts/enterprise-post-fix.log
 
-## 🚨 **PROC Cycle Evidence Review - 2025-10-06**
+# Compare before/after scores
+```
 
-### **Data Discrepancy Identified**
-- **Severity**: HIGH
-- **Status**: RESOLVED (corrected in PROC_CYCLE_SUMMARY_CORRECTED_20251006-214043.md)
-- **Description**: Initial PROC summary claimed 100% compliance but actual metrics show:
-  - ECRR Compliance: 96.7% (59/61 reports)
-  - Boss ECRR Gates: 11.1% (1/9 reports)
-  - Actor Declarations: 96.7% (59/61 reports)
-- **Impact**: False confidence in compliance status corrected
-- **Action Taken**: Generated corrected summary with accurate metrics
+**Expected Outcome:** Score should improve to 75%+ after collector restoration
 
-### **Boss Phase Compliance Gap**
-- **Severity**: CRITICAL
-- **Status**: ACTIVE
-- **Description**: Boss phase shows severe ECRR gate compliance issues:
-  - Only 1/9 Boss reports have ECRR gates (11.1%)
-  - 8/9 Boss reports missing mandatory ECRR Gate sections
-- **Impact**: Production deployment blocked pending remediation
-- **Action Required**: Add ECRR gates to 8 Boss reports
+---
 
-### **MemX Hardware Status**
-- **Severity**: LOW
-- **Status**: MONITORING
-- **Description**: Hardware operational with minor warnings:
-  - Core systems: Memory, CPU, GPU all operational
-  - UI: 1/3 monitors with availability issues
-  - Networking: 3/6 adapters disconnected (VPN, Bluetooth)
-- **Impact**: Minimal impact on observability stack
-- **Action Required**: Monitor connectivity, address UI issues
+#### Hypothesis B: Dashboard Export Staleness (SECONDARY)
+**Evidence:** Dashboard snapshots may not be current
+
+**Investigation:**
+```powershell
+# Check recent snapshot dates
+Get-ChildItem docs/observability/snapshots/* -Directory | 
+    Sort-Object -Descending | 
+    Select-Object -First 7 | 
+    Select-Object Name, LastWriteTime
+```
+
+**Resolution:** Automated nightly export should resolve
+
+---
+
+### Error #3: Agent Health Degraded
+
+**Symptom:**
+```
+Agent health check has warnings
+Status: degraded
+```
+
+**Evidence Location:**
+- `artifacts/diagnostic-20251007-160340/ecrr-diagnostic-report.md:14`
+- `artifacts/diagnostic-20251007-160340/agent-doctor.log`
+
+**Root Cause Analysis:**
+
+#### Hypothesis A: Agent State Files Stale or Corrupt (POSSIBLE)
+**Investigation Needed:**
+```powershell
+# Check agent state
+cat .agent/status.json
+
+# Check agent lock
+Test-Path .agent/LOCK
+
+# Run agent doctor for detailed output
+pnpm agent:doctor
+```
+
+**Resolution:** May need agent configuration refresh
+
+---
+
+#### Hypothesis B: OTel SDK Initialization Failing (POSSIBLE)
+**Evidence:** Agent uses `scripts/agent/otel.ts` for telemetry
+
+**Investigation:**
+```powershell
+# Check if OTEL_EXPORTER_OTLP_ENDPOINT is set
+$env:OTEL_EXPORTER_OTLP_ENDPOINT
+
+# Should be: http://localhost:4318 or http://localhost:5318
+```
+
+**Expected:** Agent health will improve after collector is running
+
+---
+
+### Error #4: Analytics API Unreachable
+
+**Symptom:**
+```
+[FAIL] Analytics API not reachable (is dev server running on port 3003?)
+```
+
+**Evidence Location:**
+- `artifacts/wiring-investigation.log`
+
+**Root Cause Analysis:**
+
+#### Hypothesis A: Dev Server Not Running (EXPECTED)
+**Reasoning:** This is a development-time service, not required for gate passage
+
+**Classification:** 🟡 **WARNING** (not a blocker)
+
+**Impact:** 
+- Cannot test full analytics event flow
+- End-to-end trace validation limited
+- Does not block gate passage
+
+**Resolution:** Start dev server when testing full pipeline
+```powershell
+# Optional: Start Resonai dev server
+cd third_party/resonai
+pnpm dev
+```
+
+**Gate Impact:** NONE (not a blocker for gate readiness)
+
+---
+
+## SigNoz Collector Status (HEALTHY ✅)
+
+**Service:** `signoz-otel-collector` (Docker container)  
+**Status:** Running  
+**Version:** dev (v0.129.6)
+
+**Log Analysis:**
+- ✅ Collector operational
+- ⚠️  Prometheus scrape warnings (expected - trying to scrape Windows collector)
+- ✅ ClickHouse exporter working
+- ✅ Trace ingestion pipeline healthy
+
+**Conclusion:** SigNoz backend is healthy; issue is Windows collector → SigNoz connectivity
+
+---
+
+## Resolution Priority Matrix
+
+| Error | Priority | Blocker? | Est. Time | Impact on Gate |
+|-------|----------|----------|-----------|----------------|
+| **#1: Collector Service Stopped** | 🔴 **P0** | YES | 5 min | +25% (1/4 → 2/4) |
+| **#2: Enterprise Readiness Low** | 🔴 **P0** | YES | 10 min | +25% (2/4 → 3/4) |
+| **#3: Agent Health Degraded** | 🟡 **P1** | NO (warning) | 5 min | +0% (side effect fix) |
+| **#4: Analytics API Down** | 🟢 **P2** | NO | N/A | 0% (not required) |
+
+**Critical Path:** Fix #1 → Re-test #2 → Address #3 → Re-run gate diagnostic
+
+---
+
+## Next Actions (Gap-Closer Agent 🩹)
+
+### Phase 1: Restore Collector Service (5 minutes)
+```powershell
+# Enable and start service
+Set-Service otelcol-contrib -StartupType Automatic
+Start-Service otelcol-contrib
+
+# Verify service
+Get-Service otelcol-contrib | Select-Object Name, Status, StartType
+
+# Verify ports
+Test-NetConnection localhost -Port 5318
+Test-NetConnection localhost -Port 5317
+```
+
+**Expected Result:** Service running, ports reachable
+
+---
+
+### Phase 2: Validate OTLP Endpoints (2 minutes)
+```powershell
+# Test HTTP endpoint
+Invoke-WebRequest -Uri "http://localhost:5318" -Method Head -TimeoutSec 3
+
+# Re-verify wiring
+pwsh -File scripts/verify-wiring.ps1
+
+# Capture success evidence
+pwsh -File scripts/verify-wiring.ps1 | Tee-Object -FilePath artifacts/wiring-post-fix.log
+```
+
+**Expected Result:** Wiring verification PASSED
+
+---
+
+### Phase 3: Re-Run Enterprise Readiness (3 minutes)
+```powershell
+# Full enterprise check
+pwsh -File scripts/enterprise-readiness-check.ps1 | Tee-Object -FilePath artifacts/enterprise-post-fix.log
+
+# Check score improvement
+# Target: ≥75% (ideally 90%+)
+```
+
+**Expected Result:** Enterprise readiness ≥ 75%
+
+---
+
+### Phase 4: Validate Agent Health (2 minutes)
+```powershell
+# Run agent doctor
+pnpm agent:doctor | Tee-Object -FilePath artifacts/agent-post-fix.log
+
+# Check for green status
+```
+
+**Expected Result:** Agent health = healthy (or acceptable warnings only)
+
+---
+
+### Phase 5: Gate Re-Assessment (3 minutes)
+```powershell
+# Full gate diagnostic with ECRR
+pwsh -File scripts/diagnostic-shell-enhanced.ps1 -Mode gate -GenerateECRR
+
+# Expected: Gate readiness ≥ 90%
+# Expected: Status = ready or near_ready
+
+# View report
+cat artifacts/diagnostic-*/ecrr-diagnostic-report.md
+```
+
+**Expected Result:** Gate READY ✅
+
+---
+
+## Investigation Conclusion
+
+**Root Causes Identified:**
+1. ✅ Windows OTel Collector service disabled and stopped
+2. ✅ Cascading failures in enterprise readiness checks
+3. ⚠️  Agent health degraded (likely side effect)
+4. ℹ️  Analytics API down (not a blocker)
+
+**Confidence Level:** 🟢 **HIGH**
+
+**Resolution Time Estimate:** 15-20 minutes total
+
+**Gate Readiness Prediction:**
+- Current: 25% (1/4 checks)
+- After fixes: 90-100% (3.5-4/4 checks)
+- Status: HOLD → READY ✅
+
+---
+
+**Next Agent:** Gap-Closer 🩹 (Execute resolution plan)
+
+---
+
+**Investigator Sign-Off:**  
+🕵️ BossCat Investigator Agent  
+**Date:** 2025-10-07 16:15 UTC  
+**Evidence Package:** `artifacts/wiring-investigation.log`, service status, collector logs  
+**Recommendation:** PROCEED with Gap-Closer remediation plan

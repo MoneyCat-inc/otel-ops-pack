@@ -1,0 +1,38 @@
+{
+  "orchestrator": {
+    "maxConcurrentAgents": 48,
+    "aggressiveDecomposition": true,
+    "taskBatchSize": 8,
+    "agentTimeout": 20,
+    "workspaceRoot": "artifacts/agent-workspaces",
+    "telemetryEnabled": true
+  },
+  "watchdog": {
+    "cycle_interval_seconds": 30,
+    "max_tasks_per_cycle": 4,
+    "lock_check_interval_seconds": 15,
+    "continuous_mode": true
+  },
+  "scheduler": {
+    "nightly_reports": {
+      "enabled": true,
+      "schedule": "02:00",
+      "tasks": [
+        "ecrr-processing",
+        "dashboard-export",
+        "compliance-check"
+      ]
+    },
+    "canary_monitoring": {
+      "enabled": true,
+      "interval_minutes": 30
+    }
+  },
+  "scaling": {
+    "auto_scale": true,
+    "min_agents": 8,
+    "max_agents": 64,
+    "scale_threshold": 0.75
+  }
+}
+
