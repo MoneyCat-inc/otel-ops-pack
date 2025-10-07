@@ -344,10 +344,10 @@ test.describe('IONA Diagnostics Shell Tests', () => {
     
     // Switch to Traces tab
     await page.getByRole('button', { name: /Traces/i }).click();
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(3000); // Give mock API more time to respond
     
-    // Check for trace content or "no traces" message
-    const hasTraces = await page.locator('text=/trace|span|no traces/i').isVisible();
+    // Check for trace content or "no traces" message (with explicit timeout)
+    const hasTraces = await page.locator('text=/trace|span|no traces/i').isVisible({ timeout: 10000 });
     expect(hasTraces).toBe(true);
     
     console.log('✓ IONA traces panel loaded');
