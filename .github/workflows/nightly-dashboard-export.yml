@@ -2,177 +2,162 @@ name: Nightly Dashboard Export
 
 on:
   schedule:
-    - cron: "30 2 * * *"
-  workflow_dispatch: {}
+    # Run daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      export_all:
+        description: 'Export all dashboards (not just executive)'
+        required: false
+        default: 'false'
+        type: boolean
+
+permissions:
+  contents: write
+  pull-requests: write
 
 jobs:
-  export:
+  export-dashboards:
+    name: Export SigNoz Dashboards
     runs-on: ubuntu-latest
-
+    timeout-minutes: 20
+    
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Install Microsoft Edge
-        shell: bash
-        run: |
-          curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | sudo gpg --dearmor -o /usr/share/keyrings/microsoft-edge.gpg
-          echo "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft-edge.gpg] https://packages.microsoft.com/repos/edge/ stable main" | sudo tee /etc/apt/sources.list.d/microsoft-edge.list
-          sudo apt-get update
-          sudo apt-get install -y microsoft-edge-stable
-
-      - name: Set env
-        shell: pwsh
-        run: |
-          echo "SIGNOZ_URL=${{ secrets.SIGNOZ_URL }}" | Out-File -FilePath $env:GITHUB_ENV -Append
-          echo "SIGNOZ_SESSION=${{ secrets.SIGNOZ_SESSION }}" | Out-File -FilePath $env:GITHUB_ENV -Append
-          echo "SIGNOZ_BROWSER_PATH=/usr/bin/microsoft-edge" | Out-File -FilePath $env:GITHUB_ENV -Append
-
-      - name: Start SigNoz with Docker Compose
-        shell: pwsh
-        run: |
-          # Start SigNoz stack using modern docker compose syntax
-          docker compose -f docker-compose-signoz.yml up -d
-          
-          # Wait for SigNoz to be ready
-          $maxAttempts = 30
-          $attempt = 0
-          do {
-            Start-Sleep -Seconds 2
-            $attempt++
-            try {
-              $response = Invoke-RestMethod -Uri "http://localhost:8080/api/v1/health" -Method Get -TimeoutSec 5
-              Write-Host "SigNoz is ready!"
-              break
-            } catch {
-              Write-Host "Waiting for SigNoz... (attempt $attempt/$maxAttempts)"
-            }
-          } while ($attempt -lt $maxAttempts)
-          
-          if ($attempt -eq $maxAttempts) {
-            throw "SigNoz failed to start within timeout"
-          }
-
-      - name: Export PDFs with Edge headless
-        shell: pwsh
-        run: |
-          pwsh -File scripts/nightly-dashboard-export.ps1
-
-      - name: Upload snapshot PDFs
-        uses: actions/upload-artifact@v4
-        with:
-          name: signoz-dashboard-pdfs
-          path: docs/observability/snapshots/**/**/*.pdf
-          if-no-files-found: warn
-
-      - name: Upload ECRR report
-        uses: actions/upload-artifact@v4
-        with:
-          name: ecrr-nightly
-          path: docs/ecrr/ECRR_REPORTS/*_nightly_dashboard_export.md
-          if-no-files-found: warn
-
-      - name: Cleanup SigNoz
-        if: always()
-        shell: pwsh
-        run: |
-          docker compose -f docker-compose-signoz.yml down -v
-
-  export_playwright:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-
-      - name: Install pnpm
-        run: npm install -g pnpm
-
-      - name: Install deps
-        run: pnpm i --frozen-lockfile
-
-      - name: Install Playwright browser
-        run: pnpm exec playwright install chromium
-
-      - name: Start SigNoz with Docker Compose
-        shell: pwsh
-        run: |
-          # Start SigNoz stack using modern docker compose syntax
-          docker compose -f docker-compose-signoz.yml up -d
-          
-          # Wait for SigNoz to be ready
-          $maxAttempts = 30
-          $attempt = 0
-          do {
-            Start-Sleep -Seconds 2
-            $attempt++
-            try {
-              $response = Invoke-RestMethod -Uri "http://localhost:8080/api/v1/health" -Method Get -TimeoutSec 5
-              Write-Host "SigNoz is ready!"
-              break
-            } catch {
-              Write-Host "Waiting for SigNoz... (attempt $attempt/$maxAttempts)"
-            }
-          } while ($attempt -lt $maxAttempts)
-          
-          if ($attempt -eq $maxAttempts) {
-            throw "SigNoz failed to start within timeout"
-          }
-
-      - name: Set env
-        shell: pwsh
-        run: |
-          echo "SIGNOZ_URL=${{ secrets.SIGNOZ_URL }}" | Out-File -FilePath $env:GITHUB_ENV -Append
-          echo "SIGNOZ_SESSION=${{ secrets.SIGNOZ_SESSION }}" | Out-File -FilePath $env:GITHUB_ENV -Append
-
-      - name: Export with Playwright
-        run: pnpm run export:signoz:playwright
-
-      - name: Upload PDFs
-        uses: actions/upload-artifact@v4
-        with:
-          name: signoz-dashboard-pdfs-playwright
-          path: docs/observability/snapshots/**/**/*.pdf
-          if-no-files-found: warn
-
-      - name: Upload ECRR report
-        uses: actions/upload-artifact@v4
-        with:
-          name: ecrr-nightly-playwright
-          path: docs/ecrr/ECRR_REPORTS/*_nightly_dashboard_export_playwright.md
-          if-no-files-found: warn
-
-      - name: Cleanup SigNoz
-        if: always()
-        shell: pwsh
-        run: |
-          docker compose -f docker-compose-signoz.yml down -v
-
-  update_docs:
-    runs-on: ubuntu-latest
-    needs: [export, export_playwright]
-    steps:
-      - uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Update docs index
-        shell: pwsh
-        run: pwsh -File scripts/update-docs-index.ps1
-
-      - name: Commit updated docs index
+          fetch-depth: 0
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+          run_install: false
+      
+      - name: Setup PowerShell
         shell: pwsh
         run: |
-          git config user.name "moneycat-bot"
-          git config user.email "bot@moneycat.inc"
-          git add docs/README.md
-          git commit -m "docs(report): update docs index with latest snapshot" || echo "No changes"
-
-      - name: Upload docs index
+          Write-Host "PowerShell $($PSVersionTable.PSVersion) installed"
+      
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+      
+      - name: Start SigNoz stack
+        run: |
+          docker-compose -f docker-compose-signoz.yml up -d
+          echo "Waiting for SigNoz to be ready..."
+          for i in {1..60}; do
+            if curl -s http://localhost:8080/api/v1/health > /dev/null 2>&1; then
+              echo "✅ SigNoz is ready!"
+              break
+            fi
+            echo "⏳ Waiting for SigNoz... ($i/60)"
+            sleep 10
+          done
+          
+          # Verify SigNoz is actually responding
+          curl -v http://localhost:8080/api/v1/health || exit 1
+      
+      - name: Run dashboard export (PowerShell)
+        shell: pwsh
+        run: |
+          if (Test-Path scripts/nightly-dashboard-export.ps1) {
+            pwsh -File scripts/nightly-dashboard-export.ps1
+          } else {
+            Write-Host "⚠️ nightly-dashboard-export.ps1 not found, using Playwright directly"
+            pnpm run export:signoz:playwright
+          }
+      
+      - name: Run dashboard export (Playwright)
+        if: github.event.inputs.export_all == 'true'
+        run: |
+          pnpm run export:signoz:playwright
+      
+      - name: Collect dashboard snapshots
+        run: |
+          mkdir -p docs/observability/snapshots/$(date +%Y-%m-%d)
+          
+          # Copy artifacts
+          if [ -d "artifacts" ]; then
+            cp artifacts/*.png docs/observability/snapshots/$(date +%Y-%m-%d)/ 2>/dev/null || true
+            cp artifacts/*.json docs/observability/snapshots/$(date +%Y-%m-%d)/ 2>/dev/null || true
+          fi
+          
+          # Copy test results
+          if [ -d "test-results" ]; then
+            find test-results -name "*.png" -exec cp {} docs/observability/snapshots/$(date +%Y-%m-%d)/ \; 2>/dev/null || true
+          fi
+          
+          # Generate index
+          echo "# Dashboard Snapshots - $(date +%Y-%m-%d)" > docs/observability/snapshots/$(date +%Y-%m-%d)/README.md
+          echo "" >> docs/observability/snapshots/$(date +%Y-%m-%d)/README.md
+          echo "Auto-generated by nightly-dashboard-export workflow" >> docs/observability/snapshots/$(date +%Y-%m-%d)/README.md
+          echo "" >> docs/observability/snapshots/$(date +%Y-%m-%d)/README.md
+          ls -lh docs/observability/snapshots/$(date +%Y-%m-%d)/ >> docs/observability/snapshots/$(date +%Y-%m-%d)/README.md
+      
+      - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: docs-index
-          path: docs/README.md
-          if-no-files-found: warn
+          name: dashboard-snapshots-${{ github.run_number }}
+          path: |
+            docs/observability/snapshots/
+            artifacts/*.png
+            artifacts/*.json
+          retention-days: 90
+      
+      - name: Commit dashboard snapshots
+        run: |
+          git config user.name "BossCat OEM Bot"
+          git config user.email "bosscat-oem@noreply.github.com"
+          
+          git add docs/observability/snapshots/
+          
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "docs(observability): nightly dashboard export $(date +%Y-%m-%d)
+
+          - Automated snapshot capture
+          - Executive dashboard export
+          - BossCat compliance artifacts
+          
+          Generated by: .github/workflows/nightly-dashboard-export.yml
+          Run: #${{ github.run_number }}"
+            
+            git push
+          fi
+      
+      - name: Stop SigNoz
+        if: always()
+        run: |
+          docker-compose -f docker-compose-signoz.yml down -v
+      
+      - name: Generate summary
+        if: always()
+        run: |
+          echo "## 📊 Nightly Dashboard Export Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Date**: $(date +%Y-%m-%d)" >> $GITHUB_STEP_SUMMARY
+          echo "**Run Number**: #${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ -d "docs/observability/snapshots/$(date +%Y-%m-%d)" ]; then
+            echo "### Captured Snapshots" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+            ls -lh docs/observability/snapshots/$(date +%Y-%m-%d)/ || echo "No snapshots found"
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Dashboard export complete" >> $GITHUB_STEP_SUMMARY
