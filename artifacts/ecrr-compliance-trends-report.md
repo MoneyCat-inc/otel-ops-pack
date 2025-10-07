@@ -1,42 +1,48 @@
 # ECRR Compliance Trends Report
 
-**Generated**: 2025-10-05 19:07:01
-**Report Period**: Last 27 measurements
+**Generated**: 2025-10-06 22:37:02
+**Report Period**: Last 34 measurements
 
 ## ?? Current Compliance Status
 
-- **Overall Score**: 258/792
-- **Compliance Rate**: 97%
-- **Passed Reports**: 64/66
-- **Failed Reports**: 2/66
+- **Overall Score**: 237/756
+- **Compliance Rate**: 92.1%
+- **Passed Reports**: 58/63
+- **Failed Reports**: 5/63
 
 ## ?? Trend Analysis
 
-- **Trend Direction**: Upward
-- **Trend Status**: Improving
-- **Change**: 2.7%
-- **Recent Average**: 97%
-- **Historical Average**: 94.3%
+- **Trend Direction**: Flat
+- **Trend Status**: Stable
+- **Change**: -0.27%
+- **Recent Average**: 92.1%
+- **Historical Average**: 92.37%
 
 ## ?? Recommendations
 
-Continue current practices - compliance trending upward
+Maintain current practices
 
 ## ?? Detailed Report Analysis
 
 ### Reports with Issues
 **2025-01-29-windows-collector-recovery-ecrr.md** - Score: /100
 Issues: 2
+**bosscat-ci-deployment-ecrr-2025-10-06.md** - Score: /100
+Issues: 3
 **ECRR_COMPLIANCE_REPORT_2025-10-05.md** - Score: /100
 Issues: 4
+**ECRR_MERGE_STRATEGY_ASSIGNMENT_2025-01-29.md** - Score: /100
+Issues: 3
+**ECRR_ROLLOUT_MERGE_REPORT_2025-01-29.md** - Score: /100
+Issues: 3
 ### Historical Compliance Rate
-- **10/05/2025 14:36:59**: 98.5%
-- **10/05/2025 15:06:59**: 98.5%
-- **10/05/2025 15:37:00**: 98.5%
-- **10/05/2025 16:06:58**: 98.5%
-- **10/05/2025 16:36:58**: 97%
-- **10/05/2025 17:06:59**: 97%
-- **10/05/2025 17:36:58**: 97%
-- **10/05/2025 18:06:59**: 97%
-- **10/05/2025 18:36:58**: 97%
-- **2025-10-05T19:06:58Z**: 97%
+- **10/06/2025 18:06:59**: 92.1%
+- **10/06/2025 18:36:59**: 92.1%
+- **10/06/2025 19:06:59**: 92.1%
+- **10/06/2025 19:36:59**: 92.1%
+- **10/06/2025 20:06:59**: 92.1%
+- **10/06/2025 20:36:59**: 92.1%
+- **10/06/2025 21:06:59**: 92.1%
+- **10/06/2025 21:36:59**: 92.1%
+- **10/06/2025 22:06:59**: 92.1%
+- **2025-10-06T22:36:59Z**: 92.1%

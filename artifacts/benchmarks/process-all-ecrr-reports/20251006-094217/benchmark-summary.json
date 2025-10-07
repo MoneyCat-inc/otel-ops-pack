@@ -1,0 +1,34 @@
+[
+  {
+    "Scenario": "auto-parallel",
+    "Runs": 2,
+    "AverageMs": 1286.14,
+    "MinMs": 1220.85,
+    "MaxMs": 1351.42,
+    "AverageIssues": 0.0
+  },
+  {
+    "Scenario": "max-1",
+    "Runs": 2,
+    "AverageMs": 1180.03,
+    "MinMs": 1155.47,
+    "MaxMs": 1204.59,
+    "AverageIssues": 0.0
+  },
+  {
+    "Scenario": "max-4",
+    "Runs": 2,
+    "AverageMs": 1058.65,
+    "MinMs": 1031.51,
+    "MaxMs": 1085.79,
+    "AverageIssues": 0.0
+  },
+  {
+    "Scenario": "max-8",
+    "Runs": 2,
+    "AverageMs": 1137.2,
+    "MinMs": 1115.14,
+    "MaxMs": 1159.27,
+    "AverageIssues": 0.0
+  }
+]

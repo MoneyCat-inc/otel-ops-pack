@@ -1,0 +1,8 @@
+{
+  "Scenario": "max-1",
+  "Runs": 2,
+  "AverageMs": 1030.76,
+  "MinMs": 1009.55,
+  "MaxMs": 1051.97,
+  "AverageIssues": 0.0
+}

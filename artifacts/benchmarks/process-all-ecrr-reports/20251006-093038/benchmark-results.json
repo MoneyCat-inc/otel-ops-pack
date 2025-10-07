@@ -1,0 +1,22 @@
+[
+  {
+    "Scenario": "max-148",
+    "Iteration": 1,
+    "MaxParallel": 148,
+    "UsedAutoParallel": false,
+    "TotalMilliseconds": 1637.64,
+    "TotalSeconds": 1.638,
+    "Timestamp": "2025-10-06T09:30:41.0723159+01:00",
+    "OutputDir": "artifacts\\benchmarks\\process-all-ecrr-reports\\20251006-093038\\max-148-run1"
+  },
+  {
+    "Scenario": "auto-parallel",
+    "Iteration": 1,
+    "MaxParallel": null,
+    "UsedAutoParallel": true,
+    "TotalMilliseconds": 1765.83,
+    "TotalSeconds": 1.766,
+    "Timestamp": "2025-10-06T09:30:42.8567291+01:00",
+    "OutputDir": "artifacts\\benchmarks\\process-all-ecrr-reports\\20251006-093038\\auto-parallel-run1"
+  }
+]

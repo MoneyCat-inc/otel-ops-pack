@@ -1,0 +1,121 @@
+{
+  "pairs": [
+    {
+      "bossName": "BOSS_V2_LOCAL_RUN.md",
+      "bossPath": "C:\\otel\\docs\\BossCat\\reports\\BOSS_V2_LOCAL_RUN.md",
+      "bossTimestamp": "2025-10-06 04:09:00",
+      "ecrrName": "bosscat-ci-deployment-ecrr-2025-10-06.md",
+      "ecrrPath": "C:\\otel\\docs\\ECRR_REPORTS\\bosscat-ci-deployment-ecrr-2025-10-06.md",
+      "ecrrTimestamp": "2025-10-06 00:00:00",
+      "deltaMinutes": 249.0
+    },
+    {
+      "bossName": "ECRR_LOCAL_RUN.md",
+      "bossPath": "C:\\otel\\docs\\BossCat\\reports\\ECRR_LOCAL_RUN.md",
+      "bossTimestamp": "2025-10-06 04:09:00",
+      "ecrrName": "bosscat-ci-deployment-ecrr-2025-10-06.md",
+      "ecrrPath": "C:\\otel\\docs\\ECRR_REPORTS\\bosscat-ci-deployment-ecrr-2025-10-06.md",
+      "ecrrTimestamp": "2025-10-06 00:00:00",
+      "deltaMinutes": 249.0
+    }
+  ],
+  "ecrrSummary": {
+    "TotalReports": 60,
+    "Recommendations": [
+      "Add ECRR gates to 0 missing reports",
+      "Ensure 4-section structure in 0 reports",
+      "Add explicit status to 0 reports",
+      "Implement consolidation for 1 candidates"
+    ],
+    "ConsolidationCandidates": [
+      "2025-09-29-rollout-merge-oct-2025-consolidated.md"
+    ],
+    "MissingFourSection": [],
+    "ComplianceMetrics": {
+      "ProductionReady": 96.7,
+      "EvidenceReferences": 98.3,
+      "StatusDeclarations": 100.0,
+      "ActorDeclarations": 96.7,
+      "FourSectionStructure": 100.0,
+      "ECRRGates": 100.0
+    },
+    "ReportCategories": {
+      "MergeDeployment": 5,
+      "Other": 33,
+      "Implementation": 9,
+      "Verification": 13,
+      "Completion": 0
+    },
+    "MissingStatus": [],
+    "TemporalPatterns": {
+      "September 2025": 44,
+      "January 2025": 1
+    },
+    "AgentDistribution": {
+      "Cursor Agent": 50,
+      "Codex Agent": 0,
+      "Cursor-Local": 6,
+      "ChatGPT Agent": 1,
+      "Other": 3
+    },
+    "ProcessedReports": 60,
+    "QualityIssues": [],
+    "ProcessingDate": "2025-10-06 20:59:22 UTC"
+  },
+  "memx": {
+    "path": "C:\\otel\\artifacts\\memx\\hardware\\memx-hardware-20251006T195924Z.json",
+    "generatedAt": "2025-10-06T19:59:24.7632258Z",
+    "host": "D-MONOLITH",
+    "summary": {
+      "memory": {
+        "status": "ok",
+        "moduleCount": 4,
+        "totalCapacityBytes": 34359738368,
+        "issues": []
+      },
+      "cpu": {
+        "status": "ok",
+        "packageCount": 1,
+        "totalCores": 12,
+        "totalLogicalProcessors": 24,
+        "issues": []
+      },
+      "gpu": {
+        "status": "ok",
+        "controllerCount": 3,
+        "issues": []
+      },
+      "ui": {
+        "status": "warn",
+        "monitorCount": 3,
+        "issues": [
+          "Monitor Default Monitor availability code 8"
+        ]
+      },
+      "networking": {
+        "status": "warn",
+        "adapterCount": 6,
+        "adaptersUp": 3,
+        "loopbackReachable": true,
+        "issues": [
+          "Adapter OpenVPN Data Channel Offload for NordVPN status Disconnected",
+          "Adapter Local Area Connection 2 status Disconnected",
+          "Adapter Bluetooth Network Connection status Disconnected"
+        ]
+      }
+    }
+  },
+  "generatedAt": "2025-10-06T20:59:27Z",
+  "bossTotals": {
+    "ProcessedReports": 9,
+    "Metrics": {
+      "HasActionItems": 5,
+      "HasGate": 1,
+      "HasStatus": 9,
+      "HasEvidence": 9
+    },
+    "Issues": [],
+    "TotalReports": 9
+  },
+  "windowMinutes": 720
+}
