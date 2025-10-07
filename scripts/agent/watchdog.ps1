@@ -27,6 +27,15 @@ try {
     $cycleInterval = if ($config.watchdog.cycle_interval_seconds) { $config.watchdog.cycle_interval_seconds } else { $CycleIntervalSeconds }
     $maxTasksPerCycle = if ($config.watchdog.max_tasks_per_cycle) { $config.watchdog.max_tasks_per_cycle } else { 2 }
     $lockCheckInterval = if ($config.watchdog.lock_check_interval_seconds) { $config.watchdog.lock_check_interval_seconds } else { 30 }
+    $configuredMaxCycles = if ($config.watchdog.PSObject.Properties.Name -contains 'max_cycles') { [int]$config.watchdog.max_cycles } else { -1 }
+    if (-not $PSBoundParameters.ContainsKey('MaxCycles')) {
+        $MaxCycles = $configuredMaxCycles
+    } elseif ($MaxCycles -lt 0 -and $configuredMaxCycles -ge 0) {
+        $MaxCycles = $configuredMaxCycles
+    }
+    if (-not $PSBoundParameters.ContainsKey('CycleIntervalSeconds') -and $config.watchdog.cycle_interval_seconds) {
+        $CycleIntervalSeconds = $config.watchdog.cycle_interval_seconds
+    }
 } catch {
     Write-Host "[watchdog] ⚠ Error reading configuration, using defaults" -ForegroundColor Yellow
     $cycleInterval = $CycleIntervalSeconds
@@ -38,6 +47,11 @@ Write-Host "[watchdog] Configuration loaded:" -ForegroundColor Yellow
 Write-Host "[watchdog]   Cycle interval: $cycleInterval seconds" -ForegroundColor White
 Write-Host "[watchdog]   Max tasks per cycle: $maxTasksPerCycle" -ForegroundColor White
 Write-Host "[watchdog]   Lock check interval: $lockCheckInterval seconds" -ForegroundColor White
+if ($MaxCycles -ge 0) {
+    Write-Host "[watchdog]   Max cycles: $MaxCycles" -ForegroundColor White
+} else {
+    Write-Host "[watchdog]   Max cycles: unlimited" -ForegroundColor White
+}
 
 # Initialize cycle tracking
 $cycleCount = 0

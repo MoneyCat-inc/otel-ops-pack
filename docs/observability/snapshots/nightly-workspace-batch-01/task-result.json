@@ -1,0 +1,14 @@
+{
+  "Artifacts": [
+    "compliance-report.json",
+    "audit-summary.md"
+  ],
+  "TaskId": "nightly-batch-chunk-01-p4",
+  "EndTime": "2025-10-07T16:59:42.4851877+01:00",
+  "Workspace": "docs\\observability\\snapshots\\nightly-workspace-batch-01",
+  "StartTime": "2025-10-07T16:59:40.8462685+01:00",
+  "Duration": 1638.9192,
+  "Parallelism": 4,
+  "Processed": 100,
+  "Status": "completed"
+}

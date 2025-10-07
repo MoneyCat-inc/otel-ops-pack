@@ -1,0 +1,135 @@
+extensions:
+  health_check:
+    endpoint: 127.0.0.1:13134
+    path: /healthz
+  zpages:
+    endpoint: 0.0.0.0:55679
+
+receivers:
+  # OTLP receivers for direct application log ingestion
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 127.0.0.1:5317
+      http:
+        endpoint: 127.0.0.1:5318
+  windowseventlog/application:
+    channel: Application
+    start_at: end
+    poll_interval: 200ms
+  windowseventlog/system:
+    channel: System
+    start_at: end
+    poll_interval: 200ms
+  filelog/queue:
+    include:
+      - C:/logs/queue/*.log
+    start_at: end
+    include_file_path: true
+    include_file_name: true
+    poll_interval: 200ms
+    operators:
+      - type: json_parser
+        parse_from: body
+  filelog/canary:
+    include:
+      - C:/logs/**/*.log
+    start_at: end
+    include_file_path: true
+    include_file_name: true
+    poll_interval: 200ms
+
+processors:
+  memory_limiter:
+    limit_mib: 1536
+    check_interval: 500ms
+    spike_limit_mib: 512
+  filter/drop_noise:
+    logs:
+      log_record:
+        - attributes["winlog.event_id"] == 6005
+        - attributes["winlog.event_id"] == 6006
+        - attributes["winlog.event_id"] == 7036
+        - IsMatch(body, "(?i)windows update|service control manager")
+        - attributes["winlog.event_id"] == 10016
+        - (attributes["service.name"] == "otelcol" and IsMatch(body, "(?i)cannot create agent without orgId"))
+  attributes/redact_sensitive:
+    actions:
+      - key: http.request.header.authorization
+        action: delete
+      - key: http.response.header.authorization
+        action: delete
+      - key: http.request.header.x-api-key
+        action: delete
+      - key: http.request.header.cookie
+        action: delete
+  resource/defaults:
+    attributes:
+      - key: deployment.env
+        value: local
+        action: upsert
+  transform/canary_dataset:
+    log_statements:
+      - context: log
+        statements:
+          - set(attributes["dataset"], "resonai_analytics") where IsMatch(body, "(?i)windows-canary") or attributes["log.file.path"] == "C\\logs\\windows-canary-test.log"
+  transform/queue_attributes:
+    log_statements:
+      - context: log
+        statements:
+          - set(resource.attributes["service.name"], "queue-steward") where attributes["log.file.path"] == "C:\\logs\\queue\\health.log"
+          - set(attributes["log.source"], "win-filelog") where attributes["log.file.path"] == "C:\\logs\\queue\\health.log"
+  batch/logs:
+    timeout: 200ms
+    send_batch_size: 128
+    send_batch_max_size: 256
+
+exporters:
+  otlp:
+    endpoint: localhost:14317
+    tls:
+      insecure: true
+    retry_on_failure:
+      enabled: true
+      initial_interval: 100ms
+      max_interval: 5s
+      max_elapsed_time: 30s
+    sending_queue:
+      enabled: true
+      num_consumers: 2
+      queue_size: 256
+
+service:
+  extensions:
+    - health_check
+    - zpages
+  pipelines:
+    traces:
+      receivers:
+        - otlp
+      processors:
+        - memory_limiter
+        - resource/defaults
+        - batch/logs
+      exporters:
+        - otlp
+    logs:
+      receivers:
+        - otlp
+        - windowseventlog/application
+        - windowseventlog/system
+        - filelog/queue
+        - filelog/canary
+      processors:
+        - memory_limiter
+        - filter/drop_noise
+        - attributes/redact_sensitive
+        - resource/defaults
+        - transform/canary_dataset
+        - transform/queue_attributes
+        - batch/logs
+      exporters:
+        - otlp
+
+
+

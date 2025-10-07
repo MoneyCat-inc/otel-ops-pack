@@ -1,0 +1,13 @@
+{
+  "Artifacts": [
+    "performance-metrics.png",
+    "performance-metrics.json"
+  ],
+  "TaskId": "nightly-export-performance-metrics-24h",
+  "EndTime": "2025-10-07T16:59:41.4611296+01:00",
+  "Workspace": "docs\\observability\\snapshots\\nightly-workspace-export-performance-metrics-24h",
+  "TimeRange": "24h",
+  "StartTime": "2025-10-07T16:59:40.8352361+01:00",
+  "Duration": 625.8935,
+  "Status": "completed"
+}

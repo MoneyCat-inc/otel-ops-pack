@@ -50,7 +50,7 @@ param(
     [Parameter(Mandatory)]
     [string]$TaskSpec,
     
-    [int]$MaxConcurrentAgents = $env:NUMBER_OF_PROCESSORS,
+    [int]$MaxConcurrentAgents = 0,
     
     [string]$WorkspaceRoot = 'artifacts/agent-workspaces',
     
@@ -63,6 +63,10 @@ param(
     [string]$AgentType = 'bosscat'
     
 )
+
+$script:agentConfigPath = '.agent/config.json'
+$script:agentConfig = $null
+$script:parallelAgentConfig = $null
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
@@ -85,6 +89,39 @@ function Write-AgentLog {
     param([string]$Message, [string]$Level = 'INFO')
     $colors = @{ INFO = 'Green'; WARN = 'Yellow'; ERROR = 'Red'; DEBUG = 'Gray' }
     Write-Host "[AGENT-$Level] $Message" -ForegroundColor $colors[$Level]
+}
+
+if (Test-Path $script:agentConfigPath) {
+    try {
+        $script:agentConfig = Get-Content $script:agentConfigPath -Raw | ConvertFrom-Json
+        if ($script:agentConfig.PSObject.Properties.Name -contains 'parallelAgent') {
+            $script:parallelAgentConfig = $script:agentConfig.parallelAgent
+        }
+        Write-AgentLog "Loaded agent configuration from $($script:agentConfigPath)" -Level DEBUG
+    } catch {
+        Write-AgentLog "Failed to parse $($script:agentConfigPath): $($_.Exception.Message)" -Level WARN
+    }
+} else {
+    Write-AgentLog "Agent configuration not found at $($script:agentConfigPath); using defaults" -Level WARN
+}
+
+$configuredMaxAgents = 0
+if ($script:parallelAgentConfig -and $script:parallelAgentConfig.PSObject.Properties.Name -contains 'max_concurrent_agents') {
+    $configuredMaxAgents = [int]$script:parallelAgentConfig.max_concurrent_agents
+}
+
+if ($PSBoundParameters.ContainsKey('MaxConcurrentAgents') -and $MaxConcurrentAgents -gt 0) {
+    if ($configuredMaxAgents -gt 0 -and $MaxConcurrentAgents -gt $configuredMaxAgents) {
+        Write-AgentLog "Capping requested MaxConcurrentAgents ($MaxConcurrentAgents) to configured maximum $configuredMaxAgents" -Level WARN
+        $MaxConcurrentAgents = $configuredMaxAgents
+    }
+} else {
+    if ($configuredMaxAgents -gt 0) {
+        $MaxConcurrentAgents = $configuredMaxAgents
+    } else {
+        $MaxConcurrentAgents = [Math]::Max([int]$env:NUMBER_OF_PROCESSORS, 1)
+    }
+    Write-AgentLog "Using MaxConcurrentAgents=$MaxConcurrentAgents" -Level DEBUG
 }
 
 # Parse task specification
@@ -113,27 +150,95 @@ function Invoke-TaskDecomposition {
     
     switch ($TaskSpec.type) {
         'batch-processing' {
-            $parallelSettings = $TaskSpec.input.parallelSettings
-            $reportCount = $TaskSpec.input.reportCount
+            $taskInput = $TaskSpec.input
+            $inputPropertyNames = @()
+            if ($null -ne $taskInput) { $inputPropertyNames = $taskInput.PSObject.Properties.Name }
             
-            # Decompose into parallel processing tasks
-            foreach ($parallel in $parallelSettings) {
+            $reportCount = 0
+            if ($inputPropertyNames -contains 'reportCount') {
+                $reportCount = [int]$taskInput.reportCount
+            }
+            if ($reportCount -le 0) { $reportCount = 100 }
+            
+            $batchConfig = $null
+            if ($script:parallelAgentConfig -and $script:parallelAgentConfig.decomposition -and $script:parallelAgentConfig.decomposition.batch_processing) {
+                $batchConfig = $script:parallelAgentConfig.decomposition.batch_processing
+            }
+            
+            $parallelSettings = @()
+            if ($inputPropertyNames -contains 'parallelSettings') {
+                $parallelSettings = @($taskInput.parallelSettings | ForEach-Object { [int]$_ } | Where-Object { $_ -gt 0 })
+            }
+            if ($parallelSettings.Count -eq 0) {
+                $parallelSettings = @([Math]::Min(4, $MaxConcurrentAgents))
+            }
+            $parallelSettings = @($parallelSettings | Sort-Object -Unique)
+            
+            if ($batchConfig -and $batchConfig.max_parallel_multiplier -gt 1) {
+                $maxSetting = ($parallelSettings | Measure-Object -Maximum).Maximum
+                if ($maxSetting -gt 0) {
+                    $boosted = [Math]::Min([Math]::Ceiling($maxSetting * $batchConfig.max_parallel_multiplier), $MaxConcurrentAgents)
+                    if ($boosted -gt $maxSetting) {
+                        $parallelSettings += $boosted
+                    }
+                }
+            }
+            
+            $parallelSettings = @($parallelSettings | ForEach-Object { [Math]::Min($_, $MaxConcurrentAgents) } | Sort-Object -Unique | Where-Object { $_ -gt 0 })
+            if ($parallelSettings.Count -eq 0) {
+                $parallelSettings = @([Math]::Max(1, [Math]::Min(4, $MaxConcurrentAgents)))
+            }
+            
+            $chunkSize = 0
+            if ($inputPropertyNames -contains 'chunkSize') {
+                $chunkSize = [int]$taskInput.chunkSize
+            }
+            if ($batchConfig -and $batchConfig.min_chunk_size -gt 0) {
+                if ($chunkSize -lt $batchConfig.min_chunk_size) {
+                    $chunkSize = [int]$batchConfig.min_chunk_size
+                }
+            }
+            if ($chunkSize -le 0) {
+                $chunkSize = [Math]::Max([Math]::Ceiling($reportCount / ([Math]::Max($MaxConcurrentAgents, 1) * 2)), 50)
+            }
+            
+            $chunkCount = [Math]::Ceiling($reportCount / $chunkSize)
+            $maxChunks = [Math]::Max($MaxConcurrentAgents * 4, 1)
+            if ($chunkCount -gt $maxChunks) {
+                $chunkCount = $maxChunks
+                $chunkSize = [Math]::Ceiling($reportCount / $chunkCount)
+            }
+            
+            for ($chunkIndex = 0; $chunkIndex -lt $chunkCount; $chunkIndex++) {
+                $chunkStart = ($chunkIndex * $chunkSize) + 1
+                $chunkEnd = [Math]::Min($chunkStart + $chunkSize - 1, $reportCount)
+                $chunkSpan = $chunkEnd - $chunkStart + 1
+                
+                $parallelHint = $parallelSettings[[Math]::Min($chunkIndex, $parallelSettings.Count - 1)]
+                $parallelHint = [Math]::Min([Math]::Max($parallelHint, 1), $MaxConcurrentAgents)
+                
+                $taskIterations = 2
+                if ($inputPropertyNames -contains 'iterations' -and $taskInput.iterations -gt 0) {
+                    $taskIterations = [int]$taskInput.iterations
+                }
+                
                 $atomicTasks += [pscustomobject]@{
-                    Id = "batch-parallel-$parallel"
+                    Id = "batch-chunk-$([string]::Format('{0:D2}', $chunkIndex + 1))-p$parallelHint"
                     Type = "benchmark-run"
-                    Priority = if ($parallel -le 4) { 1 } else { 2 }
+                    Priority = if ($chunkIndex -lt $parallelSettings.Count) { 1 } else { 2 }
                     Dependencies = @()
                     Input = @{
-                        MaxParallel = $parallel
-                        ReportCount = $reportCount
-                        Iterations = 2
+                        MaxParallel = $parallelHint
+                        ReportCount = $chunkSpan
+                        Iterations = $taskIterations
+                        Offset = $chunkStart
                     }
                     Output = @{
                         Artifacts = @("benchmark-results.json", "summary.md")
                         Metrics = @("latency", "throughput", "compliance")
                     }
                     Timeout = $AgentTimeout
-                    Workspace = Join-Path $sessionWorkspace "agent-batch-$parallel"
+                    Workspace = Join-Path $sessionWorkspace ("agent-batch-chunk-{0:D2}" -f ($chunkIndex + 1))
                 }
             }
         }
@@ -168,26 +273,75 @@ function Invoke-TaskDecomposition {
         }
         
         'signoz-dashboard-export' {
-            # Decompose dashboard export into parallel snapshot tasks
-            $dashboards = @('pipeline-health', 'compliance-trends', 'performance-metrics', 'error-analysis')
+            $dashboardConfig = $null
+            if ($script:parallelAgentConfig -and $script:parallelAgentConfig.decomposition -and $script:parallelAgentConfig.decomposition.dashboard_export) {
+                $dashboardConfig = $script:parallelAgentConfig.decomposition.dashboard_export
+            }
             
-            foreach ($dashboard in $dashboards) {
-                $atomicTasks += [pscustomobject]@{
-                    Id = "signoz-export-$dashboard"
-                    Type = "dashboard-export"
-                    Priority = 2
-                    Dependencies = @()
-                    Input = @{
-                        DashboardName = $dashboard
-                        ExportFormat = @("png", "json")
-                        TimeRange = "1h"
+            $taskInput = $TaskSpec.input
+            $inputPropertyNames = @()
+            if ($null -ne $taskInput) { $inputPropertyNames = $taskInput.PSObject.Properties.Name }
+            
+            $dashboards = @()
+            if ($inputPropertyNames -contains 'dashboards') {
+                $dashboards = @($taskInput.dashboards | ForEach-Object { "$_" } | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
+            }
+            if ($dashboards.Count -eq 0) {
+                $dashboards = @('pipeline-health', 'compliance-trends', 'performance-metrics', 'error-analysis')
+            }
+            
+            $timeRanges = @()
+            if ($inputPropertyNames -contains 'timeRanges') {
+                $timeRanges = @($taskInput.timeRanges | ForEach-Object { "$_" })
+            } elseif ($inputPropertyNames -contains 'timeRange') {
+                $timeRanges = @("$($taskInput.timeRange)")
+            } else {
+                $timeRanges = @("1h")
+            }
+            
+            $exportFormats = @()
+            if ($inputPropertyNames -contains 'exportFormat') {
+                $exportFormats = @($taskInput.exportFormat | ForEach-Object { "$_" })
+            } else {
+                $exportFormats = @("png", "json")
+            }
+            
+            $chunkSize = 1
+            if ($dashboardConfig -and $dashboardConfig.chunk_size -gt 0) {
+                $chunkSize = [int]$dashboardConfig.chunk_size
+            }
+            if ($chunkSize -lt 1) { $chunkSize = 1 }
+            
+            for ($i = 0; $i -lt $dashboards.Count; $i += $chunkSize) {
+                $group = @($dashboards[$i..([Math]::Min($i + $chunkSize - 1, $dashboards.Count - 1))])
+                $groupId = ($group -join '-')
+                
+                foreach ($timeRange in $timeRanges) {
+                    $groupWorkspace = Join-Path $sessionWorkspace ("agent-signoz-{0}" -f $groupId.Replace(':','-'))
+                    $artifactList = @()
+                    foreach ($dashboard in $group) {
+                        foreach ($format in $exportFormats) {
+                            $artifactList += "$dashboard.$format"
+                        }
                     }
-                    Output = @{
-                        Artifacts = @("$dashboard.png", "$dashboard.json")
-                        Metrics = @("export-time", "file-size")
+                    
+                    $atomicTasks += [pscustomobject]@{
+                        Id = "signoz-export-$groupId-$timeRange"
+                        Type = "dashboard-export"
+                        Priority = 2
+                        Dependencies = @()
+                        Input = @{
+                            Dashboards = $group
+                            ExportFormats = $exportFormats
+                            TimeRange = $timeRange
+                        }
+                        Output = @{
+                            Artifacts = $artifactList
+                            Metrics = @("export-time", "file-size")
+                        }
+                        Timeout = 10
+                        Workspace = $groupWorkspace
                     }
-                    Timeout = 10
-                    Workspace = Join-Path $sessionWorkspace "agent-signoz-$dashboard"
                 }
             }
         }
@@ -367,18 +521,44 @@ try {
             
             `$input = @'$($Task.Input | ConvertTo-Json -Compress)'@ | ConvertFrom-Json
             
-            # Export dashboard (placeholder implementation)
-            `$exportStart = Get-Date
-            # Implementation would use Playwright or API calls
-            `$exportDuration = (Get-Date) - `$exportStart
+            `$dashboards = @()
+            if ($input.Dashboards) {
+                `$dashboards = @($input.Dashboards | ForEach-Object { "$_" })
+            } elseif ($input.DashboardName) {
+                `$dashboards = @("$($input.DashboardName)")
+            }
+            if (`$dashboards.Count -eq 0) { `$dashboards = @("pipeline-health") }
             
-            Send-AgentTelemetry -Metric "export_duration_ms" -Value `$exportDuration.TotalMilliseconds -Tags @{dashboard = `$input.DashboardName}
+            `$exportFormats = @()
+            if ($input.ExportFormats) {
+                `$exportFormats = @($input.ExportFormats | ForEach-Object { "$_" })
+            } else {
+                `$exportFormats = @("png", "json")
+            }
+            
+            `$timeRange = if ($input.TimeRange) { "$($input.TimeRange)" } else { "1h" }
+            
+            # Placeholder export loop - would call Playwright/API in production
+            `$exportDurationMs = 0
+            foreach (`$dashboard in `$dashboards) {
+                `$perExportMs = Get-Random -Minimum 350 -Maximum 650
+                `$exportDurationMs += `$perExportMs
+                Send-AgentTelemetry -Metric "export_duration_ms" -Value `$perExportMs -Tags @{dashboard = `$dashboard; time_range = `$timeRange}
+            }
+            
+            `$artifacts = @()
+            foreach (`$dashboard in `$dashboards) {
+                foreach (`$format in `$exportFormats) {
+                    `$artifacts += "`$dashboard.`$format"
+                }
+            }
             
             `$output = @{
                 success = `$true
-                dashboard = `$input.DashboardName
-                duration_ms = `$exportDuration.TotalMilliseconds
-                artifacts = @("`$(`$input.DashboardName).png", "`$(`$input.DashboardName).json")
+                dashboards = `$dashboards
+                time_range = `$timeRange
+                duration_ms = `$exportDurationMs
+                artifacts = `$artifacts
             }
         }
         

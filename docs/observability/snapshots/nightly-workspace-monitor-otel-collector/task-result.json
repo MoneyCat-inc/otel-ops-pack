@@ -1,0 +1,12 @@
+{
+  "Artifacts": [
+    "metrics-collection.json",
+    "performance-baseline.json"
+  ],
+  "TaskId": "nightly-monitor-otel-collector",
+  "EndTime": "2025-10-07T16:59:43.3845470+01:00",
+  "Workspace": "docs\\observability\\snapshots\\nightly-workspace-monitor-otel-collector",
+  "StartTime": "2025-10-07T16:59:42.5562869+01:00",
+  "Duration": 828.2601,
+  "Status": "completed"
+}
