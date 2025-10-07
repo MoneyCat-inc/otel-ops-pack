@@ -17,7 +17,7 @@ param(
     
     [string]$ECRRPath = 'docs/ecrr/ECRR_REPORTS',
     
-    [int]$MaxConcurrentAgents = 6,
+    [int]$MaxConcurrentAgents = 0,
     
     [switch]$EnableTelemetry = $true,
     
@@ -25,6 +25,10 @@ param(
     
     [string]$SigNozEndpoint = 'http://localhost:8080'
 )
+
+$script:agentConfigPath = '.agent/config.json'
+$script:agentConfig = $null
+$script:parallelAgentConfig = $null
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
@@ -44,6 +48,85 @@ function Write-BossCatLog {
     Write-Host "[BossCat-$Phase] $timestamp - $Message" -ForegroundColor Cyan
 }
 
+if (Test-Path $script:agentConfigPath) {
+    try {
+        $script:agentConfig = Get-Content $script:agentConfigPath -Raw | ConvertFrom-Json
+        if ($script:agentConfig.PSObject.Properties.Name -contains 'parallelAgent') {
+            $script:parallelAgentConfig = $script:agentConfig.parallelAgent
+        }
+        Write-BossCatLog "Loaded agent configuration from $script:agentConfigPath" -Phase "Examine"
+    } catch {
+        Write-BossCatLog "Failed to parse $script:agentConfigPath : $($_.Exception.Message)" -Phase "Clean"
+    }
+} else {
+    Write-BossCatLog "Agent configuration not found at $script:agentConfigPath; using defaults" -Phase "Clean"
+}
+
+$configuredMaxAgents = 0
+if ($script:parallelAgentConfig -and $script:parallelAgentConfig.PSObject.Properties.Name -contains 'max_concurrent_agents') {
+    $configuredMaxAgents = [int]$script:parallelAgentConfig.max_concurrent_agents
+}
+
+if ($PSBoundParameters.ContainsKey('MaxConcurrentAgents') -and $MaxConcurrentAgents -gt 0) {
+    if ($configuredMaxAgents -gt 0 -and $MaxConcurrentAgents -gt $configuredMaxAgents) {
+        Write-BossCatLog "Capping requested MaxConcurrentAgents ($MaxConcurrentAgents) to configured maximum $configuredMaxAgents" -Phase "Clean"
+        $MaxConcurrentAgents = $configuredMaxAgents
+    }
+} else {
+    if ($configuredMaxAgents -gt 0) {
+        $MaxConcurrentAgents = $configuredMaxAgents
+    } else {
+        $MaxConcurrentAgents = [Math]::Max([int]$env:NUMBER_OF_PROCESSORS, 1)
+    }
+}
+
+Write-BossCatLog "Using max concurrent agents: $MaxConcurrentAgents" -Phase "Examine"
+
+$batchDecompositionConfig = $null
+if ($script:parallelAgentConfig -and $script:parallelAgentConfig.decomposition -and $script:parallelAgentConfig.decomposition.batch_processing) {
+    $batchDecompositionConfig = $script:parallelAgentConfig.decomposition.batch_processing
+}
+
+$dashboardDecompositionConfig = $null
+if ($script:parallelAgentConfig -and $script:parallelAgentConfig.decomposition -and $script:parallelAgentConfig.decomposition.dashboard_export) {
+    $dashboardDecompositionConfig = $script:parallelAgentConfig.decomposition.dashboard_export
+}
+
+$nightlyParallelSettings = @()
+$baselineParallel = @(2, 4, 6)
+foreach ($value in $baselineParallel) {
+    if ($value -le $MaxConcurrentAgents) {
+        $nightlyParallelSettings += $value
+    }
+}
+if ($batchDecompositionConfig -and $batchDecompositionConfig.max_parallel_multiplier -gt 1) {
+    $maxSetting = ($nightlyParallelSettings | Measure-Object -Maximum).Maximum
+    if (-not $maxSetting) { $maxSetting = [Math]::Min(4, $MaxConcurrentAgents) }
+    $boosted = [Math]::Min([Math]::Ceiling($maxSetting * $batchDecompositionConfig.max_parallel_multiplier), $MaxConcurrentAgents)
+    if ($nightlyParallelSettings -notcontains $boosted) {
+        $nightlyParallelSettings += $boosted
+    }
+}
+$nightlyParallelSettings = @($nightlyParallelSettings | Sort-Object -Unique)
+if ($nightlyParallelSettings.Count -eq 0) {
+    $nightlyParallelSettings = @([Math]::Max([Math]::Min($MaxConcurrentAgents, 4), 1))
+}
+
+$nightlyChunkSize = 150
+if ($batchDecompositionConfig -and $batchDecompositionConfig.min_chunk_size -gt 0) {
+    $nightlyChunkSize = [int]$batchDecompositionConfig.min_chunk_size
+}
+
+$dashboardChunkSize = 1
+if ($dashboardDecompositionConfig -and $dashboardDecompositionConfig.chunk_size -gt 0) {
+    $dashboardChunkSize = [int]$dashboardDecompositionConfig.chunk_size
+}
+if ($dashboardChunkSize -lt 1) { $dashboardChunkSize = 1 }
+
+$nightlyReportCount = [Math]::Max($nightlyChunkSize * $nightlyParallelSettings.Count, $nightlyChunkSize)
+
+Write-BossCatLog "Nightly batch chunk size: $nightlyChunkSize | dashboard chunk size: $dashboardChunkSize" -Phase "Clean"
+
 Write-BossCatLog "Starting nightly parallel agent orchestration" -Phase "Examine"
 
 # Initialize directories
@@ -58,8 +141,9 @@ $nightlyTasks = @(
         priority = 1
         input = @{
             dashboards = @('pipeline-health', 'compliance-trends', 'performance-metrics', 'error-analysis')
-            timeRange = "24h"
-            format = @("png", "json")
+            timeRanges = @("24h", "6h")
+            exportFormats = @("png", "json")
+            chunkSize = $dashboardChunkSize
         }
         output = @{
             artifacts = @("dashboard-snapshots.json", "performance-summary.json")
@@ -70,9 +154,11 @@ $nightlyTasks = @(
         type = "batch-processing"
         priority = 1
         input = @{
-            itemCount = 100
+            reportCount = $nightlyReportCount
             processingType = "ecrr-validation"
-            parallelSettings = @(2, 4, 6)
+            parallelSettings = $nightlyParallelSettings
+            chunkSize = $nightlyChunkSize
+            iterations = 2
         }
         output = @{
             artifacts = @("compliance-report.json", "audit-summary.md")
@@ -132,42 +218,135 @@ Write-BossCatLog "Decomposing $($nightlyTasks.Count) nightly tasks into atomic u
 # Decompose tasks into atomic units
 $atomicTasks = @()
 foreach ($task in $nightlyTasks) {
-    switch ($task.type) {
+    try {
+        switch ($task.type) {
         'dashboard-export' {
-            foreach ($dashboard in $task.input.dashboards) {
-                $atomicTasks += @{
-                    Id = "nightly-export-$dashboard"
-                    Type = "dashboard-export"
-                    Priority = $task.priority
-                    Input = @{
-                        DashboardName = $dashboard
-                        TimeRange = $task.input.timeRange
-                        Format = $task.input.format
+            $taskInput = $task.input
+            $inputProps = @()
+            if ($null -ne $taskInput) { $inputProps = $taskInput.PSObject.Properties.Name }
+            
+            $dashboards = @()
+            if ($inputProps -contains 'dashboards') {
+                $dashboards = @($taskInput.dashboards | ForEach-Object { "$_" } | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
+            }
+            if ($dashboards.Count -eq 0) {
+                $dashboards = @('pipeline-health', 'compliance-trends', 'performance-metrics', 'error-analysis')
+            }
+            
+            $timeRanges = @()
+            if ($inputProps -contains 'timeRanges') {
+                $timeRanges = @($taskInput.timeRanges | ForEach-Object { "$_" })
+            } else {
+                $timeRanges = @("24h")
+            }
+            
+            $exportFormats = @("png", "json")
+            if ($inputProps -contains 'exportFormats') {
+                $exportFormats = @($taskInput.exportFormats | ForEach-Object { "$_" })
+            }
+            
+            $chunkSize = 1
+            if ($inputProps -contains 'chunkSize' -and $taskInput.chunkSize -gt 0) {
+                $chunkSize = [int]$taskInput.chunkSize
+            } elseif ($dashboardDecompositionConfig -and $dashboardDecompositionConfig.chunk_size -gt 0) {
+                $chunkSize = [int]$dashboardDecompositionConfig.chunk_size
+            }
+            if ($chunkSize -lt 1) { $chunkSize = 1 }
+            
+            for ($i = 0; $i -lt $dashboards.Count; $i += $chunkSize) {
+                $group = @($dashboards[$i..([Math]::Min($i + $chunkSize - 1, $dashboards.Count - 1))])
+                $groupId = ($group -join '-')
+                
+                foreach ($timeRange in $timeRanges) {
+                    $artifactList = @()
+                    foreach ($dashboard in $group) {
+                        foreach ($format in $exportFormats) {
+                            $artifactList += "$dashboard.$format"
+                        }
                     }
-                    Output = @{
-                        Artifacts = @("$dashboard.png", "$dashboard.json")
+                    
+                    $atomicTasks += @{
+                        Id = "nightly-export-$groupId-$timeRange"
+                        Type = "dashboard-export"
+                        Priority = $task.priority
+                        Input = @{
+                            Dashboards = $group
+                            ExportFormats = $exportFormats
+                            TimeRange = $timeRange
+                        }
+                        Output = @{
+                            Artifacts = $artifactList
+                        }
+                        Timeout = 10
+                        Workspace = "nightly-workspace-export-$groupId-$timeRange"
                     }
-                    Timeout = 10
-                    Workspace = "nightly-workspace-$dashboard"
                 }
             }
         }
         'batch-processing' {
-            foreach ($parallel in $task.input.parallelSettings) {
+            $taskInput = $task.input
+            $inputProps = @()
+            if ($null -ne $taskInput) { $inputProps = $taskInput.PSObject.Properties.Name }
+            
+            $reportCount = 0
+            if ($inputProps -contains 'reportCount') {
+                $reportCount = [int]$taskInput.reportCount
+            }
+            if ($reportCount -le 0) { $reportCount = 100 }
+            
+            $parallelSettings = @()
+            if ($inputProps -contains 'parallelSettings') {
+            $parallelSettings = @($taskInput.parallelSettings | ForEach-Object { [int]$_ } | Where-Object { $_ -gt 0 })
+            }
+            if ($parallelSettings.Count -eq 0) {
+                $parallelSettings = @([Math]::Min(4, $MaxConcurrentAgents))
+            }
+            $parallelSettings = @($parallelSettings | ForEach-Object { [Math]::Min($_, $MaxConcurrentAgents) } | Sort-Object -Unique)
+            
+            $chunkSize = $nightlyChunkSize
+            if ($inputProps -contains 'chunkSize' -and $taskInput.chunkSize -gt 0) {
+                $chunkSize = [int]$taskInput.chunkSize
+            }
+            if ($chunkSize -le 0) { $chunkSize = 50 }
+            
+            $iterations = 2
+            if ($inputProps -contains 'iterations' -and $taskInput.iterations -gt 0) {
+                $iterations = [int]$taskInput.iterations
+            }
+            
+            $processingType = if ($inputProps -contains 'processingType') { "$($taskInput.processingType)" } else { "generic" }
+            
+            $chunkCount = [Math]::Ceiling($reportCount / $chunkSize)
+            $maxChunks = [Math]::Max($MaxConcurrentAgents * 4, 1)
+            if ($chunkCount -gt $maxChunks) {
+                $chunkCount = $maxChunks
+                $chunkSize = [Math]::Ceiling($reportCount / $chunkCount)
+            }
+            
+            for ($chunkIndex = 0; $chunkIndex -lt $chunkCount; $chunkIndex++) {
+                $chunkStart = ($chunkIndex * $chunkSize) + 1
+                $chunkEnd = [Math]::Min($chunkStart + $chunkSize - 1, $reportCount)
+                $chunkSpan = $chunkEnd - $chunkStart + 1
+                
+                $parallelHint = $parallelSettings[[Math]::Min($chunkIndex, $parallelSettings.Count - 1)]
+                $parallelHint = [Math]::Min([Math]::Max($parallelHint, 1), $MaxConcurrentAgents)
+                
                 $atomicTasks += @{
-                    Id = "nightly-batch-$parallel"
+                    Id = "nightly-batch-chunk-$([string]::Format('{0:D2}', $chunkIndex + 1))-p$parallelHint"
                     Type = "batch-processing"
                     Priority = $task.priority
                     Input = @{
-                        MaxParallel = $parallel
-                        ItemCount = $task.input.itemCount
-                        ProcessingType = $task.input.processingType
+                        MaxParallel = $parallelHint
+                        ReportCount = $chunkSpan
+                        Offset = $chunkStart
+                        Iterations = $iterations
+                        ProcessingType = $processingType
                     }
                     Output = @{
                         Artifacts = $task.output.artifacts
                     }
                     Timeout = 30
-                    Workspace = "nightly-workspace-batch-$parallel"
+                    Workspace = "nightly-workspace-batch-$([string]::Format('{0:D2}', $chunkIndex + 1))"
                 }
             }
         }
@@ -206,6 +385,9 @@ foreach ($task in $nightlyTasks) {
                 }
             }
         }
+    }
+    } catch {
+        throw "Failed to decompose nightly task '$($task.name)': $($_.Exception.Message)"
     }
 }
 
@@ -254,13 +436,16 @@ foreach ($batch in $agentBatches) {
                 'dashboard-export' {
                     # Simulate dashboard export
                     Start-Sleep -Milliseconds (Get-Random -Minimum 500 -Maximum 2000)
-                    $result.Artifacts = @("$($task.Input.DashboardName).png", "$($task.Input.DashboardName).json")
+                    $result.Artifacts = $task.Output.Artifacts
+                    $result.TimeRange = $task.Input.TimeRange
                     $result.Status = "completed"
                 }
                 'batch-processing' {
                     # Simulate batch processing
                     Start-Sleep -Milliseconds (Get-Random -Minimum 1000 -Maximum 3000)
                     $result.Artifacts = $task.Output.Artifacts
+                    $result.Processed = $task.Input.ReportCount
+                    $result.Parallelism = $task.Input.MaxParallel
                     $result.Status = "completed"
                 }
                 'monitoring' {

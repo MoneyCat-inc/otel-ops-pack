@@ -15,6 +15,7 @@
     "db:seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
+    "@aws-sdk/client-bedrock-runtime": "^3.901.0",
     "@opentelemetry/auto-instrumentations-node": "^0.64.6",
     "@opentelemetry/core": "^2.1.0",
     "@opentelemetry/exporter-otlp-http": "^0.26.0",
