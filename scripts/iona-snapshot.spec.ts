@@ -344,11 +344,25 @@ test.describe('IONA Diagnostics Shell Tests', () => {
     
     // Switch to Traces tab
     await page.getByRole('button', { name: /Traces/i }).click();
-    await page.waitForTimeout(2000);
     
-    // Check for trace content or "no traces" message
-    const hasTraces = await page.locator('text=/trace|span|no traces/i').isVisible();
-    expect(hasTraces).toBe(true);
+    // Wait for loading state to finish (look for "Loading traces..." to disappear)
+    await page.waitForFunction(
+      () => !document.body.textContent?.includes('Loading traces...'),
+      { timeout: 10000 }
+    );
+    
+    // Now check for either trace data or "No traces available"
+    const tracesPanel = page.locator('.space-y-4, .space-y-2').first();
+    await expect(tracesPanel).toBeVisible();
+    
+    // Verify we have some content (either traces or "no traces" message)
+    const panelText = await tracesPanel.textContent();
+    const hasContent = panelText && (
+      panelText.includes('No traces') || 
+      panelText.includes('Trace ID') ||
+      panelText.includes('Span ID')
+    );
+    expect(hasContent).toBeTruthy();
     
     console.log('✓ IONA traces panel loaded');
   });

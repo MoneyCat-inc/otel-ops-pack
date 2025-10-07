@@ -27,7 +27,7 @@ Thumbs.db
 # VCS & CI noise
 .git/
 .gitignore
-.github/
+# .github/ - Allow editing workflows for BossCat CI setup
 .husky/
 .releaserc*
 

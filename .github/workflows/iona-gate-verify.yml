@@ -1,197 +1,150 @@
-name: IONA Gate Verify
+name: IONA Gate Verification
+
+on:
+  push:
+    branches:
+      - main
+      - 'rollout/**'
+      - 'feature/**'
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
 permissions:
   contents: read
-on:
-  workflow_dispatch:
-  push:
-    paths:
-      - app/**
-      - scripts/iona-snapshot.spec.ts
-      - synthetic/send_iona_boot_span.py
-      - docs/BossCat/IONA_ECRR_REPORT.md
-      - .github/workflows/iona-gate-verify.yml
-      - playwright.config.ts
-      - lib/telemetry/**
-  pull_request:
-    paths:
-      - app/**
-      - scripts/iona-snapshot.spec.ts
-      - synthetic/send_iona_boot_span.py
-      - docs/BossCat/IONA_ECRR_REPORT.md
-      - .github/workflows/iona-gate-verify.yml
-      - playwright.config.ts
-      - lib/telemetry/**
+  pull-requests: write
+  issues: write
 
 jobs:
-  verify:
-    runs-on: windows-latest
-    env:
-      SIGNOZ_URL: http://localhost:8080
-      SERVICE_NAME: iona-app
-      OTEL_EXPORTER_OTLP_ENDPOINT: http://localhost:5317
-      # Prefer API key in Actions secrets (Settings → Secrets → Actions)
-      SIGNOZ_API_KEY: ${{ secrets.SIGNOZ_API_KEY }}
-      # or use cookie if you must:
-      # SIGNOZ_SESSION_COOKIE: ${{ secrets.SIGNOZ_SESSION_COOKIE }}
+  gate-verify:
+    name: BossCat Gate Verification
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Setup Node & PNPM
-        uses: pnpm/action-setup@v4
-        with: 
-          version: 9
-          
+        with:
+          fetch-depth: 0
+      
       - name: Setup Node.js
         uses: actions/setup-node@v4
-        with: 
-          node-version: '22'
+        with:
+          node-version: '20'
           cache: 'pnpm'
-
+      
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+          run_install: false
+      
       - name: Setup Python
         uses: actions/setup-python@v5
-        with: 
-          python-version: '3.11'
-
-      - name: Install Python dependencies
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+      
+      - name: Setup PowerShell
+        shell: pwsh
         run: |
-          python -m pip install --upgrade pip
-          pip install opentelemetry-sdk opentelemetry-exporter-otlp-proto-grpc opentelemetry-instrumentation
-
-      - name: Install JavaScript dependencies
-        run: pnpm install
-
+          Write-Host "PowerShell $($PSVersionTable.PSVersion) installed"
+      
+      - name: Install dependencies
+        run: |
+          pnpm install --frozen-lockfile
+          pip install -r requirements.txt
+      
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
-
-      - name: Start IONA dev server
+      
+      - name: Run diagnostic check
+        shell: bash
+        run: |
+          chmod +x scripts/diagnostic.sh
+          ./scripts/diagnostic.sh artifacts/ci-diagnostics.json
+          cat artifacts/ci-diagnostics.json
+      
+      - name: Start SigNoz (Docker Compose)
+        run: |
+          docker compose -f docker-compose-signoz.yml up -d
+          echo "Waiting for SigNoz to be ready..."
+          for i in {1..30}; do
+            if curl -s http://localhost:8080/api/v1/health > /dev/null; then
+              echo "SigNoz is ready!"
+              break
+            fi
+            echo "Waiting for SigNoz... ($i/30)"
+            sleep 10
+          done
+      
+      - name: Run IONA gate verification
         shell: pwsh
         run: |
-          Write-Host "Starting IONA dev server..."
-          Start-Process pwsh -ArgumentList "-Command", "pnpm dev" -NoNewWindow
-          Write-Host "Waiting for server to be ready..."
-          Start-Sleep -Seconds 15
-          
-          # Verify server is running
-          try {
-            $response = Invoke-WebRequest -Uri "http://localhost:3000/api/health" -TimeoutSec 5
-            Write-Host "✓ IONA dev server is ready (Status: $($response.StatusCode))"
-          } catch {
-            Write-Host "⚠ Server health check failed: $($_.Exception.Message)"
-            Write-Host "Continuing anyway..."
-          }
-
-      - name: Fire synthetic IONA boot span
-        shell: pwsh
-        run: |
-          Write-Host "Emitting IONA synthetic boot span..."
-          python synthetic/send_iona_boot_span.py
-          Write-Host "✓ Synthetic span emitted"
-
-      - name: Verify ingestion via SigNoz (if available)
-        shell: pwsh
-        continue-on-error: true
-        run: |
-          Write-Host "Checking SigNoz availability..."
-          try {
-            $response = Invoke-WebRequest -Uri "http://localhost:8080/api/v1/health" -TimeoutSec 5
-            Write-Host "✓ SigNoz is available (Status: $($response.StatusCode))"
-            
-            Write-Host "Verifying span ingestion..."
-            # Add verification script call here if available
-            # .\scripts\verify-synthetic-ingestion-enhanced.ps1
-          } catch {
-            Write-Host "⚠ SigNoz not available - skipping ingestion verification"
-            Write-Host "Error: $($_.Exception.Message)"
-          }
-
-      - name: Run IONA UI snapshot tests
-        shell: pwsh
-        run: |
-          Write-Host "Running IONA Playwright snapshot tests..."
-          pnpm playwright test scripts/iona-snapshot.spec.ts --reporter=list,html
-          
-          if ($LASTEXITCODE -eq 0) {
-            Write-Host "✓ IONA snapshot tests passed"
-          } else {
-            Write-Host "✗ IONA snapshot tests failed with exit code: $LASTEXITCODE"
-            exit $LASTEXITCODE
-          }
-
-      - name: Verify artifacts were created
-        shell: pwsh
-        run: |
-          Write-Host "Verifying IONA artifacts..."
-          $artifacts = @(
-            "artifacts/iona-home.png",
-            "artifacts/iona-practice.png",
-            "artifacts/iona-memx-labs.png"
-          )
-          
-          $missingArtifacts = @()
-          foreach ($artifact in $artifacts) {
-            if (Test-Path $artifact) {
-              $size = (Get-Item $artifact).Length / 1KB
-              Write-Host "✓ Found: $artifact ($([math]::Round($size, 2)) KB)"
-            } else {
-              Write-Host "✗ Missing: $artifact"
-              $missingArtifacts += $artifact
-            }
-          }
-          
-          if ($missingArtifacts.Count -gt 0) {
-            Write-Host "`n⚠ Warning: $($missingArtifacts.Count) artifacts missing"
-            Write-Host "This may be expected if tests were skipped or failed"
-          } else {
-            Write-Host "`n✓ All expected artifacts created"
-          }
-
-      - name: Generate test summary
-        shell: pwsh
+          pwsh -File scripts/verify-iona-gate.ps1
+      
+      - name: Upload artifacts
         if: always()
-        run: |
-          Write-Host "`n=== IONA Gate Verification Summary ===" -ForegroundColor Cyan
-          Write-Host "Service: iona-app" -ForegroundColor White
-          Write-Host "Timestamp: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss UTC')" -ForegroundColor White
-          
-          Write-Host "`nComponents Verified:" -ForegroundColor Yellow
-          Write-Host "  ✓ Python dependencies installed" -ForegroundColor Green
-          Write-Host "  ✓ JavaScript dependencies installed" -ForegroundColor Green
-          Write-Host "  ✓ Playwright browsers installed" -ForegroundColor Green
-          Write-Host "  ✓ IONA dev server started" -ForegroundColor Green
-          Write-Host "  ✓ Synthetic boot span emitted" -ForegroundColor Green
-          Write-Host "  ✓ UI snapshot tests executed" -ForegroundColor Green
-          
-          $artifactCount = (Get-ChildItem -Path "artifacts" -Filter "iona-*.png" -ErrorAction SilentlyContinue).Count
-          Write-Host "`nArtifacts Created: $artifactCount screenshots" -ForegroundColor Yellow
-          
-          Write-Host "`n=== Gate Status: VERIFIED ===" -ForegroundColor Green
-
-      - name: Upload IONA gate artifacts
         uses: actions/upload-artifact@v4
-        if: always()
         with:
-          name: iona-gate-evidence-${{ github.run_number }}
+          name: iona-gate-artifacts
           path: |
-            artifacts/iona-*.png
-            playwright-report/**
-            test-results/**
-            docs/BossCat/IONA_ECRR_REPORT.md
+            artifacts/*.png
+            artifacts/*.json
+            artifacts/*.txt
+            artifacts/*.html
+            artifacts/*.md
+            playwright-report/
+            test-results/
           retention-days: 30
-
+      
       - name: Upload Playwright report
-        uses: actions/upload-artifact@v4
         if: always()
+        uses: actions/upload-artifact@v4
         with:
-          name: iona-playwright-report-${{ github.run_number }}
+          name: playwright-report
           path: playwright-report/
           retention-days: 30
-
-      - name: Stop dev server
-        shell: pwsh
+      
+      - name: Comment PR with results
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            
+            let comment = '## 🎯 IONA Gate Verification Results\n\n';
+            
+            // Check if artifacts exist and build comment
+            try {
+              const diagnostics = JSON.parse(fs.readFileSync('artifacts/ci-diagnostics.json', 'utf8'));
+              comment += '### System Information\n';
+              comment += `- **OS**: ${diagnostics.os_name} ${diagnostics.os_version}\n`;
+              comment += `- **Architecture**: ${diagnostics.architecture}\n`;
+              comment += `- **Node**: ${diagnostics.tools.node || 'N/A'}\n`;
+              comment += `- **Python**: ${diagnostics.tools.python3 || diagnostics.tools.python || 'N/A'}\n\n`;
+            } catch (e) {
+              comment += '⚠️ Could not read diagnostic information\n\n';
+            }
+            
+            comment += '### Gate Status\n';
+            comment += `- **Workflow Run**: [#${context.runNumber}](${context.payload.repository.html_url}/actions/runs/${context.runId})\n`;
+            comment += `- **Commit**: ${context.sha.substring(0, 7)}\n`;
+            comment += `- **Triggered by**: @${context.actor}\n\n`;
+            
+            comment += '📊 **Artifacts**: Screenshots and reports uploaded to workflow artifacts\n';
+            comment += '🔗 **Playwright Report**: Available in workflow artifacts\n';
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+      
+      - name: Stop SigNoz
         if: always()
         run: |
-          Write-Host "Cleaning up IONA dev server..."
-          Get-Process | Where-Object {$_.CommandLine -like "*pnpm dev*"} | Stop-Process -Force -ErrorAction SilentlyContinue
-          Write-Host "✓ Cleanup complete"
-
+          docker compose -f docker-compose-signoz.yml down -v
