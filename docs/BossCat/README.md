@@ -60,7 +60,7 @@
 pwsh -File scripts\quick-monitor.ps1
 
 # Generate canary test
-pwsh -File scripts\canary-test.ps1
+pwsh -File scripts\generate-windows-canary.ps1
 
 # Update dashboard data
 pnpm roadmap:update
@@ -354,7 +354,7 @@ pwsh -File scripts\quick-monitor.ps1
 - [ ] Verify dashboard data freshness
 
 ### Evening (5:00 PM)
-- [ ] Generate canary test: `canary-test.ps1`
+- [ ] Generate canary test: `generate-windows-canary.ps1`
 - [ ] Review compliance dashboard
 - [ ] Check for threshold breaches
 - [ ] Update TASKS.md with significant actions

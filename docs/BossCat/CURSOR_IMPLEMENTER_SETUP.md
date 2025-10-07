@@ -234,7 +234,7 @@ Each persona sees customized KPIs, gates, and next actions:
 
 2. **Gate Enforcement**
    - Use nightly runs for validation
-   - Execute canary tests: `pwsh -File scripts\canary-test.ps1`
+   - Execute canary tests: `pwsh -File scripts\generate-windows-canary.ps1`
    - Verify in SigNoz UI with query: `message contains "canary test"`
 
 ### Schedule Reviews
@@ -323,7 +323,7 @@ otel-canary
 ### Core Scripts
 - `scripts/monitor-optimized-pipeline.ps1` - Enhanced real-time monitoring with ECRR
 - `scripts/quick-monitor.ps1` - Fast health check and status verification
-- `scripts/canary-test.ps1` - Generate test logs and traces
+- `scripts/generate-windows-canary.ps1` - Generate test logs and traces
 - `scripts/verify-pipeline.ps1` - End-to-end pipeline validation
 
 ### Docker Compose

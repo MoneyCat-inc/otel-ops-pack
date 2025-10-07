@@ -90,7 +90,7 @@ gh api /repos/:owner/:repo/branches/main/protection | jq '.required_pull_request
   - Status: [___]
 
 - [ ] **Canary Tests Successful**
-  - Run: `pwsh -File scripts/canary-test.ps1`
+  - Run: `pwsh -File scripts/generate-windows-canary.ps1`
   - SigNoz ingestion: [ ] Working
   - Status: [___]
 

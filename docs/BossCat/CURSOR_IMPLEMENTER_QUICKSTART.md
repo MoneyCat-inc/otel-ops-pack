@@ -266,7 +266,7 @@ pwsh -File scripts\quick-monitor.ps1
 Start-Service otelcol-contrib
 
 # Generate report
-pwsh -File scripts\monitor-optimized-pipeline.ps1 -GenerateECRR
+pwsh -File scripts\monitor-optimized-pipeline.ps1 -ExportReport
 
 # Update dashboard
 pnpm roadmap:update
