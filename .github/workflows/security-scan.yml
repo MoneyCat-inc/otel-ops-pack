@@ -37,6 +37,7 @@ jobs:
           app_id: ${{ secrets.BOSSCAT_APP_ID }}
           private_key: ${{ secrets.BOSSCAT_APP_PRIVATE_KEY }}
       
+
       - name: Run Gitleaks
         uses: gitleaks/gitleaks-action@v2
         env:
