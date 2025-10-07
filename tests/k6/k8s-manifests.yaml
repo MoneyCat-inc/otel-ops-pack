@@ -1,0 +1,167 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: k6-test-config
+  namespace: bosscat-testing
+data:
+  baseline-test.js: |
+    import http from 'k6/http';
+    import { check, sleep } from 'k6';
+    import { Rate } from 'k6/metrics';
+
+    const errorRate = new Rate('errors');
+    const BASE_URL = __ENV.BASE_URL || 'http://signoz-frontend:8080';
+    const VUS = parseInt(__ENV.VUS) || 10;
+    const DURATION = __ENV.DURATION || '30s';
+
+    export const options = {
+      vus: VUS,
+      duration: DURATION,
+      thresholds: {
+        http_req_duration: ['p(95)<200'],
+        http_req_failed: ['rate<0.01'],
+        errors: ['rate<0.01'],
+      },
+    };
+
+    export default function () {
+      const healthResponse = http.get(`${BASE_URL}/api/v1/health`);
+      const healthCheck = check(healthResponse, {
+        'health endpoint status is 200': (r) => r.status === 200,
+        'health response time < 100ms': (r) => r.timings.duration < 100,
+      });
+      errorRate.add(!healthCheck);
+      sleep(1);
+    }
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: k6-baseline-test
+  namespace: bosscat-testing
+spec:
+  template:
+    spec:
+      containers:
+      - name: k6
+        image: grafana/k6:latest
+        command: ["k6", "run", "--out", "json=artifacts/baseline-test-results.json", "/scripts/baseline-test.js"]
+        env:
+        - name: BASE_URL
+          value: "http://signoz-frontend:8080"
+        - name: VUS
+          value: "10"
+        - name: DURATION
+          value: "30s"
+        volumeMounts:
+        - name: test-scripts
+          mountPath: /scripts
+        - name: artifacts
+          mountPath: /artifacts
+      volumes:
+      - name: test-scripts
+        configMap:
+          name: k6-test-config
+      - name: artifacts
+        emptyDir: {}
+      restartPolicy: Never
+  backoffLimit: 3
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: k6-load-test
+  namespace: bosscat-testing
+spec:
+  template:
+    spec:
+      containers:
+      - name: k6
+        image: grafana/k6:latest
+        command: ["k6", "run", "--out", "json=artifacts/load-test-results.json", "/scripts/load-test.js"]
+        env:
+        - name: BASE_URL
+          value: "http://signoz-frontend:8080"
+        - name: VUS
+          value: "50"
+        - name: DURATION
+          value: "2m"
+        volumeMounts:
+        - name: test-scripts
+          mountPath: /scripts
+        - name: artifacts
+          mountPath: /artifacts
+      volumes:
+      - name: test-scripts
+        configMap:
+          name: k6-test-config
+      - name: artifacts
+        emptyDir: {}
+      restartPolicy: Never
+  backoffLimit: 3
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: k6-stress-test
+  namespace: bosscat-testing
+spec:
+  template:
+    spec:
+      containers:
+      - name: k6
+        image: grafana/k6:latest
+        command: ["k6", "run", "--out", "json=artifacts/stress-test-results.json", "/scripts/stress-test.js"]
+        env:
+        - name: BASE_URL
+          value: "http://signoz-frontend:8080"
+        - name: VUS
+          value: "100"
+        - name: DURATION
+          value: "5m"
+        volumeMounts:
+        - name: test-scripts
+          mountPath: /scripts
+        - name: artifacts
+          mountPath: /artifacts
+      volumes:
+      - name: test-scripts
+        configMap:
+          name: k6-test-config
+      - name: artifacts
+        emptyDir: {}
+      restartPolicy: Never
+  backoffLimit: 3
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: k6-soak-test
+  namespace: bosscat-testing
+spec:
+  template:
+    spec:
+      containers:
+      - name: k6
+        image: grafana/k6:latest
+        command: ["k6", "run", "--out", "json=artifacts/soak-test-results.json", "/scripts/soak-test.js"]
+        env:
+        - name: BASE_URL
+          value: "http://signoz-frontend:8080"
+        - name: VUS
+          value: "20"
+        - name: DURATION
+          value: "30m"
+        volumeMounts:
+        - name: test-scripts
+          mountPath: /scripts
+        - name: artifacts
+          mountPath: /artifacts
+      volumes:
+      - name: test-scripts
+        configMap:
+          name: k6-test-config
+      - name: artifacts
+        emptyDir: {}
+      restartPolicy: Never
+  backoffLimit: 3

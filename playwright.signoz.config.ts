@@ -1,6 +1,6 @@
 import { defineConfig, devices } from "@playwright/test";
 
-const baseURL = process.env.SIGNOZ_URL || "http://localhost:8080";
+const baseURL = process.env['SIGNOZ_URL'] || "http://localhost:8080";
 
 export default defineConfig({
   timeout: 60_000,

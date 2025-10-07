@@ -41,15 +41,15 @@ export function getQueueConfig(): QueueConfig {
   const isDev = process.env.NODE_ENV === 'development';
   
   return {
-    driver: (process.env.QUEUE_DRIVER as 'json' | 'sqlite') || 'json',
-    wal: process.env.QUEUE_WAL === '1' || process.env.QUEUE_WAL === 'true',
-    shadow: process.env.QUEUE_SHADOW === '1' || process.env.QUEUE_SHADOW === 'true' || true, // Default to true for safety
-    enabled: process.env.QUEUE_ENABLED !== '0' && process.env.QUEUE_ENABLED !== 'false',
-    maxJobs: parseInt(process.env.QUEUE_MAX_JOBS || '10', 10),
-    maxConcurrency: parseInt(process.env.QUEUE_MAX_CONCURRENCY || (isDev ? '3' : '2'), 10),
-    maxAttempts: parseInt(process.env.QUEUE_MAX_ATTEMPTS || '3', 10),
-    baseDelayMs: parseInt(process.env.QUEUE_BASE_DELAY_MS || '1000', 10),
-    jitterFactor: parseFloat(process.env.QUEUE_JITTER_FACTOR || '0.15'),
+    driver: (process.env['QUEUE_DRIVER'] as 'json' | 'sqlite') || 'json',
+    wal: process.env['QUEUE_WAL'] === '1' || process.env['QUEUE_WAL'] === 'true',
+    shadow: process.env['QUEUE_SHADOW'] === '1' || process.env['QUEUE_SHADOW'] === 'true' || true, // Default to true for safety
+    enabled: process.env['QUEUE_ENABLED'] !== '0' && process.env['QUEUE_ENABLED'] !== 'false',
+    maxJobs: parseInt(process.env['QUEUE_MAX_JOBS'] || '10', 10),
+    maxConcurrency: parseInt(process.env['QUEUE_MAX_CONCURRENCY'] || (isDev ? '3' : '2'), 10),
+    maxAttempts: parseInt(process.env['QUEUE_MAX_ATTEMPTS'] || '3', 10),
+    baseDelayMs: parseInt(process.env['QUEUE_BASE_DELAY_MS'] || '1000', 10),
+    jitterFactor: parseFloat(process.env['QUEUE_JITTER_FACTOR'] || '0.15'),
   };
 }
 

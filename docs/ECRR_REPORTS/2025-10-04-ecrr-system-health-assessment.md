@@ -6,7 +6,7 @@
 
 ---
 
-## 🔍 **Examine**
+## 🔍 **1. Examine**
 
 ### **Initial State Captured**
 - **Environment**: Windows 10.0.26220, PowerShell 7, OTel + SigNoz stack
@@ -30,7 +30,7 @@
 
 ---
 
-## 🧹 **Clean**
+## 🧹 **2. Clean**
 
 ### **Drift Removed**
 - ✅ **Artifact Assessment**: Identified 1130 files requiring cleanup (not yet removed) - **CORRECTED**
@@ -51,7 +51,7 @@
 
 ---
 
-## 📝 **Report**
+## 📝 **3. Report**
 
 ### **Actions Documented**
 1. **System Examination**: Comprehensive health check of OTel + SigNoz stack
@@ -88,7 +88,7 @@
 
 ---
 
-## 🎭 **Role**
+## 🎭 **4. Role**
 
 ### **Actor Declared**
 **BossCat OEM (Executive Overseer Manager)** - Supreme Authority over all agents and release gates, responsible for ECRR compliance, system health monitoring, and operational excellence.
@@ -156,7 +156,7 @@
 <!-- ecrr-compliance-addendum -->
 ## ?? **ECRR Compliance Addendum**
 
-## 📋 **Role**
+## 📋 **4. Role**
 **Actor Declaration:** Cursor Agent - Observability Copilot
 - Accountability remains with the declared agent under BossCat OEM oversight.
 

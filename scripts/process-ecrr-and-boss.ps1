@@ -3,7 +3,9 @@ param(
     [string]$EcrrOutputDir = "artifacts",
     [string]$BossOutputDir = "artifacts",
     [string]$BossReportsDir = "docs/BossCat/reports",
-    [int]$CorrelationWindowMinutes = 180
+    [int]$CorrelationWindowMinutes = 180,
+    [switch]$IncludeMemx,
+    [string]$MemxOutputDir = "artifacts/memx/hardware"
 )
 
 $ErrorActionPreference = 'Stop'
@@ -18,6 +20,25 @@ pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/process-all-ecrr-reports.p
 
 # 2) Run Boss processing
 pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/process-all-boss-reports.ps1 -ReportsDir $BossReportsDir -OutputDir $BossOutputDir | Write-Host
+
+# 2.5) Optionally run MemX hardware audit and capture latest report
+$memx = $null
+if ($IncludeMemx.IsPresent) {
+    if (-not (Test-Path $MemxOutputDir)) { New-Item -ItemType Directory -Path $MemxOutputDir -Force | Out-Null }
+    pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/memx/run-hardware-audit.ps1 -OutputDir $MemxOutputDir | Write-Host
+    $latestMemx = Get-ChildItem -Path $MemxOutputDir -Filter '*.json' -File | Sort-Object LastWriteTime -Desc | Select-Object -First 1
+    if ($latestMemx) {
+        try {
+            $memxObj = Get-Content $latestMemx.FullName -Raw | ConvertFrom-Json
+            $memx = [ordered]@{
+                path = $latestMemx.FullName.Replace('\\','/')
+                generatedAt = $memxObj.generatedAt
+                host = $memxObj.host
+                summary = $memxObj.summary
+            }
+        } catch {}
+    }
+}
 
 # 3) Load summaries and correlate by timestamp proximity
 $ecrrMetricsPath = Join-Path $EcrrOutputDir 'ecrr-compliance-metrics.json'
@@ -84,6 +105,7 @@ $correlation = @{
     windowMinutes = $CorrelationWindowMinutes
     bossTotals = $bossSummary.Totals
     ecrrSummary = $ecrrMetrics
+    memx = $memx
     pairs = $pairs
 }
 

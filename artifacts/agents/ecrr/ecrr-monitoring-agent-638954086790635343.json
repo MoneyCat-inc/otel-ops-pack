@@ -1,0 +1,35 @@
+{
+  "bossCatApproval": false,
+  "agentStats": {
+    "successCount": 41,
+    "uptime": 2.1676225966666665,
+    "taskCount": 45,
+    "errorCount": 4
+  },
+  "compliance": {
+    "reliability": false,
+    "performance": true,
+    "security": false
+  },
+  "evidence": {
+    "logs": [
+      "artifacts/agents/logs/monitoring-agent.log"
+    ],
+    "metrics": [],
+    "screenshots": []
+  },
+  "findings": {
+    "major": null,
+    "minor": [
+      "Monitor memory usage"
+    ],
+    "critical": "High memory usage: 111MB"
+  },
+  "recommendations": [
+    "Monitor memory usage"
+  ],
+  "scope": "Agent Behavior Analysis: monitoring-agent",
+  "timestamp": "2025-10-07 04:37:59",
+  "reportId": "ecrr-monitoring-agent-638954086790635343",
+  "responsibleAgent": "monitoring-agent"
+}

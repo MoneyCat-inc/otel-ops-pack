@@ -15,7 +15,7 @@ export function bootstrapErrorRadar(options: {
     enableUncaughtExceptions?: boolean;
 } = {}): void {
     const {
-        serviceName = process.env.SERVICE_NAME || 'otel-app',
+        serviceName = process.env['SERVICE_NAME'] || 'otel-app',
         enableProcessWarnings = true,
         enableUnhandledRejections = true,
         enableUncaughtExceptions = true
@@ -62,7 +62,7 @@ export function bootstrapErrorRadar(options: {
     if (enableProcessWarnings) {
         process.on('warning', (warning) => {
             const err = new Error(`Process Warning: ${warning.name} - ${warning.message}`);
-            err.stack = warning.stack;
+            (err as any).stack = warning.stack || undefined;
             
             captureError(err, {
                 origin: 'processWarning',
@@ -88,7 +88,7 @@ export function guard<T>(
     return promise.catch((error) => {
         captureError(error, {
             origin: context.origin || 'promise-guard',
-            service: context.service || process.env.SERVICE_NAME || 'app',
+            service: context.service || process.env['SERVICE_NAME'] || 'app',
             route: context.route,
             testId: context.testId
         });
@@ -109,7 +109,7 @@ export function guardAsync<T extends any[], R>(
         } catch (error) {
             captureError(error, {
                 origin: context.origin || 'async-guard',
-                service: context.service || process.env.SERVICE_NAME || 'app',
+                service: context.service || process.env['SERVICE_NAME'] || 'app',
                 route: context.route
             });
             throw error;
@@ -130,7 +130,7 @@ export function guardSync<T extends any[], R>(
         } catch (error) {
             captureError(error, {
                 origin: context.origin || 'sync-guard',
-                service: context.service || process.env.SERVICE_NAME || 'app',
+                service: context.service || process.env['SERVICE_NAME'] || 'app',
                 route: context.route
             });
             throw error;
@@ -147,7 +147,7 @@ export function createErrorMiddleware(options: {
     capture5xx?: boolean;
 } = {}) {
     const {
-        serviceName = process.env.SERVICE_NAME || 'http-service',
+        serviceName = process.env['SERVICE_NAME'] || 'http-service',
         capture4xx = false,
         capture5xx = true
     } = options;

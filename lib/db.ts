@@ -10,7 +10,7 @@ declare global {
 }
 
 // Database configuration
-const DATABASE_URL = process.env.DATABASE_URL;
+const DATABASE_URL = process.env['DATABASE_URL'];
 if (!DATABASE_URL) {
   throw new Error('DATABASE_URL environment variable is required');
 }
@@ -53,7 +53,7 @@ export async function checkDatabaseHealth(): Promise<{
   latency: number;
   error?: string;
 }> {
-  const span = trace.getActiveSpan();
+  trace.getActiveSpan();
   const startTime = Date.now();
   
   try {
@@ -62,7 +62,7 @@ export async function checkDatabaseHealth(): Promise<{
     
     const latency = Date.now() - startTime;
     
-    span?.setAttributes({
+    trace.getActiveSpan()?.setAttributes({
       'db.health_check': 'success',
       'db.latency_ms': latency,
     });
@@ -76,7 +76,7 @@ export async function checkDatabaseHealth(): Promise<{
     const latency = Date.now() - startTime;
     const errorMessage = error instanceof Error ? error.message : 'Unknown database error';
     
-    span?.setAttributes({
+    trace.getActiveSpan()?.setAttributes({
       'db.health_check': 'failed',
       'db.latency_ms': latency,
       'db.error': errorMessage,
@@ -130,19 +130,19 @@ export async function getDatabaseStats(): Promise<{
 
 // Graceful shutdown
 export async function closeDatabaseConnection(): Promise<void> {
-  const span = trace.getActiveSpan();
+  trace.getActiveSpan();
   
   try {
     await db.$disconnect();
     
-    span?.setAttributes({
+    trace.getActiveSpan()?.setAttributes({
       'db.disconnect': 'success',
     });
 
     console.log('Database connection closed gracefully');
 
   } catch (error) {
-    span?.setAttributes({
+    trace.getActiveSpan()?.setAttributes({
       'db.disconnect': 'error',
       'db.error': error instanceof Error ? error.message : 'Unknown error',
     });
@@ -156,9 +156,9 @@ export async function withTransaction<T>(
   operation: (tx: PrismaClient) => Promise<T>,
   options?: { timeout?: number; isolationLevel?: 'ReadUncommitted' | 'ReadCommitted' | 'RepeatableRead' | 'Serializable' }
 ): Promise<T> {
-  const span = trace.getActiveSpan();
+  trace.getActiveSpan();
   
-  return db.$transaction(async (tx) => {
+  return db.$transaction(async (tx: any) => {
     const childSpan = trace.getTracer('resonai-backend').startSpan('db.transaction', {
       attributes: {
         'db.transaction.isolation_level': options?.isolationLevel || 'ReadCommitted',
@@ -189,14 +189,14 @@ export function withQueryMonitoring<T>(
   operation: () => Promise<T>,
   queryName: string
 ): Promise<T> {
-  const span = trace.getActiveSpan();
+  trace.getActiveSpan();
   const startTime = Date.now();
   
   return operation().then(
     (result) => {
       const duration = Date.now() - startTime;
       
-      span?.setAttributes({
+      trace.getActiveSpan()?.setAttributes({
         [`db.query.${queryName}.success`]: true,
         [`db.query.${queryName}.duration_ms`]: duration,
       });
@@ -206,7 +206,7 @@ export function withQueryMonitoring<T>(
     (error) => {
       const duration = Date.now() - startTime;
       
-      span?.setAttributes({
+      trace.getActiveSpan()?.setAttributes({
         [`db.query.${queryName}.error`]: true,
         [`db.query.${queryName}.duration_ms`]: duration,
         [`db.query.${queryName}.error_message`]: error instanceof Error ? error.message : 'Unknown error',

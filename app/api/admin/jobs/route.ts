@@ -18,7 +18,7 @@ export const POST = withOTel(
       try {
         // Check if user is admin
         const isAdmin = user.email?.endsWith('@resonai.app') || 
-                        process.env.ADMIN_USER_IDS?.split(',').includes(user.id);
+                        process.env['ADMIN_USER_IDS']?.split(',').includes(user.id);
 
         if (!isAdmin) {
           span?.setAttributes({
@@ -38,10 +38,10 @@ export const POST = withOTel(
           );
         }
 
-        const body = await req.json();
+        const body = await req.json() as { jobType: string; payload: any };
         const { jobType, payload } = body;
 
-        if (!jobType || !Object.values(JobType).includes(jobType)) {
+        if (!jobType || !Object.values(JobType).includes(jobType as JobType)) {
           return NextResponse.json(
             {
               success: false,
@@ -55,7 +55,7 @@ export const POST = withOTel(
         }
 
         // Schedule the job
-        const jobId = await backgroundJobManager.scheduleJob(jobType, payload);
+        const jobId = await backgroundJobManager.scheduleJob(jobType as JobType, payload);
 
         span?.setAttributes({
           'admin.job_scheduled': true,
@@ -107,7 +107,7 @@ export const GET = withOTel(
       try {
         // Check if user is admin
         const isAdmin = user.email?.endsWith('@resonai.app') || 
-                        process.env.ADMIN_USER_IDS?.split(',').includes(user.id);
+                        process.env['ADMIN_USER_IDS']?.split(',').includes(user.id);
 
         if (!isAdmin) {
           return NextResponse.json(
@@ -173,7 +173,7 @@ export const GET = withOTel(
         return NextResponse.json({
           success: true,
           data: {
-            jobs: jobs.map(job => ({
+            jobs: jobs.map((job: any) => ({
               id: job.id,
               type: job.type,
               status: job.status,
@@ -227,15 +227,29 @@ export const GET = withOTel(
 // DELETE /api/admin/jobs/:jobId - Cancel a background job (admin only)
 export const DELETE = withOTel(
   withRateLimit(rateLimitConfigs.user,
-    requireAuth(async (req: NextRequest, { user }, { params }: { params: { jobId: string } }) => {
+    requireAuth(async (req: NextRequest, { user }: { user: any }) => {
       const span = trace.getActiveSpan();
       
       try {
-        const { jobId } = params;
+        const { searchParams } = new URL(req.url);
+        const jobId = searchParams.get('jobId');
+
+        if (!jobId) {
+          return NextResponse.json(
+            {
+              success: false,
+              error: {
+                code: 'MISSING_JOB_ID',
+                message: 'Job ID is required'
+              }
+            },
+            { status: 400 }
+          );
+        }
 
         // Check if user is admin
         const isAdmin = user.email?.endsWith('@resonai.app') || 
-                        process.env.ADMIN_USER_IDS?.split(',').includes(user.id);
+                        process.env['ADMIN_USER_IDS']?.split(',').includes(user.id);
 
         if (!isAdmin) {
           return NextResponse.json(
@@ -328,137 +342,7 @@ export const DELETE = withOTel(
   )
 );
 
-// GET /api/admin/jobs/stats - Get background job statistics (admin only)
-export const stats = withOTel(
-  withRateLimit(rateLimitConfigs.user,
-    requireAuth(async (req: NextRequest, { user }) => {
-      const span = trace.getActiveSpan();
-      
-      try {
-        // Check if user is admin
-        const isAdmin = user.email?.endsWith('@resonai.app') || 
-                        process.env.ADMIN_USER_IDS?.split(',').includes(user.id);
-
-        if (!isAdmin) {
-          return NextResponse.json(
-            {
-              success: false,
-              error: {
-                code: 'INSUFFICIENT_PERMISSIONS',
-                message: 'Admin access required'
-              }
-            },
-            { status: 403 }
-          );
-        }
-
-        // Get job statistics by type
-        const jobsByType = await db.backgroundJob.groupBy({
-          by: ['type'],
-          _count: { type: true },
-          _avg: { retryCount: true },
-        });
-
-        // Get recent job performance
-        const recentJobs = await db.backgroundJob.findMany({
-          where: {
-            completedAt: {
-              gte: new Date(Date.now() - 24 * 60 * 60 * 1000) // Last 24 hours
-            }
-          },
-          orderBy: { completedAt: 'desc' },
-          take: 100,
-          select: {
-            type: true,
-            status: true,
-            startedAt: true,
-            completedAt: true,
-            retryCount: true,
-          }
-        });
-
-        // Calculate performance metrics
-        const performanceMetrics = recentJobs.reduce((acc, job) => {
-          if (!acc[job.type]) {
-            acc[job.type] = {
-              total: 0,
-              completed: 0,
-              failed: 0,
-              avgDuration: 0,
-              avgRetries: 0,
-            };
-          }
-
-          acc[job.type].total++;
-          if (job.status === JobStatus.COMPLETED) {
-            acc[job.type].completed++;
-          } else if (job.status === JobStatus.FAILED) {
-            acc[job.type].failed++;
-          }
-
-          if (job.startedAt && job.completedAt) {
-            const duration = job.completedAt.getTime() - job.startedAt.getTime();
-            acc[job.type].avgDuration += duration;
-          }
-
-          acc[job.type].avgRetries += job.retryCount || 0;
-        }, {} as any);
-
-        // Calculate averages
-        Object.keys(performanceMetrics).forEach(type => {
-          const metrics = performanceMetrics[type];
-          if (metrics.total > 0) {
-            metrics.avgDuration = Math.round(metrics.avgDuration / metrics.total);
-            metrics.avgRetries = Math.round((metrics.avgRetries / metrics.total) * 100) / 100;
-            metrics.successRate = Math.round((metrics.completed / metrics.total) * 100);
-          }
-        });
-
-        span?.setAttributes({
-          'admin.job_stats_retrieved': true,
-          'admin.job_types_count': jobsByType.length,
-          'admin.recent_jobs_count': recentJobs.length,
-        });
-
-        return NextResponse.json({
-          success: true,
-          data: {
-            jobsByType: jobsByType.map(item => ({
-              type: item.type,
-              count: item._count.type,
-              avgRetries: Math.round((item._avg.retryCount || 0) * 100) / 100,
-            })),
-            performance: performanceMetrics,
-            summary: {
-              totalJobTypes: jobsByType.length,
-              recentJobsProcessed: recentJobs.length,
-              systemHealth: recentJobs.filter(j => j.status === JobStatus.FAILED).length > 10 ? 'degraded' : 'healthy',
-            }
-          }
-        });
-
-      } catch (error) {
-        span?.setAttributes({
-          'admin.job_stats_error': true,
-          'admin.error.message': error instanceof Error ? error.message : 'Unknown error'
-        });
-
-        console.error('Failed to get background job statistics:', error);
-
-        return NextResponse.json(
-          {
-            success: false,
-            error: {
-              code: 'JOB_STATS_ERROR',
-              message: 'Failed to get background job statistics'
-            }
-          },
-          { status: 500 }
-        );
-      }
-    })
-  )
-);
+// Note: Stats functionality moved to GET handler above with ?stats=true parameter
 
 // Export config for Edge Runtime
 export const runtime = 'nodejs';

@@ -1,0 +1,171 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - heading "IONA Diagnostics" [level=1] [ref=e5]
+        - paragraph [ref=e6]: Real-time telemetry monitoring and control panel
+      - generic [ref=e7]:
+        - navigation [ref=e9]:
+          - button "📊Metrics" [ref=e10]
+          - button "🔍Traces" [active] [ref=e11]
+          - button "📝Logs" [ref=e12]
+          - button "⚙️Controls" [ref=e13]
+          - button "🔄 Refresh" [ref=e15]
+        - generic [ref=e18]:
+          - generic [ref=e19]:
+            - generic [ref=e20]:
+              - generic [ref=e21]:
+                - generic [ref=e22]: iona.boot
+                - generic [ref=e23]:
+                  - generic [ref=e24]:
+                    - text: "Trace ID:"
+                    - code [ref=e25]: 2683d72bbfc92...
+                  - generic [ref=e26]:
+                    - text: "Span ID:"
+                    - code [ref=e27]: eacadeab894ad...
+                  - generic [ref=e28]: "Time: 10/7/2025, 10:22:54 AM"
+              - generic [ref=e30]: 91.87ms
+            - group [ref=e31]:
+              - generic "Attributes (3)" [ref=e32]
+          - generic [ref=e33]:
+            - generic [ref=e34]:
+              - generic [ref=e35]:
+                - generic [ref=e36]: iona.operation.1
+                - generic [ref=e37]:
+                  - generic [ref=e38]:
+                    - text: "Trace ID:"
+                    - code [ref=e39]: 5de5c8cd6e338...
+                  - generic [ref=e40]:
+                    - text: "Span ID:"
+                    - code [ref=e41]: b281367df9554...
+                  - generic [ref=e42]: "Time: 10/7/2025, 10:21:54 AM"
+              - generic [ref=e44]: 47.72ms
+            - group [ref=e45]:
+              - generic "Attributes (3)" [ref=e46]
+          - generic [ref=e47]:
+            - generic [ref=e48]:
+              - generic [ref=e49]:
+                - generic [ref=e50]: iona.operation.2
+                - generic [ref=e51]:
+                  - generic [ref=e52]:
+                    - text: "Trace ID:"
+                    - code [ref=e53]: 992cd2967835c...
+                  - generic [ref=e54]:
+                    - text: "Span ID:"
+                    - code [ref=e55]: 2a11bba75905a...
+                  - generic [ref=e56]: "Time: 10/7/2025, 10:20:54 AM"
+              - generic [ref=e58]: 99.62ms
+            - group [ref=e59]:
+              - generic "Attributes (3)" [ref=e60]
+          - generic [ref=e61]:
+            - generic [ref=e62]:
+              - generic [ref=e63]:
+                - generic [ref=e64]: iona.operation.3
+                - generic [ref=e65]:
+                  - generic [ref=e66]:
+                    - text: "Trace ID:"
+                    - code [ref=e67]: 02f6839b16522...
+                  - generic [ref=e68]:
+                    - text: "Span ID:"
+                    - code [ref=e69]: 653087055403f...
+                  - generic [ref=e70]: "Time: 10/7/2025, 10:19:54 AM"
+              - generic [ref=e72]: 42.47ms
+            - group [ref=e73]:
+              - generic "Attributes (3)" [ref=e74]
+          - generic [ref=e75]:
+            - generic [ref=e76]:
+              - generic [ref=e77]:
+                - generic [ref=e78]: iona.operation.4
+                - generic [ref=e79]:
+                  - generic [ref=e80]:
+                    - text: "Trace ID:"
+                    - code [ref=e81]: c4aadcd26abda...
+                  - generic [ref=e82]:
+                    - text: "Span ID:"
+                    - code [ref=e83]: f630bad81079c...
+                  - generic [ref=e84]: "Time: 10/7/2025, 10:18:54 AM"
+              - generic [ref=e86]: 47.51ms
+            - group [ref=e87]:
+              - generic "Attributes (3)" [ref=e88]
+          - generic [ref=e89]:
+            - generic [ref=e90]:
+              - generic [ref=e91]:
+                - generic [ref=e92]: iona.operation.5
+                - generic [ref=e93]:
+                  - generic [ref=e94]:
+                    - text: "Trace ID:"
+                    - code [ref=e95]: 35bf2f4713947...
+                  - generic [ref=e96]:
+                    - text: "Span ID:"
+                    - code [ref=e97]: b2f0d9ce9391f...
+                  - generic [ref=e98]: "Time: 10/7/2025, 10:17:54 AM"
+              - generic [ref=e100]: 74.08ms
+            - group [ref=e101]:
+              - generic "Attributes (3)" [ref=e102]
+          - generic [ref=e103]:
+            - generic [ref=e104]:
+              - generic [ref=e105]:
+                - generic [ref=e106]: iona.operation.6
+                - generic [ref=e107]:
+                  - generic [ref=e108]:
+                    - text: "Trace ID:"
+                    - code [ref=e109]: c88155bcf3d6c...
+                  - generic [ref=e110]:
+                    - text: "Span ID:"
+                    - code [ref=e111]: 78b8f42863f74...
+                  - generic [ref=e112]: "Time: 10/7/2025, 10:16:54 AM"
+              - generic [ref=e114]: 67.52ms
+            - group [ref=e115]:
+              - generic "Attributes (3)" [ref=e116]
+          - generic [ref=e117]:
+            - generic [ref=e118]:
+              - generic [ref=e119]:
+                - generic [ref=e120]: iona.operation.7
+                - generic [ref=e121]:
+                  - generic [ref=e122]:
+                    - text: "Trace ID:"
+                    - code [ref=e123]: ffa10c28b13f3...
+                  - generic [ref=e124]:
+                    - text: "Span ID:"
+                    - code [ref=e125]: ae66f5850dbb4...
+                  - generic [ref=e126]: "Time: 10/7/2025, 10:15:54 AM"
+              - generic [ref=e128]: 22.31ms
+            - group [ref=e129]:
+              - generic "Attributes (3)" [ref=e130]
+          - generic [ref=e131]:
+            - generic [ref=e132]:
+              - generic [ref=e133]:
+                - generic [ref=e134]: iona.operation.8
+                - generic [ref=e135]:
+                  - generic [ref=e136]:
+                    - text: "Trace ID:"
+                    - code [ref=e137]: d3bfb0c4b8925...
+                  - generic [ref=e138]:
+                    - text: "Span ID:"
+                    - code [ref=e139]: a3e3a4dfb24d5...
+                  - generic [ref=e140]: "Time: 10/7/2025, 10:14:54 AM"
+              - generic [ref=e142]: 40.21ms
+            - group [ref=e143]:
+              - generic "Attributes (3)" [ref=e144]
+          - generic [ref=e145]:
+            - generic [ref=e146]:
+              - generic [ref=e147]:
+                - generic [ref=e148]: iona.operation.9
+                - generic [ref=e149]:
+                  - generic [ref=e150]:
+                    - text: "Trace ID:"
+                    - code [ref=e151]: dfacac62361f1...
+                  - generic [ref=e152]:
+                    - text: "Span ID:"
+                    - code [ref=e153]: 798e87d6ec25...
+                  - generic [ref=e154]: "Time: 10/7/2025, 10:13:54 AM"
+              - generic [ref=e156]: 54.94ms
+            - group [ref=e157]:
+              - generic "Attributes (3)" [ref=e158]
+  - button "Open Next.js Dev Tools" [ref=e164] [cursor=pointer]:
+    - img [ref=e165]
+  - alert [ref=e168]
+```

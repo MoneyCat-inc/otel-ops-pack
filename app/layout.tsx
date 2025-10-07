@@ -4,6 +4,7 @@ export const metadata = {
 }
 
 import TracingProvider from '../components/TracingProvider';
+import { TelemetryInit } from './telemetry-init';
 
 export default function RootLayout({
   children,
@@ -13,6 +14,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <TelemetryInit />
         <TracingProvider>
           {children}
         </TracingProvider>

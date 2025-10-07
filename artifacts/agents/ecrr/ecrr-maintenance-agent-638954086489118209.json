@@ -1,0 +1,37 @@
+{
+  "bossCatApproval": false,
+  "agentStats": {
+    "successCount": 26,
+    "uptime": 1.5986111033333332,
+    "taskCount": 29,
+    "errorCount": 2
+  },
+  "compliance": {
+    "reliability": false,
+    "performance": true,
+    "security": false
+  },
+  "evidence": {
+    "logs": [
+      "artifacts/agents/logs/maintenance-agent.log"
+    ],
+    "metrics": [],
+    "screenshots": []
+  },
+  "findings": {
+    "major": null,
+    "minor": [
+      "Investigate task failures",
+      "Monitor memory usage"
+    ],
+    "critical": "High memory usage: 108MB"
+  },
+  "recommendations": [
+    "Investigate task failures",
+    "Monitor memory usage"
+  ],
+  "scope": "Agent Behavior Analysis: maintenance-agent",
+  "timestamp": "2025-10-07 04:37:28",
+  "reportId": "ecrr-maintenance-agent-638954086489118209",
+  "responsibleAgent": "maintenance-agent"
+}

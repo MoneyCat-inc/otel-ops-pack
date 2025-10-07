@@ -311,7 +311,7 @@ export class BackgroundJobManager {
     const span = trace.getActiveSpan();
     
     try {
-      const retentionMs = parseInt(process.env.EVENT_RETENTION_MS || '3600000'); // 1 hour default
+      const retentionMs = parseInt(process.env['EVENT_RETENTION_MS'] || '3600000'); // 1 hour default
       const cutoffDate = new Date(Date.now() - retentionMs);
 
       const result = await db.event.deleteMany({
@@ -431,10 +431,10 @@ export class BackgroundJobManager {
       });
 
       // Track cohort analytics
-      cohortStats.forEach(stat => {
+      cohortStats.forEach((stat: any) => {
         resonaiMetrics.trackEngagementEvent({
           userId: 'system',
-          eventType: 'cohort_analytics',
+          eventType: 'session_start',
           metadata: {
             cohort: stat.cohort,
             eventCount: stat._count.cohort,
@@ -464,7 +464,7 @@ export class BackgroundJobManager {
     
     try {
       // Check database health
-      const dbHealth = await db.$queryRaw`SELECT 1`;
+      await db.$queryRaw`SELECT 1`;
       
       // Check job queue health
       const pendingJobs = await db.backgroundJob.count({

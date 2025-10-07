@@ -15,7 +15,7 @@ const rateLimitConfig = {
   windowMs: 60 * 1000, // 1 minute
   keyGenerator: (req: NextRequest) => {
     // Use IP + user identifier for rate limiting
-    const ip = req.ip || req.headers.get('x-forwarded-for') || 'unknown';
+    const ip = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown';
     const userIdHash = req.headers.get('x-user-id-hash') || 'anonymous';
     return `${ip}:${userIdHash}`;
   }
@@ -42,7 +42,7 @@ export const POST = withOTel(
             error: {
               code: 'VALIDATION_ERROR',
               message: 'Invalid event batch format',
-              details: parseResult.error.errors
+              details: parseResult.error.issues
             }
           },
           { status: 400 }
@@ -52,7 +52,7 @@ export const POST = withOTel(
       const { events }: EventsBatch = parseResult.data;
       
       // 2. Anonymize user IDs and prepare database records
-      const serverSalt = process.env.USER_HASH_SALT;
+      const serverSalt = process.env['USER_HASH_SALT'];
       if (!serverSalt) {
         throw new Error('USER_HASH_SALT environment variable not set');
       }
@@ -60,7 +60,7 @@ export const POST = withOTel(
       const dbRecords = events.map(event => {
         // Hash user ID for privacy (not reversible)
         const userIdHash = createHash('sha256')
-          .update(event.props.userId + serverSalt)
+          .update(event.props['userId'] + serverSalt)
           .digest('hex')
           .substring(0, 16); // Truncate for performance
 
@@ -68,7 +68,7 @@ export const POST = withOTel(
         const cohort = `cohort_${parseInt(userIdHash.substring(0, 2), 16) % 10}`;
 
         return {
-          userId: event.props.userId, // Keep for relation, but hashed in props
+          userId: event.props['userId'], // Keep for relation, but hashed in props
           ts: new Date(event.ts || Date.now()),
           kind: event.kind.toUpperCase(),
           props: {
@@ -139,7 +139,7 @@ export const OPTIONS = async () => {
   return new NextResponse(null, {
     status: 200,
     headers: {
-      'Access-Control-Allow-Origin': process.env.ALLOWED_ORIGIN || '*',
+      'Access-Control-Allow-Origin': process.env['ALLOWED_ORIGIN'] || '*',
       'Access-Control-Allow-Methods': 'POST, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, x-user-id-hash',
       'Access-Control-Max-Age': '86400', // 24 hours

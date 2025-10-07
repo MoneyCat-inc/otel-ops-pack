@@ -3,7 +3,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     // For now, return a mock session
     // In production, this would validate JWT tokens or session cookies

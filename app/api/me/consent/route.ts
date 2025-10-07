@@ -10,7 +10,7 @@ import { withOTel } from '@/lib/middleware/otel';
 
 // GET /api/me/consent - Retrieve current consent settings
 export const GET = withOTel(
-  requireAuth(async (req: NextRequest, { user }) => {
+  requireAuth(async (_req: NextRequest, { user }) => {
     const span = trace.getActiveSpan();
     
     try {
@@ -56,11 +56,11 @@ export const GET = withOTel(
 
 // PUT /api/me/consent - Update consent settings with audit logging
 export const PUT = withOTel(
-  requireAuth(async (req: NextRequest, { user }) => {
+  requireAuth(async (_req: NextRequest, { user }) => {
     const span = trace.getActiveSpan();
     
     try {
-      const body = await req.json();
+      const body = await _req.json();
       const parseResult = ConsentUpdateSchema.safeParse(body);
       
       if (!parseResult.success) {
@@ -75,7 +75,7 @@ export const PUT = withOTel(
             error: {
               code: 'VALIDATION_ERROR',
               message: 'Invalid consent update format',
-              details: parseResult.error.errors
+              details: parseResult.error.issues
             }
           },
           { status: 400 }
@@ -90,7 +90,7 @@ export const PUT = withOTel(
       };
 
       // Track changes for audit log
-      const auditEntries = [];
+      const auditEntries: any[] = [];
       const newConsent = { ...currentConsent };
 
       // Check each consent field for changes
@@ -103,11 +103,11 @@ export const PUT = withOTel(
             oldValue,
             newValue,
             changedAt: new Date(),
-            ipAddress: req.ip || req.headers.get('x-forwarded-for'),
-            userAgent: req.headers.get('user-agent'),
+            ipAddress: _req.headers.get('x-forwarded-for') || _req.headers.get('x-real-ip'),
+            userAgent: _req.headers.get('user-agent'),
           });
           
-          newConsent[field as keyof typeof newConsent] = newValue;
+          newConsent[field as keyof typeof newConsent] = newValue as boolean;
         }
       });
 

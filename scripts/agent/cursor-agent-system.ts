@@ -40,7 +40,7 @@ class CursorAgentSystem {
   private orchestrator: AgentOrchestrator;
   private queue: SQLiteQueueManager;
   private compliance: ECRRComplianceEngine;
-  private config: SystemConfig;
+  private config!: SystemConfig;
   private isRunning: boolean = false;
 
   constructor(configPath: string = '.agent/system-config.json') {
@@ -208,7 +208,7 @@ class CursorAgentSystem {
     } catch (error) {
       return {
         healthy: false,
-        issues: [`Health check failed: ${error.message}`]
+        issues: [`Health check failed: ${error instanceof Error ? error.message : 'Unknown error'}`]
       };
     }
   }
@@ -227,7 +227,7 @@ class CursorAgentSystem {
 ## 📊 System Overview
 
 - **Running**: ${status.system.running ? 'Yes' : 'No'}
-- **Queue Status**: ${Object.entries(status.queue).map(([k, v]) => `${k}: ${v.count}`).join(', ')}
+- **Queue Status**: ${Object.entries(status.queue).map(([k, v]) => `${k}: ${(v as any).count}`).join(', ')}
 - **Compliance Rate**: ${status.compliance.complianceRate}%
 
 ## 🚨 Health Issues

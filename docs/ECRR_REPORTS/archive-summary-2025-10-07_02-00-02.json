@@ -1,0 +1,58 @@
+{
+  "InitialReportCount": 63,
+  "Timestamp": "2025-10-07_02-00-02",
+  "DryRun": {
+    "IsPresent": false
+  },
+  "ActualArchiveCount": 3,
+  "ArchiveCriteria": {
+    "DuplicatePatterns": [
+      "rollout-merge.*ecrr.*complete\\.md$",
+      "ecrr-processing.*complete\\.md$",
+      "ecrr-processing.*summary\\.md$",
+      "ecrr-processing.*final\\.md$",
+      "ecrr-processing.*analysis\\.md$",
+      "task-.*-complete\\.md$",
+      "task-.*-001-.*\\.md$"
+    ],
+    "OldDatePatterns": [
+      "^2024-",
+      "^2025-01-",
+      "^2025-02-",
+      "^2025-03-",
+      "^2025-04-",
+      "^2025-05-",
+      "^2025-06-",
+      "^2025-07-",
+      "^2025-08-"
+    ],
+    "ExamplePatterns": [
+      "workshop-.*-example-ecrr\\.md$",
+      "example-ecrr\\.md$"
+    ],
+    "CompletedPatterns": [
+      "complete\\.md$",
+      "final.*complete\\.md$",
+      "implementation.*complete\\.md$",
+      "deployment.*complete\\.md$",
+      "rollout.*complete\\.md$",
+      "verification.*complete\\.md$",
+      "consolidated\\.md$",
+      "final.*consolidated\\.md$",
+      "processing.*complete\\.md$",
+      "processing.*final\\.md$",
+      "processing.*summary\\.md$",
+      "cleanup.*complete\\.md$",
+      "optimization.*complete\\.md$"
+    ],
+    "SystemPatterns": [
+      "ECRR_PROCESSING_.*\\.md$",
+      "ECRR_ENHANCEMENT_.*\\.md$",
+      "ECRR_COMPLIANCE_.*\\.md$"
+    ]
+  },
+  "ArchiveCandidates": 3,
+  "RemainingReports": 60,
+  "TargetActiveReports": 50,
+  "PlannedArchiveCount": 3
+}

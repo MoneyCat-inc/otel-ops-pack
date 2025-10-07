@@ -21,12 +21,12 @@ pip install -r requirements.txt
 ```
 
 **PyTorch versions**:
-- `torch==2.5.1` (CPU-only)
-- `torchaudio==2.5.1` (CPU-only)
-- `torchvision==0.20.1` (CPU-only)
+- `torch==2.8.0` (CPU-only)
+- `torchaudio==2.8.0` (CPU-only)
+- `torchvision==0.23.0` (CPU-only)
 
 **Compatibility**:
-- Supported Python versions: 3.9 - 3.12 (PyPI wheels available)
+- Supported Python versions: 3.9 - 3.13 (PyPI wheels available)
 - Works on GitHub Actions hosted runners
 - No external package indexes required
 
@@ -42,14 +42,14 @@ pip install -r requirements-gpu.txt -f https://download.pytorch.org/whl/torch_st
 ```
 
 **PyTorch versions**:
-- `torch==2.5.1+cu121` (CUDA 12.1)
-- `torchaudio==2.5.1+cu121` (CUDA 12.1)
-- `torchvision==0.20.1+cu121` (CUDA 12.1)
+- `torch==2.8.0+cu121` (CUDA 12.1)
+- `torchaudio==2.8.0+cu121` (CUDA 12.1)
+- `torchvision==0.23.0+cu121` (CUDA 12.1)
 
 **Requirements**:
 - NVIDIA GPU with CUDA 12.1+ support
 - CUDA 12.1 drivers and toolkit installed
-- Supported Python versions: 3.9 - 3.11 (CUDA wheels published for these versions)
+- Supported Python versions: 3.9 - 3.13 (CUDA wheels published for these versions)
 - Not available on GitHub Actions hosted runners (no GPU access)
 
 ## GitHub Actions Integration
@@ -74,11 +74,12 @@ For CI/CD pipelines, use the CPU-only configuration:
 
 | Python Version | CPU PyTorch (`requirements.txt`) | CUDA PyTorch (`requirements-gpu.txt`) | GitHub Actions |
 | -------------- | -------------------------------- | ------------------------------------ | -------------- |
-| 3.8            | No (PyTorch 2.5.1 dropped support) | No (no wheels)                       | Avoid (use newer) |
+| 3.8            | No (PyTorch 2.8.0 dropped support) | No (no wheels)                       | Avoid (use newer) |
 | 3.9            | Yes                               | Yes (requires CUDA toolkit)          | Yes (CPU only) |
 | 3.10           | Yes                               | Yes (requires CUDA toolkit)          | Yes (CPU only) |
 | 3.11           | Yes                               | Yes (requires CUDA toolkit)          | Yes (CPU only) |
-| 3.12           | Yes (tested locally)               | Limited (wheels pending, prefer CPU) | Yes (default image) |
+| 3.12           | Yes (tested locally)               | Yes (CUDA 12.1 wheels validated)     | Yes (default image) |
+| 3.13           | Yes (preferred for CI)             | Yes (requires CUDA toolkit)          | Yes (CPU only) |
 
 ## Troubleshooting
 
@@ -93,11 +94,11 @@ For CI/CD pipelines, use the CPU-only configuration:
 
 ### Python Version Conflicts
 
-**Cause**: Using Python 3.12 with CUDA PyTorch or Python 3.8 with PyTorch 2.5.1.
+**Cause**: Using Python 3.8 with PyTorch 2.8.0 or installing CUDA builds without matching wheels.
 
 **Solution**:
-1. Use Python 3.9 - 3.11 for CUDA builds
-2. Use Python 3.9 - 3.12 for CPU-only PyTorch
+1. Use Python 3.9 - 3.13 for CUDA builds
+2. Use Python 3.9 - 3.13 for CPU-only PyTorch
 3. Upgrade or downgrade Python to a supported version as needed
 
 ### GitHub Actions Failures
@@ -116,10 +117,10 @@ For CI/CD pipelines, use the CPU-only configuration:
 1. Replace `requirements.txt` content:
    ```bash
    # Old (CUDA)
-   torch==2.5.1+cu121
+   torch==2.8.0+cu121
 
    # New (CPU-only)
-   torch==2.5.1
+   torch==2.8.0
    ```
 2. Remove any PyTorch index specifications from workflows
 3. Test with Python 3.12 to ensure compatibility
@@ -165,4 +166,3 @@ For CI/CD pipelines, use the CPU-only configuration:
 
 ---
 *Generated: 2025-10-03 06:15:47 UTC | Repository: MoneyCat-inc/otel-ops-pack*
-

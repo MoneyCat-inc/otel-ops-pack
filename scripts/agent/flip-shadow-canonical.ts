@@ -48,7 +48,7 @@ export class ShadowToCanonicalFlipper {
     if (!copyResult.success) {
       return {
         success: false,
-        reason: copyResult.reason,
+        reason: copyResult.reason || 'Unknown error',
         artifactsCopied: copyResult.artifactsCopied,
         artifactsSkipped: copyResult.artifactsSkipped,
         verificationPassed: true,

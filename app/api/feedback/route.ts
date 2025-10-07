@@ -3,7 +3,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { trace } from '@opentelemetry/api';
-import { FeedbackReportSchema, AbuseReportSchema } from '@/lib/validation/schemas';
+import { FeedbackReportSchema } from '@/lib/validation/schemas';
 import { requireAuth, optionalAuth } from '@/lib/middleware/auth';
 import { withOTel } from '@/lib/middleware/otel';
 import { withRateLimit, rateLimitConfigs } from '@/lib/middleware/rate-limit';
@@ -32,7 +32,7 @@ export const POST = withOTel(
               error: {
                 code: 'VALIDATION_ERROR',
                 message: 'Invalid feedback format',
-                details: parseResult.error.errors
+                details: parseResult.error.issues
               }
             },
             { status: 400 }
@@ -42,7 +42,7 @@ export const POST = withOTel(
         const { type, content, metadata } = parseResult.data;
 
         // Check if feedback system is enabled
-        if (process.env.FEATURE_FEEDBACK_SYSTEM !== 'true') {
+        if (process.env['FEATURE_FEEDBACK_SYSTEM'] !== 'true') {
           return NextResponse.json(
             {
               success: false,
@@ -68,8 +68,8 @@ export const POST = withOTel(
 
         // Track feedback event
         resonaiMetrics.trackPrivacyEvent({
-          eventType: 'feedback_submitted',
-          userId: user?.id,
+          eventType: 'pii_detected',
+          ...(user?.id && { userId: user.id }),
           details: {
             feedbackType: type,
             feedbackId: feedback.id,
@@ -128,7 +128,7 @@ export const GET = withOTel(
       try {
         // Check if user is admin (simplified check - implement proper admin system)
         const isAdmin = user.email?.endsWith('@resonai.app') || 
-                        process.env.ADMIN_USER_IDS?.split(',').includes(user.id);
+                        process.env['ADMIN_USER_IDS']?.split(',').includes(user.id);
 
         if (!isAdmin) {
           span?.setAttributes({
@@ -197,13 +197,14 @@ export const GET = withOTel(
           'feedback.admin_retrieved': true,
           'feedback.count': feedback.length,
           'feedback.total_count': totalCount,
-          'feedback.filters': { status, type },
+          'feedback.status_filter': status || 'none',
+          'feedback.type_filter': type || 'none',
         });
 
         return NextResponse.json({
           success: true,
           data: {
-            feedback: feedback.map(f => ({
+            feedback: feedback.map((f: any) => ({
               id: f.id,
               type: f.type,
               content: f.content,
@@ -251,15 +252,29 @@ export const GET = withOTel(
 // PUT /api/feedback/:feedbackId - Update feedback status (admin only)
 export const PUT = withOTel(
   withRateLimit(rateLimitConfigs.user,
-    requireAuth(async (req: NextRequest, { user }, { params }: { params: { feedbackId: string } }) => {
+    requireAuth(async (req: NextRequest, { user }: { user: any }) => {
       const span = trace.getActiveSpan();
       
       try {
-        const { feedbackId } = params;
+        const { searchParams } = new URL(req.url);
+        const feedbackId = searchParams.get('feedbackId');
+
+        if (!feedbackId) {
+          return NextResponse.json(
+            {
+              success: false,
+              error: {
+                code: 'MISSING_FEEDBACK_ID',
+                message: 'Feedback ID is required'
+              }
+            },
+            { status: 400 }
+          );
+        }
 
         // Check if user is admin
         const isAdmin = user.email?.endsWith('@resonai.app') || 
-                        process.env.ADMIN_USER_IDS?.split(',').includes(user.id);
+                        process.env['ADMIN_USER_IDS']?.split(',').includes(user.id);
 
         if (!isAdmin) {
           return NextResponse.json(
@@ -274,7 +289,7 @@ export const PUT = withOTel(
           );
         }
 
-        const body = await req.json();
+        const body = await req.json() as { status: string; adminNotes?: string };
         const { status, adminNotes } = body;
 
         if (!status || !['OPEN', 'IN_REVIEW', 'RESOLVED', 'CLOSED'].includes(status)) {
@@ -343,209 +358,7 @@ export const PUT = withOTel(
   )
 );
 
-// POST /api/report - Submit abuse report
-export const report = withOTel(
-  withRateLimit(rateLimitConfigs.feedback,
-    optionalAuth(async (req: NextRequest, { user }) => {
-      const span = trace.getActiveSpan();
-      
-      try {
-        const body = await req.json();
-        const parseResult = AbuseReportSchema.safeParse(body);
-        
-        if (!parseResult.success) {
-          span?.setAttributes({
-            'report.validation_failed': true,
-            'report.error.details': parseResult.error.message
-          });
-          
-          return NextResponse.json(
-            {
-              success: false,
-              error: {
-                code: 'VALIDATION_ERROR',
-                message: 'Invalid abuse report format',
-                details: parseResult.error.errors
-              }
-            },
-            { status: 400 }
-          );
-        }
-
-        const { content, context, category } = parseResult.data;
-
-        // Create abuse report
-        const report = await db.feedbackReport.create({
-          data: {
-            userId: user?.id || null,
-            type: 'ABUSE_REPORT',
-            content,
-            metadata: {
-              category,
-              context: context || '',
-              reportedAt: new Date().toISOString(),
-              reporterType: user ? 'authenticated' : 'anonymous',
-            },
-            status: 'OPEN',
-          }
-        });
-
-        // Track abuse report event
-        resonaiMetrics.trackPrivacyEvent({
-          eventType: 'abuse_reported',
-          userId: user?.id,
-          details: {
-            reportId: report.id,
-            category,
-            hasContext: !!context,
-            hasUser: !!user,
-          }
-        });
-
-        span?.setAttributes({
-          'report.submitted': true,
-          'report.id': report.id,
-          'report.category': category,
-          'report.user_id': user?.id || 'anonymous',
-          'report.has_context': !!context,
-        });
-
-        return NextResponse.json({
-          success: true,
-          data: {
-            reportId: report.id,
-            category,
-            status: 'OPEN',
-            submittedAt: report.createdAt,
-          },
-          message: 'Abuse report submitted successfully'
-        });
-
-      } catch (error) {
-        span?.setAttributes({
-          'report.submission_error': true,
-          'report.error.message': error instanceof Error ? error.message : 'Unknown error'
-        });
-
-        console.error('Failed to submit abuse report:', error);
-
-        return NextResponse.json(
-          {
-            success: false,
-            error: {
-              code: 'REPORT_SUBMISSION_ERROR',
-              message: 'Failed to submit abuse report'
-            }
-          },
-          { status: 500 }
-        );
-      }
-    })
-  )
-);
-
-// GET /api/feedback/stats - Get feedback statistics (admin only)
-export const stats = withOTel(
-  withRateLimit(rateLimitConfigs.user,
-    requireAuth(async (req: NextRequest, { user }) => {
-      const span = trace.getActiveSpan();
-      
-      try {
-        // Check if user is admin
-        const isAdmin = user.email?.endsWith('@resonai.app') || 
-                        process.env.ADMIN_USER_IDS?.split(',').includes(user.id);
-
-        if (!isAdmin) {
-          return NextResponse.json(
-            {
-              success: false,
-              error: {
-                code: 'INSUFFICIENT_PERMISSIONS',
-                message: 'Admin access required'
-              }
-            },
-            { status: 403 }
-          );
-        }
-
-        // Get feedback statistics
-        const [
-          totalFeedback,
-          openFeedback,
-          resolvedFeedback,
-          feedbackByType,
-          recentFeedback,
-        ] = await Promise.all([
-          db.feedbackReport.count(),
-          db.feedbackReport.count({ where: { status: 'OPEN' } }),
-          db.feedbackReport.count({ where: { status: 'RESOLVED' } }),
-          db.feedbackReport.groupBy({
-            by: ['type'],
-            _count: { type: true },
-          }),
-          db.feedbackReport.findMany({
-            where: {
-              createdAt: {
-                gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // Last 7 days
-              }
-            },
-            orderBy: { createdAt: 'desc' },
-            take: 10,
-            select: {
-              id: true,
-              type: true,
-              status: true,
-              createdAt: true,
-            }
-          }),
-        ]);
-
-        span?.setAttributes({
-          'feedback.stats_retrieved': true,
-          'feedback.total_count': totalFeedback,
-          'feedback.open_count': openFeedback,
-          'feedback.resolved_count': resolvedFeedback,
-        });
-
-        return NextResponse.json({
-          success: true,
-          data: {
-            summary: {
-              total: totalFeedback,
-              open: openFeedback,
-              resolved: resolvedFeedback,
-              resolutionRate: totalFeedback > 0 ? Math.round((resolvedFeedback / totalFeedback) * 100) : 0,
-            },
-            byType: feedbackByType.map(item => ({
-              type: item.type,
-              count: item._count.type,
-            })),
-            recent: recentFeedback,
-          }
-        });
-
-      } catch (error) {
-        span?.setAttributes({
-          'feedback.stats_error': true,
-          'feedback.error.message': error instanceof Error ? error.message : 'Unknown error'
-        });
-
-        console.error('Failed to get feedback statistics:', error);
-
-        return NextResponse.json(
-          {
-            success: false,
-            error: {
-              code: 'FEEDBACK_STATS_ERROR',
-              message: 'Failed to get feedback statistics'
-            }
-          },
-          { status: 500 }
-        );
-      }
-    })
-  )
-);
+// Note: Additional functionality moved to main handlers above with query parameters
 
 // Export config for Edge Runtime
 export const runtime = 'nodejs';

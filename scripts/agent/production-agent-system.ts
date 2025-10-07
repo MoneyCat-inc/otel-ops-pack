@@ -180,7 +180,7 @@ class ProductionAgentSystem {
         this.reports = this.parseJsonOrDefault<ECRRReport[]>(reportsData, []);
       }
     } catch (error) {
-      console.warn('Failed to load existing data:', error.message);
+      console.warn('Failed to load existing data:', error instanceof Error ? error.message : 'Unknown error');
     }
   }
 
@@ -191,7 +191,7 @@ class ProductionAgentSystem {
       await fs.writeFile('.agent/production-tasks.json', JSON.stringify(this.tasks, null, 2));
       await fs.writeFile('.agent/production-reports.json', JSON.stringify(this.reports, null, 2));
     } catch (error) {
-      console.error('Failed to save data:', error.message);
+      console.error('Failed to save data:', error instanceof Error ? error.message : 'Unknown error');
     }
   }
 
@@ -246,7 +246,7 @@ class ProductionAgentSystem {
       await this.initializeMonitoringTasks();
 
     } catch (error) {
-      console.warn('OTel integration warning:', error.message);
+      console.warn('OTel integration warning:', error instanceof Error ? error.message : 'Unknown error');
     }
   }
 
@@ -367,7 +367,7 @@ class ProductionAgentSystem {
 
     try {
       // Execute task based on type and agent capabilities
-      const result = await this.executeTaskByType(task, agent);
+      await this.executeTaskByType(task, agent);
       
       // Mark as completed
       task.status = 'completed';
@@ -402,8 +402,8 @@ class ProductionAgentSystem {
     }
   }
 
-  private async executeMonitoringTask(task: ProductionTask, agent: AgentCapabilities): Promise<any> {
-    const { check } = task.payload;
+  private async executeMonitoringTask(_task: ProductionTask, _agent: AgentCapabilities): Promise<any> {
+    const { check } = _task.payload;
     
     switch (check) {
       case 'signoz-health':
@@ -423,7 +423,7 @@ class ProductionAgentSystem {
     }
   }
 
-  private async executeRemediationTask(task: ProductionTask, agent: AgentCapabilities): Promise<any> {
+  private async executeRemediationTask(_task: ProductionTask, agent: AgentCapabilities): Promise<any> {
     // Implement remediation logic based on agent capabilities
     if (agent.capabilities.includes('cloud-ops')) {
       return { result: 'success', action: 'Cloud remediation applied' };
@@ -431,7 +431,7 @@ class ProductionAgentSystem {
     return { result: 'success', action: 'Remediation task completed' };
   }
 
-  private async executeMaintenanceTask(task: ProductionTask, agent: AgentCapabilities): Promise<any> {
+  private async executeMaintenanceTask(_task: ProductionTask, agent: AgentCapabilities): Promise<any> {
     // Implement maintenance logic based on agent capabilities
     if (agent.capabilities.includes('background-cleanup')) {
       return { result: 'success', action: 'Background cleanup completed' };
@@ -439,17 +439,17 @@ class ProductionAgentSystem {
     return { result: 'success', action: 'Maintenance task completed' };
   }
 
-  private async executeAlertTask(task: ProductionTask, agent: AgentCapabilities): Promise<any> {
+  private async executeAlertTask(_task: ProductionTask, _agent: AgentCapabilities): Promise<any> {
     // Implement alert handling logic
     return { result: 'success', action: 'Alert processed' };
   }
 
-  private async executeOptimizationTask(task: ProductionTask, agent: AgentCapabilities): Promise<any> {
+  private async executeOptimizationTask(_task: ProductionTask, _agent: AgentCapabilities): Promise<any> {
     // Implement optimization logic
     return { result: 'success', action: 'Optimization applied' };
   }
 
-  private async executeComplianceTask(task: ProductionTask, agent: AgentCapabilities): Promise<any> {
+  private async executeComplianceTask(_task: ProductionTask, _agent: AgentCapabilities): Promise<any> {
     // Implement compliance checking logic
     return { result: 'success', action: 'Compliance check completed' };
   }
@@ -501,7 +501,7 @@ class ProductionAgentSystem {
       await fs.appendFile(this.otelIntegration.metricsPath, metricsLine);
 
     } catch (error) {
-      console.warn('Failed to update OTel metrics:', error.message);
+      console.warn('Failed to update OTel metrics:', error instanceof Error ? error.message : 'Unknown error');
     }
   }
 
@@ -717,7 +717,7 @@ class ProductionAgentSystem {
     } catch (error) {
       return {
         healthy: false,
-        issues: [`Health check failed: ${error.message}`]
+        issues: [`Health check failed: ${error instanceof Error ? error.message : 'Unknown error'}`]
       };
     }
   }
@@ -744,7 +744,7 @@ class ProductionAgentSystem {
 
 ## 🤖 Agent Status
 
-${status.agents.map(agent => 
+${status.agents.map((agent: any) => 
   `- **${agent.name}** (${agent.id}): ${agent.enabled ? '✅ Enabled' : '❌ Disabled'} - ${agent.activeTasks} active tasks`
 ).join('\n')}
 
