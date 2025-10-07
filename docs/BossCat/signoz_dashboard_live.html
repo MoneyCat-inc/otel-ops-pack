@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resonai [OTel] — Cat Nap Control Room (Live)</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  /* ===== Same styling as v2, with additions for charts ===== */
+  :root {
+    --bg: #0b0d12;
+    --card: #121520;
+    --muted: #77809a;
+    --fg: #e9edf7;
+    --green: #4caf50;
+    --yellow: #ffc107;
+    --red: #f44336;
+    --blue: #7c5cff;
+    --teal: #00c2b2;
+    --border: #252b3a;
+    --gradient-primary: linear-gradient(135deg, #7c5cff 0%, #4caf50 100%);
+  }
+  
+  @media (prefers-color-scheme: light) {
+    :root { --bg:#f7f8fb; --card:#ffffff; --fg:#0c1022; --border:#dde1ee; --muted:#66708a; }
+  }
+  
+  * { box-sizing: border-box; }
+  
+  body {
+    margin: 0; padding: 0; background: var(--bg); color: var(--fg);
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, sans-serif;
+    font-size: 14px; line-height: 1.4;
+  }
+  
+  .header {
+    background: linear-gradient(180deg, var(--bg), rgba(11,13,18,0.95));
+    border-bottom: 1px solid var(--border); padding: 16px 24px;
+    position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px);
+  }
+  
+  .header-content {
+    max-width: 1600px; margin: 0 auto;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 12px;
+  }
+  
+  .header h1 {
+    margin: 0; font-size: 20px; font-weight: 700;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .header-subtitle { color: var(--muted); font-size: 12px; margin-top: 4px; }
+  
+  .status-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 12px; border-radius: 999px;
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    background: rgba(76,175,80,.18); color: var(--green);
+    border: 1px solid rgba(76,175,80,.35);
+  }
+  
+  .status-indicator {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: currentColor; animation: pulse 2s ease-in-out infinite;
+  }
+  
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+  
+  .container { max-width: 1600px; margin: 0 auto; padding: 24px; }
+  
+  .metrics-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px; margin-bottom: 24px;
+  }
+  
+  .charts-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+    gap: 16px; margin-bottom: 24px;
+  }
+  
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  }
+  
+  .card-title {
+    font-size: 12px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.05em; color: var(--muted); margin: 0 0 12px 0;
+  }
+  
+  .card-value {
+    font-size: 36px; font-weight: 700; color: var(--fg); margin: 0 0 8px 0;
+  }
+  
+  .card-value.ok { color: var(--green); }
+  .card-value.warn { color: var(--yellow); }
+  .card-value.bad { color: var(--red); }
+  
+  .card-subtitle { font-size: 12px; color: var(--muted); }
+  
+  .chart-container {
+    position: relative; height: 220px; margin-top: 12px;
+  }
+  
+  .logs-table {
+    width: 100%; border-collapse: collapse;
+  }
+  
+  .logs-table th {
+    text-align: left; padding: 10px 12px;
+    border-bottom: 2px solid var(--border);
+    font-size: 11px; font-weight: 600;
+    text-transform: uppercase; color: var(--muted);
+  }
+  
+  .logs-table td {
+    padding: 12px; border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  
+  .logs-table tr:hover { background: rgba(255,255,255,0.02); }
+  
+  .log-level {
+    display: inline-block; padding: 2px 8px;
+    border-radius: 4px; font-size: 11px; font-weight: 600;
+  }
+  
+  .log-level.info { background: rgba(0,194,178,.18); color: var(--teal); }
+  .log-level.warn { background: rgba(255,193,7,.20); color: var(--yellow); }
+  .log-level.error { background: rgba(244,67,54,.18); color: var(--red); }
+  
+  .error-banner {
+    background: rgba(244,67,54,.18); border: 1px solid rgba(244,67,54,.35);
+    border-radius: 8px; padding: 12px 16px; margin-bottom: 16px;
+    color: var(--red); font-size: 13px;
+  }
+  
+  .config-section {
+    background: rgba(255,193,7,.10); border: 1px solid rgba(255,193,7,.30);
+    border-radius: 8px; padding: 16px; margin-bottom: 24px;
+  }
+  
+  .config-section h3 {
+    margin: 0 0 12px 0; font-size: 14px; color: var(--yellow);
+  }
+  
+  .config-input {
+    width: 100%; padding: 8px 12px; border: 1px solid var(--border);
+    background: var(--card); color: var(--fg); border-radius: 6px;
+    font-family: 'Courier New', monospace; font-size: 13px;
+    margin-bottom: 8px;
+  }
+  
+  .btn {
+    padding: 8px 16px; border: 1px solid var(--border);
+    background: var(--blue); color: white; border-radius: 6px;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .btn:hover { background: #5a3cc4; }
+  
+  .footer {
+    text-align: center; padding: 32px 24px; color: var(--muted);
+    font-size: 12px; border-top: 1px solid var(--border); margin-top: 48px;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-content">
+    <div>
+      <h1>🐾 Resonai [OTel] — Cat Nap Control Room (Live Data)</h1>
+      <div class="header-subtitle">Real-time SigNoz integration • Auto-refresh every 30s</div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <span class="status-pill">
+        <span class="status-indicator"></span>
+        <span id="connectionStatus">Connecting...</span>
+      </span>
+      <span style="color: var(--muted); font-size: 12px;">
+        Last updated: <span id="lastUpdate">--:--:--</span>
+      </span>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- Configuration Section -->
+  <div class="config-section">
+    <h3>⚙️ SigNoz API Configuration</h3>
+    <p style="margin: 0 0 12px 0; font-size: 13px; color: var(--muted);">
+      Get your API token from: <a href="http://localhost:8080/settings/ingestion-settings" target="_blank" style="color: var(--blue);">SigNoz Settings → Ingestion Settings</a>
+    </p>
+    <input type="text" id="apiToken" class="config-input" placeholder="Enter SigNoz API Token (optional for localhost)" />
+    <input type="text" id="apiEndpoint" class="config-input" value="http://localhost:8080" placeholder="SigNoz API Endpoint" />
+    <button class="btn" onclick="saveConfig()">💾 Save & Connect</button>
+    <button class="btn" style="background: var(--green); margin-left: 8px;" onclick="fetchAllData()">🔄 Refresh Now</button>
+  </div>
+
+  <!-- Error Banner (hidden by default) -->
+  <div id="errorBanner" class="error-banner" style="display: none;"></div>
+
+  <!-- Metrics Grid -->
+  <div class="metrics-grid">
+    <div class="card">
+      <div class="card-title">Pipeline Throughput</div>
+      <div class="card-value ok" id="throughput">--</div>
+      <div class="card-subtitle">logs/sec</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Active Spans</div>
+      <div class="card-value ok" id="activeSpans">--</div>
+      <div class="card-subtitle">traces processed</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Error Rate</div>
+      <div class="card-value ok" id="errorRate">--</div>
+      <div class="card-subtitle">percent</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Log Volume</div>
+      <div class="card-value ok" id="logVolume">--</div>
+      <div class="card-subtitle">total logs</div>
+    </div>
+  </div>
+
+  <!-- Charts Grid -->
+  <div class="charts-grid">
+    <div class="card">
+      <div class="card-title">📊 Throughput Trend (Last Hour)</div>
+      <div class="chart-container">
+        <canvas id="throughputChart"></canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">📈 Log Volume by Level</div>
+      <div class="chart-container">
+        <canvas id="logLevelChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Logs -->
+  <div class="card">
+    <h3 style="margin: 0 0 16px 0; font-size: 16px; font-weight: 700;">📋 Recent Logs</h3>
+    <table class="logs-table">
+      <thead>
+        <tr>
+          <th>Timestamp</th>
+          <th>Level</th>
+          <th>Service</th>
+          <th>Message</th>
+        </tr>
+      </thead>
+      <tbody id="logsTableBody">
+        <tr>
+          <td colspan="4" style="text-align: center; color: var(--muted);">
+            Configure API token above and click "Refresh Now" to load data...
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<div class="footer">
+  <p>🐾 <strong>Resonai [OTel] Observability Pipeline</strong> • Cat Nap Control Room Live</p>
+  <p>
+    <a href="../status.html" style="color: var(--blue); text-decoration: none;">Status Dashboard</a> • 
+    <a href="signoz_dashboard_mockup_v2.html" style="color: var(--blue); text-decoration: none;">Mockup Version</a> • 
+    <a href="http://localhost:8080" target="_blank" style="color: var(--blue); text-decoration: none;">SigNoz UI</a>
+  </p>
+</div>
+
+<script>
+// ===== Configuration =====
+let config = {
+  apiToken: localStorage.getItem('signoz_api_token') || '',
+  apiEndpoint: localStorage.getItem('signoz_api_endpoint') || 'http://localhost:8080'
+};
+
+// Load saved config
+document.getElementById('apiToken').value = config.apiToken;
+document.getElementById('apiEndpoint').value = config.apiEndpoint;
+
+function saveConfig() {
+  config.apiToken = document.getElementById('apiToken').value;
+  config.apiEndpoint = document.getElementById('apiEndpoint').value;
+  localStorage.setItem('signoz_api_token', config.apiToken);
+  localStorage.setItem('signoz_api_endpoint', config.apiEndpoint);
+  showError('Configuration saved! Fetching data...', 'info');
+  fetchAllData();
+}
+
+// ===== Chart Setup =====
+const chartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: { display: false },
+    tooltip: { mode: 'index', intersect: false }
+  },
+  scales: {
+    x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#77809a' } },
+    y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#77809a' } }
+  }
+};
+
+let throughputChart, logLevelChart;
+
+function initCharts() {
+  // Throughput Chart
+  const throughputCtx = document.getElementById('throughputChart').getContext('2d');
+  throughputChart = new Chart(throughputCtx, {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: [{
+        label: 'Throughput (logs/sec)',
+        data: [],
+        borderColor: '#4caf50',
+        backgroundColor: 'rgba(76,175,80,0.1)',
+        tension: 0.4,
+        fill: true
+      }]
+    },
+    options: chartOptions
+  });
+
+  // Log Level Chart
+  const logLevelCtx = document.getElementById('logLevelChart').getContext('2d');
+  logLevelChart = new Chart(logLevelCtx, {
+    type: 'bar',
+    data: {
+      labels: ['INFO', 'WARN', 'ERROR', 'DEBUG'],
+      datasets: [{
+        label: 'Log Count',
+        data: [0, 0, 0, 0],
+        backgroundColor: ['#00c2b2', '#ffc107', '#f44336', '#7c5cff']
+      }]
+    },
+    options: chartOptions
+  });
+}
+
+initCharts();
+
+// ===== Data Fetching =====
+function showError(message, type = 'error') {
+  const banner = document.getElementById('errorBanner');
+  banner.textContent = message;
+  banner.style.display = 'block';
+  banner.style.background = type === 'info' ? 'rgba(0,194,178,.18)' : 'rgba(244,67,54,.18)';
+  banner.style.borderColor = type === 'info' ? 'rgba(0,194,178,.35)' : 'rgba(244,67,54,.35)';
+  banner.style.color = type === 'info' ? '#00c2b2' : '#f44336';
+  setTimeout(() => { banner.style.display = 'none'; }, 5000);
+}
+
+async function fetchLogs() {
+  try {
+    const headers = { 'Content-Type': 'application/json' };
+    if (config.apiToken) headers['Authorization'] = `Bearer ${config.apiToken}`;
+
+    const response = await fetch(`${config.apiEndpoint}/api/v1/logs`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        limit: 50,
+        orderBy: { columnName: 'timestamp', order: 'desc' },
+        filters: { items: [] }
+      })
+    });
+
+    if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    
+    const data = await response.json();
+    updateLogsTable(data.logs || []);
+    updateMetrics(data.logs || []);
+    document.getElementById('connectionStatus').textContent = 'Live';
+    return data.logs || [];
+  } catch (error) {
+    console.error('Failed to fetch logs:', error);
+    showError(`Failed to fetch logs: ${error.message}`);
+    document.getElementById('connectionStatus').textContent = 'Error';
+    return [];
+  }
+}
+
+function updateMetrics(logs) {
+  // Calculate metrics from logs
+  const logCount = logs.length;
+  const errorCount = logs.filter(log => log.severity_text === 'ERROR').length;
+  const errorRate = logCount > 0 ? ((errorCount / logCount) * 100).toFixed(2) : '0.00';
+  
+  // Update display
+  document.getElementById('throughput').textContent = logCount > 0 ? (logCount / 30).toFixed(1) : '--';
+  document.getElementById('logVolume').textContent = logCount || '--';
+  document.getElementById('errorRate').textContent = errorRate + '%';
+  document.getElementById('activeSpans').textContent = logs.filter(log => log.trace_id).length || '--';
+
+  // Update charts
+  const now = new Date();
+  const timeLabel = now.toLocaleTimeString();
+  
+  if (throughputChart.data.labels.length > 20) {
+    throughputChart.data.labels.shift();
+    throughputChart.data.datasets[0].data.shift();
+  }
+  throughputChart.data.labels.push(timeLabel);
+  throughputChart.data.datasets[0].data.push((logCount / 30).toFixed(1));
+  throughputChart.update();
+
+  // Update log level counts
+  const levelCounts = { INFO: 0, WARN: 0, ERROR: 0, DEBUG: 0 };
+  logs.forEach(log => {
+    const level = log.severity_text || 'INFO';
+    if (levelCounts[level] !== undefined) levelCounts[level]++;
+  });
+  logLevelChart.data.datasets[0].data = [
+    levelCounts.INFO,
+    levelCounts.WARN,
+    levelCounts.ERROR,
+    levelCounts.DEBUG
+  ];
+  logLevelChart.update();
+}
+
+function updateLogsTable(logs) {
+  const tbody = document.getElementById('logsTableBody');
+  if (logs.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--muted);">No logs found</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = logs.slice(0, 20).map(log => {
+    const timestamp = new Date(log.timestamp / 1000000).toLocaleString();
+    const level = log.severity_text || 'INFO';
+    const service = log.attributes?.service_name || log.resources_string || 'unknown';
+    const message = log.body || log.message || '(empty)';
+    
+    return `
+      <tr>
+        <td style="font-family: 'Courier New', monospace; font-size: 12px; color: var(--muted);">${timestamp}</td>
+        <td><span class="log-level ${level.toLowerCase()}">${level}</span></td>
+        <td>${service}</td>
+        <td>${message.substring(0, 100)}${message.length > 100 ? '...' : ''}</td>
+      </tr>
+    `;
+  }).join('');
+}
+
+async function fetchAllData() {
+  document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
+  await fetchLogs();
+}
+
+// ===== Auto-refresh =====
+let refreshInterval = setInterval(fetchAllData, 30000);
+
+// Initial fetch
+setTimeout(fetchAllData, 1000);
+
+// Update timestamp every second
+setInterval(() => {
+  document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
+}, 1000);
+</script>
+
+</body>
+</html>
+
