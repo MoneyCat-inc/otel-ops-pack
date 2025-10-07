@@ -74,3 +74,31 @@ tools/
 *.exe
 *.bin
 artifacts/memx/hardware/*.json
+# =============================================================================
+# SECURITY & SECRETS (DO NOT COMMIT)
+# =============================================================================
+
+# Environment files with actual secrets
+.env
+.env.local
+.env.*.local
+.env.production
+.env.development
+.env.test
+
+# Private keys and certificates
+*.pem
+*.key
+*.pfx
+*.p12
+**/*private*.key
+**/*secret*.key
+
+# SSH keys
+id_rsa
+id_dsa
+id_ecdsa
+id_ed25519
+
+# GPG keys
+secring.*
