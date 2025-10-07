@@ -30,14 +30,14 @@ export const POST = withOTel(
             error: {
               code: 'VALIDATION_ERROR',
               message: 'Invalid callback request',
-              details: parseResult.error.errors
+              details: parseResult.error.issues
             }
           },
           { status: 400 }
         );
       }
 
-      const { token, state } = parseResult.data;
+      const { token } = parseResult.data;
 
       // Find magic link
       const magicLink = await db.magicLink.findUnique({
@@ -189,7 +189,7 @@ export const GET = withOTel(async (req: NextRequest) => {
         'auth.callback_get_invalid_params': true,
       });
 
-      return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/auth/error?error=invalid_request`);
+      return NextResponse.redirect(`${process.env['NEXTAUTH_URL']}/auth/error?error=invalid_request`);
     }
 
     // Find magic link
@@ -202,7 +202,7 @@ export const GET = withOTel(async (req: NextRequest) => {
         'auth.callback_get_invalid_token': true,
       });
 
-      return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/auth/error?error=invalid_token`);
+      return NextResponse.redirect(`${process.env['NEXTAUTH_URL']}/auth/error?error=invalid_token`);
     }
 
     // Mark token as used
@@ -218,7 +218,7 @@ export const GET = withOTel(async (req: NextRequest) => {
     const sessionToken = await SessionManager.createSession(user.id, req);
 
     // Redirect to dashboard with session cookie
-    const response = NextResponse.redirect(`${process.env.NEXTAUTH_URL}${magicLink.redirectUrl}`);
+    const response = NextResponse.redirect(`${process.env['NEXTAUTH_URL']}${magicLink.redirectUrl}`);
 
     response.cookies.set('session_token', sessionToken, {
       httpOnly: true,
@@ -244,7 +244,7 @@ export const GET = withOTel(async (req: NextRequest) => {
 
     console.error('Failed to process GET auth callback:', error);
 
-    return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/auth/error?error=server_error`);
+    return NextResponse.redirect(`${process.env['NEXTAUTH_URL']}/auth/error?error=server_error`);
   }
 });
 

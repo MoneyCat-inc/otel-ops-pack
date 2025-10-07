@@ -67,7 +67,7 @@ export const EngagementProfileSchema = z.object({
 
 export const BadgeUnlockSchema = z.object({
   badgeType: z.string().min(1).max(50),
-  metadata: z.record(z.any()).optional(),
+  metadata: z.record(z.string(), z.any()).optional(),
 });
 
 // =============================================================================
@@ -85,6 +85,7 @@ export const EventKindSchema = z.enum([
 ]);
 
 export const EventPropsSchema = z.record(
+  z.string(),
   z.union([z.string(), z.number(), z.boolean()])
 ).refine(
   (props) => Object.keys(props).length <= 10,
@@ -173,7 +174,7 @@ export const FeedbackTypeSchema = z.enum([
 export const FeedbackReportSchema = z.object({
   type: FeedbackTypeSchema,
   content: z.string().min(1).max(5000),
-  metadata: z.record(z.any()).optional(),
+  metadata: z.record(z.string(), z.any()).optional(),
 });
 
 export const AbuseReportSchema = z.object({

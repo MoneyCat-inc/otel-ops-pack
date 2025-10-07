@@ -1,0 +1,34 @@
+{
+  "StartTime": "2025-10-07T05:26:36.8067798+01:00",
+  "Duration": 77.5271,
+  "EndTime": "2025-10-07T05:26:36.8843069+01:00",
+  "Tests": [
+    {
+      "Status": "PASSED",
+      "Details": "Workspace creation and file operations successful",
+      "Name": "Basic Demo"
+    },
+    {
+      "Status": "PASSED",
+      "Details": "ECRR report generation successful",
+      "Name": "ECRR Framework"
+    },
+    {
+      "Status": "PASSED",
+      "Details": "Telemetry data generation successful",
+      "Name": "Telemetry Integration"
+    },
+    {
+      "Status": "PASSED",
+      "Details": "Isolated workspace creation successful",
+      "Name": "Workspace Isolation"
+    }
+  ],
+  "Summary": {
+    "Duration": 77.53,
+    "TotalTests": 4,
+    "PassedTests": 4,
+    "FailedTests": 0,
+    "SuccessRate": 100.0
+  }
+}

@@ -102,8 +102,8 @@ class AgentSystemDeployment {
     console.log('🔍 Running pre-deployment checks...');
 
     // Check Node.js version
-    const nodeVersion = process.version;
-    if (parseInt(nodeVersion.slice(1).split('.')[0]) < 18) {
+    const nodeVersion = process.version || 'v0.0.0';
+    if (parseInt(nodeVersion.slice(1).split('.')[0] || '0') < 18) {
       throw new Error('Node.js 18+ required');
     }
 
@@ -395,9 +395,7 @@ if (require.main === module) {
 
     try {
       // Test SQLite queue
-      const { execAsync } = await import('child_process');
-      const { promisify } = await import('util');
-      const exec = promisify(execAsync);
+      const { exec } = await import('child_process');
       
       await exec('pnpm agent:queue');
       console.log('✅ SQLite queue initialized');
@@ -407,7 +405,7 @@ if (require.main === module) {
       console.log('✅ ECRR compliance engine initialized');
 
     } catch (error) {
-      console.warn('⚠️ Database initialization warning:', error.message);
+      console.warn('⚠️ Database initialization warning:', error instanceof Error ? error.message : 'Unknown error');
     }
   }
 
@@ -430,7 +428,7 @@ if (require.main === module) {
       console.log('✅ All tests passed');
 
     } catch (error) {
-      console.warn('⚠️ Some tests failed:', error.message);
+      console.warn('⚠️ Some tests failed:', error instanceof Error ? error.message : 'Unknown error');
     }
   }
 

@@ -58,14 +58,14 @@ export const POST = withOTel(
               error: {
                 code: 'VALIDATION_ERROR',
                 message: 'Invalid coach grant request',
-                details: parseResult.error.errors
+                details: parseResult.error.issues
               }
             },
             { status: 400 }
           );
         }
 
-        const { coachId, scope, expiresAt, encryptedBlob } = parseResult.data;
+        const { coachId, scope, expiresAt, encryptedBlob: _encryptedBlob } = parseResult.data;
 
         // Validate expiration date
         const expirationDate = new Date(expiresAt);
@@ -171,11 +171,12 @@ export const POST = withOTel(
 
 // GET /api/coach/:grantId - Retrieve encrypted coach grant
 export const GET = withOTel(
-  withRateLimit(rateLimitConfigs.user, async (req: NextRequest, { params }: { params: { grantId: string } }) => {
+  withRateLimit(rateLimitConfigs.user, async (req: NextRequest) => {
     const span = trace.getActiveSpan();
     
     try {
-      const { grantId } = params;
+      const { searchParams } = new URL(req.url);
+      const grantId = searchParams.get('grantId');
 
       if (!grantId) {
         return NextResponse.json(
@@ -252,11 +253,12 @@ export const GET = withOTel(
 // DELETE /api/coach/:grantId - Revoke coach grant
 export const DELETE = withOTel(
   withRateLimit(rateLimitConfigs.user,
-    requireAuth(async (req: NextRequest, { user }, { params }: { params: { grantId: string } }) => {
+    requireAuth(async (req: NextRequest, { user }: { user: any }) => {
       const span = trace.getActiveSpan();
       
       try {
-        const { grantId } = params;
+        const { searchParams } = new URL(req.url);
+        const grantId = searchParams.get('grantId');
 
         if (!grantId) {
           return NextResponse.json(

@@ -11,8 +11,8 @@ async function debugRunner() {
   console.log('🔍 Debugging Agent Runner...\n');
 
   // Set test environment
-  process.env.QUEUE_DRIVER = 'sqlite';
-  process.env.QUEUE_SHADOW = '1';
+  process.env['QUEUE_DRIVER'] = 'sqlite';
+  process.env['QUEUE_SHADOW'] = '1';
 
   const config = getQueueConfig();
   console.log('Configuration:', config);

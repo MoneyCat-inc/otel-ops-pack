@@ -4,15 +4,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { trace } from '@opentelemetry/api';
 import { MagicLinkRequestSchema } from '@/lib/validation/schemas';
-import { UserManager, SessionManager } from '@/lib/middleware/auth';
+import { UserManager } from '@/lib/middleware/auth';
 import { withOTel } from '@/lib/middleware/otel';
 import { withRateLimit, rateLimitConfigs } from '@/lib/middleware/rate-limit';
-import { createHash, randomBytes } from 'crypto';
+import { randomBytes } from 'crypto';
 import { db } from '@/lib/db';
 
 // Magic link configuration
 const MAGIC_LINK_EXPIRY = 15 * 60 * 1000; // 15 minutes
-const MAGIC_LINK_SECRET = process.env.MAGIC_LINK_SECRET || process.env.NEXTAUTH_SECRET;
+const MAGIC_LINK_SECRET = process.env['MAGIC_LINK_SECRET'] || process.env['NEXTAUTH_SECRET'];
 
 if (!MAGIC_LINK_SECRET) {
   throw new Error('MAGIC_LINK_SECRET or NEXTAUTH_SECRET environment variable is required');
@@ -39,7 +39,7 @@ export const POST = withOTel(
             error: {
               code: 'VALIDATION_ERROR',
               message: 'Invalid magic link request',
-              details: parseResult.error.errors
+              details: parseResult.error.issues
             }
           },
           { status: 400 }
@@ -49,7 +49,7 @@ export const POST = withOTel(
       const { email, redirectUrl } = parseResult.data;
 
       // Check if magic links are enabled
-      if (process.env.FEATURE_MAGIC_LINK_AUTH !== 'true') {
+      if (process.env['FEATURE_MAGIC_LINK_AUTH'] !== 'true') {
         return NextResponse.json(
           {
             success: false,
@@ -81,7 +81,7 @@ export const POST = withOTel(
       });
 
       // Generate magic link URL
-      const magicLinkUrl = `${process.env.NEXTAUTH_URL}/api/auth/callback?token=${token}&type=magic_link`;
+      const magicLinkUrl = `${process.env['NEXTAUTH_URL']}/api/auth/callback?token=${token}&type=magic_link`;
 
       // Send email (in production, integrate with your email service)
       await sendMagicLinkEmail(email, magicLinkUrl, redirectUrl);
@@ -136,7 +136,7 @@ async function sendMagicLinkEmail(email: string, magicLinkUrl: string, redirectU
     }
 
     // In production, send actual email
-    const emailService = process.env.SMTP_HOST ? 'smtp' : 'sendgrid';
+    const emailService = process.env['SMTP_HOST'] ? 'smtp' : 'sendgrid';
     
     if (emailService === 'smtp') {
       await sendSMTPEmail(email, magicLinkUrl, redirectUrl);
@@ -162,14 +162,14 @@ async function sendMagicLinkEmail(email: string, magicLinkUrl: string, redirectU
 }
 
 // SMTP email sending
-async function sendSMTPEmail(email: string, magicLinkUrl: string, redirectUrl?: string): Promise<void> {
+async function sendSMTPEmail(email: string, magicLinkUrl: string, _redirectUrl?: string): Promise<void> {
   // Implement SMTP email sending
   // This is a placeholder - integrate with your preferred SMTP service
   console.log(`SMTP: Sending magic link to ${email}: ${magicLinkUrl}`);
 }
 
 // SendGrid email sending
-async function sendSendGridEmail(email: string, magicLinkUrl: string, redirectUrl?: string): Promise<void> {
+async function sendSendGridEmail(email: string, magicLinkUrl: string, _redirectUrl?: string): Promise<void> {
   // Implement SendGrid email sending
   // This is a placeholder - integrate with SendGrid API
   console.log(`SendGrid: Sending magic link to ${email}: ${magicLinkUrl}`);

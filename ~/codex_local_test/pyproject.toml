@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "logfilter"
+version = "0.1.0"
+description = "A simple log filtering utility"
+authors = [{name = "Codex Local Test", email = "test@example.com"}]
+readme = "README.md"
+requires-python = ">=3.7"
+dependencies = []
+
+[project.scripts]
+logfilter = "logfilter.main:main"
+
+[project.optional-dependencies]
+test = ["pytest>=6.0", "pytest-cov"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]

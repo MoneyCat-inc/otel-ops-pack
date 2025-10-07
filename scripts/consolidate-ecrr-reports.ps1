@@ -39,6 +39,15 @@ $groups = @(
         "2025-09-28-compliance-automation-rollout-merge-ecrr.md",
         "2025-09-28-fast-wins-rollout-merge-ecrr.md",
         "2025-09-28-windows-canary-pipeline-rollout-merge-ecrr.md"
+    )},
+    @{ name = "rollout-merge-oct-2025-consolidated"; files = @(
+        "2025-09-27-rollout-merge-api-token-dashboard-ecrr.md",
+        "2025-09-29-ecrr-orchestrator-rollout-merge.md",
+        "2025-09-29-queue-steward-rollout-merge.md",
+        "2025-10-02-ecrr-automated-monitoring-rollout-merge.md",
+        "2025-10-02-ecrr-rollout-merge-final.md",
+        "2025-10-02-ecrr-rollout-merge-plan.md",
+        "2025-10-02-windows-collector-rollout-merge-ecrr.md"
     )}
 )
 

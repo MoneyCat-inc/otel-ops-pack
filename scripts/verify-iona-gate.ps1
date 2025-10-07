@@ -146,10 +146,17 @@ if ($SkipSyntheticSpan) {
     Write-Warning "Skipping synthetic span emission (browser telemetry only)"
 } else {
     try {
-        $spanOutput = python synthetic/send_iona_boot_span.py 2>&1
+        # Set environment variables for Node OTLP emitter
+        $env:OTEL_EXPORTER_OTLP_ENDPOINT = "http://127.0.0.1:5318"
+        $env:OTEL_SERVICE_NAME = "iona-app"
+        
+        # Run Node.js synthetic span emitter (replaces Python implementation)
+        $spanOutput = pnpm emit 2>&1
         if ($LASTEXITCODE -eq 0) {
-            Write-Success "Synthetic span emitted successfully"
-            $spanOutput | ForEach-Object { Write-Host "    $_" -ForegroundColor Gray }
+            Write-Success "Synthetic span emitted successfully (Node.js OTLP/HTTP)"
+            $spanOutput | Select-String -Pattern "\[IONA\]|✓|→" | ForEach-Object { 
+                Write-Host "    $_" -ForegroundColor Gray 
+            }
         } else {
             Write-Error "Failed to emit synthetic span (exit code: $LASTEXITCODE)"
             $spanOutput | ForEach-Object { Write-Host "    $_" -ForegroundColor Gray }

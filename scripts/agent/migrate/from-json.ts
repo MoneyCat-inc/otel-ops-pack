@@ -6,7 +6,7 @@
  */
 
 import { readFileSync, existsSync } from 'fs';
-import { join } from 'path';
+// import { join } from 'path';
 import { SQLiteQueueDB, Job } from '../db';
 import { QueueConfig } from '../../../lib/config/queue';
 
@@ -85,9 +85,9 @@ export class JsonToSQLiteMigrator {
           const migratedJob = this.convertJsonJob(jsonJob);
           if (migratedJob) {
             // Check if job already exists in SQLite
-            const existingJob = this.db.getJob(migratedJob.id);
+            const existingJob = this.db.getJob((migratedJob as any).id);
             if (existingJob) {
-              warnings.push(`Job ${migratedJob.id} already exists in SQLite, skipping`);
+              warnings.push(`Job ${(migratedJob as any).id} already exists in SQLite, skipping`);
               continue;
             }
 

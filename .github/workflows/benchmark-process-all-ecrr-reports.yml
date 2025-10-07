@@ -1,0 +1,28 @@
+name: Benchmark process-all-ecrr-reports
+
+on:
+  schedule:
+    - cron: '17 2 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  run-benchmark:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run benchmark harness (defaults)
+        shell: pwsh
+        run: >
+          pwsh -NoLogo -NoProfile -File scripts/benchmark-process-all-ecrr-reports.ps1
+          -ReportCount 300 -Iterations 3 -IncludeAutoParallel
+
+      - name: Upload benchmark artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-process-all-ecrr-reports
+          path: artifacts/benchmarks/process-all-ecrr-reports/**

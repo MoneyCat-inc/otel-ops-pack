@@ -1,4 +1,56 @@
 {
+  "generatedAt": "2025-10-07T05:29:44Z",
+  "bossTotals": {
+    "Metrics": {
+      "HasGate": 1,
+      "HasEvidence": 9,
+      "HasStatus": 9,
+      "HasActionItems": 5
+    },
+    "ProcessedReports": 9,
+    "TotalReports": 9,
+    "Issues": []
+  },
+  "ecrrSummary": {
+    "MissingFourSection": [],
+    "ProcessingDate": "2025-10-07 05:29:37 UTC",
+    "TotalReports": 58,
+    "ComplianceMetrics": {
+      "FourSectionStructure": 100.0,
+      "ProductionReady": 96.6,
+      "ECRRGates": 100.0,
+      "ActorDeclarations": 98.3,
+      "StatusDeclarations": 100.0,
+      "EvidenceReferences": 98.3
+    },
+    "ProcessedReports": 58,
+    "AgentDistribution": {
+      "Codex Agent": 0,
+      "ChatGPT Agent": 1,
+      "Cursor-Local": 6,
+      "Cursor Agent": 49,
+      "Other": 2
+    },
+    "ReportCategories": {
+      "Implementation": 9,
+      "Other": 32,
+      "Completion": 0,
+      "MergeDeployment": 4,
+      "Verification": 13
+    },
+    "TemporalPatterns": {
+      "September 2025": 43
+    },
+    "Recommendations": [
+      "Add ECRR gates to 0 missing reports",
+      "Ensure 4-section structure in 0 reports",
+      "Add explicit status to 0 reports",
+      "Implement consolidation for 0 candidates"
+    ],
+    "MissingStatus": [],
+    "QualityIssues": [],
+    "ConsolidationCandidates": []
+  },
   "pairs": [
     {
       "bossName": "BOSS_V2_LOCAL_RUN.md",
@@ -19,52 +71,10 @@
       "deltaMinutes": 249.0
     }
   ],
-  "ecrrSummary": {
-    "TotalReports": 60,
-    "Recommendations": [
-      "Add ECRR gates to 0 missing reports",
-      "Ensure 4-section structure in 0 reports",
-      "Add explicit status to 0 reports",
-      "Implement consolidation for 1 candidates"
-    ],
-    "ConsolidationCandidates": [
-      "2025-09-29-rollout-merge-oct-2025-consolidated.md"
-    ],
-    "MissingFourSection": [],
-    "ComplianceMetrics": {
-      "ProductionReady": 96.7,
-      "EvidenceReferences": 98.3,
-      "StatusDeclarations": 100.0,
-      "ActorDeclarations": 96.7,
-      "FourSectionStructure": 100.0,
-      "ECRRGates": 100.0
-    },
-    "ReportCategories": {
-      "MergeDeployment": 5,
-      "Other": 33,
-      "Implementation": 9,
-      "Verification": 13,
-      "Completion": 0
-    },
-    "MissingStatus": [],
-    "TemporalPatterns": {
-      "September 2025": 44,
-      "January 2025": 1
-    },
-    "AgentDistribution": {
-      "Cursor Agent": 50,
-      "Codex Agent": 0,
-      "Cursor-Local": 6,
-      "ChatGPT Agent": 1,
-      "Other": 3
-    },
-    "ProcessedReports": 60,
-    "QualityIssues": [],
-    "ProcessingDate": "2025-10-06 20:59:22 UTC"
-  },
+  "windowMinutes": 720,
   "memx": {
-    "path": "C:\\otel\\artifacts\\memx\\hardware\\memx-hardware-20251006T195924Z.json",
-    "generatedAt": "2025-10-06T19:59:24.7632258Z",
+    "path": "C:\\otel\\artifacts\\memx\\hardware\\memx-hardware-20251007T042940Z.json",
+    "generatedAt": "2025-10-07T04:29:40.1991601Z",
     "host": "D-MONOLITH",
     "summary": {
       "memory": {
@@ -104,18 +114,5 @@
         ]
       }
     }
-  },
-  "generatedAt": "2025-10-06T20:59:27Z",
-  "bossTotals": {
-    "ProcessedReports": 9,
-    "Metrics": {
-      "HasActionItems": 5,
-      "HasGate": 1,
-      "HasStatus": 9,
-      "HasEvidence": 9
-    },
-    "Issues": [],
-    "TotalReports": 9
-  },
-  "windowMinutes": 720
+  }
 }

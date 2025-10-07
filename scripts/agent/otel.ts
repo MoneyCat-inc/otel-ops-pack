@@ -1,12 +1,12 @@
 import { NodeSDK } from '@opentelemetry/sdk-node';
-import { Resource } from '@opentelemetry/resources';
+import { resourceFromAttributes } from '@opentelemetry/resources';
 import { SemanticResourceAttributes as S } from '@opentelemetry/semantic-conventions';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-http';
 import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
 
 const sdk = new NodeSDK({
-  resource: new Resource({
+  resource: resourceFromAttributes({
     [S.SERVICE_NAME]: 'codex-local',
     [S.SERVICE_VERSION]: '0.1.0',
     'resonai.agent.role': 'local-workflow-custodian'
@@ -18,7 +18,9 @@ const sdk = new NodeSDK({
   })
 });
 
-sdk.start().catch(err => {
+try {
+  sdk.start();
+} catch (err) {
   console.error('OTel SDK start failed', err);
-});
+}
 process.on('SIGTERM', () => sdk.shutdown());

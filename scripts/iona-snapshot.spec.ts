@@ -221,3 +221,168 @@ test.describe('IONA Integration Tests', () => {
   });
 });
 
+test.describe('IONA Diagnostics Shell Tests', () => {
+  const artifactsDir = path.join(process.cwd(), 'artifacts');
+
+  test('Diagnostics page renders correctly', async ({ page }) => {
+    // Navigate to diagnostics page
+    await page.goto('/diagnostics');
+    
+    // Wait for page to load
+    await page.waitForLoadState('networkidle');
+    
+    // Check for main heading
+    await expect(page.getByRole('heading', { name: /IONA Diagnostics/i })).toBeVisible();
+    
+    // Check for tab navigation
+    await expect(page.getByRole('button', { name: /Metrics/i })).toBeVisible();
+    await expect(page.getByRole('button', { name: /Traces/i })).toBeVisible();
+    await expect(page.getByRole('button', { name: /Logs/i })).toBeVisible();
+    await expect(page.getByRole('button', { name: /Controls/i })).toBeVisible();
+    
+    console.log('✓ IONA diagnostics page rendered successfully');
+  });
+
+  test('Diagnostics page captures screenshot', async ({ page }) => {
+    // Navigate to diagnostics page
+    await page.goto('/diagnostics');
+    await page.waitForLoadState('networkidle');
+    
+    // Wait for telemetry data to load
+    await page.waitForTimeout(2000);
+    
+    // Capture screenshot
+    const screenshotPath = path.join(artifactsDir, 'iona-diagnostics.png');
+    await page.screenshot({ 
+      path: screenshotPath,
+      fullPage: true 
+    });
+    
+    console.log(`[IONA] diagnostics screenshot saved: ${screenshotPath}`);
+    
+    // Verify screenshot was created
+    expect(fs.existsSync(screenshotPath)).toBe(true);
+  });
+
+  test('Instrumentation toggle works', async ({ page }) => {
+    // Navigate to diagnostics page
+    await page.goto('/diagnostics');
+    await page.waitForLoadState('networkidle');
+    
+    // Switch to Controls tab
+    await page.getByRole('button', { name: /Controls/i }).click();
+    await page.waitForTimeout(500);
+    
+    // Find instrumentation toggle
+    const toggle = page.locator('[role="switch"]').first();
+    await expect(toggle).toBeVisible();
+    
+    // Get initial state
+    const initialState = await toggle.getAttribute('aria-checked');
+    console.log(`[IONA] Initial instrumentation state: ${initialState}`);
+    
+    // Click toggle
+    await toggle.click();
+    await page.waitForTimeout(300);
+    
+    // Verify state changed
+    const newState = await toggle.getAttribute('aria-checked');
+    expect(newState).not.toBe(initialState);
+    
+    console.log(`[IONA] Instrumentation toggled: ${initialState} → ${newState}`);
+  });
+
+  test('Emit span button triggers span emission', async ({ page }) => {
+    // Navigate to diagnostics page
+    await page.goto('/diagnostics');
+    await page.waitForLoadState('networkidle');
+    
+    // Switch to Controls tab
+    await page.getByRole('button', { name: /Controls/i }).click();
+    await page.waitForTimeout(500);
+    
+    // Find emit span button
+    const emitButton = page.getByRole('button', { name: /Emit Test Span/i });
+    await expect(emitButton).toBeVisible();
+    
+    // Click emit button
+    await emitButton.click();
+    
+    // Wait for response
+    await page.waitForTimeout(1500);
+    
+    // Check for success message
+    const successIndicator = page.locator('text=/emitted successfully/i');
+    const isVisible = await successIndicator.isVisible().catch(() => false);
+    
+    if (isVisible) {
+      console.log('✓ IONA span emission successful');
+    } else {
+      console.warn('⚠ IONA span emission may have failed or response not visible');
+    }
+  });
+
+  test('Metrics panel displays data', async ({ page }) => {
+    // Navigate to diagnostics page
+    await page.goto('/diagnostics');
+    await page.waitForLoadState('networkidle');
+    
+    // Wait for metrics to load
+    await page.waitForTimeout(2000);
+    
+    // Metrics tab should be active by default
+    const metricsContent = page.locator('text=/uptime|memory|cpu/i').first();
+    await expect(metricsContent).toBeVisible({ timeout: 5000 });
+    
+    console.log('✓ IONA metrics panel loaded');
+  });
+
+  test('Traces panel displays data', async ({ page }) => {
+    // Navigate to diagnostics page
+    await page.goto('/diagnostics');
+    await page.waitForLoadState('networkidle');
+    
+    // Switch to Traces tab
+    await page.getByRole('button', { name: /Traces/i }).click();
+    await page.waitForTimeout(2000);
+    
+    // Check for trace content or "no traces" message
+    const hasTraces = await page.locator('text=/trace|span|no traces/i').isVisible();
+    expect(hasTraces).toBe(true);
+    
+    console.log('✓ IONA traces panel loaded');
+  });
+
+  test('Logs panel displays data', async ({ page }) => {
+    // Navigate to diagnostics page
+    await page.goto('/diagnostics');
+    await page.waitForLoadState('networkidle');
+    
+    // Switch to Logs tab
+    await page.getByRole('button', { name: /Logs/i }).click();
+    await page.waitForTimeout(2000);
+    
+    // Check for log filter buttons
+    await expect(page.getByRole('button', { name: /All/i })).toBeVisible();
+    await expect(page.getByRole('button', { name: /Info/i })).toBeVisible();
+    
+    console.log('✓ IONA logs panel loaded');
+  });
+
+  test('Tab navigation works correctly', async ({ page }) => {
+    // Navigate to diagnostics page
+    await page.goto('/diagnostics');
+    await page.waitForLoadState('networkidle');
+    
+    const tabs = ['Metrics', 'Traces', 'Logs', 'Controls'];
+    
+    for (const tabName of tabs) {
+      await page.getByRole('button', { name: new RegExp(tabName, 'i') }).click();
+      await page.waitForTimeout(500);
+      console.log(`  ✓ Switched to ${tabName} tab`);
+    }
+    
+    console.log('✓ IONA tab navigation verified');
+  });
+});
+

@@ -73,3 +73,4 @@ artifacts/tools/
 tools/
 *.exe
 *.bin
+artifacts/memx/hardware/*.json

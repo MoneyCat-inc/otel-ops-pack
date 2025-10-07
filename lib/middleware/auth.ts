@@ -9,7 +9,6 @@ import { trace } from '@opentelemetry/api';
 
 // Session configuration
 const SESSION_DURATION = 24 * 60 * 60 * 1000; // 24 hours
-const REFRESH_TOKEN_DURATION = 7 * 24 * 60 * 60 * 1000; // 7 days
 
 // User context interface
 export interface UserContext {
@@ -31,7 +30,7 @@ export function requireAuth<T extends any[]>(
     
     try {
       // Extract session token from cookies
-      const cookieStore = cookies();
+      const cookieStore = await cookies();
       const sessionToken = cookieStore.get('session_token')?.value;
       
       if (!sessionToken) {
@@ -140,7 +139,7 @@ export function requireAuth<T extends any[]>(
       });
 
       // Execute the handler with user context
-      return await handler(req, { user: userContext }, ...args);
+      return await handler(req, { ...(userContext && { user: userContext }) }, ...args);
 
     } catch (error) {
       span?.setAttributes({
@@ -172,7 +171,7 @@ export function optionalAuth<T extends any[]>(
     const span = trace.getActiveSpan();
     
     try {
-      const cookieStore = cookies();
+      const cookieStore = await cookies();
       const sessionToken = cookieStore.get('session_token')?.value;
       
       let userContext: UserContext | undefined;
@@ -205,7 +204,7 @@ export function optionalAuth<T extends any[]>(
         'auth.optional_user_present': !!userContext,
       });
 
-      return await handler(req, { user: userContext }, ...args);
+      return await handler(req, { ...(userContext && { user: userContext }) }, ...args);
 
     } catch (error) {
       span?.setAttributes({
@@ -214,7 +213,7 @@ export function optionalAuth<T extends any[]>(
       });
 
       // Continue without authentication on error
-      return await handler(req, { user: undefined }, ...args);
+      return await handler(req, {}, ...args);
     }
   };
 }
@@ -226,7 +225,7 @@ export class SessionManager {
     const token = randomBytes(32).toString('hex');
     const expiresAt = new Date(Date.now() + SESSION_DURATION);
     
-    const ipAddress = req.ip || req.headers.get('x-forwarded-for') || 'unknown';
+    const ipAddress = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown';
     const userAgent = req.headers.get('user-agent') || '';
 
     await db.session.create({
@@ -298,7 +297,7 @@ export class SessionManager {
 export class UserManager {
   // Create or find user by email
   static async findOrCreateUser(email: string): Promise<UserContext> {
-    const serverSalt = process.env.USER_HASH_SALT;
+    const serverSalt = process.env['USER_HASH_SALT'];
     if (!serverSalt) {
       throw new Error('USER_HASH_SALT environment variable not set');
     }
@@ -339,7 +338,7 @@ export class UserManager {
 
   // Create anonymous user
   static async createAnonymousUser(): Promise<UserContext> {
-    const serverSalt = process.env.USER_HASH_SALT;
+    const serverSalt = process.env['USER_HASH_SALT'];
     if (!serverSalt) {
       throw new Error('USER_HASH_SALT environment variable not set');
     }
@@ -408,7 +407,7 @@ export class Authorization {
   }
 
   // Check if user can share clips (always false for now)
-  static canShareClips(user: UserContext): boolean {
+  static canShareClips(_user: UserContext): boolean {
     return false; // Always false per privacy policy
   }
 

@@ -1,0 +1,8 @@
+{
+  "WorkspacePath": "artifacts\\test-results\\isolated-workspace",
+  "CreatedAt": "2025-10-07T05:26:36.8823116+01:00",
+  "Type": "temporary",
+  "Status": "ready",
+  "AgentId": "test-agent-001",
+  "IsolationLevel": "filesystem"
+}

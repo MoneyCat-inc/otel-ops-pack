@@ -1,0 +1,53 @@
+### MemX Hardware Report JSON Schema (informal)
+
+- top-level
+  - **generatedAt**: string (ISO 8601)
+  - **status**: string (OK|WARN|DEGRADED)
+  - **issues**: array<string>
+  - **memory**: object
+    - **totalBytes**: number
+    - **modules**: array<object>
+      - slot: string
+      - bank: string
+      - capacityBytes: number
+      - speedMTps: number
+      - widthBits: number
+      - manufacturer: string
+      - partNumber: string
+      - serial: string
+  - **cpu**: object
+    - **packages**: array<object>
+      - name: string
+      - cores: number
+      - threads: number
+      - baseClockMHz: number
+      - currentClockMHz: number
+      - loadPct: number
+      - warnings: array<string>
+  - **gpu**: object
+    - **controllers**: array<object>
+      - name: string
+      - driverVersion: string
+      - vramBytes: number
+      - temperatureC?: number
+      - utilizationPct?: number
+  - **displays**: array<object>
+    - name: string
+    - resolution: string
+    - refreshHz?: number
+    - connected: boolean
+  - **network**: object
+    - **adapters**: array<object>
+      - name: string
+      - type: string (Ethernet|WiFi|Loopback|Other)
+      - mac: string
+      - ipv4: array<string>
+      - linkSpeedMbps?: number
+      - status: string (Up|Down|Degraded)
+      - issues: array<string>
+    - **loopbackReachable**: boolean
+
+Notes:
+- Optional fields may be absent on some systems/vendors.
+- See `artifacts/memx/hardware/` for sample outputs.
+

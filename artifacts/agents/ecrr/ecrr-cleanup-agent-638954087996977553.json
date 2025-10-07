@@ -1,0 +1,37 @@
+{
+  "bossCatApproval": false,
+  "agentStats": {
+    "successCount": 65,
+    "uptime": 4.156030775,
+    "taskCount": 75,
+    "errorCount": 9
+  },
+  "compliance": {
+    "reliability": false,
+    "performance": true,
+    "security": false
+  },
+  "evidence": {
+    "logs": [
+      "artifacts/agents/logs/cleanup-agent.log"
+    ],
+    "metrics": [],
+    "screenshots": []
+  },
+  "findings": {
+    "major": null,
+    "minor": [
+      "Investigate task failures",
+      "Monitor memory usage"
+    ],
+    "critical": "High memory usage: 112MB"
+  },
+  "recommendations": [
+    "Investigate task failures",
+    "Monitor memory usage"
+  ],
+  "scope": "Agent Behavior Analysis: cleanup-agent",
+  "timestamp": "2025-10-07 04:39:59",
+  "reportId": "ecrr-cleanup-agent-638954087996977553",
+  "responsibleAgent": "cleanup-agent"
+}

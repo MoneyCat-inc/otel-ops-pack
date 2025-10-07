@@ -1,0 +1,13 @@
+{
+  "Type": "temporary",
+  "WorkspacePath": "artifacts\\agent-workspaces\\active\\test-agent-001-20251007-045318",
+  "AgentId": "test-agent-001",
+  "CreatedAt": "2025-10-07T04:53:18.2486287+01:00",
+  "ResourceLimits": {
+    "MaxProcessCount": 10,
+    "MaxDiskSpaceMB": 1024,
+    "MaxMemoryMB": 512,
+    "MaxCPUPercent": 50
+  },
+  "IsolationLevel": "filesystem"
+}

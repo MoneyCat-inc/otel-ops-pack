@@ -196,7 +196,7 @@ export class SQLiteQueueDB {
   /**
    * Mark a job as failed and schedule retry if appropriate
    */
-  markJobFailed(jobId: string, error?: string): boolean {
+  markJobFailed(jobId: string, _error?: string): boolean {
     const job = this.getJob(jobId);
     if (!job) return false;
 
