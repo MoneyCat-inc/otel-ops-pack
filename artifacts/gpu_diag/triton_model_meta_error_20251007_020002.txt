@@ -1,0 +1,7 @@
+Invoke-RestMethod: C:\otel\scripts\verify-gpu-codex.ps1:21
+Line |
+  21 |  … modelMeta = Invoke-RestMethod -Method GET -Uri 'http://localhost:8000 …
+     |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     |  {   "error": "Request for unknown model: \u0027simple_identity\u0027 is not found" }
+
+

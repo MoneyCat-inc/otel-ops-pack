@@ -10,7 +10,7 @@ import { withOTel } from '@/lib/middleware/otel';
 
 // GET /api/me/engagement - Retrieve user's engagement profile
 export const GET = withOTel(
-  requireAuth(async (req: NextRequest, { user }) => {
+  requireAuth(async (_req: NextRequest, { user }) => {
     const span = trace.getActiveSpan();
     
     try {
@@ -92,11 +92,11 @@ export const GET = withOTel(
 
 // PUT /api/me/engagement - Sync engagement data from client
 export const PUT = withOTel(
-  requireAuth(async (req: NextRequest, { user }) => {
+  requireAuth(async (_req: NextRequest, { user }) => {
     const span = trace.getActiveSpan();
     
     try {
-      const body = await req.json();
+      const body = await _req.json();
       const parseResult = EngagementProfileSchema.safeParse(body);
       
       if (!parseResult.success) {
@@ -111,7 +111,7 @@ export const PUT = withOTel(
             error: {
               code: 'VALIDATION_ERROR',
               message: 'Invalid engagement profile format',
-              details: parseResult.error.errors
+              details: parseResult.error.issues
             }
           },
           { status: 400 }
@@ -147,8 +147,8 @@ export const PUT = withOTel(
       });
 
       // Check for new badges in the request
-      if (body.badges && Array.isArray(body.badges)) {
-        const badgePromises = body.badges.map(async (badge: any) => {
+      if ((body as any).badges && Array.isArray((body as any).badges)) {
+        const badgePromises = (body as any).badges.map(async (badge: any) => {
           const badgeResult = BadgeUnlockSchema.safeParse(badge);
           if (!badgeResult.success) return null;
 

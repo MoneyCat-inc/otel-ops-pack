@@ -9,7 +9,8 @@ const nextConfig = {
   
   // Enable experimental features
   experimental: {
-    serverExternalPackages: ['@prisma/client'],
+    // serverExternalPackages removed for Next.js 15 compatibility
+    // Prisma client is now handled automatically
   },
 
   // Output configuration

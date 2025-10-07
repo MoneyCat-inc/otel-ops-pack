@@ -34,7 +34,6 @@ export function withRateLimit(
   return async (req: NextRequest): Promise<NextResponse> => {
     const key = config.keyGenerator(req);
     const now = Date.now();
-    const windowStart = now - config.windowMs;
 
     // Get or create rate limit entry
     let entry = rateLimitStore.get(key);
@@ -106,7 +105,7 @@ export const rateLimitConfigs = {
     requests: 5,
     windowMs: 15 * 60 * 1000, // 15 minutes
     keyGenerator: (req: NextRequest) => {
-      const ip = req.ip || req.headers.get('x-forwarded-for') || 'unknown';
+      const ip = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown';
       return `auth:${ip}`;
     },
     message: 'Too many authentication attempts',
@@ -117,7 +116,7 @@ export const rateLimitConfigs = {
     requests: 100,
     windowMs: 15 * 60 * 1000, // 15 minutes
     keyGenerator: (req: NextRequest) => {
-      const ip = req.ip || req.headers.get('x-forwarded-for') || 'unknown';
+      const ip = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown';
       const userId = req.headers.get('x-user-id') || 'anonymous';
       return `user:${ip}:${userId}`;
     },
@@ -129,7 +128,7 @@ export const rateLimitConfigs = {
     requests: 1000,
     windowMs: 60 * 1000, // 1 minute
     keyGenerator: (req: NextRequest) => {
-      const ip = req.ip || req.headers.get('x-forwarded-for') || 'unknown';
+      const ip = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown';
       const userIdHash = req.headers.get('x-user-id-hash') || 'anonymous';
       return `events:${ip}:${userIdHash}`;
     },
@@ -141,7 +140,7 @@ export const rateLimitConfigs = {
     requests: 10,
     windowMs: 60 * 60 * 1000, // 1 hour
     keyGenerator: (req: NextRequest) => {
-      const ip = req.ip || req.headers.get('x-forwarded-for') || 'unknown';
+      const ip = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown';
       return `feedback:${ip}`;
     },
     message: 'Too many feedback submissions',
@@ -152,7 +151,7 @@ export const rateLimitConfigs = {
     requests: 1000,
     windowMs: 60 * 1000, // 1 minute
     keyGenerator: (req: NextRequest) => {
-      const ip = req.ip || req.headers.get('x-forwarded-for') || 'unknown';
+      const ip = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown';
       return `global:${ip}`;
     },
     message: 'Global rate limit exceeded',

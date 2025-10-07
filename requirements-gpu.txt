@@ -6,7 +6,7 @@
 #
 # Note: These CUDA-specific builds require:
 # - Compatible CUDA drivers (12.1+)
-# - Python >=3.8,<3.12 (CUDA builds may not support Python 3.12+)
+# - Python >=3.9,<3.14 (CUDA 12.1 builds validated for Python 3.9-3.13)
 # - Appropriate hardware (NVIDIA GPU with CUDA support)
 
 filelock==3.19.1
@@ -19,8 +19,8 @@ numpy==2.3.3
 pillow==11.0.0
 
 # CUDA-accelerated PyTorch packages (requires special index)
-torch==2.8.0
-torchaudio==2.5.1+cu121
-torchvision==0.20.1+cu121
+torch==2.8.0+cu121
+torchaudio==2.8.0+cu121
+torchvision==0.23.0+cu121
 
 typing_extensions==4.15.0

@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
   const snaps = loadLatest(".artifacts/memx/snapshots", limit);
   const zip = new JSZip();
   snaps.forEach((s, i) => {
-    const name = `${i.toString().padStart(3,"0")}_${s.ts.replaceAll(":","-")}_${s.snapshot_id}.json`;
+    const name = `${i.toString().padStart(3,"0")}_${s.ts.replace(/:/g,"-")}_${s.snapshot_id}.json`;
     zip.file(name, JSON.stringify(s, null, 2));
   });
   const blob = await zip.generateAsync({ type: "nodebuffer" });

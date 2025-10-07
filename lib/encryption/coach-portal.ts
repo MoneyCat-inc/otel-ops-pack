@@ -4,12 +4,24 @@
 import { randomBytes, createHash } from 'crypto';
 import { db } from '@/lib/db';
 import { trace } from '@opentelemetry/api';
-import { CoachGrantRequestSchema, CoachScopeSchema } from '@/lib/validation/schemas';
+
+type BadgeSummary = {
+  badgeType: string;
+  unlockedAt: Date | null;
+};
+
+type StoryProgressSummary = {
+  chapter: {
+    title: string;
+    chapterId: string;
+  };
+  completedAt: Date;
+  choices: unknown;
+};
 
 // Encryption configuration
 const ENCRYPTION_KEY_SIZE = 32; // 256 bits
 const NONCE_SIZE = 24; // 192 bits for XChaCha20
-const SALT_SIZE = 32; // 256 bits
 
 // Simple encryption implementation (use libsodium in production)
 class SimpleEncryption {
@@ -28,9 +40,12 @@ class SimpleEncryption {
     const textBytes = Buffer.from(plaintext, 'utf8');
     const keyStream = this.generateKeyStream(key, nonce, textBytes.length);
     
+    
     const encrypted = Buffer.alloc(textBytes.length);
     for (let i = 0; i < textBytes.length; i++) {
-      encrypted[i] = textBytes[i] ^ keyStream[i];
+      const textByte = textBytes[i] ?? 0;
+      const keyByte = keyStream[i] ?? 0;
+      encrypted[i] = textByte ^ keyByte;
     }
     
     // Return base64 encoded: nonce + encrypted data
@@ -47,7 +62,9 @@ class SimpleEncryption {
     
     const decrypted = Buffer.alloc(encrypted.length);
     for (let i = 0; i < encrypted.length; i++) {
-      decrypted[i] = encrypted[i] ^ keyStream[i];
+      const encryptedByte = encrypted[i] ?? 0;
+      const keyByte = keyStream[i] ?? 0;
+      decrypted[i] = encryptedByte ^ keyByte;
     }
     
     return decrypted.toString('utf8');
@@ -323,7 +340,7 @@ export class CoachDataPreparer {
       // Prepare coach-safe data
       const coachData = {
         streakDays: profile.streakDays,
-        badges: profile.badges.map(badge => ({
+        badges: profile.badges.map((badge: BadgeSummary) => ({
           type: badge.badgeType,
           unlockedAt: badge.unlockedAt,
         })),
@@ -372,7 +389,7 @@ export class CoachDataPreparer {
       });
 
       const progressData = {
-        recentChapters: storyProgress.map(progress => ({
+        recentChapters: storyProgress.map((progress: StoryProgressSummary) => ({
           chapterTitle: progress.chapter.title,
           chapterId: progress.chapter.chapterId,
           completedAt: progress.completedAt,

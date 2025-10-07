@@ -1,0 +1,37 @@
+{
+  "bossCatApproval": false,
+  "agentStats": {
+    "successCount": 50,
+    "uptime": 3.63165865,
+    "taskCount": 56,
+    "errorCount": 6
+  },
+  "compliance": {
+    "reliability": false,
+    "performance": true,
+    "security": false
+  },
+  "evidence": {
+    "logs": [
+      "artifacts/agents/logs/remediation-agent.log"
+    ],
+    "metrics": [],
+    "screenshots": []
+  },
+  "findings": {
+    "major": null,
+    "minor": [
+      "Investigate task failures",
+      "Monitor memory usage"
+    ],
+    "critical": "High memory usage: 108MB"
+  },
+  "recommendations": [
+    "Investigate task failures",
+    "Monitor memory usage"
+  ],
+  "scope": "Agent Behavior Analysis: remediation-agent",
+  "timestamp": "2025-10-07 04:39:29",
+  "reportId": "ecrr-remediation-agent-638954087695397351",
+  "responsibleAgent": "remediation-agent"
+}

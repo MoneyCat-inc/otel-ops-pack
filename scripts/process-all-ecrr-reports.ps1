@@ -5,7 +5,9 @@ param(
     [string]$OutputDir = "artifacts",
     [switch]$GenerateSummary = $true,
     [switch]$GenerateConsolidationPlan = $true,
-    [switch]$GenerateComplianceReport = $true
+    [switch]$GenerateComplianceReport = $true,
+    [int]$MaxParallel = 1,
+    [switch]$AutoParallel = $false
 )
 
 Write-Host "🔍 ECRR Reports Processing - Complete Analysis" -ForegroundColor Cyan
@@ -43,6 +45,8 @@ $AnalysisData = @{
     TemporalPatterns = @{}
     ConsolidationCandidates = @()
     QualityIssues = @()
+    MissingFourSection = @()
+    MissingStatus = @()
     Recommendations = @()
 }
 
@@ -55,118 +59,158 @@ $AnalysisData.TotalReports = $ECRRFiles.Count
 
 Write-Host "📊 Found $($AnalysisData.TotalReports) ECRR reports to process" -ForegroundColor Green
 
+if ($AutoParallel) {
+    try {
+        $videoControllers = Get-CimInstance Win32_VideoController -ErrorAction Stop | Where-Object { $_.AdapterRAM -gt 0 }
+        if ($videoControllers) {
+            $totalVramBytes = ($videoControllers | Measure-Object -Property AdapterRAM -Sum).Sum
+            $totalVramGB = [math]::Round($totalVramBytes / 1GB, 2)
+            $estimatedParallel = [math]::Min(16, [math]::Max(1, [math]::Floor($totalVramBytes / 1GB) * 2))
+            Write-Host "Detected VRAM: $totalVramGB GB" -ForegroundColor Cyan
+            if ($estimatedParallel -gt $MaxParallel) {
+                $MaxParallel = $estimatedParallel
+            }
+        } else {
+            Write-Host "VRAM detection returned no data; falling back to CPU estimate" -ForegroundColor Yellow
+        }
+    } catch {
+        Write-Host ("VRAM detection failed: {0}" -f $_.Exception.Message) -ForegroundColor Yellow
+    }
+}
+
+if ($MaxParallel -lt 1) {
+    $MaxParallel = 1
+}
+
+if ($MaxParallel -le 1) {
+    $cpuEstimate = [System.Environment]::ProcessorCount
+    if ($cpuEstimate -gt 1) {
+        $MaxParallel = [math]::Min($cpuEstimate, 8)
+        Write-Host "CPU-based parallel limit applied: $MaxParallel" -ForegroundColor Cyan
+    }
+}
+
+if ($MaxParallel -gt 1) {
+    Write-Host "🚀 Parallel processing enabled (ThrottleLimit=$MaxParallel)" -ForegroundColor Cyan
+}
+
 # Process each report
-foreach ($file in $ECRRFiles) {
+$ReportProcessor = {
+    param($file)
+
     Write-Host "Processing: $($file.Name)" -ForegroundColor Yellow
-    
+
+    $result = [ordered]@{
+        Name = $file.Name
+        FourSection = $false
+        ECRRGate = $false
+        ActorDeclaration = $false
+        EvidenceReference = $false
+        StatusDeclaration = $false
+        ProductionReady = $false
+        AgentType = "Other"
+        Category = "Other"
+        TemporalGroup = $null
+        ConsolidationCandidate = $false
+        Error = $null
+    }
+
     try {
         $content = Get-Content -Path $file.FullName -Raw -Encoding UTF8
-        
-        # Analyze compliance metrics
-        if ($content -match "## 🔍.*1\. Examine" -and $content -match "## 🧹.*2\. Clean" -and $content -match "## 📝.*3\. Report" -and $content -match "## 🎭.*4\. Role") {
-            $AnalysisData.ComplianceMetrics.FourSectionStructure++
-        }
-        
-        if ($content -match "## ✅.*ECRR Gate" -or $content -match "ECRR Gate") {
-            $AnalysisData.ComplianceMetrics.ECRRGates++
-        }
-        
-        if ($content -match "Actor.*Declaration" -or $content -match "Agent.*acting as") {
-            $AnalysisData.ComplianceMetrics.ActorDeclarations++
-        }
-        
-        if ($content -match "Evidence" -or $content -match "Artifacts" -or $content -match "Screenshots" -or $content -match "Logs") {
-            $AnalysisData.ComplianceMetrics.EvidenceReferences++
-        }
-        
-        if ($content -match "Status.*COMPLETE" -or $content -match "Status.*SUCCESS" -or $content -match "Status.*Complete") {
-            $AnalysisData.ComplianceMetrics.StatusDeclarations++
-        }
-        
-        if ($content -match "Production.*Ready" -or $content -match "Production.*Complete") {
-            $AnalysisData.ComplianceMetrics.ProductionReady++
-        }
-        
-        # Analyze agent distribution
+
+        $result.FourSection = ($content -match "## ??.*1\. Examine" -and $content -match "## ??.*2\. Clean" -and $content -match "## ??.*3\. Report" -and $content -match "## ??.*4\. Role")
+        $result.ECRRGate = ($content -match "## ?.*ECRR Gate" -or $content -match "ECRR Gate")
+        $result.ActorDeclaration = ($content -match "Actor.*Declaration" -or $content -match "Agent.*acting as")
+        $result.EvidenceReference = ($content -match "Evidence" -or $content -match "Artifacts" -or $content -match "Screenshots" -or $content -match "Logs")
+        $result.StatusDeclaration = ($content -match "Status.*COMPLETE" -or $content -match "Status.*SUCCESS" -or $content -match "Status.*Complete")
+        $result.ProductionReady = ($content -match "Production.*Ready" -or $content -match "Production.*Complete")
+
         if ($content -match "Cursor Agent") {
-            if (-not $AnalysisData.AgentDistribution.ContainsKey("Cursor Agent")) {
-                $AnalysisData.AgentDistribution["Cursor Agent"] = 0
-            }
-            $AnalysisData.AgentDistribution["Cursor Agent"]++
+            $result.AgentType = "Cursor Agent"
+        } elseif ($content -match "Cursor-Local") {
+            $result.AgentType = "Cursor-Local"
+        } elseif ($content -match "ChatGPT Agent") {
+            $result.AgentType = "ChatGPT Agent"
+        } elseif ($content -match "Codex Agent") {
+            $result.AgentType = "Codex Agent"
         }
-        elseif ($content -match "Cursor-Local") {
-            if (-not $AnalysisData.AgentDistribution.ContainsKey("Cursor-Local")) {
-                $AnalysisData.AgentDistribution["Cursor-Local"] = 0
-            }
-            $AnalysisData.AgentDistribution["Cursor-Local"]++
+
+        $name = $file.Name
+        if ($name -match "implementation" -or $name -match "deployment") {
+            $result.Category = "Implementation"
+        } elseif ($name -match "verification" -or $name -match "validation" -or $name -match "test") {
+            $result.Category = "Verification"
+        } elseif ($name -match "complete" -or $name -match "completion") {
+            $result.Category = "Completion"
+        } elseif ($name -match "merge" -or $name -match "rollout") {
+            $result.Category = "MergeDeployment"
         }
-        elseif ($content -match "ChatGPT Agent") {
-            if (-not $AnalysisData.AgentDistribution.ContainsKey("ChatGPT Agent")) {
-                $AnalysisData.AgentDistribution["ChatGPT Agent"] = 0
-            }
-            $AnalysisData.AgentDistribution["ChatGPT Agent"]++
+
+        if ($name -match "2025-09") {
+            $result.TemporalGroup = "September 2025"
+        } elseif ($name -match "2025-01") {
+            $result.TemporalGroup = "January 2025"
+        } elseif ($name -match "2024-12") {
+            $result.TemporalGroup = "December 2024"
         }
-        elseif ($content -match "Codex Agent") {
-            if (-not $AnalysisData.AgentDistribution.ContainsKey("Codex Agent")) {
-                $AnalysisData.AgentDistribution["Codex Agent"] = 0
-            }
-            $AnalysisData.AgentDistribution["Codex Agent"]++
+
+        if ($name -match "rollout-merge" -or $name -match "ecrr-01" -or $name -match "signoz-alerts") {
+            $result.ConsolidationCandidate = $true
         }
-        else {
-            if (-not $AnalysisData.AgentDistribution.ContainsKey("Other")) {
-                $AnalysisData.AgentDistribution["Other"] = 0
-            }
-            $AnalysisData.AgentDistribution["Other"]++
-        }
-        
-        # Analyze report categories
-        if ($file.Name -match "implementation" -or $file.Name -match "deployment") {
-            $AnalysisData.ReportCategories.Implementation++
-        }
-        elseif ($file.Name -match "verification" -or $file.Name -match "validation" -or $file.Name -match "test") {
-            $AnalysisData.ReportCategories.Verification++
-        }
-        elseif ($file.Name -match "complete" -or $file.Name -match "completion") {
-            $AnalysisData.ReportCategories.Completion++
-        }
-        elseif ($file.Name -match "merge" -or $file.Name -match "rollout") {
-            $AnalysisData.ReportCategories.MergeDeployment++
-        }
-        else {
-            $AnalysisData.ReportCategories.Other++
-        }
-        
-        # Analyze temporal patterns
-        if ($file.Name -match "2025-09") {
-            if (-not $AnalysisData.TemporalPatterns.ContainsKey("September 2025")) {
-                $AnalysisData.TemporalPatterns["September 2025"] = 0
-            }
-            $AnalysisData.TemporalPatterns["September 2025"]++
-        }
-        elseif ($file.Name -match "2025-01") {
-            if (-not $AnalysisData.TemporalPatterns.ContainsKey("January 2025")) {
-                $AnalysisData.TemporalPatterns["January 2025"] = 0
-            }
-            $AnalysisData.TemporalPatterns["January 2025"]++
-        }
-        elseif ($file.Name -match "2024-12") {
-            if (-not $AnalysisData.TemporalPatterns.ContainsKey("December 2024")) {
-                $AnalysisData.TemporalPatterns["December 2024"] = 0
-            }
-            $AnalysisData.TemporalPatterns["December 2024"]++
-        }
-        
-        # Identify consolidation candidates
-        if ($file.Name -match "rollout-merge" -or $file.Name -match "ecrr-01" -or $file.Name -match "signoz-alerts") {
-            $AnalysisData.ConsolidationCandidates += $file.Name
-        }
-        
-        $AnalysisData.ProcessedReports++
-        
     } catch {
-        Write-Warning "Error processing $($file.Name): $($_.Exception.Message)"
-        $AnalysisData.QualityIssues += "Error processing $($file.Name): $($_.Exception.Message)"
+        $result.Error = $_.Exception.Message
+        Write-Warning "Error processing $($file.Name): $($result.Error)"
     }
+
+    [pscustomobject]$result
+}
+
+# Cache processor definition for parallel runspaces
+$ReportProcessorText = $ReportProcessor.ToString()
+
+if ($MaxParallel -gt 1) {
+    $reportResults = $ECRRFiles | ForEach-Object -Parallel {
+        $processor = [ScriptBlock]::Create($using:ReportProcessorText)
+        & $processor $_
+    } -ThrottleLimit $MaxParallel
+} else {
+    $reportResults = foreach ($file in $ECRRFiles) {
+        & $ReportProcessor $file
+    }
+}
+
+$reportResults = @($reportResults)
+
+$AnalysisData.ProcessedReports = $reportResults.Count
+$AnalysisData.ComplianceMetrics.FourSectionStructure = ($reportResults | Where-Object { $_.FourSection }).Count
+$AnalysisData.ComplianceMetrics.ECRRGates = ($reportResults | Where-Object { $_.ECRRGate }).Count
+$AnalysisData.ComplianceMetrics.ActorDeclarations = ($reportResults | Where-Object { $_.ActorDeclaration }).Count
+$AnalysisData.ComplianceMetrics.EvidenceReferences = ($reportResults | Where-Object { $_.EvidenceReference }).Count
+$AnalysisData.ComplianceMetrics.StatusDeclarations = ($reportResults | Where-Object { $_.StatusDeclaration }).Count
+$AnalysisData.ComplianceMetrics.ProductionReady = ($reportResults | Where-Object { $_.ProductionReady }).Count
+
+$AnalysisData.MissingFourSection = @($reportResults | Where-Object { -not $_.FourSection } | Select-Object -ExpandProperty Name)
+$AnalysisData.MissingStatus = @($reportResults | Where-Object { -not $_.StatusDeclaration } | Select-Object -ExpandProperty Name)
+$AnalysisData.QualityIssues = @($reportResults | Where-Object { $_.Error } | ForEach-Object { "Error processing $($_.Name): $($_.Error)" })
+$AnalysisData.ConsolidationCandidates = @($reportResults | Where-Object { $_.ConsolidationCandidate } | Select-Object -ExpandProperty Name)
+
+$agentKeys = @('Cursor Agent','Cursor-Local','ChatGPT Agent','Codex Agent','Other')
+$AnalysisData.AgentDistribution = @{}
+foreach ($agent in $agentKeys) {
+    $AnalysisData.AgentDistribution[$agent] = ($reportResults | Where-Object { $_.AgentType -eq $agent }).Count
+}
+
+$AnalysisData.ReportCategories = @{
+    Implementation = ($reportResults | Where-Object { $_.Category -eq 'Implementation' }).Count
+    Verification = ($reportResults | Where-Object { $_.Category -eq 'Verification' }).Count
+    Completion = ($reportResults | Where-Object { $_.Category -eq 'Completion' }).Count
+    MergeDeployment = ($reportResults | Where-Object { $_.Category -eq 'MergeDeployment' }).Count
+    Other = ($reportResults | Where-Object { $_.Category -eq 'Other' }).Count
+}
+
+$AnalysisData.TemporalPatterns = @{}
+foreach ($group in $reportResults | Where-Object { $_.TemporalGroup } | Group-Object TemporalGroup) {
+    $AnalysisData.TemporalPatterns[$group.Name] = $group.Count
 }
 
 # Generate compliance percentages
@@ -463,6 +507,8 @@ if ($GenerateComplianceReport) {
         TemporalPatterns = $AnalysisData.TemporalPatterns
         ConsolidationCandidates = $AnalysisData.ConsolidationCandidates
         QualityIssues = $AnalysisData.QualityIssues
+        MissingFourSection = $AnalysisData.MissingFourSection
+        MissingStatus = $AnalysisData.MissingStatus
         Recommendations = @(
             "Add ECRR gates to $($AnalysisData.TotalReports - $AnalysisData.ComplianceMetrics.ECRRGates) missing reports",
             "Ensure 4-section structure in $($AnalysisData.TotalReports - $AnalysisData.ComplianceMetrics.FourSectionStructure) reports",

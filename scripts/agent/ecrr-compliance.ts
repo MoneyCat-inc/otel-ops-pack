@@ -85,7 +85,7 @@ class ECRRComplianceEngine {
         name: 'Examine Section Required',
         description: 'All ECRR reports must have an examine section',
         severity: 'critical',
-        check: (report) => report.examine && report.examine.timestamp && report.examine.evidence.length > 0,
+        check: (report) => !!(report.examine && report.examine.timestamp && report.examine.evidence.length > 0),
         message: 'ECRR report missing examine section or evidence'
       },
       {
@@ -109,7 +109,7 @@ class ECRRComplianceEngine {
         name: 'Role Section Required',
         description: 'All ECRR reports must have a role section',
         severity: 'critical',
-        check: (report) => report.role && report.role.actor && report.role.signature,
+        check: (report) => !!(report.role && report.role.actor && report.role.signature),
         message: 'ECRR report missing role section or signature'
       },
       {
@@ -162,7 +162,7 @@ class ECRRComplianceEngine {
         severity: 'critical',
         check: (report) => {
           const signature = report.role.signature;
-          return signature && signature.includes(report.agentId) && signature.includes('agent-');
+          return !!(signature && signature.includes(report.agentId) && signature.includes('agent-'));
         },
         message: 'ECRR report has invalid signature'
       }
@@ -182,7 +182,7 @@ class ECRRComplianceEngine {
           violations.push(`${rule.severity.toUpperCase()}: ${rule.message} (${ruleId})`);
         }
       } catch (error) {
-        violations.push(`ERROR: Rule ${ruleId} failed to execute: ${error.message}`);
+        violations.push(`ERROR: Rule ${ruleId} failed to execute: ${error instanceof Error ? error.message : 'Unknown error'}`);
       }
     }
 
@@ -222,6 +222,14 @@ class ECRRComplianceEngine {
       clean,
       report,
       role,
+      artifacts: [],
+      metrics: {
+        violationsFound: 0,
+        checksRun: 0,
+        complianceRate: 100
+      },
+      violations: [],
+      recommendations: [],
       compliance: false, // Will be set by validation
       createdAt: now
     };
@@ -248,7 +256,9 @@ class ECRRComplianceEngine {
       if (!report.compliance) {
         report.report.violations.forEach(violation => {
           const severity = violation.split(':')[0];
-          violationsBySeverity[severity] = (violationsBySeverity[severity] || 0) + 1;
+          if (severity) {
+            violationsBySeverity[severity] = (violationsBySeverity[severity] || 0) + 1;
+          }
         });
       }
     });
@@ -482,7 +492,7 @@ ${report.role.accountability.map(a => `- ${a}`).join('\n')}
               this.complianceHistory.push(report);
             }
           } catch (error) {
-            console.warn(`Failed to load report ${file}:`, error.message);
+            console.warn(`Failed to load report ${file}:`, error instanceof Error ? error.message : 'Unknown error');
           }
         }
       }
@@ -494,7 +504,6 @@ ${report.role.accountability.map(a => `- ${a}`).join('\n')}
   private parseMarkdownReport(content: string): ECRRReport | null {
     try {
       // Simple parsing - in production, use a proper markdown parser
-      const lines = content.split('\n');
       const report: Partial<ECRRReport> = {};
       
       // Extract basic info
@@ -508,10 +517,10 @@ ${report.role.accountability.map(a => `- ${a}`).join('\n')}
         return null;
       }
       
-      report.id = idMatch[1];
-      report.agentId = agentMatch[1];
-      report.taskId = taskMatch[1];
-      report.createdAt = createdAtMatch[1];
+      report.id = idMatch[1] || '';
+      report.agentId = agentMatch[1] || '';
+      report.taskId = taskMatch[1] || '';
+      report.createdAt = createdAtMatch[1] || '';
       report.compliance = complianceMatch?.[1]?.includes('✅') || false;
       
       // This is a simplified parser - in production, implement full parsing
@@ -564,11 +573,71 @@ if (require.main === module) {
           budget: { files: 1, lines: 10, jobs: 1 }
         },
         {
+          id: 'test-report-2',
+          taskId: 'test-task-2',
+          agentId: 'test-agent',
+          examine: {
+            timestamp: new Date().toISOString(),
+            environment: 'test',
+            state: 'test-state',
+            artifacts: [],
+            evidence: []
+          },
+          clean: {
+            actions: [],
+            changes: [],
+            rollback: [],
+            guardrails: [],
+            budget: { files: 0, lines: 0, jobs: 0 }
+          },
+          report: {
+            id: 'test-report-2',
+            taskId: 'test-task-2',
+            agentId: 'test-agent',
+            examine: {
+              timestamp: new Date().toISOString(),
+              environment: 'test',
+              state: 'test-state',
+              artifacts: [],
+              evidence: []
+            },
+            clean: {
+              actions: [],
+              changes: [],
+              rollback: [],
+              guardrails: [],
+              budget: { files: 0, lines: 0, jobs: 0 }
+            },
+            report: {} as any,
+            role: {
+              actor: 'test-agent',
+              responsibility: 'test responsibility',
+              signature: 'test-signature',
+              accountability: ['test accountability']
+            },
+            artifacts: [],
+            metrics: {
+              violationsFound: 0,
+              checksRun: 0,
+              complianceRate: 100
+            },
+            violations: [],
+            recommendations: [],
+            compliance: false,
+            createdAt: new Date().toISOString()
+          },
+          role: {
+            actor: 'test-agent',
+            responsibility: 'test responsibility',
+            signature: 'test-signature',
+            accountability: ['test accountability']
+          },
           artifacts: ['test-report.md'],
           metrics: { duration: 1000 },
           compliance: false,
           violations: [],
-          recommendations: ['Test recommendation']
+          recommendations: ['Test recommendation'],
+          createdAt: new Date().toISOString()
         },
         {
           actor: 'Test Agent',
@@ -586,7 +655,7 @@ if (require.main === module) {
       console.log('Compliance stats:', stats);
       
       // Generate compliance report
-      const complianceReport = await engine.generateComplianceReport();
+      await engine.generateComplianceReport();
       console.log('Compliance report generated');
       
     } catch (error) {
@@ -597,4 +666,5 @@ if (require.main === module) {
   testCompliance();
 }
 
-export { ECRRComplianceEngine, ECRRReport, ECRRExamine, ECRRClean, ECRRRole, ComplianceRule };
+export { ECRRComplianceEngine };
+export type { ECRRReport, ECRRExamine, ECRRClean, ECRRRole, ComplianceRule };

@@ -1,4 +1,4 @@
-import { context, trace, diag, SpanStatusCode } from '@opentelemetry/api';
+import { context, trace, SpanStatusCode } from '@opentelemetry/api';
 
 /**
  * Error event model for structured error reporting
@@ -32,10 +32,10 @@ function parseStackFrames(stack?: string): Array<{file:string; line?:number; col
         const match = line.match(/^\s*at\s+(?:([^(]+)\s+\()?([^(]+):(\d+):(\d+)\)?/);
         if (match) {
             frames.push({
-                fn: match[1]?.trim(),
-                file: match[2]?.trim(),
-                line: parseInt(match[3]),
-                col: parseInt(match[4])
+                fn: match[1]?.trim() || '',
+                file: match[2]?.trim() || '',
+                line: parseInt(match[3] || '0'),
+                col: parseInt(match[4] || '0')
             });
         }
     }
@@ -57,10 +57,10 @@ export function publishToOtel(error: Error, ctx: any = {}): void {
             known: ctx.known || false,
             severity: ctx.severity || 'error',
             origin: ctx.origin || 'unknown',
-            service: ctx.service || process.env.SERVICE_NAME || 'otel-app',
+            service: ctx.service || process.env['SERVICE_NAME'] || 'otel-app',
             route: ctx.route,
             testId: ctx.testId,
-            buildSha: ctx.buildSha || process.env.GIT_SHA || 'dev',
+            buildSha: ctx.buildSha || process.env['GIT_SHA'] || 'dev',
             message: error.message || String(error),
             frames,
             count: ctx.count || 1,
@@ -123,20 +123,20 @@ export function publishToOtel(error: Error, ctx: any = {}): void {
 /**
  * Fallback console logging when OTEL is not available
  */
-function fallbackToConsole(errorEvent: ErrorEvent): void {
-    const logLevel = errorEvent.known ? 'warn' : 'error';
-    const prefix = errorEvent.known ? '🔄' : '🚨';
-    
-    console[logLevel](`${prefix} [${errorEvent.fingerprint}] ${errorEvent.message}`, {
-        fingerprint: errorEvent.fingerprint,
-        known: errorEvent.known,
-        origin: errorEvent.origin,
-        service: errorEvent.service,
-        count: errorEvent.count,
-        suppressed: errorEvent.suppressed,
-        frames: errorEvent.frames.slice(0, 3)
-    });
-}
+// function fallbackToConsole(errorEvent: ErrorEvent): void {
+//     const logLevel = errorEvent.known ? 'warn' : 'error';
+//     const prefix = errorEvent.known ? '🔄' : '🚨';
+//     
+//     console[logLevel](`${prefix} [${errorEvent.fingerprint}] ${errorEvent.message}`, {
+//         fingerprint: errorEvent.fingerprint,
+//         known: errorEvent.known,
+//         origin: errorEvent.origin,
+//         service: errorEvent.service,
+//         count: errorEvent.count,
+//         suppressed: errorEvent.suppressed,
+//         frames: errorEvent.frames.slice(0, 3)
+//     });
+// }
 
 /**
  * JSON log fallback for structured logging
@@ -168,7 +168,7 @@ export function publishToJsonLog(error: Error, ctx: any = {}): void {
         known: ctx.known || false,
         severity: ctx.severity || 'error',
         origin: ctx.origin || 'unknown',
-        service: ctx.service || process.env.SERVICE_NAME || 'otel-app',
+        service: ctx.service || process.env['SERVICE_NAME'] || 'otel-app',
         message: error.message || String(error),
         frames: parseStackFrames(error.stack),
         count: ctx.count || 1,

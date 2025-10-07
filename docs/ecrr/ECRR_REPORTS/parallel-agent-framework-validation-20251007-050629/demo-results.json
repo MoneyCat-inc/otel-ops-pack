@@ -1,0 +1,148 @@
+{
+  "Summary": {
+    "AverageAgentDuration": 373.71,
+    "CompletedAgents": 4,
+    "TotalDuration": 1943.58,
+    "TotalTasks": 5,
+    "SuccessRate": 80.0,
+    "FailedAgents": 6
+  },
+  "Tasks": [
+    {
+      "AtomicTasks": [
+        {
+          "Id": "file-processing-demo-1-atomic-1",
+          "EstimatedDuration": 5,
+          "Priority": 1,
+          "Type": "atomic"
+        },
+        {
+          "Id": "file-processing-demo-1-atomic-2",
+          "EstimatedDuration": 14,
+          "Priority": 1,
+          "Type": "atomic"
+        },
+        {
+          "Id": "file-processing-demo-1-atomic-3",
+          "EstimatedDuration": 10,
+          "Priority": 2,
+          "Type": "atomic"
+        },
+        {
+          "Id": "file-processing-demo-1-atomic-4",
+          "EstimatedDuration": 6,
+          "Priority": 2,
+          "Type": "atomic"
+        },
+        {
+          "Id": "file-processing-demo-1-atomic-5",
+          "EstimatedDuration": 5,
+          "Priority": 2,
+          "Type": "atomic"
+        }
+      ],
+      "DecompositionTime": 16.1918,
+      "TaskId": "file-processing-demo-1"
+    },
+    {
+      "AtomicTasks": [
+        {
+          "Id": "api-testing-demo-2-atomic-1",
+          "EstimatedDuration": 5,
+          "Priority": 1,
+          "Type": "atomic"
+        }
+      ],
+      "DecompositionTime": 4.4398,
+      "TaskId": "api-testing-demo-2"
+    },
+    {
+      "AtomicTasks": [
+        {
+          "Id": "file-processing-demo-3-atomic-1",
+          "EstimatedDuration": 11,
+          "Priority": 1,
+          "Type": "atomic"
+        },
+        {
+          "Id": "file-processing-demo-3-atomic-2",
+          "EstimatedDuration": 9,
+          "Priority": 1,
+          "Type": "atomic"
+        },
+        {
+          "Id": "file-processing-demo-3-atomic-3",
+          "EstimatedDuration": 9,
+          "Priority": 2,
+          "Type": "atomic"
+        },
+        {
+          "Id": "file-processing-demo-3-atomic-4",
+          "EstimatedDuration": 5,
+          "Priority": 2,
+          "Type": "atomic"
+        },
+        {
+          "Id": "file-processing-demo-3-atomic-5",
+          "EstimatedDuration": 5,
+          "Priority": 2,
+          "Type": "atomic"
+        }
+      ],
+      "DecompositionTime": 0.612,
+      "TaskId": "file-processing-demo-3"
+    },
+    {
+      "AtomicTasks": [
+        {
+          "Id": "api-testing-demo-4-atomic-1",
+          "EstimatedDuration": 10,
+          "Priority": 1,
+          "Type": "atomic"
+        }
+      ],
+      "DecompositionTime": 0.3787,
+      "TaskId": "api-testing-demo-4"
+    },
+    {
+      "AtomicTasks": [
+        {
+          "Id": "file-processing-demo-5-atomic-1",
+          "EstimatedDuration": 14,
+          "Priority": 1,
+          "Type": "atomic"
+        },
+        {
+          "Id": "file-processing-demo-5-atomic-2",
+          "EstimatedDuration": 5,
+          "Priority": 1,
+          "Type": "atomic"
+        },
+        {
+          "Id": "file-processing-demo-5-atomic-3",
+          "EstimatedDuration": 11,
+          "Priority": 2,
+          "Type": "atomic"
+        },
+        {
+          "Id": "file-processing-demo-5-atomic-4",
+          "EstimatedDuration": 14,
+          "Priority": 2,
+          "Type": "atomic"
+        },
+        {
+          "Id": "file-processing-demo-5-atomic-5",
+          "EstimatedDuration": 11,
+          "Priority": 2,
+          "Type": "atomic"
+        }
+      ],
+      "DecompositionTime": 0.7994,
+      "TaskId": "file-processing-demo-5"
+    }
+  ],
+  "EndTime": "2025-10-07T05:05:29.7209584+01:00",
+  "SessionId": "demo-20251007-050527",
+  "Duration": 1943.583,
+  "StartTime": "2025-10-07T05:05:27.7773754+01:00"
+}

@@ -1,5 +1,5 @@
 {
-  "last_update": "2025-10-05T18:05:23.706023+00:00",
+  "last_update": "2025-10-07T09:20:43.360838+00:00",
   "kpis": [
     {
       "label": "SigNoz Status",
@@ -9,15 +9,15 @@
     },
     {
       "label": "Windows Collector",
-      "value": "running",
-      "status": "ok",
+      "value": "stopped",
+      "status": "bad",
       "details": "Service: otelcol-contrib"
     },
     {
       "label": "ECRR Compliance",
       "value": "Active",
       "status": "ok",
-      "details": "**Agent:** BossCat OEM (Executive Overseer Manager) | **Operation:** Automated Status Dashboard Implementation | **Status:** ✅ **IMPLEMENTATION COMPLETE**"
+      "details": "ECRR report available"
     },
     {
       "label": "Repository Health",

@@ -1,0 +1,102 @@
+{
+  "Config": {
+    "TaskTypes": [
+      "file-processing",
+      "api-testing"
+    ],
+    "Complexity": "low",
+    "Duration": 2,
+    "Features": [
+      "task-decomposition",
+      "workspace-isolation"
+    ]
+  },
+  "EnableTelemetry": {
+    "IsPresent": false
+  },
+  "TaskCount": 5,
+  "DemoType": "basic",
+  "EnableECRR": {
+    "IsPresent": false
+  },
+  "MaxConcurrent": 2,
+  "SessionId": "demo-20251007-050527",
+  "Tasks": [
+    {
+      "type": "file-processing",
+      "fileTypes": [
+        ".md",
+        ".ps1"
+      ],
+      "scope": [
+        "docs",
+        "scripts"
+      ],
+      "processingType": "validation",
+      "name": "file-processing-demo-1"
+    },
+    {
+      "type": "api-testing",
+      "input": {
+        "endpoints": [
+          {
+            "method": "GET",
+            "tests": [
+              "status-check",
+              "response-time"
+            ],
+            "url": "http://localhost:8080/api/v1/health",
+            "expectedResponse": "healthy",
+            "name": "signoz-health"
+          }
+        ]
+      },
+      "name": "api-testing-demo-2"
+    },
+    {
+      "type": "file-processing",
+      "fileTypes": [
+        ".md",
+        ".ps1"
+      ],
+      "scope": [
+        "docs",
+        "scripts"
+      ],
+      "processingType": "validation",
+      "name": "file-processing-demo-3"
+    },
+    {
+      "type": "api-testing",
+      "input": {
+        "endpoints": [
+          {
+            "method": "GET",
+            "tests": [
+              "status-check",
+              "response-time"
+            ],
+            "url": "http://localhost:8080/api/v1/health",
+            "expectedResponse": "healthy",
+            "name": "signoz-health"
+          }
+        ]
+      },
+      "name": "api-testing-demo-4"
+    },
+    {
+      "type": "file-processing",
+      "fileTypes": [
+        ".md",
+        ".ps1"
+      ],
+      "scope": [
+        "docs",
+        "scripts"
+      ],
+      "processingType": "validation",
+      "name": "file-processing-demo-5"
+    }
+  ],
+  "StartTime": "2025-10-07T05:05:27.7217827+01:00"
+}

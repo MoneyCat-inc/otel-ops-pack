@@ -1,89 +1,126 @@
 // Resonai Backend - SigNoz API Integration
 // Enhanced observability integration with SigNoz API key
 
-import { trace } from '@opentelemetry/api';
-import { NodeSDK } from '@opentelemetry/sdk-node';
+import { trace, metrics as metricsApi } from '@opentelemetry/api';
+import { registerInstrumentations } from '@opentelemetry/instrumentation';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
-import { Resource } from '@opentelemetry/resources';
+import { resourceFromAttributes } from '@opentelemetry/resources';
 import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
-import { OTLPTraceExporter } from '@opentelemetry/exporter-otlp-http';
-import { OTLPMetricExporter } from '@opentelemetry/exporter-otlp-http';
-import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
+import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-http';
+import { MeterProvider, PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
 
 // SigNoz configuration
 const SIGNOZ_API_KEY = 'YMJnm6c+/poKMuEGsjOQZCKrOealu8NjX22QE66VdnQ=';
-const SIGNOZ_ENDPOINT = process.env.OTEL_EXPORTER_OTLP_ENDPOINT || 'http://localhost:14317';
-const SERVICE_NAME = process.env.OTEL_SERVICE_NAME || 'resonai-backend';
-const SERVICE_VERSION = process.env.OTEL_SERVICE_VERSION || '1.0.0';
-const ENVIRONMENT = process.env.OTEL_ENVIRONMENT || 'development';
+const SIGNOZ_ENDPOINT = process.env['OTEL_EXPORTER_OTLP_ENDPOINT'] || 'http://localhost:14317';
+const SERVICE_NAME = process.env['OTEL_SERVICE_NAME'] || 'resonai-backend';
+const SERVICE_VERSION = process.env['OTEL_SERVICE_VERSION'] || '1.0.0';
+const ENVIRONMENT = process.env['OTEL_ENVIRONMENT'] || 'development';
 
-// Initialize SigNoz integration
-export function initializeSigNoz(): NodeSDK {
-  const sdk = new NodeSDK({
-    resource: new Resource({
+let meterProvider: MeterProvider | undefined;
+let instrumentationsRegistered = false;
+let initializingPromise: Promise<void> | undefined;
+
+// Initialize SigNoz integration using HTTP exporters only (no gRPC dependency)
+export function initializeSigNoz(): Promise<void> {
+  if (typeof window !== 'undefined') {
+    return Promise.resolve();
+  }
+
+  if (meterProvider) {
+    return Promise.resolve();
+  }
+
+  if (initializingPromise) {
+    return initializingPromise;
+  }
+
+  initializingPromise = (async () => {
+    const resource = resourceFromAttributes({
       [SemanticResourceAttributes.SERVICE_NAME]: SERVICE_NAME,
       [SemanticResourceAttributes.SERVICE_VERSION]: SERVICE_VERSION,
       [SemanticResourceAttributes.DEPLOYMENT_ENVIRONMENT]: ENVIRONMENT,
-      [SemanticResourceAttributes.SERVICE_INSTANCE_ID]: process.env.VERCEL_REGION || 'local',
-    }),
-    traceExporter: new OTLPTraceExporter({
-      url: `${SIGNOZ_ENDPOINT}/v1/traces`,
-      headers: {
-        'Authorization': `Bearer ${SIGNOZ_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-    }),
-    metricReader: new PeriodicExportingMetricReader({
-      exporter: new OTLPMetricExporter({
-        url: `${SIGNOZ_ENDPOINT}/v1/metrics`,
-        headers: {
-          'Authorization': `Bearer ${SIGNOZ_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-      }),
-      exportIntervalMillis: 10000, // Export every 10 seconds
-    }),
-    instrumentations: [
-      getNodeAutoInstrumentations({
-        // Disable some instrumentations that might be noisy
-        '@opentelemetry/instrumentation-fs': {
-          enabled: false,
-        },
-        '@opentelemetry/instrumentation-dns': {
-          enabled: false,
-        },
-        // Enable HTTP instrumentation with custom configuration
-        '@opentelemetry/instrumentation-http': {
-          enabled: true,
-          requestHook: (span, request) => {
-            // Add custom attributes to HTTP requests
-            span.setAttributes({
-              'http.request.method': request.method,
-              'http.request.url': request.url,
-              'http.request.user_agent': request.headers?.['user-agent'] || '',
-            });
-          },
-          responseHook: (span, response) => {
-            // Add custom attributes to HTTP responses
-            span.setAttributes({
-              'http.response.status_code': response.statusCode,
-              'http.response.status_text': response.statusMessage || '',
-            });
-          },
-        },
-        // Enable Express instrumentation
-        '@opentelemetry/instrumentation-express': {
-          enabled: true,
-        },
-        // Enable Prisma instrumentation
-        '@opentelemetry/instrumentation-prisma': {
-          enabled: true,
-        },
-      }),
-    ],
-  });
+      [SemanticResourceAttributes.SERVICE_INSTANCE_ID]:
+        process.env['VERCEL_REGION'] || 'local',
+    });
 
-  return sdk;
+    meterProvider = new MeterProvider({
+      resource,
+    });
+
+    meterProvider.addMetricReader(
+      new PeriodicExportingMetricReader({
+        exporter: new OTLPMetricExporter({
+          url: `${SIGNOZ_ENDPOINT}/v1/metrics`,
+          headers: {
+            Authorization: `Bearer ${SIGNOZ_API_KEY}`,
+            'Content-Type': 'application/json',
+          },
+        }),
+        exportIntervalMillis: 10000,
+      }),
+    );
+
+    metricsApi.setGlobalMeterProvider(meterProvider);
+
+    if (!instrumentationsRegistered) {
+      registerInstrumentations({
+        instrumentations: [
+          getNodeAutoInstrumentations({
+            '@opentelemetry/instrumentation-fs': {
+              enabled: false,
+            },
+            '@opentelemetry/instrumentation-dns': {
+              enabled: false,
+            },
+            '@opentelemetry/instrumentation-http': {
+              enabled: true,
+              requestHook: (span, request) => {
+                span.setAttributes({
+                  'http.request.method': request.method,
+                  'http.request.url': (request as any).url || '',
+                  'http.request.user_agent': (request as any).headers?.['user-agent'] || '',
+                });
+              },
+              responseHook: (span, response) => {
+                span.setAttributes({
+                  'http.response.status_code': response.statusCode,
+                  'http.response.status_text': response.statusMessage || '',
+                });
+              },
+            },
+            '@opentelemetry/instrumentation-express': {
+              enabled: true,
+            },
+          }),
+        ],
+      });
+      instrumentationsRegistered = true;
+    }
+  })()
+    .catch(error => {
+      // eslint-disable-next-line no-console
+      console.error('Failed to initialize SigNoz metrics exporters', error);
+      throw error;
+    });
+
+  return initializingPromise;
+}
+
+export async function shutdownSigNoz(): Promise<void> {
+  if (!meterProvider) return;
+
+  try {
+    await meterProvider.shutdown();
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('Failed to shutdown SigNoz metrics provider', error);
+  } finally {
+    meterProvider = undefined;
+    initializingPromise = undefined;
+    if (typeof metricsApi.disable === 'function') {
+      metricsApi.disable();
+    }
+  }
 }
 
 // SigNoz API client for custom queries and dashboards
@@ -92,7 +129,7 @@ export class SigNozAPIClient {
   private apiKey: string;
 
   constructor() {
-    this.baseUrl = process.env.SIGNOZ_API_URL || 'http://localhost:8080/api/v1';
+    this.baseUrl = process.env['SIGNOZ_API_URL'] || 'http://localhost:8080/api/v1';
     this.apiKey = SIGNOZ_API_KEY;
   }
 
@@ -161,7 +198,7 @@ export class SigNozAPIClient {
       }
 
       const data = await response.json();
-      return data.traces || [];
+      return (data as any).traces || [];
     } catch (error) {
       console.error('Failed to query traces from SigNoz:', error);
       return [];
@@ -226,7 +263,7 @@ export class SigNozAPIClient {
       }
 
       const data = await response.json();
-      return data.logs || [];
+      return (data as any).logs || [];
     } catch (error) {
       console.error('Failed to query logs from SigNoz:', error);
       return [];
@@ -234,7 +271,7 @@ export class SigNozAPIClient {
   }
 
   // Get service metrics summary
-  async getServiceMetrics(serviceName: string = SERVICE_NAME): Promise<{
+  async getServiceMetrics(_serviceName: string = SERVICE_NAME): Promise<{
     requestRate: number;
     errorRate: number;
     avgLatency: number;
@@ -462,13 +499,24 @@ export class ResonaiMetrics {
 
 // Initialize SigNoz on module load
 if (process.env.NODE_ENV !== 'test') {
-  const sdk = initializeSigNoz();
-  sdk.start();
-  
-  console.log('🔍 SigNoz integration initialized');
-  console.log(`   Service: ${SERVICE_NAME} v${SERVICE_VERSION}`);
-  console.log(`   Environment: ${ENVIRONMENT}`);
-  console.log(`   Endpoint: ${SIGNOZ_ENDPOINT}`);
+  initializeSigNoz()
+    .then(() => {
+      console.log('🔍 SigNoz integration initialized');
+      console.log(`   Service: ${SERVICE_NAME} v${SERVICE_VERSION}`);
+      console.log(`   Environment: ${ENVIRONMENT}`);
+      console.log(`   Endpoint: ${SIGNOZ_ENDPOINT}`);
+    })
+    .catch(error => {
+      console.error('Failed to initialize SigNoz integration', error);
+    });
+
+  const handleShutdown = async () => {
+    await shutdownSigNoz();
+  };
+
+  process.once('SIGTERM', handleShutdown);
+  process.once('SIGINT', handleShutdown);
+  process.once('beforeExit', handleShutdown);
 }
 
 // Export instances

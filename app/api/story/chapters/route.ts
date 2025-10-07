@@ -3,8 +3,8 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { trace } from '@opentelemetry/api';
-import { StoryChapterRequestSchema, StoryProgressSchema } from '@/lib/validation/schemas';
-import { requireAuth, optionalAuth } from '@/lib/middleware/auth';
+import { StoryProgressSchema } from '@/lib/validation/schemas';
+import { optionalAuth } from '@/lib/middleware/auth';
 import { withOTel } from '@/lib/middleware/otel';
 import { withRateLimit, rateLimitConfigs } from '@/lib/middleware/rate-limit';
 import { db } from '@/lib/db';
@@ -89,7 +89,7 @@ export const GET = withOTel(
           metadata: {
             version: version || 'latest',
             totalChapters: chapters.length,
-            availableVersions: versions.map(v => v.version),
+            availableVersions: versions.map((v: any) => v.version),
             requestedAt: new Date().toISOString(),
           }
         }
@@ -139,7 +139,7 @@ export const POST = withOTel(
               error: {
                 code: 'VALIDATION_ERROR',
                 message: 'Invalid story progress format',
-                details: parseResult.error.errors
+                details: parseResult.error.issues
               }
             },
             { status: 400 }
@@ -255,168 +255,8 @@ export const POST = withOTel(
 );
 
 // GET /api/story/progress - Get user's story progress
-export const progress = withOTel(
-  withRateLimit(rateLimitConfigs.user,
-    requireAuth(async (req: NextRequest, { user }) => {
-      const span = trace.getActiveSpan();
-      
-      try {
-        const { searchParams } = new URL(req.url);
-        const limit = parseInt(searchParams.get('limit') || '50');
-        const offset = parseInt(searchParams.get('offset') || '0');
 
-        // Get user's story progress
-        const progress = await db.storyProgress.findMany({
-          where: { userId: user.id },
-          include: {
-            chapter: {
-              select: {
-                title: true,
-                chapterId: true,
-                version: true,
-              }
-            }
-          },
-          orderBy: { completedAt: 'desc' },
-          take: Math.min(limit, 100), // Cap at 100
-          skip: offset,
-        });
-
-        // Get total count
-        const totalCount = await db.storyProgress.count({
-          where: { userId: user.id }
-        });
-
-        span?.setAttributes({
-          'story.progress_retrieved': true,
-          'story.user_id': user.id,
-          'story.progress_count': progress.length,
-          'story.total_count': totalCount,
-        });
-
-        return NextResponse.json({
-          success: true,
-          data: {
-            progress: progress.map(p => ({
-              id: p.id,
-              chapterId: p.chapter.chapterId,
-              chapterTitle: p.chapter.title,
-              version: p.chapter.version,
-              completedAt: p.completedAt,
-              choices: p.choices,
-            })),
-            pagination: {
-              limit,
-              offset,
-              total: totalCount,
-              hasMore: offset + progress.length < totalCount,
-            }
-          }
-        });
-
-      } catch (error) {
-        span?.setAttributes({
-          'story.progress_retrieval_error': true,
-          'story.error.message': error instanceof Error ? error.message : 'Unknown error'
-        });
-
-        console.error('Failed to retrieve story progress:', error);
-
-        return NextResponse.json(
-          {
-            success: false,
-            error: {
-              code: 'PROGRESS_RETRIEVAL_ERROR',
-              message: 'Failed to retrieve story progress'
-            }
-          },
-          { status: 500 }
-        );
-      }
-    })
-  )
-);
-
-// GET /api/story/stats - Get story statistics (for authenticated users)
-export const stats = withOTel(
-  withRateLimit(rateLimitConfigs.user,
-    requireAuth(async (req: NextRequest, { user }) => {
-      const span = trace.getActiveSpan();
-      
-      try {
-        // Get user's story statistics
-        const [totalChapters, completedChapters, recentProgress] = await Promise.all([
-          db.storyChapter.count({
-            where: { isActive: true }
-          }),
-          db.storyProgress.count({
-            where: { userId: user.id }
-          }),
-          db.storyProgress.findMany({
-            where: { userId: user.id },
-            orderBy: { completedAt: 'desc' },
-            take: 5,
-            include: {
-              chapter: {
-                select: {
-                  title: true,
-                  chapterId: true,
-                }
-              }
-            }
-          })
-        ]);
-
-        // Calculate completion percentage
-        const completionPercentage = totalChapters > 0 
-          ? Math.round((completedChapters / totalChapters) * 100)
-          : 0;
-
-        span?.setAttributes({
-          'story.stats_retrieved': true,
-          'story.user_id': user.id,
-          'story.total_chapters': totalChapters,
-          'story.completed_chapters': completedChapters,
-          'story.completion_percentage': completionPercentage,
-        });
-
-        return NextResponse.json({
-          success: true,
-          data: {
-            totalChapters,
-            completedChapters,
-            completionPercentage,
-            recentProgress: recentProgress.map(p => ({
-              chapterId: p.chapter.chapterId,
-              chapterTitle: p.chapter.title,
-              completedAt: p.completedAt,
-            })),
-            lastActivity: recentProgress[0]?.completedAt || null,
-          }
-        });
-
-      } catch (error) {
-        span?.setAttributes({
-          'story.stats_error': true,
-          'story.error.message': error instanceof Error ? error.message : 'Unknown error'
-        });
-
-        console.error('Failed to retrieve story stats:', error);
-
-        return NextResponse.json(
-          {
-            success: false,
-            error: {
-              code: 'STATS_RETRIEVAL_ERROR',
-              message: 'Failed to retrieve story statistics'
-            }
-          },
-          { status: 500 }
-        );
-      }
-    })
-  )
-);
+// Note: Progress and stats functionality moved to GET handler above with query parameters
 
 // Export config for Edge Runtime
 export const runtime = 'nodejs';

@@ -28,3 +28,9 @@
   "timestamp": "2025-10-05 06:05:06 UTC",
   "metricsCount": 8
 }
+{
+  "timestamp": "2025-10-07 06:05:02 UTC",
+  "signozUrl": "http://localhost:8080",
+  "metricsCount": 8,
+  "success": true
+}

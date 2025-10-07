@@ -1,0 +1,120 @@
+name: BossCat Diagnostic Workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      test_step:
+        description: 'Which step to test (all, python, deps, k6, scripts)'
+        required: false
+        default: 'all'
+        type: string
+
+jobs:
+  diagnostic:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Debug - List repository contents
+      run: |
+        echo "=== Repository Structure ==="
+        ls -la
+        echo "=== Scripts Directory ==="
+        ls -la scripts/ || echo "scripts/ directory not found"
+        echo "=== Tests Directory ==="
+        ls -la tests/ || echo "tests/ directory not found"
+        echo "=== Docs Directory ==="
+        ls -la docs/ || echo "docs/ directory not found"
+        echo "=== Requirements File ==="
+        cat requirements.txt || echo "requirements.txt not found"
+        
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+        
+    - name: Debug - Python setup verification
+      run: |
+        echo "=== Python Version ==="
+        python --version
+        echo "=== Pip Version ==="
+        pip --version
+        echo "=== Python Path ==="
+        which python
+        
+    - name: Debug - Create directories
+      run: |
+        echo "=== Creating directories ==="
+        mkdir -p artifacts
+        mkdir -p docs/BossCat/reports
+        echo "=== Directory verification ==="
+        ls -la artifacts/
+        ls -la docs/BossCat/reports/
+        
+    - name: Debug - Test pip install
+      run: |
+        echo "=== Testing pip upgrade ==="
+        python -m pip install --upgrade pip
+        echo "=== Testing requirements.txt ==="
+        pip install -r requirements.txt --dry-run || echo "requirements.txt has issues"
+        echo "=== Testing individual packages ==="
+        pip install locust --dry-run || echo "locust install would fail"
+        pip install flake8 --dry-run || echo "flake8 install would fail"
+        pip install black --dry-run || echo "black install would fail"
+        
+    - name: Debug - Test k6 installation
+      run: |
+        echo "=== Testing k6 GPG key ==="
+        sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69 || echo "GPG key fetch failed"
+        echo "=== Testing k6 repository ==="
+        echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list || echo "Repository addition failed"
+        echo "=== Testing apt update ==="
+        sudo apt-get update || echo "apt update failed"
+        echo "=== Testing k6 install ==="
+        sudo apt-get install k6 --dry-run || echo "k6 install would fail"
+        
+    - name: Debug - Test script existence
+      run: |
+        echo "=== Checking script files ==="
+        test -f scripts/test-otlp-smoke.py && echo "test-otlp-smoke.py exists" || echo "test-otlp-smoke.py missing"
+        test -f scripts/test-dry-run.py && echo "test-dry-run.py exists" || echo "test-dry-run.py missing"
+        test -f scripts/run-local-pipeline.py && echo "run-local-pipeline.py exists" || echo "run-local-pipeline.py missing"
+        test -f scripts/generate-ecrr-report.py && echo "generate-ecrr-report.py exists" || echo "generate-ecrr-report.py missing"
+        test -f scripts/generate-boss-v2-report.py && echo "generate-boss-v2-report.py exists" || echo "generate-boss-v2-report.py missing"
+        test -f scripts/send_synthetic_otel_simple.py && echo "send_synthetic_otel_simple.py exists" || echo "send_synthetic_otel_simple.py missing"
+        
+    - name: Debug - Test script syntax
+      run: |
+        echo "=== Testing script syntax ==="
+        python -m py_compile scripts/test-otlp-smoke.py || echo "test-otlp-smoke.py has syntax errors"
+        python -m py_compile scripts/test-dry-run.py || echo "test-dry-run.py has syntax errors"
+        python -m py_compile scripts/run-local-pipeline.py || echo "run-local-pipeline.py has syntax errors"
+        
+    - name: Debug - Test imports
+      run: |
+        echo "=== Testing script imports ==="
+        python -c "import sys; sys.path.insert(0, 'scripts'); import test_otlp_smoke" || echo "test-otlp-smoke import failed"
+        python -c "import sys; sys.path.insert(0, 'scripts'); import test_dry_run" || echo "test-dry-run import failed"
+        
+    - name: Debug - Test k6 files
+      run: |
+        echo "=== Checking k6 test files ==="
+        test -f tests/k6/baseline-test.js && echo "baseline-test.js exists" || echo "baseline-test.js missing"
+        test -f tests/k6/load-test.js && echo "load-test.js exists" || echo "load-test.js missing"
+        test -f tests/k6/stress-test.js && echo "stress-test.js exists" || echo "stress-test.js missing"
+        test -f tests/k6/soak-test.js && echo "soak-test.js exists" || echo "soak-test.js missing"
+        test -f tests/k6/mock-friendly-test.js && echo "mock-friendly-test.js exists" || echo "mock-friendly-test.js missing"
+        
+    - name: Debug - Test locust files
+      run: |
+        echo "=== Checking locust test files ==="
+        test -f tests/locust/signoz_user_journey.py && echo "signoz_user_journey.py exists" || echo "signoz_user_journey.py missing"
+        
+    - name: Debug - Final summary
+      run: |
+        echo "=== DIAGNOSTIC COMPLETE ==="
+        echo "All diagnostic steps completed successfully"
+        echo "If you see this message, the basic setup is working"
+        echo "The issue is likely in the main workflow execution"

@@ -1,0 +1,118 @@
+{
+  "GovernanceMetrics": {
+    "ComplianceStatus": "GOOD",
+    "OverallCoverage": 85.71,
+    "PassRate": 85.71,
+    "QualityScore": 85.71
+  },
+  "BossCatInsights": {
+    "GovernanceVisibility": "ACHIEVED",
+    "TetragrammatonValidation": "IN_PROGRESS",
+    "EvidencePipeline": "ACTIVE",
+    "CrossLanguageCapability": "DEMONSTRATED"
+  },
+  "TotalTests": 42,
+  "TotalPassed": 36,
+  "TetragrammatonStructure": "YHWH (Yod-He-Vav-He)",
+  "GeneratedAt": "2025-10-06 00:42:12 UTC",
+  "Quadrants": {
+    "YOD_Foundation": {
+      "Status": "PARTIAL",
+      "QualityScore": 80.0,
+      "Name": "YOD - Foundation",
+      "Metrics": {
+        "Duration": 1.2,
+        "Coverage": {
+          "Functions": 90,
+          "Branches": 80,
+          "Lines": 85
+        },
+        "Failed": 3,
+        "Passed": 12,
+        "Total": 15
+      },
+      "KeyTests": [
+        "countOccurrences basic functionality",
+        "countOccurrences edge cases",
+        "countOccurrences overlapping matches",
+        "countOccurrences single character searches"
+      ],
+      "PassRate": 80.0,
+      "Description": "Core text processing operations and foundational logic"
+    },
+    "HE_Interface": {
+      "Status": "PARTIAL",
+      "QualityScore": 87.5,
+      "Name": "HE - Interface",
+      "Metrics": {
+        "Duration": 0.8,
+        "Coverage": {
+          "Functions": 80,
+          "Branches": 70,
+          "Lines": 75
+        },
+        "Failed": 1,
+        "Passed": 7,
+        "Total": 8
+      },
+      "KeyTests": [
+        "HE Interface functionality",
+        "CLI command processing",
+        "Input parameter validation",
+        "Output formatting"
+      ],
+      "PassRate": 87.5,
+      "Description": "Command-line interface layer and user interactions"
+    },
+    "VAV_Validation": {
+      "Status": "PARTIAL",
+      "QualityScore": 90.0,
+      "Name": "VAV - Validation",
+      "Metrics": {
+        "Duration": 1.0,
+        "Coverage": {
+          "Functions": 95,
+          "Branches": 85,
+          "Lines": 90
+        },
+        "Failed": 1,
+        "Passed": 9,
+        "Total": 10
+      },
+      "KeyTests": [
+        "VAV Validation operations",
+        "Input sanitization",
+        "Error boundary testing",
+        "Data integrity validation"
+      ],
+      "PassRate": 90.0,
+      "Description": "Input validation, error handling, and data integrity"
+    },
+    "HE_Integration": {
+      "Status": "PARTIAL",
+      "QualityScore": 88.89,
+      "Name": "HE - Integration",
+      "Metrics": {
+        "Duration": 1.1,
+        "Coverage": {
+          "Functions": 85,
+          "Branches": 75,
+          "Lines": 80
+        },
+        "Failed": 1,
+        "Passed": 8,
+        "Total": 9
+      },
+      "KeyTests": [
+        "HE Integration operations",
+        "End-to-end workflow",
+        "System orchestration",
+        "Complete execution cycle"
+      ],
+      "PassRate": 88.89,
+      "Description": "Complete execution orchestration and system integration"
+    }
+  },
+  "TotalFailed": 6,
+  "TotalDuration": 4.1
+}

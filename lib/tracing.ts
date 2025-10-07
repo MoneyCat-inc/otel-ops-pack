@@ -2,8 +2,8 @@
 // This file initializes tracing for the browser/client-side
 
 import { WebTracerProvider } from '@opentelemetry/sdk-trace-web';
-import { OTLPTraceExporter } from '@opentelemetry/exporter-otlp-http';
-import { Resource } from '@opentelemetry/resources';
+import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
+import { resourceFromAttributes } from '@opentelemetry/resources';
 import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
 import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-web';
 import { registerInstrumentations } from '@opentelemetry/instrumentation';
@@ -13,22 +13,22 @@ import { UserInteractionInstrumentation } from '@opentelemetry/instrumentation-u
 import { XMLHttpRequestInstrumentation } from '@opentelemetry/instrumentation-xml-http-request';
 
 // Only initialize tracing in browser environment
-if (typeof window !== 'undefined') {
+if (typeof globalThis !== 'undefined' && (globalThis as any).window) {
   // Create OTLP exporter for SigNoz
   const otlpExporter = new OTLPTraceExporter({
-    url: process.env.NEXT_PUBLIC_OTEL_EXPORTER_OTLP_ENDPOINT || 'http://localhost:5318/v1/traces',
+    url: process.env['NEXT_PUBLIC_OTEL_EXPORTER_OTLP_ENDPOINT'] || 'http://localhost:5318/v1/traces',
     headers: {
-      'signoz-access-token': process.env.NEXT_PUBLIC_SIGNOZ_ACCESS_TOKEN || 'local-signoz-jwt-secret-rotate',
+      'signoz-access-token': process.env['NEXT_PUBLIC_SIGNOZ_ACCESS_TOKEN'] || 'local-signoz-jwt-secret-rotate',
     },
   });
 
   // Create resource with service information
-  const resource = new Resource({
+  const resource = resourceFromAttributes({
     [SemanticResourceAttributes.SERVICE_NAME]: 'resonai-frontend',
-    [SemanticResourceAttributes.SERVICE_VERSION]: process.env.NEXT_PUBLIC_APP_VERSION || '1.0.0',
-    [SemanticResourceAttributes.DEPLOYMENT_ENVIRONMENT]: process.env.NEXT_PUBLIC_ENVIRONMENT || 'development',
-    [SemanticResourceAttributes.BROWSER_NAME]: navigator.userAgent,
-    [SemanticResourceAttributes.BROWSER_VERSION]: navigator.userAgent,
+        [SemanticResourceAttributes.SERVICE_VERSION]: process.env['NEXT_PUBLIC_APP_VERSION'] || '1.0.0',
+        [SemanticResourceAttributes.DEPLOYMENT_ENVIRONMENT]: process.env['NEXT_PUBLIC_ENVIRONMENT'] || 'development',
+        'browser.name': (globalThis as any).navigator?.userAgent || '',
+        'browser.version': (globalThis as any).navigator?.userAgent || '',
   });
 
   // Create tracer provider
@@ -37,7 +37,7 @@ if (typeof window !== 'undefined') {
   });
 
   // Add span processor
-  tracerProvider.addSpanProcessor(
+  (tracerProvider as any).addSpanProcessor(
     new BatchSpanProcessor(otlpExporter, {
       maxExportBatchSize: 100,
       exportTimeoutMillis: 30000,
@@ -53,13 +53,7 @@ if (typeof window !== 'undefined') {
         requestHook: (span, request) => {
           span.setAttributes({
             'http.request.method': request.method,
-            'http.request.url': request.url,
-          });
-        },
-        responseHook: (span, response) => {
-          span.setAttributes({
-            'http.response.status_code': response.status,
-            'http.response.status_text': response.statusText,
+            'http.request.url': (request as any).url || '',
           });
         },
       }),
@@ -67,20 +61,7 @@ if (typeof window !== 'undefined') {
         enabled: true,
         eventNames: ['click', 'submit', 'keydown'],
       }),
-      new XMLHttpRequestInstrumentation({
-        requestHook: (span, request) => {
-          span.setAttributes({
-            'http.request.method': request.method,
-            'http.request.url': request.url,
-          });
-        },
-        responseHook: (span, response) => {
-          span.setAttributes({
-            'http.response.status_code': response.status,
-            'http.response.status_text': response.statusText,
-          });
-        },
-      }),
+      new XMLHttpRequestInstrumentation(),
     ],
   });
 

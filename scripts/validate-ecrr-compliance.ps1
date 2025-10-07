@@ -4,10 +4,20 @@
 param(
     [string]$ReportsPath = "docs/ECRR_REPORTS",
     [string]$OutDir = "artifacts",
-    [switch]$Verbose
+    [switch]$Verbose,
+    # Aliases/new-style params used by orchestrators
+    [string]$ReportsDir,
+    [string]$OutJson,
+    [int]$MinFourSectionPct = 0,
+    [int]$MinGatePct = 0
 )
 
 $ErrorActionPreference = 'Stop'
+
+# Reconcile parameter aliases
+if ($PSBoundParameters.ContainsKey('ReportsDir') -and -not [string]::IsNullOrWhiteSpace($ReportsDir)) {
+    $ReportsPath = $ReportsDir
+}
 
 if (!(Test-Path $OutDir)) {
     New-Item -ItemType Directory -Path $OutDir | Out-Null
@@ -89,6 +99,29 @@ $result = [ordered]@{
     nonCompliant = $issues
 }
 
+# Orchestrator-compatible JSON schema
+$schema = [ordered]@{
+    total = $total
+    fourSection = [ordered]@{
+        count = $metrics.hasFourSection
+        pct   = if ($total -gt 0) { [math]::Round(($metrics.hasFourSection/$total)*100,1) } else { 0 }
+    }
+    ecrrGate = [ordered]@{
+        count = $metrics.hasEcrrGate
+        pct   = if ($total -gt 0) { [math]::Round(($metrics.hasEcrrGate/$total)*100,1) } else { 0 }
+    }
+    # Map available metrics to expected fields
+    actor = $metrics.hasActor
+    evidence = $metrics.hasProductionMarker
+    status = $metrics.hasProductionMarker
+    thresholds = [ordered]@{
+        minFourSectionPct = $MinFourSectionPct
+        minGatePct = $MinGatePct
+    }
+}
+
+$schema.passed = (($schema.fourSection.pct -ge $schema.thresholds.minFourSectionPct) -and ($schema.ecrrGate.pct -ge $schema.thresholds.minGatePct))
+
 $jsonPath = Join-Path $OutDir 'ecrr-compliance-report.json'
 ($result | ConvertTo-Json -Depth 6) | Out-File -Encoding UTF8 $jsonPath
 
@@ -111,5 +144,15 @@ $mdPath = Join-Path $OutDir 'ecrr-compliance-report.md'
 ) | Out-File -Encoding UTF8 $mdPath
 
 Write-Host "✅ Compliance report written to $jsonPath and $mdPath" -ForegroundColor Green
+
+# If an explicit OutJson path is provided, emit the orchestrator schema there
+if ($PSBoundParameters.ContainsKey('OutJson') -and -not [string]::IsNullOrWhiteSpace($OutJson)) {
+    $outDirForJson = Split-Path -Parent $OutJson
+    if (-not [string]::IsNullOrWhiteSpace($outDirForJson) -and -not (Test-Path $outDirForJson)) {
+        New-Item -ItemType Directory -Path $outDirForJson -Force | Out-Null
+    }
+    ($schema | ConvertTo-Json -Depth 6) | Out-File -Encoding UTF8 $OutJson
+    Write-Host "✅ Orchestrator JSON written to $OutJson" -ForegroundColor Green
+}
 
 return $result

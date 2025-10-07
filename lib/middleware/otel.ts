@@ -12,7 +12,7 @@ export function withOTel<T extends any[]>(
   handler: (...args: T) => Promise<NextResponse>
 ) {
   return async (...args: T): Promise<NextResponse> => {
-    const [req] = args as [NextRequest];
+    const [req] = args as unknown as [NextRequest, ...any[]];
     
     // Extract route information
     const route = req.nextUrl.pathname;

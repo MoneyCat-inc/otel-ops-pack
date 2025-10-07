@@ -1,0 +1,275 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: signoz-config
+  namespace: bosscat-testing
+data:
+  signoz-config.yaml: |
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:4317
+          http:
+            endpoint: 0.0.0.0:4318
+      
+      prometheus:
+        config:
+          scrape_configs:
+            - job_name: 'otelcol'
+              static_configs:
+                - targets: ['otelcol-contrib:8888']
+              scrape_interval: 15s
+              metrics_path: /metrics
+              
+            - job_name: 'signoz-query-service'
+              static_configs:
+                - targets: ['signoz-query-service:8080']
+              scrape_interval: 15s
+              metrics_path: /metrics
+              
+            - job_name: 'signoz-frontend'
+              static_configs:
+                - targets: ['signoz-frontend:8080']
+              scrape_interval: 15s
+              metrics_path: /metrics
+
+    processors:
+      batch:
+        timeout: 200ms
+        send_batch_size: 1024
+        send_batch_max_size: 2048
+      
+      memory_limiter:
+        limit_mib: 512
+        spike_limit_mib: 128
+        check_interval: 5s
+      
+      resource:
+        attributes:
+          - key: bosscat.environment
+            value: bosscat-testing
+            action: upsert
+          - key: bosscat.test_type
+            value: gate_verification
+            action: upsert
+
+    exporters:
+      otlp:
+        endpoint: http://signoz-otel-collector:4317
+        tls:
+          insecure: true
+      
+      prometheus:
+        endpoint: "0.0.0.0:8889"
+        namespace: bosscat
+        const_labels:
+          environment: bosscat-testing
+          service: bosscat-gate-verification
+
+    service:
+      pipelines:
+        traces:
+          receivers: [otlp]
+          processors: [memory_limiter, batch, resource]
+          exporters: [otlp]
+        
+        metrics:
+          receivers: [otlp, prometheus]
+          processors: [memory_limiter, batch, resource]
+          exporters: [otlp, prometheus]
+        
+        logs:
+          receivers: [otlp]
+          processors: [memory_limiter, batch, resource]
+          exporters: [otlp]
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+  namespace: bosscat-testing
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 15s
+      evaluation_interval: 15s
+
+    rule_files:
+      - "/etc/prometheus/rules/*.yml"
+
+    scrape_configs:
+      - job_name: 'bosscat-gate-verification'
+        static_configs:
+          - targets: ['signoz-frontend:8080']
+        metrics_path: /api/v1/metrics
+        scrape_interval: 10s
+        scrape_timeout: 5s
+        
+      - job_name: 'otel-collector'
+        static_configs:
+          - targets: ['otelcol-contrib:8888']
+        metrics_path: /metrics
+        scrape_interval: 15s
+        
+      - job_name: 'k6-tests'
+        static_configs:
+          - targets: ['k6-test-runner:8080']
+        metrics_path: /metrics
+        scrape_interval: 30s
+        
+      - job_name: 'locust-tests'
+        static_configs:
+          - targets: ['locust-master:8089']
+        metrics_path: /stats/requests/csv
+        scrape_interval: 30s
+
+    alerting:
+      alertmanagers:
+        - static_configs:
+            - targets:
+              - alertmanager:9093
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasources
+  namespace: bosscat-testing
+data:
+  datasources.yaml: |
+    apiVersion: 1
+    datasources:
+      - name: SigNoz
+        type: signoz
+        url: http://signoz-query-service:8080
+        access: proxy
+        isDefault: true
+        jsonData:
+          httpMethod: POST
+          
+      - name: Prometheus
+        type: prometheus
+        url: http://prometheus:9090
+        access: proxy
+        isDefault: false
+        jsonData:
+          httpMethod: POST
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bosscat-alerts
+  namespace: bosscat-testing
+data:
+  bosscat-alerts.yml: |
+    groups:
+      - name: bosscat-gate-verification
+        rules:
+          - alert: BossCatGateVerificationFailed
+            expr: rate(http_requests_total{status=~"5.."}[5m]) > 0.05
+            for: 2m
+            labels:
+              severity: critical
+              service: bosscat-gate-verification
+            annotations:
+              summary: "BossCat gate verification failing"
+              description: "Error rate exceeds 5% for 2 minutes"
+              
+          - alert: BossCatTraceIngestionLatency
+            expr: histogram_quantile(0.95, rate(otelcol_processor_batch_batch_send_duration_bucket[5m])) > 0.5
+            for: 1m
+            labels:
+              severity: warning
+              service: bosscat-gate-verification
+            annotations:
+              summary: "High trace ingestion latency"
+              description: "95th percentile trace ingestion latency exceeds 500ms"
+              
+          - alert: BossCatSyntheticTracesMissing
+            expr: absent(rate(otelcol_processor_batch_batch_send_size_sum[5m]))
+            for: 5m
+            labels:
+              severity: critical
+              service: bosscat-gate-verification
+            annotations:
+              summary: "Synthetic traces not being ingested"
+              description: "No synthetic traces detected for 5 minutes"
+              
+          - alert: BossCatCanaryTestFailed
+            expr: rate(otelcol_processor_batch_batch_send_size_sum{test_type="canary"}[5m]) == 0
+            for: 2m
+            labels:
+              severity: warning
+              service: bosscat-gate-verification
+            annotations:
+              summary: "Canary test not running"
+              description: "No canary test traces detected for 2 minutes"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bosscat-dashboard-config
+  namespace: bosscat-testing
+data:
+  dashboard.json: |
+    {
+      "dashboard": {
+        "title": "BossCat Gate Verification Dashboard",
+        "tags": ["bosscat", "gate-verification", "observability"],
+        "timezone": "browser",
+        "panels": [
+          {
+            "title": "Gate Verification Status",
+            "type": "stat",
+            "targets": [
+              {
+                "expr": "rate(http_requests_total{status=~\"2..\"}[5m])",
+                "legendFormat": "Success Rate"
+              }
+            ],
+            "fieldConfig": {
+              "defaults": {
+                "unit": "percent",
+                "min": 0,
+                "max": 1
+              }
+            }
+          },
+          {
+            "title": "Trace Ingestion Rate",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "rate(otelcol_processor_batch_batch_send_size_sum[5m])",
+                "legendFormat": "Traces/sec"
+              }
+            ]
+          },
+          {
+            "title": "Error Rate",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "rate(http_requests_total{status=~\"5..\"}[5m])",
+                "legendFormat": "Error Rate"
+              }
+            ]
+          },
+          {
+            "title": "Response Time P95",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))",
+                "legendFormat": "P95 Response Time"
+              }
+            ]
+          }
+        ],
+        "time": {
+          "from": "now-1h",
+          "to": "now"
+        },
+        "refresh": "30s"
+      }
+    }

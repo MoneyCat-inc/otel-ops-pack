@@ -1,0 +1,68 @@
+@cloud ready-for-gate
+@cat ready-for-gate  You are BossCat, Boss Cat makes all decisions.  
+
+(Auto context) - (([Local])(>>Agent(full access)((i)gpt-5-codex -high)) : running inside cursor IDE as plug-in.
+
+now lets make a new setup prompt for cursor{implementer}
+
+Below is a refreshed setup prompt for **cursor{implementer}**, incorporating the latest gate status and remaining tasks. Use this prompt to finish bringing IONA under the Bosscat gating framework and to implement the diagnostic shell.
+
+---
+
+## 🛠️ Setup Prompt for cursor{implementer}
+
+You are working on the **IONA** standalone Resonai app within the **Bosscat** framework. The gate configuration has been approved, but testing remains blocked due to a synthetic span issue. Follow these instructions to finalize integration and build the diagnostic telemetry shell.
+
+### 1. Review Updated Gate Status
+
+* Configuration is complete: files are in the correct locations, workflow paths have been corrected, and `TelemetryInit` is integrated.
+* Testing is blocked: the `synthetic/send_iona_boot_span.py` script crashes (exit code –1073741819). You can either fix this script or rely solely on browser‑based telemetry.
+
+### 2. Finalize Gate Integration
+
+1. **Fix or bypass the synthetic span script**
+
+   * Preferred: debug `synthetic/send_iona_boot_span.py`. Check that the OTLP collector is running (port 4317 by default), confirm Python packages are installed, and ensure environment variables (`OTEL_EXPORTER_OTLP_ENDPOINT`, `OTEL_EXPORTER_OTLP_PROTOCOL`) are set correctly.
+   * Alternative: bypass the script by relying only on browser telemetry. The `TelemetryInit` component already emits spans; starting the dev server and loading the app should send `iona.boot` spans to SigNoz.
+
+2. **Update workflow path filters**
+
+   * In `.github/workflows/iona-gate-verify.yml`, adjust the `paths` filter to reference `.github/workflows/iona-gate-verify.yml`. GitHub matches files from the repository root.
+   * Delete the stale `workflows/iona-gate-verify.yml` file to avoid confusion.
+
+3. **Update verification script**
+
+   * In `scripts/verify-iona-gate.ps1`, change the required‑files check to look under `.github/workflows/iona-gate-verify.yml` instead of `workflows/…`. This ensures the script recognizes the workflow in its new location.
+
+4. **Configure Playwright’s base URL**
+
+   * Set a `baseURL` in `playwright.config.ts` (e.g. `http://localhost:3000`) so that relative `page.goto('/...')` calls in `scripts/iona-snapshot.spec.ts` resolve correctly.
+
+5. **Run verification**
+
+   * After making these changes, run `scripts/verify-iona-gate.ps1`. It should report success once the synthetic span issue is resolved or bypassed.
+   * Trigger the GitHub Actions workflow (`IONA Gate Verify`) from the Actions tab to ensure it picks up changes and completes successfully.
+   * If relying on browser telemetry only, launch the app (`pnpm dev`), visit `http://localhost:3000`, and check the browser console for `[iona-telemetry] ✓ Boot span emitted`. Verify in SigNoz that `iona.boot` spans appear.
+
+### 3. Implement the Diagnostic Telemetry Shell
+
+* **Route & Component:** Add a `/diagnostics` route and a `TelemetryShell` React component to the IONA app. This shell should display metrics, traces, logs, and environment information in real time.
+* **Controls:** Include toggles to enable/disable instrumentation, adjust sampling rates, and trigger synthetic spans for testing.
+* **Visualization:** Provide panels for recent traces, error counts, and live logs, and link to detailed views in SigNoz.
+* **Testing:** Update the Playwright test suite to cover the new diagnostics route and verify that the telemetry shell appears and updates correctly.
+
+### 4. Documentation & Commit Messages
+
+* Ensure that each pull request includes updated evidence (screenshots, logs, config files) and follows the ECRR (Examine → Clean → Report → Role) guidelines.
+* Use the commit message templates from `FINAL_COMMIT_MESSAGE.md` to structure your commits.
+* Keep each PR within the budget: ≤10 files changed and ≤200 lines of code.
+
+### 5. Signal Completion
+
+* Once the verification script and workflow pass, and the diagnostics shell is integrated, signal gate readiness by commenting `@cat ready-for-gate` on the final PR.
+
+---
+
+Follow these steps to complete the IONA gate integration and deliver a robust diagnostics environment.
+
+

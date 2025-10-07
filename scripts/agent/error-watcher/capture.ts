@@ -54,7 +54,7 @@ function saveRegistry(reg: Registry): void {
  */
 function cleanupRegistry(reg: Registry): Registry {
     const now = Math.floor(Date.now() / 1000);
-    const TTL_DAYS = Number(process.env.ERROR_REGISTRY_TTL_DAYS || 21);
+    const TTL_DAYS = Number(process.env['ERROR_REGISTRY_TTL_DAYS'] || 21);
     const TTL_SECONDS = TTL_DAYS * 24 * 3600;
     
     const cleaned: Registry = {};
@@ -94,8 +94,8 @@ export function captureError(err: any, ctx: any = {}): string {
         entry.lastStack = err?.stack;
         
         // Determine if this should be "loud" (new error) or "quiet" (known error)
-        const RENOTIFY_WINDOW_SEC = Number(process.env.RENOTIFY_WINDOW_SEC || 6 * 3600); // 6 hours default
-        const MAX_LOUD_PER_HOUR = Number(process.env.MAX_LOUD_PER_HOUR_PER_FP || 1);
+        const RENOTIFY_WINDOW_SEC = Number(process.env['RENOTIFY_WINDOW_SEC'] || 6 * 3600); // 6 hours default
+        // const MAX_LOUD_PER_HOUR = Number(process.env.MAX_LOUD_PER_HOUR_PER_FP || 1);
         
         const isNewError = !reg[fp];
         const isWithinRenotifyWindow = now < (entry.mutedUntil || 0);
@@ -110,7 +110,7 @@ export function captureError(err: any, ctx: any = {}): string {
                 known: !isNewError,
                 severity: isNewError ? 'fatal' : 'error',
                 origin: ctx.origin || 'unknown',
-                service: ctx.service || process.env.SERVICE_NAME || 'app',
+                service: ctx.service || process.env['SERVICE_NAME'] || 'app',
                 route: ctx.route,
                 testId: ctx.testId,
                 buildSha: ctx.buildSha,
@@ -127,7 +127,7 @@ export function captureError(err: any, ctx: any = {}): string {
                 known: true,
                 severity: 'warn',
                 origin: ctx.origin || 'unknown',
-                service: ctx.service || process.env.SERVICE_NAME || 'app',
+                service: ctx.service || process.env['SERVICE_NAME'] || 'app',
                 route: ctx.route,
                 testId: ctx.testId,
                 buildSha: ctx.buildSha,

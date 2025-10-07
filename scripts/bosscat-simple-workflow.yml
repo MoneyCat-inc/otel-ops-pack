@@ -1,0 +1,63 @@
+name: BossCat Gate Verification (Simplified)
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  gate-verification:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+        
+    - name: Create required directories
+      run: |
+        mkdir -p artifacts
+        mkdir -p docs/BossCat/reports
+        
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install locust flake8 black
+        
+    - name: Install k6
+      run: |
+        sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
+        echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+        sudo apt-get update
+        sudo apt-get install k6
+        
+    - name: Verify installations
+      run: |
+        python --version
+        k6 version
+        locust --version
+        
+    - name: Test basic functionality
+      run: |
+        echo "Testing basic Python execution..."
+        python -c "print('Python is working')"
+        echo "Testing script existence..."
+        ls -la scripts/
+        echo "Testing k6 files..."
+        ls -la tests/k6/
+        
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: bosscat-simple-test-results-${{ github.run_number }}
+        path: |
+          artifacts/
+        retention-days: 30

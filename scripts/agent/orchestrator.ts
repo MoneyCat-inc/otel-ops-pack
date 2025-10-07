@@ -9,7 +9,7 @@
 
 import { Database } from 'sqlite3';
 import { promises as fs } from 'fs';
-import path from 'path';
+// import path from 'path';
 
 interface AgentConfig {
   id: string;
@@ -80,7 +80,7 @@ class AgentOrchestrator {
   }
 
   private async initializeDatabase(): Promise<void> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, _reject) => {
       this.db.serialize(() => {
         // Tasks table
         this.db.run(`
@@ -185,7 +185,7 @@ class AgentOrchestrator {
   }
 
   private async upsertAgent(config: AgentConfig): Promise<void> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, _reject) => {
       const stmt = this.db.prepare(`
         INSERT OR REPLACE INTO agents (id, name, type, enabled, budget_config, schedule_config)
         VALUES (?, ?, ?, ?, ?, ?)
@@ -198,8 +198,8 @@ class AgentOrchestrator {
         config.enabled ? 1 : 0,
         JSON.stringify(config.budget),
         JSON.stringify(config.schedule),
-        (err) => {
-          if (err) reject(err);
+        (err: any) => {
+          if (err) _reject(err);
           else resolve();
         }
       );
@@ -264,7 +264,7 @@ class AgentOrchestrator {
         await this.executeTask(task, config);
       } catch (error) {
         console.error(`Task ${task.id} failed:`, error);
-        await this.markTaskFailed(task.id, error.message);
+        await this.markTaskFailed(task.id, error instanceof Error ? error.message : 'Unknown error');
       }
     }
   }
@@ -325,7 +325,7 @@ class AgentOrchestrator {
       // Mark task as failed
       await this.updateTaskStatus(task.id, 'failed');
       ecrrReport.report.compliance = false;
-      ecrrReport.report.metrics.error = error.message;
+      ecrrReport.report.metrics.error = error instanceof Error ? error.message : 'Unknown error';
       
       await this.saveECRRReport(task.id, ecrrReport);
       await this.updateTaskECRR(task.id, ecrrReport);
@@ -349,7 +349,7 @@ class AgentOrchestrator {
     }
   }
 
-  private async executeMaintenanceTask(task: Task, config: AgentConfig): Promise<any> {
+  private async executeMaintenanceTask(task: Task, _config: AgentConfig): Promise<any> {
     // Implementation for maintenance tasks
     return {
       actions: ['Maintenance task executed'],
@@ -360,7 +360,7 @@ class AgentOrchestrator {
     };
   }
 
-  private async executeRemediationTask(task: Task, config: AgentConfig): Promise<any> {
+  private async executeRemediationTask(task: Task, _config: AgentConfig): Promise<any> {
     // Implementation for remediation tasks
     return {
       actions: ['Remediation task executed'],
@@ -371,7 +371,7 @@ class AgentOrchestrator {
     };
   }
 
-  private async executeMonitoringTask(task: Task, config: AgentConfig): Promise<any> {
+  private async executeMonitoringTask(task: Task, _config: AgentConfig): Promise<any> {
     // Implementation for monitoring tasks
     return {
       actions: ['Monitoring task executed'],
@@ -382,7 +382,7 @@ class AgentOrchestrator {
     };
   }
 
-  private async executeCleanupTask(task: Task, config: AgentConfig): Promise<any> {
+  private async executeCleanupTask(task: Task, _config: AgentConfig): Promise<any> {
     // Implementation for cleanup tasks
     return {
       actions: ['Cleanup task executed'],
@@ -394,12 +394,12 @@ class AgentOrchestrator {
   }
 
   private async getPendingTasks(agentId: string, limit: number): Promise<Task[]> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, _reject) => {
       this.db.all(
         'SELECT * FROM tasks WHERE agent_id = ? AND status = ? ORDER BY priority DESC, created_at ASC LIMIT ?',
         [agentId, 'pending', limit],
         (err, rows) => {
-          if (err) reject(err);
+          if (err) _reject(err);
           else resolve(rows.map(this.mapRowToTask));
         }
       );
@@ -424,7 +424,7 @@ class AgentOrchestrator {
   }
 
   private async updateTaskStatus(taskId: string, status: string): Promise<void> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, _reject) => {
       const now = new Date().toISOString();
       const updates: any = { status };
       
@@ -441,8 +441,8 @@ class AgentOrchestrator {
       this.db.run(
         `UPDATE tasks SET ${setClause} WHERE id = ?`,
         values,
-        (err) => {
-          if (err) reject(err);
+        (err: any) => {
+          if (err) _reject(err);
           else resolve();
         }
       );
@@ -450,12 +450,12 @@ class AgentOrchestrator {
   }
 
   private async updateTaskECRR(taskId: string, ecrrReport: ECRRReport): Promise<void> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, _reject) => {
       this.db.run(
         'UPDATE tasks SET ecrr_report = ? WHERE id = ?',
         [JSON.stringify(ecrrReport), taskId],
-        (err) => {
-          if (err) reject(err);
+        (err: any) => {
+          if (err) _reject(err);
           else resolve();
         }
       );
@@ -463,7 +463,7 @@ class AgentOrchestrator {
   }
 
   private async saveECRRReport(taskId: string, ecrrReport: ECRRReport): Promise<void> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, _reject) => {
       this.db.run(
         'INSERT INTO ecrr_reports (id, task_id, examine, clean, report, role, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)',
         [
@@ -475,8 +475,8 @@ class AgentOrchestrator {
           JSON.stringify(ecrrReport.role),
           new Date().toISOString()
         ],
-        (err) => {
-          if (err) reject(err);
+        (err: any) => {
+          if (err) _reject(err);
           else resolve();
         }
       );
@@ -537,11 +537,11 @@ class AgentOrchestrator {
   }
 
   private async getTaskCounts(): Promise<any> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, _reject) => {
       this.db.all(
         'SELECT status, COUNT(*) as count FROM tasks GROUP BY status',
         (err, rows) => {
-          if (err) reject(err);
+          if (err) _reject(err);
           else {
             const counts: any = {};
             rows.forEach((row: any) => {
@@ -555,11 +555,11 @@ class AgentOrchestrator {
   }
 
   private async getAgentStatuses(): Promise<any> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, _reject) => {
       this.db.all(
         'SELECT id, name, status, last_run FROM agents',
         (err, rows) => {
-          if (err) reject(err);
+          if (err) _reject(err);
           else resolve(rows);
         }
       );
@@ -595,4 +595,5 @@ if (require.main === module) {
   });
 }
 
-export { AgentOrchestrator, Task, ECRRReport };
+export { AgentOrchestrator };
+export type { Task, ECRRReport };

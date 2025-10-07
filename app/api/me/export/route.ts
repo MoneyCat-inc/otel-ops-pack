@@ -8,7 +8,7 @@ import { requireAuth } from '@/lib/middleware/auth';
 import { withOTel } from '@/lib/middleware/otel';
 import { withRateLimit, rateLimitConfigs } from '@/lib/middleware/rate-limit';
 import { db } from '@/lib/db';
-import { createHash, randomBytes } from 'crypto';
+import { randomBytes } from 'crypto';
 import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 
@@ -34,7 +34,7 @@ export const POST = withOTel(
               error: {
                 code: 'VALIDATION_ERROR',
                 message: 'Invalid export request',
-                details: parseResult.error.errors
+                details: parseResult.error.issues
               }
             },
             { status: 400 }
@@ -141,11 +141,24 @@ export const POST = withOTel(
 // GET /api/me/export/:exportId - Get export status and download
 export const GET = withOTel(
   withRateLimit(rateLimitConfigs.user,
-    requireAuth(async (req: NextRequest, { user }, { params }: { params: { exportId: string } }) => {
+    requireAuth(async (req: NextRequest, { user }) => {
       const span = trace.getActiveSpan();
       
       try {
-        const { exportId } = params;
+        const { searchParams } = new URL(req.url);
+      const exportId = searchParams.get('exportId');
+      if (!exportId) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: {
+              code: 'MISSING_EXPORT_ID',
+              message: 'Export ID is required'
+            }
+          },
+          { status: 400 }
+        );
+      }
 
         if (!exportId) {
           return NextResponse.json(
@@ -271,7 +284,7 @@ export const DELETE = withOTel(
               error: {
                 code: 'VALIDATION_ERROR',
                 message: 'Invalid deletion request',
-                details: parseResult.error.errors
+                details: parseResult.error.issues
               }
             },
             { status: 400 }
@@ -303,7 +316,7 @@ export const DELETE = withOTel(
         });
 
         // Perform cascade deletion
-        await db.$transaction(async (tx) => {
+        await db.$transaction(async (tx: any) => {
           // Delete in order to respect foreign key constraints
           await tx.badge.deleteMany({ where: { userId: user.id } });
           await tx.engagementProfile.deleteMany({ where: { userId: user.id } });
@@ -474,7 +487,7 @@ async function processDataExport(
         orderBy: { completedAt: 'desc' }
       });
 
-      userData.storyProgress = storyProgress.map(progress => ({
+      userData.storyProgress = storyProgress.map((progress: any) => ({
         chapterTitle: progress.chapter.title,
         chapterId: progress.chapter.chapterId,
         completedAt: progress.completedAt,
