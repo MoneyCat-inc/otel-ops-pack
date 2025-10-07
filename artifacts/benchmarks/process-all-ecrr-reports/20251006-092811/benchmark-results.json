@@ -1,0 +1,82 @@
+[
+  {
+    "Scenario": "max-1",
+    "Iteration": 1,
+    "MaxParallel": 1,
+    "UsedAutoParallel": false,
+    "TotalMilliseconds": 1130.53,
+    "TotalSeconds": 1.131,
+    "Timestamp": "2025-10-06T09:28:16.0170036+01:00",
+    "OutputDir": "artifacts\\benchmarks\\process-all-ecrr-reports\\20251006-092811\\max-1-run1"
+  },
+  {
+    "Scenario": "max-1",
+    "Iteration": 2,
+    "MaxParallel": 1,
+    "UsedAutoParallel": false,
+    "TotalMilliseconds": 1108.35,
+    "TotalSeconds": 1.108,
+    "Timestamp": "2025-10-06T09:28:17.1373635+01:00",
+    "OutputDir": "artifacts\\benchmarks\\process-all-ecrr-reports\\20251006-092811\\max-1-run2"
+  },
+  {
+    "Scenario": "max-4",
+    "Iteration": 1,
+    "MaxParallel": 4,
+    "UsedAutoParallel": false,
+    "TotalMilliseconds": 1039.69,
+    "TotalSeconds": 1.04,
+    "Timestamp": "2025-10-06T09:28:18.1809701+01:00",
+    "OutputDir": "artifacts\\benchmarks\\process-all-ecrr-reports\\20251006-092811\\max-4-run1"
+  },
+  {
+    "Scenario": "max-4",
+    "Iteration": 2,
+    "MaxParallel": 4,
+    "UsedAutoParallel": false,
+    "TotalMilliseconds": 1104.83,
+    "TotalSeconds": 1.105,
+    "Timestamp": "2025-10-06T09:28:19.2888745+01:00",
+    "OutputDir": "artifacts\\benchmarks\\process-all-ecrr-reports\\20251006-092811\\max-4-run2"
+  },
+  {
+    "Scenario": "max-8",
+    "Iteration": 1,
+    "MaxParallel": 8,
+    "UsedAutoParallel": false,
+    "TotalMilliseconds": 1134.79,
+    "TotalSeconds": 1.135,
+    "Timestamp": "2025-10-06T09:28:20.4284494+01:00",
+    "OutputDir": "artifacts\\benchmarks\\process-all-ecrr-reports\\20251006-092811\\max-8-run1"
+  },
+  {
+    "Scenario": "max-8",
+    "Iteration": 2,
+    "MaxParallel": 8,
+    "UsedAutoParallel": false,
+    "TotalMilliseconds": 1052.71,
+    "TotalSeconds": 1.053,
+    "Timestamp": "2025-10-06T09:28:21.4860803+01:00",
+    "OutputDir": "artifacts\\benchmarks\\process-all-ecrr-reports\\20251006-092811\\max-8-run2"
+  },
+  {
+    "Scenario": "auto-parallel",
+    "Iteration": 1,
+    "MaxParallel": null,
+    "UsedAutoParallel": true,
+    "TotalMilliseconds": 1286.17,
+    "TotalSeconds": 1.286,
+    "Timestamp": "2025-10-06T09:28:22.7771366+01:00",
+    "OutputDir": "artifacts\\benchmarks\\process-all-ecrr-reports\\20251006-092811\\auto-parallel-run1"
+  },
+  {
+    "Scenario": "auto-parallel",
+    "Iteration": 2,
+    "MaxParallel": null,
+    "UsedAutoParallel": true,
+    "TotalMilliseconds": 1107.27,
+    "TotalSeconds": 1.107,
+    "Timestamp": "2025-10-06T09:28:23.8893214+01:00",
+    "OutputDir": "artifacts\\benchmarks\\process-all-ecrr-reports\\20251006-092811\\auto-parallel-run2"
+  }
+]

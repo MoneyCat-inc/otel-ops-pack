@@ -1,0 +1,26 @@
+{
+  "TotalCandidates": 1,
+  "ExpectedImpact": {
+    "ReportReduction": "15% fewer reports",
+    "ContentDeduplication": "90% reduction in redundant content",
+    "QualityImprovement": "Enhanced ECRR compliance and clarity"
+  },
+  "ProcessingDate": "2025-10-06 09:29:07 UTC",
+  "ImplementationPlan": {
+    "Phase2": "Consolidate secondary groups (7 reports → 2 reports)",
+    "Phase3": "Archive originals and update references",
+    "Phase1": "Consolidate high-priority groups (12 reports → 3 reports)"
+  },
+  "ConsolidationGroups": {
+    "Production Deployment Reports": [],
+    "GPU Automation Reports": [],
+    "Rollout Merge Reports": [
+      "2025-09-29-rollout-merge-oct-2025-consolidated.md"
+    ],
+    "SigNoz Alert Reports": [],
+    "ECRR-01 Reports": []
+  },
+  "Candidates": [
+    "2025-09-29-rollout-merge-oct-2025-consolidated.md"
+  ]
+}

@@ -1,112 +1,20 @@
-{
-  "gatePct": 97.9,
-  "timestamp": "2025-09-29 18:56:00 +01:00",
-  "passed": true,
-  "fourSectionPct": 97.9,
-  "total": 144
-}
-{
-  "fourSectionPct": 97.9,
-  "total": 144,
-  "gatePct": 97.9,
-  "timestamp": "2025-09-29 18:58:54 +01:00",
-  "passed": true
-}
-{
-  "timestamp": "2025-09-29 19:00:13 +01:00",
-  "fourSectionPct": 97.9,
-  "gatePct": 97.9,
-  "passed": true,
-  "total": 144
-}
-{
-  "timestamp": "2025-09-29 19:01:35 +01:00",
-  "gatePct": 97.9,
-  "fourSectionPct": 97.9,
-  "passed": true,
-  "total": 144
-}
-{
-  "fourSectionPct": 97.9,
-  "total": 144,
-  "gatePct": 97.9,
-  "passed": true,
-  "timestamp": "2025-09-29 19:02:59 +01:00"
-}
-{
-  "gatePct": 97.9,
-  "total": 144,
-  "passed": true,
-  "fourSectionPct": 97.9,
-  "timestamp": "2025-09-29 19:03:52 +01:00"
-}
-{
-  "passed": true,
-  "fourSectionPct": 97.9,
-  "gatePct": 97.9,
-  "total": 144,
-  "timestamp": "2025-09-29 19:04:37 +01:00"
-}
-{
-  "total": 144,
-  "gatePct": 97.9,
-  "fourSectionPct": 97.9,
-  "passed": true,
-  "timestamp": "2025-09-29 19:07:05 +01:00"
-}
-{
-  "timestamp": "2025-09-29 19:08:10 +01:00",
-  "gatePct": 97.9,
-  "passed": true,
-  "fourSectionPct": 97.9,
-  "total": 144
-}
-{
-  "timestamp": "2025-09-29 20:02:38 +01:00",
-  "gatePct": 97.9,
-  "total": 144,
-  "fourSectionPct": 97.9,
-  "passed": true
-}
-{
-  "total": 135,
-  "gatePct": 100.0,
-  "passed": true,
-  "timestamp": "2025-09-29 21:00:28 +01:00",
-  "fourSectionPct": 98.5
-}
-{
-  "fourSectionPct": 98.5,
-  "total": 135,
-  "passed": true,
-  "gatePct": 100.0,
-  "timestamp": "2025-09-29 21:02:28 +01:00"
-}
-{
-  "passed": true,
-  "timestamp": "2025-09-29 21:03:25 +01:00",
-  "gatePct": 100.0,
-  "total": 135,
-  "fourSectionPct": 98.5
-}
-{
-  "total": 135,
-  "passed": true,
-  "fourSectionPct": 98.5,
-  "gatePct": 100.0,
-  "timestamp": "2025-09-29 21:04:20 +01:00"
-}
-{
-  "fourSectionPct": 98.5,
-  "timestamp": "2025-09-29 21:08:20 +01:00",
-  "gatePct": 100.0,
-  "passed": true,
-  "total": 135
-}
-{
-  "total": 136,
-  "gatePct": 100.0,
-  "timestamp": "2025-09-29 21:12:37 +01:00",
-  "fourSectionPct": 98.5,
-  "passed": true
-}
+{"gatePct":97.9,"timestamp":"2025-09-29 18:56:00 +01:00","passed":true,"fourSectionPct":97.9,"total":144}
+{"fourSectionPct":97.9,"total":144,"gatePct":97.9,"timestamp":"2025-09-29 18:58:54 +01:00","passed":true}
+{"timestamp":"2025-09-29 19:00:13 +01:00","fourSectionPct":97.9,"gatePct":97.9,"passed":true,"total":144}
+{"timestamp":"2025-09-29 19:01:35 +01:00","gatePct":97.9,"fourSectionPct":97.9,"passed":true,"total":144}
+{"fourSectionPct":97.9,"total":144,"gatePct":97.9,"passed":true,"timestamp":"2025-09-29 19:02:59 +01:00"}
+{"gatePct":97.9,"total":144,"passed":true,"fourSectionPct":97.9,"timestamp":"2025-09-29 19:03:52 +01:00"}
+{"passed":true,"fourSectionPct":97.9,"gatePct":97.9,"total":144,"timestamp":"2025-09-29 19:04:37 +01:00"}
+{"total":144,"gatePct":97.9,"fourSectionPct":97.9,"passed":true,"timestamp":"2025-09-29 19:07:05 +01:00"}
+{"timestamp":"2025-09-29 19:08:10 +01:00","gatePct":97.9,"passed":true,"fourSectionPct":97.9,"total":144}
+{"timestamp":"2025-09-29 20:02:38 +01:00","gatePct":97.9,"total":144,"fourSectionPct":97.9,"passed":true}
+{"total":135,"gatePct":100.0,"passed":true,"timestamp":"2025-09-29 21:00:28 +01:00","fourSectionPct":98.5}
+{"fourSectionPct":98.5,"total":135,"passed":true,"gatePct":100.0,"timestamp":"2025-09-29 21:02:28 +01:00"}
+{"passed":true,"timestamp":"2025-09-29 21:03:25 +01:00","gatePct":100.0,"total":135,"fourSectionPct":98.5}
+{"total":135,"passed":true,"fourSectionPct":98.5,"gatePct":100.0,"timestamp":"2025-09-29 21:04:20 +01:00"}
+{"fourSectionPct":98.5,"timestamp":"2025-09-29 21:08:20 +01:00","gatePct":100.0,"passed":true,"total":135}
+{"total":136,"gatePct":100.0,"timestamp":"2025-09-29 21:12:37 +01:00","fourSectionPct":98.5,"passed":true}
+{"timestamp":"2025-10-06 19:55:45 +01:00","total":74,"fourSectionPct":100.0,"gatePct":98.6,"passed":true}
+{"passed":true,"timestamp":"2025-10-06 20:00:03 +01:00","total":74,"gatePct":98.6,"fourSectionPct":100.0}
+{"total":74,"timestamp":"2025-10-06 20:17:42 +01:00","passed":true,"fourSectionPct":100.0,"gatePct":98.6}
+{"fourSectionPct":100.0,"total":74,"passed":true,"timestamp":"2025-10-06 20:19:07 +01:00","gatePct":98.6}
