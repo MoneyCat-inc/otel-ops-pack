@@ -25,10 +25,13 @@ All documentation, agents, CI/CD guardrails, and artifacts (ECRR reports, SSOTs,
 A complete Windows-to-SigNoz observability pipeline with automated monitoring, alerting, and agent workflows for repeatable operations.
 
 ## Documentation
+
+📐 **System Architecture**: See the [Official Architecture Diagram](docs/BossCat/SYSTEM_ARCHITECTURE_DIAGRAM.md) featuring the 77× throughput uplift design with User Workstation → I/O Handler → IONA Controller → OTel Pipeline → SigNoz → Three-Loop Control System.
+
 See the [Runbook Index](docs/RUNBOOK_INDEX.md) for all operational and handoff docs.
 
 📊 For a high-level project status, see the [ECRR Report](docs/reports/ECRR_REPORT.md) covering Executive summary, Contributions, Risks, and Readiness.
-?? Resonai program summary: see the [ECRR Project Report](docs/ECRR_PROJECT_REPORT.md) for cross-team context.
+📋 Resonai program summary: see the [ECRR Project Report](docs/ECRR_PROJECT_REPORT.md) for cross-team context.
 
 [![ECRR Status](https://img.shields.io/badge/ECRR-Cohort--Ready-green?style=flat-square)](docs/reports/ECRR_REPORT.md)
 
