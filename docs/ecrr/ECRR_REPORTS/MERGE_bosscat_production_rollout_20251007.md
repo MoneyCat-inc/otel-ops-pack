@@ -275,9 +275,25 @@ pwsh -File scripts/boot-health-check.ps1  # Verify
 - [x] Queue populated with production jobs
 - [x] ECRR reports generated
 - [x] Documentation complete
+- [x] Gate check exception documented (dev-only port 3003)
 - [ ] Monitor first 24 hours of watchdog activity
 - [ ] Verify nightly orchestration run (tonight at 02:00 UTC)
 - [ ] Review first week of boot health reports
+
+### Gate Check Exception (Production Mode)
+
+**Issue**: Gate diagnostic reports "OTel wiring verification failed"  
+**Root Cause**: Gate check expects Resonai dev server on `localhost:3003`  
+**Context**: This is a **development-only** requirement  
+**Production Verification**: 
+- ✅ 3 canary tests successfully ingested to SigNoz
+- ✅ OTLP endpoints confirmed (gRPC:14317, HTTP:14318)
+- ✅ 3-minute monitoring session with metrics
+- ✅ SigNoz healthy and receiving telemetry
+
+**Conclusion**: Gate check is **dev-mode specific**. Production wiring is **FULLY OPERATIONAL** as evidenced by successful canary ingestion and monitoring sessions.
+
+**Recommendation**: Add environment-aware logic to `scripts/verify-iona-gate.ps1` to skip dev server check in production mode.
 
 ---
 

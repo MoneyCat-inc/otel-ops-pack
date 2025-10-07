@@ -129,7 +129,7 @@ pwsh -File scripts/diagnostic-shell-enhanced.ps1 -Mode full -IncludeLogs
 pwsh -File scripts/update-status-dashboard.ps1 -RunOnce
 
 # Run canary test
-pwsh -File scripts/canary-test.ps1
+pwsh -File scripts/generate-windows-canary.ps1
 ```
 
 ---
@@ -158,7 +158,7 @@ pwsh -File scripts/canary-test.ps1
 | Script | Purpose | Runtime | Frequency |
 |--------|---------|---------|-----------|
 | `diagnostic-shell-enhanced.ps1` | Full health check | 5 min | Daily |
-| `canary-test.ps1` | Generate test data | 30 sec | Per deployment |
+| `generate-windows-canary.ps1` | Generate test data | 30 sec | Per deployment |
 | `verify-pipeline.ps1` | End-to-end validation | 3 min | Per PR |
 | `enterprise-readiness-check.ps1` | Gate readiness | 2 min | Per release |
 
@@ -166,7 +166,7 @@ pwsh -File scripts/canary-test.ps1
 ```powershell
 # Run all tests
 pwsh -File scripts/diagnostic-shell-enhanced.ps1 -Mode gate -GenerateECRR
-pwsh -File scripts/canary-test.ps1
+pwsh -File scripts/generate-windows-canary.ps1
 pwsh -File scripts/verify-pipeline.ps1
 pwsh -File scripts/enterprise-readiness-check.ps1
 
