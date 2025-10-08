@@ -17,10 +17,22 @@ param(
   [string]$ApiKey
 )
 
+# Auto-detect API key from environment or GitHub secret
 if (-not $ApiKey) {
-  Write-Host "❌ ERROR: -ApiKey parameter required" -ForegroundColor Red
-  Write-Host "   Example: pwsh -File scripts/bosscat-ops-oneliners.ps1 -Operation FullStatus -ApiKey `$env:WYZWOZ_SIGNOZ" -ForegroundColor Yellow
-  exit 1
+  if ($env:SIGNOZ_API_KEY) {
+    $ApiKey = $env:SIGNOZ_API_KEY
+    Write-Host "🔑 Using API key from `$env:SIGNOZ_API_KEY" -ForegroundColor DarkGray
+  } elseif ($env:WYZWOZ_SIGNOZ) {
+    $ApiKey = $env:WYZWOZ_SIGNOZ
+    Write-Host "🔑 Using API key from `$env:WYZWOZ_SIGNOZ" -ForegroundColor DarkGray
+  } else {
+    Write-Host "❌ ERROR: API key required" -ForegroundColor Red
+    Write-Host "   Set one of:" -ForegroundColor Yellow
+    Write-Host "     `$env:SIGNOZ_API_KEY = 'your-key'" -ForegroundColor Cyan
+    Write-Host "     `$env:WYZWOZ_SIGNOZ = 'your-key'" -ForegroundColor Cyan
+    Write-Host "   Or pass: -ApiKey 'your-key'" -ForegroundColor Cyan
+    exit 1
+  }
 }
 
 $headers = @{
