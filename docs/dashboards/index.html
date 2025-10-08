@@ -538,6 +538,34 @@
     </section>
   </main>
 
+  <!-- Quick Setup Instructions -->
+  <section aria-labelledby="setup" style="margin-top: 48px; padding: 24px; background: rgba(124,92,255,0.05); border-radius: 12px; border: 1px solid rgba(124,92,255,0.16);">
+    <h2 id="setup" style="margin: 0 0 16px 0; font-size: 18px; font-weight: 600;">🚀 Quick Setup</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+      <div>
+        <h3 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600; color: var(--accent);">For Full Live Data</h3>
+        <p style="margin: 0 0 12px 0; font-size: 13px; color: var(--muted);">Run via web server to avoid CORS restrictions:</p>
+        <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 6px; font-family: 'Courier New', monospace; font-size: 12px;">
+          <div style="color: #4caf50; margin-bottom: 4px;"># Terminal command:</div>
+          <div style="color: var(--fg);">python -m http.server 3000</div>
+          <div style="color: #4caf50; margin: 8px 0 4px 0;"># Or use helper scripts:</div>
+          <div style="color: var(--fg);">pwsh scripts/start-dashboard-server.ps1</div>
+          <div style="color: var(--fg);">scripts/start-dashboard-server.bat</div>
+          <div style="color: #4caf50; margin: 8px 0 4px 0;"># Then visit:</div>
+          <div style="color: var(--fg);">http://localhost:3000/docs/dashboards/</div>
+        </div>
+      </div>
+      <div>
+        <h3 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600; color: var(--accent);">Prerequisites</h3>
+        <ul style="margin: 0; padding-left: 16px; font-size: 13px; color: var(--muted);">
+          <li>SigNoz running on localhost:8080</li>
+          <li>OTel Collector on localhost:5318</li>
+          <li>Python 3.x (for web server)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
   <footer>
     BossCat OEM · Resonai [OTel] Observability Stack · Evidence-first dashboards for nightly review.
   </footer>
@@ -548,11 +576,87 @@
     signozEndpoint: 'http://localhost:8080',
     otelEndpoint: 'http://localhost:5318',
     refreshInterval: 10000, // 10 seconds
-    logLimit: 20
+    logLimit: 20,
+    corsMode: 'cors', // Use 'no-cors' for file:// origins
+    timeout: 5000 // 5 second timeout
   };
+  
+  // Detect if running from file:// protocol
+  const isFileProtocol = window.location.protocol === 'file:';
+  if (isFileProtocol) {
+    config.corsMode = 'no-cors';
+    showCORSWarning();
+  }
   
   let autoRefreshEnabled = false;
   let refreshInterval = null;
+  
+  // Show CORS warning for file:// protocol
+  function showCORSWarning() {
+    const warning = document.createElement('div');
+    warning.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(255, 193, 7, 0.95);
+      color: #000;
+      padding: 16px;
+      border-radius: 8px;
+      border: 1px solid #ffc107;
+      max-width: 400px;
+      z-index: 1000;
+      font-size: 14px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    `;
+    warning.innerHTML = `
+      <div style="font-weight: bold; margin-bottom: 8px;">⚠️ CORS Warning</div>
+      <div style="margin-bottom: 12px;">Running from file:// protocol. Live data may be limited.</div>
+      <div style="font-size: 12px; margin-bottom: 12px;">
+        <strong>Solution:</strong> Run a local web server:<br>
+        <code style="background: rgba(0,0,0,0.1); padding: 2px 4px; border-radius: 3px;">
+          python -m http.server 3000
+        </code><br>
+        Then visit: <code>http://localhost:3000/docs/dashboards/index.html</code>
+      </div>
+      <button onclick="this.parentElement.remove()" style="
+        background: #000;
+        color: #fff;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+      ">Got it</button>
+    `;
+    document.body.appendChild(warning);
+    
+    // Auto-remove after 10 seconds
+    setTimeout(() => {
+      if (warning.parentElement) warning.remove();
+    }, 10000);
+  }
+  
+  // Enhanced fetch with timeout and CORS handling
+  async function safeFetch(url, options = {}) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), config.timeout);
+    
+    try {
+      const response = await fetch(url, {
+        ...options,
+        mode: config.corsMode,
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+      return response;
+    } catch (error) {
+      clearTimeout(timeoutId);
+      if (error.name === 'AbortError') {
+        throw new Error('Request timeout');
+      }
+      throw error;
+    }
+  }
   
   // Initialize on page load
   window.onload = () => {
@@ -574,7 +678,7 @@
     
     try {
       // Test OTel Collector endpoint
-      const response = await fetch(`${config.otelEndpoint}/v1/logs`, {
+      const response = await safeFetch(`${config.otelEndpoint}/v1/logs`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -612,7 +716,7 @@
     const logStream = document.getElementById('logStream');
     
     try {
-      const response = await fetch(`${config.signozEndpoint}/api/v1/logs`, {
+      const response = await safeFetch(`${config.signozEndpoint}/api/v1/logs`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -654,13 +758,28 @@
         throw new Error(`HTTP ${response.status}`);
       }
     } catch (error) {
-      logStream.innerHTML = `
-        <div class="log-entry">
-          <span class="log-time">--:--:--</span>
-          <span class="log-level error">ERROR</span>
-          <span class="log-message">Failed to fetch logs: ${error.message}</span>
-        </div>
-      `;
+      if (isFileProtocol && error.message.includes('CORS')) {
+        logStream.innerHTML = `
+          <div class="log-entry">
+            <span class="log-time">--:--:--</span>
+            <span class="log-level warn">WARN</span>
+            <span class="log-message">CORS blocked - run via web server for live data</span>
+          </div>
+          <div class="log-entry">
+            <span class="log-time">--:--:--</span>
+            <span class="log-level info">INFO</span>
+            <span class="log-message">Use: python -m http.server 3000</span>
+          </div>
+        `;
+      } else {
+        logStream.innerHTML = `
+          <div class="log-entry">
+            <span class="log-time">--:--:--</span>
+            <span class="log-level error">ERROR</span>
+            <span class="log-message">Failed to fetch logs: ${error.message}</span>
+          </div>
+        `;
+      }
     }
   }
   
@@ -668,7 +787,7 @@
   async function updateMetrics() {
     try {
       // Fetch logs to calculate metrics
-      const response = await fetch(`${config.signozEndpoint}/api/v1/logs`, {
+      const response = await safeFetch(`${config.signozEndpoint}/api/v1/logs`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -709,7 +828,7 @@
   async function checkIONAHealth() {
     try {
       // Fetch recent logs to calculate health
-      const response = await fetch(`${config.signozEndpoint}/api/v1/logs`, {
+      const response = await safeFetch(`${config.signozEndpoint}/api/v1/logs`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
