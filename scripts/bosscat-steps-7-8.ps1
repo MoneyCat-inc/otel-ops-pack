@@ -16,10 +16,18 @@ Write-Host "🐾 BossCat SigNoz Steps 7-8 Automation" -ForegroundColor Green
 Write-Host "Authority: BossCat OEM (Executive Overseer Manager)" -ForegroundColor Cyan
 Write-Host "Mission: Complete SigNoz setup with Saved Views & Dashboards" -ForegroundColor Yellow
 
+# Auto-detect API key from environment or GitHub secret
 if (-not $ApiKey) {
-  Write-Host "❌ ERROR: -ApiKey parameter required" -ForegroundColor Red
-  Write-Host "   Example: pwsh -File scripts/bosscat-steps-7-8.ps1 -ApiKey `$env:WYZWOZ_SIGNOZ" -ForegroundColor Yellow
-  exit 1
+  if ($env:SIGNOZ_API_KEY) {
+    $ApiKey = $env:SIGNOZ_API_KEY
+    Write-Host "🔑 Using API key from `$env:SIGNOZ_API_KEY" -ForegroundColor DarkGray
+  } elseif ($env:WYZWOZ_SIGNOZ) {
+    $ApiKey = $env:WYZWOZ_SIGNOZ
+    Write-Host "🔑 Using API key from `$env:WYZWOZ_SIGNOZ" -ForegroundColor DarkGray
+  } else {
+    Write-Host "⚠️  No API key detected - exporting definitions only (no -Apply)" -ForegroundColor Yellow
+    Write-Host "   Set `$env:SIGNOZ_API_KEY or pass -ApiKey to enable -Apply mode" -ForegroundColor DarkGray
+  }
 }
 
 $headers = @{
@@ -35,29 +43,56 @@ if (-not (Test-Path -Path $docsDir)) {
 
 Write-Host "`n🔍 Step 7: Creating BossCat Saved Views..." -ForegroundColor White
 
-# Define BossCat Saved Views
+# Define BossCat Saved Views (SHOWTIME EDITION - Active data views)
 $BossCatSavedViews = @{
   logs_views = @(
     @{
+      name = "IONA Canary Activity"
+      description = "🎯 SHOWTIME: Live canary test logs from iona-canary.ps1 burst"
+      filters = @{
+        message = "contains 'canary test'"
+        service_name = "frontend"
+        source = "Application"  # Windows Event Log source
+      }
+      timeRange = "15m"
+      notes = "Run: pwsh -File scripts\iona-canary.ps1 -DurationMinutes 5 -EventsPerMinute 120"
+    },
+    @{
+      name = "Collector Ingest Logs" 
+      description = "🔧 Pipeline health: Collector logs showing ingest activity"
+      filters = @{
+        service_name = "otelcol"
+        log_level = "info,warn,error"
+      }
+      timeRange = "1h"
+      notes = "Monitor collector health and throughput"
+    },
+    @{
       name = "BossCat Error Logs View"
-      description = "Filtered view of error logs for BossCat monitoring"
+      description = "Error-level logs across all services"
       filters = @{
         severity = "ERROR"
         level = "error"
       }
       timeRange = "1h"
-    },
-    @{
-      name = "BossCat Canary Logs View" 
-      description = "View for canary test logs"
-      filters = @{
-        body = "windows-canary"
-        source = "windows_event_log"
-      }
-      timeRange = "1h"
     }
   )
   traces_views = @(
+    @{
+      name = "Frontend Canary Spans"
+      description = "🎯 SHOWTIME: Synthetic traces from iona-trace-canary.ps1"
+      filters = @{
+        service_name = "frontend"
+        span_name = "iona-canary-span"
+        attributes = @{
+          bosscat = "1"
+          canary = "1"
+          env = "dev"
+        }
+      }
+      timeRange = "15m"
+      notes = "Run: pwsh -File scripts\iona-trace-canary.ps1 -Force"
+    },
     @{
       name = "BossCat High Latency Traces"
       description = "Traces with latency > 500ms"
@@ -74,6 +109,20 @@ $BossCatSavedViews = @{
         error = "true"
       }
       timeRange = "1h"
+    }
+  )
+  metrics_views = @(
+    @{
+      name = "Collector Ingest Pulse"
+      description = "🎯 SHOWTIME: Real-time pipeline metrics from OTel Collector"
+      queries = @(
+        "rate(otelcol_receiver_accepted_log_records[5m])",
+        "rate(otelcol_receiver_accepted_spans[5m])",
+        "rate(otelcol_exporter_sent_log_records[5m])",
+        "rate(otelcol_exporter_sent_spans[5m])"
+      )
+      timeRange = "1h"
+      notes = "Monitor log/trace ingestion and export rates"
     }
   )
 }
@@ -167,9 +216,10 @@ $summary | ConvertTo-Json -Depth 20 | Out-File -FilePath $summaryPath -Encoding 
 Write-Host "✅ Summary report saved: $summaryPath" -ForegroundColor Green
 
 Write-Host "`n🎭 BossCat Steps 7-8 — WyzWoz Recap" -ForegroundColor Magenta
-Write-Host (" • Saved Views: {0} (logs) + {1} (traces)" -f $BossCatSavedViews.logs_views.Count, $BossCatSavedViews.traces_views.Count)
+Write-Host (" • Saved Views: {0} (logs) + {1} (traces) + {2} (metrics)" -f $BossCatSavedViews.logs_views.Count, $BossCatSavedViews.traces_views.Count, $BossCatSavedViews.metrics_views.Count)
 Write-Host (" • Dashboard Panels: {0}" -f $BossCatDashboard.panels.Count)
-Write-Host (" • Artifacts Generated: 3" -f $BossCatDashboard.panels.Count)
+Write-Host (" • Artifacts Generated: 3")
+Write-Host (" • 🎯 SHOWTIME Views: IONA Canary Activity, Frontend Canary Spans, Collector Ingest Pulse" -f $BossCatDashboard.panels.Count)
 
 Write-Host "`n🌐 SigNoz Management Shortcuts:" -ForegroundColor Cyan
 Write-Host (" • Dashboards: {0}/dashboards" -f $SigNozUrl)

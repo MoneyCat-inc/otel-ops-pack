@@ -1,41 +1,82 @@
 {
+  "metrics_views": [
+    {
+      "queries": [
+        "rate(otelcol_receiver_accepted_log_records[5m])",
+        "rate(otelcol_receiver_accepted_spans[5m])",
+        "rate(otelcol_exporter_sent_log_records[5m])",
+        "rate(otelcol_exporter_sent_spans[5m])"
+      ],
+      "name": "Collector Ingest Pulse",
+      "description": "🎯 SHOWTIME: Real-time pipeline metrics from OTel Collector",
+      "notes": "Monitor log/trace ingestion and export rates",
+      "timeRange": "1h"
+    }
+  ],
   "traces_views": [
     {
-      "timeRange": "1h",
-      "description": "Traces with latency > 500ms",
+      "filters": {
+        "service_name": "frontend",
+        "attributes": {
+          "bosscat": "1",
+          "env": "dev",
+          "canary": "1"
+        },
+        "span_name": "iona-canary-span"
+      },
+      "name": "Frontend Canary Spans",
+      "description": "🎯 SHOWTIME: Synthetic traces from iona-trace-canary.ps1",
+      "notes": "Run: pwsh -File scripts\\iona-trace-canary.ps1 -Force",
+      "timeRange": "15m"
+    },
+    {
       "filters": {
         "duration": ">500ms"
       },
-      "name": "BossCat High Latency Traces"
+      "name": "BossCat High Latency Traces",
+      "description": "Traces with latency > 500ms",
+      "timeRange": "1h"
     },
     {
-      "timeRange": "1h",
-      "description": "Traces with errors",
       "filters": {
         "status_code": "ERROR",
         "error": "true"
       },
-      "name": "BossCat Error Traces"
+      "name": "BossCat Error Traces",
+      "description": "Traces with errors",
+      "timeRange": "1h"
     }
   ],
   "logs_views": [
     {
-      "timeRange": "1h",
-      "description": "Filtered view of error logs for BossCat monitoring",
+      "filters": {
+        "message": "contains 'canary test'",
+        "service_name": "frontend",
+        "source": "Application"
+      },
+      "name": "IONA Canary Activity",
+      "description": "🎯 SHOWTIME: Live canary test logs from iona-canary.ps1 burst",
+      "notes": "Run: pwsh -File scripts\\iona-canary.ps1 -DurationMinutes 5 -EventsPerMinute 120",
+      "timeRange": "15m"
+    },
+    {
+      "filters": {
+        "service_name": "otelcol",
+        "log_level": "info,warn,error"
+      },
+      "name": "Collector Ingest Logs",
+      "description": "🔧 Pipeline health: Collector logs showing ingest activity",
+      "notes": "Monitor collector health and throughput",
+      "timeRange": "1h"
+    },
+    {
       "filters": {
         "level": "error",
         "severity": "ERROR"
       },
-      "name": "BossCat Error Logs View"
-    },
-    {
-      "timeRange": "1h",
-      "description": "View for canary test logs",
-      "filters": {
-        "body": "windows-canary",
-        "source": "windows_event_log"
-      },
-      "name": "BossCat Canary Logs View"
+      "name": "BossCat Error Logs View",
+      "description": "Error-level logs across all services",
+      "timeRange": "1h"
     }
   ]
 }

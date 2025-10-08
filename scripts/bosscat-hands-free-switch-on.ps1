@@ -7,6 +7,7 @@
   1. Smoke-check API (find working path + header)
   2. Create sentinel alert (flip BLUE → GREEN)
   3. Apply full BossCat alert set (8 alerts)
+  3.5. Send trace canary (light up showtime views)
   4. Verify 6/6 completion
 
 .USAGE
@@ -143,6 +144,26 @@ try {
   Write-Host "❌ Failed to apply BossCat alert set" -ForegroundColor Red
   Write-Host ("   Error: {0}" -f $_.Exception.Message) -ForegroundColor DarkGray
 }
+
+Write-Host "`n═══════════════════════════════════════════════════════════" -ForegroundColor Cyan
+Write-Host "  STEP 3.5: SEND TRACE CANARY (LIGHT UP SHOWTIME VIEWS)" -ForegroundColor Green
+Write-Host "═══════════════════════════════════════════════════════════" -ForegroundColor Cyan
+
+Write-Host "🎯 Sending trace canary to populate Frontend Canary Spans view..." -ForegroundColor White
+
+try {
+  $exitCode = & pwsh -File scripts/iona-trace-canary.ps1 -CollectorHost localhost -OtlpHttpPort 5318 -ZipkinPort 9411 -ServiceName frontend -DurationMs 1200 -Force 2>&1 | Out-Null
+  if ($LASTEXITCODE -eq 0) {
+    Write-Host "✅ Trace canary sent successfully" -ForegroundColor Green
+    Write-Host "   → Check SigNoz Traces: service=frontend, span=iona-canary-span" -ForegroundColor DarkGray
+  } else {
+    Write-Host "⚠️ Trace canary returned exit code $LASTEXITCODE (non-blocking)" -ForegroundColor Yellow
+  }
+} catch {
+  Write-Host "⚠️ Trace canary failed (non-blocking): $($_.Exception.Message)" -ForegroundColor Yellow
+}
+
+Start-Sleep -Seconds 3  # Allow ingestion time
 
 Write-Host "`n═══════════════════════════════════════════════════════════" -ForegroundColor Cyan
 Write-Host "  STEP 4: VERIFY 6/6 COMPLETION" -ForegroundColor Green
