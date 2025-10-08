@@ -1,0 +1,11 @@
+{
+  "Artifacts": [
+    "health-check-results.json"
+  ],
+  "Duration": 834.7243,
+  "StartTime": "2025-10-08T03:00:04.6114850+01:00",
+  "EndTime": "2025-10-08T03:00:05.4462093+01:00",
+  "Status": "completed",
+  "Workspace": "docs\\observability\\snapshots\\nightly-workspace-api-signoz-health",
+  "TaskId": "nightly-api-signoz-health"
+}

@@ -1,0 +1,39 @@
+{
+  "timestamp": "2025-10-08T02:50:10.588Z",
+  "signoz": {
+    "status": "healthy",
+    "responseTime": 5,
+    "lastCheck": "2025-10-08T02:55:40.719Z",
+    "details": "{\"status\":\"ok\"}"
+  },
+  "otelCollector": {
+    "status": "healthy",
+    "responseTime": 6,
+    "lastCheck": "2025-10-08T02:55:40.719Z",
+    "details": "HTTP 200"
+  },
+  "windowsCollector": {
+    "status": "unhealthy",
+    "responseTime": 0,
+    "lastCheck": "2025-10-08T02:55:40.716Z",
+    "error": "Connection failed: "
+  },
+  "system": {
+    "status": "healthy",
+    "cpuUsage": 0,
+    "memoryUsage": 65.73143665402787,
+    "lastCheck": "2025-10-08T02:55:40.714Z",
+    "details": {
+      "platform": "win32",
+      "arch": "x64",
+      "uptime": 11181.734,
+      "totalMemory": 34274869248,
+      "freeMemory": 11745435648
+    }
+  },
+  "uptime": {
+    "startTime": "2025-10-08T02:50:10.589Z",
+    "checks": 11,
+    "failures": 11
+  }
+}

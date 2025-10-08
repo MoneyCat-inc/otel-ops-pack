@@ -1,12 +1,12 @@
 {
+  "EndTime": "2025-10-08T02:00:07.2781983+01:00",
+  "Status": "completed",
+  "Duration": 2058.6135,
   "Artifacts": [
     "metrics-collection.json",
     "performance-baseline.json"
   ],
+  "StartTime": "2025-10-08T02:00:05.2195848+01:00",
   "TaskId": "nightly-monitor-signoz-ui",
-  "EndTime": "2025-10-07T16:59:43.9311692+01:00",
-  "Workspace": "docs\\observability\\snapshots\\nightly-workspace-monitor-signoz-ui",
-  "StartTime": "2025-10-07T16:59:42.5533158+01:00",
-  "Duration": 1377.8534,
-  "Status": "completed"
+  "Workspace": "docs\\observability\\snapshots\\nightly-workspace-monitor-signoz-ui"
 }

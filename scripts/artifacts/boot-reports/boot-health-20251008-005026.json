@@ -1,0 +1,52 @@
+{
+  "Duration": 17257.6118,
+  "SessionId": "2068f383-162d-4917-aca6-d214a8fef26c",
+  "EndTime": "2025-10-08T00:50:26.0062735+01:00",
+  "Status": "degraded",
+  "Checks": [
+    {
+      "Duration": 12347.3561,
+      "Required": true,
+      "Status": "unhealthy",
+      "Timestamp": "2025-10-08T00:50:21.1497182+01:00",
+      "Name": "Docker Desktop"
+    },
+    {
+      "Duration": 445.8293,
+      "Required": true,
+      "Status": "unhealthy",
+      "Timestamp": "2025-10-08T00:50:21.6149635+01:00",
+      "Name": "Windows OTel Collector"
+    },
+    {
+      "Duration": 18.4077,
+      "Required": true,
+      "Status": "healthy",
+      "Timestamp": "2025-10-08T00:50:21.6365067+01:00",
+      "Name": "Agent Configuration"
+    },
+    {
+      "Duration": 70.5305,
+      "Required": true,
+      "Status": "unhealthy",
+      "Timestamp": "2025-10-08T00:50:21.7142915+01:00",
+      "Name": "Agent Queue"
+    },
+    {
+      "Duration": 2699.6613,
+      "Required": false,
+      "Status": "healthy",
+      "Timestamp": "2025-10-08T00:50:24.4162657+01:00",
+      "Name": "BossCat Watchdog"
+    },
+    {
+      "Duration": 1586.2071,
+      "Required": false,
+      "Status": "unhealthy",
+      "Timestamp": "2025-10-08T00:50:26.0053040+01:00",
+      "Name": "IONA Boot Telemetry"
+    }
+  ],
+  "Environment": "dev",
+  "StartTime": "2025-10-08T00:50:08.7486617+01:00"
+}

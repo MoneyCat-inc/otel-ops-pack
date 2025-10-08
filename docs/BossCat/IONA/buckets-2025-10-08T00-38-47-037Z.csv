@@ -1,0 +1,4 @@
+tag,failed,examples
+@security,48,Docker vulnerabilities | Container hardening needed
+@service,1,Windows Collector stopped | Service configuration disabled
+@monitoring,0,ECRR compliance active | Status dashboard operational
