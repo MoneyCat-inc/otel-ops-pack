@@ -402,6 +402,64 @@
         </div>
       </div>
 
+      <!-- Synthetic Traces Generator -->
+      <div class="stress-card">
+        <div class="stress-title">🔗 Synthetic Traces</div>
+        <div class="stress-description">
+          Generates OpenTelemetry traces with spans, parent-child relationships, and realistic timing patterns.
+        </div>
+        <div class="stress-controls-inner">
+          <div class="control-row">
+            <span class="control-label">Status:</span>
+            <span class="control-value">
+              <span class="status-indicator inactive" id="tracesStatus"></span>
+              <span id="tracesText">Inactive</span>
+            </span>
+          </div>
+          <div class="control-row">
+            <span class="control-label">Traces/sec:</span>
+            <span class="control-value" id="tracesCount">0</span>
+          </div>
+          <div class="slider-container">
+            <span class="control-label">Rate:</span>
+            <input type="range" class="slider" id="tracesRate" min="1" max="15" value="5">
+            <span class="control-value" id="tracesRateText">5/sec</span>
+          </div>
+          <button class="btn-stress" id="tracesBtn" onclick="toggleTraces()">
+            Start Traces
+          </button>
+        </div>
+      </div>
+
+      <!-- System Metrics Generator -->
+      <div class="stress-card">
+        <div class="stress-title">💻 System Metrics</div>
+        <div class="stress-description">
+          Generates CPU, memory, GPU usage, and queue-depth metrics with realistic system behavior patterns.
+        </div>
+        <div class="stress-controls-inner">
+          <div class="control-row">
+            <span class="control-label">Status:</span>
+            <span class="control-value">
+              <span class="status-indicator inactive" id="systemStatus"></span>
+              <span id="systemText">Inactive</span>
+            </span>
+          </div>
+          <div class="control-row">
+            <span class="control-label">Metrics/sec:</span>
+            <span class="control-value" id="systemCount">0</span>
+          </div>
+          <div class="slider-container">
+            <span class="control-label">Intensity:</span>
+            <input type="range" class="slider" id="systemIntensity" min="1" max="10" value="3">
+            <span class="control-value" id="systemIntensityText">Medium</span>
+          </div>
+          <button class="btn-stress" id="systemBtn" onclick="toggleSystemMetrics()">
+            Start System
+          </button>
+        </div>
+      </div>
+
       <!-- Fixture Replay -->
       <div class="stress-card">
         <div class="stress-title">📁 Fixture Replay</div>
@@ -561,6 +619,8 @@
     metrics: { active: false, interval: null, count: 0 },
     noise: { active: false, interval: null, burstSize: 0 },
     probes: { active: false, interval: null, endpoints: 0 },
+    traces: { active: false, interval: null, count: 0 },
+    system: { active: false, interval: null, count: 0 },
     fixture: { active: false, interval: null, count: 0 }
   };
   
@@ -575,6 +635,46 @@
     { name: 'notification-service', patterns: ['Email sent', 'SMS queued', 'Push notification', 'Template rendered'] },
     { name: 'analytics-engine', patterns: ['Event tracked', 'Aggregation complete', 'Report generated', 'Data exported'] },
     { name: 'user-service', patterns: ['Profile updated', 'Preference changed', 'Account created', 'Password reset'] }
+  ];
+  
+  // Trace templates with realistic span patterns
+  const traceTemplates = [
+    { 
+      name: 'web-request', 
+      spans: [
+        { name: 'http.request', duration: [50, 200], children: ['database.query', 'cache.lookup'] },
+        { name: 'database.query', duration: [10, 100], children: [] },
+        { name: 'cache.lookup', duration: [1, 10], children: [] }
+      ]
+    },
+    { 
+      name: 'user-auth', 
+      spans: [
+        { name: 'auth.validate', duration: [20, 80], children: ['token.verify', 'permission.check'] },
+        { name: 'token.verify', duration: [5, 25], children: [] },
+        { name: 'permission.check', duration: [2, 15], children: [] }
+      ]
+    },
+    { 
+      name: 'payment-flow', 
+      spans: [
+        { name: 'payment.process', duration: [100, 500], children: ['fraud.check', 'gateway.call'] },
+        { name: 'fraud.check', duration: [50, 150], children: [] },
+        { name: 'gateway.call', duration: [200, 800], children: [] }
+      ]
+    }
+  ];
+  
+  // System metrics patterns
+  const systemMetrics = [
+    { name: 'cpu.usage', type: 'gauge', range: [10, 90], unit: '%' },
+    { name: 'memory.usage', type: 'gauge', range: [20, 85], unit: '%' },
+    { name: 'gpu.usage', type: 'gauge', range: [5, 95], unit: '%' },
+    { name: 'disk.io', type: 'counter', range: [100, 10000], unit: 'bytes/sec' },
+    { name: 'network.io', type: 'counter', range: [500, 50000], unit: 'bytes/sec' },
+    { name: 'queue.depth', type: 'gauge', range: [0, 1000], unit: 'items' },
+    { name: 'active.connections', type: 'gauge', range: [10, 500], unit: 'connections' },
+    { name: 'response.time', type: 'histogram', range: [1, 5000], unit: 'ms' }
   ];
   
   // Error patterns for noise generation
@@ -707,6 +807,8 @@
     if (generators.metrics.active) totalLPS += parseInt(document.getElementById('metricsVolume').value);
     if (generators.noise.active) totalLPS += parseInt(document.getElementById('noiseIntensity').value) * 2;
     if (generators.probes.active) totalLPS += 1;
+    if (generators.traces.active) totalLPS += parseInt(document.getElementById('tracesRate').value) * 2; // Traces generate multiple spans
+    if (generators.system.active) totalLPS += parseInt(document.getElementById('systemIntensity').value) * systemMetrics.length;
     if (generators.fixture.active) totalLPS += parseInt(document.getElementById('fixtureSpeed').value);
     
     document.getElementById('totalLogsPerSec').textContent = totalLPS;
@@ -932,6 +1034,163 @@
     }
   }
   
+  // Synthetic traces generator
+  function toggleTraces() {
+    const btn = document.getElementById('tracesBtn');
+    const status = document.getElementById('tracesStatus');
+    const text = document.getElementById('tracesText');
+    
+    if (generators.traces.active) {
+      clearInterval(generators.traces.interval);
+      generators.traces.active = false;
+      btn.textContent = 'Start Traces';
+      btn.classList.remove('active');
+      status.className = 'status-indicator inactive';
+      text.textContent = 'Inactive';
+      logActivity('Synthetic traces generator stopped', 'info');
+    } else {
+      const desiredRate = parseInt(document.getElementById('tracesRate').value);
+      const intervalMs = Math.max(200, 1000 / desiredRate); // Minimum 200ms between traces
+      
+      generators.traces.interval = setInterval(() => {
+        const template = traceTemplates[Math.floor(Math.random() * traceTemplates.length)];
+        const traceId = generateTraceId();
+        const startTime = Date.now();
+        
+        // Generate parent span
+        const parentSpan = template.spans[0];
+        const parentDuration = Math.floor(Math.random() * (parentSpan.duration[1] - parentSpan.duration[0])) + parentSpan.duration[0];
+        
+        sendOTLPTrace(template.name, traceId, parentSpan.name, null, startTime, parentDuration, {
+          'trace.template': template.name,
+          'span.type': 'parent',
+          'generator': 'synthetic-traces'
+        });
+        
+        // Generate child spans
+        parentSpan.children.forEach((childName, index) => {
+          const childSpan = template.spans.find(s => s.name === childName);
+          if (childSpan) {
+            const childDuration = Math.floor(Math.random() * (childSpan.duration[1] - childSpan.duration[0])) + childSpan.duration[0];
+            const childStartTime = startTime + Math.floor(Math.random() * (parentDuration - childDuration));
+            
+            sendOTLPTrace(template.name, traceId, childSpan.name, parentSpan.name, childStartTime, childDuration, {
+              'trace.template': template.name,
+              'span.type': 'child',
+              'parent.span': parentSpan.name,
+              'generator': 'synthetic-traces'
+            });
+          }
+        });
+        
+        generators.traces.count++;
+        document.getElementById('tracesCount').textContent = generators.traces.count;
+      }, intervalMs);
+      
+      generators.traces.active = true;
+      btn.textContent = 'Stop Traces';
+      btn.classList.add('active');
+      status.className = 'status-indicator active';
+      text.textContent = 'Active';
+      logActivity(`Synthetic traces generator started (${desiredRate}/sec, ${intervalMs}ms interval)`, 'info');
+    }
+  }
+  
+  // System metrics generator
+  function toggleSystemMetrics() {
+    const btn = document.getElementById('systemBtn');
+    const status = document.getElementById('systemStatus');
+    const text = document.getElementById('systemText');
+    
+    if (generators.system.active) {
+      clearInterval(generators.system.interval);
+      generators.system.active = false;
+      btn.textContent = 'Start System';
+      btn.classList.remove('active');
+      status.className = 'status-indicator inactive';
+      text.textContent = 'Inactive';
+      logActivity('System metrics generator stopped', 'info');
+    } else {
+      const intensity = parseInt(document.getElementById('systemIntensity').value);
+      const numMetrics = systemMetrics.length;
+      const perMetricRate = intensity / numMetrics;
+      const intervalMs = Math.max(100, 1000 / perMetricRate);
+      
+      generators.system.interval = setInterval(() => {
+        systemMetrics.forEach((metric, index) => {
+          let value;
+          if (metric.type === 'gauge') {
+            // Gauge values fluctuate realistically
+            const baseValue = (metric.range[0] + metric.range[1]) / 2;
+            const variation = (metric.range[1] - metric.range[0]) * 0.3;
+            value = Math.max(metric.range[0], Math.min(metric.range[1], 
+              baseValue + (Math.random() - 0.5) * variation));
+          } else if (metric.type === 'counter') {
+            // Counter values increment
+            value = Math.floor(Math.random() * (metric.range[1] - metric.range[0])) + metric.range[0];
+          } else if (metric.type === 'histogram') {
+            // Histogram values with realistic distribution
+            const percentile = Math.random();
+            if (percentile < 0.5) {
+              value = metric.range[0] + Math.random() * (metric.range[1] - metric.range[0]) * 0.3;
+            } else if (percentile < 0.9) {
+              value = metric.range[0] + (metric.range[1] - metric.range[0]) * 0.3 + 
+                     Math.random() * (metric.range[1] - metric.range[0]) * 0.4;
+            } else {
+              value = metric.range[0] + (metric.range[1] - metric.range[0]) * 0.7 + 
+                     Math.random() * (metric.range[1] - metric.range[0]) * 0.3;
+            }
+            value = Math.floor(value);
+          }
+          
+          sendOTLPLog('system-metrics', `${metric.name}: ${value}${metric.unit}`, 'INFO', {
+            'metric.type': metric.type,
+            'metric.name': metric.name,
+            'metric.value': value.toString(),
+            'metric.unit': metric.unit,
+            'generator': 'system-metrics',
+            'intensity': intensity.toString()
+          });
+          
+          generators.system.count++;
+        });
+        
+        document.getElementById('systemCount').textContent = generators.system.count;
+      }, intervalMs);
+      
+      generators.system.active = true;
+      btn.textContent = 'Stop System';
+      btn.classList.add('active');
+      status.className = 'status-indicator active';
+      text.textContent = 'Active';
+      logActivity(`System metrics generator started (intensity: ${intensity}, ${intervalMs}ms interval)`, 'info');
+    }
+  }
+  
+  // Generate random trace ID
+  function generateTraceId() {
+    return Array.from({length: 16}, () => Math.floor(Math.random() * 16).toString(16)).join('');
+  }
+  
+  // Send OTLP trace (simplified - would need proper OTLP trace format in production)
+  async function sendOTLPTrace(serviceName, traceId, spanName, parentSpan, startTime, duration, attributes) {
+    const endTime = startTime + duration;
+    
+    // For now, send as structured log with trace information
+    // In production, this would use proper OTLP trace protocol
+    const traceMessage = `Trace[${traceId}]: ${spanName}${parentSpan ? ` (child of ${parentSpan})` : ''} - ${duration}ms`;
+    
+    sendOTLPLog(serviceName, traceMessage, 'INFO', {
+      'trace.id': traceId,
+      'span.name': spanName,
+      'span.start_time': startTime.toString(),
+      'span.duration': duration.toString(),
+      'span.end_time': endTime.toString(),
+      'parent.span': parentSpan || '',
+      ...attributes
+    });
+  }
+
   // Fixture replay
   function toggleFixtureReplay() {
     const btn = document.getElementById('fixtureBtn');
@@ -987,6 +1246,8 @@
       toggleMetrics();
       toggleNoise();
       toggleProbes();
+      toggleTraces();
+      toggleSystemMetrics();
       toggleFixtureReplay();
       btn.textContent = 'Stop All Generators';
       btn.classList.add('active');
@@ -999,6 +1260,8 @@
     if (generators.metrics.active) toggleMetrics();
     if (generators.noise.active) toggleNoise();
     if (generators.probes.active) toggleProbes();
+    if (generators.traces.active) toggleTraces();
+    if (generators.system.active) toggleSystemMetrics();
     if (generators.fixture.active) toggleFixtureReplay();
     
     document.getElementById('masterBtn').textContent = 'Start All Generators';
@@ -1016,6 +1279,12 @@
     document.getElementById('noiseIntensityText').textContent = intensityText;
     
     document.getElementById('probeIntervalText').textContent = document.getElementById('probeInterval').value + 's';
+    document.getElementById('tracesRateText').textContent = document.getElementById('tracesRate').value + '/sec';
+    
+    const systemIntensity = document.getElementById('systemIntensity').value;
+    const systemIntensityText = ['Very Low', 'Low', 'Medium', 'High', 'Very High', 'Extreme', 'Intense', 'Max', 'Ultra', 'Peak'][systemIntensity - 1];
+    document.getElementById('systemIntensityText').textContent = systemIntensityText;
+    
     document.getElementById('fixtureSpeedText').textContent = document.getElementById('fixtureSpeed').value + 'x';
   }
   
@@ -1035,6 +1304,8 @@
     document.getElementById('metricsVolume').addEventListener('input', updateSliderTexts);
     document.getElementById('noiseIntensity').addEventListener('input', updateSliderTexts);
     document.getElementById('probeInterval').addEventListener('input', updateSliderTexts);
+    document.getElementById('tracesRate').addEventListener('input', updateSliderTexts);
+    document.getElementById('systemIntensity').addEventListener('input', updateSliderTexts);
     document.getElementById('fixtureSpeed').addEventListener('input', updateSliderTexts);
     
     // Update metrics every second
