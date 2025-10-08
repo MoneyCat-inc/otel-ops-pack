@@ -6,6 +6,7 @@
 <title>Stress Testing Suite — Resonai [OTel]</title>
 <link rel="icon" type="image/png" href="../LOGO/Resonai_LOGO_ICONonly.png">
 <link rel="stylesheet" href="../assets/resonai-system.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
   .stress-controls {
     display: grid;
@@ -539,6 +540,54 @@
     </div>
   </section>
 
+  <!-- Historical Trend Charts -->
+  <section class="section">
+    <h2 class="mb-lg">📈 Historical Trends</h2>
+    <div class="charts-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: var(--spacing-lg);">
+      
+      <!-- Throughput Trend Chart -->
+      <div class="chart-container" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--border-radius-lg); padding: var(--spacing-lg);">
+        <h3 style="margin: 0 0 var(--spacing-md) 0; font-size: var(--font-size-md); color: var(--primary);">📊 Throughput Over Time</h3>
+        <canvas id="throughputChart" width="400" height="200"></canvas>
+        <div style="margin-top: var(--spacing-sm); display: flex; justify-content: space-between; font-size: var(--font-size-xs); color: var(--fg-muted);">
+          <span>Logs/sec</span>
+          <span id="throughputRange">Last 60 seconds</span>
+        </div>
+      </div>
+
+      <!-- Generator Activity Chart -->
+      <div class="chart-container" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--border-radius-lg); padding: var(--spacing-lg);">
+        <h3 style="margin: 0 0 var(--spacing-md) 0; font-size: var(--font-size-md); color: var(--primary);">🎛️ Generator Activity</h3>
+        <canvas id="activityChart" width="400" height="200"></canvas>
+        <div style="margin-top: var(--spacing-sm); display: flex; justify-content: space-between; font-size: var(--font-size-xs); color: var(--fg-muted);">
+          <span>Active Generators</span>
+          <span id="activityRange">Last 60 seconds</span>
+        </div>
+      </div>
+
+      <!-- Error Rate Trend Chart -->
+      <div class="chart-container" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--border-radius-lg); padding: var(--spacing-lg);">
+        <h3 style="margin: 0 0 var(--spacing-md) 0; font-size: var(--font-size-md); color: var(--primary);">⚠️ Error Rate Trend</h3>
+        <canvas id="errorRateChart" width="400" height="200"></canvas>
+        <div style="margin-top: var(--spacing-sm); display: flex; justify-content: space-between; font-size: var(--font-size-xs); color: var(--fg-muted);">
+          <span>Error %</span>
+          <span id="errorRange">Last 60 seconds</span>
+        </div>
+      </div>
+
+      <!-- System Metrics Trend Chart -->
+      <div class="chart-container" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--border-radius-lg); padding: var(--spacing-lg);">
+        <h3 style="margin: 0 0 var(--spacing-md) 0; font-size: var(--font-size-md); color: var(--primary);">💻 System Metrics Trend</h3>
+        <canvas id="systemMetricsChart" width="400" height="200"></canvas>
+        <div style="margin-top: var(--spacing-sm); display: flex; justify-content: space-between; font-size: var(--font-size-xs); color: var(--fg-muted);">
+          <span>CPU/Memory/GPU %</span>
+          <span id="systemRange">Last 60 seconds</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
   <!-- Activity Log -->
   <section class="section">
     <h2 class="mb-lg">📋 Stress Test Activity</h2>
@@ -626,6 +675,22 @@
   
   let totalLogsSent = 0;
   let startTime = Date.now();
+  
+  // Historical data tracking
+  const historicalData = {
+    throughput: [],
+    activity: [],
+    errorRate: [],
+    systemMetrics: {
+      cpu: [],
+      memory: [],
+      gpu: []
+    },
+    timestamps: []
+  };
+  
+  // Chart instances
+  let throughputChart, activityChart, errorRateChart, systemMetricsChart;
   
   // Service templates for multi-source generation
   const serviceTemplates = [
@@ -789,6 +854,182 @@
     }
   }
   
+  // Initialize charts
+  function initializeCharts() {
+    const chartOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          labels: {
+            color: '#ffffff',
+            font: { size: 11 }
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: { color: '#888888', font: { size: 10 } },
+          grid: { color: 'rgba(255,255,255,0.1)' }
+        },
+        y: {
+          ticks: { color: '#888888', font: { size: 10 } },
+          grid: { color: 'rgba(255,255,255,0.1)' }
+        }
+      }
+    };
+
+    // Throughput Chart
+    throughputChart = new Chart(document.getElementById('throughputChart'), {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [{
+          label: 'Logs/sec',
+          data: [],
+          borderColor: '#7c5cff',
+          backgroundColor: 'rgba(124,92,255,0.1)',
+          tension: 0.4,
+          fill: true
+        }]
+      },
+      options: { ...chartOptions }
+    });
+
+    // Activity Chart
+    activityChart = new Chart(document.getElementById('activityChart'), {
+      type: 'bar',
+      data: {
+        labels: [],
+        datasets: [{
+          label: 'Active Generators',
+          data: [],
+          backgroundColor: 'rgba(76,175,80,0.8)',
+          borderColor: '#4caf50',
+          borderWidth: 1
+        }]
+      },
+      options: { ...chartOptions }
+    });
+
+    // Error Rate Chart
+    errorRateChart = new Chart(document.getElementById('errorRateChart'), {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [{
+          label: 'Error Rate %',
+          data: [],
+          borderColor: '#f44336',
+          backgroundColor: 'rgba(244,67,54,0.1)',
+          tension: 0.4,
+          fill: true
+        }]
+      },
+      options: { ...chartOptions }
+    });
+
+    // System Metrics Chart
+    systemMetricsChart = new Chart(document.getElementById('systemMetricsChart'), {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [
+          {
+            label: 'CPU %',
+            data: [],
+            borderColor: '#ff9800',
+            backgroundColor: 'rgba(255,152,0,0.1)',
+            tension: 0.4
+          },
+          {
+            label: 'Memory %',
+            data: [],
+            borderColor: '#2196f3',
+            backgroundColor: 'rgba(33,150,243,0.1)',
+            tension: 0.4
+          },
+          {
+            label: 'GPU %',
+            data: [],
+            borderColor: '#9c27b0',
+            backgroundColor: 'rgba(156,39,176,0.1)',
+            tension: 0.4
+          }
+        ]
+      },
+      options: { ...chartOptions }
+    });
+  }
+
+  // Update historical data
+  function updateHistoricalData() {
+    const now = new Date();
+    const timestamp = now.toLocaleTimeString();
+    
+    // Calculate current metrics
+    const elapsed = (Date.now() - startTime) / 1000;
+    const logsPerSec = elapsed > 0 ? parseFloat((totalLogsSent / elapsed).toFixed(1)) : 0;
+    const activeServices = Object.values(generators).filter(g => g.active).length;
+    
+    // Calculate error rate (simplified - based on noise generator activity)
+    const errorRate = generators.noise.active ? 
+      Math.min(100, parseInt(document.getElementById('noiseIntensity').value) * 10) : 0;
+    
+    // Add to historical data
+    historicalData.throughput.push(logsPerSec);
+    historicalData.activity.push(activeServices);
+    historicalData.errorRate.push(errorRate);
+    historicalData.timestamps.push(timestamp);
+    
+    // System metrics (simulated for demo)
+    historicalData.systemMetrics.cpu.push(Math.floor(Math.random() * 30) + 40);
+    historicalData.systemMetrics.memory.push(Math.floor(Math.random() * 25) + 50);
+    historicalData.systemMetrics.gpu.push(Math.floor(Math.random() * 40) + 20);
+    
+    // Keep only last 60 data points (60 seconds)
+    const maxPoints = 60;
+    if (historicalData.throughput.length > maxPoints) {
+      historicalData.throughput.shift();
+      historicalData.activity.shift();
+      historicalData.errorRate.shift();
+      historicalData.systemMetrics.cpu.shift();
+      historicalData.systemMetrics.memory.shift();
+      historicalData.systemMetrics.gpu.shift();
+      historicalData.timestamps.shift();
+    }
+    
+    // Update charts
+    updateCharts();
+  }
+
+  // Update chart data
+  function updateCharts() {
+    const labels = historicalData.timestamps.slice(-20); // Show last 20 points
+    
+    // Throughput Chart
+    throughputChart.data.labels = labels;
+    throughputChart.data.datasets[0].data = historicalData.throughput.slice(-20);
+    throughputChart.update('none');
+    
+    // Activity Chart
+    activityChart.data.labels = labels;
+    activityChart.data.datasets[0].data = historicalData.activity.slice(-20);
+    activityChart.update('none');
+    
+    // Error Rate Chart
+    errorRateChart.data.labels = labels;
+    errorRateChart.data.datasets[0].data = historicalData.errorRate.slice(-20);
+    errorRateChart.update('none');
+    
+    // System Metrics Chart
+    systemMetricsChart.data.labels = labels;
+    systemMetricsChart.data.datasets[0].data = historicalData.systemMetrics.cpu.slice(-20);
+    systemMetricsChart.data.datasets[1].data = historicalData.systemMetrics.memory.slice(-20);
+    systemMetricsChart.data.datasets[2].data = historicalData.systemMetrics.gpu.slice(-20);
+    systemMetricsChart.update('none');
+  }
+
   // Update metrics display
   function updateMetrics() {
     const elapsed = (Date.now() - startTime) / 1000;
@@ -812,6 +1053,9 @@
     if (generators.fixture.active) totalLPS += parseInt(document.getElementById('fixtureSpeed').value);
     
     document.getElementById('totalLogsPerSec').textContent = totalLPS;
+    
+    // Update historical data
+    updateHistoricalData();
   }
   
   // Multi-source log generator
@@ -1292,6 +1536,9 @@
   window.onload = () => {
     updateSliderTexts();
     updateMetrics();
+    
+    // Initialize charts
+    initializeCharts();
     
     // Show CORS warning if running from file:// protocol
     if (config.isFileProtocol) {
