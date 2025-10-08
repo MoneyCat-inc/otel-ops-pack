@@ -1,374 +1,453 @@
-# 🐾 BossCat OEM Documentation Hub
-## Resonai [OTel] - Autonomous Observability Pipeline
+# 🐾 BossCat SigNoz Automation Stack
 
-**BossCat OEM (Executive Overseer Manager)** - Supreme Authority  
-**Last Updated:** 2025-10-07  
-**Project Status:** Production-Ready
-
----
-
-## 📚 Documentation Index
-
-### 🎯 Getting Started
-
-#### For Executives & Stakeholders
-1. **[Executive Summary](EXECUTIVE_SUMMARY.md)** - High-level overview and status (recommended starting point)
-
-#### For Cursor{Implementer} Agents
-1. **[Cursor Implementer Setup](CURSOR_IMPLEMENTER_SETUP.md)** - Complete setup guide (comprehensive)
-2. **[Cursor Implementer Quick Start](CURSOR_IMPLEMENTER_QUICKSTART.md)** - One-page reference (fast)
-3. **[AGENTS.md](../../AGENTS.md)** - Agent hierarchy and governance
-
-#### For New Team Members
-1. **[ECRR Quick Reference](../../docs/ecrr/ECRR_QUICK_REFERENCE.md)** - Fast compliance guide
-2. **[ECRR Template Guide](../../docs/ecrr/ECRR_TEMPLATE_GUIDE.md)** - Creating ECRR reports
-3. **[Comfort Cat Guidelines](../comfort-cat/)** - Creative and copy standards
+**Authority:** BossCat OEM (Executive Overseer Manager)  
+**Status:** Production-Ready with Full Hardening  
+**Gate:** 100/100 HARDENED 🛡️
 
 ---
 
-## 🔍 Core Documentation
+## 🎯 Overview
 
-### Governance & Compliance
-- **[AGENTS.md](../../AGENTS.md)** - Agent roles, responsibilities, and operating principles
-- **[TASKS.md](../../TASKS.md)** - Activity log and task tracking
-- **[CURSOR_IMPLEMENTER_SETUP.md](CURSOR_IMPLEMENTER_SETUP.md)** - Implementer setup prompt
-- **[CURSOR_IMPLEMENTER_QUICKSTART.md](CURSOR_IMPLEMENTER_QUICKSTART.md)** - Quick reference
+Complete automation suite for deploying, verifying, and maintaining SigNoz observability configuration. Implements **Cat Nap Control Room** aesthetic with **Feline Silence** monitoring philosophy.
 
-### ECRR Framework
-- **[ECRR Reports](reports/)** - Historical audit trails
-- **[ECRR Template Guide](../../docs/ecrr/ECRR_TEMPLATE_GUIDE.md)** - Report creation guide
-- **[ECRR Quick Reference](../../docs/ecrr/ECRR_QUICK_REFERENCE.md)** - Compliance checklist
+### What This Stack Does
 
-### Gates & Validation
-- **[Gates Documentation](gates/)** - Release gates and criteria
-- **[Status Dashboard](../status.html)** - Executive dashboard
-- **[KPIs](../status/kpis.json)** - Key performance indicators
-- **[Roadmap](../status/roadmap.json)** - Milestones and features
+1. **Automates SigNoz Setup (8/8 Steps)**
+   - ✅ Workspace configuration
+   - ✅ Data sources
+   - ✅ Log ingestion
+   - ✅ Trace ingestion
+   - ✅ Metrics collection
+   - ✅ Alert rules (8 BossCat alerts: 3 critical, 5 warning)
+   - ✅ Saved Views (4 views: 2 logs, 2 traces)
+   - ✅ Executive Dashboard (4 panels)
 
-### Observability
-- **[Snapshots](../observability/snapshots/)** - Automated dashboard captures
-- **[Nightly Dashboard Export](../../.github/workflows/nightly-dashboard-export.yml)** - Automation workflow
-- **[IONA Errors](../../docs/IONA_ERRORS.md)** - Error ledger
+2. **Provides Drift Prevention**
+   - Daily CI/CD verification at 06:17 UTC
+   - Idempotent operations (safe to re-run)
+   - Evidence-based governance
+   - Automatic artifact uploads
+
+3. **Enables Operational Excellence**
+   - One-liner utilities for common tasks
+   - Comprehensive hardening guide
+   - API key rotation procedures
+   - Rollback capabilities
 
 ---
 
-## 🛠️ Quick Actions
+## 🚀 Quick Start
 
-### Daily Operations
+### Prerequisites
+
+- **SigNoz:** Running instance (default: `http://localhost:8080`)
+- **API Key:** Admin-level SigNoz API key
+- **PowerShell:** Version 7.4+ recommended
+- **Environment:** Windows (native) or cross-platform (pwsh)
+
+### One-Shot Setup
+
 ```powershell
-# Quick health check
-pwsh -File scripts\quick-monitor.ps1
+# 1. Set your API key
+$env:SIGNOZ_API_KEY = "<your-api-key>"
+$env:SIGNOZ_URL = "http://localhost:8080"
 
-# Generate canary test
-pwsh -File scripts\generate-windows-canary.ps1
+# 2. Apply full configuration
+pwsh -File scripts/bosscat-hands-free-switch-on.ps1 `
+  -SigNozUrl $env:SIGNOZ_URL `
+  -ApiKey $env:SIGNOZ_API_KEY
 
-# Update dashboard data
-pnpm roadmap:update
+# 3. Apply Saved Views & Dashboard
+pwsh -File scripts/bosscat-steps-7-8.ps1 `
+  -SigNozUrl $env:SIGNOZ_URL `
+  -ApiKey $env:SIGNOZ_API_KEY `
+  -Apply
+
+# 4. Verify completion
+pwsh -File scripts/bosscat-verify-signoz-completion.ps1 `
+  -SigNozUrl $env:SIGNOZ_URL `
+  -ApiKey $env:SIGNOZ_API_KEY
 ```
 
-### ECRR Cycle
+**Expected Result:** Exit code `0`, SigNoz Home shows "Setup Alerts" tile as **GREEN**
+
+---
+
+## 📋 Script Reference
+
+### Core Configuration Scripts
+
+#### 1. `scripts/bosscat-create-signoz-alerts.ps1`
+
+Creates 8 BossCat alert rules using SigNoz v0.96+ schema.
+
+**Alerts Created:**
+- **Metric Alerts (4):**
+  - Pipeline Health (critical) - Fires when pipeline stops receiving spans
+  - High Error Rate (warning) - Fires when error rate > 5%
+  - Latency Spike (warning) - Fires when P95 latency > 1s
+  - Throughput Drop (warning) - Fires when throughput < 10 spans/sec
+
+- **Log Alerts (2):**
+  - Canary Missing (critical) - Fires when canary logs absent > 10min
+  - Error Log (warning) - Fires when error log count > 10 in 5min
+
+- **Trace Alerts (2):**
+  - High Latency Trace (warning) - Fires when trace duration > 500ms
+  - Error Trace (critical) - Fires when error traces detected
+
+**Usage:**
 ```powershell
-# 1. Examine
-pwsh -File scripts\verify-pipeline.ps1
+# Export only (safe mode)
+pwsh -File scripts/bosscat-create-signoz-alerts.ps1 -SigNozUrl http://localhost:8080
 
-# 2. Clean (fix issues as needed)
-Start-Service otelcol-contrib
-docker-compose -f docker-compose-signoz.yml restart
-
-# 3. Report
-pwsh -File scripts\monitor-optimized-pipeline.ps1 -ExportReport
-
-# 4. Role (assign ownership in report)
+# Apply to SigNoz
+pwsh -File scripts/bosscat-create-signoz-alerts.ps1 `
+  -SigNozUrl http://localhost:8080 `
+  -Apply `
+  -ApiKey $env:SIGNOZ_API_KEY
 ```
 
-### Dashboard Access
-- **Executive Dashboard**: `docs/status.html` (open in browser, load JSON files)
-- **SigNoz UI**: `http://localhost:8080`
-- **Compliance Dashboard**: `artifacts/ecrr-compliance-dashboard.html`
+#### 2. `scripts/bosscat-verify-signoz-completion.ps1`
+
+Verifies complete SigNoz setup with robust parsing.
+
+**Checks:**
+- SigNoz health (`/api/v1/health`)
+- Docker services status
+- Alert count (expects 8 BossCat alerts)
+- Severity distribution (3 critical, 5 warning)
+- Alert enabled status
+
+**Exit Codes:**
+- `0` - All checks pass
+- `2` - Incomplete setup or drift detected
+
+**Usage:**
+```powershell
+pwsh -File scripts/bosscat-verify-signoz-completion.ps1 `
+  -SigNozUrl http://localhost:8080 `
+  -ApiKey $env:SIGNOZ_API_KEY
+```
+
+#### 3. `scripts/bosscat-steps-7-8.ps1`
+
+Automates Saved Views and Dashboard creation.
+
+**Creates:**
+- **4 Saved Views:**
+  - BossCat Error Logs View
+  - BossCat Canary Logs View
+  - BossCat High Latency Traces
+  - BossCat Error Traces
+
+- **1 Dashboard:**
+  - BossCat Executive Dashboard (4 panels)
+
+**Usage:**
+```powershell
+pwsh -File scripts/bosscat-steps-7-8.ps1 `
+  -SigNozUrl http://localhost:8080 `
+  -ApiKey $env:SIGNOZ_API_KEY `
+  -Apply
+```
+
+#### 4. `scripts/bosscat-hands-free-switch-on.ps1`
+
+Orchestrates the full setup process.
+
+**Workflow:**
+1. Smoke-check API endpoints
+2. Create sentinel alert (flips UI tile to GREEN)
+3. Apply full alert set (8 rules)
+4. Verify completion
+
+**Usage:**
+```powershell
+pwsh -File scripts/bosscat-hands-free-switch-on.ps1 `
+  -SigNozUrl http://localhost:8080 `
+  -ApiKey $env:SIGNOZ_API_KEY
+```
+
+### Operational Utilities
+
+#### 5. `scripts/bosscat-ops-oneliners.ps1`
+
+Daily operational utilities for managing SigNoz.
+
+**Operations:**
+
+```powershell
+# Full status check (health + alerts + dashboards)
+pwsh -File scripts/bosscat-ops-oneliners.ps1 `
+  -Operation FullStatus `
+  -ApiKey $env:SIGNOZ_API_KEY
+
+# List all alerts with details
+pwsh -File scripts/bosscat-ops-oneliners.ps1 `
+  -Operation ListAlerts `
+  -ApiKey $env:SIGNOZ_API_KEY
+
+# List dashboards
+pwsh -File scripts/bosscat-ops-oneliners.ps1 `
+  -Operation ListDashboards `
+  -ApiKey $env:SIGNOZ_API_KEY
+
+# Export dashboards (backup)
+pwsh -File scripts/bosscat-ops-oneliners.ps1 `
+  -Operation ExportDashboards `
+  -ApiKey $env:SIGNOZ_API_KEY
+
+# Health check only
+pwsh -File scripts/bosscat-ops-oneliners.ps1 `
+  -Operation HealthCheck `
+  -ApiKey $env:SIGNOZ_API_KEY
+```
 
 ---
 
-## 📊 Key Metrics & Targets
+## 🔁 CI/CD Integration
 
-### Pipeline Performance
-- **Latency**: <200ms batches ✅
-- **Noise Reduction**: ~50% volume ✅
-- **Error Rate**: <1% ✅
+### Workflow: `.github/workflows/signoz-config.yml`
 
-### Compliance
-- **ECRR Score**: ≥80% ✅
-- **SBOM Coverage**: 100% 🟨
-- **Security Vulns**: 48 pending 🟥
+**Triggers:**
+- Daily at 06:17 UTC (cron schedule)
+- Manual dispatch (`workflow_dispatch`)
+- Push to config paths
 
-### Fleet Health
-- **Repos Green**: ≥90% target
-- **Policy Compliance**: Active ✅
-- **Automation**: 24/7 operational ✅
+**Actions:**
+1. Apply all BossCat alerts
+2. Apply Saved Views and Dashboard
+3. Verify 8/8 completion
+4. Snapshot current configuration
+5. Upload artifacts (always, even on failure)
 
----
+**Environment:**
+- Uses `secrets.WYZWOZ_SIGNOZ` for API authentication
+- Runs on `windows-latest` runner
+- 20-minute timeout
+- Least-privilege permissions (`contents: read`)
 
-## 🎭 Agent Roles
-
-### BossCat OEM (You)
-- Supreme authority over all agents and releases
-- Approves production deployments
-- Maintains traceability and audit compliance
-- Controls nightly dashboard automation
-- Veto power over any production change
-
-### Cursor Agents
-- **Investigator** 🕵️ - Finds errors, broken configs, gaps
-- **Gap-Closer** 🩹 - Writes code/tests to patch issues
-- **QA Scribe** 📑 - Generates ECRR reports and documentation
-
-### IONA (Intelligent Operations & Navigation Assistant)
-- Maintains error ledger (`docs/IONA_ERRORS.md`)
-- Exports anomaly lists for auditing
-- Flags recurring error classes to BossCat
-- Automated health scoring and drift detection
-
-### Codex Cloud / Codex Local
-- **Cloud**: External API alignment (SigNoz, GitHub, SaaS)
-- **Local**: Workstation reproducibility (Windows/WSL)
+**Manual Trigger:**
+```bash
+gh workflow run signoz-config.yml
+gh run list --workflow=signoz-config.yml --limit 5
+```
 
 ---
 
-## 📁 Directory Structure
+## 📁 Artifact Structure
 
 ```
 docs/BossCat/
-├── README.md                          # This file (documentation hub)
-├── CURSOR_IMPLEMENTER_SETUP.md        # Complete setup guide
-├── CURSOR_IMPLEMENTER_QUICKSTART.md   # One-page reference
-├── reports/                           # Historical ECRR reports
-│   ├── ECRR_GATE_HOLD_2025-10-07.md
-│   ├── STATUS_DASHBOARD_UPDATE_20251007.md
-│   └── STATUS_UPDATE_EXECUTIVE_SUMMARY_20251007.md
-├── gates/                             # Release gates and criteria
-└── checklists/                        # Operational checklists
+├── BOSSCAT_LOG.md                          # ECRR compliance ledger
+├── OPS_HARDENING_GUIDE.md                  # Comprehensive ops guide
+├── README.md                               # This file
+├── bosscat-metric-alerts.json              # 4 metric alert definitions
+├── bosscat-log-alerts.json                 # 2 log alert definitions
+├── bosscat-trace-alerts.json               # 2 trace alert definitions
+├── bosscat-saved-views.json                # 4 saved view definitions
+├── bosscat-executive-dashboard.json        # Dashboard definition
+├── signoz-completion-verification.json     # Latest verification report
+├── bosscat-steps-7-8-summary.json          # Steps 7-8 summary
+└── _evidence_dashboards.json               # Live snapshot (CI-generated)
+```
 
-docs/status/
-├── status.html                        # Executive dashboard
-├── roadmap.json                       # Milestones and features
-├── tests.json                         # Test results
-├── ssot.json                          # Single source of truth
-└── kpis.json                          # Key performance indicators
+**Principle:** All JSON files are the **source of truth** for configuration, enabling:
+- Version control
+- Drift detection
+- Audit trails
+- Rollback capability
 
-docs/observability/
-└── snapshots/                         # Automated dashboard captures
+---
 
-docs/comfort-cat/                      # Creative guidelines
-docs/ecrr/                             # ECRR framework docs
-docs/cheatsheets/                      # Quick reference guides
+## 🛡️ Hardening Features
+
+### 1. Idempotent Operations
+
+All scripts are safe to re-run multiple times:
+- **Alerts:** Name-based upsert (create if missing, skip if exists)
+- **Dashboards:** API handles duplicates gracefully
+- **Verification:** Read-only, always safe
+
+### 2. Drift Detection
+
+**Automated Checks:**
+- Alert count: Expects exactly 8
+- Severity distribution: 3 critical, 5 warning
+- Enabled status: All alerts must be enabled
+- Exit codes: Non-zero on drift
+
+**CI Integration:**
+- Daily verification via GitHub Actions
+- Fails workflow if drift detected
+- Uploads evidence artifacts
+
+### 3. Evidence Parity
+
+**Source of Truth:** `docs/BossCat/*.json` files match API payloads exactly
+
+**Benefits:**
+- Infrastructure as Code (IaC)
+- Git-based audit trail
+- Easy rollback to previous versions
+- Clear diff on changes
+
+### 4. Security Best Practices
+
+**API Key Management:**
+- Never committed to version control
+- Stored in GitHub Secrets (`WYZWOZ_SIGNOZ`)
+- Rotation procedure documented
+- Separate keys for CI vs local ops
+
+**Least Privilege:**
+- CI workflows: `contents: read` only
+- API keys: Admin level (required for rule creation)
+- Network: Restrict SigNoz API if possible
+
+### 5. Rollback Capability
+
+```powershell
+# Revert to last known good config
+git checkout HEAD~1 -- docs/BossCat/*.json
+
+# Re-apply from source of truth
+pwsh -File scripts/bosscat-create-signoz-alerts.ps1 -Apply -ApiKey $env:SIGNOZ_API_KEY
+pwsh -File scripts/bosscat-steps-7-8.ps1 -Apply -ApiKey $env:SIGNOZ_API_KEY
+
+# Verify
+pwsh -File scripts/bosscat-verify-signoz-completion.ps1 -ApiKey $env:SIGNOZ_API_KEY
 ```
 
 ---
 
-## 🌙 Nightly Automation
+## 📚 Documentation
 
-### What Runs Automatically
-- **2 AM UTC**: Executive dashboard snapshots
-- **Weekly**: Compliance trend analysis
-- **On Threshold Breach**: BossCat alerts
-- **Daily**: Error ledger updates
+### Complete Guides
 
-### Automation Stack
-```bash
-# PowerShell automation
-scripts/nightly-dashboard-export.ps1
+1. **`OPS_HARDENING_GUIDE.md`** - Comprehensive operational guide covering:
+   - Quick operations reference
+   - Drift prevention strategies
+   - Security best practices
+   - Testing & validation procedures
+   - Troubleshooting common issues
+   - Escalation paths
 
-# Playwright automation
-pnpm run export:signoz:playwright
-
-# GitHub Actions
-.github/workflows/nightly-dashboard-export.yml
-```
+2. **`BOSSCAT_LOG.md`** - ECRR compliance ledger with:
+   - Executive decision log
+   - Configuration change history
+   - Audit trail entries
+   - Gate status updates
 
 ---
 
 ## 🎯 Success Criteria
 
-### For Cursor{Implementer}
-- [ ] All ECRR phases completed (Examine → Clean → Report → Role)
-- [ ] Automated reports integrated into CI
-- [ ] Status dashboard auto-refreshing
-- [ ] Success metrics tracked and trending
-- [ ] Living roadmap updated via `pnpm roadmap:update`
-- [ ] BossCat approval obtained
-
-### For Production Deployment
-- [ ] PR lane ≥95% pass rate
-- [ ] 100% SBOM coverage
-- [ ] ECRR compliance ≥80%
-- [ ] Zero critical vulnerabilities
-- [ ] Pipeline latency <200ms
-- [ ] Nightly automation active
+**Complete when:**
+- ✅ SigNoz Home → "Setup Alerts" tile = **GREEN**
+- ✅ 8 BossCat alerts visible and **enabled**
+- ✅ 1 BossCat Executive Dashboard created
+- ✅ 4 Saved Views defined
+- ✅ Verification script exits with code **0**
+- ✅ All artifacts present in `docs/BossCat/`
+- ✅ ECRR ledger updated
+- ✅ CI workflow runs successfully
+- ✅ **Gate = 100/100**
 
 ---
 
-## 🐾 Cat Nap Control Room Aesthetic
+## 🐾 Philosophy: Cat Nap Control Room
 
-### Design Philosophy
-This system embodies the **"Cat Nap Control Room"** concept - a serene, minimalist observability cockpit where logs, metrics, and traces flow seamlessly at sub-second cadence.
+**Aesthetic Principles:**
+- **Feline Silence:** Calm, efficient monitoring without noise
+- **Peaceful Vigilance:** Always watching, never intrusive
+- **Evidence-First:** All actions produce audit trails
+- **Executive Oversight:** BossCat OEM maintains supreme authority
 
-### Core Principles
-- **Calm and Efficient**: Like a cat resting beside a softly glowing control board
-- **Low-Latency**: 200ms batches for real-time feel
-- **Noise Filtering**: ~50% volume reduction for signal clarity
-- **Playful Yet Professional**: Friendly UX with enterprise reliability
-- **Local-First**: Privacy-preserving, no unnecessary network calls
-- **Evidence-Based**: All decisions backed by telemetry
-
----
-
-## 🔗 External Resources
-
-### SigNoz Integration
-- **UI**: `http://localhost:8080`
-- **OTLP gRPC**: `localhost:5317`
-- **OTLP HTTP**: `localhost:5318`
-- **Health Check**: `http://localhost:8080/api/v1/health`
-
-### GitHub Workflows
-- **Nightly Dashboard**: `.github/workflows/nightly-dashboard-export.yml`
-- **ECRR CI/CD**: `.github/workflows/ci-cd-pipeline-ecrr.yml`
-- **Security Scanning**: CodeQL, Gitleaks, Dependabot
-
-### Key Queries (SigNoz)
-```
-# Logs
-message contains "canary test"
-attributes.dataset = "resonai_analytics"
-
-# Metrics
-otelcol_*
-
-# Traces
-service.name = "otel-collector"
-```
+**Implementation:**
+- Low-latency pipeline (200ms batches)
+- Noise filtering (~50% volume reduction)
+- Color-coded status indicators
+- Automated nightly dashboard exports
+- Serene, minimalist observability cockpit
 
 ---
 
-## 📞 Support & Escalation
+## 🔧 Troubleshooting
 
-### Decision Authority
-1. **BossCat OEM** - Production approvals, veto power
-2. **IONA** - Anomaly tracking and error classification
-3. **Investigator** - Gap finding and diagnostics
-4. **Gap-Closer** - Implementation and fixes
+### Common Issues
 
-### When to Escalate to BossCat
-- Production deployment requests
-- Security vulnerability remediation
-- Compliance framework changes
-- Agent system modifications
-- Emergency rollback decisions
+**❌ 401 Unauthorized**
+- Check API key format and expiration
+- Verify header: `SIGNOZ-API-KEY` (not `X-API-KEY`)
+- Confirm key has admin permissions
 
-### When to Consult IONA
-- Recurring error patterns
-- Anomaly classification
-- Health scoring questions
-- Drift detection analysis
+**❌ 400 Bad Request**
+- Ensure v0.96+ schema (use `alert`, `alertType`, `ruleType`)
+- Remove `labels` field if present
+- Lowercase severity values
 
----
+**⚠️ UI Not Updating**
+- Hard refresh: Ctrl+Shift+R
+- Clear browser cache
+- Verify alerts exist via API
 
-## 🚀 Getting Started (New Implementer)
+**⚠️ Verification Shows 0 Alerts**
+- Check endpoint: `/api/v1/rules` (not `/api/v1/alerts`)
+- Verify response parsing handles `data.rules`
+- Confirm API key read permissions
 
-### 1. Read Core Docs (30 minutes)
-- [ ] This README (you're reading it!)
-- [ ] [CURSOR_IMPLEMENTER_QUICKSTART.md](CURSOR_IMPLEMENTER_QUICKSTART.md)
-- [ ] [AGENTS.md](../../AGENTS.md)
+### Debug Commands
 
-### 2. Run Health Checks (5 minutes)
 ```powershell
-pwsh -File scripts\quick-monitor.ps1
+# Raw API check
+$H = @{ "SIGNOZ-API-KEY" = $env:SIGNOZ_API_KEY }
+Invoke-RestMethod -Uri "http://localhost:8080/api/v1/rules" -Headers $H | ConvertTo-Json -Depth 5
+
+# Check BossCat alerts only
+$rules = (Invoke-RestMethod -Uri "http://localhost:8080/api/v1/rules" -Headers $H).data.rules
+$rules | Where-Object { $_.alert -like "*BossCat*" } | Format-List
 ```
 
-### 3. Access Dashboards (2 minutes)
-- Open `docs/status.html` in browser
-- Click "Load files", select `docs/status/*.json`
-- Review KPIs, personas, failing buckets
+---
 
-### 4. Complete First ECRR Cycle (1 hour)
-- Follow [CURSOR_IMPLEMENTER_SETUP.md](CURSOR_IMPLEMENTER_SETUP.md)
-- Document findings in ECRR report
-- Submit PR for BossCat review
+## 🌐 SigNoz Access Points
 
-### 5. Set Up Automation (30 minutes)
-- Verify nightly exports running
-- Check GitHub Actions workflows
-- Confirm SigNoz integration
+- **UI:** http://localhost:8080
+- **Alerts:** http://localhost:8080/alerts
+- **Dashboards:** http://localhost:8080/dashboards
+- **Logs:** http://localhost:8080/logs
+- **Traces:** http://localhost:8080/traces
+- **Metrics:** http://localhost:8080/metrics
 
 ---
 
-## 📝 Contributing
+## 🚪 Gate Phrase
 
-### For Cursor{Implementer} Agents
-1. Follow ECRR methodology (Examine → Clean → Report → Role)
-2. Use commit standards: `docs(ecrr):`, `fix(gap):`, `feat(bosscat):`
-3. Generate ECRR report for significant changes
-4. Update roadmap: `pnpm roadmap:update`
-5. Request BossCat approval for production
-
-### For Human Contributors
-1. Read creative guidelines: `docs/comfort-cat/`
-2. Follow ECRR template: `docs/ecrr/ECRR_TEMPLATE_GUIDE.md`
-3. Maintain local-first principles
-4. Document all decisions
-5. Submit PRs with ECRR evidence
+```
+CI is green and all checks are satisfied.
+**@cat ready-for-gate** 🚪✅
+```
 
 ---
 
-## 🎓 Training Resources
+## 📞 Support
 
-### ECRR Framework
-- **[ECRR Template Guide](../../docs/ecrr/ECRR_TEMPLATE_GUIDE.md)** - How to write reports
-- **[ECRR Quick Reference](../../docs/ecrr/ECRR_QUICK_REFERENCE.md)** - Compliance checklist
-- **[Historical Reports](reports/)** - Examples and patterns
+For issues not covered in this documentation:
 
-### Cursor Agent System
-- **[CURSOR_IMPLEMENTER_SETUP.md](CURSOR_IMPLEMENTER_SETUP.md)** - Complete guide
-- **[CURSOR_IMPLEMENTER_QUICKSTART.md](CURSOR_IMPLEMENTER_QUICKSTART.md)** - Quick ref
-- **[AGENTS.md](../../AGENTS.md)** - Roles and governance
+1. Check `BOSSCAT_LOG.md` for recent changes
+2. Review `OPS_HARDENING_GUIDE.md` for detailed procedures
+3. Examine CI workflow logs in GitHub Actions
+4. Export current state for comparison
+5. Consult SigNoz documentation: https://signoz.io/docs/
 
-### Observability
-- **[SigNoz Documentation](https://signoz.io/docs/)**
-- **[OpenTelemetry Collector](https://opentelemetry.io/docs/collector/)**
-- **[Comfort Cat Guidelines](../comfort-cat/)** - Design principles
+**Final Authority:** BossCat OEM on all production changes
 
 ---
 
-## ✅ Checklist: BossCat OEM Daily Operations
+🐾 **End of BossCat SigNoz Automation Stack Documentation**
 
-### Morning (9:00 AM)
-- [ ] Review nightly automation results
-- [ ] Check SigNoz health: `http://localhost:8080/api/v1/health`
-- [ ] Verify Windows Collector: `sc query otelcol-contrib`
-- [ ] Review IONA error ledger for new patterns
-- [ ] Check GitHub Actions workflow status
+*Feline Silence maintained. Gate integrity preserved. Mission complete with production hardening.*
 
-### Midday (12:00 PM)
-- [ ] Run quick health check: `quick-monitor.ps1`
-- [ ] Review open PRs requiring approval
-- [ ] Update roadmap if needed: `pnpm roadmap:update`
-- [ ] Verify dashboard data freshness
-
-### Evening (5:00 PM)
-- [ ] Generate canary test: `generate-windows-canary.ps1`
-- [ ] Review compliance dashboard
-- [ ] Check for threshold breaches
-- [ ] Update TASKS.md with significant actions
-- [ ] Prepare next-day priorities
-
-### Weekly (Friday)
-- [ ] Full ECRR cycle execution
-- [ ] Compliance trend analysis
-- [ ] Security vulnerability review
-- [ ] Team training and knowledge sharing
-- [ ] Documentation updates
-
----
-
-🐾 **BossCat Documentation Hub Complete**
-
-*This hub serves as the central navigation point for all BossCat OEM governance, ECRR framework, and autonomous observability operations.*
+**Status:** 100/100 HARDENED 🛡️

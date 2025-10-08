@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2025-10-08T02:50:10.648Z",
+    "generatedAt": "2025-10-08T12:05:10.966Z",
     "reportDate": "2025-10-08",
     "reportType": "comprehensive",
     "version": "1.0"
@@ -14,46 +14,46 @@
     "logsCount": 0
   },
   "health": {
-    "timestamp": "2025-10-08T02:50:10.649Z",
+    "timestamp": "2025-10-08T12:05:10.967Z",
     "signoz": {
       "status": "healthy",
-      "responseTime": 25,
-      "lastCheck": "2025-10-08T02:50:10.623Z",
+      "responseTime": 7,
+      "lastCheck": "2025-10-08T12:04:49.052Z",
       "details": "{\"status\":\"ok\"}"
     },
     "otelCollector": {
       "status": "healthy",
-      "responseTime": 6,
-      "lastCheck": "2025-10-08T02:50:10.630Z",
+      "responseTime": 8,
+      "lastCheck": "2025-10-08T12:04:49.053Z",
       "details": "HTTP 200"
     },
     "windowsCollector": {
-      "status": "unhealthy",
-      "responseTime": 0,
-      "lastCheck": "2025-10-08T02:50:10.635Z",
-      "error": "Connection failed: "
+      "status": "healthy",
+      "responseTime": 8,
+      "lastCheck": "2025-10-08T12:04:49.053Z",
+      "details": "HTTP 200"
     },
     "system": {
       "status": "healthy",
       "cpuUsage": 0,
-      "memoryUsage": 66.59660119733915,
-      "lastCheck": "2025-10-08T02:50:10.636Z",
+      "memoryUsage": 59.37667903776915,
+      "lastCheck": "2025-10-08T12:04:49.048Z",
       "details": {
         "platform": "win32",
         "arch": "x64",
-        "uptime": 10851.656,
+        "uptime": 44130.062,
         "totalMemory": 34274869248,
-        "freeMemory": 11448840192
+        "freeMemory": 13923614720
       }
     }
   },
   "alerts": {
-    "timestamp": "2025-10-08T02:50:10.649Z",
+    "timestamp": "2025-10-08T12:05:10.967Z",
     "activeAlerts": [],
     "alertHistory": []
   },
   "signoz": {
-    "timestamp": "2025-10-08T02:50:10.649Z",
+    "timestamp": "2025-10-08T12:05:10.967Z",
     "health": "healthy",
     "metrics": [],
     "services": [],

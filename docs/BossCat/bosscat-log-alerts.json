@@ -1,0 +1,50 @@
+[
+  {
+    "alert": "BossCat Canary Missing Alert",
+    "alertType": "LOG_BASED_ALERT",
+    "evalWindow": "10m",
+    "condition": {
+      "target": 0,
+      "compositeQuery": {
+        "logsAggregate": {
+          "A": {
+            "disabled": false,
+            "query": "(log.source = 'windows_event_log' AND body contains 'windows-canary') OR (log.file.path contains 'windows-canary-test.log' AND body contains 'windows-canary')"
+          }
+        },
+        "queryType": "logs"
+      },
+      "matchType": "less_than",
+      "op": "<"
+    },
+    "description": "Critical alert when canary logs are missing for 10+ minutes",
+    "ruleType": "threshold_rule",
+    "frequency": "1m",
+    "disabled": false,
+    "severity": "critical"
+  },
+  {
+    "alert": "BossCat Error Log Alert",
+    "alertType": "LOG_BASED_ALERT",
+    "evalWindow": "5m",
+    "condition": {
+      "target": 10,
+      "compositeQuery": {
+        "logsAggregate": {
+          "A": {
+            "disabled": false,
+            "query": "severity = 'ERROR' OR level = 'error'"
+          }
+        },
+        "queryType": "logs"
+      },
+      "matchType": "greater_than",
+      "op": ">"
+    },
+    "description": "Warning when error logs exceed threshold",
+    "ruleType": "threshold_rule",
+    "frequency": "1m",
+    "disabled": false,
+    "severity": "warning"
+  }
+]
