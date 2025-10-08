@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error Rate Heatmap - BossCat OEM</title>
+    <link rel="stylesheet" href="../assets/resonai-system.css">
+    <style>
+        .heatmap-container {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .heatmap-grid {
+            display: grid;
+            grid-template-columns: repeat(24, 1fr);
+            gap: 2px;
+            margin: var(--spacing-md) 0;
+        }
+        
+        .heatmap-cell {
+            aspect-ratio: 1;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+        }
+        
+        .heatmap-cell:hover {
+            transform: scale(1.1);
+            z-index: 10;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        
+        .heatmap-cell.level-0 { background: #4caf50; } /* Green - 0% errors */
+        .heatmap-cell.level-1 { background: #8bc34a; } /* Light Green - 1-2% */
+        .heatmap-cell.level-2 { background: #cddc39; } /* Lime - 3-5% */
+        .heatmap-cell.level-3 { background: #ffc107; } /* Yellow - 6-10% */
+        .heatmap-cell.level-4 { background: #ff9800; } /* Orange - 11-20% */
+        .heatmap-cell.level-5 { background: #f44336; } /* Red - 21%+ */
+        
+        .heatmap-legend {
+            display: flex;
+            justify-content: space-between;
+            margin-top: var(--spacing-md);
+            padding-top: var(--spacing-md);
+            border-top: 1px solid var(--border-color);
+            font-size: 12px;
+            color: var(--fg-secondary);
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+        }
+        
+        .heatmap-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-md);
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+        }
+        
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        
+        .time-axis {
+            display: grid;
+            grid-template-columns: repeat(24, 1fr);
+            gap: 2px;
+            margin-top: var(--spacing-sm);
+            font-size: 10px;
+            color: var(--fg-secondary);
+            text-align: center;
+        }
+        
+        .tooltip {
+            position: absolute;
+            background: rgba(0,0,0,0.9);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            pointer-events: none;
+            z-index: 1000;
+            white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <div class="brand">
+                    <h1>🔥 Error Rate Heatmap</h1>
+                    <p class="tagline">BossCat OEM - Visual Error Pattern Analysis</p>
+                </div>
+                <nav class="nav">
+                    <a href="index.html" class="nav-link">← Dashboard Hub</a>
+                    <a href="stress-testing.html" class="nav-link">Stress Testing</a>
+                    <a href="../../scripts/start-dashboard-server.ps1" class="nav-link">Start Server</a>
+                </nav>
+            </div>
+        </header>
+
+        <main class="main">
+            <!-- CORS Warning -->
+            <div class="alert alert-warning" id="corsWarning" style="display: none;">
+                <strong>⚠️ CORS Restriction Detected:</strong> You're running this page from the file system (file:// protocol). 
+                For full functionality, run via web server using 
+                <code>python -m http.server 3000</code> or use the helper scripts.
+            </div>
+
+            <!-- Heatmap Controls -->
+            <section class="section">
+                <div class="heatmap-controls">
+                    <div class="control-group">
+                        <span style="color: var(--fg-secondary); font-size: 12px;">Time Range:</span>
+                        <select id="timeRange" style="padding: 4px 8px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); color: var(--fg);">
+                            <option value="24">Last 24 hours</option>
+                            <option value="48" selected>Last 48 hours</option>
+                            <option value="168">Last week</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <span style="color: var(--fg-secondary); font-size: 12px;">Granularity:</span>
+                        <select id="granularity" style="padding: 4px 8px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); color: var(--fg);">
+                            <option value="1" selected>1 hour</option>
+                            <option value="2">2 hours</option>
+                            <option value="6">6 hours</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <button class="btn btn-primary" onclick="generateHeatmap()">🔄 Refresh</button>
+                        <button class="btn btn-ghost" onclick="toggleAutoRefresh()">⏸️ Auto-Refresh</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Heatmap Display -->
+            <section class="section">
+                <div class="heatmap-container">
+                    <h2 style="margin: 0 0 var(--spacing-md) 0; font-size: var(--font-size-lg); color: var(--primary);">
+                        Error Rate Distribution (Last 48 Hours)
+                    </h2>
+                    
+                    <!-- Day Labels -->
+                    <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; margin-bottom: var(--spacing-sm);">
+                        <div style="text-align: center; font-size: 12px; color: var(--fg-secondary); padding: 4px;">Mon</div>
+                        <div style="text-align: center; font-size: 12px; color: var(--fg-secondary); padding: 4px;">Tue</div>
+                        <div style="text-align: center; font-size: 12px; color: var(--fg-secondary); padding: 4px;">Wed</div>
+                        <div style="text-align: center; font-size: 12px; color: var(--fg-secondary); padding: 4px;">Thu</div>
+                        <div style="text-align: center; font-size: 12px; color: var(--fg-secondary); padding: 4px;">Fri</div>
+                        <div style="text-align: center; font-size: 12px; color: var(--fg-secondary); padding: 4px;">Sat</div>
+                        <div style="text-align: center; font-size: 12px; color: var(--fg-secondary); padding: 4px;">Sun</div>
+                    </div>
+                    
+                    <!-- Heatmap Grid -->
+                    <div id="heatmapGrid" class="heatmap-grid"></div>
+                    
+                    <!-- Time Axis -->
+                    <div class="time-axis" id="timeAxis"></div>
+                    
+                    <!-- Legend -->
+                    <div class="heatmap-legend">
+                        <div class="legend-item">
+                            <div class="legend-color level-0"></div>
+                            <span>0% errors</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color level-1"></div>
+                            <span>1-2% errors</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color level-2"></div>
+                            <span>3-5% errors</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color level-3"></div>
+                            <span>6-10% errors</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color level-4"></div>
+                            <span>11-20% errors</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color level-5"></div>
+                            <span>21%+ errors</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Statistics -->
+            <section class="section">
+                <h2 class="mb-lg">📊 Error Rate Statistics</h2>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-value" id="avgErrorRate">0.0%</div>
+                        <div class="metric-label">Average Error Rate</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="peakErrorRate">0.0%</div>
+                        <div class="metric-label">Peak Error Rate</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="errorHours">0</div>
+                        <div class="metric-label">Hours with Errors</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="criticalHours">0</div>
+                        <div class="metric-label">Critical Hours (>20%)</div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Configuration
+        const config = {
+            isFileProtocol: window.location.protocol === 'file:',
+            corsMode: window.location.protocol === 'file:' ? 'no-cors' : 'cors'
+        };
+
+        // Heatmap data
+        let heatmapData = [];
+        let autoRefreshInterval = null;
+        let autoRefreshEnabled = false;
+
+        // Initialize
+        window.onload = () => {
+            // Show CORS warning if needed
+            if (config.isFileProtocol) {
+                document.getElementById('corsWarning').style.display = 'block';
+            }
+            
+            // Generate initial heatmap
+            generateHeatmap();
+            
+            // Add event listeners
+            document.getElementById('timeRange').addEventListener('change', generateHeatmap);
+            document.getElementById('granularity').addEventListener('change', generateHeatmap);
+            
+            logActivity('Error Rate Heatmap initialized', 'info');
+        };
+
+        // Generate heatmap data
+        function generateHeatmap() {
+            const timeRange = parseInt(document.getElementById('timeRange').value);
+            const granularity = parseInt(document.getElementById('granularity').value);
+            
+            // Generate simulated error rate data
+            heatmapData = [];
+            const now = new Date();
+            const hoursBack = timeRange;
+            const totalCells = 7 * 24; // 7 days * 24 hours
+            
+            let avgErrorRate = 0;
+            let peakErrorRate = 0;
+            let errorHours = 0;
+            let criticalHours = 0;
+            
+            for (let i = 0; i < totalCells; i++) {
+                // Generate realistic error patterns
+                let errorRate;
+                const hourOfDay = i % 24;
+                const dayOfWeek = Math.floor(i / 24);
+                
+                // Higher errors during business hours (9-17) on weekdays
+                if (dayOfWeek < 5 && hourOfDay >= 9 && hourOfDay <= 17) {
+                    errorRate = Math.random() * 15 + 2; // 2-17% during business hours
+                } else if (dayOfWeek < 5) {
+                    errorRate = Math.random() * 8 + 0.5; // 0.5-8.5% during off hours
+                } else {
+                    errorRate = Math.random() * 5; // 0-5% on weekends
+                }
+                
+                // Add some random spikes
+                if (Math.random() < 0.05) { // 5% chance of spike
+                    errorRate = Math.random() * 30 + 15; // 15-45% spike
+                }
+                
+                const cell = {
+                    day: dayOfWeek,
+                    hour: hourOfDay,
+                    errorRate: errorRate,
+                    timestamp: new Date(now.getTime() - (totalCells - i - 1) * 60 * 60 * 1000)
+                };
+                
+                heatmapData.push(cell);
+                
+                // Update statistics
+                avgErrorRate += errorRate;
+                if (errorRate > peakErrorRate) peakErrorRate = errorRate;
+                if (errorRate > 0) errorHours++;
+                if (errorRate > 20) criticalHours++;
+            }
+            
+            avgErrorRate /= totalCells;
+            
+            // Update statistics display
+            document.getElementById('avgErrorRate').textContent = avgErrorRate.toFixed(1) + '%';
+            document.getElementById('peakErrorRate').textContent = peakErrorRate.toFixed(1) + '%';
+            document.getElementById('errorHours').textContent = errorHours;
+            document.getElementById('criticalHours').textContent = criticalHours;
+            
+            // Render heatmap
+            renderHeatmap();
+            
+            logActivity(`Heatmap generated for ${timeRange} hours with ${granularity}h granularity`, 'info');
+        }
+
+        // Render heatmap grid
+        function renderHeatmap() {
+            const grid = document.getElementById('heatmapGrid');
+            grid.innerHTML = '';
+            
+            // Create 7x24 grid (7 days, 24 hours)
+            for (let day = 0; day < 7; day++) {
+                for (let hour = 0; hour < 24; hour++) {
+                    const cell = heatmapData.find(d => d.day === day && d.hour === hour);
+                    const errorRate = cell ? cell.errorRate : 0;
+                    
+                    const cellElement = document.createElement('div');
+                    cellElement.className = `heatmap-cell level-${getErrorLevel(errorRate)}`;
+                    
+                    // Add tooltip
+                    cellElement.addEventListener('mouseenter', (e) => {
+                        showTooltip(e, cell);
+                    });
+                    
+                    cellElement.addEventListener('mouseleave', hideTooltip);
+                    
+                    grid.appendChild(cellElement);
+                }
+            }
+            
+            // Update time axis
+            updateTimeAxis();
+        }
+
+        // Get error level for color coding
+        function getErrorLevel(errorRate) {
+            if (errorRate === 0) return 0;
+            if (errorRate <= 2) return 1;
+            if (errorRate <= 5) return 2;
+            if (errorRate <= 10) return 3;
+            if (errorRate <= 20) return 4;
+            return 5;
+        }
+
+        // Show tooltip
+        function showTooltip(event, cell) {
+            const tooltip = document.createElement('div');
+            tooltip.className = 'tooltip';
+            tooltip.innerHTML = `
+                <strong>${getDayName(cell.day)} ${cell.hour}:00</strong><br>
+                Error Rate: ${cell.errorRate.toFixed(1)}%<br>
+                Time: ${cell.timestamp.toLocaleString()}
+            `;
+            
+            document.body.appendChild(tooltip);
+            
+            const rect = event.target.getBoundingClientRect();
+            tooltip.style.left = rect.right + 10 + 'px';
+            tooltip.style.top = rect.top + 'px';
+        }
+
+        // Hide tooltip
+        function hideTooltip() {
+            const tooltip = document.querySelector('.tooltip');
+            if (tooltip) {
+                tooltip.remove();
+            }
+        }
+
+        // Get day name
+        function getDayName(dayIndex) {
+            const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+            return days[dayIndex];
+        }
+
+        // Update time axis
+        function updateTimeAxis() {
+            const axis = document.getElementById('timeAxis');
+            axis.innerHTML = '';
+            
+            for (let hour = 0; hour < 24; hour++) {
+                const label = document.createElement('div');
+                label.textContent = hour.toString().padStart(2, '0');
+                axis.appendChild(label);
+            }
+        }
+
+        // Toggle auto-refresh
+        function toggleAutoRefresh() {
+            autoRefreshEnabled = !autoRefreshEnabled;
+            const button = event.target;
+            
+            if (autoRefreshEnabled) {
+                button.textContent = '⏸️ Auto-Refresh';
+                button.style.background = 'var(--warning)';
+                autoRefreshInterval = setInterval(generateHeatmap, 30000); // 30 seconds
+                logActivity('Auto-refresh enabled (30s interval)', 'info');
+            } else {
+                button.textContent = '▶️ Auto-Refresh';
+                button.style.background = 'var(--primary)';
+                if (autoRefreshInterval) {
+                    clearInterval(autoRefreshInterval);
+                    autoRefreshInterval = null;
+                }
+                logActivity('Auto-refresh disabled', 'info');
+            }
+        }
+
+        // Activity logging
+        function logActivity(message, level = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            console.log(`[${timestamp}] ${level.toUpperCase()}: ${message}`);
+        }
+
+        // Cleanup on page unload
+        window.onbeforeunload = () => {
+            if (autoRefreshInterval) {
+                clearInterval(autoRefreshInterval);
+            }
+        };
+    </script>
+</body>
+</html>
