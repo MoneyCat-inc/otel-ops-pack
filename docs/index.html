@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Documentation Hub — Resonai [OTel]</title>
+<link rel="icon" type="image/png" href="LOGO/Resonai_LOGO_ICONonly.png">
+<link rel="stylesheet" href="assets/resonai-system.css">
+<style>
+  .doc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--spacing-lg);
+  }
+  
+  .doc-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-xl);
+    transition: all 0.2s ease;
+  }
+  
+  .doc-card:hover {
+    border-color: var(--primary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+  
+  .doc-icon {
+    font-size: 32px;
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .doc-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .doc-description {
+    color: var(--fg-muted);
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .doc-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    color: var(--primary);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+  }
+  
+  .search-box {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto var(--spacing-3xl);
+    padding: var(--spacing-lg);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    font-size: var(--font-size-lg);
+    color: var(--fg-primary);
+    font-family: var(--font-family);
+  }
+  
+  .search-box:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-bg);
+  }
+</style>
+</head>
+<body>
+
+<!-- Breadcrumb -->
+<nav class="breadcrumb" style="padding: 8px 24px; background: var(--bg-primary); border-bottom: 1px solid var(--border-color);">
+  <a href="../index.html">🏠 Home</a>
+  <span class="breadcrumb-separator">/</span>
+  <span>Documentation</span>
+</nav>
+
+<!-- Header -->
+<header class="resonai-header">
+  <div class="resonai-header-content">
+    <div class="resonai-logo">📚 Documentation Hub</div>
+    <nav class="resonai-nav">
+      <a href="../index.html">Home</a>
+      <a href="status.html">Executive Dashboard</a>
+      <a href="dashboards/live-metrics.html">Live Metrics</a>
+      <a href="dashboards/test-harness.html">Test Harness</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Main Content -->
+<main class="container">
+
+  <!-- Search -->
+  <section class="section text-center">
+    <h1 class="mb-lg">📖 Complete Documentation</h1>
+    <p class="text-muted mb-xl">Search and explore all Resonai [OTel] documentation</p>
+    <input type="text" id="searchBox" class="search-box" placeholder="Search documentation..." onkeyup="searchDocs()">
+  </section>
+
+  <!-- Getting Started -->
+  <section class="section">
+    <h2 class="mb-lg">🚀 Getting Started</h2>
+    <div class="doc-grid" id="gettingStarted">
+      <a href="../README.md" class="doc-card">
+        <div class="doc-icon">📘</div>
+        <div class="doc-title">Main README</div>
+        <div class="doc-description">Complete setup guide, quick start, and project overview</div>
+        <span class="doc-link">Read guide →</span>
+      </a>
+      <a href="BossCat/QUICK_START_CARD.md" class="doc-card">
+        <div class="doc-icon">⚡</div>
+        <div class="doc-title">Quick Start Card</div>
+        <div class="doc-description">Get up and running in under 5 minutes</div>
+        <span class="doc-link">Start now →</span>
+      </a>
+      <a href="RUNBOOK_INDEX.md" class="doc-card">
+        <div class="doc-icon">📇</div>
+        <div class="doc-title">Runbook Index</div>
+        <div class="doc-description">Operational procedures and playbooks</div>
+        <span class="doc-link">Browse runbooks →</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- Architecture & Design -->
+  <section class="section">
+    <h2 class="mb-lg">📐 Architecture & Design</h2>
+    <div class="doc-grid">
+      <a href="BossCat/SYSTEM_ARCHITECTURE_DIAGRAM.md" class="doc-card">
+        <div class="doc-icon">🏗️</div>
+        <div class="doc-title">System Architecture</div>
+        <div class="doc-description">77× throughput uplift design with component diagrams</div>
+        <span class="doc-link">View architecture →</span>
+      </a>
+      <a href="comfort-cat/README.md" class="doc-card">
+        <div class="doc-icon">🎨</div>
+        <div class="doc-title">Comfort Cat Guidelines</div>
+        <div class="doc-description">Creative reference and design standards</div>
+        <span class="doc-link">Read guidelines →</span>
+      </a>
+      <a href="assets/resonai-system.css" class="doc-card">
+        <div class="doc-icon">💎</div>
+        <div class="doc-title">Design System</div>
+        <div class="doc-description">Unified CSS tokens, components, and utilities</div>
+        <span class="doc-link">View system →</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- Operations -->
+  <section class="section">
+    <h2 class="mb-lg">🔧 Operations & Maintenance</h2>
+    <div class="doc-grid">
+      <a href="BossCat/README.md" class="doc-card">
+        <div class="doc-icon">🐱</div>
+        <div class="doc-title">BossCat Operations</div>
+        <div class="doc-description">Executive oversight and governance framework</div>
+        <span class="doc-link">Read manual →</span>
+      </a>
+      <a href="AGENTS.md" class="doc-card">
+        <div class="doc-icon">🤖</div>
+        <div class="doc-title">ECRR Agent Framework</div>
+        <div class="doc-description">Examine → Clean → Report → Role methodology</div>
+        <span class="doc-link">Learn framework →</span>
+      </a>
+      <a href="TROUBLESHOOTING.md" class="doc-card">
+        <div class="doc-icon">🔍</div>
+        <div class="doc-title">Troubleshooting Guide</div>
+        <div class="doc-description">Common issues and solutions</div>
+        <span class="doc-link">Fix issues →</span>
+      </a>
+      <a href="MONITORING_SETUP_GUIDE.md" class="doc-card">
+        <div class="doc-icon">📊</div>
+        <div class="doc-title">Monitoring Setup</div>
+        <div class="doc-description">Configure alerts, dashboards, and health checks</div>
+        <span class="doc-link">Setup monitoring →</span>
+      </a>
+      <a href="DEPLOYMENT_CHECKLIST.md" class="doc-card">
+        <div class="doc-icon">🚀</div>
+        <div class="doc-title">Deployment Checklist</div>
+        <div class="doc-description">Pre-flight validation and rollout procedures</div>
+        <span class="doc-link">View checklist →</span>
+      </a>
+      <a href="IONA_ERRORS.md" class="doc-card">
+        <div class="doc-icon">📋</div>
+        <div class="doc-title">IONA Error Ledger</div>
+        <div class="doc-description">Anomaly tracking and incident log</div>
+        <span class="doc-link">View ledger →</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- Testing & QA -->
+  <section class="section">
+    <h2 class="mb-lg">🧪 Testing & Quality Assurance</h2>
+    <div class="doc-grid">
+      <a href="BossCat/DATA_ROOM_QUICKSTART.md" class="doc-card">
+        <div class="doc-icon">⚡</div>
+        <div class="doc-title">Data Room Quick Start</div>
+        <div class="doc-description">30-second test harness setup and troubleshooting</div>
+        <span class="doc-link">Get started →</span>
+      </a>
+      <a href="BossCat/DATA_ROOM_GUIDE.md" class="doc-card">
+        <div class="doc-icon">📖</div>
+        <div class="doc-title">Data Room User Guide</div>
+        <div class="doc-description">Complete manual for chaos engineering and testing</div>
+        <span class="doc-link">Read guide →</span>
+      </a>
+      <a href="qa-checklist.md" class="doc-card">
+        <div class="doc-icon">✅</div>
+        <div class="doc-title">QA Checklist</div>
+        <div class="doc-description">Quality assurance verification steps</div>
+        <span class="doc-link">View checklist →</span>
+      </a>
+      <a href="TETRAGRAMMATON_USER_GUIDE.md" class="doc-card">
+        <div class="doc-icon">🔬</div>
+        <div class="doc-title">Tetragrammaton Guide</div>
+        <div class="doc-description">Cross-language testing framework</div>
+        <span class="doc-link">Learn more →</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- Security -->
+  <section class="section">
+    <h2 class="mb-lg">🔐 Security & Compliance</h2>
+    <div class="doc-grid">
+      <a href="SECURITY.md" class="doc-card">
+        <div class="doc-icon">🛡️</div>
+        <div class="doc-title">Security Policy</div>
+        <div class="doc-description">Vulnerability reporting and security practices</div>
+        <span class="doc-link">View policy →</span>
+      </a>
+      <a href="BossCat/SECURITY_MAINTENANCE_MASTER_GUIDE.md" class="doc-card">
+        <div class="doc-icon">🔒</div>
+        <div class="doc-title">Security Maintenance</div>
+        <div class="doc-description">Credential rotation, scanning, and remediation</div>
+        <span class="doc-link">Read guide →</span>
+      </a>
+      <a href="BossCat/CREDENTIAL_ROTATION_CALENDAR.md" class="doc-card">
+        <div class="doc-icon">🗓️</div>
+        <div class="doc-title">Rotation Calendar</div>
+        <div class="doc-description">Scheduled credential and certificate rotation</div>
+        <span class="doc-link">View calendar →</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- Reports -->
+  <section class="section">
+    <h2 class="mb-lg">📊 Reports & Analytics</h2>
+    <div class="doc-grid">
+      <a href="reports/ECRR_REPORT.md" class="doc-card">
+        <div class="doc-icon">📈</div>
+        <div class="doc-title">ECRR Report</div>
+        <div class="doc-description">Executive summary, contributions, risks, readiness</div>
+        <span class="doc-link">View report →</span>
+      </a>
+      <a href="BossCat/STAKEHOLDER_EVIDENCE_PACKAGE.md" class="doc-card">
+        <div class="doc-icon">📦</div>
+        <div class="doc-title">Evidence Package</div>
+        <div class="doc-description">Stakeholder reports and compliance evidence</div>
+        <span class="doc-link">View package →</span>
+      </a>
+      <a href="CI_PIPELINE_STATUS_FINAL.md" class="doc-card">
+        <div class="doc-icon">🔄</div>
+        <div class="doc-title">CI Pipeline Status</div>
+        <div class="doc-description">Continuous integration health and metrics</div>
+        <span class="doc-link">Check status →</span>
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<!-- Footer -->
+<footer class="resonai-footer">
+  <div class="resonai-footer-content">
+    <div class="resonai-footer-logo">🐾 Resonai • MoneyCat Inc.</div>
+    <nav class="resonai-footer-links">
+      <a href="../index.html">Home</a>
+      <a href="BossCat/PROJECT_HUB_USER_GUIDE.md">User Guide</a>
+      <a href="../README.md">Main README</a>
+      <a href="https://github.com/MoneyCat-inc/otel-ops-pack" target="_blank">GitHub</a>
+    </nav>
+    <p class="resonai-footer-text">
+      Local-First • Privacy-Focused • ECRR-Compliant • BossCat OEM Certified
+    </p>
+  </div>
+</footer>
+
+<script>
+  // Simple client-side search
+  function searchDocs() {
+    const query = document.getElementById('searchBox').value.toLowerCase();
+    const allDocCards = document.querySelectorAll('.doc-card');
+    
+    allDocCards.forEach(card => {
+      const title = card.querySelector('.doc-title').textContent.toLowerCase();
+      const description = card.querySelector('.doc-description').textContent.toLowerCase();
+      
+      if (title.includes(query) || description.includes(query) || query === '') {
+        card.style.display = '';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+</script>
+
+</body>
+</html>
+
