@@ -1,12 +1,12 @@
 {
+  "EndTime": "2025-10-08T02:00:06.0478288+01:00",
+  "Status": "completed",
+  "Duration": 822.8963,
   "Artifacts": [
     "metrics-collection.json",
     "performance-baseline.json"
   ],
+  "StartTime": "2025-10-08T02:00:05.2249325+01:00",
   "TaskId": "nightly-monitor-otel-collector",
-  "EndTime": "2025-10-07T16:59:43.3845470+01:00",
-  "Workspace": "docs\\observability\\snapshots\\nightly-workspace-monitor-otel-collector",
-  "StartTime": "2025-10-07T16:59:42.5562869+01:00",
-  "Duration": 828.2601,
-  "Status": "completed"
+  "Workspace": "docs\\observability\\snapshots\\nightly-workspace-monitor-otel-collector"
 }

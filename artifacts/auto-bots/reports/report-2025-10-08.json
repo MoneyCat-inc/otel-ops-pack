@@ -1,0 +1,63 @@
+{
+  "metadata": {
+    "generatedAt": "2025-10-08T02:50:10.648Z",
+    "reportDate": "2025-10-08",
+    "reportType": "comprehensive",
+    "version": "1.0"
+  },
+  "summary": {
+    "overallStatus": "healthy",
+    "activeAlerts": 0,
+    "criticalAlerts": 0,
+    "warningAlerts": 0,
+    "metricsCount": 0,
+    "logsCount": 0
+  },
+  "health": {
+    "timestamp": "2025-10-08T02:50:10.649Z",
+    "signoz": {
+      "status": "healthy",
+      "responseTime": 25,
+      "lastCheck": "2025-10-08T02:50:10.623Z",
+      "details": "{\"status\":\"ok\"}"
+    },
+    "otelCollector": {
+      "status": "healthy",
+      "responseTime": 6,
+      "lastCheck": "2025-10-08T02:50:10.630Z",
+      "details": "HTTP 200"
+    },
+    "windowsCollector": {
+      "status": "unhealthy",
+      "responseTime": 0,
+      "lastCheck": "2025-10-08T02:50:10.635Z",
+      "error": "Connection failed: "
+    },
+    "system": {
+      "status": "healthy",
+      "cpuUsage": 0,
+      "memoryUsage": 66.59660119733915,
+      "lastCheck": "2025-10-08T02:50:10.636Z",
+      "details": {
+        "platform": "win32",
+        "arch": "x64",
+        "uptime": 10851.656,
+        "totalMemory": 34274869248,
+        "freeMemory": 11448840192
+      }
+    }
+  },
+  "alerts": {
+    "timestamp": "2025-10-08T02:50:10.649Z",
+    "activeAlerts": [],
+    "alertHistory": []
+  },
+  "signoz": {
+    "timestamp": "2025-10-08T02:50:10.649Z",
+    "health": "healthy",
+    "metrics": [],
+    "services": [],
+    "logs": []
+  },
+  "recommendations": []
+}

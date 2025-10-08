@@ -1,6 +1,6 @@
 # ECRR Compliance Report
 
-Generated: 2025-10-07T17:06:59Z
+Generated: 2025-10-08T03:36:59Z
 
 ## Metrics
 - Total Reports: 60

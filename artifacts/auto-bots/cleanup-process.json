@@ -1,0 +1,8 @@
+{
+  "interval": "1 hour",
+  "description": "Maintains system hygiene and optimizes storage",
+  "id": 30776,
+  "name": "Cleanup Bot",
+  "script": "scripts/auto-bots/cleanup-bot.js",
+  "startTime": "2025-10-08T03:50:10.484Z"
+}
