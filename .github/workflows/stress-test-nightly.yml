@@ -1,0 +1,138 @@
+name: Nightly Stress Test Pipeline
+
+on:
+  schedule:
+    - cron: '0 2 * * *'  # Daily at 2 AM UTC
+  workflow_dispatch:  # Allow manual triggering
+    inputs:
+      scenario:
+        description: 'Scenario to run'
+        required: false
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - light-load
+          - medium-load
+          - chaos-test
+          - ramp-up
+          - burst-test
+
+jobs:
+  stress-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    
+    steps:
+      - name: 🐾 BossCat OEM - Checkout Repository
+        uses: actions/checkout@v4
+      
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: 🐳 Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      
+      - name: 📦 Start SigNoz Stack
+        run: |
+          echo "🚀 Starting SigNoz observability stack..."
+          docker-compose up -d
+          echo "⏳ Waiting for services to be healthy..."
+          sleep 60
+          
+          # Health check
+          until curl -f http://localhost:8080/api/v1/health > /dev/null 2>&1; do
+            echo "⏳ Waiting for SigNoz..."
+            sleep 5
+          done
+          echo "✅ SigNoz is ready"
+      
+      - name: 🔧 Start OTel Collector
+        run: |
+          echo "🚀 Starting OTel Collector..."
+          # Assuming otel-contrib is installed or running in Docker
+          docker ps
+      
+      - name: 🌐 Start Dashboard Server
+        run: |
+          echo "🌐 Starting web server for dashboards..."
+          python -m http.server 3000 &
+          SERVER_PID=$!
+          echo "SERVER_PID=$SERVER_PID" >> $GITHUB_ENV
+          sleep 5
+      
+      - name: 🧪 Run Light Load Test
+        if: ${{ github.event.inputs.scenario == 'all' || github.event.inputs.scenario == 'light-load' }}
+        run: |
+          echo "🧪 Running Light Load Test..."
+          node scripts/ci/run-scenario.js light-load
+      
+      - name: 🧪 Run Medium Load Test
+        if: ${{ github.event.inputs.scenario == 'all' || github.event.inputs.scenario == 'medium-load' }}
+        run: |
+          echo "🧪 Running Medium Load Test..."
+          node scripts/ci/run-scenario.js medium-load
+      
+      - name: 🧪 Run Chaos Test
+        if: ${{ github.event.inputs.scenario == 'all' || github.event.inputs.scenario == 'chaos-test' }}
+        run: |
+          echo "🧪 Running Chaos Engineering Test..."
+          node scripts/ci/run-scenario.js chaos-test
+      
+      - name: 📊 Collect Test Results
+        if: always()
+        run: |
+          echo "📊 Collecting test results from SigNoz..."
+          mkdir -p test-results
+          
+          # Export logs
+          curl "http://localhost:8080/api/v1/logs" > test-results/logs.json
+          
+          # Export metrics
+          curl "http://localhost:8080/api/v1/metrics" > test-results/metrics.json
+          
+          # Generate summary report
+          node scripts/ci/generate-report.js
+      
+      - name: 📈 Generate Performance Report
+        if: always()
+        run: |
+          echo "📈 Generating performance comparison report..."
+          node scripts/ci/compare-baseline.js
+      
+      - name: 📤 Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: stress-test-results-${{ github.run_number }}
+          path: test-results/
+          retention-days: 30
+      
+      - name: 💬 Comment on PR (if applicable)
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const report = fs.readFileSync('test-results/summary.md', 'utf8');
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: report
+            });
+      
+      - name: 🧹 Cleanup
+        if: always()
+        run: |
+          echo "🧹 Cleaning up..."
+          kill $SERVER_PID || true
+          docker-compose down
+      
+      - name: 🎯 BossCat OEM - Test Complete
+        run: |
+          echo "✅ Nightly stress test pipeline complete"
+          echo "📊 Results uploaded to artifacts"
+

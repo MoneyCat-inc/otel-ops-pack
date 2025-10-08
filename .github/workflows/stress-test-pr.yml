@@ -1,0 +1,89 @@
+name: PR Stress Test Validation
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+    paths:
+      - 'config/**'
+      - 'scripts/**'
+      - 'docs/dashboards/**'
+      - '.github/workflows/stress-test-*.yml'
+
+jobs:
+  quick-validation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
+    steps:
+      - name: 🐾 BossCat OEM - Checkout PR
+        uses: actions/checkout@v4
+      
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: 📦 Start SigNoz Stack
+        run: |
+          echo "🚀 Starting SigNoz for PR validation..."
+          docker-compose up -d
+          sleep 60
+          
+          until curl -f http://localhost:8080/api/v1/health > /dev/null 2>&1; do
+            echo "⏳ Waiting for SigNoz..."
+            sleep 5
+          done
+          echo "✅ SigNoz ready for testing"
+      
+      - name: 🌐 Start Dashboard Server
+        run: |
+          python -m http.server 3000 &
+          echo "SERVER_PID=$!" >> $GITHUB_ENV
+          sleep 5
+      
+      - name: 🧪 Run Light Load Test (PR Validation)
+        run: |
+          echo "🧪 Running quick validation test..."
+          node scripts/ci/run-scenario.js light-load
+      
+      - name: 📊 Collect Results
+        if: always()
+        run: |
+          mkdir -p test-results
+          curl "http://localhost:8080/api/v1/logs" > test-results/pr-logs.json
+          node scripts/ci/generate-report.js
+      
+      - name: ✅ Validate Performance Thresholds
+        run: |
+          echo "🎯 Checking performance thresholds..."
+          node scripts/ci/validate-thresholds.js
+      
+      - name: 📤 Upload PR Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-stress-test-${{ github.event.pull_request.number }}
+          path: test-results/
+      
+      - name: 💬 Comment Test Results
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const report = fs.readFileSync('test-results/summary.md', 'utf8');
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## 🐾 BossCat OEM - Stress Test Results\n\n${report}`
+            });
+      
+      - name: 🧹 Cleanup
+        if: always()
+        run: |
+          kill $SERVER_PID || true
+          docker-compose down
+
