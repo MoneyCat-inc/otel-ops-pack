@@ -1,0 +1,41 @@
+{
+  "traces_views": [
+    {
+      "timeRange": "1h",
+      "description": "Traces with latency > 500ms",
+      "filters": {
+        "duration": ">500ms"
+      },
+      "name": "BossCat High Latency Traces"
+    },
+    {
+      "timeRange": "1h",
+      "description": "Traces with errors",
+      "filters": {
+        "status_code": "ERROR",
+        "error": "true"
+      },
+      "name": "BossCat Error Traces"
+    }
+  ],
+  "logs_views": [
+    {
+      "timeRange": "1h",
+      "description": "Filtered view of error logs for BossCat monitoring",
+      "filters": {
+        "level": "error",
+        "severity": "ERROR"
+      },
+      "name": "BossCat Error Logs View"
+    },
+    {
+      "timeRange": "1h",
+      "description": "View for canary test logs",
+      "filters": {
+        "body": "windows-canary",
+        "source": "windows_event_log"
+      },
+      "name": "BossCat Canary Logs View"
+    }
+  ]
+}

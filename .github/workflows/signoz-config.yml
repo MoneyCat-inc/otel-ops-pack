@@ -1,0 +1,92 @@
+# .github/workflows/signoz-config.yml
+name: BossCat • SigNoz Config (Alerts + Views + Dashboards)
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 6 * * *"  # daily drift check at 06:17 UTC
+  push:
+    paths:
+      - scripts/bosscat-create-signoz-alerts.ps1
+      - scripts/bosscat-steps-7-8.ps1
+      - scripts/bosscat-verify-signoz-completion.ps1
+      - docs/BossCat/**
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bosscat-signoz-automation  # Unified across all SigNoz workflows
+  cancel-in-progress: false
+
+jobs:
+  config:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    env:
+      SIGNOZ_URL: http://localhost:8080
+      SIGNOZ_API_KEY: ${{ secrets.WYZWOZ_SIGNOZ }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PowerShell (pwsh 7.4)
+        uses: PowerShell/PowerShell@v1
+        with:
+          pwsh-version: '7.4.x'
+
+      - name: Apply Alerts (v0.96+ schema)
+        shell: pwsh
+        run: |
+          pwsh -File scripts/bosscat-create-signoz-alerts.ps1 `
+            -SigNozUrl $env:SIGNOZ_URL `
+            -Apply `
+            -ApiKey $env:SIGNOZ_API_KEY
+
+      - name: Apply Saved Views & Dashboard (Steps 7-8)
+        shell: pwsh
+        run: |
+          pwsh -File scripts/bosscat-steps-7-8.ps1 `
+            -SigNozUrl $env:SIGNOZ_URL `
+            -ApiKey $env:SIGNOZ_API_KEY `
+            -Apply
+
+      - name: Verify Alerts (8 rules)
+        shell: pwsh
+        run: |
+          pwsh -File scripts/bosscat-verify-signoz-completion.ps1 `
+            -SigNozUrl $env:SIGNOZ_URL `
+            -ApiKey $env:SIGNOZ_API_KEY
+
+      - name: Snapshot Dashboards & Views (for evidence)
+        if: always()
+        shell: pwsh
+        run: |
+          $H = @{ "SIGNOZ-API-KEY" = $env:SIGNOZ_API_KEY }
+          
+          # Snapshot dashboards
+          try {
+            $dash = Invoke-RestMethod -Uri "$env:SIGNOZ_URL/api/v1/dashboards" -Headers $H -Method GET
+            $dash | ConvertTo-Json -Depth 20 | Out-File docs/BossCat/_evidence_dashboards.json -Encoding UTF8
+            Write-Host "✅ Dashboard snapshot saved" -ForegroundColor Green
+          } catch {
+            Write-Host "⚠️ Dashboard snapshot failed: $($_.Exception.Message)" -ForegroundColor Yellow
+          }
+          
+          # Snapshot saved views (if endpoint available)
+          # Note: Saved Views API may require different endpoint or approach
+          Write-Host "ℹ️ Saved Views snapshot deferred - API endpoint investigation ongoing" -ForegroundColor Cyan
+
+      - name: Upload Evidence (always)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: signoz-config-evidence
+          path: |
+            docs/BossCat/signoz-completion-verification.json
+            docs/BossCat/_evidence_dashboards.json
+            docs/BossCat/bosscat-*.json
+          if-no-files-found: warn
+          retention-days: 30  # Extended for audit compliance
+

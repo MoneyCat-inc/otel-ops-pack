@@ -1,0 +1,98 @@
+[
+  {
+    "alert": "BossCat Pipeline Health Alert",
+    "alertType": "METRIC_BASED_ALERT",
+    "evalWindow": "2m",
+    "condition": {
+      "target": 0,
+      "compositeQuery": {
+        "queryType": "promql",
+        "promQueries": {
+          "A": {
+            "disabled": false,
+            "query": "rate(otelcol_*_spans_received_total[5m]) == 0"
+          }
+        }
+      },
+      "matchType": "equal",
+      "op": "=="
+    },
+    "description": "Critical alert when OTel pipeline stops receiving spans",
+    "ruleType": "threshold_rule",
+    "frequency": "1m",
+    "disabled": false,
+    "severity": "critical"
+  },
+  {
+    "alert": "BossCat High Error Rate Alert",
+    "alertType": "METRIC_BASED_ALERT",
+    "evalWindow": "5m",
+    "condition": {
+      "target": 0.05,
+      "compositeQuery": {
+        "queryType": "promql",
+        "promQueries": {
+          "A": {
+            "disabled": false,
+            "query": "rate(otelcol_*_errors_total[5m]) > 0.05"
+          }
+        }
+      },
+      "matchType": "greater_than",
+      "op": ">"
+    },
+    "description": "Warning when pipeline error rate exceeds 5%",
+    "ruleType": "threshold_rule",
+    "frequency": "1m",
+    "disabled": false,
+    "severity": "warning"
+  },
+  {
+    "alert": "BossCat Latency Spike Alert",
+    "alertType": "METRIC_BASED_ALERT",
+    "evalWindow": "3m",
+    "condition": {
+      "target": 1.0,
+      "compositeQuery": {
+        "queryType": "promql",
+        "promQueries": {
+          "A": {
+            "disabled": false,
+            "query": "histogram_quantile(0.95, rate(otelcol_*_duration_seconds_bucket[5m])) > 1.0"
+          }
+        }
+      },
+      "matchType": "greater_than",
+      "op": ">"
+    },
+    "description": "Warning when P95 latency exceeds 1 second",
+    "ruleType": "threshold_rule",
+    "frequency": "1m",
+    "disabled": false,
+    "severity": "warning"
+  },
+  {
+    "alert": "BossCat Throughput Drop Alert",
+    "alertType": "METRIC_BASED_ALERT",
+    "evalWindow": "5m",
+    "condition": {
+      "target": 10,
+      "compositeQuery": {
+        "queryType": "promql",
+        "promQueries": {
+          "A": {
+            "disabled": false,
+            "query": "rate(otelcol_*_spans_processed_total[5m]) < 10"
+          }
+        }
+      },
+      "matchType": "less_than",
+      "op": "<"
+    },
+    "description": "Warning when throughput drops below 10 spans/second",
+    "ruleType": "threshold_rule",
+    "frequency": "1m",
+    "disabled": false,
+    "severity": "warning"
+  }
+]

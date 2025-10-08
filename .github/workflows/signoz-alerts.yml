@@ -1,0 +1,65 @@
+# BossCat • SigNoz Alerts - Production-Hardened CI/CD
+# Authority: BossCat OEM (Executive Overseer Manager)
+# Purpose: Apply 8 BossCat alerts and verify 6/6 completion using WYZWOZ_SIGNOZ secret
+# Hardening: Least-privilege, concurrency guard, timeout, always-upload artifacts
+
+name: BossCat • SigNoz Alerts
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - scripts/bosscat-create-signoz-alerts.ps1
+      - scripts/bosscat-verify-signoz-completion.ps1
+      - docs/BossCat/**
+
+# Least-privilege permissions
+permissions:
+  contents: read
+
+# Concurrency guard: only one alert run at a time
+concurrency:
+  group: bosscat-signoz-automation  # Unified across all SigNoz workflows
+  cancel-in-progress: false
+
+jobs:
+  alerts:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    env:
+      SIGNOZ_URL: http://localhost:8080
+      SIGNOZ_API_KEY: ${{ secrets.WYZWOZ_SIGNOZ }}  # masked
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PowerShell (pwsh 7.4)
+        uses: PowerShell/PowerShell@v1
+        with:
+          pwsh-version: '7.4.x'
+
+      - name: Apply BossCat Alerts to SigNoz
+        shell: pwsh
+        run: |
+          pwsh -File scripts/bosscat-create-signoz-alerts.ps1 `
+            -SigNozUrl $env:SIGNOZ_URL `
+            -Apply `
+            -ApiKey $env:SIGNOZ_API_KEY
+
+      - name: Verify SigNoz Completion (6/6)
+        shell: pwsh
+        run: |
+          pwsh -File scripts/bosscat-verify-signoz-completion.ps1 `
+            -SigNozUrl $env:SIGNOZ_URL `
+            -ApiKey $env:SIGNOZ_API_KEY
+
+      - name: Upload verification report (always)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: signoz-completion-report
+          path: docs/BossCat/signoz-completion-verification.json
+          if-no-files-found: warn
+          retention-days: 14
+

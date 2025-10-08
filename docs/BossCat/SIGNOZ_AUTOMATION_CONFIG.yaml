@@ -1,0 +1,125 @@
+# BossCat SigNoz Full Automation Configuration
+# Authority: BossCat OEM (Executive Overseer Manager)
+# Timestamp: 2025-10-08T04:35:00Z
+
+# SigNoz Dashboard Configuration
+dashboards:
+  bosscat_executive:
+    name: "BossCat Executive Dashboard"
+    description: "Real-time observability for BossCat OEM oversight"
+    panels:
+      - title: "Pipeline Health"
+        query: "rate(otelcol_*_spans_received_total[5m])"
+        type: "graph"
+        threshold: "> 0"
+      - title: "Error Rates"
+        query: "rate(otelcol_*_errors_total[5m])"
+        type: "graph"
+        threshold: "< 0.01"
+      - title: "Latency P95"
+        query: "histogram_quantile(0.95, rate(otelcol_*_duration_seconds_bucket[5m]))"
+        type: "graph"
+        threshold: "< 0.2"
+      - title: "Throughput"
+        query: "rate(otelcol_*_spans_processed_total[5m])"
+        type: "graph"
+        threshold: "> 100"
+
+# Alert Rules Configuration
+alerts:
+  pipeline_down:
+    name: "Pipeline Health Alert"
+    condition: "rate(otelcol_*_spans_received_total[5m]) == 0"
+    severity: "critical"
+    duration: "2m"
+    description: "OTel pipeline stopped receiving spans"
+    
+  high_error_rate:
+    name: "High Error Rate Alert"
+    condition: "rate(otelcol_*_errors_total[5m]) > 0.05"
+    severity: "warning"
+    duration: "5m"
+    description: "Error rate exceeds 5% threshold"
+    
+  latency_spike:
+    name: "Latency Spike Alert"
+    condition: "histogram_quantile(0.95, rate(otelcol_*_duration_seconds_bucket[5m])) > 1.0"
+    severity: "warning"
+    duration: "3m"
+    description: "P95 latency exceeds 1 second"
+    
+  canary_missing:
+    name: "Canary Missing Alert"
+    condition: "absent_over_time(otelcol_*_canary_spans_total[10m])"
+    severity: "critical"
+    duration: "10m"
+    description: "Canary traces missing for 10+ minutes"
+
+# Saved Views Configuration
+saved_views:
+  bosscat_overview:
+    name: "BossCat Overview"
+    filters:
+      - "service.name = 'bosscat-otel'"
+      - "deployment.environment = 'production'"
+    time_range: "last_1h"
+    
+  error_analysis:
+    name: "Error Analysis"
+    filters:
+      - "status.code = 'ERROR'"
+      - "error = true"
+    time_range: "last_24h"
+    
+  performance_monitoring:
+    name: "Performance Monitoring"
+    filters:
+      - "http.method = 'POST'"
+      - "http.url contains '/v1/traces'"
+    time_range: "last_1h"
+
+# Automation Configuration
+automation:
+  nightly_exports:
+    enabled: true
+    schedule: "0 2 * * *"  # 2 AM UTC daily
+    dashboards:
+      - "bosscat_executive"
+      - "performance_monitoring"
+    format: "pdf"
+    destination: "docs/observability/snapshots/"
+    
+  health_checks:
+    enabled: true
+    interval: "5m"
+    checks:
+      - "sigNoz_health"
+      - "otel_collector_health"
+      - "clickhouse_health"
+      - "pipeline_throughput"
+      
+  compliance_reporting:
+    enabled: true
+    schedule: "0 6 * * *"  # 6 AM UTC daily
+    reports:
+      - "ecrr_audit_trail"
+      - "performance_metrics"
+      - "error_analysis"
+      - "compliance_score"
+
+# BossCat Specific Configuration
+bosscat_config:
+  aesthetic: "cat_nap_control_room"
+  monitoring_style: "feline_silence"
+  authority_level: "executive_overseer"
+  gate_control: true
+  veto_power: true
+  evidence_based_decisions: true
+  
+# ECRR Integration
+ecrr_config:
+  enabled: true
+  audit_trail: "docs/ecrr/ECRR_REPORTS/"
+  evidence_collection: "automatic"
+  compliance_scoring: "real_time"
+  reporting_interval: "15m"

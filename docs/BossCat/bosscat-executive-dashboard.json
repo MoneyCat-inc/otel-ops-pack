@@ -1,0 +1,35 @@
+{
+  "layout": {
+    "rows": 2,
+    "columns": 2
+  },
+  "description": "Executive overview of OTel pipeline health and performance",
+  "panels": [
+    {
+      "type": "metric",
+      "title": "Pipeline Health Overview",
+      "visualization": "line",
+      "query": "rate(otelcol_*_spans_received_total[5m])"
+    },
+    {
+      "type": "metric",
+      "title": "Error Rate Trend",
+      "visualization": "line",
+      "query": "rate(otelcol_*_errors_total[5m])"
+    },
+    {
+      "type": "metric",
+      "title": "Latency Distribution",
+      "visualization": "line",
+      "query": "histogram_quantile(0.95, rate(otelcol_*_duration_seconds_bucket[5m]))"
+    },
+    {
+      "type": "metric",
+      "title": "Throughput Metrics",
+      "visualization": "line",
+      "query": "rate(otelcol_*_spans_processed_total[5m])"
+    }
+  ],
+  "refreshInterval": "30s",
+  "name": "BossCat Executive Dashboard"
+}
