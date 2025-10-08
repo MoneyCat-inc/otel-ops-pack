@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connection Diagnostics — Resonai [OTel]</title>
+<link rel="icon" type="image/png" href="../LOGO/Resonai_LOGO_ICONonly.png">
+<link rel="stylesheet" href="../assets/resonai-system.css">
+<style>
+  .diagnostic-result {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-sm);
+  }
+  
+  .diagnostic-result.success {
+    border-color: var(--success);
+    background: rgba(76, 175, 80, 0.1);
+  }
+  
+  .diagnostic-result.error {
+    border-color: var(--error);
+    background: rgba(244, 67, 54, 0.1);
+  }
+  
+  .diagnostic-result.warning {
+    border-color: var(--warning);
+    background: rgba(255, 193, 7, 0.1);
+  }
+  
+  .diagnostic-step {
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .step-title {
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--spacing-sm);
+    color: var(--primary);
+  }
+  
+  .step-description {
+    color: var(--fg-muted);
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .response-preview {
+    background: #000;
+    color: #0f0;
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-sm);
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    max-height: 200px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+</style>
+</head>
+<body>
+
+<!-- Breadcrumb -->
+<nav class="breadcrumb" style="padding: 8px 24px; background: var(--bg-primary); border-bottom: 1px solid var(--border-color);">
+  <a href="../../index.html">🏠 Home</a>
+  <span class="breadcrumb-separator">/</span>
+  <a href="../../index.html#projects">OTel Pipeline</a>
+  <span class="breadcrumb-separator">/</span>
+  <span>Connection Diagnostics</span>
+</nav>
+
+<!-- Header -->
+<header class="resonai-header">
+  <div class="resonai-header-content">
+    <div class="resonai-logo">🔧 Connection Diagnostics</div>
+    <nav class="resonai-nav">
+      <a href="../../index.html">Home</a>
+      <a href="../status.html">Executive Dashboard</a>
+      <a href="live-metrics.html">Live Metrics</a>
+      <a href="test-harness.html">Test Harness</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Main Content -->
+<main class="container">
+
+  <!-- Status Alert -->
+  <div class="alert alert-info">
+    <strong>🔍 Diagnostic Tool:</strong> This page helps troubleshoot connection issues between the Data Room and SigNoz. 
+    Run diagnostics to identify and resolve API connectivity problems.
+  </div>
+
+  <!-- Diagnostic Steps -->
+  <section class="section">
+    <h2 class="mb-lg">🔧 Diagnostic Steps</h2>
+    
+    <div class="diagnostic-step">
+      <div class="step-title">Step 1: Check SigNoz Health</div>
+      <div class="step-description">Verify SigNoz is running and accessible</div>
+      <button class="btn btn-primary" onclick="checkSigNozHealth()">Check SigNoz Health</button>
+      <div id="signozHealthResult" class="diagnostic-result" style="display: none;"></div>
+    </div>
+
+    <div class="diagnostic-step">
+      <div class="step-title">Step 2: Test Logs API</div>
+      <div class="step-description">Test the SigNoz logs API endpoint</div>
+      <button class="btn btn-primary" onclick="testLogsAPI()">Test Logs API</button>
+      <div id="logsAPIResult" class="diagnostic-result" style="display: none;"></div>
+    </div>
+
+    <div class="diagnostic-step">
+      <div class="step-title">Step 3: Test OTel Collector</div>
+      <div class="step-description">Verify OTel Collector is accepting logs</div>
+      <button class="btn btn-primary" onclick="testOTelCollector()">Test OTel Collector</button>
+      <div id="otelResult" class="diagnostic-result" style="display: none;"></div>
+    </div>
+
+    <div class="diagnostic-step">
+      <div class="step-title">Step 4: Send Test Log</div>
+      <div class="step-description">Send a test log and verify it appears in SigNoz</div>
+      <button class="btn btn-primary" onclick="sendTestLog()">Send Test Log</button>
+      <div id="testLogResult" class="diagnostic-result" style="display: none;"></div>
+    </div>
+  </section>
+
+  <!-- Quick Fixes -->
+  <section class="section">
+    <div class="card">
+      <h3 class="card-title">🚀 Quick Fixes</h3>
+      <div class="grid-2">
+        <div class="alert alert-warning">
+          <strong>SigNoz Not Running:</strong><br>
+          <code>docker-compose up -d</code><br>
+          Wait 30 seconds, then refresh
+        </div>
+        <div class="alert alert-warning">
+          <strong>OTel Collector Down:</strong><br>
+          <code>sc start otelcol-contrib</code><br>
+          Check service status
+        </div>
+        <div class="alert alert-info">
+          <strong>API Token Issues:</strong><br>
+          Use debug mode in Data Room<br>
+          <a href="../BossCat/data_room_iona_debug.html" class="text-primary">Open Debug Mode →</a>
+        </div>
+        <div class="alert alert-info">
+          <strong>Firewall/Network:</strong><br>
+          Check localhost:8080 and :5318<br>
+          Disable VPN if active
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Run All Diagnostics -->
+  <section class="section">
+    <div class="text-center">
+      <button class="btn btn-success btn-lg" onclick="runAllDiagnostics()">
+        🔍 Run All Diagnostics
+      </button>
+      <p class="text-muted mt-md">Comprehensive health check of all components</p>
+    </div>
+  </section>
+
+</main>
+
+<!-- Footer -->
+<footer class="resonai-footer">
+  <div class="resonai-footer-content">
+    <div class="resonai-footer-logo">🐾 Resonai • MoneyCat Inc.</div>
+    <nav class="resonai-footer-links">
+      <a href="../../index.html">Home</a>
+      <a href="../BossCat/PROJECT_HUB_USER_GUIDE.md">User Guide</a>
+      <a href="../BossCat/DATA_ROOM_QUICKSTART.md">Quick Start</a>
+      <a href="https://github.com/MoneyCat-inc/otel-ops-pack" target="_blank">GitHub</a>
+    </nav>
+    <p class="resonai-footer-text">
+      Local-First • Privacy-Focused • ECRR-Compliant • BossCat OEM Certified
+    </p>
+  </div>
+</footer>
+
+<script>
+  // Display result in diagnostic container
+  function showResult(containerId, success, title, details, responsePreview = null) {
+    const container = document.getElementById(containerId);
+    container.style.display = 'block';
+    container.className = `diagnostic-result ${success ? 'success' : 'error'}`;
+    
+    let content = `
+      <div style="font-weight: bold; margin-bottom: 8px;">
+        ${success ? '✅' : '❌'} ${title}
+      </div>
+      <div style="margin-bottom: 12px;">${details}</div>
+    `;
+    
+    if (responsePreview) {
+      content += `
+        <div style="margin-top: 12px;">
+          <strong>Response Preview:</strong>
+          <div class="response-preview">${responsePreview}</div>
+        </div>
+      `;
+    }
+    
+    container.innerHTML = content;
+  }
+
+  // Check SigNoz health
+  async function checkSigNozHealth() {
+    try {
+      const response = await fetch('http://localhost:8080/api/v1/health');
+      const responseText = await response.text();
+      
+      if (response.ok) {
+        showResult('signozHealthResult', true, 'SigNoz is running', 
+          `Health endpoint returned HTTP ${response.status}`, responseText.substring(0, 200));
+      } else {
+        showResult('signozHealthResult', false, 'SigNoz health check failed', 
+          `HTTP ${response.status}: ${responseText.substring(0, 100)}`, responseText.substring(0, 200));
+      }
+    } catch (error) {
+      showResult('signozHealthResult', false, 'SigNoz connection failed', 
+        `Cannot connect to localhost:8080. Error: ${error.message}`, null);
+    }
+  }
+
+  // Test logs API
+  async function testLogsAPI() {
+    try {
+      const response = await fetch('http://localhost:8080/api/v1/logs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          limit: 10,
+          orderBy: { columnName: 'timestamp', order: 'desc' },
+          filters: { items: [] }
+        })
+      });
+      
+      const responseText = await response.text();
+      const contentType = response.headers.get('Content-Type') || '';
+      
+      if (response.ok && contentType.includes('application/json')) {
+        try {
+          const data = JSON.parse(responseText);
+          showResult('logsAPIResult', true, 'Logs API working', 
+            `Retrieved ${data.logs?.length || 0} logs`, 
+            JSON.stringify(data, null, 2).substring(0, 300));
+        } catch (parseError) {
+          showResult('logsAPIResult', false, 'Logs API returned invalid JSON', 
+            `Parse error: ${parseError.message}`, responseText.substring(0, 200));
+        }
+      } else {
+        showResult('logsAPIResult', false, 'Logs API failed', 
+          `HTTP ${response.status}, Content-Type: ${contentType}`, responseText.substring(0, 200));
+      }
+    } catch (error) {
+      showResult('logsAPIResult', false, 'Logs API connection failed', 
+        `Error: ${error.message}`, null);
+    }
+  }
+
+  // Test OTel Collector
+  async function testOTelCollector() {
+    try {
+      const testLog = {
+        resourceLogs: [{
+          resource: { attributes: [{ key: 'service.name', value: { stringValue: 'diagnostic-test' } }] },
+          scopeLogs: [{
+            scope: { name: 'diagnostic', version: '1.0' },
+            logRecords: [{
+              timeUnixNano: (Date.now() * 1000000).toString(),
+              severityNumber: 9,
+              severityText: 'INFO',
+              body: { stringValue: 'Diagnostic test log from connection tester' }
+            }]
+          }]
+        }]
+      };
+      
+      const response = await fetch('http://localhost:5318/v1/logs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(testLog)
+      });
+      
+      const responseText = await response.text();
+      
+      if (response.ok) {
+        showResult('otelResult', true, 'OTel Collector accepting logs', 
+          `HTTP ${response.status} - Log sent successfully`, responseText.substring(0, 200));
+      } else {
+        showResult('otelResult', false, 'OTel Collector rejected log', 
+          `HTTP ${response.status}: ${responseText.substring(0, 100)}`, responseText.substring(0, 200));
+      }
+    } catch (error) {
+      showResult('otelResult', false, 'OTel Collector connection failed', 
+        `Cannot connect to localhost:5318. Error: ${error.message}`, null);
+    }
+  }
+
+  // Send test log and verify
+  async function sendTestLog() {
+    try {
+      // Send test log
+      const testLog = {
+        resourceLogs: [{
+          resource: { attributes: [{ key: 'service.name', value: { stringValue: 'diagnostic-verification' } }] },
+          scopeLogs: [{
+            scope: { name: 'diagnostic', version: '1.0' },
+            logRecords: [{
+              timeUnixNano: (Date.now() * 1000000).toString(),
+              severityNumber: 9,
+              severityText: 'INFO',
+              body: { stringValue: `Diagnostic verification test - ${new Date().toISOString()}` }
+            }]
+          }]
+        }]
+      };
+      
+      const otelResponse = await fetch('http://localhost:5318/v1/logs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(testLog)
+      });
+      
+      if (!otelResponse.ok) {
+        throw new Error(`OTel send failed: HTTP ${otelResponse.status}`);
+      }
+      
+      // Wait 3 seconds for log to appear in SigNoz
+      await new Promise(resolve => setTimeout(resolve, 3000));
+      
+      // Check if log appears in SigNoz
+      const signozResponse = await fetch('http://localhost:8080/api/v1/logs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          limit: 20,
+          orderBy: { columnName: 'timestamp', order: 'desc' },
+          filters: { items: [{ key: 'service.name', operator: '=', value: 'diagnostic-verification' }] }
+        })
+      });
+      
+      const signozText = await signozResponse.text();
+      
+      if (signozResponse.ok) {
+        try {
+          const data = JSON.parse(signozText);
+          const foundLogs = data.logs?.filter(log => 
+            log.body?.includes('Diagnostic verification test')
+          ) || [];
+          
+          if (foundLogs.length > 0) {
+            showResult('testLogResult', true, 'End-to-end test successful', 
+              `Log sent to OTel and found in SigNoz (${foundLogs.length} matches)`, 
+              JSON.stringify(foundLogs[0], null, 2).substring(0, 300));
+          } else {
+            showResult('testLogResult', false, 'Log sent but not found in SigNoz', 
+              'Log may still be processing. Wait 10 seconds and check SigNoz UI manually.', 
+              signozText.substring(0, 200));
+          }
+        } catch (parseError) {
+          showResult('testLogResult', false, 'SigNoz response invalid', 
+            `Parse error: ${parseError.message}`, signozText.substring(0, 200));
+        }
+      } else {
+        showResult('testLogResult', false, 'SigNoz query failed', 
+          `HTTP ${signozResponse.status}: ${signozText.substring(0, 100)}`, signozText.substring(0, 200));
+      }
+      
+    } catch (error) {
+      showResult('testLogResult', false, 'End-to-end test failed', 
+        `Error: ${error.message}`, null);
+    }
+  }
+
+  // Run all diagnostics
+  async function runAllDiagnostics() {
+    const steps = [
+      { name: 'SigNoz Health', func: checkSigNozHealth },
+      { name: 'Logs API', func: testLogsAPI },
+      { name: 'OTel Collector', func: testOTelCollector },
+      { name: 'Test Log', func: sendTestLog }
+    ];
+    
+    for (let i = 0; i < steps.length; i++) {
+      const step = steps[i];
+      console.log(`Running ${step.name}...`);
+      await step.func();
+      
+      // Wait between steps
+      if (i < steps.length - 1) {
+        await new Promise(resolve => setTimeout(resolve, 2000));
+      }
+    }
+    
+    console.log('All diagnostics complete');
+  }
+</script>
+
+</body>
+</html>
