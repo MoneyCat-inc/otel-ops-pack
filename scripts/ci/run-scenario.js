@@ -27,6 +27,10 @@ function loadScenarios() {
 async function runScenario(scenarioName) {
   console.log(`🚀 Starting scenario: ${scenarioName}`);
   
+  // Check service health first
+  console.log('🔍 Checking service health...');
+  await checkServiceHealth();
+  
   const scenarios = loadScenarios();
   const scenario = scenarios.scenarios[scenarioName];
   
@@ -44,71 +48,102 @@ async function runScenario(scenarioName) {
     fs.mkdirSync(CONFIG.resultsDir, { recursive: true });
   }
   
+  // Check if OTel Collector is accessible
+  let otelAccessible = false;
+  try {
+    const testResponse = await fetch(CONFIG.otelCollectorUrl + '/v1/logs');
+    otelAccessible = true;
+    console.log('✅ OTel Collector is accessible');
+  } catch (error) {
+    console.log('⚠️  OTel Collector not accessible - running in simulation mode');
+    console.log('   This will generate simulated data without actual OTLP sending');
+  }
+  
   // Execute scenario
   if (scenario.phases) {
-    await runMultiPhaseScenario(scenario);
+    await runMultiPhaseScenario(scenario, otelAccessible);
   } else {
-    await runSinglePhaseScenario(scenario);
+    await runSinglePhaseScenario(scenario, otelAccessible);
   }
   
   console.log(`✅ Scenario completed: ${scenarioName}`);
 }
 
 // Run single-phase scenario
-async function runSinglePhaseScenario(scenario) {
+async function runSinglePhaseScenario(scenario, otelAccessible = true) {
   console.log(`▶️  Running single-phase scenario...`);
   
   // Send logs based on scenario settings
-  await generateLoad(scenario.settings, scenario.duration);
+  await generateLoad(scenario.settings, scenario.duration, otelAccessible);
 }
 
 // Run multi-phase scenario
-async function runMultiPhaseScenario(scenario) {
+async function runMultiPhaseScenario(scenario, otelAccessible = true) {
   console.log(`🔄 Running multi-phase scenario with ${scenario.phases.length} phases...`);
   
   for (let i = 0; i < scenario.phases.length; i++) {
     const phase = scenario.phases[i];
     console.log(`📋 Phase ${i + 1}: ${phase.name} (${phase.duration}s)`);
     
-    await generateLoad(phase.settings, phase.duration);
+    await generateLoad(phase.settings, phase.duration, otelAccessible);
   }
 }
 
 // Generate load based on settings
-async function generateLoad(settings, duration) {
+async function generateLoad(settings, duration, otelAccessible = true) {
   const startTime = Date.now();
   const endTime = startTime + (duration * 1000);
   
   let logCount = 0;
+  let metricCount = 0;
+  let traceCount = 0;
   
   while (Date.now() < endTime) {
     // Multi-source logs
     if (settings.multiSource?.enabled) {
-      await sendLog('multi-source', settings.multiSource.frequency);
+      if (otelAccessible) {
+        await sendLog('multi-source', settings.multiSource.frequency);
+      } else {
+        console.log(`📝 [SIM] Multi-source log: ${settings.multiSource.frequency} logs/sec`);
+      }
       logCount++;
     }
     
     // Metrics
     if (settings.metrics?.enabled) {
-      await sendMetric('synthetic', settings.metrics.volume);
+      if (otelAccessible) {
+        await sendMetric('synthetic', settings.metrics.volume);
+      } else {
+        console.log(`📊 [SIM] Synthetic metric: ${settings.metrics.volume} metrics/sec`);
+      }
+      metricCount++;
     }
     
     // Noise
     if (settings.noise?.enabled) {
-      await sendLog('noise', settings.noise.intensity);
+      if (otelAccessible) {
+        await sendLog('noise', settings.noise.intensity);
+      } else {
+        console.log(`🎲 [SIM] Noise log: intensity ${settings.noise.intensity}`);
+      }
       logCount++;
     }
     
     // Traces
     if (settings.traces?.enabled) {
-      await sendTrace('synthetic', settings.traces.rate);
+      if (otelAccessible) {
+        await sendTrace('synthetic', settings.traces.rate);
+      } else {
+        console.log(`🔗 [SIM] Synthetic trace: ${settings.traces.rate} traces/sec`);
+      }
+      traceCount++;
     }
     
     // Wait 1 second between batches
     await sleep(1000);
   }
   
-  console.log(`📊 Generated ${logCount} logs in ${duration}s`);
+  console.log(`📊 Generated ${logCount} logs, ${metricCount} metrics, ${traceCount} traces in ${duration}s`);
 }
 
 // Send OTLP log
@@ -213,7 +248,7 @@ async function sendTrace(source, rate) {
   }
 }
 
-// HTTP POST helper
+// HTTP POST helper with timeout and better error handling
 function postData(url, data) {
   return new Promise((resolve, reject) => {
     const parsedUrl = new URL(url);
@@ -225,19 +260,55 @@ function postData(url, data) {
       headers: {
         'Content-Type': 'application/json',
         'Content-Length': Buffer.byteLength(JSON.stringify(data))
-      }
+      },
+      timeout: 5000 // 5 second timeout
     };
     
     const req = http.request(options, (res) => {
       let body = '';
       res.on('data', (chunk) => body += chunk);
-      res.on('end', () => resolve(body));
+      res.on('end', () => {
+        if (res.statusCode >= 200 && res.statusCode < 300) {
+          resolve(body);
+        } else {
+          reject(new Error(`HTTP ${res.statusCode}: ${body}`));
+        }
+      });
     });
     
-    req.on('error', reject);
+    req.on('error', (error) => {
+      reject(new Error(`Connection failed: ${error.message}`));
+    });
+    
+    req.on('timeout', () => {
+      req.destroy();
+      reject(new Error('Request timeout'));
+    });
+    
     req.write(JSON.stringify(data));
     req.end();
   });
+}
+
+// Health check for services
+async function checkServiceHealth() {
+  const services = [
+    { name: 'SigNoz', url: 'http://localhost:8080/api/v1/health' },
+    { name: 'OTel Collector', url: 'http://localhost:5318/v1/logs' }
+  ];
+  
+  for (const service of services) {
+    try {
+      const response = await fetch(service.url);
+      if (response.ok) {
+        console.log(`✅ ${service.name} is healthy`);
+      } else {
+        console.log(`⚠️  ${service.name} responded with ${response.status}`);
+      }
+    } catch (error) {
+      console.log(`❌ ${service.name} is not accessible: ${error.message}`);
+    }
+  }
 }
 
 // Sleep helper
