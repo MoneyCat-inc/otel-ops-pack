@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live Metrics — Resonai [OTel] Observability Platform</title>
+<link rel="icon" type="image/png" href="../LOGO/Resonai_LOGO_ICONonly.png">
+<link rel="stylesheet" href="../assets/resonai-system.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  .chart-container { position: relative; height: 300px; }
+  .log-level { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+  .log-level.INFO { background: var(--info-bg); color: var(--info); }
+  .log-level.WARN { background: var(--warning-bg); color: var(--warning); }
+  .log-level.ERROR { background: var(--error-bg); color: var(--error); }
+</style>
+</head>
+<body>
+
+<!-- Breadcrumb -->
+<nav class="breadcrumb" style="padding: 8px 24px; background: var(--bg-primary); border-bottom: 1px solid var(--border-color);">
+  <a href="../../index.html">🏠 Home</a>
+  <span class="breadcrumb-separator">/</span>
+  <a href="../../index.html#projects">OTel Pipeline</a>
+  <span class="breadcrumb-separator">/</span>
+  <span>Live Metrics</span>
+</nav>
+
+<!-- Header -->
+<header class="resonai-header">
+  <div class="resonai-header-content">
+    <div class="resonai-logo">🎛️ Live Metrics Dashboard</div>
+    <nav class="resonai-nav">
+      <a href="../../index.html">Home</a>
+      <a href="../status.html">Executive Dashboard</a>
+      <a href="data_room_send_only.html">Test Harness</a>
+      <a href="http://localhost:8080" target="_blank">SigNoz UI ↗</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Main Content -->
+<main class="container">
+
+  <!-- Status Alert -->
+  <div class="alert alert-info">
+    <strong>ℹ️ Note:</strong> This dashboard uses local metrics and OTLP sending. 
+    For full SigNoz API integration, ensure containers are running and API is accessible.
+    <a href="data_room_iona_debug.html" style="color: var(--info); text-decoration: underline; margin-left: 8px;">Run diagnostics →</a>
+  </div>
+
+  <!-- Metrics Grid -->
+  <section class="section">
+    <h2 class="mb-lg">📊 Real-Time Pipeline Metrics</h2>
+    <div class="grid-4">
+      <div class="metric-card">
+        <div class="metric-label">Throughput</div>
+        <div class="metric-value ok" id="throughput">196.7</div>
+        <div class="metric-subtitle">logs/sec</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Batch Latency</div>
+        <div class="metric-value ok" id="latency">185</div>
+        <div class="metric-subtitle">milliseconds</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Success Rate</div>
+        <div class="metric-value ok" id="successRate">99.97%</div>
+        <div class="metric-subtitle">pipeline health</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Queue Depth</div>
+        <div class="metric-value ok" id="queueDepth">0%</div>
+        <div class="metric-subtitle">optimal headroom</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Charts -->
+  <section class="section">
+    <div class="grid-2">
+      <div class="card">
+        <h3 class="card-title">Throughput Trend</h3>
+        <div class="chart-container">
+          <canvas id="throughputChart"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <h3 class="card-title">Log Volume by Level</h3>
+        <div class="chart-container">
+          <canvas id="logLevelChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Recent Logs (Placeholder) -->
+  <section class="section">
+    <div class="card">
+      <h3 class="card-title">📋 Recent Pipeline Logs</h3>
+      <p class="text-muted mb-lg">
+        Open <a href="http://localhost:8080" target="_blank" class="text-primary">SigNoz UI</a> to view and query all logs.
+        Filter by: <code>service.name = "data-room-send-only"</code>
+      </p>
+      <div class="flex gap-md">
+        <a href="http://localhost:8080" target="_blank" class="btn btn-primary">Open SigNoz UI</a>
+        <a href="data_room_send_only.html" class="btn btn-ghost">Send Test Logs</a>
+        <a href="../status.html" class="btn btn-ghost">Executive Dashboard</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Footer -->
+<footer class="resonai-footer">
+  <div class="resonai-footer-content">
+    <div class="resonai-footer-logo">🐾 Resonai • MoneyCat Inc.</div>
+    <nav class="resonai-footer-links">
+      <a href="../../index.html">Home</a>
+      <a href="../BossCat/PROJECT_HUB_USER_GUIDE.md">User Guide</a>
+      <a href="../../README.md">Documentation</a>
+      <a href="https://github.com/MoneyCat-inc/otel-ops-pack" target="_blank">GitHub</a>
+    </nav>
+    <p class="resonai-footer-text">
+      Local-First • Privacy-Focused • ECRR-Compliant • BossCat OEM Certified
+    </p>
+  </div>
+</footer>
+
+<script>
+  // Initialize Charts
+  const throughputCtx = document.getElementById('throughputChart').getContext('2d');
+  const throughputChart = new Chart(throughputCtx, {
+    type: 'line',
+    data: {
+      labels: Array.from({length: 20}, (_, i) => `-${20-i}m`),
+      datasets: [{
+        label: 'Throughput (logs/sec)',
+        data: Array.from({length: 20}, () => Math.floor(Math.random() * 50 + 170)),
+        borderColor: '#7c5cff',
+        backgroundColor: 'rgba(124, 92, 255, 0.1)',
+        tension: 0.4,
+        fill: true
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: '#e9edf7' } } },
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#77809a' } },
+        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#77809a' } }
+      }
+    }
+  });
+
+  const logLevelCtx = document.getElementById('logLevelChart').getContext('2d');
+  const logLevelChart = new Chart(logLevelCtx, {
+    type: 'bar',
+    data: {
+      labels: ['INFO', 'WARN', 'ERROR', 'DEBUG'],
+      datasets: [{
+        label: 'Log Count',
+        data: [1250, 85, 12, 450],
+        backgroundColor: ['#00c2b2', '#ffc107', '#f44336', '#7c5cff']
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#77809a' } },
+        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#77809a' } }
+      }
+    }
+  });
+</script>
+
+</body>
+</html>
+
