@@ -490,6 +490,37 @@
         </div>
       </div>
 
+      <!-- Custom Scenarios -->
+      <div class="stress-card">
+        <div class="stress-title">📋 Custom Scenarios</div>
+        <div class="stress-description">
+          Load predefined test patterns for repeatable stress testing scenarios.
+        </div>
+        <div class="stress-controls-inner">
+          <div class="control-row">
+            <span class="control-label">Scenario:</span>
+            <select id="scenarioSelect" style="padding: 4px 8px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); color: var(--fg);">
+              <option value="">Select a scenario...</option>
+              <option value="light-load">Light Load Test (~3 logs/sec)</option>
+              <option value="medium-load">Medium Load Test (~25 logs/sec)</option>
+              <option value="chaos-test">Chaos Engineering Test (~80 logs/sec)</option>
+              <option value="ramp-up">Ramp-Up Test (2→100+ logs/sec)</option>
+              <option value="burst-test">Burst Test (1→150+ logs/sec)</option>
+            </select>
+          </div>
+          <div class="control-row">
+            <span class="control-label">Duration:</span>
+            <span class="control-value" id="scenarioDuration">--</span>
+          </div>
+          <button class="btn-stress" id="loadScenarioBtn" onclick="loadSelectedScenario()">
+            Load Scenario
+          </button>
+          <button class="btn-stress" id="runScenarioBtn" onclick="runSelectedScenario()" disabled>
+            ▶️ Run Scenario
+          </button>
+        </div>
+      </div>
+
       <!-- Master Controls -->
       <div class="stress-card">
         <div class="stress-title">🎯 Master Controls</div>
@@ -799,6 +830,10 @@
     responseTime: { warning: 500, critical: 1000 },
     cpuUsage: { warning: 70, critical: 90 }
   };
+  
+  // Scenario management
+  let currentScenario = null;
+  let scenarioData = null;
   
   // Service templates for multi-source generation
   const serviceTemplates = [
@@ -1207,6 +1242,162 @@
     alertThresholds.responseTime.critical = parseInt(document.getElementById('responseTimeCritical').value);
     alertThresholds.cpuUsage.warning = parseInt(document.getElementById('cpuUsageWarning').value);
     alertThresholds.cpuUsage.critical = parseInt(document.getElementById('cpuUsageCritical').value);
+  }
+  
+  // Load scenario from JSON file
+  async function loadScenarioData() {
+    try {
+      const response = await fetch('scenarios-example.json');
+      scenarioData = await response.json();
+      logActivity('📋 Scenario data loaded successfully', 'info');
+    } catch (error) {
+      logActivity(`❌ Failed to load scenario data: ${error.message}`, 'error');
+    }
+  }
+  
+  // Load selected scenario
+  function loadSelectedScenario() {
+    const scenarioSelect = document.getElementById('scenarioSelect');
+    const scenarioName = scenarioSelect.value;
+    
+    if (!scenarioName || !scenarioData) {
+      logActivity('❌ No scenario selected or data not loaded', 'error');
+      return;
+    }
+    
+    const scenario = scenarioData.scenarios[scenarioName];
+    if (!scenario) {
+      logActivity(`❌ Scenario '${scenarioName}' not found`, 'error');
+      return;
+    }
+    
+    currentScenario = scenario;
+    
+    // Update duration display
+    document.getElementById('scenarioDuration').textContent = `${scenario.duration}s`;
+    
+    // Enable run button
+    document.getElementById('runScenarioBtn').disabled = false;
+    
+    logActivity(`📋 Scenario loaded: ${scenario.name}`, 'info');
+    logActivity(`📝 Description: ${scenario.description}`, 'info');
+    logActivity(`⏱️ Duration: ${scenario.duration}s`, 'info');
+    logActivity(`📊 Expected: ${scenario.expectedThroughput}`, 'info');
+  }
+  
+  // Run selected scenario
+  function runSelectedScenario() {
+    if (!currentScenario) {
+      logActivity('❌ No scenario loaded', 'error');
+      return;
+    }
+    
+    logActivity(`🚀 Starting scenario: ${currentScenario.name}`, 'info');
+    
+    if (currentScenario.phases) {
+      runMultiPhaseScenario(currentScenario);
+    } else {
+      runSinglePhaseScenario(currentScenario);
+    }
+  }
+  
+  // Run single-phase scenario
+  function runSinglePhaseScenario(scenario) {
+    // Stop all generators first
+    stopAllGenerators();
+    
+    // Apply settings
+    applyGeneratorSettings(scenario.settings);
+    
+    // Log scenario start
+    logActivity(`▶️ Scenario running: ${scenario.name}`, 'info');
+    logActivity(`📊 Expected throughput: ${scenario.expectedThroughput}`, 'info');
+    
+    // Auto-stop after duration
+    setTimeout(() => {
+      stopAllGenerators();
+      logActivity(`✅ Scenario completed: ${scenario.name}`, 'info');
+    }, scenario.duration * 1000);
+  }
+  
+  // Run multi-phase scenario
+  function runMultiPhaseScenario(scenario) {
+    logActivity(`🔄 Starting multi-phase scenario: ${scenario.name}`, 'info');
+    
+    let currentPhase = 0;
+    let totalElapsed = 0;
+    
+    function runNextPhase() {
+      if (currentPhase >= scenario.phases.length) {
+        logActivity(`✅ Multi-phase scenario completed: ${scenario.name}`, 'info');
+        return;
+      }
+      
+      const phase = scenario.phases[currentPhase];
+      logActivity(`📋 Phase ${currentPhase + 1}: ${phase.name}`, 'info');
+      
+      // Stop all generators
+      stopAllGenerators();
+      
+      // Apply phase settings
+      applyGeneratorSettings(phase.settings);
+      
+      // Schedule next phase
+      setTimeout(() => {
+        currentPhase++;
+        runNextPhase();
+      }, phase.duration * 1000);
+    }
+    
+    runNextPhase();
+  }
+  
+  // Apply generator settings from scenario
+  function applyGeneratorSettings(settings) {
+    // Multi-Source
+    if (settings.multiSource.enabled) {
+      document.getElementById('multiSourceFreq').value = settings.multiSource.frequency;
+      if (!generators.multiSource.active) toggleMultiSource();
+    }
+    
+    // Metrics
+    if (settings.metrics.enabled) {
+      document.getElementById('metricsVolume').value = settings.metrics.volume;
+      if (!generators.metrics.active) toggleMetrics();
+    }
+    
+    // Noise
+    if (settings.noise.enabled) {
+      document.getElementById('noiseIntensity').value = settings.noise.intensity;
+      if (!generators.noise.active) toggleNoise();
+    }
+    
+    // Probes
+    if (settings.probes.enabled) {
+      document.getElementById('probeInterval').value = settings.probes.interval;
+      if (!generators.probes.active) toggleProbes();
+    }
+    
+    // Traces
+    if (settings.traces.enabled) {
+      document.getElementById('tracesRate').value = settings.traces.rate;
+      if (!generators.traces.active) toggleTraces();
+    }
+    
+    // System
+    if (settings.system.enabled) {
+      document.getElementById('systemIntensity').value = settings.system.intensity;
+      if (!generators.system.active) toggleSystemMetrics();
+    }
+    
+    // Fixture
+    if (settings.fixture.enabled) {
+      document.getElementById('fixtureSpeed').value = settings.fixture.speed;
+      if (!generators.fixture.active) toggleFixtureReplay();
+    }
+    
+    // Update slider displays
+    updateSliderTexts();
   }
 
   // Update metrics display
@@ -1721,6 +1912,9 @@
     
     // Initialize charts
     initializeCharts();
+    
+    // Load scenario data
+    loadScenarioData();
     
     // Show CORS warning if running from file:// protocol
     if (config.isFileProtocol) {
