@@ -517,6 +517,106 @@
     </div>
   </section>
 
+  <!-- Alert Thresholds Configuration -->
+  <section class="section">
+    <h2 class="mb-lg">🚨 Alert Thresholds</h2>
+    <div class="thresholds-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--spacing-lg);">
+      
+      <!-- Throughput Threshold -->
+      <div class="threshold-card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--border-radius-lg); padding: var(--spacing-lg);">
+        <h3 style="margin: 0 0 var(--spacing-md) 0; font-size: var(--font-size-md); color: var(--primary);">📊 Throughput</h3>
+        <div class="threshold-controls">
+          <div class="control-row">
+            <span class="control-label">Warning:</span>
+            <input type="number" id="throughputWarning" value="50" min="1" max="1000" 
+                   style="width: 80px; padding: 4px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); color: var(--fg);">
+            <span class="control-unit">logs/sec</span>
+          </div>
+          <div class="control-row">
+            <span class="control-label">Critical:</span>
+            <input type="number" id="throughputCritical" value="100" min="1" max="1000" 
+                   style="width: 80px; padding: 4px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); color: var(--fg);">
+            <span class="control-unit">logs/sec</span>
+          </div>
+        </div>
+        <div class="threshold-status" id="throughputStatus" style="margin-top: var(--spacing-sm); padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold;">
+          <span class="status-indicator" id="throughputIndicator" style="background: var(--success);"></span>
+          <span>Normal</span>
+        </div>
+      </div>
+
+      <!-- Error Rate Threshold -->
+      <div class="threshold-card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--border-radius-lg); padding: var(--spacing-lg);">
+        <h3 style="margin: 0 0 var(--spacing-md) 0; font-size: var(--font-size-md); color: var(--primary);">⚠️ Error Rate</h3>
+        <div class="threshold-controls">
+          <div class="control-row">
+            <span class="control-label">Warning:</span>
+            <input type="number" id="errorRateWarning" value="10" min="0" max="100" 
+                   style="width: 80px; padding: 4px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); color: var(--fg);">
+            <span class="control-unit">%</span>
+          </div>
+          <div class="control-row">
+            <span class="control-label">Critical:</span>
+            <input type="number" id="errorRateCritical" value="25" min="0" max="100" 
+                   style="width: 80px; padding: 4px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); color: var(--fg);">
+            <span class="control-unit">%</span>
+          </div>
+        </div>
+        <div class="threshold-status" id="errorRateStatus" style="margin-top: var(--spacing-sm); padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold;">
+          <span class="status-indicator" id="errorRateIndicator" style="background: var(--success);"></span>
+          <span>Normal</span>
+        </div>
+      </div>
+
+      <!-- Response Time Threshold -->
+      <div class="threshold-card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--border-radius-lg); padding: var(--spacing-lg);">
+        <h3 style="margin: 0 0 var(--spacing-md) 0; font-size: var(--font-size-md); color: var(--primary);">⏱️ Response Time</h3>
+        <div class="threshold-controls">
+          <div class="control-row">
+            <span class="control-label">Warning:</span>
+            <input type="number" id="responseTimeWarning" value="500" min="1" max="10000" 
+                   style="width: 80px; padding: 4px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); color: var(--fg);">
+            <span class="control-unit">ms</span>
+          </div>
+          <div class="control-row">
+            <span class="control-label">Critical:</span>
+            <input type="number" id="responseTimeCritical" value="1000" min="1" max="10000" 
+                   style="width: 80px; padding: 4px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); color: var(--fg);">
+            <span class="control-unit">ms</span>
+          </div>
+        </div>
+        <div class="threshold-status" id="responseTimeStatus" style="margin-top: var(--spacing-sm); padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold;">
+          <span class="status-indicator" id="responseTimeIndicator" style="background: var(--success);"></span>
+          <span>Normal</span>
+        </div>
+      </div>
+
+      <!-- CPU Usage Threshold -->
+      <div class="threshold-card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--border-radius-lg); padding: var(--spacing-lg);">
+        <h3 style="margin: 0 0 var(--spacing-md) 0; font-size: var(--font-size-md); color: var(--primary);">💻 CPU Usage</h3>
+        <div class="threshold-controls">
+          <div class="control-row">
+            <span class="control-label">Warning:</span>
+            <input type="number" id="cpuUsageWarning" value="70" min="0" max="100" 
+                   style="width: 80px; padding: 4px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); color: var(--fg);">
+            <span class="control-unit">%</span>
+          </div>
+          <div class="control-row">
+            <span class="control-label">Critical:</span>
+            <input type="number" id="cpuUsageCritical" value="90" min="0" max="100" 
+                   style="width: 80px; padding: 4px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); color: var(--fg);">
+            <span class="control-unit">%</span>
+          </div>
+        </div>
+        <div class="threshold-status" id="cpuUsageStatus" style="margin-top: var(--spacing-sm); padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold;">
+          <span class="status-indicator" id="cpuUsageIndicator" style="background: var(--success);"></span>
+          <span>Normal</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
   <!-- Real-time Metrics -->
   <section class="section">
     <h2 class="mb-lg">📊 Stress Test Metrics</h2>
@@ -691,6 +791,14 @@
   
   // Chart instances
   let throughputChart, activityChart, errorRateChart, systemMetricsChart;
+  
+  // Alert thresholds
+  const alertThresholds = {
+    throughput: { warning: 50, critical: 100 },
+    errorRate: { warning: 10, critical: 25 },
+    responseTime: { warning: 500, critical: 1000 },
+    cpuUsage: { warning: 70, critical: 90 }
+  };
   
   // Service templates for multi-source generation
   const serviceTemplates = [
@@ -1030,6 +1138,77 @@
     systemMetricsChart.update('none');
   }
 
+  // Check alert thresholds
+  function checkAlertThresholds() {
+    // Get current values
+    const currentThroughput = parseFloat(document.getElementById('currentLogsPerSec').textContent);
+    const currentErrorRate = parseFloat(document.getElementById('errorRate').textContent);
+    const currentResponseTime = historicalData.systemMetrics.cpu.length > 0 ? 
+      historicalData.systemMetrics.cpu[historicalData.systemMetrics.cpu.length - 1] : 0;
+    const currentCpuUsage = historicalData.systemMetrics.cpu.length > 0 ? 
+      historicalData.systemMetrics.cpu[historicalData.systemMetrics.cpu.length - 1] : 0;
+    
+    // Check thresholds and update status
+    updateThresholdStatus('throughput', currentThroughput, alertThresholds.throughput);
+    updateThresholdStatus('errorRate', currentErrorRate, alertThresholds.errorRate);
+    updateThresholdStatus('responseTime', currentResponseTime, alertThresholds.responseTime);
+    updateThresholdStatus('cpuUsage', currentCpuUsage, alertThresholds.cpuUsage);
+  }
+  
+  // Update threshold status display
+  function updateThresholdStatus(metric, currentValue, thresholds) {
+    const statusElement = document.getElementById(`${metric}Status`);
+    const indicatorElement = document.getElementById(`${metric}Indicator`);
+    const statusText = statusElement.querySelector('span:last-child');
+    
+    let status, color, text;
+    
+    if (currentValue >= thresholds.critical) {
+      status = 'critical';
+      color = 'var(--error)';
+      text = 'Critical';
+    } else if (currentValue >= thresholds.warning) {
+      status = 'warning';
+      color = 'var(--warning)';
+      text = 'Warning';
+    } else {
+      status = 'normal';
+      color = 'var(--success)';
+      text = 'Normal';
+    }
+    
+    // Update indicator
+    indicatorElement.style.background = color;
+    statusText.textContent = text;
+    
+    // Update status background
+    statusElement.style.background = status === 'critical' ? 'rgba(244,67,54,0.2)' : 
+                                   status === 'warning' ? 'rgba(255,193,7,0.2)' : 
+                                   'rgba(76,175,80,0.2)';
+    statusElement.style.color = status === 'critical' ? 'var(--error)' : 
+                              status === 'warning' ? 'var(--warning)' : 
+                              'var(--success)';
+    
+    // Log alerts
+    if (status === 'critical') {
+      logActivity(`🚨 CRITICAL: ${metric} threshold exceeded (${currentValue})`, 'error');
+    } else if (status === 'warning') {
+      logActivity(`⚠️ WARNING: ${metric} threshold exceeded (${currentValue})`, 'warn');
+    }
+  }
+  
+  // Load thresholds from inputs
+  function loadThresholdsFromInputs() {
+    alertThresholds.throughput.warning = parseInt(document.getElementById('throughputWarning').value);
+    alertThresholds.throughput.critical = parseInt(document.getElementById('throughputCritical').value);
+    alertThresholds.errorRate.warning = parseInt(document.getElementById('errorRateWarning').value);
+    alertThresholds.errorRate.critical = parseInt(document.getElementById('errorRateCritical').value);
+    alertThresholds.responseTime.warning = parseInt(document.getElementById('responseTimeWarning').value);
+    alertThresholds.responseTime.critical = parseInt(document.getElementById('responseTimeCritical').value);
+    alertThresholds.cpuUsage.warning = parseInt(document.getElementById('cpuUsageWarning').value);
+    alertThresholds.cpuUsage.critical = parseInt(document.getElementById('cpuUsageCritical').value);
+  }
+
   // Update metrics display
   function updateMetrics() {
     const elapsed = (Date.now() - startTime) / 1000;
@@ -1056,6 +1235,9 @@
     
     // Update historical data
     updateHistoricalData();
+    
+    // Check alert thresholds
+    checkAlertThresholds();
   }
   
   // Multi-source log generator
@@ -1554,6 +1736,16 @@
     document.getElementById('tracesRate').addEventListener('input', updateSliderTexts);
     document.getElementById('systemIntensity').addEventListener('input', updateSliderTexts);
     document.getElementById('fixtureSpeed').addEventListener('input', updateSliderTexts);
+    
+    // Add event listeners for threshold inputs
+    document.getElementById('throughputWarning').addEventListener('input', loadThresholdsFromInputs);
+    document.getElementById('throughputCritical').addEventListener('input', loadThresholdsFromInputs);
+    document.getElementById('errorRateWarning').addEventListener('input', loadThresholdsFromInputs);
+    document.getElementById('errorRateCritical').addEventListener('input', loadThresholdsFromInputs);
+    document.getElementById('responseTimeWarning').addEventListener('input', loadThresholdsFromInputs);
+    document.getElementById('responseTimeCritical').addEventListener('input', loadThresholdsFromInputs);
+    document.getElementById('cpuUsageWarning').addEventListener('input', loadThresholdsFromInputs);
+    document.getElementById('cpuUsageCritical').addEventListener('input', loadThresholdsFromInputs);
     
     // Update metrics every second
     setInterval(updateMetrics, 1000);
