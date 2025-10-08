@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test Harness — Resonai [OTel] Observability Platform</title>
+<link rel="icon" type="image/png" href="../LOGO/Resonai_LOGO_ICONonly.png">
+<link rel="stylesheet" href="../assets/resonai-system.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  .chart-container { position: relative; height: 280px; }
+  .activity-log {
+    background: #000; border: 1px solid var(--border-color); border-radius: var(--border-radius-md);
+    padding: var(--spacing-lg); font-family: var(--font-mono); font-size: var(--font-size-sm);
+    max-height: 400px; overflow-y: auto;
+  }
+  .log-line { margin-bottom: var(--spacing-sm); }
+  .log-line.success { color: var(--success); }
+  .log-line.error { color: var(--error); }
+  .log-line.info { color: var(--info); }
+  .log-line.warn { color: var(--warning); }
+</style>
+</head>
+<body>
+
+<!-- Breadcrumb -->
+<nav class="breadcrumb" style="padding: 8px 24px; background: var(--bg-primary); border-bottom: 1px solid var(--border-color);">
+  <a href="../../index.html">🏠 Home</a>
+  <span class="breadcrumb-separator">/</span>
+  <a href="../../index.html#projects">OTel Pipeline</a>
+  <span class="breadcrumb-separator">/</span>
+  <span>Test Harness</span>
+</nav>
+
+<!-- Header -->
+<header class="resonai-header">
+  <div class="resonai-header-content">
+    <div class="resonai-logo">🧪 Test Harness & Data Room</div>
+    <nav class="resonai-nav">
+      <a href="../../index.html">Home</a>
+      <a href="../status.html">Executive Dashboard</a>
+      <a href="live-metrics.html">Live Metrics</a>
+      <a href="http://localhost:8080" target="_blank">SigNoz UI ↗</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Main Content -->
+<main class="container">
+
+  <!-- Status Alert -->
+  <div class="alert alert-success">
+    <strong>✅ Production Mode:</strong> Sends real OTLP logs to OTel Collector (port 5318). 
+    All logs appear in SigNoz within 2-5 seconds. 
+    <a href="../BossCat/data_room_iona_debug.html" style="color: var(--success); text-decoration: underline; margin-left: 8px;">Run diagnostics if needed →</a>
+  </div>
+
+  <!-- Primary Controls -->
+  <section class="section">
+    <h2 class="mb-lg">🎛️ Signal Generation Controls</h2>
+    <div class="grid-3">
+      <button class="btn btn-success" onclick="sendLog('laminar')">
+        🌊 Laminar Flow
+        <div style="font-size: 11px; opacity: 0.8; margin-top: 4px;">Steady-state baseline</div>
+      </button>
+      <button class="btn" style="background: var(--orange);" onclick="sendLog('chaotic')">
+        🌀 Chaotic Flow
+        <div style="font-size: 11px; opacity: 0.8; margin-top: 4px;">Stress test</div>
+      </button>
+      <button class="btn btn-primary" onclick="sendLog('test')">
+        🧪 Test Signal
+        <div style="font-size: 11px; opacity: 0.8; margin-top: 4px;">Standard test</div>
+      </button>
+      <button class="btn" style="background: var(--info);" onclick="sendCanary()">
+        🐤 Canary Test
+        <div style="font-size: 11px; opacity: 0.8; margin-top: 4px;">Deployment validation</div>
+      </button>
+      <button class="btn btn-danger" onclick="sendStopSignal()">
+        🛑 Stop Signal
+        <div style="font-size: 11px; opacity: 0.8; margin-top: 4px;">Emergency halt</div>
+      </button>
+      <button class="btn btn-ghost" onclick="clearActivity()">
+        🗑️ Clear Activity
+        <div style="font-size: 11px; opacity: 0.8; margin-top: 4px;">Reset logs</div>
+      </button>
+    </div>
+  </section>
+
+  <!-- Local Metrics -->
+  <section class="section">
+    <h2 class="mb-lg">📊 Session Metrics</h2>
+    <div class="grid-4">
+      <div class="metric-card">
+        <div class="metric-label">Logs Sent</div>
+        <div class="metric-value ok" id="logsSent">0</div>
+        <div class="metric-subtitle">this session</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Send Rate</div>
+        <div class="metric-value ok" id="sendRate">0.00</div>
+        <div class="metric-subtitle">logs/sec (avg)</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Canaries</div>
+        <div class="metric-value ok" id="canariesSent">0</div>
+        <div class="metric-subtitle">unique IDs</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Success Rate</div>
+        <div class="metric-value ok" id="successRate">100%</div>
+        <div class="metric-subtitle">OTLP responses</div>
+      </div>
+    </div>
+    <div class="card mt-xl">
+      <div class="chart-container">
+        <canvas id="metricsChart"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- Activity Log -->
+  <section class="section">
+    <div class="card">
+      <h3 class="card-title">📋 Activity Log</h3>
+      <p class="card-subtitle mb-lg">
+        Local log of all actions. View received logs in 
+        <a href="http://localhost:8080" target="_blank" class="text-primary">SigNoz UI</a> with filter: 
+        <code>service.name = "test-harness"</code>
+      </p>
+      <div class="activity-log" id="activityLog">
+        <div class="log-line info">🟢 Test harness initialized - ready to send logs</div>
+        <div class="log-line info">🔌 OTel endpoint: http://localhost:5318/v1/logs</div>
+        <div class="log-line info">📊 Session ID: <span id="sessionId">--</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SigNoz Query Helper -->
+  <section class="section">
+    <div class="card">
+      <h3 class="card-title">🔍 SigNoz Query Helper</h3>
+      <p class="card-subtitle mb-lg">Copy/paste these filters in SigNoz Logs Explorer</p>
+      <div class="grid-2">
+        <div class="alert alert-info">
+          <strong>All Test Harness Logs:</strong><br>
+          <code>service.name = "test-harness"</code>
+        </div>
+        <div class="alert alert-info">
+          <strong>Only Canaries:</strong><br>
+          <code>canary.source = "test-harness"</code>
+        </div>
+        <div class="alert alert-info">
+          <strong>Only Stop Signals:</strong><br>
+          <code>signal.type = "emergency-stop"</code>
+        </div>
+        <div class="alert alert-info">
+          <strong>By Flow Type:</strong><br>
+          <code>flow.type = "laminar"</code>
+        </div>
+      </div>
+      <div class="mt-lg text-center">
+        <button class="btn btn-primary" onclick="openSigNoz()">🚀 Open SigNoz UI</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Footer -->
+<footer class="resonai-footer">
+  <div class="resonai-footer-content">
+    <div class="resonai-footer-logo">🐾 Resonai • MoneyCat Inc.</div>
+    <nav class="resonai-footer-links">
+      <a href="../../index.html">Home</a>
+      <a href="../BossCat/PROJECT_HUB_USER_GUIDE.md">User Guide</a>
+      <a href="../BossCat/DATA_ROOM_QUICKSTART.md">Quick Start</a>
+      <a href="https://github.com/MoneyCat-inc/otel-ops-pack" target="_blank">GitHub</a>
+    </nav>
+    <p class="resonai-footer-text">
+      Local-First • Privacy-Focused • ECRR-Compliant • BossCat OEM Certified
+    </p>
+  </div>
+</footer>
+
+<script>
+  // State
+  let logsSent = 0, canariesSent = 0, successfulSends = 0, failedSends = 0;
+  let sessionStart = Date.now();
+  const sessionId = `session-${Date.now().toString(36)}`;
+  document.getElementById('sessionId').textContent = sessionId;
+  
+  // Chart
+  let chart;
+  const metricsData = {
+    labels: [],
+    datasets: [{
+      label: 'Cumulative Logs Sent',
+      data: [],
+      borderColor: '#7c5cff',
+      backgroundColor: 'rgba(124, 92, 255, 0.2)',
+      tension: 0.4,
+      fill: true
+    }]
+  };
+  
+  function initChart() {
+    const ctx = document.getElementById('metricsChart').getContext('2d');
+    chart = new Chart(ctx, {
+      type: 'line',
+      data: metricsData,
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { labels: { color: '#e9edf7' } } },
+        scales: {
+          x: { display: false },
+          y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#77809a', precision: 0 } }
+        }
+      }
+    });
+  }
+  
+  // Logging
+  function logActivity(message, type = 'info') {
+    const timestamp = new Date().toLocaleTimeString();
+    const activityLog = document.getElementById('activityLog');
+    const line = document.createElement('div');
+    line.className = `log-line ${type}`;
+    line.textContent = `[${timestamp}] ${message}`;
+    activityLog.insertBefore(line, activityLog.firstChild);
+    while (activityLog.children.length > 50) activityLog.removeChild(activityLog.lastChild);
+  }
+  
+  // Update metrics
+  function updateMetrics() {
+    document.getElementById('logsSent').textContent = logsSent;
+    document.getElementById('canariesSent').textContent = canariesSent;
+    const sessionDuration = (Date.now() - sessionStart) / 1000;
+    const rate = sessionDuration > 0 ? (logsSent / sessionDuration).toFixed(2) : '0.00';
+    document.getElementById('sendRate').textContent = rate;
+    const totalAttempts = successfulSends + failedSends;
+    const successPct = totalAttempts > 0 ? ((successfulSends / totalAttempts) * 100).toFixed(1) : '100';
+    document.getElementById('successRate').textContent = successPct + '%';
+    
+    // Chart
+    const time = new Date().toLocaleTimeString();
+    if (metricsData.labels.length > 20) {
+      metricsData.labels.shift();
+      metricsData.datasets[0].data.shift();
+    }
+    metricsData.labels.push(time);
+    metricsData.datasets[0].data.push(logsSent);
+    chart.update();
+  }
+  
+  // Send log
+  async function sendLog(flowType) {
+    const payload = {
+      resourceLogs: [{
+        resource: { attributes: [{ key: 'service.name', value: { stringValue: 'test-harness' } }] },
+        scopeLogs: [{
+          scope: { name: 'resonai.test-harness', version: '2.0' },
+          logRecords: [{
+            timeUnixNano: (Date.now() * 1000000).toString(),
+            severityNumber: flowType === 'chaotic' ? 13 : 9,
+            severityText: flowType === 'chaotic' ? 'WARN' : 'INFO',
+            body: { stringValue: {
+              laminar: 'Laminar flow operational - steady state confirmed',
+              chaotic: 'Chaotic flow detected - turbulence in pipeline',
+              test: 'Test signal generated from unified test harness'
+            }[flowType] },
+            attributes: [
+              { key: 'flow.type', value: { stringValue: flowType } },
+              { key: 'session.id', value: { stringValue: sessionId } }
+            ]
+          }]
+        }]
+      }]
+    };
+    
+    try {
+      const response = await fetch('http://localhost:5318/v1/logs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      
+      if (response.ok) {
+        logsSent++;
+        successfulSends++;
+        logActivity(`✅ ${flowType.toUpperCase()} log sent (HTTP ${response.status})`, 'success');
+      } else {
+        failedSends++;
+        logActivity(`❌ Send failed: HTTP ${response.status}`, 'error');
+      }
+    } catch (error) {
+      failedSends++;
+      logActivity(`❌ Error: ${error.message}`, 'error');
+    }
+    updateMetrics();
+  }
+  
+  // Send canary
+  async function sendCanary() {
+    const canaryId = `canary-${Date.now().toString(36)}`;
+    const payload = {
+      resourceLogs: [{
+        resource: { attributes: [{ key: 'service.name', value: { stringValue: 'test-harness' } }] },
+        scopeLogs: [{
+          scope: { name: 'resonai.canary', version: '2.0' },
+          logRecords: [{
+            timeUnixNano: (Date.now() * 1000000).toString(),
+            severityNumber: 9,
+            severityText: 'INFO',
+            body: { stringValue: 'Canary test initiated from unified test harness' },
+            attributes: [
+              { key: 'canary.id', value: { stringValue: canaryId } },
+              { key: 'canary.source', value: { stringValue: 'test-harness' } },
+              { key: 'session.id', value: { stringValue: sessionId } }
+            ]
+          }]
+        }]
+      }]
+    };
+    
+    try {
+      const response = await fetch('http://localhost:5318/v1/logs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      
+      if (response.ok) {
+        logsSent++;
+        canariesSent++;
+        successfulSends++;
+        logActivity(`🐤 Canary sent: ${canaryId}`, 'success');
+        logActivity(`   Query: canary.id = "${canaryId}"`, 'info');
+      } else {
+        failedSends++;
+        logActivity(`❌ Canary failed: HTTP ${response.status}`, 'error');
+      }
+    } catch (error) {
+      failedSends++;
+      logActivity(`❌ Canary error: ${error.message}`, 'error');
+    }
+    updateMetrics();
+  }
+  
+  // Send stop signal
+  async function sendStopSignal() {
+    const payload = {
+      resourceLogs: [{
+        resource: { attributes: [{ key: 'service.name', value: { stringValue: 'test-harness' } }] },
+        scopeLogs: [{
+          scope: { name: 'resonai.control', version: '2.0' },
+          logRecords: [{
+            timeUnixNano: (Date.now() * 1000000).toString(),
+            severityNumber: 13,
+            severityText: 'WARN',
+            body: { stringValue: '🛑 STOP SIGNAL issued by operator' },
+            attributes: [
+              { key: 'signal.type', value: { stringValue: 'emergency-stop' } },
+              { key: 'session.id', value: { stringValue: sessionId } }
+            ]
+          }]
+        }]
+      }]
+    };
+    
+    try {
+      const response = await fetch('http://localhost:5318/v1/logs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      
+      if (response.ok) {
+        logsSent++;
+        successfulSends++;
+        logActivity('🛑 STOP SIGNAL sent', 'warn');
+      }
+    } catch (error) {
+      failedSends++;
+      logActivity(`❌ Stop signal error: ${error.message}`, 'error');
+    }
+    updateMetrics();
+  }
+  
+  // Utility
+  function clearActivity() {
+    document.getElementById('activityLog').innerHTML = `
+      <div class="log-line info">🗑️ Activity log cleared</div>
+      <div class="log-line info">📊 Session metrics preserved</div>
+    `;
+  }
+  
+  function openSigNoz() {
+    window.open('http://localhost:8080', '_blank');
+    logActivity('🚀 Opened SigNoz UI in new tab', 'info');
+  }
+  
+  // Init
+  window.onload = () => {
+    initChart();
+  };
+</script>
+
+</body>
+</html>
+
