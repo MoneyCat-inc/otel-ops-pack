@@ -1,5 +1,5 @@
 {
-  "last_update": "2025-10-08T02:55:43.798192+00:00",
+  "last_update": "2025-10-08T03:00:43.685868+00:00",
   "authoritative_sources": {
     "ecrr_reports": {
       "path": "docs/BossCat/reports\\ECRR_GATE_HOLD_2025-10-07.md",
@@ -9,7 +9,7 @@
     "signoz_health": {
       "status": "unhealthy: ok",
       "version": "v0.96.1",
-      "last_check": "2025-10-08T02:55:43.798195+00:00"
+      "last_check": "2025-10-08T03:00:43.685871+00:00"
     },
     "collector_status": "stopped"
   },
