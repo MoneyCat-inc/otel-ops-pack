@@ -259,6 +259,17 @@
 <!-- Main Content -->
 <main class="container">
 
+  <!-- CORS Warning (shown only for file:// protocol) -->
+  <div class="alert alert-error" id="corsWarning" style="display: none;">
+    <strong>🚨 CORS Restriction Detected:</strong> You're running this page from the file system (file:// protocol). 
+    Live OTLP log sending is disabled to prevent CORS errors. 
+    <strong>For full functionality:</strong> Run via web server using 
+    <code>python -m http.server 3000</code> or use the helper scripts in the scripts/ directory.
+    <a href="../../scripts/start-dashboard-server.ps1" class="nav-link" style="display: inline; margin-left: 8px;">
+      📁 Start Server Script
+    </a>
+  </div>
+
   <!-- Status Alert -->
   <div class="alert alert-warning">
     <strong>⚡ Stress Testing Mode:</strong> This suite generates synthetic load to validate your observability pipeline. 
@@ -500,7 +511,8 @@
   const config = {
     otelEndpoint: 'http://localhost:5318',
     corsMode: window.location.protocol === 'file:' ? 'no-cors' : 'cors',
-    timeout: 5000
+    timeout: 5000,
+    isFileProtocol: window.location.protocol === 'file:'
   };
   
   // State tracking
@@ -587,6 +599,14 @@
   async function sendOTLPLog(serviceName, message, level = 'INFO', attributes = {}) {
     const severityMap = { INFO: 9, WARN: 13, ERROR: 17, DEBUG: 5 };
     
+    // If running from file:// protocol, simulate log sending without actual network call
+    if (config.isFileProtocol) {
+      // Simulate successful log sending
+      totalLogsSent++;
+      updateMetrics();
+      return;
+    }
+    
     const payload = {
       resourceLogs: [{
         resource: { 
@@ -621,6 +641,8 @@
       if (response.ok) {
         totalLogsSent++;
         updateMetrics();
+      } else {
+        logActivity(`OTLP endpoint returned ${response.status}: ${response.statusText}`, 'warn');
       }
     } catch (error) {
       logActivity(`Failed to send log: ${error.message}`, 'error');
@@ -665,27 +687,35 @@
       text.textContent = 'Inactive';
       logActivity('Multi-source log generator stopped', 'info');
     } else {
-      const frequency = parseInt(document.getElementById('multiSourceFreq').value);
+      const desiredRate = parseInt(document.getElementById('multiSourceFreq').value);
+      const numServices = serviceTemplates.length;
+      const perServiceRate = desiredRate / numServices;
+      const intervalMs = Math.max(100, 1000 / perServiceRate); // Minimum 100ms between ticks
+      
       generators.multiSource.interval = setInterval(() => {
-        const service = serviceTemplates[Math.floor(Math.random() * serviceTemplates.length)];
-        const pattern = service.patterns[Math.floor(Math.random() * service.patterns.length)];
-        const level = Math.random() > 0.1 ? 'INFO' : (Math.random() > 0.5 ? 'WARN' : 'ERROR');
-        
-        sendOTLPLog(service.name, pattern, level, {
-          'generator': 'multi-source',
-          'frequency': frequency.toString()
+        // Emit one log per service on each tick
+        serviceTemplates.forEach((service, index) => {
+          const pattern = service.patterns[Math.floor(Math.random() * service.patterns.length)];
+          const level = Math.random() > 0.1 ? 'INFO' : (Math.random() > 0.5 ? 'WARN' : 'ERROR');
+          
+          sendOTLPLog(service.name, pattern, level, {
+            'generator': 'multi-source',
+            'desired.rate': desiredRate.toString(),
+            'service.index': index.toString()
+          });
+          
+          generators.multiSource.count++;
         });
         
-        generators.multiSource.count++;
         document.getElementById('multiSourceCount').textContent = generators.multiSource.count;
-      }, 1000 / frequency);
+      }, intervalMs);
       
       generators.multiSource.active = true;
       btn.textContent = 'Stop Multi-Source';
       btn.classList.add('active');
       status.className = 'status-indicator active';
       text.textContent = 'Active';
-      logActivity(`Multi-source log generator started (${frequency}/sec)`, 'info');
+      logActivity(`Multi-source log generator started (${desiredRate}/sec across ${numServices} services, ${intervalMs}ms interval)`, 'info');
     }
   }
   
@@ -704,14 +734,19 @@
       text.textContent = 'Inactive';
       logActivity('Synthetic metrics generator stopped', 'info');
     } else {
-      const volume = parseInt(document.getElementById('metricsVolume').value);
+      const desiredRate = parseInt(document.getElementById('metricsVolume').value);
+      const numMetricTypes = 3; // counter, gauge, histogram
+      const perMetricRate = desiredRate / numMetricTypes;
+      const intervalMs = Math.max(100, 1000 / perMetricRate); // Minimum 100ms between ticks
+      
       generators.metrics.interval = setInterval(() => {
         // Generate counter metrics
         const counterValue = Math.floor(Math.random() * 1000);
         sendOTLPLog('metrics-generator', `Counter metric: requests_total=${counterValue}`, 'INFO', {
           'metric.type': 'counter',
           'metric.name': 'requests_total',
-          'metric.value': counterValue.toString()
+          'metric.value': counterValue.toString(),
+          'desired.rate': desiredRate.toString()
         });
         
         // Generate gauge metrics
@@ -719,7 +754,8 @@
         sendOTLPLog('metrics-generator', `Gauge metric: memory_usage=${gaugeValue}%`, 'INFO', {
           'metric.type': 'gauge',
           'metric.name': 'memory_usage',
-          'metric.value': gaugeValue
+          'metric.value': gaugeValue,
+          'desired.rate': desiredRate.toString()
         });
         
         // Generate histogram metrics
@@ -727,19 +763,20 @@
         sendOTLPLog('metrics-generator', `Histogram metric: response_time=${histogramValue}ms`, 'INFO', {
           'metric.type': 'histogram',
           'metric.name': 'response_time',
-          'metric.value': histogramValue.toString()
+          'metric.value': histogramValue.toString(),
+          'desired.rate': desiredRate.toString()
         });
         
         generators.metrics.count += 3;
         document.getElementById('metricsCount').textContent = generators.metrics.count;
-      }, 1000 / volume);
+      }, intervalMs);
       
       generators.metrics.active = true;
       btn.textContent = 'Stop Metrics';
       btn.classList.add('active');
       status.className = 'status-indicator active';
       text.textContent = 'Active';
-      logActivity(`Synthetic metrics generator started (${volume}/sec)`, 'info');
+      logActivity(`Synthetic metrics generator started (${desiredRate}/sec across ${numMetricTypes} types, ${intervalMs}ms interval)`, 'info');
     }
   }
   
@@ -759,10 +796,20 @@
       logActivity('Randomized noise generator stopped', 'info');
     } else {
       const intensity = parseInt(document.getElementById('noiseIntensity').value);
+      // More predictable burst pattern: burst every 3-8 seconds based on intensity
+      const baseInterval = 5000; // 5 seconds base
+      const intensityVariation = (6 - intensity) * 1000; // Higher intensity = shorter intervals
+      const intervalMs = baseInterval + intensityVariation;
+      
       generators.noise.interval = setInterval(() => {
-        // Random burst timing
-        if (Math.random() < 0.3) {
-          const burstSize = Math.floor(Math.random() * intensity * 5) + 1;
+        // Burst probability increases with intensity (20% to 80%)
+        const burstProbability = 0.2 + (intensity - 1) * 0.15;
+        
+        if (Math.random() < burstProbability) {
+          // Burst size: 1-5 logs for low intensity, 5-20 for high intensity
+          const minBurst = 1;
+          const maxBurst = intensity * 4;
+          const burstSize = Math.floor(Math.random() * (maxBurst - minBurst + 1)) + minBurst;
           generators.noise.burstSize += burstSize;
           
           for (let i = 0; i < burstSize; i++) {
@@ -773,21 +820,22 @@
             sendOTLPLog(service, error, level, {
               'generator': 'noise',
               'burst.id': Date.now().toString(),
-              'burst.size': burstSize.toString()
+              'burst.size': burstSize.toString(),
+              'intensity': intensity.toString()
             });
           }
           
           document.getElementById('noiseBurstSize').textContent = generators.noise.burstSize;
-          logActivity(`Noise burst: ${burstSize} logs generated`, 'warn');
+          logActivity(`Noise burst: ${burstSize} logs generated (intensity ${intensity})`, 'warn');
         }
-      }, Math.random() * 5000 + 1000); // Random interval 1-6 seconds
+      }, intervalMs);
       
-      generators.metrics.active = true;
+      generators.noise.active = true;
       btn.textContent = 'Stop Noise';
       btn.classList.add('active');
       status.className = 'status-indicator active';
       text.textContent = 'Active';
-      logActivity(`Randomized noise generator started (intensity: ${intensity})`, 'info');
+      logActivity(`Randomized noise generator started (intensity: ${intensity}, interval: ${intervalMs}ms)`, 'info');
     }
   }
   
@@ -860,6 +908,7 @@
       logActivity('Fixture replay stopped', 'info');
     } else {
       const speed = parseInt(document.getElementById('fixtureSpeed').value);
+      const intervalMs = Math.max(500, 1000 / speed); // Minimum 500ms between fixtures
       let fixtureIndex = 0;
       
       generators.fixture.interval = setInterval(() => {
@@ -867,20 +916,21 @@
         sendOTLPLog(fixture.service, fixture.message, fixture.level, {
           'generator': 'fixture-replay',
           'fixture.id': fixtureIndex.toString(),
-          'replay.speed': speed.toString()
+          'replay.speed': speed.toString(),
+          'fixture.total': fixtureData.length.toString()
         });
         
         fixtureIndex++;
         generators.fixture.count++;
         document.getElementById('fixtureCount').textContent = generators.fixture.count;
-      }, 1000 / speed);
+      }, intervalMs);
       
       generators.fixture.active = true;
       btn.textContent = 'Stop Replay';
       btn.classList.add('active');
       status.className = 'status-indicator active';
       text.textContent = 'Active';
-      logActivity(`Fixture replay started (${speed}x speed)`, 'info');
+      logActivity(`Fixture replay started (${speed}x speed, ${intervalMs}ms interval)`, 'info');
     }
   }
   
@@ -933,6 +983,12 @@
   window.onload = () => {
     updateSliderTexts();
     updateMetrics();
+    
+    // Show CORS warning if running from file:// protocol
+    if (config.isFileProtocol) {
+      document.getElementById('corsWarning').style.display = 'block';
+      logActivity('⚠️ Running from file:// protocol - OTLP sending disabled due to CORS restrictions', 'warn');
+    }
     
     // Add event listeners for sliders
     document.getElementById('multiSourceFreq').addEventListener('input', updateSliderTexts);
