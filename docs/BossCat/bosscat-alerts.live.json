@@ -1,0 +1,373 @@
+{
+  "status": "success",
+  "data": {
+    "rules": [
+      {
+        "id": "0199c24f-246f-7279-bff8-6207c58ef8e1",
+        "state": "inactive",
+        "alert": "BossCat Sentinel Alert (API)",
+        "alertType": "METRIC_BASED_ALERT",
+        "description": "Minimal rule to flip Setup Alerts to GREEN",
+        "ruleType": "promql_rule",
+        "evalWindow": "5m0s",
+        "frequency": "1m0s",
+        "condition": {
+          "compositeQuery": {
+            "promQueries": {
+              "A": {
+                "query": "rate(otelcol_*_spans_received_total[5m]) > 0",
+                "disabled": false
+              }
+            },
+            "panelType": "",
+            "queryType": "promql"
+          },
+          "op": ">",
+          "target": 0,
+          "matchType": "greater_than"
+        },
+        "disabled": false,
+        "createAt": "2025-10-08T05:33:10.639119Z",
+        "createBy": "fubumaki@gmail.com",
+        "updateAt": "2025-10-08T05:33:10.639119Z",
+        "updateBy": "fubumaki@gmail.com"
+      },
+      {
+        "id": "0199c26a-4248-7a77-ba90-8a10491db550",
+        "state": "inactive",
+        "alert": "BossCat Pipeline Health Alert",
+        "alertType": "METRIC_BASED_ALERT",
+        "description": "Critical alert when OTel pipeline stops receiving spans",
+        "ruleType": "promql_rule",
+        "evalWindow": "2m0s",
+        "frequency": "1m0s",
+        "condition": {
+          "compositeQuery": {
+            "promQueries": {
+              "A": {
+                "query": "rate(otelcol_*_spans_received_total[5m]) == 0",
+                "disabled": false
+              }
+            },
+            "panelType": "",
+            "queryType": "promql"
+          },
+          "op": "==",
+          "target": 0,
+          "matchType": "equal"
+        },
+        "disabled": false,
+        "createAt": "2025-10-08T06:02:47.752677Z",
+        "createBy": "fubumaki@gmail.com",
+        "updateAt": "2025-10-08T06:02:47.752677Z",
+        "updateBy": "fubumaki@gmail.com"
+      },
+      {
+        "id": "0199c26a-4263-7a83-a1f1-da8af90a65f0",
+        "state": "inactive",
+        "alert": "BossCat High Error Rate Alert",
+        "alertType": "METRIC_BASED_ALERT",
+        "description": "Warning when pipeline error rate exceeds 5%",
+        "ruleType": "promql_rule",
+        "evalWindow": "5m0s",
+        "frequency": "1m0s",
+        "condition": {
+          "compositeQuery": {
+            "promQueries": {
+              "A": {
+                "query": "rate(otelcol_*_errors_total[5m]) > 0.05",
+                "disabled": false
+              }
+            },
+            "panelType": "",
+            "queryType": "promql"
+          },
+          "op": ">",
+          "target": 0.05,
+          "matchType": "greater_than"
+        },
+        "disabled": false,
+        "createAt": "2025-10-08T06:02:47.779681Z",
+        "createBy": "fubumaki@gmail.com",
+        "updateAt": "2025-10-08T06:02:47.779681Z",
+        "updateBy": "fubumaki@gmail.com"
+      },
+      {
+        "id": "0199c26a-4276-7504-9059-a3a43f39d351",
+        "state": "inactive",
+        "alert": "BossCat Latency Spike Alert",
+        "alertType": "METRIC_BASED_ALERT",
+        "description": "Warning when P95 latency exceeds 1 second",
+        "ruleType": "promql_rule",
+        "evalWindow": "3m0s",
+        "frequency": "1m0s",
+        "condition": {
+          "compositeQuery": {
+            "promQueries": {
+              "A": {
+                "query": "histogram_quantile(0.95, rate(otelcol_*_duration_seconds_bucket[5m])) > 1.0",
+                "disabled": false
+              }
+            },
+            "panelType": "",
+            "queryType": "promql"
+          },
+          "op": ">",
+          "target": 1,
+          "matchType": "greater_than"
+        },
+        "disabled": false,
+        "createAt": "2025-10-08T06:02:47.798322Z",
+        "createBy": "fubumaki@gmail.com",
+        "updateAt": "2025-10-08T06:02:47.798322Z",
+        "updateBy": "fubumaki@gmail.com"
+      },
+      {
+        "id": "0199c26a-4288-7733-b9a7-3bb4e5e59e6f",
+        "state": "inactive",
+        "alert": "BossCat Throughput Drop Alert",
+        "alertType": "METRIC_BASED_ALERT",
+        "description": "Warning when throughput drops below 10 spans/second",
+        "ruleType": "promql_rule",
+        "evalWindow": "5m0s",
+        "frequency": "1m0s",
+        "condition": {
+          "compositeQuery": {
+            "promQueries": {
+              "A": {
+                "query": "rate(otelcol_*_spans_processed_total[5m]) < 10",
+                "disabled": false
+              }
+            },
+            "panelType": "",
+            "queryType": "promql"
+          },
+          "op": "<",
+          "target": 10,
+          "matchType": "less_than"
+        },
+        "disabled": false,
+        "createAt": "2025-10-08T06:02:47.816467Z",
+        "createBy": "fubumaki@gmail.com",
+        "updateAt": "2025-10-08T06:02:47.816467Z",
+        "updateBy": "fubumaki@gmail.com"
+      },
+      {
+        "id": "0199c26a-429b-7475-998b-399067a725da",
+        "state": "inactive",
+        "alert": "BossCat Canary Missing Alert",
+        "alertType": "LOG_BASED_ALERT",
+        "description": "Critical alert when canary logs are missing for 10+ minutes",
+        "ruleType": "threshold_rule",
+        "evalWindow": "10m0s",
+        "frequency": "1m0s",
+        "condition": {
+          "compositeQuery": {
+            "panelType": "",
+            "queryType": "logs"
+          },
+          "op": "<",
+          "target": 0,
+          "matchType": "less_than"
+        },
+        "disabled": false,
+        "createAt": "2025-10-08T06:02:47.835287Z",
+        "createBy": "fubumaki@gmail.com",
+        "updateAt": "2025-10-08T06:02:47.835287Z",
+        "updateBy": "fubumaki@gmail.com"
+      },
+      {
+        "id": "0199c26a-42ad-7787-a85b-db3c8c6b24ca",
+        "state": "inactive",
+        "alert": "BossCat Error Log Alert",
+        "alertType": "LOG_BASED_ALERT",
+        "description": "Warning when error logs exceed threshold",
+        "ruleType": "threshold_rule",
+        "evalWindow": "5m0s",
+        "frequency": "1m0s",
+        "condition": {
+          "compositeQuery": {
+            "panelType": "",
+            "queryType": "logs"
+          },
+          "op": ">",
+          "target": 10,
+          "matchType": "greater_than"
+        },
+        "disabled": false,
+        "createAt": "2025-10-08T06:02:47.853489Z",
+        "createBy": "fubumaki@gmail.com",
+        "updateAt": "2025-10-08T06:02:47.853489Z",
+        "updateBy": "fubumaki@gmail.com"
+      },
+      {
+        "id": "0199c26a-42be-74e5-be53-13436ad3a7d5",
+        "state": "inactive",
+        "alert": "BossCat High Latency Trace Alert",
+        "alertType": "TRACE_BASED_ALERT",
+        "description": "Warning when trace latency exceeds 500ms",
+        "ruleType": "threshold_rule",
+        "evalWindow": "5m0s",
+        "frequency": "1m0s",
+        "condition": {
+          "compositeQuery": {
+            "panelType": "",
+            "queryType": "traces"
+          },
+          "op": ">",
+          "target": 5,
+          "matchType": "greater_than"
+        },
+        "disabled": false,
+        "createAt": "2025-10-08T06:02:47.870316Z",
+        "createBy": "fubumaki@gmail.com",
+        "updateAt": "2025-10-08T06:02:47.870316Z",
+        "updateBy": "fubumaki@gmail.com"
+      },
+      {
+        "id": "0199c26a-42cf-7845-8db1-63e2c62adbc8",
+        "state": "inactive",
+        "alert": "BossCat Error Trace Alert",
+        "alertType": "TRACE_BASED_ALERT",
+        "description": "Critical alert for error traces",
+        "ruleType": "threshold_rule",
+        "evalWindow": "1m0s",
+        "frequency": "1m0s",
+        "condition": {
+          "compositeQuery": {
+            "panelType": "",
+            "queryType": "traces"
+          },
+          "op": ">",
+          "target": 0,
+          "matchType": "greater_than"
+        },
+        "disabled": false,
+        "createAt": "2025-10-08T06:02:47.887537Z",
+        "createBy": "fubumaki@gmail.com",
+        "updateAt": "2025-10-08T06:02:47.887537Z",
+        "updateBy": "fubumaki@gmail.com"
+      },
+      {
+        "id": "0199c3b2-be6c-7b17-a24a-e6d7c47974e7",
+        "state": "inactive",
+        "alert": "BossCat SLO • Error Burn (5m) – Critical",
+        "alertType": "METRIC_BASED_ALERT",
+        "description": "Error budget burn-rate exceeds 14.4x over 5m window.",
+        "ruleType": "promql_rule",
+        "evalWindow": "5m0s",
+        "frequency": "1m0s",
+        "condition": {
+          "compositeQuery": {
+            "promQueries": {
+              "A": {
+                "query": "(sum(rate(http_server_request_duration_seconds_count{status_code=~\"5..\"}[5m])) / sum(rate(http_server_request_duration_seconds_count{}[5m]))) / 0.01",
+                "disabled": false
+              }
+            },
+            "panelType": "",
+            "queryType": "promql"
+          },
+          "op": ">",
+          "target": 14.4,
+          "matchType": "greater_than"
+        },
+        "disabled": false,
+        "createAt": "2025-10-08T12:01:35.340717Z",
+        "createBy": "fubumaki@gmail.com",
+        "updateAt": "2025-10-08T12:16:37.652893Z",
+        "updateBy": "fubumaki@gmail.com"
+      },
+      {
+        "id": "0199c3b2-be83-7a8c-9cf6-8ff10623ca40",
+        "state": "inactive",
+        "alert": "BossCat SLO • Error Burn (30m) – Warning",
+        "alertType": "METRIC_BASED_ALERT",
+        "description": "Error budget burn-rate exceeds 6x over 30m window.",
+        "ruleType": "promql_rule",
+        "evalWindow": "30m0s",
+        "frequency": "1m0s",
+        "condition": {
+          "compositeQuery": {
+            "promQueries": {
+              "A": {
+                "query": "(sum(rate(http_server_request_duration_seconds_count{status_code=~\"5..\"}[30m])) / sum(rate(http_server_request_duration_seconds_count{}[30m]))) / 0.01",
+                "disabled": false
+              }
+            },
+            "panelType": "",
+            "queryType": "promql"
+          },
+          "op": ">",
+          "target": 6,
+          "matchType": "greater_than"
+        },
+        "disabled": false,
+        "createAt": "2025-10-08T12:01:35.36368Z",
+        "createBy": "fubumaki@gmail.com",
+        "updateAt": "2025-10-08T12:16:37.671947Z",
+        "updateBy": "fubumaki@gmail.com"
+      },
+      {
+        "id": "0199c3b2-be9a-7da4-9351-6e89ffb5314f",
+        "state": "inactive",
+        "alert": "BossCat SLO • P95 Latency (5m) – Critical",
+        "alertType": "METRIC_BASED_ALERT",
+        "description": "P95 latency breaches 0.3s over 5m.",
+        "ruleType": "promql_rule",
+        "evalWindow": "5m0s",
+        "frequency": "1m0s",
+        "condition": {
+          "compositeQuery": {
+            "promQueries": {
+              "A": {
+                "query": "histogram_quantile(0.95, sum(rate(http_server_request_duration_seconds_bucket{}[5m])) by (le))",
+                "disabled": false
+              }
+            },
+            "panelType": "",
+            "queryType": "promql"
+          },
+          "op": ">",
+          "target": 0.3,
+          "matchType": "greater_than"
+        },
+        "disabled": false,
+        "createAt": "2025-10-08T12:01:35.386889Z",
+        "createBy": "fubumaki@gmail.com",
+        "updateAt": "2025-10-08T12:16:37.689533Z",
+        "updateBy": "fubumaki@gmail.com"
+      },
+      {
+        "id": "0199c3b2-beae-755e-9e1d-40023a0f0083",
+        "state": "inactive",
+        "alert": "BossCat SLO • P95 Latency (30m) – Warning",
+        "alertType": "METRIC_BASED_ALERT",
+        "description": "P95 latency breaches 0.3s over 30m.",
+        "ruleType": "promql_rule",
+        "evalWindow": "30m0s",
+        "frequency": "1m0s",
+        "condition": {
+          "compositeQuery": {
+            "promQueries": {
+              "A": {
+                "query": "histogram_quantile(0.95, sum(rate(http_server_request_duration_seconds_bucket{}[30m])) by (le))",
+                "disabled": false
+              }
+            },
+            "panelType": "",
+            "queryType": "promql"
+          },
+          "op": ">",
+          "target": 0.3,
+          "matchType": "greater_than"
+        },
+        "disabled": false,
+        "createAt": "2025-10-08T12:01:35.406346Z",
+        "createBy": "fubumaki@gmail.com",
+        "updateAt": "2025-10-08T12:16:37.706998Z",
+        "updateBy": "fubumaki@gmail.com"
+      }
+    ]
+  }
+}
