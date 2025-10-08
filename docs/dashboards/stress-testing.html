@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stress Testing Suite — Resonai [OTel]</title>
+<link rel="icon" type="image/png" href="../LOGO/Resonai_LOGO_ICONonly.png">
+<link rel="stylesheet" href="../assets/resonai-system.css">
+<style>
+  .stress-controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-2xl);
+  }
+  
+  .stress-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-xl);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .stress-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top right, rgba(124,92,255,.15), transparent 60%);
+    opacity: 0;
+    transition: opacity .25s ease;
+  }
+  
+  .stress-card:hover::before { opacity: 1; }
+  
+  .stress-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--spacing-sm);
+    color: var(--primary);
+  }
+  
+  .stress-description {
+    color: var(--fg-muted);
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .stress-controls-inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+  
+  .control-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--spacing-md);
+  }
+  
+  .control-label {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+  }
+  
+  .control-value {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-sm);
+    color: var(--primary);
+  }
+  
+  .btn-stress {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: white;
+    border: none;
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border-radius: var(--border-radius-md);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .btn-stress:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+  }
+  
+  .btn-stress:active {
+    transform: translateY(0);
+  }
+  
+  .btn-stress.active {
+    background: linear-gradient(135deg, var(--success), var(--accent));
+    animation: pulse 2s infinite;
+  }
+  
+  .btn-stress.danger {
+    background: linear-gradient(135deg, var(--error), #ff6b6b);
+  }
+  
+  .btn-stress.warning {
+    background: linear-gradient(135deg, var(--warning), #ffa726);
+  }
+  
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+  }
+  
+  .status-indicator {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: var(--spacing-xs);
+  }
+  
+  .status-indicator.active { background: var(--success); animation: pulse 1.5s infinite; }
+  .status-indicator.inactive { background: var(--fg-muted); }
+  .status-indicator.error { background: var(--error); }
+  
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-lg);
+  }
+  
+  .metric-card {
+    background: rgba(124,92,255,0.08);
+    border: 1px solid rgba(124,92,255,0.16);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-md);
+    text-align: center;
+  }
+  
+  .metric-value {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--primary);
+    display: block;
+  }
+  
+  .metric-label {
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--fg-muted);
+    margin-top: var(--spacing-xs);
+  }
+  
+  .log-stream {
+    background: #000;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-lg);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-xs);
+    max-height: 300px;
+    overflow-y: auto;
+    margin-top: var(--spacing-lg);
+  }
+  
+  .log-entry {
+    margin-bottom: var(--spacing-xs);
+    display: flex;
+    gap: var(--spacing-sm);
+    align-items: center;
+  }
+  
+  .log-time {
+    color: var(--fg-muted);
+    min-width: 60px;
+  }
+  
+  .log-level {
+    min-width: 50px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  .log-level.info { background: rgba(76,175,80,0.2); color: var(--success); }
+  .log-level.warn { background: rgba(255,193,7,0.2); color: var(--warning); }
+  .log-level.error { background: rgba(244,67,54,0.2); color: var(--error); }
+  
+  .log-message {
+    flex: 1;
+    color: var(--fg);
+  }
+  
+  .slider-container {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin: var(--spacing-sm) 0;
+  }
+  
+  .slider {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--border-color);
+    outline: none;
+  }
+  
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--primary);
+    cursor: pointer;
+  }
+  
+  .slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--primary);
+    cursor: pointer;
+    border: none;
+  }
+</style>
+</head>
+<body>
+
+<!-- Breadcrumb -->
+<nav class="breadcrumb" style="padding: 8px 24px; background: var(--bg-primary); border-bottom: 1px solid var(--border-color);">
+  <a href="../../index.html">🏠 Home</a>
+  <span class="breadcrumb-separator">/</span>
+  <a href="index.html">Dashboards</a>
+  <span class="breadcrumb-separator">/</span>
+  <span>Stress Testing</span>
+</nav>
+
+<!-- Header -->
+<header class="resonai-header">
+  <div class="resonai-header-content">
+    <div class="resonai-logo">⚡ Stress Testing Suite</div>
+    <nav class="resonai-nav">
+      <a href="../../index.html">Home</a>
+      <a href="index.html">Dashboard Hub</a>
+      <a href="test-harness.html">Test Harness</a>
+      <a href="connection-diagnostics.html">Diagnostics</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Main Content -->
+<main class="container">
+
+  <!-- Status Alert -->
+  <div class="alert alert-warning">
+    <strong>⚡ Stress Testing Mode:</strong> This suite generates synthetic load to validate your observability pipeline. 
+    Monitor your dashboards and SigNoz UI to observe the impact of different stress patterns.
+  </div>
+
+  <!-- Stress Testing Controls -->
+  <section class="section">
+    <h2 class="mb-lg">🎛️ Signal Generators</h2>
+    <div class="stress-controls">
+      
+      <!-- Multi-Source Log Generator -->
+      <div class="stress-card">
+        <div class="stress-title">📊 Multi-Source Log Generator</div>
+        <div class="stress-description">
+          Generates logs from multiple simulated services with varying formats, severity levels, and frequencies.
+        </div>
+        <div class="stress-controls-inner">
+          <div class="control-row">
+            <span class="control-label">Status:</span>
+            <span class="control-value">
+              <span class="status-indicator inactive" id="multiSourceStatus"></span>
+              <span id="multiSourceText">Inactive</span>
+            </span>
+          </div>
+          <div class="control-row">
+            <span class="control-label">Services:</span>
+            <span class="control-value" id="multiSourceCount">0</span>
+          </div>
+          <div class="slider-container">
+            <span class="control-label">Frequency:</span>
+            <input type="range" class="slider" id="multiSourceFreq" min="1" max="10" value="3">
+            <span class="control-value" id="multiSourceFreqText">3/sec</span>
+          </div>
+          <button class="btn-stress" id="multiSourceBtn" onclick="toggleMultiSource()">
+            Start Multi-Source
+          </button>
+        </div>
+      </div>
+
+      <!-- Synthetic Metrics Generator -->
+      <div class="stress-card">
+        <div class="stress-title">📈 Synthetic Metrics</div>
+        <div class="stress-description">
+          Emits OpenTelemetry metrics (counters, gauges, histograms) with randomized values for visualization testing.
+        </div>
+        <div class="stress-controls-inner">
+          <div class="control-row">
+            <span class="control-label">Status:</span>
+            <span class="control-value">
+              <span class="status-indicator inactive" id="metricsStatus"></span>
+              <span id="metricsText">Inactive</span>
+            </span>
+          </div>
+          <div class="control-row">
+            <span class="control-label">Metrics/sec:</span>
+            <span class="control-value" id="metricsCount">0</span>
+          </div>
+          <div class="slider-container">
+            <span class="control-label">Volume:</span>
+            <input type="range" class="slider" id="metricsVolume" min="1" max="20" value="5">
+            <span class="control-value" id="metricsVolumeText">5/sec</span>
+          </div>
+          <button class="btn-stress" id="metricsBtn" onclick="toggleMetrics()">
+            Start Metrics
+          </button>
+        </div>
+      </div>
+
+      <!-- Noise Generator -->
+      <div class="stress-card">
+        <div class="stress-title">🌪️ Randomized Noise</div>
+        <div class="stress-description">
+          Generates bursts of arbitrarily structured logs at irregular intervals to simulate unpredictable traffic spikes.
+        </div>
+        <div class="stress-controls-inner">
+          <div class="control-row">
+            <span class="control-label">Status:</span>
+            <span class="control-value">
+              <span class="status-indicator inactive" id="noiseStatus"></span>
+              <span id="noiseText">Inactive</span>
+            </span>
+          </div>
+          <div class="control-row">
+            <span class="control-label">Burst Size:</span>
+            <span class="control-value" id="noiseBurstSize">0</span>
+          </div>
+          <div class="slider-container">
+            <span class="control-label">Intensity:</span>
+            <input type="range" class="slider" id="noiseIntensity" min="1" max="5" value="2">
+            <span class="control-value" id="noiseIntensityText">Medium</span>
+          </div>
+          <button class="btn-stress warning" id="noiseBtn" onclick="toggleNoise()">
+            Start Noise
+          </button>
+        </div>
+      </div>
+
+      <!-- Health Check Probes -->
+      <div class="stress-card">
+        <div class="stress-title">🏥 Health Check Probes</div>
+        <div class="stress-description">
+          Continuously probes API endpoints and logs responses to generate real diagnostic signals.
+        </div>
+        <div class="stress-controls-inner">
+          <div class="control-row">
+            <span class="control-label">Status:</span>
+            <span class="control-value">
+              <span class="status-indicator inactive" id="probeStatus"></span>
+              <span id="probeText">Inactive</span>
+            </span>
+          </div>
+          <div class="control-row">
+            <span class="control-label">Endpoints:</span>
+            <span class="control-value" id="probeEndpoints">0</span>
+          </div>
+          <div class="slider-container">
+            <span class="control-label">Interval:</span>
+            <input type="range" class="slider" id="probeInterval" min="1" max="30" value="5">
+            <span class="control-value" id="probeIntervalText">5s</span>
+          </div>
+          <button class="btn-stress" id="probeBtn" onclick="toggleProbes()">
+            Start Probes
+          </button>
+        </div>
+      </div>
+
+      <!-- Fixture Replay -->
+      <div class="stress-card">
+        <div class="stress-title">📁 Fixture Replay</div>
+        <div class="stress-description">
+          Replays pre-loaded static log files representing known error conditions for alerting validation.
+        </div>
+        <div class="stress-controls-inner">
+          <div class="control-row">
+            <span class="control-label">Status:</span>
+            <span class="control-value">
+              <span class="status-indicator inactive" id="fixtureStatus"></span>
+              <span id="fixtureText">Inactive</span>
+            </span>
+          </div>
+          <div class="control-row">
+            <span class="control-label">Fixtures:</span>
+            <span class="control-value" id="fixtureCount">3</span>
+          </div>
+          <div class="slider-container">
+            <span class="control-label">Speed:</span>
+            <input type="range" class="slider" id="fixtureSpeed" min="1" max="10" value="3">
+            <span class="control-value" id="fixtureSpeedText">3x</span>
+          </div>
+          <button class="btn-stress" id="fixtureBtn" onclick="toggleFixtureReplay()">
+            Start Replay
+          </button>
+        </div>
+      </div>
+
+      <!-- Master Controls -->
+      <div class="stress-card">
+        <div class="stress-title">🎯 Master Controls</div>
+        <div class="stress-description">
+          Control all stress testing generators simultaneously with coordinated patterns.
+        </div>
+        <div class="stress-controls-inner">
+          <div class="control-row">
+            <span class="control-label">Active Generators:</span>
+            <span class="control-value" id="activeGenerators">0</span>
+          </div>
+          <div class="control-row">
+            <span class="control-label">Total Logs/sec:</span>
+            <span class="control-value" id="totalLogsPerSec">0</span>
+          </div>
+          <button class="btn-stress" id="masterBtn" onclick="toggleAllGenerators()">
+            Start All Generators
+          </button>
+          <button class="btn-stress danger" onclick="stopAllGenerators()">
+            🛑 Stop All
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Real-time Metrics -->
+  <section class="section">
+    <h2 class="mb-lg">📊 Stress Test Metrics</h2>
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-value" id="totalLogsSent">0</div>
+        <div class="metric-label">Total Logs Sent</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" id="currentLogsPerSec">0.0</div>
+        <div class="metric-label">Current Logs/sec</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" id="activeServices">0</div>
+        <div class="metric-label">Active Services</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" id="errorRate">0%</div>
+        <div class="metric-label">Error Rate</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Activity Log -->
+  <section class="section">
+    <h2 class="mb-lg">📋 Stress Test Activity</h2>
+    <div class="log-stream" id="stressActivityLog">
+      <div class="log-entry">
+        <span class="log-time">--:--:--</span>
+        <span class="log-level info">INFO</span>
+        <span class="log-message">Stress testing suite initialized - ready for load generation</span>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Footer -->
+<footer class="resonai-footer">
+  <div class="resonai-footer-content">
+    <div class="resonai-footer-logo">🐾 Resonai • MoneyCat Inc.</div>
+    <nav class="resonai-footer-links">
+      <a href="../../index.html">Home</a>
+      <a href="index.html">Dashboard Hub</a>
+      <a href="test-harness.html">Test Harness</a>
+      <a href="https://github.com/MoneyCat-inc/otel-ops-pack" target="_blank">GitHub</a>
+    </nav>
+    <p class="resonai-footer-text">
+      Local-First • Privacy-Focused • ECRR-Compliant • BossCat OEM Certified
+    </p>
+  </div>
+</footer>
+
+<script>
+  // Configuration
+  const config = {
+    otelEndpoint: 'http://localhost:5318',
+    corsMode: window.location.protocol === 'file:' ? 'no-cors' : 'cors',
+    timeout: 5000
+  };
+  
+  // State tracking
+  const generators = {
+    multiSource: { active: false, interval: null, count: 0 },
+    metrics: { active: false, interval: null, count: 0 },
+    noise: { active: false, interval: null, burstSize: 0 },
+    probes: { active: false, interval: null, endpoints: 0 },
+    fixture: { active: false, interval: null, count: 0 }
+  };
+  
+  let totalLogsSent = 0;
+  let startTime = Date.now();
+  
+  // Service templates for multi-source generation
+  const serviceTemplates = [
+    { name: 'web-api', patterns: ['HTTP request', 'Database query', 'Cache miss', 'Response sent'] },
+    { name: 'auth-service', patterns: ['Login attempt', 'Token validation', 'Permission check', 'Session created'] },
+    { name: 'payment-gateway', patterns: ['Payment processed', 'Transaction failed', 'Refund issued', 'Fraud check'] },
+    { name: 'notification-service', patterns: ['Email sent', 'SMS queued', 'Push notification', 'Template rendered'] },
+    { name: 'analytics-engine', patterns: ['Event tracked', 'Aggregation complete', 'Report generated', 'Data exported'] },
+    { name: 'user-service', patterns: ['Profile updated', 'Preference changed', 'Account created', 'Password reset'] }
+  ];
+  
+  // Error patterns for noise generation
+  const errorPatterns = [
+    'Connection timeout',
+    'Database connection lost',
+    'Memory allocation failed',
+    'Disk space low',
+    'Network unreachable',
+    'Service unavailable',
+    'Authentication failed',
+    'Rate limit exceeded'
+  ];
+  
+  // Fixture data for replay
+  const fixtureData = [
+    { level: 'ERROR', message: 'Critical system failure detected', service: 'system-monitor' },
+    { level: 'WARN', message: 'High memory usage alert', service: 'resource-monitor' },
+    { level: 'ERROR', message: 'Database connection pool exhausted', service: 'database-service' },
+    { level: 'INFO', message: 'Scheduled maintenance completed', service: 'maintenance-service' },
+    { level: 'ERROR', message: 'External API rate limit exceeded', service: 'api-gateway' }
+  ];
+  
+  // Enhanced fetch with CORS handling
+  async function safeFetch(url, options = {}) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), config.timeout);
+    
+    try {
+      const response = await fetch(url, {
+        ...options,
+        mode: config.corsMode,
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+      return response;
+    } catch (error) {
+      clearTimeout(timeoutId);
+      if (error.name === 'AbortError') {
+        throw new Error('Request timeout');
+      }
+      throw error;
+    }
+  }
+  
+  // Log activity
+  function logActivity(message, level = 'info') {
+    const timestamp = new Date().toLocaleTimeString();
+    const activityLog = document.getElementById('stressActivityLog');
+    const entry = document.createElement('div');
+    entry.className = 'log-entry';
+    entry.innerHTML = `
+      <span class="log-time">${timestamp}</span>
+      <span class="log-level ${level}">${level.toUpperCase()}</span>
+      <span class="log-message">${message}</span>
+    `;
+    activityLog.insertBefore(entry, activityLog.firstChild);
+    while (activityLog.children.length > 50) activityLog.removeChild(activityLog.lastChild);
+  }
+  
+  // Send OTLP log
+  async function sendOTLPLog(serviceName, message, level = 'INFO', attributes = {}) {
+    const severityMap = { INFO: 9, WARN: 13, ERROR: 17, DEBUG: 5 };
+    
+    const payload = {
+      resourceLogs: [{
+        resource: { 
+          attributes: [
+            { key: 'service.name', value: { stringValue: serviceName } },
+            { key: 'stress.test', value: { boolValue: true } }
+          ]
+        },
+        scopeLogs: [{
+          scope: { name: 'stress-test-suite', version: '1.0' },
+          logRecords: [{
+            timeUnixNano: (Date.now() * 1000000).toString(),
+            severityNumber: severityMap[level] || 9,
+            severityText: level,
+            body: { stringValue: message },
+            attributes: Object.entries(attributes).map(([key, value]) => ({
+              key,
+              value: { stringValue: value.toString() }
+            }))
+          }]
+        }]
+      }]
+    };
+    
+    try {
+      const response = await safeFetch(`${config.otelEndpoint}/v1/logs`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      
+      if (response.ok) {
+        totalLogsSent++;
+        updateMetrics();
+      }
+    } catch (error) {
+      logActivity(`Failed to send log: ${error.message}`, 'error');
+    }
+  }
+  
+  // Update metrics display
+  function updateMetrics() {
+    const elapsed = (Date.now() - startTime) / 1000;
+    const logsPerSec = elapsed > 0 ? (totalLogsSent / elapsed).toFixed(1) : '0.0';
+    
+    document.getElementById('totalLogsSent').textContent = totalLogsSent;
+    document.getElementById('currentLogsPerSec').textContent = logsPerSec;
+    
+    const activeServices = Object.values(generators).filter(g => g.active).length;
+    document.getElementById('activeServices').textContent = activeServices;
+    document.getElementById('activeGenerators').textContent = activeServices;
+    
+    // Calculate total logs per second from all generators
+    let totalLPS = 0;
+    if (generators.multiSource.active) totalLPS += parseInt(document.getElementById('multiSourceFreq').value);
+    if (generators.metrics.active) totalLPS += parseInt(document.getElementById('metricsVolume').value);
+    if (generators.noise.active) totalLPS += parseInt(document.getElementById('noiseIntensity').value) * 2;
+    if (generators.probes.active) totalLPS += 1;
+    if (generators.fixture.active) totalLPS += parseInt(document.getElementById('fixtureSpeed').value);
+    
+    document.getElementById('totalLogsPerSec').textContent = totalLPS;
+  }
+  
+  // Multi-source log generator
+  function toggleMultiSource() {
+    const btn = document.getElementById('multiSourceBtn');
+    const status = document.getElementById('multiSourceStatus');
+    const text = document.getElementById('multiSourceText');
+    
+    if (generators.multiSource.active) {
+      clearInterval(generators.multiSource.interval);
+      generators.multiSource.active = false;
+      btn.textContent = 'Start Multi-Source';
+      btn.classList.remove('active');
+      status.className = 'status-indicator inactive';
+      text.textContent = 'Inactive';
+      logActivity('Multi-source log generator stopped', 'info');
+    } else {
+      const frequency = parseInt(document.getElementById('multiSourceFreq').value);
+      generators.multiSource.interval = setInterval(() => {
+        const service = serviceTemplates[Math.floor(Math.random() * serviceTemplates.length)];
+        const pattern = service.patterns[Math.floor(Math.random() * service.patterns.length)];
+        const level = Math.random() > 0.1 ? 'INFO' : (Math.random() > 0.5 ? 'WARN' : 'ERROR');
+        
+        sendOTLPLog(service.name, pattern, level, {
+          'generator': 'multi-source',
+          'frequency': frequency.toString()
+        });
+        
+        generators.multiSource.count++;
+        document.getElementById('multiSourceCount').textContent = generators.multiSource.count;
+      }, 1000 / frequency);
+      
+      generators.multiSource.active = true;
+      btn.textContent = 'Stop Multi-Source';
+      btn.classList.add('active');
+      status.className = 'status-indicator active';
+      text.textContent = 'Active';
+      logActivity(`Multi-source log generator started (${frequency}/sec)`, 'info');
+    }
+  }
+  
+  // Synthetic metrics generator
+  function toggleMetrics() {
+    const btn = document.getElementById('metricsBtn');
+    const status = document.getElementById('metricsStatus');
+    const text = document.getElementById('metricsText');
+    
+    if (generators.metrics.active) {
+      clearInterval(generators.metrics.interval);
+      generators.metrics.active = false;
+      btn.textContent = 'Start Metrics';
+      btn.classList.remove('active');
+      status.className = 'status-indicator inactive';
+      text.textContent = 'Inactive';
+      logActivity('Synthetic metrics generator stopped', 'info');
+    } else {
+      const volume = parseInt(document.getElementById('metricsVolume').value);
+      generators.metrics.interval = setInterval(() => {
+        // Generate counter metrics
+        const counterValue = Math.floor(Math.random() * 1000);
+        sendOTLPLog('metrics-generator', `Counter metric: requests_total=${counterValue}`, 'INFO', {
+          'metric.type': 'counter',
+          'metric.name': 'requests_total',
+          'metric.value': counterValue.toString()
+        });
+        
+        // Generate gauge metrics
+        const gaugeValue = (Math.random() * 100).toFixed(2);
+        sendOTLPLog('metrics-generator', `Gauge metric: memory_usage=${gaugeValue}%`, 'INFO', {
+          'metric.type': 'gauge',
+          'metric.name': 'memory_usage',
+          'metric.value': gaugeValue
+        });
+        
+        // Generate histogram metrics
+        const histogramValue = Math.floor(Math.random() * 500);
+        sendOTLPLog('metrics-generator', `Histogram metric: response_time=${histogramValue}ms`, 'INFO', {
+          'metric.type': 'histogram',
+          'metric.name': 'response_time',
+          'metric.value': histogramValue.toString()
+        });
+        
+        generators.metrics.count += 3;
+        document.getElementById('metricsCount').textContent = generators.metrics.count;
+      }, 1000 / volume);
+      
+      generators.metrics.active = true;
+      btn.textContent = 'Stop Metrics';
+      btn.classList.add('active');
+      status.className = 'status-indicator active';
+      text.textContent = 'Active';
+      logActivity(`Synthetic metrics generator started (${volume}/sec)`, 'info');
+    }
+  }
+  
+  // Randomized noise generator
+  function toggleNoise() {
+    const btn = document.getElementById('noiseBtn');
+    const status = document.getElementById('noiseStatus');
+    const text = document.getElementById('noiseText');
+    
+    if (generators.noise.active) {
+      clearInterval(generators.noise.interval);
+      generators.noise.active = false;
+      btn.textContent = 'Start Noise';
+      btn.classList.remove('active');
+      status.className = 'status-indicator inactive';
+      text.textContent = 'Inactive';
+      logActivity('Randomized noise generator stopped', 'info');
+    } else {
+      const intensity = parseInt(document.getElementById('noiseIntensity').value);
+      generators.noise.interval = setInterval(() => {
+        // Random burst timing
+        if (Math.random() < 0.3) {
+          const burstSize = Math.floor(Math.random() * intensity * 5) + 1;
+          generators.noise.burstSize += burstSize;
+          
+          for (let i = 0; i < burstSize; i++) {
+            const error = errorPatterns[Math.floor(Math.random() * errorPatterns.length)];
+            const service = serviceTemplates[Math.floor(Math.random() * serviceTemplates.length)].name;
+            const level = Math.random() > 0.3 ? 'ERROR' : 'WARN';
+            
+            sendOTLPLog(service, error, level, {
+              'generator': 'noise',
+              'burst.id': Date.now().toString(),
+              'burst.size': burstSize.toString()
+            });
+          }
+          
+          document.getElementById('noiseBurstSize').textContent = generators.noise.burstSize;
+          logActivity(`Noise burst: ${burstSize} logs generated`, 'warn');
+        }
+      }, Math.random() * 5000 + 1000); // Random interval 1-6 seconds
+      
+      generators.metrics.active = true;
+      btn.textContent = 'Stop Noise';
+      btn.classList.add('active');
+      status.className = 'status-indicator active';
+      text.textContent = 'Active';
+      logActivity(`Randomized noise generator started (intensity: ${intensity})`, 'info');
+    }
+  }
+  
+  // Health check probes
+  function toggleProbes() {
+    const btn = document.getElementById('probeBtn');
+    const status = document.getElementById('probeStatus');
+    const text = document.getElementById('probeText');
+    
+    if (generators.probes.active) {
+      clearInterval(generators.probes.interval);
+      generators.probes.active = false;
+      btn.textContent = 'Start Probes';
+      btn.classList.remove('active');
+      status.className = 'status-indicator inactive';
+      text.textContent = 'Inactive';
+      logActivity('Health check probes stopped', 'info');
+    } else {
+      const interval = parseInt(document.getElementById('probeInterval').value);
+      const endpoints = ['/api/health', '/api/auth/session', '/api/metrics', '/api/status'];
+      
+      generators.probes.interval = setInterval(async () => {
+        const endpoint = endpoints[Math.floor(Math.random() * endpoints.length)];
+        const startTime = Date.now();
+        
+        try {
+          // Simulate API call
+          await new Promise(resolve => setTimeout(resolve, Math.random() * 100 + 50));
+          const responseTime = Date.now() - startTime;
+          const status = responseTime > 200 ? 'WARN' : 'INFO';
+          
+          sendOTLPLog('health-probe', `Probe: ${endpoint} - ${responseTime}ms`, status, {
+            'probe.endpoint': endpoint,
+            'probe.response_time': responseTime.toString(),
+            'probe.status': status
+          });
+          
+          generators.probes.endpoints++;
+          document.getElementById('probeEndpoints').textContent = generators.probes.endpoints;
+        } catch (error) {
+          sendOTLPLog('health-probe', `Probe failed: ${endpoint}`, 'ERROR', {
+            'probe.endpoint': endpoint,
+            'probe.error': error.message
+          });
+        }
+      }, interval * 1000);
+      
+      generators.probes.active = true;
+      btn.textContent = 'Stop Probes';
+      btn.classList.add('active');
+      status.className = 'status-indicator active';
+      text.textContent = 'Active';
+      logActivity(`Health check probes started (${interval}s interval)`, 'info');
+    }
+  }
+  
+  // Fixture replay
+  function toggleFixtureReplay() {
+    const btn = document.getElementById('fixtureBtn');
+    const status = document.getElementById('fixtureStatus');
+    const text = document.getElementById('fixtureText');
+    
+    if (generators.fixture.active) {
+      clearInterval(generators.fixture.interval);
+      generators.fixture.active = false;
+      btn.textContent = 'Start Replay';
+      btn.classList.remove('active');
+      status.className = 'status-indicator inactive';
+      text.textContent = 'Inactive';
+      logActivity('Fixture replay stopped', 'info');
+    } else {
+      const speed = parseInt(document.getElementById('fixtureSpeed').value);
+      let fixtureIndex = 0;
+      
+      generators.fixture.interval = setInterval(() => {
+        const fixture = fixtureData[fixtureIndex % fixtureData.length];
+        sendOTLPLog(fixture.service, fixture.message, fixture.level, {
+          'generator': 'fixture-replay',
+          'fixture.id': fixtureIndex.toString(),
+          'replay.speed': speed.toString()
+        });
+        
+        fixtureIndex++;
+        generators.fixture.count++;
+        document.getElementById('fixtureCount').textContent = generators.fixture.count;
+      }, 1000 / speed);
+      
+      generators.fixture.active = true;
+      btn.textContent = 'Stop Replay';
+      btn.classList.add('active');
+      status.className = 'status-indicator active';
+      text.textContent = 'Active';
+      logActivity(`Fixture replay started (${speed}x speed)`, 'info');
+    }
+  }
+  
+  // Master controls
+  function toggleAllGenerators() {
+    const btn = document.getElementById('masterBtn');
+    const anyActive = Object.values(generators).some(g => g.active);
+    
+    if (anyActive) {
+      stopAllGenerators();
+    } else {
+      // Start all generators with default settings
+      toggleMultiSource();
+      toggleMetrics();
+      toggleNoise();
+      toggleProbes();
+      toggleFixtureReplay();
+      btn.textContent = 'Stop All Generators';
+      btn.classList.add('active');
+      logActivity('All stress test generators started', 'info');
+    }
+  }
+  
+  function stopAllGenerators() {
+    if (generators.multiSource.active) toggleMultiSource();
+    if (generators.metrics.active) toggleMetrics();
+    if (generators.noise.active) toggleNoise();
+    if (generators.probes.active) toggleProbes();
+    if (generators.fixture.active) toggleFixtureReplay();
+    
+    document.getElementById('masterBtn').textContent = 'Start All Generators';
+    document.getElementById('masterBtn').classList.remove('active');
+    logActivity('All stress test generators stopped', 'info');
+  }
+  
+  // Update slider text displays
+  function updateSliderTexts() {
+    document.getElementById('multiSourceFreqText').textContent = document.getElementById('multiSourceFreq').value + '/sec';
+    document.getElementById('metricsVolumeText').textContent = document.getElementById('metricsVolume').value + '/sec';
+    
+    const intensity = document.getElementById('noiseIntensity').value;
+    const intensityText = ['Low', 'Medium', 'High', 'Very High', 'Extreme'][intensity - 1];
+    document.getElementById('noiseIntensityText').textContent = intensityText;
+    
+    document.getElementById('probeIntervalText').textContent = document.getElementById('probeInterval').value + 's';
+    document.getElementById('fixtureSpeedText').textContent = document.getElementById('fixtureSpeed').value + 'x';
+  }
+  
+  // Initialize
+  window.onload = () => {
+    updateSliderTexts();
+    updateMetrics();
+    
+    // Add event listeners for sliders
+    document.getElementById('multiSourceFreq').addEventListener('input', updateSliderTexts);
+    document.getElementById('metricsVolume').addEventListener('input', updateSliderTexts);
+    document.getElementById('noiseIntensity').addEventListener('input', updateSliderTexts);
+    document.getElementById('probeInterval').addEventListener('input', updateSliderTexts);
+    document.getElementById('fixtureSpeed').addEventListener('input', updateSliderTexts);
+    
+    // Update metrics every second
+    setInterval(updateMetrics, 1000);
+    
+    logActivity('Stress testing suite ready for load generation', 'info');
+  };
+  
+  // Cleanup on page unload
+  window.onbeforeunload = () => {
+    stopAllGenerators();
+  };
+</script>
+
+</body>
+</html>
