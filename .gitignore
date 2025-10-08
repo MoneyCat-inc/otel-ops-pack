@@ -102,3 +102,6 @@ id_ed25519
 
 # GPG keys
 secring.*
+# BossCat OEM - Security
+.env.staging
+keys/
