@@ -1,0 +1,73 @@
+<!-- Reusable Navigation Component for All Resonai Pages -->
+<!-- Include this file or copy/paste this block into your HTML pages -->
+
+<!-- Breadcrumb Navigation -->
+<nav class="breadcrumb" style="padding: 8px 24px; background: var(--bg-primary, #0b0d12); border-bottom: 1px solid var(--border-color, #252b3a);">
+  <a href="/index.html">🏠 Home</a>
+  <span class="breadcrumb-separator" style="opacity: 0.5;">/</span>
+  <a href="#" id="breadcrumbSection">Section</a>
+  <span class="breadcrumb-separator" style="opacity: 0.5;">/</span>
+  <span id="breadcrumbPage">Current Page</span>
+</nav>
+
+<!-- Main Header -->
+<header class="resonai-header">
+  <div class="resonai-header-content">
+    <div class="resonai-logo">🐾 Resonai [OTel]</div>
+    <nav class="resonai-nav">
+      <a href="/index.html">Home</a>
+      <a href="/docs/status.html">Executive Dashboard</a>
+      <a href="/docs/BossCat/signoz_dashboard_live.html">Live Metrics</a>
+      <a href="/docs/BossCat/data_room_send_only.html">Test Harness</a>
+      <a href="http://localhost:8080" target="_blank">SigNoz UI ↗</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Footer Component -->
+<footer class="resonai-footer" id="resonai-footer">
+  <div class="resonai-footer-content">
+    <div class="resonai-footer-logo">🐾 Resonai • MoneyCat Inc.</div>
+    <nav class="resonai-footer-links">
+      <a href="https://github.com/MoneyCat-inc/otel-ops-pack" target="_blank">GitHub</a>
+      <a href="/docs/AGENTS.md">ECRR Framework</a>
+      <a href="/docs/SECURITY.md">Security</a>
+      <a href="/docs/TROUBLESHOOTING.md">Troubleshooting</a>
+      <a href="/docs/BossCat/PROJECT_HUB_USER_GUIDE.md">User Guide</a>
+    </nav>
+    <p class="resonai-footer-text">
+      Local-First • Privacy-Focused • ECRR-Compliant • BossCat OEM Certified<br>
+      <span id="footerTimestamp">Loading...</span>
+    </p>
+  </div>
+</footer>
+
+<script>
+  // Update breadcrumbs based on page
+  function updateBreadcrumbs(section, page) {
+    const sectionEl = document.getElementById('breadcrumbSection');
+    const pageEl = document.getElementById('breadcrumbPage');
+    if (sectionEl) sectionEl.textContent = section;
+    if (pageEl) pageEl.textContent = page;
+  }
+  
+  // Update footer timestamp
+  function updateFooterTimestamp() {
+    const el = document.getElementById('footerTimestamp');
+    if (el) el.textContent = `Last updated: ${new Date().toLocaleString()}`;
+  }
+  updateFooterTimestamp();
+  setInterval(updateFooterTimestamp, 60000); // Every minute
+  
+  // Highlight active nav link
+  function highlightActiveNav() {
+    const currentPath = window.location.pathname;
+    document.querySelectorAll('.resonai-nav a').forEach(link => {
+      if (link.getAttribute('href') && currentPath.includes(link.getAttribute('href').replace('/index.html', ''))) {
+        link.classList.add('active');
+      }
+    });
+  }
+  highlightActiveNav();
+</script>
+
