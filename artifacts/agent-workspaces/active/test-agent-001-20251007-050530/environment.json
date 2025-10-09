@@ -1,7 +1,0 @@
-{
-  "WORKSPACE_PATH": "artifacts\\agent-workspaces\\active\\test-agent-001-20251007-050530",
-  "RESOURCE_LIMITS": "{\"MaxMemoryMB\":512,\"MaxCPUPercent\":50,\"MaxProcessCount\":10,\"MaxDiskSpaceMB\":1024}",
-  "AGENT_ID": "test-agent-001",
-  "ISOLATION_LEVEL": "filesystem",
-  "WORKSPACE_TYPE": "temporary"
-}

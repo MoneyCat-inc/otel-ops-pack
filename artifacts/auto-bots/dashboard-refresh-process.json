@@ -1,8 +1,0 @@
-{
-  "interval": "2 minutes",
-  "description": "Refreshes dashboard data and generates snapshots",
-  "id": 12064,
-  "name": "Dashboard Refresh Bot",
-  "script": "scripts/auto-bots/dashboard-refresh-bot.js",
-  "startTime": "2025-10-08T03:50:10.573Z"
-}

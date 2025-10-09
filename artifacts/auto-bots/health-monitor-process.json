@@ -1,8 +1,0 @@
-{
-  "interval": "30 seconds",
-  "description": "Monitors SigNoz, OTel Collector, and system health",
-  "id": 7348,
-  "name": "Health Monitor Bot",
-  "script": "scripts/auto-bots/health-monitor-bot.js",
-  "startTime": "2025-10-08T03:50:10.511Z"
-}

@@ -1,6 +1,0 @@
-apiVersion: v2
-name: codex-local
-description: Watchdog sidecar for autonomous observability
-type: application
-version: 0.1.0
-appVersion: "0.1.0"
