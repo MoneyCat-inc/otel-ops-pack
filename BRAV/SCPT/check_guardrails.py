@@ -25,7 +25,7 @@ FOUR_CHAR_DIRS = {
     "ALFA": {"SRCE", "TEST", "TOOL", "OTEL", "APPS", "LIBS", "CORE", "INST"},
     "BRAV": {"SCPT", "INFR", "DOCK", "CICD", "HOOK", "BUIL"},
     "CHAR": {"DOCS", "EVID", "AUDT", "REPO", "RUNB", "PRSV", "ECRR"},
-    "DELT": {"CONF", "ASST", "FIXT", "LOAD", "TMPL", "META", "SECR", "OVER", "BASE"}
+    "DELT": {"CONF", "ASST", "FIXT", "LOAD", "TMPL", "META", "SECR", "OVER", "BASE", "ARTF"}
 }
 
 class Colors:

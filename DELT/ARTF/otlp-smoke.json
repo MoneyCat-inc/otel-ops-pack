@@ -1,0 +1,6 @@
+{
+  "ts": "2025-10-10T00:11:58+0100",
+  "sigNozUrl": "http://localhost:8080",
+  "status": "unreachable",
+  "error": "<urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>"
+}

@@ -33,7 +33,7 @@ jobs:
         
     - name: Create required directories
       run: |
-        mkdir -p artifacts
+        mkdir -p DELT/ARTF
         mkdir -p docs/BossCat/reports
         
     - name: Install Python dependencies
@@ -80,7 +80,7 @@ jobs:
       with:
         name: bosscat-test-results-${{ github.run_number }}
         path: |
-          artifacts/
+          DELT/ARTF/
           docs/BossCat/reports/
         retention-days: 30
         
@@ -88,7 +88,7 @@ jobs:
       if: always()
       run: |
         python BRAV/SCPT/generate-ecrr-report.py \
-          --gate-results artifacts/gate-verification-results.json \
+          --gate-results DELT/ART/gate-verification-results.json \
           --output docs/BossCat/reports/ECRR_CI_RUN.md \
           --pdf docs/BossCat/reports/ECRR_CI_RUN.pdf || echo "ECRR report generation failed"
       continue-on-error: true
@@ -97,7 +97,7 @@ jobs:
       if: always()
       run: |
         python BRAV/SCPT/generate-boss-v2-report.py \
-          --gate-results artifacts/gate-verification-results.json \
+          --gate-results DELT/ART/gate-verification-results.json \
           --output docs/BossCat/reports/BOSS_v2_CI_RUN.md \
           --pdf docs/BossCat/reports/BOSS_v2_CI_RUN.pdf || echo "BOSS v2 report generation failed"
       continue-on-error: true

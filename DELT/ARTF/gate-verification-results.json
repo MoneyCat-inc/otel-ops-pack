@@ -1,0 +1,25 @@
+{
+  "timestamp": "2025-10-10T00:02:05+01:00",
+  "commit": "d6f22c3",
+  "branch": "main",
+  "verdict": "READY",
+  "reasons": [],
+  "tests": {
+    "total": 0,
+    "failed": 0
+  },
+  "checks": {
+    "DELT/ARTF/queue-steward-verification.txt": "missing",
+    "docs/observability/snapshots": "present",
+    "docs/status.html": "present",
+    "scripts/benchmark-process-all-ecrr-reports.ps1": "present",
+    "docs/ecrr/ECRR_REPORTS": "present",
+    "ALFA/TEST/helpers/signoz.ts": "present",
+    ".github/workflows/bosscat-gate-verify.yml": "present",
+    "docs/IONA_ERRORS.md": "present",
+    "docs/BossCat/README.md": "present",
+    "docs/status/tests.json": "present",
+    "docs/cheatsheets": "present",
+    "index.html": "present"
+  }
+}
