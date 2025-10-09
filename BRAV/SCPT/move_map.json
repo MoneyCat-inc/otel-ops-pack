@@ -1,0 +1,14 @@
+{
+  "ai-context/": "CHAR/DOCS/ai-context/",
+  "comfort-cat-stubs/": "CHAR/PRSV/comfort-cat-stubs/",
+  "cuda/": "DELT/CONF/cuda/",
+  "experiments/": "CHAR/PRSV/experiments/",
+  "gpu/": "DELT/CONF/gpu/",
+  "gpu-buffers/": "DELT/CONF/gpu-buffers/",
+  "patches/": "CHAR/PRSV/patches/",
+  "preview/": "CHAR/EVID/preview/",
+  "projects/": "CHAR/DOCS/projects/",
+  "triton-models/": "DELT/CONF/triton-models/",
+  "upstream-contribution/": "CHAR/DOCS/upstream-contribution/"
+}
+
