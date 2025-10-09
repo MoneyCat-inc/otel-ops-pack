@@ -1,7 +1,0 @@
-Invoke-RestMethod: C:\otel\scripts\verify-gpu-codex.ps1:36
-Line |
-  36 |      $resp = Invoke-RestMethod -Method POST -Uri 'http://localhost:800 …
-     |              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-     | {"error":"Request for unknown model: 'simple_identity' is not found"}
-
-

@@ -1,9 +1,0 @@
-# ECRR Automated Monitoring Verification
-Timestamp: 2025-10-02 00:38:24
-Compliance Monitor: scripts/ecrr-compliance-monitor.ps1
-Compliance Rate: 100% (152/152 reports)
-Artifacts: artifacts/ecrr-compliance-report-2025-10-02_00-36-13.json, artifacts/ecrr-compliance-dashboard.html
-Notes:
- - Git pre-commit hook refreshed at .git/hooks/pre-commit.
- - CI workflows regenerated: .github/workflows/ecrr-compliance.yml, azure-pipelines-ecrr.yml.
- - Scheduled Task 'ECRR Compliance Monitor' created successfully (last result 0 at 2025-10-02 00:38).

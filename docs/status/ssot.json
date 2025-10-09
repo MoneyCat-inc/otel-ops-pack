@@ -1,5 +1,5 @@
 {
-  "last_update": "2025-10-09T05:25:43.418454+00:00",
+  "last_update": "2025-10-09T06:40:43.032401+00:00",
   "authoritative_sources": {
     "ecrr_reports": {
       "path": "docs/BossCat/reports\\ECRR_STATUS_DASHBOARD_IMPLEMENTATION_2025-01-04.md",
@@ -9,9 +9,9 @@
     "signoz_health": {
       "status": "unhealthy: ok",
       "version": "v0.96.1",
-      "last_check": "2025-10-09T05:25:43.418458+00:00"
+      "last_check": "2025-10-09T06:40:43.032406+00:00"
     },
-    "collector_status": "stopped"
+    "collector_status": "running"
   },
   "summary": {
     "repository_health": "Excellent",

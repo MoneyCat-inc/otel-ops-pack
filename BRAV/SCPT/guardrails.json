@@ -1,0 +1,142 @@
+{
+  "version": "1.0.0",
+  "description": "Tetragram repository structure guardrails - BossCat OEM governance",
+  "rules": {
+    "allowed_top_level": [
+      "ALFA",
+      "BRAV",
+      "CHAR",
+      "DELT",
+      ".github",
+      ".agent",
+      ".git",
+      ".gitignore",
+      ".gitattributes",
+      ".editorconfig",
+      "README.md",
+      "LICENSE",
+      "NOTICE",
+      "CONTRIBUTING.md",
+      "CODE_OF_CONDUCT.md",
+      "SECURITY.md",
+      "CHANGELOG.md",
+      "AGENTS.md",
+      "ART_OF_ECRR.md",
+      "DECISIONS.md",
+      "QUICKSTART.md",
+      "STATUS.md",
+      "TASKS.md",
+      "RESTORE_DEPENDENCIES.md",
+      "package.json",
+      "pnpm-lock.yaml",
+      "pnpm-workspace.yaml",
+      "tsconfig.json",
+      "next.config.js",
+      "next-env.d.ts",
+      "jest.config.ts",
+      "lefthook.yml",
+      "vercel.json",
+      "Dockerfile",
+      "Dockerfile.dev",
+      "docker-compose.yml",
+      "node_modules",
+      ".next",
+      ".vscode",
+      ".cursor"
+    ],
+    "forbidden_legacy_roots": [
+      "scripts",
+      "docs",
+      "config",
+      "configs",
+      "docker",
+      "helm",
+      "deployment-pipeline",
+      "assets",
+      "reports",
+      "artifacts",
+      "playwright-report",
+      "synthetic",
+      "tests",
+      "tools",
+      "logs",
+      "tmp",
+      "out",
+      "backups",
+      "archive",
+      "baseline"
+    ],
+    "max_path_depth": 7,
+    "tetragram_structure": {
+      "ALFA": {
+        "description": "Application plane - source code, instrumentation, apps",
+        "subdirs": ["CORE", "INST", "APPS", "LIBS"]
+      },
+      "BRAV": {
+        "description": "Build/Runtime/Automation/Verification plane - scripts, infra, CI/CD",
+        "subdirs": ["SCPT", "INFR", "DOCK", "CICD", "HOOK"]
+      },
+      "CHAR": {
+        "description": "Compliance/Human/Audit/Review plane - docs, reports, evidence",
+        "subdirs": ["DOCS", "EVID", "AUDT", "REPO"]
+      },
+      "DELT": {
+        "description": "Data/Environment/Load/Test plane - configs, fixtures, test data",
+        "subdirs": ["CONF", "FIXT", "ASST", "LOAD", "TMPL"]
+      }
+    },
+    "ci_workflow_rules": {
+      "max_inline_run_lines": 40,
+      "require_brav_scpt_reference": true,
+      "allowed_workflow_paths": [
+        ".github/workflows"
+      ]
+    },
+    "forbidden_globs": [
+      "**/*.env",
+      "**/*.pem",
+      "**/*.pfx",
+      "**/*id_rsa*",
+      "**/*.key",
+      "**/.DS_Store",
+      "**/node_modules/**",
+      "**/__pycache__/**",
+      "**/*AWS_ACCESS_KEY_ID*",
+      "**/*AWS_SECRET_ACCESS_KEY*"
+    ]
+  },
+  "exemptions": {
+    "hidden_dirs": [
+      ".git",
+      ".github",
+      ".agent",
+      ".next",
+      "node_modules",
+      ".vscode",
+      ".cursor",
+      ".idea"
+    ],
+    "temp_dirs": [
+      "tmp",
+      "logs",
+      "out"
+    ],
+    "build_dirs": [
+      "dist",
+      "build",
+      "target",
+      "coverage",
+      "venv",
+      ".venv",
+      ".pytest_cache",
+      ".mypy_cache",
+      "__pycache__"
+    ]
+  },
+  "enforcement": {
+    "mode": "fail",
+    "report_format": "github_actions",
+    "exit_code_on_violation": 1
+  }
+}
+

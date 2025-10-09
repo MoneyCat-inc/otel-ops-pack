@@ -1,7 +1,0 @@
-Invoke-RestMethod: C:\otel\scripts\verify-gpu-codex.ps1:50
-Line |
-  50 |      $deep = Invoke-RestMethod -Method GET -Uri 'http://localhost:8003 …
-     |              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-     |  {   "detail": "Not Found" }
-
-
