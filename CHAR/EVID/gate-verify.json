@@ -1,0 +1,90 @@
+{
+  "SigNozHealth": {
+    "data": {
+      "status": "ok"
+    },
+    "ok": true
+  },
+  "SigNozVersion": {
+    "data": {
+      "version": "v0.96.1",
+      "ee": "Y",
+      "setupCompleted": true
+    },
+    "ok": true
+  },
+  "WindowsCollector": {
+    "status": 4,
+    "exists": true
+  },
+  "Docker": {
+    "signoz": [
+      "signoz|Up 37 seconds (healthy)",
+      "signoz-clickhouse|Up About a minute (healthy)",
+      "signoz-zookeeper|Up About a minute (healthy)",
+      "signoz-otel-collector|Up 34 minutes (healthy)"
+    ],
+    "ok": true
+  },
+  "Ports": [
+    {
+      "port": 8080,
+      "reachable": true
+    },
+    {
+      "port": 14317,
+      "reachable": true
+    },
+    {
+      "port": 14318,
+      "reachable": true
+    }
+  ],
+  "GuardrailsOutput": [
+    "\u001b[96m[INFO]\u001b[0m Scanning repository structure...",
+    "\u001b[95m\u001b[1m[HEADER]\u001b[0m ≡ƒÉ╛ BossCat Guardrails Report - otel",
+    "",
+    "\u001b[91m[ERROR]\u001b[0m Found 1 forbidden legacy root directories:",
+    "  Γ¥î configs/",
+    "",
+    "\u001b[91m[ERROR]\u001b[0m Found 1 unauthorized top-level directories:",
+    "  Γ¥î configs/",
+    "",
+    "\u001b[93m[WARN]\u001b[0m Found 5 ephemeral/untracked directories (ignored):",
+    "  Γä╣∩╕Å  gpu-buffers/ (ephemeral, untracked - ignored)",
+    "  Γä╣∩╕Å  logs/ (ephemeral, untracked - ignored)",
+    "  Γä╣∩╕Å  out/ (ephemeral, untracked - ignored)",
+    "  Γä╣∩╕Å  sidecars/ (ephemeral, untracked - ignored)",
+    "  Γä╣∩╕Å  tmp/ (ephemeral, untracked - ignored)",
+    "",
+    "\u001b[93m[WARN]\u001b[0m Consider extracting logic to BRAV/SCPT scripts: \u001b[94m.github\\workflows\\apisec-scan.yml\u001b[0m",
+    "\u001b[93m[WARN]\u001b[0m Consider extracting logic to BRAV/SCPT scripts: \u001b[94m.github\\workflows\\boss-gate-signal-and-merge.yml\u001b[0m",
+    "\u001b[93m[WARN]\u001b[0m Consider extracting logic to BRAV/SCPT scripts: \u001b[94m.github\\workflows\\boss-gate-verify.yml\u001b[0m",
+    "\u001b[93m[WARN]\u001b[0m Consider extracting logic to BRAV/SCPT scripts: \u001b[94m.github\\workflows\\bosscat-governance.yml\u001b[0m",
+    "\u001b[93m[WARN]\u001b[0m Consider extracting logic to BRAV/SCPT scripts: \u001b[94m.github\\workflows\\bosscat-tetragram-guard.yml\u001b[0m",
+    "\u001b[93m[WARN]\u001b[0m Consider extracting logic to BRAV/SCPT scripts: \u001b[94m.github\\workflows\\ci-disabled.yml\u001b[0m",
+    "\u001b[93m[WARN]\u001b[0m Consider extracting logic to BRAV/SCPT scripts: \u001b[94m.github\\workflows\\codacy.yml\u001b[0m",
+    "\u001b[93m[WARN]\u001b[0m Consider extracting logic to BRAV/SCPT scripts: \u001b[94m.github\\workflows\\codeql-analysis.yml\u001b[0m",
+    "\u001b[93m[WARN]\u001b[0m Consider extracting logic to BRAV/SCPT scripts: \u001b[94m.github\\workflows\\codeql.yml\u001b[0m",
+    "\u001b[93m[WARN]\u001b[0m Consider extracting logic to BRAV/SCPT scripts: \u001b[94m.github\\workflows\\defender-for-devops.yml\u001b[0m",
+    "\u001b[93m[WARN]\u001b[0m Consider extracting logic to BRAV/SCPT scripts: \u001b[94m.github\\workflows\\devskim.yml\u001b[0m",
+    "\u001b[93m[WARN]\u001b[0m Consider extracting logic to BRAV/SCPT scripts: \u001b[94m.github\\workflows\\ethicalcheck.yml\u001b[0m",
+    "\u001b[93m[WARN]\u001b[0m Consider extracting logic to BRAV/SCPT scripts: \u001b[94m.github\\workflows\\fortify.yml\u001b[0m",
+    "\u001b[93m[WARN]\u001b[0m Consider extracting logic to BRAV/SCPT scripts: \u001b[94m.github\\workflows\\gitleaks-security-scan.yml\u001b[0m",
+    "\u001b[93m[WARN]\u001b[0m Consider extracting logic to BRAV/SCPT scripts: \u001b[94m.github\\workflows\\gitleaks.yml\u001b[0m",
+    "\u001b[93m[WARN]\u001b[0m Consider extracting logic to BRAV/SCPT scripts: \u001b[94m.github\\workflows\\jfrog-sast.yml\u001b[0m",
+    "\u001b[93m[WARN]\u001b[0m Consider extracting logic to BRAV/SCPT scripts: \u001b[94m.github\\workflows\\jscrambler-code-integrity.yml\u001b[0m",
+    "\u001b[93m[WARN]\u001b[0m Consider extracting logic to BRAV/SCPT scripts: \u001b[94m.github\\workflows\\main.yml\u001b[0m",
+    "\u001b[93m[WARN]\u001b[0m Consider extracting logic to BRAV/SCPT scripts: \u001b[94m.github\\workflows\\mayhem-for-api.yml\u001b[0m",
+    "\u001b[93m[WARN]\u001b[0m Consider extracting logic to BRAV/SCPT scripts: \u001b[94m.github\\workflows\\neuralegion.yml\u001b[0m",
+    "\u001b[93m[WARN]\u001b[0m Consider extracting logic to BRAV/SCPT scripts: \u001b[94m.github\\workflows\\osv-scanner.yml\u001b[0m",
+    "\u001b[93m[WARN]\u001b[0m Consider extracting logic to BRAV/SCPT scripts: \u001b[94m.github\\workflows\\powershell.yml\u001b[0m",
+    "\u001b[93m[WARN]\u001b[0m Consider extracting logic to BRAV/SCPT scripts: \u001b[94m.github\\workflows\\security-scan.yml\u001b[0m",
+    "\u001b[93m[WARN]\u001b[0m Consider extracting logic to BRAV/SCPT scripts: \u001b[94m.github\\workflows\\snyk-security.yml\u001b[0m",
+    "\u001b[93m[WARN]\u001b[0m Consider extracting logic to BRAV/SCPT scripts: \u001b[94m.github\\workflows\\sysdig-scan.yml\u001b[0m",
+    "\u001b[93m[WARN]\u001b[0m Consider extracting logic to BRAV/SCPT scripts: \u001b[94m.github\\workflows\\trivy-security-scan.yml\u001b[0m",
+    "",
+    "\u001b[91m[ERROR]\u001b[0m ≡ƒÜ½ Guardrails check failed"
+  ],
+  "Timestamp": "2025-10-09T12:00:11.3814358+01:00"
+}

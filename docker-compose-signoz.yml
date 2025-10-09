@@ -141,7 +141,6 @@ volumes:
 
 networks:
   signoz:
-    name: signoz-net
+    name: signoz
     driver: bridge
-
 
