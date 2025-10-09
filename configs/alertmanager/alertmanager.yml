@@ -1,7 +1,0 @@
-# Default Alertmanager configuration for SigNoz local stack
-route:
-  receiver: signoz-null
-  repeat_interval: 4h
-
-receivers:
-  - name: signoz-null
