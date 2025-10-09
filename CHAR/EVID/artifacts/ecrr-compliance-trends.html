@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ECRR Compliance Trends</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .chart-container { width: 800px; height: 400px; margin: 20px 0; }
+        .summary { background: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0; }
+        .metric { display: inline-block; margin: 10px 20px 10px 0; }
+        .metric-value { font-size: 24px; font-weight: bold; }
+        .metric-label { font-size: 14px; color: #666; }
+    </style>
+</head>
+<body>
+    <h1>ECRR Compliance Trends</h1>
+    
+    <div class="summary">
+        <h3>Summary</h3>
+        <div class="metric">
+            <div class="metric-value">100%</div>
+            <div class="metric-label">Four-section Structure</div>
+        </div>
+        <div class="metric">
+            <div class="metric-value">98.6%</div>
+            <div class="metric-label">ECRR Gates</div>
+        </div>
+        <div class="metric">
+            <div class="metric-value">74</div>
+            <div class="metric-label">Total Reports</div>
+        </div>
+        <div class="metric">
+            <div class="metric-value">20</div>
+            <div class="metric-label">History Entries</div>
+        </div>
+    </div>
+    
+    <div class="chart-container">
+        <canvas id="complianceChart"></canvas>
+    </div>
+    
+    <script>
+        const data = [
+  {
+    "fourSection": 97.9,
+    "passed": true,
+    "date": "2025-09-29 18:56",
+    "gates": 97.9
+  },
+  {
+    "fourSection": 97.9,
+    "passed": true,
+    "date": "2025-09-29 18:58",
+    "gates": 97.9
+  },
+  {
+    "fourSection": 97.9,
+    "passed": true,
+    "date": "2025-09-29 19:00",
+    "gates": 97.9
+  },
+  {
+    "fourSection": 97.9,
+    "passed": true,
+    "date": "2025-09-29 19:01",
+    "gates": 97.9
+  },
+  {
+    "fourSection": 97.9,
+    "passed": true,
+    "date": "2025-09-29 19:02",
+    "gates": 97.9
+  },
+  {
+    "fourSection": 97.9,
+    "passed": true,
+    "date": "2025-09-29 19:03",
+    "gates": 97.9
+  },
+  {
+    "fourSection": 97.9,
+    "passed": true,
+    "date": "2025-09-29 19:04",
+    "gates": 97.9
+  },
+  {
+    "fourSection": 97.9,
+    "passed": true,
+    "date": "2025-09-29 19:07",
+    "gates": 97.9
+  },
+  {
+    "fourSection": 97.9,
+    "passed": true,
+    "date": "2025-09-29 19:08",
+    "gates": 97.9
+  },
+  {
+    "fourSection": 97.9,
+    "passed": true,
+    "date": "2025-09-29 20:02",
+    "gates": 97.9
+  },
+  {
+    "fourSection": 98.5,
+    "passed": true,
+    "date": "2025-09-29 21:00",
+    "gates": 100.0
+  },
+  {
+    "fourSection": 98.5,
+    "passed": true,
+    "date": "2025-09-29 21:02",
+    "gates": 100.0
+  },
+  {
+    "fourSection": 98.5,
+    "passed": true,
+    "date": "2025-09-29 21:03",
+    "gates": 100.0
+  },
+  {
+    "fourSection": 98.5,
+    "passed": true,
+    "date": "2025-09-29 21:04",
+    "gates": 100.0
+  },
+  {
+    "fourSection": 98.5,
+    "passed": true,
+    "date": "2025-09-29 21:08",
+    "gates": 100.0
+  },
+  {
+    "fourSection": 98.5,
+    "passed": true,
+    "date": "2025-09-29 21:12",
+    "gates": 100.0
+  },
+  {
+    "fourSection": 100.0,
+    "passed": true,
+    "date": "2025-10-06 19:55",
+    "gates": 98.6
+  },
+  {
+    "fourSection": 100.0,
+    "passed": true,
+    "date": "2025-10-06 20:00",
+    "gates": 98.6
+  },
+  {
+    "fourSection": 100.0,
+    "passed": true,
+    "date": "2025-10-06 20:17",
+    "gates": 98.6
+  },
+  {
+    "fourSection": 100.0,
+    "passed": true,
+    "date": "2025-10-06 20:19",
+    "gates": 98.6
+  }
+];
+        const ctx = document.getElementById('complianceChart').getContext('2d');
+        
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: data.map(d => d.date),
+                datasets: [{
+                    label: 'Four-section Structure %',
+                    data: data.map(d => d.fourSection),
+                    borderColor: 'rgb(75, 192, 192)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    tension: 0.1
+                }, {
+                    label: 'ECRR Gates %',
+                    data: data.map(d => d.gates),
+                    borderColor: 'rgb(255, 99, 132)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        min: 90,
+                        max: 100
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'ECRR Compliance Trends Over Time'
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

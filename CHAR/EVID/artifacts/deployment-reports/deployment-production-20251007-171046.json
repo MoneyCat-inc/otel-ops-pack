@@ -1,0 +1,137 @@
+{
+  "Environment": "production",
+  "SessionId": "a7bd9c99-43f6-4365-a100-dd42c6c35ebb",
+  "Duration": 15.9569275,
+  "StartTime": "2025-10-07T17:10:30.7686509+01:00",
+  "EndTime": "2025-10-07T17:10:46.7255784+01:00",
+  "Version": "1.0.0",
+  "Steps": [
+    {
+      "Status": "running",
+      "Timestamp": "2025-10-07T17:10:30.7816394+01:00",
+      "Details": "",
+      "Data": {},
+      "Name": "System Health Check"
+    },
+    {
+      "Status": "success",
+      "Timestamp": "2025-10-07T17:10:36.3489431+01:00",
+      "Details": "All components healthy",
+      "Data": {},
+      "Name": "System Health Check"
+    },
+    {
+      "Status": "running",
+      "Timestamp": "2025-10-07T17:10:36.3499328+01:00",
+      "Details": "",
+      "Data": {},
+      "Name": "Configuration Backup"
+    },
+    {
+      "Status": "success",
+      "Timestamp": "2025-10-07T17:10:36.4244276+01:00",
+      "Details": "artifacts/deployment-backups/backup-20251007-171036",
+      "Data": {},
+      "Name": "Configuration Backup"
+    },
+    {
+      "Status": "running",
+      "Timestamp": "2025-10-07T17:10:36.4257022+01:00",
+      "Details": "",
+      "Data": {},
+      "Name": "Verify Scheduled Tasks"
+    },
+    {
+      "Status": "success",
+      "Timestamp": "2025-10-07T17:10:39.1472277+01:00",
+      "Details": "All 3 tasks registered",
+      "Data": {},
+      "Name": "Verify Scheduled Tasks"
+    },
+    {
+      "Status": "running",
+      "Timestamp": "2025-10-07T17:10:39.1487537+01:00",
+      "Details": "",
+      "Data": {},
+      "Name": "Agent Queue Configuration"
+    },
+    {
+      "Status": "success",
+      "Timestamp": "2025-10-07T17:10:39.1779102+01:00",
+      "Details": "6 queued jobs of 6 total",
+      "Data": {},
+      "Name": "Agent Queue Configuration"
+    },
+    {
+      "Status": "running",
+      "Timestamp": "2025-10-07T17:10:39.1789076+01:00",
+      "Details": "",
+      "Data": {},
+      "Name": "Watchdog Service"
+    },
+    {
+      "Status": "success",
+      "Timestamp": "2025-10-07T17:10:43.3266910+01:00",
+      "Details": "PID 113212, uptime 00:37:51",
+      "Data": {},
+      "Name": "Watchdog Service"
+    },
+    {
+      "Status": "running",
+      "Timestamp": "2025-10-07T17:10:43.3274008+01:00",
+      "Details": "",
+      "Data": {},
+      "Name": "OTel Collector Service"
+    },
+    {
+      "Status": "success",
+      "Timestamp": "2025-10-07T17:10:43.3404176+01:00",
+      "Details": "Running",
+      "Data": {},
+      "Name": "OTel Collector Service"
+    },
+    {
+      "Status": "running",
+      "Timestamp": "2025-10-07T17:10:43.3416159+01:00",
+      "Details": "",
+      "Data": {},
+      "Name": "SigNoz Backend"
+    },
+    {
+      "Status": "success",
+      "Timestamp": "2025-10-07T17:10:43.4601141+01:00",
+      "Details": "Version v0.96.1",
+      "Data": {},
+      "Name": "SigNoz Backend"
+    },
+    {
+      "Status": "running",
+      "Timestamp": "2025-10-07T17:10:43.4615846+01:00",
+      "Details": "",
+      "Data": {},
+      "Name": "Deployment Canary Test"
+    },
+    {
+      "Status": "success",
+      "Timestamp": "2025-10-07T17:10:46.7185974+01:00",
+      "Details": "Canary dispatched",
+      "Data": {},
+      "Name": "Deployment Canary Test"
+    },
+    {
+      "Status": "running",
+      "Timestamp": "2025-10-07T17:10:46.7194248+01:00",
+      "Details": "",
+      "Data": {},
+      "Name": "Parallel Orchestrator Config"
+    },
+    {
+      "Status": "success",
+      "Timestamp": "2025-10-07T17:10:46.7249500+01:00",
+      "Details": "48 max agents, 45s cycles",
+      "Data": {},
+      "Name": "Parallel Orchestrator Config"
+    }
+  ],
+  "Status": "failed"
+}

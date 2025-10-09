@@ -1,0 +1,80 @@
+{
+  "Statistics": {
+    "StartStopEvents": 4,
+    "SuspiciousPatternCount": 3,
+    "TotalChanges": 4
+  },
+  "SuspiciousPatterns": {
+    "Severity": "HIGH",
+    "Description": "Service disabled 4 times in 24h",
+    "Type": "MULTIPLE_DISABLE"
+  },
+  "LookbackHours": 24,
+  "StartStopPattern": [
+    {
+      "Message": "The start type of the OpenTelemetry Collector (Contrib) service was changed from disabled to auto start.",
+      "Timestamp": "2025-10-09 07:00:31.000",
+      "EventID": 7040,
+      "Action": "DISABLED"
+    },
+    {
+      "Message": "The start type of the OpenTelemetry Collector (Contrib) service was changed from auto start to disabled.",
+      "Timestamp": "2025-10-09 03:31:18.000",
+      "EventID": 7040,
+      "Action": "DISABLED"
+    },
+    {
+      "Message": "The start type of the OpenTelemetry Collector (Contrib) service was changed from disabled to auto start.",
+      "Timestamp": "2025-10-08 23:18:31.000",
+      "EventID": 7040,
+      "Action": "DISABLED"
+    },
+    {
+      "Message": "The start type of the OpenTelemetry Collector (Contrib) service was changed from auto start to disabled.",
+      "Timestamp": "2025-10-08 22:43:24.000",
+      "EventID": 7040,
+      "Action": "DISABLED"
+    }
+  ],
+  "ChangeHistory": [
+    {
+      "Source": "Service Control Manager",
+      "EventId": 7040,
+      "UserName": "D-MONOLITH\\fubum",
+      "EntryType": "Information",
+      "Message": "The start type of the OpenTelemetry Collector (Contrib) service was changed from disabled to auto start.",
+      "Timestamp": "2025-10-09 07:00:31"
+    },
+    {
+      "Source": "Service Control Manager",
+      "EventId": 7040,
+      "UserName": "NT AUTHORITY\\SYSTEM",
+      "EntryType": "Information",
+      "Message": "The start type of the OpenTelemetry Collector (Contrib) service was changed from auto start to disabled.",
+      "Timestamp": "2025-10-09 03:31:18"
+    },
+    {
+      "Source": "Service Control Manager",
+      "EventId": 7040,
+      "UserName": "D-MONOLITH\\fubum",
+      "EntryType": "Information",
+      "Message": "The start type of the OpenTelemetry Collector (Contrib) service was changed from disabled to auto start.",
+      "Timestamp": "2025-10-08 23:18:31"
+    },
+    {
+      "Source": "Service Control Manager",
+      "EventId": 7040,
+      "UserName": "NT AUTHORITY\\SYSTEM",
+      "EntryType": "Information",
+      "Message": "The start type of the OpenTelemetry Collector (Contrib) service was changed from auto start to disabled.",
+      "Timestamp": "2025-10-08 22:43:24"
+    }
+  ],
+  "CurrentState": {
+    "Status": "Running",
+    "DisplayName": "OpenTelemetry Collector (Contrib)",
+    "Timestamp": "2025-10-09 07:22:12",
+    "StartType": "AUTO_START"
+  },
+  "Timestamp": "2025-10-09 07:22:18.694"
+}

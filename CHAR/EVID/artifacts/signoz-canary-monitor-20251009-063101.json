@@ -1,0 +1,15 @@
+{
+  "emittedMessage": "SigNoz wiring canary sent 2025-10-09T06:31:01",
+  "status": "critical",
+  "timeWindowMinutes": 60,
+  "latest": null,
+  "earliestTimestamp": "No data",
+  "latestTimestamp": "No data",
+  "spikeThreshold": 500,
+  "canaryCount": 0,
+  "alertThreshold": 1,
+  "timestamp": "2025-10-09 06:31:01",
+  "alerts": [
+    "CRITICAL: No canary entries found in last 60 minutes"
+  ]
+}

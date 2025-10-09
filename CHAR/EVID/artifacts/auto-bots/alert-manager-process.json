@@ -1,0 +1,8 @@
+{
+  "interval": "1 minute",
+  "description": "Monitors thresholds and triggers alerts",
+  "id": 37528,
+  "name": "Alert Manager Bot",
+  "script": "scripts/auto-bots/alert-manager-bot.js",
+  "startTime": "2025-10-08T03:50:10.529Z"
+}

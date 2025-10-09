@@ -1,0 +1,91 @@
+extensions:
+  health_check:
+    endpoint: 0.0.0.0:13134
+    path: /healthz
+
+receivers:
+  windows_event_log:
+    - channel: Application
+      log_name: Application
+      start_at: end
+      poll_interval: 1s
+      exclude_providers:
+        - Microsoft-Windows-Security-SPP
+  filelog:
+    - include: C:\logs\**\*.log
+      start_at: end
+      poll_interval: 1s
+      operators:
+        - type: json_parser
+          parse_from: body
+        - type: add
+          field: log.source
+          value: file
+processors:
+  batch/logs:
+    timeout: 200ms
+    send_batch_size: 256
+  memory_limiter:
+    limit_mib: 256
+    check_interval: 1s
+    spike_limit_mib: 512
+  attributes:
+    actions:
+      - key: deployment.env
+        value: local
+        action: insert
+      - key: log.source
+        value: windows_event_log
+        action: insert
+        conditions:
+          - key: log.source
+            value: windows_event_log
+  filter/drop_noise:
+    logs:
+      log_record:
+        - attributes["winlog.event_id"] in [6005, 6006, 7036]
+        - IsMatch(body, "(?i)windows update|service control manager")
+  batch:
+    timeout: 1s
+    send_batch_size: 1024
+exporters:
+  otlp:
+    endpoint: localhost:14317
+    tls:
+      insecure: true
+  otlphttp:
+    endpoint: http://localhost:14318
+    tls:
+      insecure: true
+service:
+  extensions:
+    - health_check
+  pipelines:
+    logs:
+      receivers:
+        - windows_event_log
+        - filelog
+      processors:
+        - memory_limiter
+        - filter/drop_noise
+        - attributes
+        - batch/logs
+      exporters:
+        - otlp
+        - otlphttp
+    metrics:
+      receivers: []
+      processors:
+        - memory_limiter
+        - batch
+      exporters:
+        - otlp
+        - otlphttp
+    traces:
+      receivers: []
+      processors:
+        - memory_limiter
+        - batch
+      exporters:
+        - otlp
+        - otlphttp

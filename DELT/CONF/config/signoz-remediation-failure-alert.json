@@ -1,0 +1,30 @@
+{
+  "name": "Production Agent Remediation Failure",
+  "description": "Detects when automated remediation actions fail",
+  "query": {
+    "dataSource": "logs",
+    "query": "SELECT * FROM signoz_logs.logs_v2 WHERE attributes['type'] = 'remediation_failure' AND attributes['system'] = 'production-agent-system' AND timestamp >= now() - INTERVAL 1 HOUR"
+  },
+  "condition": {
+    "threshold": 1,
+    "operator": ">=",
+    "evaluationWindow": "1h"
+  },
+  "severity": "CRITICAL",
+  "labels": {
+    "system": "production-agent-system",
+    "component": "remediation",
+    "alert_type": "remediation_failure"
+  },
+  "annotations": {
+    "summary": "Automated remediation action failed",
+    "description": "An automated remediation action has failed, manual intervention may be required",
+    "runbook_url": "https://docs.example.com/runbooks/remediation-failure"
+  },
+  "webhook": {
+    "enabled": true,
+    "url": "http://localhost:8080/api/v1/webhooks/production-agent",
+    "secret": "prod-agent-webhook-secret-2025",
+    "auth_header": "Bearer prod-agent-auth-token-2025"
+  }
+}

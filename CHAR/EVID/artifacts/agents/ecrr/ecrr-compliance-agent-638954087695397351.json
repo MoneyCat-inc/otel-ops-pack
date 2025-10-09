@@ -1,0 +1,37 @@
+{
+  "bossCatApproval": false,
+  "agentStats": {
+    "successCount": 42,
+    "uptime": 3.541535275,
+    "taskCount": 47,
+    "errorCount": 5
+  },
+  "compliance": {
+    "reliability": false,
+    "performance": true,
+    "security": false
+  },
+  "evidence": {
+    "logs": [
+      "artifacts/agents/logs/compliance-agent.log"
+    ],
+    "metrics": [],
+    "screenshots": []
+  },
+  "findings": {
+    "major": null,
+    "minor": [
+      "Investigate task failures",
+      "Monitor memory usage"
+    ],
+    "critical": "High memory usage: 111MB"
+  },
+  "recommendations": [
+    "Investigate task failures",
+    "Monitor memory usage"
+  ],
+  "scope": "Agent Behavior Analysis: compliance-agent",
+  "timestamp": "2025-10-07 04:39:29",
+  "reportId": "ecrr-compliance-agent-638954087695397351",
+  "responsibleAgent": "compliance-agent"
+}

@@ -1,0 +1,21 @@
+{
+  "alert": {
+    "name": "Collector Queue Fill >25%",
+    "description": "Alert when OTel collector exporter queue fill exceeds 25%",
+    "query": {
+      "metricsQuery": {
+        "query": "sum(otelcol_exporter_queue_size) / clamp_max(sum(otelcol_exporter_queue_capacity), 1) * 100"
+      }
+    },
+    "condition": {
+      "threshold": 25,
+      "operator": "above",
+      "evaluationWindow": "5m"
+    },
+    "labels": {
+      "severity": "warning",
+      "component": "collector",
+      "metric": "queue_fill"
+    }
+  }
+}

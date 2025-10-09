@@ -1,0 +1,43 @@
+{
+  "QualityIssues": [],
+  "ProcessingDate": "2025-10-06 09:28:48 UTC",
+  "ProcessedReports": 61,
+  "Recommendations": [
+    "Add ECRR gates to 0 missing reports",
+    "Ensure 4-section structure in 0 reports",
+    "Add explicit status to 0 reports",
+    "Implement consolidation for 1 candidates"
+  ],
+  "ComplianceMetrics": {
+    "ECRRGates": 100.0,
+    "EvidenceReferences": 98.4,
+    "FourSectionStructure": 100.0,
+    "ActorDeclarations": 96.7,
+    "StatusDeclarations": 100.0,
+    "ProductionReady": 96.7
+  },
+  "ConsolidationCandidates": [
+    "2025-09-29-rollout-merge-oct-2025-consolidated.md"
+  ],
+  "MissingStatus": [],
+  "TotalReports": 61,
+  "AgentDistribution": {
+    "ChatGPT Agent": 1,
+    "Cursor Agent": 50,
+    "Codex Agent": 0,
+    "Other": 4,
+    "Cursor-Local": 6
+  },
+  "TemporalPatterns": {
+    "January 2025": 1,
+    "September 2025": 44
+  },
+  "ReportCategories": {
+    "Completion": 0,
+    "MergeDeployment": 5,
+    "Other": 34,
+    "Verification": 13,
+    "Implementation": 9
+  },
+  "MissingFourSection": []
+}

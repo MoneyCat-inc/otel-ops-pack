@@ -1,0 +1,83 @@
+{
+  "title": "Windows to SigNoz Optimization Dashboard",
+  "description": "Key health metrics for the Windows collector to SigNoz pipeline",
+  "tags": ["windows", "signoz", "otel"],
+  "panels": [
+    {
+      "id": "collector_health",
+      "title": "Collector Heartbeat",
+      "type": "stat",
+      "targets": [
+        {
+          "query": "avg(last_5m(signoz_derived_metrics{metric_name='otelcol_exporter_sent_log_records'}))",
+          "legend": "Logs exported"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "steps": [
+              { "color": "red", "value": 0 },
+              { "color": "green", "value": 1 }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "event_ingestion",
+      "title": "Resonai Analytics Events",
+      "type": "timeseries",
+      "targets": [
+        {
+          "query": "sum(rate(signoz_logs_total{dataset='resonai_analytics'}[5m]))",
+          "legend": "Events per second"
+        }
+      ]
+    },
+    {
+      "id": "event_severity",
+      "title": "Log Severity Split",
+      "type": "table",
+      "targets": [
+        {
+          "query": "sum by(severity_text) (signoz_logs_total{dataset='resonai_analytics'})",
+          "legend": "Count by severity"
+        }
+      ]
+    },
+    {
+      "id": "ttv_p95",
+      "title": "TTV P95",
+      "type": "timeseries",
+      "targets": [
+        {
+          "query": "quantile_over_time(0.95, signoz_logs_numeric_value{dataset='resonai_analytics', attribute_key='ttv_ms'}[5m])",
+          "legend": "ttv_ms p95"
+        }
+      ]
+    },
+    {
+      "id": "error_rate",
+      "title": "Error Rate",
+      "type": "timeseries",
+      "targets": [
+        {
+          "query": "sum(rate(signoz_logs_total{dataset='resonai_analytics', severity_text='ERROR'}[5m])) / sum(rate(signoz_logs_total{dataset='resonai_analytics'}[5m]))",
+          "legend": "Error ratio"
+        }
+      ]
+    },
+    {
+      "id": "ingestion_latency",
+      "title": "Ingestion Latency",
+      "type": "stat",
+      "targets": [
+        {
+          "query": "avg(last_5m(signoz_logs_numeric_value{dataset='resonai_analytics', attribute_key='ingestion_latency_ms'}))",
+          "legend": "Latency ms"
+        }
+      ]
+    }
+  ]
+}

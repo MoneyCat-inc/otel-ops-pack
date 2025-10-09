@@ -1,0 +1,14 @@
+{
+  "actor": "Agent A",
+  "lane": "docs",
+  "examine": "Lane-scoped execution for docs lane",
+  "clean": "Failed after 3 attempts: Retry exhausted: Budget exceeded: 41 files (max 10)",
+  "report": "Error: Retry exhausted: Budget exceeded: 41 files (max 10). TTL hit: false",
+  "role": "AUTO-BOTS Lane Executor (Agent A)",
+  "status": "failed",
+  "retries": 3,
+  "ttlHit": false,
+  "timestamp": "2025-10-09T01:43:33.273Z",
+  "filesModified": [],
+  "linesChanged": 0
+}

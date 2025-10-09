@@ -1,0 +1,131 @@
+# Kafka Integration Template
+# Copy this template and customize for your Kafka setup
+# 
+# =============================================================================
+# KAFKA EXPORTER CONFIGURATION
+# =============================================================================
+exporters:
+  kafka:
+    # Basic Kafka configuration
+    brokers:
+      - localhost:9092
+    topic: otel-logs # Update with your topic name
+    encoding: otlp_json # or otlp_proto
+    protocol_version: 2.0.0 # Update with your Kafka brokers
+    # Retry configuration
+    retry_on_failure:
+      enabled: true
+      initial_interval: 1s
+      max_interval: 30s
+      max_elapsed_time: 300s
+    # Queue configuration
+    sending_queue:
+      enabled: true
+      num_consumers: 4
+      queue_size: 8192
+      storage: file_storage
+      # Optional: Authentication (uncomment if needed)
+# auth:
+
+#   sasl:
+
+#     mechanism: PLAIN
+
+#     username: ${KAFKA_USERNAME}
+
+#     password: ${KAFKA_PASSWORD}
+
+# Optional: TLS (uncomment if needed)
+
+# tls:
+
+#   insecure: false
+
+#   ca_file: /path/to/ca.pem
+
+#   cert_file: /path/to/client.pem
+
+#   key_file: /path/to/client.key
+# =============================================================================
+
+# PIPELINE INTEGRATION
+
+# =============================================================================
+
+# Add to your service pipelines:
+
+# service:
+
+#   pipelines:
+
+#     logs:
+
+#       receivers: [otlp, filelog]
+
+#       processors: [resource/defaults, memory_limiter, batch]
+
+#       exporters: [otlp, kafka]  # Add kafka here
+
+#     traces:
+
+#       receivers: [otlp]
+
+#       processors: [resource/defaults, tail_sampling, memory_limiter, batch]
+
+#       exporters: [otlp, kafka]  # Add kafka here
+
+#     metrics:
+
+#       receivers: [otlp, prometheus]
+
+#       processors: [resource/defaults, memory_limiter, batch]
+
+#       exporters: [otlp, kafka]  # Add kafka here
+
+# =============================================================================
+
+# CUSTOMIZATION OPTIONS
+
+# =============================================================================
+
+# 1. Multiple Kafka topics by type:
+
+# topic: otel-${type}  # Will create otel-logs, otel-traces, otel-metrics
+
+# 2. Multiple Kafka brokers:
+
+# brokers: ["kafka1:9092", "kafka2:9092", "kafka3:9092"]
+
+# 3. Different encoding:
+
+# encoding: otlp_proto  # More efficient than otlp_json
+
+# 4. Custom partitioning:
+
+# partitioning:
+
+#   hash:
+
+#     key: service.name
+
+# =============================================================================
+
+# VERIFICATION COMMANDS
+
+# =============================================================================
+
+# Test Kafka connectivity:
+
+# C:\otel\kafka-smoke.ps1 -Broker localhost:9092
+
+# Validate configuration:
+
+# C:\otel\config-schema.ps1 -ConfigPath C:\otel\config.yaml
+
+# Apply configuration:
+
+# C:\otel\safe-apply-config.ps1 -Candidate C:\otel\config.candidate.yaml
+
+# Verify data flow:
+
+# C:\otel\canary-check-min.ps1
