@@ -3,7 +3,7 @@
 # Updated to use shared progress indicators module
 
 # Import progress indicators module
-. .\scripts\progress-indicators.ps1
+. ..\progress-indicators.ps1
 
 param(
     [switch]$Detailed,

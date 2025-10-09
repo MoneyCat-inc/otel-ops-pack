@@ -72,7 +72,9 @@
       "coverage",
       "dist",
       "build",
-      ".next"
+      ".next",
+      "gpu-buffers",
+      "sidecars"
     ],
     "ignore_untracked_top_level": false,
     "max_path_depth": 7,

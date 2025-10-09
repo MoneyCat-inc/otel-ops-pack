@@ -322,3 +322,34 @@ cat artifacts/diagnostic-*/ecrr-diagnostic-report.md
 **Date:** 2025-10-07 16:15 UTC  
 **Evidence Package:** `artifacts/wiring-investigation.log`, service status, collector logs  
 **Recommendation:** PROCEED with Gap-Closer remediation plan
+
+## Gate Verification Findings (2025-10-09)
+
+**Investigation Date:** 2025-10-09  
+**Source:** Local BossCat verification run (post-tetragram-1.2)  
+**Commit:** bf76f9b
+
+### Current Anomalies
+
+- **SigNoz UI/API unreachable** on `http://localhost:8080` (timeout). OTLP ports 5317/5318 not reachable.
+- **Windows Collector service** `otelcol-contrib` present but Stopped.
+- **Guardrails violations**: 2 unauthorized top-level directories: `gpu-buffers/`, `sidecars/`.
+- **Script dependency** `BRAV/SCPT/quick-monitor.ps1` depends on missing `scripts/progress-indicators.ps1`.
+
+### Suggested Remediations
+
+- Start Windows Collector: `sc start otelcol-contrib`.
+- Ensure SigNoz UI/API containers are running (port 8080 open).
+- Fix script path references to use `BRAV\SCPT\progress-indicators.ps1`.
+- Remove unauthorized directories (`gpu-buffers/`, `sidecars/`).
+
+### Evidence
+
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_VERIFY_2025-10-09.md`
+- Local verification artifacts
+
+**Status:** Remediation in progress
+
+---
+
+*🐾 Updated: 2025-10-09*
