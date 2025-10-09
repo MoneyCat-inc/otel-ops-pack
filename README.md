@@ -24,6 +24,42 @@ All documentation, agents, CI/CD guardrails, and artifacts (ECRR reports, SSOTs,
 
 A complete Windows-to-SigNoz observability pipeline with automated monitoring, alerting, and agent workflows for repeatable operations.
 
+## 🏗️ Repository Structure (Tetragram)
+
+This repository follows a **four-plane tetragram structure** for clear organization and enforced compliance:
+
+```
+ALFA/  → Application & Source          BRAV/  → Build, Runtime, Automation
+  APPS/   deployable apps                SCPT/   CI/runtime scripts
+  LIBS/   shared libraries               DOCK/   Docker configs
+  CORE/   framework code                 INFR/   infrastructure/helm
+  OTEL/   OTel instrumentation
+  TEST/   test suites                  CHAR/  → Compliance, Human, Audit
+  TOOL/   developer tools                DOCS/   documentation/ADRs/policies
+                                         EVID/   evidence/reports/artifacts
+DELT/  → Data, Environment, Load         PRSV/   preserved/experiments
+  CONF/   configurations
+  ASST/   static assets               🛡️ Guardrails enforce this structure:
+  FIXT/   test fixtures                   python BRAV/SCPT/check_guardrails.py
+  TMPL/   templates
+```
+
+**Where things go:**
+- **New app/service?** → `ALFA/APPS/<name>/`
+- **Shared library?** → `ALFA/LIBS/<name>/`
+- **New script?** → `BRAV/SCPT/`
+- **Documentation?** → `CHAR/DOCS/`
+- **Configuration?** → `DELT/CONF/`
+- **Evidence/reports?** → `CHAR/EVID/`
+
+**TypeScript path aliases:** Use `@alfa/*`, `@brav/*`, `@char/*`, `@delt/*` for clean imports.
+
+**Learn more:** See [`CHAR/DOCS/ADR/0001-tetragram-baseline.md`](CHAR/DOCS/ADR/0001-tetragram-baseline.md) for architecture decisions.
+
+**Compliance:** ✅ 0 forbidden roots, 0 unauthorized directories, automated enforcement via CI.
+
+---
+
 ## Documentation
 
 📐 **System Architecture**: See the [Official Architecture Diagram](docs/BossCat/SYSTEM_ARCHITECTURE_DIAGRAM.md) featuring the 77× throughput uplift design with User Workstation → I/O Handler → IONA Controller → OTel Pipeline → SigNoz → Three-Loop Control System.
