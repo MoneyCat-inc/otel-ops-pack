@@ -1,0 +1,111 @@
+name: Gate Nightly Verification
+
+on:
+  schedule:
+    - cron: "3 2 * * *"   # 02:03 UTC nightly
+  workflow_dispatch: {}
+
+jobs:
+  verify:
+    runs-on: windows-latest
+    # For production, use: runs-on: [self-hosted, windows]
+    # if your collector/SigNoz aren't accessible from GitHub runners
+    
+    env:
+      SIGNOZ_API_KEY: ${{ secrets.SIGNOZ_API_KEY }}
+    
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Python dependencies
+        run: |
+          pip install opentelemetry-sdk opentelemetry-exporter-otlp-proto-http
+
+      - name: Run pipeline verification
+        id: verify
+        shell: pwsh
+        run: |
+          pwsh -File scripts/verify-pipeline.ps1
+          $code = $LASTEXITCODE
+          echo "exit_code=$code" >> $env:GITHUB_OUTPUT
+          exit 0
+        continue-on-error: true
+
+      - name: Upload verification summary
+        uses: actions/upload-artifact@v4
+        with:
+          name: gate_verification_${{ github.run_number }}
+          path: out/gate_verification.json
+          retention-days: 30
+
+      - name: Check verification result
+        shell: pwsh
+        run: |
+          $result = Get-Content out/gate_verification.json | ConvertFrom-Json
+          Write-Host "Verification outcome: $($result.outcome)"
+          
+          if ($result.outcome -eq "FAIL") {
+            Write-Host "::error::Gate verification FAILED - rollback criteria met"
+            exit 1
+          } elseif ($result.outcome -eq "WARN") {
+            Write-Host "::warning::Gate verification returned warnings"
+          } else {
+            Write-Host "::notice::Gate verification passed"
+          }
+
+      - name: Create issue on WARN/FAIL
+        if: ${{ steps.verify.outputs.exit_code != '0' }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let j = {};
+            try { 
+              j = JSON.parse(fs.readFileSync('out/gate_verification.json','utf8')); 
+            } catch(e) { 
+              j = { outcome: 'UNKNOWN', service_name: 'unknown', timestamp_utc: new Date().toISOString() }; 
+            }
+            
+            const title = `🚨 Gate verification ${j.outcome || 'UNKNOWN'}: ${j.service_name || 'service'} @ ${j.timestamp_utc || new Date().toISOString()}`;
+            const body = [
+              `## Gate Verification ${j.outcome || 'UNKNOWN'}`,
+              '',
+              `**Outcome:** ${j.outcome}`,
+              `**Exit Code:** ${j.exit_code}`,
+              `**Run ID:** ${context.runId}`,
+              `**Workflow:** ${context.workflow}`,
+              '',
+              '### Verification Details',
+              '',
+              '```json',
+              JSON.stringify(j, null, 2),
+              '```',
+              '',
+              '### Actions Required',
+              '',
+              '1. Review verification JSON above',
+              '2. Check failed gate checks',
+              '3. Run local diagnostic: `pwsh -File scripts\\verify-pipeline.ps1`',
+              '4. If critical, flip gate: `pwsh -File scripts\\set-gate-status.ps1 -Status HOLD -Reason "Nightly verification failed"`',
+              '',
+              '### Quick Links',
+              '',
+              `- [Workflow Run](${context.payload.repository.html_url}/actions/runs/${context.runId})`,
+              '- [Gate Status](../docs/ecrr/GATE_STATUS.md)',
+              '- [IONA Errors](../docs/IONA_ERRORS.md)',
+              '- [SigNoz UI](http://localhost:8080)',
+            ].join('\n');
+            
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title,
+              body,
+              labels: ['gate', 'verification', 'fail', 'automated']
+            });
+

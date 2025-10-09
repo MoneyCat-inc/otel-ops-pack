@@ -12,7 +12,11 @@
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",
-    "db:seed": "tsx prisma/seed.ts"
+    "db:seed": "tsx prisma/seed.ts",
+    "security:scan": "pwsh -File scripts/monthly-trivy-scan.ps1",
+    "security:scan:export": "pwsh -File scripts/monthly-trivy-scan.ps1 -ExportReport",
+    "security:monitor": "pwsh -File scripts/security-monitor.ps1",
+    "dashboard:export": "pwsh -File scripts/playwright-dashboard-export.ps1"
   },
   "dependencies": {
     "@aws-sdk/client-bedrock-runtime": "^3.901.0",

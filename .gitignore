@@ -105,3 +105,49 @@ secring.*
 # BossCat OEM - Security
 .env.staging
 keys/
+
+# === BossCat Cleanup Additions ===
+# Build artifacts (should not be in git)
+node_modules/
+.venv/
+venv/
+.next/
+dist/
+out/
+build/
+
+# Python
+__pycache__/
+*.py[cod]
+*.class
+*.so
+.Python
+
+# Temporary files
+.tmp/
+tmp/
+*.log
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Playwright
+playwright-report/
+test-results/
+
+# BossCat cleanup archives
+archive/cleanup-*/
+artifacts/cleanup-reports/
+
+# Large mock data (use git-lfs or external storage)
+resonai-mock/
+third_party/
+

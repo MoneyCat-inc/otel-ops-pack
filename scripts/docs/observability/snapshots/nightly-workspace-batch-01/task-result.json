@@ -3,12 +3,12 @@
     "compliance-report.json",
     "audit-summary.md"
   ],
-  "Duration": 1190.1899,
-  "Processed": 100,
-  "StartTime": "2025-10-08T03:00:02.6546225+01:00",
-  "EndTime": "2025-10-08T03:00:03.8448124+01:00",
-  "Parallelism": 4,
   "Status": "completed",
+  "EndTime": "2025-10-09T03:00:04.4440843+01:00",
   "Workspace": "docs\\observability\\snapshots\\nightly-workspace-batch-01",
-  "TaskId": "nightly-batch-chunk-01-p4"
+  "StartTime": "2025-10-09T03:00:02.1918524+01:00",
+  "Parallelism": 4,
+  "TaskId": "nightly-batch-chunk-01-p4",
+  "Processed": 100,
+  "Duration": 2252.2319
 }

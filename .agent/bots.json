@@ -1,0 +1,148 @@
+{
+  "generatedAt": "2025-10-09T01:23:04.310Z",
+  "grammar": "SET-SET-LANE-ROLE (4-4-4-4 tetragrams)",
+  "writers": "AUTO-BOTS-*-ALFA",
+  "monitors": "IONA-CATS-*-BETA",
+  "bots": [
+    {
+      "set": "AUTO-BOTS",
+      "role": "ALFA",
+      "lane": "SSOT",
+      "title": "SSOT Refresher",
+      "task": "Regenerate SSOT and RUN_AND_VERIFY.md",
+      "badge": {
+        "file": "auto-bots-ssot-alfa.svg",
+        "label": "AUTO-SSOT-ALFA",
+        "emoji": "&#x1FAB6;",
+        "color": "#4C9AFF"
+      },
+      "code": "AUTO-BOTS-SSOT-ALFA"
+    },
+    {
+      "set": "IONA-CATS",
+      "role": "BETA",
+      "lane": "SSOT",
+      "title": "SSOT Auditor",
+      "task": "Verify docs-only diffs, ECRR, BOSSCAT_LOG",
+      "badge": {
+        "file": "iona-cats-ssot-beta.svg",
+        "label": "IONA-SSOT-BETA",
+        "emoji": "&#x1FAB6;",
+        "color": "#7FB3FF"
+      },
+      "code": "IONA-CATS-SSOT-BETA"
+    },
+    {
+      "set": "AUTO-BOTS",
+      "role": "ALFA",
+      "lane": "FLAK",
+      "title": "Flaky Test Quarantiner",
+      "task": "Mark @flaky/skip and isolate",
+      "badge": {
+        "file": "auto-bots-flak-alfa.svg",
+        "label": "AUTO-FLAK-ALFA",
+        "emoji": "&#x1F9EA;",
+        "color": "#FFAB00"
+      },
+      "code": "AUTO-BOTS-FLAK-ALFA"
+    },
+    {
+      "set": "IONA-CATS",
+      "role": "BETA",
+      "lane": "FLAK",
+      "title": "Test Stability Watch",
+      "task": "Validate scope (tests), collect evidence",
+      "badge": {
+        "file": "iona-cats-flak-beta.svg",
+        "label": "IONA-FLAK-BETA",
+        "emoji": "&#x1F9EA;",
+        "color": "#FFCC66"
+      },
+      "code": "IONA-CATS-FLAK-BETA"
+    },
+    {
+      "set": "AUTO-BOTS",
+      "role": "ALFA",
+      "lane": "SELE",
+      "title": "Selector Hygienist",
+      "task": "Add data-testid + small ARIA",
+      "badge": {
+        "file": "auto-bots-sele-alfa.svg",
+        "label": "AUTO-SELE-ALFA",
+        "emoji": "&#x1F3AF;",
+        "color": "#6554C0"
+      },
+      "code": "AUTO-BOTS-SELE-ALFA"
+    },
+    {
+      "set": "IONA-CATS",
+      "role": "BETA",
+      "lane": "SELE",
+      "title": "Selector Inspector",
+      "task": "Check allowed files; ensure tests green",
+      "badge": {
+        "file": "iona-cats-sele-beta.svg",
+        "label": "IONA-SELE-BETA",
+        "emoji": "&#x1F3AF;",
+        "color": "#8E7FE0"
+      },
+      "code": "IONA-CATS-SELE-BETA"
+    },
+    {
+      "set": "AUTO-BOTS",
+      "role": "ALFA",
+      "lane": "COMP",
+      "title": "Security & A11y Fixer",
+      "task": "Remove inline scripts/styles; add a11y metadata",
+      "badge": {
+        "file": "auto-bots-comp-alfa.svg",
+        "label": "AUTO-COMP-ALFA",
+        "emoji": "&#x1F6E1;",
+        "color": "#36B37E"
+      },
+      "code": "AUTO-BOTS-COMP-ALFA"
+    },
+    {
+      "set": "IONA-CATS",
+      "role": "BETA",
+      "lane": "COMP",
+      "title": "Compliance Auditor",
+      "task": "Validate CSP/WCAG AA; ECRR trail",
+      "badge": {
+        "file": "iona-cats-comp-beta.svg",
+        "label": "IONA-COMP-BETA",
+        "emoji": "&#x1F6E1;",
+        "color": "#7AD0AE"
+      },
+      "code": "IONA-CATS-COMP-BETA"
+    },
+    {
+      "set": "AUTO-BOTS",
+      "role": "ALFA",
+      "lane": "DOCS",
+      "title": "Docs Synchronizer",
+      "task": "Refresh docs/runbooks to match reality",
+      "badge": {
+        "file": "auto-bots-docs-alfa.svg",
+        "label": "AUTO-DOCS-ALFA",
+        "emoji": "&#x1F4DA;",
+        "color": "#00B8D9"
+      },
+      "code": "AUTO-BOTS-DOCS-ALFA"
+    },
+    {
+      "set": "IONA-CATS",
+      "role": "BETA",
+      "lane": "DOCS",
+      "title": "Docs Proofreader",
+      "task": "Lint/consistency; BOSSCAT_LOG + gate",
+      "badge": {
+        "file": "iona-cats-docs-beta.svg",
+        "label": "IONA-DOCS-BETA",
+        "emoji": "&#x1F4DA;",
+        "color": "#5CD7EA"
+      },
+      "code": "IONA-CATS-DOCS-BETA"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+# Local Lefthook Overrides
+# Copy to .lefthook-local.yml (git-ignored) for personal settings
+
+# Example: Skip slow checks during development
+# pre-commit:
+#   commands:
+#     powershell-format:
+#       skip: true
+#     ecrr-check:
+#       skip: true
+
+# Example: Run only security checks
+# pre-commit:
+#   commands:
+#     gitleaks:
+#       skip: false
+#     powershell-syntax:
+#       skip: true
+#     powershell-format:
+#       skip: true
+#     ecrr-check:
+#       skip: true
+
+# Example: Disable commit message validation
+# commit-msg:
+#   commands:
+#     conventional-commit:
+#       skip: true
+
+

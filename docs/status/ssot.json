@@ -1,17 +1,17 @@
 {
-  "last_update": "2025-10-08T12:05:43.536956+00:00",
+  "last_update": "2025-10-09T04:20:43.056695+00:00",
   "authoritative_sources": {
     "ecrr_reports": {
-      "path": "docs/BossCat/reports\\ECRR_GATE_HOLD_2025-10-07.md",
-      "summary": "ECRR report available",
-      "last_modified": "2025-10-07T17:39:04.982922+00:00"
+      "path": "docs/BossCat/reports\\ECRR_GATE_READY_2025-10-09.md",
+      "summary": "**Gate Status:** ✅ **READY** (with documented risk acceptance) | **Status:** ✅ **PASS** | **Status:** ✅ READY",
+      "last_modified": "2025-10-09T03:28:00.645224+00:00"
     },
     "signoz_health": {
       "status": "unhealthy: ok",
       "version": "v0.96.1",
-      "last_check": "2025-10-08T12:05:43.536959+00:00"
+      "last_check": "2025-10-09T04:20:43.056699+00:00"
     },
-    "collector_status": "running"
+    "collector_status": "stopped"
   },
   "summary": {
     "repository_health": "Excellent",

@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BossCat Gate Verification",
+  "description": "JSON schema for BossCat OEM gate verification artifact validation",
+  "type": "object",
+  "required": ["timestamp_utc","service_name","steps","gate_checks","outcome","exit_code"],
+  "properties": {
+    "timestamp_utc": { 
+      "type": "string", 
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of verification run"
+    },
+    "service_name": { 
+      "type": "string", 
+      "minLength": 1,
+      "description": "Service name for canary verification"
+    },
+    "gate_id": { 
+      "type": "string",
+      "description": "Gate decision identifier"
+    },
+    "steps": {
+      "type": "object",
+      "required": ["quick_monitor","canary_send"],
+      "properties": {
+        "quick_monitor": { 
+          "type": "string", 
+          "enum": ["pass","fail","warn","skip"],
+          "description": "Quick monitor health check result"
+        },
+        "canary_send": {
+          "type": "object",
+          "required": ["exit_code","status","log_confirmed","api_confirmed","api_reason"],
+          "properties": {
+            "exit_code": { 
+              "type": "integer",
+              "description": "Canary script exit code (0 = success)"
+            },
+            "trace_id": { 
+              "type": "string", 
+              "pattern": "^[0-9a-f]{32}$",
+              "description": "OpenTelemetry trace ID (32-char hex, forensic mode)"
+            },
+            "canary_id": { 
+              "type": "string", 
+              "pattern": "^[0-9]+$",
+              "description": "Unique canary run identifier (timestamp ms)"
+            },
+            "send_ts_ns": { 
+              "type": "integer",
+              "description": "Nanosecond timestamp when canary was sent"
+            },
+            "log_confirmed": { 
+              "type": "boolean",
+              "description": "Whether span export was confirmed in collector logs"
+            },
+            "api_confirmed": { 
+              "type": "boolean",
+              "description": "Whether span was confirmed via SigNoz API"
+            },
+            "api_reason": {
+              "type": "string",
+              "enum": ["span_found","no_span_found","missing_api_key","http_error","skipped_by_config","canary_script_not_found"],
+              "description": "Reason code for API verification result"
+            },
+            "api_mode": { 
+              "type": "string",
+              "description": "Verification mode (PINPOINT or STANDARD)"
+            },
+            "ingest_latency_ms": { 
+              "type": ["integer","null"], 
+              "minimum": 0,
+              "maximum": 300000,
+              "description": "Measured ingest latency in milliseconds (null if unmeasurable)"
+            },
+            "status": { 
+              "type": "string", 
+              "enum": ["pass","warn","fail","skip"],
+              "description": "Overall canary status"
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "gate_checks": {
+      "type": "object",
+      "required": ["collector_service_running","otlp_reachable","span_rate_nonzero","export_drops_zero","error_ratio_under_5pct"],
+      "properties": {
+        "collector_service_running": { 
+          "type": "boolean",
+          "description": "Windows OTel collector service is running"
+        },
+        "otlp_reachable": { 
+          "type": "boolean",
+          "description": "OTLP endpoints (4317/4318) are reachable"
+        },
+        "span_rate_nonzero": { 
+          "type": "boolean",
+          "description": "Spans are being ingested (log OR API confirmed)"
+        },
+        "export_drops_zero": { 
+          "type": "boolean",
+          "description": "No dropped spans detected in collector logs"
+        },
+        "error_ratio_under_5pct": { 
+          "type": "boolean",
+          "description": "Error ratio is under 5% threshold"
+        }
+      },
+      "additionalProperties": true
+    },
+    "outcome": { 
+      "type": "string", 
+      "enum": ["OK","WARN","FAIL"],
+      "description": "Overall verification outcome"
+    },
+    "exit_code": { 
+      "type": "integer", 
+      "enum": [0,1,2],
+      "description": "Exit code (0=OK, 1=WARN, 2=FAIL)"
+    }
+  },
+  "additionalProperties": true
+}
+

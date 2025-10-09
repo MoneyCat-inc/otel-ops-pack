@@ -1,0 +1,88 @@
+{
+  "gate_id": "GATE-2025-10-08-234500",
+  "ecrr_ref": "ECRR-2025-10-08-234500",
+  "decision_date_utc": "2025-10-08T23:45:00Z",
+  "qa_validated_utc": "2025-10-08T23:50:00Z",
+  "status": "APPROVED",
+  "confidence": 0.95,
+  "risk_level": "low",
+  "valid_until": "next_ecrr_or_incident",
+  
+  "scores": {
+    "service_health": 100,
+    "pipeline_integrity": 95,
+    "docker_stack": 100,
+    "ecrr_compliance": 100,
+    "monitoring_active": 95,
+    "weighted_total": 98.0,
+    "pass_threshold": 85.0,
+    "margin_above_threshold": 13.0
+  },
+  
+  "scoring_weights": {
+    "service_health": 0.30,
+    "pipeline_integrity": 0.30,
+    "docker_stack": 0.20,
+    "ecrr_compliance": 0.10,
+    "monitoring_active": 0.10
+  },
+  
+  "conditions": [
+    "Monitor enterprise readiness score ≥ 75% on re-check",
+    "Validate nightly dashboard export executes successfully at 02:00 UTC",
+    "Optional: Canary test UI verification in SigNoz"
+  ],
+  
+  "rollback_criteria": {
+    "auto_downgrade_to_hold": true,
+    "triggers": [
+      "collector_service != Running for >5m",
+      "otlp_unreachable (4317 or 4318) for >5m",
+      "span_rate_zero (synthetic-windows-check) for >5m",
+      "continuous_export_drops > 0 for >5m",
+      "error_ratio > 5% for 5m"
+    ]
+  },
+  
+  "slo_targets": {
+    "availability": {
+      "target": 0.995,
+      "period": "monthly",
+      "measurement": "collector_running AND otlp_reachable AND span_rate > 0"
+    },
+    "latency_p95": {
+      "target_seconds": 5.0,
+      "measurement": "canary_send_to_span_visible",
+      "alert_threshold": "3_consecutive_breaches"
+    },
+    "quality": {
+      "dropped_spans": 0,
+      "alert_threshold": "continuous_drops_5min"
+    },
+    "error_budget": {
+      "error_ratio_max": 0.05,
+      "window": "5_minutes"
+    }
+  },
+  
+  "monitoring_scripts": {
+    "verify_pipeline": "scripts/verify-pipeline.ps1",
+    "quick_monitor": "scripts/quick-monitor.ps1",
+    "send_canary": "scripts/send-canary-trace.ps1",
+    "check_export": "scripts/check-nightly-export.ps1",
+    "set_gate_status": "scripts/set-gate-status.ps1"
+  },
+  
+  "evidence_artifacts": [
+    "docs/ecrr/ECRR_REPORTS/ECRR-2025-10-08-234500.md",
+    "docs/ecrr/ECRR_REPORTS/GATE-APPROVAL-2025-10-08.md",
+    "docs/ecrr/ECRR_REPORTS/QA-HARDENING-IMPLEMENTATION-2025-10-08.md",
+    "docs/ecrr/GATE_STATUS.md",
+    "docs/IONA_ERRORS.md"
+  ],
+  
+  "approved_by": "BossCat OEM",
+  "qa_validated_by": "Peer Review",
+  "approval_authority": "executive_overseer_manager"
+}
+
