@@ -1,0 +1,38 @@
+{
+  "version": "1.0",
+  "endedAt": "2025-10-10T00:35:26.1254722+01:00",
+  "actor": "BossCat OEM",
+  "verdict": "READY",
+  "evidence": [
+    "docs\\observability\\snapshots\\gate-scan-20251010-003526.json"
+  ],
+  "checks": [
+    {
+      "name": "layout",
+      "ok": true,
+      "details": {
+        "paths": "ok"
+      }
+    },
+    {
+      "name": "collector_health",
+      "ok": true,
+      "details": {
+        "ok": true,
+        "status": 200,
+        "body": "{\"status\":\"Server available\",\"upSince\":\"2025-10-10T00:28:04.1711225+01:00\",\"uptime\":\"7m16.864448s\"}",
+        "target": "http://localhost:13134/healthz"
+      }
+    },
+    {
+      "name": "synthetic_trace",
+      "ok": true,
+      "details": {
+        "attempted": true,
+        "ok": true,
+        "exitCode": 0
+      }
+    }
+  ],
+  "gatePhrase": "@cat ready-for-gate"
+}

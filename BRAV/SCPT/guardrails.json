@@ -7,6 +7,8 @@
       "BRAV",
       "CHAR",
       "DELT",
+      "scripts",
+      "docs",
       ".github",
       ".agent",
       ".git",
@@ -45,8 +47,6 @@
       ".cursor"
     ],
     "forbidden_legacy_roots": [
-      "scripts",
-      "docs",
       "config",
       "configs",
       "docker",
@@ -74,7 +74,9 @@
       "build",
       ".next",
       "gpu-buffers",
-      "sidecars"
+      "sidecars",
+      "artifacts",
+      "DELT/ARTF"
     ],
     "ignore_untracked_top_level": false,
     "max_path_depth": 7,
@@ -92,8 +94,8 @@
         "subdirs": ["DOCS", "EVID", "AUDT", "REPO"]
       },
       "DELT": {
-        "description": "Data/Environment/Load/Test plane - configs, fixtures, test data",
-        "subdirs": ["CONF", "FIXT", "ASST", "LOAD", "TMPL"]
+        "description": "Data/Environment/Load/Test plane - configs, fixtures, test data, artifacts",
+        "subdirs": ["CONF", "FIXT", "ASST", "LOAD", "TMPL", "ARTF"]
       }
     },
     "ci_workflow_rules": {

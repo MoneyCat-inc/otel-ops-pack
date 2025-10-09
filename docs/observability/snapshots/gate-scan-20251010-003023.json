@@ -1,0 +1,33 @@
+{
+  "actor": "BossCat OEM",
+  "startedAt": "2025-10-10T00:30:16.1892985+01:00",
+  "checks": [
+    {
+      "name": "layout",
+      "ok": true,
+      "details": {
+        "paths": "ok"
+      }
+    },
+    {
+      "name": "collector_health",
+      "ok": true,
+      "details": {
+        "ok": true,
+        "status": 200,
+        "body": "{\"status\":\"Server available\",\"upSince\":\"2025-10-10T00:28:04.1711225+01:00\",\"uptime\":\"2m14.1048649s\"}",
+        "target": "http://localhost:13134/healthz"
+      }
+    },
+    {
+      "name": "synthetic_trace",
+      "ok": true,
+      "details": {
+        "attempted": true,
+        "ok": true,
+        "exitCode": 0
+      }
+    }
+  ],
+  "gatePhrase": "@cat ready-for-gate"
+}
