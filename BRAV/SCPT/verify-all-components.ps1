@@ -175,9 +175,9 @@ if ($env:ALERT_WEBHOOK_URL) {
 
 # Component 7: Dashboard Configuration
 Write-Host "`nComponent 7: Dashboard Configuration" -ForegroundColor Yellow
-if (Test-Path "artifacts/signoz-queue-pressure-dashboard.json") {
+if (Test-Path "CHAR/EVID/artifacts/signoz-queue-pressure-dashboard.json") {
     try {
-        $DashboardConfig = Get-Content "artifacts/signoz-queue-pressure-dashboard.json" -Raw | ConvertFrom-Json
+        $DashboardConfig = Get-Content "CHAR/EVID/artifacts/signoz-queue-pressure-dashboard.json" -Raw | ConvertFrom-Json
         Write-Host "  OK Dashboard configuration file exists and is valid" -ForegroundColor Green
         $VerificationStatus.components.dashboard_config.status = "ok"
         $VerificationStatus.components.dashboard_config.details.file_exists = $true
@@ -223,9 +223,9 @@ try {
 
 # Component 9: Webhook Delivery
 Write-Host "`nComponent 9: Webhook Delivery" -ForegroundColor Yellow
-if (Test-Path "artifacts/webhook-logs.json") {
+if (Test-Path "CHAR/EVID/artifacts/webhook-logs.json") {
     try {
-        $WebhookLogs = Get-Content "artifacts/webhook-logs.json" -Raw | ConvertFrom-Json
+        $WebhookLogs = Get-Content "CHAR/EVID/artifacts/webhook-logs.json" -Raw | ConvertFrom-Json
         if ($WebhookLogs -and $WebhookLogs.Count -gt 0) {
             $RecentWebhooks = $WebhookLogs | Where-Object { [DateTime]::Parse($_.timestamp) -gt (Get-Date).AddMinutes(-10) }
             Write-Host "  OK Webhook delivery logs found: $($WebhookLogs.Count) total, $($RecentWebhooks.Count) recent" -ForegroundColor Green
@@ -313,8 +313,10 @@ if ($VerificationStatus.recommendations.Count -gt 0) {
 
 # Save verification report
 if ($GenerateReport) {
-    $VerificationStatus | ConvertTo-Json -Depth 4 | Out-File "artifacts/component-verification-report.json" -Encoding UTF8
-    Write-Host "`nVerification report saved to: artifacts/component-verification-report.json" -ForegroundColor Cyan
+    # Ensure CHAR/EVID/artifacts/ exists
+    New-Item -ItemType Directory -Force -Path "CHAR/EVID/artifacts" | Out-Null
+    $VerificationStatus | ConvertTo-Json -Depth 4 | Out-File "CHAR/EVID/artifacts/component-verification-report.json" -Encoding UTF8
+    Write-Host "`nVerification report saved to: CHAR/EVID/artifacts/component-verification-report.json" -ForegroundColor Cyan
 }
 
 # Role: Declare actor and next steps
