@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="60">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tetragram Health Status</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #0a0a0a;
+            color: #eaeaea;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        h1 {
+            margin: 0 0 8px 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        .subtitle {
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+        .grid {
+            display: grid;
+            gap: 16px;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        }
+        .card {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 16px;
+        }
+        .card h3 {
+            margin: 0 0 12px 0;
+            font-size: 16px;
+            font-weight: 500;
+            color: #fff;
+        }
+        pre {
+            background: #0a0a0a;
+            border: 1px solid #222;
+            border-radius: 4px;
+            padding: 12px;
+            overflow: auto;
+            margin: 0;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+        .status-ok { color: #0a7a0a; }
+        .status-warn { color: #b58900; }
+        .status-error { color: #c00; }
+        .loading {
+            color: #666;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🐾 Tetragram Health Status</h1>
+        <p class="subtitle">Auto-refresh every 60 seconds · Evidence: CHAR/EVID/health/</p>
+        
+        <div class="grid">
+            <div class="card">
+                <h3>Test Results</h3>
+                <pre id="tests" class="loading">Loading...</pre>
+            </div>
+            
+            <div class="card">
+                <h3>Guardrails Status</h3>
+                <pre id="guardrails" class="loading">Loading...</pre>
+            </div>
+            
+            <div class="card">
+                <h3>Docker Services</h3>
+                <pre id="docker" class="loading">Loading...</pre>
+            </div>
+            
+            <div class="card">
+                <h3>Windows Services</h3>
+                <pre id="windows" class="loading">Loading...</pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function loadJSON(id, filename) {
+            try {
+                const response = await fetch(filename, { cache: 'no-store' });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const data = await response.json();
+                const element = document.getElementById(id);
+                element.textContent = JSON.stringify(data, null, 2);
+                element.classList.remove('loading');
+            } catch (error) {
+                const element = document.getElementById(id);
+                element.textContent = `Error: ${error.message}`;
+                element.classList.remove('loading');
+                element.classList.add('status-error');
+            }
+        }
+
+        // Load all status files
+        loadJSON('tests', 'tests.json');
+        loadJSON('guardrails', 'guardrails.json');
+        loadJSON('docker', 'docker.json');
+        loadJSON('windows', 'windows.json');
+    </script>
+</body>
+</html>
+
