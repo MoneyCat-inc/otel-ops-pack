@@ -1,0 +1,56 @@
+{
+  "timestamp": "2025-10-09",
+  "forbidden_roots": [],
+  "forbidden_count": 0,
+  "unauthorized_top_level": [
+    "logs",
+    "out",
+    "tmp"
+  ],
+  "unauthorized_count": 3,
+  "planes": {
+    "ALFA": [
+      "APPS",
+      "CORE",
+      "LIBS",
+      "OTEL",
+      "TEST",
+      "TOOL"
+    ],
+    "BRAV": [
+      "DOCK",
+      "INFR",
+      "SCPT"
+    ],
+    "CHAR": [
+      "DOCS",
+      "EVID",
+      "PRSV"
+    ],
+    "DELT": [
+      "ASST",
+      "CONF",
+      "FIXT",
+      "TMPL"
+    ]
+  },
+  "plane_health": {
+    "ALFA": {
+      "exists": true,
+      "subdir_count": 6
+    },
+    "BRAV": {
+      "exists": true,
+      "subdir_count": 3
+    },
+    "CHAR": {
+      "exists": true,
+      "subdir_count": 3
+    },
+    "DELT": {
+      "exists": true,
+      "subdir_count": 4
+    }
+  },
+  "overall_health": "\u2705 PASS"
+}

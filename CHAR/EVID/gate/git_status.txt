@@ -1,1 +1,15 @@
-?? CHAR/EVID/gate/
+## main...origin/main
+R  CHAR/DOCS/upstream-contribution/upstream-contribution/PR_DESCRIPTION.md -> CHAR/DOCS/upstream-contribution/PR_DESCRIPTION.md
+R  CHAR/DOCS/upstream-contribution/upstream-contribution/windows_day2_ops/README.md -> CHAR/DOCS/upstream-contribution/windows_day2_ops/README.md
+R  CHAR/DOCS/upstream-contribution/upstream-contribution/windows_day2_ops/configs/README.md -> CHAR/DOCS/upstream-contribution/windows_day2_ops/configs/README.md
+R  CHAR/DOCS/upstream-contribution/upstream-contribution/windows_day2_ops/docker/Dockerfile.watchdog -> CHAR/DOCS/upstream-contribution/windows_day2_ops/docker/Dockerfile.watchdog
+R  CHAR/DOCS/upstream-contribution/upstream-contribution/windows_day2_ops/helm/codex-local/Chart.yaml -> CHAR/DOCS/upstream-contribution/windows_day2_ops/helm/codex-local/Chart.yaml
+R  CHAR/DOCS/upstream-contribution/upstream-contribution/windows_day2_ops/helm/codex-local/templates/deployment.yaml -> CHAR/DOCS/upstream-contribution/windows_day2_ops/helm/codex-local/templates/deployment.yaml
+R  CHAR/DOCS/upstream-contribution/upstream-contribution/windows_day2_ops/helm/codex-local/values.yaml -> CHAR/DOCS/upstream-contribution/windows_day2_ops/helm/codex-local/values.yaml
+R  CHAR/DOCS/upstream-contribution/upstream-contribution/windows_day2_ops/package.json -> CHAR/DOCS/upstream-contribution/windows_day2_ops/package.json
+R  CHAR/DOCS/upstream-contribution/upstream-contribution/windows_day2_ops/policies/codex.rego -> CHAR/DOCS/upstream-contribution/windows_day2_ops/policies/codex.rego
+R  CHAR/DOCS/upstream-contribution/upstream-contribution/windows_day2_ops/scripts/status-fleet.ps1 -> CHAR/DOCS/upstream-contribution/windows_day2_ops/scripts/status-fleet.ps1
+R  CHAR/DOCS/upstream-contribution/upstream-contribution/windows_day2_ops/scripts/status-fleet.sh -> CHAR/DOCS/upstream-contribution/windows_day2_ops/scripts/status-fleet.sh
+ M CHAR/EVID/gate/git_status.txt
+ M CHAR/EVID/gate/guardrails.txt
+?? CHAR/EVID/gate/health.json
