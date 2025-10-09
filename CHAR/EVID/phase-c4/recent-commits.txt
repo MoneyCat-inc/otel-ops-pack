@@ -1,0 +1,5 @@
+a7a126d fix(verify): Align verification script with tetragram paths
+5c2ca58 feat(bosscat): Phase C.4 - Application code to ALFA structure
+030fca0 docs(ops): Add verification readiness checklist
+52bb956 fix(workflows): update script paths to use BRAV/SCPT/ after migration
+09ba038 docs(governance): Add ADR-0001, runbooks, and TypeScript path aliases
