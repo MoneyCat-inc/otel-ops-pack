@@ -37,6 +37,11 @@ class GateVerifier:
             "Accept": "application/json",
             "Content-Type": "application/json",
         })
+        # Add SigNoz API key authentication if available
+        api_key = os.environ.get("SIGNOZ_API_KEY")
+        if api_key:
+            self.session.headers.update({"X-SigNoz-Key": api_key})
+            LOG.info("SigNoz API key authentication enabled")
         self.results: Dict[str, Any] = {
             "generated_at": datetime.utcnow().isoformat() + "Z",
             "signoz_url": self.signoz_url,

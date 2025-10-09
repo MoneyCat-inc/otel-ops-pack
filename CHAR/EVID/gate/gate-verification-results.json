@@ -1,0 +1,43 @@
+{
+  "generated_at": "2025-10-09T17:41:33.873206Z",
+  "signoz_url": "http://localhost:8080",
+  "artifacts_dir": "CHAR/EVID/artifacts",
+  "tests": {
+    "k6_performance": {
+      "overall_status": "MISSING",
+      "per_test": [],
+      "failure_reasons": [
+        "No k6 summaries found"
+      ]
+    },
+    "locust_user_journey": {
+      "overall_status": "PASS",
+      "failure_reasons": [],
+      "metrics": {},
+      "thresholds": {
+        "error_rate_max": 0.05,
+        "p95_response_time_max": 1000,
+        "avg_response_time_max": 500
+      }
+    },
+    "signoz_health": {
+      "overall_status": "PASS",
+      "details": {
+        "status": "ok"
+      }
+    },
+    "synthetic_traces": {
+      "overall_status": "FAIL",
+      "failure_reasons": [
+        "Expecting value: line 1 column 1 (char 0)"
+      ]
+    },
+    "canary_traces": {
+      "overall_status": "FAIL",
+      "failure_reasons": [
+        "401 Client Error: Unauthorized for url: http://localhost:8080/api/v1/logs?start=1760030793&end=1760031693&limit=50&query=test.type+%3D+%22canary%22"
+      ]
+    }
+  },
+  "overall_status": "FAIL"
+}
