@@ -1,0 +1,198 @@
+# Multi-App CI/CD Matrix
+# Tetragram-compliant: thin YAML, delegates to BRAV/SCPT/
+
+name: Multi-App CI/CD
+
+on:
+  pull_request:
+    paths:
+      - 'ALFA/APPS/**'
+      - 'BRAV/SCPT/build.sh'
+      - 'BRAV/SCPT/test.sh'
+      - 'BRAV/SCPT/deploy.sh'
+  push:
+    branches: [ main ]
+    paths:
+      - 'ALFA/APPS/**'
+  workflow_dispatch:
+    inputs:
+      app:
+        description: 'App to build/test/deploy (or "all")'
+        required: false
+        default: 'all'
+
+jobs:
+  detect-changes:
+    name: Detect Changed Apps
+    runs-on: ubuntu-latest
+    outputs:
+      apps: ${{ steps.set-matrix.outputs.apps }}
+      has-changes: ${{ steps.set-matrix.outputs.has-changes }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect changed apps
+        id: set-matrix
+        run: |
+          # All apps
+          ALL_APPS='["app","apps","codex","collector","otel","sidecars"]'
+          
+          # Manual trigger
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            if [ "${{ inputs.app }}" = "all" ]; then
+              echo "apps=$ALL_APPS" >> $GITHUB_OUTPUT
+              echo "has-changes=true" >> $GITHUB_OUTPUT
+            else
+              echo "apps=[\"${{ inputs.app }}\"]" >> $GITHUB_OUTPUT
+              echo "has-changes=true" >> $GITHUB_OUTPUT
+            fi
+            exit 0
+          fi
+          
+          # PR or push: detect changes
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE_REF="${{ github.event.pull_request.base.sha }}"
+          else
+            BASE_REF="HEAD^"
+          fi
+          
+          CHANGED_APPS=$(git diff --name-only $BASE_REF HEAD | \
+            grep '^ALFA/APPS/' | \
+            cut -d'/' -f3 | \
+            sort -u | \
+            jq -R . | \
+            jq -s -c .)
+          
+          if [ "$CHANGED_APPS" = "[]" ]; then
+            echo "apps=[]" >> $GITHUB_OUTPUT
+            echo "has-changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "apps=$CHANGED_APPS" >> $GITHUB_OUTPUT
+            echo "has-changes=true" >> $GITHUB_OUTPUT
+          fi
+
+  build-test:
+    name: Build & Test
+    needs: detect-changes
+    if: needs.detect-changes.outputs.has-changes == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        app: ${{ fromJson(needs.detect-changes.outputs.apps) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Setup Python
+        if: matrix.app == 'sidecars'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          if [ -f "package.json" ]; then
+            npm ci
+          fi
+          if [ "${{ matrix.app }}" = "sidecars" ]; then
+            pip install -r ALFA/APPS/sidecars/requirements.txt || true
+          fi
+
+      - name: Build app
+        run: bash BRAV/SCPT/build.sh ALFA/APPS/${{ matrix.app }}
+
+      - name: Test app
+        run: bash BRAV/SCPT/test.sh ALFA/APPS/${{ matrix.app }}
+
+      - name: Upload build artifacts
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ matrix.app }}-${{ github.sha }}
+          path: |
+            ALFA/APPS/${{ matrix.app }}/dist
+            ALFA/APPS/${{ matrix.app }}/build
+            ALFA/APPS/${{ matrix.app }}/.next
+          retention-days: 7
+          if-no-files-found: ignore
+
+  package:
+    name: Package (Container)
+    needs: build-test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        app: ${{ fromJson(needs.detect-changes.outputs.apps) }}
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Package container
+        run: bash BRAV/SCPT/deploy.sh ALFA/APPS/${{ matrix.app }} package
+        env:
+          IMAGE_TAG: ${{ github.sha }}
+
+      - name: Push container
+        run: bash BRAV/SCPT/deploy.sh ALFA/APPS/${{ matrix.app }} push
+        env:
+          IMAGE_TAG: ${{ github.sha }}
+
+  deploy-dev:
+    name: Deploy to DEV
+    needs: package
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        app: ${{ fromJson(needs.detect-changes.outputs.apps) }}
+    environment:
+      name: dev
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to DEV
+        run: bash BRAV/SCPT/deploy.sh ALFA/APPS/${{ matrix.app }} rollout
+        env:
+          IMAGE_TAG: ${{ github.sha }}
+          KUBE_CONTEXT: dev
+          KUBE_NAMESPACE: dev
+
+  summary:
+    name: CI/CD Summary
+    needs: [detect-changes, build-test]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Summary
+        run: |
+          echo "## 🚀 Multi-App CI/CD Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Apps processed:** ${{ needs.detect-changes.outputs.apps }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Build & Test:** ${{ needs.build-test.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ needs.build-test.result }}" = "success" ]; then
+            echo "✅ All apps passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Some apps failed" >> $GITHUB_STEP_SUMMARY
+          fi
+
