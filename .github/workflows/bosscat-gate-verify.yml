@@ -58,18 +58,18 @@ jobs:
         
     - name: Run linting (optional)
       run: |
-        python -m flake8 scripts/ --max-line-length=100 --ignore=E203,W503 || echo "Linting issues found but continuing..."
-        python -m black --check scripts/ || echo "Black formatting issues found but continuing..."
+        python -m flake8 BRAV/SCPT/ --max-line-length=100 --ignore=E203,W503 || echo "Linting issues found but continuing..."
+        python -m black --check BRAV/SCPT/ || echo "Black formatting issues found but continuing..."
       continue-on-error: true
         
     - name: Run OTLP smoke test
       run: |
-        python scripts/test-otlp-smoke.py --verbose || echo "OTLP smoke test failed but continuing..."
+        python BRAV/SCPT/test-otlp-smoke.py --verbose || echo "OTLP smoke test failed but continuing..."
       continue-on-error: true
         
     - name: Run BossCat pipeline
       run: |
-        python scripts/run-local-pipeline.py \
+        python BRAV/SCPT/run-local-pipeline.py \
           --use-mock \
           --test-types baseline load \
           --verbose
@@ -87,7 +87,7 @@ jobs:
     - name: Generate ECRR Report
       if: always()
       run: |
-        python scripts/generate-ecrr-report.py \
+        python BRAV/SCPT/generate-ecrr-report.py \
           --gate-results artifacts/gate-verification-results.json \
           --output docs/BossCat/reports/ECRR_CI_RUN.md \
           --pdf docs/BossCat/reports/ECRR_CI_RUN.pdf || echo "ECRR report generation failed"
@@ -96,7 +96,7 @@ jobs:
     - name: Generate BOSS v2 Report
       if: always()
       run: |
-        python scripts/generate-boss-v2-report.py \
+        python BRAV/SCPT/generate-boss-v2-report.py \
           --gate-results artifacts/gate-verification-results.json \
           --output docs/BossCat/reports/BOSS_v2_CI_RUN.md \
           --pdf docs/BossCat/reports/BOSS_v2_CI_RUN.pdf || echo "BOSS v2 report generation failed"

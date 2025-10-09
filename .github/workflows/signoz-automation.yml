@@ -12,7 +12,7 @@ on:
     paths:
       - tests/signoz.final.spec.ts
       - playwright.signoz.config.ts
-      - scripts/automate-signoz-setup.ps1
+      - BRAV/SCPT/automate-signoz-setup.ps1
       - docs/SIGNOZ_AUTOMATION_SETUP.md
       - .github/workflows/signoz-automation.yml
 

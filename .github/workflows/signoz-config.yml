@@ -7,9 +7,9 @@ on:
     - cron: "17 6 * * *"  # daily drift check at 06:17 UTC
   push:
     paths:
-      - scripts/bosscat-create-signoz-alerts.ps1
-      - scripts/bosscat-steps-7-8.ps1
-      - scripts/bosscat-verify-signoz-completion.ps1
+      - BRAV/SCPT/bosscat-create-signoz-alerts.ps1
+      - BRAV/SCPT/bosscat-steps-7-8.ps1
+      - BRAV/SCPT/bosscat-verify-signoz-completion.ps1
       - docs/BossCat/**
 
 permissions:
@@ -39,7 +39,7 @@ jobs:
       - name: Apply Alerts (v0.96+ schema)
         shell: pwsh
         run: |
-          pwsh -File scripts/bosscat-create-signoz-alerts.ps1 `
+          pwsh -File BRAV/SCPT/bosscat-create-signoz-alerts.ps1 `
             -SigNozUrl $env:SIGNOZ_URL `
             -Apply `
             -ApiKey $env:SIGNOZ_API_KEY
@@ -47,7 +47,7 @@ jobs:
       - name: Apply Saved Views & Dashboard (Steps 7-8)
         shell: pwsh
         run: |
-          pwsh -File scripts/bosscat-steps-7-8.ps1 `
+          pwsh -File BRAV/SCPT/bosscat-steps-7-8.ps1 `
             -SigNozUrl $env:SIGNOZ_URL `
             -ApiKey $env:SIGNOZ_API_KEY `
             -Apply
@@ -55,7 +55,7 @@ jobs:
       - name: Verify Alerts (8 rules)
         shell: pwsh
         run: |
-          pwsh -File scripts/bosscat-verify-signoz-completion.ps1 `
+          pwsh -File BRAV/SCPT/bosscat-verify-signoz-completion.ps1 `
             -SigNozUrl $env:SIGNOZ_URL `
             -ApiKey $env:SIGNOZ_API_KEY
 

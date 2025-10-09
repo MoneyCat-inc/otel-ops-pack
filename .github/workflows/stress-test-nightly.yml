@@ -67,19 +67,19 @@ jobs:
         if: ${{ github.event.inputs.scenario == 'all' || github.event.inputs.scenario == 'light-load' }}
         run: |
           echo "🧪 Running Light Load Test..."
-          node scripts/ci/run-scenario.js light-load
+          node BRAV/SCPT/ci/run-scenario.js light-load
       
       - name: 🧪 Run Medium Load Test
         if: ${{ github.event.inputs.scenario == 'all' || github.event.inputs.scenario == 'medium-load' }}
         run: |
           echo "🧪 Running Medium Load Test..."
-          node scripts/ci/run-scenario.js medium-load
+          node BRAV/SCPT/ci/run-scenario.js medium-load
       
       - name: 🧪 Run Chaos Test
         if: ${{ github.event.inputs.scenario == 'all' || github.event.inputs.scenario == 'chaos-test' }}
         run: |
           echo "🧪 Running Chaos Engineering Test..."
-          node scripts/ci/run-scenario.js chaos-test
+          node BRAV/SCPT/ci/run-scenario.js chaos-test
       
       - name: 📊 Collect Test Results
         if: always()
@@ -94,13 +94,13 @@ jobs:
           curl "http://localhost:8080/api/v1/metrics" > test-results/metrics.json
           
           # Generate summary report
-          node scripts/ci/generate-report.js
+          node BRAV/SCPT/ci/generate-report.js
       
       - name: 📈 Generate Performance Report
         if: always()
         run: |
           echo "📈 Generating performance comparison report..."
-          node scripts/ci/compare-baseline.js
+          node BRAV/SCPT/ci/compare-baseline.js
       
       - name: 📤 Upload Test Results
         if: always()

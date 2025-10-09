@@ -71,8 +71,8 @@ jobs:
       - name: Run dashboard export (PowerShell)
         shell: pwsh
         run: |
-          if (Test-Path scripts/nightly-dashboard-export.ps1) {
-            pwsh -File scripts/nightly-dashboard-export.ps1
+          if (Test-Path BRAV/SCPT/nightly-dashboard-export.ps1) {
+            pwsh -File BRAV/SCPT/nightly-dashboard-export.ps1
           } else {
             Write-Host "⚠️ nightly-dashboard-export.ps1 not found, using Playwright directly"
             pnpm run export:signoz:playwright

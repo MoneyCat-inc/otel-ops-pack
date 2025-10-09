@@ -46,19 +46,19 @@ jobs:
       - name: 🧪 Run Light Load Test (PR Validation)
         run: |
           echo "🧪 Running quick validation test..."
-          node scripts/ci/run-scenario.js light-load
+          node BRAV/SCPT/ci/run-scenario.js light-load
       
       - name: 📊 Collect Results
         if: always()
         run: |
           mkdir -p test-results
           curl "http://localhost:8080/api/v1/logs" > test-results/pr-logs.json
-          node scripts/ci/generate-report.js
+          node BRAV/SCPT/ci/generate-report.js
       
       - name: ✅ Validate Performance Thresholds
         run: |
           echo "🎯 Checking performance thresholds..."
-          node scripts/ci/validate-thresholds.js
+          node BRAV/SCPT/ci/validate-thresholds.js
       
       - name: 📤 Upload PR Results
         if: always()

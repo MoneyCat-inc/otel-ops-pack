@@ -18,7 +18,7 @@ jobs:
       - name: Run benchmark harness (defaults)
         shell: pwsh
         run: >
-          pwsh -NoLogo -NoProfile -File scripts/benchmark-process-all-ecrr-reports.ps1
+          pwsh -NoLogo -NoProfile -File BRAV/SCPT/benchmark-process-all-ecrr-reports.ps1
           -ReportCount 300 -Iterations 3 -IncludeAutoParallel
 
       - name: Upload benchmark artifacts

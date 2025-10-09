@@ -83,7 +83,7 @@ jobs:
           SIGNOZ_PASS: ${{ secrets.SIGNOZ_PASS }}
         run: |
           Write-Host "📊 Generating dashboard snapshots..." -ForegroundColor Cyan
-          pwsh -File scripts/generate-dashboard-snapshots.ps1 -SignozUrl "$env:SIGNOZ_URL" -GeneratePDF
+          pwsh -File BRAV/SCPT/generate-dashboard-snapshots.ps1 -SignozUrl "$env:SIGNOZ_URL" -GeneratePDF
           
           # Verify output was generated
           $outputDir = "artifacts/dashboard-snapshots"

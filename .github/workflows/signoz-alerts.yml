@@ -9,8 +9,8 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - scripts/bosscat-create-signoz-alerts.ps1
-      - scripts/bosscat-verify-signoz-completion.ps1
+      - BRAV/SCPT/bosscat-create-signoz-alerts.ps1
+      - BRAV/SCPT/bosscat-verify-signoz-completion.ps1
       - docs/BossCat/**
 
 # Least-privilege permissions
@@ -42,7 +42,7 @@ jobs:
       - name: Apply BossCat Alerts to SigNoz
         shell: pwsh
         run: |
-          pwsh -File scripts/bosscat-create-signoz-alerts.ps1 `
+          pwsh -File BRAV/SCPT/bosscat-create-signoz-alerts.ps1 `
             -SigNozUrl $env:SIGNOZ_URL `
             -Apply `
             -ApiKey $env:SIGNOZ_API_KEY
@@ -50,7 +50,7 @@ jobs:
       - name: Verify SigNoz Completion (6/6)
         shell: pwsh
         run: |
-          pwsh -File scripts/bosscat-verify-signoz-completion.ps1 `
+          pwsh -File BRAV/SCPT/bosscat-verify-signoz-completion.ps1 `
             -SigNozUrl $env:SIGNOZ_URL `
             -ApiKey $env:SIGNOZ_API_KEY
 

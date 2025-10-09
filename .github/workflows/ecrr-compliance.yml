@@ -25,7 +25,7 @@ jobs:
       
     - name: Run ECRR Compliance Lint
       run: |
-        pwsh -NoLogo -File scripts/lint-ecrr-compliance.ps1 -FailOnError -Verbose
+        pwsh -NoLogo -File BRAV/SCPT/lint-ecrr-compliance.ps1 -FailOnError -Verbose
         
     - name: Upload Compliance Report
       if: always()

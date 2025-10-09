@@ -22,7 +22,7 @@ jobs:
         echo "=== Repository Structure ==="
         ls -la
         echo "=== Scripts Directory ==="
-        ls -la scripts/ || echo "scripts/ directory not found"
+        ls -la BRAV/SCPT/ || echo "scripts/ directory not found"
         echo "=== Tests Directory ==="
         ls -la tests/ || echo "tests/ directory not found"
         echo "=== Docs Directory ==="
@@ -78,19 +78,19 @@ jobs:
     - name: Debug - Test script existence
       run: |
         echo "=== Checking script files ==="
-        test -f scripts/test-otlp-smoke.py && echo "test-otlp-smoke.py exists" || echo "test-otlp-smoke.py missing"
-        test -f scripts/test-dry-run.py && echo "test-dry-run.py exists" || echo "test-dry-run.py missing"
-        test -f scripts/run-local-pipeline.py && echo "run-local-pipeline.py exists" || echo "run-local-pipeline.py missing"
-        test -f scripts/generate-ecrr-report.py && echo "generate-ecrr-report.py exists" || echo "generate-ecrr-report.py missing"
-        test -f scripts/generate-boss-v2-report.py && echo "generate-boss-v2-report.py exists" || echo "generate-boss-v2-report.py missing"
-        test -f scripts/send_synthetic_otel_simple.py && echo "send_synthetic_otel_simple.py exists" || echo "send_synthetic_otel_simple.py missing"
+        test -f BRAV/SCPT/test-otlp-smoke.py && echo "test-otlp-smoke.py exists" || echo "test-otlp-smoke.py missing"
+        test -f BRAV/SCPT/test-dry-run.py && echo "test-dry-run.py exists" || echo "test-dry-run.py missing"
+        test -f BRAV/SCPT/run-local-pipeline.py && echo "run-local-pipeline.py exists" || echo "run-local-pipeline.py missing"
+        test -f BRAV/SCPT/generate-ecrr-report.py && echo "generate-ecrr-report.py exists" || echo "generate-ecrr-report.py missing"
+        test -f BRAV/SCPT/generate-boss-v2-report.py && echo "generate-boss-v2-report.py exists" || echo "generate-boss-v2-report.py missing"
+        test -f BRAV/SCPT/send_synthetic_otel_simple.py && echo "send_synthetic_otel_simple.py exists" || echo "send_synthetic_otel_simple.py missing"
         
     - name: Debug - Test script syntax
       run: |
         echo "=== Testing script syntax ==="
-        python -m py_compile scripts/test-otlp-smoke.py || echo "test-otlp-smoke.py has syntax errors"
-        python -m py_compile scripts/test-dry-run.py || echo "test-dry-run.py has syntax errors"
-        python -m py_compile scripts/run-local-pipeline.py || echo "run-local-pipeline.py has syntax errors"
+        python -m py_compile BRAV/SCPT/test-otlp-smoke.py || echo "test-otlp-smoke.py has syntax errors"
+        python -m py_compile BRAV/SCPT/test-dry-run.py || echo "test-dry-run.py has syntax errors"
+        python -m py_compile BRAV/SCPT/run-local-pipeline.py || echo "run-local-pipeline.py has syntax errors"
         
     - name: Debug - Test imports
       run: |
