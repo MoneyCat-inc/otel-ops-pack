@@ -151,3 +151,6 @@ artifacts/cleanup-reports/
 resonai-mock/
 third_party/
 
+
+# Reference scan working data (regeneratable)
+artifacts/reference-scan/
