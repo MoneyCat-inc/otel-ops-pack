@@ -1,0 +1,5 @@
+4efa555 chore(repo): Phase F - Final directory cleanup to tetragram structure
+ed8f8cb fix(guardrails): Precision hardening - only ignore known ephemerals
+5bf51f6 feat(guardrails): Add ephemeral directory handling
+c75e1d2 docs(bosscat): Comprehensive tetragram migration summary
+6c16826 feat(bosscat): Add Phase F automation toolkit
