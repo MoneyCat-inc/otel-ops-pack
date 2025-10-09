@@ -130,9 +130,12 @@ def check_allowed_roots(
     Ephemeral directories (logs/, out/, tmp/) are handled specially:
     - If untracked: warned but ignored
     - If tracked: error (should be in .gitignore)
+    
+    All other unauthorized directories are always errors (tracked or not).
     """
     ephemeral_set = set(ephemeral or [])
-    tracked = git_tracked_top_level(repo_root) if (repo_root and ignore_untracked) else None
+    # Always query git to check ephemeral tracking status
+    tracked = git_tracked_top_level(repo_root) if repo_root else None
     
     errors = []
     warnings = []
@@ -142,7 +145,7 @@ def check_allowed_roots(
         if d in allowed or d in exemptions:
             continue
         
-        # Handle ephemeral directories
+        # Handle ephemeral directories specially
         if d in ephemeral_set:
             if tracked is not None and d in tracked:
                 errors.append(f"{d}/ (ephemeral but tracked - add to .gitignore)")
@@ -150,12 +153,8 @@ def check_allowed_roots(
                 warnings.append(f"{d}/ (ephemeral, untracked - ignored)")
             continue
         
-        # Handle other untracked directories if ignore_untracked is enabled
-        if tracked is not None and d not in tracked:
-            warnings.append(f"{d}/ (untracked, ignored)")
-            continue
-        
-        # Otherwise it's an error
+        # For any other unauthorized directory: ALWAYS error
+        # (Don't hide real violations just because they're untracked)
         errors.append(d)
     
     return errors, warnings

@@ -73,7 +73,7 @@
       "build",
       ".next"
     ],
-    "ignore_untracked_top_level": true,
+    "ignore_untracked_top_level": false,
     "max_path_depth": 7,
     "tetragram_structure": {
       "ALFA": {
@@ -124,11 +124,7 @@
       ".cursor",
       ".idea"
     ],
-    "temp_dirs": [
-      "tmp",
-      "logs",
-      "out"
-    ],
+    "temp_dirs": [],
     "build_dirs": [
       "dist",
       "build",
