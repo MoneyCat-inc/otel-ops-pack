@@ -59,13 +59,21 @@
       "synthetic",
       "tests",
       "tools",
-      "logs",
-      "tmp",
-      "out",
       "backups",
       "archive",
       "baseline"
     ],
+    "ephemeral_top_level": [
+      "logs",
+      "out",
+      "tmp",
+      ".cache",
+      "coverage",
+      "dist",
+      "build",
+      ".next"
+    ],
+    "ignore_untracked_top_level": true,
     "max_path_depth": 7,
     "tetragram_structure": {
       "ALFA": {

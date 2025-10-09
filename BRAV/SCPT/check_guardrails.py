@@ -10,8 +10,9 @@ Stdlib only - no external dependencies required.
 import json
 import os
 import sys
+import subprocess
 from pathlib import Path
-from typing import List, Set, Dict, Tuple
+from typing import List, Set, Dict, Tuple, Optional
 
 # Ensure UTF-8 encoding for Windows console
 if sys.platform == 'win32':
@@ -91,11 +92,73 @@ def check_forbidden_roots(top_level: List[str], forbidden: List[str]) -> List[st
     violations = [d for d in top_level if d in forbidden]
     return violations
 
-def check_allowed_roots(top_level: List[str], allowed: List[str], exemptions: Set[str]) -> List[str]:
-    """Check for directories that aren't in the allowed list"""
-    violations = [d for d in top_level 
-                 if d not in allowed and d not in exemptions]
-    return violations
+def git_tracked_top_level(repo_root: Path) -> Optional[Set[str]]:
+    """
+    Return set of top-level paths that are tracked by git.
+    Returns None if git is not available.
+    """
+    try:
+        out = subprocess.check_output(
+            ["git", "ls-files", "--full-name"],
+            cwd=str(repo_root),
+            text=True,
+            stderr=subprocess.DEVNULL,
+        )
+        first_components = set()
+        for line in out.splitlines():
+            if not line.strip():
+                continue
+            parts = Path(line.strip()).parts
+            if parts:
+                first_components.add(parts[0])
+        return first_components
+    except Exception:
+        return None
+
+def check_allowed_roots(
+    top_level: List[str], 
+    allowed: List[str], 
+    exemptions: Set[str],
+    repo_root: Path = None,
+    ephemeral: List[str] = None,
+    ignore_untracked: bool = False
+) -> Tuple[List[str], List[str]]:
+    """
+    Check for directories that aren't in the allowed list.
+    Returns (errors, warnings) tuple.
+    
+    Ephemeral directories (logs/, out/, tmp/) are handled specially:
+    - If untracked: warned but ignored
+    - If tracked: error (should be in .gitignore)
+    """
+    ephemeral_set = set(ephemeral or [])
+    tracked = git_tracked_top_level(repo_root) if (repo_root and ignore_untracked) else None
+    
+    errors = []
+    warnings = []
+    
+    for d in top_level:
+        # Skip if in allowed or exemptions
+        if d in allowed or d in exemptions:
+            continue
+        
+        # Handle ephemeral directories
+        if d in ephemeral_set:
+            if tracked is not None and d in tracked:
+                errors.append(f"{d}/ (ephemeral but tracked - add to .gitignore)")
+            else:
+                warnings.append(f"{d}/ (ephemeral, untracked - ignored)")
+            continue
+        
+        # Handle other untracked directories if ignore_untracked is enabled
+        if tracked is not None and d not in tracked:
+            warnings.append(f"{d}/ (untracked, ignored)")
+            continue
+        
+        # Otherwise it's an error
+        errors.append(d)
+    
+    return errors, warnings
 
 def check_path_depth(repo_root: Path, max_depth: int, exemptions: Set[str]) -> List[Tuple[str, int]]:
     """Check for paths exceeding maximum depth"""
@@ -222,6 +285,13 @@ def generate_report(repo_root: Path, config: dict, violations: Dict[str, List]) 
             print(f"  ❌ {root}/")
         print()
     
+    # Allowed roots warnings (ephemeral/untracked)
+    if violations.get('disallowed_warnings'):
+        log('WARN', f"Found {len(violations['disallowed_warnings'])} ephemeral/untracked directories (ignored):")
+        for root in violations['disallowed_warnings']:
+            print(f"  ℹ️  {root}")
+        print()
+    
     # Plane subdir structure check
     if violations.get('plane_subdirs'):
         has_violations = True
@@ -307,16 +377,23 @@ def main():
     # Check plane subdirectory structure
     plane_ok, plane_violations = check_plane_subdirs(repo_root)
     
+    # Check allowed roots with ephemeral handling
+    disallowed_errors, disallowed_warnings = check_allowed_roots(
+        top_level,
+        config['rules']['allowed_top_level'],
+        exemptions,
+        repo_root=repo_root,
+        ephemeral=config['rules'].get('ephemeral_top_level', []),
+        ignore_untracked=config['rules'].get('ignore_untracked_top_level', False)
+    )
+    
     violations = {
         'forbidden_roots': check_forbidden_roots(
             top_level, 
             config['rules']['forbidden_legacy_roots']
         ),
-        'disallowed_roots': check_allowed_roots(
-            top_level,
-            config['rules']['allowed_top_level'],
-            exemptions
-        ),
+        'disallowed_roots': disallowed_errors,
+        'disallowed_warnings': disallowed_warnings,
         'plane_subdirs': plane_violations,
         'path_depth': check_path_depth(
             repo_root,
