@@ -56,7 +56,7 @@ foreach ($port in $ports) {
 Write-Host ""
 Write-Host "4️⃣ Enhanced Service Verification" -ForegroundColor Yellow
 try {
-    $verifyResult = .\scripts\verify-synthetic-ingestion-enhanced.ps1 -ServiceName $env:SERVICE_NAME 2>&1
+    $verifyResult = .\BRAV\SCPT\verify-synthetic-ingestion-enhanced.ps1 -ServiceName $env:SERVICE_NAME 2>&1
     if ($LASTEXITCODE -eq 0) {
         Write-Host "   ✅ Service found in SigNoz" -ForegroundColor Green
     } else {
@@ -69,7 +69,7 @@ try {
 # 5. Playwright evidence collection
 Write-Host ""
 Write-Host "5️⃣ Playwright Evidence Collection" -ForegroundColor Yellow
-Write-Host "   💡 Run manually: pnpm playwright test scripts/signoz-snapshot.spec.ts" -ForegroundColor Blue
+Write-Host "   💡 Run manually: pnpm playwright test BRAV/SCPT/signoz-snapshot.spec.ts" -ForegroundColor Blue
 
 Write-Host ""
 Write-Host "🎯 Final Gate Status" -ForegroundColor Cyan
