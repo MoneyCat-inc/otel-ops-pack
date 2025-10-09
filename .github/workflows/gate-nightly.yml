@@ -30,7 +30,7 @@ jobs:
         id: verify
         shell: pwsh
         run: |
-          pwsh -File scripts/verify-pipeline.ps1
+          pwsh -File BRAV/SCPT/verify-pipeline.ps1
           $code = $LASTEXITCODE
           echo "exit_code=$code" >> $env:GITHUB_OUTPUT
           exit 0

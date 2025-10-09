@@ -70,7 +70,7 @@ jobs:
       - name: Run diagnostic check
         shell: bash
         run: |
-          chmod +x scripts/diagnostic.sh
+          chmod +x BRAV/SCPT/diagnostic.sh
           ./scripts/diagnostic.sh artifacts/ci-diagnostics.json
           cat artifacts/ci-diagnostics.json
       
@@ -90,7 +90,7 @@ jobs:
       - name: Run IONA gate verification
         shell: pwsh
         run: |
-          pwsh -File scripts/verify-iona-gate.ps1
+          pwsh -File BRAV/SCPT/verify-iona-gate.ps1
       
       - name: Upload artifacts
         if: always()

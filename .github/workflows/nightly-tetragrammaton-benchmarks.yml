@@ -69,7 +69,7 @@ jobs:
       - name: Dry Run Validation
         run: |
           Write-Host "🧪 Executing dry run validation..." -ForegroundColor Cyan
-          pwsh -File scripts/nightly-tetragrammaton-ci.ps1 -DryRun
+          pwsh -File BRAV/SCPT/nightly-tetragrammaton-ci.ps1 -DryRun
           
           if ($LASTEXITCODE -ne 0) {
             Write-Host "❌ Dry run validation failed" -ForegroundColor Red
@@ -81,7 +81,7 @@ jobs:
         run: |
           Write-Host "🐾 Executing Tetragrammaton cross-language benchmarks..." -ForegroundColor Cyan
           
-          pwsh -File scripts/nightly-tetragrammaton-ci.ps1 -SignozUrl $env:SIGNOZ_URL -BenchmarkPaths @($env:NODEJS_BENCHMARK_PATH, $env:PYTHON_BENCHMARK_PATH) -OutputRoot $env:OUTPUT_ROOT -ECRRReportDir $env:ECRR_REPORT_DIR -BossCatSnapshotDir $env:BOSSCAT_SNAPSHOT_DIR
+          pwsh -File BRAV/SCPT/nightly-tetragrammaton-ci.ps1 -SignozUrl $env:SIGNOZ_URL -BenchmarkPaths @($env:NODEJS_BENCHMARK_PATH, $env:PYTHON_BENCHMARK_PATH) -OutputRoot $env:OUTPUT_ROOT -ECRRReportDir $env:ECRR_REPORT_DIR -BossCatSnapshotDir $env:BOSSCAT_SNAPSHOT_DIR
           
           if ($LASTEXITCODE -ne 0) {
             Write-Host "❌ Tetragrammaton benchmarks failed" -ForegroundColor Red

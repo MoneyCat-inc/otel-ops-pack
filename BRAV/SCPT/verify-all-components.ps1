@@ -254,7 +254,7 @@ if ($TestEndToEnd) {
     Write-Host "`nClean: Running end-to-end test..." -ForegroundColor Green
     
     try {
-        $EndToEndTest = pwsh -File scripts/end-to-end-test.ps1 -TestMessage "Component verification test"
+        $EndToEndTest = pwsh -File BRAV/SCPT/end-to-end-test.ps1 -TestMessage "Component verification test"
         $VerificationStatus.test_results.end_to_end_test = "completed"
     } catch {
         Write-Host "  ERROR End-to-end test failed: $($_.Exception.Message)" -ForegroundColor Red

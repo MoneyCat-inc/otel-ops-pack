@@ -19,7 +19,7 @@ jobs:
         shell: pwsh
         run: |
           Write-Host "🔐 Running repository security verification..." -ForegroundColor Cyan
-          pwsh -File scripts/setup-github-repo-security.ps1 -TestOnly
+          pwsh -File BRAV/SCPT/setup-github-repo-security.ps1 -TestOnly
           
       - name: Verify Actions Enabled
         uses: actions/github-script@v7
