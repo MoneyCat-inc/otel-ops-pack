@@ -1,0 +1,3 @@
+12637f6 feat(bosscat): Phase E - High-value directory cleanup
+cab2832 docs(bosscat): Add tetragram status quick reference
+76472a6 docs(bosscat): Phase C.4 executive summary
