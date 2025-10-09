@@ -1,0 +1,389 @@
+# top-level
+
+Mode  Name
+----  ----
+d---- .agent
+d---- .artifacts
+d---- .cursor
+d--h- .git
+d---- .github
+d---- .tmp
+d---- .vscode
+d---- ~
+d---- ai-context
+d---- alerts
+d---- ALFA
+d---- app
+d---- apps
+d---- audit
+d---- BRAV
+d---- CHAR
+d---- codex
+d---- collector
+d---- comfort-cat-stubs
+d---- components
+d---- cuda
+d---- DELT
+d---- experiments
+d---- gpu
+d---- gpu-buffers
+d---- lib
+d---- logs
+d---- models
+d---- otel
+d---- out
+d---- pages
+d---- patches
+d---- policies
+d---- preview
+d---- prisma
+d---- projects
+d---- schemas
+d---- sidecars
+d---- test-results
+d---- tmp
+d---- triton-models
+d---- upstream-contribution
+d---- validation
+d---- visual-assets-draft
+d---- workflows
+-a--- .cursor-prompt.md
+-a--- .cursorignore
+-a--- .cursorrules
+-a--- .dockerignore
+-a--- .editorconfig
+-a--- .env
+-a--- .env.example
+-a--- .eslintrc.js
+-a--- .gitattributes
+-a--- .gitignore
+-a--- .gitleaks.toml
+-a--- .gitmessage
+-a--- .gitmodules
+-a--- .lefthook-local.yml.example
+-a--- .mergify.yml
+-a--- .node-version
+-a--- .nvmrc
+-a--- .pre-commit-config.yaml
+-a--- .prettierrc
+-a--- .yamllint
+-a--- agent-scheduler.ps1
+-a--- AGENTS.md
+-a--- ai-assistant-config.yaml
+-a--- ai-assistant-helper.ps1
+-a--- ART_OF_ECRR.md
+-a--- azure-pipelines-ecrr.yml
+-a--- basic-test.ps1
+-a--- BOSSCAT_TETRAGRAM_KIT_INSTALLED.md
+-a--- bring-up.ps1
+-a--- canary-check-min.ps1
+-a--- canary-check.ps1
+-a--- canary-monitor.ps1
+-a--- canary-test.ps1
+-a--- canary.yml
+-a--- CHANGELOG.md
+-a--- chaos-drill.ps1
+-a--- check-ports.ps1
+-a--- check-validation-status.ps1
+-a--- ci-cd-pipeline-ecrr.yml
+-a--- ci-cd-pipeline.yml
+-a--- cleanup-repository.ps1
+-a--- cleanup-simple.ps1
+-a--- cleanup-test-artifacts.ps1
+-a--- clickhouse-cluster-config.xml
+-a--- clickhouse-zookeeper-config.xml
+-a--- CODEOWNERS
+-a--- collect-validation-evidence.ps1
+-a--- config-schema.ps1
+-a--- config.backup.yaml
+-a--- config.yaml
+-a--- DECISIONS.md
+-a--- deploy-pressure-monitoring.ps1
+-a--- docker-compose-optimized.yml
+-a--- docker-compose-signoz-simple.yml
+-a--- docker-compose-signoz.yml
+-a--- docker-compose.gpu.yml
+-a--- docker-compose.unified.yml
+-a--- docker-compose.yml
+-a--- Dockerfile
+-a--- Dockerfile.demo
+-a--- Dockerfile.dev
+-a--- Dockerfile.gpu-base
+-a--- env.template
+-a--- final-verification.ps1
+-a--- Fix-CursorPrematureClose.ps1
+-a--- FORBIDDEN_ROOTS_ELIMINATED.md
+-a--- gpu-metrics-emitter.py
+-a--- gpu-metrics-simple.py
+-a--- gpu-monitor.ps1
+-a--- gpu-voice-analysis.py
+-a--- green-sheet.ps1
+-a--- health-check.ps1
+-a--- import-canary-alert.ps1
+-a--- import-metrics-alert.ps1
+-a--- index.html
+-a--- instrumentation-disabled.js
+-a--- instrumentation-minimal.js
+-a--- instrumentation-simple.js
+-a--- instrumentation.ts
+-a--- integration-tests.ps1
+-a--- jest.config.ts
+-a--- kafka-smoke.ps1
+-a--- lefthook.yml
+-a--- make-audit-pack.ps1
+-a--- migrate-to-agent-structure.ps1
+-a--- monitor-canary-task.ps1
+-a--- monitor-ci-background.ps1
+-a--- monitor-parallel-validation.ps1
+-a--- next-env.d.ts
+-a--- next.config.js
+-a--- otel-demo-app.js
+-a--- package-minimal.json
+-a--- package-working.json
+-a--- package.json
+-a--- pfac_run.py
+-a--- PHASE_B1_COMPLETE.md
+-a--- PHASES_B1_B2_COMPLETE.md
+-a--- playwright.chromium.config.ts
+-a--- playwright.config.ts
+-a--- playwright.signoz.config.ts
+-a--- playwright.smoke.config.ts
+-a--- pnpm-lock.yaml
+-a--- pnpm-workspace.yaml
+-a--- post-deploy-smoke.ps1
+-a--- PSScriptAnalyzerSettings.psd1
+-a--- qc
+-a--- query
+-a--- queue-steward-dashboard-logs.json
+-a--- queue-steward-dashboard.json
+-a--- quick-status-check.ps1
+-a--- quick-status.ps1
+-a--- QUICKSTART.md
+-a--- README.md
+-a--- repo-clean-inventory.ps1
+-a--- restart-collector.ps1
+-a--- RESTORE_DEPENDENCIES.md
+-a--- roadmap.json
+-a--- rolling_run.py
+-a--- run-agent.ps1
+-a--- run-gpu-analysis.ps1
+-a--- run-gpu-metrics.ps1
+-a--- safe-apply-config.ps1
+-a--- security-remediation-ngrok.ps1
+-a--- setup_cursor_implementer.ps1
+-a--- setup_cursor_implementer.sh
+-a--- setup-commit-template.ps1
+-a--- setup-resonai-env.ps1
+-a--- setup-weekly-audit.ps1
+-a--- signoz-alerts.json
+-a--- signoz-collector-config.backup.yaml
+-a--- signoz-collector-config.yaml
+-a--- signoz-ecrr-canary-alert.json
+-a--- signoz-health-canary-alert.json
+-a--- signoz-hurst-exponent-drift-alert.json
+-a--- signoz-memory-alert.json
+-a--- signoz-metrics-canary-alert.json
+-a--- signoz-queue-pressure-dashboard.json
+-a--- signoz-scan-critical-high.json
+-a--- signoz-windows-logs-canary-alert.json
+-a--- start
+-a--- start-signoz.ps1
+-a--- start-signoz.sh
+-a--- startup-observability.ps1
+-a--- STATUS.md
+-a--- stop
+-a--- TASKS.md
+-a--- test-agent-processing.ps1
+-a--- test-agent.ps1
+-a--- test-canary-monitor.ps1
+-a--- test-config.ps1
+-a--- Test-ResonaiStack.ps1
+-a--- test-reviewdog.js
+-a--- test-runbook-execution.ps1
+-a--- test-scripts.ps1
+-a--- test-setup.ps1
+-a--- test-validation-simple.ps1
+-a--- test-webhook-payload.json
+-a--- test-yaml.ps1
+-a--- TETRAGRAM_MIGRATION_COMPLETE.md
+-a--- tsconfig.error-watcher.json
+-a--- tsconfig.json
+-a--- validate-concurrency-queue.ps1
+-a--- validate-pipeline.ps1
+-a--- validate-yaml.py
+-a--- vercel.json
+-a--- verify-ci-fixes.ps1
+-a--- verify-collector.ps1
+-a--- verify-hardened-collector.ps1
+-a--- verify-integration.ps1
+-a--- verify-pipeline.ps1
+-a--- yaml-check.py
+
+
+
+# ALFA/
+
+ALFA\OTEL
+ALFA\OTEL\synthetic
+ALFA\TEST
+ALFA\TEST\unit
+ALFA\TEST\unit\contract
+ALFA\TEST\unit\e2e
+ALFA\TEST\unit\helpers
+ALFA\TEST\unit\k6
+ALFA\TEST\unit\locust
+ALFA\TEST\unit\privacy
+ALFA\TEST\unit\smoke
+ALFA\TEST\unit\tetragrammaton
+ALFA\TOOL
+ALFA\TOOL\cli
+
+# BRAV/
+
+BRAV\DOCK
+BRAV\DOCK\legacy
+BRAV\DOCK\legacy\docker
+BRAV\INFR
+BRAV\INFR\deployment-pipeline
+BRAV\INFR\deployment-pipeline\.github
+BRAV\INFR\deployment-pipeline\docs
+BRAV\INFR\deployment-pipeline\k8s
+BRAV\INFR\deployment-pipeline\scripts
+BRAV\INFR\deployment-pipeline\src
+BRAV\INFR\deployment-pipeline\tests
+BRAV\INFR\helm
+BRAV\INFR\helm\codex-local
+BRAV\INFR\legacy
+BRAV\SCPT
+BRAV\SCPT\__pycache__
+BRAV\SCPT\.agent
+BRAV\SCPT\agent
+BRAV\SCPT\agent\error-watcher
+BRAV\SCPT\agent\lib
+BRAV\SCPT\agent\migrate
+BRAV\SCPT\agent\tools
+BRAV\SCPT\agent\utils
+BRAV\SCPT\agent\workflows
+BRAV\SCPT\artifacts
+BRAV\SCPT\artifacts\boot-reports
+BRAV\SCPT\auto-bots
+BRAV\SCPT\ci
+BRAV\SCPT\docs
+BRAV\SCPT\docs\ecrr
+BRAV\SCPT\docs\observability
+BRAV\SCPT\ecrr
+BRAV\SCPT\github-workflows
+BRAV\SCPT\memx
+BRAV\SCPT\observability
+BRAV\SCPT\policy
+BRAV\SCPT\ps
+BRAV\SCPT\reference-scan
+BRAV\SCPT\roadmap
+BRAV\SCPT\secrets
+BRAV\SCPT\security
+BRAV\SCPT\signoz
+BRAV\SCPT\supplychain
+
+# CHAR/
+
+CHAR\DOCS
+CHAR\DOCS\docs
+CHAR\DOCS\docs\agent
+CHAR\DOCS\docs\agents
+CHAR\DOCS\docs\archive
+CHAR\DOCS\docs\assets
+CHAR\DOCS\docs\bench
+CHAR\DOCS\docs\BossCat
+CHAR\DOCS\docs\cheat-sheets
+CHAR\DOCS\docs\cheatsheets
+CHAR\DOCS\docs\comfort cat
+CHAR\DOCS\docs\comfort-cat
+CHAR\DOCS\docs\dashboard
+CHAR\DOCS\docs\dashboards
+CHAR\DOCS\docs\ecrr
+CHAR\DOCS\docs\ECRR_REPORTS
+CHAR\DOCS\docs\experiments
+CHAR\DOCS\docs\golden
+CHAR\DOCS\docs\gpu
+CHAR\DOCS\docs\grafana
+CHAR\DOCS\docs\IONA
+CHAR\DOCS\docs\LOGO
+CHAR\DOCS\docs\memx
+CHAR\DOCS\docs\metrics
+CHAR\DOCS\docs\observability
+CHAR\DOCS\docs\patterns
+CHAR\DOCS\docs\planning
+CHAR\DOCS\docs\project-reports
+CHAR\DOCS\docs\release-notes
+CHAR\DOCS\docs\reports
+CHAR\DOCS\docs\research
+CHAR\DOCS\docs\roles
+CHAR\DOCS\docs\runbooks
+CHAR\DOCS\docs\security
+CHAR\DOCS\docs\sort pile
+CHAR\DOCS\docs\status
+CHAR\DOCS\docs\templates
+CHAR\DOCS\docs\upstream
+CHAR\EVID
+CHAR\EVID\artifacts
+CHAR\EVID\artifacts\agent-workspaces
+CHAR\EVID\artifacts\agents
+CHAR\EVID\artifacts\auto-bots
+CHAR\EVID\artifacts\benchmarks
+CHAR\EVID\artifacts\boot-reports
+CHAR\EVID\artifacts\dashboard-snapshots
+CHAR\EVID\artifacts\demo-results
+CHAR\EVID\artifacts\deployment-backups
+CHAR\EVID\artifacts\deployment-reports
+CHAR\EVID\artifacts\diagnostic-20251007-160159
+CHAR\EVID\artifacts\diagnostic-20251007-160340
+CHAR\EVID\artifacts\diagnostic-20251007-161617
+CHAR\EVID\artifacts\diagnostic-20251007-172932
+CHAR\EVID\artifacts\doe
+CHAR\EVID\artifacts\ecrr
+CHAR\EVID\artifacts\ecrr-analysis
+CHAR\EVID\artifacts\ecrr-compliance-monitoring
+CHAR\EVID\artifacts\ecrr-evidence
+CHAR\EVID\artifacts\ecrr-run
+CHAR\EVID\artifacts\gpu_diag
+CHAR\EVID\artifacts\iona
+CHAR\EVID\artifacts\locust
+CHAR\EVID\artifacts\reference-scan
+CHAR\EVID\artifacts\reports
+CHAR\EVID\artifacts\security-monitoring
+CHAR\EVID\artifacts\security-scans
+CHAR\EVID\artifacts\snapshots
+CHAR\EVID\artifacts\test-decomposition
+CHAR\EVID\artifacts\test-results
+CHAR\EVID\gate
+CHAR\EVID\phase-b1
+CHAR\EVID\playwright-report
+CHAR\EVID\reports
+CHAR\EVID\reports\gpu-sidecar
+CHAR\PRSV
+CHAR\PRSV\archive
+CHAR\PRSV\archive\compliance-reports
+CHAR\PRSV\archive\ecrr-reports
+CHAR\PRSV\archive\handoff-reports
+CHAR\PRSV\archive\launch-assets-archive
+CHAR\PRSV\archive\milestone-reports
+CHAR\PRSV\backups
+
+# DELT/
+
+DELT\ASST
+DELT\ASST\assets
+DELT\ASST\assets\alerts
+DELT\ASST\assets\dashboards
+DELT\CONF
+DELT\CONF\config
+DELT\CONF\config\observability
+DELT\CONF\configs
+DELT\CONF\configs\alertmanager
+DELT\CONF\configs\dashboards
+DELT\CONF\configs\prometheus
+DELT\FIXT
+DELT\FIXT\baseline
+DELT\FIXT\test-payloads
+DELT\TMPL
+DELT\TMPL\templates
