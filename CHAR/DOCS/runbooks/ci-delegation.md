@@ -10,7 +10,7 @@
 
 GitHub Actions workflows should be **thin delegators** that call scripts in `BRAV/SCPT/`. This keeps workflows maintainable and allows local testing.
 
-**Rule:** Inline `run:` blocks should be ≤40 lines (ideally ≤20). Complex logic goes in `BRAV/SCPT/`.
+**Rule:** Inline `run:` blocks should be ≤20 lines (enforced at 40 during migration, ratcheting to 20). Complex logic goes in `BRAV/SCPT/`.
 
 ---
 
