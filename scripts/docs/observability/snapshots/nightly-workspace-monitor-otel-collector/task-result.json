@@ -3,10 +3,10 @@
     "metrics-collection.json",
     "performance-baseline.json"
   ],
-  "Duration": 822.0234,
-  "StartTime": "2025-10-08T03:00:04.5933208+01:00",
-  "EndTime": "2025-10-08T03:00:05.4153442+01:00",
   "Status": "completed",
+  "EndTime": "2025-10-09T03:00:06.6292664+01:00",
   "Workspace": "docs\\observability\\snapshots\\nightly-workspace-monitor-otel-collector",
-  "TaskId": "nightly-monitor-otel-collector"
+  "StartTime": "2025-10-09T03:00:04.5140406+01:00",
+  "TaskId": "nightly-monitor-otel-collector",
+  "Duration": 2115.2258
 }

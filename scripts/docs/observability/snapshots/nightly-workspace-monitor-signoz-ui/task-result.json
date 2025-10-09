@@ -3,10 +3,10 @@
     "metrics-collection.json",
     "performance-baseline.json"
   ],
-  "Duration": 2006.336,
-  "StartTime": "2025-10-08T03:00:04.5852649+01:00",
-  "EndTime": "2025-10-08T03:00:06.5916009+01:00",
   "Status": "completed",
+  "EndTime": "2025-10-09T03:00:05.3849316+01:00",
   "Workspace": "docs\\observability\\snapshots\\nightly-workspace-monitor-signoz-ui",
-  "TaskId": "nightly-monitor-signoz-ui"
+  "StartTime": "2025-10-09T03:00:04.5091431+01:00",
+  "TaskId": "nightly-monitor-signoz-ui",
+  "Duration": 875.7885
 }

@@ -1,0 +1,131 @@
+{
+  "EndTime": "2025-10-09T03:00:06.6338625+01:00",
+  "Performance": {
+    "ParallelEfficiency": 37.5,
+    "AverageDuration": 1384.38,
+    "TotalDuration": 4742.4199
+  },
+  "TotalTasks": 9,
+  "SessionId": "nightly-20251009-030001",
+  "FailedAgents": 0,
+  "StartTime": "2025-10-09T03:00:01.9006048+01:00",
+  "Agents": {
+    "Completed": [
+      {
+        "Artifacts": [
+          "compliance-trends.png",
+          "compliance-trends.json"
+        ],
+        "Status": "completed",
+        "TimeRange": "24h",
+        "EndTime": "2025-10-09T03:00:03.0430367+01:00",
+        "Workspace": "docs\\observability\\snapshots\\nightly-workspace-export-compliance-trends-24h",
+        "StartTime": "2025-10-09T03:00:02.1436487+01:00",
+        "TaskId": "nightly-export-compliance-trends-24h",
+        "Duration": 899.388
+      },
+      {
+        "Artifacts": [
+          "pipeline-health.png",
+          "pipeline-health.json"
+        ],
+        "Status": "completed",
+        "TimeRange": "24h",
+        "EndTime": "2025-10-09T03:00:03.5602094+01:00",
+        "Workspace": "docs\\observability\\snapshots\\nightly-workspace-export-pipeline-health-24h",
+        "StartTime": "2025-10-09T03:00:02.1406892+01:00",
+        "TaskId": "nightly-export-pipeline-health-24h",
+        "Duration": 1419.5202
+      },
+      {
+        "Artifacts": [
+          "performance-metrics.png",
+          "performance-metrics.json"
+        ],
+        "Status": "completed",
+        "TimeRange": "24h",
+        "EndTime": "2025-10-09T03:00:03.7778738+01:00",
+        "Workspace": "docs\\observability\\snapshots\\nightly-workspace-export-performance-metrics-24h",
+        "StartTime": "2025-10-09T03:00:02.1533664+01:00",
+        "TaskId": "nightly-export-performance-metrics-24h",
+        "Duration": 1624.5074
+      },
+      {
+        "Artifacts": [
+          "error-analysis.png",
+          "error-analysis.json"
+        ],
+        "Status": "completed",
+        "TimeRange": "24h",
+        "EndTime": "2025-10-09T03:00:03.9003530+01:00",
+        "Workspace": "docs\\observability\\snapshots\\nightly-workspace-export-error-analysis-24h",
+        "StartTime": "2025-10-09T03:00:02.1623788+01:00",
+        "TaskId": "nightly-export-error-analysis-24h",
+        "Duration": 1737.9742
+      },
+      {
+        "Artifacts": [
+          "compliance-report.json",
+          "audit-summary.md"
+        ],
+        "Status": "completed",
+        "EndTime": "2025-10-09T03:00:04.4440843+01:00",
+        "Workspace": "docs\\observability\\snapshots\\nightly-workspace-batch-01",
+        "StartTime": "2025-10-09T03:00:02.1918524+01:00",
+        "Parallelism": 4,
+        "TaskId": "nightly-batch-chunk-01-p4",
+        "Processed": 100,
+        "Duration": 2252.2319
+      },
+      {
+        "Artifacts": [
+          "health-check-results.json"
+        ],
+        "Status": "completed",
+        "EndTime": "2025-10-09T03:00:05.1060830+01:00",
+        "Workspace": "docs\\observability\\snapshots\\nightly-workspace-api-signoz-health",
+        "StartTime": "2025-10-09T03:00:04.5331807+01:00",
+        "TaskId": "nightly-api-signoz-health",
+        "Duration": 572.9023
+      },
+      {
+        "Artifacts": [
+          "metrics-collection.json",
+          "performance-baseline.json"
+        ],
+        "Status": "completed",
+        "EndTime": "2025-10-09T03:00:05.3849316+01:00",
+        "Workspace": "docs\\observability\\snapshots\\nightly-workspace-monitor-signoz-ui",
+        "StartTime": "2025-10-09T03:00:04.5091431+01:00",
+        "TaskId": "nightly-monitor-signoz-ui",
+        "Duration": 875.7885
+      },
+      {
+        "Artifacts": [
+          "health-check-results.json"
+        ],
+        "Status": "completed",
+        "EndTime": "2025-10-09T03:00:05.5093975+01:00",
+        "Workspace": "docs\\observability\\snapshots\\nightly-workspace-api-otel-metrics",
+        "StartTime": "2025-10-09T03:00:04.5475135+01:00",
+        "TaskId": "nightly-api-otel-metrics",
+        "Duration": 961.884
+      },
+      {
+        "Artifacts": [
+          "metrics-collection.json",
+          "performance-baseline.json"
+        ],
+        "Status": "completed",
+        "EndTime": "2025-10-09T03:00:06.6292664+01:00",
+        "Workspace": "docs\\observability\\snapshots\\nightly-workspace-monitor-otel-collector",
+        "StartTime": "2025-10-09T03:00:04.5140406+01:00",
+        "TaskId": "nightly-monitor-otel-collector",
+        "Duration": 2115.2258
+      }
+    ],
+    "Failed": []
+  },
+  "SuccessRate": 100.0,
+  "CompletedAgents": 9
+}

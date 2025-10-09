@@ -1,5 +1,5 @@
 {
-  "last_update": "2025-10-08T12:05:43.534869+00:00",
+  "last_update": "2025-10-09T04:20:43.054013+00:00",
   "kpis": [
     {
       "label": "SigNoz Status",
@@ -9,15 +9,15 @@
     },
     {
       "label": "Windows Collector",
-      "value": "running",
-      "status": "ok",
+      "value": "stopped",
+      "status": "bad",
       "details": "Service: otelcol-contrib"
     },
     {
       "label": "ECRR Compliance",
       "value": "Active",
       "status": "ok",
-      "details": "ECRR report available"
+      "details": "**Gate Status:** ✅ **READY** (with documented risk acceptance) | **Status:** ✅ **PASS** | **Status:** ✅ READY"
     },
     {
       "label": "Repository Health",

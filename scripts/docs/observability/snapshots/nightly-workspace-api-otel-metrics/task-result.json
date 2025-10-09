@@ -2,10 +2,10 @@
   "Artifacts": [
     "health-check-results.json"
   ],
-  "Duration": 364.755,
-  "StartTime": "2025-10-08T03:00:04.6178148+01:00",
-  "EndTime": "2025-10-08T03:00:04.9825698+01:00",
   "Status": "completed",
+  "EndTime": "2025-10-09T03:00:05.5093975+01:00",
   "Workspace": "docs\\observability\\snapshots\\nightly-workspace-api-otel-metrics",
-  "TaskId": "nightly-api-otel-metrics"
+  "StartTime": "2025-10-09T03:00:04.5475135+01:00",
+  "TaskId": "nightly-api-otel-metrics",
+  "Duration": 961.884
 }

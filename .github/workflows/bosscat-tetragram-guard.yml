@@ -1,0 +1,28 @@
+name: BossCat · Tetragram Guard
+on: [pull_request]
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: 9 }
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - name: Validate 4-4-4-4 + A/B
+        run: pnpm agent:validate-names
+      - name: A/B smoke (all lanes)
+        run: |
+          pnpm agent:smoke:ssot
+          pnpm agent:smoke:flak
+          pnpm agent:smoke:sele
+          pnpm agent:smoke:comp
+          pnpm agent:smoke:docs
+      - name: Gate signal (comment template)
+        run: |
+          echo "CI is green and all checks are satisfied."
+          echo "**@cat ready-for-gate** 🚪✅"
+

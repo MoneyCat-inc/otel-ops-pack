@@ -1,0 +1,5 @@
+BossCat SLO metric expectations (edit in scripts/bosscat-alerts-slo-burnrate.ps1):
+  • Request counter: http_server_request_duration_seconds_count
+  • Latency buckets: http_server_request_duration_seconds_bucket
+  • Service selector: service="frontend" (or set -ServiceSelector)
+If these metrics are not present, either align names to your app or emit matching series via your app/exporter.

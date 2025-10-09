@@ -1,0 +1,46 @@
+{
+  "timestamp": "2025-10-08T16:20:11.898Z",
+  "signoz": {
+    "health": "healthy",
+    "metricsCount": 0
+  },
+  "dashboards": {
+    "index.html": {
+      "status": "error",
+      "accessible": false,
+      "error": "Connection failed: socket hang up"
+    },
+    "docs/dashboards/index.html": {
+      "status": "error",
+      "accessible": false,
+      "error": "Connection failed: socket hang up"
+    },
+    "docs/dashboards/live-metrics.html": {
+      "status": "error",
+      "accessible": false,
+      "error": "Connection failed: socket hang up"
+    },
+    "docs/dashboards/stress-testing.html": {
+      "status": "error",
+      "accessible": false,
+      "error": "Connection failed: socket hang up"
+    },
+    "docs/dashboards/advanced-visualizations.html": {
+      "status": "error",
+      "accessible": false,
+      "error": "Connection failed: socket hang up"
+    }
+  },
+  "system": {
+    "platform": "win32",
+    "arch": "x64",
+    "uptime": 59452.937,
+    "totalMemory": 34274869248,
+    "freeMemory": 10887999488,
+    "loadAverage": [
+      0,
+      0,
+      0
+    ]
+  }
+}
