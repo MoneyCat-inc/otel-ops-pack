@@ -168,3 +168,7 @@ visual-assets-draft/
 # Local experimental/buffer directories
 gpu-buffers/
 sidecars/
+
+# Tetragram Health Monitoring - Ephemeral Artifacts
+CHAR/EVID/health/update-status.log
+CHAR/EVID/diagnostics/gpu-sidecars-*.txt

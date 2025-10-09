@@ -1,0 +1,19 @@
+{
+  "guardrails": {
+    "ok": true,
+    "exit_code": 0
+  },
+  "summary": {
+    "overall_health": "PASS"
+  },
+  "commit": "aa3e8ef44a3123235031e5954ca7fd2071f51341",
+  "windows": {
+    "service_count": 1,
+    "running": 3
+  },
+  "last_update": "2025-10-09T17:08:38Z",
+  "docker": {
+    "healthy": 4,
+    "container_count": 4
+  }
+}

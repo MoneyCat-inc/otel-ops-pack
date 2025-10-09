@@ -1,0 +1,22 @@
+[
+  {
+    "image": "signoz/signoz:v0.96.1",
+    "name": "signoz",
+    "status": "Up 6 hours (healthy)"
+  },
+  {
+    "image": "clickhouse/clickhouse-server:25.5.6",
+    "name": "signoz-clickhouse",
+    "status": "Up 6 hours (healthy)"
+  },
+  {
+    "image": "signoz/zookeeper:3.9.3",
+    "name": "signoz-zookeeper",
+    "status": "Up 6 hours (healthy)"
+  },
+  {
+    "image": "signoz/signoz-otel-collector:v0.129.6",
+    "name": "signoz-otel-collector",
+    "status": "Up 7 hours (healthy)"
+  }
+]
