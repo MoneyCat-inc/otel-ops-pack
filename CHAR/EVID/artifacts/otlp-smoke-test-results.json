@@ -1,0 +1,22 @@
+{
+  "started_at": "2025-10-09T18:39:49.539651",
+  "tests": {
+    "trace_id_generation": {
+      "status": "PASS"
+    },
+    "canary_trace_generation": {
+      "status": "PASS"
+    },
+    "batch_trace_generation": {
+      "status": "PASS"
+    },
+    "protocol_selection": {
+      "status": "PASS"
+    },
+    "mock_otlp_exporter": {
+      "status": "PASS"
+    }
+  },
+  "overall_status": "PASS",
+  "completed_at": "2025-10-09T18:39:49.540085"
+}
