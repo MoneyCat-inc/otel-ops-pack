@@ -10,7 +10,7 @@ param(
 )
 
 # Import progress indicators module
-. .\scripts\progress-indicators.ps1
+. .\BRAV\SCPT\progress-indicators.ps1
 
 Set-StrictMode -Version 2
 $ErrorActionPreference = "Stop"

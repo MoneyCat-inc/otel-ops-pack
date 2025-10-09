@@ -10,7 +10,7 @@ param(
 )
 
 # Import progress indicators module
-. .\scripts\progress-indicators.ps1
+. .\BRAV\SCPT\progress-indicators.ps1
 
 Write-Host "⚡ Quick Pipeline Monitor" -ForegroundColor Cyan
 Write-Host "Fast health check with ECRR reporting" -ForegroundColor Gray

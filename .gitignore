@@ -165,3 +165,6 @@ visual-assets-draft/
 
 # Repo-root tilde directory (accidental PS/junction artifact)
 ~/
+# Local experimental/buffer directories
+gpu-buffers/
+sidecars/

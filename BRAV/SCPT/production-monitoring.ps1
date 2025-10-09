@@ -4,7 +4,7 @@
 # Updated with progress indicators for better user experience
 
 # Import progress indicators module
-. .\scripts\progress-indicators.ps1
+. .\BRAV\SCPT\progress-indicators.ps1
 
 param(
     [string]$Environment = "production",
