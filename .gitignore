@@ -154,3 +154,6 @@ third_party/
 
 # Reference scan working data (regeneratable)
 artifacts/reference-scan/
+
+# Legacy scripts directory - migrated to BRAV/SCPT/
+scripts/
