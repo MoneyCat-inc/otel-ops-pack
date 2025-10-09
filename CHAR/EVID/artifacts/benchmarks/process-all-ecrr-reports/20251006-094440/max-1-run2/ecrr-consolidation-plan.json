@@ -1,0 +1,26 @@
+{
+  "TotalCandidates": 1,
+  "ConsolidationGroups": {
+    "SigNoz Alert Reports": [],
+    "Rollout Merge Reports": [
+      "2025-09-29-rollout-merge-oct-2025-consolidated.md"
+    ],
+    "ECRR-01 Reports": [],
+    "Production Deployment Reports": [],
+    "GPU Automation Reports": []
+  },
+  "ImplementationPlan": {
+    "Phase3": "Archive originals and update references",
+    "Phase2": "Consolidate secondary groups (7 reports → 2 reports)",
+    "Phase1": "Consolidate high-priority groups (12 reports → 3 reports)"
+  },
+  "Candidates": [
+    "2025-09-29-rollout-merge-oct-2025-consolidated.md"
+  ],
+  "ProcessingDate": "2025-10-06 09:44:48 UTC",
+  "ExpectedImpact": {
+    "ContentDeduplication": "90% reduction in redundant content",
+    "ReportReduction": "15% fewer reports",
+    "QualityImprovement": "Enhanced ECRR compliance and clarity"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "sigNozEndpoint": "http://localhost:8080",
+  "completedRuns": 24,
+  "timeRange": 10,
+  "totalRuns": 24,
+  "experiment": {
+    "timestamp": "20250921-191853",
+    "duration": 30,
+    "stage": "stage1",
+    "replicates": 1,
+    "loadCommand": "pwsh -File scripts/generate-synthetic-load.ps1"
+  },
+  "measurementsExtracted": 24,
+  "extractionTimestamp": "2025-09-21T23:08:37.177Z"
+}

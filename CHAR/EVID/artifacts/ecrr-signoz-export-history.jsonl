@@ -1,0 +1,42 @@
+{
+  "signozUrl": "http://localhost:8080",
+  "metricsCount": 8,
+  "success": true,
+  "timestamp": "2025-09-29 19:35:04 UTC"
+}
+{
+  "signozUrl": "http://localhost:8080",
+  "metricsCount": 8,
+  "timestamp": "2025-09-29 19:36:40 UTC",
+  "success": true
+}
+{
+  "metricsCount": 8,
+  "success": true,
+  "signozUrl": "http://localhost:8080",
+  "timestamp": "2025-09-29 19:38:58 UTC"
+}
+{
+  "success": true,
+  "timestamp": "2025-10-02 06:05:02 UTC",
+  "signozUrl": "http://localhost:8080",
+  "metricsCount": 8
+}
+{
+  "signozUrl": "http://localhost:8080",
+  "success": true,
+  "timestamp": "2025-10-05 06:05:06 UTC",
+  "metricsCount": 8
+}
+{
+  "timestamp": "2025-10-07 06:05:02 UTC",
+  "signozUrl": "http://localhost:8080",
+  "metricsCount": 8,
+  "success": true
+}
+{
+  "metricsCount": 8,
+  "timestamp": "2025-10-08 06:05:03 UTC",
+  "signozUrl": "http://localhost:8080",
+  "success": true
+}

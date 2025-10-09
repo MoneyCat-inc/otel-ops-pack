@@ -1,0 +1,151 @@
+# Prometheus Integration Template
+# Copy this template and customize for your Prometheus setup
+# 
+# =============================================================================
+# PROMETHEUS RECEIVER CONFIGURATION
+# =============================================================================
+receivers:
+  prometheus:
+    config:
+      scrape_configs:
+        # OTel Collector metrics
+        - job_name: otel-collector
+          static_configs:
+            - targets:
+                - 127.0.0.1:8889
+          scrape_interval: 15s
+          metrics_path: /metrics
+        # GPU metrics (if available)
+        - job_name: gpu-metrics
+          static_configs:
+            - targets:
+                - 127.0.0.1:9400
+          scrape_interval: 15s
+          metrics_path: /metrics
+        # Custom application metrics
+        - job_name: application-metrics
+          static_configs:
+            - targets:
+                - 127.0.0.1:8080
+          scrape_interval: 30s
+          metrics_path: /metrics
+          params:
+            format:
+              - prometheus
+# =============================================================================
+
+# PROMETHEUS EXPORTER CONFIGURATION
+
+# =============================================================================
+exporters:
+  prometheus:
+    # Basic Prometheus exporter
+    endpoint: 0.0.0.0:8889 # Prometheus metrics endpoint
+    namespace: otelcol # Metric namespace prefix
+    # Optional: Const labels
+    const_labels:
+      service: otel-collector
+      environment: production
+      datacenter: us-east-1
+    # Optional: Metric relabeling
+    metric_relabeling:
+      - source_labels:
+          - __name__
+        regex: otelcol_(.*)
+        target_label: otel_metric_name
+        replacement: ${1}
+    # Optional: Label relabeling
+    label_relabeling:
+      - source_labels:
+          - service_name
+        regex: (.+)
+        target_label: service
+        replacement: ${1}
+# =============================================================================
+# PIPELINE INTEGRATION
+
+# =============================================================================
+
+# Add to your service pipelines:
+
+# service:
+
+#   pipelines:
+
+#     metrics:
+
+#       receivers: [otlp, prometheus]  # Add prometheus receiver
+
+#       processors: [resource/defaults, memory_limiter, batch]
+
+#       exporters: [otlp, prometheus]  # Add prometheus exporter
+
+# =============================================================================
+
+# CUSTOMIZATION OPTIONS
+
+# =============================================================================
+
+# 1. Multiple scrape targets:
+
+# - job_name: 'multiple-targets'
+
+#   static_configs:
+
+#     - targets: ['app1:8080', 'app2:8080', 'app3:8080']
+
+# 2. Service discovery:
+
+# - job_name: 'consul-services'
+
+#   consul_sd_configs:
+
+#     - server: 'localhost:8500'
+
+#       services: ['my-service']
+
+# 3. Custom scrape intervals:
+
+# scrape_interval: 5s    # High frequency
+
+# scrape_interval: 60s   # Low frequency
+
+# 4. Custom metrics path:
+
+# metrics_path: /custom/metrics
+
+# 5. Authentication:
+
+# basic_auth:
+
+#   username: 'user'
+
+#   password: 'pass'
+
+# 6. TLS configuration:
+
+# tls_config:
+
+#   insecure_skip_verify: true
+
+# =============================================================================
+
+# VERIFICATION COMMANDS
+
+# =============================================================================
+
+# Test Prometheus connectivity:
+
+# Invoke-WebRequest -Uri http://127.0.0.1:8889/metrics -UseBasicParsing
+
+# Validate configuration:
+
+# C:\otel\config-schema.ps1 -ConfigPath C:\otel\config.yaml
+
+# Apply configuration:
+
+# C:\otel\safe-apply-config.ps1 -Candidate C:\otel\config.candidate.yaml
+
+# Verify metrics collection:
+
+# C:\otel\canary-check-min.ps1

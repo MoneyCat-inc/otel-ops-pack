@@ -1,0 +1,33 @@
+{
+  "resource_usage": {
+    "cpu_percent": 18.74,
+    "memory_mb": 13336.0
+  },
+  "runId": "stage2_row06-r2-20250921-231348",
+  "factors": {
+    "run_label": "stage2_row06",
+    "traces_timeout_ms": "150",
+    "metrics_timeout_ms": "750",
+    "logs_timeout_ms": "1500",
+    "send_batch_max_size": "10000",
+    "queue_size": "6000",
+    "num_consumers": "2",
+    "memory_limit_mib": "768",
+    "compression": "gzip",
+    "retry_max_elapsed_minutes": "10"
+  },
+  "runLabel": "stage2_row06",
+  "latency": {
+    "p95_ms": 100,
+    "p99_ms": 500
+  },
+  "timestamp": "2025-09-22T02:10:39.547Z",
+  "reliability": {
+    "error_rate_percent": 0.5,
+    "availability_percent": 99.5
+  },
+  "throughput": {
+    "events_per_second": 800
+  },
+  "replicate": 2
+}

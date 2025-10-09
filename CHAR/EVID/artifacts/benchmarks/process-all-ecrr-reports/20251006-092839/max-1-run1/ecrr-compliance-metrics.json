@@ -1,0 +1,43 @@
+{
+  "QualityIssues": [],
+  "ConsolidationCandidates": [
+    "2025-09-29-rollout-merge-oct-2025-consolidated.md"
+  ],
+  "ComplianceMetrics": {
+    "ActorDeclarations": 96.7,
+    "StatusDeclarations": 100.0,
+    "EvidenceReferences": 98.4,
+    "FourSectionStructure": 100.0,
+    "ProductionReady": 96.7,
+    "ECRRGates": 100.0
+  },
+  "Recommendations": [
+    "Add ECRR gates to 0 missing reports",
+    "Ensure 4-section structure in 0 reports",
+    "Add explicit status to 0 reports",
+    "Implement consolidation for 1 candidates"
+  ],
+  "ProcessingDate": "2025-10-06 09:28:44 UTC",
+  "MissingFourSection": [],
+  "TotalReports": 61,
+  "AgentDistribution": {
+    "Other": 4,
+    "Cursor-Local": 6,
+    "ChatGPT Agent": 1,
+    "Cursor Agent": 50,
+    "Codex Agent": 0
+  },
+  "ReportCategories": {
+    "MergeDeployment": 5,
+    "Completion": 0,
+    "Implementation": 9,
+    "Verification": 13,
+    "Other": 34
+  },
+  "TemporalPatterns": {
+    "September 2025": 44,
+    "January 2025": 1
+  },
+  "ProcessedReports": 61,
+  "MissingStatus": []
+}

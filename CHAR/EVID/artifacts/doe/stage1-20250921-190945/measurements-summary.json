@@ -1,0 +1,9 @@
+{
+  "completedRuns": 0,
+  "totalRuns": 72,
+  "timeRange": 10,
+  "experiment": "stage1-dry-run",
+  "measurementsExtracted": 0,
+  "extractionTimestamp": "2025-09-21T19:16:37.852Z",
+  "sigNozEndpoint": "http://localhost:8080"
+}

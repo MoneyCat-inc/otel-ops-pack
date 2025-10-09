@@ -1,0 +1,718 @@
+{
+  "generatedAt": "2025-10-09T07:36:59Z",
+  "metrics": {
+    "totalReports": 60,
+    "hasFourSection": 57,
+    "hasEcrrGate": 57,
+    "hasActor": 57,
+    "hasProductionMarker": 60
+  },
+  "complianceRates": {
+    "fourSection": 95.0,
+    "ecrrGate": 95.0,
+    "actor": 95.0,
+    "production": 100.0,
+    "fullyCompliant": 95.0
+  },
+  "fullyCompliantCount": 57,
+  "nonCompliant": [
+    {
+      "file": "C:\\otel\\docs\\ECRR_REPORTS\\bosscat-ci-deployment-ecrr-2025-10-06.md",
+      "issues": [
+        "missing_four_section",
+        "missing_ecrr_gate",
+        "missing_actor_declaration"
+      ]
+    },
+    {
+      "file": "C:\\otel\\docs\\ECRR_REPORTS\\ECRR_MERGE_STRATEGY_ASSIGNMENT_2025-01-29.md",
+      "issues": [
+        "missing_four_section",
+        "missing_ecrr_gate",
+        "missing_actor_declaration"
+      ]
+    },
+    {
+      "file": "C:\\otel\\docs\\ECRR_REPORTS\\ECRR_ROLLOUT_MERGE_REPORT_2025-01-29.md",
+      "issues": [
+        "missing_four_section",
+        "missing_ecrr_gate",
+        "missing_actor_declaration"
+      ]
+    }
+  ],
+  "files": [
+    {
+      "File": "2025-09-20-ecrr-canary-deployment-ready.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-09-20-ecrr-canary-deployment-ready.md",
+      "LastModified": "2025-10-09T06:11:17.9001362+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-09-20-ecrr-canary-enhancement.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-09-20-ecrr-canary-enhancement.md",
+      "LastModified": "2025-10-09T06:11:17.910166+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-09-20-ecrr-canary-scheduled-run.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-09-20-ecrr-canary-scheduled-run.md",
+      "LastModified": "2025-10-09T06:11:17.9218675+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-09-20-ecrr-implementation.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-09-20-ecrr-implementation.md",
+      "LastModified": "2025-10-09T06:11:17.9300632+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-09-20-ecrr-verification.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-09-20-ecrr-verification.md",
+      "LastModified": "2025-10-09T06:11:17.9441295+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-09-20-readme-ecrr-integration.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-09-20-readme-ecrr-integration.md",
+      "LastModified": "2025-10-09T06:11:17.9536791+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-09-21-ci-validation.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-09-21-ci-validation.md",
+      "LastModified": "2025-10-09T06:11:17.9623463+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-09-21-doe-harness-enhancement.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-09-21-doe-harness-enhancement.md",
+      "LastModified": "2025-10-09T06:11:17.973918+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-09-22-codex-local-docs-integration.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-09-22-codex-local-docs-integration.md",
+      "LastModified": "2025-10-09T06:11:17.982461+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-09-22-comfort-cat-compliance.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-09-22-comfort-cat-compliance.md",
+      "LastModified": "2025-10-09T06:11:17.9935432+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-09-22-comfort-cat-folder-duplication.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-09-22-comfort-cat-folder-duplication.md",
+      "LastModified": "2025-10-09T06:11:18.0030946+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-09-22-monitoring-automation.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-09-22-monitoring-automation.md",
+      "LastModified": "2025-10-09T06:11:18.0126167+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-09-22-monitoring-enhancement.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-09-22-monitoring-enhancement.md",
+      "LastModified": "2025-10-09T06:11:18.0246554+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-09-22-monitoring-infrastructure-setup.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-09-22-monitoring-infrastructure-setup.md",
+      "LastModified": "2025-10-09T06:11:18.0322115+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-09-22-observability-copilot-health-check.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-09-22-observability-copilot-health-check.md",
+      "LastModified": "2025-10-09T06:11:18.044761+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-09-22-observability-copilot-setup.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-09-22-observability-copilot-setup.md",
+      "LastModified": "2025-10-09T06:11:18.0553203+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-09-22-optimized-pipeline-deployment.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-09-22-optimized-pipeline-deployment.md",
+      "LastModified": "2025-10-09T06:11:18.06538+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-09-22-post-merge-validation.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-09-22-post-merge-validation.md",
+      "LastModified": "2025-10-09T06:11:18.0779486+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-09-22-resonai-session-validation.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-09-22-resonai-session-validation.md",
+      "LastModified": "2025-10-09T06:11:18.089503+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-09-22-signoz-ui-and-drilldown-assets.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-09-22-signoz-ui-and-drilldown-assets.md",
+      "LastModified": "2025-10-09T06:11:18.099038+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-09-22-stakeholder-map-validation.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-09-22-stakeholder-map-validation.md",
+      "LastModified": "2025-10-09T06:11:18.1105867+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-09-22-terminal-commands-summary.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-09-22-terminal-commands-summary.md",
+      "LastModified": "2025-10-09T06:11:18.1201309+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-09-22-windows-collector-reset-and-canary.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-09-22-windows-collector-reset-and-canary.md",
+      "LastModified": "2025-10-09T06:11:18.1291624+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-09-27-component-verification-ecrr.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-09-27-component-verification-ecrr.md",
+      "LastModified": "2025-10-09T06:11:18.1397157+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-09-27-e2-ratio-optimization-sprint.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-09-27-e2-ratio-optimization-sprint.md",
+      "LastModified": "2025-10-09T06:11:18.1477508+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-09-27-health-endpoint-consistency-rollout-ecrr.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-09-27-health-endpoint-consistency-rollout-ecrr.md",
+      "LastModified": "2025-10-09T06:11:18.158802+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-09-27-memx-chromium-compatibility-rollout-ecrr.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-09-27-memx-chromium-compatibility-rollout-ecrr.md",
+      "LastModified": "2025-10-09T06:11:18.1723606+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-09-27-pressure-monitoring-deployment.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-09-27-pressure-monitoring-deployment.md",
+      "LastModified": "2025-10-09T06:11:18.1819092+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-09-28-automated-compliance-monitoring-implementation.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-09-28-automated-compliance-monitoring-implementation.md",
+      "LastModified": "2025-10-09T06:11:18.194492+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-09-28-compliance-alert-verification.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-09-28-compliance-alert-verification.md",
+      "LastModified": "2025-10-09T06:11:18.2060366+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-09-28-cursor-agent-deployment.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-09-28-cursor-agent-deployment.md",
+      "LastModified": "2025-10-09T06:11:18.2150649+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-09-28-phase4-rollout.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-09-28-phase4-rollout.md",
+      "LastModified": "2025-10-09T06:11:18.2276148+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-09-28-post-launch-ecrr-verification.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-09-28-post-launch-ecrr-verification.md",
+      "LastModified": "2025-10-09T06:11:18.2376556+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-09-28-queue-telemetry-signoz-validation.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-09-28-queue-telemetry-signoz-validation.md",
+      "LastModified": "2025-10-09T06:11:18.2461884+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-09-28-task-task-a11y-001.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-09-28-task-task-a11y-001.md",
+      "LastModified": "2025-10-09T06:11:18.2572415+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-09-29-ecrr-action-items-and-recommendations.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-09-29-ecrr-action-items-and-recommendations.md",
+      "LastModified": "2025-10-09T06:11:18.2717871+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-09-29-ecrr-consolidation-and-redaction.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-09-29-ecrr-consolidation-and-redaction.md",
+      "LastModified": "2025-10-09T06:11:18.2803141+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-09-29-otel-windows-diagnosis.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-09-29-otel-windows-diagnosis.md",
+      "LastModified": "2025-10-09T06:11:18.2933897+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-09-29-queue-steward-verification.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-09-29-queue-steward-verification.md",
+      "LastModified": "2025-10-09T06:11:18.2943897+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-09-29-signoz-collector-cleanup.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-09-29-signoz-collector-cleanup.md",
+      "LastModified": "2025-10-09T06:11:18.304457+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-09-29-signoz-collector-config.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-09-29-signoz-collector-config.md",
+      "LastModified": "2025-10-09T06:11:18.3124872+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-09-29-signoz-dashboard-import.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-09-29-signoz-dashboard-import.md",
+      "LastModified": "2025-10-09T06:11:18.3240418+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-09-29-signoz-dashboard-verification.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-09-29-signoz-dashboard-verification.md",
+      "LastModified": "2025-10-09T06:11:18.3315757+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-10-01-comprehensive-implementation-summary.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-10-01-comprehensive-implementation-summary.md",
+      "LastModified": "2025-10-09T06:11:18.3325832+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-10-01-ecrr-processing-final-consolidated-report.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-10-01-ecrr-processing-final-consolidated-report.md",
+      "LastModified": "2025-10-09T06:11:18.3406008+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-10-01-final-implementation-summary.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-10-01-final-implementation-summary.md",
+      "LastModified": "2025-10-09T06:11:18.3406008+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-10-01-final-rollout-ecrr-report.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-10-01-final-rollout-ecrr-report.md",
+      "LastModified": "2025-10-09T06:11:18.3416045+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-10-01-log-pattern-fractal-validation.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-10-01-log-pattern-fractal-validation.md",
+      "LastModified": "2025-10-09T06:11:18.3416045+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-10-02-ecrr-current-state-assessment.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-10-02-ecrr-current-state-assessment.md",
+      "LastModified": "2025-10-09T06:11:18.3506377+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-10-02-ecrr-monitoring-status-report.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-10-02-ecrr-monitoring-status-report.md",
+      "LastModified": "2025-10-09T06:11:18.358679+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-10-02-ecrr-monitoring-verification.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-10-02-ecrr-monitoring-verification.md",
+      "LastModified": "2025-10-09T06:11:18.359676+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-10-02-ecrr-operational-status.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-10-02-ecrr-operational-status.md",
+      "LastModified": "2025-10-09T06:11:18.359676+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-10-02-ecrr-system-assessment.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-10-02-ecrr-system-assessment.md",
+      "LastModified": "2025-10-09T06:11:18.3606762+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-10-04-compliance-remediation-action-plan.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-10-04-compliance-remediation-action-plan.md",
+      "LastModified": "2025-10-09T06:11:18.3611812+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "2025-10-04-ecrr-system-health-assessment.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\2025-10-04-ecrr-system-health-assessment.md",
+      "LastModified": "2025-10-09T06:11:18.3611812+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "bosscat-ci-deployment-ecrr-2025-10-06.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\bosscat-ci-deployment-ecrr-2025-10-06.md",
+      "LastModified": "2025-10-09T06:11:19.7423072+01:00",
+      "Compliant": false,
+      "HasEcrrGate": false,
+      "HasFourSection": false,
+      "HasActor": false,
+      "Issues": [
+        "missing_four_section",
+        "missing_ecrr_gate",
+        "missing_actor_declaration"
+      ],
+      "HasProduction": true
+    },
+    {
+      "File": "ECRR_MERGE_STRATEGY_ASSIGNMENT_2025-01-29.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\ECRR_MERGE_STRATEGY_ASSIGNMENT_2025-01-29.md",
+      "LastModified": "2025-10-09T06:11:18.4707127+01:00",
+      "Compliant": false,
+      "HasEcrrGate": false,
+      "HasFourSection": false,
+      "HasActor": false,
+      "Issues": [
+        "missing_four_section",
+        "missing_ecrr_gate",
+        "missing_actor_declaration"
+      ],
+      "HasProduction": true
+    },
+    {
+      "File": "ECRR_ROLLOUT_MERGE_REPORT_2025-01-29.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\ECRR_ROLLOUT_MERGE_REPORT_2025-01-29.md",
+      "LastModified": "2025-10-09T06:11:18.4797543+01:00",
+      "Compliant": false,
+      "HasEcrrGate": false,
+      "HasFourSection": false,
+      "HasActor": false,
+      "Issues": [
+        "missing_four_section",
+        "missing_ecrr_gate",
+        "missing_actor_declaration"
+      ],
+      "HasProduction": true
+    },
+    {
+      "File": "ecrr-processing-comprehensive-analysis-2025-10-02.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\ecrr-processing-comprehensive-analysis-2025-10-02.md",
+      "LastModified": "2025-10-09T06:11:19.7508309+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    },
+    {
+      "File": "ecrr-report-2025-10-02.md",
+      "Path": "C:\\otel\\docs\\ECRR_REPORTS\\ecrr-report-2025-10-02.md",
+      "LastModified": "2025-10-09T06:11:19.7508309+01:00",
+      "Compliant": true,
+      "HasEcrrGate": true,
+      "HasFourSection": true,
+      "HasActor": true,
+      "Issues": [],
+      "HasProduction": true
+    }
+  ]
+}

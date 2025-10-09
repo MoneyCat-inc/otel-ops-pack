@@ -1,0 +1,21 @@
+{
+  "alert": {
+    "name": "Collector Send Failures >0",
+    "description": "Alert when OTel collector has any send failures",
+    "query": {
+      "metricsQuery": {
+        "query": "sum(rate(otelcol_exporter_send_failed_spans[5m])) + sum(rate(otelcol_exporter_send_failed_logs[5m]))"
+      }
+    },
+    "condition": {
+      "threshold": 0,
+      "operator": "above",
+      "evaluationWindow": "5m"
+    },
+    "labels": {
+      "severity": "critical",
+      "component": "collector",
+      "metric": "send_failures"
+    }
+  }
+}

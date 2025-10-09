@@ -1,0 +1,8 @@
+{
+  "interval": "15 minutes",
+  "description": "Generates comprehensive reports",
+  "id": 35628,
+  "name": "Report Generator Bot",
+  "script": "scripts/auto-bots/report-generator-bot.js",
+  "startTime": "2025-10-08T03:50:10.551Z"
+}

@@ -1,0 +1,21 @@
+{
+  "duration": "10m",
+  "condition": {
+    "operator": ">",
+    "value": 300,
+    "severity": "info"
+  },
+  "query": "avg(attributes.ttv_ms{attributes.dataset=\"resonai_analytics\"})",
+  "enabled": true,
+  "annotations": {
+    "summary": "TTV Mean latency exceeds 300ms threshold",
+    "description": "Alert triggered when ttv mean latency exceeds 300ms threshold"
+  },
+  "name": "TTV Mean High",
+  "labels": {
+    "component": "resonai_analytics",
+    "alert_type": "performance",
+    "metric": "ttv_mean"
+  },
+  "description": "TTV Mean latency exceeds 300ms threshold"
+}

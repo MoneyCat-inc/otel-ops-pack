@@ -1,0 +1,507 @@
+{
+  "ExecutionPlan": {
+    "EstimatedTotalDuration": 60.0,
+    "ExecutionPhases": [
+      {
+        "ResourceRequirements": {
+          "CPU": 10,
+          "MemoryMB": 20480
+        },
+        "Tasks": [
+          {
+            "Id": "batch-0-9",
+            "Type": "atomic",
+            "Priority": 1,
+            "Dependencies": [],
+            "Input": {
+              "StartIndex": 0,
+              "ProcessingType": "validation",
+              "BatchSize": 10,
+              "EndIndex": 9
+            },
+            "Output": {
+              "Metrics": [],
+              "Artifacts": []
+            },
+            "Timeout": 30,
+            "ResourceRequirements": {
+              "CPU": 1,
+              "MemoryMB": 2048
+            },
+            "EstimatedDuration": 6,
+            "Workspace": "agent-workspace-batch-0-9"
+          },
+          {
+            "Id": "batch-10-19",
+            "Type": "atomic",
+            "Priority": 1,
+            "Dependencies": [],
+            "Input": {
+              "StartIndex": 10,
+              "ProcessingType": "validation",
+              "BatchSize": 10,
+              "EndIndex": 19
+            },
+            "Output": {
+              "Metrics": [],
+              "Artifacts": []
+            },
+            "Timeout": 30,
+            "ResourceRequirements": {
+              "CPU": 1,
+              "MemoryMB": 2048
+            },
+            "EstimatedDuration": 6,
+            "Workspace": "agent-workspace-batch-10-19"
+          },
+          {
+            "Id": "batch-20-29",
+            "Type": "atomic",
+            "Priority": 1,
+            "Dependencies": [],
+            "Input": {
+              "StartIndex": 20,
+              "ProcessingType": "validation",
+              "BatchSize": 10,
+              "EndIndex": 29
+            },
+            "Output": {
+              "Metrics": [],
+              "Artifacts": []
+            },
+            "Timeout": 30,
+            "ResourceRequirements": {
+              "CPU": 1,
+              "MemoryMB": 2048
+            },
+            "EstimatedDuration": 6,
+            "Workspace": "agent-workspace-batch-20-29"
+          },
+          {
+            "Id": "batch-30-39",
+            "Type": "atomic",
+            "Priority": 1,
+            "Dependencies": [],
+            "Input": {
+              "StartIndex": 30,
+              "ProcessingType": "validation",
+              "BatchSize": 10,
+              "EndIndex": 39
+            },
+            "Output": {
+              "Metrics": [],
+              "Artifacts": []
+            },
+            "Timeout": 30,
+            "ResourceRequirements": {
+              "CPU": 1,
+              "MemoryMB": 2048
+            },
+            "EstimatedDuration": 6,
+            "Workspace": "agent-workspace-batch-30-39"
+          },
+          {
+            "Id": "batch-40-49",
+            "Type": "atomic",
+            "Priority": 1,
+            "Dependencies": [],
+            "Input": {
+              "StartIndex": 40,
+              "ProcessingType": "validation",
+              "BatchSize": 10,
+              "EndIndex": 49
+            },
+            "Output": {
+              "Metrics": [],
+              "Artifacts": []
+            },
+            "Timeout": 30,
+            "ResourceRequirements": {
+              "CPU": 1,
+              "MemoryMB": 2048
+            },
+            "EstimatedDuration": 6,
+            "Workspace": "agent-workspace-batch-40-49"
+          },
+          {
+            "Id": "batch-50-59",
+            "Type": "atomic",
+            "Priority": 1,
+            "Dependencies": [],
+            "Input": {
+              "StartIndex": 50,
+              "ProcessingType": "validation",
+              "BatchSize": 10,
+              "EndIndex": 59
+            },
+            "Output": {
+              "Metrics": [],
+              "Artifacts": []
+            },
+            "Timeout": 30,
+            "ResourceRequirements": {
+              "CPU": 1,
+              "MemoryMB": 2048
+            },
+            "EstimatedDuration": 6,
+            "Workspace": "agent-workspace-batch-50-59"
+          },
+          {
+            "Id": "batch-60-69",
+            "Type": "atomic",
+            "Priority": 1,
+            "Dependencies": [],
+            "Input": {
+              "StartIndex": 60,
+              "ProcessingType": "validation",
+              "BatchSize": 10,
+              "EndIndex": 69
+            },
+            "Output": {
+              "Metrics": [],
+              "Artifacts": []
+            },
+            "Timeout": 30,
+            "ResourceRequirements": {
+              "CPU": 1,
+              "MemoryMB": 2048
+            },
+            "EstimatedDuration": 6,
+            "Workspace": "agent-workspace-batch-60-69"
+          },
+          {
+            "Id": "batch-70-79",
+            "Type": "atomic",
+            "Priority": 1,
+            "Dependencies": [],
+            "Input": {
+              "StartIndex": 70,
+              "ProcessingType": "validation",
+              "BatchSize": 10,
+              "EndIndex": 79
+            },
+            "Output": {
+              "Metrics": [],
+              "Artifacts": []
+            },
+            "Timeout": 30,
+            "ResourceRequirements": {
+              "CPU": 1,
+              "MemoryMB": 2048
+            },
+            "EstimatedDuration": 6,
+            "Workspace": "agent-workspace-batch-70-79"
+          },
+          {
+            "Id": "batch-80-89",
+            "Type": "atomic",
+            "Priority": 1,
+            "Dependencies": [],
+            "Input": {
+              "StartIndex": 80,
+              "ProcessingType": "validation",
+              "BatchSize": 10,
+              "EndIndex": 89
+            },
+            "Output": {
+              "Metrics": [],
+              "Artifacts": []
+            },
+            "Timeout": 30,
+            "ResourceRequirements": {
+              "CPU": 1,
+              "MemoryMB": 2048
+            },
+            "EstimatedDuration": 6,
+            "Workspace": "agent-workspace-batch-80-89"
+          },
+          {
+            "Id": "batch-90-99",
+            "Type": "atomic",
+            "Priority": 1,
+            "Dependencies": [],
+            "Input": {
+              "StartIndex": 90,
+              "ProcessingType": "validation",
+              "BatchSize": 10,
+              "EndIndex": 99
+            },
+            "Output": {
+              "Metrics": [],
+              "Artifacts": []
+            },
+            "Timeout": 30,
+            "ResourceRequirements": {
+              "CPU": 1,
+              "MemoryMB": 2048
+            },
+            "EstimatedDuration": 6,
+            "Workspace": "agent-workspace-batch-90-99"
+          }
+        ],
+        "EstimatedDuration": 6,
+        "PhaseNumber": 1
+      }
+    ],
+    "TotalTasks": 10,
+    "ParallelEfficiency": 100.0,
+    "ResourceUtilization": {
+      "MemoryUtilization": 0,
+      "CPUUtilization": 42
+    }
+  },
+  "AtomicTasks": [
+    {
+      "Id": "batch-0-9",
+      "Type": "atomic",
+      "Priority": 1,
+      "Dependencies": [],
+      "Input": {
+        "StartIndex": 0,
+        "ProcessingType": "validation",
+        "BatchSize": 10,
+        "EndIndex": 9
+      },
+      "Output": {
+        "Metrics": [],
+        "Artifacts": []
+      },
+      "Timeout": 30,
+      "ResourceRequirements": {
+        "CPU": 1,
+        "MemoryMB": 2048
+      },
+      "EstimatedDuration": 6,
+      "Workspace": "agent-workspace-batch-0-9"
+    },
+    {
+      "Id": "batch-10-19",
+      "Type": "atomic",
+      "Priority": 1,
+      "Dependencies": [],
+      "Input": {
+        "StartIndex": 10,
+        "ProcessingType": "validation",
+        "BatchSize": 10,
+        "EndIndex": 19
+      },
+      "Output": {
+        "Metrics": [],
+        "Artifacts": []
+      },
+      "Timeout": 30,
+      "ResourceRequirements": {
+        "CPU": 1,
+        "MemoryMB": 2048
+      },
+      "EstimatedDuration": 6,
+      "Workspace": "agent-workspace-batch-10-19"
+    },
+    {
+      "Id": "batch-20-29",
+      "Type": "atomic",
+      "Priority": 1,
+      "Dependencies": [],
+      "Input": {
+        "StartIndex": 20,
+        "ProcessingType": "validation",
+        "BatchSize": 10,
+        "EndIndex": 29
+      },
+      "Output": {
+        "Metrics": [],
+        "Artifacts": []
+      },
+      "Timeout": 30,
+      "ResourceRequirements": {
+        "CPU": 1,
+        "MemoryMB": 2048
+      },
+      "EstimatedDuration": 6,
+      "Workspace": "agent-workspace-batch-20-29"
+    },
+    {
+      "Id": "batch-30-39",
+      "Type": "atomic",
+      "Priority": 1,
+      "Dependencies": [],
+      "Input": {
+        "StartIndex": 30,
+        "ProcessingType": "validation",
+        "BatchSize": 10,
+        "EndIndex": 39
+      },
+      "Output": {
+        "Metrics": [],
+        "Artifacts": []
+      },
+      "Timeout": 30,
+      "ResourceRequirements": {
+        "CPU": 1,
+        "MemoryMB": 2048
+      },
+      "EstimatedDuration": 6,
+      "Workspace": "agent-workspace-batch-30-39"
+    },
+    {
+      "Id": "batch-40-49",
+      "Type": "atomic",
+      "Priority": 1,
+      "Dependencies": [],
+      "Input": {
+        "StartIndex": 40,
+        "ProcessingType": "validation",
+        "BatchSize": 10,
+        "EndIndex": 49
+      },
+      "Output": {
+        "Metrics": [],
+        "Artifacts": []
+      },
+      "Timeout": 30,
+      "ResourceRequirements": {
+        "CPU": 1,
+        "MemoryMB": 2048
+      },
+      "EstimatedDuration": 6,
+      "Workspace": "agent-workspace-batch-40-49"
+    },
+    {
+      "Id": "batch-50-59",
+      "Type": "atomic",
+      "Priority": 1,
+      "Dependencies": [],
+      "Input": {
+        "StartIndex": 50,
+        "ProcessingType": "validation",
+        "BatchSize": 10,
+        "EndIndex": 59
+      },
+      "Output": {
+        "Metrics": [],
+        "Artifacts": []
+      },
+      "Timeout": 30,
+      "ResourceRequirements": {
+        "CPU": 1,
+        "MemoryMB": 2048
+      },
+      "EstimatedDuration": 6,
+      "Workspace": "agent-workspace-batch-50-59"
+    },
+    {
+      "Id": "batch-60-69",
+      "Type": "atomic",
+      "Priority": 1,
+      "Dependencies": [],
+      "Input": {
+        "StartIndex": 60,
+        "ProcessingType": "validation",
+        "BatchSize": 10,
+        "EndIndex": 69
+      },
+      "Output": {
+        "Metrics": [],
+        "Artifacts": []
+      },
+      "Timeout": 30,
+      "ResourceRequirements": {
+        "CPU": 1,
+        "MemoryMB": 2048
+      },
+      "EstimatedDuration": 6,
+      "Workspace": "agent-workspace-batch-60-69"
+    },
+    {
+      "Id": "batch-70-79",
+      "Type": "atomic",
+      "Priority": 1,
+      "Dependencies": [],
+      "Input": {
+        "StartIndex": 70,
+        "ProcessingType": "validation",
+        "BatchSize": 10,
+        "EndIndex": 79
+      },
+      "Output": {
+        "Metrics": [],
+        "Artifacts": []
+      },
+      "Timeout": 30,
+      "ResourceRequirements": {
+        "CPU": 1,
+        "MemoryMB": 2048
+      },
+      "EstimatedDuration": 6,
+      "Workspace": "agent-workspace-batch-70-79"
+    },
+    {
+      "Id": "batch-80-89",
+      "Type": "atomic",
+      "Priority": 1,
+      "Dependencies": [],
+      "Input": {
+        "StartIndex": 80,
+        "ProcessingType": "validation",
+        "BatchSize": 10,
+        "EndIndex": 89
+      },
+      "Output": {
+        "Metrics": [],
+        "Artifacts": []
+      },
+      "Timeout": 30,
+      "ResourceRequirements": {
+        "CPU": 1,
+        "MemoryMB": 2048
+      },
+      "EstimatedDuration": 6,
+      "Workspace": "agent-workspace-batch-80-89"
+    },
+    {
+      "Id": "batch-90-99",
+      "Type": "atomic",
+      "Priority": 1,
+      "Dependencies": [],
+      "Input": {
+        "StartIndex": 90,
+        "ProcessingType": "validation",
+        "BatchSize": 10,
+        "EndIndex": 99
+      },
+      "Output": {
+        "Metrics": [],
+        "Artifacts": []
+      },
+      "Timeout": 30,
+      "ResourceRequirements": {
+        "CPU": 1,
+        "MemoryMB": 2048
+      },
+      "EstimatedDuration": 6,
+      "Workspace": "agent-workspace-batch-90-99"
+    }
+  ],
+  "Metadata": {
+    "TaskDefinition": {
+      "name": "test-batch-processing",
+      "type": "batch-processing",
+      "input": {
+        "itemCount": 100,
+        "processingType": "validation",
+        "parallelSettings": [
+          2,
+          4,
+          8
+        ]
+      }
+    },
+    "ResourceConstraints": {
+      "MemoryLimitMB": 2048,
+      "TimeoutMinutes": 30,
+      "MaxConcurrent": "24"
+    },
+    "GeneratedAt": "2025-10-07T05:05:30.0433476+01:00",
+    "DecompositionStrategy": "parallel"
+  }
+}

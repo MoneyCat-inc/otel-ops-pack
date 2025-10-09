@@ -1,0 +1,112 @@
+{
+  "CurrentState": {
+    "Status": "Running",
+    "StartType": "AUTO_START",
+    "Timestamp": "2025-10-09 07:16:23",
+    "DisplayName": "OpenTelemetry Collector (Contrib)"
+  },
+  "StartStopPattern": [
+    {
+      "Message": "The start type of the OpenTelemetry Collector (Contrib) service was changed from disabled to auto start.",
+      "Timestamp": "2025-10-09 07:00:31.000",
+      "EventID": 7040,
+      "Action": "DISABLED"
+    },
+    {
+      "Message": "The start type of the OpenTelemetry Collector (Contrib) service was changed from auto start to disabled.",
+      "Timestamp": "2025-10-09 03:31:18.000",
+      "EventID": 7040,
+      "Action": "DISABLED"
+    },
+    {
+      "Message": "The start type of the OpenTelemetry Collector (Contrib) service was changed from disabled to auto start.",
+      "Timestamp": "2025-10-08 23:18:31.000",
+      "EventID": 7040,
+      "Action": "DISABLED"
+    },
+    {
+      "Message": "The start type of the OpenTelemetry Collector (Contrib) service was changed from auto start to disabled.",
+      "Timestamp": "2025-10-08 22:43:24.000",
+      "EventID": 7040,
+      "Action": "DISABLED"
+    },
+    {
+      "Message": "The start type of the OpenTelemetry Collector (Contrib) service was changed from disabled to auto start.",
+      "Timestamp": "2025-10-08 05:26:39.000",
+      "EventID": 7040,
+      "Action": "DISABLED"
+    },
+    {
+      "Message": "The start type of the OpenTelemetry Collector (Contrib) service was changed from auto start to disabled.",
+      "Timestamp": "2025-10-07 19:20:41.000",
+      "EventID": 7040,
+      "Action": "DISABLED"
+    },
+    {
+      "Message": "The start type of the OpenTelemetry Collector (Contrib) service was changed from disabled to auto start.",
+      "Timestamp": "2025-10-07 16:14:19.000",
+      "EventID": 7040,
+      "Action": "DISABLED"
+    },
+    {
+      "Message": "The start type of the OpenTelemetry Collector (Contrib) service was changed from auto start to disabled.",
+      "Timestamp": "2025-10-07 08:14:57.000",
+      "EventID": 7040,
+      "Action": "DISABLED"
+    }
+  ],
+  "Timestamp": "2025-10-09 07:16:29.082",
+  "ChangeHistory": [
+    {
+      "EntryType": "Information",
+      "Message": "The start type of the OpenTelemetry Collector (Contrib) service was changed from disabled to auto start.",
+      "Source": "Service Control Manager",
+      "Timestamp": "2025-10-09 07:00:31",
+      "EventId": 7040,
+      "UserName": "D-MONOLITH\\fubum"
+    },
+    {
+      "EntryType": "Information",
+      "Message": "The start type of the OpenTelemetry Collector (Contrib) service was changed from auto start to disabled.",
+      "Source": "Service Control Manager",
+      "Timestamp": "2025-10-09 03:31:18",
+      "EventId": 7040,
+      "UserName": "NT AUTHORITY\\SYSTEM"
+    },
+    {
+      "EntryType": "Information",
+      "Message": "The start type of the OpenTelemetry Collector (Contrib) service was changed from disabled to auto start.",
+      "Source": "Service Control Manager",
+      "Timestamp": "2025-10-08 23:18:31",
+      "EventId": 7040,
+      "UserName": "D-MONOLITH\\fubum"
+    },
+    {
+      "EntryType": "Information",
+      "Message": "The start type of the OpenTelemetry Collector (Contrib) service was changed from auto start to disabled.",
+      "Source": "Service Control Manager",
+      "Timestamp": "2025-10-08 22:43:24",
+      "EventId": 7040,
+      "UserName": "NT AUTHORITY\\SYSTEM"
+    },
+    {
+      "EntryType": "Information",
+      "Message": "The start type of the OpenTelemetry Collector (Contrib) service was changed from disabled to auto start.",
+      "Source": "Service Control Manager",
+      "Timestamp": "2025-10-08 05:26:39",
+      "EventId": 7040,
+      "UserName": "D-MONOLITH\\fubum"
+    }
+  ],
+  "LookbackHours": 48,
+  "Statistics": {
+    "SuspiciousPatternCount": 3,
+    "TotalChanges": 5,
+    "StartStopEvents": 8
+  },
+  "SuspiciousPatterns": {
+    "Type": "MULTIPLE_DISABLE",
+    "Severity": "HIGH",
+    "Description": "Service disabled 8 times in 48h"
+  }
+}

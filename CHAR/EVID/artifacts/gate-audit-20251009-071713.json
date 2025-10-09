@@ -1,0 +1,112 @@
+{
+  "LookbackHours": 48,
+  "ChangeHistory": [
+    {
+      "Message": "The start type of the OpenTelemetry Collector (Contrib) service was changed from disabled to auto start.",
+      "EntryType": "Information",
+      "Timestamp": "2025-10-09 07:00:31",
+      "Source": "Service Control Manager",
+      "UserName": "D-MONOLITH\\fubum",
+      "EventId": 7040
+    },
+    {
+      "Message": "The start type of the OpenTelemetry Collector (Contrib) service was changed from auto start to disabled.",
+      "EntryType": "Information",
+      "Timestamp": "2025-10-09 03:31:18",
+      "Source": "Service Control Manager",
+      "UserName": "NT AUTHORITY\\SYSTEM",
+      "EventId": 7040
+    },
+    {
+      "Message": "The start type of the OpenTelemetry Collector (Contrib) service was changed from disabled to auto start.",
+      "EntryType": "Information",
+      "Timestamp": "2025-10-08 23:18:31",
+      "Source": "Service Control Manager",
+      "UserName": "D-MONOLITH\\fubum",
+      "EventId": 7040
+    },
+    {
+      "Message": "The start type of the OpenTelemetry Collector (Contrib) service was changed from auto start to disabled.",
+      "EntryType": "Information",
+      "Timestamp": "2025-10-08 22:43:24",
+      "Source": "Service Control Manager",
+      "UserName": "NT AUTHORITY\\SYSTEM",
+      "EventId": 7040
+    },
+    {
+      "Message": "The start type of the OpenTelemetry Collector (Contrib) service was changed from disabled to auto start.",
+      "EntryType": "Information",
+      "Timestamp": "2025-10-08 05:26:39",
+      "Source": "Service Control Manager",
+      "UserName": "D-MONOLITH\\fubum",
+      "EventId": 7040
+    }
+  ],
+  "Statistics": {
+    "StartStopEvents": 8,
+    "SuspiciousPatternCount": 3,
+    "TotalChanges": 5
+  },
+  "Timestamp": "2025-10-09 07:17:18.590",
+  "CurrentState": {
+    "Timestamp": "2025-10-09 07:17:13",
+    "StartType": "AUTO_START",
+    "DisplayName": "OpenTelemetry Collector (Contrib)",
+    "Status": "Running"
+  },
+  "SuspiciousPatterns": {
+    "Severity": "HIGH",
+    "Description": "Service disabled 8 times in 48h",
+    "Type": "MULTIPLE_DISABLE"
+  },
+  "StartStopPattern": [
+    {
+      "EventID": 7040,
+      "Timestamp": "2025-10-09 07:00:31.000",
+      "Message": "The start type of the OpenTelemetry Collector (Contrib) service was changed from disabled to auto start.",
+      "Action": "DISABLED"
+    },
+    {
+      "EventID": 7040,
+      "Timestamp": "2025-10-09 03:31:18.000",
+      "Message": "The start type of the OpenTelemetry Collector (Contrib) service was changed from auto start to disabled.",
+      "Action": "DISABLED"
+    },
+    {
+      "EventID": 7040,
+      "Timestamp": "2025-10-08 23:18:31.000",
+      "Message": "The start type of the OpenTelemetry Collector (Contrib) service was changed from disabled to auto start.",
+      "Action": "DISABLED"
+    },
+    {
+      "EventID": 7040,
+      "Timestamp": "2025-10-08 22:43:24.000",
+      "Message": "The start type of the OpenTelemetry Collector (Contrib) service was changed from auto start to disabled.",
+      "Action": "DISABLED"
+    },
+    {
+      "EventID": 7040,
+      "Timestamp": "2025-10-08 05:26:39.000",
+      "Message": "The start type of the OpenTelemetry Collector (Contrib) service was changed from disabled to auto start.",
+      "Action": "DISABLED"
+    },
+    {
+      "EventID": 7040,
+      "Timestamp": "2025-10-07 19:20:41.000",
+      "Message": "The start type of the OpenTelemetry Collector (Contrib) service was changed from auto start to disabled.",
+      "Action": "DISABLED"
+    },
+    {
+      "EventID": 7040,
+      "Timestamp": "2025-10-07 16:14:19.000",
+      "Message": "The start type of the OpenTelemetry Collector (Contrib) service was changed from disabled to auto start.",
+      "Action": "DISABLED"
+    },
+    {
+      "EventID": 7040,
+      "Timestamp": "2025-10-07 08:14:57.000",
+      "Message": "The start type of the OpenTelemetry Collector (Contrib) service was changed from auto start to disabled.",
+      "Action": "DISABLED"
+    }
+  ]
+}

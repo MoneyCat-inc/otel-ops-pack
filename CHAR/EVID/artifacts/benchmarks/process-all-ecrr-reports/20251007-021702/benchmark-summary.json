@@ -1,0 +1,66 @@
+[
+  {
+    "Scenario": "auto-parallel",
+    "Runs": 3,
+    "AverageMs": 1099.01,
+    "MinMs": 1051.18,
+    "MaxMs": 1192.45,
+    "AverageIssues": 0.0
+  },
+  {
+    "Scenario": "max-1",
+    "Runs": 3,
+    "AverageMs": 1075.71,
+    "MinMs": 968.83,
+    "MaxMs": 1273.15,
+    "AverageIssues": 0.0
+  },
+  {
+    "Scenario": "max-12",
+    "Runs": 3,
+    "AverageMs": 1014.62,
+    "MinMs": 968.45,
+    "MaxMs": 1040.0,
+    "AverageIssues": 0.0
+  },
+  {
+    "Scenario": "max-16",
+    "Runs": 3,
+    "AverageMs": 992.49,
+    "MinMs": 939.21,
+    "MaxMs": 1026.33,
+    "AverageIssues": 0.0
+  },
+  {
+    "Scenario": "max-2",
+    "Runs": 3,
+    "AverageMs": 988.68,
+    "MinMs": 939.88,
+    "MaxMs": 1062.33,
+    "AverageIssues": 0.0
+  },
+  {
+    "Scenario": "max-4",
+    "Runs": 3,
+    "AverageMs": 988.88,
+    "MinMs": 899.45,
+    "MaxMs": 1096.2,
+    "AverageIssues": 0.0
+  },
+  {
+    "Scenario": "max-6",
+    "Runs": 3,
+    "AverageMs": 994.7,
+    "MinMs": 984.85,
+    "MaxMs": 1007.0,
+    "AverageIssues": 0.0
+  },
+  {
+    "Scenario": "max-8",
+    "Runs": 3,
+    "AverageMs": 1000.29,
+    "MinMs": 951.27,
+    "MaxMs": 1042.71,
+    "AverageIssues": 0.0
+  }
+]
