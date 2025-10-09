@@ -1,0 +1,69 @@
+name: drift-alert
+on:
+  schedule:
+    - cron: "13 4 * * *"   # daily at 04:13 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Guardrails (strict)
+        id: guardrails
+        env:
+          PYTHONUTF8: "1"
+          PYTHONIOENCODING: "UTF-8"
+        run: |
+          set -e
+          python3 BRAV/SCPT/check_guardrails.py --config BRAV/SCPT/guardrails.json --strict
+        continue-on-error: true
+
+      - name: Health snapshot
+        id: health
+        run: |
+          python3 BRAV/SCPT/tetragram_health.py > health.json
+          echo "json=$(cat health.json | jq -c .)" >> $GITHUB_OUTPUT
+
+      - name: Summarize
+        if: always()
+        run: |
+          echo "### Nightly tetragram health" >> $GITHUB_STEP_SUMMARY
+          echo '```json' >> $GITHUB_STEP_SUMMARY
+          cat health.json >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+      - name: Open drift issue (if needed)
+        if: steps.guardrails.outcome == 'failure'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const health = JSON.parse(`${{ steps.health.outputs.json }}`);
+            const body = [
+              "Guardrails failed on nightly run.",
+              "",
+              "**Health JSON**:",
+              "```json",
+              JSON.stringify(health, null, 2),
+              "```",
+              "",
+              "Please fix by moving paths into ALFA/BRAV/CHAR/DELT or untracking ephemerals."
+            ].join("\n");
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: "Tetragram drift detected: guardrails failure",
+              body,
+              labels: ["tetragram", "drift", "compliance"]
+            });
+            core.setFailed("Drift issue opened.");
+
