@@ -1,0 +1,11 @@
+- ✅ **4-Section Structure**: $($AnalysisData.ComplianceMetrics.FourSectionStructure)/$($AnalysisData.TotalReports) reports ($($CompliancePercentages.FourSectionStructure)%) complete
+- ✅ **ECRR Gate Sections**: $($AnalysisData.ComplianceMetrics.ECRRGates)/$($AnalysisData.TotalReports) reports ($($CompliancePercentages.ECRRGates)%) include gates
+- ✅ **Actor Declarations**: $($AnalysisData.ComplianceMetrics.ActorDeclarations)/$($AnalysisData.TotalReports) reports ($($CompliancePercentages.ActorDeclarations)%) proper declarations
+- ✅ **Evidence References**: $($AnalysisData.ComplianceMetrics.EvidenceReferences)/$($AnalysisData.TotalReports) reports ($($CompliancePercentages.EvidenceReferences)%) include artifacts
+
+### **Agent Distribution Validation**
+"@
+
+    foreach ($agent in $AnalysisData.AgentDistribution.Keys) {
+        $percentage = [math]::Round(($AnalysisData.AgentDistribution[$agent] / $AnalysisData.TotalReports) * 100, 1)
+        $SummaryReport += "`n- ✅ **$agent**: $($AnalysisData.AgentDistribution[$agent]) reports ($percentage%)"

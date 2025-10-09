@@ -21,11 +21,13 @@ param(
     [ValidateRange(1, 10)]
     [int]$Iterations = 2,
 
-    [string]$BenchmarkRoot = 'artifacts/benchmarks/process-all-ecrr-reports',
+    # Tetragram-friendly default root
+    [string]$BenchmarkRoot = 'CHAR/EVID/benchmarks/process-all-ecrr-reports',
 
     [switch]$KeepSyntheticReports,
 
-    [string]$TrendCsvPath = 'artifacts/benchmarks/process-all-ecrr-reports/processing-trend.csv',
+    # Trend CSV within CHAR/EVID
+    [string]$TrendCsvPath = 'CHAR/EVID/benchmarks/process-all-ecrr-reports/processing-trend.csv',
 
     [ValidateRange(0,1)]
     [double]$FaultyPercentage = 0.15,
@@ -37,9 +39,19 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 $repoRoot = Get-Location
-$ecrrDir = Join-Path $repoRoot 'docs/ECRR_REPORTS'
-if (-not (Test-Path $ecrrDir)) {
-    throw "ECRR reports directory not found at $ecrrDir"
+# Resolve ECRR reports directory (tetragram first, with legacy fallbacks)
+$candidateEcrr = @(
+    (Join-Path $repoRoot 'CHAR/ECRR/ECRR_REPORTS'),
+    (Join-Path $repoRoot 'docs/ECRR_REPORTS'),
+    (Join-Path $repoRoot 'docs/ecrr/ECRR_REPORTS'),
+    (Join-Path $repoRoot 'CHAR/DOCS/docs/ECRR_REPORTS')
+)
+$ecrrDir = $null
+foreach ($cand in $candidateEcrr) {
+    if (Test-Path $cand) { $ecrrDir = $cand; break }
+}
+if (-not $ecrrDir) {
+    throw "ECRR reports directory not found. Checked: $($candidateEcrr -join ', ')"
 }
 
 $timestamp = Get-Date -Format 'yyyyMMdd-HHmmss'
@@ -283,7 +295,8 @@ foreach ($scenario in $scenarios) {
         $scenarioOutputDir = Join-Path $runDir "$($scenario.Name)-run$iteration"
         $null = New-Item -ItemType Directory -Path $scenarioOutputDir -Force
 
-        $arguments = @('-NoLogo', '-NoProfile', '-File', 'scripts/process-all-ecrr-reports.ps1', '-OutputDir', $scenarioOutputDir)
+        # Invoke the processor from BRAV/SCPT (tetragram path)
+        $arguments = @('-NoLogo', '-NoProfile', '-File', 'BRAV/SCPT/process-all-ecrr-reports.ps1', '-OutputDir', $scenarioOutputDir)
         $arguments += $scenario.Arguments
 
         Write-Host "[Benchmark] Running scenario '$($scenario.Name)' iteration $iteration" -ForegroundColor Yellow
@@ -355,7 +368,7 @@ $markdown += "- Synthetic reports: $ReportCount"
 $markdown += "- Iterations per scenario: $Iterations"
 $markdown += "- Synthetic tag: $syntheticTag"
 $markdown += "- Faulty percentage target: $FaultyPercentage"
-$markdown += "- Source script: scripts/process-all-ecrr-reports.ps1"
+$markdown += "- Source script: BRAV/SCPT/process-all-ecrr-reports.ps1"
 $markdown += ""
 $markdown += "| Scenario | Runs | Avg (ms) | Min (ms) | Max (ms) | Avg Issues |"
 $markdown += "| --- | ---: | ---: | ---: | ---: | ---: |"

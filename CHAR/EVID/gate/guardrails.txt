@@ -1,9 +1,11 @@
 [96m[INFO][0m Scanning repository structure...
 [95m[1m[HEADER][0m ≡ƒÉ╛ BossCat Guardrails Report - otel
 
-[93m[WARN][0m Found 3 ephemeral/untracked directories (ignored):
+[93m[WARN][0m Found 5 ephemeral/untracked directories (ignored):
+  Γä╣∩╕Å  gpu-buffers/ (ephemeral, untracked - ignored)
   Γä╣∩╕Å  logs/ (ephemeral, untracked - ignored)
   Γä╣∩╕Å  out/ (ephemeral, untracked - ignored)
+  Γä╣∩╕Å  sidecars/ (ephemeral, untracked - ignored)
   Γä╣∩╕Å  tmp/ (ephemeral, untracked - ignored)
 
 [93m[WARN][0m Consider extracting logic to BRAV/SCPT scripts: [94m.github\workflows\apisec-scan.yml[0m

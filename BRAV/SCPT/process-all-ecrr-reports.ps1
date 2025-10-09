@@ -18,8 +18,23 @@ if (-not (Test-Path $OutputDir)) {
     New-Item -ItemType Directory -Path $OutputDir -Force | Out-Null
 }
 
-# ECRR Reports directory
-$ECRRDir = "docs/ECRR_REPORTS"
+# ECRR Reports directory (support tetragram + legacy fallbacks)
+$candidateDirs = @(
+    "CHAR/ECRR/ECRR_REPORTS",
+    "docs/ECRR_REPORTS",
+    "docs/ecrr/ECRR_REPORTS",
+    "CHAR/DOCS/docs/ECRR_REPORTS"
+)
+
+$ECRRDir = $null
+foreach ($cand in $candidateDirs) {
+    if (Test-Path $cand) { $ECRRDir = $cand; break }
+}
+
+if (-not $ECRRDir) {
+    throw "ECRR reports directory not found. Checked: $($candidateDirs -join ', ')"
+}
+
 $ArchiveDir = "$ECRRDir/archive"
 
 # Initialize analysis data
@@ -52,7 +67,7 @@ $AnalysisData = @{
 
 # Get all ECRR report files
 $ECRRFiles = Get-ChildItem -Path $ECRRDir -Filter "*.md" -File | Where-Object { 
-    $_.Name -notlike "ECRR_*" -and $_.Name -notlike "workshop-*" 
+    $_.Name -notlike "workshop-*" 
 }
 
 $AnalysisData.TotalReports = $ECRRFiles.Count
@@ -216,7 +231,11 @@ foreach ($group in $reportResults | Where-Object { $_.TemporalGroup } | Group-Ob
 # Generate compliance percentages
 $CompliancePercentages = @{}
 foreach ($metric in $AnalysisData.ComplianceMetrics.Keys) {
-    $CompliancePercentages[$metric] = [math]::Round(($AnalysisData.ComplianceMetrics[$metric] / $AnalysisData.TotalReports) * 100, 1)
+    if ($AnalysisData.TotalReports -gt 0) {
+        $CompliancePercentages[$metric] = [math]::Round(($AnalysisData.ComplianceMetrics[$metric] / $AnalysisData.TotalReports) * 100, 1)
+    } else {
+        $CompliancePercentages[$metric] = 0
+    }
 }
 
 # Generate comprehensive analysis report
@@ -254,7 +273,7 @@ if ($GenerateSummary) {
 "@
 
     foreach ($agent in $AnalysisData.AgentDistribution.Keys) {
-        $percentage = [math]::Round(($AnalysisData.AgentDistribution[$agent] / $AnalysisData.TotalReports) * 100, 1)
+        $percentage = if ($AnalysisData.TotalReports -gt 0) { [math]::Round(($AnalysisData.AgentDistribution[$agent] / $AnalysisData.TotalReports) * 100, 1) } else { 0 }
         $SummaryReport += "`n- **$agent**: $($AnalysisData.AgentDistribution[$agent]) reports ($percentage%)"
     }
 
