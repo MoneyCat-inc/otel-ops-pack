@@ -162,3 +162,6 @@ scripts/
 visual-assets-draft/
 
 # Test results
+
+# Repo-root tilde directory (accidental PS/junction artifact)
+~/
