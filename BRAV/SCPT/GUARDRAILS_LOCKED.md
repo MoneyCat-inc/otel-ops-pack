@@ -15,9 +15,10 @@ This guardrails configuration (`BRAV/SCPT/guardrails.json`) has been tested, ver
 
 **Configuration Hash:**
 ```
-SHA256: To be computed on lock
+SHA256: 782E7FD93BA1886DCBB3CE2E621B80F9E6B2CE605382652B7D7E8BB0098A06BF
 Version: 1.1 (Hybrid)
 Exit Code: 0 (PASSING)
+Lock Commit: 5dee1ec
 ```
 
 ---
