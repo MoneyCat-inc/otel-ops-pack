@@ -1,0 +1,22 @@
+≡ƒÉ╛ BossCat Pathmap Validator
+Repository: otel
+
+Migrated (16):
+  Γ£à CHAR/EVID/artifacts/
+  Γ£à DELT/ASST/assets/
+  Γ£à DELT/FIXT/baseline/
+  Γ£à DELT/CONF/config/
+  Γ£à DELT/CONF/configs/
+  Γ£à BRAV/INFR/deployment-pipeline/
+  Γ£à BRAV/DOCK/legacy/
+  Γ£à BRAV/INFR/helm/
+  Γ£à CHAR/EVID/playwright-report/
+  Γ£à CHAR/EVID/reports/
+  Γ£à BRAV/SCPT/
+  Γ£à ALFA/OTEL/synthetic/
+  Γ£à DELT/TMPL/templates/
+  Γ£à DELT/FIXT/test-payloads/
+  Γ£à ALFA/TEST/unit/
+  Γ£à ALFA/TOOL/cli/
+
+Summary: 16 migrated, 0 shims, 0 pending
