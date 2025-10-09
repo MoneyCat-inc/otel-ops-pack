@@ -1,0 +1,103 @@
+name: app-template-ci
+# TEMPLATE: Copy and rename to app-<YOUR_APP_NAME>.yml
+# Replace all <APP_NAME> with your app folder name from ALFA/APPS/<APP_NAME>
+
+on:
+  pull_request:
+    paths:
+      - 'ALFA/APPS/<APP_NAME>/**'
+      - 'BRAV/SCPT/**'
+      - '.github/workflows/app-<APP_NAME>.yml'
+      - 'DELT/CONF/**'     # env/config changes can affect builds
+  push:
+    branches: [ main ]
+    paths:
+      - 'ALFA/APPS/<APP_NAME>/**'
+      - 'BRAV/SCPT/**'
+      - '.github/workflows/app-<APP_NAME>.yml'
+      - 'DELT/CONF/**'
+
+concurrency:
+  group: app-<APP_NAME>-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  guardrails:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.x' }
+      - name: Guardrails (strict on main)
+        env:
+          PYTHONUTF8: '1'
+          PYTHONIOENCODING: 'UTF-8'
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            python3 BRAV/SCPT/check_guardrails.py --config BRAV/SCPT/guardrails.json --strict
+          else
+            python3 BRAV/SCPT/check_guardrails.py --config BRAV/SCPT/guardrails.json
+          fi
+
+  build_test:
+    needs: guardrails
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: |
+            ALFA/APPS/<APP_NAME>/package-lock.json
+            ALFA/LIBS/**/package-lock.json
+      - name: Configure npm auth (if needed)
+        if: ${{ secrets.NPM_TOKEN != '' }}
+        run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Build
+        run: bash BRAV/SCPT/build.sh ALFA/APPS/<APP_NAME>
+      - name: Test
+        run: bash BRAV/SCPT/test.sh ALFA/APPS/<APP_NAME>
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: <APP_NAME>-test-results
+          path: out/test-results/<APP_NAME>/**
+
+  containerize_and_deploy:
+    if: github.ref == 'refs/heads/main'
+    needs: build_test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Login to registry
+        run: echo "${{ secrets.REGISTRY_TOKEN }}" | docker login ${{ vars.REGISTRY_HOST }} -u ${{ secrets.REGISTRY_USER }} --password-stdin
+      - name: Containerize
+        run: bash BRAV/SCPT/deploy.sh ALFA/APPS/<APP_NAME> package
+        env:
+          REGISTRY: ${{ vars.REGISTRY_HOST }}
+          IMAGE_NAME: ${{ vars.IMAGE_PREFIX || 'app' }}-<APP_NAME>
+          IMAGE_TAG: ${{ github.sha }}
+      - name: Push image
+        run: bash BRAV/SCPT/deploy.sh ALFA/APPS/<APP_NAME> push
+        env:
+          REGISTRY: ${{ vars.REGISTRY_HOST }}
+          IMAGE_NAME: ${{ vars.IMAGE_PREFIX || 'app' }}-<APP_NAME>
+          IMAGE_TAG: ${{ github.sha }}
+      # Optional: environment rollout (kustomize/helm) via BRAV/SCPT script
+      - name: Rollout (DEV)
+        if: ${{ vars.ROLL_OUT_DEV == 'true' }}
+        run: bash BRAV/SCPT/deploy.sh ALFA/APPS/<APP_NAME> rollout DEV
+        env:
+          IMAGE: ${{ vars.REGISTRY_HOST }}/${{ vars.IMAGE_PREFIX || 'app' }}-<APP_NAME>:${{ github.sha }}
+
