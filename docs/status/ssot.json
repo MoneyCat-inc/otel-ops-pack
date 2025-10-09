@@ -1,15 +1,15 @@
 {
-  "last_update": "2025-10-09T04:25:43.127824+00:00",
+  "last_update": "2025-10-09T04:30:43.129225+00:00",
   "authoritative_sources": {
     "ecrr_reports": {
       "path": "docs/BossCat/reports\\ECRR_GATE_READY_2025-10-09.md",
       "summary": "**Gate Status:** ✅ **READY** (with documented risk acceptance) | **Status:** ✅ **PASS** | **Status:** ✅ READY",
-      "last_modified": "2025-10-09T03:28:00.645224+00:00"
+      "last_modified": "2025-10-09T04:29:19.296405+00:00"
     },
     "signoz_health": {
       "status": "unhealthy: ok",
       "version": "v0.96.1",
-      "last_check": "2025-10-09T04:25:43.127828+00:00"
+      "last_check": "2025-10-09T04:30:43.129230+00:00"
     },
     "collector_status": "stopped"
   },
