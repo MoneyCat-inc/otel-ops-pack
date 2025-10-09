@@ -34,6 +34,23 @@ PATHMAP = {
     "templates/": "DELT/TMPL/templates/"
 }
 
+def is_junction_or_symlink(path):
+    """Check if path is a junction (Windows) or symlink (Unix)"""
+    if not path.exists():
+        return False
+    try:
+        # Check for symlink (works on Unix and Windows)
+        if path.is_symlink():
+            return True
+        # Check for junction on Windows using os module
+        if sys.platform == 'win32':
+            import os
+            # Junctions are reparse points but not symlinks
+            return os.path.islink(str(path)) or (path.is_dir() and hasattr(os, 'readlink'))
+    except:
+        pass
+    return False
+
 def main(root="."):
     """Validate pathmap migration status"""
     root = Path(root).resolve()
@@ -50,9 +67,12 @@ def main(root="."):
         new_path = root / new.rstrip('/')
         
         if old_path.exists():
-            if old_path.is_symlink():
-                target = old_path.readlink()
-                shims.append(f"  🔗 {old} → {target} (shim)")
+            if is_junction_or_symlink(old_path):
+                try:
+                    target = old_path.readlink() if old_path.is_symlink() else new.rstrip('/')
+                    shims.append(f"  🔗 {old} → {target} (junction/shim)")
+                except:
+                    shims.append(f"  🔗 {old} (junction)")
             else:
                 missing.append(f"  ❌ {old} still exists and is not a shim")
         
