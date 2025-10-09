@@ -1,0 +1,93 @@
+# BossCat OEM - Tetragram Codeowners
+# Governance framework for Resonai [OTel] observability stack
+
+# Default owner for everything
+* @BossCat
+
+# ============================================
+# ALFA - Application Plane
+# ============================================
+# Source code, instrumentation, apps, libs
+
+/ALFA/ @BossCat @alfa-team
+/ALFA/CORE/ @BossCat @core-developers
+/ALFA/INST/ @BossCat @instrumentation-team
+/ALFA/APPS/ @BossCat @app-developers
+/ALFA/LIBS/ @BossCat @library-maintainers
+
+# ============================================
+# BRAV - Build/Runtime/Automation/Verification
+# ============================================
+# Scripts, infrastructure, CI/CD, Docker, hooks
+
+/BRAV/ @BossCat @brav-team
+/BRAV/SCPT/ @BossCat @ops-team
+/BRAV/INFR/ @BossCat @infrastructure-team
+/BRAV/DOCK/ @BossCat @docker-maintainers
+/BRAV/CICD/ @BossCat @ci-cd-team
+/BRAV/HOOK/ @BossCat @git-hooks-team
+
+# Critical automation requires BossCat approval
+/BRAV/SCPT/check_guardrails.py @BossCat
+/BRAV/SCPT/guardrails.json @BossCat
+/BRAV/SCPT/migrate_*.* @BossCat
+/BRAV/SCPT/cleanup_*.* @BossCat
+
+# ============================================
+# CHAR - Compliance/Human/Audit/Review
+# ============================================
+# Documentation, reports, evidence, audits
+
+/CHAR/ @BossCat @char-team
+/CHAR/DOCS/ @BossCat @documentation-team
+/CHAR/EVID/ @BossCat @qa-team
+/CHAR/AUDT/ @BossCat @audit-team
+/CHAR/REPO/ @BossCat @report-writers
+
+# ECRR reports require audit team review
+/CHAR/EVID/**/ECRR_REPORTS/ @BossCat @audit-team
+/CHAR/DOCS/ecrr/ @BossCat @audit-team
+
+# ============================================
+# DELT - Data/Environment/Load/Test
+# ============================================
+# Configs, fixtures, assets, load tests, templates
+
+/DELT/ @BossCat @delt-team
+/DELT/CONF/ @BossCat @config-team
+/DELT/FIXT/ @BossCat @qa-team
+/DELT/ASST/ @BossCat @asset-team
+/DELT/LOAD/ @BossCat @performance-team
+/DELT/TMPL/ @BossCat @template-team
+
+# Production configs require elevated review
+/DELT/CONF/**/prod*.* @BossCat @ops-lead
+/DELT/CONF/**/production*.* @BossCat @ops-lead
+
+# ============================================
+# Special Directories
+# ============================================
+
+# GitHub workflows require BossCat + ops approval
+/.github/workflows/ @BossCat @ops-team @ci-cd-team
+
+# Agent configuration requires BossCat review
+/.agent/ @BossCat
+
+# ============================================
+# Critical Root Files
+# ============================================
+
+/AGENTS.md @BossCat
+/ART_OF_ECRR.md @BossCat
+/DECISIONS.md @BossCat
+/CODEOWNERS @BossCat
+/.github/pull_request_template.md @BossCat
+
+# Docker Compose files require infrastructure approval
+docker-compose*.yml @BossCat @infrastructure-team @docker-maintainers
+
+# Package management requires dependency review
+package.json @BossCat @dependency-team
+pnpm-lock.yaml @BossCat @dependency-team
+

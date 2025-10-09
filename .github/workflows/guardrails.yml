@@ -1,0 +1,67 @@
+name: 🐾 BossCat Tetragram Guardrails
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+jobs:
+  guardrails-check:
+    name: Repository Structure Compliance
+    runs-on: ubuntu-latest
+    
+    env:
+      PYTHONUTF8: 1
+      PYTHONIOENCODING: UTF-8
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Run guardrails checker
+        id: check
+        run: |
+          echo "::group::🐾 BossCat Guardrails Check"
+          python3 BRAV/SCPT/check_guardrails.py --config BRAV/SCPT/guardrails.json
+          echo "::endgroup::"
+        continue-on-error: true
+      
+      - name: Generate structure report
+        if: always()
+        run: |
+          echo "## 📊 Repository Structure Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Top-level directories:" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          ls -1 | grep -v '^\.' | head -20 >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Tetragram planes:" >> $GITHUB_STEP_SUMMARY
+          for plane in ALFA BRAV CHAR DELT; do
+            if [ -d "$plane" ]; then
+              echo "- ✅ $plane/" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "- ⚠️  $plane/ (not present)" >> $GITHUB_STEP_SUMMARY
+            fi
+          done
+      
+      - name: Check result
+        if: steps.check.outcome == 'failure'
+        run: |
+          echo "::error::Guardrails check failed. See logs above for details."
+          exit 1
+      
+      - name: Success
+        if: steps.check.outcome == 'success'
+        run: |
+          echo "::notice::✅ Repository structure complies with BossCat tetragram guardrails"
+

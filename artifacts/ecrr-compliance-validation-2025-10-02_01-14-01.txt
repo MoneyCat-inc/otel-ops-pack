@@ -1,5 +1,0 @@
-ECRR compliance validation note (2025-10-02_01-14-01)
-Command: pwsh -File scripts/ecrr-compliance-monitor.ps1 -GenerateReport
-  -> artifacts/ecrr-compliance-report-2025-10-02_01-13-20.json | ComplianceRate=100%
-Command: pwsh -File scripts/ecrr-ci-integration.ps1
-  -> artifacts/ecrr-ci-summary.json | Status=PASS, ComplianceRate=100%

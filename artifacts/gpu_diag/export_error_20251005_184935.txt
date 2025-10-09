@@ -1,7 +1,0 @@
-Invoke-RestMethod: C:\otel\scripts\export-triton-health.ps1:24
-Line |
-  24 |    Invoke-RestMethod -Method Post -Uri $SigNozOtlpEndpoint -ContentTyp …
-     |    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-     | No connection could be made because the target machine actively refused it.
-
-

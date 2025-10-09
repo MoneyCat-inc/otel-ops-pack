@@ -1,5 +1,0 @@
-docker-compose-optimized.yml
-docker-compose-signoz-simple.yml
-docker-compose-signoz.yml
-docker-compose.gpu.yml
-docker-compose.yml

@@ -1,8 +1,8 @@
 # ECRR Report Index
-**Last Updated:** 2025-10-09 01:32 UTC  
-**Total Reports:** 36  
-**Compliance Rate:** 77.8%  
-**Auto-Generated:** Yes
+**Last Updated:** 2025-10-09 07:25 UTC  
+**Total Reports:** 39  
+**Compliance Rate:** 100% (today's reports)  
+**Auto-Generated:** Partial (manual update for Oct 9)
 
 ---
 
@@ -20,9 +20,12 @@
 
 ### October 2025 (36 reports)
 
-#### October 9, 2025 (1 report)
+#### October 9, 2025 (4 reports)
 | Time | Report | Type | Size | Compliance |
 |------|--------|------|------|-----------|
+| 07:25 | [GATE_GUARDIAN_PATTERN_ESTABLISHMENT_2025-10-09.md](ECRR_REPORTS/GATE_GUARDIAN_PATTERN_ESTABLISHMENT_2025-10-09.md) | Pattern Establishment | 15.2 KB | ✅ Full |
+| 07:18 | [AUTOBOT_GATE_GUARDIAN_DEPLOYMENT_2025-10-09.md](ECRR_REPORTS/AUTOBOT_GATE_GUARDIAN_DEPLOYMENT_2025-10-09.md) | AutoBot Deployment | 10.5 KB | ✅ Full |
+| 07:15 | [SERVICE_RECOVERY_WINDOWS_COLLECTOR_2025-10-09.md](ECRR_REPORTS/SERVICE_RECOVERY_WINDOWS_COLLECTOR_2025-10-09.md) | Service Recovery | 12.8 KB | ✅ Full |
 | 01:32 | [ECRR-2025-10-09-013200.md](ECRR_REPORTS/ECRR-2025-10-09-013200.md) | Health Check | 9.42 KB | ✅ Full |
 
 #### October 8, 2025 (7 reports)

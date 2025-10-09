@@ -1,7 +1,0 @@
-ECRR Monitoring Verification — 2025-10-02
------------------------------------------
-Command: pwsh -File scripts/ecrr-compliance-monitor.ps1 -GenerateReport
-Result: 57 compliant / 0 non-compliant (100%)
-Scheduled Task: ECRR Compliance Monitor — Ready
-Observation: continuous-ecrr-compliance-monitor.ps1 -GenerateReport raised 'A hash table can only be added to another hash table.' (requires follow-up bugfix).
-Artifacts: artifacts/ecrr-compliance-report-2025-10-02_01-10-58.json, artifacts/ecrr-compliance-dashboard.html

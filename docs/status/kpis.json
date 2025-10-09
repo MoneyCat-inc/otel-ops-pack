@@ -1,5 +1,5 @@
 {
-  "last_update": "2025-10-09T05:25:43.416672+00:00",
+  "last_update": "2025-10-09T06:40:43.029897+00:00",
   "kpis": [
     {
       "label": "SigNoz Status",
@@ -9,8 +9,8 @@
     },
     {
       "label": "Windows Collector",
-      "value": "stopped",
-      "status": "bad",
+      "value": "running",
+      "status": "ok",
       "details": "Service: otelcol-contrib"
     },
     {
