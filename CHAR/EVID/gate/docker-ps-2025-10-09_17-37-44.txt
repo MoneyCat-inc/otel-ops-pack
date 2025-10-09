@@ -1,0 +1,9 @@
+NAMES                   STATUS                          PORTS
+signoz                  Up 6 hours (healthy)            0.0.0.0:8080->8080/tcp, [::]:8080->8080/tcp
+signoz-clickhouse       Up 6 hours (healthy)            8123/tcp, 9000/tcp, 9009/tcp
+signoz-zookeeper        Up 6 hours (healthy)            2181/tcp, 2888/tcp, 3888/tcp, 8080/tcp
+signoz-otel-collector   Up 6 hours (healthy)            0.0.0.0:14317->4317/tcp, [::]:14317->4317/tcp, 0.0.0.0:14318->4318/tcp, [::]:14318->4318/tcp, 0.0.0.0:18888->8888/tcp, [::]:18888->8888/tcp, 0.0.0.0:18889->8889/tcp, [::]:18889->8889/tcp
+otel-gpu-inference      Restarting (2) 46 seconds ago   
+otel-gpu-compression    Restarting (2) 45 seconds ago   
+otel-gpu-aggregation    Restarting (2) 46 seconds ago   
+triton                  Up 6 hours                      0.0.0.0:8000-8002->8000-8002/tcp, [::]:8000-8002->8000-8002/tcp
