@@ -1,0 +1,48 @@
+[96m[INFO][0m Scanning repository structure...
+[95m[1m[HEADER][0m 🐾 BossCat Guardrails Report - otel
+
+[93m[WARN][0m Found 5 ephemeral/untracked directories (ignored):
+  ℹ️  gpu-buffers/ (ephemeral, untracked - ignored)
+  ℹ️  logs/ (ephemeral, untracked - ignored)
+  ℹ️  out/ (ephemeral, untracked - ignored)
+  ℹ️  sidecars/ (ephemeral, untracked - ignored)
+  ℹ️  tmp/ (ephemeral, untracked - ignored)
+
+[93m[WARN][0m Consider extracting logic to BRAV/SCPT scripts: [94m.github\workflows\apisec-scan.yml[0m
+[93m[WARN][0m Consider extracting logic to BRAV/SCPT scripts: [94m.github\workflows\boss-gate-signal-and-merge.yml[0m
+[93m[WARN][0m Consider extracting logic to BRAV/SCPT scripts: [94m.github\workflows\boss-gate-verify.yml[0m
+[93m[WARN][0m Consider extracting logic to BRAV/SCPT scripts: [94m.github\workflows\bosscat-governance.yml[0m
+[93m[WARN][0m Consider extracting logic to BRAV/SCPT scripts: [94m.github\workflows\bosscat-tetragram-guard.yml[0m
+[93m[WARN][0m Consider extracting logic to BRAV/SCPT scripts: [94m.github\workflows\ci-disabled.yml[0m
+[93m[WARN][0m Consider extracting logic to BRAV/SCPT scripts: [94m.github\workflows\codacy.yml[0m
+[93m[WARN][0m Consider extracting logic to BRAV/SCPT scripts: [94m.github\workflows\codeql-analysis.yml[0m
+[93m[WARN][0m Consider extracting logic to BRAV/SCPT scripts: [94m.github\workflows\codeql.yml[0m
+[93m[WARN][0m Consider extracting logic to BRAV/SCPT scripts: [94m.github\workflows\defender-for-devops.yml[0m
+[93m[WARN][0m Consider extracting logic to BRAV/SCPT scripts: [94m.github\workflows\devskim.yml[0m
+[93m[WARN][0m Consider extracting logic to BRAV/SCPT scripts: [94m.github\workflows\ethicalcheck.yml[0m
+[93m[WARN][0m Consider extracting logic to BRAV/SCPT scripts: [94m.github\workflows\fortify.yml[0m
+[93m[WARN][0m Consider extracting logic to BRAV/SCPT scripts: [94m.github\workflows\gitleaks-security-scan.yml[0m
+[93m[WARN][0m Consider extracting logic to BRAV/SCPT scripts: [94m.github\workflows\gitleaks.yml[0m
+[93m[WARN][0m Consider extracting logic to BRAV/SCPT scripts: [94m.github\workflows\jfrog-sast.yml[0m
+[93m[WARN][0m Consider extracting logic to BRAV/SCPT scripts: [94m.github\workflows\jscrambler-code-integrity.yml[0m
+[93m[WARN][0m Consider extracting logic to BRAV/SCPT scripts: [94m.github\workflows\main.yml[0m
+[93m[WARN][0m Consider extracting logic to BRAV/SCPT scripts: [94m.github\workflows\mayhem-for-api.yml[0m
+[93m[WARN][0m Consider extracting logic to BRAV/SCPT scripts: [94m.github\workflows\neuralegion.yml[0m
+[93m[WARN][0m Consider extracting logic to BRAV/SCPT scripts: [94m.github\workflows\osv-scanner.yml[0m
+[93m[WARN][0m Consider extracting logic to BRAV/SCPT scripts: [94m.github\workflows\powershell.yml[0m
+[93m[WARN][0m Consider extracting logic to BRAV/SCPT scripts: [94m.github\workflows\security-scan.yml[0m
+[93m[WARN][0m Consider extracting logic to BRAV/SCPT scripts: [94m.github\workflows\snyk-security.yml[0m
+[93m[WARN][0m Consider extracting logic to BRAV/SCPT scripts: [94m.github\workflows\sysdig-scan.yml[0m
+[93m[WARN][0m Consider extracting logic to BRAV/SCPT scripts: [94m.github\workflows\trivy-security-scan.yml[0m
+
+[92m[SUCCESS][0m ✅ Repository structure complies with tetragram guardrails
+
+[96m[INFO][0m Tetragram planes detected:
+  ✓ ALFA/ - Application plane - source code, instrumentation, apps
+  ✓ BRAV/ - Build/Runtime/Automation/Verification plane - scripts, infra, CI/CD
+  ✓ CHAR/ - Compliance/Human/Audit/Review plane - docs, reports, evidence
+  ✓ DELT/ - Data/Environment/Load/Test plane - configs, fixtures, test data
+
+[92m[SUCCESS][0m ✅ Guardrails check passed
+
+Exit code: 0
