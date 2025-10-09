@@ -19,6 +19,14 @@ if sys.platform == 'win32':
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
     sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
 
+# Tetragram 4-letter plane/subdir enforcement
+FOUR_CHAR_DIRS = {
+    "ALFA": {"SRCE", "TEST", "TOOL", "OTEL", "APPS", "LIBS", "CORE", "INST"},
+    "BRAV": {"SCPT", "INFR", "DOCK", "CICD", "HOOK", "BUIL"},
+    "CHAR": {"DOCS", "EVID", "AUDT", "REPO", "RUNB", "PRSV", "ECRR"},
+    "DELT": {"CONF", "ASST", "FIXT", "LOAD", "TMPL", "META", "SECR", "OVER", "BASE"}
+}
+
 class Colors:
     """ANSI color codes for terminal output"""
     RED = '\033[91m'
@@ -112,6 +120,31 @@ def check_path_depth(repo_root: Path, max_depth: int, exemptions: Set[str]) -> L
     
     return violations
 
+def check_plane_subdirs(repo_root: Path) -> Tuple[bool, List[str]]:
+    """Check that plane subdirectories follow 4-char uppercase naming convention"""
+    violations = []
+    
+    for plane, allowed in FOUR_CHAR_DIRS.items():
+        plane_path = repo_root / plane
+        if not plane_path.exists() or not plane_path.is_dir():
+            continue
+        
+        try:
+            for child in plane_path.iterdir():
+                if not child.is_dir():
+                    continue
+                name = child.name
+                
+                # Check 4-char uppercase convention
+                if not (len(name) == 4 and name.isupper() and name.isalpha()):
+                    violations.append(f"{plane}/{name}: not 4-char UPPERCASE")
+                elif name not in allowed:
+                    violations.append(f"{plane}/{name}: not in allowed set {sorted(allowed)}")
+        except PermissionError:
+            pass
+    
+    return (len(violations) == 0, violations)
+
 def check_workflow_files(repo_root: Path, config: dict) -> List[Dict[str, any]]:
     """Check GitHub workflow files for compliance"""
     violations = []
@@ -189,6 +222,16 @@ def generate_report(repo_root: Path, config: dict, violations: Dict[str, List]) 
             print(f"  ❌ {root}/")
         print()
     
+    # Plane subdir structure check
+    if violations.get('plane_subdirs'):
+        has_violations = True
+        log('ERROR', f"Found {len(violations['plane_subdirs'])} plane subdirectory violations:")
+        for v in violations['plane_subdirs'][:10]:
+            print(f"  ❌ {v}")
+        if len(violations['plane_subdirs']) > 10:
+            print(f"  ... and {len(violations['plane_subdirs']) - 10} more")
+        print()
+    
     # Path depth check
     if violations['path_depth']:
         has_violations = True
@@ -261,6 +304,9 @@ def main():
     
     top_level = scan_top_level_dirs(repo_root, exemptions)
     
+    # Check plane subdirectory structure
+    plane_ok, plane_violations = check_plane_subdirs(repo_root)
+    
     violations = {
         'forbidden_roots': check_forbidden_roots(
             top_level, 
@@ -271,6 +317,7 @@ def main():
             config['rules']['allowed_top_level'],
             exemptions
         ),
+        'plane_subdirs': plane_violations,
         'path_depth': check_path_depth(
             repo_root,
             config['rules']['max_path_depth'],
