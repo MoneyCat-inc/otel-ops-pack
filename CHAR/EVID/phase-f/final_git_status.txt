@@ -1,0 +1,4 @@
+## main...origin/main [ahead 2]
+?? CHAR/EVID/phase-f/final_git_status.txt
+?? CHAR/EVID/phase-f/final_guardrails.txt
+?? CHAR/EVID/phase-f/final_health.json
