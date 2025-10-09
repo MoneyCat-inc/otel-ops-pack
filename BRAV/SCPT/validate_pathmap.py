@@ -42,11 +42,13 @@ def is_junction_or_symlink(path):
         # Check for symlink (works on Unix and Windows)
         if path.is_symlink():
             return True
-        # Check for junction on Windows using os module
-        if sys.platform == 'win32':
-            import os
-            # Junctions are reparse points but not symlinks
-            return os.path.islink(str(path)) or (path.is_dir() and hasattr(os, 'readlink'))
+        # Check for junction on Windows via ctypes
+        if sys.platform == 'win32' and path.is_dir():
+            import ctypes
+            FILE_ATTRIBUTE_REPARSE_POINT = 0x400
+            attrs = ctypes.windll.kernel32.GetFileAttributesW(str(path))
+            if attrs != -1:
+                return bool(attrs & FILE_ATTRIBUTE_REPARSE_POINT)
     except:
         pass
     return False
