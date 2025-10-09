@@ -16,6 +16,8 @@
     "security:scan": "pwsh -File scripts/monthly-trivy-scan.ps1",
     "security:scan:export": "pwsh -File scripts/monthly-trivy-scan.ps1 -ExportReport",
     "security:monitor": "pwsh -File scripts/security-monitor.ps1",
+    "security:cleanup": "pwsh -File scripts/security-cleanup.ps1",
+    "security:cleanup:dry": "pwsh -File scripts/security-cleanup.ps1 -DryRun",
     "dashboard:export": "pwsh -File scripts/playwright-dashboard-export.ps1"
   },
   "dependencies": {
