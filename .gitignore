@@ -157,3 +157,8 @@ artifacts/reference-scan/
 
 # Legacy scripts directory - migrated to BRAV/SCPT/
 scripts/
+
+# Obsolete directories (cleaned up - prevent reintroduction)
+visual-assets-draft/
+
+# Test results
