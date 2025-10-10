@@ -25,7 +25,10 @@
     "ingest:worker": "tsx scripts/ingest-worker.ts",
     "ingest:backfill": "pwsh -File scripts/ingest-backfill.ps1 -Repository MoneyCat-inc/otel-ops-pack -Days 3",
     "normalize:run": "tsx scripts/normalize-events.ts",
-    "summarize:run": "tsx scripts/summarize-run.ts"
+    "classify:run": "tsx scripts/classify-run.ts",
+    "summarize:run": "tsx scripts/summarize-run.ts",
+    "act:pr": "tsx scripts/actor-pr-comment.ts",
+    "ecrr:process": "pwsh -File scripts/run-normalize-summarize.ps1 -RunDir $RUN_DIR"
   },
   "dependencies": {
     "@aws-sdk/client-bedrock-runtime": "^3.901.0",
