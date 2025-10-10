@@ -79,7 +79,7 @@ if (Test-Path $collectorExe) {
     } catch { Write-Fail "Collector config dry-run error: $($_.Exception.Message)" }
 } else { Write-Fail "Collector binary not found at $collectorExe" }
 $healthOk = $false; $healthError = $null
-foreach ($endpoint in @("http://localhost:13134/healthz","http://localhost:13133/healthz")) {
+foreach ($endpoint in @("http://localhost:13134/healthz")) {
     try {
         $healthResponse = Invoke-WebRequest -Uri $endpoint -TimeoutSec 5
         if ($healthResponse.StatusCode -eq 200) { Write-Pass "Collector health endpoint reachable ($endpoint)"; $healthOk = $true; break }

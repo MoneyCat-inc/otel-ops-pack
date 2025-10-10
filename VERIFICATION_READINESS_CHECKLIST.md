@@ -168,7 +168,7 @@ pwsh -File BRAV\SCPT\verify-all-components.ps1 -TestEndToEnd
 curl http://localhost:8080/api/v1/health
 
 # Just check collector
-curl http://localhost:13133/
+curl http://localhost:13134/
 
 # Just check Resonai app
 curl http://localhost:3000
@@ -185,7 +185,7 @@ curl http://localhost:3000
 
 Examine: Checking all components...
   ✅ SigNoz UI: http://localhost:8080 (200 OK)
-  ✅ OTel Collector: http://localhost:13133/ (200 OK)
+  ✅ OTel Collector: http://localhost:13134/ (200 OK)
   ✅ Resonai App: http://localhost:3000 (200 OK)
   ✅ Webhook Server: http://localhost:3003 (200 OK)
   ✅ ALERT_WEBHOOK_URL set
@@ -304,7 +304,7 @@ pwsh -File BRAV\SCPT\verify-all-components.ps1
 curl http://localhost:8080/api/v1/health
 
 # Collector  
-curl http://localhost:13133/
+curl http://localhost:13134/
 
 # Resonai app (if running)
 curl http://localhost:3000

@@ -34,7 +34,7 @@ def main() -> int:
     parser.add_argument("--signoz-url", default="http://127.0.0.1:8080")
     args = parser.parse_args()
 
-    ports = [4317, 4318, 13133, 55679]
+    ports = [4317, 4318, 13134, 55679]
     failures = 0
 
     print("[CHECK] Port connectivity")

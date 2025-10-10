@@ -33,8 +33,8 @@ Overall: PASS
 $ pwsh -File BRAV\SCPT\bosscat-final-verification.ps1
 
 Results:
-- Health check: ❌ Connection refused (localhost:13133)
-- OTLP ports: ❌ Not reachable (4317, 4318, 13133)
+- Health check: ❌ Connection refused (localhost:13134)
+- OTLP ports: ❌ Not reachable (4317, 4318, 13134)
 - Port 55679: ✅ LISTENING
 - Services: Not started yet
 ```
@@ -148,7 +148,7 @@ git push origin main
 
 **Should show:**
 - ✅ Synthetic trace generation: Success
-- ✅ Health verification: Port 13133 responding
+- ✅ Health verification: Port 13134 responding
 - ✅ OTLP ports: 4317, 4318 reachable
 - ✅ Enhanced service verification: Service found in SigNoz
 - ✅ Playwright evidence: Manual run available
@@ -194,7 +194,7 @@ pnpm playwright test BRAV/SCPT/signoz-snapshot.spec.ts
 - [ ] Resonai app started (`npm run dev`)
 - [ ] Webhook server started (port 3003)
 - [ ] Environment variables set (`ALERT_WEBHOOK_URL`)
-- [ ] All ports accessible (8080, 3000, 3003, 4317, 4318, 13133)
+- [ ] All ports accessible (8080, 3000, 3003, 4317, 4318, 13134)
 
 ### Verification
 - [ ] Run `bosscat-final-verification.ps1`

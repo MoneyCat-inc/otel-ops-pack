@@ -113,9 +113,9 @@ try {
         $healthResponse = Invoke-WebRequest -Uri $healthUrl -TimeoutSec 10
         $healthStatus = "200 from :13134 ✅"
     } catch {
-        $healthUrl = "http://localhost:13133/healthz"
+        $healthUrl = "http://localhost:13134/healthz"
         $healthResponse = Invoke-WebRequest -Uri $healthUrl -TimeoutSec 10
-        $healthStatus = "200 from :13133 ✅"
+        $healthStatus = "200 from :13134 ✅"
     }
     
     Write-Result "Windows Collector" "PASS" @($serviceStatus, $configStatus, $healthStatus)
@@ -215,7 +215,7 @@ try {
 Write-Host "`n4. Checking Collector Backpressure..." -ForegroundColor Yellow
 try {
     # Try different metrics endpoints
-    $metricsUrls = @("http://localhost:8888/metrics", "http://localhost:13134/metrics", "http://localhost:13133/metrics")
+    $metricsUrls = @("http://localhost:8888/metrics", "http://localhost:13134/metrics")
     $metrics = $null
     
     foreach ($url in $metricsUrls) {
