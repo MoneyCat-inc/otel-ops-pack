@@ -28,6 +28,8 @@
     "classify:run": "tsx scripts/classify-run.ts",
     "summarize:run": "tsx scripts/summarize-run.ts",
     "act:pr": "tsx scripts/actor-pr-comment.ts",
+    "dashboard:query": "tsx scripts/dashboard-query.ts",
+    "dashboard:rollup": "tsx scripts/dashboard-query.ts --days 7 --root artifacts/ecrr --out DELT/ARTF --snapshot docs/observability/snapshots",
     "ecrr:process": "pwsh -File scripts/run-normalize-summarize.ps1 -RunDir $RUN_DIR"
   },
   "dependencies": {
@@ -44,6 +46,7 @@
     "@prisma/client": "^6.17.0",
     "@types/sqlite3": "^3.1.11",
     "express": "^5.1.0",
+    "glob": "^11.0.3",
     "jsonwebtoken": "^9.0.2",
     "next": "^15.5.4",
     "pino": "^10.0.0",

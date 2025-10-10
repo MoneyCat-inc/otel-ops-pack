@@ -10,6 +10,7 @@
 import express from 'express'
 import fs from 'fs'
 import path from 'path'
+import JSZip from 'jszip'
 import { ecrrPath, ensureDir, redact, writeJson, writeText, safeString } from './ingest-utils'
 
 type WorkflowRun = {
@@ -98,6 +99,46 @@ async function handle(body: WebhookBody) {
   ensureDir(path.join(p.dir, 'logs'))
   writeText(path.join(p.dir, 'logs', 'ingest.txt'), redact(`ingested ${org}/${repo} run ${run.id} at ${new Date().toISOString()}`))
 
+  // Optional enrichment via GitHub API (jobs + logs)
+  if (process.env.GITHUB_TOKEN) {
+    try {
+      const base = `https://api.github.com/repos/${org}/${repo}/actions/runs/${run.id}`
+      const headers: Record<string, string> = {
+        Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+        'User-Agent': 'bosscat-ingest-worker',
+        Accept: 'application/vnd.github+json',
+      }
+      // Jobs metadata
+      const jobsRes = await fetch(`${base}/jobs`, { headers })
+      if (jobsRes.ok) {
+        const jobsJson = await jobsRes.json()
+        writeJson(path.join(p.dir, 'jobs.json'), jobsJson)
+        recordEvent(p.dir, 'enrich.jobs_saved', { count: jobsJson?.total_count ?? 0 })
+      }
+      // Logs ZIP
+      const logsRes = await fetch(`${base}/logs`, { headers })
+      if (logsRes.ok) {
+        const ab = await logsRes.arrayBuffer()
+        const zip = await JSZip.loadAsync(ab)
+        const outDir = path.join(p.dir, 'logs')
+        ensureDir(outDir)
+        const entries = Object.keys(zip.files).slice(0, 50) // safety cap
+        for (const name of entries) {
+          const file = zip.files[name]
+          if (!file) continue
+          if (file.dir) continue
+          const txt = await file.async('text')
+          const rel = name.replace(/\\/g, '/').split('/').pop() || 'log.txt'
+          const dest = path.join(outDir, rel)
+          writeText(dest, redact(txt))
+        }
+        recordEvent(p.dir, 'enrich.logs_extracted', { files: entries.length })
+      }
+    } catch (e) {
+      recordEvent(p.dir, 'enrich.error', { message: String(e) })
+    }
+  }
+
   return { ok: true, path: p.dir }
 }
 
@@ -143,4 +184,3 @@ async function main() {
 }
 
 main().catch((e) => { console.error(e); process.exit(1) })
-
