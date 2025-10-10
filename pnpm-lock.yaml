@@ -39,8 +39,8 @@ importers:
         specifier: ^1.37.0
         version: 1.37.0
       '@prisma/client':
-        specifier: ^5.7.1
-        version: 5.22.0(prisma@5.22.0)
+        specifier: ^6.17.0
+        version: 6.17.0(prisma@5.22.0)(typescript@5.9.2)
       '@types/sqlite3':
         specifier: ^3.1.11
         version: 3.1.11
@@ -1630,13 +1630,16 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
-  '@prisma/client@5.22.0':
-    resolution: {integrity: sha512-M0SVXfyHnQREBKxCgyo7sffrKttwE6R8PMq330MIUF0pTwjUhLbW84pFDlf06B27XyCR++VtjugEnIHdr07SVA==}
-    engines: {node: '>=16.13'}
+  '@prisma/client@6.17.0':
+    resolution: {integrity: sha512-b42mTLOdLEZ6e/igu8CLdccAUX9AwHknQQ1+pHOftnzDP2QoyZyFvcANqSLs5ockimFKJnV7Ljf+qrhNYf6oAg==}
+    engines: {node: '>=18.18'}
     peerDependencies:
       prisma: '*'
+      typescript: '>=5.1.0'
     peerDependenciesMeta:
       prisma:
+        optional: true
+      typescript:
         optional: true
 
   '@prisma/debug@5.22.0':
@@ -6799,9 +6802,10 @@ snapshots:
     dependencies:
       playwright: 1.56.0
 
-  '@prisma/client@5.22.0(prisma@5.22.0)':
+  '@prisma/client@6.17.0(prisma@5.22.0)(typescript@5.9.2)':
     optionalDependencies:
       prisma: 5.22.0
+      typescript: 5.9.2
 
   '@prisma/debug@5.22.0': {}
 
