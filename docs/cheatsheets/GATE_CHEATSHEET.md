@@ -45,3 +45,27 @@ Every gate run follows:
 3. **Report** - Generate evidence
 4. **Role** - Declare actor/responsibility
 
+---
+
+## Automated Evidence Management
+
+### Weekly Guardrails Re-Certification
+- **Schedule:** Monday 03:00 UTC
+- **Action:** Verify guardrails config hash, run compliance check
+- **Evidence:** `docs/observability/snapshots/guardrails-recert-*.json`
+- **Alert:** GitHub Issue on drift detection
+- **Workflow:** `.github/workflows/guardrails-recert.yml`
+
+### Monthly Evidence Rollup
+- **Schedule:** 1st day of month, 02:00 UTC
+- **Action:** Archive snapshots and ECRR reports older than 30 days
+- **Archive:** `CHAR/PRSV/evidence-archives/evidence-rollup-YYYY-MM.tar.gz`
+- **Report:** `docs/ecrr/ECRR_REPORTS/ECRR_EVIDENCE_ROLLUP_YYYY-MM.md`
+- **Retention:** 90-day artifact retention, indefinite archive
+- **Workflow:** `.github/workflows/bosscat-monthly-evidence-rollup.yml`
+
+**Manual Trigger:**
+```
+GitHub Actions → "Monthly Evidence Rollup" → Run workflow
+```
+
