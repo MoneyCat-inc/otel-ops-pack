@@ -9,6 +9,10 @@ on:
         default: 'all'
         type: string
 
+concurrency:
+  group: bosscat-diagnostic-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   diagnostic:
     runs-on: ubuntu-latest

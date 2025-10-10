@@ -22,6 +22,10 @@ on:
   schedule:
     - cron: '16 14 * * 1'
 
+concurrency:
+  group: codacy-security-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 

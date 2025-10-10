@@ -34,5 +34,10 @@
       }
     }
   ],
+  "reasons": [
+    "maintenance: parallel cleanup pagination fix documented (ECRR)"
+  ],
+  "branch": "main",
+  "commit": "27806e4",
   "gatePhrase": "@cat ready-for-gate"
 }

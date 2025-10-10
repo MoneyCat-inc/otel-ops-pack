@@ -19,6 +19,10 @@ on:
         default: false
         type: boolean
 
+concurrency:
+  group: boss-gate-signal-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   signal-gate:
     name: Signal Boss Gate
