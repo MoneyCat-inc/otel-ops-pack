@@ -1,9 +1,9 @@
 ﻿# ECRR Reports Benchmark
 
-Timestamp: 2025-10-10T01:34:29+01:00
-Commit: 1ac3094
-Branch: main
+Timestamp: 2025-10-10T01:52:36+01:00
+Commit: e71e52c
+Branch: feat/gate-fallback-artifacts-queue
 
-- Report files: 13
-- Total bytes: 19025
-- Latest: ECRR_GATE_RUN_LATEST.md (662 bytes)
+- Report files: 18
+- Total bytes: 28104
+- Latest: ECRR_GATE_RUN_LATEST.md (682 bytes)

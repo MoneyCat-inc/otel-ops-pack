@@ -32,6 +32,13 @@ Runbooks:
   - `.github/workflows/bosscat-gate-verify.yml`
   - `.github/workflows/nightly-dashboard-export.yml`
 
+## Evidence Links
+
+- Queue Steward Evidence: [artifacts/queue-steward-verification.txt](../../artifacts/queue-steward-verification.txt)
+- ECRR Trend (CSV): [DELT/ARTF/ecrr-benchmark-trend.csv](../../DELT/ARTF/ecrr-benchmark-trend.csv)
+- ECRR Benchmark (JSON): [DELT/ARTF/ecrr-benchmark.json](../../DELT/ARTF/ecrr-benchmark.json)
+- Latest ECRR Gate Run: [docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md](../ecrr/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md)
+
 ### Retention & Sampling Policy
 
 - Sampling sources: on every gate verification (PR/CI) and nightly dashboard export.

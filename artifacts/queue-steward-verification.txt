@@ -1,0 +1,6 @@
+﻿Queue Steward Verification
+Timestamp: 2025-10-10 01:50:18 +01:00
+Source: C:\otel\docs\observability\snapshots\gate-final-ready-20251010-004510.json
+
+Checks:
+- health: OK status: 200

@@ -1,7 +1,7 @@
 ﻿{
-    "timestamp":  "2025-10-10T01:42:44+01:00",
-    "commit":  "7ccf34c",
-    "branch":  "main",
+    "timestamp":  "2025-10-10T01:52:35+01:00",
+    "commit":  "e71e52c",
+    "branch":  "feat/gate-fallback-artifacts-queue",
     "verdict":  "READY",
     "reasons":  [
 
@@ -19,7 +19,7 @@
                    "docs/cheatsheets":  "present",
                    "docs/status.html":  "present",
                    "docs/ecrr/ECRR_REPORTS":  "present",
-                   "queue-steward-verification.txt":  "missing",
+                   "queue-steward-verification.txt":  "present",
                    ".github/workflows/bosscat-gate-verify.yml":  "present",
                    "ALFA/TEST/helpers/signoz.ts":  "present",
                    "scripts/benchmark-process-all-ecrr-reports.ps1":  "present"
