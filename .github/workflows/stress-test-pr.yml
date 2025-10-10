@@ -91,3 +91,29 @@ jobs:
           kill $SERVER_PID || true
           docker-compose down
 
+      - name: ECRR Process (pilot)
+        if: always()
+        shell: bash
+        run: |
+          RUN_DIR="artifacts/ecrr/org=${GITHUB_REPOSITORY%/*}/repo=${GITHUB_REPOSITORY#*/}/dt=$(date -u +%Y)/$(date -u +%m)/$(date -u +%d)/run=${GITHUB_RUN_ID}"
+          mkdir -p "$RUN_DIR/logs"
+          printf "workflow=%s run=%s status=%s\n" "$GITHUB_WORKFLOW" "$GITHUB_RUN_NUMBER" "${{ job.status }}" > "$RUN_DIR/logs/ci.log"
+          cat > "$RUN_DIR/meta.json" <<META
+          { "org":"${GITHUB_REPOSITORY%/*}", "repo":"${GITHUB_REPOSITORY#*/}", "run_id": ${GITHUB_RUN_ID}, "run_number": ${GITHUB_RUN_NUMBER}, "name": "${GITHUB_WORKFLOW}", "event": "${GITHUB_EVENT_NAME}", "status": "completed", "conclusion": "${{ job.status }}", "head_branch": "${GITHUB_REF_NAME}", "head_sha": "${GITHUB_SHA}", "created_at": "$(date -u +%FT%TZ)", "updated_at": "$(date -u +%FT%TZ)", "storage": { "root": "artifacts/ecrr", "date": "$(date -u +%Y-%m-%d)", "dir": "$RUN_DIR" } }
+META
+          export RUN_DIR
+          pnpm normalize:run || true
+          pnpm classify:run || true
+          pnpm summarize:run || true
+          echo "RUN_DIR=$RUN_DIR" >> $GITHUB_ENV
+
+      - name: ECRR PR Comment (pilot)
+        if: github.event_name == 'pull_request'
+        env:
+          RUN_DIR: ${{ env.RUN_DIR }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          tsx scripts/actor-pr-comment.ts --dir "$RUN_DIR"
+
