@@ -23,7 +23,9 @@
     "dashboard:export": "pwsh -File scripts/playwright-dashboard-export.ps1",
     "emit:logs": "tsx scripts/examples/log-with-trace.ts",
     "ingest:worker": "tsx scripts/ingest-worker.ts",
-    "ingest:backfill": "pwsh -File scripts/ingest-backfill.ps1 -Repository MoneyCat-inc/otel-ops-pack -Days 3"
+    "ingest:backfill": "pwsh -File scripts/ingest-backfill.ps1 -Repository MoneyCat-inc/otel-ops-pack -Days 3",
+    "normalize:run": "tsx scripts/normalize-events.ts",
+    "summarize:run": "tsx scripts/summarize-run.ts"
   },
   "dependencies": {
     "@aws-sdk/client-bedrock-runtime": "^3.901.0",
