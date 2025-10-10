@@ -45,7 +45,52 @@ function main() {
     ['correlation', 'normalize']
   ]
 
-  const out = { version: 1, generated_at: new Date().toISOString(), nodes, edges, scripts }
+  // Load docs index for important documents
+  let docsIndex: any = null
+  const docsIdxPath = path.join('docs', 'reference', 'docs-index.json')
+  if (fs.existsSync(docsIdxPath)) {
+    try { docsIndex = JSON.parse(fs.readFileSync(docsIdxPath, 'utf-8')) } catch {}
+  }
+  const docNodes = (docsIndex?.items || []).map((d: any) => ({ id: `doc:${d.title || d.path}`, type: 'doc', files: [d.path], importance: d.importance || 'P2', tags: d.tags || [] }))
+
+  // Taxonomy aligned to concept vision (Phases, Loops, ECRR, Importance)
+  const taxonomy = {
+    phases: {
+      phase1: ['correlation'],
+      phase2: ['ingest-worker', 'normalize', 'classify', 'summarize', 'actor-pr', 'dashboard-rollup'],
+      phase3: ['policy', 'registry']
+    },
+    loops: {
+      run: ['ingest-worker', 'normalize', 'classify', 'summarize'],
+      pr: ['actor-pr'],
+      workflow: ['dashboard-rollup'],
+      org: ['policy', 'registry']
+    },
+    ecrr: ['examine', 'clean', 'report', 'role'],
+    importanceLevels: {
+      P0: 'Critical — canonical design/governance, gate‑deciding reports',
+      P1: 'High — operational guides, indices, validations',
+      P2: 'Medium — implementation notes, examples, playbooks',
+      P3: 'Low — archival/history'
+    }
+  }
+
+  // Existence check for robustness
+  const missing: { node: string; file: string }[] = []
+  for (const n of [...nodes, ...docNodes]) {
+    for (const f of n.files) {
+      if (!fs.existsSync(path.join(ROOT, f))) missing.push({ node: n.id, file: f })
+    }
+  }
+
+  const allNodes = [...nodes, ...docNodes]
+  const importanceCounts: Record<string, number> = { P0: 0, P1: 0, P2: 0, P3: 0 }
+  for (const n of allNodes) {
+    const imp = (n as any).importance
+    if (imp && importanceCounts[imp] !== undefined) importanceCounts[imp]++
+  }
+
+  const out = { version: 1, generated_at: new Date().toISOString(), nodes: allNodes, edges, scripts, taxonomy, missing, stats: { importanceCounts } }
   const outDir = path.dirname(OUT)
   if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true })
   fs.writeFileSync(OUT, JSON.stringify(out, null, 2))
@@ -53,4 +98,3 @@ function main() {
 }
 
 main()
-

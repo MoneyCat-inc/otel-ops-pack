@@ -92,14 +92,21 @@
       // Reference map preview
       try {
         const r = await fetch('reference/reference-map.json', { cache: 'no-store' });
+        const v = await fetch('reference/reference-map-validation.json', { cache: 'no-store' });
         if (r.ok) {
           const m = await r.json();
           const nodes = (m.nodes || []).length;
           const edges = (m.edges || []).length;
           const list = (m.nodes || []).slice(0,6).map(n => `- ${n.id} (${n.type})`).join('<br>');
+          let missing = 0;
+          if (v.ok) {
+            const rep = await v.json();
+            missing = rep.counts?.missing || 0;
+          }
           document.getElementById('refmap').innerHTML = `
             <p><strong>Generated:</strong> ${m.generated_at || '—'}</p>
-            <p><strong>Nodes/Edges:</strong> ${nodes}/${edges}</p>
+            <p><strong>Nodes/Edges:</strong> ${nodes}/${edges} ${missing>0?`<span class='pill'>missing: ${missing}</span>`:''}</p>
+            <p><strong>Docs by Importance:</strong> P0=${m.stats?.importanceCounts?.P0||0} · P1=${m.stats?.importanceCounts?.P1||0} · P2=${m.stats?.importanceCounts?.P2||0} · P3=${m.stats?.importanceCounts?.P3||0}</p>
             <p><strong>Sample:</strong><br>${list}</p>
           `;
         }

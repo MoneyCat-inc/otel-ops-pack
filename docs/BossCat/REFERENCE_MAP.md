@@ -85,3 +85,12 @@ Maintenance
 - Keep `docs/reference/reference-map.json` in sync via the generator script.
 - Add an evidence entry for any structural changes (files, workflows, policies).
 
+Importance System (Docs Priority)
+- Purpose: keep critical documents discoverable as the system scales.
+- Levels (4‑tier):
+  - P0 Critical — canonical design/governance specs and gate‑deciding reports
+  - P1 High — operational guides, living indices, pilots and validation summaries
+  - P2 Medium — implementation notes, examples, playbooks
+  - P3 Low — archival, historical snapshots
+- Source of truth: `docs/reference/docs-index.json`
+- Display: surfaced in `docs/reference/reference-map.json` and status.html (counts + top P0)
