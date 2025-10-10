@@ -34,7 +34,12 @@
       <li><a href="../DELT/ARTF/ecrr-benchmark.json">ECRR Benchmark (JSON)</a></li>
       <li><a href="ecrr/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md">Latest ECRR Gate Run</a></li>
       <li><a href="ecrr/ECRR_REPORTS/ECRR_MAINTENANCE_LATEST.md">Maintenance Latest (Pagination Fix)</a></li>
+      <li><a href="reference/reference-map.json">Reference Map (JSON)</a></li>
     </ul>
+  </div>
+  <div class="status">
+    <h2>Reference Map Preview</h2>
+    <div id="refmap"></div>
   </div>
   <script>
     (async () => {
@@ -84,6 +89,21 @@
       } else if (copyBtn) {
         copyBtn.disabled = true;
       }
+      // Reference map preview
+      try {
+        const r = await fetch('reference/reference-map.json', { cache: 'no-store' });
+        if (r.ok) {
+          const m = await r.json();
+          const nodes = (m.nodes || []).length;
+          const edges = (m.edges || []).length;
+          const list = (m.nodes || []).slice(0,6).map(n => `- ${n.id} (${n.type})`).join('<br>');
+          document.getElementById('refmap').innerHTML = `
+            <p><strong>Generated:</strong> ${m.generated_at || '—'}</p>
+            <p><strong>Nodes/Edges:</strong> ${nodes}/${edges}</p>
+            <p><strong>Sample:</strong><br>${list}</p>
+          `;
+        }
+      } catch {}
     })();
   </script>
 </body>
