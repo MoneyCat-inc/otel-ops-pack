@@ -172,3 +172,5 @@ sidecars/
 # Tetragram Health Monitoring - Ephemeral Artifacts
 CHAR/EVID/health/update-status.log
 CHAR/EVID/diagnostics/gpu-sidecars-*.txt
+DELT/ARTF/gate-2025-10-10-bundle.tar.gz
+DELT/ARTF/*.tar.gz
