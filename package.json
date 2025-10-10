@@ -44,7 +44,7 @@
     "@opentelemetry/instrumentation-xml-http-request": "^0.206.0",
     "@opentelemetry/sdk-trace-web": "^2.1.0",
     "@opentelemetry/semantic-conventions": "^1.37.0",
-    "@prisma/client": "^6.17.0",
+    "@prisma/client": "^6.17.1",
     "@types/sqlite3": "^3.1.11",
     "express": "^5.1.0",
     "glob": "^11.0.3",
