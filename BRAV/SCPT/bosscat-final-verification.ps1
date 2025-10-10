@@ -31,7 +31,7 @@ try {
 Write-Host ""
 Write-Host "2️⃣ Health Verification" -ForegroundColor Yellow
 try {
-    $health = Invoke-WebRequest -UseBasicParsing http://localhost:13133/healthz -TimeoutSec 5
+    $health = Invoke-WebRequest -UseBasicParsing http://localhost:13134/healthz -TimeoutSec 5
     if ($health.StatusCode -eq 200) {
         Write-Host "   ✅ Collector Health: 200 OK" -ForegroundColor Green
     }
@@ -42,7 +42,7 @@ try {
 # 3. Port connectivity
 Write-Host ""
 Write-Host "3️⃣ Port Connectivity" -ForegroundColor Yellow
-$ports = @(4317, 4318, 13133, 55679)
+$ports = @(4317, 4318, 13134, 55679)
 foreach ($port in $ports) {
     $connection = Test-NetConnection -ComputerName localhost -Port $port -WarningAction SilentlyContinue
     if ($connection.TcpTestSucceeded) {

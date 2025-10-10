@@ -1,0 +1,14 @@
+# Python dependencies for BossCat Gate Verification
+# Core dependencies installed via workflow, this file kept for compatibility
+
+# Testing & Load Generation
+locust>=2.20.0
+k6>=0.45.0
+
+# Code Quality
+flake8>=6.1.0
+black>=23.12.0
+
+# ECRR & Reporting (if needed)
+# Add additional deps as required
+

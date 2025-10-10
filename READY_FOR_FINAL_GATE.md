@@ -40,7 +40,7 @@ $ pwsh -File BRAV\SCPT\bosscat-final-verification.ps1
 
 Services Status:
 - SigNoz: ❌ Connection refused (needs: docker-compose up)
-- OTLP Ports: ❌ Not reachable (4317, 4318, 13133)
+- OTLP Ports: ❌ Not reachable (4317, 4318, 13134)
 - Windows Collector: ⚠️ Health check failed
 ```
 
