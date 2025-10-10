@@ -1,5 +1,9 @@
 name: 🐾 BossCat Tetragram Guardrails
 
+concurrency:
+  group: tetragram-guardrails-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
   push:
     branches: [ main, develop ]

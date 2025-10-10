@@ -1,0 +1,568 @@
+{
+  "workflows": [
+    {
+      "has_retention": false,
+      "has_summary": false,
+      "has_artifact_upload": false,
+      "name": "apisec-scan.yml",
+      "has_concurrency": false,
+      "triggers": {
+        "push": true,
+        "pr": true
+      }
+    },
+    {
+      "has_retention": false,
+      "has_summary": false,
+      "has_artifact_upload": true,
+      "name": "app-template.yml",
+      "has_concurrency": true,
+      "triggers": {
+        "push": true,
+        "pr": true
+      }
+    },
+    {
+      "has_retention": false,
+      "has_summary": false,
+      "has_artifact_upload": true,
+      "name": "benchmark-process-all-ecrr-reports.yml",
+      "has_concurrency": false,
+      "triggers": {
+        "push": false,
+        "pr": false
+      }
+    },
+    {
+      "has_retention": false,
+      "has_summary": true,
+      "has_artifact_upload": false,
+      "name": "boss-gate-signal-and-merge.yml",
+      "has_concurrency": false,
+      "triggers": {
+        "push": false,
+        "pr": false
+      }
+    },
+    {
+      "has_retention": true,
+      "has_summary": false,
+      "has_artifact_upload": true,
+      "name": "boss-gate-verify.yml",
+      "has_concurrency": false,
+      "triggers": {
+        "push": false,
+        "pr": true
+      }
+    },
+    {
+      "has_retention": false,
+      "has_summary": false,
+      "has_artifact_upload": false,
+      "name": "bosscat-diagnostic.yml",
+      "has_concurrency": false,
+      "triggers": {
+        "push": false,
+        "pr": false
+      }
+    },
+    {
+      "has_retention": true,
+      "has_summary": false,
+      "has_artifact_upload": true,
+      "name": "bosscat-gate-bot-native.yml",
+      "has_concurrency": true,
+      "triggers": {
+        "push": false,
+        "pr": true
+      }
+    },
+    {
+      "has_retention": true,
+      "has_summary": true,
+      "has_artifact_upload": true,
+      "name": "bosscat-gate-verify.yml",
+      "has_concurrency": true,
+      "triggers": {
+        "push": true,
+        "pr": true
+      }
+    },
+    {
+      "has_retention": true,
+      "has_summary": false,
+      "has_artifact_upload": true,
+      "name": "bosscat-governance.yml",
+      "has_concurrency": false,
+      "triggers": {
+        "push": true,
+        "pr": true
+      }
+    },
+    {
+      "has_retention": true,
+      "has_summary": false,
+      "has_artifact_upload": true,
+      "name": "bosscat-monthly-evidence-rollup.yml",
+      "has_concurrency": true,
+      "triggers": {
+        "push": false,
+        "pr": false
+      }
+    },
+    {
+      "has_retention": false,
+      "has_summary": false,
+      "has_artifact_upload": false,
+      "name": "bosscat-tetragram-guard.yml",
+      "has_concurrency": false,
+      "triggers": {
+        "push": false,
+        "pr": false
+      }
+    },
+    {
+      "has_retention": false,
+      "has_summary": true,
+      "has_artifact_upload": false,
+      "name": "ci-disabled.yml",
+      "has_concurrency": false,
+      "triggers": {
+        "push": false,
+        "pr": false
+      }
+    },
+    {
+      "has_retention": false,
+      "has_summary": false,
+      "has_artifact_upload": false,
+      "name": "codacy.yml",
+      "has_concurrency": false,
+      "triggers": {
+        "push": true,
+        "pr": true
+      }
+    },
+    {
+      "has_retention": false,
+      "has_summary": false,
+      "has_artifact_upload": false,
+      "name": "codeql-analysis.yml",
+      "has_concurrency": false,
+      "triggers": {
+        "push": true,
+        "pr": true
+      }
+    },
+    {
+      "has_retention": false,
+      "has_summary": false,
+      "has_artifact_upload": false,
+      "name": "codeql.yml",
+      "has_concurrency": false,
+      "triggers": {
+        "push": true,
+        "pr": true
+      }
+    },
+    {
+      "has_retention": false,
+      "has_summary": false,
+      "has_artifact_upload": false,
+      "name": "defender-for-devops.yml",
+      "has_concurrency": false,
+      "triggers": {
+        "push": true,
+        "pr": true
+      }
+    },
+    {
+      "has_retention": false,
+      "has_summary": false,
+      "has_artifact_upload": false,
+      "name": "devskim.yml",
+      "has_concurrency": false,
+      "triggers": {
+        "push": true,
+        "pr": true
+      }
+    },
+    {
+      "has_retention": false,
+      "has_summary": true,
+      "has_artifact_upload": false,
+      "name": "drift-alert.yml",
+      "has_concurrency": false,
+      "triggers": {
+        "push": false,
+        "pr": false
+      }
+    },
+    {
+      "has_retention": true,
+      "has_summary": false,
+      "has_artifact_upload": true,
+      "name": "ecrr-compliance.yml",
+      "has_concurrency": false,
+      "triggers": {
+        "push": true,
+        "pr": true
+      }
+    },
+    {
+      "has_retention": false,
+      "has_summary": false,
+      "has_artifact_upload": false,
+      "name": "ethicalcheck.yml",
+      "has_concurrency": false,
+      "triggers": {
+        "push": true,
+        "pr": true
+      }
+    },
+    {
+      "has_retention": false,
+      "has_summary": false,
+      "has_artifact_upload": false,
+      "name": "fortify.yml",
+      "has_concurrency": false,
+      "triggers": {
+        "push": true,
+        "pr": true
+      }
+    },
+    {
+      "has_retention": true,
+      "has_summary": false,
+      "has_artifact_upload": true,
+      "name": "gate-nightly.yml",
+      "has_concurrency": false,
+      "triggers": {
+        "push": false,
+        "pr": false
+      }
+    },
+    {
+      "has_retention": true,
+      "has_summary": false,
+      "has_artifact_upload": true,
+      "name": "gitleaks-security-scan.yml",
+      "has_concurrency": false,
+      "triggers": {
+        "push": true,
+        "pr": true
+      }
+    },
+    {
+      "has_retention": true,
+      "has_summary": false,
+      "has_artifact_upload": true,
+      "name": "gitleaks.yml",
+      "has_concurrency": false,
+      "triggers": {
+        "push": true,
+        "pr": true
+      }
+    },
+    {
+      "has_retention": false,
+      "has_summary": false,
+      "has_artifact_upload": true,
+      "name": "guardrails-recert.yml",
+      "has_concurrency": false,
+      "triggers": {
+        "push": false,
+        "pr": false
+      }
+    },
+    {
+      "has_retention": false,
+      "has_summary": true,
+      "has_artifact_upload": false,
+      "name": "guardrails.yml",
+      "has_concurrency": false,
+      "triggers": {
+        "push": true,
+        "pr": true
+      }
+    },
+    {
+      "has_retention": true,
+      "has_summary": false,
+      "has_artifact_upload": true,
+      "name": "iona-gate-verify.yml",
+      "has_concurrency": false,
+      "triggers": {
+        "push": true,
+        "pr": true
+      }
+    },
+    {
+      "has_retention": false,
+      "has_summary": false,
+      "has_artifact_upload": false,
+      "name": "jfrog-sast.yml",
+      "has_concurrency": false,
+      "triggers": {
+        "push": true,
+        "pr": true
+      }
+    },
+    {
+      "has_retention": false,
+      "has_summary": false,
+      "has_artifact_upload": false,
+      "name": "jscrambler-code-integrity.yml",
+      "has_concurrency": false,
+      "triggers": {
+        "push": true,
+        "pr": true
+      }
+    },
+    {
+      "has_retention": false,
+      "has_summary": false,
+      "has_artifact_upload": false,
+      "name": "main.yml",
+      "has_concurrency": false,
+      "triggers": {
+        "push": true,
+        "pr": true
+      }
+    },
+    {
+      "has_retention": false,
+      "has_summary": false,
+      "has_artifact_upload": false,
+      "name": "mayhem-for-api.yml",
+      "has_concurrency": false,
+      "triggers": {
+        "push": true,
+        "pr": true
+      }
+    },
+    {
+      "has_retention": true,
+      "has_summary": true,
+      "has_artifact_upload": true,
+      "name": "multi-app-ci.yml",
+      "has_concurrency": false,
+      "triggers": {
+        "push": true,
+        "pr": true
+      }
+    },
+    {
+      "has_retention": false,
+      "has_summary": false,
+      "has_artifact_upload": false,
+      "name": "neuralegion.yml",
+      "has_concurrency": false,
+      "triggers": {
+        "push": true,
+        "pr": true
+      }
+    },
+    {
+      "has_retention": true,
+      "has_summary": true,
+      "has_artifact_upload": true,
+      "name": "nightly-dashboard-export.yml",
+      "has_concurrency": false,
+      "triggers": {
+        "push": false,
+        "pr": false
+      }
+    },
+    {
+      "has_retention": true,
+      "has_summary": false,
+      "has_artifact_upload": true,
+      "name": "nightly-dashboard-reports.yml",
+      "has_concurrency": false,
+      "triggers": {
+        "push": false,
+        "pr": false
+      }
+    },
+    {
+      "has_retention": false,
+      "has_summary": false,
+      "has_artifact_upload": true,
+      "name": "nightly-gpu-smoke.yml",
+      "has_concurrency": false,
+      "triggers": {
+        "push": false,
+        "pr": false
+      }
+    },
+    {
+      "has_retention": false,
+      "has_summary": false,
+      "has_artifact_upload": false,
+      "name": "nightly-tetragrammaton-benchmarks.yml",
+      "has_concurrency": false,
+      "triggers": {
+        "push": false,
+        "pr": false
+      }
+    },
+    {
+      "has_retention": false,
+      "has_summary": false,
+      "has_artifact_upload": false,
+      "name": "osv-scanner.yml",
+      "has_concurrency": false,
+      "triggers": {
+        "push": true,
+        "pr": true
+      }
+    },
+    {
+      "has_retention": false,
+      "has_summary": false,
+      "has_artifact_upload": false,
+      "name": "powershell.yml",
+      "has_concurrency": false,
+      "triggers": {
+        "push": true,
+        "pr": true
+      }
+    },
+    {
+      "has_retention": true,
+      "has_summary": false,
+      "has_artifact_upload": true,
+      "name": "repository-security-check.yml",
+      "has_concurrency": false,
+      "triggers": {
+        "push": true,
+        "pr": false
+      }
+    },
+    {
+      "has_retention": false,
+      "has_summary": true,
+      "has_artifact_upload": false,
+      "name": "security-scan.yml",
+      "has_concurrency": false,
+      "triggers": {
+        "push": true,
+        "pr": true
+      }
+    },
+    {
+      "has_retention": true,
+      "has_summary": false,
+      "has_artifact_upload": true,
+      "name": "signoz-alerts.yml",
+      "has_concurrency": true,
+      "triggers": {
+        "push": true,
+        "pr": false
+      }
+    },
+    {
+      "has_retention": true,
+      "has_summary": false,
+      "has_artifact_upload": true,
+      "name": "signoz-automation-fresh.yml",
+      "has_concurrency": false,
+      "triggers": {
+        "push": true,
+        "pr": false
+      }
+    },
+    {
+      "has_retention": false,
+      "has_summary": false,
+      "has_artifact_upload": true,
+      "name": "signoz-automation.yml",
+      "has_concurrency": false,
+      "triggers": {
+        "push": true,
+        "pr": false
+      }
+    },
+    {
+      "has_retention": true,
+      "has_summary": false,
+      "has_artifact_upload": true,
+      "name": "signoz-config.yml",
+      "has_concurrency": true,
+      "triggers": {
+        "push": true,
+        "pr": false
+      }
+    },
+    {
+      "has_retention": false,
+      "has_summary": false,
+      "has_artifact_upload": false,
+      "name": "snyk-security.yml",
+      "has_concurrency": false,
+      "triggers": {
+        "push": true,
+        "pr": true
+      }
+    },
+    {
+      "has_retention": true,
+      "has_summary": false,
+      "has_artifact_upload": true,
+      "name": "stress-test-nightly.yml",
+      "has_concurrency": false,
+      "triggers": {
+        "push": false,
+        "pr": false
+      }
+    },
+    {
+      "has_retention": false,
+      "has_summary": false,
+      "has_artifact_upload": true,
+      "name": "stress-test-pr.yml",
+      "has_concurrency": false,
+      "triggers": {
+        "push": false,
+        "pr": true
+      }
+    },
+    {
+      "has_retention": false,
+      "has_summary": false,
+      "has_artifact_upload": false,
+      "name": "sysdig-scan.yml",
+      "has_concurrency": false,
+      "triggers": {
+        "push": true,
+        "pr": true
+      }
+    },
+    {
+      "has_retention": false,
+      "has_summary": true,
+      "has_artifact_upload": false,
+      "name": "trivy-security-scan.yml",
+      "has_concurrency": false,
+      "triggers": {
+        "push": true,
+        "pr": true
+      }
+    }
+  ],
+  "metadata": {
+    "total_workflows": 50,
+    "phase": "Phase1-Examine",
+    "audit_id": "ALFA-1-20251010-090838",
+    "timestamp": "2025-10-10T09:09:20.7068417+01:00"
+  },
+  "summary": {
+    "has_retention": 18,
+    "has_summary": 9,
+    "needs_summary": 41,
+    "has_concurrency": 6,
+    "needs_concurrency": 44,
+    "needs_retention": 32
+  }
+}

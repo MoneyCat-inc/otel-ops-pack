@@ -1,5 +1,10 @@
 name: BossCat · Tetragram Guard
 on: [pull_request]
+
+concurrency:
+  group: tetragram-guard-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   guard:
     runs-on: ubuntu-latest

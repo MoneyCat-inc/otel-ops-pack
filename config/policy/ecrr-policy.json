@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "rerun": {
+    "enabled": true,
+    "dominant_classes_allow": ["flake_or_test_failure"],
+    "max_reruns_per_pr": 1,
+    "require_open_pr": true
+  },
+  "owners": {
+    "test": "@qa-team",
+    "deps": "@platform-team",
+    "build": "@infra-build",
+    "infra": "@sre",
+    "cache": "@devex",
+    "other": "@triage"
+  }
+}
+

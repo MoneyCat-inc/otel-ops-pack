@@ -83,7 +83,7 @@ jobs:
           DELT/ARTF/
           docs/BossCat/reports/
           artifacts/*.txt
-        retention-days: 30
+        retention-days: 14
         
     - name: Generate ECRR Report
       if: always()
@@ -119,7 +119,7 @@ jobs:
       with:
         name: bosscat-reports-${{ github.run_number }}
         path: docs/BossCat/reports/
-        retention-days: 30
+        retention-days: 14
 
     - name: Run ECRR benchmark and append trend
       if: always()
@@ -137,4 +137,50 @@ jobs:
           DELT/ARTF/ecrr-benchmark.json
           DELT/ARTF/ecrr-benchmark-trend.csv
           artifacts/ecrr-benchmark-trend.csv
-        retention-days: 30
+        retention-days: 14
+
+    - name: ECRR Process (pilot)
+      if: always()
+      shell: bash
+      run: |
+        RUN_DIR="artifacts/ecrr/org=${GITHUB_REPOSITORY%/*}/repo=${GITHUB_REPOSITORY#*/}/dt=$(date -u +%Y)/$(date -u +%m)/$(date -u +%d)/run=${GITHUB_RUN_ID}"
+        mkdir -p "$RUN_DIR/logs"
+        printf "workflow=%s run=%s status=%s\n" "$GITHUB_WORKFLOW" "$GITHUB_RUN_NUMBER" "${{ job.status }}" > "$RUN_DIR/logs/ci.log"
+        cat > "$RUN_DIR/meta.json" <<META
+        { "org":"${GITHUB_REPOSITORY%/*}", "repo":"${GITHUB_REPOSITORY#*/}", "run_id": ${GITHUB_RUN_ID}, "run_number": ${GITHUB_RUN_NUMBER}, "name": "${GITHUB_WORKFLOW}", "event": "${GITHUB_EVENT_NAME}", "status": "completed", "conclusion": "${{ job.status }}", "head_branch": "${GITHUB_REF_NAME}", "head_sha": "${GITHUB_SHA}", "created_at": "$(date -u +%FT%TZ)", "updated_at": "$(date -u +%FT%TZ)", "storage": { "root": "artifacts/ecrr", "date": "$(date -u +%Y-%m-%d)", "dir": "$RUN_DIR" } }
+META
+        export RUN_DIR
+        pnpm normalize:run || true
+        pnpm classify:run || true
+        pnpm summarize:run || true
+        echo "RUN_DIR=$RUN_DIR" >> $GITHUB_ENV
+
+    - name: ECRR PR Comment (pilot)
+      if: github.event_name == 'pull_request'
+      env:
+        RUN_DIR: ${{ env.RUN_DIR }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        tsx scripts/actor-pr-comment.ts --dir "$RUN_DIR"
+
+    - name: Publish Job Summary
+      if: always()
+      shell: bash
+      run: |
+        echo "## BossCat Gate Verification" >> "$GITHUB_STEP_SUMMARY"
+        echo "" >> "$GITHUB_STEP_SUMMARY"
+        echo "- Workflow: $GITHUB_WORKFLOW" >> "$GITHUB_STEP_SUMMARY"
+        echo "- Run: #$GITHUB_RUN_NUMBER" >> "$GITHUB_STEP_SUMMARY"
+        echo "- Ref: $GITHUB_REF" >> "$GITHUB_STEP_SUMMARY"
+        echo "- Actor: $GITHUB_ACTOR" >> "$GITHUB_STEP_SUMMARY"
+        echo "" >> "$GITHUB_STEP_SUMMARY"
+        echo "### Artifacts" >> "$GITHUB_STEP_SUMMARY"
+        echo "- \\`DELT/ARTF\\` (logs, metrics)" >> "$GITHUB_STEP_SUMMARY"
+        echo "- \\`docs/BossCat/reports\\` (ECRR/BOSS reports)" >> "$GITHUB_STEP_SUMMARY"
+        echo "" >> "$GITHUB_STEP_SUMMARY"
+        echo "> Retention set to 14 days for uploaded artifacts." >> "$GITHUB_STEP_SUMMARY"
+concurrency:
+  group: bosscat-gate-verify-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true

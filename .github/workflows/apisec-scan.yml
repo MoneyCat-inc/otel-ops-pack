@@ -27,6 +27,10 @@
 
 name: APIsec
 
+concurrency:
+  group: apisec-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch

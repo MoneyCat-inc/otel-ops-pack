@@ -26,6 +26,10 @@ on:
   schedule:
     - cron: '20 3 * * 6'
 
+concurrency:
+  group: defender-for-devops-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   MSDO:
     # currently only windows latest is supported
