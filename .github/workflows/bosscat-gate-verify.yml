@@ -83,7 +83,7 @@ jobs:
           DELT/ARTF/
           docs/BossCat/reports/
           artifacts/*.txt
-        retention-days: 30
+        retention-days: 14
         
     - name: Generate ECRR Report
       if: always()
@@ -119,7 +119,7 @@ jobs:
       with:
         name: bosscat-reports-${{ github.run_number }}
         path: docs/BossCat/reports/
-        retention-days: 30
+        retention-days: 14
 
     - name: Run ECRR benchmark and append trend
       if: always()
@@ -137,4 +137,24 @@ jobs:
           DELT/ARTF/ecrr-benchmark.json
           DELT/ARTF/ecrr-benchmark-trend.csv
           artifacts/ecrr-benchmark-trend.csv
-        retention-days: 30
+        retention-days: 14
+
+    - name: Publish Job Summary
+      if: always()
+      shell: bash
+      run: |
+        echo "## BossCat Gate Verification" >> "$GITHUB_STEP_SUMMARY"
+        echo "" >> "$GITHUB_STEP_SUMMARY"
+        echo "- Workflow: $GITHUB_WORKFLOW" >> "$GITHUB_STEP_SUMMARY"
+        echo "- Run: #$GITHUB_RUN_NUMBER" >> "$GITHUB_STEP_SUMMARY"
+        echo "- Ref: $GITHUB_REF" >> "$GITHUB_STEP_SUMMARY"
+        echo "- Actor: $GITHUB_ACTOR" >> "$GITHUB_STEP_SUMMARY"
+        echo "" >> "$GITHUB_STEP_SUMMARY"
+        echo "### Artifacts" >> "$GITHUB_STEP_SUMMARY"
+        echo "- \\`DELT/ARTF\\` (logs, metrics)" >> "$GITHUB_STEP_SUMMARY"
+        echo "- \\`docs/BossCat/reports\\` (ECRR/BOSS reports)" >> "$GITHUB_STEP_SUMMARY"
+        echo "" >> "$GITHUB_STEP_SUMMARY"
+        echo "> Retention set to 14 days for uploaded artifacts." >> "$GITHUB_STEP_SUMMARY"
+concurrency:
+  group: bosscat-gate-verify-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
