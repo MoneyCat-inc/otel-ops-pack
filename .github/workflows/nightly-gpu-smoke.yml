@@ -5,6 +5,10 @@ on:
     - cron: '0 2 * * *'
   workflow_dispatch: {}
 
+concurrency:
+  group: nightly-gpu-smoke-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   gpu-smoke:
     runs-on: windows-latest

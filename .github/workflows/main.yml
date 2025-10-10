@@ -8,6 +8,10 @@ on:
   schedule:
     - cron: '0 3 * * 0'  # weekly scan
 
+concurrency:
+  group: codeql-main-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   analyze:
     name: Analyze

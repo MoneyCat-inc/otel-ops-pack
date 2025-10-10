@@ -21,6 +21,10 @@ on:
   push:
     branches: [ "main" ]
 
+concurrency:
+  group: osv-scanner-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   # Require writing security events to upload SARIF file to security tab
   security-events: write
