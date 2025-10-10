@@ -114,6 +114,24 @@ jobs:
             artifacts/*.png
             artifacts/*.json
           retention-days: 90
+
+      - name: Run ECRR benchmark and append trend
+        if: always()
+        shell: pwsh
+        run: |
+          ./scripts/benchmark-process-all-ecrr-reports.ps1
+          ./scripts/append-ecrr-benchmark-trend.ps1 -BenchmarkJson 'DELT/ARTF/ecrr-benchmark.json' -OutputCsv 'DELT/ARTF/ecrr-benchmark-trend.csv' -MirrorCsv 'artifacts/ecrr-benchmark-trend.csv' -Dedup
+
+      - name: Upload ECRR benchmark artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nightly-ecrr-benchmark-${{ github.run_number }}
+          path: |
+            DELT/ARTF/ecrr-benchmark.json
+            DELT/ARTF/ecrr-benchmark-trend.csv
+            artifacts/ecrr-benchmark-trend.csv
+          retention-days: 90
       
       - name: Commit dashboard snapshots
         run: |

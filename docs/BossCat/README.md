@@ -20,6 +20,30 @@ Runbooks:
 - ECRR benchmark: pwsh -NoProfile -File scripts/benchmark-process-all-ecrr-reports.ps1
 - Watchdog control: pwsh -File BRAV/SCPT/watchdog-control.ps1 [start|stop|status|logs|evidence] [gate|site|both]
 
+## ECRR Benchmark Trend
+
+- Latest summary JSON: `DELT/ARTF/ecrr-benchmark.json`
+- Rolling CSV: `DELT/ARTF/ecrr-benchmark-trend.csv`
+- Mirror CSV (for IDE/artifacts): `artifacts/ecrr-benchmark-trend.csv`
+- Generate locally:
+  - `pwsh -NoProfile -File scripts/benchmark-process-all-ecrr-reports.ps1`
+  - `pwsh -NoProfile -File scripts/append-ecrr-benchmark-trend.ps1 -Dedup`
+- CI/Nightly maintenance:
+  - `.github/workflows/bosscat-gate-verify.yml`
+  - `.github/workflows/nightly-dashboard-export.yml`
+
+### Retention & Sampling Policy
+
+- Sampling sources: on every gate verification (PR/CI) and nightly dashboard export.
+- De-duplication key: `timestamp + commit + branch + latest_name` (keeps first occurrence).
+- Retention window: last 365 days and at most 2000 rows (newest kept).
+- Artifact retention in CI:
+  - Gate verify artifacts: 30 days
+  - Nightly artifacts: 90 days
+- Tunables (optional):
+  - `scripts/append-ecrr-benchmark-trend.ps1 -MaxDays <int> -MaxRows <int>`
+  - Set `-MirrorCsv` to control the mirror path for IDEs.
+
 ## Automated Operations
 
 **Daily:** GATE + SITE watchdogs keep collector running  
