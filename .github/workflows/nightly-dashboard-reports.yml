@@ -11,6 +11,10 @@ on:
         default: 'false'
         type: boolean
 
+concurrency:
+  group: nightly-dashboard-reports-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 env:
   SIGNOZ_URL_TEST: 'http://localhost:8080'
   SIGNOZ_URL_PROD: 'http://signoz-prod.example.com'  # Update with actual URL

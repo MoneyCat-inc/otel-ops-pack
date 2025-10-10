@@ -16,6 +16,10 @@ on:
       - docs/SIGNOZ_AUTOMATION_SETUP.md
       - .github/workflows/signoz-automation.yml
 
+concurrency:
+  group: signoz-automation-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   signoz-smoke:
     runs-on: ubuntu-latest

@@ -11,6 +11,10 @@ on:
       - 'docs/dashboards/**'
       - '.github/workflows/stress-test-*.yml'
 
+concurrency:
+  group: stress-test-pr-validation-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   quick-validation:
     runs-on: ubuntu-latest

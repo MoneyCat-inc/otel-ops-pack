@@ -12,6 +12,10 @@ on:
         default: 'false'
         type: boolean
 
+concurrency:
+  group: nightly-dashboard-export-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 permissions:
   contents: write
   pull-requests: write
@@ -120,7 +124,7 @@ jobs:
             artifacts/*.png
             artifacts/*.json
             artifacts/*.txt
-          retention-days: 90
+          retention-days: 30
 
       - name: Run ECRR benchmark and append trend
         if: always()
@@ -138,7 +142,7 @@ jobs:
             DELT/ARTF/ecrr-benchmark.json
             DELT/ARTF/ecrr-benchmark-trend.csv
             artifacts/ecrr-benchmark-trend.csv
-          retention-days: 90
+          retention-days: 30
       
       - name: Commit dashboard snapshots
         run: |

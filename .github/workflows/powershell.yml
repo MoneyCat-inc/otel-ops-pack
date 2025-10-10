@@ -17,6 +17,10 @@ on:
   schedule:
     - cron: '33 5 * * 2'
 
+concurrency:
+  group: psscriptanalyzer-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
