@@ -98,6 +98,7 @@ PY
               `Snapshot: ${process.env.SNAPSHOT || '(missing)'}`,
               '',
               `Commit: ${context.sha}`,
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
             ].join('\n');
             // Try to find an open issue with same title
             const { data: issues } = await github.rest.issues.listForRepo({
@@ -125,4 +126,24 @@ PY
               });
               core.info(`Updated issue #${found.number}`);
             }
+      
+      - name: Send Slack notification (optional)
+        if: env.DRIFT == 'true' && vars.SLACK_WEBHOOK_URL != ''
+        shell: bash
+        run: |
+          WEBHOOK_URL="${{ vars.SLACK_WEBHOOK_URL }}"
+          if [ -n "$WEBHOOK_URL" ]; then
+            curl -X POST "$WEBHOOK_URL" \
+              -H 'Content-Type: application/json' \
+              -d "{
+                \"text\": \"🚨 Guardrails Drift Detected\",
+                \"blocks\": [{
+                  \"type\": \"section\",
+                  \"text\": {
+                    \"type\": \"mrkdwn\",
+                    \"text\": \"*Guardrails drift detected in weekly re-cert*\n\n• Locked: \`${LOCKED_HASH}\`\n• Current: \`${CURRENT_HASH}\`\n• Run: <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Details>\"
+                  }
+                }]
+              }" || echo "::warning::Slack notification failed (non-blocking)"
+          fi
 
