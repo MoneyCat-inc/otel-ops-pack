@@ -82,6 +82,7 @@ jobs:
         path: |
           DELT/ARTF/
           docs/BossCat/reports/
+          artifacts/*.txt
         retention-days: 30
         
     - name: Generate ECRR Report
@@ -101,6 +102,16 @@ jobs:
           --output docs/BossCat/reports/BOSS_v2_CI_RUN.md \
           --pdf docs/BossCat/reports/BOSS_v2_CI_RUN.pdf || echo "BOSS v2 report generation failed"
       continue-on-error: true
+
+    - name: Generate queue steward evidence (best-effort)
+      if: always()
+      shell: pwsh
+      run: |
+        if (Test-Path 'docs/observability/snapshots') {
+          ./scripts/generate-queue-steward-evidence.ps1
+        } else {
+          Write-Host "No snapshots directory found; skipping evidence generation"
+        }
           
     - name: Upload Final Reports
       uses: actions/upload-artifact@v4
@@ -108,4 +119,22 @@ jobs:
       with:
         name: bosscat-reports-${{ github.run_number }}
         path: docs/BossCat/reports/
+        retention-days: 30
+
+    - name: Run ECRR benchmark and append trend
+      if: always()
+      shell: pwsh
+      run: |
+        ./scripts/benchmark-process-all-ecrr-reports.ps1
+        ./scripts/append-ecrr-benchmark-trend.ps1 -BenchmarkJson 'DELT/ARTF/ecrr-benchmark.json' -OutputCsv 'DELT/ARTF/ecrr-benchmark-trend.csv' -MirrorCsv 'artifacts/ecrr-benchmark-trend.csv' -Dedup
+
+    - name: Upload ECRR benchmark artifacts
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: ecrr-benchmark-${{ github.run_number }}
+        path: |
+          DELT/ARTF/ecrr-benchmark.json
+          DELT/ARTF/ecrr-benchmark-trend.csv
+          artifacts/ecrr-benchmark-trend.csv
         retention-days: 30

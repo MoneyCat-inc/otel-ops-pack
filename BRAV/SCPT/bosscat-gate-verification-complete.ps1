@@ -8,7 +8,7 @@ Write-Host ""
 # 1. Windows Collector Health
 Write-Host "1️⃣ Windows Collector Health Check" -ForegroundColor Yellow
 try {
-    $health = Invoke-WebRequest -Uri "http://localhost:13133/healthz" -UseBasicParsing -TimeoutSec 5
+    $health = Invoke-WebRequest -Uri "http://localhost:13134/healthz" -UseBasicParsing -TimeoutSec 5
     if ($health.StatusCode -eq 200) {
         Write-Host "   ✅ Collector Health: 200 OK" -ForegroundColor Green
     } else {
@@ -21,7 +21,7 @@ try {
 # 2. Port Connectivity
 Write-Host ""
 Write-Host "2️⃣ Port Connectivity Check" -ForegroundColor Yellow
-$ports = @(4317, 4318, 13133, 55679)
+$ports = @(4317, 4318, 13134, 55679)
 foreach ($port in $ports) {
     $connection = Test-NetConnection -ComputerName localhost -Port $port -WarningAction SilentlyContinue
     if ($connection.TcpTestSucceeded) {
