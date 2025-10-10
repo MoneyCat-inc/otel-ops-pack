@@ -36,7 +36,35 @@ async function main() {
     process.exit(2)
   }
   const sigs = readJSON<Sigs>(sigsPath)
-  const labels = sigs.top.map((s) => ({ sig_id: s.id, class: mapComponentToClass(s.component), component: s.component, count: s.count }))
+
+  // Optional: load signature registry for known issues and owners
+  let registry: any = null
+  const registryPathCandidates = [
+    path.join(process.cwd(), 'ALFA', 'APPS', 'signature-registry.json'),
+    path.join(process.cwd(), 'signature-registry.json')
+  ]
+  for (const p of registryPathCandidates) {
+    if (fs.existsSync(p)) { registry = JSON.parse(fs.readFileSync(p, 'utf-8')); break }
+  }
+  const regIndex: Record<string, any> = {}
+  if (registry?.entries) {
+    for (const e of registry.entries) regIndex[e.sig_id] = e
+  }
+
+  const labels = sigs.top.map((s) => {
+    const klass = mapComponentToClass(s.component)
+    const reg = regIndex[s.id]
+    return {
+      sig_id: s.id,
+      class: klass,
+      component: s.component,
+      count: s.count,
+      known: Boolean(reg),
+      owner: reg?.owner || null,
+      playbook_url: reg?.playbook_url || null,
+      confidence: reg?.confidence || null,
+    }
+  })
   const dominant = labels[0]?.class || 'other'
   const out = {
     dominant_class: dominant,
@@ -48,4 +76,3 @@ async function main() {
 }
 
 main().catch((e) => { console.error(e); process.exit(1) })
-
