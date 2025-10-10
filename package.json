@@ -8,7 +8,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "emit": "node scripts/emit-synthetic-span.mjs",
+    "emit": "node scripts/emit-simple-trace.mjs",
+    "emit:full": "tsx scripts/emit-synthetic-span.ts",
+    "emit:enhanced": "tsx scripts/emit-synthetic-enhanced.ts",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",
@@ -18,7 +20,10 @@
     "security:monitor": "pwsh -File scripts/security-monitor.ps1",
     "security:cleanup": "pwsh -File scripts/security-cleanup.ps1",
     "security:cleanup:dry": "pwsh -File scripts/security-cleanup.ps1 -DryRun",
-    "dashboard:export": "pwsh -File scripts/playwright-dashboard-export.ps1"
+    "dashboard:export": "pwsh -File scripts/playwright-dashboard-export.ps1",
+    "emit:logs": "tsx scripts/examples/log-with-trace.ts",
+    "ingest:worker": "tsx scripts/ingest-worker.ts",
+    "ingest:backfill": "pwsh -File scripts/ingest-backfill.ps1 -Repository MoneyCat-inc/otel-ops-pack -Days 3"
   },
   "dependencies": {
     "@aws-sdk/client-bedrock-runtime": "^3.901.0",
@@ -36,6 +41,7 @@
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "next": "^15.5.4",
+    "pino": "^10.0.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "sqlite3": "^5.1.7",
@@ -48,6 +54,7 @@
     "@opentelemetry/resources": "^2.1.0",
     "@opentelemetry/sdk-node": "^0.206.0",
     "@opentelemetry/sdk-trace-base": "^2.1.0",
+    "@opentelemetry/sdk-trace-node": "^2.1.0",
     "@playwright/test": "^1.56.0",
     "@types/better-sqlite3": "^7.6.8",
     "@types/jest": "^30.0.0",
