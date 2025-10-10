@@ -1,0 +1,221 @@
+name: BossCat — Monthly Evidence Rollup
+
+on:
+  schedule:
+    # First day of each month, 02:00 UTC
+    - cron: "0 2 1 * *"
+  workflow_dispatch:
+    inputs:
+      archive_age_days:
+        description: 'Archive snapshots older than N days'
+        required: false
+        default: '30'
+        type: string
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: evidence-rollup
+  cancel-in-progress: false
+
+jobs:
+  rollup:
+    runs-on: ubuntu-latest
+    env:
+      SNAPSHOT_DIR: docs/observability/snapshots
+      ECRR_DIR: docs/ecrr/ECRR_REPORTS
+      ARTIFACT_DIR: DELT/ARTF
+      ARCHIVE_DIR: CHAR/PRSV/evidence-archives
+
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Abort if kill-switch engaged
+        id: kill
+        shell: bash
+        run: |
+          if [ -f .agent/LOCK ]; then
+            echo "::warning::Kill-switch present (.agent/LOCK). Aborting evidence rollup."
+            echo "killed=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "killed=false" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Python
+        if: steps.kill.outputs.killed != 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Examine — Collect evidence metadata
+        if: steps.kill.outputs.killed != 'true'
+        id: examine
+        shell: bash
+        run: |
+          # Count evidence files
+          SNAPSHOT_COUNT=$(find "${SNAPSHOT_DIR}" -type f -name "*.json" 2>/dev/null | wc -l || echo 0)
+          ECRR_COUNT=$(find "${ECRR_DIR}" -type f -name "*.md" 2>/dev/null | wc -l || echo 0)
+          TOTAL_SIZE=$(du -sh "${SNAPSHOT_DIR}" 2>/dev/null | cut -f1 || echo "0")
+          
+          echo "snapshot_count=${SNAPSHOT_COUNT}" >> "$GITHUB_OUTPUT"
+          echo "ecrr_count=${ECRR_COUNT}" >> "$GITHUB_OUTPUT"
+          echo "total_size=${TOTAL_SIZE}" >> "$GITHUB_OUTPUT"
+          
+          echo "📊 Evidence Inventory:"
+          echo "  Snapshots: ${SNAPSHOT_COUNT} files"
+          echo "  ECRR Reports: ${ECRR_COUNT} files"
+          echo "  Total Size: ${TOTAL_SIZE}"
+
+      - name: Clean — Create monthly archive bundle
+        if: steps.kill.outputs.killed != 'true'
+        id: archive
+        shell: bash
+        run: |
+          MONTH=$(date -u +'%Y-%m')
+          TIMESTAMP=$(date -u +'%Y%m%d-%H%M%SZ')
+          ARCHIVE_NAME="evidence-rollup-${MONTH}.tar.gz"
+          ARCHIVE_PATH="${ARCHIVE_DIR}/${ARCHIVE_NAME}"
+          
+          mkdir -p "${ARCHIVE_DIR}"
+          
+          # Archive snapshots and ECRR reports from last month
+          CUTOFF_DAYS="${{ github.event.inputs.archive_age_days || '30' }}"
+          
+          # Find files older than cutoff
+          echo "🗜️ Creating archive of evidence older than ${CUTOFF_DAYS} days..."
+          
+          # Create temporary file list
+          FILELIST=$(mktemp)
+          
+          # Find old snapshots (excluding .gitkeep)
+          find "${SNAPSHOT_DIR}" -type f -name "*.json" -mtime +${CUTOFF_DAYS} 2>/dev/null > "$FILELIST" || true
+          
+          # Find old ECRR reports (exclude LATEST files)
+          find "${ECRR_DIR}" -type f \( -name "*.md" -o -name "*.pdf" \) ! -name "*LATEST*" -mtime +${CUTOFF_DAYS} 2>/dev/null >> "$FILELIST" || true
+          
+          FILE_COUNT=$(wc -l < "$FILELIST")
+          
+          if [ "$FILE_COUNT" -gt 0 ]; then
+            echo "📦 Archiving ${FILE_COUNT} files..."
+            tar -czf "${ARCHIVE_PATH}" -T "$FILELIST" 2>/dev/null || echo "::warning::Archive creation had warnings"
+            
+            # Optionally remove archived files to save space (commented out for safety)
+            # while IFS= read -r file; do
+            #   rm -f "$file"
+            # done < "$FILELIST"
+            
+            ARCHIVE_SIZE=$(du -h "${ARCHIVE_PATH}" | cut -f1)
+            echo "✅ Archive created: ${ARCHIVE_PATH} (${ARCHIVE_SIZE})"
+            echo "archive_path=${ARCHIVE_PATH}" >> "$GITHUB_OUTPUT"
+            echo "archive_size=${ARCHIVE_SIZE}" >> "$GITHUB_OUTPUT"
+            echo "files_archived=${FILE_COUNT}" >> "$GITHUB_OUTPUT"
+          else
+            echo "ℹ️ No files older than ${CUTOFF_DAYS} days to archive"
+            echo "files_archived=0" >> "$GITHUB_OUTPUT"
+          fi
+          
+          rm -f "$FILELIST"
+
+      - name: Report — Generate rollup summary
+        if: steps.kill.outputs.killed != 'true'
+        id: report
+        shell: bash
+        run: |
+          TIMESTAMP=$(date -u +'%Y%m%d-%H%M%SZ')
+          MONTH=$(date -u +'%Y-%m')
+          REPORT="${ECRR_DIR}/ECRR_EVIDENCE_ROLLUP_${MONTH}.md"
+          COMMIT=$(git rev-parse --short HEAD)
+          
+          cat > "${REPORT}" <<EOF
+          # ECRR Evidence Rollup — ${MONTH}
+          
+          **Timestamp:** ${TIMESTAMP}
+          **Commit:** ${COMMIT}
+          **Actor:** BossCat Monthly Rollup
+          
+          ## Examine
+          
+          - Snapshots: ${{ steps.examine.outputs.snapshot_count }} files
+          - ECRR Reports: ${{ steps.examine.outputs.ecrr_count }} files
+          - Total Size: ${{ steps.examine.outputs.total_size }}
+          
+          ## Clean
+          
+          - Files Archived: ${{ steps.archive.outputs.files_archived || '0' }}
+          - Archive Size: ${{ steps.archive.outputs.archive_size || 'N/A' }}
+          - Archive Path: ${{ steps.archive.outputs.archive_path || 'N/A' }}
+          
+          ## Report
+          
+          Evidence archived to \`CHAR/PRSV/evidence-archives/${MONTH}.tar.gz\`
+          
+          Retention:
+          - Active evidence: ${SNAPSHOT_DIR}, ${ECRR_DIR}
+          - Archived evidence: ${ARCHIVE_DIR}
+          - Archive retention: Indefinite (manual cleanup)
+          
+          ## Role
+          
+          - Actor: BossCat OEM (automated monthly rollup)
+          - Scope: Archive and organize evidence
+          - Status: Complete
+          EOF
+          
+          echo "report_path=${REPORT}" >> "$GITHUB_OUTPUT"
+          
+          cat "${REPORT}"
+
+      - name: Commit evidence rollup
+        if: steps.kill.outputs.killed != 'true' && steps.archive.outputs.files_archived > 0
+        shell: bash
+        run: |
+          git config user.name "boss-cat[bot]"
+          git config user.email "boss-cat-bot@users.noreply.github.com"
+          
+          git add "${{ steps.archive.outputs.archive_path }}" "${{ steps.report.outputs.report_path }}" || true
+          git commit -m "chore(evidence): monthly rollup $(date -u +'%Y-%m') [skip ci]
+
+          ECRR: Evidence archival
+          
+          - Files archived: ${{ steps.archive.outputs.files_archived }}
+          - Archive size: ${{ steps.archive.outputs.archive_size }}
+          - Report: ${{ steps.report.outputs.report_path }}
+          
+          Actor: BossCat monthly rollup
+          Status: Complete" || echo "No changes to commit"
+          
+          git push
+
+      - name: Upload rollup artifacts
+        if: steps.kill.outputs.killed != 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: evidence-rollup-${{ github.run_number }}
+          path: |
+            ${{ steps.archive.outputs.archive_path }}
+            ${{ steps.report.outputs.report_path }}
+          if-no-files-found: warn
+          retention-days: 90
+
+      - name: Rollup summary
+        if: steps.kill.outputs.killed != 'true'
+        shell: bash
+        run: |
+          echo "## 📦 Evidence Rollup Summary"
+          echo ""
+          echo "- **Snapshots:** ${{ steps.examine.outputs.snapshot_count }}"
+          echo "- **ECRR Reports:** ${{ steps.examine.outputs.ecrr_count }}"
+          echo "- **Files Archived:** ${{ steps.archive.outputs.files_archived || '0' }}"
+          echo "- **Archive Size:** ${{ steps.archive.outputs.archive_size || 'N/A' }}"
+          echo ""
+          if [ "${{ steps.archive.outputs.files_archived || '0' }}" -gt 0 ]; then
+            echo "✅ Evidence rollup complete"
+          else
+            echo "ℹ️ No files to archive this cycle"
+          fi
+
