@@ -24,7 +24,9 @@ function compose(dir: string): string {
     lines.push(`Dominant Class: ${labels.dominant_class} — Rerun Suggested: ${labels.rerun_suggested ? 'Yes' : 'No'}`)
     lines.push('Top Labels:')
     for (const l of labels.labels.slice(0, 5)) {
-      lines.push(`- ${l.component} | ${l.class} | ${l.sig_id} × ${l.count}`)
+      const owner = l.owner ? ` | owner: ${l.owner}` : ''
+      const play = l.playbook_url ? ` | playbook: ${l.playbook_url}` : ''
+      lines.push(`- ${l.component} | ${l.class} | ${l.sig_id} × ${l.count}${owner}${play}`)
     }
   }
   return lines.join('\n') + '\n'
@@ -59,4 +61,3 @@ async function main() {
 }
 
 main().catch((e) => { console.error(e); process.exit(1) })
-
