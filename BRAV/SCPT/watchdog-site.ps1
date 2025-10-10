@@ -16,10 +16,44 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = "Continue"
 
 function Write-SiteLog($message, $level = "INFO") {
+    # Log rotation check before writing
+    Invoke-LogRotation -Path $LogPath -MaxSizeMB 10 -KeepFiles 5
+    
     $timestamp = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
     $entry = "[$timestamp] [SITE:$level] $message"
     Write-Host $entry
     Add-Content -Path $LogPath -Value $entry -Encoding UTF8
+}
+
+function Invoke-LogRotation {
+    param(
+        [string]$Path,
+        [int]$MaxSizeMB = 10,
+        [int]$KeepFiles = 5
+    )
+    
+    if (-not (Test-Path $Path)) { return }
+    
+    $file = Get-Item $Path
+    $sizeMB = [math]::Round($file.Length / 1MB, 2)
+    
+    if ($sizeMB -ge $MaxSizeMB) {
+        # Rotate existing numbered logs
+        for ($i = $KeepFiles - 1; $i -ge 1; $i--) {
+            $oldLog = "$Path.$i"
+            $newLog = "$Path.$($i + 1)"
+            if (Test-Path $oldLog) {
+                Move-Item -Path $oldLog -Destination $newLog -Force
+            }
+        }
+        
+        # Archive current log as .1
+        Move-Item -Path $Path -Destination "$Path.1" -Force
+        
+        # Log rotation event to new file
+        $rotationMsg = "[$((Get-Date).ToString('yyyy-MM-dd HH:mm:ss'))] [SITE:ROTATION] Log rotated at ${sizeMB}MB (keeping $KeepFiles old logs)"
+        Set-Content -Path $Path -Value $rotationMsg -Encoding UTF8
+    }
 }
 
 function Test-KillSwitch {

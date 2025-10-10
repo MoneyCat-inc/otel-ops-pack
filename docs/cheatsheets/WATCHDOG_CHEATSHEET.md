@@ -206,3 +206,28 @@ Both bots follow ECRR:
 - **Report:** Log findings and export evidence
 - **Role:** GATE (guardian) or SITE (observer)
 
+---
+
+## Log Rotation
+
+Both watchdogs automatically rotate logs when they reach 10MB:
+- **Max Size:** 10MB per log file
+- **Keep Files:** 5 old logs (watchdog-*.log.1 through watchdog-*.log.5)
+- **Auto-Cleanup:** Oldest logs deleted automatically
+- **Rotation Event:** Logged to new file for audit trail
+
+**Log Files:**
+```
+DELT/ARTF/watchdog-gate.log       (current)
+DELT/ARTF/watchdog-gate.log.1     (previous)
+DELT/ARTF/watchdog-gate.log.2     (older)
+...
+DELT/ARTF/watchdog-gate.log.5     (oldest kept)
+```
+
+**Manual Rotation (if needed):**
+```powershell
+# Force rotation of GATE log
+Move-Item DELT/ARTF/watchdog-gate.log DELT/ARTF/watchdog-gate.log.1 -Force
+```
+
