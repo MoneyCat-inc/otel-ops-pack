@@ -24,15 +24,16 @@
 - **Lesson**: Targeted testing >> full pipeline; fast feedback drives quality
 - **Next**: P1-B security scanners (COMP lane)
 
-**13:50 UTC** - P1-B COMP Jobs 1&2 + P1-C Job C-1 COMPLETE ✅  
-- P1-B Job 1: index.html (HTML5+CSP), security-sweep.ts, comp:check (191 LOC ✅)
-- P1-B Job 2: gitleaks+syft+csp-helper, full sec:scan (123 LOC ✅)  
-- P1-C Job C-1: signature registry generator, guard:signatures (75 LOC ✅)
-- Total P1 progress: A+B+C1 complete, C2 pending
-- Budget discipline: All jobs ≤200 LOC ✅, governance maintained
-- Commits: 1b8aaf0 (Job1), f4c2a00 (C-1)
-- **Lesson**: Multi-job splits >> single overbudget; security foundation >> shortcuts
-- **Next**: P1-C Job C-2 (Jscrambler guard), then P1-D/E/F
+**13:50 UTC** - P1-A/B/C COMPLETE ✅ (3/6 tasks done)
+- P1-A: FLAK smoke (85 LOC, 60-80% faster)
+- P1-B Job1: index.html+CSP+security-sweep (191 LOC ✅)
+- P1-B Job2: gitleaks+syft+csp-helper (123 LOC ✅)  
+- P1-C Job1: signature registry generator (75 LOC ✅)
+- P1-C Job2: JS signature guard, inline ban enforced (80 LOC ✅)
+- Commits: 1b8aaf0, f4c2a00, d776e87 | Pushed to feat/gate-matrix-site-build
+- Budget discipline: All 6 jobs ≤200 LOC ✅, 100% governance
+- **Lesson**: Multi-job governance >> monolithic PRs; security+integrity >> speed
+- **Next**: P1-D (k6 perf gates), P1-E (.NET OTel), P1-F (chaos drills)
 
 ---
 
