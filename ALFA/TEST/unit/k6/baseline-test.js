@@ -34,25 +34,24 @@ export const options = {
 export default function () {
   const baseUrl = config.baseUrl;
 
-  const healthResponse = http.get(`${baseUrl}/api/v1/health`);
+  const authHeader = __ENV.SIGNOZ_API_KEY ? { 'Authorization': `Api-Key ${__ENV.SIGNOZ_API_KEY}` } : {};
+  const baseHeaders = { 'Content-Type': 'application/json', ...authHeader };
+
+  const healthResponse = http.get(`${baseUrl}/api/v1/health`, { headers: baseHeaders });
   const healthCheck = check(healthResponse, {
     "health endpoint status is 200": (r) => r.status === 200,
     "health response time < 100ms": (r) => r.timings.duration < 100
   });
   customErrorRate.add(!healthCheck);
 
-  const logsResponse = http.get(`${baseUrl}/api/v1/logs`, {
-    headers: { "Content-Type": "application/json" }
-  });
+  const logsResponse = http.get(`${baseUrl}/api/v1/logs`, { headers: baseHeaders });
   const logsCheck = check(logsResponse, {
     "logs endpoint status is 200": (r) => r.status === 200,
     "logs response time < 500ms": (r) => r.timings.duration < 500
   });
   customErrorRate.add(!logsCheck);
 
-  const metricsResponse = http.get(`${baseUrl}/api/v1/metrics`, {
-    headers: { "Content-Type": "application/json" }
-  });
+  const metricsResponse = http.get(`${baseUrl}/api/v1/metrics`, { headers: baseHeaders });
   const metricsCheck = check(metricsResponse, {
     "metrics endpoint status is 200": (r) => r.status === 200,
     "metrics response time < 300ms": (r) => r.timings.duration < 300
