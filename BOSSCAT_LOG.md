@@ -23,6 +23,12 @@
 **Tag:** `gate-verify-matrix-v1.0`  
 **PR:** #125 (merged)
 
+**Closeout Enhancement (commit 80d2544):**
+- Added prod-only queue-steward evidence generator (OTLP port reachability)
+- Workflow guard: USE_MOCK=false && site=prod
+- ECRR Annex A to READY_FOR_FINAL_GATE.md (audit completeness)
+- Evidence automation closed loop per ECRR doctrine
+
 ---
 
 ## 2025-10-11: Gate #007 Structural Drift Correction
