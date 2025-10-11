@@ -448,4 +448,31 @@ MoneyCat Inc · Resonai [OTel]
 **Date:** 2025-10-09  
 **Status:** ✅ **STRUCTURAL GATE READY**  
 **Trigger:** 🚀 **@cat ready-for-gate**
+## Annex A — Gate×Site Matrix v1.0 Closeout (2025-10-11)
+
+Scope: 3 sites × 3 gates = 9 jobs. Synthetic emitter + prod‑only queue‑steward evidence.
+
+Verification Summary
+- IONA × {ci, local, prod}: Synthetic emit + verify → ✅
+- GPU_FIX × {ci, local, prod}: Thresholds/stubs → ✅
+- PERF_SUMMARY × {ci, local, prod}: Parse + artifact → ✅
+- Prod‑only steward evidence: `DELT/ARTF/queue-steward-verification.txt` → ✅
+
+Controls & Signals
+- `USE_MOCK=true` in PR events; prod/main runs real checks
+- OTLP: gRPC 5317 / HTTP 5318 verified in steward artifact
+- Synthetic trace aligns with IONA gate guidance and matrix workflow
+
+Evidence Index
+- Gate implementation ECRR: `docs/BossCat/…/GATE_VERIFY_MATRIX_IMPLEMENTATION_20251011.md`
+- Root cause & waivers (SigNoz OpenSSL): `CHAR/EVID/…/SECURITY_WAIVER_SIGNOZ_OPENSSL_20251007.md`
+- IONA ECRR report & synthetic strategy: `docs/BossCat/IONA_ECRR_REPORT.md`
+- Data Room harness guide: `docs/BossCat/data_room_enhanced.html (User Guide)`
+
+Governance Notes
+- Prod‑only requirement for steward evidence (queue health)
+- PR lanes are mock‑safe; prod lanes block if steward missing
+- AUTO‑BOTS budgets & single‑writer discipline are in force
+
+Status: ✅ All nine gates GREEN. Ready for continuous nightly validation.
 
