@@ -35,6 +35,8 @@ jobs:
       run: |
         mkdir -p DELT/ARTF
         mkdir -p docs/BossCat/reports
+        mkdir -p docs/ecrr/ECRR_REPORTS
+        mkdir -p docs/observability/snapshots
         
     - name: Install Python dependencies
       run: |
@@ -73,6 +75,12 @@ jobs:
           --use-mock \
           --test-types baseline load \
           --verbose
+
+    - name: GPU_FIX lane (Option B)
+      shell: pwsh
+      run: |
+        ./scripts/gpu-fix-lane.ps1 -OptionBRequired:$false
+      continue-on-error: true
           
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
@@ -89,7 +97,7 @@ jobs:
       if: always()
       run: |
         python BRAV/SCPT/generate-ecrr-report.py \
-          --gate-results DELT/ART/gate-verification-results.json \
+          --gate-results DELT/ARTF/gate-verification-results.json \
           --output docs/BossCat/reports/ECRR_CI_RUN.md \
           --pdf docs/BossCat/reports/ECRR_CI_RUN.pdf || echo "ECRR report generation failed"
       continue-on-error: true
@@ -98,7 +106,7 @@ jobs:
       if: always()
       run: |
         python BRAV/SCPT/generate-boss-v2-report.py \
-          --gate-results DELT/ART/gate-verification-results.json \
+          --gate-results DELT/ARTF/gate-verification-results.json \
           --output docs/BossCat/reports/BOSS_v2_CI_RUN.md \
           --pdf docs/BossCat/reports/BOSS_v2_CI_RUN.pdf || echo "BOSS v2 report generation failed"
       continue-on-error: true
