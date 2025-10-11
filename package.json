@@ -37,7 +37,9 @@
     "comp:gitleaks": "tsx scripts/comp/gitleaks-wrapper.ts",
     "comp:sbom": "tsx scripts/comp/syft-sbom.ts",
     "guard:signatures": "tsx scripts/build/gen-signature-registry.ts",
-    "sec:scan": "pnpm comp:check && pnpm comp:gitleaks && pnpm comp:sbom && pnpm guard:signatures"
+    "guard:js": "tsx scripts/build/js-signature-guard.ts",
+    "guard:all": "pnpm guard:signatures && pnpm guard:js",
+    "sec:scan": "pnpm comp:check && pnpm comp:gitleaks && pnpm comp:sbom && pnpm guard:all"
   },
   "dependencies": {
     "@aws-sdk/client-bedrock-runtime": "^3.901.0",
