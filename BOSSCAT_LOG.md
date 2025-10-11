@@ -6,6 +6,25 @@
 
 ---
 
+## 2025-10-11: Gate×Site Matrix v1.0 - Production Deployment
+
+**Event:** Gate×Site matrix expansion - 9 parallel validation paths deployed  
+**Agent:** cursor{implementer}  
+**Outcome:** 9/9 gates GREEN; IONA emitter + prod-only evidence; PRs mock by event
+
+### Summary
+- Infrastructure: 3 sites × 3 gates = 9 parallel validation paths
+- ECRR preflight with kill-switch governance
+- USE_MOCK event-based strategy (PRs mock all sites, main/nightly real)
+- Prod-only queue-steward evidence rule
+- Synthetic emitter (mock→httpbin, real→OTLP)
+- Evidence: 5 comprehensive ECRR reports filed in CHAR/EVID/
+
+**Tag:** `gate-verify-matrix-v1.0`  
+**PR:** #125 (merged)
+
+---
+
 ## 2025-10-11: Gate #007 Structural Drift Correction
 
 **Event:** Guardrails check failing - 4 forbidden roots, 5 unauthorized directories  
