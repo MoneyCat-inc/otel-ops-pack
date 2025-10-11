@@ -69,14 +69,23 @@ function Write-PrComment([string]$Verdict,[string[]]$Reasons,[string]$OutputPath
   ($lines -join "`r`n") | Set-Content -Path $OutputPath -Encoding utf8
 }
 $tsIso=Get-Date -Format 'yyyy-MM-ddTHH:mm:ssK'; Ensure-Dirs @('DELT/ARTF','docs/ecrr/ECRR_REPORTS')
+# Resolve environment switches early for use in checks
+$useMock = ($env:USE_MOCK -eq 'true')
+$queueRequired = ($Site -eq 'prod' -and -not $useMock)
 if (Get-Command Update-BossCatProgress -ErrorAction SilentlyContinue) { Update-BossCatProgress -Phase 'Collecting required assets' -CompletedSeconds 3 }
 $required=@('.github/workflows/bosscat-gate-verify.yml','docs/status/tests.json','docs/status.html','docs/ecrr/ECRR_REPORTS','docs/observability/snapshots','docs/IONA_ERRORS.md','docs/cheatsheets','index.html')
-$nonCritical=@('scripts/benchmark-process-all-ecrr-reports.ps1','ALFA/TEST/helpers/signoz.ts','docs/BossCat/README.md')
+$nonCritical=@('scripts/benchmark-process-all-ecrr-reports.ps1','docs/BossCat/README.md')
 Ensure-Dirs @('docs/observability/snapshots','docs/cheatsheets')
 $checks=@{}; $missing=New-Object System.Collections.ArrayList
 foreach($p in $required){ $ex=Test-Path -LiteralPath $p; $checks[$p]= if($ex){'present'} else {'missing'}; if(-not $ex){[void]$missing.Add($p)} }
 if (Get-Command Update-BossCatProgress -ErrorAction SilentlyContinue) { Update-BossCatProgress -Phase 'Reading status tests' -CompletedSeconds 7 }
 foreach($p in $nonCritical){ $checks[$p]= if(Test-Path -LiteralPath $p){'present'} else {'missing'} }
+
+# Composite non-critical check: signoz helper can live in either path
+$signozPaths=@('tests/helpers/signoz.ts','ALFA/TEST/helpers/signoz.ts')
+$signozPresent=$false
+foreach($sp in $signozPaths){ if(Test-Path -LiteralPath $sp){ $signozPresent=$true; break } }
+$checks['signoz.ts']= if($signozPresent){'present'} else {'missing'}
 
 # Composite check: queue-steward-verification.txt may reside in DELT/ARTF or artifacts
 $queuePaths=@('DELT/ARTF/queue-steward-verification.txt','artifacts/queue-steward-verification.txt')
@@ -104,5 +113,3 @@ $report=New-EcrrReport -Verdict $verdict -Reasons @($reasons) -Checks $checks
 Write-PrComment -Verdict $verdict -Reasons @($reasons) -OutputPath $PrCommentPath
 if (Get-Command Complete-BossCatProgress -ErrorAction SilentlyContinue) { Complete-BossCatProgress }
 if($verdict -eq 'NOT_READY' -and -not $NoFailOnMissing){ exit 2 } else { exit 0 }
-$useMock = ($env:USE_MOCK -eq 'true')
-$queueRequired = ($Site -eq 'prod' -and -not $useMock)

@@ -27,6 +27,11 @@ on:
         required: false
         default: 'ci'
         type: string
+      site_all:
+        description: 'Run all sites (overrides site)'
+        required: false
+        default: true
+        type: boolean
       gpu_option_b:
         description: 'Require GPU_FIX Option B pass (<200ms P95)'
         required: false
@@ -35,24 +40,27 @@ on:
 
 jobs:
   gate-verification:
-    name: Gate Verify (${{ matrix.site }})
+    name: Gate Verify (${{ matrix.gate }}/${{ matrix.site }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
+        gate: [IONA, GPU_FIX]
         site: [ci, local, prod]
     env:
-      GATE: ${{ github.event_name == 'workflow_dispatch' && inputs.gate || 'IONA' }}
+      GATE: ${{ matrix.gate }}
       SITE: ${{ matrix.site }}
       SIGNOZ_API_KEY: ${{ secrets.SIGNOZ_API_KEY }}
-      USE_MOCK: ${{ github.event_name == 'pull_request' && 'true' || 'false' }}
+      USE_MOCK: ${{ github.event_name == 'pull_request' && 'true' || (github.event_name == 'workflow_dispatch' && inputs.use_mock && 'true' || 'false') }}
       OTEL_SERVICE_NAME: iona-app
       OTEL_EXPORTER_OTLP_ENDPOINT: http://127.0.0.1:5318/v1/traces
       OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf
       BASE_URL: https://httpbin.org
     concurrency:
-      group: bosscat-gate-verify-${{ github.workflow }}-${{ github.ref_name }}-${{ matrix.site }}
+      group: bosscat-gate-verify-${{ github.workflow }}-${{ github.ref_name }}-${{ matrix.gate }}-${{ matrix.site }}
       cancel-in-progress: true
+    # Filter matrix combinations when dispatch inputs provided
+    if: ${{ github.event_name != 'workflow_dispatch' || ((inputs.gate == '' || inputs.gate == matrix.gate) && (inputs.site_all || inputs.site == matrix.site)) }}
     
     steps:
     - name: Checkout code
@@ -131,12 +139,14 @@ jobs:
           --verbose
 
     - name: Run IONA Gate Verification
+      if: ${{ matrix.gate == 'IONA' }}
       shell: pwsh
       run: |
         pwsh -File scripts/verify-iona-gate.ps1 -Strict:$true -OutputJson 'DELT/ARTF/gate-verification-results.json' -PrCommentPath 'PR_COMMENT_IONA_GATE_002_FINAL.md' -Gate "$env:GATE" -Site "$env:SITE"
 
     - name: GPU_FIX lane (Option B)
       shell: pwsh
+      if: ${{ matrix.gate == 'GPU_FIX' }}
       run: |
         $require = $true
         if ('${{ github.event_name }}' -eq 'workflow_dispatch') { $require = [System.Convert]::ToBoolean('${{ inputs.gpu_option_b }}') }
@@ -198,6 +208,55 @@ jobs:
       run: |
         docker stop httpbin || true
       shell: bash
+
+    - name: Upload gate artifacts
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: bosscat-${{ matrix.gate }}-${{ matrix.site }}-artifacts
+        path: |
+          DELT/ARTF/**
+          docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md
+
+  site-build:
+    name: Site Build (${{ matrix.site }})
+    runs-on: ubuntu-latest
+    needs: gate-verification
+    if: always()
+    strategy:
+      fail-fast: false
+      matrix:
+        site: [ci, local, prod]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Enable corepack and install deps
+        run: |
+          corepack enable
+          pnpm i --frozen-lockfile=false
+
+      - name: Prepare site bundle
+        shell: bash
+        run: |
+          mkdir -p DELT/SITE/${{ matrix.site }}/docs/observability/snapshots
+          mkdir -p DELT/SITE/${{ matrix.site }}/docs/ecrr/ECRR_REPORTS
+          cp -f index.html DELT/SITE/${{ matrix.site }}/ 2>/dev/null || true
+          cp -f docs/status.html DELT/SITE/${{ matrix.site }}/docs/ 2>/dev/null || true
+          cp -f docs/IONA_ERRORS.md DELT/SITE/${{ matrix.site }}/docs/ 2>/dev/null || true
+          cp -rf docs/observability/snapshots/* DELT/SITE/${{ matrix.site }}/docs/observability/snapshots/ 2>/dev/null || true
+          cp -rf docs/ecrr/ECRR_REPORTS/* DELT/SITE/${{ matrix.site }}/docs/ecrr/ECRR_REPORTS/ 2>/dev/null || true
+
+      - name: Upload site bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: bosscat-site-${{ matrix.site }}
+          path: DELT/SITE/${{ matrix.site }}/**
 
     - name: Upload GPU_FIX artifacts (scoped)
       if: always() && matrix.gate == 'GPU_FIX'
@@ -385,4 +444,3 @@ jobs:
         echo "- Artifact name: \`bosscat-test-results-${{ matrix.site }}-${{ github.run_number }}\`" >> "$GITHUB_STEP_SUMMARY"
         echo "" >> "$GITHUB_STEP_SUMMARY"
         echo "> Retention set to 14 days for uploaded artifacts." >> "$GITHUB_STEP_SUMMARY"
-
