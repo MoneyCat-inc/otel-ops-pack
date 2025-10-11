@@ -1,2 +1,9 @@
 # BossCat guardrails - ephemeral/build outputs (use DELT/ARTF/ for evidence)
 artifacts/
+
+# Forbidden legacy roots - migrated to tetragram structure
+config/
+configs/
+tests/
+schemas/
+triton-models/

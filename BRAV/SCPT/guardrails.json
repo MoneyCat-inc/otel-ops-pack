@@ -54,7 +54,6 @@
       "deployment-pipeline",
       "assets",
       "reports",
-      "artifacts",
       "playwright-report",
       "synthetic",
       "tests",
