@@ -74,13 +74,52 @@ jobs:
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: http://127.0.0.1:5318/v1/traces
 
-      - name: GPU_FIX gate
+      - name: Resolve SLO thresholds (site-aware)
+        if: matrix.gate == 'GPU_FIX'
+        shell: bash
+        run: |
+          if [ "${{ matrix.site }}" = "prod" ] && [ "${{ env.USE_MOCK }}" != "true" ]; then
+            echo "SLO_P95_MS=200" >> $GITHUB_ENV
+            echo "SLO_ERR_RATE=0.005" >> $GITHUB_ENV
+          else
+            echo "SLO_P95_MS=500" >> $GITHUB_ENV
+            echo "SLO_ERR_RATE=0.01" >> $GITHUB_ENV
+          fi
+          echo "TARGET_URL=https://httpbin.org" >> $GITHUB_ENV
+          echo "ARTIFACT_DIR=DELT/ARTF" >> $GITHUB_ENV
+
+      - name: Ensure artifacts directory
         if: matrix.gate == 'GPU_FIX'
         run: |
-          echo "GPU_FIX P95 assertion (USE_MOCK=$USE_MOCK)"
-          # plug your runner (k6/locust), fail on threshold breach
-          # k6 example: k6 run tests/gpu_fix.js
-        shell: bash
+          mkdir -p DELT/ARTF
+          mkdir -p DELT/ARTF/gpu_fix
+
+      - name: GPU_FIX — run k6 smoke (gated)
+        if: matrix.gate == 'GPU_FIX'
+        uses: grafana/k6-action@v0.2.0
+        with:
+          filename: ./BRAV/SCPT/load/gpu_fix.js
+          flags: >-
+            --vus 20 --duration 60s
+            --summary-export DELT/ARTF/gpu_fix/k6-summary.json
+        env:
+          TARGET_URL: ${{ env.TARGET_URL }}
+          SLO_P95_MS: ${{ env.SLO_P95_MS }}
+          SLO_ERR_RATE: ${{ env.SLO_ERR_RATE }}
+
+      - name: PERF_SUMMARY — roll up GPU_FIX (non-gating)
+        if: always() && matrix.gate == 'GPU_FIX'
+        run: node scripts/summarize-perf.js
+
+      - name: Upload GPU_FIX artifacts (scoped)
+        if: always() && matrix.gate == 'GPU_FIX'
+        uses: actions/upload-artifact@v4
+        with:
+          name: gpu_fix-${{ matrix.site }}-${{ github.run_number }}
+          path: |
+            DELT/ARTF/gpu_fix/k6-summary.json
+            DELT/ARTF/gpu_fix/gpu_fix_summary.json
+          retention-days: 14
 
       - name: Performance summary
         if: matrix.gate == 'PERF_SUMMARY'

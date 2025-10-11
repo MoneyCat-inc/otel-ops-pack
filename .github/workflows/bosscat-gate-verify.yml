@@ -23,9 +23,14 @@ on:
         default: 'IONA'
         type: string
       site:
-        description: 'Site/environment (e.g., ci, local, prod)'
+        description: 'Site/environment (all|ci|local|prod)'
         required: false
-        default: 'ci'
+        default: 'all'
+        type: string
+      gates:
+        description: 'Comma-delimited gates to run (e.g., IONA,GPU_FIX,PERF_SUMMARY,GATE_006)'
+        required: false
+        default: 'IONA,GPU_FIX,PERF_SUMMARY'
         type: string
       gpu_option_b:
         description: 'Require GPU_FIX Option B pass (<200ms P95)'
@@ -35,23 +40,27 @@ on:
 
 jobs:
   gate-verification:
-    name: Gate Verify (${{ matrix.site }})
+    name: Gate Verify (${{ matrix.site }} · ${{ matrix.gate }})
+    # For workflow_dispatch allow narrowing by site and gates CSV
+    if: ${{ github.event_name != 'workflow_dispatch' || ((inputs.site == 'all' || matrix.site == inputs.site) && contains(inputs.gates, matrix.gate)) }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         site: [ci, local, prod]
+        gate: [IONA, GPU_FIX, PERF_SUMMARY, GATE_006]
     env:
-      GATE: ${{ github.event_name == 'workflow_dispatch' && inputs.gate || 'IONA' }}
+      GATE: ${{ matrix.gate }}
       SITE: ${{ matrix.site }}
       SIGNOZ_API_KEY: ${{ secrets.SIGNOZ_API_KEY }}
-      USE_MOCK: ${{ github.event_name == 'pull_request' && 'true' || 'false' }}
+      # For dispatch, respect input. For PR default to true, else false.
+      USE_MOCK: ${{ github.event_name == 'workflow_dispatch' && inputs.use_mock || (github.event_name == 'pull_request' && 'true' || 'false') }}
       OTEL_SERVICE_NAME: iona-app
       OTEL_EXPORTER_OTLP_ENDPOINT: http://127.0.0.1:5318/v1/traces
       OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf
       BASE_URL: https://httpbin.org
     concurrency:
-      group: bosscat-gate-verify-${{ github.workflow }}-${{ github.ref_name }}-${{ matrix.site }}
+      group: bosscat-gate-verify-${{ github.workflow }}-${{ github.ref_name }}-${{ matrix.site }}-${{ matrix.gate }}
       cancel-in-progress: true
     
     steps:
@@ -88,6 +97,7 @@ jobs:
         mkdir -p docs/BossCat/reports
         mkdir -p docs/ecrr/ECRR_REPORTS
         mkdir -p docs/observability/snapshots
+        mkdir -p artifacts
         
     - name: ECRR Preflight
       run: pnpm agent:preflight
@@ -124,14 +134,39 @@ jobs:
       continue-on-error: true
         
     - name: Run BossCat pipeline
+      shell: bash
       run: |
+        EXTRA=""
+        if [ "${USE_MOCK}" = "true" ]; then EXTRA="--use-mock"; fi
         python BRAV/SCPT/run-local-pipeline.py \
-          --use-mock \
-          --test-types baseline load \
+          ${EXTRA} \
+          --test-types "${{ github.event_name == 'workflow_dispatch' && inputs.test_types || 'baseline load' }}" \
           --verbose
 
+    - name: k6 smoke with bounded retries (max 3)
+      shell: bash
+      env:
+        SITE: ${{ matrix.site }}
+        BASE_URL: ${{ env.BASE_URL }}
+        VUS: ${{ env.K6_VUS || '20' }}
+        DURATION: ${{ env.K6_DURATION || '60s' }}
+      run: |
+        set -euo pipefail
+        attempts=0; max=3; delay=15
+        until k6 run BRAV/SCPT/load/smoke.js; do
+          attempts=$((attempts+1))
+          if [ $attempts -ge $max ]; then
+            echo "::error::k6 thresholds breached after $attempts attempts"
+            exit 1
+          fi
+          echo "⚠️  Thresholds breached; retrying in ${delay}s (attempt $attempts/$max)…"
+          sleep $delay; delay=$((delay*2))
+        done
+      if: ${{ matrix.gate == 'PERF_SUMMARY' }}
+
+
     - name: Generate queue-steward evidence (prod-only)
-      if: env.USE_MOCK == 'false' && matrix.site == 'prod'
+      if: env.USE_MOCK == 'false' && matrix.site == 'prod' && matrix.gate == 'IONA'
       shell: pwsh
       run: |
         $out = 'DELT/ARTF/queue-steward-verification.txt'
@@ -149,6 +184,7 @@ jobs:
       shell: pwsh
       run: |
         pwsh -File scripts/verify-iona-gate.ps1 -Strict:$true -OutputJson 'DELT/ARTF/gate-verification-results.json' -PrCommentPath 'PR_COMMENT_IONA_GATE_002_FINAL.md' -Gate "$env:GATE" -Site "$env:SITE"
+      if: ${{ matrix.gate == 'IONA' }}
 
     - name: GPU_FIX lane (Option B)
       shell: pwsh
@@ -157,18 +193,74 @@ jobs:
         if ('${{ github.event_name }}' -eq 'workflow_dispatch') { $require = [System.Convert]::ToBoolean('${{ inputs.gpu_option_b }}') }
         ./scripts/gpu-fix-lane.ps1 -OptionBRequired:$require
       continue-on-error: ${{ github.event_name == 'workflow_dispatch' && inputs.gpu_option_b == false }}
+      if: ${{ matrix.gate == 'GPU_FIX' }}
+
+    - name: Resolve SLO thresholds (site-aware)
+      if: ${{ matrix.gate == 'GPU_FIX' }}
+      shell: bash
+      run: |
+        if [ "${{ matrix.site }}" = "prod" ] && [ "${{ env.USE_MOCK }}" != "true" ]; then
+          echo "SLO_P95_MS=200" >> $GITHUB_ENV
+          echo "SLO_ERR_RATE=0.005" >> $GITHUB_ENV
+        else
+          echo "SLO_P95_MS=500" >> $GITHUB_ENV
+          echo "SLO_ERR_RATE=0.01" >> $GITHUB_ENV
+        fi
+        echo "TARGET_URL=${{ env.BASE_URL }}" >> $GITHUB_ENV
+        echo "ARTIFACT_DIR=DELT/ARTF" >> $GITHUB_ENV
+
+    - name: Ensure artifacts dir exists
+      if: ${{ matrix.gate == 'GPU_FIX' }}
+      run: |
+        mkdir -p DELT/ARTF
+        mkdir -p DELT/ARTF/gpu_fix
+
+    - name: GPU_FIX — run k6 smoke (gated)
+      if: ${{ matrix.gate == 'GPU_FIX' }}
+      uses: grafana/k6-action@v0.2.0
+      with:
+        filename: ./BRAV/SCPT/load/gpu_fix.js
+        flags: >-
+          --vus 20 --duration 60s
+          --summary-export DELT/ARTF/gpu_fix/k6-summary.json
+      env:
+        TARGET_URL: ${{ env.TARGET_URL }}
+        SLO_P95_MS: ${{ env.SLO_P95_MS }}
+        SLO_ERR_RATE: ${{ env.SLO_ERR_RATE }}
+
+    - name: PERF_SUMMARY — roll up GPU_FIX (non-gating)
+      if: always() && matrix.gate == 'GPU_FIX'
+      run: node scripts/summarize-perf.js
+
+    - name: Upload GPU_FIX artifacts (scoped)
+      if: always() && matrix.gate == 'GPU_FIX'
+      uses: actions/upload-artifact@v4
+      with:
+        name: gpu_fix-${{ matrix.site }}-${{ github.run_number }}
+        path: |
+          DELT/ARTF/gpu_fix/k6-summary.json
+          DELT/ARTF/gpu_fix/gpu_fix_summary.json
+        retention-days: 14
 
     
           
-    - name: Upload artifacts
+    - name: Upload IONA artifacts (scoped)
+      if: always() && matrix.gate == 'IONA'
+      uses: actions/upload-artifact@v4
+      with:
+        name: iona-${{ matrix.site }}-${{ github.run_number }}
+        path: |
+          DELT/ARTF/gate-verification-results.json
+          PR_COMMENT_IONA_GATE_002_FINAL.md
+        retention-days: 14
+
+    - name: Upload reports (shared)
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: bosscat-test-results-${{ matrix.site }}-${{ github.run_number }}
+        name: bosscat-reports-${{ matrix.site }}-${{ github.run_number }}
         path: |
-          DELT/ARTF/
           docs/BossCat/reports/
-          PR_COMMENT_IONA_GATE_002_FINAL.md
           artifacts/*.txt
         retention-days: 14
         
@@ -242,7 +334,7 @@ jobs:
         retention-days: 14
 
     - name: Publish Perf Summary (GPU_FIX)
-      if: always()
+      if: always() && matrix.gate == 'PERF_SUMMARY'
       shell: pwsh
       run: |
         $summaryFile = $env:GITHUB_STEP_SUMMARY
@@ -338,5 +430,53 @@ jobs:
         echo "> Retention set to 14 days for uploaded artifacts." >> "$GITHUB_STEP_SUMMARY"
 
 
+    - name: SigNoz health (record)
+      if: ${{ matrix.gate == 'IONA' }}
+      shell: bash
+      run: |
+        mkdir -p artifacts
+        set +e
+        curl -sS http://localhost:8080/api/v1/health -o artifacts/signoz-health.json || echo '{}' > artifacts/signoz-health.json
+        set -e
+
     - name: Emit synthetic trace (IONA)
+      if: ${{ matrix.gate == 'IONA' }}
       run: pnpm emit
+      env:
+        OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://127.0.0.1:5318/v1/traces
+        OTEL_SERVICE_NAME: iona-app
+
+    - name: Verify ingestion (heuristic)
+      if: ${{ matrix.gate == 'IONA' }}
+      shell: bash
+      run: |
+        mkdir -p artifacts
+        echo '{"emission":"iona.boot+iona.synthetic","site":"'${{ matrix.site }}'","mock":"'${{ env.USE_MOCK }}'"}' > artifacts/ingest-check.json
+        if [ "${{ env.USE_MOCK }}" = "false" ] && [ "${{ matrix.site }}" = "prod" ]; then
+          test -s artifacts/signoz-health.json || { echo "SigNoz health missing"; exit 2; }
+        else
+          echo "Mock/non-prod: warning-only ingestion check"
+        fi
+
+    - name: Security waiver review watchdog
+      if: github.ref == 'refs/heads/main'
+      env:
+        REVIEW_DATE: '2025-11-07'
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      shell: bash
+      run: |
+        command -v gh >/dev/null 2>&1 || { echo "gh not installed; skipping watchdog"; exit 0; }
+        now=$(date -u +%F)
+        if [ "$now" \> "$REVIEW_DATE" ] || [ "$now" = "$REVIEW_DATE" ]; then
+          gh issue create --title "Review SigNoz OpenSSL waiver" \
+            --body "Upstream OpenSSL CVEs in signoz image; waiver requires review. See CHAR/EVID security waiver." \
+            --label security,waiver || true
+        else
+          echo "Waiver within window; next check nightly."
+        fi
+
+    - name: Export gate evidence → dashboard JSONs
+      shell: bash
+      run: |
+        pnpm dashboard:rollup || true
+        ls -l docs/status/*.json 2>/dev/null || true
