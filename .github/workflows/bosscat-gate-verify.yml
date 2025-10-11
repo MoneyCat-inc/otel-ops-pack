@@ -182,5 +182,5 @@ META
         echo "" >> "$GITHUB_STEP_SUMMARY"
         echo "> Retention set to 14 days for uploaded artifacts." >> "$GITHUB_STEP_SUMMARY"
 concurrency:
-  group: bosscat-gate-verify-${{ github.workflow }}-${{ github.ref }}
+  group: bosscat-gate-verify-${{ github.workflow }}-${{ github.ref_name }}
   cancel-in-progress: true
