@@ -39,6 +39,7 @@
     "guard:signatures": "tsx scripts/build/gen-signature-registry.ts",
     "guard:js": "tsx scripts/build/js-signature-guard.ts",
     "guard:all": "pnpm guard:signatures && pnpm guard:js",
+    "perf:gate": "k6 run ALFA/TEST/load/k6/perf-gate-thresholds.js",
     "sec:scan": "pnpm comp:check && pnpm comp:gitleaks && pnpm comp:sbom && pnpm guard:all"
   },
   "dependencies": {
