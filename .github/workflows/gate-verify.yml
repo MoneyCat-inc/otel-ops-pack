@@ -47,6 +47,24 @@ jobs:
 
       # ----- Gates -----
 
+      - name: Generate queue-steward evidence (prod-only)
+        if: env.USE_MOCK == 'false' && matrix.site == 'prod'
+        shell: pwsh
+        run: |
+          $out = 'DELT/ARTF/queue-steward-verification.txt'
+          New-Item -ItemType Directory -Force -Path (Split-Path $out) | Out-Null
+          $candidates = @(
+            'SCPT/queue/generate-queue-steward-evidence.ps1',
+            'BRAV/queue/generate-queue-steward-evidence.ps1',
+            'scripts/queue/generate-queue-steward-evidence.ps1'
+          )
+          $script = $candidates | Where-Object { Test-Path $_ } | Select-Object -First 1
+          if (-not $script) {
+            Write-Error 'Required generator not found for prod.'
+            exit 2
+          }
+          & $script -OutFile $out -Verbose
+
       - name: IONA gate
         if: matrix.gate == 'IONA'
         run: |
