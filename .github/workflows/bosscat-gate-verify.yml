@@ -117,30 +117,7 @@ jobs:
         ./scripts/gpu-fix-lane.ps1 -OptionBRequired:$require
       continue-on-error: ${{ github.event_name == 'workflow_dispatch' && inputs.gpu_option_b == false }}
 
-    - name: Publish Perf Summary
-      if: always()
-      shell: pwsh
-      run: |
-        if (Test-Path 'DELT/ARTF/gate-verification-results.json') {
-          $j = Get-Content 'DELT/ARTF/gate-verification-results.json' -Raw | ConvertFrom-Json
-          $gate = $env:GATE
-          $site = $env:SITE
-          $p95 = $j.k6.p95
-          $p5317 = [bool]$j.otlp_ports.'5317'
-          $p5318 = [bool]$j.otlp_ports.'5318'
-          $span = [bool]$j.synthetic_span.success
-          $status = $j.status
-          Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value "## GPU_FIX Summary"
-          Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value "- Gate: $gate"
-          Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value "- Site: $site"
-          Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value "- Status: $status"
-          Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value "- Ports: 5317=$p5317 5318=$p5318"
-          Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value "- Synthetic Span (iona.boot): $span"
-          Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value "- P95 (ms): $p95"
-        } else {
-          Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value "## GPU_FIX Summary"
-          Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value "⚠️ Gate verification results not found"
-        }
+    
           
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
@@ -231,6 +208,26 @@ jobs:
             Add-Content -Path $summaryFile -Value "- Synthetic Span (iona.boot): $span"
             if ($p95 -ne $null) { Add-Content -Path $summaryFile -Value "- P95 (ms): $p95" }
             Add-Content -Path $summaryFile -Value ""
+            # IONA Gate Verdict from PR comment file (with guards)
+            Add-Content -Path $summaryFile -Value "## IONA Gate Verdict"
+            if (Test-Path 'PR_COMMENT_IONA_GATE_002_FINAL.md') {
+              try {
+                $comment = Get-Content 'PR_COMMENT_IONA_GATE_002_FINAL.md' -Raw
+                $verdict = $null
+                if ($comment -match 'Verdict:\s*(\w+)') { $verdict = $Matches[1] }
+                if ($verdict) {
+                  Add-Content -Path $summaryFile -Value "- Verdict: $verdict"
+                  Add-Content -Path $summaryFile -Value "- Gate: $gate"
+                  Add-Content -Path $summaryFile -Value "- Site: $site"
+                } else {
+                  Add-Content -Path $summaryFile -Value "⚠️ Verdict not found in PR comment"
+                }
+              } catch {
+                Add-Content -Path $summaryFile -Value "⚠️ Error parsing PR comment: $_"
+              }
+            } else {
+              Add-Content -Path $summaryFile -Value "⚠️ PR comment file not generated"
+            }
           } catch {
             Add-Content -Path $summaryFile -Value "GPU_FIX Summary: unable to parse gate-verification-results.json ($_ )"
           }
