@@ -16,8 +16,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup PowerShell 7
-        uses: PowerShell/PowerShell-For-GitHub-Actions@v1
+      # PowerShell 7 is already available on windows-latest runners
+      # No setup step needed - using shell: pwsh directly
 
       - name: Run GPU smoke test
         shell: pwsh

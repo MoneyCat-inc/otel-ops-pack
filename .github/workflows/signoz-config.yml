@@ -31,10 +31,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup PowerShell (pwsh 7.4)
-        uses: PowerShell/PowerShell@v1
-        with:
-          pwsh-version: '7.4.x'
+      # PowerShell 7 is already available on windows-latest runners
+      # No setup step needed - using shell: pwsh directly
 
       - name: Apply Alerts (v0.96+ schema)
         shell: pwsh
