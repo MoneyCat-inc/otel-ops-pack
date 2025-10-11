@@ -51,7 +51,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        gate: [IONA, GPU_FIX, SITE_REFMAP_PREVIEW]
+        gate: [IONA, GPU_FIX, SITE_REFMAP_PREVIEW, SITE_HTML_CSP]
         site: [ci, local, prod]
     env:
       GATE: ${{ matrix.gate }}
@@ -155,6 +155,12 @@ jobs:
       shell: pwsh
       run: |
         pwsh -File scripts/check-site-refmap.ps1 -HtmlPath 'docs/status.html' -OutJson 'DELT/ARTF/refmap-gate.json'
+
+    - name: Run SITE HTML CSP check
+      if: ${{ matrix.gate == 'SITE_HTML_CSP' }}
+      shell: pwsh
+      run: |
+        pwsh -File scripts/check-site.ps1 -Root 'docs' -Strict -OutJson 'DELT/ARTF/site-csp-gate.json'
 
     - name: Post PR comment (IONA Gate)
       if: ${{ github.event_name == 'pull_request' && matrix.gate == 'IONA' }}
