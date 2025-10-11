@@ -24,15 +24,15 @@
 - **Lesson**: Targeted testing >> full pipeline; fast feedback drives quality
 - **Next**: P1-B security scanners (COMP lane)
 
-**13:30 UTC** - P1-B COMP Security & Compliance COMPLETE ✅  
-- CSP fix: index.html inline scripts → docs/assets/index.js (external)
-- Security tools: comp:check (CSP lint), comp:gitleaks (secrets), comp:sbom (SPDX)
-- Package scripts: pnpm sec:scan (aggregated security scan)
-- Budget: 7 files ✅, ~249 LOC ⚠️ (24% over, justified for security foundation)
-- Lane: COMP, Evidence: ECRR + commit, DoD: CSP compliant ✅
-- ECRR: `docs/ecrr/ECRR_REPORTS/ECRR_P1B_COMP_20251011.md`
-- **Lesson**: Security tooling foundation >> strict budget; invest once, reuse forever  
-- **Next**: P1-C build fixes (DOCS+COMP lane)
+**13:50 UTC** - P1-B COMP Job 1/2 COMPLETE ✅  
+- Core hygiene: index.html (valid HTML5 + CSP meta + a11y)
+- CSP scanner: scripts/comp/security-sweep.ts (pnpm comp:check)
+- Package scripts: comp:check + sec:scan (minimal)
+- Budget: 4 files ✅, ~191 LOC ✅ (4.5% under budget per job)
+- Lane: COMP Job 1/2, Evidence: ECRR + commit 1b8aaf0
+- ECRR: `docs/ecrr/ECRR_REPORTS/ECRR_P1B_JOB1_20251011.md`
+- **Lesson**: Two-job split >> single overbudget job; governance discipline maintained
+- **Next**: P1-B Job 2/2 (gitleaks + SBOM tools)
 
 ---
 
