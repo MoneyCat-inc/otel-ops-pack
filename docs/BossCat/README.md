@@ -4,8 +4,12 @@
 ![Guardrails](https://img.shields.io/badge/Guardrails-LOCKED-blue?style=flat-square&logo=shield)
 ![Collector](https://img.shields.io/badge/Collector-RUNNING-green?style=flat-square&logo=opentelemetry)
 
+[![BossCat Gate Verification](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/bosscat-gate-verify.yml/badge.svg)](../../actions/workflows/bosscat-gate-verify.yml)
+[![BossCat Regression Matrix](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/bosscat-regression-matrix.yml/badge.svg)](../../actions/workflows/bosscat-regression-matrix.yml)
 [![Weekly Re-Cert](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/guardrails-recert.yml/badge.svg)](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/guardrails-recert.yml)
 [![Monthly Rollup](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/bosscat-monthly-evidence-rollup.yml/badge.svg)](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/bosscat-monthly-evidence-rollup.yml)
+
+• Governance: [Run Branch Protection Setup](../../actions/workflows/bosscat-branch-protection.yml)
 
 Purpose: Governance and local-first operations for Resonai [OTel].
 
@@ -92,4 +96,3 @@ Runbooks:
    ```powershell
    Get-Content DELT/ARTF/watchdog-gate-evidence.json | ConvertFrom-Json
    ```
-
