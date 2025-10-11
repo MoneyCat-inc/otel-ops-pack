@@ -74,10 +74,23 @@ jobs:
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: http://127.0.0.1:5318/v1/traces
 
-      - name: Resolve SLO thresholds (site-aware)
+      - name: GPU_FIX — start local mock target
+        if: env.USE_MOCK == 'true' && matrix.gate == 'GPU_FIX'
+        run: |
+          docker run -d --rm --name httpbin -p 8080:80 kennethreitz/httpbin
+          for i in {1..20}; do
+            if curl -fsS http://localhost:8080/status/200 >/dev/null 2>&1; then
+              echo "httpbin is up"; break
+            fi
+            sleep 1
+          done
+        shell: bash
+
+      - name: GPU_FIX — resolve target & SLOs
         if: matrix.gate == 'GPU_FIX'
         shell: bash
         run: |
+          echo "SITE=${{ matrix.site }}" >> "$GITHUB_ENV"
           if [ "${{ matrix.site }}" = "prod" ] && [ "${{ env.USE_MOCK }}" != "true" ]; then
             echo "SLO_P95_MS=200" >> $GITHUB_ENV
             echo "SLO_ERR_RATE=0.005" >> $GITHUB_ENV
@@ -85,7 +98,11 @@ jobs:
             echo "SLO_P95_MS=500" >> $GITHUB_ENV
             echo "SLO_ERR_RATE=0.01" >> $GITHUB_ENV
           fi
-          echo "TARGET_URL=https://httpbin.org" >> $GITHUB_ENV
+          if [ "${{ env.USE_MOCK }}" = "true" ]; then
+            echo "TARGET_URL=http://localhost:8080/get?gpu_fix=true" >> "$GITHUB_ENV"
+          else
+            echo "TARGET_URL=https://httpbin.org/get?gpu_fix=true" >> "$GITHUB_ENV"
+          fi
           echo "ARTIFACT_DIR=DELT/ARTF" >> $GITHUB_ENV
 
       - name: Ensure artifacts directory
@@ -111,6 +128,11 @@ jobs:
         if: always() && matrix.gate == 'GPU_FIX'
         run: node scripts/summarize-perf.js
 
+      - name: GPU_FIX — stop mock target
+        if: always() && env.USE_MOCK == 'true' && matrix.gate == 'GPU_FIX'
+        run: docker stop httpbin || true
+        shell: bash
+
       - name: Upload GPU_FIX artifacts (scoped)
         if: always() && matrix.gate == 'GPU_FIX'
         uses: actions/upload-artifact@v4
@@ -123,7 +145,17 @@ jobs:
 
       - name: Performance summary
         if: matrix.gate == 'PERF_SUMMARY'
-        run: node scripts/summarize-perf.js || echo "summary skipped"
+        run: |
+          mkdir -p DELT/ARTF/perf_summary
+          node scripts/summarize-perf.js --mode=aggregate || echo "summary skipped"
+
+      - name: Upload PERF_SUMMARY artifacts (scoped)
+        if: always() && matrix.gate == 'PERF_SUMMARY'
+        uses: actions/upload-artifact@v4
+        with:
+          name: perf_summary-${{ matrix.site }}-${{ github.run_number }}
+          path: DELT/ARTF/perf_summary/*.json
+          retention-days: 14
 
       # Best‑effort optional evidence (script moved → fallback paths)
       - name: Optional evidence (best‑effort)

@@ -2,7 +2,9 @@ import http from 'k6/http';
 import { sleep, check } from 'k6';
 
 const SITE = __ENV.SITE || 'ci';
-const BASE_URL = __ENV.BASE_URL || 'https://httpbin.org';
+const DEFAULT_BASE = 'https://httpbin.org';
+const BASE_URL = __ENV.BASE_URL || DEFAULT_BASE;
+const TARGET = __ENV.TARGET_URL || `${BASE_URL}/get`;
 
 const targets = {
   ci:    { p95: 600, err: 0.015 },
@@ -20,7 +22,7 @@ export const options = {
 };
 
 export default function () {
-  const res = http.get(`${BASE_URL}/get`);
+  const res = http.get(TARGET);
   check(res, { 'status is 200': (r) => r.status === 200 });
   sleep(1);
 }
