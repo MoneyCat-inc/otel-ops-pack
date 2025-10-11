@@ -77,7 +77,8 @@ jobs:
       - name: GPU_FIX — start local mock target
         if: env.USE_MOCK == 'true' && matrix.gate == 'GPU_FIX'
         run: |
-          docker run -d --rm --name httpbin -p 8080:80 kennethreitz/httpbin
+          docker network create k6-net || true
+          docker run -d --rm --name httpbin --network k6-net -p 8080:80 kennethreitz/httpbin
           for i in {1..20}; do
             if curl -fsS http://localhost:8080/status/200 >/dev/null 2>&1; then
               echo "httpbin is up"; break
@@ -99,9 +100,9 @@ jobs:
             echo "SLO_ERR_RATE=0.01" >> $GITHUB_ENV
           fi
           if [ "${{ env.USE_MOCK }}" = "true" ]; then
-            echo "TARGET_URL=http://localhost:8080/get?gpu_fix=true" >> "$GITHUB_ENV"
+            echo "TARGET_URL=http://httpbin" >> "$GITHUB_ENV"
           else
-            echo "TARGET_URL=https://httpbin.org/get?gpu_fix=true" >> "$GITHUB_ENV"
+            echo "TARGET_URL=https://httpbin.org" >> "$GITHUB_ENV"
           fi
           echo "ARTIFACT_DIR=DELT/ARTF" >> $GITHUB_ENV
 
@@ -119,6 +120,7 @@ jobs:
           flags: >-
             --vus 20 --duration 60s
             --summary-export DELT/ARTF/gpu_fix/k6-summary.json
+          docker-opt: --network k6-net
         env:
           TARGET_URL: ${{ env.TARGET_URL }}
           SLO_P95_MS: ${{ env.SLO_P95_MS }}
@@ -130,7 +132,9 @@ jobs:
 
       - name: GPU_FIX — stop mock target
         if: always() && env.USE_MOCK == 'true' && matrix.gate == 'GPU_FIX'
-        run: docker stop httpbin || true
+        run: |
+          docker stop httpbin || true
+          docker network rm k6-net || true
         shell: bash
 
       - name: Upload GPU_FIX artifacts (scoped)
