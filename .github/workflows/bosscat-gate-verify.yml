@@ -223,13 +223,13 @@ jobs:
                   Add-Content -Path $summaryFile -Value "⚠️ Verdict not found in PR comment"
                 }
               } catch {
-                Add-Content -Path $summaryFile -Value "⚠️ Error parsing PR comment: $_"
+                Add-Content -Path $summaryFile -Value "⚠️ Error parsing PR comment: $($_.Exception.Message)"
               }
             } else {
               Add-Content -Path $summaryFile -Value "⚠️ PR comment file not generated"
             }
           } catch {
-            Add-Content -Path $summaryFile -Value "GPU_FIX Summary: unable to parse gate-verification-results.json ($_ )"
+            Add-Content -Path $summaryFile -Value "GPU_FIX Summary: unable to parse gate-verification-results.json ($($_.Exception.Message))"
           }
         } else {
           Add-Content -Path $summaryFile -Value "GPU_FIX Summary: gate-verification-results.json not found"
