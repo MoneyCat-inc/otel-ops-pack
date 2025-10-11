@@ -32,7 +32,15 @@
     "dashboard:rollup": "tsx scripts/dashboard-query.ts --days 7 --root artifacts/ecrr --out DELT/ARTF --snapshot docs/observability/snapshots",
     "ecrr:process": "pwsh -File scripts/run-normalize-summarize.ps1 -RunDir $RUN_DIR",
     "map:generate": "tsx scripts/generate-reference-map.ts",
-    "agent:preflight": "node scripts/agent-preflight.mjs"
+    "agent:preflight": "node scripts/agent-preflight.mjs",
+    "comp:check": "tsx scripts/comp/security-sweep.ts",
+    "comp:gitleaks": "tsx scripts/comp/gitleaks-wrapper.ts",
+    "comp:sbom": "tsx scripts/comp/syft-sbom.ts",
+    "guard:signatures": "tsx scripts/build/gen-signature-registry.ts",
+    "guard:js": "tsx scripts/build/js-signature-guard.ts",
+    "guard:all": "pnpm guard:signatures && pnpm guard:js",
+    "perf:gate": "k6 run ALFA/TEST/load/k6/perf-gate-thresholds.js",
+    "sec:scan": "pnpm comp:check && pnpm comp:gitleaks && pnpm comp:sbom && pnpm guard:all"
   },
   "dependencies": {
     "@aws-sdk/client-bedrock-runtime": "^3.901.0",
