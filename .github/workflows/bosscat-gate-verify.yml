@@ -46,6 +46,9 @@ jobs:
       SITE: ${{ matrix.site }}
       SIGNOZ_API_KEY: ${{ secrets.SIGNOZ_API_KEY }}
       USE_MOCK: ${{ github.event_name == 'pull_request' && 'true' || 'false' }}
+      OTEL_SERVICE_NAME: iona-app
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://127.0.0.1:5318/v1/traces
+      OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf
       BASE_URL: https://httpbin.org
     concurrency:
       group: bosscat-gate-verify-${{ github.workflow }}-${{ github.ref_name }}-${{ matrix.site }}
@@ -77,6 +80,7 @@ jobs:
       run: |
         corepack enable
         pnpm i --frozen-lockfile=false
+        pnpm -v
         
     - name: Create required directories
       run: |
@@ -319,4 +323,6 @@ jobs:
         echo "> Retention set to 14 days for uploaded artifacts." >> "$GITHUB_STEP_SUMMARY"
 
 
+    - name: Emit synthetic trace (IONA)
+      run: pnpm emit
 
