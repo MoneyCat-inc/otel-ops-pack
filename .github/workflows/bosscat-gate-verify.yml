@@ -36,9 +36,13 @@ on:
 jobs:
   gate-verification:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        site: [ci, local, prod]
     env:
       GATE: ${{ github.event_name == 'workflow_dispatch' && inputs.gate || 'IONA' }}
-      SITE: ${{ github.event_name == 'workflow_dispatch' && inputs.site || 'ci' }}
+      SITE: ${{ matrix.site }}
     
     steps:
     - name: Checkout code
@@ -123,7 +127,7 @@ jobs:
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: bosscat-test-results-${{ github.run_number }}
+        name: bosscat-test-results-${{ matrix.site }}-${{ github.run_number }}
         path: |
           DELT/ARTF/
           docs/BossCat/reports/
@@ -163,7 +167,7 @@ jobs:
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: bosscat-reports-${{ github.run_number }}
+        name: bosscat-reports-${{ matrix.site }}-${{ github.run_number }}
         path: docs/BossCat/reports/
         retention-days: 14
 
@@ -178,7 +182,7 @@ jobs:
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: ecrr-benchmark-${{ github.run_number }}
+        name: ecrr-benchmark-${{ matrix.site }}-${{ github.run_number }}
         path: |
           DELT/ARTF/ecrr-benchmark.json
           DELT/ARTF/ecrr-benchmark-trend.csv
@@ -272,13 +276,14 @@ META
         echo "- Ref: $GITHUB_REF" >> "$GITHUB_STEP_SUMMARY"
         echo "- Actor: $GITHUB_ACTOR" >> "$GITHUB_STEP_SUMMARY"
         echo "- Gate: ${GATE:-IONA}" >> "$GITHUB_STEP_SUMMARY"
-        echo "- Site: ${SITE:-ci}" >> "$GITHUB_STEP_SUMMARY"
+        echo "- Site: ${{ matrix.site }}" >> "$GITHUB_STEP_SUMMARY"
         echo "" >> "$GITHUB_STEP_SUMMARY"
         echo "### Artifacts" >> "$GITHUB_STEP_SUMMARY"
         echo "- \\`DELT/ARTF\\` (logs, metrics)" >> "$GITHUB_STEP_SUMMARY"
         echo "- \\`docs/BossCat/reports\\` (ECRR/BOSS reports)" >> "$GITHUB_STEP_SUMMARY"
+        echo "- Artifact name: \`bosscat-test-results-${{ matrix.site }}-${{ github.run_number }}\`" >> "$GITHUB_STEP_SUMMARY"
         echo "" >> "$GITHUB_STEP_SUMMARY"
         echo "> Retention set to 14 days for uploaded artifacts." >> "$GITHUB_STEP_SUMMARY"
 concurrency:
-  group: bosscat-gate-verify-${{ github.workflow }}-${{ github.ref_name }}-${{ env.GATE || 'IONA' }}-${{ env.SITE || 'ci' }}
+  group: bosscat-gate-verify-${{ github.workflow }}-${{ github.ref_name }}-${{ matrix.site }}
   cancel-in-progress: true
