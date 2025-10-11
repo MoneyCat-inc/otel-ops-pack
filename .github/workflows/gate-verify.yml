@@ -17,8 +17,8 @@ jobs:
     env:
       SITE: ${{ matrix.site }}
       GATE: ${{ matrix.gate }}
-      # Mock non‑prod to keep gates deterministic and fast
-      USE_MOCK: ${{ matrix.site != 'prod' && 'true' || 'false' }}
+      # Mock PRs to keep gates deterministic and fast; real for main/nightly
+      USE_MOCK: ${{ github.event_name == 'pull_request' && 'true' || 'false' }}
       OTEL_SERVICE_NAME: iona-app
       OTEL_EXPORTER_OTLP_ENDPOINT: http://127.0.0.1:5318/v1/traces
       OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf
