@@ -1,27 +1,11 @@
-﻿{
-    "timestamp":  "2025-10-10T01:52:35+01:00",
-    "commit":  "e71e52c",
-    "branch":  "feat/gate-fallback-artifacts-queue",
-    "verdict":  "READY",
-    "reasons":  [
-
-                ],
-    "tests":  {
-                  "total":  0,
-                  "failed":  0
-              },
-    "checks":  {
-                   "docs/IONA_ERRORS.md":  "present",
-                   "index.html":  "present",
-                   "docs/observability/snapshots":  "present",
-                   "docs/status/tests.json":  "present",
-                   "docs/BossCat/README.md":  "present",
-                   "docs/cheatsheets":  "present",
-                   "docs/status.html":  "present",
-                   "docs/ecrr/ECRR_REPORTS":  "present",
-                   "queue-steward-verification.txt":  "present",
-                   ".github/workflows/bosscat-gate-verify.yml":  "present",
-                   "ALFA/TEST/helpers/signoz.ts":  "present",
-                   "scripts/benchmark-process-all-ecrr-reports.ps1":  "present"
-               }
+{
+  "lane": "GPU_FIX",
+  "preflight": {
+    "budgets_ok": true,
+    "clean": false
+  },
+  "error": "Preflight failed (dirty worktree or budgets exceeded)",
+  "option_b_required": true,
+  "started_at": "2025-10-11T04:22:30",
+  "status": "RED"
 }

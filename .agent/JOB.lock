@@ -1,0 +1,7 @@
+{
+  "mission": "GPU_FIX",
+  "started": "2025-10-11T04:22:06.3297394+01:00",
+  "actor": "cursor{implementor}",
+  "ttl_minutes": 30,
+  "heartbeat_max_seconds": 60
+}
