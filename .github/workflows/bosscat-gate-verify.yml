@@ -115,7 +115,7 @@ jobs:
         $require = $true
         if ('${{ github.event_name }}' -eq 'workflow_dispatch') { $require = [System.Convert]::ToBoolean('${{ inputs.gpu_option_b }}') }
         ./scripts/gpu-fix-lane.ps1 -OptionBRequired:$require
-      continue-on-error: true
+      continue-on-error: ${{ github.event_name == 'workflow_dispatch' && inputs.gpu_option_b == false }}
 
     - name: Publish Perf Summary
       if: always()
@@ -207,6 +207,36 @@ jobs:
           DELT/ARTF/ecrr-benchmark-trend.csv
           artifacts/ecrr-benchmark-trend.csv
         retention-days: 14
+
+    - name: Publish Perf Summary (GPU_FIX)
+      if: always()
+      shell: pwsh
+      run: |
+        $summaryFile = $env:GITHUB_STEP_SUMMARY
+        if (Test-Path 'DELT/ARTF/gate-verification-results.json') {
+          try {
+            $j = Get-Content 'DELT/ARTF/gate-verification-results.json' -Raw | ConvertFrom-Json
+            $gate = $env:GATE; $site = $env:SITE
+            $p95 = $null
+            if ($j.k6 -and $j.k6.p95) { $p95 = $j.k6.p95 } elseif ($j.k6 -and $j.k6.'p95') { $p95 = $j.k6.'p95' }
+            $p5317 = $false; if ($j.otlp_ports -and $j.otlp_ports.'5317' -ne $null) { $p5317 = [bool]$j.otlp_ports.'5317' }
+            $p5318 = $false; if ($j.otlp_ports -and $j.otlp_ports.'5318' -ne $null) { $p5318 = [bool]$j.otlp_ports.'5318' }
+            $span = $false; if ($j.synthetic_span -and $j.synthetic_span.success -ne $null) { $span = [bool]$j.synthetic_span.success }
+            $status = $j.status
+            Add-Content -Path $summaryFile -Value "## GPU_FIX Summary"
+            Add-Content -Path $summaryFile -Value "- Gate: $gate"
+            Add-Content -Path $summaryFile -Value "- Site: $site"
+            Add-Content -Path $summaryFile -Value "- Status: $status"
+            Add-Content -Path $summaryFile -Value "- Ports: 5317=$p5317 5318=$p5318"
+            Add-Content -Path $summaryFile -Value "- Synthetic Span (iona.boot): $span"
+            if ($p95 -ne $null) { Add-Content -Path $summaryFile -Value "- P95 (ms): $p95" }
+            Add-Content -Path $summaryFile -Value ""
+          } catch {
+            Add-Content -Path $summaryFile -Value "GPU_FIX Summary: unable to parse gate-verification-results.json ($_ )"
+          }
+        } else {
+          Add-Content -Path $summaryFile -Value "GPU_FIX Summary: gate-verification-results.json not found"
+        }
 
     - name: ECRR Process (pilot)
       if: always()
