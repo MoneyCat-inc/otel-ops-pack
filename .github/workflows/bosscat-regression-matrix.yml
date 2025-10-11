@@ -30,6 +30,7 @@ jobs:
     env:
       GATE: ${{ matrix.gate }}
       SITE: ${{ matrix.site }}
+      SIGNOZ_API_KEY: ${{ secrets.SIGNOZ_API_KEY }}
     concurrency:
       group: bosscat-regression-${{ github.ref_name }}-${{ matrix.gate }}-${{ matrix.site }}
       cancel-in-progress: true

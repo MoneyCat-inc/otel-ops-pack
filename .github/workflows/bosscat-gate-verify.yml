@@ -44,6 +44,7 @@ jobs:
     env:
       GATE: ${{ github.event_name == 'workflow_dispatch' && inputs.gate || 'IONA' }}
       SITE: ${{ matrix.site }}
+      SIGNOZ_API_KEY: ${{ secrets.SIGNOZ_API_KEY }}
     concurrency:
       group: bosscat-gate-verify-${{ github.workflow }}-${{ github.ref_name }}-${{ matrix.site }}
       cancel-in-progress: true
@@ -296,7 +297,6 @@ jobs:
         echo "- Artifact name: \`bosscat-test-results-${{ matrix.site }}-${{ github.run_number }}\`" >> "$GITHUB_STEP_SUMMARY"
         echo "" >> "$GITHUB_STEP_SUMMARY"
         echo "> Retention set to 14 days for uploaded artifacts." >> "$GITHUB_STEP_SUMMARY"
-
 
 
 
