@@ -22,6 +22,10 @@ on:
         default: "true"
         type: boolean
 
+concurrency:
+  group: nightly-tetragrammaton-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 env:
   SIGNOZ_URL: http://localhost:8080
   NODEJS_BENCHMARK_PATH: C:\Users\fubum\nodejs_benchmark

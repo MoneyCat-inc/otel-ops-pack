@@ -18,6 +18,10 @@ on:
           - ramp-up
           - burst-test
 
+concurrency:
+  group: stress-test-nightly-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   stress-test:
     runs-on: ubuntu-latest

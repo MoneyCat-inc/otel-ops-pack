@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "generated_at": "",
+  "nodes": [
+    { "id": "ingest-worker", "type": "script", "files": ["scripts/ingest-worker.ts", "scripts/ingest-utils.ts", "scripts/ingest-backfill.ps1"] },
+    { "id": "normalize", "type": "script", "files": ["scripts/normalize-events.ts"] },
+    { "id": "classify", "type": "script", "files": ["scripts/classify-run.ts"] },
+    { "id": "summarize", "type": "script", "files": ["scripts/summarize-run.ts"] },
+    { "id": "actor-pr", "type": "script", "files": ["scripts/actor-pr-comment.ts"] },
+    { "id": "policy", "type": "config", "files": ["config/policy/ecrr-policy.json"] },
+    { "id": "registry", "type": "data", "files": ["ALFA/APPS/signature-registry.json"] },
+    { "id": "dashboard-rollup", "type": "script", "files": ["scripts/dashboard-query.ts"] },
+    { "id": "workflows", "type": "workflow", "files": [".github/workflows/bosscat-gate-verify.yml", ".github/workflows/stress-test-pr.yml", ".github/workflows/nightly-ecrr-aggregates.yml"] },
+    { "id": "correlation", "type": "lib", "files": ["scripts/lib/correlation.ts", "scripts/lib/logger.ts", "scripts/emit-synthetic-span.ts", "scripts/examples/log-with-trace.ts", "scripts/verify-correlation.ps1"] }
+  ],
+  "edges": [
+    ["ingest-worker", "normalize"],
+    ["normalize", "classify"],
+    ["classify", "summarize"],
+    ["summarize", "actor-pr"],
+    ["registry", "classify"],
+    ["policy", "actor-pr"],
+    ["dashboard-rollup", "workflows"],
+    ["correlation", "ingest-worker"],
+    ["correlation", "normalize"]
+  ]
+}
+

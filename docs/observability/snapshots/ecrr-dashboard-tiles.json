@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "tiles": [
+    {
+      "id": "signature_counts",
+      "title": "Top Signatures (Last 7d)",
+      "description": "Counts of top signature IDs aggregated across runs",
+      "source": "ecrr",
+      "query": "SELECT sig_id, SUM(count) as total FROM signatures_top_7d GROUP BY sig_id ORDER BY total DESC LIMIT 10",
+      "type": "bar"
+    },
+    {
+      "id": "dominant_components",
+      "title": "Dominant Components (Last 7d)",
+      "description": "Distribution of dominant components across runs",
+      "source": "ecrr",
+      "query": "SELECT component, COUNT(1) as total FROM dominant_components_7d GROUP BY component ORDER BY total DESC",
+      "type": "pie"
+    }
+  ]
+}
+

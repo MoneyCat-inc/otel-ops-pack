@@ -12,6 +12,10 @@ on:
       - 'docs/ECRR_REPORTS/**'
       - 'scripts/lint-ecrr-compliance.ps1'
 
+concurrency:
+  group: ecrr-compliance-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   ecrr-compliance:
     runs-on: windows-latest

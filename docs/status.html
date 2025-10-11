@@ -1,6 +1,6 @@
-<!doctype html>
+﻿<!doctype html>
 <html>
-<head>
+  <head>
   <meta charset="utf-8">
   <title>BossCat Status Dashboard</title>
   <style>
@@ -15,11 +15,12 @@
     .btn:hover { background: #f6f8fa; }
     .links a { margin-right: .5rem; }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
 </head>
 <body>
-  <h1>🐾 BossCat Status Dashboard</h1>
+  <h1>&#128062; BossCat Status Dashboard</h1>
   <div class="status ready">
-    <h2>System Status</h2>
+    <h2>&#128062; System Status</h2>
     <p>BossCat Operations - Resonai [OTel]</p>
     <p>For detailed status, run: <code>pwsh -File scripts/verify-iona-gate.ps1</code></p>
     <div id="gate-latest"></div>
@@ -27,14 +28,20 @@
   </div>
 
   <div class="status">
-    <h2>Evidence Links</h2>
+    <h2>&#128062; Evidence Links</h2>
     <ul>
-      <li><a href="../artifacts/queue-steward-verification.txt">Queue Steward Evidence</a></li>
-      <li><a href="../DELT/ARTF/ecrr-benchmark-trend.csv">ECRR Trend (CSV)</a></li>
-      <li><a href="../DELT/ARTF/ecrr-benchmark.json">ECRR Benchmark (JSON)</a></li>
-      <li><a href="ecrr/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md">Latest ECRR Gate Run</a></li>
-      <li><a href="ecrr/ECRR_REPORTS/ECRR_MAINTENANCE_LATEST.md">Maintenance Latest (Pagination Fix)</a></li>
+      <li><strong>Gate #006:</strong> <a href="../CHAR/EVID/gate-006/README.md">Gate Archive Index</a> · <a href="../CHAR/EVID/gate-006/GATE_006_CLOSEOUT_CERTIFIED.md">Closeout</a></li>
+      <li><strong>Evidence:</strong> <a href="../DELT/ARTF/README.md">Artifacts Index</a> · <a href="../artifacts/queue-steward-verification.txt">Queue Steward</a></li>
+      <li><strong>ECRR:</strong> <a href="ecrr/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md">Latest Gate Run</a> · <a href="ecrr/ECRR_REPORTS/ECRR_MAINTENANCE_LATEST.md">Maintenance</a></li>
+      <li><strong>Benchmarks:</strong> <a href="../DELT/ARTF/ecrr-benchmark.json">ECRR Benchmark (JSON)</a> · <a href="../DELT/ARTF/ecrr-benchmark-trend.csv">Trend (CSV)</a></li>
+      <li><strong>Reference:</strong> <a href="reference/reference-map.json">Reference Map (JSON)</a></li>
+      <li><strong>Operations:</strong> <a href="BossCat/TODO.md">BossCat TODOs</a></li>
     </ul>
+  </div>
+  <div class="status">
+    <h2>Reference Map Preview</h2>
+    <div id="refmap"></div>
+    <div id="refmap-graph"></div>
   </div>
   <script>
     (async () => {
@@ -84,6 +91,73 @@
       } else if (copyBtn) {
         copyBtn.disabled = true;
       }
+      // Reference map preview
+      try {
+        const r = await fetch('reference/reference-map.json', { cache: 'no-store' });
+        const v = await fetch('reference/reference-map-validation.json', { cache: 'no-store' });
+        if (r.ok) {
+          const m = await r.json();
+          const nodes = (m.nodes || []).length;
+          const edges = (m.edges || []).length;
+          const list = (m.nodes || []).slice(0,6).map(n => `- ${n.id} (${n.type})`).join('<br>');
+          let missing = 0;
+          if (v.ok) {
+            const rep = await v.json();
+            missing = rep.counts?.missing || 0;
+          }
+          // P1 per-tag counts
+          const tagCounts = {};
+          for (const n of (m.nodes||[])) {
+            if (n.type === 'doc' && n.importance === 'P1' && Array.isArray(n.tags)) {
+              for (const t of n.tags) tagCounts[t] = (tagCounts[t]||0) + 1;
+            }
+          }
+          const tagEntries = Object.entries(tagCounts).sort((a,b)=>b[1]-a[1]).slice(0,6);
+          const tagLine = tagEntries.length ? tagEntries.map(([k,v])=>`${k}=${v}`).join(' · ') : '—';
+          const pinnedTags = ['operations','governance'];
+          const pinnedLine = pinnedTags.map(k => `${k}=${tagCounts[k]||0}`).join(' · ');
+
+          document.getElementById('refmap').innerHTML = `
+            <p><strong>Generated:</strong> ${m.generated_at || '—'}</p>
+            <p><strong>Nodes/Edges:</strong> ${nodes}/${edges} ${missing>0?`<span class='pill'>missing: ${missing}</span>`:''}</p>
+            <p><strong>Docs by Importance:</strong> P0=${m.stats?.importanceCounts?.P0||0} · P1=${m.stats?.importanceCounts?.P1||0} · P2=${m.stats?.importanceCounts?.P2||0} · P3=${m.stats?.importanceCounts?.P3||0}</p>
+            <p><strong>P1 by Tag:</strong> ${pinnedLine} · Top: ${tagLine}</p>
+            <p><strong>Sample:</strong><br>${list}</p>
+          `;
+
+          // Mermaid graph (subset to keep it readable)
+          try {
+            const edges = (m.edges || []) as string[][];
+            const nodesSet = new Set<string>();
+            const picked = edges.slice(0, 12);
+            for (const [a,b] of picked) { nodesSet.add(a); nodesSet.add(b); }
+            const nodes = Array.from(nodesSet);
+            let graph = 'flowchart LR\n';
+            graph += 'classDef p0 fill:#ffe5e5,stroke:#c00,stroke-width:2px;\n';
+            graph += 'classDef p1 fill:#fff7cc,stroke:#aa0,stroke-width:1.5px;\n';
+            for (const n of nodes) graph += `  ${n.replace(/[^a-zA-Z0-9_]/g,'_')}[${n}]\n`;
+            for (const [a,b] of picked) graph += `  ${a.replace(/[^a-zA-Z0-9_]/g,'_')} --> ${b.replace(/[^a-zA-Z0-9_]/g,'_')}\n`;
+            // Add a small doc hub with top P0/P1 docs
+            const topDocs = (m.nodes||[]).filter(n => n.type==='doc' && (n.importance==='P0'||n.importance==='P1')).slice(0,3);
+            if (topDocs.length) {
+              graph += '  docsHub[Docs] \n';
+              for (const d of topDocs) {
+                const dn = (d.id||'doc').replace(/[^a-zA-Z0-9_]/g,'_');
+                graph += `  ${dn}[${d.title || d.id}]\n`;
+                graph += `  docsHub --> ${dn}\n`;
+                if (d.importance==='P0') graph += `  class ${dn} p0;\n`;
+                if (d.importance==='P1') graph += `  class ${dn} p1;\n`;
+              }
+            }
+            mermaid.initialize({ startOnLoad: false, theme: 'default' });
+            const el = document.getElementById('refmap-graph');
+            if (el) {
+              const id = 'refmapSvg';
+              mermaid.mermaidAPI.render(id, graph, (svgCode) => { el.innerHTML = svgCode; });
+            }
+          } catch {}
+        }
+      } catch {}
     })();
   </script>
 </body>

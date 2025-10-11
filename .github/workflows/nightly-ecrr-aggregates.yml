@@ -1,0 +1,37 @@
+name: Nightly ECRR Aggregates
+
+on:
+  schedule:
+    - cron: '0 2 * * *'  # 02:00 UTC daily
+  workflow_dispatch:
+
+jobs:
+  rollup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install deps
+        run: |
+          npm ci || npm i
+
+      - name: Build ECRR aggregates (7d)
+        run: |
+          npx tsx scripts/dashboard-query.ts --days 7 --root artifacts/ecrr --out DELT/ARTF --snapshot docs/observability/snapshots
+
+      - name: Upload rollup artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ecrr-aggregates-${{ github.run_number }}
+          path: |
+            DELT/ARTF/ecrr_signature_counts_7d.json
+            DELT/ARTF/ecrr_dominant_components_7d.json
+          retention-days: 14
+
