@@ -165,6 +165,7 @@ jobs:
   neuralegion_scan:
     runs-on: ubuntu-18.04
     name: A job to run a Nexploit scan
+    if: github.event_name != 'pull_request' && secrets.NEURALEGION_TOKEN != ''
     steps:
       - uses: actions/checkout@v4
       - name: Start Nexploit Scan 🏁

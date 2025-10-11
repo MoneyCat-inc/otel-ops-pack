@@ -30,6 +30,7 @@ jobs:
     env:
       GATE: ${{ matrix.gate }}
       SITE: ${{ matrix.site }}
+      SIGNOZ_API_KEY: ${{ secrets.SIGNOZ_API_KEY }}
     concurrency:
       group: bosscat-regression-${{ github.ref_name }}-${{ matrix.gate }}-${{ matrix.site }}
       cancel-in-progress: true
@@ -83,6 +84,34 @@ jobs:
         ./scripts/gpu-fix-lane.ps1 -OptionBRequired:$require
       continue-on-error: ${{ github.event_name == 'workflow_dispatch' && inputs.gpu_option_b == false }}
 
+    - name: Upload Nexploit SARIF (if present)
+      if: hashFiles('DELT/ARTF/nexploit-report.sarif') != ''
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: DELT/ARTF/nexploit-report.sarif
+
+    - name: Nexploit Gate (fail on Critical/High)
+      if: hashFiles('DELT/ARTF/nexploit-summary.json') != ''
+      shell: pwsh
+      run: |
+        try {
+          $j = Get-Content 'DELT/ARTF/nexploit-summary.json' -Raw | ConvertFrom-Json
+          $crit = 0; $high = 0; $med = 0; $low = 0
+          if ($j.severity) {
+            if ($j.severity.critical) { $crit = [int]$j.severity.critical }
+            if ($j.severity.high) { $high = [int]$j.severity.high }
+            if ($j.severity.medium) { $med = [int]$j.severity.medium }
+            if ($j.severity.low) { $low = [int]$j.severity.low }
+          }
+          Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value '## Nexploit Summary'
+          Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value "- Critical: $crit"
+          Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value "- High: $high"
+          Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value "- Medium: $med"
+          Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value "- Low: $low"
+          if ($crit -gt 0 -or $high -gt 0) { throw "Nexploit gate failed: Critical/High findings present" }
+        } catch {
+          Write-Error $_
+        }
     - name: Publish Perf Summary (GPU_FIX)
       if: always()
       shell: pwsh
@@ -142,4 +171,3 @@ jobs:
           docs/BossCat/reports/
           PR_COMMENT_IONA_GATE_002_FINAL.md
         retention-days: 14
-

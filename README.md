@@ -25,6 +25,29 @@ All documentation, agents, CI/CD guardrails, and artifacts (ECRR reports, SSOTs,
 [![Maintained by MoneyCat-inc](https://img.shields.io/badge/Maintained%20by-MoneyCat--inc-00aa88?style=for-the-badge&logo=github&logoColor=white)](https://github.com/MoneyCat-inc)
 
 • Governance: [Run Branch Protection Setup](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/bosscat-branch-protection.yml)
+• Governance: [Run Ruleset Setup](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/bosscat-ruleset-setup.yml)
+• Contributing: [Contributing Guide](CONTRIBUTING.md)
+
+## 🔐 CI/CD Setup
+
+Required Secret
+- `SIGNOZ_API_KEY` — [Add in Settings → Secrets → Actions](https://github.com/MoneyCat-inc/otel-ops-pack/settings/secrets/actions)
+  - Used by k6 functional tests to authenticate against the SigNoz API
+  - Without it: latency gates may pass, but functional checks can fail
+
+Branch Protection (merge requirements)
+- ✅ BossCat Gate Verification / Gate Verify (ci)
+- ✅ BossCat Gate Verification / Gate Verify (local)
+- ✅ BossCat Gate Verification / Gate Verify (prod)
+- ✅ 1 PR approval required
+
+Note: Do not rename these jobs unless you also update the governance workflows that enforce them.
+
+### 🔧 Quick Fixes
+
+- Functional checks failing? Add or verify `SIGNOZ_API_KEY` in repo [Secrets](https://github.com/MoneyCat-inc/otel-ops-pack/settings/secrets/actions).
+- Workflow errors? Validate YAML with a linter (e.g., actionlint) and fix syntax.
+- Job names changed? Re-run governance to refresh required checks: [Branch Protection](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/bosscat-branch-protection.yml).
 
 A complete Windows-to-SigNoz observability pipeline with automated monitoring, alerting, and agent workflows for repeatable operations.
 
