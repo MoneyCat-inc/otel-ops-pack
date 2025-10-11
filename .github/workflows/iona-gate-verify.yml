@@ -11,6 +11,10 @@ on:
       - main
   workflow_dispatch:
 
+concurrency:
+  group: iona-gate-verify-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   pull-requests: write
@@ -105,7 +109,7 @@ jobs:
             artifacts/*.md
             playwright-report/
             test-results/
-          retention-days: 30
+          retention-days: 14
       
       - name: Upload Playwright report
         if: always()
@@ -113,7 +117,7 @@ jobs:
         with:
           name: playwright-report
           path: playwright-report/
-          retention-days: 30
+          retention-days: 14
       
       - name: Comment PR with results
         if: github.event_name == 'pull_request' && always()

@@ -4,6 +4,10 @@ on:
     - cron: "13 4 * * *"   # daily at 04:13 UTC
   workflow_dispatch:
 
+concurrency:
+  group: drift-alert-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 permissions:
   contents: read
   issues: write

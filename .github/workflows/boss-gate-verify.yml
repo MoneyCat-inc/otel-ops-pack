@@ -11,6 +11,10 @@ on:
         default: main
         type: string
 
+concurrency:
+  group: boss-gate-verify-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   verify-gate:
     name: Boss Gate Verification
@@ -111,7 +115,7 @@ jobs:
             signoz-collector-config.yaml
             config.yaml
           if-no-files-found: warn
-          retention-days: 30
+          retention-days: 14
 
       - name: Comment PR with verification results
         if: github.event_name == 'pull_request' && always()
@@ -157,3 +161,20 @@ jobs:
               repo: context.repo.repo,
               body
             });
+      
+      - name: 📋 Run Summary
+        if: always()
+        run: |
+          {
+            echo '### Boss Gate Verify - Run Summary';
+            echo '';
+            echo "**Workflow:** ${{ github.workflow }}";
+            echo "**Run:** #${{ github.run_number }} (attempt ${{ github.run_attempt }})";
+            echo "**Ref:** \`${{ github.ref }}\`";
+            echo "**Actor:** @${{ github.actor }}";
+            echo "**Status:** ${{ job.status }}";
+            echo '';
+            echo '**Artifacts:** boss-gate-verification (14d retention)';
+            echo '';
+            echo '[View full run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})';
+          } >> "$GITHUB_STEP_SUMMARY"

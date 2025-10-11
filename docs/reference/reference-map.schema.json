@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "BossCat Reference Map",
+  "type": "object",
+  "required": ["version", "generated_at", "nodes", "edges"],
+  "properties": {
+    "version": { "type": "integer" },
+    "generated_at": { "type": "string" },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "files"],
+        "properties": {
+          "id": { "type": "string" },
+          "type": { "type": "string" },
+          "files": { "type": "array", "items": { "type": "string" } },
+          "importance": { "type": "string", "enum": ["P0","P1","P2","P3"] },
+          "tags": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "minItems": 2,
+        "maxItems": 2,
+        "items": { "type": "string" }
+      }
+    },
+    "scripts": { "type": "object" },
+    "taxonomy": { "type": "object" },
+    "missing": {
+      "type": "array",
+      "items": { "type": "object", "properties": { "node": {"type":"string"}, "file": {"type":"string"} }, "required": ["node","file"] }
+    },
+    "stats": { "type": "object" }
+  }
+}

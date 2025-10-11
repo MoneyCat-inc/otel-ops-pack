@@ -21,6 +21,10 @@ on:
         required: false
         default: 'all'
 
+concurrency:
+  group: multi-app-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   detect-changes:
     name: Detect Changed Apps

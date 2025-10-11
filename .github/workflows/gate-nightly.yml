@@ -5,6 +5,10 @@ on:
     - cron: "3 2 * * *"   # 02:03 UTC nightly
   workflow_dispatch: {}
 
+concurrency:
+  group: gate-nightly-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   verify:
     runs-on: windows-latest
