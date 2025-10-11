@@ -181,15 +181,10 @@ jobs:
         mkdir -p DELT/ARTF
         mkdir -p DELT/ARTF/gpu_fix
 
-    - name: GPU_FIX — run k6 smoke (gated)
+    - name: GPU_FIX — run k6 smoke (gated, native)
       if: ${{ matrix.gate == 'GPU_FIX' }}
-      uses: grafana/k6-action@v0.2.0
-      with:
-        filename: ./BRAV/SCPT/load/gpu_fix.js
-        flags: >-
-          --vus 20 --duration 60s
-          --summary-export DELT/ARTF/gpu_fix/k6-summary.json
-        docker-opt: --network k6-net
+      run: k6 run BRAV/SCPT/load/gpu_fix.js --vus 20 --duration 60s --summary-export DELT/ARTF/gpu_fix/k6-summary.json
+      shell: bash
       env:
         TARGET_URL: ${{ env.TARGET_URL }}
         SLO_P95_MS: ${{ env.SLO_P95_MS }}
