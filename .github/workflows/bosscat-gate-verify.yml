@@ -116,6 +116,31 @@ jobs:
         if ('${{ github.event_name }}' -eq 'workflow_dispatch') { $require = [System.Convert]::ToBoolean('${{ inputs.gpu_option_b }}') }
         ./scripts/gpu-fix-lane.ps1 -OptionBRequired:$require
       continue-on-error: true
+
+    - name: Publish Perf Summary
+      if: always()
+      shell: pwsh
+      run: |
+        if (Test-Path 'DELT/ARTF/gate-verification-results.json') {
+          $j = Get-Content 'DELT/ARTF/gate-verification-results.json' -Raw | ConvertFrom-Json
+          $gate = $env:GATE
+          $site = $env:SITE
+          $p95 = $j.k6.p95
+          $p5317 = [bool]$j.otlp_ports.'5317'
+          $p5318 = [bool]$j.otlp_ports.'5318'
+          $span = [bool]$j.synthetic_span.success
+          $status = $j.status
+          Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value "## GPU_FIX Summary"
+          Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value "- Gate: $gate"
+          Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value "- Site: $site"
+          Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value "- Status: $status"
+          Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value "- Ports: 5317=$p5317 5318=$p5318"
+          Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value "- Synthetic Span (iona.boot): $span"
+          Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value "- P95 (ms): $p95"
+        } else {
+          Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value "## GPU_FIX Summary"
+          Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value "⚠️ Gate verification results not found"
+        }
           
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
