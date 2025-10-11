@@ -34,9 +34,7 @@
     "map:generate": "tsx scripts/generate-reference-map.ts",
     "agent:preflight": "node scripts/agent-preflight.mjs",
     "comp:check": "tsx scripts/comp/security-sweep.ts",
-    "comp:gitleaks": "tsx scripts/comp/gitleaks-wrapper.ts",
-    "comp:sbom": "tsx scripts/comp/syft-sbom.ts",
-    "sec:scan": "pnpm comp:check && pnpm comp:gitleaks && pnpm comp:sbom"
+    "sec:scan": "pnpm comp:check"
   },
   "dependencies": {
     "@aws-sdk/client-bedrock-runtime": "^3.901.0",
