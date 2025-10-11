@@ -24,15 +24,15 @@
 - **Lesson**: Targeted testing >> full pipeline; fast feedback drives quality
 - **Next**: P1-B security scanners (COMP lane)
 
-**13:50 UTC** - P1-B COMP Job 1/2 COMPLETE ✅  
-- Core hygiene: index.html (valid HTML5 + CSP meta + a11y)
-- CSP scanner: scripts/comp/security-sweep.ts (pnpm comp:check)
-- Package scripts: comp:check + sec:scan (minimal)
-- Budget: 4 files ✅, ~191 LOC ✅ (4.5% under budget per job)
-- Lane: COMP Job 1/2, Evidence: ECRR + commit 1b8aaf0
-- ECRR: `docs/ecrr/ECRR_REPORTS/ECRR_P1B_JOB1_20251011.md`
-- **Lesson**: Two-job split >> single overbudget job; governance discipline maintained
-- **Next**: P1-B Job 2/2 (gitleaks + SBOM tools)
+**13:50 UTC** - P1-B COMP Jobs 1&2 + P1-C Job C-1 COMPLETE ✅  
+- P1-B Job 1: index.html (HTML5+CSP), security-sweep.ts, comp:check (191 LOC ✅)
+- P1-B Job 2: gitleaks+syft+csp-helper, full sec:scan (123 LOC ✅)  
+- P1-C Job C-1: signature registry generator, guard:signatures (75 LOC ✅)
+- Total P1 progress: A+B+C1 complete, C2 pending
+- Budget discipline: All jobs ≤200 LOC ✅, governance maintained
+- Commits: 1b8aaf0 (Job1), f4c2a00 (C-1)
+- **Lesson**: Multi-job splits >> single overbudget; security foundation >> shortcuts
+- **Next**: P1-C Job C-2 (Jscrambler guard), then P1-D/E/F
 
 ---
 
