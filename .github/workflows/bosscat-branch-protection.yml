@@ -1,0 +1,64 @@
+name: BossCat Branch Protection
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to protect'
+        required: false
+        default: 'main'
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+  administration: write
+
+jobs:
+  protect:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Apply branch protection (require Gate checks)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OWNER: ${{ github.repository_owner }}
+          REPO: ${{ github.event.repository.name }}
+          BRANCH: ${{ inputs.branch || 'main' }}
+        run: |
+          set -euo pipefail
+          API_URL="https://api.github.com/repos/$OWNER/$REPO/branches/$BRANCH/protection"
+          echo "Applying protection to $OWNER/$REPO@$BRANCH"
+          cat > body.json <<'JSON'
+          {
+            "required_status_checks": {
+              "strict": true,
+              "contexts": [
+                "BossCat Gate Verification / Gate Verify (ci)",
+                "BossCat Gate Verification / Gate Verify (local)",
+                "BossCat Gate Verification / Gate Verify (prod)"
+              ]
+            },
+            "enforce_admins": true,
+            "required_pull_request_reviews": {
+              "required_approving_review_count": 1
+            },
+            "restrictions": null
+          }
+          JSON
+          curl -sS -X PUT \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            "$API_URL" \
+            --data-binary @body.json | jq -r '.required_status_checks, .enforce_admins, .required_pull_request_reviews' || true
+
+      - name: Show current protection
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OWNER: ${{ github.repository_owner }}
+          REPO: ${{ github.event.repository.name }}
+          BRANCH: ${{ inputs.branch || 'main' }}
+        run: |
+          curl -sS -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            "https://api.github.com/repos/$OWNER/$REPO/branches/$BRANCH/protection" | jq '.' || true
+
