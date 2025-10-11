@@ -85,6 +85,9 @@ jobs:
         mkdir -p docs/ecrr/ECRR_REPORTS
         mkdir -p docs/observability/snapshots
         
+    - name: ECRR Preflight
+      run: pnpm agent:preflight
+        
     - name: Install Python dependencies
       run: |
         python -m pip install --upgrade pip
@@ -172,15 +175,16 @@ jobs:
       if: always()
       shell: pwsh
       run: |
-        if (Test-Path 'docs/observability/snapshots') {
-          if (Test-Path 'scripts/generate-queue-steward-evidence.ps1') {
-            ./scripts/generate-queue-steward-evidence.ps1
-          } else {
-            Write-Host "Queue steward evidence script not found; skipping"
-          }
-        } else {
-          Write-Host "No snapshots directory found; skipping evidence generation"
+        if (!(Test-Path 'docs/observability/snapshots')) {
+          Write-Host "No snapshots directory found; skipping evidence generation"; return
         }
+        $candidates = @(
+          'BRAV/SCPT/generate-queue-steward-evidence.ps1',
+          'brav/scpt/generate-queue-steward-evidence.ps1',
+          'scripts/generate-queue-steward-evidence.ps1'
+        )
+        $hit = $candidates | Where-Object { Test-Path $_ } | Select-Object -First 1
+        if ($hit) { pwsh -File $hit } else { Write-Host 'evidence script not found — skipping' }
       continue-on-error: true
           
     - name: Upload Final Reports
@@ -313,7 +317,6 @@ jobs:
         echo "- Artifact name: \`bosscat-test-results-${{ matrix.site }}-${{ github.run_number }}\`" >> "$GITHUB_STEP_SUMMARY"
         echo "" >> "$GITHUB_STEP_SUMMARY"
         echo "> Retention set to 14 days for uploaded artifacts." >> "$GITHUB_STEP_SUMMARY"
-
 
 
 

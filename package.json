@@ -31,7 +31,8 @@
     "dashboard:query": "tsx scripts/dashboard-query.ts",
     "dashboard:rollup": "tsx scripts/dashboard-query.ts --days 7 --root artifacts/ecrr --out DELT/ARTF --snapshot docs/observability/snapshots",
     "ecrr:process": "pwsh -File scripts/run-normalize-summarize.ps1 -RunDir $RUN_DIR",
-    "map:generate": "tsx scripts/generate-reference-map.ts"
+    "map:generate": "tsx scripts/generate-reference-map.ts",
+    "agent:preflight": "node scripts/agent-preflight.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-bedrock-runtime": "^3.901.0",
