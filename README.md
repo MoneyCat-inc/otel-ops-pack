@@ -17,10 +17,10 @@ All documentation, agents, CI/CD guardrails, and artifacts (ECRR reports, SSOTs,
 
 [![ECRR](https://img.shields.io/badge/ECRR-Examine→Clean→Report→Role-7c5cff?style=for-the-badge&logo=gitbook&logoColor=white)](./AGENTS.md#-agents--ecrr-mantra)
 [![ECRR Project Report](https://img.shields.io/badge/ECRR%20Project%20Report-available-7c5cff?style=for-the-badge)](docs/ECRR_PROJECT_REPORT.md)
+[![BossCat Gate Verification](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/bosscat-gate-verify.yml/badge.svg)](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/bosscat-gate-verify.yml)
 [![SigNoz Automation](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/signoz-automation.yml/badge.svg)](../../actions/workflows/signoz-automation.yml)
 [![CodeQL](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/codeql.yml/badge.svg)](../../actions/workflows/codeql.yml)
 [![Gitleaks](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/gitleaks.yml/badge.svg)](../../actions/workflows/gitleaks.yml)
-[![BossCat Gate Verification](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/bosscat-gate-verify.yml/badge.svg)](../../actions/workflows/bosscat-gate-verify.yml)
 [![Maintained by MoneyCat-inc](https://img.shields.io/badge/Maintained%20by-MoneyCat--inc-00aa88?style=for-the-badge&logo=github&logoColor=white)](https://github.com/MoneyCat-inc)
 
 A complete Windows-to-SigNoz observability pipeline with automated monitoring, alerting, and agent workflows for repeatable operations.
