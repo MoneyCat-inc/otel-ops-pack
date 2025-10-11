@@ -1,14 +1,14 @@
-﻿{
-    "timestamp":  "2025-10-10T01:52:36+01:00",
-    "commit":  "e71e52c",
-    "branch":  "feat/gate-fallback-artifacts-queue",
-    "reports":  {
-                    "count":  18,
-                    "totalBytes":  28104,
-                    "latest":  {
-                                   "name":  "ECRR_GATE_RUN_LATEST.md",
-                                   "size":  682,
-                                   "modified":  "\/Date(1760057555486)\/"
-                               }
-                }
+{
+  "timestamp": "2025-10-11T03:41:57+01:00",
+  "commit": "6533301",
+  "branch": "main",
+  "reports": {
+    "count": 55,
+    "totalBytes": 242304.0,
+    "latest": {
+      "name": "ECRR_GATE_007_FINAL_PUSH_20251011.md",
+      "size": 11533,
+      "modified": "2025-10-11T03:39:59.3844714+01:00"
+    }
+  }
 }
