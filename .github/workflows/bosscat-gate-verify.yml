@@ -45,7 +45,7 @@ jobs:
       GATE: ${{ github.event_name == 'workflow_dispatch' && inputs.gate || 'IONA' }}
       SITE: ${{ matrix.site }}
       SIGNOZ_API_KEY: ${{ secrets.SIGNOZ_API_KEY }}
-      USE_MOCK: true
+      USE_MOCK: ${{ github.event_name == 'pull_request' && 'true' || 'false' }}
       BASE_URL: https://httpbin.org
     concurrency:
       group: bosscat-gate-verify-${{ github.workflow }}-${{ github.ref_name }}-${{ matrix.site }}
@@ -129,7 +129,7 @@ jobs:
     - name: Run IONA Gate Verification
       shell: pwsh
       run: |
-        ./scripts/verify-iona-gate.ps1 -Strict:$true -OutputJson 'DELT/ARTF/gate-verification-results.json' -PrCommentPath 'PR_COMMENT_IONA_GATE_002_FINAL.md' -Gate "$env:GATE" -Site "$env:SITE"
+        pwsh -File scripts/verify-iona-gate.ps1 -Strict:$true -OutputJson 'DELT/ARTF/gate-verification-results.json' -PrCommentPath 'PR_COMMENT_IONA_GATE_002_FINAL.md' -Gate "$env:GATE" -Site "$env:SITE"
 
     - name: GPU_FIX lane (Option B)
       shell: pwsh
@@ -317,7 +317,6 @@ jobs:
         echo "- Artifact name: \`bosscat-test-results-${{ matrix.site }}-${{ github.run_number }}\`" >> "$GITHUB_STEP_SUMMARY"
         echo "" >> "$GITHUB_STEP_SUMMARY"
         echo "> Retention set to 14 days for uploaded artifacts." >> "$GITHUB_STEP_SUMMARY"
-
 
 
 

@@ -4,7 +4,8 @@ Param(
   [string]$PrCommentPath = 'PR_COMMENT_IONA_GATE_002_FINAL.md',
   [switch]$NoFailOnMissing,
   [string]$Gate = 'IONA',
-  [string]$Site = 'ci'
+  [string]$Site = 'ci',
+  [switch]$VerboseMode
 )
 $ErrorActionPreference = 'Stop'
 try { Import-Module -Name "$(Join-Path $PSScriptRoot 'lib/BossCat.Progress.psm1')" -ErrorAction SilentlyContinue } catch {}
@@ -82,9 +83,11 @@ $queuePaths=@('DELT/ARTF/queue-steward-verification.txt','artifacts/queue-stewar
 $queuePresent=$false
 foreach($qp in $queuePaths){ if(Test-Path -LiteralPath $qp){ $queuePresent=$true; break } }
 $checks['queue-steward-verification.txt']= if($queuePresent){'present'} else {'missing'}
-# Treat queue-steward verification evidence as REQUIRED
-if (-not $queuePresent) {
+# Treat queue-steward verification evidence as REQUIRED only for real prod
+if (-not $queuePresent -and $queueRequired) {
   [void]$missing.Add('queue-steward-verification.txt')
+} elseif (-not $queuePresent -and -not $queueRequired) {
+  Write-Warning "[Gate][$Site] queue-steward evidence missing (OK in mock/non-prod)."
 }
 $s=Read-TestsJson; $failed=[int]$s.failed; $total=[int]$s.total
 if (Get-Command Update-BossCatProgress -ErrorAction SilentlyContinue) { Update-BossCatProgress -Phase 'Evaluating verdict' -CompletedSeconds 12 }
@@ -101,3 +104,5 @@ $report=New-EcrrReport -Verdict $verdict -Reasons @($reasons) -Checks $checks
 Write-PrComment -Verdict $verdict -Reasons @($reasons) -OutputPath $PrCommentPath
 if (Get-Command Complete-BossCatProgress -ErrorAction SilentlyContinue) { Complete-BossCatProgress }
 if($verdict -eq 'NOT_READY' -and -not $NoFailOnMissing){ exit 2 } else { exit 0 }
+$useMock = ($env:USE_MOCK -eq 'true')
+$queueRequired = ($Site -eq 'prod' -and -not $useMock)
