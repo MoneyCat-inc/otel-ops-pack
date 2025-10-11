@@ -17,6 +17,11 @@ on:
         required: false
         default: true
         type: boolean
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
       gate:
         description: 'Gate target (e.g., IONA, GATE_006)'
         required: false
@@ -257,6 +262,72 @@ jobs:
         with:
           name: bosscat-site-${{ matrix.site }}
           path: DELT/SITE/${{ matrix.site }}/**
+
+  site-assemble-deploy:
+    name: Site Deploy
+    runs-on: ubuntu-latest
+    needs: site-build
+    if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' }}
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Download site bundle (ci)
+        uses: actions/download-artifact@v4
+        with:
+          name: bosscat-site-ci
+          path: public/ci
+        continue-on-error: true
+
+      - name: Download site bundle (local)
+        uses: actions/download-artifact@v4
+        with:
+          name: bosscat-site-local
+          path: public/local
+        continue-on-error: true
+
+      - name: Download site bundle (prod)
+        uses: actions/download-artifact@v4
+        with:
+          name: bosscat-site-prod
+          path: public/prod
+        continue-on-error: true
+
+      - name: Add root index
+        shell: bash
+        run: |
+          mkdir -p public
+          cat > public/index.html <<'HTML'
+          <!doctype html>
+          <html lang="en">
+            <head>
+              <meta charset="utf-8" />
+              <meta name="viewport" content="width=device-width, initial-scale=1" />
+              <title>BossCat Site Bundles</title>
+              <style>body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu;line-height:1.5;padding:24px}ul{padding-left:18px}</style>
+            </head>
+            <body>
+              <h1>BossCat Site Bundles</h1>
+              <ul>
+                <li><a href="ci/">ci</a></li>
+                <li><a href="local/">local</a></li>
+                <li><a href="prod/">prod</a></li>
+              </ul>
+            </body>
+          </html>
+          HTML
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
 
     - name: Upload GPU_FIX artifacts (scoped)
       if: always() && matrix.gate == 'GPU_FIX'
