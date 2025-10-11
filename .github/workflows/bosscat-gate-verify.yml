@@ -294,24 +294,6 @@ jobs:
         echo "- \\`DELT/ARTF\\` (logs, metrics)" >> "$GITHUB_STEP_SUMMARY"
         echo "- \\`docs/BossCat/reports\\` (ECRR/BOSS reports)" >> "$GITHUB_STEP_SUMMARY"
         echo "- Artifact name: \`bosscat-test-results-${{ matrix.site }}-${{ github.run_number }}\`" >> "$GITHUB_STEP_SUMMARY"
-        if [ -f "DELT/ARTF/nexploit-summary.json" ]; then
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "### Nexploit" >> "$GITHUB_STEP_SUMMARY"
-          python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
-import json
-with open('DELT/ARTF/nexploit-summary.json','r',encoding='utf-8') as f:
-    j=json.load(f)
-sev=j.get('severity',{})
-crit=sev.get('critical',0)
-high=sev.get('high',0)
-med=sev.get('medium',0)
-low=sev.get('low',0)
-print(f"- Critical: {crit}")
-print(f"- High: {high}")
-print(f"- Medium: {med}")
-print(f"- Low: {low}")
-PY
-        fi
         echo "" >> "$GITHUB_STEP_SUMMARY"
         echo "> Retention set to 14 days for uploaded artifacts." >> "$GITHUB_STEP_SUMMARY"
 
