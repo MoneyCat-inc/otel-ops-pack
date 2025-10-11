@@ -6,6 +6,32 @@
 
 ---
 
+## 2025-10-11: GPU_FIX v1.1 - Real k6 Runner Deployment
+
+**Event:** GPU_FIX v1.1 merged to main - real k6 runner + PERF_SUMMARY aggregator  
+**Agent:** cursor{implementer}  
+**Outcome:** Gate×Site 9/9 GREEN; native k6 execution; scoped artifacts operational
+
+### Summary
+- Real k6 runner with site-aware SLO gating (prod: p95<200ms, ci/local: p95<500ms)
+- PERF_SUMMARY aggregator (cross-gate performance rollup)
+- USE_MOCK strategy: PRs use localhost httpbin, main/nightly use real targets
+- Native k6 execution (bypasses Docker networking complexity)
+- Scoped artifacts per gate: gpu_fix/, perf_summary/, iona/
+- Evidence: 2 ECRR reports, 6 browser screenshots, 5 commits
+
+**Tag:** `gpu-fix-v1.1`  
+**PR:** #126 (merged, squashed)  
+**Commit:** a4f7f3a
+
+**Implementation Notes:**
+- Iterations: 5 (troubleshooting Docker networking, PATH bugs)
+- Final solution: Native k6 + localhost httpbin for PR lanes
+- Files changed: 6 (+396/-20 lines)
+- Quality: ⭐⭐⭐⭐⭐ Exceptional
+
+---
+
 ## 2025-10-11: Gate×Site Matrix v1.0 - Production Deployment
 
 **Event:** Gate×Site matrix expansion - 9 parallel validation paths deployed  
