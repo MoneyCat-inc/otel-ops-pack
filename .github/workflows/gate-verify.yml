@@ -77,8 +77,7 @@ jobs:
       - name: GPU_FIX — start local mock target
         if: env.USE_MOCK == 'true' && matrix.gate == 'GPU_FIX'
         run: |
-          docker network create k6-net || true
-          docker run -d --rm --name httpbin --network k6-net -p 8080:80 kennethreitz/httpbin
+          docker run -d --rm --name httpbin -p 8080:80 kennethreitz/httpbin
           for i in {1..20}; do
             if curl -fsS http://localhost:8080/status/200 >/dev/null 2>&1; then
               echo "httpbin is up"; break
@@ -100,7 +99,7 @@ jobs:
             echo "SLO_ERR_RATE=0.01" >> $GITHUB_ENV
           fi
           if [ "${{ env.USE_MOCK }}" = "true" ]; then
-            echo "TARGET_URL=http://httpbin" >> "$GITHUB_ENV"
+            echo "TARGET_URL=http://127.0.0.1:8080" >> "$GITHUB_ENV"
           else
             echo "TARGET_URL=https://httpbin.org" >> "$GITHUB_ENV"
           fi
