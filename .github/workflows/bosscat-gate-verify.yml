@@ -297,9 +297,11 @@ jobs:
         run: |
           mkdir -p DELT/SITE/${{ matrix.site }}/docs/observability/snapshots
           mkdir -p DELT/SITE/${{ matrix.site }}/docs/ecrr/ECRR_REPORTS
+          mkdir -p DELT/SITE/${{ matrix.site }}/docs/BossCat
           cp -f index.html DELT/SITE/${{ matrix.site }}/ 2>/dev/null || true
           cp -f docs/status.html DELT/SITE/${{ matrix.site }}/docs/ 2>/dev/null || true
           cp -f docs/IONA_ERRORS.md DELT/SITE/${{ matrix.site }}/docs/ 2>/dev/null || true
+          cp -rf docs/BossCat/*.md DELT/SITE/${{ matrix.site }}/docs/BossCat/ 2>/dev/null || true
           cp -rf docs/observability/snapshots/* DELT/SITE/${{ matrix.site }}/docs/observability/snapshots/ 2>/dev/null || true
           cp -rf docs/ecrr/ECRR_REPORTS/* DELT/SITE/${{ matrix.site }}/docs/ecrr/ECRR_REPORTS/ 2>/dev/null || true
 
