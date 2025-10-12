@@ -4,7 +4,7 @@ name: SBOM Stability Tracker
 
 on:
   workflow_run:
-    workflows: ["BossCat — Gate Verify"]
+    workflows: ["BossCat Gate Verification"]
     types: [completed]
     branches: [main]
   workflow_dispatch:
@@ -34,13 +34,13 @@ jobs:
     timeout-minutes: 5
     
     # Only run if:
-    # 1. Triggered by completed workflow_run on main, OR
+    # 1. Successful workflow_run on main, OR
     # 2. Manual workflow_dispatch, OR
     # 3. Scheduled run
     if: |
       github.event_name == 'schedule' ||
       github.event_name == 'workflow_dispatch' ||
-      (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main')
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')
     
     steps:
       - name: Checkout

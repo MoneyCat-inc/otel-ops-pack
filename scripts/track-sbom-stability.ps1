@@ -77,27 +77,38 @@ function Test-SBOMArtifact {
     
     Write-Host "  🔎 Checking artifacts for run $RunId..." -ForegroundColor Gray
     
-    $artifacts = gh api "repos/$repo/actions/runs/$RunId/artifacts" --jq '.artifacts[]'
-    
-    if ($LASTEXITCODE -ne 0) {
-        Write-Warning "Failed to fetch artifacts for run $RunId"
-        return $null
-    }
-    
-    $artifactsJson = $artifacts | ConvertFrom-Json
-    $sbomArtifact = $artifactsJson | Where-Object { $_.name -like 'sbom-attestation-*' }
-    
-    if ($sbomArtifact) {
-        return @{
-            Present = $true
-            Name = $sbomArtifact.name
-            Size = $sbomArtifact.size_in_bytes
-            Url = $sbomArtifact.archive_download_url
-            ExpiresAt = $sbomArtifact.expires_at
+    try {
+        $artifacts = gh api "repos/$repo/actions/runs/$RunId/artifacts" --jq '.artifacts[]' 2>&1
+        
+        if ($LASTEXITCODE -ne 0) {
+            # Tolerate 404 (artifacts expired or run too old)
+            if ($artifacts -match '404|Not Found') {
+                Write-Host "  ⏭️ Artifacts not found (expired or unavailable) — skipping run" -ForegroundColor Gray
+                return @{ Present = $false; Expired = $true }
+            }
+            Write-Warning "Failed to fetch artifacts for run $RunId"
+            return @{ Present = $false }
         }
+        
+        $artifactsJson = $artifacts | ConvertFrom-Json -ErrorAction SilentlyContinue
+        $sbomArtifact = $artifactsJson | Where-Object { $_.name -like 'sbom-attestation-*' }
+        
+        if ($sbomArtifact) {
+            return @{
+                Present = $true
+                Name = $sbomArtifact.name
+                Size = $sbomArtifact.size_in_bytes
+                Url = $sbomArtifact.archive_download_url
+                ExpiresAt = $sbomArtifact.expires_at
+            }
+        }
+        
+        return @{ Present = $false }
     }
-    
-    return @{ Present = $false }
+    catch {
+        Write-Host "  ⚠️ Error checking artifacts: $($_.Exception.Message)" -ForegroundColor Yellow
+        return @{ Present = $false }
+    }
 }
 
 function Format-EvidenceUpdate {
