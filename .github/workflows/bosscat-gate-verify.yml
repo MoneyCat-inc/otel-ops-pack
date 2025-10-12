@@ -352,7 +352,7 @@ jobs:
           
           # Verify final state before upload
           [ -f "DELT/ARTF/sbom.json" ] && echo "✅ SBOM ready for upload at DELT/ARTF/sbom.json" || echo "⚠️ SBOM missing at upload path"
-        continue-on-error: true
+        continue-on-error: ${{ matrix.site != 'prod' }}
       
       - name: Upload SBOM Artifacts
         if: matrix.site == 'prod' && always()
