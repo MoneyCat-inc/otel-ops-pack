@@ -1,10 +1,10 @@
 # Fractal Reference Map (Silicon → Site)
 
-**Tetragram IDs:**  
-- System Architecture View: `BOSS-CATX-RESE-SYAR`  
+**Tetragram IDs:**
+- System Architecture View: `BOSS-CATX-RESE-SYAR`
 - Fractal Reference Map (this doc): `BOSS-CATX-RESE-FRAM`
 
-**Intent:** Bind physical lanes (L0–L8) to logical governance loops so evidence and promotion remain deterministic from **silicon** to **site**.
+Intent: Bind physical lanes (L0–L8) to logical governance loops so evidence and promotion remain deterministic from silicon to site.
 
 ---
 
@@ -29,21 +29,20 @@ Edges are acyclic and auditable; contracts bind key checkpoints (e.g., attestati
 ## 2. Logical loop — ECRR over the lanes
 
 At every lane boundary that can change state, we require ECRR evidence:
-- **Evidence:** facts, diffs, logs, perf/trace artifacts  
-- **Contain:** freeze or narrow the blast radius (feature flags, lanes)  
-- **Rollback:** restore last‑known‑good with switches and plans  
-- **Report:** status entry and approvals, then exit
+- Evidence: facts, diffs, logs, perf/trace artifacts
+- Contain: freeze or narrow the blast radius (feature flags, lanes)
+- Rollback: restore last‑known‑good with switches and plans
+- Report: status entry and approvals, then exit
 
 Paired agents enforce single‑writer discipline and bounded retry; any anomaly routes to ECRR first.
 
 ---
 
-## 3. Determinism — Tetragram + NATO call‑outs
+## 3. Determinism — Tetragram mapping
 
 All artifacts, IDs, CI paths, and site keys derive from the same mapping function:
 - Uppercase A–Z; keep letters; pad with X; first four per chunk.
-- Canonical path mirrors the code: `/docs/BOSS/CATX/RESE/SYAR/...`
-- Voice ops: NATO call‑outs per segment.
+- Canonical path mirrors the code: `/docs/BOSS/CATX/RESE/SYAR/...`.
 
 This keeps names reversible and avoids taxonomy drift.
 
@@ -51,9 +50,9 @@ This keeps names reversible and avoids taxonomy drift.
 
 ## 4. Performance & telemetry references
 
-**Perf:** Treat performance criteria as first‑class gates; CI must fail on threshold breach. Prefer k6 thresholds and short, targeted "changed‑paths only" runs on PRs; heavier validation pre‑release. Archive the JSON/HTML as gate evidence.
+Performance: Treat performance criteria as first‑class gates; CI must fail on threshold breach. Prefer k6 thresholds and short, targeted “changed‑paths only” runs on PRs; heavier validation pre‑release. Archive the JSON/HTML as gate evidence.
 
-**Telemetry:** Run a synthetic OTLP trace after staging deploy; verify ingestion and correlation across spans (HTTP server, clients, DB, gRPC). Enable zero‑code .NET auto‑instrumentation for services in scope to guarantee trace/metrics/log correlation.
+Telemetry: Run a synthetic OTLP trace after staging deploy; verify ingestion and correlation across spans (HTTP server, clients, DB, gRPC). Enable zero‑code .NET auto‑instrumentation for services in scope to guarantee trace/metrics/log correlation.
 
 ---
 
@@ -88,23 +87,14 @@ The loop closes: build/publish evidence, gate on thresholds, promote canary, obs
 
 ## 6. ICF (Iterative Convergence Framework)
 
-The system evolves by **small, safe steps** in dual‑agent cycles:
-
-* Each cycle contributes lessons and improvements (ICF doctrine).
-* Background drills (Data Room) provide controlled perturbations to harden the loop.
-* RSI indicators (e.g., style integrity, reduction in flaky retries, faster green rates) are published as non‑blocking metrics unless configured.
+The system evolves by small, safe steps in dual‑agent cycles:
+- Each cycle contributes lessons and improvements (ICF doctrine).
+- Background drills (Data Room) provide controlled perturbations to harden the loop.
+- RSI indicators (e.g., style integrity, reduction in flaky retries, faster green rates) are published as non‑blocking metrics unless configured.
 
 ---
 
 ## 7. Status and audit
 
-* Status page surfaces Attestation **verified**, SBOM **signed**, Canary **steady**, ECRR **evidence** link, and next audit window.
-* Approvals and overrides are explicit; prod gate remains STRICT with documented contracts.
-
----
-
-## 8. Appendix — Codes and call‑outs
-
-* `BOSS-CATX-RESE-SYAR` — BRAVO–OSCAR–SIERRA–SIERRA / CHARLIE–ALFA–TANGO–XRAY / ROMEO–ECHO–SIERRA–ECHO / SIERRA–YANKEE–ALFA–ROMEO
-* `BOSS-CATX-RESE-FRAM` — BRAVO–OSCAR–SIERRA–SIERRA / CHARLIE–ALFA–TANGO–XRAY / ROMEO–ECHO–SIERRA–ECHO / FOXTROT–ROMEO–ALFA–MIKE
-
+- Status page surfaces Attestation verified, SBOM signed, Canary steady, ECRR evidence link, and next audit window.
+- Approvals and overrides are explicit; prod gate remains STRICT with documented contracts.
