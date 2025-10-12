@@ -1,0 +1,91 @@
+name: SBOM Stability Tracker
+
+# Automatically updates Issue #135 after prod gate runs
+
+on:
+  workflow_run:
+    workflows: ["BossCat — Gate Verify"]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      force_update:
+        description: 'Force update even if not prod gate'
+        required: false
+        default: false
+        type: boolean
+  schedule:
+    # Run daily at 3 AM UTC to catch any missed runs
+    - cron: '0 3 * * *'
+
+concurrency:
+  group: sbom-tracker-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  track-sbom:
+    name: Track SBOM Stability
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    
+    # Only run if:
+    # 1. Triggered by completed workflow_run on main, OR
+    # 2. Manual workflow_dispatch, OR
+    # 3. Scheduled run
+    if: |
+      github.event_name == 'schedule' ||
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main')
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+      
+      - name: Setup PowerShell
+        shell: pwsh
+        run: |
+          Write-Host "PowerShell $($PSVersionTable.PSVersion) installed"
+      
+      - name: Run SBOM Stability Tracker
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Run the tracking script
+          ./scripts/track-sbom-stability.ps1 -IssueNumber 135 -RequiredRuns 3
+      
+      - name: Generate Summary
+        if: always()
+        run: |
+          {
+            echo '### SBOM Stability Tracker';
+            echo '';
+            echo "**Workflow:** ${{ github.workflow }}";
+            echo "**Trigger:** ${{ github.event_name }}";
+            echo "**Run:** #${{ github.run_number }}";
+            echo '';
+            echo 'Updated Issue #135 with latest SBOM evidence.';
+            echo '';
+            echo '[View Issue #135](https://github.com/${{ github.repository }}/issues/135)';
+          } >> "$GITHUB_STEP_SUMMARY"
+
+# ============================================
+# Design Notes
+# ============================================
+#
+# 1. Triggers automatically after prod gate runs on main
+# 2. Can be manually triggered via workflow_dispatch
+# 3. Daily scheduled backup to catch any missed runs
+# 4. Updates Issue #135 with pass/fail evidence
+# 5. Stops updating after 3 successful runs collected
+# 6. Low overhead: ~30 seconds per run
+# 7. Permissions: read-only contents, write issues
+#
+# ============================================
+
