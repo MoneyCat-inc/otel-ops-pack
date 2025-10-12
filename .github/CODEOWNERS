@@ -3,3 +3,6 @@
 /config-hardened-plus.yaml                             @fubumaki
 /*.ps1                                                 @fubumaki
 /docs/*                                                @fubumaki
+
+# BossCat OEM governance and critical infrastructure
+/signature-registry.json                               @BossCat-OEM
