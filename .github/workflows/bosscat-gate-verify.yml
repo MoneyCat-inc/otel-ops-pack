@@ -365,6 +365,35 @@ jobs:
             DELT/ARTF/sbom/signature-registry.json
             DELT/ARTF/sbom/signature-registry.json.sha256
           retention-days: 90
+      
+      - name: SBOM Summary
+        if: matrix.site == 'prod' && always()
+        shell: bash
+        run: |
+          {
+            echo '### 📦 SBOM & Supply Chain Artifacts';
+            echo '';
+            if [ -f "DELT/ARTF/sbom.json" ]; then
+              echo '✅ **SBOM Generated**: `DELT/ARTF/sbom.json`';
+              if [ -f "DELT/ARTF/sbom.json.sha256" ]; then
+                echo "- **Checksum**: \`$(cat DELT/ARTF/sbom.json.sha256 | cut -d' ' -f1 | head -c 16)...\`";
+              fi
+              echo "- **Size**: $(du -h DELT/ARTF/sbom.json | cut -f1)";
+            else
+              echo '⚠️ **SBOM Missing** — Review logs above for generation errors';
+              echo '';
+              echo '**Impact**: Non-blocking for this run (tracking stability for future enforcement)';
+            fi
+            if [ -f "DELT/ARTF/sbom/signature-registry.json" ]; then
+              echo '✅ **Signature Registry**: Present';
+            else
+              echo '⚠️ **Signature Registry**: Missing';
+            fi
+            echo '';
+            echo '**Artifact**: `sbom-attestation-${{ github.run_number }}`';
+            echo '**Retention**: 90 days (compliance artifact)';
+            echo '**Tracking**: Issue #135 (automated SBOM stability monitoring)';
+          } >> "$GITHUB_STEP_SUMMARY"
         
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
