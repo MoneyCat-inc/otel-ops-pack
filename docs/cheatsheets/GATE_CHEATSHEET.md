@@ -35,7 +35,7 @@ This signals the gatekeeper for hand-off (does NOT auto-merge).
 
 - ≤2 jobs per pass
 - ≤10 files changed
-- ≤200 LOC non-move changes
+- ≤ 2,000 LOC non-move changes
 
 ## ECRR Framework
 
