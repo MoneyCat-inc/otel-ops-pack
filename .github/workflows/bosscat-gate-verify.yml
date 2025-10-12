@@ -77,18 +77,6 @@ jobs:
         if [ -f "ALFA/APPS/signature-registry.json" ]; then
           echo "::warning::Duplicate signature-registry.json in ALFA/APPS (should be root only)"
         fi
-      
-    - name: Assert signature-registry.json at root
-      if: ${{ github.event_name == 'pull_request' }}
-      shell: bash
-      run: |
-        if [ ! -f "signature-registry.json" ]; then
-          echo "::error::signature-registry.json must exist at repo root"
-          exit 1
-        fi
-        if [ -f "ALFA/APPS/signature-registry.json" ]; then
-          echo "::warning::Duplicate signature-registry.json in ALFA/APPS (should be root only)"
-        fi
 
     - name: Validate signature-registry.json schema
       if: ${{ github.event_name == 'pull_request' }}
