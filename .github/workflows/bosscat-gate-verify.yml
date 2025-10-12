@@ -371,7 +371,7 @@ jobs:
         shell: bash
         run: |
           {
-            echo '### 📦 SBOM & Supply Chain Artifacts';
+            echo '### SBOM & Supply Chain Artifacts';
             echo '';
             if [ -f "DELT/ARTF/sbom.json" ]; then
               echo '[OK] **SBOM Generated**: `DELT/ARTF/sbom.json`';
