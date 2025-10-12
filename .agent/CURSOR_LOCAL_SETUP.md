@@ -20,7 +20,7 @@ This setup provides a **Cursor-Local** agent system that assists **Codex-Cloud**
 
 ## Non-Negotiable Guardrails
 
-- **Safety budget**: ≤ 10 changed files, ≤ 200 LOC per PR
+- **Safety budget**: ≤ 10 changed files, ≤ 2,000 LOC per PR
 - **Idempotence**: Patches must be safe to re-apply or noop on second run
 - **Diff-only mindset**: Make the smallest change that resolves the issue
 - **No secrets**: Never print or commit tokens/keys

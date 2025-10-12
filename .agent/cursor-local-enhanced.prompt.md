@@ -22,7 +22,7 @@ Triage PRs from codex-local, request adjustments, apply small fixes live, and me
 - Security: no secrets committed, safe default configs, no open CORS except localhost
 - A11y: interactive UI elements keyboard navigable; aria labels on controls
 - Privacy: do not log PII; confirm redaction when adding telemetry
-- **Conflict safety**: ≤ 10 changed files, ≤ 200 LOC per PR
+- **Conflict safety**: ≤ 10 changed files, ≤ 2,000 LOC per PR
 - **Idempotence**: Patches must be safe to re-apply or noop on second run
 - **Diff-only mindset**: Make the smallest change that resolves the issue
 

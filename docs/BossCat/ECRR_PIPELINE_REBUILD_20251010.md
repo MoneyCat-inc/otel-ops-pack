@@ -63,7 +63,7 @@
 
 **config.json highlights:**
 - **Lanes:** gate (scripts/, .github/, docs/BossCat/), site (config/, docker-compose*, scripts/)
-- **Budgets:** ≤2 jobs, ≤10 files, ≤200 LOC per operation
+- **Budgets:** ≤2 jobs, ≤10 files, ≤ 2,000 LOC per operation
 - **Retry:** 3 attempts, 15min backoff, 12h TTL
 - **Exit Codes:** 50 (kill-switch), 52 (writer conflict), 53 (retry exhausted)
 - **A/B Pairing:** GATE-ALFA (writer) + GATE-BETA (monitor)
@@ -289,7 +289,7 @@
 
 - **Monitor (B):** IONA-CATS-GATE-BETA
   - Reads only (never writes)
-  - Enforces budgets: ≤2 jobs, ≤10 files, ≤200 LOC
+  - Enforces budgets: ≤2 jobs, ≤10 files, ≤ 2,000 LOC
   - Verifies evidence completeness
   - Posts gate badges and status
   - Escalates on budget breach or TTL expiry
@@ -550,4 +550,3 @@ Start-Process "http://localhost:8080"
 *Pipeline rebuilt. Bots enabled. Evidence flowing. Gates ready.*
 
 **@cat ready-for-gate** 🚀
-
