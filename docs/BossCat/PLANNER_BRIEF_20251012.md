@@ -17,8 +17,8 @@ Authority: BossCat OEM • Cycle: 7-day (ECRR)
 - Latest ECRR Closeout: docs/ecrr/ECRR_REPORTS/ECRR_GATE_CLOSEOUT_LATEST.md
 - Registry (JSON): signature-registry.json
 - Mascot Image: Vasilisa_High_Priestess_TinCanForest.jpg
+- Research Conversion Summary: docs/BossCat/Research/CONVERSION_SUMMARY.md
 
 ## Notes
 - Budgets enforced: ≤10 files / ≤2,000 LOC; sticky at ≥1,600 LOC
 - Prod collector gating: STRICT; ci/local: WARNINGS; strict_mode override available
-

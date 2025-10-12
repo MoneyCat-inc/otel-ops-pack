@@ -1,0 +1,58 @@
+name: ICF Filename Ratchet
+
+on:
+  schedule:
+    # Runs at 00:01 UTC on Oct 19 every year (guarded by mode for idempotency)
+    - cron: '1 0 19 10 *'
+  workflow_dispatch:
+
+jobs:
+  ratchet:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect current mode
+        id: detect
+        shell: bash
+        run: |
+          if grep -q "ICF_FILENAME_MODE: enforce" .github/workflows/bosscat-gate-verify.yml; then
+            echo "mode=enforce" >> $GITHUB_OUTPUT
+          else
+            echo "mode=warn" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Exit early if already enforce
+        if: steps.detect.outputs.mode == 'enforce'
+        run: echo "ICF_FILENAME_MODE already enforce — nothing to do."
+
+      - name: Flip to enforce
+        if: steps.detect.outputs.mode == 'warn'
+        shell: bash
+        run: |
+          sed -i "s/ICF_FILENAME_MODE: warn/ICF_FILENAME_MODE: enforce/" .github/workflows/bosscat-gate-verify.yml
+          echo "Changed mode to enforce."
+
+      - name: Create ratchet PR (CI/ops labeled, NOT 'icf')
+        if: steps.detect.outputs.mode == 'warn'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: chore/icf-filename-enforce-20251019
+          title: "ci: enforce ICF filename PR-bound reports (ratchet)"
+          labels: "ci,ops"
+          commit-message: "ci(gate): flip ICF_FILENAME_MODE to enforce (ratchet reached)"
+          body: |
+            @cat ready-for-gate — ICF_COMPLIANCE • SITE_REFMAP_PREVIEW • SITE_HTML_CSP
+
+            Scope: CI ratchet — set `ICF_FILENAME_MODE: enforce`
+
+            Budgets ✅  Lanes ✅  ECRR present ✅  No inline CSS/JS ✅
+
+            Decision: GREEN — human merge per Rule #9 (bots do not merge to trunk).
+

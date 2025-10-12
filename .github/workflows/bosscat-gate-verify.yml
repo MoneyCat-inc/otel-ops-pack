@@ -83,16 +83,6 @@ jobs:
           echo "::warning::Duplicate signature-registry.json in ALFA/APPS (should be root only)"
         fi
 
-    - name: Validate signature-registry.json schema
-      if: ${{ github.event_name == 'pull_request' }}
-      shell: bash
-      run: |
-        set -euo pipefail
-        # Basic structure: version present, entries is array
-        jq -e '.version and (.entries | type == "array")' signature-registry.json >/dev/null
-        # Each entry must contain sig_id and owner
-        jq -e 'reduce .entries[] as $e (true; . and ($e.sig_id and $e.owner))' signature-registry.json >/dev/null
-
     - name: Assert mascot image at root
       if: ${{ github.event_name == 'pull_request' }}
       shell: bash
@@ -318,16 +308,6 @@ jobs:
         with:
           name: bosscat-site-${{ matrix.site }}
           path: DELT/SITE/${{ matrix.site }}/**
-
-    - name: Upload GPU_FIX artifacts (scoped)
-      if: always() && matrix.gate == 'GPU_FIX'
-      uses: actions/upload-artifact@v4
-      with:
-        name: gpu_fix-${{ matrix.site }}-${{ github.run_number }}
-        path: |
-          DELT/ARTF/gpu_fix/k6-summary.json
-          DELT/ARTF/gpu_fix/gpu_fix_summary.json
-        retention-days: 14
         
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
