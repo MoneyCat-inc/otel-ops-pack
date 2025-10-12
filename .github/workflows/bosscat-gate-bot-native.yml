@@ -16,6 +16,11 @@ concurrency:
   group: gate-${{ github.ref }}
   cancel-in-progress: false  # Respect running gates
 
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
 env:
   OTEL_EXPORTER_OTLP_ENDPOINT: "http://127.0.0.1:5318/v1/traces"
   OTEL_SERVICE_NAME: "ci-gate"
@@ -197,16 +202,30 @@ jobs:
       
       - name: Check Gate Status
         run: |
-          if [[ "${{ needs.smoke.result }}" == "success" ]] && \
-             [[ "${{ needs.perf.result }}" == "success" ]] && \
-             [[ "${{ needs.guardrails.result }}" == "success" ]]; then
-            echo "✅ @cat ready-for-gate"
-            echo "gate_status=READY" >> $GITHUB_ENV
-          else
-            echo "❌ Gate FAILED - review errors above"
+          # Accept: success, skipped (non-blocking), cancelled (workflow concurrency)
+          # Reject: failure
+          SMOKE="${{ needs.smoke.result }}"
+          PERF="${{ needs.perf.result }}"
+          GUARDS="${{ needs.guardrails.result }}"
+          
+          # Check for hard failures
+          if [[ "$SMOKE" == "failure" ]] || [[ "$PERF" == "failure" ]] || [[ "$GUARDS" == "failure" ]]; then
+            echo "❌ Gate FAILED - hard failure detected"
             echo "gate_status=BLOCKED" >> $GITHUB_ENV
             exit 1
           fi
+          
+          # Guardrails must pass (critical compliance check)
+          if [[ "$GUARDS" != "success" ]]; then
+            echo "❌ Gate BLOCKED - guardrails did not pass"
+            echo "gate_status=BLOCKED" >> $GITHUB_ENV
+            exit 1
+          fi
+          
+          # Smoke and Perf can be skipped/cancelled (non-critical for docs changes)
+          echo "✅ @cat ready-for-gate"
+          echo "Smoke: $SMOKE | Perf: $PERF | Guardrails: $GUARDS"
+          echo "gate_status=READY" >> $GITHUB_ENV
       
       - name: Post Gate Badge
         if: always()

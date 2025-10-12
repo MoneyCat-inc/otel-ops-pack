@@ -1,0 +1,27 @@
+- id: icf-heuristic-01-ui-poll
+  priority: P1
+  lane: tests
+  budget: {files_max: 10, loc_max: 2000}
+  icf: true
+  paths_allow: ["tests/smoke/**", "docs/ecrr/ECRR_REPORTS/**"]
+  verify: ["ICF_COMPLIANCE", "SITE_HTML_CSP"]
+  rollback: "disable helper via feature flag if any gate flips RED"
+
+- id: rsi-metrics-extractor-v01
+  priority: P1
+  lane: ci
+  budget: {files_max: 10, loc_max: 2000}
+  icf: false
+  paths_allow: [".github/workflows/nightly-dashboard-export.yml", "docs/status/metrics.json"]
+  verify: ["ICF_COMPLIANCE", "SITE_DEPLOY_VERIFY"]
+  rollback: "revert step; restore placeholder counters"
+
+- id: gate-ux-budget-comment-polish
+  priority: P2
+  lane: ci
+  budget: {files_max: 10, loc_max: 2000}
+  icf: false
+  paths_allow: [".github/workflows/bosscat-gate-verify.yml"]
+  verify: ["ICF_COMPLIANCE"]
+  rollback: "revert comment step only"
+

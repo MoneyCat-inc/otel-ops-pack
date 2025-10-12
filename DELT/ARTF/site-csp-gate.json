@@ -1,0 +1,29 @@
+{
+  "gate": "SITE_HTML_CSP",
+  "status": "PASS",
+  "violations": 0,
+  "files": [
+    {
+      "path": "docs\\status.html",
+      "cspPresent": true,
+      "cspConnectSelf": true,
+      "inlineStyle": false,
+      "inlineScript": false,
+      "inlineHandlers": false,
+      "scripts": [
+        {
+          "src": "./assets/vendor/mermaid/mermaid-10.9.4.min.js",
+          "host": "self",
+          "sri": false
+        },
+        {
+          "src": "assets/status.js",
+          "host": "self",
+          "sri": false
+        }
+      ],
+      "mermaidOk": true
+    }
+  ],
+  "timestamp": "2025-10-12T00:22:56.6721253+01:00"
+}
