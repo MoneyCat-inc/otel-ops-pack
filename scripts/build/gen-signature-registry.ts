@@ -70,7 +70,7 @@ const output = {
 };
 
 // Write to file
-const outputPath = 'signature-registry.json';
+const outputPath = 'ALFA/APPS/signature-registry.json';
 writeFileSync(outputPath, JSON.stringify(output, null, 2), 'utf-8');
 
 console.log(`\n✅ Registry generated: ${outputPath}`);
