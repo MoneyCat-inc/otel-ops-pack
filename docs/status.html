@@ -17,6 +17,8 @@
     <p>For detailed status, run: <code>pwsh -File scripts/verify-iona-gate.ps1</code></p>
     <div id="gate-latest"></div>
     <div class="meta" id="gate-links"></div>
+    <div class="meta" id="site-health" aria-live="polite"></div>
+    <div class="meta" id="site-switch" aria-live="polite"></div>
   </div>
 
   <div class="status">
@@ -35,6 +37,10 @@
     <div id="refmap"></div>
     <div id="refmap-graph"></div>
   </div>
+  <div class="status" id="rsi-metrics-block">
+    <h2>RSI Metrics</h2>
+    <div id="rsi-metrics" aria-live="polite"></div>
+  </div>
   <footer class="site-footer" role="contentinfo">
     <div class="footer-inner">
       <p class="footer-title">Audit</p>
@@ -42,9 +48,15 @@
         <ul class="audit-links">
           <li><a href="./reference/reference-map.json" rel="nofollow">Reference map JSON</a></li>
           <li><a href="./reference/reference-map-validation.json" rel="nofollow">Validation report</a></li>
+          <li><a href="../signature-registry.json" rel="nofollow">Signature registry (JSON)</a></li>
+          <li><a href="../Vasilisa_High_Priestess_TinCanForest.jpg" rel="nofollow">Mascot image</a></li>
           <li><a href="./assets/vendor/mermaid/mermaid-10.9.4.min.js" rel="nofollow">Mermaid (vendored)</a></li>
           <li><a href="./ecrr/ECRR_REPORTS/ECRR_GATE_CLOSEOUT_LATEST.md" rel="noopener">Latest ECRR closeout</a></li>
         </ul>
+      </nav>
+      <p class="footer-title">Site Bundles</p>
+      <nav aria-label="Site bundle links">
+        <ul class="audit-links" id="site-links"></ul>
       </nav>
     </div>
   </footer>

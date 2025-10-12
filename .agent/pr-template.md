@@ -1,7 +1,7 @@
 # PR Template for Codex — Maintenance & Remediation Agent
 
 ## PR Title
-`fix(obs): <short action> [safe, ≤200 LOC]`
+`fix(obs): <short action> [safe, ≤ 2,000 LOC]`
 
 ## Problem Summary
 <!-- Copy minimal alert facts from task file -->
