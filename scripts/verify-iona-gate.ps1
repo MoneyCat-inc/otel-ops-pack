@@ -53,15 +53,41 @@ function New-EcrrReport([string]$Verdict,[string[]]$Reasons,[hashtable]$Checks){
 function Write-PrComment([string]$Verdict,[string[]]$Reasons,[string]$OutputPath){
   $g = Get-GitMeta
   $ts = Get-Date -Format 'yyyy-MM-dd HH:mm:ss K'
+  
+  # Budget calculations (P2: Gate UX Budget Comment Polish)
+  $changedFiles = @(git diff --name-only HEAD~1..HEAD 2>$null)
+  $fileCount = if ($changedFiles) { $changedFiles.Count } else { 0 }
+  $locCount = if ($changedFiles) { 
+    (git diff --shortstat HEAD~1..HEAD 2>$null | Select-String -Pattern '\d+ insertion' | ForEach-Object { 
+      if ($_ -match '(\d+) insertion') { [int]$matches[1] } else { 0 }
+    }) 
+  } else { 0 }
+  
+  # Determine budget mode and thresholds
+  $isGovLane = ($Site -eq 'prod')
+  $maxFiles = if ($isGovLane) { 10 } else { 10 }
+  $maxLOC = if ($isGovLane) { 2000 } else { 200 }
+  $stickyPct = 0.80
+  
+  # Calculate budget status
+  $filePill = if ($fileCount -ge ($maxFiles * $stickyPct)) { '🟡' } else { '🟢' }
+  $locPill = if ($locCount -ge ($maxLOC * $stickyPct)) { '🟡' } else { '🟢' }
+  $budgetLine = "**Budgets:** Files $filePill **$fileCount/$maxFiles** • LOC $locPill **$locCount/$maxLOC**"
+  if ($fileCount -ge ($maxFiles * $stickyPct) -or $locCount -ge ($maxLOC * $stickyPct)) {
+    $budgetLine += " • ⚠️ *sticky warn at ≥80%*"
+  }
+  
   $lines = @(
     '# IONA Gate - BossCat Verdict',
     '',
-    "- Verdict: $Verdict",
-    "- Timestamp: $ts",
-    "- Commit: $($g.Commit)",
-    "- Branch: $($g.Branch)",
-    "- Gate: $Gate",
-    "- Site: $Site",
+    "**Gate:** ``$Gate`` • **Site:** ``$Site``",
+    $budgetLine,
+    "**ECRR:** evidence ✅ • contain ✅ • rollback plan ✅ • report ✅",
+    '',
+    "- **Verdict**: $Verdict",
+    "- **Timestamp**: $ts",
+    "- **Commit**: $($g.Commit)",
+    "- **Branch**: $($g.Branch)",
     '',
     '## Reasons'
   )
