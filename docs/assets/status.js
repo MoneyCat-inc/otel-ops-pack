@@ -25,10 +25,13 @@
     const ts = data.timestamp || data.endedAt || '';
     const branch = data.branch || '';
     const commit = data.commit || '';
+    const gate = data.gate || 'IONA';
+    const site = data.site || 'ci';
     const reasons = (data.reasons && data.reasons.length) ? data.reasons.join('; ') : 'None';
 
     el.innerHTML = `
       <p><strong>Verdict:</strong> ${esc(verdict)}</p>
+      <p><strong>Gate/Site:</strong> <span class="pill">${esc(gate)}</span> / <span class="pill">${esc(site)}</span></p>
       <p><strong>Timestamp:</strong> ${esc(ts)}</p>
       <p><strong>Branch:</strong> ${esc(branch)}</p>
       <p><strong>Commit:</strong> <span class="pill" id="commit-pill">${esc(commit || '—')}</span> <button class="btn" id="copy-commit">Copy</button></p>

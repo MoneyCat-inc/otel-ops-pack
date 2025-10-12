@@ -1,9 +1,11 @@
-﻿# IONA Gate - BossCat Verdict
+# IONA Gate - BossCat Verdict
 
 - Verdict: READY
-- Timestamp: 2025-10-10 01:52:35 +01:00
-- Commit: e71e52c
-- Branch: feat/gate-fallback-artifacts-queue
+- Timestamp: 2025-10-12 23:53:09 +01:00
+- Commit: ef51e3e3
+- Branch: main
+- Gate: IONA
+- Site: ci
 
 ## Reasons
 - None
