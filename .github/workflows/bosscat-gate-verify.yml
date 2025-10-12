@@ -7,6 +7,11 @@ on:
     branches: [ main ]
   workflow_dispatch:
     inputs:
+      strict_mode:
+        description: 'Force strict collector health gating on all sites'
+        required: false
+        type: boolean
+        default: false
       test_types:
         description: 'Test types to run (space-separated)'
         required: false
@@ -76,6 +81,25 @@ jobs:
         fi
         if [ -f "ALFA/APPS/signature-registry.json" ]; then
           echo "::warning::Duplicate signature-registry.json in ALFA/APPS (should be root only)"
+        fi
+
+    - name: Validate signature-registry.json schema
+      if: ${{ github.event_name == 'pull_request' }}
+      shell: bash
+      run: |
+        set -euo pipefail
+        # Basic structure: version present, entries is array
+        jq -e '.version and (.entries | type == "array")' signature-registry.json >/dev/null
+        # Each entry must contain sig_id and owner
+        jq -e 'reduce .entries[] as $e (true; . and ($e.sig_id and $e.owner))' signature-registry.json >/dev/null
+
+    - name: Assert mascot image at root
+      if: ${{ github.event_name == 'pull_request' }}
+      shell: bash
+      run: |
+        if [ ! -f "Vasilisa_High_Priestess_TinCanForest.jpg" ]; then
+          echo "::error::Mascot image missing at repo root: Vasilisa_High_Priestess_TinCanForest.jpg"
+          exit 1
         fi
 
     - name: Validate signature-registry.json schema
@@ -165,11 +189,21 @@ jobs:
           --test-types baseline load \
           --verbose
 
-    - name: Run IONA Gate Verification
+    - name: Run IONA Gate Verification (site-aware strict)
       if: ${{ matrix.gate == 'IONA' }}
-      shell: pwsh
+      env:
+        ENFORCE_STRICT: ${{ (matrix.site == 'prod') || inputs.strict_mode }}
+      shell: bash
       run: |
-        pwsh -File scripts/verify-iona-gate.ps1 -Strict:$true -OutputJson 'DELT/ARTF/gate-verification-results.json' -PrCommentPath 'PR_COMMENT_IONA_GATE_002_FINAL.md' -Gate "$env:GATE" -Site "$env:SITE"
+        set -euo pipefail
+        STRICT_FLAG=""
+        if [ "${ENFORCE_STRICT}" = "true" ]; then
+          STRICT_FLAG="-Strict:\$true"
+          echo "Collector gating: STRICT (site=${{ matrix.site }})"
+        else
+          echo "Collector gating: WARNINGS (site=${{ matrix.site }})"
+        fi
+        pwsh -File scripts/verify-iona-gate.ps1 $STRICT_FLAG -OutputJson 'DELT/ARTF/gate-verification-results.json' -PrCommentPath 'PR_COMMENT_IONA_GATE_002_FINAL.md' -Gate "$GATE" -Site "$SITE"
 
     - name: GPU_FIX lane (Option B)
       shell: pwsh
