@@ -340,6 +340,16 @@ jobs:
           # Copy signature registry to SBOM directory
           [ -f "signature-registry.json" ] && cp signature-registry.json DELT/ARTF/sbom/ || echo "⚠️ Signature registry missing"
           
+          # Generate checksums for audit trail
+          if [ -f "DELT/ARTF/sbom.json" ]; then
+            sha256sum DELT/ARTF/sbom.json > DELT/ARTF/sbom.json.sha256
+            echo "✅ SBOM checksum generated: $(cat DELT/ARTF/sbom.json.sha256)"
+          fi
+          if [ -f "DELT/ARTF/sbom/signature-registry.json" ]; then
+            sha256sum DELT/ARTF/sbom/signature-registry.json > DELT/ARTF/sbom/signature-registry.json.sha256
+            echo "✅ Signature registry checksum generated"
+          fi
+          
           # Verify final state before upload
           [ -f "DELT/ARTF/sbom.json" ] && echo "✅ SBOM ready for upload at DELT/ARTF/sbom.json" || echo "⚠️ SBOM missing at upload path"
         continue-on-error: true
@@ -351,7 +361,9 @@ jobs:
           name: sbom-attestation-${{ github.run_number }}
           path: |
             DELT/ARTF/sbom.json
+            DELT/ARTF/sbom.json.sha256
             DELT/ARTF/sbom/signature-registry.json
+            DELT/ARTF/sbom/signature-registry.json.sha256
           retention-days: 90
         
     - name: Upload artifacts
