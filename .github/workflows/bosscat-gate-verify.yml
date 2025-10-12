@@ -42,6 +42,11 @@ on:
         required: false
         default: true
         type: boolean
+      skip_sbom_blocking:
+        description: 'Emergency: Skip SBOM blocking for prod (use only if tooling broken)'
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   gate-verification:
@@ -352,7 +357,7 @@ jobs:
           
           # Verify final state before upload
           [ -f "DELT/ARTF/sbom.json" ] && echo "✅ SBOM ready for upload at DELT/ARTF/sbom.json" || echo "⚠️ SBOM missing at upload path"
-        continue-on-error: true
+        continue-on-error: ${{ matrix.site != 'prod' || github.event.inputs.skip_sbom_blocking == 'true' }}
       
       - name: Upload SBOM Artifacts
         if: matrix.site == 'prod' && always()
