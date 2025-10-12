@@ -10,9 +10,9 @@ import { glob } from 'glob';
 console.log('🔐 JS Signature Guard - Validating asset integrity...\n');
 
 // Load signature registry
-const REGISTRY_PATH = 'signature-registry.json';
+const REGISTRY_PATH = 'ALFA/APPS/signature-registry.json';
 if (!existsSync(REGISTRY_PATH)) {
-  console.log('❌ signature-registry.json not found');
+  console.log('❌ signature-registry.json not found at ALFA/APPS/');
   console.log('   Run: pnpm guard:signatures first\n');
   process.exit(1);
 }
