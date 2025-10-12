@@ -24,6 +24,55 @@ Runbooks:
 - ECRR benchmark: pwsh -NoProfile -File scripts/benchmark-process-all-ecrr-reports.ps1
 - Watchdog control: pwsh -File BRAV/SCPT/watchdog-control.ps1 [start|stop|status|logs|evidence] [gate|site|both]
 
+## 🚀 Quick Commands
+
+### Gate Verification
+```
+pnpm run agent:ready-for-gate
+```
+
+- Purpose: Run local gate verification and generate artifacts.
+- Produces:
+  - `DELT/ARTF/gate-verification-results.json` — Gate verification results with verdict
+  - `PR_COMMENT_IONA_GATE_002_FINAL.md` — Formatted PR comment for gate approval
+  - ECRR gate reports (when applicable) in `docs/ecrr/ECRR_REPORTS/`
+- Use cases:
+  - Local pre-flight checks before PR submission
+  - Manual gate verification during development
+  - Refreshing gate artifacts for status dashboard
+- Alias for: `pwsh -File scripts/verify-iona-gate.ps1 -OutputJson DELT/ARTF/gate-verification-results.json -PrCommentPath PR_COMMENT_IONA_GATE_002_FINAL.md`
+
+### Dashboard Export
+```
+pnpm run export:signoz:playwright
+```
+
+- Purpose: Export SigNoz dashboards for nightly automation and documentation.
+- Produces:
+  - Dashboard screenshots (PNG) and data exports (JSON)
+  - Observability snapshots under `docs/observability/snapshots/`
+- Use cases:
+  - Nightly dashboard automation (GitHub Actions workflow)
+  - Manual captures for documentation and audits
+- Alias for: `pwsh -File scripts/playwright-dashboard-export.ps1`
+- Automation: Triggered by `.github/workflows/nightly-dashboard-export.yml`
+
+### Typical Development Flow
+```
+# 1) Create branch and implement changes
+git checkout -b feat/my-enhancement
+
+# 2) Run local gate verification
+pnpm run agent:ready-for-gate
+
+# 3) Review gate results
+type DELT/ARTF/gate-verification-results.json
+
+# 4) If READY, push and open PR
+git push origin feat/my-enhancement
+# Create PR via your preferred tool (e.g., GitHub CLI or web)
+```
+
 ## ECRR Benchmark Trend
 
 - Latest summary JSON: `DELT/ARTF/ecrr-benchmark.json`
