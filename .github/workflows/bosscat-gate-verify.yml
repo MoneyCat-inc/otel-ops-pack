@@ -324,9 +324,24 @@ jobs:
           # Ensure output directory
           mkdir -p DELT/ARTF/sbom
           
-          # Copy to DELT/ARTF for artifact upload
-          [ -f "DELT/ARTF/sbom.json" ] && echo "✅ SBOM generated" || echo "⚠️ SBOM missing"
+          # Find and copy SBOM to canonical location (resilient to varying output paths)
+          if [ -f "DELT/ARTF/sbom.json" ]; then
+            echo "✅ SBOM already at canonical location"
+          elif [ -f "sbom.json" ]; then
+            cp sbom.json DELT/ARTF/sbom.json
+            echo "✅ SBOM copied from root to DELT/ARTF/"
+          elif [ -f "artifacts/sbom.json" ]; then
+            cp artifacts/sbom.json DELT/ARTF/sbom.json
+            echo "✅ SBOM copied from artifacts/ to DELT/ARTF/"
+          else
+            echo "⚠️ SBOM not found in expected locations (DELT/ARTF, root, artifacts)"
+          fi
+          
+          # Copy signature registry to SBOM directory
           [ -f "signature-registry.json" ] && cp signature-registry.json DELT/ARTF/sbom/ || echo "⚠️ Signature registry missing"
+          
+          # Verify final state before upload
+          [ -f "DELT/ARTF/sbom.json" ] && echo "✅ SBOM ready for upload at DELT/ARTF/sbom.json" || echo "⚠️ SBOM missing at upload path"
         continue-on-error: true
       
       - name: Upload SBOM Artifacts
