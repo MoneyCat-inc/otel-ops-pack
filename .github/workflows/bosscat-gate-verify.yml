@@ -105,7 +105,7 @@ jobs:
           echo "::error::Invalid schema: entries must have 'sig_id' and 'owner' fields"
           exit 1
         }
-        echo "✅ Schema validation passed"
+        echo "[OK] Schema validation passed"
       
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -316,42 +316,42 @@ jobs:
         shell: bash
         run: |
           # Generate SBOM using syft
-          pnpm comp:sbom || echo "⚠️ SBOM generation failed (non-blocking)"
+          pnpm comp:sbom || echo "WARNING: SBOM generation failed (non-blocking)"
           
           # Generate signature registry
-          pnpm guard:signatures || echo "⚠️ Signature registry failed (non-blocking)"
+          pnpm guard:signatures || echo "WARNING: Signature registry failed (non-blocking)"
           
           # Ensure output directory
           mkdir -p DELT/ARTF/sbom
           
           # Find and copy SBOM to canonical location (resilient to varying output paths)
           if [ -f "DELT/ARTF/sbom.json" ]; then
-            echo "✅ SBOM already at canonical location"
+            echo "[OK] SBOM already at canonical location"
           elif [ -f "sbom.json" ]; then
             cp sbom.json DELT/ARTF/sbom.json
-            echo "✅ SBOM copied from root to DELT/ARTF/"
+            echo "[OK] SBOM copied from root to DELT/ARTF/"
           elif [ -f "artifacts/sbom.json" ]; then
             cp artifacts/sbom.json DELT/ARTF/sbom.json
-            echo "✅ SBOM copied from artifacts/ to DELT/ARTF/"
+            echo "[OK] SBOM copied from artifacts/ to DELT/ARTF/"
           else
-            echo "⚠️ SBOM not found in expected locations (DELT/ARTF, root, artifacts)"
+            echo "WARNING: SBOM not found in expected locations (DELT/ARTF, root, artifacts)"
           fi
           
           # Copy signature registry to SBOM directory
-          [ -f "signature-registry.json" ] && cp signature-registry.json DELT/ARTF/sbom/ || echo "⚠️ Signature registry missing"
+          [ -f "signature-registry.json" ] && cp signature-registry.json DELT/ARTF/sbom/ || echo "WARNING: Signature registry missing"
           
           # Generate checksums for audit trail
           if [ -f "DELT/ARTF/sbom.json" ]; then
             sha256sum DELT/ARTF/sbom.json > DELT/ARTF/sbom.json.sha256
-            echo "✅ SBOM checksum generated: $(cat DELT/ARTF/sbom.json.sha256)"
+            echo "[OK] SBOM checksum generated: $(cat DELT/ARTF/sbom.json.sha256)"
           fi
           if [ -f "DELT/ARTF/sbom/signature-registry.json" ]; then
             sha256sum DELT/ARTF/sbom/signature-registry.json > DELT/ARTF/sbom/signature-registry.json.sha256
-            echo "✅ Signature registry checksum generated"
+            echo "[OK] Signature registry checksum generated"
           fi
           
           # Verify final state before upload
-          [ -f "DELT/ARTF/sbom.json" ] && echo "✅ SBOM ready for upload at DELT/ARTF/sbom.json" || echo "⚠️ SBOM missing at upload path"
+          [ -f "DELT/ARTF/sbom.json" ] && echo "[OK] SBOM ready for upload at DELT/ARTF/sbom.json" || echo "WARNING: SBOM missing at upload path"
         continue-on-error: ${{ matrix.site != 'prod' }}
       
       - name: Upload SBOM Artifacts
@@ -374,20 +374,20 @@ jobs:
             echo '### 📦 SBOM & Supply Chain Artifacts';
             echo '';
             if [ -f "DELT/ARTF/sbom.json" ]; then
-              echo '✅ **SBOM Generated**: `DELT/ARTF/sbom.json`';
+              echo '[OK] **SBOM Generated**: `DELT/ARTF/sbom.json`';
               if [ -f "DELT/ARTF/sbom.json.sha256" ]; then
                 echo "- **Checksum**: \`$(cat DELT/ARTF/sbom.json.sha256 | cut -d' ' -f1 | head -c 16)...\`";
               fi
               echo "- **Size**: $(du -h DELT/ARTF/sbom.json | cut -f1)";
             else
-              echo '⚠️ **SBOM Missing** — Review logs above for generation errors';
+              echo 'WARNING: **SBOM Missing** — Review logs above for generation errors';
               echo '';
               echo '**Impact**: Non-blocking for this run (tracking stability for future enforcement)';
             fi
             if [ -f "DELT/ARTF/sbom/signature-registry.json" ]; then
-              echo '✅ **Signature Registry**: Present';
+              echo '[OK] **Signature Registry**: Present';
             else
-              echo '⚠️ **Signature Registry**: Missing';
+              echo 'WARNING: **Signature Registry**: Missing';
             fi
             echo '';
             echo '**Artifact**: `sbom-attestation-${{ github.run_number }}`';
@@ -469,7 +469,7 @@ jobs:
       if: always()
       shell: bash
       run: |
-        node scripts/rsi-extract.mjs docs/BossCat/README.md || echo "⚠️ RSI extraction failed"
+        node scripts/rsi-extract.mjs docs/BossCat/README.md || echo "WARNING: RSI extraction failed"
       continue-on-error: true
 
     - name: Upload ECRR benchmark artifacts
@@ -526,19 +526,19 @@ jobs:
                   Add-Content -Path $summaryFile -Value "- Gate: $gate"
                   Add-Content -Path $summaryFile -Value "- Site: $site"
                 } else {
-                  Add-Content -Path $summaryFile -Value "⚠️ Verdict not found in PR comment"
+                  Add-Content -Path $summaryFile -Value "WARNING: Verdict not found in PR comment"
                 }
               } catch {
-                Add-Content -Path $summaryFile -Value "⚠️ Error parsing PR comment: $($_.Exception.Message)"
+                Add-Content -Path $summaryFile -Value "WARNING: Error parsing PR comment: $($_.Exception.Message)"
               }
             } else {
-              Add-Content -Path $summaryFile -Value "⚠️ PR comment file not generated"
+              Add-Content -Path $summaryFile -Value "WARNING: PR comment file not generated"
             }
           } catch {
-            Add-Content -Path $summaryFile -Value "⚠️ Unable to parse gate-verification-results.json: $($_.Exception.Message)"
+            Add-Content -Path $summaryFile -Value "WARNING: Unable to parse gate-verification-results.json: $($_.Exception.Message)"
           }
         } else {
-          Add-Content -Path $summaryFile -Value "⚠️ Gate verification results not found"
+          Add-Content -Path $summaryFile -Value "WARNING: Gate verification results not found"
         }
 
     - name: ECRR Process (pilot)
