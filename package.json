@@ -33,6 +33,7 @@
     "ecrr:process": "pwsh -File scripts/run-normalize-summarize.ps1 -RunDir $RUN_DIR",
     "map:generate": "tsx scripts/generate-reference-map.ts",
     "agent:preflight": "node scripts/agent-preflight.mjs",
+    "agent:validate-names": "tsx BRAV/SCPT/agent/validate-tetragram.ts",
     "comp:check": "tsx scripts/comp/security-sweep.ts",
     "comp:gitleaks": "tsx scripts/comp/gitleaks-wrapper.ts",
     "comp:sbom": "tsx scripts/comp/syft-sbom.ts",
