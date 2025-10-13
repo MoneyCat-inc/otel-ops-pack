@@ -162,6 +162,17 @@ jobs:
         run: |
           node scripts/rsi-extract.mjs docs/BossCat/README.md || echo "WARNING: RSI extraction failed"
         continue-on-error: true
+      
+      - name: Publish RSI metrics for status UI (main branch only)
+        if: github.ref == 'refs/heads/main' && always()
+        shell: bash
+        run: |
+          mkdir -p docs/artifacts/rsi
+          if [ -f "artifacts/rsi/rsi.json" ]; then
+            cp -f artifacts/rsi/rsi.json docs/artifacts/rsi/metrics.json
+            echo "[OK] RSI metrics published for status UI"
+          fi
+        continue-on-error: true
 
       - name: Upload gate artifacts
         if: always()

@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="assets/status.css">
   <script defer src="./assets/vendor/mermaid/mermaid-10.9.4.min.js"></script>
   <script src="assets/status.js" defer></script>
+  <script src="assets/icf-rsi-panel.js" defer></script>
   </head>
 <body>
   <h1>&#128062; BossCat Status Dashboard</h1>
@@ -43,6 +44,36 @@
     <h2>RSI Metrics</h2>
     <div id="rsi-metrics" aria-live="polite"></div>
   </div>
+  
+  <div class="status" id="icf-rsi">
+    <h2 id="icf-rsi-title">Iterative Convergence (ICF/RSI)</h2>
+    <p class="muted">Tracks convergence and style integrity from recent runs.</p>
+    
+    <div class="metrics-grid">
+      <div class="metric">
+        <div class="label">Convergence Rate (7d)</div>
+        <div class="value"><span id="icf-rate">—</span></div>
+      </div>
+      <div class="metric">
+        <div class="label">RSI Warnings (7d)</div>
+        <div class="value"><span id="icf-warn">—</span></div>
+      </div>
+      <div class="metric">
+        <div class="label">LII</div>
+        <div class="value"><span id="icf-lii">—</span></div>
+      </div>
+      <div class="metric">
+        <div class="label">ΔPerplexity</div>
+        <div class="value"><span id="icf-dppl">—</span></div>
+      </div>
+    </div>
+    
+    <p class="muted" style="font-size: 0.85em; margin-top: 1em;">
+      Source: <code>artifacts/rsi/metrics.json</code> (fallbacks supported).
+      Evidence: <a href="../artifacts/ecrr.md" rel="nofollow">ECRR packet</a>.
+    </p>
+  </div>
+  
   <footer class="site-footer" role="contentinfo">
     <div class="footer-inner">
       <p class="footer-title">Audit</p>
