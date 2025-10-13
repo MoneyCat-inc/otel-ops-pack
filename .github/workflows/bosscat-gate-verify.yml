@@ -232,7 +232,7 @@ jobs:
         continue-on-error: true
         run: |
           set -euo pipefail
-          file="${{ github.workflow_ref##*/ }}"
+          file="bosscat-gate-verify.yml"
           ok=$(gh api \
             "/repos/$REPO/actions/workflows/$file/runs?branch=main&status=success&per_page=5" \
             --jq '.workflow_runs | map(select(.event=="push")) | length' || echo 0)
