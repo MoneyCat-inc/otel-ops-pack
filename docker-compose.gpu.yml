@@ -13,8 +13,8 @@ services:
       - NVIDIA_DRIVER_CAPABILITIES=compute,utility
       - CUDA_VISIBLE_DEVICES=0
     volumes:
-      - ./gpu-buffers:/app/gpu-buffers
-      - ./sidecars/compression:/app/sidecars/compression
+      - ./DELT/ARTF/gpu-buffers:/app/gpu-buffers
+      - ./ALFA/APPS/sidecars/compression:/app/sidecars/compression
     working_dir: /app/sidecars/compression
     command: python3 compression_sidecar.py
     ports:
@@ -39,8 +39,8 @@ services:
       - NVIDIA_DRIVER_CAPABILITIES=compute,utility
       - CUDA_VISIBLE_DEVICES=0
     volumes:
-      - ./gpu-buffers:/app/gpu-buffers
-      - ./sidecars/aggregation:/app/sidecars/aggregation
+      - ./DELT/ARTF/gpu-buffers:/app/gpu-buffers
+      - ./ALFA/APPS/sidecars/aggregation:/app/sidecars/aggregation
     working_dir: /app/sidecars/aggregation
     command: python3 aggregation_sidecar.py
     ports:
@@ -66,8 +66,8 @@ services:
       - CUDA_VISIBLE_DEVICES=0
       - TRITON_URL=triton:8000
     volumes:
-      - ./gpu-buffers:/app/gpu-buffers
-      - ./sidecars/inference:/app/sidecars/inference
+      - ./DELT/ARTF/gpu-buffers:/app/gpu-buffers
+      - ./ALFA/APPS/sidecars/inference:/app/sidecars/inference
     working_dir: /app/sidecars/inference
     command: python3 inference_sidecar.py
     ports:

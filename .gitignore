@@ -15,3 +15,6 @@ configs/
 tests/
 schemas/
 triton-models/
+
+# GPU metric buffers (ephemeral)
+DELT/ARTF/gpu-buffers/**
