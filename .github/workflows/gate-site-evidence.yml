@@ -35,13 +35,17 @@ jobs:
           echo '<!DOCTYPE html><html><body><h1>Gate Test Server</h1></body></html>' > index.html
           pnpm dlx http-server . -p 3000 -s >/dev/null 2>&1 &
           for i in {1..10}; do curl -s http://localhost:3000 >/dev/null && break || sleep 1; done
+      - name: Install k6
+        run: |
+          sudo gpg -k
+          sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
+          echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt-get update
+          sudo apt-get install k6
       - name: Run k6 perf
-        uses: grafana/k6-action@v0.2.0
         env:
           GATE_BASE_URL: ${{ env.GATE_BASE_URL }}
-        with:
-          filename: ./tests/perf/gate.js
-          flags: --summary-export artifacts/ecrr/gate/k6-summary.json
+        run: k6 run ./tests/perf/gate.js --summary-export artifacts/ecrr/gate/k6-summary.json
       - name: Collect k6 summary & verdict
         if: always()
         run: |
