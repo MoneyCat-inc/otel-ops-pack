@@ -15,10 +15,6 @@ on:
         description: "true = archive only (no deletions)"
         required: true
         default: "true"
-        type: choice
-        options:
-          - "true"
-          - "false"
 
 permissions:
   contents: write
