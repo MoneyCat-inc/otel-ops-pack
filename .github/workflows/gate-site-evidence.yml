@@ -82,11 +82,13 @@ jobs:
               verbosity: detailed
               sampling_initial: 1
               sampling_thereafter: 1
+            debug:
+              verbosity: detailed
           service:
             pipelines:
               traces:
                 receivers: [otlp]
-                exporters: [logging]
+                exporters: [logging, debug]
             telemetry:
               logs:
                 level: debug
