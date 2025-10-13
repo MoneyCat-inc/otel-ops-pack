@@ -1,27 +1,49 @@
-# ECRR — Gate #007 Closeout (Release)
+# ECRR Gate Close-Out — IONA PROD (Latest)
 
-Timestamp: 2025-10-12 03:29 UTC
-Actor: BossCat OEM
-Decision: RELEASE APPROVED — Gate #007
+See also: docs/ecrr/ECRR_REPORTS/ECRR_GATE_CLOSEOUT_20251013_133713.md
+
+Timestamp: 2025-10-13 13:37:13 +01:00
+Commit: e6ade399
+Branch: main
+Gate: IONA
+Site: prod
+Verdict: READY
+Tag: IONA-2025-10-13-PROD
+
+---
 
 ## Examine
-- Status dashboard validated: CSP-safe, Site Health pills present, navigation enhanced.
-- SigNoz stack: UI healthy (200 OK), collector healthy; screenshots captured.
-- Evidence present on disk and in CI artifacts.
 
-## Clean
-- Fixed workflow inputs for GATE+SITE dispatch and site bundles assembly.
-- Reconciled SigNoz configs (ClickHouse creds, Zookeeper, DSNs, port mappings).
-- Added screenshot automation and cursor implementer runbook.
+- .github/workflows/bosscat-gate-verify.yml — present
+- docs/status/tests.json — present
+- docs/status.html — present
+- docs/observability/snapshots — present
+- docs/ecrr/ECRR_REPORTS — present
+- docs/IONA_ERRORS.md — present
+- docs/cheatsheets — present
+- index.html — present
+- ALFA/TEST/helpers/signoz.ts — present
+- artifacts/queue-steward-verification.txt — present
 
 ## Report
-- Gate Verdict: READY
-- Operational Verdict (strict): READY_WITH_WARNINGS previously; now healthy after collector alignment.
-- Artifacts:
-  - Canonical closeout: ECRR_GATE_CLOSEOUT_20251012_032900.md
-  - Latest gate run: docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md
-  - Screenshots: docs/observability/snapshots/status-latest.png
-  - Cursor runs: DELT/ARTF/cursor-runs/
 
-## Role
-- Investigator/G00ap-Closer/QA Scribe: Complete. Release authorized by BossCat.
+Gate IONA for site PROD is READY. Queue-steward verification evidence is present and detected. Release notes and PR approval comment are prepared. Governance requires human operator to promote; bots do not merge.
+
+## Evidence
+
+- Gate Results (JSON): DELT/ARTF/gate-verification-results.json
+- Latest ECRR Gate Report: docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md
+- Release Notes: docs/BossCat/RELEASE_NOTES_IONA_PROD_READY_20251013.md
+- PR Comment (approval): PR_COMMENT_BOSSCAT_PROD_APPROVAL.md
+- Queue Steward Evidence: artifacts/queue-steward-verification.txt
+
+## Operator Checklist (Post-Deploy)
+
+- [ ] Synthetic traces visible in SigNoz (UI http://localhost:8080)
+- [ ] Perf smoke thresholds GREEN
+- [ ] Status page reflects release (docs/status.html)
+- [ ] Append note to BOSSCAT_LOG.md (time, outcome)
+
+## Rollback Plan
+
+On anomaly: contain (freeze lane), rollback to last known-good tag, and file ECRR incident note; notify BossCat OEM.

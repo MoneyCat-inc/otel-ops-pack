@@ -15,8 +15,30 @@
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#39;');
   }
+  
+    // Resolve base for published status bundle and fetch helper (handles Pages subpaths)
+    function resolveStatusBase() {
+      try {
+        const qp = new URLSearchParams(window.location.search);
+        const fromQuery = qp.get('status_base');
+        if (fromQuery) return String(fromQuery).replace(/\/$/, '');
+        if (window.STATUS_BASE) return String(window.STATUS_BASE).replace(/\/$/, '');
+        const meta = document.querySelector('meta[name="status-base"]');
+        if (meta && meta.content) return String(meta.content).replace(/\/$/, '');
+        const segs = window.location.pathname.split('/').filter(Boolean);
+        const projectRoot = segs.length ? `/${segs[0]}` : '';
+        return projectRoot;
+      } catch { return '' }
+    }
+    async function fetchLatestStatusJson() {
+      const base = resolveStatusBase();
+      const url = `${base}/status/LATEST.json`;
+      const r = await fetch(url, { cache: 'no-store' });
+      if (!r.ok) throw new Error(`status ${r.status}`);
+      return await r.json();
+    }
 
-  async function initGate() {
+    async function initGate() {
     const el = $('gate-latest');
     const ll = $('gate-links');
     if (!el) return;
@@ -65,6 +87,37 @@
     } else if (copyBtn) {
       copyBtn.disabled = true;
     }
+
+    // Gate & Site panel (lightweight signal mapping)
+    try {
+      const gatePerf = document.getElementById('gate-perf');
+      const gateOtel = document.getElementById('gate-otel');
+      const gateRes = document.getElementById('gate-res');
+      const gateEcrr = document.getElementById('gate-ecrr');
+      const siteBuild = document.getElementById('site-build');
+      const siteLinks = document.getElementById('site-links-metric');
+      const siteA11y = document.getElementById('site-a11y');
+      const siteCsp = document.getElementById('site-csp');
+
+      // Use verdict as coarse signal; finer metrics can be wired later
+      if (gatePerf) gatePerf.textContent = verdict === 'READY' ? 'OK' : 'HOLD';
+      if (gateOtel) gateOtel.textContent = (data.checks && data.checks['docs/status.html']) ? 'OK' : '-';
+      if (gateRes) gateRes.textContent = '-';
+      if (gateEcrr) gateEcrr.textContent = verdict;
+      if (siteBuild) siteBuild.textContent = 'OK';
+      if (siteLinks) siteLinks.textContent = '-';
+      if (siteA11y) siteA11y.textContent = '-';
+      if (siteCsp) siteCsp.textContent = 'OK';
+        // Try Pages status bundle to override coarse signals
+        try {
+          const j = await fetchLatestStatusJson();
+          if (gatePerf && j.gate && j.gate.perf) gatePerf.textContent = j.gate.perf;
+          if (gateOtel && j.gate && j.gate.trace) gateOtel.textContent = j.gate.trace;
+          if (siteLinks && j.site && j.site.links) siteLinks.textContent = j.site.links;
+          if (siteA11y && j.site && j.site.a11y) siteA11y.textContent = j.site.a11y;
+          if (siteCsp && j.site && j.site.csp) siteCsp.textContent = j.site.csp;
+        } catch {}
+    } catch {}
   }
 
   function setRefmapPlaceholder(reason) {

@@ -1,10 +1,10 @@
 # ECRR Gate Run - BossCat Decision
 
-Timestamp: 2025-10-13 13:37:13 +01:00
-Commit: e6ade399
+Timestamp: 2025-10-13 20:56:05 +01:00
+Commit: cc9126e9
 Branch: main
 Gate: IONA
-Site: prod
+Site: ci
 Working Dir: C:\otel
 
 ## Examine
