@@ -9,7 +9,7 @@ Param(
 )
 $ErrorActionPreference = 'Stop'
 try { Import-Module -Name "$(Join-Path $PSScriptRoot 'lib/BossCat.Progress.psm1')" -ErrorAction SilentlyContinue } catch {}
-if (Get-Command Start-BossCatProgress -ErrorAction SilentlyContinue) { Start-BossCatProgress -Activity 'IONA Gate Verify' -ExpectedTotalSeconds 20 }
+if (Get-Command Start-BossCatProgress -ErrorAction SilentlyContinue) { Start-BossCatProgress -Activity 'BossCat Gate Verify' -ExpectedTotalSeconds 20 }
 function Get-GitMeta { try {$c=(git rev-parse --short HEAD 2>$null).Trim()}catch{$c=''}; try{$b=(git rev-parse --abbrev-ref HEAD 2>$null).Trim()}catch{$b=''}; [pscustomobject]@{Commit=$c;Branch=$b} }
 function Ensure-Dirs([string[]]$Dirs){ foreach($d in $Dirs){ if(-not(Test-Path -LiteralPath $d)){ New-Item -ItemType Directory -Path $d -Force|Out-Null } } }
 function Read-TestsJson{ $p='docs/status/tests.json'; if(-not(Test-Path $p)){return [pscustomobject]@{total=0;passed=0;failed=0}}; try{ $d=Get-Content -Raw -LiteralPath $p|ConvertFrom-Json; if($d.summary){return $d.summary}; [pscustomobject]@{total=0;passed=0;failed=0} }catch{ [pscustomobject]@{total=0;passed=0;failed=0} } }
@@ -104,6 +104,8 @@ $tsIso=Get-Date -Format 'yyyy-MM-ddTHH:mm:ssK'; Ensure-Dirs @('DELT/ARTF','docs/
 # Resolve environment switches early for use in checks
 $useMock = ($env:USE_MOCK -eq 'true')
 $queueRequired = ($Site -eq 'prod' -and -not $useMock)
+# Default strictness by site if not explicitly provided
+if (-not $PSBoundParameters.ContainsKey('Strict')) { $Strict = ($Site -eq 'prod') }
 if (Get-Command Update-BossCatProgress -ErrorAction SilentlyContinue) { Update-BossCatProgress -Phase 'Collecting required assets' -CompletedSeconds 3 }
 $required=@('.github/workflows/bosscat-gate-verify.yml','docs/status/tests.json','docs/status.html','docs/ecrr/ECRR_REPORTS','docs/observability/snapshots','docs/IONA_ERRORS.md','docs/cheatsheets','index.html')
 $nonCritical=@('scripts/benchmark-process-all-ecrr-reports.ps1','docs/BossCat/README.md')

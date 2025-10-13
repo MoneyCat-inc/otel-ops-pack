@@ -23,5 +23,6 @@
   "typescript.tsserver.watchOptions": {
     "watchDirectory": "useFsEvents"
   },
-  "chatgpt.openOnStartup": true
+  "chatgpt.openOnStartup": true,
+  "git.ignoreLimitWarning": true
 }
