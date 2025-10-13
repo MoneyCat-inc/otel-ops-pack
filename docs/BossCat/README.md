@@ -110,6 +110,70 @@ git push origin feat/my-enhancement
 **Weekly:** Guardrails re-certification (Monday 03:00 UTC)  
 **Monthly:** Evidence rollup and archival (1st day, 02:00 UTC)
 
+## SBOM Strictness Toggle (Staged Re-Promotion)
+
+**Current Mode**: Non-blocking (collecting evidence)  
+**Toggle**: `SBOM_STRICT` (GitHub org/repo variable)  
+**Default**: `false` (non-strict until proven stable)
+
+### How It Works
+
+The BossCat Gate Verification workflow includes SBOM generation for prod gates, but uses a **toggle-based promotion system** aligned with ICF doctrine (evidence → staged promotion).
+
+**Non-Strict Mode** (`SBOM_STRICT=false` or unset):
+- SBOM generation runs on every prod gate
+- Failures logged but don't block the workflow
+- Evidence collected via Issue #135 (automated tracking)
+- Artifacts uploaded for manual review (90-day retention)
+
+**Strict Mode** (`SBOM_STRICT=true`):
+- SBOM generation failures **block** prod gate workflow
+- Enforces supply chain integrity with hard gate
+- Only promoted after evidence confirms stability (3-5 successful runs)
+- Reversible via single variable change
+
+### Promotion Plan
+
+**Phase 1** (Current): Non-blocking evidence collection
+- Monitor Issue #135 for SBOM generation patterns
+- Track success rate over 3-5 prod gate runs
+- Review failure logs for tooling issues
+- **Duration**: 72 hours minimum
+
+**Phase 2**: Staged promotion (when evidence is green)
+- Set `SBOM_STRICT=true` in GitHub org/repo variables
+- Monitor first 2-3 runs with strict enforcement
+- Rollback if issues detected (set back to `false`)
+
+**Phase 3**: Thorough hardening
+- Install syft explicitly in workflow
+- Add enhanced logging and diagnostics
+- Implement fallback copy mechanisms
+- Document troubleshooting procedures
+
+### Manual Override
+
+**To promote SBOM to strict mode**:
+```bash
+# Via GitHub web UI
+# Settings → Secrets and variables → Actions → Variables
+# Add/Edit: SBOM_STRICT = true
+
+# Or via gh CLI
+gh variable set SBOM_STRICT --body "true" --repo MoneyCat-inc/otel-ops-pack
+```
+
+**To rollback**:
+```bash
+gh variable set SBOM_STRICT --body "false" --repo MoneyCat-inc/otel-ops-pack
+```
+
+**Rationale**: This toggle-based approach follows BossCat doctrine:
+- ✅ **Evidence-based**: Promotion only after stability proven
+- ✅ **Reversible**: Single-variable change, no code edits
+- ✅ **Safe**: Non-blocking by default, strict when ready
+- ✅ **ECRR-aligned**: Examine → Contain → (evidence) → Promote
+
 ## Collector Recovery
 
 **If collector fails repeatedly despite GATE bot:**
