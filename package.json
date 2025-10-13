@@ -33,6 +33,7 @@
     "agent:ready-for-gate:local": "pwsh -File scripts/verify-iona-gate.ps1 -Site local -OutputJson DELT/ARTF/gate-verification-results.json -PrCommentPath PR_COMMENT_IONA_GATE_002_FINAL.md",
     "agent:ready-for-gate:stg": "pwsh -File scripts/verify-iona-gate.ps1 -Site stg -OutputJson DELT/ARTF/gate-verification-results.json -PrCommentPath PR_COMMENT_IONA_GATE_002_FINAL.md",
     "agent:ready-for-gate:prod": "pwsh -File scripts/verify-iona-gate.ps1 -Site prod -Strict -OutputJson DELT/ARTF/gate-verification-results.json -PrCommentPath PR_COMMENT_IONA_GATE_002_FINAL.md",
+    "status:validate": "tsx scripts/status-validate.ts",
     "act:pr": "tsx scripts/actor-pr-comment.ts",
     "dashboard:query": "tsx scripts/dashboard-query.ts",
     "dashboard:rollup": "tsx scripts/dashboard-query.ts --days 7 --root artifacts/ecrr --out DELT/ARTF --snapshot docs/observability/snapshots",
@@ -49,6 +50,10 @@
     "perf:gate": "k6 run ALFA/TEST/load/k6/perf-gate-thresholds.js",
     "sec:scan": "pnpm comp:check && pnpm comp:gitleaks && pnpm comp:sbom && pnpm guard:all",
     "agent:run:icfx": "tsx scripts/agent/run-lane.ts --lane=icfx --dry-run",
+    "agent:run:gate": "tsx scripts/agent/run-lane.ts --lane=gate --dry-run",
+    "agent:run:site": "tsx scripts/agent/run-lane.ts --lane=site --dry-run",
+    "gate:perf": "k6 run tests/perf/gate.js",
+    "gate:trace": "OTEL_SERVICE_NAME=gate-synth OTLP_HTTP=http://localhost:14318/v1/traces tsx scripts/synth-trace.ts",
     "icf:rollup": "tsx scripts/icf/write-rollup.ts"
   },
   "dependencies": {
