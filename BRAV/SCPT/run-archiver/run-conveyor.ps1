@@ -7,7 +7,8 @@ param(
   [int]$MaxKeep = 100,
   [int]$ArchConcurrency = 24,
   [decimal]$DeleteQPS = 1.0,
-  [switch]$DryRun = $true
+  [switch]$DryRun = $true,
+  [switch]$SkipRateLimitWait = $false
 )
 
 $ErrorActionPreference = "Stop"
@@ -30,6 +31,7 @@ try {
   $env:ARCH_CONCURRENCY = $ArchConcurrency
   $env:DELETE_QPS = $DeleteQPS
   $env:DRY_RUN = if ($DryRun) { "true" } else { "false" }
+  $env:SKIP_RATE_LIMIT_WAIT = if ($SkipRateLimitWait) { "true" } else { "false" }
   
   # Use GITHUB_TOKEN if available, or prompt for GH_TOKENS
   if (-not $env:GH_TOKENS -and -not $env:GITHUB_TOKEN) {
