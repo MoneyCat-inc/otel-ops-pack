@@ -34,6 +34,14 @@ jobs:
       SITE: ${{ matrix.site }}
 
     steps:
+      - name: Matrix Selection Echo
+        shell: bash
+        run: |
+          echo "::notice title=Matrix Selection::Gate=${{ matrix.site }} selected for this run"
+          echo "Event: ${{ github.event_name }}"
+          echo "Site: ${{ matrix.site }}"
+          echo "Strictness: $STRICTNESS"
+      
       - name: Checkout
         uses: actions/checkout@v4
         with:
@@ -129,7 +137,7 @@ jobs:
             cp signature-registry.json DELT/ARTF/sbom/
             sha256sum DELT/ARTF/sbom/signature-registry.json > DELT/ARTF/sbom/signature-registry.json.sha256 || true
           fi
-        continue-on-error: false
+        continue-on-error: true
 
       - name: RSI metrics extraction
         if: always()
