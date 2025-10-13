@@ -1,0 +1,51 @@
+name: ICF UI Smoke (Retry-on-slow)
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: icf-smoke
+  cancel-in-progress: true
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run slow-UI smoke
+        run: npx tsx BRAV/SCPT/icf/retry-on-slow-ui.ts
+        env:
+          UI_URL: ${{ vars.UI_URL || 'https://moneycat-inc.github.io/otel-ops-pack/' }}
+          P95_MS: ${{ vars.UI_P95_MS || '1500' }}
+
+      - name: Evidence (JSONL)
+        if: always()
+        run: |
+          mkdir -p CHAR/EVID/artifacts/ecrr/icf
+          echo "{\"t\":\"$(date -u +%FT%TZ)\",\"who\":\"A\",\"type\":\"icf-smoke\",\"status\":\"${{ job.status }}\"}" >> CHAR/EVID/artifacts/ecrr/icf/EVIDENCE.jsonl
+
+      - name: Commit evidence
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add CHAR/EVID/artifacts/ecrr/icf/EVIDENCE.jsonl || true
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "docs(ecrr): ICF smoke evidence [skip ci]"
+            git push
+          fi
+
