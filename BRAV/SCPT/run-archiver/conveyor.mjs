@@ -10,6 +10,8 @@ import { existsSync } from 'node:fs';
 import Bottleneck from 'bottleneck';
 import PQueue from 'p-queue';
 import { request } from 'undici';
+import prettyMs from 'pretty-ms';
+import cliProgress from 'cli-progress';
 
 const REPO = process.env.REPO || 'MoneyCat-inc/otel-ops-pack';
 const TOKENS = (process.env.GH_TOKENS || process.env.GITHUB_TOKEN || '').split(',').filter(Boolean);
@@ -21,6 +23,86 @@ const DRY_RUN = (process.env.DRY_RUN || 'false').toLowerCase() === 'true';
 const BASE = `https://api.github.com/repos/${REPO}/actions`;
 const LEDGER = 'CHAR/EVID/artifacts/ecrr/arch/LEDGER.jsonl';
 const WHITELIST_PATH = 'BRAV/SCPT/run-archiver/whitelist.json';
+
+// Progress UI helper
+function makePhaseUI(name) {
+  const start = Date.now();
+  let total = 0, done = 0;
+  const bar = new cliProgress.SingleBar({
+    format: `[{bar}] {percentage}% | {done}/{total} | ETA: {eta} | ${name}`,
+    etaBuffer: 100,
+    hideCursor: true
+  }, cliProgress.Presets.shades_classic);
+
+  return {
+    start(totalCount) {
+      total = totalCount;
+      done = 0;
+      bar.start(total, 0, { total, done, eta: 'estimating…' });
+    },
+    tick(n = 1) {
+      done += n;
+      const elapsed = Date.now() - start;
+      const rate = done > 0 ? elapsed / done : 0;
+      const remaining = Math.max(total - done, 0) * rate;
+      bar.update(done, { done, total, eta: prettyMs(remaining, { compact: true }) });
+    },
+    stop() { bar.stop(); }
+  };
+}
+
+// Rate-limit aware fetch with auto-throttle
+const SECONDARY_REGEX = /secondary rate limit|abuse detection/i;
+
+async function ghFetch(url, { token, method = 'GET', body, headers = {}, maxRetries = 8 }) {
+  let attempt = 0;
+  let backoff = 2000;
+
+  while (true) {
+    const res = await request(url, {
+      method,
+      body,
+      headers: {
+        'Accept': 'application/vnd.github+json',
+        'Authorization': `Bearer ${token}`,
+        'User-Agent': 'BossCat-Run-Conveyor/1.0',
+        'X-GitHub-Api-Version': '2022-11-28',
+        ...headers
+      }
+    });
+
+    if (res.statusCode < 400) return res;
+
+    const txt = await res.body.text();
+    const remaining = res.headers['x-ratelimit-remaining'];
+    const reset = res.headers['x-ratelimit-reset'];
+    const retryAfter = res.headers['retry-after'];
+
+    if ((res.statusCode === 403 || res.statusCode === 429) &&
+        (remaining === '0' || retryAfter || SECONDARY_REGEX.test(txt))) {
+      
+      let sleepMs = 0;
+      if (retryAfter) {
+        sleepMs = Number(retryAfter) * 1000;
+      } else if (reset) {
+        const resetMs = (Number(reset) * 1000) - Date.now();
+        sleepMs = Math.max(resetMs, 30_000);
+      } else {
+        sleepMs = backoff + Math.floor(Math.random() * 1000);
+        backoff = Math.min(backoff * 1.6, 120_000);
+      }
+
+      const why = SECONDARY_REGEX.test(txt) ? 'secondary limit' : 'rate limit';
+      console.warn(`\n⏳ Pausing for ${prettyMs(sleepMs)} (${why}) — will auto-resume…`);
+      await new Promise(r => setTimeout(r, sleepMs));
+      attempt++;
+      if (attempt <= maxRetries) continue;
+    }
+
+    const hint = txt?.slice(0, 300)?.replace(/\s+/g, ' ');
+    throw new Error(`GitHub API ${res.statusCode} on ${method} ${url} — ${hint}`);
+  }
+}
 
 function hdr(token) {
   return {
@@ -63,7 +145,7 @@ async function safeReadJson(path, fallback) {
 // ---------- Archive Lane (Blue - Fast Parallel) ----------
 const archiveQ = new PQueue({ concurrency: ARCH_CONCURRENCY });
 
-async function archiveRun(run, token) {
+async function archiveRun(run, token, ui) {
   const t = new Date().toISOString();
   await ledger({ t, id: run.id, state: 'ARCHIVING', msg: `Start ${run.name}` });
 
@@ -72,10 +154,7 @@ async function archiveRun(run, token) {
     const meta = run;
 
     // 2) Jobs
-    const jobsRes = await request(`${BASE}/runs/${run.id}/jobs?per_page=100`, { 
-      headers: hdr(token),
-      throwOnError: true 
-    });
+    const jobsRes = await ghFetch(`${BASE}/runs/${run.id}/jobs?per_page=100`, { token });
     const jobsData = await jobsRes.body.json();
     const jobs = jobsData.jobs || [];
 
@@ -86,14 +165,11 @@ async function archiveRun(run, token) {
     
     if (needLogs) {
       try {
-        const logsRes = await request(`${BASE}/runs/${run.id}/logs`, { 
-          headers: hdr(token),
-          maxRedirections: 1
-        });
+        const logsRes = await ghFetch(`${BASE}/runs/${run.id}/logs`, { token });
         logsZip = Buffer.from(await logsRes.body.arrayBuffer());
         logsBytes = logsZip.length;
       } catch (e) {
-        console.warn(`Could not download logs for run ${run.id}: ${e.message}`);
+        // Log download often fails for old runs - this is expected
       }
     }
 
@@ -135,7 +211,7 @@ async function archiveRun(run, token) {
       msg: `${run.name} • ${run.conclusion}`
     });
 
-    console.log(`✅ Archived run ${run.id} (${run.name})`);
+    if (ui) ui.tick(1);
 
   } catch (e) {
     await ledger({
@@ -215,10 +291,10 @@ const tokenLimiters = TOKENS.map(() => new Bottleneck({
   reservoirRefreshInterval: 60 * 1000,    // Refill every minute
 }));
 
-async function deleteRun(runId, tokenIndex) {
+async function deleteRun(runId, tokenIndex, ui) {
   if (DRY_RUN) {
-    console.log(`🔴 [DRY RUN] Would delete run ${runId}`);
     await ledger({ t: new Date().toISOString(), id: runId, state: 'DELETED', msg: 'DRY RUN - not actually deleted' });
+    if (ui) ui.tick(1);
     return;
   }
 
@@ -230,20 +306,17 @@ async function deleteRun(runId, tokenIndex) {
     const st = await latestState(runId);
     if (!okArchivedState(st)) {
       await ledger({ t: new Date().toISOString(), id: runId, state: 'SKIP', msg: 'Not archived – safety gate stop' });
+      if (ui) ui.tick(1);
       return;
     }
 
     await ledger({ t: new Date().toISOString(), id: runId, state: 'DELETING', msg: 'Removing from Actions UI' });
 
     try {
-      const res = await request(`${BASE}/runs/${runId}`, {
-        method: 'DELETE',
-        headers: hdr(token)
-      });
+      const res = await ghFetch(`${BASE}/runs/${runId}`, { token, method: 'DELETE' });
 
       if (res.statusCode === 204 || res.statusCode === 202) {
         await ledger({ t: new Date().toISOString(), id: runId, state: 'DELETED', msg: 'Removed from Actions UI' });
-        console.log(`🔴 Deleted run ${runId}`);
       } else {
         const body = await res.body.text();
         await ledger({ 
@@ -261,30 +334,46 @@ async function deleteRun(runId, tokenIndex) {
         msg: `Delete error: ${e.message}` 
       });
     }
+    
+    if (ui) ui.tick(1);
   });
 }
 
 // ---------- Controller (Orchestrates Both Lanes) ----------
-async function listAllRuns(token) {
+async function listAllRuns(token, ui) {
   let page = 1;
   let all = [];
   let batch;
   
-  do {
-    const res = await request(`${BASE}/runs?per_page=100&page=${page}`, { 
-      headers: hdr(token),
-      throwOnError: true 
-    });
+  // Estimate pages for progress bar
+  const firstRes = await ghFetch(`${BASE}/runs?per_page=100&page=1`, { token });
+  const firstData = await firstRes.body.json();
+  const totalCount = firstData.total_count || 0;
+  const estimatedPages = Math.ceil(totalCount / 100);
+  
+  if (ui) ui.start(estimatedPages);
+  
+  all.push(...(firstData.workflow_runs || []));
+  if (ui) ui.tick(1);
+  
+  batch = firstData.workflow_runs || [];
+  page = 2;
+  
+  while (batch.length === 100 && page <= 200) {
+    const res = await ghFetch(`${BASE}/runs?per_page=100&page=${page}`, { token });
     const data = await res.body.json();
     batch = data.workflow_runs || [];
     all.push(...batch);
+    if (ui) ui.tick(1);
     page++;
-    
-    // Safety limit (prevent infinite loop)
-    if (page > 200) break;
-  } while (batch.length === 100);
+  }
 
   return all;
+}
+
+function estimateDeleteTime(count, tokens, qps) {
+  const seconds = Math.ceil(count / (tokens * qps));
+  return prettyMs(seconds * 1000, { unitCount: 2 });
 }
 
 async function main() {
@@ -305,12 +394,17 @@ async function main() {
     throw new Error('Kill-switch active (.agent/LOCK exists). Aborting per ECRR doctrine.');
   }
 
-  console.log('\n📊 Phase 1: Collecting run inventory...');
-  const all = await listAllRuns(TOKENS[0]);
-  console.log(`Fetched ${all.length} runs`);
+  console.log('\n📊 Phase 1 — Inventory');
+  console.log('Paging the Actions API to collect the backlog. Quick phase (~1-2 minutes).\n');
+  
+  const invUI = makePhaseUI('Collecting runs');
+  const all = await listAllRuns(TOKENS[0], invUI);
+  invUI.stop();
+  
+  console.log(`\n✅ Fetched ${all.length} runs`);
 
   // 2) Partition: Keep newest MAX_KEEP + whitelist, archive the rest
-  console.log('\n📊 Phase 2: Computing KeepSet and TrimSet...');
+  console.log('\n📊 Phase 2 — Computing KeepSet and TrimSet');
   const whitelist = await safeReadJson(WHITELIST_PATH, []);
   const sorted = [...all].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
   const keepSet = new Set(sorted.slice(0, MAX_KEEP).map(r => r.id).concat(whitelist));
@@ -324,46 +418,60 @@ async function main() {
     return;
   }
 
+  // Print timeline estimates
+  const archETA = prettyMs((archiveSet.length / ARCH_CONCURRENCY) * 5000, { unitCount: 2 }); // ~5s per run avg
+  const deleteETA = estimateDeleteTime(archiveSet.length, TOKENS.length, DELETE_QPS_PER_TOKEN);
+  
+  console.log('\n════════════════════════════════════════════════════════');
+  console.log(`🟦 Archive queue:    ${archiveSet.length} runs (parallel ${ARCH_CONCURRENCY})`);
+  console.log(`   Archive ETA:      ≈ ${archETA}`);
+  console.log(`🟥 Delete queue:     ${archiveSet.length} runs (rate ${DELETE_QPS_PER_TOKEN}/s × ${TOKENS.length} token${TOKENS.length > 1 ? 's' : ''})`);
+  console.log(`   Delete ETA:       ≈ ${deleteETA}`);
+  console.log('════════════════════════════════════════════════════════');
+
   // 3) BLUE LANE: Archive runs in parallel
-  console.log(`\n🔵 Phase 3: Archiving ${archiveSet.length} runs (${ARCH_CONCURRENCY} parallel)...`);
+  console.log('\n🔵 Phase 3 — Archive (Blue Lane)');
+  console.log('Archiving runs in parallel. Auto-pauses if GitHub rate-limits, then resumes.\n');
+  
+  const archUI = makePhaseUI('Archive');
+  archUI.start(archiveSet.length);
   let archived = 0;
   
   for (const r of archiveSet) {
     archiveQ.add(async () => {
       try {
-        await archiveRun(r, TOKENS[0]);
+        await archiveRun(r, TOKENS[0], archUI);
         archived++;
-        if (archived % 100 === 0) {
-          console.log(`Progress: ${archived}/${archiveSet.length} archived...`);
-        }
       } catch (e) {
-        console.error(`Failed to archive run ${r.id}: ${e.message}`);
+        console.error(`\nFailed to archive run ${r.id}: ${e.message}`);
       }
     });
   }
 
   await archiveQ.onIdle();
-  console.log(`✅ Archive complete: ${archived}/${archiveSet.length} runs`);
+  archUI.stop();
+  console.log(`\n✅ Archive complete: ${archived}/${archiveSet.length} runs`);
 
   // 4) RED LANE: Delete runs (rate-limited, safety-gated)
-  console.log(`\n🔴 Phase 4: Deleting archived runs (${DELETE_QPS_PER_TOKEN}/sec per token)...`);
+  console.log('\n🔴 Phase 4 — Delete (Red Lane)');
+  console.log('One delete per second per token. Progress bar marches steadily.');
+  console.log('Pauses may occur if GitHub rate-limits—we auto-resume.\n');
   
   if (DRY_RUN) {
-    console.log('⚠️ DRY RUN: Skipping deletion phase');
+    console.log('⚠️ DRY RUN: Skipping deletion phase\n');
   } else {
+    const delUI = makePhaseUI('Delete');
+    delUI.start(archiveSet.length);
     let deleted = 0;
     let idx = 0;
 
     for (const r of archiveSet) {
-      await deleteRun(r.id, idx++);
+      await deleteRun(r.id, idx++, delUI);
       deleted++;
-      
-      if (deleted % 100 === 0) {
-        console.log(`Progress: ${deleted}/${archiveSet.length} deleted...`);
-      }
     }
 
-    console.log(`✅ Delete complete: ${deleted}/${archiveSet.length} runs`);
+    delUI.stop();
+    console.log(`\n✅ Delete complete: ${deleted}/${archiveSet.length} runs`);
   }
 
   // 5) Final verification
