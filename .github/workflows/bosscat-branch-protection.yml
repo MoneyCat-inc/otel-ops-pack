@@ -33,8 +33,9 @@ jobs:
             "required_status_checks": {
               "strict": true,
               "contexts": [
-                "BossCat Gate Verification / Gate Verify (ci)",
                 "BossCat Gate Verification / Gate Verify (local)",
+                "BossCat Gate Verification / Gate Verify (ci)",
+                "BossCat Gate Verification / Gate Verify (stg)",
                 "BossCat Gate Verification / Gate Verify (prod)"
               ]
             },
@@ -61,4 +62,3 @@ jobs:
           curl -sS -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer $GITHUB_TOKEN" \
             "https://api.github.com/repos/$OWNER/$REPO/branches/$BRANCH/protection" | jq '.' || true
-

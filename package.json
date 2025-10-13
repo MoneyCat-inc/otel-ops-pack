@@ -30,6 +30,7 @@
     "summarize:run": "tsx scripts/summarize-run.ts",
     "agent:ready-for-gate": "pwsh -File scripts/verify-iona-gate.ps1 -OutputJson DELT/ARTF/gate-verification-results.json -PrCommentPath PR_COMMENT_IONA_GATE_002_FINAL.md",
     "agent:ready-for-gate:ci": "pwsh -File scripts/verify-iona-gate.ps1 -Site ci -OutputJson DELT/ARTF/gate-verification-results.json -PrCommentPath PR_COMMENT_IONA_GATE_002_FINAL.md",
+    "agent:ready-for-gate:local": "pwsh -File scripts/verify-iona-gate.ps1 -Site local -OutputJson DELT/ARTF/gate-verification-results.json -PrCommentPath PR_COMMENT_IONA_GATE_002_FINAL.md",
     "agent:ready-for-gate:stg": "pwsh -File scripts/verify-iona-gate.ps1 -Site stg -OutputJson DELT/ARTF/gate-verification-results.json -PrCommentPath PR_COMMENT_IONA_GATE_002_FINAL.md",
     "agent:ready-for-gate:prod": "pwsh -File scripts/verify-iona-gate.ps1 -Site prod -Strict -OutputJson DELT/ARTF/gate-verification-results.json -PrCommentPath PR_COMMENT_IONA_GATE_002_FINAL.md",
     "act:pr": "tsx scripts/actor-pr-comment.ts",

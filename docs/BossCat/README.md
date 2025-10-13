@@ -28,7 +28,14 @@ Runbooks:
 
 ### Gate Verification
 ```
+# Default (auto-detect strictness by site)
 pnpm run agent:ready-for-gate
+
+# Explicit per-site helpers
+pnpm run agent:ready-for-gate:local
+pnpm run agent:ready-for-gate:ci
+pnpm run agent:ready-for-gate:stg
+pnpm run agent:ready-for-gate:prod
 ```
 
 - Purpose: Run local gate verification and generate artifacts.
@@ -41,6 +48,9 @@ pnpm run agent:ready-for-gate
   - Manual gate verification during development
   - Refreshing gate artifacts for status dashboard
 - Alias for: `pwsh -File scripts/verify-iona-gate.ps1 -OutputJson DELT/ARTF/gate-verification-results.json -PrCommentPath PR_COMMENT_IONA_GATE_002_FINAL.md`
+- Strict gating: enforced automatically for `prod` site (can be overridden via `-Strict`/no switch)
+
+Note: BossCat gate now runs across SITE matrix `local, ci, stg, prod` in GitHub Actions (see `.github/workflows/bosscat-gate-verify.yml`). Gate type is parameterized (`GATE=IONA`) and ready for future gates.
 
 ### Dashboard Export
 ```

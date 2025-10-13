@@ -20,17 +20,18 @@ concurrency:
 
 jobs:
   gate:
-    name: Gate (${{ matrix.site }})
+    name: Gate Verify (${{ matrix.site }})
     runs-on: ubuntu-latest
     timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
-        site: [ci, stg, prod]
+        site: [local, ci, stg, prod]
+        gate: [IONA]
 
     env:
       STRICTNESS: ${{ matrix.site == 'prod' && 'prod' || 'ci' }}
-      GATE: IONA
+      GATE: ${{ matrix.gate }}
       SITE: ${{ matrix.site }}
       SBOM_STRICT: ${{ vars.SBOM_STRICT || 'false' }}
 
@@ -38,9 +39,10 @@ jobs:
       - name: Matrix Selection Echo
         shell: bash
         run: |
-          echo "::notice title=Matrix Selection::Gate=${{ matrix.site }} selected for this run"
+          echo "::notice title=Matrix Selection::Site=${{ matrix.site }} Gate=${{ matrix.gate }} selected"
           echo "Event: ${{ github.event_name }}"
           echo "Site: ${{ matrix.site }}"
+          echo "Gate: ${{ matrix.gate }}"
           echo "Strictness: $STRICTNESS"
       
       - name: Checkout
@@ -277,5 +279,4 @@ jobs:
             echo "---"
             echo "**ECRR**: Examine ✓ | Contain ✓ | Rollback ✓ | Report ✓"
           } >> $GITHUB_STEP_SUMMARY
-
 
