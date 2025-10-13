@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated_at": "",
+  "generated_at": "2025-10-13T09:09:41Z",
   "nodes": [
     { "id": "ingest-worker", "type": "script", "files": ["scripts/ingest-worker.ts", "scripts/ingest-utils.ts", "scripts/ingest-backfill.ps1"] },
     { "id": "normalize", "type": "script", "files": ["scripts/normalize-events.ts"] },
