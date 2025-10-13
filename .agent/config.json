@@ -65,6 +65,29 @@
         "package.json"
       ],
       "budgets": { "jobs": 2, "files": 10, "lines": 200 }
+    },
+    "gate": {
+      "allow": [
+        "tests/perf/**",
+        "ALFA/TEST/**",
+        "artifacts/ecrr/gate/**",
+        "DELT/ARTF/**",
+        "scripts/**",
+        "package.json",
+        ".agent/**"
+      ],
+      "budgets": { "jobs": 2, "files": 10, "lines": 200 }
+    },
+    "site": {
+      "allow": [
+        "docs/**",
+        "site/**",
+        "docs/status.html",
+        "docs/assets/**",
+        "package.json",
+        ".agent/**"
+      ],
+      "budgets": { "jobs": 2, "files": 10, "lines": 200 }
     }
   }
 }

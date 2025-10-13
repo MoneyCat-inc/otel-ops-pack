@@ -143,6 +143,62 @@
         "color": "#5CD7EA"
       },
       "code": "IONA-CATS-DOCS-BETA"
+    },
+    {
+      "set": "AUTO-BOTS",
+      "role": "ALFA",
+      "lane": "GATE",
+      "title": "Gate Runner",
+      "task": "Run perf + synthetic trace; emit ECRR; do not merge",
+      "badge": {
+        "file": "auto-bots-gate-alfa.svg",
+        "label": "AUTO-GATE-ALFA",
+        "emoji": "\uD83D\uDEE1;",
+        "color": "#0052CC"
+      },
+      "code": "AUTO-BOTS-GATE-ALFA"
+    },
+    {
+      "set": "IONA-CATS",
+      "role": "BETA",
+      "lane": "GATE",
+      "title": "Gate Monitor",
+      "task": "Enforce budgets; collect evidence; advise BossCat",
+      "badge": {
+        "file": "iona-cats-gate-beta.svg",
+        "label": "IONA-GATE-BETA",
+        "emoji": "\uD83D\uDEE1;",
+        "color": "#4C9AFF"
+      },
+      "code": "IONA-CATS-GATE-BETA"
+    },
+    {
+      "set": "AUTO-BOTS",
+      "role": "ALFA",
+      "lane": "SITE",
+      "title": "Site Builder",
+      "task": "Build site + a11y + links; emit ECRR; do not merge",
+      "badge": {
+        "file": "auto-bots-site-alfa.svg",
+        "label": "AUTO-SITE-ALFA",
+        "emoji": "\uD83D\uDDA5;",
+        "color": "#36B37E"
+      },
+      "code": "AUTO-BOTS-SITE-ALFA"
+    },
+    {
+      "set": "IONA-CATS",
+      "role": "BETA",
+      "lane": "SITE",
+      "title": "Site Monitor",
+      "task": "Validate CSP/WCAG/links; collect evidence; advise BossCat",
+      "badge": {
+        "file": "iona-cats-site-beta.svg",
+        "label": "IONA-SITE-BETA",
+        "emoji": "\uD83D\uDDA5;",
+        "color": "#7AD0AE"
+      },
+      "code": "IONA-CATS-SITE-BETA"
     }
   ]
 }

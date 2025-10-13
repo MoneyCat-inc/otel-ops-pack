@@ -8,7 +8,7 @@
 
 ---
 
-## The Ten Bots
+## The Bots
 
 | Badge | Bot Code | Title | Lane | Role | Task |
 |---|---|---|---|---|---|
@@ -22,6 +22,10 @@
 | <img src="./badges/iona-cats-comp-beta.svg" alt="IONA-COMP-BETA" height="20"/> | **IONA-CATS-COMP-BETA** | Compliance Auditor | `COMP` | BETA | Validate CSP/WCAG AA; ECRR trail |
 | <img src="./badges/auto-bots-docs-alfa.svg" alt="AUTO-DOCS-ALFA" height="20"/> | **AUTO-BOTS-DOCS-ALFA** | Docs Synchronizer | `DOCS` | ALFA | Refresh docs/runbooks to match reality |
 | <img src="./badges/iona-cats-docs-beta.svg" alt="IONA-DOCS-BETA" height="20"/> | **IONA-CATS-DOCS-BETA** | Docs Proofreader | `DOCS` | BETA | Lint/consistency; BOSSCAT_LOG + gate |
+| <img src="./badges/auto-bots-gate-alfa.svg" alt="AUTO-GATE-ALFA" height="20"/> | **AUTO-BOTS-GATE-ALFA** | Gate Runner | `GATE` | ALFA | Run perf + synthetic trace; emit ECRR; do not merge |
+| <img src="./badges/iona-cats-gate-beta.svg" alt="IONA-GATE-BETA" height="20"/> | **IONA-CATS-GATE-BETA** | Gate Monitor | `GATE` | BETA | Enforce budgets; collect evidence; advise BossCat |
+| <img src="./badges/auto-bots-site-alfa.svg" alt="AUTO-SITE-ALFA" height="20"/> | **AUTO-BOTS-SITE-ALFA** | Site Builder | `SITE` | ALFA | Build site + a11y + links; emit ECRR; do not merge |
+| <img src="./badges/iona-cats-site-beta.svg" alt="IONA-SITE-BETA" height="20"/> | **IONA-CATS-SITE-BETA** | Site Monitor | `SITE` | BETA | Validate CSP/WCAG/links; collect evidence; advise BossCat |
 
 ---
 
@@ -34,6 +38,15 @@
 | **SELE** | Selector Hygiene | Test stability | `**/components/**`, `**/tests/**` |
 | **COMP** | Compliance | Security & A11y | `**/*.html`, `**/*.tsx`, `**/*.ts` |
 | **DOCS** | Documentation | Docs drift | `**/docs/**`, `README.md` |
+| **GATE** | Quality Gate | Perf + Observability evidence | `tests/perf/**`, `scripts/synth-trace.ts`, read `docs/status.html`, `docs/assets/status.js` |
+| **SITE** | Site Health | Build, links, a11y, CSP | `docs/**`, write `artifacts/ecrr/site/**` |
+
+Budgets (all lanes): jobs ≤ 2, files ≤ 10, lines ≤ 200 per job.
+
+### Gate & Site — Quick Access
+
+[![Gate & Site Evidence](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/gate-site-evidence.yml/badge.svg)](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/gate-site-evidence.yml)
+[View Latest Status JSON](https://MoneyCat-inc.github.io/otel-ops-pack/status/LATEST.json) · [Open Dashboard](https://MoneyCat-inc.github.io/otel-ops-pack/docs/status.html)
 
 ---
 
