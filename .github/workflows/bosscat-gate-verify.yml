@@ -170,7 +170,7 @@ jobs:
           pnpm icf:rollup || echo "WARNING: ICF rollup failed"
         continue-on-error: true
       - name: Archive ICF rollup (timestamped)
-        if: always()
+        if: matrix.site == 'ci' && always()
         shell: bash
         run: |
           set -euo pipefail
@@ -178,12 +178,13 @@ jobs:
           if [[ -f artifacts/icf/rollup.json ]]; then
             ts=$(jq -r '.timestamp // empty' artifacts/icf/rollup.json || true)
             [[ -z "$ts" ]] && ts="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
-            ts2="$(echo "$ts" | tr -d ':-' | sed -E 's/(\.[0-9]+)?Z$//; s/T//')Z"
+            # Keep ISO format but replace colons with hyphens for filename safety
+            ts2="$(echo "$ts" | sed 's/:/-/g')"
             cp artifacts/icf/rollup.json "artifacts/icf/rollup.demo-${ts2}.json"
           fi
 
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: matrix.site == 'ci' && always()
         with:
           name: icf-rollup-${{ github.run_number }}
           path: artifacts/icf/rollup*.json
