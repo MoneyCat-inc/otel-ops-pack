@@ -33,10 +33,9 @@ jobs:
             "required_status_checks": {
               "strict": true,
               "contexts": [
-                "BossCat Gate Verification / Gate Verify (local)",
-                "BossCat Gate Verification / Gate Verify (ci)",
-                "BossCat Gate Verification / Gate Verify (stg)",
-                "BossCat Gate Verification / Gate Verify (prod)"
+                "Gate & Site Evidence (Non-Merging) / Gate • k6 thresholds",
+                "Gate & Site Evidence (Non-Merging) / Gate • synthetic trace (OTLP/HTTP)",
+                "Gate & Site Evidence (Non-Merging) / Site • links + a11y + CSP (coarse)"
               ]
             },
             "enforce_admins": true,
