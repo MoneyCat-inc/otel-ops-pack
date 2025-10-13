@@ -30,7 +30,7 @@ $trimSet = Get-Content ".agent/tmp/TRIMSET.txt" | Where-Object {
   ($_ -as [int]) % $Shards -eq $Shard
 }
 
-Write-Host "Shard $Shard of $Shards: Processing $($trimSet.Count) runs (MaxParallel: $MaxParallel, DryRun: $DryRun)"
+Write-Host "Shard $Shard of ${Shards}: Processing $($trimSet.Count) runs (MaxParallel: $MaxParallel, DryRun: $DryRun)"
 
 # Bounded retry function (Rule #4)
 function Invoke-WithRetry([scriptblock]$op, [int]$max=3) {
@@ -49,7 +49,7 @@ function Invoke-WithRetry([scriptblock]$op, [int]$max=3) {
 $sem = [System.Threading.SemaphoreSlim]::new($MaxParallel, $MaxParallel)
 $tasks = foreach ($runId in $trimSet) {
   $null = $sem.Wait()
-  [Threading.Tasks.Task]::Run({
+  [System.Threading.Tasks.Task]::Run([Action]{
     try {
       $year = (Get-Date).ToString("yyyy")
       $month = (Get-Date).ToString("MM")
@@ -205,8 +205,10 @@ Created: $($run.created_at) • SHA: ``$($run.head_sha)``
 }
 
 # Wait for all tasks
-Write-Host "Waiting for $($tasks.Count) tasks to complete..."
-[Threading.Tasks.Task]::WaitAll($tasks)
+if ($tasks.Count -gt 0) {
+  Write-Host "Waiting for $($tasks.Count) tasks to complete..."
+  [System.Threading.Tasks.Task]::WaitAll($tasks)
+}
 
 Write-Host "Shard $Shard complete: Processed $($trimSet.Count) runs"
 
