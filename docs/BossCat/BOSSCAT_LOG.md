@@ -1,1 +1,4 @@
-[2025-10-11T04:25:49] GPU_FIX lane GREEN; P95=1.91574ms; ports:5317=True 5318=True; span=iona.boot:True; artifacts=DELT/ARTF/gate-verification-results.json
+# BOSSCAT_LOG (one-liners)
+
+- [2025-10-13T10:15:00] gate/site lanes ACTIVE; workflow=gate-site-evidence.yml; commit=7b143c17; components=k6+OTLP+site-checks
+
