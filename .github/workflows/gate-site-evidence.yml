@@ -27,6 +27,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v3
+        with:
+          version: 10
       - run: pnpm install
       - name: Run k6 perf
         uses: grafana/k6-action@v0.2.0
@@ -55,6 +57,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v3
+        with:
+          version: 10
       - run: pnpm install
       - name: Start minimal OTel Collector (logging exporter)
         run: |
@@ -97,6 +101,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v3
+        with:
+          version: 10
       - run: pnpm install
       - name: Serve docs
         run: |
