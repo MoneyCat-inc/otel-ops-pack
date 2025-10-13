@@ -169,7 +169,25 @@ jobs:
         run: |
           pnpm icf:rollup || echo "WARNING: ICF rollup failed"
         continue-on-error: true
-      
+      - name: Archive ICF rollup (timestamped)
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts/icf
+          if [[ -f artifacts/icf/rollup.json ]]; then
+            ts=$(jq -r '.timestamp // empty' artifacts/icf/rollup.json || true)
+            [[ -z "$ts" ]] && ts="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+            ts2="$(echo "$ts" | tr -d ':-' | sed -E 's/(\.[0-9]+)?Z$//; s/T//')Z"
+            cp artifacts/icf/rollup.json "artifacts/icf/rollup.demo-${ts2}.json"
+          fi
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: icf-rollup-${{ github.run_number }}
+          path: artifacts/icf/rollup*.json
+          retention-days: 14      
       - name: Publish RSI metrics for status UI (main branch only)
         if: github.ref == 'refs/heads/main' && always()
         shell: bash
@@ -205,6 +223,29 @@ jobs:
             DELT/ARTF/sbom/signature-registry.json.sha256
           retention-days: 90
 
+      - name: Check consecutive green prod runs (>=3) and propose SBOM_STRICT=true
+        if: matrix.site == 'prod' && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        shell: bash
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          file="${{ github.workflow_ref##*/ }}"
+          ok=$(gh api \
+            "/repos/$REPO/actions/workflows/$file/runs?branch=main&status=success&per_page=5" \
+            --jq '.workflow_runs | map(select(.event=="push")) | length' || echo 0)
+          if [[ "$ok" -ge 3 ]]; then
+            git config user.name  "bosscat-oem-bot"
+            git config user.email "bosscat@users.noreply.github.com"
+            git checkout -b chore/sbom-strict-on || true
+            sed -i 's/SBOM_STRICT\s*:\s*.*/SBOM_STRICT: true/' .github/workflows/bosscat-gate-verify.yml || true
+            git commit -am "chore(gate): SBOM_STRICT=true after >=3 consecutive green prod runs" || true
+            git push --set-upstream origin chore/sbom-strict-on || true
+            gh pr create --title "Ratchet: SBOM_STRICT=true" \
+              --body "Automated proposal after >=3 consecutive green prod runs. Human review required." || true
+          fi
       - name: Job Summary
         if: always()
         shell: bash
@@ -235,3 +276,5 @@ jobs:
             echo "---"
             echo "**ECRR**: Examine ✓ | Contain ✓ | Rollback ✓ | Report ✓"
           } >> $GITHUB_STEP_SUMMARY
+
+

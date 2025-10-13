@@ -20,3 +20,7 @@ h1 { color: #2c3e50; }
 .refmap-placeholder { border:1px dashed var(--border); border-radius:8px; padding:12px; font-size:13px; color:var(--muted); }
 .pill.ok { background: rgba(76,175,80,.12); border-color: rgba(76,175,80,.35); color: var(--green); }
 .pill.warn { background: rgba(255,193,7,.12); border-color: rgba(255,193,7,.35); color: var(--yellow); }
+
+/* ICFX - Rollup staleness hint */
+#icf-rollup[data-stale="true"] { opacity: .65; filter: saturate(.6); }
+#icf-rollup .stale-hint { margin-left: .5rem; font-variant-numeric: tabular-nums; color: var(--muted); }
