@@ -45,7 +45,7 @@ const fwRatio = fwCount / Math.max(1, tokens.length);
 // ΔPPL: deviation from baseline (proxy for perplexity drift)
 const deltaPPL = Math.abs(fwRatio - baseline.fwRatio);
 
-// Output metrics
+// Output metrics (with ICF fields for status panel)
 const metrics = {
   LII: parseFloat(LII.toFixed(4)),
   deltaPPL: parseFloat(deltaPPL.toFixed(4)),
@@ -53,7 +53,12 @@ const metrics = {
   tokens: tokens.length,
   types: types.size,
   inputFile: path.basename(inputFile),
-  timestamp: new Date().toISOString()
+  timestamp: new Date().toISOString(),
+  // ICF fields (placeholders until full convergence tracking implemented)
+  convergence_rate_7d: 0.93,  // TODO: Calculate from ECRR trends
+  warnings_7d: deltaPPL > 0.50 ? 1 : 0,  // Simple threshold for now
+  delta_perplexity: parseFloat(deltaPPL.toFixed(4)),
+  lii: parseFloat(LII.toFixed(4))
 };
 
 // Ensure output directory exists
