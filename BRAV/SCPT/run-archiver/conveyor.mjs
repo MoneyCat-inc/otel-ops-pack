@@ -19,6 +19,7 @@ const MAX_KEEP = Number(process.env.MAX_KEEP || 100);
 const ARCH_CONCURRENCY = Number(process.env.ARCH_CONCURRENCY || 24);
 const DELETE_QPS_PER_TOKEN = Number(process.env.DELETE_QPS || 1);
 const DRY_RUN = (process.env.DRY_RUN || 'false').toLowerCase() === 'true';
+const SKIP_RATE_LIMIT_WAIT = (process.env.SKIP_RATE_LIMIT_WAIT || 'false').toLowerCase() === 'true';
 
 const BASE = `https://api.github.com/repos/${REPO}/actions`;
 const LEDGER = 'CHAR/EVID/artifacts/ecrr/arch/LEDGER.jsonl';
@@ -80,6 +81,12 @@ async function ghFetch(url, { token, method = 'GET', body, headers = {}, maxRetr
 
     if ((res.statusCode === 403 || res.statusCode === 429) &&
         (remaining === '0' || retryAfter || SECONDARY_REGEX.test(txt))) {
+      
+      // Manual bypass: fail immediately instead of waiting
+      if (SKIP_RATE_LIMIT_WAIT) {
+        const why = SECONDARY_REGEX.test(txt) ? 'secondary limit' : 'rate limit';
+        throw new Error(`Rate limit hit (${why}). SKIP_RATE_LIMIT_WAIT=true, failing immediately. ${txt.slice(0, 200)}`);
+      }
       
       let sleepMs = 0;
       if (retryAfter) {
@@ -384,6 +391,7 @@ async function main() {
   console.log(`Delete QPS per token: ${DELETE_QPS_PER_TOKEN}`);
   console.log(`Tokens: ${TOKENS.length}`);
   console.log(`DRY RUN: ${DRY_RUN}`);
+  console.log(`SKIP_RATE_LIMIT_WAIT: ${SKIP_RATE_LIMIT_WAIT}`);
 
   if (!TOKENS.length) {
     throw new Error('GH_TOKENS or GITHUB_TOKEN required (comma-separated for multiple tokens)');
