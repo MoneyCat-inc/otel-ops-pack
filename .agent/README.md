@@ -27,7 +27,7 @@ This directory contains the AUTO-BOTS stability framework implementing Rules #2-
 ### Configuration
 - **File**: `.agent/config.json`
 - **Contents**:
-  - Budgets: Max 2 jobs, 10 files, 2,000 LOC per run
+  - Budgets: Max 2 jobs, 10 files, 200 LOC per job
   - Retry: Max 3 attempts, 15min backoff, 12h TTL
   - Lanes: Approved file patterns per lane
 
@@ -40,6 +40,8 @@ This directory contains the AUTO-BOTS stability framework implementing Rules #2-
 4. **csp** - Content Security Policy fixes
 5. **flaky** - Flaky test quarantine
 6. **selector** - Selector hygiene
+7. **gate** - Quality/production gates (perf + observability evidence)
+8. **site** - Site integrity (build, links, a11y, CSP)
 
 Each lane has specific allow-list patterns defined in `config.json`.
 
