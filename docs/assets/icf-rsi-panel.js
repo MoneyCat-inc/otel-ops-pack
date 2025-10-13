@@ -93,7 +93,7 @@
           const p = document.createElement('p');
           p.className = 'muted';
           const tp = (roll.throughput != null ? `${roll.throughput}/run` : 'n/a');
-          const er = (roll.errorRate != null ? `${Math.round(roll.errorRate * 100)}%` : 'n/a');
+          const er = (roll.errorRate != null ? `${(Math.round(roll.errorRate * 1000) / 10).toFixed(1)}%` : 'n/a');
           const ce = (roll.chaosEvents != null ? String(roll.chaosEvents) : '0');
           p.textContent = `ICF rollup: throughput ${tp} • error ${er} • chaos ${ce}`;
           host.appendChild(p);
