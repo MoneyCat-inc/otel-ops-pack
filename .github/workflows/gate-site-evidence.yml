@@ -79,12 +79,17 @@ jobs:
                   endpoint: 0.0.0.0:4318
           exporters:
             logging:
-              loglevel: debug
+              verbosity: detailed
+              sampling_initial: 1
+              sampling_thereafter: 1
           service:
             pipelines:
               traces:
                 receivers: [otlp]
                 exporters: [logging]
+            telemetry:
+              logs:
+                level: debug
           YML
           docker run -d --name otelcol -p 4318:4318 -v "$PWD/collector.yaml:/etc/otelcol/config.yaml" otel/opentelemetry-collector:0.106.0
           for i in {1..20}; do bash -lc 'echo > /dev/tcp/127.0.0.1/4318' && break || sleep 1; done
@@ -96,8 +101,8 @@ jobs:
         if: always()
         run: |
           mkdir -p artifacts/ecrr/gate
-          docker logs otelcol --since=5m > artifacts/ecrr/gate/otelcol.log || true
-          if grep -Eq "TracesExporter|ResourceSpans|Exporting span|exporter/logging" artifacts/ecrr/gate/otelcol.log; then echo '{"verdict":"PASS"}' > artifacts/ecrr/gate/trace-verdict.json; else echo '{"verdict":"HOLD"}' > artifacts/ecrr/gate/trace-verdict.json; fi
+          docker logs otelcol --since=5m > artifacts/ecrr/gate/otelcol.log 2>&1 || true
+          if grep -Eq "TracesExporter|ResourceSpans|Exporting|exporter/logging|Span #0" artifacts/ecrr/gate/otelcol.log; then echo '{"verdict":"PASS"}' > artifacts/ecrr/gate/trace-verdict.json; else echo '{"verdict":"HOLD"}' > artifacts/ecrr/gate/trace-verdict.json; fi
       - uses: actions/upload-artifact@v4
         if: always()
         with:
