@@ -57,6 +57,17 @@ pnpm run export:signoz:playwright
 - Alias for: `pwsh -File scripts/playwright-dashboard-export.ps1`
 - Automation: Triggered by `.github/workflows/nightly-dashboard-export.yml`
 
+### ICF Lane (ICFX)
+```
+pnpm run agent:run:icfx
+```
+
+- Purpose: Dry-run validation for the ICF self-opt lane (ICFX).
+- Scope: Validates changes are within the lane allow-set and under budgets.
+- Produces:
+  - `artifacts/ecrr/icfx/LATEST.md` — ECRR evidence of lane run
+  - Exit code 0 (ready) or 2 (not ready)
+
 ### Typical Development Flow
 ```
 # 1) Create branch and implement changes

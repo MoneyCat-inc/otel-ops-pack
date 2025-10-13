@@ -55,5 +55,16 @@
     "benchBatches": [1, 4, 8],
     "ecrrOutDir": "docs/ecrr/ECRR_REPORTS",
     "allowCpuFallback": true
+  },
+  "lanes": {
+    "icfx": {
+      "allow": [
+        "**/.agent/**",
+        "docs/BossCat/**",
+        "scripts/**",
+        "package.json"
+      ],
+      "budgets": { "jobs": 2, "files": 10, "lines": 200 }
+    }
   }
 }

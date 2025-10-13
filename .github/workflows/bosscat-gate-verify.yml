@@ -26,7 +26,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        site: [ci, prod]
+        site: [ci, stg, prod]
 
     env:
       STRICTNESS: ${{ matrix.site == 'prod' && 'prod' || 'ci' }}
@@ -161,6 +161,13 @@ jobs:
         shell: bash
         run: |
           node scripts/rsi-extract.mjs docs/BossCat/README.md || echo "WARNING: RSI extraction failed"
+        continue-on-error: true
+
+      - name: ICF rollup (panel feeder)
+        if: always()
+        shell: bash
+        run: |
+          pnpm icf:rollup || echo "WARNING: ICF rollup failed"
         continue-on-error: true
       
       - name: Publish RSI metrics for status UI (main branch only)

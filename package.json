@@ -29,6 +29,9 @@
     "classify:run": "tsx scripts/classify-run.ts",
     "summarize:run": "tsx scripts/summarize-run.ts",
     "agent:ready-for-gate": "pwsh -File scripts/verify-iona-gate.ps1 -OutputJson DELT/ARTF/gate-verification-results.json -PrCommentPath PR_COMMENT_IONA_GATE_002_FINAL.md",
+    "agent:ready-for-gate:ci": "pwsh -File scripts/verify-iona-gate.ps1 -Site ci -OutputJson DELT/ARTF/gate-verification-results.json -PrCommentPath PR_COMMENT_IONA_GATE_002_FINAL.md",
+    "agent:ready-for-gate:stg": "pwsh -File scripts/verify-iona-gate.ps1 -Site stg -OutputJson DELT/ARTF/gate-verification-results.json -PrCommentPath PR_COMMENT_IONA_GATE_002_FINAL.md",
+    "agent:ready-for-gate:prod": "pwsh -File scripts/verify-iona-gate.ps1 -Site prod -Strict -OutputJson DELT/ARTF/gate-verification-results.json -PrCommentPath PR_COMMENT_IONA_GATE_002_FINAL.md",
     "act:pr": "tsx scripts/actor-pr-comment.ts",
     "dashboard:query": "tsx scripts/dashboard-query.ts",
     "dashboard:rollup": "tsx scripts/dashboard-query.ts --days 7 --root artifacts/ecrr --out DELT/ARTF --snapshot docs/observability/snapshots",
@@ -43,7 +46,9 @@
     "guard:js": "tsx scripts/build/js-signature-guard.ts",
     "guard:all": "pnpm guard:signatures && pnpm guard:js",
     "perf:gate": "k6 run ALFA/TEST/load/k6/perf-gate-thresholds.js",
-    "sec:scan": "pnpm comp:check && pnpm comp:gitleaks && pnpm comp:sbom && pnpm guard:all"
+    "sec:scan": "pnpm comp:check && pnpm comp:gitleaks && pnpm comp:sbom && pnpm guard:all",
+    "agent:run:icfx": "tsx scripts/agent/run-lane.ts --lane=icfx --dry-run",
+    "icf:rollup": "tsx scripts/icf/write-rollup.ts"
   },
   "dependencies": {
     "@aws-sdk/client-bedrock-runtime": "^3.901.0",
