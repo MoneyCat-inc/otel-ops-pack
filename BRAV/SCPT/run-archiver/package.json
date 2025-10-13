@@ -11,7 +11,10 @@
   "dependencies": {
     "@octokit/rest": "^20.1.1",
     "adm-zip": "^0.5.12",
-    "fast-xml-parser": "^4.5.0"
+    "fast-xml-parser": "^4.5.0",
+    "bottleneck": "^2.19.5",
+    "p-queue": "^7.4.1",
+    "undici": "^6.19.8"
   }
 }
 
