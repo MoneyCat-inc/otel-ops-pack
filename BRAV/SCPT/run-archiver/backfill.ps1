@@ -6,7 +6,7 @@ param(
   [string]$Repo = "MoneyCat-inc/otel-ops-pack",
   [int]$Shards = 8,
   [int]$Shard = 0,
-  [int]$MaxParallel = 4,
+  [int]$MaxParallel = 12,
   [switch]$DeleteAfterArchive = $false,
   [switch]$DryRun = $true
 )
