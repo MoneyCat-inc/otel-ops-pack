@@ -6,7 +6,7 @@ import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions'
 
 diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.ERROR);
 
-const endpoint = process.env.OTLP_HTTP || 'http://localhost:14318/v1/traces';
+const endpoint = process.env.OTLP_HTTP || 'http://localhost:4318/v1/traces';
 const serviceName = process.env.OTEL_SERVICE_NAME || 'gate-synth';
 
 const exporter = new OTLPTraceExporter({ url: endpoint });
