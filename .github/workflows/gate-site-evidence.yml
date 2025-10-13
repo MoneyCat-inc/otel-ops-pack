@@ -135,6 +135,7 @@ jobs:
     name: Publish status bundle to Pages (no trunk writes)
     runs-on: ubuntu-latest
     needs: [gate_perf, gate_trace, site_checks]
+    if: always()
     steps:
       - uses: actions/download-artifact@v4
         with: { name: ecrr-gate-perf, path: out/gate }
