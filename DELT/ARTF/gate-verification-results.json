@@ -1,6 +1,6 @@
 {
-  "timestamp": "2025-10-12T23:53:08+01:00",
-  "commit": "ef51e3e3",
+  "timestamp": "2025-10-13T03:20:03+01:00",
+  "commit": "61407d0f",
   "branch": "main",
   "gate": "IONA",
   "site": "ci",
@@ -12,16 +12,16 @@
   },
   "checks": {
     "docs/cheatsheets": "present",
+    "docs/observability/snapshots": "present",
     "scripts/benchmark-process-all-ecrr-reports.ps1": "present",
     "index.html": "present",
+    "docs/status.html": "present",
+    "docs/IONA_ERRORS.md": "present",
+    "docs/ecrr/ECRR_REPORTS": "present",
     "docs/status/tests.json": "present",
     ".github/workflows/bosscat-gate-verify.yml": "present",
-    "docs/status.html": "present",
     "signoz.ts": "present",
-    "docs/IONA_ERRORS.md": "present",
-    "docs/observability/snapshots": "present",
     "queue-steward-verification.txt": "present",
-    "docs/ecrr/ECRR_REPORTS": "present",
     "docs/BossCat/README.md": "present"
   }
 }

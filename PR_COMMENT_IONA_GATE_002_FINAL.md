@@ -1,11 +1,13 @@
 # IONA Gate - BossCat Verdict
 
-- Verdict: READY
-- Timestamp: 2025-10-12 23:53:09 +01:00
-- Commit: ef51e3e3
-- Branch: main
-- Gate: IONA
-- Site: ci
+**Gate:** `IONA` • **Site:** `ci`
+**Budgets:** Files 🟢 **7/10** • LOC 🟡 **241/200** • ⚠️ *sticky warn at ≥80%*
+**ECRR:** evidence ✅ • contain ✅ • rollback plan ✅ • report ✅
+
+- **Verdict**: READY
+- **Timestamp**: 2025-10-13 03:20:04 +01:00
+- **Commit**: 61407d0f
+- **Branch**: main
 
 ## Reasons
 - None

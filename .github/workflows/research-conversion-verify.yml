@@ -1,0 +1,68 @@
+name: Research Conversion Verify
+
+on:
+  push:
+    paths:
+      - 'docs/BossCat/Research/**/*.docx'
+      - 'docs/BossCat/Research/**/*.pdf'
+      - '.github/workflows/research-conversion-verify.yml'
+  workflow_dispatch:
+
+jobs:
+  convert-and-compare:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install converters (pandoc + poppler-utils)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pandoc poppler-utils
+
+      - name: Convert DOCX → Markdown (GFM) and PDF → text
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p DELT/RESEARCH/md DELT/RESEARCH/txt DELT/RESEARCH/diff
+          shopt -s nullglob
+          for f in docs/BossCat/Research/**/*.docx; do
+            base=$(basename "$f" .docx)
+            pandoc "$f" -t gfm -o "DELT/RESEARCH/md/${base}.md"
+          done
+          for p in docs/BossCat/Research/**/*.pdf; do
+            base=$(basename "$p" .pdf)
+            pdftotext -layout "$p" "DELT/RESEARCH/txt/${base}.txt" || true
+          done
+
+      - name: Compare (best effort)
+        shell: bash
+        run: |
+          set -euo pipefail
+          for m in DELT/RESEARCH/md/*.md; do
+            base=$(basename "$m" .md)
+            t="DELT/RESEARCH/txt/${base}.txt"
+            if [ -f "$t" ]; then
+              diff -u "$t" "$m" > "DELT/RESEARCH/diff/${base}.diff" || true
+            fi
+          done
+          {
+            echo "### Research Conversion Summary"
+            echo ""
+            echo "- Markdown files: $(ls -1 DELT/RESEARCH/md | wc -l)"
+            echo "- PDF text files: $(ls -1 DELT/RESEARCH/txt | wc -l)"
+            echo "- Diffs produced: $(ls -1 DELT/RESEARCH/diff | wc -l)"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: research-conversions
+          path: |
+            DELT/RESEARCH/md
+            DELT/RESEARCH/txt
+            DELT/RESEARCH/diff
