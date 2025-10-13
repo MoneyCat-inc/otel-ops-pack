@@ -21,6 +21,11 @@
     '../DELT/ARTF/rsi/metrics.json',
     './status/rsi-metrics.json'
   ];
+  const ROLLUP_CANDIDATES = [
+    '../artifacts/icf/rollup.json',
+    './artifacts/icf/rollup.json',
+    '../DELT/ARTF/icf/rollup.json'
+  ];
 
   async function fetchFirst(urls) {
     for (const url of urls) {
@@ -79,6 +84,22 @@
   async function init() {
     const data = await fetchFirst(CANDIDATES);
     render(data);
+    // Optional ICF rollup badge
+    try {
+      const roll = await fetchFirst(ROLLUP_CANDIDATES);
+      if (roll && document) {
+        const host = document.getElementById('icf-rsi');
+        if (host) {
+          const p = document.createElement('p');
+          p.className = 'muted';
+          const tp = (roll.throughput != null ? `${roll.throughput}/run` : 'n/a');
+          const er = (roll.errorRate != null ? `${Math.round(roll.errorRate * 100)}%` : 'n/a');
+          const ce = (roll.chaosEvents != null ? String(roll.chaosEvents) : '0');
+          p.textContent = `ICF rollup: throughput ${tp} • error ${er} • chaos ${ce}`;
+          host.appendChild(p);
+        }
+      }
+    } catch (_) { /* no-op */ }
   }
 
   if (document.readyState === 'loading') {
