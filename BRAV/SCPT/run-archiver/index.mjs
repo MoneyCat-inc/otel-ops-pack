@@ -26,6 +26,8 @@ const OUT_ARCH = path.join(OUT_ROOT, 'archived');
 const OUT_LATEST = path.join(OUT_ROOT, 'latest');
 const OUT_BADGES = path.join(OUT_ROOT, 'badges');
 const EVID_ROOT = path.join('CHAR', 'EVID', 'artifacts', 'ecrr', 'arch');
+const RSI_JSON = path.join('docs', 'BossCat', 'RSI_METRICS.json');
+const RSI_MD = path.join('docs', 'BossCat', 'RSI_METRICS.md');
 
 function ensureDir(p) { fs.mkdirSync(p, { recursive: true }); }
 function iso(dt) { return new Date(dt).toISOString(); }
@@ -117,6 +119,25 @@ async function writeReport(run) {
   return { archPath, mdPath: archPath, tl: tldr(run, jobs, tests), createdAt: run.created_at };
 }
 
+function computeMetrics(runs) {
+  const total = runs.length;
+  let success = 0; let failure = 0; let cancelled = 0; let timed_out = 0; let other = 0;
+  let durations = [];
+  for (const r of runs) {
+    const conc = r.conclusion || r.status || 'unknown';
+    if (conc === 'success') success++; else if (conc === 'failure') failure++; else if (conc === 'cancelled') cancelled++; else if (conc === 'timed_out') timed_out++; else other++;
+    const ms = durMs(r.created_at, r.updated_at || r.run_started_at || r.created_at);
+    if (Number.isFinite(ms) && ms >= 0) durations.push(ms);
+  }
+  const avgMs = durations.length ? Math.round(durations.reduce((a,b)=>a+b,0) / durations.length) : 0;
+  const passRate = total ? +(success/total*100).toFixed(2) : 0;
+  return { total, success, failure, cancelled, timed_out, other, avg_duration_ms: avgMs, pass_rate_pct: passRate };
+}
+
+function rsiMd(m) {
+  return `# RSI Metrics\n\n- Total runs: ${m.total}\n- Success: ${m.success}\n- Failure: ${m.failure}\n- Cancelled: ${m.cancelled}\n- Timed out: ${m.timed_out}\n- Other: ${m.other}\n- Avg duration: ${fmtDur(m.avg_duration_ms)}\n- Pass rate: ${m.pass_rate_pct}%\n\nTL;DR — ${m.pass_rate_pct}% pass • avg ${fmtDur(m.avg_duration_ms)} over ${m.total} runs\n`;
+}
+
 async function rotateLatest(allInfos) {
   const sorted = [...allInfos].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   const keep = sorted.slice(0, MAX_ON_REPO);
@@ -182,6 +203,12 @@ async function main() {
   }
   await rotateLatest(infos);
   await appendEvidence(evid);
+  // RSI metrics
+  const metrics = computeMetrics(runs);
+  if (!DRY_RUN) {
+    await fsp.writeFile(RSI_JSON, JSON.stringify(metrics, null, 2), 'utf8');
+    await fsp.writeFile(RSI_MD, rsiMd(metrics), 'utf8');
+  }
   await appendBossCatLog(`Run archiver updated ${infos.length} reports; rotated latest to ${Math.min(infos.length, MAX_ON_REPO)}.`);
   console.log('Done.');
 }
@@ -190,4 +217,3 @@ main().catch(err => {
   console.error(err);
   process.exit(1);
 });
-
