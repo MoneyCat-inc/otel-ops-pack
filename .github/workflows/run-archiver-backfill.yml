@@ -40,13 +40,17 @@ jobs:
           REPO="${{ github.repository }}"
           KEEP="${{ github.event.inputs.max_keep }}"
           
-          # Get timestamp of Nth newest run
-          cutoff=$(gh run list -R "$REPO" --limit "$KEEP" --json createdAt -q '.[-1].createdAt')
+          # Get timestamp of Nth newest run using API directly
+          cutoff=$(curl -s -H "Authorization: token $GH_TOKEN" \
+            "https://api.github.com/repos/$REPO/actions/runs?per_page=$KEEP&page=1" \
+            | jq -r ".workflow_runs[-1].created_at")
           echo "value=$cutoff" >> "$GITHUB_OUTPUT"
           echo "Cutoff timestamp: $cutoff"
           
-          # Count how many runs are older (rough estimate)
-          total=$(gh api -R "$REPO" '/repos/{owner}/{repo}/actions/runs?per_page=1' -q '.total_count')
+          # Count total runs
+          total=$(curl -s -H "Authorization: token $GH_TOKEN" \
+            "https://api.github.com/repos/$REPO/actions/runs?per_page=1" \
+            | jq -r '.total_count')
           count_older=$((total - KEEP))
           echo "count=$count_older" >> "$GITHUB_OUTPUT"
           echo "Estimated runs to archive: $count_older"
@@ -87,11 +91,14 @@ jobs:
           set -euo pipefail
           mkdir -p BRAV/SCPT/run-archiver/tmp
           
-          # Fetch all older runs (paginated)
-          gh api -R "$REPO" --paginate \
-            '/repos/{owner}/{repo}/actions/runs?per_page=100&status=completed' \
-            -q '.workflow_runs[] | select(.created_at < "'"$CUTOFF"'") | .id' \
-            > all_older.txt
+          # Fetch older runs using curl (paginated - up to 10 pages = 1000 runs)
+          touch all_older.txt
+          for page in {1..10}; do
+            curl -s -H "Authorization: token $GH_TOKEN" \
+              "https://api.github.com/repos/$REPO/actions/runs?per_page=100&status=completed&page=$page" \
+              | jq -r '.workflow_runs[] | select(.created_at < "'"$CUTOFF"'") | .id' \
+              >> all_older.txt || break
+          done
           
           # Deterministic sharding by line number
           nl -ba all_older.txt | awk -v s="$SHARDS" -v i="$SHARD_INDEX" '($1-1)%s==i {print $2}' > shard_ids.txt
@@ -112,15 +119,18 @@ jobs:
             echo "Processing run $id..."
             
             # 1) Run metadata
-            gh api -R "$REPO" "/repos/{owner}/{repo}/actions/runs/$id" \
+            curl -s -H "Authorization: token $GH_TOKEN" \
+              "https://api.github.com/repos/$REPO/actions/runs/$id" \
               > "BRAV/SCPT/run-archiver/tmp/$id.run.json"
             
             # 2) Jobs (for TLDR)
-            gh api -R "$REPO" "/repos/{owner}/{repo}/actions/runs/$id/jobs?per_page=100" \
+            curl -s -H "Authorization: token $GH_TOKEN" \
+              "https://api.github.com/repos/$REPO/actions/runs/$id/jobs?per_page=100" \
               > "BRAV/SCPT/run-archiver/tmp/$id.jobs.json"
             
             # 3) Artifacts inventory
-            gh api -R "$REPO" "/repos/{owner}/{repo}/actions/runs/$id/artifacts?per_page=100" \
+            curl -s -H "Authorization: token $GH_TOKEN" \
+              "https://api.github.com/repos/$REPO/actions/runs/$id/artifacts?per_page=100" \
               > "BRAV/SCPT/run-archiver/tmp/$id.artifacts.json"
             
             # 4) Generate MD report using archiver summarize command
@@ -197,7 +207,9 @@ jobs:
           while read -r id; do
             i=$((i+1))
             echo "[$i/$total] Deleting run $id..."
-            gh api -R "$REPO" -X DELETE "/repos/{owner}/{repo}/actions/runs/$id" || echo "Failed to delete $id (may already be deleted)"
+            curl -s -X DELETE -H "Authorization: token $GH_TOKEN" \
+              "https://api.github.com/repos/$REPO/actions/runs/$id" \
+              || echo "Failed to delete $id (may already be deleted)"
             
             # Sleep 1 second between DELETE requests (GitHub best practice)
             # https://docs.github.com/en/rest/using-the-rest-api/best-practices-for-using-the-rest-api#pause-between-mutative-requests
@@ -215,12 +227,16 @@ jobs:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Confirm count ≈ max_keep
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           REPO="${{ github.repository }}"
           KEEP="${{ github.event.inputs.max_keep }}"
           
           # Count remaining runs
-          total=$(gh api -R "$REPO" '/repos/{owner}/{repo}/actions/runs?per_page=1' -q '.total_count')
+          total=$(curl -s -H "Authorization: token $GH_TOKEN" \
+            "https://api.github.com/repos/$REPO/actions/runs?per_page=1" \
+            | jq -r '.total_count')
           
           echo "Target runs: $KEEP"
           echo "Actual runs: $total"
