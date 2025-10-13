@@ -1,12 +1,12 @@
 # IONA Gate - BossCat Verdict
 
-**Gate:** `IONA` • **Site:** `ci`
-**Budgets:** Files 🟢 **1/10** • LOC 🟢 **4/200**
+**Gate:** `IONA` • **Site:** `prod`
+**Budgets:** Files 🟢 **2/10** • LOC 🟢 **716/2000**
 **ECRR:** evidence ✅ • contain ✅ • rollback plan ✅ • report ✅
 
 - **Verdict**: READY
-- **Timestamp**: 2025-10-13 08:55:51 +01:00
-- **Commit**: 09b0238f
+- **Timestamp**: 2025-10-13 13:37:14 +01:00
+- **Commit**: e6ade399
 - **Branch**: main
 
 ## Reasons

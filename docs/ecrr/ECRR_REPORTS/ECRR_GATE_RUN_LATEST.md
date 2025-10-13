@@ -1,10 +1,10 @@
 # ECRR Gate Run - BossCat Decision
 
-Timestamp: 2025-10-13 08:55:51 +01:00
-Commit: 09b0238f
+Timestamp: 2025-10-13 13:37:13 +01:00
+Commit: e6ade399
 Branch: main
 Gate: IONA
-Site: ci
+Site: prod
 Working Dir: C:\otel
 
 ## Examine
@@ -18,7 +18,7 @@ Working Dir: C:\otel
 - docs/status.html - present
 - docs/status/tests.json - present
 - index.html - present
-- queue-steward-verification.txt - missing
+- queue-steward-verification.txt - present
 - scripts/benchmark-process-all-ecrr-reports.ps1 - present
 - signoz.ts - present
 
