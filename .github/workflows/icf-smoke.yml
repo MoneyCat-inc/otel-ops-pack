@@ -23,16 +23,12 @@ jobs:
         run: |
           ./BRAV/SCPT/icf-smoke.ps1 -VerboseMode
 
-      - name: Commit evidence
+      - name: Upload evidence artifact
         if: always()
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add CHAR/EVID/artifacts/icf-smoke || true
-          if git diff --cached --quiet; then
-            echo "No evidence changes."
-          else
-            git commit -m "docs(ecrr): ICF smoke evidence update [skip ci]"
-            git push
-          fi
+        uses: actions/upload-artifact@v4
+        with:
+          name: icf-smoke-evidence-${{ github.run_number }}
+          path: CHAR/EVID/artifacts/icf-smoke/
+          retention-days: 14
+          if-no-files-found: warn
 
