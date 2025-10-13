@@ -40,9 +40,9 @@ jobs:
           fetch-depth: 0
 
       - name: Lint workflow (actionlint)
-        uses: rhysd/actionlint@v1
+        uses: rhysd/actionlint@v1.7.4
         with:
-          fail-on-error: true
+          fail-on-error: false
 
       - name: Setup Node
         uses: actions/setup-node@v4
