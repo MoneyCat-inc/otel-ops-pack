@@ -1,0 +1,150 @@
+name: Gate & Site Evidence (Non-Merging)
+
+on:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      gate_base_url:
+        description: 'Base URL for k6 perf gate'
+        required: false
+        default: 'http://localhost:3000'
+      otlp_http:
+        description: 'OTLP HTTP endpoint for synthetic trace'
+        required: false
+        default: 'http://localhost:14318/v1/traces'
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  gate_perf:
+    name: Gate • k6 thresholds
+    runs-on: ubuntu-latest
+    env:
+      GATE_BASE_URL: ${{ inputs.gate_base_url || vars.GATE_BASE_URL || 'http://localhost:3000' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+      - run: pnpm install
+      - name: Run k6 perf
+        uses: grafana/k6-action@v0.2.0
+        env:
+          GATE_BASE_URL: ${{ env.GATE_BASE_URL }}
+        with:
+          script: ./tests/perf/gate.js
+          flags: --summary-export artifacts/ecrr/gate/k6-summary.json
+      - name: Collect k6 summary & verdict
+        if: always()
+        run: |
+          mkdir -p artifacts/ecrr/gate
+          test -s artifacts/ecrr/gate/k6-summary.json || echo '{}' > artifacts/ecrr/gate/k6-summary.json
+          echo "{\"verdict\":\"${{ job.status == 'success' && 'PASS' || 'FAIL' }}\"}" > artifacts/ecrr/gate/perf-verdict.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ecrr-gate-perf
+          path: artifacts/ecrr/gate/
+
+  gate_trace:
+    name: Gate • synthetic trace (OTLP/HTTP)
+    runs-on: ubuntu-latest
+    env:
+      OTLP_HTTP: ${{ inputs.otlp_http || vars.OTLP_HTTP || 'http://localhost:4318/v1/traces' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+      - run: pnpm install
+      - name: Start minimal OTel Collector (logging exporter)
+        run: |
+          cat > collector.yaml <<'YML'
+          receivers:
+            otlp:
+              protocols:
+                http:
+                  endpoint: 0.0.0.0:4318
+          exporters:
+            logging:
+              loglevel: debug
+          service:
+            pipelines:
+              traces:
+                receivers: [otlp]
+                exporters: [logging]
+          YML
+          docker run -d --name otelcol -p 4318:4318 -v "$PWD/collector.yaml:/etc/otelcol/config.yaml" otel/opentelemetry-collector:0.106.0
+          sleep 2
+      - name: Emit synthetic span
+        run: |
+          mkdir -p artifacts/ecrr/gate
+          pnpm dlx tsx scripts/synth-trace.ts | tee artifacts/ecrr/gate/trace-log.txt
+      - name: Collector logs → evidence
+        if: always()
+        run: |
+          mkdir -p artifacts/ecrr/gate
+          docker logs otelcol --since=2m > artifacts/ecrr/gate/otelcol.log || true
+          grep -q "Exporting span" artifacts/ecrr/gate/otelcol.log && echo '{"verdict":"PASS"}' > artifacts/ecrr/gate/trace-verdict.json || echo '{"verdict":"HOLD"}' > artifacts/ecrr/gate/trace-verdict.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ecrr-gate-trace
+          path: artifacts/ecrr/gate/
+
+  site_checks:
+    name: Site • links + a11y + CSP (coarse)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+      - run: pnpm install
+      - name: Serve docs
+        run: |
+          pnpm dlx http-server ./docs -p 5173 -s >/dev/null 2>&1 &
+          sleep 2
+      - name: Link check (internal)
+        run: |
+          mkdir -p artifacts/ecrr/site
+          pnpm dlx linkinator http://localhost:5173/ --recurse --retry 2 --format json > artifacts/ecrr/site/links.json || true
+      - name: Accessibility (critical/severe only)
+        run: |
+          pnpm dlx @axe-core/cli http://localhost:5173/docs/status.html -q -o artifacts/ecrr/site/axe.json || true
+      - name: CSP coarse check
+        run: |
+          node -e "const fs=require('fs');const g=[...fs.readFileSync('docs/status.html','utf8').matchAll(/<script(?![^>]*src=)/g)].length;fs.writeFileSync('artifacts/ecrr/site/csp.json',JSON.stringify({inlineScripts:g,verdict:g===0?'PASS':'HOLD'}))"
+      - name: Verdict
+        run: |
+          # HOLD if broken links or critical a11y or inline scripts found
+          (jq -e '.links[]?|select(.state!="OK")' artifacts/ecrr/site/links.json >/dev/null 2>&1) && L=HOLD || L=PASS
+          (jq -e '.violations[]?|select(.impact=="critical" or .impact=="serious")' artifacts/ecrr/site/axe.json >/dev/null 2>&1) && A=HOLD || A=PASS
+          C=$(jq -r '.verdict' artifacts/ecrr/site/csp.json 2>/dev/null || echo HOLD)
+          echo "{\"links\":\"$L\",\"a11y\":\"$A\",\"csp\":\"$C\"}" > artifacts/ecrr/site/site-verdict.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ecrr-site
+          path: artifacts/ecrr/site/
+
+  publish_status:
+    name: Publish status bundle to Pages (no trunk writes)
+    runs-on: ubuntu-latest
+    needs: [gate_perf, gate_trace, site_checks]
+    steps:
+      - uses: actions/download-artifact@v4
+        with: { name: ecrr-gate-perf, path: out/gate }
+      - uses: actions/download-artifact@v4
+        with: { name: ecrr-gate-trace, path: out/gate }
+      - uses: actions/download-artifact@v4
+        with: { name: ecrr-site, path: out/site }
+      - name: Assemble LATEST.{json,md}
+        run: |
+          mkdir -p status
+          PERF=$(jq -r '.verdict' out/gate/perf-verdict.json 2>/dev/null || echo HOLD)
+          TRACE=$(jq -r '.verdict' out/gate/trace-verdict.json 2>/dev/null || echo HOLD)
+          SITE=$(cat out/site/site-verdict.json 2>/dev/null || echo '{"links":"HOLD","a11y":"HOLD","csp":"HOLD"}')
+          echo "{\"gate\":{\"perf\":\"$PERF\",\"trace\":\"$TRACE\"},\"site\":$SITE}" > status/LATEST.json
+          printf "# Gate & Site Evidence\n\n- Gate/perf: %s\n- Gate/trace: %s\n- Site: %s\n" "$PERF" "$TRACE" "$SITE" > status/LATEST.md
+      - uses: actions/upload-pages-artifact@v3
+        with: { path: status }
+      - id: deploy
+        uses: actions/deploy-pages@v4
