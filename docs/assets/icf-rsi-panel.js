@@ -97,6 +97,40 @@
           const ce = (roll.chaosEvents != null ? String(roll.chaosEvents) : '0');
           p.textContent = `ICF rollup: throughput ${tp} • error ${er} • chaos ${ce}`;
           host.appendChild(p);
+
+          // --- ICFX: staleness hint (24h) ---
+          (function(){
+            const STALE_TTL_MS = 24 * 60 * 60 * 1000; // 24h
+            try {
+              // Ensure a dedicated rollup panel exists
+              let panel = document.getElementById('icf-rollup');
+              if (!panel) {
+                panel = document.createElement('div');
+                panel.id = 'icf-rollup';
+                host.appendChild(panel);
+              }
+              const tsMs = new Date(roll.timestamp).getTime();
+              if (Number.isFinite(tsMs)) {
+                const ageMs = Date.now() - tsMs;
+                const stale = ageMs > STALE_TTL_MS;
+                panel.toggleAttribute('data-stale', !!stale);
+                let hint = panel.querySelector('.stale-hint');
+                if (!hint) {
+                  hint = document.createElement('small');
+                  hint.className = 'stale-hint';
+                  hint.setAttribute('aria-live', 'polite');
+                  panel.appendChild(hint);
+                }
+                if (stale) {
+                  const hours = Math.max(0, Math.floor(ageMs / 3600000));
+                  hint.textContent = `stale ${hours}h`;
+                } else {
+                  hint.textContent = '';
+                }
+              }
+            } catch (_) {}
+          })();
+          // --- end ICFX ---
         }
       }
     } catch (_) { /* no-op */ }

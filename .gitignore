@@ -1,5 +1,13 @@
 # BossCat guardrails - ephemeral/build outputs (use DELT/ARTF/ for evidence)
-artifacts/
+# Default: ignore artifacts
+artifacts/**
+# ICF artifacts: keep live baseline + archived demos
+!artifacts/icf/
+artifacts/icf/*
+!artifacts/icf/rollup.json
+!artifacts/icf/rollup.demo-*.json
+# ECRR evidence under artifacts remains untracked
+artifacts/ecrr/**
 
 # Forbidden legacy roots - migrated to tetragram structure
 config/
