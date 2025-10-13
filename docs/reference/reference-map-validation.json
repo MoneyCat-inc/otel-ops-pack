@@ -1,7 +1,6 @@
 {
   "ok": true,
-  "generated_at": "${NOW}
-  ",
+  "generated_at": "${NOW}",
   "counts": {
     "missing": 0,
     "nodes": 0,
