@@ -190,6 +190,58 @@ async function appendBossCatLog(message) {
   if (!DRY_RUN) await fsp.writeFile(logPath, out, 'utf8');
 }
 
+async function summarize(runId, runJsonPath, jobsJsonPath, artifactsJsonPath) {
+  const run = JSON.parse(await fsp.readFile(runJsonPath, 'utf8'));
+  const jobsData = JSON.parse(await fsp.readFile(jobsJsonPath, 'utf8'));
+  const artifactsData = JSON.parse(await fsp.readFile(artifactsJsonPath, 'utf8'));
+  
+  const jobs = jobsData.jobs || [];
+  const artifacts = artifactsData.artifacts || [];
+  
+  // Generate TL;DR
+  const failures = jobs.flatMap(j =>
+    (j.steps || []).filter(s => s.conclusion && s.conclusion !== 'success')
+      .map(s => ({ job: j.name, step: s.name, conclusion: s.conclusion }))
+  );
+  const status = failures.length ? '❌ FAIL' : '✅ PASS';
+  
+  // Build MD report
+  const y = new Date(run.created_at).getUTCFullYear();
+  const m = String(new Date(run.created_at).getUTCMonth() + 1).padStart(2, '0');
+  const archDir = path.join(OUT_ARCH, String(y), String(m));
+  ensureDir(archDir);
+  ensureDir(OUT_BADGES);
+  
+  const badgeFile = path.join(OUT_BADGES, `run-${run.id}.svg`);
+  const badgeRel = `../../badges/run-${run.id}.svg`;
+  
+  const md = `# Run ${run.id} — ${status}
+
+![](${badgeRel})
+
+**Workflow**: ${run.name || 'unknown'}  
+**Event**: \`${run.event}\` • **Actor**: @${run.actor?.login || 'unknown'}  
+**When**: ${iso(run.created_at)} • **Branch**: \`${run.head_branch}\` • **SHA**: \`${run.head_sha?.slice(0,7)}\`  
+**Jobs**: ${jobs.length} • **Conclusion**: \`${run.conclusion || run.status}\`
+
+${failures.length ? `### Failing steps\n${failures.map(f => `- ${f.job} › ${f.step} — \`${f.conclusion}\``).join('\n')}\n` : ''}
+### Artifacts
+${artifacts.map(a => `- ${a.name} (${a.size_in_bytes} bytes, expired: ${a.expired})`).join('\n') || '_none_'}
+
+---
+**TL;DR:** ${status} — ${failures.length ? `${failures.length} failing step(s)` : 'all green'}.  
+<sub>Archived by BossCat run-archiver backfill.</sub>
+`;
+  
+  const mdPath = path.join(archDir, `run-${run.id}.md`);
+  const svg = badgeSvg('Run', (run.conclusion || run.status || 'unknown').toUpperCase(), statusColor(run.conclusion));
+  
+  await fsp.writeFile(badgeFile, svg, 'utf8');
+  await fsp.writeFile(mdPath, md, 'utf8');
+  
+  console.log(`Archived run ${run.id} → ${mdPath}`);
+}
+
 async function main() {
   console.log(`Archiving runs for ${owner}/${repo} … MAX_ON_REPO=${MAX_ON_REPO} DRY_RUN=${DRY_RUN}`);
   ensureDir(OUT_ARCH); ensureDir(OUT_LATEST); ensureDir(OUT_BADGES); ensureDir(EVID_ROOT);
@@ -213,7 +265,16 @@ async function main() {
   console.log('Done.');
 }
 
-main().catch(err => {
-  console.error(err);
-  process.exit(1);
-});
+// CLI dispatch
+const args = process.argv.slice(2);
+if (args[0] === 'summarize' && args.length === 5) {
+  summarize(args[1], args[2], args[3], args[4]).catch(err => {
+    console.error(err);
+    process.exit(1);
+  });
+} else {
+  main().catch(err => {
+    console.error(err);
+    process.exit(1);
+  });
+}

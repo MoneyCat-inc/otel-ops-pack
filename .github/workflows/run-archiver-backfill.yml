@@ -1,0 +1,238 @@
+name: Run Archiver Backfill & Prune
+
+on:
+  workflow_dispatch:
+    inputs:
+      max_keep:
+        description: "How many newest runs to keep in Actions UI"
+        required: true
+        default: "100"
+      shards:
+        description: "Number of parallel shards (1-16)"
+        required: true
+        default: "8"
+      dry_run:
+        description: "true = archive only (no deletions)"
+        required: true
+        default: "true"
+        type: choice
+        options:
+          - "true"
+          - "false"
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: archiver-backfill
+  cancel-in-progress: false
+
+jobs:
+  compute-cutoff:
+    name: Determine cutoff timestamp
+    runs-on: ubuntu-latest
+    outputs:
+      cutoff: ${{ steps.cutoff.outputs.value }}
+      count_older: ${{ steps.cutoff.outputs.count }}
+    steps:
+      - name: Compute cutoff (100th run timestamp)
+        id: cutoff
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          REPO="${{ github.repository }}"
+          KEEP="${{ github.event.inputs.max_keep }}"
+          
+          # Get timestamp of Nth newest run
+          cutoff=$(gh run list -R "$REPO" --limit "$KEEP" --json createdAt -q '.[-1].createdAt')
+          echo "value=$cutoff" >> "$GITHUB_OUTPUT"
+          echo "Cutoff timestamp: $cutoff"
+          
+          # Count how many runs are older (rough estimate)
+          total=$(gh api -R "$REPO" '/repos/{owner}/{repo}/actions/runs?per_page=1' -q '.total_count')
+          count_older=$((total - KEEP))
+          echo "count=$count_older" >> "$GITHUB_OUTPUT"
+          echo "Estimated runs to archive: $count_older"
+
+  shard:
+    name: Archive shard ${{ matrix.shard }}
+    needs: compute-cutoff
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: ${{ fromJSON(github.event.inputs.shards) }}
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+    if: ${{ matrix.shard < fromJSON(github.event.inputs.shards) }}
+    env:
+      REPO: ${{ github.repository }}
+      SHARDS: ${{ github.event.inputs.shards }}
+      SHARD_INDEX: ${{ matrix.shard }}
+      CUTOFF: ${{ needs.compute-cutoff.outputs.cutoff }}
+      DRY_RUN: ${{ github.event.inputs.dry_run }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: BRAV/SCPT/run-archiver/package-lock.json
+
+      - name: Install dependencies
+        working-directory: BRAV/SCPT/run-archiver
+        run: npm ci
+
+      - name: Gather run IDs older than cutoff (this shard)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          mkdir -p BRAV/SCPT/run-archiver/tmp
+          
+          # Fetch all older runs (paginated)
+          gh api -R "$REPO" --paginate \
+            '/repos/{owner}/{repo}/actions/runs?per_page=100&status=completed' \
+            -q '.workflow_runs[] | select(.created_at < "'"$CUTOFF"'") | .id' \
+            > all_older.txt
+          
+          # Deterministic sharding by line number
+          nl -ba all_older.txt | awk -v s="$SHARDS" -v i="$SHARD_INDEX" '($1-1)%s==i {print $2}' > shard_ids.txt
+          
+          count=$(wc -l < shard_ids.txt)
+          echo "Shard $SHARD_INDEX: $count runs to archive"
+          echo "shard_count=$count" >> "$GITHUB_ENV"
+
+      - name: Analyze & archive runs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          mkdir -p CHAR/EVID/artifacts/ecrr/arch
+          touch archived_ids.txt
+          
+          while read -r id; do
+            echo "Processing run $id..."
+            
+            # 1) Run metadata
+            gh api -R "$REPO" "/repos/{owner}/{repo}/actions/runs/$id" \
+              > "BRAV/SCPT/run-archiver/tmp/$id.run.json"
+            
+            # 2) Jobs (for TLDR)
+            gh api -R "$REPO" "/repos/{owner}/{repo}/actions/runs/$id/jobs?per_page=100" \
+              > "BRAV/SCPT/run-archiver/tmp/$id.jobs.json"
+            
+            # 3) Artifacts inventory
+            gh api -R "$REPO" "/repos/{owner}/{repo}/actions/runs/$id/artifacts?per_page=100" \
+              > "BRAV/SCPT/run-archiver/tmp/$id.artifacts.json"
+            
+            # 4) Generate MD report using archiver summarize command
+            node BRAV/SCPT/run-archiver/index.mjs summarize \
+              "$id" \
+              "BRAV/SCPT/run-archiver/tmp/$id.run.json" \
+              "BRAV/SCPT/run-archiver/tmp/$id.jobs.json" \
+              "BRAV/SCPT/run-archiver/tmp/$id.artifacts.json"
+            
+            # 5) Evidence ledger append
+            jq -c --arg id "$id" --arg when "$(date -u +%FT%TZ)" --arg shard "$SHARD_INDEX" \
+              '{type:"backfill-archive", run_id:$id, archived_at:$when, shard:$shard, actor:.actor.login, status:.status, conclusion:.conclusion, created_at:.created_at}' \
+              "BRAV/SCPT/run-archiver/tmp/$id.run.json" \
+              >> CHAR/EVID/artifacts/ecrr/arch/EVIDENCE.jsonl
+            
+            echo "$id" >> archived_ids.txt
+            
+            # Rate limiting (be gentle with GETs too)
+            sleep 0.5
+          done < shard_ids.txt
+
+      - name: Commit shard artifacts
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ -s archived_ids.txt ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add docs/BossCat/run-reports/archived CHAR/EVID/artifacts/ecrr/arch/EVIDENCE.jsonl || true
+            
+            count=$(wc -l < archived_ids.txt)
+            git commit -m "docs(ecrr): backfill shard $SHARD_INDEX - archived $count runs [skip ci]" || echo "No changes"
+            git push
+          fi
+          
+          # Prepare for prune job
+          cp archived_ids.txt "$RUNNER_TEMP/archived_ids_${SHARD_INDEX}.txt"
+
+      - name: Upload shard manifest
+        uses: actions/upload-artifact@v4
+        with:
+          name: archived-ids-${{ matrix.shard }}
+          path: ${{ runner.temp }}/archived_ids_${{ matrix.shard }}.txt
+          retention-days: 7
+
+  prune:
+    name: Prune archived runs from Actions UI
+    needs: shard
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.dry_run == 'false' }}
+    env:
+      REPO: ${{ github.repository }}
+    steps:
+      - name: Download all shard manifests
+        uses: actions/download-artifact@v4
+        with:
+          pattern: archived-ids-*
+          merge-multiple: true
+
+      - name: Merge manifests & delete runs (1/sec rate-safe)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          
+          # Merge all shard manifests
+          cat archived_ids_*.txt 2>/dev/null | sort -n | uniq > to_delete.txt || touch to_delete.txt
+          
+          total=$(wc -l < to_delete.txt)
+          echo "Will delete $total runs from Actions UI (rate: 1/sec)"
+          
+          # Delete runs with 1-second delay (GitHub best practice for secondary rate limits)
+          i=0
+          while read -r id; do
+            i=$((i+1))
+            echo "[$i/$total] Deleting run $id..."
+            gh api -R "$REPO" -X DELETE "/repos/{owner}/{repo}/actions/runs/$id" || echo "Failed to delete $id (may already be deleted)"
+            
+            # Sleep 1 second between DELETE requests (GitHub best practice)
+            # https://docs.github.com/en/rest/using-the-rest-api/best-practices-for-using-the-rest-api#pause-between-mutative-requests
+            sleep 1
+          done < to_delete.txt
+          
+          echo "Pruning complete: $total runs deleted"
+
+  verify:
+    name: Verify final run count
+    needs: prune
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.dry_run == 'false' }}
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Confirm count ≈ max_keep
+        run: |
+          REPO="${{ github.repository }}"
+          KEEP="${{ github.event.inputs.max_keep }}"
+          
+          # Count remaining runs
+          total=$(gh api -R "$REPO" '/repos/{owner}/{repo}/actions/runs?per_page=1' -q '.total_count')
+          
+          echo "Target runs: $KEEP"
+          echo "Actual runs: $total"
+          
+          if [ "$total" -le "$((KEEP + 50))" ]; then
+            echo "✅ SUCCESS: Run count within acceptable range"
+          else
+            echo "⚠️ WARNING: Run count higher than expected (may need another pass)"
+          fi
+
