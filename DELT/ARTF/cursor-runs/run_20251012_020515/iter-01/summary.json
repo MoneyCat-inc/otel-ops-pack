@@ -1,0 +1,24 @@
+{
+  "iteration": 1,
+  "timestamp": "2025-10-12T02:05:23+01:00",
+  "site": "local",
+  "gate": "IONA",
+  "ui": {
+    "body": "{\"status\":\"ok\"}",
+    "target": "http://127.0.0.1:8080/api/v1/health",
+    "ok": true,
+    "status": 200
+  },
+  "collector": {
+    "body": "",
+    "target": "",
+    "ok": false,
+    "status": 0
+  },
+  "synthetic": {
+    "exitCode": 0,
+    "attempted": true,
+    "ok": true
+  },
+  "gate_verdict": "READY"
+}

@@ -1,0 +1,27 @@
+{
+  "timestamp": "2025-10-12T02:10:29+01:00",
+  "commit": "2fb7ea3",
+  "branch": "docs/status-footer-audit-closeout-link",
+  "gate": "IONA",
+  "site": "local",
+  "verdict": "READY",
+  "reasons": [],
+  "tests": {
+    "total": 0,
+    "failed": 0
+  },
+  "checks": {
+    "signoz.ts": "present",
+    "docs/observability/snapshots": "present",
+    "scripts/benchmark-process-all-ecrr-reports.ps1": "missing",
+    "index.html": "present",
+    "docs/status/tests.json": "present",
+    "docs/cheatsheets": "present",
+    "docs/BossCat/README.md": "present",
+    "docs/status.html": "present",
+    "docs/ecrr/ECRR_REPORTS": "present",
+    "docs/IONA_ERRORS.md": "present",
+    "queue-steward-verification.txt": "present",
+    ".github/workflows/bosscat-gate-verify.yml": "present"
+  }
+}
