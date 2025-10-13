@@ -20,7 +20,7 @@ permissions:
 
 jobs:
   gate_perf:
-    name: Gate • k6 thresholds
+    name: "Gate • k6 thresholds"
     runs-on: ubuntu-latest
     env:
       GATE_BASE_URL: ${{ inputs.gate_base_url || vars.GATE_BASE_URL || 'http://localhost:3000' }}
@@ -59,7 +59,7 @@ jobs:
           path: artifacts/ecrr/gate/
 
   gate_trace:
-    name: Gate • synthetic trace (OTLP/HTTP)
+    name: "Gate • synthetic trace (OTLP/HTTP)"
     runs-on: ubuntu-latest
     env:
       OTLP_HTTP: ${{ inputs.otlp_http || vars.OTLP_HTTP || 'http://localhost:4318/v1/traces' }}
@@ -114,7 +114,7 @@ jobs:
           path: artifacts/ecrr/gate/
 
   site_checks:
-    name: Site • links + a11y + CSP (coarse)
+    name: "Site • links + a11y + CSP (coarse)"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
