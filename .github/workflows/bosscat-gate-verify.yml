@@ -41,8 +41,7 @@ jobs:
 
       - name: Lint workflow (actionlint)
         uses: rhysd/actionlint@v1.7.4
-        with:
-          fail-on-error: false
+        continue-on-error: true
 
       - name: Setup Node
         uses: actions/setup-node@v4
