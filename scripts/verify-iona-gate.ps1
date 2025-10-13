@@ -50,7 +50,7 @@ function New-EcrrReport([string]$Verdict,[string[]]$Reasons,[hashtable]$Checks){
   $content | Set-Content -Path (Join-Path $dir 'ECRR_GATE_RUN_LATEST.md') -Encoding utf8
   return $name
 }
-function Write-PrComment([string]$Verdict,[string[]]$Reasons,[string]$OutputPath){
+function Write-PrComment([string]$Verdict,[string[]]$Reasons,[string]$OutputPath,[hashtable]$Checks=$null){
   $g = Get-GitMeta
   $ts = Get-Date -Format 'yyyy-MM-dd HH:mm:ss K'
   
@@ -73,8 +73,14 @@ function Write-PrComment([string]$Verdict,[string[]]$Reasons,[string]$OutputPath
   $filePill = if ($fileCount -ge ($maxFiles * $stickyPct)) { '🟡' } else { '🟢' }
   $locPill = if ($locCount -ge ($maxLOC * $stickyPct)) { '🟡' } else { '🟢' }
   $budgetLine = "**Budgets:** Files $filePill **$fileCount/$maxFiles** • LOC $locPill **$locCount/$maxLOC**"
-  if ($fileCount -ge ($maxFiles * $stickyPct) -or $locCount -ge ($maxLOC * $stickyPct)) {
+  $isSticky = ($fileCount -ge ($maxFiles * $stickyPct) -or $locCount -ge ($maxLOC * $stickyPct))
+  if ($isSticky) {
     $budgetLine += " • ⚠️ *sticky warn at ≥80%*"
+    # P2: Add first failing gate name for faster triage
+    if ($Checks -and $Verdict -ne 'READY') {
+      $firstFail = ($Checks.Keys | Where-Object { $Checks[$_] -eq 'missing' } | Select-Object -First 1)
+      if ($firstFail) { $budgetLine += " • **First fail:** ``$firstFail``" }
+    }
   }
   
   $lines = @(
@@ -136,6 +142,6 @@ $out=[ordered]@{ timestamp=$tsIso; commit=$g.Commit; branch=$g.Branch; gate=$Gat
 ($out|ConvertTo-Json -Depth 6)|Set-Content -Path $OutputJson -Encoding utf8
 if (Get-Command Update-BossCatProgress -ErrorAction SilentlyContinue) { Update-BossCatProgress -Phase 'Writing ECRR & PR comment' -CompletedSeconds 16 }
 $report=New-EcrrReport -Verdict $verdict -Reasons @($reasons) -Checks $checks
-Write-PrComment -Verdict $verdict -Reasons @($reasons) -OutputPath $PrCommentPath
+Write-PrComment -Verdict $verdict -Reasons @($reasons) -OutputPath $PrCommentPath -Checks $checks
 if (Get-Command Complete-BossCatProgress -ErrorAction SilentlyContinue) { Complete-BossCatProgress }
 if($verdict -eq 'NOT_READY' -and -not $NoFailOnMissing){ exit 2 } else { exit 0 }

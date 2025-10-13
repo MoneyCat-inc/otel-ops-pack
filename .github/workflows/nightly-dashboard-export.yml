@@ -142,32 +142,42 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          LAST7=$(git log --since='7 days ago' --pretty=format:'%H' | wc -l || true)
-          CONV=1.0
-          SELF=0
-          UTURN=0
-          KB=$(grep -E '^-\s' docs/BossCat/BOSSCAT_LOG.md 2>/dev/null | wc -l || true)
-          OVER=0.0
-          UTURN=$(grep -Rci "rollback" .agent 2>/dev/null || true)
-          SELF=$(grep -Rci "self-heal" .agent 2>/dev/null || true)
+          # RSI Metrics Extractor v0.1 - Real convergence from evidence
+          
+          # Convergence rate: READY gates / total gates from ECRR benchmark
+          if [ -f "DELT/ARTF/ecrr-benchmark.json" ]; then
+            READY=$(jq -r '.ready // 0' DELT/ARTF/ecrr-benchmark.json)
+            TOTAL=$(jq -r '.total // 1' DELT/ARTF/ecrr-benchmark.json)
+            CONV=$(awk "BEGIN {printf \"%.2f\", ${READY}/${TOTAL}}")
+          else
+            CONV=0.0
+          fi
+          
+          # U-turns: rollback/revert commits in last 7 days
+          UTURN=$(git log --since='7 days ago' --oneline --grep='revert' --grep='rollback' -i | wc -l || true)
+          
+          # Self-heals: auto-fix mentions in ECRR reports (7 days)
+          SELF=$(find docs/ecrr/ECRR_REPORTS -name "*.md" -mtime -7 -exec grep -ci 'self-heal\|auto-fix\|auto-remediation' {} + 2>/dev/null | awk '{sum+=$1} END {print sum+0}')
+          
+          # KB coverage: one-liner lessons in BossCat log
+          KB=$(grep -cE '^(- |## )[0-9]{4}-[0-9]{2}-[0-9]{2}' docs/BossCat/BOSSCAT_LOG.md 2>/dev/null || true)
+          
+          # RSI overhead: U-turns as % of total commits (7 days)
+          COMMITS_7D=$(git log --since='7 days ago' --oneline | wc -l || true)
+          OVER=$(awk "BEGIN {if (${COMMITS_7D}>0) printf \"%.1f\", (${UTURN}/${COMMITS_7D})*100; else print 0}")
+          
           mkdir -p docs/status
-          cat > docs/status/metrics.json <<'JSON'
+          cat > docs/status/metrics.json <<JSON
           {
             "version": 1,
-            "generated_at": "__NOW__",
-            "convergence_rate_7d": __CONV__,
-            "self_heals_7d": __SELF__,
-            "u_turns_7d": __UTURN__,
-            "kb_coverage": __KB__,
-            "rsi_overhead_pct": __OVER__
+            "generated_at": "$(date -u +%FT%TZ)",
+            "convergence_rate_7d": ${CONV},
+            "self_heals_7d": ${SELF},
+            "u_turns_7d": ${UTURN},
+            "kb_coverage": ${KB},
+            "rsi_overhead_pct": ${OVER}
           }
           JSON
-          sed -i "s/__NOW__/$(date -u +%FT%TZ)/" docs/status/metrics.json
-          sed -i "s/__CONV__/${CONV}/" docs/status/metrics.json
-          sed -i "s/__SELF__/${SELF}/" docs/status/metrics.json
-          sed -i "s/__UTURN__/${UTURN}/" docs/status/metrics.json
-          sed -i "s/__KB__/${KB}/" docs/status/metrics.json
-          sed -i "s/__OVER__/${OVER}/" docs/status/metrics.json
 
       - name: Generate queue steward evidence
         if: always()

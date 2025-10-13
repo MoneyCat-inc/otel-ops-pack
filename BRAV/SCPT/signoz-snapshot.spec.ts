@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { waitReady } from "../../ALFA/TEST/unit/smoke/lib/waitReady";
 
 const BASE = process.env.SIGNOZ_URL || "http://localhost:8080";
 const SERVICE = process.env.SERVICE_NAME || "synthetic-windows-check";
@@ -8,10 +9,8 @@ test("SigNoz evidence bundle for synthetic service", async ({ page }) => {
 
   await page.goto(`${BASE}/services`, { waitUntil: "domcontentloaded" });
 
-  // Poll up to 30 tries x 3s = 90s
-  let found = false;
-  for (let i = 0; i < 30; i++) {
-    // Try quick search if available
+  // ICF Heuristic 01: Poll with reusable helper
+  const found = await waitReady(async () => {
     const hasSearch = await page.getByPlaceholder(/search/i).first().count();
     if (hasSearch) {
       await page.getByPlaceholder(/search/i).first().fill(SERVICE);
@@ -19,11 +18,9 @@ test("SigNoz evidence bundle for synthetic service", async ({ page }) => {
     } else {
       await page.reload();
     }
-
     const itemCount = await page.getByText(SERVICE, { exact: false }).count();
-    if (itemCount > 0) { found = true; break; }
-    await page.waitForTimeout(3000);
-  }
+    return itemCount > 0 ? true : null;
+  });
 
   if (!found) test.fail(true, `Service ${SERVICE} not listed yet`);
 
