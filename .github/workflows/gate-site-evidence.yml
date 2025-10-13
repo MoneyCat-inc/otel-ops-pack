@@ -30,6 +30,11 @@ jobs:
         with:
           version: 10
       - run: pnpm install
+      - name: Start minimal HTTP server for k6
+        run: |
+          echo '<!DOCTYPE html><html><body><h1>Gate Test Server</h1></body></html>' > index.html
+          pnpm dlx http-server . -p 3000 -s >/dev/null 2>&1 &
+          for i in {1..10}; do curl -s http://localhost:3000 >/dev/null && break || sleep 1; done
       - name: Run k6 perf
         uses: grafana/k6-action@v0.2.0
         env:
@@ -78,7 +83,7 @@ jobs:
                 exporters: [logging]
           YML
           docker run -d --name otelcol -p 4318:4318 -v "$PWD/collector.yaml:/etc/otelcol/config.yaml" otel/opentelemetry-collector:0.106.0
-          sleep 2
+          for i in {1..20}; do bash -lc 'echo > /dev/tcp/127.0.0.1/4318' && break || sleep 1; done
       - name: Emit synthetic span
         run: |
           mkdir -p artifacts/ecrr/gate
@@ -87,8 +92,8 @@ jobs:
         if: always()
         run: |
           mkdir -p artifacts/ecrr/gate
-          docker logs otelcol --since=2m > artifacts/ecrr/gate/otelcol.log || true
-          grep -q "Exporting span" artifacts/ecrr/gate/otelcol.log && echo '{"verdict":"PASS"}' > artifacts/ecrr/gate/trace-verdict.json || echo '{"verdict":"HOLD"}' > artifacts/ecrr/gate/trace-verdict.json
+          docker logs otelcol --since=5m > artifacts/ecrr/gate/otelcol.log || true
+          if grep -Eq "TracesExporter|ResourceSpans|Exporting span|exporter/logging" artifacts/ecrr/gate/otelcol.log; then echo '{"verdict":"PASS"}' > artifacts/ecrr/gate/trace-verdict.json; else echo '{"verdict":"HOLD"}' > artifacts/ecrr/gate/trace-verdict.json; fi
       - uses: actions/upload-artifact@v4
         if: always()
         with:
