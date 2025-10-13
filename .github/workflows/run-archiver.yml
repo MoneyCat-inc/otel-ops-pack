@@ -1,0 +1,72 @@
+name: Archive & Analyze Workflow Runs
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: run-archiver
+  cancel-in-progress: true
+
+jobs:
+  archive:
+    name: Analyze runs and rotate reports
+    runs-on: ubuntu-latest
+    env:
+      MAX_ON_REPO: ${{ inputs.MAX_ON_REPO || '100' }}
+      DRY_RUN: 'false'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: BRAV/SCPT/run-archiver/package-lock.json
+
+      - name: Install dependencies
+        working-directory: BRAV/SCPT/run-archiver
+        run: |
+          npm ci
+
+      - name: Configure optional AWS credentials
+        if: ${{ secrets.AWS_ROLE_ARN != '' }}
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Run archiver
+        working-directory: BRAV/SCPT/run-archiver
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MAX_ON_REPO: ${{ env.MAX_ON_REPO }}
+          DRY_RUN: ${{ env.DRY_RUN }}
+          AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
+          S3_BUCKET: ${{ secrets.S3_BUCKET }}
+          S3_PREFIX: ${{ secrets.S3_PREFIX }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+        run: |
+          node index.mjs
+
+      - name: Commit changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/BossCat/run-reports CHAR/EVID docs/BossCat/BOSSCAT_LOG.md || true
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "docs(ecrr): run-archiver report update [skip ci]"
+            git push
+          fi
+

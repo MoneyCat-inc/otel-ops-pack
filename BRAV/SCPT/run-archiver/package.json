@@ -1,0 +1,17 @@
+{
+  "name": "run-archiver",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Archive & analyze GitHub Actions workflow runs; keep latest N readable reports, archive the rest.",
+  "scripts": {
+    "start": "node index.mjs",
+    "lint": "echo 'no lint configured'"
+  },
+  "dependencies": {
+    "@octokit/rest": "^20.1.1",
+    "adm-zip": "^0.5.12",
+    "fast-xml-parser": "^4.5.0"
+  }
+}
+
