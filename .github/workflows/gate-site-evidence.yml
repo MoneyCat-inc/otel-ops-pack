@@ -35,7 +35,7 @@ jobs:
         env:
           GATE_BASE_URL: ${{ env.GATE_BASE_URL }}
         with:
-          script: ./tests/perf/gate.js
+          filename: ./tests/perf/gate.js
           flags: --summary-export artifacts/ecrr/gate/k6-summary.json
       - name: Collect k6 summary & verdict
         if: always()
