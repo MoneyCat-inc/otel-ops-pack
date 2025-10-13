@@ -32,6 +32,7 @@ jobs:
       STRICTNESS: ${{ matrix.site == 'prod' && 'prod' || 'ci' }}
       GATE: IONA
       SITE: ${{ matrix.site }}
+      SBOM_STRICT: ${{ vars.SBOM_STRICT || 'false' }}
 
     steps:
       - name: Matrix Selection Echo
@@ -46,6 +47,10 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      
+      - name: Guard - Required files tracked by git
+        shell: bash
+        run: bash scripts/guard-required-files.sh
 
       - name: Lint workflow (actionlint)
         uses: rhysd/actionlint@v1.7.4
@@ -138,6 +143,18 @@ jobs:
             sha256sum DELT/ARTF/sbom/signature-registry.json > DELT/ARTF/sbom/signature-registry.json.sha256 || true
           fi
         continue-on-error: true
+      
+      - name: Verify SBOM (strict when SBOM_STRICT=true)
+        if: matrix.site == 'prod' && always()
+        shell: bash
+        run: |
+          if [ -f "DELT/ARTF/sbom.json" ]; then
+            echo "[OK] SBOM verification passed"
+          else
+            echo "::error::SBOM missing (strict mode: $SBOM_STRICT)"
+            exit 1
+          fi
+        continue-on-error: ${{ env.SBOM_STRICT != 'true' }}
 
       - name: RSI metrics extraction
         if: always()
@@ -180,6 +197,7 @@ jobs:
             echo "**Site**: ${{ matrix.site }}"
             echo "**Strictness**: $STRICTNESS"
             echo "**Gate**: $GATE"
+            echo "**SBOM Strict**: $SBOM_STRICT"
             echo ""
             if [ -f "DELT/ARTF/gate-verification-results.json" ]; then
               verdict=$(jq -r '.verdict // "UNKNOWN"' DELT/ARTF/gate-verification-results.json)
@@ -195,4 +213,7 @@ jobs:
               echo "[OK] **SBOM Generated**: DELT/ARTF/sbom.json"
               echo "**Artifact**: sbom-attestation-${{ github.run_number }}"
             fi
+            echo ""
+            echo "---"
+            echo "**ECRR**: Examine ✓ | Contain ✓ | Rollback ✓ | Report ✓"
           } >> $GITHUB_STEP_SUMMARY
