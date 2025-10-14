@@ -11,7 +11,9 @@ param(
   [double]$ArchQps = 2.5,
   [double]$DeleteQps = 1.0,
   [switch]$DryRun = $true,
-  [switch]$SkipRateLimitWait = $false
+  [switch]$SkipRateLimitWait = $false,
+  [string]$MetricsTag = "",
+  [string]$MetricsDir = "CHAR/EVID/artifacts/ecrr/arch"
 )
 
 $ErrorActionPreference = "Stop"
@@ -38,6 +40,8 @@ try {
   $env:DELETE_QPS = $DeleteQps
   $env:DRY_RUN = if ($DryRun) { "true" } else { "false" }
   $env:SKIP_RATE_LIMIT_WAIT = if ($SkipRateLimitWait) { "true" } else { "false" }
+  $env:METRICS_TAG = $MetricsTag
+  $env:METRICS_DIR = $MetricsDir
   
   # Use GITHUB_TOKEN if available, or prompt for GH_TOKENS
   if (-not $env:GH_TOKENS -and -not $env:GITHUB_TOKEN) {
