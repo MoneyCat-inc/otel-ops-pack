@@ -42,6 +42,8 @@ try {
   $env:SKIP_RATE_LIMIT_WAIT = if ($SkipRateLimitWait) { "true" } else { "false" }
   $env:METRICS_TAG = $MetricsTag
   $env:METRICS_DIR = $MetricsDir
+  # Ensure Node scripts write to repo root (not current dir)
+  $env:REPO_ROOT = (Resolve-Path '..\\..\\..').Path
   
   # Clear self-test mode unless explicitly set to "1" (prevents persistence)
   if ($env:CONVEYOR_SELFTEST -ne "1") {
@@ -63,6 +65,7 @@ try {
   Write-Host "  DELETE_QPS: $env:DELETE_QPS"
   Write-Host "  DRY_RUN: $env:DRY_RUN"
   Write-Host "  TOKENS: $($env:GH_TOKENS ? ($env:GH_TOKENS.Split(',').Count) : 1)"
+  Write-Host "  REPO_ROOT: $env:REPO_ROOT"
 
   # Execute conveyor
   Write-Host "`n🚀 Starting conveyor..."

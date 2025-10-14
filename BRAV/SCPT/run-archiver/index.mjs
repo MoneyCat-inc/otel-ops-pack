@@ -21,11 +21,13 @@ if (!token) {
 
 const octokit = new Octokit({ auth: token });
 
-const OUT_ROOT = path.join('docs', 'BossCat', 'run-reports');
+const REPO_ROOT = process.env.REPO_ROOT || path.resolve(process.cwd(), '..', '..', '..');
+const rootJoin = (...p) => path.join(REPO_ROOT, ...p);
+const OUT_ROOT = rootJoin('docs', 'BossCat', 'run-reports');
 const OUT_ARCH = path.join(OUT_ROOT, 'archived');
 const OUT_LATEST = path.join(OUT_ROOT, 'latest');
 const OUT_BADGES = path.join(OUT_ROOT, 'badges');
-const EVID_ROOT = path.join('CHAR', 'EVID', 'artifacts', 'ecrr', 'arch');
+const EVID_ROOT = rootJoin('CHAR', 'EVID', 'artifacts', 'ecrr', 'arch');
 const RSI_JSON = path.join('docs', 'BossCat', 'RSI_METRICS.json');
 const RSI_MD = path.join('docs', 'BossCat', 'RSI_METRICS.md');
 
@@ -181,7 +183,7 @@ async function appendEvidence(lines) {
 }
 
 async function appendBossCatLog(message) {
-  const logPath = path.join('docs', 'BossCat', 'BOSSCAT_LOG.md');
+  const logPath = rootJoin('docs', 'BossCat', 'BOSSCAT_LOG.md');
   const ts = new Date().toISOString();
   const line = `- ${ts} — ${message}`;
   let cur = '';
