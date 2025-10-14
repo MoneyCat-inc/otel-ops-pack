@@ -21,7 +21,7 @@ const MAX_KEEP = Number(process.env.MAX_KEEP || 100);
 const CHUNK_SIZE = Number(process.env.CHUNK_SIZE || 1000);
 const CHUNK_OFFSET = Number(process.env.CHUNK_OFFSET || 0);
 const ARCH_CONCURRENCY = Number(process.env.ARCH_CONCURRENCY || 48);
-const ARCH_QPS = Number(process.env.ARCH_QPS || 2.5);
+const ARCH_QPS = Number(process.env.ARCH_QPS || 2.0);
 const DELETE_QPS_PER_TOKEN = Number(process.env.DELETE_QPS || 1.0);
 const DRY_RUN = (process.env.DRY_RUN || 'false').toLowerCase() === 'true';
 const SKIP_RATE_LIMIT_WAIT = (process.env.SKIP_RATE_LIMIT_WAIT || 'false').toLowerCase() === 'true';
@@ -29,6 +29,7 @@ const TRACE = process.env.TRACE_CONCURRENCY === '1';
 const SELFTEST = process.env.CONVEYOR_SELFTEST === '1';
 const SELFTEST_N = Number(process.env.CONVEYOR_SELFTEST_N || 240);
 const SELFTEST_MS = Number(process.env.CONVEYOR_SELFTEST_MS || 1000);
+const RATE_JITTER_MS = Number(process.env.RATE_JITTER_MS || 1500); // extra stagger to avoid herds
 
 const BASE = `https://api.github.com/repos/${REPO}/actions`;
 // Resolve repo root for all outputs (works when running from BRAV/SCPT/run-archiver)
@@ -140,11 +141,26 @@ function makePhaseUI(name) {
 // Rate-limit aware fetch with auto-throttle
 const SECONDARY_REGEX = /secondary rate limit|abuse detection/i;
 
+// Shared backoff gate across all workers to avoid thundering herd
+// When one request hits a rate limit, all others will respect `rateGate.until`.
+const rateGate = { until: 0 };
+
 async function ghFetch(url, { token, method = 'GET', body, headers = {}, maxRetries = 8 }) {
   let attempt = 0;
   let backoff = 2000;
 
   while (true) {
+    // Coordinated wait if a global backoff is active
+    const now0 = Date.now();
+    if (!SKIP_RATE_LIMIT_WAIT && rateGate.until > now0) {
+      const waitMs = Math.max(0, rateGate.until - now0);
+      const jitter = Math.floor(Math.random() * RATE_JITTER_MS);
+      const total = waitMs + jitter;
+      if (total > 0) {
+        stats.http.backoffMs += total;
+        await new Promise(r => setTimeout(r, total));
+      }
+    }
     const res = await request(url, {
       method,
       body,
@@ -192,6 +208,16 @@ async function ghFetch(url, { token, method = 'GET', body, headers = {}, maxRetr
       console.warn(`\n⏳ Pausing for ${prettyMs(sleepMs)} (${why}) — will auto-resume…`);
       stats.http.backoffMs += sleepMs;
       await new Promise(r => setTimeout(r, sleepMs));
+      // Extra jitter and global coordination to avoid thundering herd
+      if (!SKIP_RATE_LIMIT_WAIT) {
+        const extra = Math.floor(Math.random() * RATE_JITTER_MS);
+        const baseUntil = Date.now() + extra;
+        if (baseUntil > rateGate.until) rateGate.until = baseUntil;
+        if (extra > 0) {
+          stats.http.backoffMs += extra;
+          await new Promise(r => setTimeout(r, extra));
+        }
+      }
       attempt++;
       if (attempt <= maxRetries) continue;
     }
@@ -352,6 +378,27 @@ async function archiveRun(run, token, ui) {
     // Render badge
     const badge = renderBadge(meta.conclusion);
     await writeFile(badgePath, badge, 'utf8');
+
+    // Append to lightweight analysis index (JSONL)
+    try {
+      const startedAt = new Date(meta.run_started_at || meta.created_at);
+      const updatedAt = new Date(meta.updated_at || meta.created_at);
+      const durationSec = Math.max(0, Math.round((updatedAt - startedAt) / 1000));
+      const date = startedAt.toISOString().slice(0, 10);
+      const relPath = `${year}/${month}/run-${run.id}.md`;
+      appendJSONL(abs('docs/BossCat/run-reports/INDEX.jsonl'), {
+        id: String(run.id),
+        workflow: meta.name || 'unknown',
+        conclusion: meta.conclusion || meta.status || 'unknown',
+        duration: durationSec,
+        date,
+        actor: meta.actor?.login || 'unknown',
+        path: relPath
+      });
+    } catch (e) {
+      // Non-fatal: index append should not block archival
+      console.warn(`Could not append to INDEX.jsonl for ${run.id}: ${e.message}`);
+    }
 
     // Compute evidence hash
     const hasher = createHash('sha256');

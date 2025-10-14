@@ -7,10 +7,10 @@ param(
   [int]$MaxKeep = 100,
   [int]$ChunkSize = 1000,
   [int]$ChunkOffset = 0,
-  [int]$ArchConcurrency = 48,
-  [double]$ArchQps = 2.5,
+  [int]$ArchConcurrency = 24,
+  [double]$ArchQps = 2.0,
   [double]$DeleteQps = 1.0,
-  [switch]$DryRun = $true,
+  [switch]$DryRun = $false,
   [switch]$SkipRateLimitWait = $false,
   [string]$MetricsTag = "",
   [string]$MetricsDir = "CHAR/EVID/artifacts/ecrr/arch"

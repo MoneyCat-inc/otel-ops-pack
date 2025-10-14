@@ -12,7 +12,7 @@ on:
         type: boolean
 
 concurrency:
-  group: nightly-dashboard-reports-${{ github.workflow }}-${{ github.ref }}
+  group: bosscat-nightly-operations
   cancel-in-progress: false
 
 env:

@@ -1,0 +1,88 @@
+name: BossCat Run Rotation
+
+on:
+  schedule:
+    - cron: '*/30 * * * *' # Every 30 minutes
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run (no deletes)'
+        required: false
+        default: 'false'
+        type: choice
+        options: ['false','true']
+      chunk_size:
+        description: 'Chunk size'
+        required: false
+        default: '1000'
+      arch_qps:
+        description: 'Archive QPS'
+        required: false
+        default: '2.0'
+      delete_qps:
+        description: 'Delete QPS'
+        required: false
+        default: '1.0'
+      arch_concurrency:
+        description: 'Archive concurrency'
+        required: false
+        default: '24'
+      rate_jitter_ms:
+        description: 'Rate jitter (ms)'
+        required: false
+        default: '1500'
+
+concurrency:
+  group: bosscat-nightly-operations
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  # Safe defaults for steady-state
+  CHUNK_SIZE: ${{ inputs.chunk_size || '1000' }}
+  ARCH_QPS: ${{ inputs.arch_qps || '2.0' }}
+  DELETE_QPS: ${{ inputs.delete_qps || '1.0' }}
+  ARCH_CONCURRENCY: ${{ inputs.arch_concurrency || '24' }}
+  RATE_JITTER_MS: ${{ inputs.rate_jitter_ms || '1500' }}
+  DRY_RUN: ${{ inputs.dry_run || 'false' }}
+
+jobs:
+  rotate:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies (if present)
+        shell: pwsh
+        run: |
+          if (Test-Path package-lock.json) { npm ci } else { Write-Host 'No package-lock.json; skipping npm ci' }
+
+      - name: Preflight
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          pwsh BRAV/SCPT/run-archiver/preflight.ps1 -Strict
+
+      - name: Run rotation conveyor
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $dry = ($env:DRY_RUN -eq 'true')
+          pwsh BRAV/SCPT/run-archiver/run-conveyor.ps1 `
+            -ChunkSize [int]$env:CHUNK_SIZE `
+            -ArchQps [double]$env:ARCH_QPS `
+            -DeleteQps [double]$env:DELETE_QPS `
+            -RateJitterMs [int]$env:RATE_JITTER_MS `
+            -Concurrency [int]$env:ARCH_CONCURRENCY `
+            -DryRun:$dry
+
