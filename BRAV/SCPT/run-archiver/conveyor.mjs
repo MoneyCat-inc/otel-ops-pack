@@ -570,7 +570,8 @@ async function main() {
   }
 
   // 6) Update BossCat log
-  const logEntry = `- ${new Date().toISOString()} — Conveyor: Archived ${archived}, Deleted ${deleted}, Remaining ${finalCount}`;
+  const deletedCount = DRY_RUN ? 0 : (deleted || 0);
+  const logEntry = `- ${new Date().toISOString()} — Conveyor: Archived ${archived}, Deleted ${deletedCount}, Remaining ${finalCount}`;
   try {
     const logPath = 'docs/BossCat/BOSSCAT_LOG.md';
     let logContent = '';
