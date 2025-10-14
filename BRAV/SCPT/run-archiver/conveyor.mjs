@@ -6,7 +6,9 @@
 import { setTimeout as sleep } from 'node:timers/promises';
 import { writeFile, appendFile, mkdir, readFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
-import { existsSync } from 'node:fs';
+import { existsSync, mkdirSync, appendFileSync } from 'node:fs';
+import { performance } from 'node:perf_hooks';
+import { dirname, join } from 'node:path';
 import Bottleneck from 'bottleneck';
 import PQueue from 'p-queue';
 import { request, Pool, setGlobalDispatcher } from 'undici';
@@ -49,6 +51,61 @@ const stats = {
   http: { r429: 0, r5xx: 0, backoffMs: 0 }
 };
 let tickCount = 0, lastDone = 0, lastTickAt = Date.now();
+
+// Precision timing & latency tracking
+const timing = {
+  archiveDurMs: [],
+  deleteDurMs: [],
+  phases: {}
+};
+
+class StopWatch {
+  constructor(label) {
+    this.label = label;
+    this.t0 = performance.now();
+    this.marks = [];
+  }
+  mark(name) {
+    const t = performance.now();
+    this.marks.push({ name, t });
+  }
+  stop(extra = {}) {
+    const t1 = performance.now();
+    const spans = [];
+    let prev = this.t0;
+    for (const m of this.marks) {
+      spans.push({ name: m.name, ms: Math.round(m.t - prev) });
+      prev = m.t;
+    }
+    return { label: this.label, total_ms: Math.round(t1 - this.t0), spans, ...extra };
+  }
+}
+
+function pct(p, arr) {
+  if (!arr.length) return null;
+  const sorted = [...arr].sort((a, b) => a - b);
+  const i = Math.min(sorted.length - 1, Math.max(0, Math.floor(p / 100 * (sorted.length - 1))));
+  return Math.round(sorted[i]);
+}
+
+function hhmmss(ms) {
+  const s = Math.round(ms / 1000);
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const ss = s % 60;
+  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(ss).padStart(2, '0')}`;
+}
+
+function ensureDir(p) {
+  try {
+    mkdirSync(p, { recursive: true });
+  } catch { }
+}
+
+function appendJSONL(path, obj) {
+  ensureDir(dirname(path));
+  appendFileSync(path, JSON.stringify(obj) + '\n');
+}
 
 // Progress UI helper
 function makePhaseUI(name) {
@@ -241,6 +298,7 @@ async function archiveRun(run, token, ui) {
   }
 
   stats.arch.started++;
+  const t0 = performance.now();
   const t = new Date().toISOString();
   await ledger({ t, id: run.id, state: 'ARCHIVING', msg: `Start ${run.name}` });
 
@@ -313,10 +371,14 @@ async function archiveRun(run, token, ui) {
     // Save checkpoint
     await saveCheckpoint(run.id);
     
+    const dt = performance.now() - t0;
+    timing.archiveDurMs.push(dt);
     stats.arch.done++;
     if (ui) ui.tick(1);
 
   } catch (e) {
+    const dt = performance.now() - t0;
+    timing.archiveDurMs.push(dt);
     stats.arch.errs++;
     await ledger({
       t: new Date().toISOString(),
@@ -400,8 +462,12 @@ const tokenLimiters = TOKENS.map(() => new Bottleneck({
 }));
 
 async function deleteRun(runId, tokenIndex, ui) {
+  const t0 = performance.now();
+  
   if (DRY_RUN) {
     await ledger({ t: new Date().toISOString(), id: runId, state: 'DELETED', msg: 'DRY RUN - not actually deleted' });
+    const dt = performance.now() - t0;
+    timing.deleteDurMs.push(dt);
     stats.del.done++;
     if (ui) ui.tick(1);
     return;
@@ -448,6 +514,8 @@ async function deleteRun(runId, tokenIndex, ui) {
       stats.del.errs++;
     }
     
+    const dt = performance.now() - t0;
+    timing.deleteDurMs.push(dt);
     if (ui) ui.tick(1);
   });
 }
@@ -490,6 +558,10 @@ function estimateDeleteTime(count, tokens, qps) {
 }
 
 async function main() {
+  const swAll = new StopWatch(`conveyor:chunk[${CHUNK_OFFSET + 1}..${CHUNK_OFFSET + CHUNK_SIZE}]`);
+  const METRICS_DIR = process.env.METRICS_DIR || 'CHAR/EVID/artifacts/ecrr/arch';
+  const METRICS_TAG = process.env.METRICS_TAG || '';
+  
   // Self-test mode: prove concurrency with synthetic tasks
   if (SELFTEST) {
     console.log('🧪 BossCat Conveyor — Self-Test Mode (Concurrency Proof)');
@@ -539,9 +611,11 @@ async function main() {
   console.log('\n📊 Phase 1 — Inventory');
   console.log('Paging the Actions API to collect the backlog. Quick phase (~1-2 minutes).\n');
   
+  const swInv = new StopWatch('inventory');
   const invUI = makePhaseUI('Collecting runs');
   const all = await listAllRuns(TOKENS[0], invUI);
   invUI.stop();
+  timing.phases.inventory = swInv.stop();
   
   console.log(`\n✅ Fetched ${all.length} runs`);
 
@@ -598,6 +672,7 @@ async function main() {
   console.log('\n🔵 Phase 3 — Archive (Blue Lane)');
   console.log('Archiving runs in parallel. Auto-pauses if GitHub rate-limits, then resumes.\n');
   
+  const swArc = new StopWatch('archive');
   const archUI = makePhaseUI('Archive');
   archUI.start(archiveSet.length);
   let archived = 0;
@@ -615,6 +690,11 @@ async function main() {
 
   await archiveQ.onIdle();
   archUI.stop();
+  timing.phases.archive = swArc.stop({
+    n: archived,
+    p50_ms: pct(50, timing.archiveDurMs),
+    p95_ms: pct(95, timing.archiveDurMs)
+  });
   console.log(`\n✅ Archive complete: ${archived}/${archiveSet.length} runs`);
 
   // 4) RED LANE: Delete runs (rate-limited, safety-gated)
@@ -622,12 +702,14 @@ async function main() {
   console.log('One delete per second per token. Progress bar marches steadily.');
   console.log('Pauses may occur if GitHub rate-limits—we auto-resume.\n');
   
+  const swDel = new StopWatch('delete');
+  let deleted = 0;
+  
   if (DRY_RUN) {
     console.log('⚠️ DRY RUN: Skipping deletion phase\n');
   } else {
     const delUI = makePhaseUI('Delete');
     delUI.start(archiveSet.length);
-    let deleted = 0;
     let idx = 0;
 
     for (const r of archiveSet) {
@@ -638,12 +720,20 @@ async function main() {
     delUI.stop();
     console.log(`\n✅ Delete complete: ${deleted}/${archiveSet.length} runs`);
   }
+  
+  timing.phases.delete = swDel.stop({
+    n: deleted,
+    p50_ms: pct(50, timing.deleteDurMs),
+    p95_ms: pct(95, timing.deleteDurMs)
+  });
 
   // 5) Final verification
   console.log('\n📊 Phase 5: Verification...');
+  const swVer = new StopWatch('verify');
   const finalRes = await request(`${BASE}/runs?per_page=1`, { headers: hdr(TOKENS[0]) });
   const finalData = await finalRes.body.json();
   const finalCount = finalData.total_count;
+  timing.phases.verify = swVer.stop();
 
   console.log(`Final run count: ${finalCount}`);
   console.log(`Target: ${MAX_KEEP}`);
@@ -703,6 +793,72 @@ async function main() {
   console.log(`   HTTP 429s: ${stats.http.r429}`);
   console.log(`   HTTP 5xxs: ${stats.http.r5xx}`);
   console.log(`   Total backoff time: ${prettyMs(stats.http.backoffMs)}`);
+  
+  // Timing summary & ETA calibration
+  const allTime = swAll.stop();
+  const predArchiveSec = Math.ceil((timing.phases.archive?.n ?? 0) * 3 / ARCH_QPS);
+  const predDeleteSec = Math.ceil((timing.phases.delete?.n ?? 0) / DELETE_QPS_PER_TOKEN);
+  const actArchiveSec = Math.round((timing.phases.archive?.total_ms ?? 0) / 1000);
+  const actDeleteSec = Math.round((timing.phases.delete?.total_ms ?? 0) / 1000);
+  const K_archive = predArchiveSec ? (actArchiveSec / predArchiveSec) : 1.0;
+  const K_delete = predDeleteSec ? (actDeleteSec / predDeleteSec) : 1.0;
+  
+  function line(name, ms, extra = '') {
+    return `${name.padEnd(10)} ${hhmmss(ms)}${extra ? '  ' + extra : ''}`;
+  }
+  
+  console.log('\n⏱️  TIMING SUMMARY —', swAll.label);
+  console.log(line('inventory:', timing.phases.inventory?.total_ms ?? 0));
+  console.log(line('archive:  ', timing.phases.archive?.total_ms ?? 0,
+    `(p50=${timing.phases.archive?.p50_ms ?? '-'}ms, p95=${timing.phases.archive?.p95_ms ?? '-'}ms, ` +
+    `QPS=${((timing.phases.archive?.n ?? 0) / ((timing.phases.archive?.total_ms ?? 1) / 1000)).toFixed(2)} of target ${ARCH_QPS.toFixed(2)} → K=${K_archive.toFixed(2)})`));
+  console.log(line('delete:   ', timing.phases.delete?.total_ms ?? 0,
+    `(p50=${timing.phases.delete?.p50_ms ?? '-'}ms, p95=${timing.phases.delete?.p95_ms ?? '-'}ms, ` +
+    `QPS=${((timing.phases.delete?.n ?? 0) / ((timing.phases.delete?.total_ms ?? 1) / 1000)).toFixed(2)} of target ${DELETE_QPS_PER_TOKEN.toFixed(2)} → K=${K_delete.toFixed(2)})`));
+  const predTotalMs = (predArchiveSec + predDeleteSec) * 1000 + (timing.phases.inventory?.total_ms ?? 0) + (timing.phases.verify?.total_ms ?? 0);
+  console.log(line('total:    ', allTime.total_ms, `(pred=${hhmmss(predTotalMs)})`));
+  
+  console.log(`\n📏 ETA calibration hint → archiveQPS *= ${(1 / K_archive).toFixed(2)}, deleteQPS *= ${(1 / K_delete).toFixed(2)}`);
+  
+  // Write timing metrics to JSONL
+  const metricsFile = join(METRICS_DIR, `METRICS${DRY_RUN ? '_DRYRUN' : ''}.jsonl`);
+  appendJSONL(metricsFile, {
+    t: new Date().toISOString(),
+    repo: REPO,
+    chunk: { size: CHUNK_SIZE, offset: CHUNK_OFFSET, range: [CHUNK_OFFSET + 1, CHUNK_OFFSET + CHUNK_SIZE] },
+    dry_run: DRY_RUN,
+    config: { ARCH_QPS, DELETE_QPS: DELETE_QPS_PER_TOKEN, ARCH_CONCURRENCY },
+    phases: {
+      inventory: { ms: timing.phases.inventory?.total_ms ?? 0 },
+      archive: {
+        n: timing.phases.archive?.n ?? 0,
+        ms: timing.phases.archive?.total_ms ?? 0,
+        p50_ms: timing.phases.archive?.p50_ms ?? null,
+        p95_ms: timing.phases.archive?.p95_ms ?? null
+      },
+      delete: {
+        n: timing.phases.delete?.n ?? 0,
+        ms: timing.phases.delete?.total_ms ?? 0,
+        p50_ms: timing.phases.delete?.p50_ms ?? null,
+        p95_ms: timing.phases.delete?.p95_ms ?? null
+      },
+      verify: { ms: timing.phases.verify?.total_ms ?? 0 },
+      total_ms: allTime.total_ms
+    },
+    eta: {
+      predicted_sec: { archive: predArchiveSec, delete: predDeleteSec, total: Math.round(predTotalMs / 1000) },
+      actual_sec: { archive: actArchiveSec, delete: actDeleteSec, total: Math.round(allTime.total_ms / 1000) },
+      k_factor: { archive: Number(K_archive.toFixed(3)), delete: Number(K_delete.toFixed(3)) }
+    },
+    stats: {
+      arch: stats.arch,
+      del: stats.del,
+      http: stats.http
+    },
+    tag: METRICS_TAG || undefined
+  });
+  
+  console.log(`\n📊 Metrics: ${metricsFile}`);
 }
 
 // Entry point
