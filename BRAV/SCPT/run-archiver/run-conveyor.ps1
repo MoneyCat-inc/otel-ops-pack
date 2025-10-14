@@ -5,8 +5,11 @@
 param(
   [string]$Repo = "MoneyCat-inc/otel-ops-pack",
   [int]$MaxKeep = 100,
-  [int]$ArchConcurrency = 24,
-  [decimal]$DeleteQPS = 1.0,
+  [int]$ChunkSize = 2000,
+  [int]$ChunkOffset = 0,
+  [int]$ArchConcurrency = 16,
+  [double]$ArchQps = 1.2,
+  [double]$DeleteQps = 0.8,
   [switch]$DryRun = $true,
   [switch]$SkipRateLimitWait = $false
 )
@@ -28,8 +31,11 @@ try {
   # Set environment
   $env:REPO = $Repo
   $env:MAX_KEEP = $MaxKeep
+  $env:CHUNK_SIZE = $ChunkSize
+  $env:CHUNK_OFFSET = $ChunkOffset
   $env:ARCH_CONCURRENCY = $ArchConcurrency
-  $env:DELETE_QPS = $DeleteQPS
+  $env:ARCH_QPS = $ArchQps
+  $env:DELETE_QPS = $DeleteQps
   $env:DRY_RUN = if ($DryRun) { "true" } else { "false" }
   $env:SKIP_RATE_LIMIT_WAIT = if ($SkipRateLimitWait) { "true" } else { "false" }
   
@@ -42,7 +48,9 @@ try {
   Write-Host "`nEnvironment:"
   Write-Host "  REPO: $env:REPO"
   Write-Host "  MAX_KEEP: $env:MAX_KEEP"
+  Write-Host "  CHUNK: size=$env:CHUNK_SIZE offset=$env:CHUNK_OFFSET"
   Write-Host "  ARCH_CONCURRENCY: $env:ARCH_CONCURRENCY"
+  Write-Host "  ARCH_QPS: $env:ARCH_QPS"
   Write-Host "  DELETE_QPS: $env:DELETE_QPS"
   Write-Host "  DRY_RUN: $env:DRY_RUN"
   Write-Host "  TOKENS: $($env:GH_TOKENS ? ($env:GH_TOKENS.Split(',').Count) : 1)"
