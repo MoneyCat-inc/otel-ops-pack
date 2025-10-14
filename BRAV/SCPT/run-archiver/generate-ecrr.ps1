@@ -4,8 +4,8 @@
 
 param(
     [string]$ChunkTag = "latest",
-    [string]$MetricsFile = "CHAR/EVID/artifacts/ecrr/arch/METRICS.jsonl",
-    [string]$LedgerFile = "CHAR/EVID/artifacts/ecrr/arch/LEDGER.jsonl"
+    [string]$MetricsFile = "BRAV/SCPT/run-archiver/CHAR/EVID/artifacts/ecrr/arch/METRICS.jsonl",
+    [string]$LedgerFile = "BRAV/SCPT/run-archiver/CHAR/EVID/artifacts/ecrr/arch/LEDGER.jsonl"
 )
 
 $ErrorActionPreference = "Stop"
