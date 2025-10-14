@@ -5,11 +5,11 @@
 param(
   [string]$Repo = "MoneyCat-inc/otel-ops-pack",
   [int]$MaxKeep = 100,
-  [int]$ChunkSize = 2000,
+  [int]$ChunkSize = 1000,
   [int]$ChunkOffset = 0,
-  [int]$ArchConcurrency = 16,
-  [double]$ArchQps = 1.2,
-  [double]$DeleteQps = 0.8,
+  [int]$ArchConcurrency = 48,
+  [double]$ArchQps = 2.5,
+  [double]$DeleteQps = 1.0,
   [switch]$DryRun = $true,
   [switch]$SkipRateLimitWait = $false
 )

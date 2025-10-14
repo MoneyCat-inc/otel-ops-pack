@@ -16,17 +16,19 @@ import cliProgress from 'cli-progress';
 const REPO = process.env.REPO || 'MoneyCat-inc/otel-ops-pack';
 const TOKENS = (process.env.GH_TOKENS || process.env.GITHUB_TOKEN || '').split(',').filter(Boolean);
 const MAX_KEEP = Number(process.env.MAX_KEEP || 100);
-const CHUNK_SIZE = Number(process.env.CHUNK_SIZE || 2000);
+const CHUNK_SIZE = Number(process.env.CHUNK_SIZE || 1000);
 const CHUNK_OFFSET = Number(process.env.CHUNK_OFFSET || 0);
-const ARCH_CONCURRENCY = Number(process.env.ARCH_CONCURRENCY || 16);
-const ARCH_QPS = Number(process.env.ARCH_QPS || 1.2);
-const DELETE_QPS_PER_TOKEN = Number(process.env.DELETE_QPS || 0.8);
+const ARCH_CONCURRENCY = Number(process.env.ARCH_CONCURRENCY || 48);
+const ARCH_QPS = Number(process.env.ARCH_QPS || 2.5);
+const DELETE_QPS_PER_TOKEN = Number(process.env.DELETE_QPS || 1.0);
 const DRY_RUN = (process.env.DRY_RUN || 'false').toLowerCase() === 'true';
 const SKIP_RATE_LIMIT_WAIT = (process.env.SKIP_RATE_LIMIT_WAIT || 'false').toLowerCase() === 'true';
 
 const BASE = `https://api.github.com/repos/${REPO}/actions`;
 const LEDGER = 'CHAR/EVID/artifacts/ecrr/arch/LEDGER.jsonl';
 const WHITELIST_PATH = 'BRAV/SCPT/run-archiver/whitelist.json';
+const CHECKPOINT_DIR = 'CHAR/EVID/artifacts/ecrr/arch/checkpoints';
+const CHECKPOINT_FILE = `${CHECKPOINT_DIR}/chunk_${CHUNK_OFFSET}_${CHUNK_SIZE}.json`;
 
 // Progress UI helper
 function makePhaseUI(name) {
@@ -152,6 +154,25 @@ async function safeReadJson(path, fallback) {
   } catch { return fallback; }
 }
 
+// Checkpoint management (resumable chunks)
+let completedRuns = new Set();
+
+async function loadCheckpoint() {
+  const data = await safeReadJson(CHECKPOINT_FILE, []);
+  completedRuns = new Set(data);
+  return completedRuns;
+}
+
+async function saveCheckpoint(runId) {
+  completedRuns.add(runId);
+  await mkdir(CHECKPOINT_DIR, { recursive: true });
+  await writeFile(CHECKPOINT_FILE, JSON.stringify([...completedRuns]), 'utf8');
+}
+
+function isCompleted(runId) {
+  return completedRuns.has(runId);
+}
+
 // ---------- Archive Lane (Blue - Fast Parallel with Global Rate Limit) ----------
 // Global rate limiter for archive operations (QPS cap across all workers)
 const archiveLimiter = new Bottleneck({
@@ -162,6 +183,12 @@ const archiveLimiter = new Bottleneck({
 const archiveQ = new PQueue({ concurrency: ARCH_CONCURRENCY });
 
 async function archiveRun(run, token, ui) {
+  // Skip if already completed in this chunk
+  if (isCompleted(run.id)) {
+    if (ui) ui.tick(1);
+    return;
+  }
+
   const t = new Date().toISOString();
   await ledger({ t, id: run.id, state: 'ARCHIVING', msg: `Start ${run.name}` });
 
@@ -426,6 +453,14 @@ async function main() {
 
   // 2) Partition: Keep newest MAX_KEEP + whitelist, then slice the chunk
   console.log('\n📊 Phase 2 — Computing KeepSet and Chunk');
+  
+  // Load checkpoint to resume from where we left off
+  await loadCheckpoint();
+  const resumeCount = completedRuns.size;
+  if (resumeCount > 0) {
+    console.log(`✅ Found checkpoint: ${resumeCount} runs already completed`);
+  }
+  
   const whitelist = await safeReadJson(WHITELIST_PATH, []);
   const sorted = [...all].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
   const keepSet = new Set(sorted.slice(0, MAX_KEEP).map(r => r.id).concat(whitelist));
@@ -435,16 +470,21 @@ async function main() {
   const end = start + CHUNK_SIZE;
   const chunkRuns = sorted.slice(start, end).filter(r => !keepSet.has(r.id) && r.status === 'completed');
   
+  // Filter out already-completed runs
+  const remainingRuns = chunkRuns.filter(r => !isCompleted(r.id));
+  
   console.log(`KeepSet: ${keepSet.size} runs (${MAX_KEEP} newest + ${whitelist.length} whitelisted)`);
   console.log(`Total available: ${sorted.length} runs`);
-  console.log(`Chunk range: indices ${start}..${end} → ${chunkRuns.length} runs to process`);
+  console.log(`Chunk range: indices ${start}..${end} → ${chunkRuns.length} runs`);
+  console.log(`Already completed: ${chunkRuns.length - remainingRuns.length} runs`);
+  console.log(`Remaining to process: ${remainingRuns.length} runs`);
 
-  if (chunkRuns.length === 0) {
-    console.log('✅ Chunk is empty. Exiting.');
+  if (remainingRuns.length === 0) {
+    console.log('✅ Chunk is fully completed. Exiting.');
     return;
   }
   
-  const archiveSet = chunkRuns;
+  const archiveSet = remainingRuns;
 
   // Print timeline estimates (adjusted for QPS limits)
   const archReqsPerRun = 3; // run + jobs + logs
