@@ -16,8 +16,11 @@ import cliProgress from 'cli-progress';
 const REPO = process.env.REPO || 'MoneyCat-inc/otel-ops-pack';
 const TOKENS = (process.env.GH_TOKENS || process.env.GITHUB_TOKEN || '').split(',').filter(Boolean);
 const MAX_KEEP = Number(process.env.MAX_KEEP || 100);
-const ARCH_CONCURRENCY = Number(process.env.ARCH_CONCURRENCY || 24);
-const DELETE_QPS_PER_TOKEN = Number(process.env.DELETE_QPS || 1);
+const CHUNK_SIZE = Number(process.env.CHUNK_SIZE || 2000);
+const CHUNK_OFFSET = Number(process.env.CHUNK_OFFSET || 0);
+const ARCH_CONCURRENCY = Number(process.env.ARCH_CONCURRENCY || 16);
+const ARCH_QPS = Number(process.env.ARCH_QPS || 1.2);
+const DELETE_QPS_PER_TOKEN = Number(process.env.DELETE_QPS || 0.8);
 const DRY_RUN = (process.env.DRY_RUN || 'false').toLowerCase() === 'true';
 const SKIP_RATE_LIMIT_WAIT = (process.env.SKIP_RATE_LIMIT_WAIT || 'false').toLowerCase() === 'true';
 
@@ -149,7 +152,13 @@ async function safeReadJson(path, fallback) {
   } catch { return fallback; }
 }
 
-// ---------- Archive Lane (Blue - Fast Parallel) ----------
+// ---------- Archive Lane (Blue - Fast Parallel with Global Rate Limit) ----------
+// Global rate limiter for archive operations (QPS cap across all workers)
+const archiveLimiter = new Bottleneck({
+  minTime: Math.ceil(1000 / ARCH_QPS),
+  maxConcurrent: ARCH_CONCURRENCY
+});
+
 const archiveQ = new PQueue({ concurrency: ARCH_CONCURRENCY });
 
 async function archiveRun(run, token, ui) {
@@ -160,8 +169,10 @@ async function archiveRun(run, token, ui) {
     // 1) Metadata (already have from list)
     const meta = run;
 
-    // 2) Jobs
-    const jobsRes = await ghFetch(`${BASE}/runs/${run.id}/jobs?per_page=100`, { token });
+    // 2) Jobs (rate-limited)
+    const jobsRes = await archiveLimiter.schedule(() => 
+      ghFetch(`${BASE}/runs/${run.id}/jobs?per_page=100`, { token })
+    );
     const jobsData = await jobsRes.body.json();
     const jobs = jobsData.jobs || [];
 
@@ -172,7 +183,9 @@ async function archiveRun(run, token, ui) {
     
     if (needLogs) {
       try {
-        const logsRes = await ghFetch(`${BASE}/runs/${run.id}/logs`, { token });
+        const logsRes = await archiveLimiter.schedule(() =>
+          ghFetch(`${BASE}/runs/${run.id}/logs`, { token })
+        );
         logsZip = Buffer.from(await logsRes.body.arrayBuffer());
         logsBytes = logsZip.length;
       } catch (e) {
@@ -384,11 +397,11 @@ function estimateDeleteTime(count, tokens, qps) {
 }
 
 async function main() {
-  console.log('🐾 BossCat Run Conveyor — Archive→Delete Pipeline');
+  console.log('🐾 BossCat Run Conveyor — Archive→Delete Pipeline (Chunked)');
   console.log(`Repository: ${REPO}`);
   console.log(`Keep newest: ${MAX_KEEP} runs`);
-  console.log(`Archive concurrency: ${ARCH_CONCURRENCY}`);
-  console.log(`Delete QPS per token: ${DELETE_QPS_PER_TOKEN}`);
+  console.log(`Chunk: size=${CHUNK_SIZE} offset=${CHUNK_OFFSET} (runs ${MAX_KEEP + CHUNK_OFFSET + 1}..${MAX_KEEP + CHUNK_OFFSET + CHUNK_SIZE})`);
+  console.log(`Rate limits: Archive ${ARCH_QPS} req/s (${ARCH_CONCURRENCY} workers) • Delete ${DELETE_QPS_PER_TOKEN}/s`);
   console.log(`Tokens: ${TOKENS.length}`);
   console.log(`DRY RUN: ${DRY_RUN}`);
   console.log(`SKIP_RATE_LIMIT_WAIT: ${SKIP_RATE_LIMIT_WAIT}`);
@@ -411,30 +424,40 @@ async function main() {
   
   console.log(`\n✅ Fetched ${all.length} runs`);
 
-  // 2) Partition: Keep newest MAX_KEEP + whitelist, archive the rest
-  console.log('\n📊 Phase 2 — Computing KeepSet and TrimSet');
+  // 2) Partition: Keep newest MAX_KEEP + whitelist, then slice the chunk
+  console.log('\n📊 Phase 2 — Computing KeepSet and Chunk');
   const whitelist = await safeReadJson(WHITELIST_PATH, []);
   const sorted = [...all].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
   const keepSet = new Set(sorted.slice(0, MAX_KEEP).map(r => r.id).concat(whitelist));
-  const archiveSet = sorted.filter(r => !keepSet.has(r.id) && r.status === 'completed');
-
+  
+  // Chunk: skip MAX_KEEP + CHUNK_OFFSET, take CHUNK_SIZE
+  const start = MAX_KEEP + CHUNK_OFFSET;
+  const end = start + CHUNK_SIZE;
+  const chunkRuns = sorted.slice(start, end).filter(r => !keepSet.has(r.id) && r.status === 'completed');
+  
   console.log(`KeepSet: ${keepSet.size} runs (${MAX_KEEP} newest + ${whitelist.length} whitelisted)`);
-  console.log(`TrimSet: ${archiveSet.length} runs to archive+delete`);
+  console.log(`Total available: ${sorted.length} runs`);
+  console.log(`Chunk range: indices ${start}..${end} → ${chunkRuns.length} runs to process`);
 
-  if (archiveSet.length === 0) {
-    console.log('✅ Nothing to archive. Exiting.');
+  if (chunkRuns.length === 0) {
+    console.log('✅ Chunk is empty. Exiting.');
     return;
   }
+  
+  const archiveSet = chunkRuns;
 
-  // Print timeline estimates
-  const archETA = prettyMs((archiveSet.length / ARCH_CONCURRENCY) * 5000, { unitCount: 2 }); // ~5s per run avg
+  // Print timeline estimates (adjusted for QPS limits)
+  const archReqsPerRun = 3; // run + jobs + logs
+  const archETA = prettyMs((archiveSet.length * archReqsPerRun / ARCH_QPS) * 1000, { unitCount: 2 });
   const deleteETA = estimateDeleteTime(archiveSet.length, TOKENS.length, DELETE_QPS_PER_TOKEN);
   
   console.log('\n════════════════════════════════════════════════════════');
-  console.log(`🟦 Archive queue:    ${archiveSet.length} runs (parallel ${ARCH_CONCURRENCY})`);
+  console.log(`📦 Chunk ${CHUNK_OFFSET / CHUNK_SIZE} (runs ${start + 1}..${Math.min(end, sorted.length)})`);
+  console.log(`🟦 Archive queue:    ${archiveSet.length} runs @ ${ARCH_QPS} req/s`);
   console.log(`   Archive ETA:      ≈ ${archETA}`);
-  console.log(`🟥 Delete queue:     ${archiveSet.length} runs (rate ${DELETE_QPS_PER_TOKEN}/s × ${TOKENS.length} token${TOKENS.length > 1 ? 's' : ''})`);
+  console.log(`🟥 Delete queue:     ${archiveSet.length} runs @ ${DELETE_QPS_PER_TOKEN}/s × ${TOKENS.length} token${TOKENS.length > 1 ? 's' : ''})`);
   console.log(`   Delete ETA:       ≈ ${deleteETA}`);
+  console.log(`⏱️  Total ETA:       ≈ ${prettyMs((archiveSet.length * archReqsPerRun / ARCH_QPS + archiveSet.length / (DELETE_QPS_PER_TOKEN * TOKENS.length)) * 1000, { unitCount: 2 })}`);
   console.log('════════════════════════════════════════════════════════');
 
   // 3) BLUE LANE: Archive runs in parallel
