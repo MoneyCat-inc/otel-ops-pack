@@ -4,4 +4,27 @@
 - [2025-10-13T11:10:00Z] GATE GREEN — perf, trace, links, a11y, csp PASS via non-merging CI evidence (run https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18463803215); flip from AMBER; owner=AUTO-BOTS-GATE-ALFA+IONA-CATS-GATE-BETA
 - [2025-10-13T10:15:00] gate/site lanes ACTIVE; workflow=gate-site-evidence.yml; commit=7b143c17; components=k6+OTLP+site-checks
 - 2025-10-13T22:14:05.0790591+01:00 — Gate APPROVED: archiver + ICF P1 deployed (keep 100 in-repo; metrics & evidence on)
-
+- 2025-10-14T09:34:16.910Z — Conveyor: Archived 998, Deleted 1000, Remaining 11620
+- 2025-10-14T10:18:29.262Z — Conveyor: Archived 997, Deleted 1000, Remaining 10626
+- 2025-10-14T10:46:43.715Z — Conveyor: Archived 997, Deleted 1000, Remaining 9630
+- 2025-10-14T11:35:23.540Z — Conveyor: Archived 995, Deleted 1000, Remaining 8637
+- 2025-10-14T12:38:03.841Z — Conveyor: Archived 997, Deleted 1000, Remaining 7642
+- 2025-10-14T12:57:00.090Z — Conveyor: Archived 539, Deleted 542, Remaining 7103
+- 2025-10-14T13:41:32.477Z — Conveyor: Archived 998, Deleted 1000, Remaining 6106
+- 2025-10-14T13:54:32.301Z — Conveyor: Archived 996, Deleted 0, Remaining 6107
+- 2025-10-14T14:53:44.923Z — Conveyor: Archived 998, Deleted 998, Remaining 5111
+- 2025-10-14T15:06:00.676Z — Conveyor: Archived 996, Deleted 0, Remaining 5112
+- 2025-10-14T15:23:41.161Z — Conveyor: Archived 996, Deleted 0, Remaining 5112
+- 2025-10-14T15:33:39.391Z — Conveyor: Archived 997, Deleted 0, Remaining 5112
+- 2025-10-14T15:45:08.756Z — Conveyor: Archived 999, Deleted 0, Remaining 5113
+- 2025-10-14T16:25:38.789Z — Conveyor: Archived 997, Deleted 0, Remaining 5114
+- 2025-10-14T19:12:43.065Z — Conveyor: Archived 12, Deleted 0, Remaining 5123
+- 2025-10-14T19:16:41.029Z — Conveyor: Archived 11, Deleted 0, Remaining 5123
+- 2025-10-14T19:20:32.432Z — Conveyor: Archived 11, Deleted 0, Remaining 5123
+- 2025-10-14T19:24:28.439Z — Conveyor: Archived 11, Deleted 0, Remaining 5123
+- 2025-10-14T19:28:24.502Z — Conveyor: Archived 10, Deleted 0, Remaining 5123
+- 2025-10-14T20:06:17.904Z — Conveyor: Archived 996, Deleted 998, Remaining 4129
+- 2025-10-14T20:34:12.019Z — Conveyor: Archived 998, Deleted 1000, Remaining 3131
+- 2025-10-14T21:22:12.139Z — Conveyor: Archived 993, Deleted 996, Remaining 2140
+- 2025-10-14T21:51:39.939Z — Conveyor: Archived 998, Deleted 1000, Remaining 1143
+- 2025-10-14T22:29:50.101Z — Conveyor: Archived 988, Deleted 993, Remaining 156
