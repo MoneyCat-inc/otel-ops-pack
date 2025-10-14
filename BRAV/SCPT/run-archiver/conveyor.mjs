@@ -9,7 +9,7 @@ import { createHash } from 'node:crypto';
 import { existsSync } from 'node:fs';
 import Bottleneck from 'bottleneck';
 import PQueue from 'p-queue';
-import { request } from 'undici';
+import { request, Pool, setGlobalDispatcher } from 'undici';
 import prettyMs from 'pretty-ms';
 import cliProgress from 'cli-progress';
 
@@ -23,6 +23,10 @@ const ARCH_QPS = Number(process.env.ARCH_QPS || 2.5);
 const DELETE_QPS_PER_TOKEN = Number(process.env.DELETE_QPS || 1.0);
 const DRY_RUN = (process.env.DRY_RUN || 'false').toLowerCase() === 'true';
 const SKIP_RATE_LIMIT_WAIT = (process.env.SKIP_RATE_LIMIT_WAIT || 'false').toLowerCase() === 'true';
+const TRACE = process.env.TRACE_CONCURRENCY === '1';
+const SELFTEST = process.env.CONVEYOR_SELFTEST === '1';
+const SELFTEST_N = Number(process.env.CONVEYOR_SELFTEST_N || 240);
+const SELFTEST_MS = Number(process.env.CONVEYOR_SELFTEST_MS || 1000);
 
 const BASE = `https://api.github.com/repos/${REPO}/actions`;
 const LEDGER = 'CHAR/EVID/artifacts/ecrr/arch/LEDGER.jsonl';
@@ -31,6 +35,20 @@ const CHECKPOINT_DIR = 'CHAR/EVID/artifacts/ecrr/arch/checkpoints';
 const CHECKPOINT_FILE = DRY_RUN 
   ? `${CHECKPOINT_DIR}/chunk_${CHUNK_OFFSET}_${CHUNK_SIZE}_DRYRUN.json`
   : `${CHECKPOINT_DIR}/chunk_${CHUNK_OFFSET}_${CHUNK_SIZE}.json`;
+
+// Lift undici connection pool to avoid hidden 10-conn bottleneck
+setGlobalDispatcher(new Pool('https://api.github.com', { 
+  connections: 64,
+  pipelining: 0  // GitHub API doesn't support HTTP/1.1 pipelining
+}));
+
+// Concurrency telemetry
+const stats = {
+  arch: { started: 0, done: 0, errs: 0, inflightMax: 0, qps: 0 },
+  del: { started: 0, done: 0, errs: 0 },
+  http: { r429: 0, r5xx: 0, backoffMs: 0 }
+};
+let tickCount = 0, lastDone = 0, lastTickAt = Date.now();
 
 // Progress UI helper
 function makePhaseUI(name) {
@@ -86,6 +104,10 @@ async function ghFetch(url, { token, method = 'GET', body, headers = {}, maxRetr
     const reset = res.headers['x-ratelimit-reset'];
     const retryAfter = res.headers['retry-after'];
 
+    // Track HTTP errors for telemetry
+    if (res.statusCode === 429) stats.http.r429++;
+    else if (res.statusCode >= 500) stats.http.r5xx++;
+    
     if ((res.statusCode === 403 || res.statusCode === 429) &&
         (remaining === '0' || retryAfter || SECONDARY_REGEX.test(txt))) {
       
@@ -108,6 +130,7 @@ async function ghFetch(url, { token, method = 'GET', body, headers = {}, maxRetr
 
       const why = SECONDARY_REGEX.test(txt) ? 'secondary limit' : 'rate limit';
       console.warn(`\n⏳ Pausing for ${prettyMs(sleepMs)} (${why}) — will auto-resume…`);
+      stats.http.backoffMs += sleepMs;
       await new Promise(r => setTimeout(r, sleepMs));
       attempt++;
       if (attempt <= maxRetries) continue;
@@ -184,13 +207,40 @@ const archiveLimiter = new Bottleneck({
 
 const archiveQ = new PQueue({ concurrency: ARCH_CONCURRENCY });
 
+// Track concurrency telemetry
+archiveQ.on('active', () => {
+  const inflight = archiveQ.pending + 1; // +1 for the one that just started
+  if (inflight > stats.arch.inflightMax) stats.arch.inflightMax = inflight;
+});
+
+// Live telemetry (every 2s) - enable with TRACE_CONCURRENCY=1
+const telemetryTimer = setInterval(() => {
+  if (!TRACE) return;
+  tickCount++;
+  const now = Date.now();
+  const dt = (now - lastTickAt) / 1000;
+  const doneNow = stats.arch.done;
+  const dDone = doneNow - lastDone;
+  stats.arch.qps = dDone / dt;
+  lastDone = doneNow;
+  lastTickAt = now;
+  
+  process.stdout.write(
+    `\r🔵 arch: inflight=${archiveQ.pending}/${ARCH_CONCURRENCY} queued=${archiveQ.size} qps=${stats.arch.qps.toFixed(2)} | ` +
+    `🔴 del: ${stats.del.done} done | ` +
+    `⛔429=${stats.http.r429} 5xx=${stats.http.r5xx}    `
+  );
+}, 2000);
+
 async function archiveRun(run, token, ui) {
   // Skip if already completed in this chunk
   if (isCompleted(run.id)) {
     if (ui) ui.tick(1);
+    stats.arch.done++;
     return;
   }
 
+  stats.arch.started++;
   const t = new Date().toISOString();
   await ledger({ t, id: run.id, state: 'ARCHIVING', msg: `Start ${run.name}` });
 
@@ -263,9 +313,11 @@ async function archiveRun(run, token, ui) {
     // Save checkpoint
     await saveCheckpoint(run.id);
     
+    stats.arch.done++;
     if (ui) ui.tick(1);
 
   } catch (e) {
+    stats.arch.errs++;
     await ledger({
       t: new Date().toISOString(),
       id: run.id,
@@ -350,10 +402,12 @@ const tokenLimiters = TOKENS.map(() => new Bottleneck({
 async function deleteRun(runId, tokenIndex, ui) {
   if (DRY_RUN) {
     await ledger({ t: new Date().toISOString(), id: runId, state: 'DELETED', msg: 'DRY RUN - not actually deleted' });
+    stats.del.done++;
     if (ui) ui.tick(1);
     return;
   }
 
+  stats.del.started++;
   const token = TOKENS[tokenIndex % TOKENS.length];
   const limiter = tokenLimiters[tokenIndex % tokenLimiters.length];
   
@@ -373,6 +427,7 @@ async function deleteRun(runId, tokenIndex, ui) {
 
       if (res.statusCode === 204 || res.statusCode === 202) {
         await ledger({ t: new Date().toISOString(), id: runId, state: 'DELETED', msg: 'Removed from Actions UI' });
+        stats.del.done++;
       } else {
         const body = await res.body.text();
         await ledger({ 
@@ -381,6 +436,7 @@ async function deleteRun(runId, tokenIndex, ui) {
           state: 'ERROR', 
           msg: `Delete failed: ${res.statusCode} ${body}` 
         });
+        stats.del.errs++;
       }
     } catch (e) {
       await ledger({ 
@@ -389,6 +445,7 @@ async function deleteRun(runId, tokenIndex, ui) {
         state: 'ERROR', 
         msg: `Delete error: ${e.message}` 
       });
+      stats.del.errs++;
     }
     
     if (ui) ui.tick(1);
@@ -433,6 +490,33 @@ function estimateDeleteTime(count, tokens, qps) {
 }
 
 async function main() {
+  // Self-test mode: prove concurrency with synthetic tasks
+  if (SELFTEST) {
+    console.log('🧪 BossCat Conveyor — Self-Test Mode (Concurrency Proof)');
+    console.log(`Workers: ${ARCH_CONCURRENCY} | Tasks: ${SELFTEST_N} × ${SELFTEST_MS}ms`);
+    console.log(`Expected wall time: ~${Math.ceil(SELFTEST_N / ARCH_CONCURRENCY) * SELFTEST_MS}ms\n`);
+    
+    const t0 = Date.now();
+    for (let i = 0; i < SELFTEST_N; i++) {
+      archiveQ.add(() => new Promise(r => setTimeout(r, SELFTEST_MS)));
+    }
+    await archiveQ.onIdle();
+    const elapsed = Date.now() - t0;
+    const ideal = Math.ceil(SELFTEST_N / ARCH_CONCURRENCY) * SELFTEST_MS;
+    const efficiency = (ideal / elapsed * 100).toFixed(1);
+    
+    console.log(`✅ Elapsed: ${elapsed}ms | Ideal: ${ideal}ms | Efficiency: ${efficiency}%`);
+    console.log(`Max inflight observed: ${stats.arch.inflightMax}`);
+    
+    if (efficiency >= 80) {
+      console.log('🎉 PASS: Concurrency working as expected!');
+    } else {
+      console.log('⚠️ WARN: Lower than expected efficiency (check system load)');
+    }
+    
+    process.exit(0);
+  }
+  
   console.log('🐾 BossCat Run Conveyor — Archive→Delete Pipeline (Chunked)');
   console.log(`Repository: ${REPO}`);
   console.log(`Keep newest: ${MAX_KEEP} runs`);
@@ -441,6 +525,7 @@ async function main() {
   console.log(`Tokens: ${TOKENS.length}`);
   console.log(`DRY RUN: ${DRY_RUN}`);
   console.log(`SKIP_RATE_LIMIT_WAIT: ${SKIP_RATE_LIMIT_WAIT}`);
+  console.log(`TRACE: ${TRACE}`);
 
   if (!TOKENS.length) {
     throw new Error('GH_TOKENS or GITHUB_TOKEN required (comma-separated for multiple tokens)');
@@ -569,7 +654,27 @@ async function main() {
     console.log('⚠️ WARNING: Run count higher than expected (may need another pass)');
   }
 
-  // 6) Update BossCat log
+  // 6) Write stats and update BossCat log
+  clearInterval(telemetryTimer);
+  
+  if (TRACE) console.log('\n'); // Clear telemetry line
+  
+  const statsPath = 'CHAR/EVID/artifacts/ecrr/arch/CONVEYOR_STATS.json';
+  await mkdir('CHAR/EVID/artifacts/ecrr/arch', { recursive: true });
+  await writeFile(statsPath, JSON.stringify({
+    timestamp: new Date().toISOString(),
+    chunk: { offset: CHUNK_OFFSET, size: CHUNK_SIZE },
+    arch: stats.arch,
+    del: stats.del,
+    http: stats.http,
+    config: {
+      archConcurrency: ARCH_CONCURRENCY,
+      archQps: ARCH_QPS,
+      deleteQps: DELETE_QPS_PER_TOKEN,
+      dryRun: DRY_RUN
+    }
+  }, null, 2));
+  
   const deletedCount = DRY_RUN ? 0 : (deleted || 0);
   const logEntry = `- ${new Date().toISOString()} — Conveyor: Archived ${archived}, Deleted ${deletedCount}, Remaining ${finalCount}`;
   try {
@@ -584,6 +689,20 @@ async function main() {
   }
 
   console.log('\n🎉 Conveyor execution complete!');
+  console.log(`Archived: ${archived}/${archiveSet.length} runs`);
+  if (!DRY_RUN) {
+    console.log(`Deleted: ${deleted}/${archiveSet.length} runs`);
+  }
+  console.log(`Evidence: ${LEDGER}`);
+  console.log(`Checkpoint: ${CHECKPOINT_FILE}`);
+  console.log(`Stats: ${statsPath}`);
+  console.log(`\n📊 Concurrency Stats:`);
+  console.log(`   Max inflight workers: ${stats.arch.inflightMax}/${ARCH_CONCURRENCY}`);
+  console.log(`   Archive errors: ${stats.arch.errs}`);
+  console.log(`   Delete errors: ${stats.del.errs}`);
+  console.log(`   HTTP 429s: ${stats.http.r429}`);
+  console.log(`   HTTP 5xxs: ${stats.http.r5xx}`);
+  console.log(`   Total backoff time: ${prettyMs(stats.http.backoffMs)}`);
 }
 
 // Entry point
