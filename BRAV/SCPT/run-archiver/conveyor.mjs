@@ -28,7 +28,9 @@ const BASE = `https://api.github.com/repos/${REPO}/actions`;
 const LEDGER = 'CHAR/EVID/artifacts/ecrr/arch/LEDGER.jsonl';
 const WHITELIST_PATH = 'BRAV/SCPT/run-archiver/whitelist.json';
 const CHECKPOINT_DIR = 'CHAR/EVID/artifacts/ecrr/arch/checkpoints';
-const CHECKPOINT_FILE = `${CHECKPOINT_DIR}/chunk_${CHUNK_OFFSET}_${CHUNK_SIZE}.json`;
+const CHECKPOINT_FILE = DRY_RUN 
+  ? `${CHECKPOINT_DIR}/chunk_${CHUNK_OFFSET}_${CHUNK_SIZE}_DRYRUN.json`
+  : `${CHECKPOINT_DIR}/chunk_${CHUNK_OFFSET}_${CHUNK_SIZE}.json`;
 
 // Progress UI helper
 function makePhaseUI(name) {
