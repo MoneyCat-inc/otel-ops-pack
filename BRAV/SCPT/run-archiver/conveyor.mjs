@@ -8,7 +8,7 @@ import { writeFile, appendFile, mkdir, readFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, appendFileSync } from 'node:fs';
 import { performance } from 'node:perf_hooks';
-import { dirname, join } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import Bottleneck from 'bottleneck';
 import PQueue from 'p-queue';
 import { request, Pool, setGlobalDispatcher } from 'undici';
@@ -31,12 +31,15 @@ const SELFTEST_N = Number(process.env.CONVEYOR_SELFTEST_N || 240);
 const SELFTEST_MS = Number(process.env.CONVEYOR_SELFTEST_MS || 1000);
 
 const BASE = `https://api.github.com/repos/${REPO}/actions`;
-const LEDGER = 'CHAR/EVID/artifacts/ecrr/arch/LEDGER.jsonl';
-const WHITELIST_PATH = 'BRAV/SCPT/run-archiver/whitelist.json';
-const CHECKPOINT_DIR = 'CHAR/EVID/artifacts/ecrr/arch/checkpoints';
+// Resolve repo root for all outputs (works when running from BRAV/SCPT/run-archiver)
+const REPO_ROOT = process.env.REPO_ROOT || resolve(process.cwd(), '..', '..', '..');
+const abs = (p) => join(REPO_ROOT, p);
+const LEDGER = abs('CHAR/EVID/artifacts/ecrr/arch/LEDGER.jsonl');
+const WHITELIST_PATH = abs('BRAV/SCPT/run-archiver/whitelist.json');
+const CHECKPOINT_DIR = abs('CHAR/EVID/artifacts/ecrr/arch/checkpoints');
 const CHECKPOINT_FILE = DRY_RUN 
-  ? `${CHECKPOINT_DIR}/chunk_${CHUNK_OFFSET}_${CHUNK_SIZE}_DRYRUN.json`
-  : `${CHECKPOINT_DIR}/chunk_${CHUNK_OFFSET}_${CHUNK_SIZE}.json`;
+  ? join(CHECKPOINT_DIR, `chunk_${CHUNK_OFFSET}_${CHUNK_SIZE}_DRYRUN.json`)
+  : join(CHECKPOINT_DIR, `chunk_${CHUNK_OFFSET}_${CHUNK_SIZE}.json`);
 
 // Lift undici connection pool to avoid hidden 10-conn bottleneck
 setGlobalDispatcher(new Pool('https://api.github.com', { 
@@ -208,7 +211,7 @@ function hdr(token) {
 }
 
 async function ledger(line) {
-  await mkdir('CHAR/EVID/artifacts/ecrr/arch', { recursive: true });
+  await mkdir(dirname(LEDGER), { recursive: true });
   await appendFile(LEDGER, JSON.stringify(line) + '\n', 'utf8');
 }
 
@@ -333,10 +336,10 @@ async function archiveRun(run, token, ui) {
     // 4) Evidence bundle + hash
     const year = new Date(run.created_at).getUTCFullYear();
     const month = String(new Date(run.created_at).getUTCMonth() + 1).padStart(2, '0');
-    const dir = `docs/BossCat/run-reports/archived/${year}/${month}`;
+    const dir = abs(`docs/BossCat/run-reports/archived/${year}/${month}`);
     await mkdir(dir, { recursive: true });
     
-    const badgeDir = 'docs/BossCat/run-reports/badges';
+    const badgeDir = abs('docs/BossCat/run-reports/badges');
     await mkdir(badgeDir, { recursive: true });
 
     const mdPath = `${dir}/run-${run.id}.md`;
@@ -559,7 +562,7 @@ function estimateDeleteTime(count, tokens, qps) {
 
 async function main() {
   const swAll = new StopWatch(`conveyor:chunk[${CHUNK_OFFSET + 1}..${CHUNK_OFFSET + CHUNK_SIZE}]`);
-  const METRICS_DIR = process.env.METRICS_DIR || 'CHAR/EVID/artifacts/ecrr/arch';
+  const METRICS_DIR = abs(process.env.METRICS_DIR || 'CHAR/EVID/artifacts/ecrr/arch');
   const METRICS_TAG = process.env.METRICS_TAG || '';
   
   // Self-test mode: prove concurrency with synthetic tasks
@@ -768,7 +771,7 @@ async function main() {
   const deletedCount = DRY_RUN ? 0 : (deleted || 0);
   const logEntry = `- ${new Date().toISOString()} — Conveyor: Archived ${archived}, Deleted ${deletedCount}, Remaining ${finalCount}`;
   try {
-    const logPath = 'docs/BossCat/BOSSCAT_LOG.md';
+    const logPath = abs('docs/BossCat/BOSSCAT_LOG.md');
     let logContent = '';
     if (existsSync(logPath)) {
       logContent = await readFile(logPath, 'utf8');
