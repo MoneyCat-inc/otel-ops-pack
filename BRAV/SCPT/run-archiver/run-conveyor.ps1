@@ -30,7 +30,7 @@ try {
     npm install
   }
 
-  # Set environment
+  # Set environment (explicitly clear test mode unless it's currently "1")
   $env:REPO = $Repo
   $env:MAX_KEEP = $MaxKeep
   $env:CHUNK_SIZE = $ChunkSize
@@ -42,6 +42,11 @@ try {
   $env:SKIP_RATE_LIMIT_WAIT = if ($SkipRateLimitWait) { "true" } else { "false" }
   $env:METRICS_TAG = $MetricsTag
   $env:METRICS_DIR = $MetricsDir
+  
+  # Clear self-test mode unless explicitly set to "1" (prevents persistence)
+  if ($env:CONVEYOR_SELFTEST -ne "1") {
+    $env:CONVEYOR_SELFTEST = "0"
+  }
   
   # Use GITHUB_TOKEN if available, or prompt for GH_TOKENS
   if (-not $env:GH_TOKENS -and -not $env:GITHUB_TOKEN) {
