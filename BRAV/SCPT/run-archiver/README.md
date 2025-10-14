@@ -144,7 +144,63 @@ CHAR/EVID/artifacts/ecrr/arch/
 │   │   │   └── ...
 │   └── ...
 └── EVIDENCE.jsonl (append-only ledger)
+
+docs/BossCat/run-reports/
+├── archived/
+│   └── 2025/
+│       ├── 09/
+│       │   └── run-*.md (1,191 reports)
+│       └── 10/
+│           └── run-*.md (7,327 reports)
+├── badges/
+│   └── run-*.svg (8,518 badges)
+└── INDEX.jsonl (queryable index)
 ```
+
+---
+
+## 🔍 **Queryable Index**
+
+### **Auto-Generated During Archive**
+
+Each archived run appends a JSONL record to `docs/BossCat/run-reports/INDEX.jsonl`:
+
+```json
+{"id":"18485761625","workflow":"JFrog SAST Scan","conclusion":"cancelled","duration":62,"date":"2025-10-14","actor":"fubumaki","path":"2025/10/run-18485761625.md"}
+```
+
+### **Backfill Index**
+
+Regenerate index from all existing reports:
+
+```powershell
+pwsh BRAV/SCPT/run-archiver/generate-index.ps1
+```
+
+Or use `-BackfillIndex` flag in batch runner:
+
+```powershell
+pwsh BRAV/SCPT/run-archiver/run-batch.ps1 -ChunkCount 5 -BackfillIndex
+```
+
+### **Query Examples**
+
+**Top 10 Failed Workflows:**
+```powershell
+Get-Content docs/BossCat/run-reports/INDEX.jsonl | 
+  ConvertFrom-Json | 
+  Where-Object {$_.conclusion -eq 'failure'} | 
+  Group-Object workflow | 
+  Sort-Object Count -Descending | 
+  Select-Object -First 10
+```
+
+**See `INDEX_GUIDE.md` for:**
+- Dashboard templates
+- Duration analysis
+- Failure trends
+- CSV export for Excel/Tableau
+- Grafana integration
 
 ---
 

@@ -1,0 +1,6 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='160' height='20'>
+  <rect width='160' height='20' fill='#555'/>
+  <rect x='70' width='90' height='20' fill='#6d6d6d'/>
+  <text x='35' y='14' fill='#fff' font-family='Verdana' font-size='11' text-anchor='middle'>RUN</text>
+  <text x='115' y='14' fill='#fff' font-family='Verdana' font-size='11' text-anchor='middle'>CANCELLED</text>
+</svg>

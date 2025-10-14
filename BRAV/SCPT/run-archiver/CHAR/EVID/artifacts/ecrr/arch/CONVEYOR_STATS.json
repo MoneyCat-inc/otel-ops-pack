@@ -1,0 +1,30 @@
+{
+  "timestamp": "2025-10-14T22:29:50.101Z",
+  "chunk": {
+    "offset": 0,
+    "size": 1000
+  },
+  "arch": {
+    "started": 993,
+    "done": 988,
+    "errs": 5,
+    "inflightMax": 24,
+    "qps": 0
+  },
+  "del": {
+    "started": 993,
+    "done": 988,
+    "errs": 0
+  },
+  "http": {
+    "r429": 0,
+    "r5xx": 0,
+    "backoffMs": 7943929
+  },
+  "config": {
+    "archConcurrency": 24,
+    "archQps": 3.5,
+    "deleteQps": 1,
+    "dryRun": false
+  }
+}
