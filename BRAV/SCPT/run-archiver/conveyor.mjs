@@ -258,6 +258,9 @@ async function archiveRun(run, token, ui) {
       msg: `${run.name} • ${run.conclusion}`
     });
 
+    // Save checkpoint
+    await saveCheckpoint(run.id);
+    
     if (ui) ui.tick(1);
 
   } catch (e) {
@@ -267,6 +270,10 @@ async function archiveRun(run, token, ui) {
       state: 'ERROR',
       msg: `Archive failed: ${e.message}`
     });
+    
+    // Still mark as completed to avoid retry loops
+    await saveCheckpoint(run.id);
+    
     throw e;
   }
 }
