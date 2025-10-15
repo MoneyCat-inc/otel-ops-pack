@@ -14,10 +14,26 @@ jobs:
         shell: pwsh
         run: |
           pwsh BRAV/SCPT/rsi-bench/bench-index.ps1 -IndexConcurrency 8 -BatchSize 1000 -SampleN 2000 -Tag nightly-warm -ReuseBench
-      - name: Run batch-size sweep (parse-only)
+      - name: Run batch-size sweep (3 repeats for statistical analysis)
         shell: pwsh
         run: |
-          pwsh BRAV/SCPT/rsi-bench/sweep-batchsize.ps1 -BatchSizes @(500,800,1000,1200,1500) -IndexConcurrency 8 -SampleN 2000 -TagPrefix 'nightly-sweep-batchsize' -BenchRoot '.bench/archived' -ArchivedRoot 'docs/BossCat/run-reports/archived'
+          # Run 3 iterations for median and confidence intervals
+          for ($i = 1; $i -le 3; $i++) {
+            Write-Host "=== Sweep iteration $i of 3 ===" -ForegroundColor Yellow
+            pwsh BRAV/SCPT/rsi-bench/sweep-batchsize.ps1 `
+              -BatchSizes @(500,800,1000,1200,1500) `
+              -IndexConcurrency 8 `
+              -SampleN 2000 `
+              -TagPrefix "nightly-r${i}-bs" `
+              -BenchRoot '.bench/archived' `
+              -ArchivedRoot 'docs/BossCat/run-reports/archived'
+          }
+      - name: Statistical analysis (median, CI, significance)
+        shell: pwsh
+        run: |
+          pwsh BRAV/SCPT/rsi-bench/analyze-sweep-stats.ps1 `
+            -TagPattern "nightly-r*-bs*" `
+            -OutputReport "docs/ecrr/ECRR_REPORTS/ECRR_RSI_NIGHTLY_STATS_LATEST.md"
       - name: Upload sweep artifacts
         uses: actions/upload-artifact@v4
         with:
