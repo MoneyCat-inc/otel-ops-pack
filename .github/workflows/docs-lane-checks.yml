@@ -1,0 +1,106 @@
+name: Docs Lane Checks
+
+on:
+  pull_request:
+    paths:
+      - '**/*.md'
+      - 'docs/**'
+      - '.agent/**'
+
+permissions:
+  contents: read
+
+jobs:
+  docs_checks:
+    name: Validate Docs Changes (budgets, lint, links)
+    runs-on: ubuntu-latest
+    env:
+      FILE_BUDGET: '10'
+      LOC_BUDGET: '200'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve base and changed files
+        id: diff
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE="${{ github.event.pull_request.base.sha }}"
+          if [[ -z "$BASE" ]]; then BASE="origin/${{ github.base_ref }}"; fi
+          echo "BASE=$BASE" >> $GITHUB_OUTPUT
+          files=$(git diff --name-only "$BASE"..HEAD | wc -l | tr -d ' ')
+          loc=$(git diff --numstat "$BASE"..HEAD | awk '{s+=$1+$2} END {print s+0}')
+          echo "files=$files" >> $GITHUB_OUTPUT
+          echo "loc=$loc" >> $GITHUB_OUTPUT
+          echo "Changed files: $files, LOC delta: $loc"
+
+      - name: Kill-switch check (.agent/LOCK)
+        shell: bash
+        run: |
+          if [[ -f .agent/LOCK ]]; then
+            echo "Kill-switch detected (.agent/LOCK). Failing with BLACK." >&2
+            exit 55
+          fi
+
+      - name: Enforce budgets (<= ${{ env.FILE_BUDGET }} files, <= ${{ env.LOC_BUDGET }} LOC)
+        shell: bash
+        run: |
+          set -euo pipefail
+          files='${{ steps.diff.outputs.files }}'
+          loc='${{ steps.diff.outputs.loc }}'
+          echo "FILES=$files LOC=$loc"
+          [[ "$files" -le "${{ env.FILE_BUDGET }}" ]] && [[ "$loc" -le "${{ env.LOC_BUDGET }}" ]]
+
+      - name: Setup Node for markdownlint
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Markdown lint (changed .md)
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm i -g markdownlint-cli
+          BASE="${{ steps.diff.outputs.BASE }}"
+          CHANGED=$(git diff --name-only "$BASE"..HEAD -- '*.md' | tr '\n' ' ')
+          if [[ -z "$CHANGED" ]]; then
+            echo "No changed markdown files; skipping lint."
+          else
+            echo "Linting: $CHANGED"
+            markdownlint $CHANGED
+          fi
+
+      - name: Link and anchor check (lychee)
+        uses: lycheeverse/lychee-action@v1
+        with:
+          args: --no-progress --exclude-mail --verbose "docs/**/*.md" "**/README*.md"
+
+      - name: Emit ECRR evidence (docs lane)
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts/ecrr/docs
+          ts=$(date -Is)
+          files='${{ steps.diff.outputs.files }}'
+          loc='${{ steps.diff.outputs.loc }}'
+          printf '{"t":"%s","who":"B","type":"report","lane":"DOCS","files_touched":%s,"loc_delta":%s,"msg":"docs-lane checks passed (lint+links)"}\n' \
+            "$ts" "$files" "$loc" > artifacts/ecrr/docs/${{ github.run_id }}.json
+
+      - name: Upload ECRR docs evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: ecrr-docs
+          path: artifacts/ecrr/docs/*.json
+
+      - name: Job Summary
+        shell: bash
+        run: |
+          echo "# Docs Lane Checks" >> $GITHUB_STEP_SUMMARY
+          echo "- Files: ${{ steps.diff.outputs.files }} / ${{ env.FILE_BUDGET }}" >> $GITHUB_STEP_SUMMARY
+          echo "- LOC: ${{ steps.diff.outputs.loc }} / ${{ env.LOC_BUDGET }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Lint: markdownlint (changed files)" >> $GITHUB_STEP_SUMMARY
+          echo "- Links: lychee (docs + READMEs)" >> $GITHUB_STEP_SUMMARY
+
