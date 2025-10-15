@@ -1,0 +1,77 @@
+name: ADOT Config Gate
+
+on:
+  pull_request:
+    paths:
+      - '.aws/**'
+      - 'deploy/adot/**'
+      - '.github/workflows/adot-config-gate.yml'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate YAML (yamllint)
+        uses: actionshub/yamllint@main
+        with:
+          config_file: ''
+        continue-on-error: false
+
+      - name: Validate ADOT config (collector dry-run)
+        run: |
+          set -euo pipefail
+          IMAGE=public.ecr.aws/aws-observability/aws-otel-collector:latest
+          echo "Pulling $IMAGE"
+          docker pull "$IMAGE"
+          
+          # Validate .aws/adot-collector-config.yaml if present
+          if [ -f "$GITHUB_WORKSPACE/.aws/adot-collector-config.yaml" ]; then
+            echo "Validating .aws/adot-collector-config.yaml"
+            docker run --rm -v "$GITHUB_WORKSPACE/.aws:/cfg:ro" \
+              -e SIGNOZ_ENDPOINT=localhost:4317 \
+              -e SIGNOZ_INSECURE=true \
+              -e AWS_REGION=us-east-1 \
+              -e COLLECTOR_LOG_LEVEL=info \
+              "$IMAGE" --config /cfg/adot-collector-config.yaml --dry-run
+          fi
+          
+          # Validate deploy/adot/adot-gateway.yaml if present (legacy)
+          if [ -f "$GITHUB_WORKSPACE/deploy/adot/adot-gateway.yaml" ]; then
+            echo "Validating deploy/adot/adot-gateway.yaml"
+            docker run --rm -v "$GITHUB_WORKSPACE/deploy/adot:/cfg:ro" "$IMAGE" \
+              --config /cfg/adot-gateway.yaml --dry-run
+          fi
+
+  # Optional placeholder for synthetic trace (disabled by default)
+  synthetic:
+    if: ${{ false }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Placeholder
+        run: echo "Synthetic trace check disabled (enable when collector is reachable)."
+  
+  # Validate Kubernetes manifests (if ADOT Operator CR present)
+  k8s-validate:
+    runs-on: ubuntu-latest
+    if: hashFiles('.aws/adot-operator-cr.yaml') != ''
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Install kubeval
+        run: |
+          wget https://github.com/instrumenta/kubeval/releases/latest/download/kubeval-linux-amd64.tar.gz
+          tar xf kubeval-linux-amd64.tar.gz
+          sudo mv kubeval /usr/local/bin/
+      
+      - name: Validate Kubernetes manifests
+        run: |
+          kubeval --strict --ignore-missing-schemas .aws/adot-operator-cr.yaml
+
