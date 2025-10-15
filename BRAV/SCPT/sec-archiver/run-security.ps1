@@ -12,7 +12,8 @@ param(
   [string]$EvidenceRoot = 'CHAR/EVID/security',
   [string]$Token = $env:GITHUB_TOKEN,
   [switch]$IncludeDismissed = $true,
-  [switch]$IncludeFixed
+  [switch]$IncludeFixed,
+  [switch]$NoProgress
 )
 
 $ErrorActionPreference = 'Stop'
@@ -166,6 +167,7 @@ function Write-Metrics($name,$meta){
 }
 
 function Show-Progress($current, $total, $type, $id){
+  if($NoProgress){ return }
   $pct = [math]::Round(($current / $total) * 100, 1)
   $bar = '█' * [math]::Floor($pct / 2)
   $space = '░' * (50 - [math]::Floor($pct / 2))

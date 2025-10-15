@@ -1,0 +1,6 @@
+{"t":"2025-01-01T00:00:00Z","who":"A","phase":"preflight","msg":"validated budgets and kill-switch"}
+{"t":"2025-01-01T00:01:00Z","who":"A","phase":"lock","msg":"JOB.lock heartbeat started"}
+{"t":"2025-01-01T00:10:00Z","who":"A","phase":"edit","msg":"edited docs/*.md"}
+{"t":"2025-01-01T00:12:00Z","who":"A","phase":"test","msg":"markdownlint + lychee passed"}
+{"t":"2025-01-01T00:13:00Z","who":"A","phase":"exit","msg":"ready for B review"}
+
