@@ -136,13 +136,19 @@ function Write-AnalysisArtifacts($ana){
   # Save metadata JSON
   ($ana | ConvertTo-Json -Depth 50) | Set-Content -Path (Join-Path $rawDir ("analysis-$id.json")) -Encoding utf8
 
-  # Fetch SARIF
-  $sarif = Get-Sarif -Id $id
-  $sarifPath = Join-Path $dir ("analysis-$id.sarif.json")
-  $sarif | Set-Content -Path $sarifPath -Encoding utf8
+  # Fetch SARIF (graceful on HTTP 422 or other API errors)
+  try {
+    $sarif = Get-Sarif -Id $id
+    $sarifPath = Join-Path $dir ("analysis-$id.sarif.json")
+    $sarif | Set-Content -Path $sarifPath -Encoding utf8
 
-  $idx = @{ analysis_id=$id; tool=$ana.tool.name; ref=$ana.ref; commit_sha=$ana.commit_sha; created_at=$ana.created_at; sarif_path=$sarifPath; alerts_count=$ana.results_count }
-  Append-Jsonl (Join-Path $OutRoot 'INDEX_ANALYSES.jsonl') $idx
+    $idx = @{ analysis_id=$id; tool=$ana.tool.name; ref=$ana.ref; commit_sha=$ana.commit_sha; created_at=$ana.created_at; sarif_path=$sarifPath; alerts_count=$ana.results_count }
+    Append-Jsonl (Join-Path $OutRoot 'INDEX_ANALYSES.jsonl') $idx
+  } catch {
+    Write-Host "SKIP SARIF for analysis $id (unavailable): $_" -ForegroundColor Yellow
+    Write-Ledger 'ANALYSIS_SARIF_UNAVAILABLE' $id @{ created_at=$ana.created_at; reason="$_" }
+    Write-Metrics 'analyses_sarif_skip' @{ analysis_id=$id }
+  }
 }
 
 function Write-Ledger($action,$entity,$meta){
@@ -214,4 +220,3 @@ if($Mode -in @('analyses','alerts+analyses')){
 }
 
 Write-Host "[BossCat] Security conveyor complete." -ForegroundColor Green
-
