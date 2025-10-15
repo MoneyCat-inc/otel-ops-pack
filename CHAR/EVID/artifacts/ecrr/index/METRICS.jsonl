@@ -66,3 +66,33 @@
 
 {"totals":{"elapsed_ms":4035,"files":2000},"kind":"index","tag":"sweep-bs-prod-bs1500","ts":"2025-10-15T02:48:59+01:00","primary":{"files_per_sec":495.66},"guards":{"errors":0,"append_p95_ms":null,"batch_p95_ms":null},"params":{"SampleN":2000,"BatchSize":1500,"IndexConcurrency":8}}
 
+{"guards":{"append_p95_ms":null,"batch_p95_ms":null,"errors":0},"params":{"SampleN":2000,"BatchSize":500,"IndexConcurrency":8},"ts":"2025-10-15T05:21:09+01:00","totals":{"elapsed_ms":8712,"files":2000},"kind":"index","primary":{"files_per_sec":229.57},"tag":"repeat-1-bs-bs500"}
+
+{"kind":"index","params":{"IndexConcurrency":8,"SampleN":2000,"BatchSize":800},"totals":{"elapsed_ms":6304,"files":2000},"primary":{"files_per_sec":317.26},"tag":"repeat-1-bs-bs800","ts":"2025-10-15T05:21:16+01:00","guards":{"batch_p95_ms":null,"errors":0,"append_p95_ms":null}}
+
+{"kind":"index","tag":"repeat-1-bs-bs1000","totals":{"files":2000,"elapsed_ms":4308},"params":{"SampleN":2000,"IndexConcurrency":8,"BatchSize":1000},"primary":{"files_per_sec":464.25},"ts":"2025-10-15T05:21:21+01:00","guards":{"batch_p95_ms":null,"errors":0,"append_p95_ms":null}}
+
+{"guards":{"batch_p95_ms":null,"errors":0,"append_p95_ms":null},"params":{"SampleN":2000,"IndexConcurrency":8,"BatchSize":1200},"kind":"index","totals":{"elapsed_ms":4064,"files":2000},"ts":"2025-10-15T05:21:26+01:00","tag":"repeat-1-bs-bs1200","primary":{"files_per_sec":492.13}}
+
+{"primary":{"files_per_sec":482.04},"guards":{"append_p95_ms":null,"errors":0,"batch_p95_ms":null},"params":{"SampleN":2000,"BatchSize":1500,"IndexConcurrency":8},"ts":"2025-10-15T05:21:30+01:00","totals":{"elapsed_ms":4149,"files":2000},"kind":"index","tag":"repeat-1-bs-bs1500"}
+
+{"tag":"repeat-2-bs-bs500","kind":"index","totals":{"elapsed_ms":7867,"files":2000},"guards":{"batch_p95_ms":null,"errors":0,"append_p95_ms":null},"ts":"2025-10-15T05:21:39+01:00","primary":{"files_per_sec":254.23},"params":{"SampleN":2000,"BatchSize":500,"IndexConcurrency":8}}
+
+{"primary":{"files_per_sec":331.13},"params":{"IndexConcurrency":8,"BatchSize":800,"SampleN":2000},"ts":"2025-10-15T05:21:46+01:00","tag":"repeat-2-bs-bs800","kind":"index","totals":{"files":2000,"elapsed_ms":6040},"guards":{"append_p95_ms":null,"errors":0,"batch_p95_ms":null}}
+
+{"kind":"index","tag":"repeat-2-bs-bs1000","ts":"2025-10-15T05:21:51+01:00","totals":{"elapsed_ms":4183,"files":2000},"primary":{"files_per_sec":478.13},"guards":{"errors":0,"batch_p95_ms":null,"append_p95_ms":null},"params":{"SampleN":2000,"BatchSize":1000,"IndexConcurrency":8}}
+
+{"guards":{"append_p95_ms":null,"batch_p95_ms":null,"errors":0},"kind":"index","params":{"SampleN":2000,"IndexConcurrency":8,"BatchSize":1200},"tag":"repeat-2-bs-bs1200","primary":{"files_per_sec":487.33},"totals":{"elapsed_ms":4104,"files":2000},"ts":"2025-10-15T05:21:55+01:00"}
+
+{"kind":"index","params":{"SampleN":2000,"BatchSize":1500,"IndexConcurrency":8},"primary":{"files_per_sec":472.81},"totals":{"files":2000,"elapsed_ms":4230},"ts":"2025-10-15T05:22:00+01:00","guards":{"append_p95_ms":null,"errors":0,"batch_p95_ms":null},"tag":"repeat-2-bs-bs1500"}
+
+{"primary":{"files_per_sec":255.82},"params":{"SampleN":2000,"IndexConcurrency":8,"BatchSize":500},"tag":"repeat-3-bs-bs500","kind":"index","totals":{"elapsed_ms":7818,"files":2000},"ts":"2025-10-15T05:22:09+01:00","guards":{"errors":0,"batch_p95_ms":null,"append_p95_ms":null}}
+
+{"ts":"2025-10-15T05:22:16+01:00","primary":{"files_per_sec":324.04},"guards":{"errors":0,"append_p95_ms":null,"batch_p95_ms":null},"params":{"BatchSize":800,"SampleN":2000,"IndexConcurrency":8},"kind":"index","totals":{"elapsed_ms":6172,"files":2000},"tag":"repeat-3-bs-bs800"}
+
+{"guards":{"batch_p95_ms":null,"append_p95_ms":null,"errors":0},"params":{"BatchSize":1000,"SampleN":2000,"IndexConcurrency":8},"totals":{"elapsed_ms":4397,"files":2000},"kind":"index","tag":"repeat-3-bs-bs1000","ts":"2025-10-15T05:22:21+01:00","primary":{"files_per_sec":454.86}}
+
+{"guards":{"batch_p95_ms":null,"append_p95_ms":null,"errors":0},"kind":"index","totals":{"files":2000,"elapsed_ms":4172},"primary":{"files_per_sec":479.39},"params":{"BatchSize":1200,"IndexConcurrency":8,"SampleN":2000},"ts":"2025-10-15T05:22:26+01:00","tag":"repeat-3-bs-bs1200"}
+
+{"guards":{"append_p95_ms":null,"batch_p95_ms":null,"errors":0},"params":{"BatchSize":1500,"IndexConcurrency":8,"SampleN":2000},"kind":"index","ts":"2025-10-15T05:22:31+01:00","totals":{"elapsed_ms":4205,"files":2000},"tag":"repeat-3-bs-bs1500","primary":{"files_per_sec":475.62}}
+
