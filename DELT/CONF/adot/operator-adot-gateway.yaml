@@ -1,0 +1,90 @@
+apiVersion: opentelemetry.io/v1alpha1
+kind: OpenTelemetryCollector
+metadata:
+  name: adot-gateway
+  namespace: observability
+spec:
+  mode: deployment
+  serviceAccount: adot-collector
+  image: public.ecr.aws/aws-observability/aws-otel-collector:latest
+  env:
+    - name: AWS_REGION
+      valueFrom:
+        fieldRef:
+          fieldPath: metadata.annotations['adot.aws.region']
+    - name: CW_NAMESPACE
+      value: "BossCat/Observability"
+  config: |-
+    # Paste of deploy/adot/adot-gateway.yaml
+    extensions:
+      health_check: {}
+      sigv4auth:
+        service: xray
+        region: ${AWS_REGION}
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:4317
+          http:
+            endpoint: 0.0.0.0:4318
+      awsxray:
+        endpoint: 0.0.0.0:2000
+        transport: udp
+        proxy_server:
+          endpoint: 0.0.0.0:2000
+    processors:
+      memory_limiter:
+        check_interval: 1s
+        limit_mib: 256
+        spike_limit_mib: 128
+      k8sattributes: {}
+      resourcedetection:
+        detectors: [env, ec2, ecs, eks]
+        override: true
+      batch: {}
+      groupbytrace:
+        wait_duration: 10s
+        num_traces: 20000
+      tail_sampling:
+        decision_wait: 1s
+        policies:
+          - name: errors
+            type: status_code
+            status_code:
+              status_codes: [ERROR]
+    exporters:
+      awsxray: {}
+      otlphttp/xray:
+        endpoint: https://xray.${AWS_REGION}.amazonaws.com/v1/traces
+        auth:
+          authenticator: sigv4auth
+      awsemf:
+        namespace: ${CW_NAMESPACE}
+      awscloudwatchlogs:
+        log_group_name: /application/otel
+        log_stream_name: collector-${HOSTNAME}
+    service:
+      extensions: [health_check, sigv4auth]
+      pipelines:
+        traces:
+          receivers: [otlp]
+          processors: [memory_limiter, k8sattributes, resourcedetection, batch]
+          exporters: [awsxray]
+        traces/tailsampling:
+          receivers: [otlp]
+          processors: [groupbytrace, tail_sampling, batch]
+          exporters: [awsxray]
+        traces/xray-sdk:
+          receivers: [awsxray]
+          processors: [batch]
+          exporters: [awsxray]
+        metrics:
+          receivers: [otlp]
+          processors: [batch]
+          exporters: [awsemf]
+        logs:
+          receivers: [otlp]
+          processors: [batch]
+          exporters: [awscloudwatchlogs]
+
