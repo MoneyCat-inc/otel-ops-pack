@@ -9,6 +9,7 @@ on:
 
 permissions:
   contents: read
+  pull-requests: write
 
 jobs:
   docs_checks:
@@ -117,4 +118,41 @@ jobs:
           echo "- LOC: ${{ steps.diff.outputs.loc }} / ${{ env.LOC_BUDGET }}" >> $GITHUB_STEP_SUMMARY
           echo "- Lint: markdownlint (changed files)" >> $GITHUB_STEP_SUMMARY
           echo "- Links: lychee (docs + READMEs)" >> $GITHUB_STEP_SUMMARY
+      
+      - name: PR Comment — Docs Lane Status
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const files = '${{ steps.diff.outputs.files }}';
+            const loc = '${{ steps.diff.outputs.loc }}';
+            const fileBudget = '${{ env.FILE_BUDGET }}';
+            const locBudget = '${{ env.LOC_BUDGET }}';
+            
+            const body = `## 📋 Docs Lane Checks — Reviewer B Status
+            
+            **Lane**: DOCS | **TTL**: n/a | **Budget**: ${files}/${loc} (files/LOC)  
+            **State**: 🟢 **GREEN**  
+            **Last event**: ${new Date().toISOString()} report "docs checks passed"  
+            **Action**: continue
+            
+            ### Checks Passed ✅
+            - **Budgets**: ${files}/${fileBudget} files, ${loc}/${locBudget} LOC
+            - **Kill-switch**: .agent/LOCK absent ✅
+            - **Lint**: markdownlint (changed files only) ✅
+            - **Links**: lychee (changed docs + READMEs only) ✅
+            - **Evidence**: ECRR artifact uploaded ✅
+            
+            ### Reviewer B Verdict
+            ✅ **READY** — All docs-lane governance checks passed.
+            
+            ---
+            🐾 **BossCat Docs Lane — Rule #7 Compliant**`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
 
