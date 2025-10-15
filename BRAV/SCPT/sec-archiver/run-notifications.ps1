@@ -71,7 +71,7 @@ for($i=$start; $i -le $end -and $i -lt $total; $i++){
       }
       Append-Jsonl (Join-Path $EvidenceRoot 'LEDGER.jsonl') @{ ts=(Get-Date).ToString('o'); action='THREAD_MARK_READ'; entity=$id; meta=@{} }
       Sleep-ForQps $MutateQps
-    } catch { Write-Host "WARN: mark-read failed for $id: $_" -ForegroundColor Yellow }
+    } catch { Write-Host "WARN: mark-read failed for ${id}: $_" -ForegroundColor Yellow }
   }
 
   Sleep-ForQps $GetQps

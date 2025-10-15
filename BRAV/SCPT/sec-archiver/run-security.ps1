@@ -36,7 +36,7 @@ function Invoke-GhApi([string]$Path, [hashtable]$Params, [string]$Accept){
   } else {
     if(-not $Token){ throw 'Missing GITHUB_TOKEN and gh CLI not available.' }
     $qs = ($Params.Keys | ForEach-Object { "$($_)=$([uri]::EscapeDataString($Params[$_]))" }) -join '&'
-    $url = "https://api.github.com$Path" + (if($qs){"?$qs"}else{'})
+    $url = "https://api.github.com$Path" + (if($qs){"?$qs"}else{""})
     $headers = @{ 'Authorization' = "token $Token"; 'User-Agent'='BossCat-Archiver'; 'Accept' = ($Accept ?? 'application/vnd.github+json') }
     return (Invoke-RestMethod -Method GET -Uri $url -Headers $headers | ConvertTo-Json -Depth 100)
   }
