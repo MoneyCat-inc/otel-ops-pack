@@ -1,0 +1,29 @@
+name: rsi-sweep-nightly
+
+on:
+  schedule:
+    - cron: '30 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  sweep-batchsize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Warm bench dataset (2000 files)
+        shell: pwsh
+        run: |
+          pwsh BRAV/SCPT/rsi-bench/bench-index.ps1 -IndexConcurrency 8 -BatchSize 1000 -SampleN 2000 -Tag nightly-warm -ReuseBench
+      - name: Run batch-size sweep (parse-only)
+        shell: pwsh
+        run: |
+          pwsh BRAV/SCPT/rsi-bench/sweep-batchsize.ps1 -BatchSizes @(500,800,1000,1200,1500) -IndexConcurrency 8 -SampleN 2000 -TagPrefix 'nightly-sweep-batchsize' -BenchRoot '.bench/archived' -ArchivedRoot 'docs/BossCat/run-reports/archived'
+      - name: Upload sweep artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: rsi-sweep-nightly
+          path: |
+            CHAR/EVID/artifacts/ecrr/index/METRICS.jsonl
+            docs/ecrr/ECRR_REPORTS/ECRR_RSI_BATCHSIZE_DISCOVERY_*.md
+            docs/ecrr/ECRR_REPORTS/ECRR_RSI_BATCHSIZE_DISCOVERY_LATEST.md
+
