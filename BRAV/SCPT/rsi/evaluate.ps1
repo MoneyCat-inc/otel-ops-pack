@@ -1,6 +1,9 @@
 Param(
   [string]$Candidate = '.agent/rsi-candidate.json',
   [string]$BaselineTag = '',
+  [int]$IndexSampleN = 1000,
+  [int]$ArchTasks = 480,
+  [int]$ArchTaskMs = 800,
   [switch]$DryRun
 )
 $ErrorActionPreference = 'Stop'
@@ -20,9 +23,9 @@ $baseline = if ($BaselineTag) { $BaselineTag } else { '' }
 if (-not $baseline) {
   $baseline = 'baseline-' + (Get-Date -Format 'yyyyMMdd_HHmmss')
   # Run index baseline
-  pwsh BRAV/SCPT/rsi-bench/bench-index.ps1 -IndexConcurrency 8 -BatchSize 1000 -SampleN 1000 -Tag $baseline | Out-Null
+  pwsh BRAV/SCPT/rsi-bench/bench-index.ps1 -IndexConcurrency 8 -BatchSize 1000 -SampleN $IndexSampleN -Tag $baseline | Out-Null
   # Run arch baseline
-  pwsh BRAV/SCPT/rsi-bench/bench-archive.ps1 -ArchQps 2.0 -ArchConcurrency 48 -Tasks 480 -TaskMs 800 -Tag $baseline | Out-Null
+  pwsh BRAV/SCPT/rsi-bench/bench-archive.ps1 -ArchQps 2.0 -ArchConcurrency 48 -Tasks $ArchTasks -TaskMs $ArchTaskMs -Tag $baseline | Out-Null
 }
 
 # 2) Run candidate benches
@@ -34,14 +37,14 @@ $idxBatch = [int]$cand.index.BatchSize
 if (-not $idxConc) { $idxConc = 8 }
 if (-not $idxBatch) { $idxBatch = 1000 }
 
-pwsh BRAV/SCPT/rsi-bench/bench-index.ps1 -IndexConcurrency $idxConc -BatchSize $idxBatch -SampleN 1000 -Tag $idxTag | Out-Null
+pwsh BRAV/SCPT/rsi-bench/bench-index.ps1 -IndexConcurrency $idxConc -BatchSize $idxBatch -SampleN $IndexSampleN -Tag $idxTag | Out-Null
 
 $aQps = [double]$cand.conveyor.ARCH_QPS
 $aConc = [int]$cand.conveyor.ARCH_CONCURRENCY
 if (-not $aQps) { $aQps = 2.0 }
 if (-not $aConc) { $aConc = 48 }
 
-pwsh BRAV/SCPT/rsi-bench/bench-archive.ps1 -ArchQps $aQps -ArchConcurrency $aConc -Tasks 480 -TaskMs 800 -Tag $archTag | Out-Null
+pwsh BRAV/SCPT/rsi-bench/bench-archive.ps1 -ArchQps $aQps -ArchConcurrency $aConc -Tasks $ArchTasks -TaskMs $ArchTaskMs -Tag $archTag | Out-Null
 
 # 3) Score
 $scoreJSON = node BRAV/SCPT/rsi-bench/score.mjs --compare $baseline $idxTag --kind index
