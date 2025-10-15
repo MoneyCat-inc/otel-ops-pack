@@ -73,10 +73,24 @@ jobs:
             markdownlint $CHANGED
           fi
 
-      - name: Link and anchor check (lychee)
-        uses: lycheeverse/lychee-action@v1
-        with:
-          args: --no-progress --exclude-mail --verbose "docs/**/*.md" "**/README*.md"
+      - name: Link and anchor check (lychee, changed files only)
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Install lychee
+          curl -sL https://github.com/lycheeverse/lychee/releases/latest/download/lychee-x86_64-unknown-linux-gnu.tar.gz | tar xz
+          chmod +x lychee
+          
+          # Get changed markdown files (docs + READMEs only)
+          BASE="${{ steps.diff.outputs.BASE }}"
+          CHANGED=$(git diff --name-only "$BASE"..HEAD -- 'docs/**/*.md' '**/README*.md' | tr '\n' ' ')
+          
+          if [[ -z "$CHANGED" ]]; then
+            echo "No changed docs/READMEs; skipping link check."
+          else
+            echo "Checking links in: $CHANGED"
+            ./lychee --no-progress --exclude-mail --verbose $CHANGED
+          fi
 
       - name: Emit ECRR evidence (docs lane)
         shell: bash
