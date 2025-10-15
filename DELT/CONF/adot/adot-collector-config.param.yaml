@@ -1,0 +1,83 @@
+# ADOT Collector Config (parameterized template)
+# Includes both traces pipelines: select exactly one via deployment overlay
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+  awsxray:
+    endpoint: 0.0.0.0:2000
+    transport: udp
+    proxy_server:
+      endpoint: 0.0.0.0:2000   # TCP (remote sampling)
+
+processors:
+  batch:
+    timeout: 200ms
+    send_batch_size: 1024
+  memory_limiter:
+    check_interval: 1s
+    limit_mib: 512
+    spike_limit_mib: 128
+  resourcedetection/aws:
+    detectors: [env, ec2, ecs, eks]
+    timeout: 5s
+    override: false
+  attributes:
+    actions:
+      - key: dataset
+        action: upsert
+        value: resonai_analytics
+
+exporters:
+  otlp/signoz:
+    endpoint: ${SIGNOZ_ENDPOINT:-localhost:4317}
+    tls:
+      insecure: ${SIGNOZ_INSECURE:-true}
+    compression: gzip
+    sending_queue:
+      enabled: true
+      num_consumers: 10
+      queue_size: 1000
+    retry_on_failure:
+      enabled: true
+      initial_interval: 1s
+      max_interval: 30s
+      max_elapsed_time: 300s
+  awsxray:
+    region: ${AWS_REGION:-us-east-1}
+  logging:
+    loglevel: ${COLLECTOR_LOG_LEVEL:-info}
+
+extensions:
+  health_check:
+    endpoint: 0.0.0.0:13133
+  pprof:
+    endpoint: 0.0.0.0:1777
+  zpages:
+    endpoint: 0.0.0.0:55679
+
+service:
+  extensions: [health_check, pprof, zpages]
+  pipelines:
+    # Choose ONE traces pipeline per deployment
+    traces/signoz:
+      receivers: [otlp]
+      processors: [memory_limiter, resourcedetection/aws, attributes, batch]
+      exporters: [otlp/signoz]
+    traces/awsxray:
+      receivers: [otlp, awsxray]
+      processors: [memory_limiter, resourcedetection/aws, attributes, batch]
+      exporters: [awsxray]
+    metrics:
+      receivers: [otlp]
+      processors: [memory_limiter, resourcedetection/aws, attributes, batch]
+      exporters: [otlp/signoz]
+    logs:
+      receivers: [otlp]
+      processors: [memory_limiter, resourcedetection/aws, attributes, batch]
+      exporters: [otlp/signoz]
+

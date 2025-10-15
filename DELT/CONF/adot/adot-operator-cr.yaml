@@ -1,0 +1,268 @@
+# AWS Distro for OpenTelemetry (ADOT) Operator CustomResource
+# Deployment: EKS cluster with ADOT Operator installed
+# Namespace: observability (create if not exists)
+
+apiVersion: opentelemetry.io/v1alpha1
+kind: OpenTelemetryCollector
+metadata:
+  name: resonai-otel-collector
+  namespace: observability
+  labels:
+    app: otel-collector
+    component: observability
+    managed-by: adot-operator
+    project: resonai-analytics
+spec:
+  # Deployment mode: DaemonSet for node-level collection, Deployment for centralized
+  mode: deployment
+  
+  # Number of collector replicas (for high availability)
+  replicas: 2
+  
+  # ADOT collector image (AWS-maintained)
+  image: public.ecr.aws/aws-observability/aws-otel-collector:latest
+  
+  # Image pull policy
+  imagePullPolicy: Always
+  
+  # Service account for AWS IAM role binding (IRSA)
+  serviceAccount: adot-collector
+  
+  # Resource limits (tune based on traffic)
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "500m"
+    limits:
+      memory: "1Gi"
+      cpu: "1000m"
+  
+  # Ports exposed by the collector
+  ports:
+    # OTLP gRPC (primary ingestion)
+    - name: otlp-grpc
+      port: 4317
+      targetPort: 4317
+      protocol: TCP
+    
+    # OTLP HTTP (fallback ingestion)
+    - name: otlp-http
+      port: 4318
+      targetPort: 4318
+      protocol: TCP
+    
+    # AWS X-Ray UDP receiver
+    - name: xray-udp
+      port: 2000
+      targetPort: 2000
+      protocol: UDP
+    
+    # Health check endpoint
+    - name: health
+      port: 13133
+      targetPort: 13133
+      protocol: TCP
+    
+    # Prometheus metrics endpoint
+    - name: prometheus
+      port: 8888
+      targetPort: 8888
+      protocol: TCP
+  
+  # Environment variables
+  env:
+    - name: AWS_REGION
+      value: "us-east-1"  # Update per deployment
+    
+    - name: SIGNOZ_ENDPOINT
+      value: "signoz-otel-collector.observability.svc.cluster.local:4317"
+    
+    - name: SIGNOZ_INSECURE
+      value: "false"  # Use TLS in production
+    
+    - name: COLLECTOR_LOG_LEVEL
+      value: "info"
+  
+  # ConfigMap for collector configuration
+  config: |
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:4317
+          http:
+            endpoint: 0.0.0.0:4318
+      awsxray:
+        endpoint: 0.0.0.0:2000
+        transport: udp
+      prometheus:
+        config:
+          scrape_configs:
+            - job_name: 'otel-collector'
+              scrape_interval: 30s
+              static_configs:
+                - targets: ['localhost:8888']
+    
+    processors:
+      batch:
+        timeout: 200ms
+        send_batch_size: 1024
+      memory_limiter:
+        check_interval: 1s
+        limit_mib: 512
+      resourcedetection/aws:
+        detectors: [env, ec2, ecs, eks]
+        timeout: 5s
+      attributes:
+        actions:
+          - key: dataset
+            action: upsert
+            value: "resonai_analytics"
+          - key: k8s.cluster.name
+            action: upsert
+            from_attribute: k8s.cluster.name
+    
+    exporters:
+      otlp/signoz:
+        endpoint: ${SIGNOZ_ENDPOINT}
+        tls:
+          insecure: ${SIGNOZ_INSECURE}
+        compression: gzip
+      awscloudwatchlogs:
+        log_group_name: "/aws/eks/resonai-otel"
+        log_stream_name: "collector-logs"
+        region: ${AWS_REGION}
+      awsxray:
+        region: ${AWS_REGION}
+      logging:
+        loglevel: ${COLLECTOR_LOG_LEVEL}
+    
+    extensions:
+      health_check:
+        endpoint: 0.0.0.0:13133
+    
+    service:
+      extensions: [health_check]
+      pipelines:
+        traces:
+          receivers: [otlp, awsxray]
+          processors: [memory_limiter, resourcedetection/aws, attributes, batch]
+          exporters: [otlp/signoz, awsxray, logging]
+        metrics:
+          receivers: [otlp, prometheus]
+          processors: [memory_limiter, resourcedetection/aws, attributes, batch]
+          exporters: [otlp/signoz, logging]
+        logs:
+          receivers: [otlp]
+          processors: [memory_limiter, resourcedetection/aws, attributes, batch]
+          exporters: [otlp/signoz, awscloudwatchlogs, logging]
+      telemetry:
+        logs:
+          level: ${COLLECTOR_LOG_LEVEL}
+        metrics:
+          address: 0.0.0.0:8888
+
+---
+# Service for collector endpoints
+apiVersion: v1
+kind: Service
+metadata:
+  name: resonai-otel-collector
+  namespace: observability
+  labels:
+    app: otel-collector
+spec:
+  selector:
+    app.kubernetes.io/name: resonai-otel-collector
+  type: ClusterIP
+  ports:
+    - name: otlp-grpc
+      port: 4317
+      targetPort: 4317
+      protocol: TCP
+    - name: otlp-http
+      port: 4318
+      targetPort: 4318
+      protocol: TCP
+    - name: health
+      port: 13133
+      targetPort: 13133
+      protocol: TCP
+
+---
+# ServiceAccount with IAM role annotation (IRSA)
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: adot-collector
+  namespace: observability
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::ACCOUNT_ID:role/resonai-otel-collector-role
+
+---
+# HorizontalPodAutoscaler for dynamic scaling
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: resonai-otel-collector-hpa
+  namespace: observability
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: resonai-otel-collector-collector
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 80
+
+---
+# PodDisruptionBudget for high availability
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: resonai-otel-collector-pdb
+  namespace: observability
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: resonai-otel-collector
+
+# Deployment Notes:
+# 1. Prerequisites:
+#    - EKS cluster with ADOT Operator installed
+#    - observability namespace created
+#    - IAM role with CloudWatch/X-Ray permissions
+#    - SigNoz deployed in observability namespace (or external endpoint)
+#
+# 2. Installation:
+#    kubectl apply -f adot-operator-cr.yaml
+#
+# 3. Verification:
+#    kubectl get otelcol -n observability
+#    kubectl get pods -n observability -l app.kubernetes.io/name=resonai-otel-collector
+#    kubectl logs -n observability -l app.kubernetes.io/name=resonai-otel-collector
+#
+# 4. Testing:
+#    kubectl port-forward -n observability svc/resonai-otel-collector 4317:4317
+#    # Send test trace via OTLP gRPC to localhost:4317
+#
+# 5. IAM Role Policy (for IRSA):
+#    - cloudwatch:PutLogEvents
+#    - xray:PutTraceSegments
+#    - xray:PutTelemetryRecords
+#
+# 6. Update ACCOUNT_ID in ServiceAccount annotation with your AWS account ID
+

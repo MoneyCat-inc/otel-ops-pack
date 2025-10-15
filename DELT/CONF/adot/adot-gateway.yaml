@@ -1,0 +1,82 @@
+extensions:
+  health_check: {}
+  sigv4auth:
+    service: xray
+    region: ${AWS_REGION}
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+  awsxray:
+    # Legacy X-Ray SDK intake + remote sampling
+    endpoint: 0.0.0.0:2000  # UDP segments
+    transport: udp
+    proxy_server:
+      endpoint: 0.0.0.0:2000 # TCP for remote sampling
+
+processors:
+  memory_limiter:
+    check_interval: 1s
+    limit_mib: 256
+    spike_limit_mib: 128
+  k8sattributes: {}
+  resourcedetection:
+    detectors: [env, ec2, ecs, eks]
+    override: true
+  batch: {}
+  groupbytrace:
+    wait_duration: 10s
+    num_traces: 20000
+  tail_sampling:
+    decision_wait: 1s
+    policies:
+      - name: errors
+        type: status_code
+        status_code:
+          status_codes: [ERROR]
+
+exporters:
+  # Option A (classic): translate OTel → X-Ray segments
+  awsxray: {}
+
+  # Option B (modern): OTLP → X-Ray OTLP endpoint (SigV4)
+  otlphttp/xray:
+    endpoint: https://xray.${AWS_REGION}.amazonaws.com/v1/traces
+    auth:
+      authenticator: sigv4auth
+
+  # Metrics & Logs
+  awsemf:
+    namespace: ${CW_NAMESPACE}
+  awscloudwatchlogs:
+    log_group_name: /application/otel
+    log_stream_name: collector-${HOSTNAME}
+
+service:
+  extensions: [health_check, sigv4auth]
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, k8sattributes, resourcedetection, batch]
+      exporters: [awsxray]  # OR switch to [otlphttp/xray]
+    traces/tailsampling:
+      receivers: [otlp]
+      processors: [groupbytrace, tail_sampling, batch]
+      exporters: [awsxray]
+    traces/xray-sdk:
+      receivers: [awsxray]
+      processors: [batch]
+      exporters: [awsxray]
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [awsemf]
+    logs:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [awscloudwatchlogs]
+
