@@ -54,7 +54,17 @@
     "agent:run:site": "tsx scripts/agent/run-lane.ts --lane=site --dry-run",
     "gate:perf": "k6 run tests/perf/gate.js",
     "gate:trace": "OTEL_SERVICE_NAME=gate-synth OTLP_HTTP=http://localhost:14318/v1/traces tsx scripts/synth-trace.ts",
-    "icf:rollup": "tsx scripts/icf/write-rollup.ts"
+    "icf:rollup": "tsx scripts/icf/write-rollup.ts",
+    "sec:archive": "pwsh -File BRAV/SCPT/sec-archiver/run-security.ps1 -Owner MoneyCat-inc -Repo otel-ops-pack -Mode alerts+analyses -ChunkSize 200",
+    "sec:archive:alerts": "pwsh -File BRAV/SCPT/sec-archiver/run-security.ps1 -Owner MoneyCat-inc -Repo otel-ops-pack -Mode alerts -ChunkSize 200",
+    "sec:archive:analyses": "pwsh -File BRAV/SCPT/sec-archiver/run-security.ps1 -Owner MoneyCat-inc -Repo otel-ops-pack -Mode analyses -ChunkSize 100",
+    "sec:archive:full": "pwsh -File BRAV/SCPT/sec-archiver/run-security.ps1 -Owner MoneyCat-inc -Repo otel-ops-pack -Mode alerts+analyses -ChunkSize 500",
+    "sec:archive:dry": "pwsh -File BRAV/SCPT/sec-archiver/run-security.ps1 -Owner MoneyCat-inc -Repo otel-ops-pack -Mode alerts+analyses -ChunkSize 50 -DryRun",
+    "sec:delete-old": "pwsh -File BRAV/SCPT/sec-archiver/run-security.ps1 -Owner MoneyCat-inc -Repo otel-ops-pack -Mode analyses -DeleteAnalysesOlderThanDays 180",
+    "sec:index": "pwsh -File BRAV/SCPT/sec-archiver/generate-security-index.ps1",
+    "notify:archive": "pwsh -File BRAV/SCPT/sec-archiver/run-notifications.ps1 -ChunkSize 500",
+    "notify:archive:mark": "pwsh -File BRAV/SCPT/sec-archiver/run-notifications.ps1 -ChunkSize 500 -MarkRead",
+    "notify:archive:dry": "pwsh -File BRAV/SCPT/sec-archiver/run-notifications.ps1 -ChunkSize 50 -DryRun"
   },
   "dependencies": {
     "@aws-sdk/client-bedrock-runtime": "^3.908.0",
