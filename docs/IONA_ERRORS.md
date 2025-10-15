@@ -8,3 +8,4 @@ Examples:
 
 - 2025-10-12 00:00:00 +00:00 | ci  | IONA | SIG_NOZ_UI | transient 503 during nightly health poll
 - 2025-10-12 00:10:00 +00:00 | stg | IONA | QUEUE_EVIDENCE_MISSING | queue-steward-verification.txt absent (non-blocking)
+- 2025-10-15 00:00:00 +00:00 | ci  | IONA | EXT_SVC_TIMEOUTS | PR #144 external service check failures (timeouts/quotas), core gates passing

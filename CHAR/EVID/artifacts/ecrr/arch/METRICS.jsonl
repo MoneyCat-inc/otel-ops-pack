@@ -37,3 +37,7 @@
 
 {"tag":"rsi-20251015_021742-arch","guards":{"http5xx":0,"rate_backoff_ms":null,"http429":0,"error_rate":0},"params":{"Tasks":480,"TaskMs":800,"ARCH_CONCURRENCY":53,"ARCH_QPS":2.2},"kind":"arch","primary":{"arch_qps_effective":57.71},"totals":{"elapsed_ms":8317,"tasks":480},"ts":"2025-10-15T02:18:18+01:00"}
 
+{"ts":"2025-10-15T02:22:32+01:00","guards":{"rate_backoff_ms":null,"http429":0,"error_rate":0,"http5xx":0},"primary":{"arch_qps_effective":58.48},"params":{"TaskMs":800,"ARCH_CONCURRENCY":48,"ARCH_QPS":2.0,"Tasks":960},"kind":"arch","tag":"baseline-prod","totals":{"tasks":960,"elapsed_ms":16415}}
+
+{"kind":"arch","totals":{"tasks":960,"elapsed_ms":15599},"params":{"ARCH_CONCURRENCY":53,"TaskMs":800,"ARCH_QPS":2.1,"Tasks":960},"tag":"rsi-20251015_022238-arch","guards":{"error_rate":0,"http429":0,"http5xx":0,"rate_backoff_ms":null},"ts":"2025-10-15T02:23:10+01:00","primary":{"arch_qps_effective":61.54}}
+
