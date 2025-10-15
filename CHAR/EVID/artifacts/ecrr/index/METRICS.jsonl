@@ -22,3 +22,13 @@
 
 {"tag":"rsi-20251015_020847-idx","primary":{"files_per_sec":372.3},"kind":"index","params":{"BatchSize":1000,"IndexConcurrency":10,"SampleN":1000},"totals":{"elapsed_ms":2686,"files":1000},"ts":"2025-10-15T02:09:09+01:00","guards":{"append_p95_ms":null,"errors":0,"batch_p95_ms":null}}
 
+{"kind":"index","ts":"2025-10-15T02:15:22+01:00","totals":{"elapsed_ms":5446,"files":2000},"primary":{"files_per_sec":367.24},"params":{"IndexConcurrency":8,"BatchSize":1000,"SampleN":2000},"tag":"baseline-prod","guards":{"append_p95_ms":null,"batch_p95_ms":null,"errors":0}}
+
+{"kind":"index","totals":{"files":2000,"elapsed_ms":4525},"tag":"baseline-20251015_021602","guards":{"batch_p95_ms":null,"append_p95_ms":null,"errors":0},"ts":"2025-10-15T02:16:11+01:00","primary":{"files_per_sec":441.99},"params":{"IndexConcurrency":8,"SampleN":1000,"BatchSize":1000}}
+
+{"kind":"index","ts":"2025-10-15T02:16:29+01:00","guards":{"append_p95_ms":null,"batch_p95_ms":null,"errors":0},"tag":"rsi-20251015_021602-idx","params":{"SampleN":1000,"BatchSize":1000,"IndexConcurrency":10},"totals":{"files":2000,"elapsed_ms":4997},"primary":{"files_per_sec":400.24}}
+
+{"totals":{"files":2000,"elapsed_ms":4745},"guards":{"errors":0,"batch_p95_ms":null,"append_p95_ms":null},"params":{"IndexConcurrency":8,"BatchSize":1000,"SampleN":1000},"primary":{"files_per_sec":421.5},"ts":"2025-10-15T02:17:51+01:00","tag":"baseline-20251015_021742","kind":"index"}
+
+{"guards":{"errors":0,"append_p95_ms":null,"batch_p95_ms":null},"tag":"rsi-20251015_021742-idx","kind":"index","params":{"IndexConcurrency":9,"SampleN":1000,"BatchSize":1000},"totals":{"files":2000,"elapsed_ms":4853},"ts":"2025-10-15T02:18:09+01:00","primary":{"files_per_sec":412.12}}
+
