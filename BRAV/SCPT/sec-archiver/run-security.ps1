@@ -26,12 +26,20 @@ function Has-Gh(){ try { $null = & gh --version 2>$null; return $LASTEXITCODE -e
 
 function Invoke-GhApi([string]$Path, [hashtable]$Params, [string]$Accept){
   if(Has-Gh){
+    # Build query string manually
+    if($Params.Count -gt 0){
+      $qs = ($Params.Keys | ForEach-Object { "$_=$($Params[$_])" }) -join '&'
+      $fullPath = "$Path`?$qs"
+    } else {
+      $fullPath = $Path
+    }
+    
     $args = @('api')
     if($Accept){ $args += @('-H', "Accept: $Accept") }
-    $args += $Path
-    foreach($k in $Params.Keys){ $args += @('-f', "$k=$($Params[$k])") }
-    $out = & gh @args 2>$null
-    if($LASTEXITCODE -ne 0){ throw "gh api failed: $Path" }
+    $args += $fullPath
+    $ErrorActionPreference = 'Continue'
+    $out = & gh @args 2>&1
+    if($LASTEXITCODE -ne 0){ throw "gh api failed: $fullPath (exit $LASTEXITCODE): $out" }
     return $out
   } else {
     if(-not $Token){ throw 'Missing GITHUB_TOKEN and gh CLI not available.' }
