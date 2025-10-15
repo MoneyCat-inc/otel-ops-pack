@@ -600,14 +600,54 @@ All archiver operations follow **ECRR methodology**:
 
 ## Integration with CI/CD
 
-### GitHub Actions Example
+### Production Workflow (Deployed)
+
+**File**: `.github/workflows/security-notifications-archive-nightly.yml`
+
+The repository includes a production-ready nightly workflow:
+
+**Schedule**: Daily at 2 AM UTC (cron: `0 2 * * *`)
+
+**Jobs**:
+1. `archive-security` - Archives alerts and SARIF analyses
+2. `archive-notifications` - Archives GitHub notifications
+3. `commit-archives` - Commits results to repository
+4. `report` - Generates summary with evidence counts
+
+**Features**:
+- ✅ Safe QPS (2.0 GET/sec, within GitHub rate limits)
+- ✅ Artifact uploads (30-day archives, 90-day evidence)
+- ✅ Auto-commit to main branch
+- ✅ Job summaries with operation counts
+- ✅ Evidence tracking (LEDGER + METRICS)
+- ✅ Graceful error handling (inherits script resilience)
+
+**Manual Trigger**: Available via workflow_dispatch
+
+**Trigger Manually**:
+```bash
+# Via GitHub UI: Actions → Security & Notifications Archive (Nightly) → Run workflow
+
+# Or via gh CLI:
+gh workflow run security-notifications-archive-nightly.yml \
+  -f chunk_size=500 \
+  -f mark_notifications_read=false
+```
+
+**Parameters**:
+- `chunk_size` - Batch size (default: 500 for alerts, 200 for analyses)
+- `mark_notifications_read` - Mark notifications as read (default: false)
+
+### Custom Workflow Example
+
+If you need a custom schedule or different settings:
 
 ```yaml
-name: Security Archive
+name: Security Archive (Custom)
 
 on:
   schedule:
-    - cron: '0 2 * * *'  # 2 AM daily
+    - cron: '0 6 * * 1'  # 6 AM every Monday
   workflow_dispatch:
 
 jobs:
@@ -616,33 +656,49 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      
-      - name: Install dependencies
-        run: pnpm install
-      
       - name: Archive security alerts
-        run: pnpm sec:archive:alerts
+        shell: pwsh
+        run: |
+          pwsh -File BRAV/SCPT/sec-archiver/run-security.ps1 `
+            -Owner ${{ github.repository_owner }} `
+            -Repo ${{ github.event.repository.name }} `
+            -Mode alerts `
+            -ChunkSize 200 `
+            -GetQps 2.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Archive analyses
-        run: pnpm sec:archive:analyses
+        shell: pwsh
+        run: |
+          pwsh -File BRAV/SCPT/sec-archiver/run-security.ps1 `
+            -Owner ${{ github.repository_owner }} `
+            -Repo ${{ github.event.repository.name }} `
+            -Mode analyses `
+            -ChunkSize 100 `
+            -GetQps 2.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Rebuild indexes
-        run: pnpm sec:index
+        shell: pwsh
+        run: pwsh -File BRAV/SCPT/sec-archiver/generate-security-index.ps1
+      
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-archive
+          path: |
+            docs/BossCat/security/
+            CHAR/EVID/security/
+          retention-days: 30
       
       - name: Commit archives
         run: |
           git config user.name "BossCat Security Bot"
-          git config user.email "bosscat@example.com"
+          git config user.email "bosscat-security@noreply.github.com"
           git add docs/BossCat/security/ CHAR/EVID/security/
-          git commit -m "docs(security): Daily archive [skip ci]" || true
+          git commit -m "chore(bosscat): Security archive [skip ci]" || true
           git push
 ```
 
