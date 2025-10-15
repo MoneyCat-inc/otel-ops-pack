@@ -58,7 +58,8 @@ jobs:
             -Repo ${{ github.event.repository.name }} `
             -Mode alerts `
             -ChunkSize $chunkSize `
-            -GetQps 2.0
+            -GetQps 2.0 `
+            -NoProgress
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
@@ -78,7 +79,8 @@ jobs:
             -Repo ${{ github.event.repository.name }} `
             -Mode analyses `
             -ChunkSize $chunkSize `
-            -GetQps 2.0
+            -GetQps 2.0 `
+            -NoProgress
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
@@ -140,7 +142,7 @@ jobs:
           
           Write-Host "[BossCat] Archiving notifications (chunk: $chunkSize, markRead: $markRead)"
           
-          $cmd = "pwsh -File BRAV/SCPT/sec-archiver/run-notifications.ps1 -ChunkSize $chunkSize -GetQps 2.0 $markReadFlag"
+          $cmd = "pwsh -File BRAV/SCPT/sec-archiver/run-notifications.ps1 -ChunkSize $chunkSize -GetQps 2.0 -NoProgress $markReadFlag"
           Invoke-Expression $cmd
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
