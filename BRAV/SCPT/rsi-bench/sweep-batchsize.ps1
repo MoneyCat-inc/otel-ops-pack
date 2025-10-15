@@ -13,6 +13,11 @@ function Ensure-Dir([string]$p){ if(-not(Test-Path $p)){ New-Item -ItemType Dire
 
 if (Test-Path '.agent/LOCK') { throw '.agent/LOCK present — sweep paused by governance.' }
 
+# Ensure baseline (1000) present
+if (-not ($BatchSizes -contains 1000)) {
+  $BatchSizes = @($BatchSizes + 1000 | Sort-Object -Unique)
+}
+
 $tags = @()
 foreach ($bs in $BatchSizes) {
   $tag = "${TagPrefix}-bs${bs}"
@@ -68,4 +73,3 @@ $outFile = Join-Path $outDir ("ECRR_RSI_BATCHSIZE_DISCOVERY_" + (Get-Date -Forma
 ($lines -join "`r`n") | Set-Content -LiteralPath (Join-Path $outDir 'ECRR_RSI_BATCHSIZE_DISCOVERY_LATEST.md') -Encoding utf8
 
 Write-Host "✅ Sweep complete. Report: $outFile" -ForegroundColor Green
-
