@@ -1,143 +1,36 @@
-name: RSI Gate - Performance Regression Check
+name: rsi-gate
 
 on:
   pull_request:
+    branches: [ main, master ]
     paths:
       - 'BRAV/SCPT/rsi/**'
       - 'BRAV/SCPT/rsi-bench/**'
       - 'BRAV/SCPT/run-archiver/**'
-  workflow_dispatch:
-
-permissions:
-  contents: read
-  pull-requests: write
+      - '.github/workflows/rsi-*.yml'
 
 jobs:
   rsi-gate:
-    name: RSI Performance Gate
     runs-on: ubuntu-latest
-    timeout-minutes: 30
-    
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      
-      - name: Setup PowerShell
-        shell: bash
+      - name: Propose candidate (conservative)
         run: |
-          pwsh --version || echo "PowerShell pre-installed"
-      
-      - name: Check .agent/LOCK (Kill-switch)
-        id: killswitch
-        shell: bash
-        run: |
-          if [ -f .agent/LOCK ]; then
-            echo "🛑 Kill-switch engaged (.agent/LOCK exists)"
-            echo "skip=true" >> $GITHUB_OUTPUT
-          else
-            echo "✅ Kill-switch clear"
-            echo "skip=false" >> $GITHUB_OUTPUT
-          fi
-      
-      - name: Run Baseline Benchmarks
-        if: steps.killswitch.outputs.skip == 'false'
+          node BRAV/SCPT/rsi/propose-conservative.mjs > .agent/rsi-candidate.json
+      - name: Evaluate candidate vs baseline (gate)
         shell: pwsh
         run: |
-          Write-Host "🔍 Running baseline benchmarks..." -ForegroundColor Cyan
-          
-          # Index baseline (CI uses smaller sample for speed)
-          pwsh BRAV/SCPT/rsi-bench/bench-index.ps1 `
-            -IndexConcurrency 8 `
-            -BatchSize 1000 `
-            -SampleN 500 `
-            -Tag baseline-ci
-          
-          # Archive baseline (CI uses smaller workload)
-          pwsh BRAV/SCPT/rsi-bench/bench-archive.ps1 `
-            -ArchQps 2.0 `
-            -ArchConcurrency 48 `
-            -Tasks 240 `
-            -TaskMs 800 `
-            -Tag baseline-ci
-      
-      - name: Generate Candidate
-        if: steps.killswitch.outputs.skip == 'false'
-        shell: bash
-        run: |
-          echo "🎯 Generating candidate configuration..."
-          node BRAV/SCPT/rsi/propose.mjs > .agent/rsi-candidate-ci.json
-          cat .agent/rsi-candidate-ci.json
-      
-      - name: Evaluate Candidate
-        if: steps.killswitch.outputs.skip == 'false'
-        id: evaluate
-        shell: pwsh
-        run: |
-          Write-Host "⚖️ Evaluating candidate vs baseline..." -ForegroundColor Cyan
-          
-          $result = pwsh BRAV/SCPT/rsi/evaluate.ps1 -Candidate .agent/rsi-candidate-ci.json
-          $exitCode = $LASTEXITCODE
-          
-          Write-Host "Exit Code: $exitCode"
-          
-          if ($exitCode -eq 0) {
-            Write-Host "✅ RSI Gate: PASS" -ForegroundColor Green
-            echo "verdict=PASS" >> $env:GITHUB_OUTPUT
-          } else {
-            Write-Host "❌ RSI Gate: FAIL (regression detected)" -ForegroundColor Red
-            echo "verdict=FAIL" >> $env:GITHUB_OUTPUT
-          }
-          
-          exit $exitCode
-      
-      - name: Upload RSI Artifacts
-        if: always() && steps.killswitch.outputs.skip == 'false'
+          # Larger samples for stability
+          pwsh BRAV/SCPT/rsi/evaluate.ps1 -Candidate .agent/rsi-candidate.json -IndexSampleN 2000 -ArchTasks 960 -ArchTaskMs 800
+      - name: Upload RSI artifacts
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: rsi-evidence-${{ github.run_number }}
+          name: rsi-gate-artifacts
           path: |
-            CHAR/EVID/artifacts/ecrr/index/METRICS.jsonl
-            CHAR/EVID/artifacts/ecrr/arch/METRICS.jsonl
+            CHAR/EVID/artifacts/ecrr/**
             docs/ecrr/ECRR_REPORTS/RSI_EVAL_LATEST.md
-          retention-days: 30
-      
-      - name: Comment on PR
-        if: always() && steps.killswitch.outputs.skip == 'false' && github.event_name == 'pull_request'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const fs = require('fs');
-            const verdict = '${{ steps.evaluate.outputs.verdict }}';
-            const tldr = fs.readFileSync('docs/ecrr/ECRR_REPORTS/RSI_EVAL_LATEST.md', 'utf8');
-            
-            const icon = verdict === 'PASS' ? '✅' : '❌';
-            const body = `## ${icon} RSI Performance Gate: ${verdict}
-            
-            <details>
-            <summary>📊 Evaluation Results</summary>
-            
-            \`\`\`markdown
-            ${tldr}
-            \`\`\`
-            
-            </details>
-            
-            **Artifacts**: [rsi-evidence-${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
-            `;
-            
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: body
-            });
-
-concurrency:
-  group: rsi-gate-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
 

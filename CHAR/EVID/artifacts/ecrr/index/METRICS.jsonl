@@ -32,3 +32,21 @@
 
 {"guards":{"errors":0,"append_p95_ms":null,"batch_p95_ms":null},"tag":"rsi-20251015_021742-idx","kind":"index","params":{"IndexConcurrency":9,"SampleN":1000,"BatchSize":1000},"totals":{"files":2000,"elapsed_ms":4853},"ts":"2025-10-15T02:18:09+01:00","primary":{"files_per_sec":412.12}}
 
+{"ts":"2025-10-15T02:22:15+01:00","kind":"index","tag":"baseline-prod","guards":{"errors":0,"batch_p95_ms":null,"append_p95_ms":null},"params":{"BatchSize":1000,"IndexConcurrency":8,"SampleN":2000},"primary":{"files_per_sec":330.36},"totals":{"files":2000,"elapsed_ms":6054}}
+
+{"ts":"2025-10-15T02:22:53+01:00","guards":{"append_p95_ms":null,"errors":0,"batch_p95_ms":null},"kind":"index","params":{"IndexConcurrency":9,"SampleN":2000,"BatchSize":1000},"totals":{"elapsed_ms":6472,"files":2000},"tag":"rsi-20251015_022238-idx","primary":{"files_per_sec":309.02}}
+
+{"tag":"1000-600","totals":{"files":2000,"elapsed_ms":415249},"kind":"index","ts":"2025-10-15T02:39:59+01:00","guards":{"errors":0,"append_p95_ms":null,"batch_p95_ms":null},"primary":{"files_per_sec":4.82},"params":{"BatchSize":600,"IndexConcurrency":800,"SampleN":1500}}
+
+{"kind":"index","ts":"2025-10-15T02:40:48+01:00","totals":{"elapsed_ms":8867,"files":2000},"tag":"sweep-batch-500","guards":{"batch_p95_ms":null,"errors":0,"append_p95_ms":null},"primary":{"files_per_sec":225.56},"params":{"SampleN":1500,"BatchSize":500,"IndexConcurrency":8}}
+
+{"kind":"index","primary":{"files_per_sec":299.94},"tag":"sweep-batch-800","ts":"2025-10-15T02:41:00+01:00","params":{"BatchSize":800,"IndexConcurrency":8,"SampleN":1500},"totals":{"files":2000,"elapsed_ms":6668},"guards":{"append_p95_ms":null,"batch_p95_ms":null,"errors":0}}
+
+{"kind":"index","tag":"sweep-batch-1000","ts":"2025-10-15T02:41:11+01:00","totals":{"files":2000,"elapsed_ms":5024},"guards":{"append_p95_ms":null,"errors":0,"batch_p95_ms":null},"primary":{"files_per_sec":398.09},"params":{"IndexConcurrency":8,"BatchSize":1000,"SampleN":1500}}
+
+{"primary":{"files_per_sec":413.48},"tag":"sweep-batch-1200","guards":{"append_p95_ms":null,"errors":0,"batch_p95_ms":null},"kind":"index","ts":"2025-10-15T02:41:21+01:00","params":{"BatchSize":1200,"IndexConcurrency":8,"SampleN":1500},"totals":{"elapsed_ms":4837,"files":2000}}
+
+{"kind":"index","tag":"sweep-batch-1500","totals":{"files":2000,"elapsed_ms":4722},"ts":"2025-10-15T02:41:32+01:00","params":{"IndexConcurrency":8,"BatchSize":1500,"SampleN":1500},"primary":{"files_per_sec":423.55},"guards":{"batch_p95_ms":null,"append_p95_ms":null,"errors":0}}
+
+{"kind":"index","tag":"verify-500","ts":"2025-10-15T02:41:58+01:00","params":{"SampleN":100,"IndexConcurrency":8,"BatchSize":500},"totals":{"files":2000,"elapsed_ms":7811},"guards":{"append_p95_ms":null,"batch_p95_ms":null,"errors":0},"primary":{"files_per_sec":256.05}}
+
