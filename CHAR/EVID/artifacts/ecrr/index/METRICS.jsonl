@@ -50,3 +50,19 @@
 
 {"kind":"index","tag":"verify-500","ts":"2025-10-15T02:41:58+01:00","params":{"SampleN":100,"IndexConcurrency":8,"BatchSize":500},"totals":{"files":2000,"elapsed_ms":7811},"guards":{"append_p95_ms":null,"batch_p95_ms":null,"errors":0},"primary":{"files_per_sec":256.05}}
 
+{"totals":{"elapsed_ms":7901,"files":2000},"primary":{"files_per_sec":253.13},"kind":"index","guards":{"append_p95_ms":null,"batch_p95_ms":null,"errors":0},"params":{"SampleN":2000,"IndexConcurrency":8,"BatchSize":500},"ts":"2025-10-15T02:46:18+01:00","tag":"sweep-batchsize-prod-bs500"}
+
+{"params":{"IndexConcurrency":8,"SampleN":2000,"BatchSize":500},"totals":{"files":2000,"elapsed_ms":7869},"ts":"2025-10-15T02:47:00+01:00","primary":{"files_per_sec":254.16},"guards":{"errors":0,"append_p95_ms":null,"batch_p95_ms":null},"kind":"index","tag":"sweep-batchsize-prod-bs500"}
+
+{"totals":{"files":2000,"elapsed_ms":4176},"ts":"2025-10-15T02:47:58+01:00","kind":"index","primary":{"files_per_sec":478.93},"guards":{"errors":0,"batch_p95_ms":null,"append_p95_ms":null},"params":{"IndexConcurrency":8,"SampleN":2000,"BatchSize":1000},"tag":"baseline-warm"}
+
+{"guards":{"batch_p95_ms":null,"errors":0,"append_p95_ms":null},"kind":"index","totals":{"elapsed_ms":7820,"files":2000},"ts":"2025-10-15T02:48:38+01:00","primary":{"files_per_sec":255.75},"params":{"SampleN":2000,"BatchSize":500,"IndexConcurrency":8},"tag":"sweep-bs-prod-bs500"}
+
+{"guards":{"append_p95_ms":null,"errors":0,"batch_p95_ms":null},"tag":"sweep-bs-prod-bs800","primary":{"files_per_sec":338.35},"kind":"index","params":{"IndexConcurrency":8,"SampleN":2000,"BatchSize":800},"totals":{"elapsed_ms":5911,"files":2000},"ts":"2025-10-15T02:48:45+01:00"}
+
+{"kind":"index","primary":{"files_per_sec":488.64},"ts":"2025-10-15T02:48:50+01:00","tag":"sweep-bs-prod-bs1000","params":{"IndexConcurrency":8,"SampleN":2000,"BatchSize":1000},"totals":{"files":2000,"elapsed_ms":4093},"guards":{"append_p95_ms":null,"batch_p95_ms":null,"errors":0}}
+
+{"ts":"2025-10-15T02:48:55+01:00","primary":{"files_per_sec":459.14},"params":{"BatchSize":1200,"SampleN":2000,"IndexConcurrency":8},"kind":"index","tag":"sweep-bs-prod-bs1200","guards":{"append_p95_ms":null,"batch_p95_ms":null,"errors":0},"totals":{"files":2000,"elapsed_ms":4356}}
+
+{"totals":{"elapsed_ms":4035,"files":2000},"kind":"index","tag":"sweep-bs-prod-bs1500","ts":"2025-10-15T02:48:59+01:00","primary":{"files_per_sec":495.66},"guards":{"errors":0,"append_p95_ms":null,"batch_p95_ms":null},"params":{"SampleN":2000,"BatchSize":1500,"IndexConcurrency":8}}
+

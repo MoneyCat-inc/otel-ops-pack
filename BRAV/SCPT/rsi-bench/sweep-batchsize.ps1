@@ -1,165 +1,71 @@
-#!/usr/bin/env pwsh
-#Requires -Version 7
-<#
-.SYNOPSIS
-  RSI BatchSize Sweep - Systematic search for optimal batch size
-.DESCRIPTION
-  Tests multiple BatchSize values while holding IndexConcurrency constant.
-  Logs all results to METRICS.jsonl for comparison via score.mjs.
-.PARAMETER Concurrency
-  IndexConcurrency to use (default: 8, current optimum)
-.PARAMETER SampleN
-  Number of files to process (default: 1500 for speed)
-.PARAMETER BatchSizes
-  Array of BatchSize values to test (default: 500,800,1000,1200,1500)
-.PARAMETER TagPrefix
-  Prefix for tags (default: sweep-batch)
-.EXAMPLE
-  pwsh BRAV/SCPT/rsi-bench/sweep-batchsize.ps1 -SampleN 1500
-.EXAMPLE
-  pwsh BRAV/SCPT/rsi-bench/sweep-batchsize.ps1 -BatchSizes 600,800,1000,1200 -SampleN 2000
-#>
-
-param(
-  [int]$Concurrency = 8,
-  [int]$SampleN = 1500,
-  [int[]]$BatchSizes = @(500, 800, 1000, 1200, 1500),
-  [string]$TagPrefix = "sweep-batch"
+Param(
+  [int[]]$BatchSizes = @(500,800,1000,1200,1500),
+  [int]$IndexConcurrency = 8,
+  [int]$SampleN = 2000,
+  [string]$TagPrefix = 'sweep-batchsize',
+  [string]$ArchivedRoot = 'docs/BossCat/run-reports/archived',
+  [string]$BenchRoot = '.bench/archived'
 )
-
 $ErrorActionPreference = 'Stop'
-Set-StrictMode -Version Latest
 
-# Colors
-$Cyan = "`e[96m"
-$Yellow = "`e[93m"
-$Green = "`e[92m"
-$Red = "`e[91m"
-$Reset = "`e[0m"
+function Read-Metrics([string]$file){ if(-not(Test-Path $file)){ return @() }; Get-Content -LiteralPath $file | % { if($_){ try{ $_ | ConvertFrom-Json } catch {} } } }
+function Ensure-Dir([string]$p){ if(-not(Test-Path $p)){ New-Item -ItemType Directory -Force -Path $p | Out-Null } }
 
-Write-Host "${Cyan}═══════════════════════════════════════════════════════${Reset}"
-Write-Host "${Cyan}🔍 RSI BatchSize Sweep${Reset}"
-Write-Host "${Cyan}═══════════════════════════════════════════════════════${Reset}"
-Write-Host ""
-Write-Host "  Concurrency: ${Yellow}$Concurrency${Reset} (fixed)"
-Write-Host "  SampleN: ${Yellow}$SampleN${Reset}"
-Write-Host "  BatchSizes: ${Yellow}$($BatchSizes -join ', ')${Reset}"
-Write-Host ""
+if (Test-Path '.agent/LOCK') { throw '.agent/LOCK present — sweep paused by governance.' }
 
-# Results collection
-$results = @()
-$baselineResult = $null
-
-foreach ($batchSize in $BatchSizes) {
-  $tag = "${TagPrefix}-${batchSize}"
-  
-  Write-Host "${Yellow}Testing BatchSize=${batchSize}...${Reset}" -NoNewline
-  
-  try {
-    # Run benchmark
-    $output = & pwsh -File "$PSScriptRoot/bench-index.ps1" `
-      -IndexConcurrency $Concurrency `
-      -BatchSize $batchSize `
-      -SampleN $SampleN `
-      -Tag $tag 2>&1
-    
-    # Extract elapsed time from output
-    $elapsed = $null
-    $outputStr = $output | Out-String
-    if ($outputStr -match '([\d.]+)\s*$') {
-      $elapsed = [double]$Matches[1]
-    }
-    
-    if ($null -eq $elapsed) {
-      Write-Host " ${Red}✗ Failed to parse elapsed time${Reset}"
-      Write-Host "  Output: $outputStr"
-      continue
-    }
-    
-    # Calculate throughput
-    $filesPerSec = [math]::Round($SampleN / $elapsed, 2)
-    
-    $result = @{
-      BatchSize = $batchSize
-      Elapsed = $elapsed
-      FilesPerSec = $filesPerSec
-      Tag = $tag
-    }
-    
-    $results += [PSCustomObject]$result
-    
-    # Mark baseline (BatchSize=1000, current default)
-    if ($batchSize -eq 1000) {
-      $baselineResult = $result
-      Write-Host " ${Green}✓${Reset} ${filesPerSec} files/sec ${Cyan}[BASELINE]${Reset}"
-    } else {
-      # Calculate delta vs baseline if available
-      if ($null -ne $baselineResult) {
-        $delta = (($filesPerSec - $baselineResult.FilesPerSec) / $baselineResult.FilesPerSec) * 100
-        $deltaStr = if ($delta -ge 0) { "+$([math]::Round($delta, 2))%" } else { "$([math]::Round($delta, 2))%" }
-        $deltaColor = if ($delta -ge 0) { $Green } else { $Red }
-        Write-Host " ${Green}✓${Reset} ${filesPerSec} files/sec (${deltaColor}${deltaStr}${Reset} vs baseline)"
-      } else {
-        Write-Host " ${Green}✓${Reset} ${filesPerSec} files/sec"
-      }
-    }
-    
-  } catch {
-    Write-Host " ${Red}✗ Error: $($_.Exception.Message)${Reset}"
-  }
+$tags = @()
+foreach ($bs in $BatchSizes) {
+  $tag = "${TagPrefix}-bs${bs}"
+  $tags += $tag
+  pwsh BRAV/SCPT/rsi-bench/bench-index.ps1 -IndexConcurrency $IndexConcurrency -BatchSize $bs -SampleN $SampleN -Tag $tag -ArchivedRoot $ArchivedRoot -BenchRoot $BenchRoot -ReuseBench | Out-Null
 }
 
-Write-Host ""
-Write-Host "${Cyan}═══════════════════════════════════════════════════════${Reset}"
-Write-Host "${Cyan}📊 Sweep Results Summary${Reset}"
-Write-Host "${Cyan}═══════════════════════════════════════════════════════${Reset}"
-Write-Host ""
-
-if ($results.Count -eq 0) {
-  Write-Host "${Red}No results collected${Reset}"
-  exit 1
+$metFile = 'CHAR/EVID/artifacts/ecrr/index/METRICS.jsonl'
+$rows = @(Read-Metrics $metFile | Where-Object { $_.kind -eq 'index' -and $_.tag -in $tags })
+$summary = @{}
+foreach ($r in $rows) {
+  $bs = [int]$r.params.BatchSize
+  $summary[$bs] = @{ files_per_sec = [double]$r.primary.files_per_sec; tag = $r.tag }
 }
 
-# Sort by throughput (descending)
-$sortedResults = $results | Sort-Object -Property FilesPerSec -Descending
+# Compute baseline and best
+if (-not $summary.ContainsKey(1000)) { Write-Warning 'Baseline BatchSize=1000 not found in recent sweep results.' }
+$baselineFps = if ($summary.ContainsKey(1000)) { [double]$summary[1000].files_per_sec } else { [double]0 }
+$bestBS = $null; $bestFPS = -1.0
+foreach ($k in $summary.Keys) { if ($summary[$k].files_per_sec -gt $bestFPS) { $bestFPS = [double]$summary[$k].files_per_sec; $bestBS = [int]$k } }
 
-# Display results table
-$sortedResults | Format-Table -AutoSize @(
-  @{Label="Rank"; Expression={$sortedResults.IndexOf($_) + 1}},
-  @{Label="BatchSize"; Expression={$_.BatchSize}},
-  @{Label="Files/sec"; Expression={$_.FilesPerSec}},
-  @{Label="Elapsed (s)"; Expression={$_.Elapsed}},
-  @{Label="Tag"; Expression={$_.Tag}}
-)
-
-# Find best configuration
-$best = $sortedResults[0]
-
-Write-Host ""
-Write-Host "${Green}🏆 Best Configuration:${Reset}"
-Write-Host "  BatchSize: ${Yellow}$($best.BatchSize)${Reset}"
-Write-Host "  Throughput: ${Yellow}$($best.FilesPerSec)${Reset} files/sec"
-Write-Host "  Tag: ${Yellow}$($best.Tag)${Reset}"
-
-if ($null -ne $baselineResult) {
-  $improvement = (($best.FilesPerSec - $baselineResult.FilesPerSec) / $baselineResult.FilesPerSec) * 100
-  $improvementStr = [math]::Round($improvement, 2)
-  
-  Write-Host ""
-  if ($improvement -gt 0) {
-    Write-Host "${Green}✓ Improvement vs baseline (1000): +${improvementStr}%${Reset}"
-  } elseif ($improvement -eq 0) {
-    Write-Host "${Yellow}= No change vs baseline (1000)${Reset}"
+$ts = Get-Date -Format 'yyyy-MM-dd HH:mm:ss K'
+$lines = @()
+$lines += '# ECRR — RSI BatchSize Sweep'
+$lines += ''
+$lines += "Timestamp: $ts"
+$lines += "SampleN: $SampleN | Concurrency: $IndexConcurrency"
+$lines += ''
+$lines += '## Results'
+foreach ($k in ($summary.Keys | Sort-Object)) {
+  $fps = [double]$summary[$k].files_per_sec
+  $delta = if ($baselineFps -gt 0) { [math]::Round(($fps - $baselineFps) / $baselineFps * 100, 2) } else { 0 }
+  $mark = if ($k -eq 1000) { '(baseline)' } elseif ($k -eq $bestBS) { '(best)' } else { '' }
+  $lines += "- BatchSize=$k → ${fps} files/sec (${delta}%) $mark"
+}
+$lines += ''
+$lines += '## Conclusion'
+if ($bestBS -and $baselineFps -gt 0) {
+  $bestDelta = [math]::Round((($bestFPS - $baselineFps) / $baselineFps) * 100, 2)
+  if ($bestDelta -gt 0) {
+    $lines += "BatchSize=$bestBS improves throughput by ${bestDelta}% vs baseline (1000)."
   } else {
-    Write-Host "${Red}✗ Regression vs baseline (1000): ${improvementStr}%${Reset}"
+    $lines += 'No improvement over baseline observed.'
   }
+} else {
+  $lines += 'Insufficient data to determine improvement.'
 }
 
-Write-Host ""
-Write-Host "${Cyan}Next Steps:${Reset}"
-Write-Host "  1. Review results above"
-Write-Host "  2. Check METRICS.jsonl: ${Yellow}CHAR/EVID/artifacts/ecrr/index/METRICS.jsonl${Reset}"
-Write-Host "  3. Compare configurations:"
-Write-Host "     ${Yellow}node BRAV/SCPT/rsi-bench/score.mjs --compare $($baselineResult.Tag) $($best.Tag) --kind index${Reset}"
-Write-Host ""
+$outDir = 'docs/ecrr/ECRR_REPORTS'
+Ensure-Dir $outDir
+$outFile = Join-Path $outDir ("ECRR_RSI_BATCHSIZE_DISCOVERY_" + (Get-Date -Format 'yyyyMMdd_HHmmss') + '.md')
+($lines -join "`r`n") | Set-Content -LiteralPath $outFile -Encoding utf8
+($lines -join "`r`n") | Set-Content -LiteralPath (Join-Path $outDir 'ECRR_RSI_BATCHSIZE_DISCOVERY_LATEST.md') -Encoding utf8
+
+Write-Host "✅ Sweep complete. Report: $outFile" -ForegroundColor Green
 

@@ -5,7 +5,8 @@ Param(
   [string]$Tag = '',
   [switch]$Trace,
   [string]$ArchivedRoot = 'docs/BossCat/run-reports/archived',
-  [string]$BenchRoot = '.bench/archived'
+  [string]$BenchRoot = '.bench/archived',
+  [switch]$ReuseBench
 )
 $ErrorActionPreference = 'Stop'
 
@@ -15,26 +16,32 @@ function Append-JSONL([string]$path, [hashtable]$obj){ Ensure-Dir (Split-Path -P
 # Kill-switch
 if (Test-Path '.agent/LOCK') { throw '.agent/LOCK present — RSI paused by governance.' }
 
-# Resolve dataset: copy a deterministic sample from archived → bench
-if (-not (Test-Path -LiteralPath $ArchivedRoot)) {
-  throw "Archived root not found: $ArchivedRoot"
+<#
+Prepare dataset
+- By default, copy a deterministic $SampleN subset into $BenchRoot.
+- If -ReuseBench is set and $BenchRoot already contains ≥$SampleN files, skip copying to avoid overhead.
+#>
+if (-not (Test-Path -LiteralPath $BenchRoot)) { Ensure-Dir $BenchRoot }
+
+$needCopy = $true
+if ($ReuseBench) {
+  $existing = @(Get-ChildItem -Path $BenchRoot -Recurse -File -Filter 'run-*.md').Count
+  if ($existing -ge $SampleN) { $needCopy = $false }
 }
-Ensure-Dir $BenchRoot
 
-$allFiles = @(Get-ChildItem -Path $ArchivedRoot -Recurse -File -Filter 'run-*.md')
-if ($allFiles.Count -eq 0) { throw "No archived run reports under $ArchivedRoot" }
-
-# Deterministic sample by path order
-$sample = $allFiles | Sort-Object FullName | Select-Object -First $SampleN
-
-# Mirror the folder structure into .bench/archived (shallow copy)
-foreach ($f in $sample) {
-  $rootPath = (Resolve-Path $ArchivedRoot).Path
-  $rel = $f.FullName.Substring($rootPath.Length)
-  if ($rel.StartsWith('\\') -or $rel.StartsWith('/')) { $rel = $rel.Substring(1) }
-  $dst = Join-Path $BenchRoot $rel
-  Ensure-Dir (Split-Path -Parent $dst)
-  Copy-Item -LiteralPath $f.FullName -Destination $dst -Force
+if ($needCopy) {
+  if (-not (Test-Path -LiteralPath $ArchivedRoot)) { throw "Archived root not found: $ArchivedRoot" }
+  $allFiles = @(Get-ChildItem -Path $ArchivedRoot -Recurse -File -Filter 'run-*.md')
+  if ($allFiles.Count -eq 0) { throw "No archived run reports under $ArchivedRoot" }
+  $sample = $allFiles | Sort-Object FullName | Select-Object -First $SampleN
+  foreach ($f in $sample) {
+    $rootPath = (Resolve-Path $ArchivedRoot).Path
+    $rel = $f.FullName.Substring($rootPath.Length)
+    if ($rel.StartsWith('\\') -or $rel.StartsWith('/')) { $rel = $rel.Substring(1) }
+    $dst = Join-Path $BenchRoot $rel
+    Ensure-Dir (Split-Path -Parent $dst)
+    Copy-Item -LiteralPath $f.FullName -Destination $dst -Force
+  }
 }
 
 # Worklist to process
