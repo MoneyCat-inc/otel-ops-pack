@@ -170,3 +170,6 @@ _BossCat Seal: 🐾_
 - 2025-10-12T01:05:00Z — GATE #007: Ready-for-gate certification issued by cursor{implementer}; all critical assets present; P1 100% complete; security hardened; performance thresholds met; evidence comprehensive. Verdict: ✅ READY FOR GATE. Evidence: ECRR_GATE_READY_EXEC_20251012.md
 [2025-10-15 02:06:46 +01:00] RSI: baseline=baseline-20251015_020401 → idx=rsi-20251015_020401-idx arch=rsi-20251015_020401-arch verdict=REJECT
 [2025-10-15 02:09:17 +01:00] RSI: baseline=baseline-20251015_020847 → idx=rsi-20251015_020847-idx arch=rsi-20251015_020847-arch verdict=PASS
+[2025-10-15 02:16:37 +01:00] RSI: baseline=baseline-20251015_021602 → idx=rsi-20251015_021602-idx arch=rsi-20251015_021602-arch verdict=REJECT
+[2025-10-15 02:18:18 +01:00] RSI: baseline=baseline-20251015_021742 → idx=rsi-20251015_021742-idx arch=rsi-20251015_021742-arch verdict=REJECT
+[2025-10-15 02:23:10 +01:00] RSI: baseline=baseline-prod → idx=rsi-20251015_022238-idx arch=rsi-20251015_022238-arch verdict=REJECT
