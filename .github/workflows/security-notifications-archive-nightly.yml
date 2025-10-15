@@ -1,0 +1,301 @@
+name: Security & Notifications Archive (Nightly)
+
+on:
+  schedule:
+    - cron: '0 2 * * *'  # 2 AM UTC daily
+  workflow_dispatch:  # Manual trigger
+    inputs:
+      chunk_size:
+        description: 'Chunk size for archival'
+        required: false
+        default: '500'
+      mark_notifications_read:
+        description: 'Mark notifications as read'
+        required: false
+        default: 'false'
+        type: boolean
+
+permissions:
+  contents: write
+  security-events: read
+  actions: read
+
+concurrency:
+  group: security-archive-nightly-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false  # Let nightly runs complete
+
+jobs:
+  archive-security:
+    name: Archive Security Alerts & Analyses
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 1
+      
+      - name: Setup PowerShell
+        shell: pwsh
+        run: |
+          Write-Host "PowerShell version: $($PSVersionTable.PSVersion)"
+          Write-Host "OS: $($PSVersionTable.OS)"
+      
+      - name: Archive Security Alerts
+        shell: pwsh
+        run: |
+          $chunkSize = if('${{ github.event.inputs.chunk_size }}') { 
+            [int]'${{ github.event.inputs.chunk_size }}' 
+          } else { 
+            500 
+          }
+          
+          Write-Host "[BossCat] Archiving security alerts (chunk: $chunkSize)"
+          
+          pwsh -File BRAV/SCPT/sec-archiver/run-security.ps1 `
+            -Owner ${{ github.repository_owner }} `
+            -Repo ${{ github.event.repository.name }} `
+            -Mode alerts `
+            -ChunkSize $chunkSize `
+            -GetQps 2.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Archive Security Analyses (SARIF)
+        shell: pwsh
+        run: |
+          $chunkSize = if('${{ github.event.inputs.chunk_size }}') { 
+            [int]'${{ github.event.inputs.chunk_size }}' 
+          } else { 
+            200 
+          }
+          
+          Write-Host "[BossCat] Archiving security analyses (chunk: $chunkSize)"
+          
+          pwsh -File BRAV/SCPT/sec-archiver/run-security.ps1 `
+            -Owner ${{ github.repository_owner }} `
+            -Repo ${{ github.event.repository.name }} `
+            -Mode analyses `
+            -ChunkSize $chunkSize `
+            -GetQps 2.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Rebuild Security Indexes
+        shell: pwsh
+        run: |
+          Write-Host "[BossCat] Rebuilding security indexes"
+          pwsh -File BRAV/SCPT/sec-archiver/generate-security-index.ps1
+      
+      - name: Upload Security Artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: security-archive-${{ github.run_number }}
+          path: |
+            docs/BossCat/security/**/*.jsonl
+            docs/BossCat/security/**/*.json
+            docs/BossCat/security/**/*.md
+            docs/BossCat/security/**/*.sarif.json
+            CHAR/EVID/security/**/*.jsonl
+          retention-days: 30
+      
+      - name: Upload Security Evidence
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: security-evidence-${{ github.run_number }}
+          path: CHAR/EVID/security/**/*.jsonl
+          retention-days: 90  # Compliance retention
+
+  archive-notifications:
+    name: Archive GitHub Notifications
+    runs-on: ubuntu-latest
+    needs: archive-security  # Run after security to avoid rate limiting
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 1
+      
+      - name: Setup PowerShell
+        shell: pwsh
+        run: |
+          Write-Host "PowerShell version: $($PSVersionTable.PSVersion)"
+      
+      - name: Archive Notifications
+        shell: pwsh
+        run: |
+          $chunkSize = if('${{ github.event.inputs.chunk_size }}') { 
+            [int]'${{ github.event.inputs.chunk_size }}' 
+          } else { 
+            500 
+          }
+          
+          $markRead = '${{ github.event.inputs.mark_notifications_read }}' -eq 'true'
+          $markReadFlag = if($markRead) { '-MarkRead' } else { '' }
+          
+          Write-Host "[BossCat] Archiving notifications (chunk: $chunkSize, markRead: $markRead)"
+          
+          $cmd = "pwsh -File BRAV/SCPT/sec-archiver/run-notifications.ps1 -ChunkSize $chunkSize -GetQps 2.0 $markReadFlag"
+          Invoke-Expression $cmd
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Upload Notifications Artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: notifications-archive-${{ github.run_number }}
+          path: |
+            docs/BossCat/notifications/**/*.jsonl
+            docs/BossCat/notifications/**/*.json
+            docs/BossCat/notifications/**/*.md
+            CHAR/EVID/notifications/**/*.jsonl
+          retention-days: 30
+      
+      - name: Upload Notifications Evidence
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: notifications-evidence-${{ github.run_number }}
+          path: CHAR/EVID/notifications/**/*.jsonl
+          retention-days: 90  # Compliance retention
+
+  commit-archives:
+    name: Commit Archives to Repository
+    runs-on: ubuntu-latest
+    needs: [archive-security, archive-notifications]
+    if: always()
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+      
+      - name: Download Security Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: security-archive-${{ github.run_number }}
+          path: .
+      
+      - name: Download Notifications Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: notifications-archive-${{ github.run_number }}
+          path: .
+      
+      - name: Configure Git
+        run: |
+          git config user.name "BossCat Security Bot"
+          git config user.email "bosscat-security@noreply.github.com"
+      
+      - name: Commit and Push Archives
+        run: |
+          git add docs/BossCat/security/ docs/BossCat/notifications/ CHAR/EVID/
+          
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore(bosscat): Nightly security & notifications archive
+            
+            Automated Archive:
+            - Security alerts archived
+            - Security analyses (SARIF) archived
+            - Notifications archived
+            - Indexes rebuilt
+            
+            Run: #${{ github.run_number }}
+            Date: $(date -u +%Y-%m-%d)
+            Evidence: CHAR/EVID/security/ + CHAR/EVID/notifications/
+            
+            Authority: BossCat Security Bot (GitHub Actions)
+            ECRR: Automated conveyor execution"
+            
+            git push origin ${{ github.ref_name }}
+          fi
+
+  report:
+    name: Generate Archive Report
+    runs-on: ubuntu-latest
+    needs: [archive-security, archive-notifications, commit-archives]
+    if: always()
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Download Security Evidence
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: security-evidence-${{ github.run_number }}
+          path: evidence/security
+      
+      - name: Download Notifications Evidence
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: notifications-evidence-${{ github.run_number }}
+          path: evidence/notifications
+      
+      - name: Generate Summary
+        shell: pwsh
+        run: |
+          Write-Host "# BossCat Nightly Archive Summary" >> $env:GITHUB_STEP_SUMMARY
+          Write-Host "" >> $env:GITHUB_STEP_SUMMARY
+          Write-Host "**Run**: #${{ github.run_number }}" >> $env:GITHUB_STEP_SUMMARY
+          Write-Host "**Date**: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss UTC')" >> $env:GITHUB_STEP_SUMMARY
+          Write-Host "" >> $env:GITHUB_STEP_SUMMARY
+          
+          # Count security evidence
+          $secLedger = "evidence/security/LEDGER.jsonl"
+          if(Test-Path $secLedger){
+            $secCount = (Get-Content $secLedger | Measure-Object).Count
+            Write-Host "## Security Archive" >> $env:GITHUB_STEP_SUMMARY
+            Write-Host "- **Operations**: $secCount" >> $env:GITHUB_STEP_SUMMARY
+            
+            # Count by action type
+            $actions = Get-Content $secLedger | ForEach-Object { 
+              ($_ | ConvertFrom-Json).action 
+            } | Group-Object | Sort-Object Count -Descending
+            
+            Write-Host "- **Actions**:" >> $env:GITHUB_STEP_SUMMARY
+            foreach($a in $actions){
+              Write-Host "  - $($a.Name): $($a.Count)" >> $env:GITHUB_STEP_SUMMARY
+            }
+          }
+          
+          Write-Host "" >> $env:GITHUB_STEP_SUMMARY
+          
+          # Count notifications evidence
+          $notifLedger = "evidence/notifications/LEDGER.jsonl"
+          if(Test-Path $notifLedger){
+            $notifCount = (Get-Content $notifLedger | Measure-Object).Count
+            Write-Host "## Notifications Archive" >> $env:GITHUB_STEP_SUMMARY
+            Write-Host "- **Operations**: $notifCount" >> $env:GITHUB_STEP_SUMMARY
+          }
+          
+          Write-Host "" >> $env:GITHUB_STEP_SUMMARY
+          Write-Host "## Artifacts" >> $env:GITHUB_STEP_SUMMARY
+          Write-Host "- Security: \`security-archive-${{ github.run_number }}\`" >> $env:GITHUB_STEP_SUMMARY
+          Write-Host "- Notifications: \`notifications-archive-${{ github.run_number }}\`" >> $env:GITHUB_STEP_SUMMARY
+          Write-Host "- Evidence: \`security-evidence-${{ github.run_number }}\`, \`notifications-evidence-${{ github.run_number }}\`" >> $env:GITHUB_STEP_SUMMARY
+          
+          Write-Host "" >> $env:GITHUB_STEP_SUMMARY
+          Write-Host "🐾 **BossCat Security Conveyor — Nightly Run Complete**" >> $env:GITHUB_STEP_SUMMARY
+      
+      - name: Report Status
+        if: always()
+        run: |
+          echo "### Workflow Status" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- Archive Security: ${{ needs.archive-security.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Archive Notifications: ${{ needs.archive-notifications.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Commit Archives: ${{ needs.commit-archives.result }}" >> $GITHUB_STEP_SUMMARY
+
