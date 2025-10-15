@@ -168,3 +168,5 @@
 _BossCat Seal: 🐾_
 - 2025-10-11T23:26:07Z — GATE+SITE: SITE_HTML_CSP & SITE_REFMAP_PREVIEW green on PR #128; status.html CSP 'self' only; Mermaid 10.9.4 vendored; audit footer live. Evidence: DELT/ARTF/site-csp-gate.json, DELT/ARTF/refmap-gate.json
 - 2025-10-12T01:05:00Z — GATE #007: Ready-for-gate certification issued by cursor{implementer}; all critical assets present; P1 100% complete; security hardened; performance thresholds met; evidence comprehensive. Verdict: ✅ READY FOR GATE. Evidence: ECRR_GATE_READY_EXEC_20251012.md
+[2025-10-15 02:06:46 +01:00] RSI: baseline=baseline-20251015_020401 → idx=rsi-20251015_020401-idx arch=rsi-20251015_020401-arch verdict=REJECT
+[2025-10-15 02:09:17 +01:00] RSI: baseline=baseline-20251015_020847 → idx=rsi-20251015_020847-idx arch=rsi-20251015_020847-arch verdict=PASS

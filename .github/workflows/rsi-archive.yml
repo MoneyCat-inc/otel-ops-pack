@@ -1,0 +1,24 @@
+name: rsi-archive
+
+on:
+  workflow_dispatch:
+
+jobs:
+  bench-archive:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Archive self-test bench only
+        shell: pwsh
+        run: |
+          pwsh BRAV/SCPT/rsi-bench/bench-archive.ps1 -ArchQps 2.0 -ArchConcurrency 48 -Tasks 480 -TaskMs 800 -Tag "baseline-ci"
+      - name: Upload RSI artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: rsi-arch-artifacts
+          path: |
+            CHAR/EVID/artifacts/ecrr/arch/METRICS.jsonl
+

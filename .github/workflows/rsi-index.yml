@@ -1,0 +1,28 @@
+name: rsi-index
+
+on:
+  workflow_dispatch:
+
+jobs:
+  bench-index:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Run propose (generate candidate)
+        run: |
+          node BRAV/SCPT/rsi/propose.mjs > .agent/rsi-candidate.json
+      - name: Evaluate candidate (index + arch benches)
+        shell: pwsh
+        run: |
+          pwsh BRAV/SCPT/rsi/evaluate.ps1 -Candidate .agent/rsi-candidate.json -DryRun
+      - name: Upload RSI artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: rsi-artifacts
+          path: |
+            CHAR/EVID/artifacts/ecrr/**
+            docs/ecrr/ECRR_REPORTS/RSI_EVAL_LATEST.md
+
