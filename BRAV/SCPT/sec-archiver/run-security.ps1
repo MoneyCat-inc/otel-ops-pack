@@ -145,9 +145,11 @@ function Write-AnalysisArtifacts($ana){
     $idx = @{ analysis_id=$id; tool=$ana.tool.name; ref=$ana.ref; commit_sha=$ana.commit_sha; created_at=$ana.created_at; sarif_path=$sarifPath; alerts_count=$ana.results_count }
     Append-Jsonl (Join-Path $OutRoot 'INDEX_ANALYSES.jsonl') $idx
   } catch {
-    Write-Host "SKIP SARIF for analysis $id (unavailable): $_" -ForegroundColor Yellow
+    Write-Host ""
+    Write-Host "   ⚠️  SKIP SARIF for analysis $id (HTTP 422 unavailable)" -ForegroundColor Yellow
     Write-Ledger 'ANALYSIS_SARIF_UNAVAILABLE' $id @{ created_at=$ana.created_at; reason="$_" }
     Write-Metrics 'analyses_sarif_skip' @{ analysis_id=$id }
+    $script:sarifSkipped++
   }
 }
 
@@ -163,35 +165,86 @@ function Write-Metrics($name,$meta){
   Append-Jsonl (Join-Path $EvidenceRoot 'METRICS.jsonl') $rec
 }
 
+function Show-Progress($current, $total, $type, $id){
+  $pct = [math]::Round(($current / $total) * 100, 1)
+  $bar = '█' * [math]::Floor($pct / 2)
+  $space = '░' * (50 - [math]::Floor($pct / 2))
+  Write-Host -NoNewline "`r[$bar$space] $pct% | $current/$total $type | Current: $id" -ForegroundColor Cyan
+}
+
 # Ensure base dirs
 Ensure-Dir $OutRoot; Ensure-Dir (Join-Path $OutRoot 'alerts'); Ensure-Dir (Join-Path $OutRoot 'analyses'); Ensure-Dir (Join-Path $OutRoot 'data')
 Ensure-Dir $EvidenceRoot
 
-Write-Host "[BossCat] Security conveyor starting ($Mode) for $Owner/$Repo (DryRun=$DryRun)" -ForegroundColor Cyan
+Write-Host "╔════════════════════════════════════════════════════════════════╗" -ForegroundColor Cyan
+Write-Host "║         🐾 BossCat Security Conveyor                         ║" -ForegroundColor Cyan
+Write-Host "╠════════════════════════════════════════════════════════════════╣" -ForegroundColor Cyan
+Write-Host "║  Owner:   $Owner" -ForegroundColor Cyan
+Write-Host "║  Repo:    $Repo" -ForegroundColor Cyan
+Write-Host "║  Mode:    $Mode" -ForegroundColor Cyan
+Write-Host "║  Chunk:   $ChunkSize (offset: $ChunkOffset)" -ForegroundColor Cyan
+Write-Host "║  DryRun:  $DryRun" -ForegroundColor Cyan
+Write-Host "╚════════════════════════════════════════════════════════════════╝" -ForegroundColor Cyan
+Write-Host ""
+
+$startTime = Get-Date
+$alertsProcessed = 0
+$analysesProcessed = 0
+$sarifSkipped = 0
 
 if($Mode -in @('alerts','alerts+analyses')){
+  Write-Host "📋 Fetching alerts..." -ForegroundColor Yellow
   $states = @('open'); if($IncludeDismissed){ $states += 'dismissed' }; if($IncludeFixed){ $states += 'fixed' }
   $alerts = Invoke-GhApi-PaginateAlerts $Owner $Repo $states
   $total = $alerts.Count
   Write-Metrics 'alerts_fetch' @{ count=$total }
+  Write-Host "   Found $total alerts (states: $($states -join ', '))" -ForegroundColor Green
+  Write-Host ""
+  
   $start = $ChunkOffset; $end = [Math]::Min($start + $ChunkSize, $total) - 1
+  $chunkSize = $end - $start + 1
+  Write-Host "🔄 Processing alerts: $chunkSize items ($start to $end)" -ForegroundColor Yellow
+  
   for($i=$start; $i -le $end -and $i -lt $total; $i++){
     $a = $alerts[$i]
-    if(-not $DryRun){ Write-AlertArtifacts $a; Write-Ledger 'ARCHIVED_ALERT' $a.number @{ state=$a.state } } else { Write-Host "DRY: alert #$($a.number)" }
+    $idx = $i - $start + 1
+    Show-Progress $idx $chunkSize "alerts" "#$($a.number)"
+    if(-not $DryRun){ Write-AlertArtifacts $a; Write-Ledger 'ARCHIVED_ALERT' $a.number @{ state=$a.state } }
+    $alertsProcessed++
     Sleep-ForQps $GetQps
   }
+  Write-Host ""
+  Write-Host "   ✅ Alerts processed: $alertsProcessed" -ForegroundColor Green
+  Write-Host ""
 }
 
 if($Mode -in @('analyses','alerts+analyses')){
+  Write-Host "📊 Fetching analyses..." -ForegroundColor Yellow
   $analyses = Invoke-GhApi-PaginateAnalyses $Owner $Repo
   $totalA = $analyses.Count
   Write-Metrics 'analyses_fetch' @{ count=$totalA }
+  Write-Host "   Found $totalA analyses" -ForegroundColor Green
+  Write-Host ""
+  
   $startA = $ChunkOffset; $endA = [Math]::Min($startA + $ChunkSize, $totalA) - 1
+  $chunkSizeA = $endA - $startA + 1
+  Write-Host "🔄 Processing analyses: $chunkSizeA items ($startA to $endA)" -ForegroundColor Yellow
+  
   for($j=$startA; $j -le $endA -and $j -lt $totalA; $j++){
     $an = $analyses[$j]
-    if(-not $DryRun){ Write-AnalysisArtifacts $an; Write-Ledger 'ARCHIVED_ANALYSIS' $an.id @{ deletable=$an.deletable } } else { Write-Host "DRY: analysis id $($an.id)" }
+    $idxA = $j - $startA + 1
+    Show-Progress $idxA $chunkSizeA "analyses" "id:$($an.id)"
+    if(-not $DryRun){ 
+      Write-AnalysisArtifacts $an
+      Write-Ledger 'ARCHIVED_ANALYSIS' $an.id @{ deletable=$an.deletable }
+    }
+    $analysesProcessed++
     Sleep-ForQps $GetQps
   }
+  Write-Host ""
+  Write-Host "   ✅ Analyses processed: $analysesProcessed" -ForegroundColor Green
+  if($sarifSkipped -gt 0){ Write-Host "   ⚠️  SARIF skipped: $sarifSkipped (HTTP 422)" -ForegroundColor Yellow }
+  Write-Host ""
 
   if(-not $DryRun -and $DeleteAnalysesOlderThanDays -ge 0){
     $cut = (Get-Date).AddDays(-$DeleteAnalysesOlderThanDays)
@@ -219,4 +272,17 @@ if($Mode -in @('analyses','alerts+analyses')){
   }
 }
 
-Write-Host "[BossCat] Security conveyor complete." -ForegroundColor Green
+$endTime = Get-Date
+$duration = $endTime - $startTime
+
+Write-Host "╔════════════════════════════════════════════════════════════════╗" -ForegroundColor Green
+Write-Host "║         ✅ BossCat Security Conveyor Complete                 ║" -ForegroundColor Green
+Write-Host "╠════════════════════════════════════════════════════════════════╣" -ForegroundColor Green
+Write-Host "║  Alerts:      $alertsProcessed processed" -ForegroundColor Green
+Write-Host "║  Analyses:    $analysesProcessed processed" -ForegroundColor Green
+if($sarifSkipped -gt 0){
+Write-Host "║  SARIF Skip:  $sarifSkipped (HTTP 422)" -ForegroundColor Yellow
+}
+Write-Host "║  Duration:    $($duration.TotalSeconds.ToString('F2'))s" -ForegroundColor Green
+Write-Host "║  Evidence:    $EvidenceRoot" -ForegroundColor Green
+Write-Host "╚════════════════════════════════════════════════════════════════╝" -ForegroundColor Green
