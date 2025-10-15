@@ -101,7 +101,7 @@
     "jest-environment-node": "^30.2.0",
     "jszip": "^3.10.1",
     "playwright": "^1.56.0",
-    "prisma": "^5.7.1",
+    "prisma": "^6.17.1",
     "tsx": "^4.6.2",
     "typescript": "^5.9.3",
     "wait-on": "^9.0.1"
