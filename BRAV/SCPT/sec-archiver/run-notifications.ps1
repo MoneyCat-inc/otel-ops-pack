@@ -21,14 +21,29 @@ Ensure-Dir $OutRoot; Ensure-Dir (Join-Path $OutRoot 'threads'); Ensure-Dir $Evid
 
 Write-Host "[BossCat] Notifications conveyor starting (DryRun=$DryRun, MarkRead=$MarkRead)" -ForegroundColor Cyan
 
-# Fetch threads
-$threadsRaw = if(Has-Gh){
-  & gh api '/notifications' -f per_page=100 --paginate
-  if($LASTEXITCODE -ne 0){ throw 'gh api notifications failed' }
-} else {
-  if(-not $Token){ throw 'Missing GITHUB_TOKEN and gh CLI not available.' }
-  $headers = @{ 'Authorization' = "token $Token"; 'User-Agent'='BossCat-Notifications'; 'Accept'='application/vnd.github+json' }
-  Invoke-RestMethod -Method GET -Headers $headers -Uri 'https://api.github.com/notifications?per_page=100' | ConvertTo-Json -Depth 100
+# Fetch threads (robust: prefer gh; fallback to REST; handle 404/permission)
+$threadsRaw = $null
+if(Has-Gh){
+  try {
+    $threadsRaw = & gh api -H 'Accept: application/vnd.github+json' '/notifications' -f per_page=100 -f all=true --paginate
+    if($LASTEXITCODE -ne 0){ throw "gh api /notifications failed (exit $LASTEXITCODE)" }
+  } catch {
+    Write-Host "WARN: gh /notifications failed: $_" -ForegroundColor Yellow
+  }
+}
+if(-not $threadsRaw){
+  if(-not $Token){
+    Write-Host "WARN: No gh auth or GITHUB_TOKEN; notifications will be empty. For mark-read, use a PAT classic with notifications scope." -ForegroundColor Yellow
+    $threadsRaw = '[]'
+  } else {
+    try {
+      $headers = @{ 'Authorization' = "token $Token"; 'User-Agent'='BossCat-Notifications'; 'Accept'='application/vnd.github+json'; 'X-GitHub-Api-Version'='2022-11-28' }
+      $threadsRaw = Invoke-RestMethod -Method GET -Headers $headers -Uri 'https://api.github.com/notifications?per_page=100&all=true' | ConvertTo-Json -Depth 100
+    } catch {
+      Write-Host "WARN: REST /notifications failed: $_" -ForegroundColor Yellow
+      $threadsRaw = '[]'
+    }
+  }
 }
 
 $threads = $threadsRaw | ConvertFrom-Json
@@ -78,4 +93,3 @@ for($i=$start; $i -le $end -and $i -lt $total; $i++){
 }
 
 Write-Host "[BossCat] Notifications conveyor complete." -ForegroundColor Green
-
