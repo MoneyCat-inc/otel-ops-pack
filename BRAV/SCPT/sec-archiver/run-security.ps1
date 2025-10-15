@@ -99,16 +99,16 @@ function Write-AlertArtifacts($alert){
 
   $badgeColor = if($state -eq 'open'){'red'} elseif($state -eq 'dismissed'){'yellow'} else {'green'}
   $md = @(
-    "# Code Scanning Alert #$num",
-    "",
-    "- Rule: `$ruleId`",
-    "- Severity: `$sev`",
-    "- State: `$state`",
-    "- File: `$file`:$line",
-    "- Created: $created",
-    "- Updated: $($alert.updated_at)",
-    "- Link: $html",
-    "",
+    "# Code Scanning Alert #$num"
+    ""
+    "- Rule: ``$ruleId``"
+    "- Severity: ``$sev``"
+    "- State: ``$state``"
+    "- File: ``$file``:$line"
+    "- Created: $created"
+    "- Updated: $($alert.updated_at)"
+    "- Link: $html"
+    ""
     "> $title"
   ) -join "`r`n"
   $mdPath = Join-Path $mdDir ("alert-$num.md")
