@@ -1,30 +1,12 @@
 {
   "version": "1.0",
-  "ignores": [
-    {
-      "path": "docs/BossCat/visuals/vendor/**",
-      "reason": "Local vendor bundles built from npm packages, not committed to git"
-    },
-    {
-      "path": "**/*.vend.js",
-      "reason": "Vendor bundles are minified third-party libraries built via esbuild"
-    },
-    {
-      "path": "**/*.min.js",
-      "reason": "Minified third-party libraries from npm"
-    }
+  "ignoreFiles": [
+    "docs/BossCat/visuals/vendor/**/*.js",
+    "**/*.vend.js",
+    "**/*.min.js",
+    "third_party/**",
+    "node_modules/**"
   ],
-  "suppressions": [
-    {
-      "ruleId": "DS137138",
-      "paths": ["docs/BossCat/visuals/control.html"],
-      "reason": "Math.random() used for preset selection, not cryptographic purposes"
-    },
-    {
-      "ruleId": "DS126858",
-      "paths": ["docs/BossCat/visuals/control.html"],
-      "reason": "CSP 'unsafe-inline' required for inline scripts in standalone HTML file"
-    }
-  ]
+  "suppressions": []
 }
 
