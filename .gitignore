@@ -9,6 +9,12 @@ artifacts/icf/*
 # ECRR evidence under artifacts remains untracked
 artifacts/ecrr/**
 
+# Runtime/vendor dirs
+node_modules/**
+
+# Local secrets (never commit)
+BRAV/SCPT/secrets/**
+
 # Forbidden legacy roots - migrated to tetragram structure
 config/
 configs/

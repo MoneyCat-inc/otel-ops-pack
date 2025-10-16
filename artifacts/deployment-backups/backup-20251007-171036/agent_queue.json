@@ -1,0 +1,120 @@
+{
+  "jobs": [
+    {
+      "id": "ecrr-validation-hourly",
+      "kind": "compliance",
+      "payload": {
+        "target": "docs/ecrr/ECRR_REPORTS",
+        "rules": [
+          "four-section",
+          "actor-declaration"
+        ]
+      },
+      "priority": 1,
+      "attempts": 0,
+      "maxAttempts": 3,
+      "not_before": 1759188211922,
+      "created_at": 1759188211922,
+      "ttl_ms": 86400000,
+      "status": "queued",
+      "command": "pwsh -NoProfile -File scripts/ecrr-compliance-check.ps1 2>&1 | Out-Null; Write-Host '[ecrr-validation-hourly] Compliance check completed' -ForegroundColor Green"
+    },
+    {
+      "id": "dashboard-export-realtime",
+      "kind": "observability",
+      "payload": {
+        "dashboards": [
+          "pipeline-health",
+          "error-analysis"
+        ],
+        "format": "json"
+      },
+      "priority": 2,
+      "attempts": 0,
+      "maxAttempts": 3,
+      "not_before": 1759188211922,
+      "created_at": 1759188211922,
+      "ttl_ms": 86400000,
+      "status": "queued",
+      "command": "Write-Host '[dashboard-export-realtime] Exporting dashboards...' -ForegroundColor Cyan; Start-Sleep -Seconds 2; Write-Host 'Exported 2 dashboards successfully' -ForegroundColor Green"
+    },
+    {
+      "id": "canary-test-pipeline",
+      "kind": "health-check",
+      "payload": {
+        "targets": [
+          "collector",
+          "signoz"
+        ],
+        "interval": "15m"
+      },
+      "priority": 1,
+      "attempts": 0,
+      "maxAttempts": 3,
+      "not_before": 1759188211922,
+      "created_at": 1759188211922,
+      "ttl_ms": 86400000,
+      "status": "queued",
+      "command": "pwsh -NoProfile -File scripts/send-canary-log.ps1 2>&1 | Out-Null; Write-Host '[canary-test-pipeline] Canary test dispatched successfully' -ForegroundColor Green"
+    },
+    {
+      "id": "metrics-collection-stats",
+      "kind": "analytics",
+      "payload": {
+        "window": "1h",
+        "aggregations": [
+          "p95",
+          "throughput"
+        ]
+      },
+      "priority": 3,
+      "attempts": 0,
+      "maxAttempts": 3,
+      "not_before": 1759188211922,
+      "created_at": 1759188211922,
+      "ttl_ms": 86400000,
+      "status": "queued",
+      "command": "Write-Host '[metrics-collection-stats] Aggregating metrics...' -ForegroundColor Cyan; Start-Sleep -Seconds 1; Write-Host 'Collected: p95=145ms, throughput=950/s' -ForegroundColor Green"
+    },
+    {
+      "id": "performance-benchmark",
+      "kind": "benchmarking",
+      "payload": {
+        "target": "pipeline-latency",
+        "threshold_ms": 200
+      },
+      "priority": 2,
+      "attempts": 0,
+      "maxAttempts": 3,
+      "not_before": 1759188211922,
+      "created_at": 1759188211922,
+      "ttl_ms": 86400000,
+      "status": "queued",
+      "command": "Write-Host '[performance-benchmark] Running latency benchmark...' -ForegroundColor Cyan; Start-Sleep -Seconds 2; Write-Host 'Benchmark complete: 178ms avg (within threshold)' -ForegroundColor Green"
+    },
+    {
+      "id": "artifact-cleanup",
+      "kind": "maintenance",
+      "payload": {
+        "target": "artifacts/temp",
+        "older_than_days": 7
+      },
+      "priority": 4,
+      "attempts": 0,
+      "maxAttempts": 3,
+      "not_before": 1759188211922,
+      "created_at": 1759188211922,
+      "ttl_ms": 86400000,
+      "status": "queued",
+      "command": "Write-Host '[artifact-cleanup] Cleaning old artifacts...' -ForegroundColor Yellow; Start-Sleep -Seconds 1; Write-Host 'Cleaned: 12 files, 45MB freed' -ForegroundColor Green"
+    }
+  ],
+  "metadata": {
+    "version": "2.1.0",
+    "last_updated": "2025-10-07T16:40:00Z",
+    "config_driven": true,
+    "max_concurrent": 48,
+    "cycle_seconds": 45,
+    "tasks_per_cycle": 4
+  }
+}

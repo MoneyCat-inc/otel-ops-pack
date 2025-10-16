@@ -1,0 +1,13 @@
+{
+  "Artifacts": [
+    "compliance-trends.png",
+    "compliance-trends.json"
+  ],
+  "TaskId": "nightly-export-compliance-trends-24h",
+  "EndTime": "2025-10-07T16:59:42.4039307+01:00",
+  "Workspace": "docs\\observability\\snapshots\\nightly-workspace-export-compliance-trends-24h",
+  "TimeRange": "24h",
+  "StartTime": "2025-10-07T16:59:40.8327206+01:00",
+  "Duration": 1571.2101,
+  "Status": "completed"
+}
