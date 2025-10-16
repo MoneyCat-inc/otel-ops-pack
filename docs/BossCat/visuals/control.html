@@ -91,8 +91,22 @@
       });
       visualizer.connectAudio(analyser);
 
-      const presets = Object.assign({}, butterchurnPresets.getPresets());
-      const presetKeys = Object.keys(presets).sort();
+      let presets = Object.assign({}, butterchurnPresets.getPresets());
+      let presetKeys = Object.keys(presets).sort();
+      if (!presetKeys.length) {
+        // CDN fallback: populate minimal list with a safe built-in
+        const fallback = {
+          'Resonai - Default (Neon Pulse)': {
+            baseVals: { wave_a: 0.35, fDecay: 0.97 }
+          }
+        };
+        presets = fallback;
+        presetKeys = Object.keys(presets);
+        const warn = document.createElement('span');
+        warn.className = 'hint';
+        warn.textContent = 'Presets CDN unavailable; using local fallback.';
+        document.querySelector('.topbar')?.appendChild(warn);
+      }
       presetKeys.forEach(k => {
         const opt = document.createElement('option');
         opt.value = k; opt.textContent = k; presetSel.appendChild(opt);
@@ -188,8 +202,20 @@
       frame(); resize();
 
       startMicBtn.addEventListener('click', async () => {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation:false, noiseSuppression:false, autoGainControl:false } });
-        const src = ctx.createMediaStreamSource(stream); src.connect(analyser);
+        try {
+          // Request permission first to reveal device labels
+          await navigator.mediaDevices.getUserMedia({ audio: true });
+          const devices = await navigator.mediaDevices.enumerateDevices();
+          const audioInputs = devices.filter(d => d.kind === 'audioinput');
+          const stereo = audioInputs.find(d => /stereo\s*mix/i.test(d.label));
+          const constraints = stereo ? 
+            { audio: { deviceId: { exact: stereo.deviceId }, echoCancellation:false, noiseSuppression:false, autoGainControl:false } } :
+            { audio: { echoCancellation:false, noiseSuppression:false, autoGainControl:false } };
+          const stream = await navigator.mediaDevices.getUserMedia(constraints);
+          const src = ctx.createMediaStreamSource(stream); src.connect(analyser);
+        } catch (e) {
+          console.error('Audio init failed', e);
+        }
       });
     })();
   </script>
