@@ -17,6 +17,8 @@
     .wrap{position:relative;height:calc(100% - 52px)}
     canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
     .hint{opacity:.7;font-size:.85rem}
+    body.theatre .topbar{transform:translateY(-100%);transition:transform .2s ease}
+    body.theatre .wrap{height:100%}
   </style>
   <!-- Butterchurn + presets (local vendor only) -->
   <script src="vendor/butterchurn.vend.js"></script>
@@ -101,6 +103,7 @@
     <select id="preset"></select>
     <button id="next">Next ▶</button>
     <button id="fullscreen" title="Fullscreen">⛶ Full</button>
+    <button id="theatre" title="Theatre Mode (hide chrome)">🎭 Theatre</button>
     <label>Blend <input id="blend" type="range" min="0" max="5" step="0.1" value="1.5"></label>
     <label><input id="auto" type="checkbox"> Auto‑cycle</label>
     <label><input id="lowIntensity" type="checkbox"> Low‑Intensity</label>
@@ -119,6 +122,7 @@
       const prevBtn = document.getElementById('prev');
       const nextBtn = document.getElementById('next');
       const fsBtn = document.getElementById('fullscreen');
+      const theatreBtn = document.getElementById('theatre');
       const startMicBtn = document.getElementById('startMic');
       const btnSelfTest = document.getElementById('btnSelfTest');
       const blend = document.getElementById('blend');
@@ -278,7 +282,7 @@
 
       if (presetKeys.length) { load(Math.floor(Math.random()*presetKeys.length), 0); }
 
-      // Lightweight on-screen metrics (RMS + peak bin)
+      // Lightweight on-screen metrics (RMS + peak bin + bands)
       const metricsEl = document.getElementById('metrics');
       function renderMetrics(){
         if (!metricsEl) return;
@@ -295,7 +299,17 @@
         for (let i = 0; i < spectrum.length; i++){
           const v = spectrum[i]; if (v > peakVal){ peakVal = v; peakBin = i; }
         }
-        metricsEl.textContent = `RMS: ${rms.toFixed(3)} | peak bin: ${peakBin} (${peakVal})`;
+        // Simple band averages (bass: 20-250Hz, mid: 250-2kHz, treble: 2k-8kHz approx by bin index)
+        const sr = 44100; // approximate
+        const binHz = (idx)=> (idx * sr) / (analyser.fftSize);
+        const avgBand = (lo, hi) => {
+          let s=0,n=0; for (let i=0;i<spectrum.length;i++){ const f=binHz(i); if (f>=lo && f<hi){ s+=spectrum[i]; n++; }}
+          return n? (s/n|0) : 0;
+        };
+        const bass = avgBand(20, 250);
+        const mid = avgBand(250, 2000);
+        const treb = avgBand(2000, 8000);
+        metricsEl.textContent = `RMS ${rms.toFixed(3)} | peak ${peakBin}(${peakVal}) | B/M/T ${bass}/${mid}/${treb}`;
       }
 
       function frame(){
@@ -318,7 +332,19 @@
         } catch (e) { console.warn('Fullscreen not available', e); }
       });
 
-      startMicBtn.addEventListener('click', async () => {
+      // Theatre mode: hide chrome, esc to exit; toggle with T
+      function setTheatre(on){
+        document.body.classList.toggle('theatre', !!on);
+      }
+      theatreBtn.addEventListener('click', ()=> setTheatre(!document.body.classList.contains('theatre')));
+      document.addEventListener('keydown', (e)=>{
+        if (e.key==='t' || e.key==='T') setTheatre(!document.body.classList.contains('theatre'));
+        if (e.key==='f' || e.key==='F') fsBtn.click();
+        if (e.key==='ArrowRight') nextBtn.click();
+        if (e.key==='ArrowLeft') prevBtn.click();
+      });
+
+      async function startAudioWithPreferredDevice(){
         try {
           // Request permission first to reveal device labels
           await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -333,7 +359,11 @@
         } catch (e) {
           console.error('Audio init failed', e);
         }
-      });
+      }
+      startMicBtn.addEventListener('click', startAudioWithPreferredDevice);
+      // Auto-resume AudioContext on first user gesture anywhere
+      function resumeCtx(){ if (ctx.state !== 'running') ctx.resume().catch(()=>{}); window.removeEventListener('pointerdown', resumeCtx); }
+      window.addEventListener('pointerdown', resumeCtx, { once:true });
 
       // Self-Test: generate a near-silent oscillator feeding the analyser so visuals animate
       btnSelfTest?.addEventListener('click', async () => {
