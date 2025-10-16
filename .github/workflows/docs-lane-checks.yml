@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 name: docs-lane-checks
 
 on:
@@ -43,30 +42,6 @@ jobs:
       ARTIFACT_DIR: artifacts/docs-lane
     steps:
       - name: Checkout repository
-=======
-name: Docs Lane Checks
-
-on:
-  pull_request:
-    paths:
-      - '**/*.md'
-      - 'docs/**'
-      - '.agent/**'
-
-permissions:
-  contents: read
-  pull-requests: write
-
-jobs:
-  docs_checks:
-    name: Validate Docs Changes (budgets, lint, links)
-    runs-on: ubuntu-latest
-    env:
-      FILE_BUDGET: '10'
-      LOC_BUDGET: '200'
-    steps:
-      - name: Checkout
->>>>>>> origin/main
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -406,6 +381,7 @@ PY
           echo "Changed files: $files, LOC delta: $loc"
 
       - name: Kill-switch check (.agent/LOCK)
+        id: kill
         shell: bash
         run: |
           if [[ -f .agent/LOCK ]]; then
@@ -414,6 +390,7 @@ PY
           fi
 
       - name: Enforce budgets (<= ${{ env.FILE_BUDGET }} files, <= ${{ env.LOC_BUDGET }} LOC)
+        id: budget
         shell: bash
         run: |
           set -euo pipefail
@@ -428,6 +405,7 @@ PY
           node-version: '18'
 
       - name: Markdown lint (changed .md)
+        id: lint
         shell: bash
         run: |
           set -euo pipefail
@@ -442,6 +420,7 @@ PY
           fi
 
       - name: Link and anchor check (lychee, changed files only)
+        id: links
         shell: bash
         run: |
           set -euo pipefail
@@ -461,6 +440,7 @@ PY
           fi
 
       - name: Emit ECRR evidence (docs lane)
+        id: ecrr
         shell: bash
         run: |
           set -euo pipefail
@@ -470,6 +450,81 @@ PY
           loc='${{ steps.diff.outputs.loc }}'
           printf '{"t":"%s","who":"B","type":"report","lane":"DOCS","files_touched":%s,"loc_delta":%s,"msg":"docs-lane checks passed (lint+links)"}\n' \
             "$ts" "$files" "$loc" > artifacts/ecrr/docs/${{ github.run_id }}.json
+
+      - name: Compute Guard Telemetry (GR-xx)
+        id: guard
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          files='${{ steps.diff.outputs.files }}'
+          loc='${{ steps.diff.outputs.loc }}'
+          outcome_kill='${{ steps.kill.outcome }}'
+          outcome_budget='${{ steps.budget.outcome }}'
+          outcome_lint='${{ steps.lint.outcome }}'
+          outcome_links='${{ steps.links.outcome }}'
+
+          GUARD_CODE="GR-00"
+          GUARD_REASON="Docs-lane checks passed"
+          GUARD_STATE="GREEN"
+
+          if [[ "$outcome_kill" == "failure" ]]; then
+            GUARD_CODE="GR-01"; GUARD_REASON="Kill-switch .agent/LOCK present"; GUARD_STATE="BLACK";
+          elif [[ "$outcome_budget" == "failure" ]]; then
+            GUARD_CODE="GR-02"; GUARD_REASON="Budgets exceeded (files/LOC)"; GUARD_STATE="RED";
+          elif [[ "$outcome_lint" == "failure" ]]; then
+            GUARD_CODE="GR-03"; GUARD_REASON="Markdown lint failed"; GUARD_STATE="AMBER";
+          elif [[ "$outcome_links" == "failure" ]]; then
+            GUARD_CODE="GR-04"; GUARD_REASON="Link/anchor check failed"; GUARD_STATE="AMBER";
+          fi
+
+          echo "GUARD_CODE=$GUARD_CODE" >> "$GITHUB_ENV"
+          echo "GUARD_REASON=$GUARD_REASON" >> "$GITHUB_ENV"
+          echo "GUARD_LANE=DOCS" >> "$GITHUB_ENV"
+          echo "GUARD_STATE=$GUARD_STATE" >> "$GITHUB_ENV"
+          echo "GUARD_FILES=$files" >> "$GITHUB_ENV"
+          echo "GUARD_LOC=$loc" >> "$GITHUB_ENV"
+
+          mkdir -p artifacts
+          ts=$(date -Is)
+          cat > artifacts/guard.json <<EOF
+          {
+            "t": "${ts}",
+            "lane": "DOCS",
+            "code": "${GUARD_CODE}",
+            "state": "${GUARD_STATE}",
+            "reason": "${GUARD_REASON}",
+            "files": ${files:-0},
+            "loc": ${loc:-0},
+            "run_id": "${{ github.run_id }}",
+            "pr": "${{ github.event.pull_request.number || '' }}"
+          }
+          EOF
+
+      - name: Upload Guard Telemetry
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs-guard-telemetry
+          path: artifacts/guard.json
+
+      - name: PR Comment - Docs Guard Telemetry
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const guardCode = process.env.GUARD_CODE || 'GR-00';
+            const guardReason = process.env.GUARD_REASON || 'Docs-lane checks passed';
+            const guardState = process.env.GUARD_STATE || 'GREEN';
+            const files = process.env.GUARD_FILES || '0';
+            const loc = process.env.GUARD_LOC || '0';
+            const body = `Docs Lane Guard: \`${guardCode}\` — ${guardReason}\n\nState: **${guardState}** • Budget: ${files}/${loc} (files/LOC)\n\nArtifact: artifacts/guard.json`;
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body
+            });
 
       - name: Upload ECRR docs evidence
         uses: actions/upload-artifact@v4
@@ -522,10 +577,14 @@ PY
               repo: context.repo.repo,
               body: body
             });
+name: docs-lane-checks
 
+<<<<<<< HEAD
+=======
 >>>>>>> origin/main
 name: docs-lane-checks
 
+>>>>>>> origin/main
 on:
   pull_request:
     types: [opened, synchronize, reopened]
