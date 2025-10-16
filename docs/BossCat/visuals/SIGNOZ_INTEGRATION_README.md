@@ -114,6 +114,46 @@ Create `config/milk-preset-mapping.json`:
 }
 ```
 
+### cURL Example (with Nonce)
+
+Bridge must be running to obtain the nonce (printed on startup and returned by GET /health).
+
+```bash
+# 1) Start bridge (in another terminal)
+tsx scripts/visuals/milk-ws-bridge.ts
+
+# 2) Fetch nonce (optional helper)
+curl -s http://localhost:8899/health | jq -r .nonce
+# export it for convenience
+export MILK_NONCE=<paste-nonce-here>
+
+# 3) Send visual command (requires nonce header)
+curl -X POST http://localhost:8899/api/milk \
+  -H "Content-Type: application/json" \
+  -H "X-MILK-Nonce: $MILK_NONCE" \
+  -d '{"cmd":"setBlendTime","arg":2.5}'
+
+# Advance preset
+curl -X POST http://localhost:8899/api/milk \
+  -H "Content-Type: application/json" \
+  -H "X-MILK-Nonce: $MILK_NONCE" \
+  -d '{"cmd":"next"}'
+```
+
+### Severity Test Workflow (Local)
+
+This simulates how alerts drive visuals while staying local-first:
+
+1) Start the bridge: `tsx scripts/visuals/milk-ws-bridge.ts`
+2) Open control surface: `start docs\\BossCat\\visuals\\control.html`
+3) Pick a severity → mood using the registry (`docs/BossCat/visuals/presets/registry.json`)
+   - info/low → calm (RN-001, RN-002, RN-005)
+   - medium/warning → medium (RN-003, RN-DEFAULT)
+   - high/critical → intense (RN-004)
+4) Issue visual commands via cURL (above) to reflect the severity
+   - Example: high/critical → `next` + `setBlendTime=1.0` + `auto=false`
+
+
 Mapper will merge custom config with defaults.
 
 ---
