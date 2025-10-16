@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MILK Preset Registry",
+  "description": "Curated preset registry with mood tags and safety ratings",
+  "version": "1.0.0",
+  "updated": "2025-10-16",
+  "lane": "MILK",
+  "authority": "BossCat OEM",
+  "presets": [
+    {
+      "id": "RN-001",
+      "name": "CircuSpectra",
+      "file": "Resonai Pack v1/RN-001 CircuSpectra.milk",
+      "tags": ["calm", "circular", "spectrum"],
+      "mood": "calm",
+      "intensity": 20,
+      "safe": true,
+      "description": "Calm circular spectrum analyzer with smooth rotations",
+      "validation_score": 100,
+      "recommended_for": ["ambient", "noc", "extended-viewing"]
+    },
+    {
+      "id": "RN-002",
+      "name": "HaloBloom",
+      "file": "Resonai Pack v1/RN-002 HaloBloom.milk",
+      "tags": ["calm", "dual-ring", "bass-reactive"],
+      "mood": "calm",
+      "intensity": 25,
+      "safe": true,
+      "description": "Dual-ring halo effect with bass reactivity",
+      "validation_score": 100,
+      "recommended_for": ["ambient", "presentations", "demos"]
+    },
+    {
+      "id": "RN-003",
+      "name": "VectorGrid",
+      "file": "Resonai Pack v1/RN-003 VectorGrid.milk",
+      "tags": ["medium", "grid", "warp"],
+      "mood": "medium",
+      "intensity": 50,
+      "safe": true,
+      "description": "Grid warp effect with moderate motion",
+      "validation_score": 100,
+      "recommended_for": ["demos", "monitoring"]
+    },
+    {
+      "id": "RN-004",
+      "name": "LiquiRing",
+      "file": "Resonai Pack v1/RN-004 LiquiRing.milk",
+      "tags": ["intense", "liquid", "bass-reactive"],
+      "mood": "intense",
+      "intensity": 70,
+      "safe": true,
+      "description": "Intense liquid ring effect with strong bass reactivity",
+      "validation_score": 100,
+      "recommended_for": ["demos", "high-energy"]
+    },
+    {
+      "id": "RN-005",
+      "name": "LineDancer",
+      "file": "Resonai Pack v1/RN-005 LineDancer.milk",
+      "tags": ["calm", "waveform", "stereo"],
+      "mood": "calm",
+      "intensity": 30,
+      "safe": true,
+      "description": "Stereo waveform with dancing line patterns",
+      "validation_score": 100,
+      "recommended_for": ["ambient", "noc", "presentations"]
+    },
+    {
+      "id": "RN-DEFAULT",
+      "name": "Resonai Default (Neon Pulse)",
+      "file": "Resonai - Default (Neon Pulse).milk",
+      "tags": ["medium", "neon", "pulse", "classic"],
+      "mood": "medium",
+      "intensity": 40,
+      "safe": true,
+      "description": "Original Resonai default preset with neon pulse effect",
+      "validation_score": 100,
+      "recommended_for": ["general", "demos"]
+    }
+  ],
+  "mood_mapping": {
+    "calm": {
+      "description": "Low-motion, gentle visuals for ambient displays",
+      "intensity_range": [0, 35],
+      "recommended_presets": ["RN-001", "RN-002", "RN-005"],
+      "signoz_severity": ["info", "low"]
+    },
+    "medium": {
+      "description": "Moderate motion and energy for general use",
+      "intensity_range": [36, 60],
+      "recommended_presets": ["RN-003", "RN-DEFAULT"],
+      "signoz_severity": ["medium", "warning"]
+    },
+    "intense": {
+      "description": "High-energy visuals for alerts and high-priority events",
+      "intensity_range": [61, 100],
+      "recommended_presets": ["RN-004"],
+      "signoz_severity": ["high", "critical"]
+    }
+  },
+  "safety_notes": {
+    "all_presets_validated": true,
+    "validation_date": "2025-10-16",
+    "safety_checks": [
+      "No GPU shaders (ProjectM compatible)",
+      "fDecay ≤ 0.99 (flash prevention)",
+      "wave_a ≤ 0.9 (strobe prevention)",
+      "Spectrum smoothing ≥ 0.65",
+      "Motion deltas ≤ 0.03",
+      "Audio smoothing via EMAs",
+      "Per-pixel equations minimal"
+    ]
+  }
+}
+

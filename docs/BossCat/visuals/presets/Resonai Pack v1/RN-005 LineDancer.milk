@@ -1,0 +1,71 @@
+; Resonai – LineDancer (RN-005)
+; tags: neon,waveform,stereo,calm,shader-free
+; Style: Classic stereo waveform with center orbit, cyan/magenta
+; Safety: Low alpha, gentle motion, smooth response
+; Compatibility: MilkDrop 2/3, ProjectM, Butterchurn
+; Author: BossCat OEM | Lane: MILK
+
+fDecay=0.96
+zoom=1.00
+rot=0.00
+cx=0.5
+cy=0.5
+dx=0.0
+dy=0.0
+warp=0.0
+
+; Audio smoothing
+per_frame_1 = q1 = 0.10 + 0.90*bass_att;
+per_frame_2 = q2 = 0.10 + 0.90*mid_att;
+per_frame_3 = q3 = 0.10 + 0.90*treb_att;
+per_frame_4 = q4 = 0.80*q4 + 0.20*vol;
+
+; Slow rotation
+per_frame_5 = rot = rot + 0.005 + 0.006*q2;
+per_frame_6 = zoom = 1.000 + 0.006*q1;
+
+; Cyan/magenta stereo palette
+per_frame_7 = wave_r = 0.40 + 0.60*q3;
+per_frame_8 = wave_g = 0.35 + 0.65*q2;
+per_frame_9 = wave_b = 0.55 + 0.45*q1;
+per_frame_10 = wave_a = 0.40 + 0.35*q4;
+
+; Minimal pixel warp
+per_pixel_1 = zoom = zoom + 0.02*rad;
+per_pixel_2 = rot = rot + 0.01*(rad - 0.5);
+
+; Left stereo channel (waveform)
+wavecode_0_enabled=1
+wavecode_0_samples=512
+wavecode_0_bSpectrum=0
+wavecode_0_bDrawThick=1
+wavecode_0_bAdditive=0
+wavecode_0_smoothing=0.70
+
+wavecode_0_r=1; wavecode_0_g=1; wavecode_0_b=1; wavecode_0_a=1
+
+wavecode_0_per_point1 = x = sample;
+wavecode_0_per_point2 = y = 0.35 + 0.15*value1;
+wavecode_0_per_point3 = r = 0.10 + 0.80*q3;
+wavecode_0_per_point4 = g = 0.40 + 0.60*q2;
+wavecode_0_per_point5 = b = 0.60 + 0.40*q1;
+wavecode_0_per_point6 = a = 0.50 + 0.35*value1;
+
+; Right stereo channel (waveform)
+wavecode_1_enabled=1
+wavecode_1_samples=512
+wavecode_1_bSpectrum=0
+wavecode_1_bDrawThick=1
+wavecode_1_bAdditive=0
+wavecode_1_smoothing=0.70
+wavecode_1_sep=1
+
+wavecode_1_r=1; wavecode_1_g=1; wavecode_1_b=1; wavecode_1_a=1
+
+wavecode_1_per_point1 = x = sample;
+wavecode_1_per_point2 = y = 0.65 + 0.15*value2;
+wavecode_1_per_point3 = r = 0.50 + 0.50*q3;
+wavecode_1_per_point4 = g = 0.30 + 0.70*q2;
+wavecode_1_per_point5 = b = 0.50 + 0.50*q1;
+wavecode_1_per_point6 = a = 0.45 + 0.35*value2;
+

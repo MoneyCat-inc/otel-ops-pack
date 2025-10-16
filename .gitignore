@@ -24,3 +24,6 @@ triton-models/
 
 # GPU metric buffers (ephemeral)
 DELT/ARTF/gpu-buffers/**
+
+# MILK Lane vendor bundles (minified, security-scanned separately)
+docs/BossCat/visuals/vendor/
