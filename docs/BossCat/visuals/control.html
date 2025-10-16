@@ -78,6 +78,7 @@
     <button id="prev">◀ Prev</button>
     <select id="preset"></select>
     <button id="next">Next ▶</button>
+    <button id="fullscreen" title="Fullscreen">⛶ Full</button>
     <label>Blend <input id="blend" type="range" min="0" max="5" step="0.1" value="1.5"></label>
     <label><input id="auto" type="checkbox"> Auto‑cycle</label>
     <label><input id="lowIntensity" type="checkbox"> Low‑Intensity</label>
@@ -94,6 +95,7 @@
       const presetSel = document.getElementById('preset');
       const prevBtn = document.getElementById('prev');
       const nextBtn = document.getElementById('next');
+      const fsBtn = document.getElementById('fullscreen');
       const startMicBtn = document.getElementById('startMic');
       const blend = document.getElementById('blend');
       const auto = document.getElementById('auto');
@@ -240,6 +242,7 @@
 
       function resize(){ if (visualizer) visualizer.setRendererSize(canvas.clientWidth, canvas.clientHeight); }
       window.addEventListener('resize', resize);
+      document.addEventListener('fullscreenchange', resize);
 
       if (presetKeys.length) { load(Math.floor(Math.random()*presetKeys.length), 0); }
 
@@ -249,6 +252,18 @@
         requestAnimationFrame(frame);
       }
       frame(); resize();
+
+      // Fullscreen toggle for giant visualization
+      fsBtn.addEventListener('click', async () => {
+        const wrap = document.querySelector('.wrap');
+        try {
+          if (!document.fullscreenElement) {
+            await wrap.requestFullscreen();
+          } else {
+            await document.exitFullscreen();
+          }
+        } catch (e) { console.warn('Fullscreen not available', e); }
+      });
 
       startMicBtn.addEventListener('click', async () => {
         try {
