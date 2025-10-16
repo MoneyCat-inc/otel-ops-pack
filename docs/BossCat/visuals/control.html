@@ -21,7 +21,7 @@
   <!-- Butterchurn + presets (primary CDN: unpkg; fallback: jsDelivr) -->
   <script src="https://unpkg.com/butterchurn@2.6.7/dist/butterchurn.min.js"></script>
   <script src="https://unpkg.com/butterchurn-presets@2.6.7/dist/butterchurnPresets.min.js"></script>
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data:;" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://unpkg.com https://cdn.jsdelivr.net; script-src 'self' https://unpkg.com https://cdn.jsdelivr.net 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;" />
   <meta name="description" content="BossCat Visual Control Surface for Resonai default visualization" />
   <meta name="x-bosscat-tetragram" content="MILK" />
   <meta name="robots" content="noindex" />
@@ -75,6 +75,7 @@
   <div class="topbar">
     <h1>🎨 BossCat Visual Control</h1>
     <button id="startMic">Start Mic</button>
+    <button id="btnSelfTest" title="Generate a silent test tone">Self-Test</button>
     <button id="prev">◀ Prev</button>
     <select id="preset"></select>
     <button id="next">Next ▶</button>
@@ -97,6 +98,7 @@
       const nextBtn = document.getElementById('next');
       const fsBtn = document.getElementById('fullscreen');
       const startMicBtn = document.getElementById('startMic');
+      const btnSelfTest = document.getElementById('btnSelfTest');
       const blend = document.getElementById('blend');
       const auto = document.getElementById('auto');
       const lowIntensity = document.getElementById('lowIntensity');
@@ -279,6 +281,25 @@
           const src = ctx.createMediaStreamSource(stream); src.connect(analyser);
         } catch (e) {
           console.error('Audio init failed', e);
+        }
+      });
+
+      // Self-Test: generate a near-silent oscillator feeding the analyser so visuals animate
+      btnSelfTest?.addEventListener('click', async () => {
+        try {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          gain.gain.value = 0.0001; // inaudible but keeps the graph alive
+          osc.type = 'sawtooth';
+          osc.frequency.value = 110;
+          osc.connect(gain);
+          gain.connect(analyser);
+          // also connect to destination to avoid graph suspension
+          gain.connect(ctx.destination);
+          osc.start();
+          console.log('[MILK] Self-Test tone started (near-silent)');
+        } catch (e) {
+          console.warn('[MILK] Self-Test failed; AudioContext may be blocked until user gesture', e);
         }
       });
     })();
