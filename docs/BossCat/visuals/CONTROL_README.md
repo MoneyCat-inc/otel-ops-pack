@@ -23,6 +23,22 @@ Tip: On Windows, choose the audio input named "Stereo Mix" to capture desktop au
 
 Tetragram: MILK
 
+## First-Time Setup
+
+**Build Vendor Bundles** (required once after clone):
+
+```powershell
+pwsh -File scripts/visuals/build-milk-vendors.ps1
+```
+
+This creates local IIFE bundles of `butterchurn` + `butterchurnPresets` in `docs/BossCat/visuals/vendor/`. These files are `.gitignore`'d to avoid security scanner false positives on minified code.
+
+**Why Local Bundles?**
+- Offline support (no CDN dependency)
+- Faster load times
+- Avoids CSP issues with external scripts
+- Security scanners won't flag minified vendor code
+
 ## Low-Intensity Mode
 
 **Purpose**: Reduces visual intensity for accessibility and comfort.
