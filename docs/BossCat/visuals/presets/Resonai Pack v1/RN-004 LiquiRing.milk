@@ -1,0 +1,55 @@
+; Resonai – LiquiRing (RN-004)
+; tags: neon,ring,bass,intense,shader-free
+; Style: Bass-breathing liquid ring, darker background, purple/teal
+; Safety: Stronger bass response, clamped decay, controlled alpha
+; Compatibility: MilkDrop 2/3, ProjectM, Butterchurn
+; Author: BossCat OEM | Lane: MILK
+
+fDecay=0.99
+zoom=1.00
+rot=0.00
+cx=0.5
+cy=0.5
+dx=0.0
+dy=0.0
+warp=0.0
+
+; Audio smoothing (more reactive bass)
+per_frame_1 = q1 = 0.05 + 0.95*bass_att;
+per_frame_2 = q2 = 0.10 + 0.90*mid_att;
+per_frame_3 = q3 = 0.10 + 0.90*treb_att;
+per_frame_4 = q4 = 0.70*q4 + 0.30*vol;
+
+; Bass-driven motion
+per_frame_5 = rot = rot + 0.008 + 0.020*q1;
+per_frame_6 = zoom = 1.000 + 0.025*q1 + 0.010*sin(time*0.35);
+
+; Dark purple/teal palette
+per_frame_7 = wave_r = 0.25 + 0.60*q3;
+per_frame_8 = wave_g = 0.15 + 0.70*q2;
+per_frame_9 = wave_b = 0.45 + 0.55*q1;
+per_frame_10 = wave_a = 0.60 + 0.30*q4;
+
+; Radial breathing warp
+per_pixel_1 = zoom = zoom + 0.06*rad*q1;
+per_pixel_2 = rot = rot + 0.03*(rad - 0.5);
+
+; Liquid ring (thick, bass-reactive)
+wavecode_0_enabled=1
+wavecode_0_samples=512
+wavecode_0_bSpectrum=1
+wavecode_0_bDrawThick=1
+wavecode_0_bAdditive=1
+wavecode_0_smoothing=0.65
+
+wavecode_0_r=1; wavecode_0_g=1; wavecode_0_b=1; wavecode_0_a=1
+
+wavecode_0_per_point1 = ang = 6.283185*sample;
+wavecode_0_per_point2 = rad1 = 0.40 + 0.30*value1 + 0.10*q1;
+wavecode_0_per_point3 = x = 0.5 + rad1*cos(ang + time*0.30 + q1*0.5);
+wavecode_0_per_point4 = y = 0.5 + rad1*sin(ang + time*0.30 + q1*0.5);
+wavecode_0_per_point5 = r = 0.15 + 0.75*q3;
+wavecode_0_per_point6 = g = 0.10 + 0.80*q2;
+wavecode_0_per_point7 = b = 0.30 + 0.70*q1;
+wavecode_0_per_point8 = a = 0.40 + 0.50*value1;
+

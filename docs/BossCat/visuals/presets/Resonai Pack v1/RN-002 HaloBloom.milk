@@ -1,0 +1,74 @@
+; Resonai – HaloBloom (RN-002)
+; tags: neon,multi-ring,spectrum,calm,shader-free
+; Style: Dual concentric rings with soft bloom, teal/cyan bias
+; Safety: Clamped alpha, smooth decay, gentle motion
+; Compatibility: MilkDrop 2/3, ProjectM, Butterchurn
+; Author: BossCat OEM | Lane: MILK | Derived from template
+
+fDecay=0.97
+zoom=1.00
+rot=0.00
+cx=0.5
+cy=0.5
+dx=0.0
+dy=0.0
+warp=0.0
+
+; Audio smoothing
+per_frame_1 = q1 = 0.10 + 0.90*bass_att;
+per_frame_2 = q2 = 0.10 + 0.90*mid_att;
+per_frame_3 = q3 = 0.10 + 0.90*treb_att;
+per_frame_4 = q4 = 0.75*q4 + 0.25*vol;
+
+; Gentle pulsing zoom
+per_frame_5 = rot = rot + 0.004 + 0.008*(q2 - q3);
+per_frame_6 = zoom = 1.000 + 0.012*q1 + 0.006*sin(time*0.4);
+
+; Teal/cyan color scheme
+per_frame_7 = wave_r = 0.20 + 0.50*q3;
+per_frame_8 = wave_g = 0.40 + 0.60*q2;
+per_frame_9 = wave_b = 0.60 + 0.40*q1;
+per_frame_10 = wave_a = 0.45 + 0.35*q4;
+
+; Subtle radial warp
+per_pixel_1 = zoom = zoom + 0.03*rad;
+per_pixel_2 = rot = rot + 0.015*(rad - 0.5);
+
+; Inner ring (spectrum)
+wavecode_0_enabled=1
+wavecode_0_samples=512
+wavecode_0_bSpectrum=1
+wavecode_0_bDrawThick=1
+wavecode_0_bAdditive=1
+wavecode_0_smoothing=0.75
+
+wavecode_0_r=1; wavecode_0_g=1; wavecode_0_b=1; wavecode_0_a=1
+
+wavecode_0_per_point1 = ang = 6.283185*sample;
+wavecode_0_per_point2 = rad1 = 0.28 + 0.18*value1 + 0.05*q1;
+wavecode_0_per_point3 = x = 0.5 + rad1*cos(ang + time*0.20);
+wavecode_0_per_point4 = y = 0.5 + rad1*sin(ang + time*0.20);
+wavecode_0_per_point5 = r = 0.15 + 0.85*q3;
+wavecode_0_per_point6 = g = 0.25 + 0.75*q2;
+wavecode_0_per_point7 = b = 0.35 + 0.65*q1;
+wavecode_0_per_point8 = a = 0.30 + 0.55*value1;
+
+; Outer ring (halo effect)
+wavecode_1_enabled=1
+wavecode_1_samples=512
+wavecode_1_bSpectrum=1
+wavecode_1_bDrawThick=0
+wavecode_1_bAdditive=1
+wavecode_1_smoothing=0.80
+
+wavecode_1_r=1; wavecode_1_g=1; wavecode_1_b=1; wavecode_1_a=1
+
+wavecode_1_per_point1 = ang = 6.283185*sample;
+wavecode_1_per_point2 = rad2 = 0.44 + 0.14*value1 + 0.04*q2;
+wavecode_1_per_point3 = x = 0.5 + rad2*cos(ang - time*0.15);
+wavecode_1_per_point4 = y = 0.5 + rad2*sin(ang - time*0.15);
+wavecode_1_per_point5 = r = 0.10 + 0.60*q3;
+wavecode_1_per_point6 = g = 0.20 + 0.70*q2;
+wavecode_1_per_point7 = b = 0.40 + 0.60*q1;
+wavecode_1_per_point8 = a = 0.25 + 0.45*value1;
+
