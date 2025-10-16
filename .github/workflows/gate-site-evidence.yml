@@ -204,5 +204,5 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with: { path: status }
       - id: deploy
+        if: ${{ github.event_name != 'pull_request' }}
         uses: actions/deploy-pages@v4
-
