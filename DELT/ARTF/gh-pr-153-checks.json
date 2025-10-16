@@ -1,0 +1,506 @@
+{
+  "headRefName": "feat/bosscat-production-rollout-scaled-automation",
+  "number": 153,
+  "statusCheckRollup": [
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2025-10-16T03:44:09Z",
+      "conclusion": "FAILURE",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18549605301/job/52874478574",
+      "name": "Trigger_APIsec_scan",
+      "startedAt": "2025-10-16T03:44:05Z",
+      "status": "COMPLETED",
+      "workflowName": "APIsec"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2025-10-16T03:44:28Z",
+      "conclusion": "FAILURE",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18549605308/job/52874478653",
+      "name": "guard",
+      "startedAt": "2025-10-16T03:44:01Z",
+      "status": "COMPLETED",
+      "workflowName": "BossCat ┬╖ Tetragram Guard"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2025-10-16T03:44:05Z",
+      "conclusion": "FAILURE",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18549605284/job/52874478678",
+      "name": "Trigger_EthicalCheck",
+      "startedAt": "2025-10-16T03:44:02Z",
+      "status": "COMPLETED",
+      "workflowName": "EthicalCheck-Workflow"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2025-10-16T03:44:18Z",
+      "conclusion": "FAILURE",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18549605290/job/52874478607",
+      "name": "Fortify-AST-Scan",
+      "startedAt": "2025-10-16T03:44:01Z",
+      "status": "COMPLETED",
+      "workflowName": "Fortify AST Scan"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2025-10-16T03:44:53Z",
+      "conclusion": "FAILURE",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18549605293/job/52874478528",
+      "name": "Gate ΓÇó k6 thresholds",
+      "startedAt": "2025-10-16T03:44:05Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate & Site Evidence (Non-Merging)"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2025-10-16T03:45:29Z",
+      "conclusion": "FAILURE",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18549605282/job/52874478558",
+      "name": "Analyze",
+      "startedAt": "2025-10-16T03:44:04Z",
+      "status": "COMPLETED",
+      "workflowName": "JFrog SAST Scan"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2025-10-16T03:44:14Z",
+      "conclusion": "FAILURE",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18549605287/job/52874478534",
+      "name": "build",
+      "startedAt": "2025-10-16T03:44:05Z",
+      "status": "COMPLETED",
+      "workflowName": "Jscrambler Code Integrity"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2025-10-16T03:44:13Z",
+      "conclusion": "FAILURE",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18549605299/job/52874478538",
+      "name": "Mayhem for API",
+      "startedAt": "2025-10-16T03:44:01Z",
+      "status": "COMPLETED",
+      "workflowName": "Mayhem for API"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2025-10-16T03:44:15Z",
+      "conclusion": "FAILURE",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18549605283/job/52874478554",
+      "name": "snyk",
+      "startedAt": "2025-10-16T03:44:05Z",
+      "status": "COMPLETED",
+      "workflowName": "Snyk Security"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2025-10-16T03:44:49Z",
+      "conclusion": "FAILURE",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18549605285/job/52874478544",
+      "name": "build",
+      "startedAt": "2025-10-16T03:44:01Z",
+      "status": "COMPLETED",
+      "workflowName": "Sysdig - Build, scan, push and upload sarif report"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2025-10-16T03:44:14Z",
+      "conclusion": "FAILURE",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18549605274/job/52874478529",
+      "name": "Repository Structure Compliance",
+      "startedAt": "2025-10-16T03:44:05Z",
+      "status": "COMPLETED",
+      "workflowName": "≡ƒÉ╛ BossCat Tetragram Guardrails"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "0001-01-01T00:00:00Z",
+      "conclusion": "",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18549605298/job/52874478550",
+      "name": "Smoke Test (Changed Paths)",
+      "startedAt": "2025-10-16T03:44:05Z",
+      "status": "IN_PROGRESS",
+      "workflowName": "BossCat Gate - Bot-Native"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "0001-01-01T00:00:00Z",
+      "conclusion": "",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18549605313/job/52874478626",
+      "name": "Analyze (javascript)",
+      "startedAt": "2025-10-16T03:44:01Z",
+      "status": "IN_PROGRESS",
+      "workflowName": "CodeQL"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "0001-01-01T00:00:00Z",
+      "conclusion": "",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18549605315/job/52874478742",
+      "name": "Analyze (javascript)",
+      "startedAt": "2025-10-16T03:44:05Z",
+      "status": "IN_PROGRESS",
+      "workflowName": "CodeQL Analysis"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "0001-01-01T00:00:00Z",
+      "conclusion": "",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18549605309/job/52874478600",
+      "name": "MSDO",
+      "startedAt": "2025-10-16T03:44:33Z",
+      "status": "IN_PROGRESS",
+      "workflowName": "Microsoft Defender For Devops"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "0001-01-01T00:00:00Z",
+      "conclusion": "",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18549607205/job/52874483226",
+      "name": "convert-and-compare",
+      "startedAt": "2025-10-16T03:44:09Z",
+      "status": "IN_PROGRESS",
+      "workflowName": "Research Conversion Verify"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2025-10-16T03:43:59Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18549605378/job/52874478815",
+      "name": "scan-scheduled",
+      "startedAt": "2025-10-16T03:43:59Z",
+      "status": "COMPLETED",
+      "workflowName": "OSV-Scanner"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2025-10-16T03:45:11Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18549605296/job/52874478655",
+      "name": "Gate Verify (local)",
+      "startedAt": "2025-10-16T03:44:02Z",
+      "status": "COMPLETED",
+      "workflowName": "BossCat Gate Verification"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2025-10-16T03:45:18Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18549605294/job/52874478612",
+      "name": "trivy-scan",
+      "startedAt": "2025-10-16T03:44:05Z",
+      "status": "COMPLETED",
+      "workflowName": "BossCat ┬╖ Trivy Security Scan"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2025-10-16T03:44:37Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18549605291/job/52874478579",
+      "name": "ci ΓÇó IONA",
+      "startedAt": "2025-10-16T03:44:05Z",
+      "status": "COMPLETED",
+      "workflowName": "BossCat ΓÇö Gate Verify"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2025-10-16T03:44:59Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18549605280/job/52874478603",
+      "name": "Analyze (actions)",
+      "startedAt": "2025-10-16T03:44:05Z",
+      "status": "COMPLETED",
+      "workflowName": "CodeQL Advanced"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2025-10-16T03:45:12Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18549605277/job/52874478520",
+      "name": "DevSkim",
+      "startedAt": "2025-10-16T03:44:06Z",
+      "status": "COMPLETED",
+      "workflowName": "DevSkim"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2025-10-16T03:44:24Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18549605295/job/52874478507",
+      "name": "gitleaks",
+      "startedAt": "2025-10-16T03:44:05Z",
+      "status": "COMPLETED",
+      "workflowName": "Gitleaks Security Scan"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2025-10-16T03:44:42Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18549605303/job/52874478671",
+      "name": "PSScriptAnalyzer",
+      "startedAt": "2025-10-16T03:44:05Z",
+      "status": "COMPLETED",
+      "workflowName": "PSScriptAnalyzer"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2025-10-16T03:44:39Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18549604808/job/52874477999",
+      "name": "submit-pypi",
+      "startedAt": "2025-10-16T03:44:00Z",
+      "status": "COMPLETED",
+      "workflowName": "Automatic Dependency Submission"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "0001-01-01T00:00:00Z",
+      "conclusion": "",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18549605291/job/52874478582",
+      "name": "ci ΓÇó GPU_FIX",
+      "startedAt": "2025-10-16T03:44:05Z",
+      "status": "IN_PROGRESS",
+      "workflowName": "BossCat ΓÇö Gate Verify"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "0001-01-01T00:00:00Z",
+      "conclusion": "",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18549605280/job/52874478595",
+      "name": "Analyze (javascript-typescript)",
+      "startedAt": "2025-10-16T03:44:05Z",
+      "status": "IN_PROGRESS",
+      "workflowName": "CodeQL Advanced"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2025-10-16T03:45:20Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18549605296/job/52874478578",
+      "name": "Gate Verify (ci)",
+      "startedAt": "2025-10-16T03:44:05Z",
+      "status": "COMPLETED",
+      "workflowName": "BossCat Gate Verification"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2025-10-16T03:45:13Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18549605313/job/52874478616",
+      "name": "Analyze (python)",
+      "startedAt": "2025-10-16T03:44:01Z",
+      "status": "COMPLETED",
+      "workflowName": "CodeQL"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2025-10-16T03:45:18Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18549605296/job/52874478588",
+      "name": "Gate Verify (stg)",
+      "startedAt": "2025-10-16T03:44:02Z",
+      "status": "COMPLETED",
+      "workflowName": "BossCat Gate Verification"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2025-10-16T03:44:40Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18549605291/job/52874478591",
+      "name": "ci ΓÇó PERF_SUMMARY",
+      "startedAt": "2025-10-16T03:44:05Z",
+      "status": "COMPLETED",
+      "workflowName": "BossCat ΓÇö Gate Verify"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2025-10-16T03:45:07Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18549605280/job/52874478606",
+      "name": "Analyze (python)",
+      "startedAt": "2025-10-16T03:44:01Z",
+      "status": "COMPLETED",
+      "workflowName": "CodeQL Advanced"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2025-10-16T03:45:09Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18549605296/job/52874478569",
+      "name": "Gate Verify (prod)",
+      "startedAt": "2025-10-16T03:44:01Z",
+      "status": "COMPLETED",
+      "workflowName": "BossCat Gate Verification"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2025-10-16T03:44:31Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18549605291/job/52874478580",
+      "name": "local ΓÇó IONA",
+      "startedAt": "2025-10-16T03:44:01Z",
+      "status": "COMPLETED",
+      "workflowName": "BossCat ΓÇö Gate Verify"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "0001-01-01T00:00:00Z",
+      "conclusion": "",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18549605291/job/52874478597",
+      "name": "local ΓÇó GPU_FIX",
+      "startedAt": "2025-10-16T03:44:05Z",
+      "status": "IN_PROGRESS",
+      "workflowName": "BossCat ΓÇö Gate Verify"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2025-10-16T03:44:36Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18549605291/job/52874478590",
+      "name": "local ΓÇó PERF_SUMMARY",
+      "startedAt": "2025-10-16T03:44:01Z",
+      "status": "COMPLETED",
+      "workflowName": "BossCat ΓÇö Gate Verify"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2025-10-16T03:44:35Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18549605291/job/52874478573",
+      "name": "prod ΓÇó IONA",
+      "startedAt": "2025-10-16T03:44:05Z",
+      "status": "COMPLETED",
+      "workflowName": "BossCat ΓÇö Gate Verify"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "0001-01-01T00:00:00Z",
+      "conclusion": "",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18549605291/job/52874478589",
+      "name": "prod ΓÇó GPU_FIX",
+      "startedAt": "2025-10-16T03:44:05Z",
+      "status": "IN_PROGRESS",
+      "workflowName": "BossCat ΓÇö Gate Verify"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2025-10-16T03:44:31Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18549605291/job/52874478619",
+      "name": "prod ΓÇó PERF_SUMMARY",
+      "startedAt": "2025-10-16T03:44:01Z",
+      "status": "COMPLETED",
+      "workflowName": "BossCat ΓÇö Gate Verify"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2025-10-16T03:44:13Z",
+      "conclusion": "FAILURE",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18549605298/job/52874478564",
+      "name": "Guardrails & Compliance",
+      "startedAt": "2025-10-16T03:44:05Z",
+      "status": "COMPLETED",
+      "workflowName": "BossCat Gate - Bot-Native"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2025-10-16T03:44:06Z",
+      "conclusion": "FAILURE",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18549605378/job/52874478782",
+      "name": "scan-pr / scan-pr",
+      "startedAt": "2025-10-16T03:44:04Z",
+      "status": "COMPLETED",
+      "workflowName": "OSV-Scanner"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2025-10-16T03:43:59Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18549605291/job/52874478622",
+      "name": "security",
+      "startedAt": "2025-10-16T03:43:59Z",
+      "status": "COMPLETED",
+      "workflowName": "BossCat ΓÇö Gate Verify"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2025-10-16T03:44:33Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18549605293/job/52874478532",
+      "name": "Gate ΓÇó synthetic trace (OTLP/HTTP)",
+      "startedAt": "2025-10-16T03:44:05Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate & Site Evidence (Non-Merging)"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2025-10-16T03:44:29Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18549605293/job/52874478540",
+      "name": "Site ΓÇó links + a11y + CSP (coarse)",
+      "startedAt": "2025-10-16T03:44:01Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate & Site Evidence (Non-Merging)"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2025-10-16T03:45:06Z",
+      "conclusion": "FAILURE",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18549605293/job/52874514922",
+      "name": "Publish status bundle to Pages (no trunk writes)",
+      "startedAt": "2025-10-16T03:44:56Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate & Site Evidence (Non-Merging)"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2025-10-16T03:45:47Z",
+      "conclusion": "FAILURE",
+      "detailsUrl": "https://dashboard.gitguardian.com",
+      "name": "GitGuardian Security Checks",
+      "startedAt": "2025-10-16T03:43:57Z",
+      "status": "COMPLETED",
+      "workflowName": ""
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2025-10-16T03:44:51Z",
+      "conclusion": "NEUTRAL",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/runs/52874512674",
+      "name": "CodeQL",
+      "startedAt": "2025-10-16T03:44:49Z",
+      "status": "COMPLETED",
+      "workflowName": ""
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2025-10-16T03:44:29Z",
+      "conclusion": "NEUTRAL",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/runs/52874495994",
+      "name": "Trivy",
+      "startedAt": "2025-10-16T03:44:26Z",
+      "status": "COMPLETED",
+      "workflowName": ""
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2025-10-16T03:44:36Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/runs/52874500924",
+      "name": "PSScriptAnalyzer",
+      "startedAt": "2025-10-16T03:44:33Z",
+      "status": "COMPLETED",
+      "workflowName": ""
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2025-10-16T03:45:09Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/MoneyCat-inc/otel-ops-pack/runs/52874520949",
+      "name": "devskim",
+      "startedAt": "2025-10-16T03:45:03Z",
+      "status": "COMPLETED",
+      "workflowName": ""
+    }
+  ]
+}

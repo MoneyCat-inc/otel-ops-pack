@@ -1,0 +1,12 @@
+{
+  "version": "1.0",
+  "ignoreFiles": [
+    "docs/BossCat/visuals/vendor/**/*.js",
+    "**/*.vend.js",
+    "**/*.min.js",
+    "third_party/**",
+    "node_modules/**"
+  ],
+  "suppressions": []
+}
+
