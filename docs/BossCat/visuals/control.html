@@ -18,10 +18,10 @@
     canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
     .hint{opacity:.7;font-size:.85rem}
   </style>
-  <!-- Butterchurn + presets (CDN) -->
+  <!-- Butterchurn + presets (primary CDN: unpkg; fallback: jsDelivr) -->
   <script src="https://unpkg.com/butterchurn@2.6.7/dist/butterchurn.min.js"></script>
   <script src="https://unpkg.com/butterchurn-presets@2.6.7/dist/butterchurnPresets.min.js"></script>
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://unpkg.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:;" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data:;" />
   <meta name="description" content="BossCat Visual Control Surface for Resonai default visualization" />
   <meta name="x-bosscat-tetragram" content="MILK" />
   <meta name="robots" content="noindex" />
@@ -43,6 +43,27 @@
         }
       }
     });
+  </script>
+  <script>
+    // Multi-CDN loader: ensure butterchurn is available; if unpkg is blocked, try jsDelivr
+    function loadScript(url) {
+      return new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = url; s.async = true; s.onload = resolve; s.onerror = reject;
+        document.head.appendChild(s);
+      });
+    }
+
+    async function ensureButterchurnLoaded() {
+      // If already present from unpkg tags, use it
+      if (window.butterchurn && window.butterchurnPresets) return true;
+      // Try jsDelivr fallback
+      try {
+        await loadScript('https://cdn.jsdelivr.net/npm/butterchurn@2.6.7/dist/butterchurn.min.js');
+        await loadScript('https://cdn.jsdelivr.net/npm/butterchurn-presets@2.6.7/dist/butterchurnPresets.min.js');
+      } catch (_) {}
+      return !!(window.butterchurn && window.butterchurnPresets);
+    }
   </script>
   <script>
     // Prevent errors if butterchurn is not yet loaded
@@ -68,6 +89,7 @@
 
   <script>
     (async () => {
+      const libsOk = await ensureButterchurnLoaded();
       const canvas = document.getElementById('vis');
       const presetSel = document.getElementById('preset');
       const prevBtn = document.getElementById('prev');
@@ -84,28 +106,50 @@
       analyser.fftSize = 2048;
 
       const pxRatio = Math.min(window.devicePixelRatio || 1, 2);
-      const visualizer = butterchurn.createVisualizer(ctx, canvas, {
-        width: canvas.clientWidth,
-        height: canvas.clientHeight,
-        pixelRatio: pxRatio
-      });
-      visualizer.connectAudio(analyser);
-
-      let presets = Object.assign({}, butterchurnPresets.getPresets());
-      let presetKeys = Object.keys(presets).sort();
-      if (!presetKeys.length) {
-        // CDN fallback: populate minimal list with a safe built-in
-        const fallback = {
-          'Resonai - Default (Neon Pulse)': {
-            baseVals: { wave_a: 0.35, fDecay: 0.97 }
+      let visualizer = null;
+      let fallbackRenderer = null;
+      if (libsOk && window.butterchurn) {
+        visualizer = butterchurn.createVisualizer(ctx, canvas, {
+          width: canvas.clientWidth,
+          height: canvas.clientHeight,
+          pixelRatio: pxRatio
+        });
+        visualizer.connectAudio(analyser);
+      } else {
+        // Offline spectrum fallback so visuals still render
+        const bar = { ctx, canvas, analyser };
+        fallbackRenderer = () => {
+          const { width, height } = canvas.getBoundingClientRect();
+          const c = canvas.getContext('2d');
+          const bins = 64; const data = new Uint8Array(bins);
+          analyser.fftSize = 2048; analyser.getByteFrequencyData(data);
+          c.fillStyle = '#0b0f14'; c.fillRect(0, 0, width, height);
+          const w = width / bins;
+          for (let i = 0; i < bins; i++) {
+            const v = data[i] / 255; const h = v * (height - 10);
+            c.fillStyle = `hsl(${200 + i},70%,${40 + v*40}%)`;
+            c.fillRect(i * w, height - h, w * 0.9, h);
           }
         };
-        presets = fallback;
-        presetKeys = Object.keys(presets);
         const warn = document.createElement('span');
         warn.className = 'hint';
-        warn.textContent = 'Presets CDN unavailable; using local fallback.';
+        warn.textContent = 'Visualizer CDN unavailable; using mic spectrum fallback.';
         document.querySelector('.topbar')?.appendChild(warn);
+      }
+
+      let presets = libsOk ? Object.assign({}, butterchurnPresets.getPresets()) : {};
+      let presetKeys = Object.keys(presets).sort();
+      if (!libsOk) {
+        // No butterchurn available → single fallback option
+        presetKeys = ['Fallback Spectrum'];
+      } else if (!presetKeys.length) {
+        // Library loaded but preset pack blocked → minimal safe preset
+        presets = { 'Resonai - Default (Neon Pulse)': { baseVals: { wave_a: 0.35, fDecay: 0.97 } } };
+        presetKeys = Object.keys(presets);
+        const hint = document.createElement('span');
+        hint.className = 'hint';
+        hint.textContent = 'Preset pack unavailable; using minimal local preset.';
+        document.querySelector('.topbar')?.appendChild(hint);
       }
       presetKeys.forEach(k => {
         const opt = document.createElement('option');
@@ -128,6 +172,7 @@
         
         current = (i + presetKeys.length) % presetKeys.length;
         presetSel.value = presetKeys[current];
+        if (!libsOk) { return; } // spectrum fallback ignores presets
         let preset = presets[presetSel.value];
         
         // Apply intensity + low-intensity adjustments
@@ -193,12 +238,16 @@
       intensity.addEventListener('input', updateEffectiveSettings);
       updateEffectiveSettings(); // initial
 
-      function resize(){ visualizer.setRendererSize(canvas.clientWidth, canvas.clientHeight); }
+      function resize(){ if (visualizer) visualizer.setRendererSize(canvas.clientWidth, canvas.clientHeight); }
       window.addEventListener('resize', resize);
 
       if (presetKeys.length) { load(Math.floor(Math.random()*presetKeys.length), 0); }
 
-      function frame(){ visualizer.render(); requestAnimationFrame(frame); }
+      function frame(){
+        if (visualizer) visualizer.render();
+        else if (fallbackRenderer) fallbackRenderer();
+        requestAnimationFrame(frame);
+      }
       frame(); resize();
 
       startMicBtn.addEventListener('click', async () => {
