@@ -1,7 +1,7 @@
 # BOSSCAT_LOG (one-liners)
 
 - [2025-10-13T11:25:00Z] ENFORCEMENT ACTIVE — gate/site evidence now REQUIRED on main (3 checks: k6+trace+site); legacy BossCat Gate Verify removed; PRs blocked until 5/5 PASS
-- [2025-10-13T11:10:00Z] GATE GREEN — perf, trace, links, a11y, csp PASS via non-merging CI evidence (run https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18463803215); flip from AMBER; owner=AUTO-BOTS-GATE-ALFA+IONA-CATS-GATE-BETA
+- [2025-10-13T11:10:00Z] GATE GREEN — perf, trace, links, a11y, csp PASS via non-merging CI evidence (run 18463803215 on GitHub Actions); flip from AMBER; owner=AUTO-BOTS-GATE-ALFA+IONA-CATS-GATE-BETA
 - [2025-10-13T10:15:00] gate/site lanes ACTIVE; workflow=gate-site-evidence.yml; commit=7b143c17; components=k6+OTLP+site-checks
 - 2025-10-13T22:14:05.0790591+01:00 — Gate APPROVED: archiver + ICF P1 deployed (keep 100 in-repo; metrics & evidence on)
 - 2025-10-14T09:34:16.910Z — Conveyor: Archived 998, Deleted 1000, Remaining 11620
@@ -28,3 +28,22 @@
 - 2025-10-14T21:22:12.139Z — Conveyor: Archived 993, Deleted 996, Remaining 2140
 - 2025-10-14T21:51:39.939Z — Conveyor: Archived 998, Deleted 1000, Remaining 1143
 - 2025-10-14T22:29:50.101Z — Conveyor: Archived 988, Deleted 993, Remaining 156
+- 2025-10-15T06:30:13.459Z — ReviewerB Prep: docs-lane-gate workflow committed; markdownlint MD013 line-length outstanding; lychee dry run GREEN
+- 2025-10-15T06:31:46.225Z — ReviewerB Prep: markdownlint config tuned; docs-lane lint+lychee dry run GREEN
+- 2025-10-15T07:45:12.000Z — ReviewerB Gate: docs-lane workflow pinned Node 20.11.1 + markdownlint@0.14.0; verdict JSON now carries tool versions and run URL
+- 2025-10-15T19:55:32.000Z — ReviewerB Gate: docs-lane workflow adopts .lychee.toml retries + max concurrency; verdict JSON now records node runtime and run attempt
+- 2025-10-15T22:40:00.000Z — ReviewerB Gate: docs lane verdict tracks runtime_seconds + jobs_used; budget.json adds jobs + budget_passed; lychee config annotated
+- 2025-10-16T01:10:00.000Z — ReviewerB Gate: docs lane evidence now logs heartbeat ticks, TTL cadence, and auto-posts @cat ready-for-gate with artifact links; verdict/budget JSON capture NATO color + tool pins
+- 2025-10-16T02:05:00.000Z — ReviewerB Gate: docs lane budget/verdict artifacts adopt schema_version=1, expose files/loc/jobs/runtime, and gate comment now echoes SHA, budgets, jobs, runtime, and heartbeat cadence
+- 2025-10-16T03:00:00.000Z — ReviewerB Gate: docs lane artifacts now use bosscat.docs-lane.* schemas with heartbeat counts, changed-file manifest, run attempt, and gate signal mirrors schema + pass flag for BossCat audit trace
+- 2025-10-16T04:30:00.000Z — ReviewerB Gate: docs lane guard now fails out-of-lane diffs, captures per-file numstat, and downgrades verdicts when heartbeats or budgets go missing; gate comment echoes enriched payload
+- 2025-10-16T05:40:00.000Z — ReviewerB Gate: docs lane artifacts validated via jq schema checks; heartbeat gaps >2x interval or TTL breach now force RED; gate signal surfaces max-gap + ttl flags
+- 2025-10-16T06:20:00.000Z — ReviewerB Gate: docs lane workflow only posts @cat ready-for-gate on GREEN budget-pass runs, jq enforces pass=true with heartbeat ticks, and RED/BLACK verdicts fail after artifacts upload
+- 2025-10-16T07:05:00.000Z — ReviewerB Gate: docs lane ready-for-gate signal now depends on jq guards that confirm schema-tagged artifacts report GREEN with heartbeat ticks before commenting
+- 2025-10-16T07:45:00.000Z — ReviewerB Gate: docs lane jq guard now binds verdict/budget to head SHA, TTL, heartbeat gap ≤2× cadence, and archives the evaluated jq filters with the evidence bundle before signalling ready-for-gate
+- 2025-10-16T08:10:00.000Z — ReviewerB Gate: docs lane jq guard now records READY_FOR_GATE_REASON in summaries/comments so suppressions are audit-visible; guard reasons archived with jq filters
+- 2025-10-16T08:55:00.000Z — ReviewerB Gate: docs lane guard reason codes standardized (GR-*) and mirrored into verdict + guard.json; @cat signal echoes reason for BossCat audits
+- 2025-10-16T09:20:00.000Z — ReviewerB Gate: docs lane guard exports GR-* codes via GATE_GUARD_REASON/DOCS_LANE_GUARD_REASON envs, guarantees guard.json emission, and surfaces guard_reason in ready-for-gate comment
+- 2025-10-16T10:05:00.000Z — ReviewerB Gate: docs lane guard now emits numeric GR-xx codes with textual reasons, embeds `code`/`status` in guard.json + verdict/budget payloads, and ready-for-gate comments echo both `guard_code` and human-readable `guard_reason`
+- 2025-10-16T11:30:00.000Z — ReviewerB Gate: docs lane workflow refactored to docs-lane-checks with GR-00..04 guard telemetry, guard.json artifact, and GREEN-only @cat signal
+- 2025-10-16T12:10:00.000Z — ReviewerB Gate: docs lane guard exports GR-xx codes via guard.json and guard comment, mirrors env telemetry, and preserves evidence on suppressed signals
