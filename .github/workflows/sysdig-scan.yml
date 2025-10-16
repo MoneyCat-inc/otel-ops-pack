@@ -23,6 +23,8 @@ permissions:
 jobs:
 
   build:
+    # Skip on PRs; run on main/nightly
+    if: ${{ github.event_name != 'pull_request' }}
 
     permissions:
       checks: write # for sysdiglabs/scan-action to publish the checks

@@ -1,0 +1,55 @@
+{
+  "logs": [],
+  "metrics": {
+    "signoz": {
+      "status": "healthy",
+      "health": {
+        "status": "ok"
+      },
+      "endpoint": "http://localhost:8080"
+    },
+    "otel_collector": {
+      "status": "unreachable"
+    },
+    "recent_logs": {
+      "note": "Full SigNoz API integration pending",
+      "query_period": "5 minutes"
+    }
+  },
+  "mode": "gate",
+  "version": "2.0.0",
+  "gate_readiness": {
+    "enterprise_percentage": 50.0,
+    "blockers": [
+      "OTel wiring verification failed",
+      "Enterprise readiness below 75%"
+    ],
+    "status": "not_ready",
+    "percentage": 25.0,
+    "score": 1,
+    "enterprise_score": 6,
+    "warnings": [
+      "Agent health degraded",
+      "OTel Collector not responding"
+    ],
+    "total": 4,
+    "enterprise_total": 12
+  },
+  "checks": {
+    "agent_health": {
+      "status": "degraded"
+    },
+    "enterprise_readiness": {
+      "artifact": "artifacts/diagnostic-20251007-160340/enterprise-readiness.log",
+      "status": "completed"
+    },
+    "environment": {
+      "artifact": "artifacts/diagnostic-20251007-160340/environment.json",
+      "status": "completed"
+    },
+    "otel_wiring": {
+      "status": "failed"
+    }
+  },
+  "timestamp": "2025-10-07T15:03:40Z"
+}

@@ -29,6 +29,8 @@ env:
   JF_TOKEN: ${{ secrets.JF_ACCESS_TOKEN }}
 jobs:
   analyze:
+    # BossCat policy: CI PRs skip paid vendor scans; enforce on main/schedule
+    if: ${{ github.event_name != 'pull_request' }}
     name: Analyze
     runs-on: ubuntu-latest
     permissions:
