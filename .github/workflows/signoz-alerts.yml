@@ -12,6 +12,7 @@ on:
       - BRAV/SCPT/bosscat-create-signoz-alerts.ps1
       - BRAV/SCPT/bosscat-verify-signoz-completion.ps1
       - docs/BossCat/**
+      - '!docs/BossCat/visuals/**'  # Exclude MILK visuals from SigNoz automation
 
 # Least-privilege permissions
 permissions:
