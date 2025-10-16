@@ -43,6 +43,34 @@ Tetragram: MILK
 
 **Accessibility Note**: Recommended for users with photosensitivity, motion sensitivity, or vestibular disorders.
 
+---
+
+## Intensity Slider (Phase-5)
+
+**Purpose**: Fine-grained control over visual intensity beyond the Low-Intensity toggle.
+
+**Range**: 0-100 (default: 0)
+
+**Effects**:
+- **Blend Time Floor**: `2s + (intensity × 0.02)` up to 4s max
+  - 0 = no floor, 50 = 3s min, 100 = 4s min
+- **Wave Alpha Cap**: `0.5 − (intensity × 0.003)` down to 0.2 min
+  - 0 = 0.5 cap, 50 = 0.35 cap, 100 = 0.2 cap
+
+**Interaction with Low-Intensity**:
+- Low-Intensity toggle acts as a **hard floor** (takes precedence)
+- When both enabled: most restrictive settings apply
+- Example: Intensity=50 + Low-Intensity → 3s blend + halved wave_a + 0.35 cap
+
+**Use Cases**:
+- **Granular Control**: Fine-tune intensity for specific environments
+- **Gradual Reduction**: Slowly reduce intensity over time
+- **Per-Environment Settings**: Different intensity for day/night shifts
+
+**Usage**: Adjust slider from 0-100; changes apply to next preset load.
+
+---
+
 ## Minimal Automation Hook
 
 The page listens for simple messages via `window.postMessage`:

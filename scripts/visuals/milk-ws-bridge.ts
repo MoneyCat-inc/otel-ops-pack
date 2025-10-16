@@ -131,6 +131,16 @@ class MilkBridge {
   }
 
   private handleHttpPost(req: any, res: any): void {
+    // Security: Validate nonce header
+    const reqNonce = req.headers['x-milk-nonce'];
+    if (!reqNonce || reqNonce !== this.nonce) {
+      res.writeHead(401, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ status: 'error', message: 'Missing or invalid X-MILK-Nonce header' }));
+      this.logEvidence('http_post_rejected', { reason: 'invalid_nonce', remote: req.socket.remoteAddress });
+      console.log(`[MILK] HTTP POST rejected: invalid nonce from ${req.socket.remoteAddress}`);
+      return;
+    }
+
     let body = '';
     req.on('data', (chunk: any) => { body += chunk; });
     req.on('end', () => {

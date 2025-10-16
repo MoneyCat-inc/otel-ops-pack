@@ -128,6 +128,31 @@ window.postMessage({
 - Validates command structure before forwarding
 - Nonce generation for session tracking
 
+**Nonce Protection (Phase-5)**:
+- HTTP POST `/api/milk` requires `X-MILK-Nonce` header
+- Nonce generated on startup and logged to console
+- Invalid/missing nonce → 401 Unauthorized
+- WebSocket connections do not require nonce (localhost validation sufficient)
+
+**Example with Nonce**:
+```bash
+# Start bridge (note the nonce in output)
+tsx scripts/visuals/milk-ws-bridge.ts
+# Output: [MILK] Nonce: abc123xyz
+
+# Use nonce in HTTP POST
+curl -X POST http://localhost:8899/api/milk \
+  -H "Content-Type: application/json" \
+  -H "X-MILK-Nonce: abc123xyz" \
+  -d '{"cmd":"next"}'
+
+# Without nonce → 401
+curl -X POST http://localhost:8899/api/milk \
+  -H "Content-Type: application/json" \
+  -d '{"cmd":"next"}'
+# Response: {"status":"error","message":"Missing or invalid X-MILK-Nonce header"}
+```
+
 **Phase-3 Improvements**:
 - Add origin whitelist for postMessage forwarding
 - Implement command rate limiting

@@ -130,6 +130,12 @@ Configure SigNoz to POST directly to bridge:
 
 **Webhook URL**: `http://localhost:8899/api/milk`
 
+**Headers** (Phase-5):
+```
+Content-Type: application/json
+X-MILK-Nonce: <nonce from bridge startup>
+```
+
 **Payload Template**:
 ```json
 {
@@ -137,6 +143,8 @@ Configure SigNoz to POST directly to bridge:
   "arg": "{{.Severity}}"
 }
 ```
+
+**Note**: Phase-5 adds nonce security. Check bridge startup logs for current nonce.
 
 ### SigNoz Alert Rule (via Mapper)
 

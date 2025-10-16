@@ -60,6 +60,7 @@
     <label>Blend <input id="blend" type="range" min="0" max="5" step="0.1" value="1.5"></label>
     <label><input id="auto" type="checkbox"> Auto‑cycle</label>
     <label><input id="lowIntensity" type="checkbox"> Low‑Intensity</label>
+    <label>Intensity <input id="intensity" type="range" min="0" max="100" step="1" value="0"></label>
     <span class="hint">Tip: select <b>Stereo Mix</b> on Windows to capture desktop audio.</span>
   </div>
   <div class="wrap"><canvas id="vis"></canvas></div>
@@ -74,6 +75,7 @@
       const blend = document.getElementById('blend');
       const auto = document.getElementById('auto');
       const lowIntensity = document.getElementById('lowIntensity');
+      const intensity = document.getElementById('intensity');
 
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
       const ctx = new AudioCtx();
@@ -98,17 +100,41 @@
       let current = 0;
       function load(i, t) {
         let time = typeof t === 'number' ? t : Number(blend.value);
-        if (lowIntensity.checked && time < 2.0) time = 2.0; // min 2s blend
+        const intensityVal = Number(intensity.value);
+        
+        // Apply intensity scaling: minBlend = 2s + (intensity * 0.02) up to 4s
+        if (intensityVal > 0) {
+          const minBlend = Math.min(2.0 + (intensityVal * 0.02), 4.0);
+          if (time < minBlend) time = minBlend;
+        }
+        
+        // Low-Intensity as hard floor
+        if (lowIntensity.checked && time < 2.0) time = 2.0;
+        
         current = (i + presetKeys.length) % presetKeys.length;
         presetSel.value = presetKeys[current];
         let preset = presets[presetSel.value];
-        if (lowIntensity.checked && preset) {
-          preset = JSON.parse(JSON.stringify(preset)); // shallow clone
+        
+        // Apply intensity + low-intensity adjustments
+        if ((lowIntensity.checked || intensityVal > 0) && preset) {
+          preset = JSON.parse(JSON.stringify(preset));
           if (preset.baseVals) {
-            if (preset.baseVals.wave_a !== undefined) preset.baseVals.wave_a = Math.min(preset.baseVals.wave_a * 0.5, 0.5);
-            if (preset.baseVals.fDecay !== undefined) preset.baseVals.fDecay = Math.min(preset.baseVals.fDecay + 0.005, 0.99);
+            // Intensity wave_a cap: 0.5 − (intensity * 0.003) down to ~0.2
+            let waveACap = 0.5;
+            if (intensityVal > 0) waveACap = Math.max(0.5 - (intensityVal * 0.003), 0.2);
+            
+            if (preset.baseVals.wave_a !== undefined) {
+              let newWave = preset.baseVals.wave_a;
+              if (lowIntensity.checked) newWave = newWave * 0.5; // halve first
+              preset.baseVals.wave_a = Math.min(newWave, waveACap); // apply cap
+            }
+            
+            if (preset.baseVals.fDecay !== undefined && lowIntensity.checked) {
+              preset.baseVals.fDecay = Math.min(preset.baseVals.fDecay + 0.005, 0.99);
+            }
           }
         }
+        
         visualizer.loadPreset(preset, time);
       }
       presetSel.addEventListener('change', () => load(presetKeys.indexOf(presetSel.value), Number(blend.value)));
