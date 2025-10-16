@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>BossCat Visual Control — Resonai</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    html,body{height:100%;margin:0;background:#0b0f14;color:#cfe8ff;font-family:system-ui,"Segoe UI",Arial,sans-serif}
+    .topbar{display:flex;gap:.5rem;align-items:center;padding:.5rem .75rem;position:sticky;top:0;background:#0b0f14cc;backdrop-filter:saturate(1.2) blur(6px);z-index:10;border-bottom:1px solid #12202d}
+    .topbar h1{font-size:1rem;margin:.25rem .75rem .25rem 0;color:#7dd3fc}
+    button,select,input[type="checkbox"]{font:inherit}
+    button{background:#13293d;color:#cfe8ff;border:1px solid #1b3a52;border-radius:6px;padding:.45rem .65rem;cursor:pointer}
+    button:hover{background:#0f2233}
+    select{background:#0b1520;color:#cfe8ff;border:1px solid #1b3a52;border-radius:6px;padding:.35rem .5rem}
+    label{display:inline-flex;align-items:center;gap:.35rem}
+    #blend{width:160px;vertical-align:middle}
+    .wrap{position:relative;height:calc(100% - 52px)}
+    canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+    .hint{opacity:.7;font-size:.85rem}
+  </style>
+  <!-- Butterchurn + presets (CDN) -->
+  <script src="https://unpkg.com/butterchurn@2.6.7/dist/butterchurn.min.js"></script>
+  <script src="https://unpkg.com/butterchurn-presets@2.6.7/dist/butterchurnPresets.min.js"></script>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://unpkg.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:;" />
+  <meta name="description" content="BossCat Visual Control Surface for Resonai default visualization" />
+  <meta name="x-bosscat-tetragram" content="MILK" />
+  <meta name="robots" content="noindex" />
+  <script>
+    // Minimal command bridge via postMessage
+    window.addEventListener('message', (ev) => {
+      if (!ev || !ev.data) return;
+      const msg = ev.data;
+      if (msg && msg.type === 'bosscat:visu') {
+        const { cmd, arg } = msg;
+        if (cmd === 'setBlendTime') {
+          const s = document.getElementById('blend'); if (s) s.value = String(arg || 1.5);
+        } else if (cmd === 'next') {
+          const b = document.getElementById('next'); b && b.click();
+        } else if (cmd === 'prev') {
+          const b = document.getElementById('prev'); b && b.click();
+        } else if (cmd === 'auto' && typeof arg === 'boolean') {
+          const c = document.getElementById('auto'); if (c) { c.checked = !!arg; c.dispatchEvent(new Event('change')); }
+        }
+      }
+    });
+  </script>
+  <script>
+    // Prevent errors if butterchurn is not yet loaded
+    window.butterchurn = window.butterchurn || undefined;
+    window.butterchurnPresets = window.butterchurnPresets || { getPresets: () => ({}) };
+  </script>
+</head>
+<body>
+  <div class="topbar">
+    <h1>🎨 BossCat Visual Control</h1>
+    <button id="startMic">Start Mic</button>
+    <button id="prev">◀ Prev</button>
+    <select id="preset"></select>
+    <button id="next">Next ▶</button>
+    <label>Blend <input id="blend" type="range" min="0" max="5" step="0.1" value="1.5"></label>
+    <label><input id="auto" type="checkbox"> Auto‑cycle</label>
+    <label><input id="lowIntensity" type="checkbox"> Low‑Intensity</label>
+    <span class="hint">Tip: select <b>Stereo Mix</b> on Windows to capture desktop audio.</span>
+  </div>
+  <div class="wrap"><canvas id="vis"></canvas></div>
+
+  <script>
+    (async () => {
+      const canvas = document.getElementById('vis');
+      const presetSel = document.getElementById('preset');
+      const prevBtn = document.getElementById('prev');
+      const nextBtn = document.getElementById('next');
+      const startMicBtn = document.getElementById('startMic');
+      const blend = document.getElementById('blend');
+      const auto = document.getElementById('auto');
+      const lowIntensity = document.getElementById('lowIntensity');
+
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      const ctx = new AudioCtx();
+      const analyser = ctx.createAnalyser();
+      analyser.fftSize = 2048;
+
+      const pxRatio = Math.min(window.devicePixelRatio || 1, 2);
+      const visualizer = butterchurn.createVisualizer(ctx, canvas, {
+        width: canvas.clientWidth,
+        height: canvas.clientHeight,
+        pixelRatio: pxRatio
+      });
+      visualizer.connectAudio(analyser);
+
+      const presets = Object.assign({}, butterchurnPresets.getPresets());
+      const presetKeys = Object.keys(presets).sort();
+      presetKeys.forEach(k => {
+        const opt = document.createElement('option');
+        opt.value = k; opt.textContent = k; presetSel.appendChild(opt);
+      });
+
+      let current = 0;
+      function load(i, t) {
+        let time = typeof t === 'number' ? t : Number(blend.value);
+        if (lowIntensity.checked && time < 2.0) time = 2.0; // min 2s blend
+        current = (i + presetKeys.length) % presetKeys.length;
+        presetSel.value = presetKeys[current];
+        let preset = presets[presetSel.value];
+        if (lowIntensity.checked && preset) {
+          preset = JSON.parse(JSON.stringify(preset)); // shallow clone
+          if (preset.baseVals) {
+            if (preset.baseVals.wave_a !== undefined) preset.baseVals.wave_a = Math.min(preset.baseVals.wave_a * 0.5, 0.5);
+            if (preset.baseVals.fDecay !== undefined) preset.baseVals.fDecay = Math.min(preset.baseVals.fDecay + 0.005, 0.99);
+          }
+        }
+        visualizer.loadPreset(preset, time);
+      }
+      presetSel.addEventListener('change', () => load(presetKeys.indexOf(presetSel.value), Number(blend.value)));
+      prevBtn.addEventListener('click', () => load(current - 1, Number(blend.value)));
+      nextBtn.addEventListener('click', () => load(current + 1, Number(blend.value)));
+
+      let timer = null;
+      function startAuto() {
+        const interval = lowIntensity.checked ? 30000 : 20000; // longer interval in low-intensity
+        clearInterval(timer);
+        timer = setInterval(() => load(current + 1, Number(blend.value)), interval);
+      }
+      auto.addEventListener('change', () => {
+        if (auto.checked) { startAuto(); } else { clearInterval(timer); timer = null; }
+      });
+      lowIntensity.addEventListener('change', () => {
+        if (auto.checked) startAuto(); // restart auto with new interval
+      });
+
+      function resize(){ visualizer.setRendererSize(canvas.clientWidth, canvas.clientHeight); }
+      window.addEventListener('resize', resize);
+
+      if (presetKeys.length) { load(Math.floor(Math.random()*presetKeys.length), 0); }
+
+      function frame(){ visualizer.render(); requestAnimationFrame(frame); }
+      frame(); resize();
+
+      startMicBtn.addEventListener('click', async () => {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation:false, noiseSuppression:false, autoGainControl:false } });
+        const src = ctx.createMediaStreamSource(stream); src.connect(analyser);
+      });
+    })();
+  </script>
+</body>
+</html>
