@@ -378,8 +378,10 @@
             inputStream = null;
           }
           const audioConstraints = { echoCancellation:false, noiseSuppression:false, autoGainControl:false };
-          if (deviceId && deviceId !== 'default') {
-            audioConstraints.deviceId = { exact: deviceId };
+          if (deviceId) {
+            audioConstraints.deviceId = deviceId === 'default'
+              ? 'default'
+              : { exact: deviceId };
           }
           const constraints = { audio: audioConstraints };
           const stream = await navigator.mediaDevices.getUserMedia(constraints);
