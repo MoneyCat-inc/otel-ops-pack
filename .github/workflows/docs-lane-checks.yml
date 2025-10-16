@@ -39,6 +39,7 @@ jobs:
           echo "Changed files: $files, LOC delta: $loc"
 
       - name: Kill-switch check (.agent/LOCK)
+        id: kill
         shell: bash
         run: |
           if [[ -f .agent/LOCK ]]; then
@@ -47,6 +48,7 @@ jobs:
           fi
 
       - name: Enforce budgets (<= ${{ env.FILE_BUDGET }} files, <= ${{ env.LOC_BUDGET }} LOC)
+        id: budget
         shell: bash
         run: |
           set -euo pipefail
@@ -61,6 +63,7 @@ jobs:
           node-version: '18'
 
       - name: Markdown lint (changed .md)
+        id: lint
         shell: bash
         run: |
           set -euo pipefail
@@ -75,6 +78,7 @@ jobs:
           fi
 
       - name: Link and anchor check (lychee, changed files only)
+        id: links
         shell: bash
         run: |
           set -euo pipefail
@@ -94,6 +98,7 @@ jobs:
           fi
 
       - name: Emit ECRR evidence (docs lane)
+        id: ecrr
         shell: bash
         run: |
           set -euo pipefail
@@ -103,6 +108,81 @@ jobs:
           loc='${{ steps.diff.outputs.loc }}'
           printf '{"t":"%s","who":"B","type":"report","lane":"DOCS","files_touched":%s,"loc_delta":%s,"msg":"docs-lane checks passed (lint+links)"}\n' \
             "$ts" "$files" "$loc" > artifacts/ecrr/docs/${{ github.run_id }}.json
+
+      - name: Compute Guard Telemetry (GR-xx)
+        id: guard
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          files='${{ steps.diff.outputs.files }}'
+          loc='${{ steps.diff.outputs.loc }}'
+          outcome_kill='${{ steps.kill.outcome }}'
+          outcome_budget='${{ steps.budget.outcome }}'
+          outcome_lint='${{ steps.lint.outcome }}'
+          outcome_links='${{ steps.links.outcome }}'
+
+          GUARD_CODE="GR-00"
+          GUARD_REASON="Docs-lane checks passed"
+          GUARD_STATE="GREEN"
+
+          if [[ "$outcome_kill" == "failure" ]]; then
+            GUARD_CODE="GR-01"; GUARD_REASON="Kill-switch .agent/LOCK present"; GUARD_STATE="BLACK";
+          elif [[ "$outcome_budget" == "failure" ]]; then
+            GUARD_CODE="GR-02"; GUARD_REASON="Budgets exceeded (files/LOC)"; GUARD_STATE="RED";
+          elif [[ "$outcome_lint" == "failure" ]]; then
+            GUARD_CODE="GR-03"; GUARD_REASON="Markdown lint failed"; GUARD_STATE="AMBER";
+          elif [[ "$outcome_links" == "failure" ]]; then
+            GUARD_CODE="GR-04"; GUARD_REASON="Link/anchor check failed"; GUARD_STATE="AMBER";
+          fi
+
+          echo "GUARD_CODE=$GUARD_CODE" >> "$GITHUB_ENV"
+          echo "GUARD_REASON=$GUARD_REASON" >> "$GITHUB_ENV"
+          echo "GUARD_LANE=DOCS" >> "$GITHUB_ENV"
+          echo "GUARD_STATE=$GUARD_STATE" >> "$GITHUB_ENV"
+          echo "GUARD_FILES=$files" >> "$GITHUB_ENV"
+          echo "GUARD_LOC=$loc" >> "$GITHUB_ENV"
+
+          mkdir -p artifacts
+          ts=$(date -Is)
+          cat > artifacts/guard.json <<EOF
+          {
+            "t": "${ts}",
+            "lane": "DOCS",
+            "code": "${GUARD_CODE}",
+            "state": "${GUARD_STATE}",
+            "reason": "${GUARD_REASON}",
+            "files": ${files:-0},
+            "loc": ${loc:-0},
+            "run_id": "${{ github.run_id }}",
+            "pr": "${{ github.event.pull_request.number || '' }}"
+          }
+          EOF
+
+      - name: Upload Guard Telemetry
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs-guard-telemetry
+          path: artifacts/guard.json
+
+      - name: PR Comment - Docs Guard Telemetry
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const guardCode = process.env.GUARD_CODE || 'GR-00';
+            const guardReason = process.env.GUARD_REASON || 'Docs-lane checks passed';
+            const guardState = process.env.GUARD_STATE || 'GREEN';
+            const files = process.env.GUARD_FILES || '0';
+            const loc = process.env.GUARD_LOC || '0';
+            const body = `Docs Lane Guard: \`${guardCode}\` — ${guardReason}\n\nState: **${guardState}** • Budget: ${files}/${loc} (files/LOC)\n\nArtifact: artifacts/guard.json`;
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body
+            });
 
       - name: Upload ECRR docs evidence
         uses: actions/upload-artifact@v4
@@ -155,4 +235,369 @@ jobs:
               repo: context.repo.repo,
               body: body
             });
+name: docs-lane-checks
 
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'docs/**'
+      - 'README.md'
+
+concurrency:
+  group: docs-lane-checks-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  docs_gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      actions: read
+      pull-requests: write
+    env:
+      LANE: docs
+      GUARD_SCHEMA: bosscat.docs-lane.guard/1.0
+      BUDGET_SCHEMA: bosscat.docs-lane.budget/1.0
+      GUARD_CODE: GR-00
+      GUARD_REASON: docs lane checks passed
+      GUARD_STATE: GREEN
+      GUARD_STATUS: PASS
+      PIPELINE_SHOULD_FAIL: "0"
+      STOP_PIPELINE: "0"
+      GUARD_FILES: "0"
+      GUARD_LOC: "0"
+      NATO_AMBER_EXIT_CODE: "10"
+      NATO_RED_EXIT_CODE: "20"
+      NATO_BLACK_EXIT_CODE: "30"
+      NODE_VERSION: "20.11.1"
+      MARKDOWNLINT_VERSION: "0.14.0"
+      LYCHEE_VERSION: "v0.20.1"
+      HEARTBEAT_INTERVAL: "60"
+      TTL_SECONDS: "900"
+      ARTIFACT_DIR: artifacts/docs-lane
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Initialize guard context
+        run: |
+          {
+            echo "START_TS=$(date -u +%s)";
+            echo "GUARD_CODE=GR-00";
+            echo "GUARD_REASON=docs lane checks passed";
+            echo "GUARD_STATE=GREEN";
+            echo "GUARD_STATUS=PASS";
+            echo "PIPELINE_SHOULD_FAIL=0";
+            echo "STOP_PIPELINE=0";
+            echo "GUARD_FILES=0";
+            echo "GUARD_LOC=0";
+            echo "BUDGET_PASS=true";
+            echo "GUARD_FILES_LIST=none";
+            echo "OUT_OF_LANE_COUNT=0";
+            echo "MARKDOWNLINT_STATUS=pending";
+            echo "LYCHEE_STATUS=pending";
+          } >> "$GITHUB_ENV"
+
+      - name: Detect kill switch
+        run: |
+          if [ -f .agent/LOCK ]; then
+            {
+              echo "GUARD_CODE=GR-01";
+              echo "GUARD_REASON=kill switch present (.agent/LOCK)";
+              echo "GUARD_STATE=BLACK";
+              echo "GUARD_STATUS=FAIL";
+              echo "PIPELINE_SHOULD_FAIL=1";
+              echo "STOP_PIPELINE=1";
+            } >> "$GITHUB_ENV"
+          fi
+
+      - name: Compute changed docs scope
+        if: ${{ env.STOP_PIPELINE != '1' }}
+        id: diff
+        run: |
+          set -eo pipefail
+          mkdir -p "${ARTIFACT_DIR}"
+          BASE_SHA="${{ github.event.pull_request.base.sha }}"
+          HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+          MERGE_BASE=$(git merge-base "$BASE_SHA" "$HEAD_SHA")
+          git diff --name-only "$MERGE_BASE" "$HEAD_SHA" > all_changed.txt || true
+          grep -E '^(docs/|README\.md$)' all_changed.txt > changed_docs.txt || true
+          grep -Ev '^(docs/|README\.md$)' all_changed.txt > out_of_lane.txt || true
+          FILES=$(wc -l < changed_docs.txt | tr -d ' ')
+          LOC=$(git diff --numstat "$MERGE_BASE" "$HEAD_SHA" | awk '$3 ~ /^(docs\/|README\.md$)/ {a+=$1; d+=$2} END {print a+d+0}')
+          FILES_LIST=$(paste -sd ',' changed_docs.txt 2>/dev/null || true)
+          cp changed_docs.txt "${ARTIFACT_DIR}/changed_files.txt"
+          cp out_of_lane.txt "${ARTIFACT_DIR}/out_of_lane.txt"
+          echo "files=$FILES" >> "$GITHUB_OUTPUT"
+          echo "loc=$LOC" >> "$GITHUB_OUTPUT"
+          {
+            echo "FILES=$FILES";
+            echo "LOC=$LOC";
+            echo "HEAD_SHA=$HEAD_SHA";
+            echo "BASE_SHA=$BASE_SHA";
+            echo "MERGE_BASE_SHA=$MERGE_BASE";
+            echo "GUARD_FILES=$FILES";
+            echo "GUARD_LOC=$LOC";
+            echo "OUT_OF_LANE_COUNT=$(wc -l < out_of_lane.txt | tr -d ' ')";
+            echo "GUARD_FILES_LIST=${FILES_LIST:-none}";
+          } >> "$GITHUB_ENV"
+
+      - name: Enforce docs lane budgets
+        if: ${{ env.STOP_PIPELINE != '1' }}
+        run: |
+          if [ "${OUT_OF_LANE_COUNT:-0}" != "0" ]; then
+            {
+              echo "GUARD_CODE=GR-02";
+              echo "GUARD_REASON=docs lane scope violation";
+              echo "GUARD_STATE=RED";
+              echo "GUARD_STATUS=FAIL";
+              echo "PIPELINE_SHOULD_FAIL=1";
+              echo "STOP_PIPELINE=1";
+              echo "BUDGET_PASS=false";
+            } >> "$GITHUB_ENV"
+          elif [ "${FILES:-0}" -gt 10 ] || [ "${LOC:-0}" -gt 200 ]; then
+            {
+              echo "GUARD_CODE=GR-02";
+              echo "GUARD_REASON=docs lane budgets exceeded";
+              echo "GUARD_STATE=RED";
+              echo "GUARD_STATUS=FAIL";
+              echo "PIPELINE_SHOULD_FAIL=1";
+              echo "STOP_PIPELINE=1";
+              echo "BUDGET_PASS=false";
+            } >> "$GITHUB_ENV"
+          fi
+
+      - name: Mark downstream checks skipped when guard halted
+        if: ${{ env.STOP_PIPELINE == '1' }}
+        run: |
+          echo "MARKDOWNLINT_STATUS=skipped" >> "$GITHUB_ENV"
+          echo "LYCHEE_STATUS=skipped" >> "$GITHUB_ENV"
+
+      - name: Install markdownlint-cli2
+        if: ${{ env.STOP_PIPELINE != '1' }}
+        run: |
+          npm install --global --no-audit --no-fund "markdownlint-cli2@${MARKDOWNLINT_VERSION}"
+          npx --yes "markdownlint-cli2@${MARKDOWNLINT_VERSION}" --version
+
+      - name: Install lychee
+        if: ${{ env.STOP_PIPELINE != '1' }}
+        run: |
+          curl -sSL "https://github.com/lycheeverse/lychee/releases/download/lychee-${LYCHEE_VERSION}/lychee-x86_64-unknown-linux-gnu.tar.gz" -o /tmp/lychee.tar.gz
+          tar -xzf /tmp/lychee.tar.gz -C /tmp
+          install /tmp/lychee /usr/local/bin/lychee
+          lychee --version
+
+      - name: Markdown lint (changed docs)
+        if: ${{ env.STOP_PIPELINE != '1' }}
+        id: markdownlint
+        continue-on-error: true
+        run: |
+          if [ "${FILES:-0}" -eq 0 ]; then
+            echo "No docs lane files changed" > "${ARTIFACT_DIR}/markdownlint.txt"
+            exit 0
+          fi
+          mapfile -t DOC_FILES < changed_docs.txt
+          npx --yes "markdownlint-cli2@${MARKDOWNLINT_VERSION}" --config .markdownlint-cli2.yaml --output "${ARTIFACT_DIR}/markdownlint.txt" "${DOC_FILES[@]}"
+
+      - name: Evaluate markdownlint outcome
+        if: ${{ steps.markdownlint.outcome != 'success' && env.STOP_PIPELINE != '1' }}
+        run: |
+          {
+            echo "GUARD_CODE=GR-03";
+            echo "GUARD_REASON=markdownlint checks failed";
+            echo "GUARD_STATE=AMBER";
+            echo "GUARD_STATUS=FAIL";
+            echo "PIPELINE_SHOULD_FAIL=1";
+          } >> "$GITHUB_ENV"
+          echo "MARKDOWNLINT_STATUS=fail" >> "$GITHUB_ENV"
+
+      - name: Mark markdownlint success
+        if: ${{ steps.markdownlint.outcome == 'success' }}
+        run: echo "MARKDOWNLINT_STATUS=pass" >> "$GITHUB_ENV"
+
+      - name: Link check (changed docs)
+        if: ${{ env.STOP_PIPELINE != '1' }}
+        id: lychee
+        continue-on-error: true
+        run: |
+          if [ "${FILES:-0}" -eq 0 ]; then
+            echo "No docs lane files changed" > "${ARTIFACT_DIR}/linkcheck.txt"
+            exit 0
+          fi
+          mapfile -t DOC_FILES < changed_docs.txt
+          lychee --config .lychee.toml --no-progress --max-redirects 5 --max-retries 2 --retry-wait-time 2 --max-concurrency 10 --verbose --format detailed --output "${ARTIFACT_DIR}/linkcheck.txt" "${DOC_FILES[@]}"
+
+      - name: Evaluate link outcome
+        if: ${{ steps.lychee.outcome != 'success' && env.STOP_PIPELINE != '1' }}
+        run: |
+          {
+            echo "GUARD_CODE=GR-04";
+            echo "GUARD_REASON=link checks failed";
+            echo "GUARD_STATE=AMBER";
+            echo "GUARD_STATUS=FAIL";
+            echo "PIPELINE_SHOULD_FAIL=1";
+          } >> "$GITHUB_ENV"
+          echo "LYCHEE_STATUS=fail" >> "$GITHUB_ENV"
+
+      - name: Mark link success
+        if: ${{ steps.lychee.outcome == 'success' }}
+        run: echo "LYCHEE_STATUS=pass" >> "$GITHUB_ENV"
+
+      - name: Capture completion timestamp
+        if: ${{ always() }}
+        run: echo "END_TS=$(date -u +%s)" >> "$GITHUB_ENV"
+
+      - name: Write guard artifact
+        if: ${{ always() }}
+        run: |
+          python <<'PY'
+import json
+import os
+from datetime import datetime, timezone
+
+artifact_dir = os.environ.get("ARTIFACT_DIR", "artifacts/docs-lane")
+os.makedirs(artifact_dir, exist_ok=True)
+
+start_ts = int(os.environ.get("START_TS", "0") or 0)
+end_ts = int(os.environ.get("END_TS", "0") or 0)
+run_id = os.environ.get("GITHUB_RUN_ID", "")
+run_attempt = os.environ.get("GITHUB_RUN_ATTEMPT", "")
+server_url = os.environ.get("GITHUB_SERVER_URL", "")
+repo = os.environ.get("GITHUB_REPOSITORY", "")
+run_url = f"{server_url}/{repo}/actions/runs/{run_id}" if server_url and repo and run_id else None
+
+guard_doc = {
+    "schema": os.environ.get("GUARD_SCHEMA", "bosscat.docs-lane.guard/1.0"),
+    "lane": os.environ.get("LANE", "docs").upper(),
+    "code": os.environ.get("GUARD_CODE", "GR-99"),
+    "reason": os.environ.get("GUARD_REASON", "guard not evaluated"),
+    "state": os.environ.get("GUARD_STATE", "UNKNOWN"),
+    "status": os.environ.get("GUARD_STATUS", "SKIP"),
+    "files": int(os.environ.get("GUARD_FILES", "0") or 0),
+    "loc": int(os.environ.get("GUARD_LOC", "0") or 0),
+    "files_list": os.environ.get("GUARD_FILES_LIST", ""),
+    "budgets": {
+        "schema": os.environ.get("BUDGET_SCHEMA", "bosscat.docs-lane.budget/1.0"),
+        "limit_files": 10,
+        "limit_loc": 200,
+        "limit_jobs": 2,
+        "pass": os.environ.get("BUDGET_PASS", "true").lower() == "true",
+    },
+    "heartbeat": {
+        "interval_seconds": int(os.environ.get("HEARTBEAT_INTERVAL", "60") or 60),
+        "ttl_seconds": int(os.environ.get("TTL_SECONDS", "900") or 900),
+    },
+    "tools": {
+        "node": os.environ.get("NODE_VERSION", ""),
+        "markdownlint-cli2": os.environ.get("MARKDOWNLINT_VERSION", ""),
+        "lychee": os.environ.get("LYCHEE_VERSION", ""),
+    },
+    "run": {
+        "id": run_id,
+        "attempt": run_attempt,
+        "url": run_url,
+        "workflow": os.environ.get("GITHUB_WORKFLOW", ""),
+    },
+    "timestamps": {
+        "start": datetime.fromtimestamp(start_ts, tz=timezone.utc).isoformat().replace("+00:00", "Z") if start_ts else None,
+        "end": datetime.fromtimestamp(end_ts, tz=timezone.utc).isoformat().replace("+00:00", "Z") if end_ts else None,
+    },
+}
+
+guard_path = os.path.join(artifact_dir, "guard.json")
+with open(guard_path, "w", encoding="utf-8") as handle:
+    json.dump(guard_doc, handle, indent=2)
+
+with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as env_handle:
+    env_handle.write(f"GUARD_JSON_PATH={guard_path}\n")
+PY
+
+      - name: Upload guard telemetry
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs-guard-telemetry
+          path: artifacts/docs-lane
+          retention-days: 14
+
+      - name: Comment guard telemetry
+        if: ${{ always() }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const guardPath = process.env.GUARD_JSON_PATH;
+            if (!guardPath) {
+              return;
+            }
+            const guard = JSON.parse(fs.readFileSync(guardPath, 'utf8'));
+            const files = guard.files_list ? guard.files_list : `${guard.files}`;
+            const body = [
+              `Docs Lane Guard: ${guard.code} — ${guard.reason}`,
+              '',
+              `State: ${guard.state} (status=${guard.status})`,
+              `Budget: files ${guard.files}/10 (${files}), loc ${guard.loc}/200`,
+              `Markdownlint: ${process.env.MARKDOWNLINT_STATUS}`,
+              `Lychee: ${process.env.LYCHEE_STATUS}`,
+              `Artifact: ${guardPath}`
+            ].join('\n');
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body
+            });
+
+      - name: Comment ready-for-gate
+        if: ${{ env.GUARD_STATUS == 'PASS' && env.PIPELINE_SHOULD_FAIL != '1' }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const guardPath = process.env.GUARD_JSON_PATH;
+            const guard = JSON.parse(fs.readFileSync(guardPath, 'utf8'));
+            const shortSha = process.env.HEAD_SHA ? process.env.HEAD_SHA.substring(0, 7) : process.env.GITHUB_SHA.substring(0, 7);
+            const body = [
+              '@cat ready-for-gate',
+              '',
+              'docs-lane ✅ GREEN',
+              `schema: ${guard.schema}`,
+              `sha: ${shortSha}`,
+              `guard_code: ${guard.code}`,
+              `guard_reason: ${guard.reason}`,
+              `budget: files ${guard.files}/10, loc ${guard.loc}/200 (pass=${guard.budgets.pass})`,
+              `tools: node ${guard.tools.node} · markdownlint-cli2 ${guard.tools['markdownlint-cli2']} · lychee ${guard.tools.lychee}`,
+              `run: ${guard.run.url ?? 'n/a'}`,
+              `artifact: ${guardPath}`
+            ].join('\n');
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body
+            });
+
+      - name: 📋 Run Summary
+        if: ${{ always() }}
+        run: |
+          {
+            echo "### docs-lane-checks summary";
+            echo "- guard_code: ${GUARD_CODE}";
+            echo "- guard_reason: ${GUARD_REASON}";
+            echo "- guard_state: ${GUARD_STATE}";
+            echo "- guard_status: ${GUARD_STATUS}";
+            echo "- files_touched: ${GUARD_FILES}";
+            echo "- loc_touched: ${GUARD_LOC}";
+            echo "- budgets_pass: ${BUDGET_PASS}";
+            echo "- markdownlint: ${MARKDOWNLINT_STATUS}";
+            echo "- linkcheck: ${LYCHEE_STATUS}";
+            echo "- guard_artifact: ${GUARD_JSON_PATH:-n/a}";
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Fail workflow on guard error
+        if: ${{ env.PIPELINE_SHOULD_FAIL == '1' }}
+        run: exit 1
