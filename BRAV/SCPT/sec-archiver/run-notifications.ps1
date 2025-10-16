@@ -7,7 +7,8 @@ param(
   [double]$MutateQps = 2.0,
   [string]$OutRoot = 'docs/BossCat/notifications',
   [string]$EvidenceRoot = 'CHAR/EVID/notifications',
-  [string]$Token = $env:GITHUB_TOKEN
+  [string]$Token = $env:GITHUB_TOKEN,
+  [switch]$NoProgress
 )
 
 $ErrorActionPreference = 'Stop'
@@ -18,6 +19,7 @@ function Sleep-ForQps([double]$qps){ if($qps -le 0){ return }; $ms = [math]::Cei
 function Has-Gh(){ try { $null = & gh --version 2>$null; return $LASTEXITCODE -eq 0 } catch { return $false } }
 
 function Show-Progress($current, $total, $type, $id){
+  if($NoProgress){ return }
   $pct = [math]::Round(($current / $total) * 100, 1)
   $bar = '█' * [math]::Floor($pct / 2)
   $space = '░' * (50 - [math]::Floor($pct / 2))

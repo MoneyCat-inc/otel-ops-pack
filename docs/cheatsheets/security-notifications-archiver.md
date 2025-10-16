@@ -5,6 +5,23 @@
 
 ---
 
+## 🎨 Progress Bars & Visualization
+
+**Default Behavior**:
+- **Local use**: Beautiful progress bars with real-time feedback (verbose mode)
+- **CI/GitHub Actions**: Clean logs with `-NoProgress` flag (quiet mode)
+
+**Why?**
+- ✅ **Local (interactive)**: Progress bars enhance operator experience
+- ✅ **CI (automated)**: Clean logs make parsing and debugging easier
+
+**Manual Override**: Add `-NoProgress` to any local command for quiet output:
+```bash
+pwsh BRAV/SCPT/sec-archiver/run-security.ps1 -Owner ... -Repo ... -NoProgress
+```
+
+---
+
 ## Quick Start
 
 ### Security Alerts Archive
