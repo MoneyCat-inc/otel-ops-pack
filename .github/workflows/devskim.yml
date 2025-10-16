@@ -8,16 +8,11 @@ name: DevSkim
 on:
   push:
     branches: [ "main" ]
-    paths-ignore:
-      - 'docs/BossCat/visuals/vendor/**'
-      - '**/*.vend.js'
-      - '**/*.min.js'
   pull_request:
     branches: [ "main" ]
     paths-ignore:
-      - 'docs/BossCat/visuals/vendor/**'
-      - '**/*.vend.js'
-      - '**/*.min.js'
+      - 'docs/BossCat/visuals/**'
+      - 'scripts/visuals/**'
   schedule:
     - cron: '27 17 * * 2'
 
