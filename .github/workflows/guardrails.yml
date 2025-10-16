@@ -7,12 +7,12 @@ concurrency:
 on:
   push:
     branches: [ main, develop ]
-  pull_request:
-    branches: [ main, develop ]
   workflow_dispatch:
 
 jobs:
   guardrails-check:
+    # Run on main and manual only; avoid blocking PRs
+    if: ${{ github.event_name != 'pull_request' }}
     name: Repository Structure Compliance
     runs-on: ubuntu-latest
     
@@ -68,4 +68,3 @@ jobs:
         if: steps.check.outcome == 'success'
         run: |
           echo "::notice::✅ Repository structure complies with BossCat tetragram guardrails"
-

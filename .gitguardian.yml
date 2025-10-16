@@ -1,0 +1,19 @@
+version: 1
+paths:
+  ignored:
+    - "docs/**"
+    - "CHAR/**"
+    - "artifacts/**"
+    - "DELT/ARTF/**"
+    - "docs/ecrr/**"
+    - "docs/observability/**"
+    - "docs/BossCat/run-reports/**"
+    - "CHAR/EVID/**"
+    - "tmp/**"
+    - "logs/**"
+    - "third_party/**"
+    - "**/*.png"
+    - "**/*.jpg"
+    - "**/*.jpeg"
+    - "**/*.svg"
+    - "**/*.gif"

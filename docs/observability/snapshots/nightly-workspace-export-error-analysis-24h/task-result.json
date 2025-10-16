@@ -1,0 +1,13 @@
+{
+  "Artifacts": [
+    "error-analysis.png",
+    "error-analysis.json"
+  ],
+  "TaskId": "nightly-export-error-analysis-24h",
+  "EndTime": "2025-10-07T16:59:42.4827249+01:00",
+  "Workspace": "docs\\observability\\snapshots\\nightly-workspace-export-error-analysis-24h",
+  "TimeRange": "24h",
+  "StartTime": "2025-10-07T16:59:40.8398821+01:00",
+  "Duration": 1642.8428,
+  "Status": "completed"
+}

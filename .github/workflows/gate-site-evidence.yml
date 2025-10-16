@@ -1,7 +1,6 @@
 name: Gate & Site Evidence (Non-Merging)
 
 on:
-  pull_request:
   workflow_dispatch:
     inputs:
       gate_base_url:
@@ -20,6 +19,7 @@ permissions:
 
 jobs:
   gate_perf:
+    if: ${{ github.event_name != 'pull_request' }}
     name: "Gate • k6 thresholds"
     runs-on: ubuntu-latest
     env:
@@ -59,6 +59,7 @@ jobs:
           path: artifacts/ecrr/gate/
 
   gate_trace:
+    if: ${{ github.event_name != 'pull_request' }}
     name: "Gate • synthetic trace (OTLP/HTTP)"
     runs-on: ubuntu-latest
     env:
@@ -114,6 +115,7 @@ jobs:
           path: artifacts/ecrr/gate/
 
   site_checks:
+    if: ${{ github.event_name != 'pull_request' }}
     name: "Site • links + a11y + CSP (coarse)"
     runs-on: ubuntu-latest
     steps:

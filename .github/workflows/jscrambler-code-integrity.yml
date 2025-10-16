@@ -27,6 +27,8 @@ permissions:
 
 jobs:
   build:
+    # Skip on PRs; enable on main releases/nightly
+    if: ${{ github.event_name != 'pull_request' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read

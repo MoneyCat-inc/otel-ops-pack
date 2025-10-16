@@ -1,0 +1,52 @@
+{
+  "SessionId": "3bcbf17c-18c1-437c-8496-2e041b7830b1",
+  "StartTime": "2025-10-07T17:07:23.5035861+01:00",
+  "Duration": 4233.4955,
+  "Status": "healthy",
+  "Checks": [
+    {
+      "Name": "Docker Desktop",
+      "Status": "healthy",
+      "Required": true,
+      "Duration": 284.3421,
+      "Timestamp": "2025-10-07T17:07:23.8042328+01:00"
+    },
+    {
+      "Name": "SigNoz Stack",
+      "Status": "healthy",
+      "Required": true,
+      "Duration": 107.0963,
+      "Timestamp": "2025-10-07T17:07:23.9182398+01:00"
+    },
+    {
+      "Name": "Windows OTel Collector",
+      "Status": "healthy",
+      "Required": true,
+      "Duration": 10.6258,
+      "Timestamp": "2025-10-07T17:07:23.9306640+01:00"
+    },
+    {
+      "Name": "Agent Configuration",
+      "Status": "healthy",
+      "Required": true,
+      "Duration": 2.2979,
+      "Timestamp": "2025-10-07T17:07:23.9352154+01:00"
+    },
+    {
+      "Name": "Agent Queue",
+      "Status": "healthy",
+      "Required": true,
+      "Duration": 25.4888,
+      "Timestamp": "2025-10-07T17:07:23.9626294+01:00"
+    },
+    {
+      "Name": "BossCat Watchdog",
+      "Status": "healthy",
+      "Required": false,
+      "Duration": 3770.1616,
+      "Timestamp": "2025-10-07T17:07:27.7349057+01:00"
+    }
+  ],
+  "Environment": "production",
+  "EndTime": "2025-10-07T17:07:27.7370816+01:00"
+}
