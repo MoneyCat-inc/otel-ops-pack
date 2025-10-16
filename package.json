@@ -67,7 +67,7 @@
     "notify:archive:dry": "pwsh -File BRAV/SCPT/sec-archiver/run-notifications.ps1 -ChunkSize 50 -DryRun"
   },
   "dependencies": {
-    "@aws-sdk/client-bedrock-runtime": "^3.908.0",
+    "@aws-sdk/client-bedrock-runtime": "^3.910.0",
     "@opentelemetry/auto-instrumentations-node": "^0.65.0",
     "@opentelemetry/core": "^2.1.0",
     "@opentelemetry/exporter-otlp-http": "^0.26.0",
@@ -78,16 +78,16 @@
     "@opentelemetry/sdk-trace-web": "^2.1.0",
     "@opentelemetry/semantic-conventions": "^1.37.0",
     "@prisma/client": "^6.17.1",
-    "@types/sqlite3": "^3.1.11",
+    "@types/sqlite3": "^5.1.0",
     "express": "^5.1.0",
     "glob": "^11.0.3",
     "jsonwebtoken": "^9.0.2",
-    "next": "^15.5.4",
+    "next": "^15.5.5",
     "pino": "^10.0.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "sqlite3": "^5.1.7",
-    "zod": "^4.1.11"
+    "zod": "^4.1.12"
   },
   "devDependencies": {
     "@jest/globals": "^30.2.0",
@@ -104,7 +104,7 @@
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
     "@typescript-eslint/eslint-plugin": "^8.46.0",
-    "@typescript-eslint/parser": "^8.46.0",
+    "@typescript-eslint/parser": "^8.46.1",
     "eslint": "^9.37.0",
     "eslint-config-next": "^15.5.5",
     "jest": "^30.2.0",
