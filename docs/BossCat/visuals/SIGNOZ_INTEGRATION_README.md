@@ -17,6 +17,41 @@ SigNoz Alert → milk-signoz-mapper.ts → WebSocket Bridge → control.html →
 
 ---
 
+## Preset Registry & Mood Mapping (Phase-5)
+
+**Registry**: `docs/BossCat/visuals/presets/registry.json`
+
+Map alert severity to preset mood for contextual visuals:
+
+```typescript
+import registry from './presets/registry.json';
+
+// Get presets by mood
+const calmPresets = registry.presets.filter(p => p.mood === 'calm');
+// → [RN-001, RN-002, RN-005]
+
+// Map SigNoz severity to mood
+function getMoodFromSeverity(severity: string): string {
+  for (const [mood, config] of Object.entries(registry.mood_mapping)) {
+    if (config.signoz_severity.includes(severity)) return mood;
+  }
+  return 'calm'; // default fallback
+}
+
+// Get recommended preset for alert
+const severity = 'critical';
+const mood = getMoodFromSeverity(severity); // → 'intense'
+const preset = registry.presets.find(p => p.mood === mood);
+// → RN-004 (LiquiRing)
+```
+
+**Mood → Severity Mapping**:
+- `info`, `low` → **calm** (RN-001, RN-002, RN-005)
+- `medium`, `warning` → **medium** (RN-003, RN-DEFAULT)
+- `high`, `critical` → **intense** (RN-004)
+
+---
+
 ## Quick Start
 
 ### 1. Start the Full Stack

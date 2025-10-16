@@ -60,7 +60,8 @@
     <label>Blend <input id="blend" type="range" min="0" max="5" step="0.1" value="1.5"></label>
     <label><input id="auto" type="checkbox"> Auto‑cycle</label>
     <label><input id="lowIntensity" type="checkbox"> Low‑Intensity</label>
-    <label>Intensity <input id="intensity" type="range" min="0" max="100" step="1" value="0"></label>
+    <label>Intensity <input id="intensity" type="range" min="0" max="100" step="1" value="0"> <span id="intensityVal">0</span></label>
+    <span id="effectiveSettings" style="opacity:0.6;font-size:0.85rem"></span>
     <span class="hint">Tip: select <b>Stereo Mix</b> on Windows to capture desktop audio.</span>
   </div>
   <div class="wrap"><canvas id="vis"></canvas></div>
@@ -152,7 +153,31 @@
       });
       lowIntensity.addEventListener('change', () => {
         if (auto.checked) startAuto(); // restart auto with new interval
+        updateEffectiveSettings();
       });
+      
+      // Update effective settings display
+      function updateEffectiveSettings() {
+        const intensityVal = Number(intensity.value);
+        const lowInt = lowIntensity.checked;
+        let minBlend = 0, waveACap = 0.5;
+        
+        if (intensityVal > 0) minBlend = Math.min(2.0 + (intensityVal * 0.02), 4.0);
+        if (lowInt && minBlend < 2.0) minBlend = 2.0;
+        
+        if (intensityVal > 0) waveACap = Math.max(0.5 - (intensityVal * 0.003), 0.2);
+        
+        document.getElementById('intensityVal').textContent = intensityVal;
+        if (intensityVal > 0 || lowInt) {
+          document.getElementById('effectiveSettings').textContent = 
+            `blend ≥${minBlend.toFixed(1)}s, wave α ≤${waveACap.toFixed(2)}`;
+        } else {
+          document.getElementById('effectiveSettings').textContent = '';
+        }
+      }
+      
+      intensity.addEventListener('input', updateEffectiveSettings);
+      updateEffectiveSettings(); // initial
 
       function resize(){ visualizer.setRendererSize(canvas.clientWidth, canvas.clientHeight); }
       window.addEventListener('resize', resize);
