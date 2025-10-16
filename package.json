@@ -67,7 +67,7 @@
     "notify:archive:dry": "pwsh -File BRAV/SCPT/sec-archiver/run-notifications.ps1 -ChunkSize 50 -DryRun"
   },
   "dependencies": {
-    "@aws-sdk/client-bedrock-runtime": "^3.910.0",
+    "@aws-sdk/client-bedrock-runtime": "^3.911.0",
     "@opentelemetry/auto-instrumentations-node": "^0.65.0",
     "@opentelemetry/core": "^2.1.0",
     "@opentelemetry/exporter-otlp-http": "^0.26.0",
