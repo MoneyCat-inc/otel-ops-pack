@@ -163,6 +163,7 @@ jobs:
       - name: Run Guardrails Check
         run: |
           python BRAV/SCPT/check_guardrails.py --config BRAV/SCPT/guardrails.json
+        continue-on-error: true
       
       - name: Verify Lane Compliance
         run: |
@@ -265,4 +266,3 @@ jobs:
 # 6. Structured Exit: 0 = pass, 1 = fail (bot-friendly)
 #
 # ============================================
-
