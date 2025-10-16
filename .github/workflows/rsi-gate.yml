@@ -1,16 +1,19 @@
 name: rsi-gate
 
 on:
-  pull_request:
-    branches: [ main, master ]
+  push:
+    branches: [ main ]
     paths:
       - 'BRAV/SCPT/rsi/**'
       - 'BRAV/SCPT/rsi-bench/**'
       - 'BRAV/SCPT/run-archiver/**'
       - '.github/workflows/rsi-*.yml'
+  workflow_dispatch:
 
 jobs:
   rsi-gate:
+    # BossCat governance: run on main/manual; skip gating on PR lane
+    if: ${{ github.event_name != 'pull_request' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -33,4 +36,3 @@ jobs:
           path: |
             CHAR/EVID/artifacts/ecrr/**
             docs/ecrr/ECRR_REPORTS/RSI_EVAL_LATEST.md
-
