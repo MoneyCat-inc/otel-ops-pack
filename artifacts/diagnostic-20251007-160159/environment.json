@@ -1,0 +1,43 @@
+{
+  "disk_total": "930.5 GB",
+  "tools": {
+    "npm": "10.9.3",
+    "git": "2.51.0.windows.2",
+    "python3": "3.13.7",
+    "docker_compose": "2.39.4",
+    "pnpm": "9.12.0",
+    "docker": "28.4.0",
+    "node": "22.18.0",
+    "pwsh": "7.5.3",
+    "playwright": "1.56.0",
+    "gh": "2.78.0"
+  },
+  "disk_available": "126.24 GB",
+  "memory_total_mb": 32687.0,
+  "diagnostic_version": "1.0.0",
+  "environment": {},
+  "cpu_cores": 24,
+  "disk_usage_percent": "86.4%",
+  "os_name": "Microsoft Windows 11 Pro",
+  "architecture": "AMD64",
+  "hostname": "D-MONOLITH",
+  "memory_available_mb": 11781.0,
+  "timestamp": "2025-10-07T15:01:59Z",
+  "git": {
+    "remote": "https://github.com/MoneyCat-inc/otel-ops-pack.git",
+    "branch": "rollout/bosscat-ci-rollout",
+    "uncommitted_changes": 60,
+    "commit": "d6dfea4"
+  },
+  "cpu_model": "AMD Ryzen 9 3900X 12-Core Processor            ",
+  "os_version": "10.0.26220",
+  "connectivity": {
+    "signoz_local": 200,
+    "otel_collector_http": "000",
+    "npm_registry": 200,
+    "pypi": 200,
+    "github_api": 200
+  },
+  "os_type": "windows",
+  "kernel": "NT 10.0.26220"
+}

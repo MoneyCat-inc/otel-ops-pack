@@ -1,0 +1,13 @@
+{
+  "Artifacts": [
+    "pipeline-health.png",
+    "pipeline-health.json"
+  ],
+  "TaskId": "nightly-export-pipeline-health-24h",
+  "EndTime": "2025-10-07T16:59:42.0814563+01:00",
+  "Workspace": "docs\\observability\\snapshots\\nightly-workspace-export-pipeline-health-24h",
+  "TimeRange": "24h",
+  "StartTime": "2025-10-07T16:59:40.8328493+01:00",
+  "Duration": 1248.607,
+  "Status": "completed"
+}
