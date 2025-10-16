@@ -56,13 +56,27 @@ Reference CI: `.github/workflows/docs-lane-checks.yml` (budgets, lint, links, ev
 4) Confirm docs lane checks passed. Missing or failing → AMBER (hold).  
 5) Render verdict; if GREEN, post `@cat ready-for-gate`.
 
-## READY‑FOR‑GATE (Docs)
+## READY-FOR-GATE (Docs)
 
 All must be true:
 
 - Budgets within limits.  
 - Evidence present (PLAN, EVIDENCE.log excerpt, JOB heartbeat).  
 - Docs changed‑paths checks passed (lint + links).  
-- No policy breaches (B read‑only; A didn’t merge).  
+- No policy breaches (B read-only; A didn't merge).  
 - B posts GREEN verdict with gate signal.
 
+## Guard Telemetry (GR-xx)
+
+- Purpose: deterministic, numeric guard codes emitted by docs-lane CI for audits.
+- Emission: environment variables (`GUARD_CODE`, `GUARD_REASON`, `GUARD_STATE`, `GUARD_FILES`, `GUARD_LOC`), and `artifacts/guard.json`.
+- Ready-for-gate comment: includes the guard tuple to enrich budgets/verdict.
+
+Codes (initial set):
+- GR-00 — GREEN: Docs-lane checks passed (budgets within limits; lint+links ok)
+- GR-01 — BLACK: Kill-switch `.agent/LOCK` present
+- GR-02 — RED: Budgets exceeded (files or LOC)
+- GR-03 — AMBER: Markdown lint failed
+- GR-04 — AMBER: Link/anchor check failed
+
+Reviewer B uses the guard code to anchor the verdict and reference `artifacts/guard.json` in the audit trail.

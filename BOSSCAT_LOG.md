@@ -173,3 +173,14 @@ _BossCat Seal: 🐾_
 [2025-10-15 02:16:37 +01:00] RSI: baseline=baseline-20251015_021602 → idx=rsi-20251015_021602-idx arch=rsi-20251015_021602-arch verdict=REJECT
 [2025-10-15 02:18:18 +01:00] RSI: baseline=baseline-20251015_021742 → idx=rsi-20251015_021742-idx arch=rsi-20251015_021742-arch verdict=REJECT
 [2025-10-15 02:23:10 +01:00] RSI: baseline=baseline-prod → idx=rsi-20251015_022238-idx arch=rsi-20251015_022238-arch verdict=REJECT
+2025-10-15T19:24:19+01:00 | CLOSEOUT | v1.2-gate-final | a67e4b45f | READY
+2025-10-15T23:11:30+01:00 | GATE-CHECK | @cat ready-for-gate | 5e143f5e3 | READY | 100% | Infrastructure: 7/7 healthy | Queue: 178ms p95, 0% errors | BossCat: APPROVED
+
+## 2025-10-16
+
+**08:00 UTC** - Docs Lane Guard Telemetry (GR-xx) Enabled  
+- Workflow `.github/workflows/docs-lane-checks.yml` now emits numeric guard codes with reasons  
+- Persistence: env vars (`GUARD_CODE`, `GUARD_REASON`, `GUARD_STATE`, `GUARD_FILES`, `GUARD_LOC`) and `artifacts/guard.json`  
+- PR signal: Reviewer B status comment includes guard code tuple and enriched budget/verdict  
+- Audit: Reviewer B playbook updated with guard contract + code table  
+- Lesson: Deterministic guard signals + evidence-to-disk tighten governance and audits
