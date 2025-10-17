@@ -1,17 +1,30 @@
 #!/usr/bin/env python3
 import argparse, json, os, time, sys
+
 REQUIRED = [
   ".github/workflows/bosscat-gate-verify.yml", "docs/status/tests.json",
   "docs/status.html", "docs/ecrr/ECRR_REPORTS", "docs/observability/snapshots",
   "docs/IONA_ERRORS.md", "docs/cheatsheets", "index.html"
 ]
+PRIMARY_DIR = "artifacts"
+LEGACY_DIR = "DELT/ARTF"
+PRIMARY_JSON = os.path.join(PRIMARY_DIR, "gate-verification-results.json")
+LEGACY_JSON = os.path.join(LEGACY_DIR, "gate-verification-results.json")
+
+def _write_json(path, payload):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w", encoding="utf-8") as handle:
+        json.dump(payload, handle, indent=2)
+
 def main():
     ap=argparse.ArgumentParser()
     ap.add_argument("--use-mock", action="store_true")
     ap.add_argument("--test-types", nargs="+", default=["baseline","load"])
     ap.add_argument("--verbose", action="store_true")
+    ap.add_argument("--mirror-legacy", action="store_true",
+                    help="Also mirror outputs to DELT/ARTF for legacy consumers")
     args=ap.parse_args()
-    os.makedirs("DELT/ARTF", exist_ok=True)
+    os.makedirs(PRIMARY_DIR, exist_ok=True)
     # seed minimal status if missing
     os.makedirs("docs/status", exist_ok=True)
     if not os.path.exists("docs/status/tests.json"):
@@ -41,8 +54,13 @@ def main():
       "reasons": reasons,
       "checks": checks
     }
-    with open("DELT/ARTF/gate-verification-results.json","w",encoding="utf-8") as f:
-        json.dump(obj, f, indent=2)
+    _write_json(PRIMARY_JSON, obj)
+    if args.mirror_legacy:
+        os.makedirs(LEGACY_DIR, exist_ok=True)
+        _write_json(LEGACY_JSON, obj)
+        print("[WARN] Mirrored gate results to legacy DELT/ARTF path; update consumers to artifacts/.", file=sys.stderr)
+    elif os.path.exists(LEGACY_JSON):
+        print("[WARN] Legacy gate results detected at DELT/ARTF but mirror not requested; file remains stale.", file=sys.stderr)
     if args.verbose: print(json.dumps(obj, indent=2))
     return 0 if verdict!="NOT_READY" else 2
 if __name__=="__main__": sys.exit(main())

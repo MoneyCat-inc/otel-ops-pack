@@ -129,6 +129,7 @@ function Write-PrComment([string]$Verdict,[string[]]$Reasons,[string]$OutputPath
 }
 $primaryOutputPath='artifacts/gate-verification-results.json'
 $legacyOutputPath='DELT/ARTF/gate-verification-results.json'
+$legacyMirrorRequested=$false
 $tsIso=Get-Date -Format 'yyyy-MM-ddTHH:mm:ssK'; Ensure-Dirs @('artifacts','docs/ecrr/ECRR_REPORTS')
 if ((Test-Path -LiteralPath $legacyOutputPath) -and -not (Test-Path -LiteralPath $primaryOutputPath)) {
   try {
@@ -145,6 +146,7 @@ if ($PSBoundParameters.ContainsKey('OutputJson')) {
   if ([string]::IsNullOrWhiteSpace($OutputJson)) {
     $OutputJson = $primaryOutputPath
   } elseif ($OutputJson -eq $legacyOutputPath) {
+    $legacyMirrorRequested = $true
     Write-Warning "[Gate][$Site] legacy DELT/ARTF output requested; mirroring artifacts/ content for compatibility."
     if (-not $outputTargets.Contains($legacyOutputPath)) { [void]$outputTargets.Add($legacyOutputPath) }
   } elseif ($OutputJson -ne $primaryOutputPath) {
@@ -152,6 +154,9 @@ if ($PSBoundParameters.ContainsKey('OutputJson')) {
   }
 } else {
   $OutputJson = $primaryOutputPath
+}
+if (-not $legacyMirrorRequested -and $OutputJson -eq $primaryOutputPath) {
+  Write-Verbose "[Gate][$Site] using canonical artifacts output path: $primaryOutputPath"
 }
 # Ensure directories for each output target
 foreach($target in $outputTargets){
@@ -216,6 +221,9 @@ foreach($target in $outputTargets){
   if ($target -eq $legacyOutputPath) {
     Write-Warning "[Gate][$Site] mirrored gate results to DELT/ARTF for legacy consumers; update workflows to artifacts/."
   }
+}
+if (-not $legacyMirrorRequested -and (Test-Path -LiteralPath $legacyOutputPath)) {
+  Write-Warning "[Gate][$Site] legacy DELT/ARTF gate results still exist but are no longer updated by default. Remove stale copies or run with -OutputJson $legacyOutputPath if needed."
 }
 if (Get-Command Update-BossCatProgress -ErrorAction SilentlyContinue) { Update-BossCatProgress -Phase 'Writing ECRR & PR comment' -CompletedSeconds 16 }
 $report=New-EcrrReport -Verdict $verdict -Reasons @($asciiReasons) -Checks $checks
