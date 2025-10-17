@@ -1,11 +1,260 @@
-- ✅ **4-Section Structure**: $($AnalysisData.ComplianceMetrics.FourSectionStructure)/$($AnalysisData.TotalReports) reports ($($CompliancePercentages.FourSectionStructure)%) complete
-- ✅ **ECRR Gate Sections**: $($AnalysisData.ComplianceMetrics.ECRRGates)/$($AnalysisData.TotalReports) reports ($($CompliancePercentages.ECRRGates)%) include gates
-- ✅ **Actor Declarations**: $($AnalysisData.ComplianceMetrics.ActorDeclarations)/$($AnalysisData.TotalReports) reports ($($CompliancePercentages.ActorDeclarations)%) proper declarations
-- ✅ **Evidence References**: $($AnalysisData.ComplianceMetrics.EvidenceReferences)/$($AnalysisData.TotalReports) reports ($($CompliancePercentages.EvidenceReferences)%) include artifacts
-
-### **Agent Distribution Validation**
-"@
-
-    foreach ($agent in $AnalysisData.AgentDistribution.Keys) {
-        $percentage = [math]::Round(($AnalysisData.AgentDistribution[$agent] / $AnalysisData.TotalReports) * 100, 1)
-        $SummaryReport += "`n- ✅ **$agent**: $($AnalysisData.AgentDistribution[$agent]) reports ($percentage%)"
+0001: <!doctype html>
+0002: <html lang="en">
+0003: <head>
+0004:   <meta charset="utf-8" />
+0005:   <title>BossCat Visual Control — Resonai</title>
+0006:   <meta name="viewport" content="width=device-width,initial-scale=1" />
+0007:   <style>
+0008:     html,body{height:100%;margin:0;background:#0b0f14;color:#cfe8ff;font-family:system-ui,"Segoe UI",Arial,sans-serif}
+0009:     .topbar{display:flex;gap:.5rem;align-items:center;padding:.5rem .75rem;position:sticky;top:0;background:#0b0f14cc;backdrop-filter:saturate(1.2) blur(6px);z-index:10;border-bottom:1px solid #12202d}
+0010:     .topbar h1{font-size:1rem;margin:.25rem .75rem .25rem 0;color:#7dd3fc}
+0011:     button,select,input[type="checkbox"]{font:inherit}
+0012:     button{background:#13293d;color:#cfe8ff;border:1px solid #1b3a52;border-radius:6px;padding:.45rem .65rem;cursor:pointer}
+0013:     button:hover{background:#0f2233}
+0014:     select{background:#0b1520;color:#cfe8ff;border:1px solid #1b3a52;border-radius:6px;padding:.35rem .5rem}
+0015:     label{display:inline-flex;align-items:center;gap:.35rem}
+0016:     #blend{width:160px;vertical-align:middle}
+0017:     .wrap{position:relative;height:calc(100% - 52px)}
+0018:     canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+0019:     .hint{opacity:.7;font-size:.85rem}
+0020:   </style>
+0021:   <!-- Butterchurn + presets (local vendor only) -->
+0022:   <script src="vendor/butterchurn.vend.js"></script>
+0023:   <script src="vendor/butterchurnPresets.vend.js"></script>
+0024:   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;" />
+0025:   <meta name="description" content="BossCat Visual Control Surface for Resonai default visualization" />
+0026:   <meta name="x-bosscat-tetragram" content="MILK" />
+0027:   <meta name="robots" content="noindex" />
+0028:   <script>
+0029:     // Minimal command bridge via postMessage
+0030:     window.addEventListener('message', (ev) => {
+0031:       if (!ev || !ev.data) return;
+0032:       const msg = ev.data;
+0033:       if (msg && msg.type === 'bosscat:visu') {
+0034:         const { cmd, arg } = msg;
+0035:         if (cmd === 'setBlendTime') {
+0036:           const s = document.getElementById('blend'); if (s) s.value = String(arg || 1.5);
+0037:         } else if (cmd === 'next') {
+0038:           const b = document.getElementById('next'); b && b.click();
+0039:         } else if (cmd === 'prev') {
+0040:           const b = document.getElementById('prev'); b && b.click();
+0041:         } else if (cmd === 'auto' && typeof arg === 'boolean') {
+0042:           const c = document.getElementById('auto'); if (c) { c.checked = !!arg; c.dispatchEvent(new Event('change')); }
+0043:         }
+0044:       }
+0045:     });
+0046:   </script>
+0047:   <script>
+0048:     // Multi-CDN loader: ensure butterchurn is available; if unpkg is blocked, try jsDelivr
+0049:     function loadScript(url) {
+0050:       return new Promise((resolve, reject) => {
+0051:         const s = document.createElement('script');
+0052:         s.src = url; s.async = true; s.onload = resolve; s.onerror = reject;
+0053:         document.head.appendChild(s);
+0054:       });
+0055:     }
+0056: 
+0057:     async function ensureButterchurnLoaded() {
+0058:       // If globals already present, we're good
+0059:       if (window.butterchurn && window.butterchurnPresets) return true;
+0060: 
+0061:       // Prefer local vendor via dynamic import (ESM/UMD safe)
+0062:       try {
+0063:         const bc = await import('./vendor/butterchurn.vend.js').catch(() => ({}));
+0064:         const bp = await import('./vendor/butterchurnPresets.vend.js').catch(() => ({}));
+0065:         if (!window.butterchurn && (bc?.default || bc)) window.butterchurn = bc.default || bc;
+0066:         if (!window.butterchurnPresets && (bp?.default || bp)) window.butterchurnPresets = bp.default || bp;
+0067:       } catch (_) {}
+0068: 
+0069:       if (window.butterchurn && window.butterchurnPresets) return true;
+0070: 
+0071:       // Fallback to CDNs (some proxies rewrite; nosniff may block)
+0072:       try {
+0073:         await loadScript('https://cdn.jsdelivr.net/npm/butterchurn/dist/butterchurn.min.js');
+0074:         await loadScript('https://cdn.jsdelivr.net/npm/butterchurn-presets/dist/butterchurnPresets.min.js');
+0075:       } catch (_) {}
+0076: 
+0077:       // As last attempt, try unpkg
+0078:       if (!(window.butterchurn && window.butterchurnPresets)) {
+0079:         try {
+0080:           await loadScript('https://unpkg.com/butterchurn/dist/butterchurn.min.js');
+0081:           await loadScript('https://unpkg.com/butterchurn-presets/dist/butterchurnPresets.min.js');
+0082:         } catch (_) {}
+0083:       }
+0084: 
+0085:       return !!(window.butterchurn && window.butterchurnPresets);
+0086:     }
+0087:   </script>
+0088:   <script>
+0089:     // Prevent errors if butterchurn is not yet loaded
+0090:     window.butterchurn = window.butterchurn || undefined;
+0091:     window.butterchurnPresets = window.butterchurnPresets || { getPresets: () => ({}) };
+0092:   </script>
+0093: </head>
+0094: <body>
+0095:   <div class="topbar">
+0096:     <h1>🎨 BossCat Visual Control</h1>
+0097:     <button id="startMic">Start Mic</button>
+0098:     <button id="btnSelfTest" title="Generate a silent test tone">Self-Test</button>
+0099:     <button id="prev">◀ Prev</button>
+0100:     <select id="preset"></select>
+0101:     <button id="next">Next ▶</button>
+0102:     <button id="fullscreen" title="Fullscreen">⛶ Full</button>
+0103:     <label>Blend <input id="blend" type="range" min="0" max="5" step="0.1" value="1.5"></label>
+0104:     <label><input id="auto" type="checkbox"> Auto‑cycle</label>
+0105:     <label><input id="lowIntensity" type="checkbox"> Low‑Intensity</label>
+0106:     <label>Intensity <input id="intensity" type="range" min="0" max="100" step="1" value="0"> <span id="intensityVal">0</span></label>
+0107:     <span id="effectiveSettings" style="opacity:0.6;font-size:0.85rem"></span>
+0108:     <span class="hint">Tip: select <b>Stereo Mix</b> on Windows to capture desktop audio.</span>
+0109:   </div>
+0110:   <div class="wrap"><canvas id="vis"></canvas></div>
+0111: 
+0112:   <script>
+0113:     (async () => {
+0114:       const libsOk = await ensureButterchurnLoaded();
+0115:       const canvas = document.getElementById('vis');
+0116:       const presetSel = document.getElementById('preset');
+0117:       const prevBtn = document.getElementById('prev');
+0118:       const nextBtn = document.getElementById('next');
+0119:       const fsBtn = document.getElementById('fullscreen');
+0120:       const startMicBtn = document.getElementById('startMic');
+0121:       const btnSelfTest = document.getElementById('btnSelfTest');
+0122:       const blend = document.getElementById('blend');
+0123:       const auto = document.getElementById('auto');
+0124:       const lowIntensity = document.getElementById('lowIntensity');
+0125:       const intensity = document.getElementById('intensity');
+0126: 
+0127:       const AudioCtx = window.AudioContext || window.webkitAudioContext;
+0128:       const ctx = new AudioCtx();
+0129:       const analyser = ctx.createAnalyser();
+0130:       analyser.fftSize = 2048;
+0131: 
+0132:       const pxRatio = Math.min(window.devicePixelRatio || 1, 2);
+0133:       let visualizer = null;
+0134:       let fallbackRenderer = null;
+0135:       if (libsOk && window.butterchurn) {
+0136:         visualizer = butterchurn.createVisualizer(ctx, canvas, {
+0137:           width: canvas.clientWidth,
+0138:           height: canvas.clientHeight,
+0139:           pixelRatio: pxRatio
+0140:         });
+0141:         visualizer.connectAudio(analyser);
+0142:       } else {
+0143:         // Offline spectrum fallback so visuals still render
+0144:         const bar = { ctx, canvas, analyser };
+0145:         fallbackRenderer = () => {
+0146:           const { width, height } = canvas.getBoundingClientRect();
+0147:           const c = canvas.getContext('2d');
+0148:           const bins = 64; const data = new Uint8Array(bins);
+0149:           analyser.fftSize = 2048; analyser.getByteFrequencyData(data);
+0150:           c.fillStyle = '#0b0f14'; c.fillRect(0, 0, width, height);
+0151:           const w = width / bins;
+0152:           for (let i = 0; i < bins; i++) {
+0153:             const v = data[i] / 255; const h = v * (height - 10);
+0154:             c.fillStyle = `hsl(${200 + i},70%,${40 + v*40}%)`;
+0155:             c.fillRect(i * w, height - h, w * 0.9, h);
+0156:           }
+0157:         };
+0158:         const warn = document.createElement('span');
+0159:         warn.className = 'hint';
+0160:         warn.textContent = 'Visualizer CDN unavailable; using mic spectrum fallback.';
+0161:         document.querySelector('.topbar')?.appendChild(warn);
+0162:       }
+0163: 
+0164:       let presets = libsOk ? Object.assign({}, butterchurnPresets.getPresets()) : {};
+0165:       let presetKeys = Object.keys(presets).sort();
+0166:       if (!libsOk) {
+0167:         // No butterchurn available → single fallback option
+0168:         presetKeys = ['Fallback Spectrum'];
+0169:       } else if (!presetKeys.length) {
+0170:         // Library loaded but preset pack blocked → minimal safe preset
+0171:         presets = { 'Resonai - Default (Neon Pulse)': { baseVals: { wave_a: 0.35, fDecay: 0.97 } } };
+0172:         presetKeys = Object.keys(presets);
+0173:         const hint = document.createElement('span');
+0174:         hint.className = 'hint';
+0175:         hint.textContent = 'Preset pack unavailable; using minimal local preset.';
+0176:         document.querySelector('.topbar')?.appendChild(hint);
+0177:       }
+0178:       presetKeys.forEach(k => {
+0179:         const opt = document.createElement('option');
+0180:         opt.value = k; opt.textContent = k; presetSel.appendChild(opt);
+0181:       });
+0182: 
+0183:       let current = 0;
+0184:       function load(i, t) {
+0185:         let time = typeof t === 'number' ? t : Number(blend.value);
+0186:         const intensityVal = Number(intensity.value);
+0187:         
+0188:         // Apply intensity scaling: minBlend = 2s + (intensity * 0.02) up to 4s
+0189:         if (intensityVal > 0) {
+0190:           const minBlend = Math.min(2.0 + (intensityVal * 0.02), 4.0);
+0191:           if (time < minBlend) time = minBlend;
+0192:         }
+0193:         
+0194:         // Low-Intensity as hard floor
+0195:         if (lowIntensity.checked && time < 2.0) time = 2.0;
+0196:         
+0197:         current = (i + presetKeys.length) % presetKeys.length;
+0198:         presetSel.value = presetKeys[current];
+0199:         if (!libsOk) { return; } // spectrum fallback ignores presets
+0200:         let preset = presets[presetSel.value];
+0201:         
+0202:         // Apply intensity + low-intensity adjustments
+0203:         if ((lowIntensity.checked || intensityVal > 0) && preset) {
+0204:           preset = JSON.parse(JSON.stringify(preset));
+0205:           if (preset.baseVals) {
+0206:             // Intensity wave_a cap: 0.5 − (intensity * 0.003) down to ~0.2
+0207:             let waveACap = 0.5;
+0208:             if (intensityVal > 0) waveACap = Math.max(0.5 - (intensityVal * 0.003), 0.2);
+0209:             
+0210:             if (preset.baseVals.wave_a !== undefined) {
+0211:               let newWave = preset.baseVals.wave_a;
+0212:               if (lowIntensity.checked) newWave = newWave * 0.5; // halve first
+0213:               preset.baseVals.wave_a = Math.min(newWave, waveACap); // apply cap
+0214:             }
+0215:             
+0216:             if (preset.baseVals.fDecay !== undefined && lowIntensity.checked) {
+0217:               preset.baseVals.fDecay = Math.min(preset.baseVals.fDecay + 0.005, 0.99);
+0218:             }
+0219:           }
+0220:         }
+0221:         
+0222:         visualizer.loadPreset(preset, time);
+0223:       }
+0224:       presetSel.addEventListener('change', () => load(presetKeys.indexOf(presetSel.value), Number(blend.value)));
+0225:       prevBtn.addEventListener('click', () => load(current - 1, Number(blend.value)));
+0226:       nextBtn.addEventListener('click', () => load(current + 1, Number(blend.value)));
+0227: 
+0228:       let timer = null;
+0229:       function startAuto() {
+0230:         const interval = lowIntensity.checked ? 30000 : 20000; // longer interval in low-intensity
+0231:         clearInterval(timer);
+0232:         timer = setInterval(() => load(current + 1, Number(blend.value)), interval);
+0233:       }
+0234:       auto.addEventListener('change', () => {
+0235:         if (auto.checked) { startAuto(); } else { clearInterval(timer); timer = null; }
+0236:       });
+0237:       lowIntensity.addEventListener('change', () => {
+0238:         if (auto.checked) startAuto(); // restart auto with new interval
+0239:         updateEffectiveSettings();
+0240:       });
+0241:       
+0242:       // Update effective settings display
+0243:       function updateEffectiveSettings() {
+0244:         const intensityVal = Number(intensity.value);
+0245:         const lowInt = lowIntensity.checked;
+0246:         let minBlend = 0, waveACap = 0.5;
+0247:         
+0248:         if (intensityVal > 0) minBlend = Math.min(2.0 + (intensityVal * 0.02), 4.0);
+0249:         if (lowInt && minBlend < 2.0) minBlend = 2.0;
+0250:         
+0251:         if (intensityVal > 0) waveACap = Math.max(0.5 - (intensityVal * 0.003), 0.2);
+0252:         
+0253:         document.getElementById('intensityVal').textContent = intensityVal;
+0254:         if (intensityVal > 0 || lowInt) {
+0255:           document.getElementById('effectiveSettings').textContent = 
+0256:             `blend ≥${minBlend.toFixed(1)}s, wave α ≤${waveACap.toFixed(2)}`;
+0257:         } else {
+0258:           document.getElementById('effectiveSettings').textContent = '';
+0259:         }
+0260:       }

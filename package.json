@@ -64,7 +64,8 @@
     "sec:index": "pwsh -File BRAV/SCPT/sec-archiver/generate-security-index.ps1",
     "notify:archive": "pwsh -File BRAV/SCPT/sec-archiver/run-notifications.ps1 -ChunkSize 500",
     "notify:archive:mark": "pwsh -File BRAV/SCPT/sec-archiver/run-notifications.ps1 -ChunkSize 500 -MarkRead",
-    "notify:archive:dry": "pwsh -File BRAV/SCPT/sec-archiver/run-notifications.ps1 -ChunkSize 50 -DryRun"
+    "notify:archive:dry": "pwsh -File BRAV/SCPT/sec-archiver/run-notifications.ps1 -ChunkSize 50 -DryRun",
+    "anticlickbait:verify": "node BRAV/SCPT/verify-anticlickbait-lane.js"
   },
   "dependencies": {
     "@aws-sdk/client-bedrock-runtime": "^3.910.0",
@@ -79,6 +80,8 @@
     "@opentelemetry/semantic-conventions": "^1.37.0",
     "@prisma/client": "^6.17.1",
     "@types/sqlite3": "^5.1.0",
+    "butterchurn": "^2.6.7",
+    "butterchurn-presets": "^2.4.7",
     "express": "^5.1.0",
     "glob": "^11.0.3",
     "jsonwebtoken": "^9.0.2",

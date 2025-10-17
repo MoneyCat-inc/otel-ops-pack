@@ -1,0 +1,37 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20251017124649
+Username: MAXGROUP\SYSTEM
+RunAs User: MAXGROUP\SYSTEM
+Configuration Name: 
+Machine: D-MONOLITH (Microsoft Windows NT 10.0.26220.0)
+Host Application: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\otel\canary-check-min.ps1
+Process ID: 30628
+PSVersion: 5.1.26100.6780
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.6780
+BuildVersion: 10.0.26100.6780
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Reading baseline metrics...
+PS>TerminatingError(Invoke-WebRequest): "Unable to connect to the remote server"
+Metrics fetch failed on http://127.0.0.1:8889/metrics: Unable to connect to the remote server
+PS>TerminatingError(Invoke-WebRequest): "Unable to connect to the remote server"
+Metrics fetch failed on http://127.0.0.1:8888/metrics: Unable to connect to the remote server
+PS>TerminatingError(canary-check-min.ps1): "The running command stopped because the preference variable "ErrorActionPreference" or common parameter is set to Stop: Could not read collector metrics on 8889 or 8888."
+>> TerminatingError(canary-check-min.ps1): "The running command stopped because the preference variable "ErrorActionPreference" or common parameter is set to Stop: Could not read collector metrics on 8889 or 8888."
+The running command stopped because the preference variable "ErrorActionPreference" or common parameter is set to Stop: Could not read collector metrics on 8889 or 8888.
+C:\otel\canary-check-min.ps1 : Could not read collector metrics on 8889 or 8888.
+At C:\otel\canary-check-min.ps1:110 char:3
++   Write-Error "Could not read collector metrics on 8889 or 8888."
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [Write-Error], WriteErrorException
+    + FullyQualifiedErrorId : Microsoft.PowerShell.Commands.WriteErrorException,canary-check-min.ps1
+
+**********************
+Windows PowerShell transcript end
+End time: 20251017124653
+**********************
