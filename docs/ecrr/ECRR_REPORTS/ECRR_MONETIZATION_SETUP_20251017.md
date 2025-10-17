@@ -49,8 +49,8 @@
    - ✅ Uncommented Ko-fi button (changed to "Buy Me a Coffee")
    - ✅ Uncommented Patreon button
    - ✅ Updated URLs to match actual accounts:
-     - `https://buymeacoffee.com/resonai`
-     - `https://patreon.com/resonai`
+     - `https://buymeacoffee.com/fubumaki`
+     - `https://www.patreon.com/c/FaeMcLachlan`
    - ✅ GitHub Sponsors already active
 
 2. **Enhanced `docs/anticlickbait/index.html`**:
@@ -65,10 +65,10 @@
   <a href="https://github.com/sponsors/MoneyCat-inc" class="btn" target="_blank">
     ❤️ GitHub Sponsors
   </a>
-  <a href="https://buymeacoffee.com/resonai" class="btn btn-secondary" target="_blank">
+  <a href="https://buymeacoffee.com/fubumaki" class="btn btn-secondary" target="_blank">
     ☕ Buy Me a Coffee
   </a>
-  <a href="https://patreon.com/resonai" class="btn btn-secondary" target="_blank">
+  <a href="https://www.patreon.com/c/FaeMcLachlan" class="btn btn-secondary" target="_blank">
     🎯 Patreon
   </a>
 </div>
@@ -398,10 +398,10 @@ GitHub: https://github.com/MoneyCat-inc/otel-ops-pack
     <a href="https://github.com/sponsors/MoneyCat-inc" class="btn" target="_blank">
       ❤️ GitHub Sponsors
     </a>
-    <a href="https://buymeacoffee.com/resonai" class="btn btn-secondary" target="_blank">
+    <a href="https://buymeacoffee.com/fubumaki" class="btn btn-secondary" target="_blank">
       ☕ Buy Me a Coffee
     </a>
-    <a href="https://patreon.com/resonai" class="btn btn-secondary" target="_blank">
+    <a href="https://www.patreon.com/c/FaeMcLachlan" class="btn btn-secondary" target="_blank">
       🎯 Patreon
     </a>
   </div>
@@ -426,8 +426,8 @@ GitHub: https://github.com/MoneyCat-inc/otel-ops-pack
   <p style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #2A2F36;">
     <strong>Support This Project:</strong> 
     <a href="https://github.com/sponsors/MoneyCat-inc" style="color: #37FFC4; margin: 0 0.5rem;">GitHub Sponsors</a> • 
-    <a href="https://buymeacoffee.com/resonai" style="color: #37FFC4; margin: 0 0.5rem;">Buy Me a Coffee</a> • 
-    <a href="https://patreon.com/resonai" style="color: #37FFC4; margin: 0 0.5rem;">Patreon</a>
+    <a href="https://buymeacoffee.com/fubumaki" style="color: #37FFC4; margin: 0 0.5rem;">Buy Me a Coffee</a> • 
+    <a href="https://www.patreon.com/c/FaeMcLachlan" style="color: #37FFC4; margin: 0 0.5rem;">Patreon</a>
   </p>
 </footer>
 ```
@@ -435,4 +435,5 @@ GitHub: https://github.com/MoneyCat-inc/otel-ops-pack
 ---
 
 **End of ECRR Report**
+
 
