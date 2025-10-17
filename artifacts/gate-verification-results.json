@@ -1,7 +1,7 @@
 {
-  "timestamp": "2025-10-17T09:10:48+01:00",
-  "commit": "20b71befc",
-  "branch": "feat/milk-theatre-metrics-vendors",
+  "timestamp": "2025-10-17T23:44:56+01:00",
+  "commit": "61e00754c",
+  "branch": "main",
   "gate": "IONA",
   "site": "local",
   "verdict": "READY",
@@ -11,17 +11,17 @@
     "failed": 0
   },
   "checks": {
-    "docs/IONA_ERRORS.md": "present",
-    "index.html": "present",
-    "docs/status/tests.json": "present",
-    "docs/cheatsheets": "present",
-    "docs/status.html": "present",
-    "docs/BossCat/README.md": "present",
-    "docs/observability/snapshots": "present",
-    "signoz.ts": "present",
-    "queue-steward-verification.txt": "present",
     ".github/workflows/bosscat-gate-verify.yml": "present",
+    "docs/status.html": "present",
+    "signoz.ts": "present",
+    "docs/status/tests.json": "present",
+    "index.html": "present",
+    "docs/cheatsheets": "present",
+    "docs/IONA_ERRORS.md": "present",
+    "docs/observability/snapshots": "present",
+    "docs/BossCat/README.md": "present",
     "docs/ecrr/ECRR_REPORTS": "present",
+    "queue-steward-verification.txt": "present",
     "scripts/benchmark-process-all-ecrr-reports.ps1": "present"
   }
 }
