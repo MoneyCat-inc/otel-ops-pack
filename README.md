@@ -24,6 +24,14 @@ All documentation, agents, CI/CD guardrails, and artifacts (ECRR reports, SSOTs,
 [![Gitleaks](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/gitleaks.yml/badge.svg)](../../actions/workflows/gitleaks.yml)
 [![Maintained by MoneyCat-inc](https://img.shields.io/badge/Maintained%20by-MoneyCat--inc-00aa88?style=for-the-badge&logo=github&logoColor=white)](https://github.com/MoneyCat-inc)
 
+## 💚 Support This Project
+
+[![GitHub Sponsors](https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=for-the-badge&logo=github&logoColor=white)](https://github.com/sponsors/MoneyCat-inc)
+[![Patreon](https://img.shields.io/badge/Support-Patreon-FF424D?style=for-the-badge&logo=patreon&logoColor=white)](https://www.patreon.com/c/FaeMcLachlan)
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/fubumaki)
+
+Help fund development of more BossCat automation lanes, deeper SigNoz playbooks, and the anti-clickbait transparency hub. Every contribution supports evidence-first observability infrastructure.
+
 • Governance: [Run Branch Protection Setup](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/bosscat-branch-protection.yml)
 • Governance: [Run Ruleset Setup](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/bosscat-ruleset-setup.yml)
 • Contributing: [Contributing Guide](CONTRIBUTING.md)
