@@ -1,6 +1,6 @@
 Param(
   [switch]$Strict,
-  [string]$OutputJson = 'DELT/ARTF/gate-verification-results.json',
+  [string]$OutputJson = 'artifacts/gate-verification-results.json',
   [string]$PrCommentPath = 'PR_COMMENT_IONA_GATE_002_FINAL.md',
   [switch]$NoFailOnMissing,
   [string]$Gate = 'IONA',
@@ -12,6 +12,33 @@ try { Import-Module -Name "$(Join-Path $PSScriptRoot 'lib/BossCat.Progress.psm1'
 if (Get-Command Start-BossCatProgress -ErrorAction SilentlyContinue) { Start-BossCatProgress -Activity 'BossCat Gate Verify' -ExpectedTotalSeconds 20 }
 function Get-GitMeta { try {$c=(git rev-parse --short HEAD 2>$null).Trim()}catch{$c=''}; try{$b=(git rev-parse --abbrev-ref HEAD 2>$null).Trim()}catch{$b=''}; [pscustomobject]@{Commit=$c;Branch=$b} }
 function Ensure-Dirs([string[]]$Dirs){ foreach($d in $Dirs){ if(-not(Test-Path -LiteralPath $d)){ New-Item -ItemType Directory -Path $d -Force|Out-Null } } }
+function Get-ControlToken([int]$Code){
+  switch ($Code) {
+    0 { return '[CTRL-NULL]' }
+    7 { return '[CTRL-BEL]' }
+    8 { return '[CTRL-BS]' }
+    11 { return '[CTRL-VT]' }
+    12 { return '[CTRL-FF]' }
+    default { return ('[CTRL-0x{0:X2}]' -f $Code) }
+  }
+}
+function Convert-ToAscii([string]$Input){
+  if ($null -eq $Input) { return '' }
+  $sb = New-Object System.Text.StringBuilder
+  foreach($ch in $Input.ToCharArray()){
+    $code = [int][char]$ch
+    if (($code -ge 32 -and $code -le 126) -or $code -in 9,10,13) {
+      [void]$sb.Append([char]$code)
+    } else {
+      [void]$sb.Append((Get-ControlToken $code))
+    }
+  }
+  return $sb.ToString()
+}
+function Convert-ToAsciiLines([string[]]$Lines){
+  if (-not $Lines) { return @() }
+  return $Lines | ForEach-Object { Convert-ToAscii $_ }
+}
 function Read-TestsJson{ $p='docs/status/tests.json'; if(-not(Test-Path $p)){return [pscustomobject]@{total=0;passed=0;failed=0}}; try{ $d=Get-Content -Raw -LiteralPath $p|ConvertFrom-Json; if($d.summary){return $d.summary}; [pscustomobject]@{total=0;passed=0;failed=0} }catch{ [pscustomobject]@{total=0;passed=0;failed=0} } }
 function New-EcrrReport([string]$Verdict,[string[]]$Reasons,[hashtable]$Checks){
   $ts = Get-Date -Format 'yyyy-MM-dd HH:mm:ss K'
@@ -45,7 +72,7 @@ function New-EcrrReport([string]$Verdict,[string[]]$Reasons,[hashtable]$Checks){
   $dir = 'docs/ecrr/ECRR_REPORTS'
   Ensure-Dirs @($dir)
   $name = Join-Path $dir ("ECRR_GATE_RUN_" + (Get-Date -Format 'yyyyMMdd_HHmmss') + '.md')
-  $content = $lines -join "`r`n"
+  $content = (Convert-ToAsciiLines $lines) -join "`r`n"
   $content | Set-Content -Path $name -Encoding utf8
   $content | Set-Content -Path (Join-Path $dir 'ECRR_GATE_RUN_LATEST.md') -Encoding utf8
   return $name
@@ -53,7 +80,7 @@ function New-EcrrReport([string]$Verdict,[string[]]$Reasons,[hashtable]$Checks){
 function Write-PrComment([string]$Verdict,[string[]]$Reasons,[string]$OutputPath,[hashtable]$Checks=$null){
   $g = Get-GitMeta
   $ts = Get-Date -Format 'yyyy-MM-dd HH:mm:ss K'
-  
+
   # Budget calculations (P2: Gate UX Budget Comment Polish)
   $changedFiles = @(git diff --name-only HEAD~1..HEAD 2>$null)
   $fileCount = if ($changedFiles) { $changedFiles.Count } else { 0 }
@@ -70,25 +97,25 @@ function Write-PrComment([string]$Verdict,[string[]]$Reasons,[string]$OutputPath
   $stickyPct = 0.80
   
   # Calculate budget status
-  $filePill = if ($fileCount -ge ($maxFiles * $stickyPct)) { '🟡' } else { '🟢' }
-  $locPill = if ($locCount -ge ($maxLOC * $stickyPct)) { '🟡' } else { '🟢' }
-  $budgetLine = "**Budgets:** Files $filePill **$fileCount/$maxFiles** • LOC $locPill **$locCount/$maxLOC**"
+  $fileStatus = if ($fileCount -ge ($maxFiles * $stickyPct)) { 'WARN' } else { 'OK' }
+  $locStatus = if ($locCount -ge ($maxLOC * $stickyPct)) { 'WARN' } else { 'OK' }
+  $budgetLine = "Budgets: Files [$fileStatus] $fileCount/$maxFiles | LOC [$locStatus] $locCount/$maxLOC"
   $isSticky = ($fileCount -ge ($maxFiles * $stickyPct) -or $locCount -ge ($maxLOC * $stickyPct))
   if ($isSticky) {
-    $budgetLine += " • ⚠️ *sticky warn at ≥80%*"
+    $budgetLine += " | NOTE: sticky warn at >=80%"
     # P2: Add first failing gate name for faster triage
     if ($Checks -and $Verdict -ne 'READY') {
       $firstFail = ($Checks.Keys | Where-Object { $Checks[$_] -eq 'missing' } | Select-Object -First 1)
-      if ($firstFail) { $budgetLine += " • **First fail:** ``$firstFail``" }
+      if ($firstFail) { $budgetLine += " | First fail: ``$firstFail``" }
     }
   }
-  
+
   $lines = @(
     '# IONA Gate - BossCat Verdict',
     '',
-    "**Gate:** ``$Gate`` • **Site:** ``$Site``",
+    "**Gate:** ``$Gate`` | **Site:** ``$Site``",
     $budgetLine,
-    "**ECRR:** evidence ✅ • contain ✅ • rollback plan ✅ • report ✅",
+    "**ECRR:** evidence OK | contain OK | rollback plan OK | report OK",
     '',
     "- **Verdict**: $Verdict",
     "- **Timestamp**: $ts",
@@ -98,9 +125,39 @@ function Write-PrComment([string]$Verdict,[string[]]$Reasons,[string]$OutputPath
     '## Reasons'
   )
   if (-not $Reasons -or $Reasons.Count -eq 0) { $lines += '- None' } else { foreach($r in $Reasons){ $lines += "- $r" } }
-  ($lines -join "`r`n") | Set-Content -Path $OutputPath -Encoding utf8
+  ((Convert-ToAsciiLines $lines) -join "`r`n") | Set-Content -Path $OutputPath -Encoding utf8
 }
-$tsIso=Get-Date -Format 'yyyy-MM-ddTHH:mm:ssK'; Ensure-Dirs @('DELT/ARTF','docs/ecrr/ECRR_REPORTS')
+$primaryOutputPath='artifacts/gate-verification-results.json'
+$legacyOutputPath='DELT/ARTF/gate-verification-results.json'
+$tsIso=Get-Date -Format 'yyyy-MM-ddTHH:mm:ssK'; Ensure-Dirs @('artifacts','docs/ecrr/ECRR_REPORTS')
+if ((Test-Path -LiteralPath $legacyOutputPath) -and -not (Test-Path -LiteralPath $primaryOutputPath)) {
+  try {
+    Copy-Item -LiteralPath $legacyOutputPath -Destination $primaryOutputPath -Force
+    Write-Warning "[Gate][$Site] migrated gate results from legacy DELT/ARTF to artifacts/."
+  } catch {
+    Write-Warning "[Gate][$Site] failed to migrate legacy gate results: $($_.Exception.Message)"
+  }
+}
+# Collect all destinations for gate results, ensuring artifacts/ is canonical
+$outputTargets = New-Object 'System.Collections.Generic.List[string]'
+[void]$outputTargets.Add($primaryOutputPath)
+if ($PSBoundParameters.ContainsKey('OutputJson')) {
+  if ([string]::IsNullOrWhiteSpace($OutputJson)) {
+    $OutputJson = $primaryOutputPath
+  } elseif ($OutputJson -eq $legacyOutputPath) {
+    Write-Warning "[Gate][$Site] legacy DELT/ARTF output requested; mirroring artifacts/ content for compatibility."
+    if (-not $outputTargets.Contains($legacyOutputPath)) { [void]$outputTargets.Add($legacyOutputPath) }
+  } elseif ($OutputJson -ne $primaryOutputPath) {
+    if (-not $outputTargets.Contains($OutputJson)) { [void]$outputTargets.Add($OutputJson) }
+  }
+} else {
+  $OutputJson = $primaryOutputPath
+}
+# Ensure directories for each output target
+foreach($target in $outputTargets){
+  $dir = Split-Path -Parent $target
+  if ($dir -and $dir -ne '.') { Ensure-Dirs @($dir) }
+}
 # Resolve environment switches early for use in checks
 $useMock = ($env:USE_MOCK -eq 'true')
 $queueRequired = ($Site -eq 'prod' -and -not $useMock)
@@ -121,11 +178,22 @@ $signozPresent=$false
 foreach($sp in $signozPaths){ if(Test-Path -LiteralPath $sp){ $signozPresent=$true; break } }
 $checks['signoz.ts']= if($signozPresent){'present'} else {'missing'}
 
-# Composite check: queue-steward-verification.txt may reside in DELT/ARTF or artifacts
-$queuePaths=@('DELT/ARTF/queue-steward-verification.txt','artifacts/queue-steward-verification.txt')
-$queuePresent=$false
-foreach($qp in $queuePaths){ if(Test-Path -LiteralPath $qp){ $queuePresent=$true; break } }
+# Composite check: queue-steward-verification.txt expected under artifacts/
+$queuePreferredPath='artifacts/queue-steward-verification.txt'
+$queueLegacyPath='DELT/ARTF/queue-steward-verification.txt'
+if ((Test-Path -LiteralPath $queueLegacyPath) -and -not (Test-Path -LiteralPath $queuePreferredPath)) {
+  try {
+    Copy-Item -LiteralPath $queueLegacyPath -Destination $queuePreferredPath -Force
+    Write-Warning "[Gate][$Site] migrated queue steward evidence from legacy DELT/ARTF to artifacts/."
+  } catch {
+    Write-Warning "[Gate][$Site] failed to migrate legacy queue steward evidence: $($_.Exception.Message)"
+  }
+}
+$queuePresent=Test-Path -LiteralPath $queuePreferredPath
 $checks['queue-steward-verification.txt']= if($queuePresent){'present'} else {'missing'}
+if (-not $queuePresent -and (Test-Path -LiteralPath $queueLegacyPath)) {
+  Write-Warning "[Gate][$Site] queue-steward evidence found under legacy DELT/ARTF path; migrate to artifacts/."
+}
 # Treat queue-steward verification evidence as REQUIRED only for real prod
 if (-not $queuePresent -and $queueRequired) {
   [void]$missing.Add('queue-steward-verification.txt')
@@ -140,10 +208,17 @@ if($total -gt 0 -and $failed -gt 0){ [void]$reasons.Add("Tests failing: $failed 
 $verdict='READY'
 if($missing.Count -gt 0 -or ($failed -gt 0 -and $Strict)){ $verdict='NOT_READY' } elseif($failed -gt 0){ $verdict='READY_WITH_WARNINGS' }
 $g=Get-GitMeta
-$out=[ordered]@{ timestamp=$tsIso; commit=$g.Commit; branch=$g.Branch; gate=$Gate; site=$Site; verdict=$verdict; reasons=@($reasons); tests=[ordered]@{total=$total;failed=$failed}; checks=$checks }
-($out|ConvertTo-Json -Depth 6)|Set-Content -Path $OutputJson -Encoding utf8
+$asciiReasons=@($reasons | ForEach-Object { Convert-ToAscii $_ })
+$out=[ordered]@{ timestamp=$tsIso; commit=$g.Commit; branch=$g.Branch; gate=$Gate; site=$Site; verdict=$verdict; reasons=$asciiReasons; tests=[ordered]@{total=$total;failed=$failed}; checks=$checks }
+$jsonPayload = $out | ConvertTo-Json -Depth 6
+foreach($target in $outputTargets){
+  $jsonPayload | Set-Content -Path $target -Encoding utf8
+  if ($target -eq $legacyOutputPath) {
+    Write-Warning "[Gate][$Site] mirrored gate results to DELT/ARTF for legacy consumers; update workflows to artifacts/."
+  }
+}
 if (Get-Command Update-BossCatProgress -ErrorAction SilentlyContinue) { Update-BossCatProgress -Phase 'Writing ECRR & PR comment' -CompletedSeconds 16 }
-$report=New-EcrrReport -Verdict $verdict -Reasons @($reasons) -Checks $checks
-Write-PrComment -Verdict $verdict -Reasons @($reasons) -OutputPath $PrCommentPath -Checks $checks
+$report=New-EcrrReport -Verdict $verdict -Reasons @($asciiReasons) -Checks $checks
+Write-PrComment -Verdict $verdict -Reasons @($asciiReasons) -OutputPath $PrCommentPath -Checks $checks
 if (Get-Command Complete-BossCatProgress -ErrorAction SilentlyContinue) { Complete-BossCatProgress }
 if($verdict -eq 'NOT_READY' -and -not $NoFailOnMissing){ exit 2 } else { exit 0 }

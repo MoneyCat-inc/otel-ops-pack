@@ -111,7 +111,7 @@ jobs:
           pwsh -File scripts/verify-iona-gate.ps1 `
             -Gate $env:GATE `
             -Site $env:SITE `
-            -OutputJson DELT/ARTF/gate-verification-results.json `
+            -OutputJson artifacts/gate-verification-results.json `
             -PrCommentPath PR_COMMENT_IONA_GATE_002_FINAL.md
 
       - name: Generate SBOM + Attestation (prod only)
@@ -261,8 +261,13 @@ jobs:
             echo "**Gate**: $GATE"
             echo "**SBOM Strict**: $SBOM_STRICT"
             echo ""
-            if [ -f "DELT/ARTF/gate-verification-results.json" ]; then
-              verdict=$(jq -r '.verdict // "UNKNOWN"' DELT/ARTF/gate-verification-results.json)
+            gate_json="artifacts/gate-verification-results.json"
+            if [ ! -f "$gate_json" ] && [ -f "DELT/ARTF/gate-verification-results.json" ]; then
+              echo "::warning::BossCat gate verifier is still reading from DELT/ARTF; migrate workflows to artifacts/."
+              gate_json="DELT/ARTF/gate-verification-results.json"
+            fi
+            if [ -f "$gate_json" ]; then
+              verdict=$(jq -r '.verdict // "UNKNOWN"' "$gate_json")
               echo "**Verdict**: $verdict"
             fi
             if [ -f "gate/loc.json" ]; then
