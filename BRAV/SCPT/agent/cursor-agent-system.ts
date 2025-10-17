@@ -37,17 +37,26 @@ interface SystemConfig {
 }
 
 class CursorAgentSystem {
-  private orchestrator: AgentOrchestrator;
-  private queue: SQLiteQueueManager;
-  private compliance: ECRRComplianceEngine;
+  private orchestrator!: AgentOrchestrator;
+  private queue!: SQLiteQueueManager;
+  private compliance!: ECRRComplianceEngine;
   private config!: SystemConfig;
   private isRunning: boolean = false;
+  private initialization: Promise<void>;
 
   constructor(configPath: string = '.agent/system-config.json') {
-    this.loadConfig(configPath);
+    this.initialization = this.initialize(configPath);
+  }
+
+  private async initialize(configPath: string): Promise<void> {
+    await this.loadConfig(configPath);
     this.orchestrator = new AgentOrchestrator();
     this.queue = new SQLiteQueueManager(this.config.queue);
     this.compliance = new ECRRComplianceEngine();
+  }
+
+  private async ensureReady(): Promise<void> {
+    await this.initialization;
   }
 
   private async loadConfig(configPath: string): Promise<void> {
@@ -90,6 +99,7 @@ class CursorAgentSystem {
   }
 
   async start(): Promise<void> {
+    await this.ensureReady();
     if (this.isRunning) {
       console.log('🚀 Agent system already running');
       return;
@@ -132,6 +142,7 @@ class CursorAgentSystem {
   }
 
   async stop(): Promise<void> {
+    await this.ensureReady();
     if (!this.isRunning) {
       console.log('🛑 Agent system not running');
       return;
@@ -155,6 +166,7 @@ class CursorAgentSystem {
   }
 
   async status(): Promise<any> {
+    await this.ensureReady();
     const queueStats = await this.queue.getQueueStats();
     const complianceStats = await this.compliance.getComplianceStats();
     const systemStatus = await this.getSystemStatus();
@@ -174,6 +186,7 @@ class CursorAgentSystem {
   }
 
   async healthCheck(): Promise<{ healthy: boolean; issues: string[] }> {
+    await this.ensureReady();
     const issues: string[] = [];
 
     try {
@@ -214,6 +227,7 @@ class CursorAgentSystem {
   }
 
   async generateReport(): Promise<string> {
+    await this.ensureReady();
     const status = await this.status();
     const health = await this.healthCheck();
     const complianceReport = await this.compliance.generateComplianceReport();

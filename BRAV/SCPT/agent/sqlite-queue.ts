@@ -60,6 +60,14 @@ class SQLiteQueueManager {
 
   private async initializeDatabase(): Promise<void> {
     return new Promise((resolve, reject) => {
+      const ensureColumn = (column: string, definition: string) => {
+        this.db.run(`ALTER TABLE jobs ADD COLUMN ${definition}`, (err) => {
+          if (err && !/duplicate column name/i.test(err.message)) {
+            console.warn(`Failed to ensure column ${column}: ${err.message}`);
+          }
+        });
+      };
+
       this.db.serialize(() => {
         // Enable WAL mode for better concurrency
         if (this.config.walMode) {
@@ -84,12 +92,14 @@ class SQLiteQueueManager {
             attempts INTEGER DEFAULT 0,
             max_attempts INTEGER DEFAULT 3,
             agent_id TEXT,
-            metadata TEXT DEFAULT '{}',
-            INDEX idx_status_priority (status, priority DESC),
-            INDEX idx_created_at (created_at),
-            INDEX idx_agent_id (agent_id)
+            metadata TEXT DEFAULT '{}'
           )
         `);
+        ensureColumn('agent_id', 'agent_id TEXT');
+        ensureColumn('metadata', "metadata TEXT DEFAULT '{}'");
+        this.db.run(`CREATE INDEX IF NOT EXISTS idx_jobs_status_priority ON jobs (status, priority DESC)`);
+        this.db.run(`CREATE INDEX IF NOT EXISTS idx_jobs_created_at ON jobs (created_at)`);
+        this.db.run(`CREATE INDEX IF NOT EXISTS idx_jobs_agent_id ON jobs (agent_id)`);
 
         // Create job history table for audit trail
         this.db.run(`

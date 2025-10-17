@@ -1,0 +1,338 @@
+{
+  "$schema": "./schema.json",
+  "metadata": {
+    "version": "1.0.0",
+    "updated": "2025-10-16",
+    "total_cards": 22,
+    "scoring_version": "anticlickbait-v1"
+  },
+  "cards": [
+    {
+      "id": "otel-collector",
+      "title": "OpenTelemetry Collector",
+      "category": "infrastructure",
+      "score": 95,
+      "sources": ["https://opentelemetry.io/docs/collector/"],
+      "claims": [
+        "Vendor-agnostic telemetry pipeline",
+        "77x throughput improvement (our config vs naive)",
+        "Production-ready, CNCF graduated project"
+      ],
+      "evidence": "config.yaml, ECRR reports, benchmark data",
+      "limitations": "Requires configuration expertise, memory overhead"
+    },
+    {
+      "id": "signoz",
+      "title": "SigNoz APM",
+      "category": "observability",
+      "score": 90,
+      "sources": ["https://signoz.io/", "https://github.com/SigNoz/signoz"],
+      "claims": [
+        "Open-source APM alternative to DataDog",
+        "ClickHouse-backed metrics storage",
+        "Self-hosted, no data leaves your infrastructure"
+      ],
+      "evidence": "docker-compose-signoz.yml, SigNoz v0.96.1 running",
+      "limitations": "Requires Docker, ~2GB memory minimum"
+    },
+    {
+      "id": "windows-collector",
+      "title": "Windows Event Log Collection",
+      "category": "telemetry",
+      "score": 85,
+      "sources": ["docs/BossCat/README.md"],
+      "claims": [
+        "Real-time Windows Event Log ingestion",
+        "~50% noise reduction via filtering",
+        "Sub-200ms batch latency"
+      ],
+      "evidence": "config.yaml receivers, quick-monitor.ps1 output",
+      "limitations": "Windows-only, requires admin rights for some logs"
+    },
+    {
+      "id": "ecrr-framework",
+      "title": "ECRR Methodology",
+      "category": "governance",
+      "score": 100,
+      "sources": ["AGENTS.md", "docs/ecrr/"],
+      "claims": [
+        "Examine → Clean → Report → Role framework",
+        "35+ ECRR reports generated for MILK Lane alone",
+        "Complete audit trail for all operations"
+      ],
+      "evidence": "docs/ecrr/ECRR_REPORTS/*.md, 200+ reports total",
+      "limitations": "Documentation-heavy, requires discipline"
+    },
+    {
+      "id": "bosscat-gate",
+      "title": "BossCat Gate System",
+      "category": "automation",
+      "score": 95,
+      "sources": [".github/workflows/bosscat-gate-verify.yml"],
+      "claims": [
+        "Automated quality gates before deployment",
+        "4-lane verification (GATE, SITE, ICFX, production)",
+        "100% gate compliance before merge"
+      ],
+      "evidence": "GitHub Actions workflows, gate verification results",
+      "limitations": "Requires GitHub Actions runner, ~2min per gate"
+    },
+    {
+      "id": "milk-lane",
+      "title": "MILK Visual Feedback",
+      "category": "visualization",
+      "score": 100,
+      "sources": ["docs/BossCat/visuals/"],
+      "claims": [
+        "Real-time alert → visual feedback (<500ms)",
+        "100% safety-validated presets (6/6)",
+        "Only observability platform with audio-reactive visuals"
+      ],
+      "evidence": "ECRR_GATE_READY_MILK_FINAL_20251016.md, control.html",
+      "limitations": "Requires Butterchurn, WebGL2 support"
+    },
+    {
+      "id": "comfort-cat",
+      "title": "Comfort Cat Design System",
+      "category": "design",
+      "score": 100,
+      "sources": ["CHAR/DOCS/docs/comfort-cat/"],
+      "claims": [
+        "WCAG AA accessibility compliance",
+        "Charcoal/Slate/Fog palette with neon accents",
+        "\"Sleep easy. We've got the signal.\" — calm, honest voice"
+      ],
+      "evidence": "palette.md, type.md, copy.md",
+      "limitations": "Design-heavy, requires CSS expertise"
+    },
+    {
+      "id": "iona-controller",
+      "title": "IONA Autonomous Controller",
+      "category": "automation",
+      "score": 90,
+      "sources": ["docs/IONA_ERRORS.md", "scripts/"],
+      "claims": [
+        "Autonomous pipeline management",
+        "Error ledger tracking and reporting",
+        "Nightly health scoring and drift detection"
+      ],
+      "evidence": "IONA_ERRORS.md, nightly automation logs",
+      "limitations": "Requires configuration, learning curve"
+    },
+    {
+      "id": "tetragram-structure",
+      "title": "Tetragram Repository Structure",
+      "category": "architecture",
+      "score": 95,
+      "sources": ["README.md", "CHAR/DOCS/ADR/0001-tetragram-baseline.md"],
+      "claims": [
+        "4-plane structure: ALFA/BRAV/CHAR/DELT",
+        "0 forbidden roots, 100% compliance",
+        "Automated guardrail enforcement"
+      ],
+      "evidence": "check_guardrails.py, TypeScript path aliases",
+      "limitations": "Initial learning curve for contributors"
+    },
+    {
+      "id": "playwright-automation",
+      "title": "Playwright Dashboard Export",
+      "category": "automation",
+      "score": 90,
+      "sources": ["scripts/playwright-dashboard-export.ps1"],
+      "claims": [
+        "Automated SigNoz dashboard screenshots",
+        "Nightly executive dashboard exports",
+        "Evidence trail for compliance"
+      ],
+      "evidence": "docs/observability/snapshots/, .github/workflows/",
+      "limitations": "Requires Chromium, 1-2min per dashboard"
+    },
+    {
+      "id": "security-scanning",
+      "title": "Security Compliance Suite",
+      "category": "security",
+      "score": 95,
+      "sources": [".github/workflows/codeql.yml", ".github/workflows/gitleaks.yml"],
+      "claims": [
+        "CodeQL static analysis (daily)",
+        "Gitleaks secret scanning (on push)",
+        "Dependabot vulnerability alerts"
+      ],
+      "evidence": "GitHub Security tab, workflow runs",
+      "limitations": "Requires GitHub Advanced Security for private repos"
+    },
+    {
+      "id": "performance-benchmarks",
+      "title": "Performance Validation",
+      "category": "performance",
+      "score": 85,
+      "sources": ["ALFA/TEST/load/k6/"],
+      "claims": [
+        "k6 load testing with thresholds",
+        "P95 latency < 200ms for batch processing",
+        "Gate fails if thresholds breached"
+      ],
+      "evidence": "perf-gate-thresholds.js, DELT/ARTF/ecrr-benchmark.json",
+      "limitations": "Requires k6 installation, baseline tuning"
+    },
+    {
+      "id": "docker-compose",
+      "title": "One-Command Stack Deployment",
+      "category": "deployment",
+      "score": 90,
+      "sources": ["docker-compose-signoz.yml"],
+      "claims": [
+        "Single command: docker compose up -d",
+        "SigNoz + ClickHouse + OTel Collector",
+        "~2 minutes to full stack"
+      ],
+      "evidence": "docker-compose-signoz.yml, quick-monitor.ps1",
+      "limitations": "Requires Docker Desktop, 4GB+ RAM"
+    },
+    {
+      "id": "powershell-automation",
+      "title": "PowerShell Automation Suite",
+      "category": "automation",
+      "score": 85,
+      "sources": ["BRAV/SCPT/"],
+      "claims": [
+        "60+ PowerShell scripts for operations",
+        "Safe config application with rollback",
+        "Quick health checks (< 5 seconds)"
+      ],
+      "evidence": "quick-monitor.ps1, safe-apply-config.ps1",
+      "limitations": "PowerShell 7+ required, Windows-centric"
+    },
+    {
+      "id": "canary-testing",
+      "title": "Canary Test Generation",
+      "category": "testing",
+      "score": 90,
+      "sources": ["canary-test.ps1", "canary-check.ps1"],
+      "claims": [
+        "Generate test logs/traces on demand",
+        "Verify pipeline health in <30 seconds",
+        "Detects ingestion failures immediately"
+      ],
+      "evidence": "canary-test.ps1, SigNoz query results",
+      "limitations": "Requires SigNoz running, manual trigger"
+    },
+    {
+      "id": "typescript-tooling",
+      "title": "TypeScript Pipeline Tools",
+      "category": "development",
+      "score": 85,
+      "sources": ["scripts/", "tsconfig.json"],
+      "claims": [
+        "Type-safe configuration management",
+        "OTel SDK instrumentation examples",
+        "Next.js integration ready"
+      ],
+      "evidence": "scripts/*.ts, package.json",
+      "limitations": "Requires Node.js 18+, tsx runtime"
+    },
+    {
+      "id": "noise-reduction",
+      "title": "Intelligent Log Filtering",
+      "category": "optimization",
+      "score": 85,
+      "sources": ["config.yaml processors"],
+      "claims": [
+        "~50% volume reduction via filtering",
+        "Pattern-based noise suppression",
+        "Configurable allow/deny lists"
+      ],
+      "evidence": "config.yaml, before/after metrics",
+      "limitations": "Requires tuning per environment"
+    },
+    {
+      "id": "github-actions",
+      "title": "GitHub Actions CI/CD",
+      "category": "cicd",
+      "score": 90,
+      "sources": [".github/workflows/"],
+      "claims": [
+        "20+ automated workflows",
+        "Concurrency control (70-80% run reduction)",
+        "14-day artifact retention standard"
+      ],
+      "evidence": ".github/workflows/*.yml, GitHub Actions tab",
+      "limitations": "Requires GitHub, runner minutes quota"
+    },
+    {
+      "id": "mit-license",
+      "title": "MIT License (No Gatekeeping)",
+      "category": "licensing",
+      "score": 100,
+      "sources": ["LICENSE", "README.md"],
+      "claims": [
+        "Free forever, no enterprise edition",
+        "Commercial use allowed",
+        "No contributor license agreement (CLA)"
+      ],
+      "evidence": "LICENSE file, package.json",
+      "limitations": "No warranty, as-is basis"
+    },
+    {
+      "id": "local-first",
+      "title": "Local-First Architecture",
+      "category": "architecture",
+      "score": 100,
+      "sources": ["README.md", "AGENTS.md"],
+      "claims": [
+        "All data stays on your infrastructure",
+        "No SaaS dependencies",
+        "Works offline (except container pulls)"
+      ],
+      "evidence": "docker-compose configs, localhost bindings",
+      "limitations": "Requires local hosting, self-management"
+    },
+    {
+      "id": "documentation",
+      "title": "Comprehensive Documentation",
+      "category": "documentation",
+      "score": 85,
+      "sources": ["docs/", "README.md"],
+      "claims": [
+        "200+ documentation files",
+        "ECRR reports for every major operation",
+        "Runbook index with operational guides"
+      ],
+      "evidence": "docs/ directory, CHAR/DOCS/",
+      "limitations": "Documentation-heavy, can be overwhelming"
+    },
+    {
+      "id": "clickhouse-storage",
+      "title": "ClickHouse Time-Series Storage",
+      "category": "storage",
+      "score": 90,
+      "sources": ["docker-compose-signoz.yml"],
+      "claims": [
+        "Columnar storage for metrics/traces",
+        "Petabyte-scale capability",
+        "Sub-second query performance"
+      ],
+      "evidence": "SigNoz architecture, ClickHouse ports",
+      "limitations": "Requires tuning, disk space management"
+    }
+  ],
+  "scoring": {
+    "methodology": "anticlickbait-v1",
+    "criteria": [
+      "Verifiable evidence (source links, artifacts)",
+      "Honest limitations disclosed",
+      "No exaggerated claims",
+      "Reproducible results",
+      "Transparent methodology"
+    ],
+    "scale": {
+      "100": "Perfect transparency, complete evidence",
+      "90-99": "Excellent evidence, minor gaps",
+      "80-89": "Good evidence, some limitations",
+      "70-79": "Adequate evidence, notable limitations",
+      "<70": "Insufficient evidence or concerning gaps"
+    }
+  }
+}
+
+

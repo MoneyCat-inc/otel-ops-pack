@@ -1,22 +1,39 @@
 {
-  "timestamp": "2025-09-30T02:34:39.381Z",
-  "queueDepth": 0,
-  "runningCount": 0,
-  "lastRuns": [
+  "status": "active",
+  "message": "Orchestrator running normally",
+  "timestamp": "2025-10-17T11:55:20.435Z",
+  "orchestrator": "running",
+  "tasks": {},
+  "agents": [
     {
-      "id": "job_1759199482273_0l0khueyw",
-      "kind": "bulk-job",
-      "status": "completed",
-      "durationMs": 21
+      "id": "cursor-local",
+      "name": "Cursor-Local",
+      "status": "idle",
+      "last_run": null
     },
     {
-      "id": "job_1759199482276_33z92yfy6",
-      "kind": "bulk-job",
-      "status": "completed",
-      "durationMs": 15
+      "id": "codex-cloud",
+      "name": "Codex-Cloud",
+      "status": "idle",
+      "last_run": null
+    },
+    {
+      "id": "otel-steward",
+      "name": "OTel-Steward",
+      "status": "idle",
+      "last_run": null
+    },
+    {
+      "id": "qa-scribe",
+      "name": "QA-Scribe",
+      "status": "idle",
+      "last_run": null
+    },
+    {
+      "id": "bosscat",
+      "name": "BossCat",
+      "status": "idle",
+      "last_run": null
     }
-  ],
-  "admissionCap": 200,
-  "shadowMode": true,
-  "driver": "sqlite"
+  ]
 }

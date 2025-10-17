@@ -25,7 +25,7 @@ jobs:
       uses: actions/checkout@v4
       
     - name: Setup PowerShell
-      uses: actions/setup-powershell@v1
+      uses: PowerShell/setup-powershell@v2
       
     - name: Run ECRR Compliance Lint
       run: |
