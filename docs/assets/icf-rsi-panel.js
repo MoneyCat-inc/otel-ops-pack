@@ -31,12 +31,14 @@
     for (const url of urls) {
       try {
         const res = await fetch(url, { cache: 'no-store' });
-        if (res.ok) return await res.json();
-      } catch (_) { 
+        if (res.ok) {
+          return { data: await res.json(), source: url };
+        }
+      } catch (_) {
         // Try next candidate
       }
     }
-    return null;
+    return { data: null, source: null };
   }
 
   function set(id, value) { 
@@ -57,10 +59,10 @@
 
   function render(data) {
     if (!data) {
-      set('icf-rate', '—');
-      set('icf-warn', '—');
-      set('icf-lii', '—');
-      set('icf-dppl', '—');
+      set('icf-rate', '-');
+      set('icf-warn', '-');
+      set('icf-lii', '-');
+      set('icf-dppl', '-');
       return;
     }
 
@@ -69,10 +71,10 @@
     const lii = data.LII ?? data.lii ?? null;
     const dppl = data.deltaPPL ?? data.delta_perplexity ?? null;
 
-    set('icf-rate', rate != null ? pct(rate) : '—');
+    set('icf-rate', rate != null ? pct(rate) : '-');
     set('icf-warn', warns);
-    set('icf-lii', lii != null ? lii.toFixed(3) : '—');
-    set('icf-dppl', dppl != null ? dppl.toFixed(3) : '—');
+    set('icf-lii', lii != null ? lii.toFixed(3) : '-');
+    set('icf-dppl', dppl != null ? dppl.toFixed(3) : '-');
 
     // Apply semantic styling to warnings count
     const warnEl = $('icf-warn');
@@ -82,20 +84,26 @@
   }
 
   async function init() {
-    const data = await fetchFirst(CANDIDATES);
-    render(data);
+    const metrics = await fetchFirst(CANDIDATES);
+    if (metrics.source && metrics.source.includes('/DELT/ARTF/')) {
+      console.warn('BossCat status: RSI metrics served from legacy DELT/ARTF directory. Update exporters to artifacts/.');
+    }
+    render(metrics.data);
     // Optional ICF rollup badge
     try {
       const roll = await fetchFirst(ROLLUP_CANDIDATES);
-      if (roll && document) {
+      if (roll.source && roll.source.includes('/DELT/ARTF/')) {
+        console.warn('BossCat status: ICF rollup loaded from legacy DELT/ARTF path. Update automation to artifacts/.');
+      }
+      if (roll.data && document) {
         const host = document.getElementById('icf-rsi');
         if (host) {
           const p = document.createElement('p');
           p.className = 'muted';
-          const tp = (roll.throughput != null ? `${roll.throughput}/run` : 'n/a');
-          const er = (roll.errorRate != null ? `${(Math.round(roll.errorRate * 1000) / 10).toFixed(1)}%` : 'n/a');
-          const ce = (roll.chaosEvents != null ? String(roll.chaosEvents) : '0');
-          p.textContent = `ICF rollup: throughput ${tp} • error ${er} • chaos ${ce}`;
+          const tp = (roll.data.throughput != null ? `${roll.data.throughput}/run` : 'n/a');
+          const er = (roll.data.errorRate != null ? `${(Math.round(roll.data.errorRate * 1000) / 10).toFixed(1)}%` : 'n/a');
+          const ce = (roll.data.chaosEvents != null ? String(roll.data.chaosEvents) : '0');
+          p.textContent = `ICF rollup: throughput ${tp} | error ${er} | chaos ${ce}`;
           host.appendChild(p);
 
           // --- ICFX: staleness hint (24h) ---
@@ -109,7 +117,7 @@
                 panel.id = 'icf-rollup';
                 host.appendChild(panel);
               }
-              const tsMs = new Date(roll.timestamp).getTime();
+              const tsMs = new Date(roll.data.timestamp).getTime();
               if (Number.isFinite(tsMs)) {
                 const ageMs = Date.now() - tsMs;
                 const stale = ageMs > STALE_TTL_MS;

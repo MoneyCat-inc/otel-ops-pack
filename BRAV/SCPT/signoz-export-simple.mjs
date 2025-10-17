@@ -5,13 +5,14 @@
  */
 
 import fs from 'fs';
+import path from 'path';
 
 // BossCat Agent Configuration
 const BOSSCAT_AGENT = 'Simplified Export Agent';
 const SIGNOZ_URL = process.env.SIGNOZ_URL || 'http://localhost:8080';
 const SIGNOZ_SESSION = process.env.SIGNOZ_SESSION || '';
 
-console.log('🐾 BossCat SigNoz Dashboard Export - Simplified Edition');
+console.log('BossCat SigNoz Dashboard Export - Simplified Edition');
 console.log('MoneyCat Inc - Resonai [OTel] - BossCat OEM Agent');
 console.log('');
 
@@ -19,7 +20,7 @@ console.log('');
 const startTime = new Date();
 const reportId = `ECRR-${startTime.toISOString().slice(0, 19).replace(/[T:]/g, '-')}`;
 
-console.log('🎯 ECRR Framework: EXAMINE Phase');
+console.log('TARGET: ECRR Framework - EXAMINE Phase');
 console.log(`Agent: ${BOSSCAT_AGENT}`);
 console.log(`Report ID: ${reportId}`);
 console.log(`Start Time: ${startTime.toISOString()}`);
@@ -28,12 +29,12 @@ console.log('');
 // Load dashboard configuration
 async function loadDashboardConfig() {
     try {
-        const data = fs.readFileSync('scripts/dashboard-list.json', 'utf-8');
+        const data = fs.readFileSync(path.join('BRAV', 'SCPT', 'dashboard-list.json'), 'utf-8');
         const dashboards = JSON.parse(data);
         console.log(`  OK Dashboard List: ${dashboards.length} dashboards configured`);
         return dashboards;
     } catch (error) {
-        console.log('  ⚠️ Dashboard list not found, creating defaults...');
+        console.log('  WARNING Dashboard list not found, creating defaults...');
         const defaultDashboards = [
             { name: 'Windows Logs Dashboard', slug: 'windows-logs', priority: 'high' },
             { name: 'Queue Pressure Dashboard', slug: 'queue-pressure', priority: 'high' }
@@ -44,7 +45,7 @@ async function loadDashboardConfig() {
 
 // Verify SigNoz connectivity
 async function verifySignozHealth() {
-    console.log('?? SigNoz Health Check:');
+    console.log(':: SigNoz Health Check:');
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 10000);
 
@@ -61,10 +62,10 @@ async function verifySignozHealth() {
             return true;
         }
 
-        console.log(`  ?? SigNoz Health Check: HTTP ${response.status}`);
+            console.log(`  WARN SigNoz Health Check: HTTP ${response.status}`);
     } catch (error) {
         clearTimeout(timeout);
-        console.log(`  ?? SigNoz Health Check: FAILED (${error.message})`);
+        console.log(`  WARN SigNoz Health Check: FAILED (${error.message})`);
     }
 
     console.log('  Note: Using PowerShell agent instead for PDF generation');
@@ -77,40 +78,40 @@ function generateECRRReport(exportResults, exportErrors) {
     const endTime = new Date();
     const durationMinutes = Math.round((endTime - startTime) / 1000 / 60 * 10) / 10;
     
-    const reportContent = `# 📊 ECRR Report - BossCat Simplified Export
+    const reportContent = `# DASHBOARD ECRR Report - BossCat Simplified Export
 
 **Report ID**: ${reportId}
 **Agent**: ${BOSSCAT_AGENT}
 **Generated**: ${endTime.toISOString()}
 **Operation**: SigNoz Dashboard Export via Simplified Agent
 
-## 🎯 Executive Summary
+## TARGET Executive Summary
 
 **Duration**: ${durationMinutes} minutes
-**Status**: ✅ SUCCESS (via PowerShell agent delegation)
-**SigNoz Integration**: ✅ Delegated to PowerShell automation
+**Status**: OK SUCCESS (via PowerShell agent delegation)
+**SigNoz Integration**: OK Delegated to PowerShell automation
 
-## 📊 Export Strategy
+## DASHBOARD Export Strategy
 
 - **Primary Method**: PowerShell Edge-based PDF generation
 - **Fallback Method**: HTML captures with manual PDF conversion
 - **Authentication**: Session cookie via environment variables
 - **Evidence Collection**: BossCat compliance reporting
 
-## 🎯 BossCat Compliance
+## TARGET BossCat Compliance
 
-- ✅ ECRR methodology applied
-- ✅ Evidence collection delegated to PowerShell agent
-- ✅ SigNoz dashboard preservation via automation
-- ✅ Executive reporting artifacts generated
+- OK ECRR methodology applied
+- OK Evidence collection delegated to PowerShell agent
+- OK SigNoz dashboard preservation via automation
+- OK Executive reporting artifacts generated
 
-## 📈 Recommendations
+## TREND Recommendations
 
 1. **Use PowerShell Agent**: Execute \`pwsh -File scripts/nightly-dashboard-export.ps1\`
 2. **Set Authentication**: Ensure SIGNOZ_SESSION environment variable
 3. **Verify Dashboards**: Confirm dashboard URLs accessible in SigNoz UI
 
-🐾 **End of ECRR Report** - BossCat OEM Agent Simplified Reporting
+BossCat **End of ECRR Report** - BossCat OEM Agent Simplified Reporting
 
 ---
 
@@ -123,7 +124,7 @@ function generateECRRReport(exportResults, exportErrors) {
         fs.writeFileSync(ecrrReportFile, reportContent);
         console.log(`  OK ECRR Report Generated: ${ecrrReportFile}`);
     } catch (error) {
-        console.log(`  ⚠️ Could not save report: ${error.message}`);
+        console.log(`  WARNING Could not save report: ${error.message}`);
     }
     
     return { exportResults: [], exportErrors: [] };
@@ -139,7 +140,7 @@ async function main() {
         const healthOk = await verifySignozHealth();
         
         console.log('');
-        console.log('🎯 BossCat Simplified Agent Strategy:');
+        console.log('TARGET BossCat Simplified Agent Strategy:');
         console.log('  - Delegating PDF generation to PowerShell agent');
         console.log('  - PowerShell: pwsh -File scripts/nightly-dashboard-export.ps1');
         console.log('  - Alternative: Manual dashboard screenshots');
@@ -148,14 +149,14 @@ async function main() {
         const summary = generateECRRReport([], []);
         
         console.log('');
-        console.log('🐾 BossCat Simplified Agent Complete');
+        console.log('BossCat BossCat Simplified Agent Complete');
         console.log('Next Action: Use PowerShell agent with proper authentication');
         console.log('');
         console.log('Recommended Command:');
         console.log('  pwsh -File scripts/nightly-dashboard-export.ps1');
         
     } catch (error) {
-        console.error('❌ BossCat Simplified Agent Error:', error.message);
+        console.error('ERROR BossCat Simplified Agent Error:', error.message);
     }
 }
 

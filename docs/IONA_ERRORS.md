@@ -4,8 +4,8 @@ This ledger tracks anomalies and recurring error classes for BossCat operations.
 
 Format: `YYYY-MM-DD HH:mm:ss K | site | gate | class | note`
 
-Examples:
+Active Incidents:
 
-- 2025-10-12 00:00:00 +00:00 | ci  | IONA | SIG_NOZ_UI | transient 503 during nightly health poll
-- 2025-10-12 00:10:00 +00:00 | stg | IONA | QUEUE_EVIDENCE_MISSING | queue-steward-verification.txt absent (non-blocking)
-- 2025-10-15 00:00:00 +00:00 | ci  | IONA | EXT_SVC_TIMEOUTS | PR #144 external service check failures (timeouts/quotas), core gates passing
+- 2025-10-16 09:30:00 +00:00 | prod | IONA | QUEUE_EVIDENCE_PATH_DRIFT | queue evidence wrote to DELT/ARTF instead of artifacts/, masking missing canonical file
+- 2025-10-16 09:35:00 +00:00 | ci   | IONA | STATUS_EVIDENCE_STALE | docs/status/tests.json still pointed at 2025-10-10 run rather than latest gate artifacts
+- 2025-10-16 09:40:00 +00:00 | ci   | IONA | ASCII_EXPORT_POLICY | gate comment emitted non-ASCII glyphs that failed audit export validation

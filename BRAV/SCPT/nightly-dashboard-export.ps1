@@ -12,7 +12,7 @@
   Session cookie value for authenticating to SigNoz. If omitted the export
   proceeds without cookie injection.
 .PARAMETER DashboardListPath
-  Path to the dashboard list JSON file. Defaults to scripts/dashboard-list.json.
+  Path to the dashboard list JSON file. Defaults to BRAV/SCPT/dashboard-list.json.
 .PARAMETER OutputRoot
   Directory where PDFs are written. Defaults to docs/observability/snapshots.
 .PARAMETER ReportDir
@@ -27,7 +27,7 @@
 param(
   [string]$SignozUrl = "http://localhost:8080",
   [string]$SignozSession = "",
-  [string]$DashboardListPath = "scripts/dashboard-list.json",
+  [string]$DashboardListPath = (Join-Path $PSScriptRoot 'dashboard-list.json'),
   [string]$OutputRoot = "docs/observability/snapshots",
   [string]$ReportDir = "docs/ecrr/ECRR_REPORTS",
   [string]$SecurityScanDir = "artifacts/security-scans",
@@ -45,7 +45,7 @@ function Invoke-TrivySecurityScan {
     [string]$OutputDir
   )
   
-  Write-Info "🔒 Running Trivy security scans..."
+  Write-Info "[LOCK] Running Trivy security scans..."
   
   # Ensure Trivy is available
   if (-not (Get-Command "trivy" -ErrorAction SilentlyContinue)) {
@@ -92,12 +92,12 @@ function Invoke-TrivySecurityScan {
           Timestamp = Get-Date -Format "yyyy-MM-ddTHH:mm:ssZ"
         }
         
-        Write-Success "✅ $image`: $critical critical, $high high vulnerabilities"
+        Write-Success "OK $image`: $critical critical, $high high vulnerabilities"
       } else {
-        Write-Warn "⚠️ Failed to scan $image`: $scanOutput"
+        Write-Warn "WARNING Failed to scan $image`: $scanOutput"
       }
     } catch {
-      Write-Warn "⚠️ Error scanning $image`: $($_.Exception.Message)"
+      Write-Warn "WARNING Error scanning $image`: $($_.Exception.Message)"
     }
   }
   
@@ -113,7 +113,7 @@ function Invoke-TrivySecurityScan {
   }
   
   $summary | ConvertTo-Json -Depth 3 | Set-Content $summaryFile
-  Write-Success "🔒 Security scan summary: $totalCritical critical, $totalHigh high vulnerabilities"
+  Write-Success "[LOCK] Security scan summary: $totalCritical critical, $totalHigh high vulnerabilities"
   
   return $true
 }
@@ -314,7 +314,7 @@ $reportLines = @(
   "Outputs: $runDir",
   "",
   "## Security Scan Results",
-  $(if ($securityScanSuccess) { "✅ Security scans completed successfully" } else { "⚠️ Security scans skipped or failed" }),
+  $(if ($securityScanSuccess) { "OK Security scans completed successfully" } else { "WARNING Security scans skipped or failed" }),
   "Scan directory: $securityScanDirResolved",
   "",
   "## Successful Exports"
