@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Resonai [OTel] - Production observability that doesn't oversell. Local-first Windows telemetry, no vendor lock-in.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' http://localhost:*; img-src 'self' data: https://img.shields.io">
+  <title>Resonai [OTel] — ANTIclickbait Portal</title>
+  <style>
+    /* See C:\otel\docs\comfort cat */
+    /* Comfort Cat v1.0.0 - Honest design, no hype */
+    
+    :root {
+      --charcoal: #1B1E22;
+      --slate: #2A2F36;
+      --fog: #A7B0B7;
+      --neon-mint: #37FFC4;
+      --neon-pink: #FF3DBE;
+      --white: #FFFFFF;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', 'Source Sans Pro', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      background: var(--charcoal);
+      color: var(--fog);
+      line-height: 1.6;
+      font-size: 16px;
+    }
+    
+    header {
+      background: var(--slate);
+      padding: 1.5rem 2rem;
+      border-bottom: 2px solid var(--neon-mint);
+    }
+    
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    nav {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+    
+    nav a {
+      color: var(--fog);
+      text-decoration: none;
+      transition: color 0.2s;
+      font-weight: 500;
+    }
+    
+    nav a:hover {
+      color: var(--neon-mint);
+    }
+    
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+    
+    .hero {
+      text-align: center;
+      padding: 3rem 0 4rem;
+      border-bottom: 1px solid var(--slate);
+      margin-bottom: 3rem;
+    }
+    
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+    
+    .subtitle {
+      font-size: 1.25rem;
+      color: var(--fog);
+      margin-bottom: 2rem;
+    }
+    
+    .tagline {
+      font-size: 1rem;
+      color: var(--neon-mint);
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+    
+    .section {
+      margin-bottom: 4rem;
+    }
+    
+    h2 {
+      font-size: 2rem;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--slate);
+    }
+    
+    h3 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--neon-mint);
+      margin: 2rem 0 1rem;
+    }
+    
+    p {
+      margin-bottom: 1rem;
+      line-height: 1.75;
+    }
+    
+    .facts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      margin: 2rem 0;
+    }
+    
+    .fact-card {
+      background: var(--slate);
+      padding: 1.5rem;
+      border-radius: 8px;
+      border-left: 4px solid var(--neon-mint);
+    }
+    
+    .fact-card h4 {
+      color: var(--white);
+      font-size: 1.1rem;
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+    }
+    
+    .fact-card p {
+      color: var(--fog);
+      margin: 0;
+      font-size: 0.95rem;
+    }
+    
+    .support-section {
+      background: var(--slate);
+      padding: 3rem;
+      border-radius: 12px;
+      border: 2px solid var(--neon-pink);
+      text-align: center;
+    }
+    
+    .support-section h2 {
+      border: none;
+      color: var(--neon-pink);
+    }
+    
+    .donate-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 2rem;
+    }
+    
+    .btn {
+      display: inline-block;
+      padding: 0.875rem 2rem;
+      background: var(--neon-mint);
+      color: var(--charcoal);
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 600;
+      transition: all 0.2s;
+      border: 2px solid var(--neon-mint);
+    }
+    
+    .btn:hover {
+      background: transparent;
+      color: var(--neon-mint);
+    }
+    
+    .btn-secondary {
+      background: transparent;
+      color: var(--neon-pink);
+      border-color: var(--neon-pink);
+    }
+    
+    .btn-secondary:hover {
+      background: var(--neon-pink);
+      color: var(--charcoal);
+    }
+    
+    code {
+      font-family: 'JetBrains Mono', 'IBM Plex Mono', 'Consolas', monospace;
+      background: var(--slate);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.9em;
+      color: var(--neon-mint);
+    }
+    
+    pre {
+      background: var(--slate);
+      padding: 1.5rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 1rem 0;
+    }
+    
+    pre code {
+      background: none;
+      padding: 0;
+      display: block;
+      color: var(--fog);
+    }
+    
+    ul {
+      list-style-position: inside;
+      margin: 1rem 0;
+    }
+    
+    li {
+      margin-bottom: 0.5rem;
+      padding-left: 1rem;
+    }
+    
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      background: var(--slate);
+      border: 1px solid var(--neon-mint);
+      border-radius: 12px;
+      font-size: 0.85rem;
+      color: var(--neon-mint);
+      margin: 0.25rem;
+    }
+    
+    footer {
+      background: var(--slate);
+      padding: 2rem;
+      text-align: center;
+      border-top: 2px solid var(--neon-mint);
+      margin-top: 4rem;
+    }
+    
+    footer p {
+      margin: 0.5rem 0;
+      color: var(--fog);
+    }
+    
+    .honest-badge {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      background: transparent;
+      border: 2px solid var(--neon-pink);
+      border-radius: 8px;
+      color: var(--neon-pink);
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2rem;
+      }
+      
+      .hero {
+        padding: 2rem 0 3rem;
+      }
+      
+      .facts-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .support-section {
+        padding: 2rem 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-content">
+    <div class="logo">
+      🐾 Resonai [OTel]
+    </div>
+    <nav>
+      <a href="#about">About</a>
+      <a href="#features">Features</a>
+      <a href="#getting-started">Get Started</a>
+      <a href="#support">Support Us</a>
+      <a href="docs/status.html">Live Status</a>
+      <a href="http://localhost:8080" target="_blank">SigNoz UI ↗</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <h1>Production Observability<br>Without the Hype</h1>
+    <p class="subtitle">Windows telemetry → OpenTelemetry → SigNoz. Local-first. No vendor lock-in.</p>
+    <p class="tagline">"Sleep easy. We've got the signal."</p>
+  </section>
+
+  <section id="about" class="section">
+    <h2>🎯 What This Actually Is</h2>
+    <p>
+      <strong>Resonai [OTel]</strong> is an open-source observability pipeline for Windows environments. 
+      It collects logs, metrics, and traces from your Windows systems and sends them to SigNoz 
+      (an open-source APM) for visualization and alerting.
+    </p>
+    <p>
+      No marketing fluff. No "revolutionary" claims. Just solid telemetry infrastructure that works.
+    </p>
+    
+    <div class="facts-grid">
+      <div class="fact-card">
+        <h4>✅ What We Do Well</h4>
+        <p>77× throughput improvement over naive configs. Sub-second latency. Automated testing and gate verification.</p>
+      </div>
+      <div class="fact-card">
+        <h4>⚠️ What We Don't Do</h4>
+        <p>We're not a SaaS. We don't collect your data. We don't have a sales team. You host everything locally.</p>
+      </div>
+      <div class="fact-card">
+        <h4>🔧 Technical Stack</h4>
+        <p>OpenTelemetry Collector, SigNoz, Docker, PowerShell automation, TypeScript tooling, Next.js dashboard.</p>
+      </div>
+      <div class="fact-card">
+        <h4>📦 License</h4>
+        <p>MIT License. Free forever. No "enterprise edition" gatekeeping. What you see is what you get.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="features" class="section">
+    <h2>📊 Core Features</h2>
+    
+    <h3>Observability Pipeline</h3>
+    <ul>
+      <li><strong>Windows Event Logs</strong> → Real-time collection with intelligent filtering</li>
+      <li><strong>File-based Logs</strong> → Tail and parse application logs</li>
+      <li><strong>System Metrics</strong> → CPU, memory, disk, network telemetry</li>
+      <li><strong>Custom Traces</strong> → OpenTelemetry SDK instrumentation</li>
+      <li><strong>Noise Reduction</strong> → ~50% volume reduction via smart filtering</li>
+    </ul>
+    
+    <h3>Automation & Governance</h3>
+    <ul>
+      <li><strong>ECRR Framework</strong> → Examine, Clean, Report, Role methodology</li>
+      <li><strong>BossCat Gate System</strong> → Automated quality gates before deployment</li>
+      <li><strong>IONA Controller</strong> → Autonomous agent for pipeline management</li>
+      <li><strong>Nightly Automation</strong> → Dashboard exports, health checks, compliance scans</li>
+      <li><strong>Evidence Trail</strong> → Complete audit chain for all operations</li>
+    </ul>
+    
+    <h3>Developer Experience</h3>
+    <ul>
+      <li><strong>One-Command Setup</strong> → <code>pwsh -File scripts/setup.ps1</code></li>
+      <li><strong>Quick Health Checks</strong> → <code>pwsh -File BRAV/SCPT/quick-monitor.ps1</code></li>
+      <li><strong>Canary Testing</strong> → Generate test data and verify pipeline health</li>
+      <li><strong>Rollback Scripts</strong> → Safe configuration changes with automatic rollback</li>
+    </ul>
+
+    <h3>Visual Feedback (MILK Lane)</h3>
+    <ul>
+      <li><strong>Real-time Visualization</strong> → Audio-reactive WebGL visuals via Butterchurn</li>
+      <li><strong>SigNoz Integration</strong> → Alert severity mapped to visual presets</li>
+      <li><strong>Safety-Validated</strong> → 7-layer checks prevent flash/strobe effects</li>
+      <li><strong>WebSocket Bridge</strong> → Remote automation and control</li>
+    </ul>
+  </section>
+
+  <section id="getting-started" class="section">
+    <h2>🚀 Getting Started</h2>
+    <p><strong>Prerequisites:</strong> Windows 10/11, PowerShell 7+, Docker Desktop, Node.js 18+</p>
+    
+    <pre><code># Clone the repository
+git clone https://github.com/MoneyCat-inc/otel-ops-pack.git
+cd otel-ops-pack
+
+# Start SigNoz stack
+docker compose -f docker-compose-signoz.yml up -d
+
+# Quick health check
+pwsh -File BRAV/SCPT/quick-monitor.ps1
+
+# Access SigNoz UI
+# http://localhost:8080
+
+# Generate test data
+pwsh -File canary-test.ps1</code></pre>
+    
+    <p><strong>Full Documentation:</strong> <a href="README.md" style="color: var(--neon-mint);">README.md</a> | <a href="docs/BossCat/README.md" style="color: var(--neon-mint);">BossCat Operations Guide</a></p>
+  </section>
+
+  <section id="support" class="section support-section">
+    <h2>💚 Support This Project</h2>
+    <p>
+      We don't run ads. We don't sell your data. We don't have venture capital.<br>
+      If this project saves you time or helps your infrastructure, consider supporting it.
+    </p>
+    <p style="margin-top: 1.5rem; color: var(--fog);">
+      <strong>What your support enables:</strong> More features, better documentation, 
+      faster bug fixes, community support, and continued maintenance.
+    </p>
+    
+    <div class="donate-buttons">
+      <a href="https://github.com/sponsors/MoneyCat-inc" class="btn" target="_blank">
+        ❤️ GitHub Sponsors
+      </a>
+      <!-- Uncomment when accounts are set up
+      <a href="https://ko-fi.com/resonai" class="btn btn-secondary" target="_blank">
+        ☕ Ko-fi
+      </a>
+      <a href="https://patreon.com/resonai" class="btn btn-secondary" target="_blank">
+        🎯 Patreon
+      </a>
+      -->
+    </div>
+    
+    <p style="margin-top: 2rem; font-size: 0.9rem; color: var(--fog);">
+      <strong>Not ready to donate?</strong> Star the repo, contribute code, 
+      report bugs, or share with colleagues. All contributions help.
+    </p>
+    
+    <div class="honest-badge">
+      ✓ ANTIclickbait certified — No false promises, no dark patterns
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>🏆 Recognition & Badges</h2>
+    <div style="line-height: 2;">
+      <span class="badge">ECRR Compliant</span>
+      <span class="badge">Accessibility AA</span>
+      <span class="badge">MIT License</span>
+      <span class="badge">Local-First</span>
+      <span class="badge">No Vendor Lock-in</span>
+      <span class="badge">Open Source</span>
+      <span class="badge">Production Ready</span>
+      <span class="badge">77× Throughput</span>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>📈 Project Stats (Honest Edition)</h2>
+    <div class="facts-grid">
+      <div class="fact-card">
+        <h4>Lines of Code</h4>
+        <p>~50,000+ LOC across PowerShell, TypeScript, YAML configs</p>
+      </div>
+      <div class="fact-card">
+        <h4>Test Coverage</h4>
+        <p>Automated gate verification, integration tests, canary monitoring</p>
+      </div>
+      <div class="fact-card">
+        <h4>Deployment Time</h4>
+        <p>~10 minutes from clone to first telemetry</p>
+      </div>
+      <div class="fact-card">
+        <h4>Maintenance Status</h4>
+        <p>Actively maintained. Last commit: Check GitHub for latest.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <p><strong>Resonai [OTel]</strong> — Production Observability Without the Hype</p>
+  <p>Maintained by <a href="https://github.com/MoneyCat-inc" style="color: var(--neon-mint);">MoneyCat Inc</a> • Licensed under MIT</p>
+  <p style="font-size: 0.85rem; margin-top: 1rem;">
+    Local-First • ECRR-Compliant • Open Source • No Tracking • No Analytics
+  </p>
+  <p style="font-size: 0.75rem; margin-top: 1rem; color: var(--fog);">
+    Design: <a href="file:///C:/otel/docs/comfort%20cat/README.md" style="color: var(--fog);">Comfort Cat Creative Guidelines v1.0.0</a>
+  </p>
+</footer>
+
+</body>
+</html>
+
