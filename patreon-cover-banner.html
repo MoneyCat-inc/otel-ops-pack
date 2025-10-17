@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resonai [OTel] Patreon Cover - 1600x400</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .banner {
+            width: 1600px;
+            height: 400px;
+            background: linear-gradient(135deg, #1B1E22 0%, #2A2F36 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Subtle grid pattern */
+        .banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(55, 255, 196, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(55, 255, 196, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            opacity: 0.5;
+        }
+
+        /* Waveform visualization */
+        .waveform {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 150px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 8px;
+            padding: 0 100px;
+            opacity: 0.4;
+        }
+
+        .waveform-bar {
+            width: 4px;
+            background: linear-gradient(180deg, #37FFC4 0%, #37FFC4 50%, rgba(55, 255, 196, 0.3) 100%);
+            border-radius: 2px;
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        .waveform-bar:nth-child(1) { height: 40px; animation-delay: 0s; }
+        .waveform-bar:nth-child(2) { height: 80px; animation-delay: 0.1s; }
+        .waveform-bar:nth-child(3) { height: 120px; animation-delay: 0.2s; }
+        .waveform-bar:nth-child(4) { height: 95px; animation-delay: 0.3s; }
+        .waveform-bar:nth-child(5) { height: 60px; animation-delay: 0.4s; }
+        .waveform-bar:nth-child(6) { height: 110px; animation-delay: 0.5s; }
+        .waveform-bar:nth-child(7) { height: 75px; animation-delay: 0.6s; }
+        .waveform-bar:nth-child(8) { height: 50px; animation-delay: 0.7s; }
+        .waveform-bar:nth-child(9) { height: 90px; animation-delay: 0.8s; }
+        .waveform-bar:nth-child(10) { height: 70px; animation-delay: 0.9s; }
+        .waveform-bar:nth-child(11) { height: 100px; animation-delay: 1s; }
+        .waveform-bar:nth-child(12) { height: 55px; animation-delay: 1.1s; }
+        .waveform-bar:nth-child(13) { height: 85px; animation-delay: 1.2s; }
+        .waveform-bar:nth-child(14) { height: 65px; animation-delay: 1.3s; }
+        .waveform-bar:nth-child(15) { height: 105px; animation-delay: 1.4s; }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.4;
+                transform: scaleY(1);
+            }
+            50% {
+                opacity: 0.7;
+                transform: scaleY(1.15);
+            }
+        }
+
+        /* Text content */
+        .content {
+            position: relative;
+            z-index: 10;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px;
+        }
+
+        .title {
+            font-size: 56px;
+            font-weight: 600;
+            color: #FFFFFF;
+            margin-bottom: 16px;
+            letter-spacing: -0.5px;
+            text-align: center;
+        }
+
+        .subtitle {
+            font-size: 28px;
+            font-weight: 400;
+            color: #37FFC4;
+            letter-spacing: 0.5px;
+            text-align: center;
+        }
+
+        /* Accent dot */
+        .accent {
+            color: #37FFC4;
+        }
+
+        /* Subtle glow effect on title */
+        .title {
+            text-shadow: 0 0 40px rgba(55, 255, 196, 0.15);
+        }
+
+        /* Corner accents */
+        .corner-accent {
+            position: absolute;
+            width: 2px;
+            height: 60px;
+            background: linear-gradient(180deg, #37FFC4 0%, transparent 100%);
+        }
+
+        .corner-accent.top-left {
+            top: 30px;
+            left: 30px;
+        }
+
+        .corner-accent.top-right {
+            top: 30px;
+            right: 30px;
+            transform: rotate(180deg);
+        }
+
+        .corner-accent.bottom-left {
+            bottom: 30px;
+            left: 30px;
+            transform: rotate(180deg);
+        }
+
+        .corner-accent.bottom-right {
+            bottom: 30px;
+            right: 30px;
+        }
+
+        /* Instructions overlay (remove before screenshot) */
+        .instructions {
+            position: fixed;
+            top: 420px;
+            left: 0;
+            right: 0;
+            background: #1B1E22;
+            color: #FFFFFF;
+            padding: 20px;
+            text-align: center;
+            font-size: 14px;
+            border-top: 2px solid #37FFC4;
+        }
+
+        .instructions h3 {
+            color: #37FFC4;
+            margin-bottom: 10px;
+        }
+
+        .instructions ol {
+            text-align: left;
+            max-width: 600px;
+            margin: 10px auto;
+            padding-left: 20px;
+        }
+
+        .instructions li {
+            margin: 5px 0;
+            line-height: 1.6;
+        }
+
+        .instructions code {
+            background: #2A2F36;
+            padding: 2px 6px;
+            border-radius: 3px;
+            color: #37FFC4;
+        }
+    </style>
+</head>
+<body>
+    <div class="banner">
+        <div class="corner-accent top-left"></div>
+        <div class="corner-accent top-right"></div>
+        <div class="corner-accent bottom-left"></div>
+        <div class="corner-accent bottom-right"></div>
+        
+        <div class="waveform">
+            <div class="waveform-bar"></div>
+            <div class="waveform-bar"></div>
+            <div class="waveform-bar"></div>
+            <div class="waveform-bar"></div>
+            <div class="waveform-bar"></div>
+            <div class="waveform-bar"></div>
+            <div class="waveform-bar"></div>
+            <div class="waveform-bar"></div>
+            <div class="waveform-bar"></div>
+            <div class="waveform-bar"></div>
+            <div class="waveform-bar"></div>
+            <div class="waveform-bar"></div>
+            <div class="waveform-bar"></div>
+            <div class="waveform-bar"></div>
+            <div class="waveform-bar"></div>
+        </div>
+
+        <div class="content">
+            <div class="title">Resonai <span class="accent">[</span>OTel<span class="accent">]</span></div>
+            <div class="subtitle">Evidence-First Observability</div>
+        </div>
+    </div>
+
+    <div class="instructions">
+        <h3>📸 Screenshot Instructions</h3>
+        <ol>
+            <li>Press <code>F11</code> to enter fullscreen mode (or use your browser's fullscreen option)</li>
+            <li>Use Windows Snipping Tool (<code>Win + Shift + S</code>) or screenshot tool to capture ONLY the banner area above</li>
+            <li>The banner is exactly <strong>1600×400 pixels</strong></li>
+            <li>Save as <code>patreon-cover.png</code></li>
+            <li>Upload to Patreon → Customize → Details → Upload cover photo</li>
+        </ol>
+        <p style="margin-top: 15px; color: #999;">
+            <strong>Tip:</strong> Make sure your browser zoom is set to 100% (Ctrl+0) for accurate dimensions
+        </p>
+    </div>
+</body>
+</html>
+
