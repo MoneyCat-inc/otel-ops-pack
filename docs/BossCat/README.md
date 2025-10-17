@@ -9,7 +9,7 @@
 [![Weekly Re-Cert](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/guardrails-recert.yml/badge.svg)](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/guardrails-recert.yml)
 [![Monthly Rollup](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/bosscat-monthly-evidence-rollup.yml/badge.svg)](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/bosscat-monthly-evidence-rollup.yml)
 
-• Governance: [Run Branch Protection Setup](../../actions/workflows/bosscat-branch-protection.yml)
+- Governance: [Run Branch Protection Setup](../../actions/workflows/bosscat-branch-protection.yml)
 
 Purpose: Governance and local-first operations for Resonai [OTel].
 
@@ -28,7 +28,7 @@ Runbooks:
 - Watchdog control: pwsh -File BRAV/SCPT/watchdog-control.ps1 [start|stop|status|logs|evidence] [gate|site|both]
 - MILK visuals: start docs\BossCat\visuals\control.html
 
-## 🚀 Quick Commands
+## Quick Commands
 
 ### Gate Verification
 ```
@@ -43,15 +43,15 @@ pnpm run agent:ready-for-gate:prod
 ```
 
 - Purpose: Run local gate verification and generate artifacts.
-- Produces:
-  - `DELT/ARTF/gate-verification-results.json` — Gate verification results with verdict
-  - `PR_COMMENT_IONA_GATE_002_FINAL.md` — Formatted PR comment for gate approval
+  - Produces:
+    - `artifacts/gate-verification-results.json` - Gate verification results with verdict
+  - `PR_COMMENT_IONA_GATE_002_FINAL.md` - Formatted PR comment for gate approval
   - ECRR gate reports (when applicable) in `docs/ecrr/ECRR_REPORTS/`
 - Use cases:
   - Local pre-flight checks before PR submission
   - Manual gate verification during development
   - Refreshing gate artifacts for status dashboard
-- Alias for: `pwsh -File scripts/verify-iona-gate.ps1 -OutputJson DELT/ARTF/gate-verification-results.json -PrCommentPath PR_COMMENT_IONA_GATE_002_FINAL.md`
+  - Alias for: `pwsh -File scripts/verify-iona-gate.ps1 -OutputJson artifacts/gate-verification-results.json -PrCommentPath PR_COMMENT_IONA_GATE_002_FINAL.md`
 
 ### MILK Visual Control
 ```
@@ -73,9 +73,9 @@ node scripts/visuals/visu-shim.ts test
 - Features: Real-time audio visualization, preset management, automation API
 - Docs: `docs/BossCat/visuals/CONTROL_README.md`
 
-## 🐾 BossCat Seal
+## BossCat Seal
 
-All operations follow ECRR methodology (Examine → Clean → Report → Role) and maintain full audit trails in `docs/ecrr/ECRR_REPORTS/`.
+All operations follow ECRR methodology (Examine -> Clean -> Report -> Role) and maintain full audit trails in `docs/ecrr/ECRR_REPORTS/`.
 
 **Tetragram Lanes**:
 - **ALFA**: Agent Framework & Automation

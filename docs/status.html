@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
   <head>
   <meta charset="utf-8">
@@ -25,13 +25,13 @@
   <div class="status">
     <h2>&#128062; Evidence Links</h2>
     <ul>
-      <li><strong>Release:</strong> <a href="BossCat/RELEASE_NOTES_IONA_PROD_READY_20251013.md">IONA PROD READY (2025-10-13)</a> ┬╖ <a href="../CHANGELOG.md">Changelog</a></li>
-      <li><strong>Evidence:</strong> <a href="../CHAR/EVID/gate-007/">Gate #007</a> ┬╖ <a href="../DELT/ARTF/">Artifacts</a> ┬╖ <a href="../DELT/ARTF/sbom.json">SBOM</a></li>
-      <li><strong>ECRR:</strong> <a href="ecrr/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md">Latest Gate Run</a> ┬╖ <a href="ecrr/ECRR_REPORTS/ECRR_MAINTENANCE_LATEST.md">Maintenance</a></li>
-      <li><strong>Benchmarks:</strong> <a href="../DELT/ARTF/ecrr-benchmark.json">ECRR Benchmark (JSON)</a> ┬╖ <a href="../DELT/ARTF/ecrr-benchmark-trend.csv">Trend (CSV)</a></li>
+      <li><strong>Release:</strong> <a href="BossCat/RELEASE_NOTES_IONA_PROD_READY_20251013.md">IONA PROD READY (2025-10-13)</a> &middot; <a href="../CHANGELOG.md">Changelog</a></li>
+      <li><strong>Evidence:</strong> <a href="../CHAR/EVID/gate-007/">Gate #007</a> &middot; <a href="../artifacts/">Artifacts</a> &middot; <a href="../artifacts/gate-verification-results.json">Gate Results (JSON)</a> &middot; <a href="../artifacts/queue-steward-verification.txt">Queue Steward Log</a> &middot; <a href="../artifacts/sbom.json">SBOM</a></li>
+      <li><strong>ECRR:</strong> <a href="ecrr/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md">Latest Gate Run</a> &middot; <a href="ecrr/ECRR_REPORTS/ECRR_MAINTENANCE_LATEST.md">Maintenance</a></li>
+      <li><strong>Benchmarks:</strong> <a href="../artifacts/ecrr-benchmark.json">ECRR Benchmark (JSON)</a> &middot; <a href="../artifacts/ecrr-benchmark-trend.csv">Trend (CSV)</a></li>
       <li><strong>Reference:</strong> <a href="reference/reference-map.json">Reference Map (JSON)</a></li>
-      <li><strong>Governance:</strong> <a href="BossCat/GOVERNANCE_VIEW.md">Governance View</a> · <a href="BossCat/FRACTAL_REFERENCE_MAP.md">Fractal Map</a></li>
-      <li><strong>Session:</strong> <a href="BossCat/reports/GATE_007_SESSION_SNAPSHOT_20251012.md">Gate #007 Snapshot</a> · <a href="observability/snapshots/bosscat-session-20251012.json">JSON</a></li>
+      <li><strong>Governance:</strong> <a href="BossCat/GOVERNANCE_VIEW.md">Governance View</a> &middot; <a href="BossCat/FRACTAL_REFERENCE_MAP.md">Fractal Map</a></li>
+      <li><strong>Session:</strong> <a href="BossCat/reports/GATE_007_SESSION_SNAPSHOT_20251012.md">Gate #007 Snapshot</a> &middot; <a href="observability/snapshots/bosscat-session-20251012.json">JSON</a></li>
       <li><strong>Operations:</strong> <a href="BossCat/TODO.md">BossCat TODOs</a></li>
     </ul>
   </div>
@@ -52,19 +52,19 @@
     <div class="metrics-grid">
       <div class="metric">
         <div class="label">Convergence Rate (7d)</div>
-        <div class="value"><span id="icf-rate">—</span></div>
+        <div class="value"><span id="icf-rate">-</span></div>
       </div>
       <div class="metric">
         <div class="label">RSI Warnings (7d)</div>
-        <div class="value"><span id="icf-warn">—</span></div>
+        <div class="value"><span id="icf-warn">-</span></div>
       </div>
       <div class="metric">
         <div class="label">LII</div>
-        <div class="value"><span id="icf-lii">—</span></div>
+        <div class="value"><span id="icf-lii">-</span></div>
       </div>
       <div class="metric">
-        <div class="label">ΔPerplexity</div>
-        <div class="value"><span id="icf-dppl">—</span></div>
+        <div class="label">Delta Perplexity</div>
+        <div class="value"><span id="icf-dppl">-</span></div>
       </div>
     </div>
     
@@ -88,7 +88,7 @@
       <div class="metric"><div class="label">CSP (SITE)</div><div class="value"><span id="site-csp">-</span></div></div>
     </div>
     <p class="muted" style="font-size: 0.85em; margin-top: 1em;">
-      Source: <code>docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md</code>, <code>DELT/ARTF/gate-verification-results.json</code>.
+      Source: <code>docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md</code>, <code>artifacts/gate-verification-results.json</code>.
     </p>
   </div>
   
@@ -100,7 +100,7 @@
           <li><a href="./reference/reference-map.json" rel="nofollow">Reference map JSON</a></li>
           <li><a href="./reference/reference-map-validation.json" rel="nofollow">Validation report</a></li>
           <li><a href="../signature-registry.json" rel="nofollow">Signature registry (JSON)</a></li>
-          <li><a href="../DELT/ARTF/sbom.json" rel="nofollow">SBOM (latest)</a></li>
+          <li><a href="../artifacts/sbom.json" rel="nofollow">SBOM (latest)</a></li>
           <li><a href="../Vasilisa_High_Priestess_TinCanForest.jpg" rel="nofollow">Mascot image</a></li>
           <li><a href="./BossCat/Research/CONVERSION_SUMMARY.md" rel="nofollow">Latest research conversions</a></li>
           <li><a href="./assets/vendor/mermaid/mermaid-10.9.4.min.js" rel="nofollow">Mermaid (vendored)</a></li>

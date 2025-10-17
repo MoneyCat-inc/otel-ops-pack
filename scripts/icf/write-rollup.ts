@@ -17,9 +17,25 @@ function readJson<T>(path: string): T | null {
 }
 
 function main() {
-  // Inputs (best-effort): gate/loc.json and DELT/ARTF/gate-verification-results.json
+  // Inputs (best-effort): gate/loc.json and artifacts/gate-verification-results.json
   const loc = readJson<GateLoc>('gate/loc.json');
-  const gate = readJson<any>('DELT/ARTF/gate-verification-results.json');
+  const gateEvidencePaths = [
+    join('artifacts', 'gate-verification-results.json'),
+    join('DELT', 'ARTF', 'gate-verification-results.json')
+  ];
+
+  let gate: any = null;
+  for (const path of gateEvidencePaths) {
+    gate = readJson<any>(path);
+    if (gate) {
+      if (path !== gateEvidencePaths[0]) {
+        console.warn(
+          `[ICF] legacy gate evidence consumed from ${path}; please migrate producers to artifacts/`
+        );
+      }
+      break;
+    }
+  }
 
   const totalChanges = loc?.total ?? 0;
   const totalTests = gate?.tests?.total ?? 0;
