@@ -15,16 +15,16 @@ const BOSSCAT_AGENT = 'Playwright Export Agent';
 const SIGNOZ_URL = process.env.SIGNOZ_URL || 'http://localhost:8080';
 const SIGNOZ_SESSION = process.env.SIGNOZ_SESSION || '';
 const EXPORT_DIR = process.env.EXPORT_DIR || 'docs/observability/snapshots';
-const DASHBOARD_LIST_PATH = 'scripts/dashboard-list.json';
+const DASHBOARD_LIST_PATH = path.join('BRAV', 'SCPT', 'dashboard-list.json');
 
 // ECRR Framework: EXAMINE
 const startTime = new Date();
 const reportId = `ECRR-${startTime.toISOString().slice(0, 19).replace(/[T:]/g, '-')}`;
 
-console.log('🐾 BossCat SigNoz Dashboard Export - Playwright Edition');
+console.log('BossCat SigNoz Dashboard Export - Playwright Edition');
 console.log('MoneyCat Inc - Resonai [OTel] - BossCat OEM Agent');
 console.log('');
-console.log('🎯 ECRR Framework: EXAMINE Phase');
+console.log('TARGET: ECRR Framework - EXAMINE Phase');
 console.log(`Agent: ${BOSSCAT_AGENT}`);
 console.log(`Report ID: ${reportId}`);
 console.log(`Start Time: ${startTime.toISOString()}`);
@@ -41,7 +41,7 @@ async function loadDashboardConfig() {
         console.log(`  OK Dashboard List: ${dashboards.length} dashboards configured`);
         return dashboards;
     } catch (error) {
-        console.log('  ⚠️ Dashboard list not found, creating default configuration...');
+        console.log('  WARNING Dashboard list not found, creating default configuration...');
         
         const defaultDashboards = [
             { name: 'Windows Logs Dashboard', slug: 'windows-logs', priority: 'high' },
@@ -73,11 +73,11 @@ async function verifySignozHealth() {
             console.log('  OK SigNoz Health Check: PASSED');
             return true;
         } else {
-            console.log(`  ⚠️ SigNoz Health Check: HTTP ${response.status}`);
+            console.log(`  WARNING SigNoz Health Check: HTTP ${response.status}`);
             return false;
         }
     } catch (error) {
-        console.log(`  ⚠️ SigNoz Health Check: FAILED - ${error.message}`);
+        console.log(`  WARNING SigNoz Health Check: FAILED - ${error.message}`);
         return false;
     }
 }
@@ -99,7 +99,7 @@ async function ensureExportDirectories() {
  * ECRR Framework: CLEAN - Dashboard Export Implementation
  */
 async function exportDashboards(dashboards, exportDir) {
-    console.log('🔧 ECRR Framework: CLEAN Phase');
+    console.log('TOOLS ECRR Framework: CLEAN Phase');
     console.log('Executing dashboard export operations...');
     console.log('');
     
@@ -136,7 +136,7 @@ async function exportDashboards(dashboards, exportDir) {
     
     for (const dashboard of dashboards) {
         const { name, slug, priority } = dashboard;
-        console.log(`  📊 Exporting: ${name} (Priority: ${priority})`);
+        console.log(`  DASHBOARD Exporting: ${name} (Priority: ${priority})`);
         
         try {
             // Navigate to dashboard with retry logic
@@ -197,7 +197,7 @@ async function exportDashboards(dashboards, exportDir) {
             
         } catch (error) {
             const errorMsg = `Failed to export ${name}: ${error.message}`;
-            console.log(`    ❌ ${errorMsg}`);
+            console.log(`    ERROR ${errorMsg}`);
             
             exportErrors.push({
                 dashboard: name,
@@ -218,7 +218,7 @@ async function exportDashboards(dashboards, exportDir) {
  */
 async function generateEvidenceReports(exportResults, exportErrors, exportDir) {
     console.log('');
-    console.log('📊 ECRR Framework: REPORT Phase');
+    console.log('DASHBOARD ECRR Framework: REPORT Phase');
     console.log('Generating BossCat compliance artifacts...');
     
     const timestamp = startTime.toISOString().slice(0, 19).replace(/[T:]/g, '-');
@@ -248,20 +248,20 @@ async function generateEvidenceReports(exportResults, exportErrors, exportDir) {
     console.log(`  OK Export Summary: ${summaryFile}`);
     
     // Generate ECRR report
-    const ecrrReportContent = `# 📊 ECRR Report - BossCat SigNoz Dashboard Export
+    const ecrrReportContent = `# DASHBOARD ECRR Report - BossCat SigNoz Dashboard Export
 
 **Report ID**: ${reportId}
 **Agent**: ${BOSSCAT_AGENT}
 **Generated**: ${endTime.toISOString()}
 **Operation**: SigNoz Dashboard Export via Playwright
 
-## 🎯 Executive Summary
+## TARGET Executive Summary
 
 **Duration**: ${durationMinutes} minutes
-**Status**: ✅ SUCCESS (${exportResults.length} exports completed)
-**SigNoz Integration**: ✅ Operational via Playwright
+**Status**: OK SUCCESS (${exportResults.length} exports completed)
+**SigNoz Integration**: OK Operational via Playwright
 
-## 📊 Export Statistics
+## DASHBOARD Export Statistics
 
 - **Dashboard Count**: ${exportResults.length + exportErrors.length}
 - **Successful Exports**: ${exportResults.length}
@@ -269,24 +269,24 @@ async function generateEvidenceReports(exportResults, exportErrors, exportDir) {
 - **Export Directory**: \`${exportDir}\`
 - **Evidence Artifacts**: Generated
 
-## 🎯 BossCat Compliance
+## TARGET BossCat Compliance
 
-- ✅ ECRR methodology applied via Playwright automation
-- ✅ Evidence collection completed
-- ✅ SigNoz dashboard preservation verified
-- ✅ Executive reporting artifacts generated
+- OK ECRR methodology applied via Playwright automation
+- OK Evidence collection completed
+- OK SigNoz dashboard preservation verified
+- OK Executive reporting artifacts generated
 
-## 📈 Dashboard Export Results
+## TREND Dashboard Export Results
 
 | Dashboard | Status | File Size | Export Time |
 |-----------|--------|-----------|-------------|
-${exportResults.map(r => `| ${r.dashboard} | ✅ Success | ${r.size_kb} KB | ${r.timestamp} |`).join('\\n')}
+${exportResults.map(r => `| ${r.dashboard} | OK Success | ${r.size_kb} KB | ${r.timestamp} |`).join('\\n')}
 
-${exportErrors.length > 0 ? `## 🚨 Export Errors
+${exportErrors.length > 0 ? `## ALERT Export Errors
 
 ${exportErrors.map(e => `- **${e.dashboard}**: ${e.error}`).join('\\n')}` : ''}
 
-🐾 **End of ECRR Report** - BossCat OEM Agent Automated Reporting
+BossCat **End of ECRR Report** - BossCat OEM Agent Automated Reporting
 
 ---
 
@@ -300,7 +300,7 @@ ${exportErrors.map(e => `- **${e.dashboard}**: ${e.error}`).join('\\n')}` : ''}
         await fs.writeFile(ecrrReportFile, ecrrReportContent);
         console.log(`  OK ECRR Compliance Report: ${ecrrReportFile}`);
     } catch (error) {
-        console.log(`  ⚠️ Could not save ECRR report: ${error.message}`);
+        console.log(`  WARNING Could not save ECRR report: ${error.message}`);
     }
     
     // Generate metadata for docs index
@@ -330,7 +330,7 @@ ${exportErrors.map(e => `- **${e.dashboard}**: ${e.error}`).join('\\n')}` : ''}
  * ECRR Framework: ROLE - Agent Accountability
  */
 function reportRoleCompliance(summary) {
-    console.log('🐾 ECRR Framework: ROLE Phase');
+    console.log('BossCat ECRR Framework: ROLE Phase');
     console.log('Agent accountability verification...');
     
     console.log(`  OK Primary Agent: ${BOSSCAT_AGENT}`);
@@ -340,23 +340,23 @@ function reportRoleCompliance(summary) {
     console.log('  OK Executive Dashboard Delivery: CONFIRMED');
     
     console.log('');
-    console.log('📈 Export Statistics:');
+    console.log('TREND Export Statistics:');
     console.log(`  Total Dashboards: ${summary.dashboard_count}`);
     console.log(`  Successful Exports: ${summary.successful_exports}`);
     console.log(`  Failed Exports: ${summary.failed_exports}`);
     console.log(`  Export Directory: ${summary.export_directory}`);
     console.log('');
     
-    console.log('🎉 BossCat SigNoz Export COMPLETED Successfully!');
-    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.log('SUCCESS BossCat SigNoz Export COMPLETED Successfully!');
+    console.log('---------------------------------------------------');
     console.log(`Export Duration: ${summary.duration_minutes} minutes`);
     console.log(`Dashboards Exported: ${summary.successful_exports}/${summary.dashboard_count}`);
     console.log('Evidence Artifacts: Multiple files generated');
-    console.log('BossCat Compliance: ✅ VERIFIED');
+    console.log('BossCat Compliance: OK VERIFIED');
     console.log('Executive Dashboard Files: Ready for BossCat OEM review');
     
     console.log('');
-    console.log('🐾 BossCat OEM Agent - Operation Complete');
+    console.log('BossCat BossCat OEM Agent - Operation Complete');
     console.log('Next Action: Review exported dashboards and ECRR compliance report');
 }
 

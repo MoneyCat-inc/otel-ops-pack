@@ -1,43 +1,42 @@
 {
-  "version": "1.0",
-  "endedAt": "2025-10-10T00:35:26.1254722+01:00",
-  "actor": "BossCat OEM",
+  "version": "1.1",
+  "endedAt": "2025-10-16T11:58:22+01:00",
+  "actor": "Codex-Cloud",
   "verdict": "READY",
   "evidence": [
-    "docs\\observability\\snapshots\\gate-scan-20251010-003526.json"
+    "artifacts/gate-verification-results.json",
+    "docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md"
   ],
   "checks": [
     {
-      "name": "layout",
+      "name": "artifact_tree",
       "ok": true,
       "details": {
-        "paths": "ok"
+        "queueEvidence": "artifacts/queue-steward-verification.txt",
+        "gateResults": "artifacts/gate-verification-results.json"
       }
     },
     {
-      "name": "collector_health",
+      "name": "status_dashboard",
       "ok": true,
       "details": {
-        "ok": true,
-        "status": 200,
-        "body": "{\"status\":\"Server available\",\"upSince\":\"2025-10-10T00:28:04.1711225+01:00\",\"uptime\":\"7m16.864448s\"}",
-        "target": "http://localhost:13134/healthz"
+        "htmlLinks": "updated",
+        "jsonSource": "artifacts"
       }
     },
     {
-      "name": "synthetic_trace",
+      "name": "ascii_export",
       "ok": true,
       "details": {
-        "attempted": true,
-        "ok": true,
-        "exitCode": 0
+        "prComment": "PR_COMMENT_IONA_GATE_002_FINAL.md",
+        "encoding": "ASCII"
       }
     }
   ],
   "reasons": [
-    "maintenance: parallel cleanup pagination fix documented (ECRR)"
+    "Gate outputs and evidence now published under artifacts/ hierarchy"
   ],
   "branch": "main",
-  "commit": "27806e4",
+  "commit": "a7cc83cdd",
   "gatePhrase": "@cat ready-for-gate"
 }

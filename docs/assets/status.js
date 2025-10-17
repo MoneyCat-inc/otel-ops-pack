@@ -39,10 +39,22 @@
     }
 
     async function initGate() {
-    const el = $('gate-latest');
-    const ll = $('gate-links');
-    if (!el) return;
-    const data = await load('../DELT/ARTF/gate-verification-results.json') || await load('status/tests.json') || {};
+      const el = $('gate-latest');
+      const ll = $('gate-links');
+      if (!el) return;
+      let legacyUsed = false;
+      let data = await load('../artifacts/gate-verification-results.json');
+      if (!data) {
+        data = await load('../DELT/ARTF/gate-verification-results.json');
+        legacyUsed = !!data;
+      }
+      if (!data) {
+        data = await load('status/tests.json');
+      }
+      data = data || {};
+      if (legacyUsed) {
+        console.warn('BossCat status: gate evidence loaded from legacy DELT/ARTF directory. Migrate consumers to artifacts/.');
+      }
     const verdict = data.verdict || 'UNKNOWN';
     const ts = data.timestamp || data.endedAt || '';
     const branch = data.branch || '';
@@ -56,7 +68,7 @@
       <p><strong>Gate/Site:</strong> <span class="pill">${esc(gate)}</span> / <span class="pill">${esc(site)}</span></p>
       <p><strong>Timestamp:</strong> ${esc(ts)}</p>
       <p><strong>Branch:</strong> ${esc(branch)}</p>
-      <p><strong>Commit:</strong> <span class="pill" id="commit-pill">${esc(commit || '—')}</span> <button class="btn" id="copy-commit">Copy</button></p>
+      <p><strong>Commit:</strong> <span class="pill" id="commit-pill">${esc(commit || 'n/a')}</span> <button class="btn" id="copy-commit">Copy</button></p>
       <p><strong>Reasons:</strong> ${esc(reasons)}</p>
     `;
     const box = el.closest('.status');
@@ -128,7 +140,7 @@
     msg.className = 'refmap-placeholder';
     msg.setAttribute('role', 'status');
     msg.setAttribute('aria-live', 'polite');
-    msg.textContent = `Reference map unavailable — ${reason}`;
+    msg.textContent = `Reference map unavailable - ${reason}`;
     host.appendChild(msg);
   }
 
@@ -153,9 +165,9 @@
         }
       }
       const tagEntries = Object.entries(tagCounts).sort((a,b)=>b[1]-a[1]).slice(0,6);
-      const tagLine = tagEntries.length ? tagEntries.map(([k,v])=>`${esc(k)}=${v}`).join(' · ') : '—';
+      const tagLine = tagEntries.length ? tagEntries.map(([k,v])=>`${esc(k)}=${v}`).join(' | ') : '-';
       const pinnedTags = ['operations','governance'];
-      const pinnedLine = pinnedTags.map(k => `${k}=${tagCounts[k]||0}`).join(' · ');
+      const pinnedLine = pinnedTags.map(k => `${k}=${tagCounts[k]||0}`).join(' | ');
 
       const refmap = $('refmap');
       if (refmap) {
@@ -167,10 +179,10 @@
         pill.className = 'pill';
         if (m.generated_at) {
           const dt = new Date(m.generated_at);
-          pill.textContent = isNaN(dt) ? 'Last generated —' : `Last generated ${dt.toLocaleString()}`;
+          pill.textContent = isNaN(dt) ? 'Last generated -' : `Last generated ${dt.toLocaleString()}`;
           pill.classList.add('ok');
         } else {
-          pill.textContent = 'Last generated —';
+          pill.textContent = 'Last generated -';
           pill.classList.add('warn');
         }
         header.appendChild(pill);
@@ -180,8 +192,8 @@
         const summary = document.createElement('div');
         summary.innerHTML = `
           <p><strong>Nodes/Edges:</strong> ${nodesCount}/${edgesArr.length} ${missing>0?`<span class='pill'>missing: ${missing}</span>`:''}</p>
-          <p><strong>Docs by Importance:</strong> P0=${m.stats?.importanceCounts?.P0||0} · P1=${m.stats?.importanceCounts?.P1||0} · P2=${m.stats?.importanceCounts?.P2||0} · P3=${m.stats?.importanceCounts?.P3||0}</p>
-          <p><strong>P1 by Tag:</strong> ${pinnedLine} · Top: ${tagLine}</p>
+          <p><strong>Docs by Importance:</strong> P0=${m.stats?.importanceCounts?.P0||0} | P1=${m.stats?.importanceCounts?.P1||0} | P2=${m.stats?.importanceCounts?.P2||0} | P3=${m.stats?.importanceCounts?.P3||0}</p>
+          <p><strong>P1 by Tag:</strong> ${pinnedLine} | Top: ${tagLine}</p>
           <p><strong>Sample:</strong><br>${list}</p>
         `;
         refmap.appendChild(summary);

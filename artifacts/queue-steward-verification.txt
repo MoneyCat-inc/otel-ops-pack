@@ -1,13 +1,12 @@
-🐾 BossCat Queue Steward Verification
+BossCat Queue Steward Verification
 ------------------------------------
 Run ID: conveyor-2025-10-15T18-35-02Z
 Timestamp: 2025-10-15 18:35:02 UTC
 Queue Depth: 0 (active)
-Processed Jobs: 42 / 42 ✅
+Processed Jobs: 42 / 42 PASS
 Average Latency: 178ms (p95)
 Throughput: 312 ops/sec
 Error Rate: 0.0%
 Verification Agent: IONA-CATS-DOCS-BETA
 Evidence Checksum: 5c81c8d9-verified
-Status: ✅ PASS – Queue Steward operating within thresholds
-
+Status: PASS - Queue Steward operating within thresholds
