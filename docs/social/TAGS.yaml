@@ -1,0 +1,13 @@
+# Approved tags and when to use them (kept short and relevant)
+- tag: OSINT
+  when: Verification steps, geolocation, sourcing
+- tag: FactCheck
+  when: Verdict posts and debunks
+- tag: antimisinformation
+  when: Meta discussions about methods, hygiene
+- tag: mediahygiene
+  when: Process transparency and checklists
+- tag: OpenEvidence
+  when: Linking receipts / evidence pages
+- tag: ECRR
+  when: Process updates (Evidence→Contain→Rollback→Report)
