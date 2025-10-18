@@ -120,3 +120,11 @@
   },
   \"verdict\": \"COMPLETE\"
 }
+{"t":"2025-10-18T01:22:21.830Z","who":"A","type":"plan","lane":"SOCM","files_touched":1,"loc_delta":1,"msg":"compose draft"}
+{"t":"2025-10-18T01:22:21.831Z","who":"A","type":"edit","lane":"SOCM","files_touched":1,"loc_delta":1,"msg":"queued draft d_1760750541831"}
+{"t":"2025-10-18T01:22:21.831Z","who":"A","type":"report","lane":"SOCM","files_touched":1,"loc_delta":1,"msg":"draft-ready d_1760750541831"}
+{"t":"2025-10-18T01:22:21.832Z","who":"A","type":"exit","lane":"SOCM","files_touched":1,"loc_delta":1,"msg":"ok"}
+{"t":"2025-10-18T01:22:55.079Z","who":"A","type":"preflight","lane":"SOCM","msg":"start post"}
+{"t":"2025-10-18T01:22:55.079Z","who":"A","type":"report","lane":"SOCM","msg":"missing BSKY credentials; dry-run only"}
+{"t":"2025-10-18T01:22:55.080Z","who":"A","type":"report","lane":"SOCM","msg":"draft d_1760750541831 not approved; noop"}
+{"t":"2025-10-18T01:22:55.080Z","who":"A","type":"exit","lane":"SOCM","msg":"noop"}

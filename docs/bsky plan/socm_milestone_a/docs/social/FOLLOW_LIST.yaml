@@ -1,0 +1,13 @@
+# Curated follow list (reviewed; applied via scripts/social/follow.ts)
+# Add handles without the leading "@". Include a short reason for transparency.
+osint:
+  - handle: bellingcat.bsky.social
+    reason: OSINT investigations
+  - handle: tracey-j.bsky.social
+    reason: Geolocation & verification (example)
+factcheck:
+  - handle: politifact.bsky.social
+    reason: Fact‑checking outlet (example)
+observability:
+  - handle: opentelemetry.bsky.social
+    reason: Telemetry ecosystem (example)
