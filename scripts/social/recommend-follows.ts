@@ -5,7 +5,8 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import YAML from 'yaml';
 
-type Curated = { handle:string; rationale?:string; topics?:string[] }[];
+type Entry = { handle: string; topics?: string[]; rationale?: string };
+type Curated = Entry[];
 type Suggest = { handle:string; score:number; reasons:string[]; action:'follow_suggested' };
 
 const now = () => new Date().toISOString();
@@ -14,12 +15,36 @@ const OUT = (process.argv[process.argv.indexOf('--out')+1]) || 'artifacts/social
 async function readYaml(p:string){ return YAML.parse(await fs.readFile(p,'utf8')); }
 async function safeReadLines(p:string){ try{ return (await fs.readFile(p,'utf8')).trim().split('\n'); }catch{ return []; } }
 
+// Strict schema for FOLLOW_LIST.yaml - converts both array and object forms
+function toEntries(raw: unknown): Entry[] {
+  if (Array.isArray(raw)) return raw as Entry[];
+  if (raw && typeof raw === "object") {
+    // Handle nested category structure (osint: [...], observability: [...])
+    const entries: Entry[] = [];
+    for (const [key, value] of Object.entries(raw as Record<string, any>)) {
+      if (Array.isArray(value)) {
+        // Category with array of entries
+        entries.push(...value.filter((e: any) => e && e.handle));
+      } else if (value && typeof value === "object" && value.handle) {
+        // Single entry with handle as key
+        entries.push({
+          handle: key,
+          topics: Array.isArray(value.topics) ? value.topics : [],
+          rationale: typeof value.rationale === "string" ? value.rationale : undefined
+        });
+      }
+    }
+    return entries;
+  }
+  throw new Error("FOLLOW_LIST.yaml must be array<Entry> or map<handle,meta> or map<category,array<Entry>>");
+}
+
 (async () => {
   if (await fs.stat('.agent/LOCK').then(()=>true).catch(()=>false)) process.exit(50);
   await fs.appendFile('.agent/EVIDENCE.log', JSON.stringify({t:now(),who:'A',type:'plan',lane:'SOCM',msg:'recommend follows'})+'\n');
 
   const curatedRaw:any = await readYaml('docs/social/FOLLOW_LIST.yaml') || {};
-  const curated:Curated = Array.isArray(curatedRaw) ? curatedRaw : (curatedRaw.accounts || []);
+  const curated:Curated = toEntries(curatedRaw);
   const already = new Set<string>(
     (await safeReadLines('artifacts/social/followed.jsonl'))
       .map(l => { try{ return JSON.parse(l).handle as string; }catch{ return ''; } })
