@@ -16,16 +16,30 @@ factcheck:
     reason: AP Fact Check
 
 observability:
-  - handle: opentelemetry.bsky.social
-    reason: Telemetry ecosystem
-    note: "Check if account exists first"
-  - handle: signoz.bsky.social
-    reason: OSS observability stack
-    note: "Check if account exists first"
+  - handle: opentelemetry.io
+    reason: OpenTelemetry official account - standards + releases
+    verified: true
+  - handle: grafana.bsky.social
+    reason: Grafana Labs - OSS observability ecosystem
+    verified: true
+  - handle: clickhouse.com
+    reason: ClickHouse official - database for observability
+    verified: true
+  - handle: openobservability.bsky.social
+    reason: Open Observability Talks - community nexus
+    verified: true
 
 media_literacy:
   - handle: firstdraftnews.bsky.social
     reason: Misinformation research & training
+
+platform:
+  - handle: dot.net
+    reason: .NET official - Platform news for Windows audience
+    verified: true
+  - handle: msftazuresupport.bsky.social
+    reason: Azure Support - Cloud signal with reach
+    verified: true
 
 # Community (add as discovered)
 # - handle: example.bsky.social
