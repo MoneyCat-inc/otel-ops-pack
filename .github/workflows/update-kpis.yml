@@ -14,13 +14,14 @@ jobs:
       - uses: actions/checkout@v4
       - name: Generate KPIs
         run: |
-          cat > docs/status/kpis.json <<'JSON'
+          TIMESTAMP=$(date -Iseconds)
+          cat > docs/status/kpis.json <<JSON
           {
             "gate": "99.5%",
             "error": "0.6%",
             "canary": 3,
             "otel": "ok",
-            "ts": "$(date -Iseconds)"
+            "ts": "$TIMESTAMP"
           }
           JSON
       - name: Commit
