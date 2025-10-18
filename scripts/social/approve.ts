@@ -2,10 +2,15 @@
  * Marks the latest draft as approved:true (for human gate usage).
  * ECRR logs to .agent/EVIDENCE.log. This rewrites the last JSONL line for simplicity.
  */
-import { readFileSync, writeFileSync, appendFileSync, existsSync } from "fs";
+import { readFileSync, writeFileSync, appendFileSync, existsSync, mkdirSync } from "fs";
+
+function ensureDir(d: string) {
+  try { mkdirSync(d, { recursive: true }); } catch {}
+}
 
 type EventType = "plan"|"edit"|"report"|"exit";
 function logEvent(who: "A"|"B", type: EventType, msg: string) {
+  ensureDir(".agent");
   const line = JSON.stringify({ t: new Date().toISOString(), who, type, lane: "SOCM", msg });
   appendFileSync(".agent/EVIDENCE.log", line + "\n", "utf8");
 }
