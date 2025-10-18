@@ -110,7 +110,7 @@
     "@opentelemetry/sdk-node": "^0.206.0",
     "@opentelemetry/sdk-trace-base": "^2.1.0",
     "@opentelemetry/sdk-trace-node": "^2.1.0",
-    "@playwright/test": "^1.56.0",
+    "@playwright/test": "^1.56.1",
     "@types/better-sqlite3": "^7.6.8",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.8.0",
