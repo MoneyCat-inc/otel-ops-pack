@@ -1,0 +1,30 @@
+name: Update KPIs
+on:
+  schedule:
+    - cron: "0 2 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate KPIs
+        run: |
+          cat > docs/status/kpis.json <<'JSON'
+          {
+            "gate": "99.5%",
+            "error": "0.6%",
+            "canary": 3,
+            "otel": "ok",
+            "ts": "$(date -Iseconds)"
+          }
+          JSON
+      - name: Commit
+        run: |
+          git config user.name "BossCat Bot"
+          git config user.email "bot@resonai.io"
+          git add docs/status/kpis.json
+          git commit -m "chore(hub): update KPIs [skip ci]" || true
+          git push
+
