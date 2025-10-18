@@ -1,0 +1,26 @@
+name: Social Post (Gated)
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  gate-and-post:
+    if: contains(github.event.comment.body, '@cat ready-for-gate')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci || npm install
+      - name: Approve latest draft (B)
+        run: npx tsx scripts/social/approve.ts
+      - name: Post to Bluesky (A) — dry-run if creds absent
+        env:
+          BSKY_HANDLE: ${{ secrets.BSKY_HANDLE }}
+          BSKY_APP_PASSWORD: ${{ secrets.BSKY_APP_PASSWORD }}
+          BSKY_SERVICE: ${{ secrets.BSKY_SERVICE }}
+        run: npx tsx scripts/social/post.ts
