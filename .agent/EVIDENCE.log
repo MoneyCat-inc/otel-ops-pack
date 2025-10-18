@@ -134,3 +134,9 @@
 {"t":"2025-10-18T01:43:58.921Z","who":"A","type":"preflight","lane":"SOCM","msg":"start post"}
 {"t":"2025-10-18T01:43:58.923Z","who":"A","type":"report","lane":"SOCM","msg":"dry-run posted d_1760750541831 → dry-run://missing-credentials"}
 {"t":"2025-10-18T01:43:58.923Z","who":"A","type":"exit","lane":"SOCM","msg":"ok"}
+{"t":"2025-10-18T01:51:17.821Z","who":"A","type":"preflight","lane":"SOCM","msg":"start post"}
+{"t":"2025-10-18T01:51:17.823Z","who":"A","type":"report","lane":"SOCM","msg":"dry-run posted d_1760750541831 → dry-run://missing-credentials"}
+{"t":"2025-10-18T01:51:17.824Z","who":"A","type":"exit","lane":"SOCM","msg":"ok"}
+{"t":"2025-10-18T01:51:30.139Z","who":"A","type":"preflight","lane":"SOCM","msg":"start post"}
+{"t":"2025-10-18T01:51:30.141Z","who":"A","type":"report","lane":"SOCM","msg":"no approved drafts"}
+{"t":"2025-10-18T01:51:30.141Z","who":"A","type":"exit","lane":"SOCM","msg":"noop"}
