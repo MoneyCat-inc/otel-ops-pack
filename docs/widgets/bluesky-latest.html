@@ -1,0 +1,11 @@
+<!-- Read-only widget (CSP-friendly: external JS/CSS). Drop into any page in docs/ site. -->
+<link rel="stylesheet" href="../assets/bluesky-widget.css">
+<section aria-labelledby="bsky-heading">
+  <h2 id="bsky-heading">Latest on Bluesky</h2>
+  <div data-bsky-latest data-src="bluesky-latest.json"
+       data-fallback='<p><a href="https://bsky.app/profile/resonai.bsky.social">See profile on Bluesky</a></p>'>
+    <p>Loading…</p>
+  </div>
+</section>
+<script src="../assets/bluesky-widget.js" defer></script>
+

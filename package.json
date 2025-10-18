@@ -69,7 +69,10 @@
     "social:compose": "tsx scripts/social/compose.ts",
     "social:approve": "tsx scripts/social/approve.ts",
     "social:post": "tsx scripts/social/post.ts",
-    "social:follow": "tsx scripts/social/follow.ts"
+    "social:follow": "tsx scripts/social/follow.ts",
+    "social:export": "tsx scripts/social/export-latest.ts --out docs/widgets/bluesky-latest.json",
+    "social:trends": "tsx scripts/social/trends.ts --out artifacts/social/trends.json --suggest docs/social/TAGS.suggestions.yaml",
+    "social:recommend-follows": "tsx scripts/social/recommend-follows.ts --out artifacts/social/follow_suggestions.jsonl"
   },
   "dependencies": {
     "@atproto/api": "^0.13.0",
