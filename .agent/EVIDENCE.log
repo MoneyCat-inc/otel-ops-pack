@@ -128,3 +128,9 @@
 {"t":"2025-10-18T01:22:55.079Z","who":"A","type":"report","lane":"SOCM","msg":"missing BSKY credentials; dry-run only"}
 {"t":"2025-10-18T01:22:55.080Z","who":"A","type":"report","lane":"SOCM","msg":"draft d_1760750541831 not approved; noop"}
 {"t":"2025-10-18T01:22:55.080Z","who":"A","type":"exit","lane":"SOCM","msg":"noop"}
+{"t":"2025-10-18T01:43:31.750Z","who":"B","type":"plan","lane":"SOCM","msg":"approve latest draft"}
+{"t":"2025-10-18T01:43:31.751Z","who":"B","type":"edit","lane":"SOCM","msg":"approved draft d_1760750541831"}
+{"t":"2025-10-18T01:43:31.752Z","who":"B","type":"exit","lane":"SOCM","msg":"ok"}
+{"t":"2025-10-18T01:43:58.921Z","who":"A","type":"preflight","lane":"SOCM","msg":"start post"}
+{"t":"2025-10-18T01:43:58.923Z","who":"A","type":"report","lane":"SOCM","msg":"dry-run posted d_1760750541831 → dry-run://missing-credentials"}
+{"t":"2025-10-18T01:43:58.923Z","who":"A","type":"exit","lane":"SOCM","msg":"ok"}
