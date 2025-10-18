@@ -140,3 +140,18 @@
 {"t":"2025-10-18T01:51:30.139Z","who":"A","type":"preflight","lane":"SOCM","msg":"start post"}
 {"t":"2025-10-18T01:51:30.141Z","who":"A","type":"report","lane":"SOCM","msg":"no approved drafts"}
 {"t":"2025-10-18T01:51:30.141Z","who":"A","type":"exit","lane":"SOCM","msg":"noop"}
+{"t":"2025-10-18T02:03:46.160Z","who":"A","type":"plan","lane":"SOCM","files_touched":1,"loc_delta":1,"msg":"compose draft"}
+{"t":"2025-10-18T02:03:46.162Z","who":"A","type":"edit","lane":"SOCM","files_touched":1,"loc_delta":1,"msg":"queued draft d_1760753026161"}
+{"t":"2025-10-18T02:03:46.162Z","who":"A","type":"report","lane":"SOCM","files_touched":1,"loc_delta":1,"msg":"draft-ready d_1760753026161"}
+{"t":"2025-10-18T02:03:46.162Z","who":"A","type":"exit","lane":"SOCM","files_touched":1,"loc_delta":1,"msg":"ok"}
+{"t":"2025-10-18T02:03:46.952Z","who":"B","type":"plan","lane":"SOCM","msg":"approve latest draft"}
+{"t":"2025-10-18T02:03:46.953Z","who":"B","type":"edit","lane":"SOCM","msg":"approved draft d_1760753026161"}
+{"t":"2025-10-18T02:03:46.953Z","who":"B","type":"exit","lane":"SOCM","msg":"ok"}
+{"t":"2025-10-18T02:03:47.624Z","who":"A","type":"preflight","lane":"SOCM","msg":"start post"}
+{"t":"2025-10-18T02:03:48.811Z","who":"A","type":"report","lane":"SOCM","msg":"error: Invalid identifier or password"}
+{"t":"2025-10-18T02:09:13.356Z","who":"A","type":"preflight","lane":"SOCM","msg":"start post"}
+{"t":"2025-10-18T02:09:15.055Z","who":"A","type":"report","lane":"SOCM","msg":"posted d_1760753026161 → at://did:plc:ohvz4d5ucvbqiykwp2pkfato/app.bsky.feed.post/3m3gpf45i652i"}
+{"t":"2025-10-18T02:09:15.055Z","who":"A","type":"exit","lane":"SOCM","msg":"ok"}
+{"t":"2025-10-18T02:09:25.217Z","who":"A","type":"preflight","lane":"SOCM","msg":"start post"}
+{"t":"2025-10-18T02:09:25.218Z","who":"A","type":"report","lane":"SOCM","msg":"no approved drafts"}
+{"t":"2025-10-18T02:09:25.218Z","who":"A","type":"exit","lane":"SOCM","msg":"noop"}
