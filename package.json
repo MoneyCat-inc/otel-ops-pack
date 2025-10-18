@@ -65,9 +65,14 @@
     "notify:archive": "pwsh -File BRAV/SCPT/sec-archiver/run-notifications.ps1 -ChunkSize 500",
     "notify:archive:mark": "pwsh -File BRAV/SCPT/sec-archiver/run-notifications.ps1 -ChunkSize 500 -MarkRead",
     "notify:archive:dry": "pwsh -File BRAV/SCPT/sec-archiver/run-notifications.ps1 -ChunkSize 50 -DryRun",
-    "anticlickbait:verify": "node BRAV/SCPT/verify-anticlickbait-lane.js"
+    "anticlickbait:verify": "node BRAV/SCPT/verify-anticlickbait-lane.js",
+    "social:compose": "tsx scripts/social/compose.ts",
+    "social:approve": "tsx scripts/social/approve.ts",
+    "social:post": "tsx scripts/social/post.ts",
+    "social:follow": "tsx scripts/social/follow.ts"
   },
   "dependencies": {
+    "@atproto/api": "^0.13.0",
     "@aws-sdk/client-bedrock-runtime": "^3.911.0",
     "@opentelemetry/auto-instrumentations-node": "^0.65.0",
     "@opentelemetry/core": "^2.1.0",
@@ -90,6 +95,7 @@
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "sqlite3": "^5.1.7",
+    "yaml": "^2.4.0",
     "zod": "^4.1.12"
   },
   "devDependencies": {

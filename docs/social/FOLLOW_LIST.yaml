@@ -1,13 +1,32 @@
-# Curated follow list (reviewed; applied via scripts/social/follow.ts)
-# Add handles without the leading "@". Include a short reason for transparency.
+# Resonai [OTel] - Declarative Follow List
+# Agent B reviews additions; Agent A applies with --apply flag
+
 osint:
   - handle: bellingcat.bsky.social
-    reason: OSINT investigations
-  - handle: tracey-j.bsky.social
-    reason: Geolocation & verification (example)
+    reason: Open-source investigations (org)
+  - handle: quiztime.bsky.social
+    reason: Geolocation/verifications (community hub)
+  - handle: sector035.bsky.social
+    reason: Daily OSINT tips (individual)
+
 factcheck:
   - handle: politifact.bsky.social
-    reason: Fact‑checking outlet (example)
+    reason: Fact-checking outlet
+  - handle: apfactcheck.bsky.social
+    reason: AP Fact Check
+
 observability:
   - handle: opentelemetry.bsky.social
-    reason: Telemetry ecosystem (example)
+    reason: Telemetry ecosystem
+    note: "Check if account exists first"
+  - handle: signoz.bsky.social
+    reason: OSS observability stack
+    note: "Check if account exists first"
+
+media_literacy:
+  - handle: firstdraftnews.bsky.social
+    reason: Misinformation research & training
+
+# Community (add as discovered)
+# - handle: example.bsky.social
+#   reason: Why we follow

@@ -1,8 +1,10 @@
 /* scripts/social/post.ts
- * Gated poster: reads last approved draft from queue and (dry-run) posts.
- * Real network call is plugged in at Milestone B.
+ * Gated poster: reads the latest approved draft from artifacts/social/queue.jsonl
+ * If BSKY credentials are present, performs a real post via @atproto/api.
+ * Otherwise, performs a DRY-RUN (records intent only).
+ * ECRR logs to .agent/EVIDENCE.log and respects .agent/LOCK kill-switch.
  */
-import { appendFileSync, existsSync, readFileSync, writeFileSync } from "fs";
+import { appendFileSync, existsSync, readFileSync, appendFileSync as appendFS } from "fs";
 
 type EventType = "plan"|"preflight"|"report"|"exit";
 function logEvent(who: "A"|"B", type: EventType, msg: string) {
@@ -10,47 +12,112 @@ function logEvent(who: "A"|"B", type: EventType, msg: string) {
   appendFileSync(".agent/EVIDENCE.log", line + "\n", "utf8");
 }
 
-function readLastDraft(): any | null {
-  if (!existsSync("artifacts/social/queue.jsonl")) return null;
-  const data = readFileSync("artifacts/social/queue.jsonl","utf8").trim().split("\n").filter(Boolean);
-  if (data.length === 0) return null;
-  try { return JSON.parse(data[data.length-1]); } catch { return null; }
+function loadDrafts(): any[] {
+  if (!existsSync("artifacts/social/queue.jsonl")) return [];
+  const lines = readFileSync("artifacts/social/queue.jsonl","utf8").split("\n").filter(Boolean);
+  const out: any[] = [];
+  for (const ln of lines) {
+    try { out.push(JSON.parse(ln)); } catch {}
+  }
+  return out;
 }
 
-function appendPosted(rec: any) {
-  const line = JSON.stringify(rec);
-  appendFileSync("artifacts/social/posted.jsonl", line + "\n","utf8");
+function latestApprovedUnposted(drafts: any[]): any | null {
+  for (let i = drafts.length - 1; i >= 0; i--) {
+    const d = drafts[i];
+    if (d && d.kind === "post" && d.approved === true && d.posted !== true) return d;
+  }
+  return null;
 }
 
-function main() {
+function sanitizeTags(tags: any): string[] {
+  if (!Array.isArray(tags)) return [];
+  return tags
+    .map((t: any) => String(t||"").trim())
+    .filter(Boolean)
+    .map((t: string) => {
+      const core = t.replace(/^#+/,"");
+      return `#${core}`;
+    });
+}
+
+function joinContent(text: string, tags: string[], links: string[]): string {
+  const parts: string[] = [];
+  if (text && text.length) parts.push(text.trim());
+  if (tags && tags.length) parts.push(tags.join(" "));
+  if (links && links.length) parts.push(links.join(" "));
+  return parts.join(" ").trim();
+}
+
+async function postReal(content: string) {
+  const service = process.env.BSKY_SERVICE || "https://bsky.social";
+  const handle = process.env.BSKY_HANDLE || "";
+  const appPass = process.env.BSKY_APP_PASSWORD || "";
+  if (!handle || !appPass) return { uri: "dry-run://missing-credentials" , dryRun: true };
+
+  // Lazy import so script works even if deps not installed yet
+  // @ts-ignore
+  const { BskyAgent } = await import("@atproto/api");
+  const agent = new BskyAgent({ service });
+  await agent.login({ identifier: handle, password: appPass });
+
+  const text = content.slice(0, 300); // Bluesky hard cap (approx.)
+  // Try modern helper first; fall back to raw record if not available
+  try {
+    // @ts-ignore
+    const out = await agent.post({ text });
+    return { uri: out?.uri || "", dryRun: false };
+  } catch (e) {
+    const did = (agent as any)?.session?.did;
+    const record = {
+      $type: "app.bsky.feed.post",
+      text,
+      createdAt: new Date().toISOString()
+    };
+    // @ts-ignore
+    const out2 = await agent.api.com.atproto.repo.createRecord({
+      repo: did,
+      collection: "app.bsky.feed.post",
+      record
+    });
+    return { uri: out2?.uri || "", dryRun: false };
+  }
+}
+
+function appendPostedLedger(entry: any) {
+  appendFS("artifacts/social/posted.jsonl", JSON.stringify(entry) + "\n", "utf8");
+}
+
+async function main() {
   logEvent("A","preflight","start post");
   if (existsSync(".agent/LOCK")) {
     logEvent("A","report","kill-switch present; abort");
     process.exit(50);
   }
 
-  const handle = process.env.BSKY_HANDLE || "";
-  const appPass = process.env.BSKY_APP_PASSWORD || "";
-  if (!handle || !appPass) {
-    logEvent("A","report","missing BSKY credentials; dry-run only");
-  }
+  const drafts = loadDrafts();
+  const d = latestApprovedUnposted(drafts);
+  if (!d) { logEvent("A","report","no approved drafts"); logEvent("A","exit","noop"); return; }
 
-  const d = readLastDraft();
-  if (!d) { logEvent("A","report","no drafts"); logEvent("A","exit","noop"); return; }
-  if (!d.approved) { logEvent("A","report",`draft ${d.id} not approved; noop`); logEvent("A","exit","noop"); return; }
+  const tags = sanitizeTags(d.tags || []);
+  const links = Array.isArray(d.links) ? d.links.map((s:any)=>String(s).trim()).filter(Boolean) : [];
+  const content = joinContent(String(d.text||""), tags, links);
 
-  // Milestone A: DRY-RUN – do not hit network. Record intent & ledger.
-  const posted = {
+  const res = await postReal(content);
+  const ledger = {
     postedAt: new Date().toISOString(),
     draftId: d.id,
-    handle,
-    bskyUri: "dry-run://not-posted",
-    text: d.text,
-    tags: d.tags||[]
+    handle: process.env.BSKY_HANDLE || "",
+    bskyUri: res.uri,
+    dryRun: res.dryRun === true,
+    text: content
   };
-  appendPosted(posted);
-  logEvent("A","report",`dry-run posted ${d.id}`);
+  appendPostedLedger(ledger);
+  logEvent("A","report", (res.dryRun ? "dry-run " : "") + `posted ${d.id} → ${res.uri || "no-uri"}`);
   logEvent("A","exit","ok");
 }
 
-main();
+main().catch(err => {
+  logEvent("A","report","error: " + (err?.message || String(err)));
+  process.exit(1);
+});
