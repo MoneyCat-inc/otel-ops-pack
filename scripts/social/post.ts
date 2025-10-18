@@ -4,10 +4,15 @@
  * Otherwise, performs a DRY-RUN (records intent only).
  * ECRR logs to .agent/EVIDENCE.log and respects .agent/LOCK kill-switch.
  */
-import { appendFileSync, existsSync, readFileSync, appendFileSync as appendFS } from "fs";
+import { appendFileSync, existsSync, readFileSync, writeFileSync, appendFileSync as appendFS, mkdirSync } from "fs";
+
+function ensureDir(d: string) {
+  try { mkdirSync(d, { recursive: true }); } catch {}
+}
 
 type EventType = "plan"|"preflight"|"report"|"exit";
 function logEvent(who: "A"|"B", type: EventType, msg: string) {
+  ensureDir(".agent");
   const line = JSON.stringify({ t: new Date().toISOString(), who, type, lane: "SOCM", msg });
   appendFileSync(".agent/EVIDENCE.log", line + "\n", "utf8");
 }
@@ -113,6 +118,23 @@ async function main() {
     text: content
   };
   appendPostedLedger(ledger);
+  
+  // Mark draft as posted in queue to prevent double-posting
+  d.posted = true;
+  d.postedAt = ledger.postedAt;
+  const queueLines = readFileSync("artifacts/social/queue.jsonl", "utf8").split("\n");
+  for (let i = queueLines.length - 1; i >= 0; i--) {
+    if (!queueLines[i].trim()) continue;
+    try {
+      const obj = JSON.parse(queueLines[i]);
+      if (obj.id === d.id) {
+        queueLines[i] = JSON.stringify(d);
+        break;
+      }
+    } catch {}
+  }
+  writeFileSync("artifacts/social/queue.jsonl", queueLines.filter(Boolean).join("\n") + "\n", "utf8");
+  
   logEvent("A","report", (res.dryRun ? "dry-run " : "") + `posted ${d.id} → ${res.uri || "no-uri"}`);
   logEvent("A","exit","ok");
 }
