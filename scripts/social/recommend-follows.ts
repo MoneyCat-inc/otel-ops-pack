@@ -18,7 +18,8 @@ async function safeReadLines(p:string){ try{ return (await fs.readFile(p,'utf8')
   if (await fs.stat('.agent/LOCK').then(()=>true).catch(()=>false)) process.exit(50);
   await fs.appendFile('.agent/EVIDENCE.log', JSON.stringify({t:now(),who:'A',type:'plan',lane:'SOCM',msg:'recommend follows'})+'\n');
 
-  const curated:Curated = await readYaml('docs/social/FOLLOW_LIST.yaml') || [];
+  const curatedRaw:any = await readYaml('docs/social/FOLLOW_LIST.yaml') || {};
+  const curated:Curated = Array.isArray(curatedRaw) ? curatedRaw : (curatedRaw.accounts || []);
   const already = new Set<string>(
     (await safeReadLines('artifacts/social/followed.jsonl'))
       .map(l => { try{ return JSON.parse(l).handle as string; }catch{ return ''; } })
@@ -31,7 +32,7 @@ async function safeReadLines(p:string){ try{ return (await fs.readFile(p,'utf8')
   const approved = new Set<string>((tagsDoc.approved||[]).map((t:any)=>String(t).toLowerCase()));
 
   const suggestions:Suggest[] = curated
-    .filter(c => !already.has(c.handle))
+    .filter((c:any) => c && c.handle && !already.has(c.handle))
     .map(c => {
       const reasons = ['curated:list'];
       let score = 0.8;
