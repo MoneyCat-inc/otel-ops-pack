@@ -72,7 +72,8 @@
     "social:follow": "tsx scripts/social/follow.ts",
     "social:export": "tsx scripts/social/export-latest.ts --out docs/widgets/bluesky-latest.json",
     "social:trends": "tsx scripts/social/trends.ts --out artifacts/social/trends.json --suggest docs/social/TAGS.suggestions.yaml",
-    "social:recommend-follows": "tsx scripts/social/recommend-follows.ts --out artifacts/social/follow_suggestions.jsonl"
+    "social:recommend-follows": "tsx scripts/social/recommend-follows.ts --out artifacts/social/follow_suggestions.jsonl",
+    "social:icf-lesson": "tsx scripts/social/icf-lesson-intake.ts"
   },
   "dependencies": {
     "@atproto/api": "^0.13.0",
