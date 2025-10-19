@@ -1,0 +1,17 @@
+name: Link Check
+on:
+  pull_request:
+  schedule:
+    - cron: "0 1 * * *"
+
+jobs:
+  lychee:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: lycheeverse/lychee-action@v1
+        with:
+          args: --verbose --no-progress --config .lychee.toml "index.html" "docs/**/*.html"
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+

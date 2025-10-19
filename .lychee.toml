@@ -3,6 +3,7 @@ verbose = "info"
 no_progress = true
 cache = false
 max_cache_age = "0s"
+
 # Allow limited redirect chains so docs with short-link wrappers still resolve.
 max_redirects = 5
 
@@ -12,10 +13,12 @@ retry_wait_time = 2
 
 # Accept HTTP 200 (OK) and 429 (rate limited) responses during gate checks.
 accept = ["200", "429"]
+
 include_fragments = false
 skip_missing = false
 include_verbatim = false
 glob_ignore_case = false
+
 exclude = [
   "^mailto:",
   "^tel:",
@@ -24,3 +27,6 @@ exclude = [
   "^https://127\\.0\\.0\\.1",
   "^http://127\\.0\\.0\\.1"
 ]
+
+max_concurrency = 8
+timeout = 10
