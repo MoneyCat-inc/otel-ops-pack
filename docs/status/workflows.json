@@ -1,5 +1,6 @@
 {
   "description": "GitHub Actions workflows registry - triggers extracted from on: block only",
+  "updated": "2025-10-19T08:41:37.1824328+01:00",
   "workflows": [
     {
       "name": "adot-config-gate",
@@ -594,6 +595,5 @@
       "scheduled": true
     }
   ],
-  "updated": "2025-10-19T08:34:40.0721699+01:00",
   "total": 74
 }

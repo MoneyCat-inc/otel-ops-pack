@@ -41,7 +41,12 @@
 - After modifying workflow triggers (`on:` block)
 - After renaming/deleting workflows
 
-**Command:**
+**Quick command:**
+```powershell
+pwsh scripts/regenerate-workflows-registry.ps1
+```
+
+**Manual command (if needed):**
 ```powershell
 cd c:\otel
 
