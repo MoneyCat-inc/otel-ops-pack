@@ -2,7 +2,7 @@
 
 [![ECRR](https://img.shields.io/badge/ECRR-Examine→Clean→Report→Role-7c5cff?style=for-the-badge&logo=gitbook&logoColor=white)](docs/bosscat/misc/AGENTS.md#-agents--ecrr-mantra)
 [![BossCat Gate](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/bosscat-gate-verify.yml/badge.svg)](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/bosscat-gate-verify.yml)
-[![CodeQL](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/codeql.yml/badge.svg)](../../actions/workflows/codeql.yml)
+[![CodeQL](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/codeql.yml/badge.svg)](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/codeql.yml)
 [![Maintained by MoneyCat-inc](https://img.shields.io/badge/Maintained%20by-MoneyCat--inc-00aa88?style=for-the-badge&logo=github&logoColor=white)](https://github.com/MoneyCat-inc)
 
 **Windows-native OpenTelemetry observability** feeding Windows Event Logs and file logs into **SigNoz** for real-time monitoring. Optimized for low latency (200ms batches) with noise filtering (~50% volume reduction).
@@ -99,7 +99,7 @@ We follow strict **BossCat governance** with immutable merge rules:
 - **Gate verification:** Must pass before merge
 - **Kill-switch:** Active for drift control
 
-See: [Contributing Guide](CONTRIBUTING.md) | [ECRR Manual](docs/bosscat/misc/ART_OF_ECRR.md)
+See: [ECRR Manual](docs/bosscat/misc/ART_OF_ECRR.md) | [Agents & Hierarchy](docs/bosscat/misc/AGENTS.md)
 
 ---
 
@@ -154,7 +154,7 @@ pwsh scripts/verify-pipeline.ps1
 **Maintained by:** MoneyCat-inc  
 **Authority:** BossCat OEM (Executive Overseer Manager)  
 **Methodology:** ECRR (Examine → Clean → Report → Role)  
-**Creative Source:** [docs/comfort-cat/](docs/comfort-cat/)
+**Creative Guide:** See Documentation Hub for creative references
 
 **Professional Site Rebuild:** October 7, 2025  
 Unified navigation, docs hub, and observability interfaces.

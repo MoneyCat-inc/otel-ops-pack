@@ -90,7 +90,8 @@ jobs:
             ".agent",
             "BRAV",
             "CHAR",
-            "DELT"
+            "DELT",
+            "docs/BossCat/BossCat"
           ]
           # Only check markdown files
           include_verbatim = true
