@@ -151,10 +151,10 @@ Evidence Trails:           Comprehensive ✅
 ### Verification Data
 - [Gate Verification JSON](../DELT/ARTF/gate-verification-results.json)
 - [Gate Ready JSON](../DELT/ARTF/gate-ready-exec-20251012.json)
-- [PR Comment](../PR_COMMENT_GATE_READY_007.md)
+- [PR Comment](docs/pr/misc/PR_COMMENT_GATE_READY_007.md)
 
 ### Operations Log
-- [BossCat Log](../BOSSCAT_LOG.md)
+- [BossCat Log](docs/bosscat/misc/BOSSCAT_LOG.md)
 - [IONA Errors](IONA_ERRORS.md)
 - [BossCat TODO](BossCat/TODO.md)
 

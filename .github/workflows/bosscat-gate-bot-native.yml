@@ -34,7 +34,16 @@ jobs:
   smoke:
     name: Smoke Test (Changed Paths)
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 25  # Increased from 10 to handle Docker bootstrap lag
+    
+    # Cancel older runs of the same ref to free runners & avoid double-compose
+    concurrency:
+      group: smoke-test-${{ github.ref }}
+      cancel-in-progress: true
+    
+    env:
+      SIGNOZ_COMPOSE: docker-compose-signoz.yml
+      COMPOSE_TIMEOUT_SEC: 1200  # 20 minutes
     
     steps:
       - name: Checkout
@@ -56,17 +65,136 @@ jobs:
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
       
-      - name: Start SigNoz (Docker Compose)
+      - name: 🐳 Docker Warm-up
+        shell: bash
         run: |
-          docker compose -f docker-compose-signoz.yml up -d
-          # Wait for health
-          timeout 60 bash -c 'until docker compose -f docker-compose-signoz.yml ps | grep -q "healthy"; do sleep 2; done' || true
+          echo "Docker:"; docker --version || true
+          echo "Compose:"; docker compose version || true
+          echo "Waiting for Docker daemon..."
+          for i in {1..30}; do
+            if docker info >/dev/null 2>&1; then
+              echo "✅ Docker is ready"
+              break
+            fi
+            echo "  Still waiting ($i/30)..."
+            sleep 2
+          done
+      
+      - name: 📋 Validate Compose File
+        shell: bash
+        run: docker compose -f "$SIGNOZ_COMPOSE" config >/dev/null
+      
+      - name: 📥 Pre-pull SigNoz Images (3 attempts)
+        shell: bash
+        run: |
+          for i in 1 2 3; do
+            if docker compose -f "$SIGNOZ_COMPOSE" pull --quiet; then
+              echo "✅ Pulled images successfully"
+              exit 0
+            fi
+            echo "⚠️ Pull failed (attempt $i/3). Retrying in 15s..."
+            sleep 15
+          done
+          echo "❌ ERROR: Unable to pull images after 3 attempts"
+          exit 1
+      
+      - name: 🔧 Create Health Wait Script
+        shell: bash
+        run: |
+          mkdir -p ci
+          cat > ci/wait-for-compose.sh <<'BASH'
+          #!/usr/bin/env bash
+          set -euo pipefail
+          FILE="$1"
+          TIMEOUT="${2:-900}"
+          deadline=$(( $(date +%s) + TIMEOUT ))
+          services=$(docker compose -f "$FILE" ps --services)
+          echo "Waiting up to ${TIMEOUT}s for services: $services"
+          
+          while [ "$(date +%s)" -lt "$deadline" ]; do
+            unhealthy=0
+            for s in $services; do
+              cid=$(docker compose -f "$FILE" ps -q "$s" 2>/dev/null || echo "")
+              if [ -z "$cid" ]; then
+                unhealthy=1
+                echo "⏳ Container for $s not created yet..."
+                continue
+              fi
+              
+              # Prefer container health; fallback to state if no healthcheck defined
+              health=$(docker inspect --format='{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}' "$cid" 2>/dev/null || echo "unknown")
+              
+              case "$health" in
+                healthy)
+                  echo "? Service $s health=$health"
+                  ;;
+                running)
+                  echo "? Service $s status=$health"
+                  ;;
+                starting)
+                  unhealthy=1
+                  echo "? Service $s still starting (status=$health)"
+                  ;;
+                exited)
+                  exit_code=$(docker inspect --format='{{.State.ExitCode}}' "$cid" 2>/dev/null || echo "unknown")
+                  if [ "$exit_code" = "0" ]; then
+                    echo "? Service $s exited successfully (code 0)"
+                  else
+                    echo "?? Service $s exited with code $exit_code"
+                    unhealthy=1
+                  fi
+                  ;;
+                *)
+                  echo "?? Service $s health=$health"
+                  unhealthy=1
+                  ;;
+              esac
+            done
+            
+            if [ "$unhealthy" -eq 0 ]; then
+              echo "✅ All services are healthy"
+              exit 0
+            fi
+            sleep 5
+          done
+          
+          echo "❌ ERROR: Timeout waiting for healthy containers"
+          docker compose -f "$FILE" ps
+          exit 1
+          BASH
+          chmod +x ci/wait-for-compose.sh
+      
+      - name: 🚀 Start SigNoz (Docker Compose)
+        shell: bash
+        timeout-minutes: 20
+        run: |
+          set -euo pipefail
+          
+          # Heartbeat to defeat GitHub's "no output for 10m" killer
+          ( while true; do echo "::notice::compose-startup heartbeat"; sleep 20; done ) &
+          HEARTBEAT_PID=$!
+          cleanup() { kill $HEARTBEAT_PID 2>/dev/null || true; }
+          trap cleanup EXIT
+          
+          # Try native compose waiting first (Compose v2 supports --wait)
+          if docker compose version | grep -q 'v2'; then
+            echo "Attempting native --wait..."
+            if docker compose -f "$SIGNOZ_COMPOSE" up -d --quiet-pull --wait --wait-timeout "${COMPOSE_TIMEOUT_SEC}"; then
+              echo "✅ Native --wait succeeded"
+              exit 0
+            fi
+            echo "⚠️ Native --wait failed or not supported; falling back to manual wait..."
+          fi
+          
+          # Fallback: manual health check (chatty with status updates every 5s)
+          docker compose -f "$SIGNOZ_COMPOSE" up -d --quiet-pull
+          ./ci/wait-for-compose.sh "$SIGNOZ_COMPOSE" "${COMPOSE_TIMEOUT_SEC}"
       
       - name: Verify Pipeline Health
         run: |
           # Wait for ports
-          timeout 30 bash -c 'until nc -z localhost 5318; do sleep 1; done'
-          timeout 30 bash -c 'until nc -z localhost 8080; do sleep 1; done'
+          timeout 120 bash -c 'until nc -z localhost 5318; do sleep 1; done'
+          timeout 120 bash -c 'until nc -z localhost 8080; do sleep 1; done'
           echo "✅ Pipeline endpoints available"
       
       - name: Emit Synthetic Trace
@@ -89,6 +217,28 @@ jobs:
             .agent/EVIDENCE.log
             artifacts/**
           retention-days: 30
+      
+      - name: 📊 Dump Docker Status (on failure)
+        if: failure()
+        shell: bash
+        run: |
+          mkdir -p artifacts/docker-debug
+          docker compose -f "$SIGNOZ_COMPOSE" ps > artifacts/docker-debug/compose-ps.txt || true
+          docker compose -f "$SIGNOZ_COMPOSE" logs --no-color --tail=500 > artifacts/docker-debug/compose-logs.txt || true
+          docker ps -a > artifacts/docker-debug/docker-ps.txt || true
+      
+      - name: 📤 Upload Compose Logs (on failure)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: signoz-compose-logs-${{ github.run_id }}
+          path: artifacts/docker-debug/
+          retention-days: 14
+      
+      - name: 🧹 Teardown Compose
+        if: always()
+        shell: bash
+        run: docker compose -f "$SIGNOZ_COMPOSE" down -v --remove-orphans || true
       
       - name: Append Evidence Log
         if: always()
@@ -266,3 +416,4 @@ jobs:
 # 6. Structured Exit: 0 = pass, 1 = fail (bot-friendly)
 #
 # ============================================
+
