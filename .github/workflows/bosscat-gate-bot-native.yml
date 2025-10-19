@@ -153,20 +153,27 @@ jobs:
       
       - name: 🚀 Start SigNoz (Docker Compose)
         shell: bash
+        timeout-minutes: 20
         run: |
-          set -euxo pipefail
+          set -euo pipefail
+          
+          # Heartbeat to defeat GitHub's "no output for 10m" killer
+          ( while true; do echo "::notice::compose-startup heartbeat"; sleep 20; done ) &
+          HEARTBEAT_PID=$!
+          cleanup() { kill $HEARTBEAT_PID 2>/dev/null || true; }
+          trap cleanup EXIT
           
           # Try native compose waiting first (Compose v2 supports --wait)
           if docker compose version | grep -q 'v2'; then
             echo "Attempting native --wait..."
-            if docker compose -f "$SIGNOZ_COMPOSE" up -d --quiet-pull --wait --wait-timeout "${COMPOSE_TIMEOUT_SEC}" 2>/dev/null; then
+            if docker compose -f "$SIGNOZ_COMPOSE" up -d --quiet-pull --wait --wait-timeout "${COMPOSE_TIMEOUT_SEC}"; then
               echo "✅ Native --wait succeeded"
               exit 0
             fi
             echo "⚠️ Native --wait failed or not supported; falling back to manual wait..."
           fi
           
-          # Fallback: manual health check
+          # Fallback: manual health check (chatty with status updates every 5s)
           docker compose -f "$SIGNOZ_COMPOSE" up -d --quiet-pull
           ./ci/wait-for-compose.sh "$SIGNOZ_COMPOSE" "${COMPOSE_TIMEOUT_SEC}"
       
