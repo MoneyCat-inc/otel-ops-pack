@@ -1,13 +1,9 @@
-# IONA Gate - BossCat Verdict
+# Moved
 
-**Gate:** `IONA` | **Site:** `local`
-Budgets: Files [OK] 5/10 | LOC [OK] 72/200
-**ECRR:** evidence OK | contain OK | rollback plan OK | report OK
+This file has been moved to maintain a cleaner repository structure.
 
-- **Verdict**: READY
-- **Timestamp**: 2025-10-17 09:10:48 +01:00
-- **Commit**: 20b71befc
-- **Branch**: feat/milk-theatre-metrics-vendors
+**New location:** [docs/pr/misc/PR_COMMENT_IONA_GATE_002_FINAL.md](docs/pr/misc/PR_COMMENT_IONA_GATE_002_FINAL.md)
 
-## Reasons
-- None
+**Moved:** 2025-10-19
+
+For the canonical version, please see the link above.

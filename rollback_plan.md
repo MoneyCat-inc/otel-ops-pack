@@ -1,21 +1,9 @@
-# Rollback Plan (Template)
+# Moved
 
-- Service/Component: <name>
-- Current Release: <tag/commit>
-- Last Known Good: <tag/commit>
-- Switch Mechanism: <feature flag / traffic split / deployment rollback>
+This file has been moved to maintain a cleaner repository structure.
 
-## Steps
-1. Halt promotions; notify stakeholders.
-2. Capture evidence links (gate JSON, ECRR MD, perf report).
-3. Flip switch to last-known-good (or `git revert`/deployment rollback).
-4. Validate health checks (collector, perf smoke, error rate).
-5. File ECRR incident note; attach logs and diffs.
-6. Resume standard deploys after BossCat approval.
+**New location:** [docs/runbooks/misc/rollback_plan.md](docs/runbooks/misc/rollback_plan.md)
 
-## Verification
-- OTLP smoke: pass
-- Perf gate: within thresholds
-- Status page snippet updated
+**Moved:** 2025-10-19
 
-Owner: <name> • Reviewed by: BossCat OEM
+For the canonical version, please see the link above.
