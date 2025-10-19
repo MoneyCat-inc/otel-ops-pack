@@ -31,28 +31,40 @@ $workflows = Get-ChildItem .github\workflows\*.yml,.github\workflows\*.yaml -Fil
     $name = $_.BaseName
     $triggers = @()
     
-    # Extract on: block (YAML-aware)
-    $lines = $content -split "`n"
-    $inOnBlock = $false
-    $onBlockLines = @()
+    # Extract on: block (YAML-aware, handles both inline and multi-line formats)
+    $onBlock = ""
     
-    for ($i = 0; $i -lt $lines.Count; $i++) {
-        $line = $lines[$i]
-        if ($line -match '^on:\s*$') {
-            $inOnBlock = $true
-            continue
-        }
-        if ($inOnBlock) {
-            if ($line -match '^\w+:' -and $line -notmatch '^\s+') {
-                break
+    # Check for inline formats first: "on: push" or "on: [push, pull_request]"
+    if ($content -match '(?m)^on:\s+(\w+)\s*$') {
+        # Single trigger: "on: push"
+        $onBlock = $matches[1]
+    } elseif ($content -match '(?m)^on:\s+\[([^\]]+)\]') {
+        # Array format: "on: [push, pull_request]"
+        $onBlock = $matches[1] -replace ',', ' '
+    } else {
+        # Multi-line block format
+        $lines = $content -split "`n"
+        $inOnBlock = $false
+        $onBlockLines = @()
+        
+        for ($i = 0; $i -lt $lines.Count; $i++) {
+            $line = $lines[$i]
+            if ($line -match '^on:\s*$') {
+                $inOnBlock = $true
+                continue
             }
-            if ($line -match '^\s+(\w+):') {
-                $onBlockLines += $matches[1]
+            if ($inOnBlock) {
+                if ($line -match '^\w+:' -and $line -notmatch '^\s+') {
+                    break
+                }
+                if ($line -match '^\s+(\w+):') {
+                    $onBlockLines += $matches[1]
+                }
             }
         }
+        
+        $onBlock = $onBlockLines -join ' '
     }
-    
-    $onBlock = $onBlockLines -join ' '
     
     # Detect triggers from on: block only
     # Build trigger object with stable alphabetical key order for deterministic JSON
