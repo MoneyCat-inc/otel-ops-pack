@@ -23,11 +23,11 @@ function Get-ControlToken([int]$Code){
   }
 }
 function Convert-ToAscii([string]$Input){
-  if ($null -eq $Input) { return '' }
+  if ($null -eq $Input) {  return '' }
   $sb = New-Object System.Text.StringBuilder
   foreach($ch in $Input.ToCharArray()){
     $code = [int][char]$ch
-    if (($code -ge 32 -and $code -le 126) -or $code -in 9,10,13) {
+    if (($code -ge 32 -and $code -le 126) -or $code -in @(9,10,13)) {
       [void]$sb.Append([char]$code)
     } else {
       [void]$sb.Append((Get-ControlToken $code))
@@ -72,7 +72,7 @@ function New-EcrrReport([string]$Verdict,[string[]]$Reasons,[hashtable]$Checks){
   $dir = 'docs/ecrr/ECRR_REPORTS'
   Ensure-Dirs @($dir)
   $name = Join-Path $dir ("ECRR_GATE_RUN_" + (Get-Date -Format 'yyyyMMdd_HHmmss') + '.md')
-  $content = (Convert-ToAsciiLines $lines) -join "`r`n"
+  $content = $lines -join "`r`n"
   $content | Set-Content -Path $name -Encoding utf8
   $content | Set-Content -Path (Join-Path $dir 'ECRR_GATE_RUN_LATEST.md') -Encoding utf8
   return $name
@@ -125,7 +125,7 @@ function Write-PrComment([string]$Verdict,[string[]]$Reasons,[string]$OutputPath
     '## Reasons'
   )
   if (-not $Reasons -or $Reasons.Count -eq 0) { $lines += '- None' } else { foreach($r in $Reasons){ $lines += "- $r" } }
-  ((Convert-ToAsciiLines $lines) -join "`r`n") | Set-Content -Path $OutputPath -Encoding utf8
+  ($lines -join "`r`n") | Set-Content -Path $OutputPath -Encoding utf8
 }
 $primaryOutputPath='artifacts/gate-verification-results.json'
 $legacyOutputPath='DELT/ARTF/gate-verification-results.json'
@@ -213,7 +213,7 @@ if($total -gt 0 -and $failed -gt 0){ [void]$reasons.Add("Tests failing: $failed 
 $verdict='READY'
 if($missing.Count -gt 0 -or ($failed -gt 0 -and $Strict)){ $verdict='NOT_READY' } elseif($failed -gt 0){ $verdict='READY_WITH_WARNINGS' }
 $g=Get-GitMeta
-$asciiReasons=@($reasons | ForEach-Object { Convert-ToAscii $_ })
+$asciiReasons=@($reasons | ForEach-Object { $_ })
 $out=[ordered]@{ timestamp=$tsIso; commit=$g.Commit; branch=$g.Branch; gate=$Gate; site=$Site; verdict=$verdict; reasons=$asciiReasons; tests=[ordered]@{total=$total;failed=$failed}; checks=$checks }
 $jsonPayload = $out | ConvertTo-Json -Depth 6
 foreach($target in $outputTargets){
@@ -226,7 +226,7 @@ if (-not $legacyMirrorRequested -and (Test-Path -LiteralPath $legacyOutputPath))
   Write-Warning "[Gate][$Site] legacy DELT/ARTF gate results still exist but are no longer updated by default. Remove stale copies or run with -OutputJson $legacyOutputPath if needed."
 }
 if (Get-Command Update-BossCatProgress -ErrorAction SilentlyContinue) { Update-BossCatProgress -Phase 'Writing ECRR & PR comment' -CompletedSeconds 16 }
-$report=New-EcrrReport -Verdict $verdict -Reasons @($asciiReasons) -Checks $checks
-Write-PrComment -Verdict $verdict -Reasons @($asciiReasons) -OutputPath $PrCommentPath -Checks $checks
+$report=New-EcrrReport -Verdict $verdict -Reasons @($reasons) -Checks $checks
+Write-PrComment -Verdict $verdict -Reasons @($reasons) -OutputPath $PrCommentPath -Checks $checks
 if (Get-Command Complete-BossCatProgress -ErrorAction SilentlyContinue) { Complete-BossCatProgress }
 if($verdict -eq 'NOT_READY' -and -not $NoFailOnMissing){ exit 2 } else { exit 0 }
