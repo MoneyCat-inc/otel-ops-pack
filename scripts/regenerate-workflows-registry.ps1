@@ -54,38 +54,46 @@ $workflows = Get-ChildItem .github\workflows\*.yml,.github\workflows\*.yaml -Fil
     
     $onBlock = $onBlockLines -join ' '
     
-    # Detect triggers from on: block only (build object for schema compliance)
-    $triggerObj = @{
-        push = $onBlock -match 'push'
-        pull_request = $onBlock -match 'pull_request'
-        workflow_dispatch = $onBlock -match 'workflow_dispatch'
-        workflow_call = $onBlock -match 'workflow_call'
-        workflow_run = $onBlock -match 'workflow_run'
-        schedule = $onBlock -match 'schedule'
-        release = $onBlock -match 'release'
+    # Detect triggers from on: block only
+    # Build trigger object with stable alphabetical key order for deterministic JSON
+    $triggerObj = [PSCustomObject]@{
         issues = $onBlock -match 'issues'
         other = @()
+        pull_request = $onBlock -match 'pull_request'
+        push = $onBlock -match 'push'
+        release = $onBlock -match 'release'
+        schedule = $onBlock -match 'schedule'
+        workflow_call = $onBlock -match 'workflow_call'
+        workflow_dispatch = $onBlock -match 'workflow_dispatch'
+        workflow_run = $onBlock -match 'workflow_run'
     }
     
     [pscustomobject]@{
         name = $name
+        modified = $_.LastWriteTime.ToString('o')  # ISO 8601 format for schema
         path = $_.FullName.Replace("$repoRoot\","").Replace('\','/')
         size = $_.Length
-        modified = $_.LastWriteTime.ToString('o')  # ISO 8601 format for schema
         triggers = $triggerObj
     }
 }
 
-# Generate registry (schema-compliant format)
-$registry = @{
-    generatedAt = (Get-Date -Format 'o')
+# Generate registry (schema-compliant format with deterministic output)
+# Note: generatedAt removed for CI determinism - use git commit history instead
+# Use ordered hashtable + explicit sorting for stable JSON output
+$outputPath = "docs\status\workflows.json"
+
+# Sort workflows by name for stable output
+$sortedWorkflows = $workflows | Sort-Object -Property name
+
+$registry = [ordered]@{
     source = 'scripts/regenerate-workflows-registry.ps1'
-    total = $workflows.Count
-    items = $workflows
+    total = $sortedWorkflows.Count
+    items = $sortedWorkflows
 }
 
-$outputPath = "docs\status\workflows.json"
-$registry | ConvertTo-Json -Depth 4 | Out-File $outputPath -Encoding UTF8
+# Convert to JSON with deep nesting and save
+# ConvertTo-Json depth 5 needed for nested trigger objects
+$registry | ConvertTo-Json -Depth 5 | Out-File $outputPath -Encoding UTF8
 
 Write-Host "✅ workflows.json regenerated" -ForegroundColor Green
 Write-Host "   Total workflows: $($workflows.Count)" -ForegroundColor White

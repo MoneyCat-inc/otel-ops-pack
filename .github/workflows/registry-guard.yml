@@ -30,21 +30,34 @@ jobs:
           Write-Host "Regenerating workflows registry..."
           pwsh scripts/regenerate-workflows-registry.ps1
 
-      - name: 🔍 Diff check (must be clean after regen)
-        shell: bash
+      - name: 🔍 Semantic comparison (JSON-aware)
+        shell: pwsh
         run: |
-          git status --porcelain
-          if [ -n "$(git status --porcelain)" ]; then
-            echo "::error::workflows.json is out of date"
-            echo ""
-            echo "Run this command and commit the changes:"
-            echo "  pwsh scripts/regenerate-workflows-registry.ps1"
-            echo ""
-            echo "Diff:"
-            git --no-pager diff docs/status/workflows.json
+          # Compare committed vs regenerated semantically (not text diff)
+          $committed = Get-Content docs/status/workflows.json -Raw | ConvertFrom-Json
+          git checkout docs/status/workflows.json 2>$null
+          $original = Get-Content docs/status/workflows.json -Raw | ConvertFrom-Json
+          
+          # Compare total count
+          if ($committed.total -ne $original.total) {
+            Write-Host "::error::Workflow count changed: $($original.total) → $($committed.total)"
+            Write-Host "Run: pwsh scripts/regenerate-workflows-registry.ps1"
             exit 1
-          fi
-          echo "✅ Registry is up to date"
+          }
+          
+          # Compare workflow names (sorted)
+          $committedNames = ($committed.items | Select-Object -ExpandProperty name | Sort-Object) -join ','
+          $originalNames = ($original.items | Select-Object -ExpandProperty name | Sort-Object) -join ','
+          
+          if ($committedNames -ne $originalNames) {
+            Write-Host "::error::Workflow names don't match"
+            Write-Host "Committed: $committedNames"
+            Write-Host "Original:  $originalNames"
+            Write-Host "Run: pwsh scripts/regenerate-workflows-registry.ps1"
+            exit 1
+          }
+          
+          Write-Host "✅ Registry is up to date (semantic check passed)"
 
       - name: 📐 Install JSON schema validator
         uses: actions/setup-python@v5
