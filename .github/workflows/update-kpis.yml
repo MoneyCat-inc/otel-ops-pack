@@ -12,6 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Generate KPIs
         run: |
           TIMESTAMP=$(date -Iseconds)
@@ -24,11 +26,11 @@ jobs:
             "ts": "$TIMESTAMP"
           }
           JSON
-      - name: Commit
+      - name: Commit and Push
         run: |
-          git config user.name "BossCat Bot"
-          git config user.email "bot@resonai.io"
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git add docs/status/kpis.json
-          git commit -m "chore(hub): update KPIs [skip ci]" || true
+          git commit -m "chore(hub): update KPIs [skip ci]" || exit 0
           git push
 
