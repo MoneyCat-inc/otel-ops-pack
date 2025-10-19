@@ -119,74 +119,23 @@ pwsh scripts/regenerate-workflows-registry.ps1
 - ✅ No timestamp field (use git history instead)
 - ✅ CI-friendly (semantic comparison, not text diff)
 
-**Manual command (if modifying the script):**
+**Manual regeneration (advanced users only):**
+
+The helper script is the canonical source. If you need to modify the regeneration logic, see:
+- `scripts/regenerate-workflows-registry.ps1` — Full implementation
+- Key features: YAML-aware extraction, alphabetical ordering, semantic validation
+
+**Quick manual regeneration:**
 ```powershell
-cd c:\otel
+# Always use the helper script (handles all complexity)
+pwsh scripts/regenerate-workflows-registry.ps1
 
-$workflows = Get-ChildItem .github\workflows\*.yml,.github\workflows\*.yaml -File | ForEach-Object {
-    $content = Get-Content $_.FullName -Raw
-    $name = $_.BaseName
-    $triggers = @()
-    
-    # Extract on: block (YAML-aware)
-    $lines = $content -split "`n"
-    $inOnBlock = $false
-    $onBlockLines = @()
-    
-    for ($i = 0; $i -lt $lines.Count; $i++) {
-        $line = $lines[$i]
-        if ($line -match '^on:\s*$') {
-            $inOnBlock = $true
-            continue
-        }
-        if ($inOnBlock) {
-            if ($line -match '^\w+:' -and $line -notmatch '^\s+') {
-                break
-            }
-            if ($line -match '^\s+(\w+):') {
-                $onBlockLines += $matches[1]
-            }
-        }
-    }
-    
-    $onBlock = $onBlockLines -join ' '
-    
-    # Detect triggers from on: block only
-    if ($onBlock -match 'push') { $triggers += 'push' }
-    if ($onBlock -match 'pull_request') { $triggers += 'pull_request' }
-    if ($onBlock -match 'schedule') { $triggers += 'schedule' }
-    if ($onBlock -match 'workflow_dispatch') { $triggers += 'workflow_dispatch' }
-    if ($onBlock -match 'workflow_call') { $triggers += 'workflow_call' }
-    if ($onBlock -match 'workflow_run') { $triggers += 'workflow_run' }
-    if ($onBlock -match 'release') { $triggers += 'release' }
-    if ($onBlock -match 'issues') { $triggers += 'issues' }
-    
-    $triggerStr = if ($triggers.Count -gt 0) {
-        ($triggers | Sort-Object -Unique) -join ', '
-    } else {
-        'none'
-    }
-    
-    $scheduled = $triggers -contains 'schedule'
-    
-    [pscustomobject]@{
-        name = $name
-        path = $_.FullName.Replace('C:\otel\','').Replace('\','/')
-        size = $_.Length
-        modified = $_.LastWriteTime
-        triggers = $triggerStr
-        scheduled = $scheduled
-    }
-}
-
-@{
-    updated = (Get-Date -Format 'o')
-    total = $workflows.Count
-    description = 'GitHub Actions workflows registry - triggers extracted from on: block only'
-    workflows = $workflows
-} | ConvertTo-Json -Depth 4 | Out-File docs\status\workflows.json -Encoding UTF8
-
-Write-Host "✅ workflows.json regenerated ($($workflows.Count) workflows)" -ForegroundColor Green
+# The script:
+# 1. Anchors to repo root (works from any directory)
+# 2. Parses all .github/workflows/*.y(a)ml files
+# 3. Extracts triggers from on: block only (YAML-aware)
+# 4. Outputs schema-compliant JSON (sorted, deterministic)
+# 5. Validates against docs/status/workflows.schema.json
 ```
 
 **Verification:**

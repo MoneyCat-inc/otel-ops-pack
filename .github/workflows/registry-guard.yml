@@ -92,7 +92,7 @@ jobs:
           
           print(f"✅ Schema validation: OK")
           print(f"   Total workflows: {data['total']}")
-          print(f"   Generated: {data['generatedAt']}")
+          print(f"   Source: {data['source']}")
           PY
 
       - name: 📊 Summary
