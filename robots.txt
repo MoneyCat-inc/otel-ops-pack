@@ -1,0 +1,12 @@
+# BossCat Hub - Robots.txt
+User-agent: *
+Allow: /
+
+Disallow: /artifacts/
+Disallow: /.agent/
+Disallow: /logs/
+Disallow: /*.log
+
+Allow: /docs/
+Allow: /CHAR/DOCS/
+
