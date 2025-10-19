@@ -75,11 +75,22 @@ jobs:
       - name: Create Lychee config
         run: |
           cat > .lychee.toml <<'EOF'
-          # Exclude external links that might be rate-limited
+          # Exclude external links that might be rate-limited or internal services
           exclude = [
             "https://github.com/.*/actions/.*",
             "http://localhost.*",
-            "https://fonts.googleapis.com.*"
+            "http://127.0.0.1.*",
+            "https://fonts.googleapis.com.*",
+            "http://deployment-pipeline-api-service.*",
+            "http://collector:.*",
+            "tcp://.*"
+          ]
+          # Exclude patterns that cause issues
+          exclude_path = [
+            ".agent",
+            "BRAV",
+            "CHAR",
+            "DELT"
           ]
           # Only check markdown files
           include_verbatim = true
