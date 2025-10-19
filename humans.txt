@@ -1,0 +1,23 @@
+/* TEAM */
+BossCat OEM: Fubumaki
+Implementer: Cursor{Implementer}
+Design System: Resonai
+Framework: ECRR (Examine → Clean → Report → Role)
+
+/* SITE */
+Purpose: AntiClickbait Hub & Observability Showcase
+Stack: Windows + OpenTelemetry + SigNoz
+Contact: hello@resonai.io
+Repository: https://github.com/MoneyCat-inc/otel-ops-pack
+
+/* TECH */
+Standards: CSP, WCAG 2.1 AA, ECRR-governed
+Hosting: GitHub Pages
+Domain: hub.resonai.io
+Last Updated: 2025-10-18
+
+/* THANKS */
+OpenTelemetry Community
+SigNoz Team
+All Contributors
+
