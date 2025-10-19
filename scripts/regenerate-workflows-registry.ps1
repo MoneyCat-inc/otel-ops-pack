@@ -82,7 +82,7 @@ $workflows = Get-ChildItem .github\workflows\*.yml,.github\workflows\*.yaml -Fil
     
     [pscustomobject]@{
         name = $name
-        modified = $_.LastWriteTime.ToString('o')  # ISO 8601 format for schema
+        modified = $_.LastWriteTimeUtc.ToString('o')  # ISO 8601 UTC for timezone stability
         path = $_.FullName.Replace("$repoRoot\","").Replace('\','/')
         size = $_.Length
         triggers = $triggerObj
