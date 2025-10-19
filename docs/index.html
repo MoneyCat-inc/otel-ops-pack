@@ -225,6 +225,9 @@
       
       <div id="references-map" class="loading">Loading references map</div>
       
+      <!-- Workflows Registry Card -->
+      <div id="workflows-card-container"></div>
+      
       <div class="quick-links">
         <h2>🚀 Quick Access</h2>
         <div class="quick-links-grid">
@@ -312,6 +315,27 @@
     
     // Load map on page load
     loadReferencesMap();
+    
+    // Load workflows card
+    async function loadWorkflowsCard() {
+      try {
+        const response = await fetch('status/workflows-card.html');
+        const html = await response.text();
+        document.getElementById('workflows-card-container').innerHTML = html;
+        
+        // Re-execute scripts in the loaded HTML
+        const scripts = document.getElementById('workflows-card-container').querySelectorAll('script');
+        scripts.forEach(script => {
+          const newScript = document.createElement('script');
+          newScript.textContent = script.textContent;
+          if (script.type) newScript.type = script.type;
+          document.head.appendChild(newScript);
+        });
+      } catch (error) {
+        console.error('Failed to load workflows card:', error);
+      }
+    }
+    loadWorkflowsCard();
   </script>
 </body>
 </html>

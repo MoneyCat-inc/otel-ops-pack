@@ -1,0 +1,180 @@
+<!-- Workflows Registry Card - Embeddable widget -->
+<style>
+  .workflows-card {
+    background: white;
+    border: 2px solid #e1e8ed;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+  }
+  
+  .workflows-card h3 {
+    color: #667eea;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .workflows-card .badge {
+    background: #667eea;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+  }
+  
+  .workflows-card .meta {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+  
+  .workflows-card .workflow-item {
+    border-left: 3px solid #e1e8ed;
+    padding: 0.75rem;
+    margin: 0.5rem 0;
+    background: #f8f9fa;
+    border-radius: 4px;
+    transition: all 0.2s;
+  }
+  
+  .workflows-card .workflow-item:hover {
+    border-left-color: #667eea;
+    background: #f0f4ff;
+  }
+  
+  .workflows-card .workflow-name {
+    font-weight: 600;
+    color: #2c3e50;
+    font-family: 'Courier New', monospace;
+    font-size: 0.95rem;
+  }
+  
+  .workflows-card .workflow-path {
+    font-size: 0.85rem;
+    color: #6c757d;
+    font-family: 'Courier New', monospace;
+  }
+  
+  .workflows-card .workflow-triggers {
+    font-size: 0.85rem;
+    color: #495057;
+    margin-top: 0.25rem;
+  }
+  
+  .workflows-card .trigger-badge {
+    display: inline-block;
+    background: #e7f0ff;
+    color: #0056b3;
+    padding: 0.125rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    margin-right: 0.25rem;
+    margin-top: 0.25rem;
+  }
+  
+  .workflows-card .loading {
+    text-align: center;
+    padding: 2rem;
+    color: #6c757d;
+  }
+  
+  .workflows-card .error {
+    color: #dc3545;
+    padding: 1rem;
+    background: #f8d7da;
+    border-radius: 4px;
+  }
+  
+  .workflows-card .show-all {
+    text-align: center;
+    margin-top: 1rem;
+  }
+  
+  .workflows-card .show-all a {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  .workflows-card .show-all a:hover {
+    text-decoration: underline;
+  }
+</style>
+
+<div class="workflows-card">
+  <h3>⚙️ Workflow Registry<span id="wf-badge" class="badge">...</span></h3>
+  <div id="wf-meta" class="meta">Loading registry...</div>
+  <div id="wf-list"></div>
+  <div id="wf-show-all" class="show-all" style="display:none;">
+    <a href="status/workflows.json">View full registry (JSON)</a>
+  </div>
+</div>
+
+<script type="module">
+(async () => {
+  const listEl = document.getElementById('wf-list');
+  const metaEl = document.getElementById('wf-meta');
+  const badgeEl = document.getElementById('wf-badge');
+  const showAllEl = document.getElementById('wf-show-all');
+  
+  try {
+    const response = await fetch('status/workflows.json');
+    const data = await response.json();
+    
+    // Update badge and meta
+    badgeEl.textContent = data.total;
+    const genDate = new Date(data.generatedAt).toLocaleString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+    metaEl.innerHTML = `<strong>${data.total}</strong> workflows • Generated ${genDate}`;
+    
+    // Show top 20 workflows
+    const displayCount = Math.min(20, data.items.length);
+    
+    for (let i = 0; i < displayCount; i++) {
+      const wf = data.items[i];
+      
+      // Extract active triggers
+      const triggers = Object.entries(wf.triggers)
+        .filter(([key, value]) => value === true && key !== 'other')
+        .map(([key]) => key);
+      
+      // Create workflow item
+      const item = document.createElement('div');
+      item.className = 'workflow-item';
+      
+      item.innerHTML = `
+        <div class="workflow-name">${wf.name}</div>
+        <div class="workflow-path">${wf.path}</div>
+        <div class="workflow-triggers">
+          ${triggers.map(t => `<span class="trigger-badge">${t}</span>`).join('')}
+        </div>
+      `;
+      
+      listEl.appendChild(item);
+    }
+    
+    // Show "view all" link if there are more workflows
+    if (data.items.length > displayCount) {
+      showAllEl.style.display = 'block';
+      showAllEl.querySelector('a').textContent = `View all ${data.total} workflows (JSON)`;
+    }
+    
+  } catch (error) {
+    console.error('Failed to load workflows registry:', error);
+    listEl.innerHTML = `
+      <div class="error">
+        ⚠️ Failed to load workflows registry. 
+        See <a href="status/workflows.json">workflows.json</a> directly.
+      </div>
+    `;
+  }
+})();
+</script>
+

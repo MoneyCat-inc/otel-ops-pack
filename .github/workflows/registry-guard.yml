@@ -1,0 +1,101 @@
+name: Registry Guard
+# Enforce workflows.json stays in sync with actual workflows
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/**"
+      - "scripts/regenerate-workflows-registry.ps1"
+      - "docs/status/workflows.json"
+      - "docs/status/workflows.schema.json"
+      - ".github/workflows/registry-guard.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: registry-guard-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    name: Verify Registry Freshness
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: 🔄 Regenerate registry (location-independent)
+        shell: pwsh
+        run: |
+          Write-Host "Regenerating workflows registry..."
+          pwsh scripts/regenerate-workflows-registry.ps1
+
+      - name: 🔍 Diff check (must be clean after regen)
+        shell: bash
+        run: |
+          git status --porcelain
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "::error::workflows.json is out of date"
+            echo ""
+            echo "Run this command and commit the changes:"
+            echo "  pwsh scripts/regenerate-workflows-registry.ps1"
+            echo ""
+            echo "Diff:"
+            git --no-pager diff docs/status/workflows.json
+            exit 1
+          fi
+          echo "✅ Registry is up to date"
+
+      - name: 📐 Install JSON schema validator
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 📥 Install jsonschema
+        run: pip install jsonschema
+
+      - name: ✅ Validate against schema
+        run: |
+          python3 - <<'PY'
+          import json, sys
+          from jsonschema import validate, Draft7Validator, ValidationError
+
+          # Load schema and data
+          with open('docs/status/workflows.schema.json') as f:
+              schema = json.load(f)
+          with open('docs/status/workflows.json') as f:
+              data = json.load(f)
+
+          # Validate
+          validator = Draft7Validator(schema)
+          errors = sorted(validator.iter_errors(data), key=lambda e: e.path)
+
+          if errors:
+              print("❌ Schema validation errors:")
+              for e in errors:
+                  path = "/" + "/".join(map(str, e.path)) if e.path else "(root)"
+                  print(f"  - {path}: {e.message}")
+              sys.exit(1)
+          
+          print(f"✅ Schema validation: OK")
+          print(f"   Total workflows: {data['total']}")
+          print(f"   Generated: {data['generatedAt']}")
+          PY
+
+      - name: 📊 Summary
+        if: always()
+        run: |
+          {
+            echo "### 🛡️ Registry Guard";
+            echo "";
+            echo "**Status:** ${{ job.status }}";
+            echo "**Workflows:** $(jq '.total' docs/status/workflows.json)";
+            echo "**Schema:** docs/status/workflows.schema.json";
+            echo "";
+            if [ "${{ job.status }}" == "success" ]; then
+              echo "✅ Registry is fresh and schema-compliant";
+            else
+              echo "❌ Registry check failed - see logs above";
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
