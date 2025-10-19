@@ -1,57 +1,38 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Resonai [OTel] - Production observability platform with 77× throughput uplift">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self' http://localhost:* ws://localhost:*">
-  <title>Resonai [OTel] — Production Observability Platform</title>
-  <link rel="stylesheet" href="docs/assets/resonai-system.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BossCat Hub</title>
+<meta name="description" content="BossCat OEM hub: AntiClickbait, MILK visualizer, Data Room, live metrics">
+<link rel="stylesheet" href="docs/assets/hub.css">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; connect-src 'self' http://localhost:* ws://localhost:*">
 </head>
 <body>
+<div class="container">
+<h1>🐾 BossCat Hub</h1>
+<p>Observability • Data Room • MILK Visualizer</p>
 
-<header class="resonai-header">
-  <div class="resonai-header-content">
-    <div class="resonai-logo">🐾 Resonai [OTel]</div>
-    <nav class="resonai-nav">
-      <a href="#quick-links">Quick Links</a>
-      <a href="docs/status.html">Status</a>
-      <a href="http://localhost:8080" target="_blank">SigNoz UI ↗</a>
-    </nav>
-  </div>
-</header>
+<div class="metrics">
+<div class="metric"><div>Gate</div><div class="value" id="gateScore">—</div></div>
+<div class="metric"><div>Error</div><div class="value" id="errorRate">—</div></div>
+<div class="metric"><div>Canary</div><div class="value" id="canaryCount">—</div></div>
+<div class="metric"><div>OTel</div><div class="value" id="otelHealth">—</div></div>
+</div>
 
-<main class="container">
-  <section class="hero">
-    <div class="hero-content">
-      <h1>Production Observability Platform</h1>
-      <p>Windows → OTel Collector → SigNoz with 77× throughput uplift</p>
-    </div>
-  </section>
+<div class="grid">
+<div class="card"><h3>📊 <a href="CHAR/DOCS/docs/dashboards/live-metrics.html">Live Metrics</a></h3></div>
+<div class="card"><h3>🧪 <a href="CHAR/DOCS/docs/BossCat/data_room_enhanced.html">Data Room</a></h3></div>
+<div class="card"><h3>🎛️ <a href="portal.html">MILK Visualizer</a></h3></div>
+<div class="card"><h3>🧭 <a href="docs/status.html">Status</a></h3></div>
+<div class="card"><h3>📚 <a href="CHAR/DOCS/docs/index.html">Docs</a></h3></div>
+<div class="card"><h3>🛡️ <a href="docs/anticlickbait/index.html">AntiClickbait</a></h3></div>
+</div>
 
-  <section id="quick-links" class="section">
-    <h2>⚡ Quick Access</h2>
-    <ul>
-      <li><a href="portal.html">🌐 <strong>ANTIclickbait Portal</strong> — About & Support</a></li>
-      <li><a href="README.md">Main README</a></li>
-      <li><a href="docs/status.html">Status Dashboard</a></li>
-      <li><a href="docs/BossCat/README.md">BossCat Operations</a></li>
-      <li><a href="http://localhost:8080" target="_blank">SigNoz UI ↗</a></li>
-      <!-- Visuals quick link (docs-only) -->
-      <li data-tags="MILK visuals" data-keywords="visuals MILK neon pulse milkdrop projectm audio"><a href="docs/BossCat/visuals/README_Resonai_Default.md">🎨 Open visualizer — Resonai Default (Neon Pulse)</a></li>
-      <li data-tags="MILK docs"><a href="docs/ecrr/ECRR_REPORTS/ECRR_MILK_CONSOLIDATED_LATEST.md">📊 MILK Lane — Consolidated Report (latest)</a></li>
-    </ul>
-  </section>
-</main>
-
-<footer class="resonai-footer">
-  <div class="resonai-footer-content">
-    <p>Resonai • MoneyCat Inc. • Local-First • ECRR-Compliant</p>
-    <p>Last updated: <span id="timestamp">--:--:--</span></p>
-  </div>
-</footer>
-
-<script src="docs/assets/index.js"></script>
-
+<div class="footer">
+<p>Windows • OpenTelemetry • SigNoz | <a href="http://localhost:8080">SigNoz UI</a></p>
+</div>
+</div>
+<script src="/assets/hub.js"></script>
 </body>
 </html>
