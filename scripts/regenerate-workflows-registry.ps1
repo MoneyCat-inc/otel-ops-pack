@@ -13,12 +13,18 @@
     Authority: BossCat OEM
     Lane: DOCS
     Run this after: Adding/modifying/deleting workflows in .github/workflows/
+    Can be run from any directory - script anchors to repo root
 #>
 
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
+# Anchor to repository root
+$repoRoot = Split-Path $PSScriptRoot -Parent
+Set-Location $repoRoot
+
 Write-Host "`n🔄 Regenerating workflows registry..." -ForegroundColor Cyan
+Write-Host "   Repository root: $repoRoot" -ForegroundColor DarkGray
 
 $workflows = Get-ChildItem .github\workflows\*.yml,.github\workflows\*.yaml -File | ForEach-Object {
     $content = Get-Content $_.FullName -Raw
@@ -68,7 +74,7 @@ $workflows = Get-ChildItem .github\workflows\*.yml,.github\workflows\*.yaml -Fil
     
     [pscustomobject]@{
         name = $name
-        path = $_.FullName.Replace("$PWD\","").Replace('\','/')
+        path = $_.FullName.Replace("$repoRoot\","").Replace('\','/')
         size = $_.Length
         modified = $_.LastWriteTime
         triggers = $triggerStr

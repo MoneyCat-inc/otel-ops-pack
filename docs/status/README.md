@@ -41,7 +41,7 @@
 - After modifying workflow triggers (`on:` block)
 - After renaming/deleting workflows
 
-**Quick command:**
+**Quick command (can be run from any directory):**
 ```powershell
 pwsh scripts/regenerate-workflows-registry.ps1
 ```
