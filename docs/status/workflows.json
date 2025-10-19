@@ -1,4 +1,5 @@
 {
+  "description": "GitHub Actions workflows registry - triggers extracted from on: block only",
   "workflows": [
     {
       "name": "adot-config-gate",
@@ -13,7 +14,7 @@
       "path": ".github/workflows/apisec-scan.yml",
       "size": 3244,
       "modified": "2025-10-16T10:19:29.1974581+01:00",
-      "triggers": "push, pull_request, schedule, workflow_dispatch",
+      "triggers": "pull_request, push, schedule, workflow_dispatch",
       "scheduled": true
     },
     {
@@ -21,7 +22,7 @@
       "path": ".github/workflows/app-template.yml",
       "size": 3382,
       "modified": "2025-10-16T04:41:51.2156697+01:00",
-      "triggers": "push, pull_request",
+      "triggers": "pull_request, push",
       "scheduled": false
     },
     {
@@ -69,7 +70,7 @@
       "path": ".github/workflows/bosscat-gate-bot-native.yml",
       "size": 9160,
       "modified": "2025-10-16T10:19:29.2054799+01:00",
-      "triggers": "pull_request, workflow_dispatch, issues",
+      "triggers": "pull_request, workflow_dispatch",
       "scheduled": false
     },
     {
@@ -77,7 +78,7 @@
       "path": ".github/workflows/bosscat-gate-verify.yml",
       "size": 10591,
       "modified": "2025-10-17T14:12:06.3867946+01:00",
-      "triggers": "push, pull_request, workflow_dispatch, issues",
+      "triggers": "pull_request, push, workflow_dispatch",
       "scheduled": false
     },
     {
@@ -85,7 +86,7 @@
       "path": ".github/workflows/bosscat-governance.yml",
       "size": 5240,
       "modified": "2025-10-16T04:41:51.2192523+01:00",
-      "triggers": "push, pull_request, workflow_dispatch",
+      "triggers": "pull_request, push, workflow_dispatch",
       "scheduled": false
     },
     {
@@ -93,7 +94,7 @@
       "path": ".github/workflows/bosscat-monthly-evidence-rollup.yml",
       "size": 8073,
       "modified": "2025-10-16T04:41:51.2192523+01:00",
-      "triggers": "schedule, workflow_dispatch, issues",
+      "triggers": "schedule, workflow_dispatch",
       "scheduled": true
     },
     {
@@ -101,7 +102,7 @@
       "path": ".github/workflows/bosscat-regression-matrix.yml",
       "size": 7414,
       "modified": "2025-10-17T14:12:06.387323+01:00",
-      "triggers": "schedule, workflow_dispatch, release",
+      "triggers": "release, schedule, workflow_dispatch",
       "scheduled": true
     },
     {
@@ -125,7 +126,7 @@
       "path": ".github/workflows/codacy.yml",
       "size": 2741,
       "modified": "2025-10-16T04:41:51.221252+01:00",
-      "triggers": "push, pull_request, schedule, issues",
+      "triggers": "pull_request, push, schedule",
       "scheduled": true
     },
     {
@@ -133,7 +134,7 @@
       "path": ".github/workflows/codeql-analysis.yml",
       "size": 1093,
       "modified": "2025-10-16T04:41:51.2217574+01:00",
-      "triggers": "push, pull_request, schedule, workflow_dispatch",
+      "triggers": "pull_request, push, schedule, workflow_dispatch",
       "scheduled": true
     },
     {
@@ -141,7 +142,7 @@
       "path": ".github/workflows/codeql.yml",
       "size": 4865,
       "modified": "2025-10-16T04:41:51.2217574+01:00",
-      "triggers": "push, pull_request, schedule",
+      "triggers": "pull_request, push, schedule",
       "scheduled": true
     },
     {
@@ -149,7 +150,7 @@
       "path": ".github/workflows/defender-for-devops.yml",
       "size": 1866,
       "modified": "2025-10-16T04:41:51.2217574+01:00",
-      "triggers": "push, pull_request, schedule",
+      "triggers": "pull_request, push, schedule",
       "scheduled": true
     },
     {
@@ -157,7 +158,7 @@
       "path": ".github/workflows/devskim.yml",
       "size": 978,
       "modified": "2025-10-17T14:12:06.3883739+01:00",
-      "triggers": "push, pull_request, schedule",
+      "triggers": "pull_request, push, schedule",
       "scheduled": true
     },
     {
@@ -173,7 +174,7 @@
       "path": ".github/workflows/drift-alert.yml",
       "size": 2138,
       "modified": "2025-10-16T04:41:51.2237686+01:00",
-      "triggers": "schedule, workflow_dispatch, issues",
+      "triggers": "schedule, workflow_dispatch",
       "scheduled": true
     },
     {
@@ -181,7 +182,7 @@
       "path": ".github/workflows/ecrr-compliance.yml",
       "size": 978,
       "modified": "2025-10-17T14:12:06.3888967+01:00",
-      "triggers": "push, pull_request",
+      "triggers": "pull_request, push",
       "scheduled": false
     },
     {
@@ -189,7 +190,7 @@
       "path": ".github/workflows/ethicalcheck.yml",
       "size": 3440,
       "modified": "2025-10-16T10:19:29.2155902+01:00",
-      "triggers": "push, pull_request, schedule, workflow_dispatch",
+      "triggers": "pull_request, push, schedule, workflow_dispatch",
       "scheduled": true
     },
     {
@@ -197,7 +198,7 @@
       "path": ".github/workflows/fortify.yml",
       "size": 10713,
       "modified": "2025-10-16T10:19:29.2155902+01:00",
-      "triggers": "push, pull_request, schedule, workflow_dispatch, release",
+      "triggers": "pull_request, push, schedule, workflow_dispatch",
       "scheduled": true
     },
     {
@@ -229,7 +230,7 @@
       "path": ".github/workflows/gitleaks-security-scan.yml",
       "size": 3310,
       "modified": "2025-10-16T04:41:51.226769+01:00",
-      "triggers": "push, pull_request, schedule",
+      "triggers": "pull_request, push, schedule",
       "scheduled": true
     },
     {
@@ -237,7 +238,7 @@
       "path": ".github/workflows/gitleaks.yml",
       "size": 914,
       "modified": "2025-10-16T04:41:51.2272742+01:00",
-      "triggers": "push, pull_request, schedule, workflow_dispatch",
+      "triggers": "pull_request, push, schedule, workflow_dispatch",
       "scheduled": true
     },
     {
@@ -245,7 +246,7 @@
       "path": ".github/workflows/guardrails-recert.yml",
       "size": 5633,
       "modified": "2025-10-16T04:41:51.2277793+01:00",
-      "triggers": "schedule, workflow_dispatch, issues",
+      "triggers": "schedule, workflow_dispatch",
       "scheduled": true
     },
     {
@@ -285,7 +286,7 @@
       "path": ".github/workflows/iona-gate-verify.yml",
       "size": 5140,
       "modified": "2025-10-16T04:41:51.2287862+01:00",
-      "triggers": "push, pull_request, workflow_dispatch, issues",
+      "triggers": "pull_request, push, workflow_dispatch",
       "scheduled": false
     },
     {
@@ -293,7 +294,7 @@
       "path": ".github/workflows/jfrog-sast.yml",
       "size": 1668,
       "modified": "2025-10-16T10:19:29.2175958+01:00",
-      "triggers": "push, pull_request, schedule",
+      "triggers": "pull_request, push, schedule",
       "scheduled": true
     },
     {
@@ -301,7 +302,7 @@
       "path": ".github/workflows/jscrambler-code-integrity.yml",
       "size": 2177,
       "modified": "2025-10-16T10:19:29.218595+01:00",
-      "triggers": "push, pull_request",
+      "triggers": "pull_request, push",
       "scheduled": false
     },
     {
@@ -317,7 +318,7 @@
       "path": ".github/workflows/main.yml",
       "size": 891,
       "modified": "2025-10-16T04:41:51.2307851+01:00",
-      "triggers": "push, pull_request, schedule",
+      "triggers": "pull_request, push, schedule",
       "scheduled": true
     },
     {
@@ -325,7 +326,7 @@
       "path": ".github/workflows/mayhem-for-api.yml",
       "size": 2290,
       "modified": "2025-10-16T10:19:29.218595+01:00",
-      "triggers": "push, pull_request",
+      "triggers": "pull_request, push",
       "scheduled": false
     },
     {
@@ -333,7 +334,7 @@
       "path": ".github/workflows/multi-app-ci.yml",
       "size": 5873,
       "modified": "2025-10-16T04:41:51.2317858+01:00",
-      "triggers": "push, pull_request, workflow_dispatch",
+      "triggers": "pull_request, push, workflow_dispatch",
       "scheduled": false
     },
     {
@@ -341,7 +342,7 @@
       "path": ".github/workflows/neuralegion.yml",
       "size": 6347,
       "modified": "2025-10-16T04:41:51.2322912+01:00",
-      "triggers": "push, pull_request, schedule",
+      "triggers": "pull_request, push, schedule",
       "scheduled": true
     },
     {
@@ -397,7 +398,7 @@
       "path": ".github/workflows/osv-scanner.yml",
       "size": 1666,
       "modified": "2025-10-16T10:19:29.2195972+01:00",
-      "triggers": "push, pull_request, schedule",
+      "triggers": "pull_request, push, schedule",
       "scheduled": true
     },
     {
@@ -405,7 +406,7 @@
       "path": ".github/workflows/powershell.yml",
       "size": 1875,
       "modified": "2025-10-16T04:41:51.2358088+01:00",
-      "triggers": "push, pull_request, schedule",
+      "triggers": "pull_request, push, schedule",
       "scheduled": true
     },
     {
@@ -485,7 +486,7 @@
       "path": ".github/workflows/sbom-stability-tracker.yml",
       "size": 2697,
       "modified": "2025-10-16T04:41:51.2388142+01:00",
-      "triggers": "schedule, workflow_dispatch, workflow_run, issues",
+      "triggers": "schedule, workflow_dispatch, workflow_run",
       "scheduled": true
     },
     {
@@ -501,7 +502,7 @@
       "path": ".github/workflows/security-scan.yml",
       "size": 4360,
       "modified": "2025-10-16T04:41:51.2398143+01:00",
-      "triggers": "push, pull_request, schedule, workflow_dispatch",
+      "triggers": "pull_request, push, schedule, workflow_dispatch",
       "scheduled": true
     },
     {
@@ -541,7 +542,7 @@
       "path": ".github/workflows/snyk-security.yml",
       "size": 3439,
       "modified": "2025-10-16T10:19:29.2276216+01:00",
-      "triggers": "push, pull_request",
+      "triggers": "pull_request, push",
       "scheduled": false
     },
     {
@@ -573,7 +574,7 @@
       "path": ".github/workflows/sysdig-scan.yml",
       "size": 2462,
       "modified": "2025-10-16T10:19:29.2286216+01:00",
-      "triggers": "push, pull_request, schedule",
+      "triggers": "pull_request, push, schedule",
       "scheduled": true
     },
     {
@@ -581,7 +582,7 @@
       "path": ".github/workflows/trivy-security-scan.yml",
       "size": 2693,
       "modified": "2025-10-16T04:41:51.2438498+01:00",
-      "triggers": "push, pull_request, schedule, workflow_dispatch",
+      "triggers": "pull_request, push, schedule, workflow_dispatch",
       "scheduled": true
     },
     {
@@ -593,7 +594,6 @@
       "scheduled": true
     }
   ],
-  "total": 74,
-  "updated": "2025-10-19T08:28:22.6236279+01:00",
-  "description": "GitHub Actions workflows registry - automatically generated"
+  "updated": "2025-10-19T08:34:40.0721699+01:00",
+  "total": 74
 }
