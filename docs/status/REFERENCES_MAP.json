@@ -1,0 +1,120 @@
+{
+  "version": "1.0",
+  "updated": "2025-10-19T07:00:00+01:00",
+  "description": "Canonical reference map for Resonai [OTel] observability pack - single source of truth for all working parts",
+  "buckets": [
+    {
+      "name": "Gate & Readiness",
+      "description": "Authoritative playbooks for gate verification and production readiness",
+      "canonical": [
+        {
+          "title": "Final Gate Readiness Guide",
+          "path": "docs/BossCat/FINAL_GATE_READINESS_GUIDE.md",
+          "purpose": "Step-by-step gate verification procedure"
+        }
+      ]
+    },
+    {
+      "name": "Persona & Governance",
+      "description": "Immutable rules for merge discipline, budgets, and ECRR methodology",
+      "canonical": [
+        {
+          "title": "BossCat Immutable Persona v1.1",
+          "path": "docs/BossCat/IMMUTABLE_PERSONA_v1.1.md",
+          "purpose": "Merge conditions, self-merge rules, and budget constraints"
+        },
+        {
+          "title": "The Art of ECRR (Manual)",
+          "path": "ART_OF_ECRR.md",
+          "purpose": "Paired-agent protocol, kill-switch, strict budgets"
+        }
+      ]
+    },
+    {
+      "name": "Stakeholder Evidence",
+      "description": "Executive packages for sign-offs and audit trails",
+      "canonical": [
+        {
+          "title": "Stakeholder Evidence Package",
+          "path": "docs/BossCat/STAKEHOLDER_EVIDENCE_PACKAGE.md",
+          "purpose": "Top-down view for stakeholder review"
+        },
+        {
+          "title": "Enterprise Readiness Checklist",
+          "path": "ENTERPRISE_READINESS_CHECKLIST.md",
+          "purpose": "Production checklist we drive to green"
+        }
+      ]
+    },
+    {
+      "name": "Security & Maintenance",
+      "description": "Master security guide and tracked risk waivers",
+      "canonical": [
+        {
+          "title": "Security & Maintenance Master Guide",
+          "path": "docs/BossCat/SECURITY_MAINTENANCE_MASTER_GUIDE.md",
+          "purpose": "Week-by-week operations and security procedures"
+        },
+        {
+          "title": "ADOT Summary / Security Waiver",
+          "path": "docs/BossCat/ADOT_summary_evaluation.md",
+          "purpose": "SigNoz security waiver with tracked risk expiry"
+        }
+      ]
+    },
+    {
+      "name": "Dashboards & Data Room",
+      "description": "Live 'see it working' observability interfaces",
+      "canonical": [
+        {
+          "title": "Resonai Data Room — IONA",
+          "path": "docs/BossCat/data_room_enhanced.html",
+          "purpose": "Interactive data room for canary testing and pipeline control"
+        },
+        {
+          "title": "Status/KPI Dashboard",
+          "path": "docs/status.html",
+          "purpose": "Real-time metrics and system health dashboard"
+        }
+      ]
+    },
+    {
+      "name": "Bots & Lanes",
+      "description": "AUTO-BOTS registry and lane enforcement (SSOT/FLAK/SELE/COMP/DOCS)",
+      "canonical": [
+        {
+          "title": "AUTO-BOTS Registry (Tetragram)",
+          "path": "docs/BossCat/AUTO-BOTS-REGISTRY.md",
+          "purpose": "Complete bot registry with lane assignments"
+        },
+        {
+          "title": "AUTO-BOTS Stability Pack (Implementation Summary)",
+          "path": "docs/BossCat/AUTO-BOTS_IMPLEMENTATION_SUMMARY.md",
+          "purpose": "A/B lane enforcement and stability patterns"
+        }
+      ]
+    },
+    {
+      "name": "Rebuild History",
+      "description": "Professional site rebuild and unified UX documentation",
+      "canonical": [
+        {
+          "title": "Complete Ground-Up Rebuild Summary (2025-10-07)",
+          "path": "docs/BossCat/COMPLETE_REBUILD_SUMMARY_20251007.md",
+          "purpose": "Oct-07 rebuild that unified UX and docs hub"
+        }
+      ]
+    }
+  ],
+  "meta": {
+    "hub_url": "docs/index.html",
+    "inventory_location": "artifacts/index/",
+    "orphans_list": "docs/status/orphans.md",
+    "scripts_registry": "docs/status/scripts.json",
+    "workflows_registry": "docs/status/workflows.json",
+    "ecrr_reports": "docs/ecrr/ECRR_REPORTS/",
+    "total_canonical_refs": 11,
+    "buckets_count": 7
+  }
+}
+
