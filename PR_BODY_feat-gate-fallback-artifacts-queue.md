@@ -1,28 +1,9 @@
-# fix(gap): IONA gate accepts artifacts/queue-steward-verification.txt fallback
+# Moved
 
-## Summary
-- Treats `queue-steward-verification.txt` as REQUIRED evidence with fallback in either `DELT/ARTF/` or `artifacts/`.
-- Normalizes ECRR report/PR output (ASCII-safe dashes).
-- Adds ECRR benchmark trend append + mirror with de-dup and retention defaults.
-- Wires CI/PR gate and nightly workflows to maintain and publish rolling CSV and queue-steward evidence.
+This file has been moved to maintain a cleaner repository structure.
 
-## CI/Nightly Integration
-- Gate CI: `.github/workflows/bosscat-gate-verify.yml`
-  - Generates queue steward evidence if snapshots exist.
-  - Uploads `artifacts/*.txt` including `artifacts/queue-steward-verification.txt`.
-- Nightly: `.github/workflows/nightly-dashboard-export.yml`
-  - After snapshot collection, runs `scripts/generate-queue-steward-evidence.ps1`.
-  - Uploads `artifacts/*.txt` alongside snapshots.
-  - Appends ECRR benchmark trend and mirrors to `artifacts/`.
+**New location:** [docs/pr/misc/PR_BODY_feat-gate-fallback-artifacts-queue.md](docs/pr/misc/PR_BODY_feat-gate-fallback-artifacts-queue.md)
 
-## Evidence
-- Gate verdict + checks: `DELT/ARTF/gate-verification-results.json`
-- ECRR latest: `docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md`
-- Benchmark JSON: `DELT/ARTF/ecrr-benchmark.json`
-- Trend CSV: `DELT/ARTF/ecrr-benchmark-trend.csv`, mirror `artifacts/ecrr-benchmark-trend.csv`
-- Queue steward evidence: `artifacts/queue-steward-verification.txt`
+**Moved:** 2025-10-19
 
-## Governance
-- ECRR: Examine, Clean, Report, Role satisfied with artifacts written to disk.
-- BossCat OEM approval required before merge.
-
+For the canonical version, please see the link above.
