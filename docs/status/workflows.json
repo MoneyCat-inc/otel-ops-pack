@@ -1,6 +1,6 @@
 {
   "source": "scripts/regenerate-workflows-registry.ps1",
-  "total": 76,
+  "total": 77,
   "items": [
     {
       "name": "adot-config-gate",
@@ -140,9 +140,9 @@
     },
     {
       "name": "bosscat-gate-bot-native",
-      "modified": "2025-10-19T11:26:56.6645949Z",
+      "modified": "2025-10-19T12:05:38.5919833Z",
       "path": ".github/workflows/bosscat-gate-bot-native.yml",
-      "size": 9160,
+      "size": 14769,
       "triggers": {
         "issues": false,
         "other": [],
@@ -339,6 +339,23 @@
         "schedule": true,
         "workflow_call": false,
         "workflow_dispatch": false,
+        "workflow_run": false
+      }
+    },
+    {
+      "name": "docs-guard",
+      "modified": "2025-10-19T16:03:59.6892589Z",
+      "path": ".github/workflows/docs-guard.yml",
+      "size": 3366,
+      "triggers": {
+        "issues": false,
+        "other": [],
+        "pull_request": true,
+        "push": false,
+        "release": false,
+        "schedule": false,
+        "workflow_call": false,
+        "workflow_dispatch": true,
         "workflow_run": false
       }
     },
@@ -888,7 +905,7 @@
     },
     {
       "name": "registry-guard",
-      "modified": "2025-10-19T11:51:28.8142217Z",
+      "modified": "2025-10-19T12:07:35.9545248Z",
       "path": ".github/workflows/registry-guard.yml",
       "size": 5510,
       "triggers": {

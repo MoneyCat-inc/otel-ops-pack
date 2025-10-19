@@ -18,16 +18,13 @@
 ### 1. Gate & Readiness
 **Authoritative playbooks for gate verification and production readiness**
 
-- **[Final Gate Readiness Guide](../BossCat/FINAL_GATE_READINESS_GUIDE.md)**  
-  Step-by-step gate verification procedure
+- **[Gate Archive (2025-10)](../gate/2025-10/)**  
+  October 2025 gate verification evidence
 
 ---
 
 ### 2. Persona & Governance
 **Immutable rules for merge discipline, budgets, and ECRR methodology**
-
-- **[BossCat Immutable Persona v1.1](../BossCat/IMMUTABLE_PERSONA_v1.1.md)**  
-  Merge conditions, self-merge rules, and budget constraints
 
 - **[The Art of ECRR (Manual)](../bosscat/misc/ART_OF_ECRR.md)**  
   Paired-agent protocol, kill-switch, strict budgets
@@ -43,12 +40,6 @@
 - **[Stakeholder Evidence Package](../BossCat/STAKEHOLDER_EVIDENCE_PACKAGE.md)**  
   Top-down view for stakeholder review
 
-- **[Enterprise Readiness Checklist](../BossCat/ENTERPRISE_READINESS_CHECKLIST.md)**  
-  Production checklist we drive to green
-
-- **[Gate Archive (2025-10)](../gate/2025-10/)**  
-  October 2025 gate verification evidence
-
 ---
 
 ### 4. Security & Maintenance
@@ -57,40 +48,13 @@
 - **[Security & Maintenance Master Guide](../BossCat/SECURITY_MAINTENANCE_MASTER_GUIDE.md)**  
   Week-by-week operations and security procedures
 
-- **[ADOT Summary / Security Waiver](../BossCat/ADOT_summary_evaluation.md)**  
-  SigNoz security waiver with tracked risk expiry
-
 ---
 
 ### 5. Dashboards & Data Room
 **Live 'see it working' observability interfaces**
 
-- **[Resonai Data Room — IONA](../BossCat/data_room_enhanced.html)**  
-  Interactive data room for canary testing and pipeline control
-
 - **[Status/KPI Dashboard](../status.html)**  
   Real-time metrics and system health dashboard
-
----
-
-### 6. Bots & Lanes
-**AUTO-BOTS registry and lane enforcement (SSOT/FLAK/SELE/COMP/DOCS)**
-
-- **[AUTO-BOTS Registry (Tetragram)](../BossCat/AUTO-BOTS-REGISTRY.md)**  
-  Complete bot registry with lane assignments
-
-- **[AUTO-BOTS Stability Pack (Implementation Summary)](../BossCat/AUTO-BOTS_IMPLEMENTATION_SUMMARY.md)**  
-  A/B lane enforcement and stability patterns
-
----
-
-### 7. Rebuild History
-**Professional site rebuild and unified UX documentation**
-
-- **[Complete Ground-Up Rebuild Summary (2025-10-07)](../BossCat/COMPLETE_REBUILD_SUMMARY_20251007.md)**  
-  Oct-07 rebuild that unified UX and docs hub
-
----
 
 ## 🔧 System Registries
 
@@ -133,7 +97,7 @@ The root consolidation organized 177 files into domain-specific folders:
 ## 📊 Map Statistics
 
 - **Version:** 1.1
-- **Total Canonical References:** 13
+- **Total Canonical References:** 6
 - **Buckets:** 7
 - **Organized Domains:** 8
 - **Root Docs Consolidated:** 177

@@ -66,6 +66,8 @@ services:
     depends_on:
       signoz-clickhouse:
         condition: service_healthy
+      signoz-schema-migrator-sync:
+        condition: service_completed_successfully
     restart: on-failure
     networks:
       - signoz
@@ -119,7 +121,7 @@ services:
       - ./signoz-collector-config.yaml:/etc/otel-collector-config.yaml:ro
     ports:
       - "14317:4317"
-      - "14318:4318"
+      - "5318:4318"
       - "18888:8888"
       - "18889:8889"
     environment:
@@ -143,4 +145,3 @@ networks:
   signoz:
     name: signoz
     driver: bridge
-

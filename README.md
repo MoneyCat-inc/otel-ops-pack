@@ -1,8 +1,8 @@
 # 🐾 Resonai [OTel] — OpenTelemetry Observability Pack
 
-[![ECRR](https://img.shields.io/badge/ECRR-Examine→Clean→Report→Role-7c5cff?style=for-the-badge&logo=gitbook&logoColor=white)](./AGENTS.md#-agents--ecrr-mantra)
+[![ECRR](https://img.shields.io/badge/ECRR-Examine→Clean→Report→Role-7c5cff?style=for-the-badge&logo=gitbook&logoColor=white)](docs/bosscat/misc/AGENTS.md#-agents--ecrr-mantra)
 [![BossCat Gate](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/bosscat-gate-verify.yml/badge.svg)](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/bosscat-gate-verify.yml)
-[![CodeQL](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/codeql.yml/badge.svg)](../../actions/workflows/codeql.yml)
+[![CodeQL](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/codeql.yml/badge.svg)](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/codeql.yml)
 [![Maintained by MoneyCat-inc](https://img.shields.io/badge/Maintained%20by-MoneyCat--inc-00aa88?style=for-the-badge&logo=github&logoColor=white)](https://github.com/MoneyCat-inc)
 
 **Windows-native OpenTelemetry observability** feeding Windows Event Logs and file logs into **SigNoz** for real-time monitoring. Optimized for low latency (200ms batches) with noise filtering (~50% volume reduction).
@@ -19,12 +19,9 @@
 
 ### 🎛️ **Live Dashboards**
 - **[Status Dashboard](docs/status.html)** — Real-time metrics and system health
-- **[Data Room (IONA)](docs/BossCat/data_room_enhanced.html)** — Interactive canary testing and pipeline control
 
 ### 📊 **Key Resources**
-- **[Gate Readiness Guide](docs/BossCat/FINAL_GATE_READINESS_GUIDE.md)** — Production verification procedure
-- **[Enterprise Checklist](ENTERPRISE_READINESS_CHECKLIST.md)** — Readiness tracking
-- **[Latest ECRR Report](docs/ecrr/ECRR_REPORTS/ECRR_PROCESSING_SUMMARY_LATEST.md)** — System health and compliance
+- **[Gate Archive (2025-10)](docs/gate/2025-10/)** — October 2025 gate verification evidence
 - **[Security Master Guide](docs/BossCat/SECURITY_MAINTENANCE_MASTER_GUIDE.md)** — Security and maintenance procedures
 
 ---
@@ -89,7 +86,6 @@ All documentation is centralized in the **[Documentation Hub](docs/index.html)**
 
 - **Security scanning:** CodeQL, Gitleaks, Dependabot
 - **Master guide:** [Security & Maintenance](docs/BossCat/SECURITY_MAINTENANCE_MASTER_GUIDE.md)
-- **SigNoz waiver:** [ADOT Evaluation](docs/BossCat/ADOT_summary_evaluation.md)
 - **Error ledger:** [IONA_ERRORS.md](docs/IONA_ERRORS.md)
 
 ---
@@ -103,7 +99,7 @@ We follow strict **BossCat governance** with immutable merge rules:
 - **Gate verification:** Must pass before merge
 - **Kill-switch:** Active for drift control
 
-See: [Contributing Guide](CONTRIBUTING.md) | [Immutable Persona](docs/BossCat/IMMUTABLE_PERSONA_v1.1.md)
+See: [ECRR Manual](docs/bosscat/misc/ART_OF_ECRR.md) | [Agents & Hierarchy](docs/bosscat/misc/AGENTS.md)
 
 ---
 
@@ -114,7 +110,7 @@ See: [Contributing Guide](CONTRIBUTING.md) | [Immutable Persona](docs/BossCat/IM
 **ECRR Reports:** 195+ comprehensive reports  
 **Active Development:** 11+ consecutive days
 
-See [Latest ECRR Report](docs/ecrr/ECRR_REPORTS/ECRR_PROCESSING_SUMMARY_LATEST.md) for detailed metrics.
+See [Status Dashboard](docs/status.html) for detailed metrics.
 
 ---
 
@@ -138,10 +134,9 @@ pwsh scripts/verify-pipeline.ps1
 
 ## 📚 Additional Resources
 
-- **[Cheat Sheets](docs/cheatsheets/)** — Quick reference guides
+- **[Cheat Sheets](docs/cheatsheets/README.md)** — Quick reference guides
 - **[ECRR Reports](docs/ecrr/ECRR_REPORTS/)** — Complete audit trail
 - **[Observability Snapshots](docs/observability/snapshots/)** — Dashboard exports
-- **[AUTO-BOTS Registry](docs/BossCat/AUTO-BOTS-REGISTRY.md)** — Automation lanes
 
 ---
 
@@ -159,7 +154,7 @@ pwsh scripts/verify-pipeline.ps1
 **Maintained by:** MoneyCat-inc  
 **Authority:** BossCat OEM (Executive Overseer Manager)  
 **Methodology:** ECRR (Examine → Clean → Report → Role)  
-**Creative Source:** [docs/comfort-cat/](docs/comfort-cat/)
+**Creative Guide:** See Documentation Hub for creative references
 
 **Professional Site Rebuild:** October 7, 2025  
 Unified navigation, docs hub, and observability interfaces.
