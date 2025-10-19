@@ -1,7 +1,8 @@
 {
-  "version": "1.0",
-  "updated": "2025-10-19T07:00:00+01:00",
+  "version": "1.1",
+  "updated": "2025-10-19T13:00:00+00:00",
   "description": "Canonical reference map for Resonai [OTel] observability pack - single source of truth for all working parts",
+  "changelog": "v1.1: Updated paths after root consolidation (177 files organized by domain)",
   "buckets": [
     {
       "name": "Gate & Readiness",
@@ -25,8 +26,13 @@
         },
         {
           "title": "The Art of ECRR (Manual)",
-          "path": "ART_OF_ECRR.md",
+          "path": "docs/bosscat/misc/ART_OF_ECRR.md",
           "purpose": "Paired-agent protocol, kill-switch, strict budgets"
+        },
+        {
+          "title": "Agents & Hierarchy",
+          "path": "docs/bosscat/misc/AGENTS.md",
+          "purpose": "Agent roles and ECRR methodology"
         }
       ]
     },
@@ -41,8 +47,13 @@
         },
         {
           "title": "Enterprise Readiness Checklist",
-          "path": "ENTERPRISE_READINESS_CHECKLIST.md",
+          "path": "docs/BossCat/ENTERPRISE_READINESS_CHECKLIST.md",
           "purpose": "Production checklist we drive to green"
+        },
+        {
+          "title": "Gate Archive (2025-10)",
+          "path": "docs/gate/2025-10/",
+          "purpose": "October 2025 gate verification evidence"
         }
       ]
     },
@@ -106,6 +117,15 @@
       ]
     }
   ],
+  "organized_domains": [
+    {"name": "gate", "path": "docs/gate/", "description": "Gate verification and readiness evidence"},
+    {"name": "socm", "path": "docs/socm/", "description": "Social media and communications"},
+    {"name": "pr", "path": "docs/pr/", "description": "Pull request reviews and comments"},
+    {"name": "releases", "path": "docs/releases/", "description": "Release notes and roadmaps"},
+    {"name": "runbooks", "path": "docs/runbooks/", "description": "Operational runbooks and deployment guides"},
+    {"name": "evidence", "path": "docs/evidence/", "description": "Commit evidence and system status"},
+    {"name": "status", "path": "docs/status/", "description": "Session status and implementation reports"}
+  ],
   "meta": {
     "hub_url": "docs/index.html",
     "inventory_location": "artifacts/index/",
@@ -113,8 +133,10 @@
     "scripts_registry": "docs/status/scripts.json",
     "workflows_registry": "docs/status/workflows.json",
     "ecrr_reports": "docs/ecrr/ECRR_REPORTS/",
-    "total_canonical_refs": 11,
-    "buckets_count": 7
+    "total_canonical_refs": 13,
+    "buckets_count": 7,
+    "organized_domains_count": 7,
+    "root_docs_consolidated": 177
   }
 }
 

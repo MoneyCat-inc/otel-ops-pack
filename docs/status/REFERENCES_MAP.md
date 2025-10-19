@@ -1,8 +1,13 @@
 # 🗺️ Resonai [OTel] — Canonical References Map
 
-**Version:** 1.0  
+**Version:** 1.1  
 **Updated:** 2025-10-19  
 **Purpose:** Single source of truth for all working parts
+
+**What's New in v1.1:**
+- Updated paths after root consolidation (177 files organized)
+- Added organized domains (gate, socm, pr, releases, runbooks, evidence, status)
+- Expanded governance references (added AGENTS.md)
 
 > **Navigation:** This map is linked from [`docs/index.html`](../index.html) (the documentation hub)
 
@@ -24,8 +29,11 @@
 - **[BossCat Immutable Persona v1.1](../BossCat/IMMUTABLE_PERSONA_v1.1.md)**  
   Merge conditions, self-merge rules, and budget constraints
 
-- **[The Art of ECRR (Manual)](../../ART_OF_ECRR.md)**  
+- **[The Art of ECRR (Manual)](../bosscat/misc/ART_OF_ECRR.md)**  
   Paired-agent protocol, kill-switch, strict budgets
+
+- **[Agents & Hierarchy](../bosscat/misc/AGENTS.md)**  
+  Agent roles and ECRR methodology
 
 ---
 
@@ -35,8 +43,11 @@
 - **[Stakeholder Evidence Package](../BossCat/STAKEHOLDER_EVIDENCE_PACKAGE.md)**  
   Top-down view for stakeholder review
 
-- **[Enterprise Readiness Checklist](../../ENTERPRISE_READINESS_CHECKLIST.md)**  
+- **[Enterprise Readiness Checklist](../BossCat/ENTERPRISE_READINESS_CHECKLIST.md)**  
   Production checklist we drive to green
+
+- **[Gate Archive (2025-10)](../gate/2025-10/)**  
+  October 2025 gate verification evidence
 
 ---
 
@@ -101,13 +112,34 @@
 
 ---
 
+## 🗂️ Organized Domains
+
+The root consolidation organized 177 files into domain-specific folders:
+
+- **[docs/gate/](../gate/)** — Gate verification and readiness evidence (25 files)
+- **[docs/socm/](../socm/)** — Social media and communications (39 files)
+- **[docs/pr/](../pr/)** — Pull request reviews and comments (15 files)
+- **[docs/releases/](../releases/)** — Release notes and roadmaps (3 files)
+- **[docs/runbooks/](../runbooks/)** — Operational guides and deployment (6 files)
+- **[docs/evidence/](../evidence/)** — Commit evidence and system status (3 files)
+- **[docs/status/](../status/)** — Session reports and implementation status (12 files)
+- **[docs/notes/](../notes/)** — Notes, tasks, and misc documentation (56 files)
+
+**Date-based organization:** Files with dates organized into `YYYY-MM/` subfolders  
+**Redirect stubs:** 177 stubs at original locations preserve inbound links
+
+---
+
 ## 📊 Map Statistics
 
-- **Total Canonical References:** 11
+- **Version:** 1.1
+- **Total Canonical References:** 13
 - **Buckets:** 7
+- **Organized Domains:** 8
+- **Root Docs Consolidated:** 177
 - **Inventory Files:** 4 (complete)
-- **Registries:** 3 (pending)
-- **Last Updated:** 2025-10-19T07:00:00+01:00
+- **Registries:** 3 (operational)
+- **Last Updated:** 2025-10-19T13:00:00+00:00
 
 ---
 
