@@ -125,14 +125,27 @@ jobs:
               health=$(docker inspect --format='{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}' "$cid" 2>/dev/null || echo "unknown")
               
               case "$health" in
-                healthy|running)
-                  : # OK
+                healthy)
+                  echo "? Service $s health=$health"
+                  ;;
+                running)
+                  echo "? Service $s status=$health"
                   ;;
                 starting)
                   unhealthy=1
+                  echo "? Service $s still starting (status=$health)"
+                  ;;
+                exited)
+                  exit_code=$(docker inspect --format='{{.State.ExitCode}}' "$cid" 2>/dev/null || echo "unknown")
+                  if [ "$exit_code" = "0" ]; then
+                    echo "? Service $s exited successfully (code 0)"
+                  else
+                    echo "?? Service $s exited with code $exit_code"
+                    unhealthy=1
+                  fi
                   ;;
                 *)
-                  echo "⚠️ Service $s health=$health"
+                  echo "?? Service $s health=$health"
                   unhealthy=1
                   ;;
               esac
@@ -403,3 +416,4 @@ jobs:
 # 6. Structured Exit: 0 = pass, 1 = fail (bot-friendly)
 #
 # ============================================
+
