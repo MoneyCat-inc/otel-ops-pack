@@ -19,12 +19,9 @@
 
 ### 🎛️ **Live Dashboards**
 - **[Status Dashboard](docs/status.html)** — Real-time metrics and system health
-- **[Data Room (IONA)](docs/BossCat/data_room_enhanced.html)** — Interactive canary testing and pipeline control
 
 ### 📊 **Key Resources**
-- **[Gate Readiness Guide](docs/BossCat/FINAL_GATE_READINESS_GUIDE.md)** — Production verification procedure
-- **[Enterprise Checklist](ENTERPRISE_READINESS_CHECKLIST.md)** — Readiness tracking
-- **[Latest ECRR Report](docs/ecrr/ECRR_REPORTS/ECRR_PROCESSING_SUMMARY_LATEST.md)** — System health and compliance
+- **[Gate Archive (2025-10)](docs/gate/2025-10/)** — October 2025 gate verification evidence
 - **[Security Master Guide](docs/BossCat/SECURITY_MAINTENANCE_MASTER_GUIDE.md)** — Security and maintenance procedures
 
 ---
@@ -89,7 +86,6 @@ All documentation is centralized in the **[Documentation Hub](docs/index.html)**
 
 - **Security scanning:** CodeQL, Gitleaks, Dependabot
 - **Master guide:** [Security & Maintenance](docs/BossCat/SECURITY_MAINTENANCE_MASTER_GUIDE.md)
-- **SigNoz waiver:** [ADOT Evaluation](docs/BossCat/ADOT_summary_evaluation.md)
 - **Error ledger:** [IONA_ERRORS.md](docs/IONA_ERRORS.md)
 
 ---
@@ -103,7 +99,7 @@ We follow strict **BossCat governance** with immutable merge rules:
 - **Gate verification:** Must pass before merge
 - **Kill-switch:** Active for drift control
 
-See: [Contributing Guide](CONTRIBUTING.md) | [Immutable Persona](docs/BossCat/IMMUTABLE_PERSONA_v1.1.md)
+See: [Contributing Guide](CONTRIBUTING.md) | [ECRR Manual](docs/bosscat/misc/ART_OF_ECRR.md)
 
 ---
 
@@ -114,7 +110,7 @@ See: [Contributing Guide](CONTRIBUTING.md) | [Immutable Persona](docs/BossCat/IM
 **ECRR Reports:** 195+ comprehensive reports  
 **Active Development:** 11+ consecutive days
 
-See [Latest ECRR Report](docs/ecrr/ECRR_REPORTS/ECRR_PROCESSING_SUMMARY_LATEST.md) for detailed metrics.
+See [Status Dashboard](docs/status.html) for detailed metrics.
 
 ---
 
@@ -138,10 +134,9 @@ pwsh scripts/verify-pipeline.ps1
 
 ## 📚 Additional Resources
 
-- **[Cheat Sheets](docs/cheatsheets/)** — Quick reference guides
+- **[Cheat Sheets](docs/cheatsheets/README.md)** — Quick reference guides
 - **[ECRR Reports](docs/ecrr/ECRR_REPORTS/)** — Complete audit trail
 - **[Observability Snapshots](docs/observability/snapshots/)** — Dashboard exports
-- **[AUTO-BOTS Registry](docs/BossCat/AUTO-BOTS-REGISTRY.md)** — Automation lanes
 
 ---
 
