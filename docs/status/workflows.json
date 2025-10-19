@@ -1,6 +1,6 @@
 {
   "source": "scripts/regenerate-workflows-registry.ps1",
-  "total": 76,
+  "total": 77,
   "items": [
     {
       "name": "adot-config-gate",
@@ -339,6 +339,23 @@
         "schedule": true,
         "workflow_call": false,
         "workflow_dispatch": false,
+        "workflow_run": false
+      }
+    },
+    {
+      "name": "docs-guard",
+      "modified": "2025-10-19T16:03:59.6892589Z",
+      "path": ".github/workflows/docs-guard.yml",
+      "size": 3366,
+      "triggers": {
+        "issues": false,
+        "other": [],
+        "pull_request": true,
+        "push": false,
+        "release": false,
+        "schedule": false,
+        "workflow_call": false,
+        "workflow_dispatch": true,
         "workflow_run": false
       }
     },
