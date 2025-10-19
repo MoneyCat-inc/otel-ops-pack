@@ -1,0 +1,23 @@
+# GitHub Pages - BossCat Hub
+title: BossCat Hub
+description: AntiClickbait, MILK visualizer, Data Room, live metrics
+url: https://hub.resonai.io
+baseurl: ""
+
+theme: null
+plugins: []
+
+include: [CNAME, robots.txt, .well-known]
+
+exclude:
+  - node_modules
+  - .git
+  - .github
+  - artifacts
+  - .agent
+  - logs
+  - "*.log"
+  - "*.ps1"
+  - Dockerfile*
+  - docker-compose*.yml
+
