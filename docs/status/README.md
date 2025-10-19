@@ -86,7 +86,40 @@ This catches cases where workflows were merged without regenerating the registry
 pwsh scripts/regenerate-workflows-registry.ps1
 ```
 
-**Manual command (if needed):**
+**Output Format (Schema-Compliant):**
+```json
+{
+  "source": "scripts/regenerate-workflows-registry.ps1",
+  "total": 76,
+  "items": [
+    {
+      "name": "workflow-name",
+      "modified": "2025-10-16T04:41:51+01:00",
+      "path": ".github/workflows/workflow-name.yml",
+      "size": 1234,
+      "triggers": {
+        "issues": false,
+        "other": [],
+        "pull_request": true,
+        "push": false,
+        "release": false,
+        "schedule": false,
+        "workflow_call": false,
+        "workflow_dispatch": true,
+        "workflow_run": false
+      }
+    }
+  ]
+}
+```
+
+**Key Features:**
+- ✅ Workflows sorted alphabetically by name (deterministic)
+- ✅ Triggers as object (not string) for schema validation
+- ✅ No timestamp field (use git history instead)
+- ✅ CI-friendly (semantic comparison, not text diff)
+
+**Manual command (if modifying the script):**
 ```powershell
 cd c:\otel
 
@@ -158,9 +191,16 @@ Write-Host "✅ workflows.json regenerated ($($workflows.Count) workflows)" -For
 
 **Verification:**
 ```powershell
-# Spot-check a few workflows
+# Check total count
 $json = Get-Content docs\status\workflows.json -Raw | ConvertFrom-Json
-$json.workflows | Where-Object { $_.name -in @('bosscat-gate-bot-native', 'bosscat-gate-verify', 'apisec-scan') } | Format-Table name, triggers
+Write-Host "Total workflows: $($json.total)"
+
+# Spot-check specific workflows with active triggers
+$json.items | Where-Object { $_.name -in @('bosscat-gate-bot-native', 'apisec-scan') } | 
+  Select-Object name, @{N='triggers';E={
+    ($_.triggers.PSObject.Properties | Where-Object {$_.Value -eq $true} | 
+      Select-Object -ExpandProperty Name) -join ', '
+  }} | Format-Table
 ```
 
 ---
@@ -226,23 +266,32 @@ Write-Host "✅ scripts.json regenerated ($($scripts.Count) scripts)" -Foregroun
 **Schema Format:**
 ```json
 {
-  "generatedAt": "ISO 8601 timestamp",
   "source": "scripts/regenerate-workflows-registry.ps1",
-  "total": 74,
+  "total": 76,
   "items": [
     {
       "name": "workflow-name",
+      "modified": "2025-10-16T04:41:51+01:00",
       "path": ".github/workflows/workflow-name.yml",
+      "size": 1234,
       "triggers": {
-        "push": true/false,
-        "pull_request": true/false,
-        "workflow_dispatch": true/false,
-        ...
+        "push": true,
+        "pull_request": false,
+        "workflow_dispatch": true,
+        "schedule": false,
+        "issues": false,
+        "other": []
       }
     }
   ]
 }
 ```
+
+**Notes:**
+- Triggers are boolean objects (not strings) for machine readability
+- Workflows sorted alphabetically by name for determinism
+- No generatedAt field (git history provides timestamps)
+- CI guard uses semantic comparison (ignores JSON formatting)
 
 **Validation checks (automated by CI):**
 ```powershell
