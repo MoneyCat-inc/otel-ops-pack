@@ -1,11 +1,11 @@
 {
-  "timestamp": "2025-10-17T02:17:01.9116110+01:00",
-  "commit": "20b71befc",
-  "branch": "feat/milk-theatre-metrics-vendors",
-  "total": 79,
+  "timestamp": "2025-10-19T06:49:59.4519613+01:00",
+  "commit": "a34c9e1be",
+  "branch": "main",
+  "total": 81,
   "ready": 78,
   "not_ready": 1,
   "warn": 0,
   "latest_name": "ECRR_GATE_RUN_LATEST.md",
-  "latest_verdict": "READY"
+  "latest_verdict": ""
 }
