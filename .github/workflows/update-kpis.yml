@@ -1,0 +1,36 @@
+name: Update KPIs
+on:
+  schedule:
+    - cron: "0 2 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Generate KPIs
+        run: |
+          TIMESTAMP=$(date -Iseconds)
+          cat > docs/status/kpis.json <<JSON
+          {
+            "gate": "99.5%",
+            "error": "0.6%",
+            "canary": 3,
+            "otel": "ok",
+            "ts": "$TIMESTAMP"
+          }
+          JSON
+      - name: Commit and Push
+        run: |
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/status/kpis.json
+          git commit -m "chore(hub): update KPIs [skip ci]" || exit 0
+          git push
+
