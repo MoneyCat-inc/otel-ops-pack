@@ -140,9 +140,9 @@
     },
     {
       "name": "bosscat-gate-bot-native",
-      "modified": "2025-10-19T10:05:48.8176142+01:00",
+      "modified": "2025-10-19T11:08:56.2279376+01:00",
       "path": ".github/workflows/bosscat-gate-bot-native.yml",
-      "size": 14158,
+      "size": 15186,
       "triggers": {
         "issues": false,
         "other": [],
