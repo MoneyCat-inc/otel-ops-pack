@@ -66,6 +66,8 @@ services:
     depends_on:
       signoz-clickhouse:
         condition: service_healthy
+      signoz-schema-migrator-sync:
+        condition: service_completed_successfully
     restart: on-failure
     networks:
       - signoz
@@ -143,4 +145,3 @@ networks:
   signoz:
     name: signoz
     driver: bridge
-
