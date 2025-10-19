@@ -1,0 +1,17 @@
+{
+  "name": "BossCat Registry",
+  "version": "1.0.0",
+  "tag": "bosscat-registry-1.0",
+  "commit": "72236f29b",
+  "date": "2025-10-19",
+  "pr": 171,
+  "testRun": "18629010288",
+  "highlights": [
+    "Schema-validated workflows registry (76 workflows)",
+    "CI guard with semantic comparison",
+    "Docker Compose hardening (13 improvements)",
+    "Smoke test: 10min timeout → 4m25s success",
+    "Documentation hub with canonical references map"
+  ]
+}
+

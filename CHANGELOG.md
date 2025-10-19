@@ -1,5 +1,58 @@
 # ECRR Consolidation Changelog
 
+## [1.0.0] - 2025-10-19 - BossCat Registry 1.0
+
+### Added
+- **Schema-validated workflows registry** (`docs/status/workflows.json`) with 76 workflows
+- **CI guard workflow** (`.github/workflows/registry-guard.yml`) to auto-regenerate and validate registry on PRs
+- **Nightly drift check** (`.github/workflows/registry-drift-check.yml`) with auto-PR creation
+- **Docker Compose resilience** for SigNoz: warm-up, pre-pull, `--wait` + manual health checks, heartbeat logging, debug artifacts, always-teardown
+- **Documentation hub** (`docs/index.html`) with canonical references map
+- **Workflows card** on hub (live visualization of top 20 workflows)
+- **JSON Schema** (`docs/status/workflows.schema.json`) for registry validation
+- **Registry regeneration helper** (`scripts/regenerate-workflows-registry.ps1`) with location-independent execution
+- **PR template** with registry guard checklist
+- **CODEOWNERS** enforcement for registry-touching files
+- **Scripts registry** (`docs/status/scripts.json`) categorized by lane
+- **Orphans triage** (`docs/status/orphans.md`) for documentation cleanup
+
+### Changed
+- **Documentation hub** established with canonical references map (7 buckets, 11 refs)
+- **README.md** collapsed from 384 → 169 lines (56% reduction), hub-focused
+- **Registry format** migrated from string triggers to schema-compliant object format
+- **Navigation** wired across hub, status dashboard, data room, and references map
+- **Workflow triggers** now YAML-aware (extracts from `on:` block only, no false positives)
+
+### Fixed
+- **Smoke test timeouts:** 10-minute failures → 4m25s successful completion
+- **Docker Compose startup:** Eliminated flakes with 13 resilience improvements
+- **Registry trigger accuracy:** Zero false "issues" triggers from `permissions:` blocks
+- **Path resolution:** Scripts work from any directory (PSScriptRoot anchoring)
+- **Deterministic output:** Registry git-diff friendly (removed volatile timestamps)
+- **CI guard KeyError:** Fixed generatedAt field reference
+- **Documentation accuracy:** Updated to reflect schema-compliant format
+
+### Test Evidence
+- **Run 18629010288:** Manual dispatch ✅ SUCCESS
+  - Smoke Test: 4m25s
+  - Performance Gate: 3m
+  - All evidence uploaded
+- **PR #171:** All gates green (merged)
+
+### Commits
+- **Total:** 14 commits
+- **Files changed:** 12
+- **Lines added:** +1,750
+- **Lines removed:** -230
+- **Net impact:** +1,520 lines of production infrastructure
+
+### Authority
+- **BossCat OEM** (Taskmaster-Overseer)
+- **Executor:** Cursor{Implementer} + Fubumaki (collaborative fixes)
+- **Methodology:** ECRR (Examine → Clean → Report → Role)
+
+---
+
 ## 2025-10-13 - IONA Gate PROD READY Promotion
 
 ### Summary

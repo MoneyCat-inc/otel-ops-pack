@@ -1,16 +1,16 @@
 ﻿**********************
 Windows PowerShell transcript start
-Start time: 20251017124649
+Start time: 20251019125649
 Username: MAXGROUP\SYSTEM
 RunAs User: MAXGROUP\SYSTEM
 Configuration Name: 
 Machine: D-MONOLITH (Microsoft Windows NT 10.0.26220.0)
 Host Application: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\otel\canary-check-min.ps1
-Process ID: 30628
-PSVersion: 5.1.26100.6780
+Process ID: 43592
+PSVersion: 5.1.26100.6972
 PSEdition: Desktop
-PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.6780
-BuildVersion: 10.0.26100.6780
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.6972
+BuildVersion: 10.0.26100.6972
 CLRVersion: 4.0.30319.42000
 WSManStackVersion: 3.0
 PSRemotingProtocolVersion: 2.3
@@ -33,5 +33,5 @@ At C:\otel\canary-check-min.ps1:110 char:3
 
 **********************
 Windows PowerShell transcript end
-End time: 20251017124653
+End time: 20251019125654
 **********************
