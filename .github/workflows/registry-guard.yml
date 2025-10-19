@@ -30,34 +30,72 @@ jobs:
           Write-Host "Regenerating workflows registry..."
           pwsh scripts/regenerate-workflows-registry.ps1
 
-      - name: 🔍 Semantic comparison (JSON-aware)
+      - name: 🔍 Deep semantic comparison (triggers + metadata)
         shell: pwsh
         run: |
-          # Compare committed vs regenerated semantically (not text diff)
+          # Compare committed vs regenerated - must check triggers not just names
           $committed = Get-Content docs/status/workflows.json -Raw | ConvertFrom-Json
           git checkout docs/status/workflows.json 2>$null
           $original = Get-Content docs/status/workflows.json -Raw | ConvertFrom-Json
           
-          # Compare total count
+          $errors = @()
+          
+          # Check 1: Total count
           if ($committed.total -ne $original.total) {
-            Write-Host "::error::Workflow count changed: $($original.total) → $($committed.total)"
-            Write-Host "Run: pwsh scripts/regenerate-workflows-registry.ps1"
+            $errors += "Workflow count changed: $($original.total) → $($committed.total)"
+          }
+          
+          # Check 2: Build lookup maps for comparison
+          $committedMap = @{}
+          $committed.items | ForEach-Object { $committedMap[$_.name] = $_ }
+          
+          $originalMap = @{}
+          $original.items | ForEach-Object { $originalMap[$_.name] = $_ }
+          
+          # Check 3: Compare each workflow's triggers
+          foreach ($name in $committedMap.Keys) {
+            if (-not $originalMap.ContainsKey($name)) {
+              $errors += "New workflow: $name (missing in committed registry)"
+              continue
+            }
+            
+            $cTriggers = $committedMap[$name].triggers
+            $oTriggers = $originalMap[$name].triggers
+            
+            # Compare each trigger boolean
+            $triggerKeys = @('push', 'pull_request', 'workflow_dispatch', 'workflow_call', 'workflow_run', 'schedule', 'release', 'issues')
+            foreach ($key in $triggerKeys) {
+              $cVal = if ($cTriggers.$key) { $cTriggers.$key } else { $false }
+              $oVal = if ($oTriggers.$key) { $oTriggers.$key } else { $false }
+              
+              if ($cVal -ne $oVal) {
+                $errors += "Workflow '$name' trigger '$key' changed: $oVal → $cVal"
+              }
+            }
+          }
+          
+          # Check 4: Look for removed workflows
+          foreach ($name in $originalMap.Keys) {
+            if (-not $committedMap.ContainsKey($name)) {
+              $errors += "Workflow removed: $name (still in committed registry)"
+            }
+          }
+          
+          # Report results
+          if ($errors.Count -gt 0) {
+            Write-Host "::error::Registry is out of date - $($errors.Count) issue(s) found"
+            Write-Host ""
+            foreach ($err in $errors) {
+              Write-Host "  - $err"
+            }
+            Write-Host ""
+            Write-Host "Fix: pwsh scripts/regenerate-workflows-registry.ps1"
+            Write-Host "Then: git add docs/status/workflows.json && git commit"
             exit 1
           }
           
-          # Compare workflow names (sorted)
-          $committedNames = ($committed.items | Select-Object -ExpandProperty name | Sort-Object) -join ','
-          $originalNames = ($original.items | Select-Object -ExpandProperty name | Sort-Object) -join ','
-          
-          if ($committedNames -ne $originalNames) {
-            Write-Host "::error::Workflow names don't match"
-            Write-Host "Committed: $committedNames"
-            Write-Host "Original:  $originalNames"
-            Write-Host "Run: pwsh scripts/regenerate-workflows-registry.ps1"
-            exit 1
-          }
-          
-          Write-Host "✅ Registry is up to date (semantic check passed)"
+          Write-Host "✅ Registry is up to date (deep semantic check passed)"
+          Write-Host "   Validated: $($committed.total) workflows, all triggers match"
 
       - name: 📐 Install JSON schema validator
         uses: actions/setup-python@v5

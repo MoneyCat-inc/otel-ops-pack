@@ -140,7 +140,7 @@
     },
     {
       "name": "bosscat-gate-bot-native",
-      "modified": "2025-10-16T10:19:29.2054799+01:00",
+      "modified": "2025-10-19T12:26:56.6645949+01:00",
       "path": ".github/workflows/bosscat-gate-bot-native.yml",
       "size": 9160,
       "triggers": {
@@ -871,9 +871,9 @@
     },
     {
       "name": "registry-drift-check",
-      "modified": "2025-10-19T09:00:27.9744029+01:00",
+      "modified": "2025-10-19T12:28:45.1562822+01:00",
       "path": ".github/workflows/registry-drift-check.yml",
-      "size": 3417,
+      "size": 3317,
       "triggers": {
         "issues": false,
         "other": [],
@@ -888,9 +888,9 @@
     },
     {
       "name": "registry-guard",
-      "modified": "2025-10-19T09:10:20.7213161+01:00",
+      "modified": "2025-10-19T12:48:10.3785085+01:00",
       "path": ".github/workflows/registry-guard.yml",
-      "size": 4149,
+      "size": 5510,
       "triggers": {
         "issues": false,
         "other": [],
