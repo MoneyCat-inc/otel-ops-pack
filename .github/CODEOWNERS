@@ -1,8 +1,23 @@
-# Core configs and scripts require @fubumaki review
-/config.yaml                                           @fubumaki
-/config-hardened-plus.yaml                             @fubumaki
-/*.ps1                                                 @fubumaki
-/docs/*                                                @fubumaki
+# BossCat CODEOWNERS
+# Require review for changes to registry & guard infrastructure
 
-# BossCat OEM governance and critical infrastructure
-/signature-registry.json                               @BossCat-OEM
+# Workflows Registry & Schema
+docs/status/workflows.json @MoneyCat-inc/maintainers
+docs/status/workflows.schema.json @MoneyCat-inc/maintainers
+
+# Registry Guard & Regeneration Script
+.github/workflows/registry-guard.yml @MoneyCat-inc/maintainers
+scripts/regenerate-workflows-registry.ps1 @MoneyCat-inc/maintainers
+
+# Canonical References Map
+docs/status/REFERENCES_MAP.json @MoneyCat-inc/maintainers
+docs/status/REFERENCES_MAP.md @MoneyCat-inc/maintainers
+
+# Documentation Hub
+docs/index.html @MoneyCat-inc/maintainers
+docs/status/README.md @MoneyCat-inc/maintainers
+
+# BossCat Governance
+docs/BossCat/IMMUTABLE_PERSONA_v1.1.md @MoneyCat-inc/maintainers
+docs/AGENTS.md @MoneyCat-inc/maintainers
+ART_OF_ECRR.md @MoneyCat-inc/maintainers
