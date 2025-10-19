@@ -1,0 +1,5 @@
+Contact: mailto:security@resonai.io
+Policy: https://hub.resonai.io/security
+Expires: 2030-01-01T00:00:00.000Z
+Preferred-Languages: en
+
