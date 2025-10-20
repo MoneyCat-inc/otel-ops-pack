@@ -1,0 +1,60 @@
+{
+  "benchmark_campaign": {
+    "date": "2025-10-20",
+    "campaign_id": "campaign2",
+    "status": "COMPLETE",
+    "executor": "cursor{implementer}",
+    "authority": "BossCat OEM"
+  },
+  "configuration": {
+    "trials_per_variant": 5,
+    "duration_seconds": 60,
+    "protocol": "http",
+    "endpoint": "http://localhost:14318/v1/logs",
+    "service_name": "synthetic-windows-check"
+  },
+  "results": {
+    "baseline": {
+      "median_logs_per_s": 5327.0,
+      "status": "COMPLETE",
+      "trials": 5
+    },
+    "new": {
+      "median_logs_per_s": 5284.083,
+      "status": "COMPLETE",
+      "trials": 5
+    },
+    "uplift": {
+      "ratio": 0.992,
+      "interpretation": "0.8% degradation (NEW slower than BASELINE)",
+      "threshold": 6.0,
+      "threshold_met": false
+    }
+  },
+  "publication_decision": {
+    "status": "NO_UPLIFT_CLAIM",
+    "rationale": "Uplift 0.992× < 6.0× threshold. NEW config marginally slower than baseline.",
+    "recommended_language": "Performance: Thresholds met (see test evidence)",
+    "current_language_status": "CORRECT",
+    "site_copy_change_required": false
+  },
+  "findings": {
+    "summary": "Complete 5+5 trial dataset shows no performance improvement. NEW configuration performs 0.8% slower than baseline (5284 vs 5327 logs/sec).",
+    "validation": "Confirms removal of inflated 77× claim was correct. Fail-closed approach validated.",
+    "both_configs_meet_thresholds": true,
+    "latency_threshold": "<200ms",
+    "throughput_adequate": true
+  },
+  "evidence": {
+    "report": "docs/ecrr/ECRR_REPORTS/EVIDENCE_2025-10-20.md",
+    "artifacts": "artifacts/metrics_2025-10-20/ (see campaign2 output file)",
+    "source_file": "docs/BossCat/reports/Run benchmark campaign2.txt"
+  },
+  "compliance": {
+    "ecrr_methodology": "Examine → Clean → Report → Role",
+    "bosscat_oem_approval": "Required for any site copy changes",
+    "publication_rules_followed": true,
+    "fail_closed_principle": "MAINTAINED"
+  }
+}
+
