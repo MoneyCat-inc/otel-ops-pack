@@ -54,6 +54,10 @@ jobs:
         shell: bash
         run: bash scripts/guard-required-files.sh
 
+      - name: Guard - Inflated metrics blocked
+        shell: pwsh
+        run: pwsh -File scripts/guard-inflated-metrics.ps1
+
       - name: Lint workflow (actionlint)
         uses: rhysd/actionlint@v1.7.4
         continue-on-error: true
