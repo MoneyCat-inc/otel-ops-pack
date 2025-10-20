@@ -12,8 +12,8 @@ importers:
         specifier: ^0.13.0
         version: 0.13.35
       '@aws-sdk/client-bedrock-runtime':
-        specifier: ^3.911.0
-        version: 3.911.0
+        specifier: ^3.913.0
+        version: 3.913.0
       '@opentelemetry/auto-instrumentations-node':
         specifier: ^0.65.0
         version: 0.65.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@2.1.0(@opentelemetry/api@1.9.0))(encoding@0.1.13)
@@ -197,8 +197,8 @@ packages:
   '@aws-crypto/util@5.2.0':
     resolution: {integrity: sha512-4RkU9EsI6ZpBve5fseQlGNUWKMa1RLPQ1dnjnQoe07ldfIzcsGb5hC5W0Dm7u423KWzawlrpbjXBrXCEv9zazQ==}
 
-  '@aws-sdk/client-bedrock-runtime@3.911.0':
-    resolution: {integrity: sha512-DScoogLAX1WaDF7N3sDvA4l7PKUXRqZWTP1sTjUfUK3hwpAm624RfoQFoxgz5wQPv1zs5Slvntmg8WnPo0T9LQ==}
+  '@aws-sdk/client-bedrock-runtime@3.913.0':
+    resolution: {integrity: sha512-DzsB7iO8u1S6mg2ObtYEpCxWrfdCbl1a2aimiQoWZViT7zFCC4v193C2NF7VeU7xAYvQ0dSEZAYMKSwymvHAmg==}
     engines: {node: '>=18.0.0'}
 
   '@aws-sdk/client-sso@3.911.0':
@@ -217,12 +217,12 @@ packages:
     resolution: {integrity: sha512-xUlwKmIUW2fWP/eM3nF5u4CyLtOtyohlhGJ5jdsJokr3MrQ7w0tDITO43C9IhCn+28D5UbaiWnKw5ntkw7aVfA==}
     engines: {node: '>=18.0.0'}
 
-  '@aws-sdk/credential-provider-ini@3.911.0':
-    resolution: {integrity: sha512-bQ86kWAZ0Imn7uWl7uqOYZ2aqlkftPmEc8cQh+QyhmUXbia8II4oYKq/tMek6j3M5UOMCiJVxzJoxemJZA6/sw==}
+  '@aws-sdk/credential-provider-ini@3.913.0':
+    resolution: {integrity: sha512-iR4c4NQ1OSRKQi0SxzpwD+wP1fCy+QNKtEyCajuVlD0pvmoIHdrm5THK9e+2/7/SsQDRhOXHJfLGxHapD74WJw==}
     engines: {node: '>=18.0.0'}
 
-  '@aws-sdk/credential-provider-node@3.911.0':
-    resolution: {integrity: sha512-4oGpLwgQCKNtVoJROztJ4v7lZLhCqcUMX6pe/DQ2aU0TktZX7EczMCIEGjVo5b7yHwSNWt2zW0tDdgVUTsMHPw==}
+  '@aws-sdk/credential-provider-node@3.913.0':
+    resolution: {integrity: sha512-HQPLkKDxS83Q/nZKqg9bq4igWzYQeOMqhpx5LYs4u1GwsKeCsYrrfz12Iu4IHNWPp9EnGLcmdfbfYuqZGrsaSQ==}
     engines: {node: '>=18.0.0'}
 
   '@aws-sdk/credential-provider-process@3.911.0':
@@ -4962,12 +4962,12 @@ snapshots:
       '@smithy/util-utf8': 2.3.0
       tslib: 2.8.1
 
-  '@aws-sdk/client-bedrock-runtime@3.911.0':
+  '@aws-sdk/client-bedrock-runtime@3.913.0':
     dependencies:
       '@aws-crypto/sha256-browser': 5.2.0
       '@aws-crypto/sha256-js': 5.2.0
       '@aws-sdk/core': 3.911.0
-      '@aws-sdk/credential-provider-node': 3.911.0
+      '@aws-sdk/credential-provider-node': 3.913.0
       '@aws-sdk/eventstream-handler-node': 3.910.0
       '@aws-sdk/middleware-eventstream': 3.910.0
       '@aws-sdk/middleware-host-header': 3.910.0
@@ -5095,7 +5095,7 @@ snapshots:
       '@smithy/util-stream': 4.5.3
       tslib: 2.8.1
 
-  '@aws-sdk/credential-provider-ini@3.911.0':
+  '@aws-sdk/credential-provider-ini@3.913.0':
     dependencies:
       '@aws-sdk/core': 3.911.0
       '@aws-sdk/credential-provider-env': 3.911.0
@@ -5113,11 +5113,11 @@ snapshots:
     transitivePeerDependencies:
       - aws-crt
 
-  '@aws-sdk/credential-provider-node@3.911.0':
+  '@aws-sdk/credential-provider-node@3.913.0':
     dependencies:
       '@aws-sdk/credential-provider-env': 3.911.0
       '@aws-sdk/credential-provider-http': 3.911.0
-      '@aws-sdk/credential-provider-ini': 3.911.0
+      '@aws-sdk/credential-provider-ini': 3.913.0
       '@aws-sdk/credential-provider-process': 3.911.0
       '@aws-sdk/credential-provider-sso': 3.911.0
       '@aws-sdk/credential-provider-web-identity': 3.911.0
