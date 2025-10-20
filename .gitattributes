@@ -1,6 +1,9 @@
 * text=auto eol=lf
-*.ps1 text eol=crlf
-*.psm1 text eol=crlf
+*.bat text eol=crlf
 *.cmd text eol=crlf
-third_party/resonai/** linguist-vendored
-
+*.md  text eol=lf
+*.ps1 text eol=lf
+*.sh  text eol=lf
+*.ts  text eol=lf
+*.tsx text eol=lf
+*.html text eol=lf
