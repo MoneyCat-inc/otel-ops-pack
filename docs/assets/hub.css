@@ -15,7 +15,14 @@ a:hover{color:#6a4de6}
 .card{background:#1f2330;border:1px solid #252b3a;padding:1.75rem;border-radius:8px;transition:all .3s ease}
 .card:hover{transform:translateY(-3px);border-color:#7c5cff;box-shadow:0 8px 16px rgba(124,92,255,.2)}
 .card h3{margin:0;font-size:1.125rem}
-.footer{margin-top:3rem;padding-top:2rem;border-top:1px solid #252b3a;color:#77809a;font-size:.875rem}
+.support-section{background:#1f2330;border:1px solid #252b3a;padding:2rem;border-radius:8px;margin:2.5rem 0;text-align:center}
+.support-section h3{color:#e9edf7;margin-bottom:1rem}
+.support-section p{color:#b4bac9;margin-bottom:1.5rem}
+.support-links{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+.btn{display:inline-block;padding:.75rem 1.5rem;background:#7c5cff;color:#fff;border-radius:6px;font-weight:600;transition:all .3s}
+.btn:hover{background:#6a4de6;transform:translateY(-2px);box-shadow:0 4px 12px rgba(124,92,255,.3);color:#fff}
+.footer{margin-top:3rem;padding-top:2rem;border-top:1px solid #252b3a;color:#77809a;font-size:.875rem;text-align:center}
+.footer p{margin-bottom:.5rem}
 small{color:#77809a}
 @media(max-width:768px){
 .metrics{grid-template-columns:repeat(2,1fr)}
