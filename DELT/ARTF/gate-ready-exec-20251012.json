@@ -45,7 +45,7 @@
     "k6_gates": "OPERATIONAL",
     "batch_latency": "<200ms",
     "p95_target": "<200ms",
-    "throughput_uplift": "77x maintained"
+    "performance": "Thresholds met (see test evidence)"
   },
   "outstanding": {
     "pr_118_remediation": {

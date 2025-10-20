@@ -75,6 +75,23 @@
 /.agent/ @BossCat
 
 # ============================================
+# Performance Claims (Evidence-Backed Only)
+# ============================================
+# Landing pages, READMEs, and docs require BossCat review
+# to prevent unverified performance claims (Gate #007 remediation)
+
+/index.html @BossCat
+/portal.html @BossCat
+/README*.md @BossCat
+/docs/**/*.md @BossCat
+/docs/GATE_STATUS_DASHBOARD.md @BossCat
+/docs/ecrr/ECRR_REPORTS/ @BossCat @audit-team
+
+# Guard scripts are critical infrastructure
+/scripts/guard-inflated-metrics.ps1 @BossCat
+/scripts/index-performance-claims.ps1 @BossCat
+
+# ============================================
 # Critical Root Files
 # ============================================
 

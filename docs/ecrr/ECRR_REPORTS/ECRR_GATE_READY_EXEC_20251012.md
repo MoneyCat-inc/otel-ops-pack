@@ -248,7 +248,7 @@ Verdict: READY
 - **SigNoz:** Operational
 - **OTLP Endpoints:** Healthy
 - **Batch Latency:** <200ms
-- **Throughput:** 77× uplift maintained
+- **Performance:** Thresholds met (see test evidence)
 
 ---
 

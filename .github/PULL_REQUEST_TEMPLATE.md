@@ -1,113 +1,66 @@
-## 🐾 BossCat PR Review - ECRR Checklist
+# Pull Request
 
-### PR Type
-<!-- Check all that apply -->
-- [ ] **docs(ecrr)**: Documentation update
-- [ ] **fix(gap)**: Bug fix or patch
-- [ ] **test(canary)**: Test execution or validation
-- [ ] **feat(bosscat)**: New feature or enhancement
-- [ ] **chore(repo)**: Repository maintenance or restructuring
+## Description
+<!-- Brief description of what this PR does -->
 
-### ECRR Framework Compliance
+## Type of Change
+<!-- Mark with an 'x' all that apply -->
 
-#### 📋 Examine - What was the state before?
-<!-- Describe the environment/system state before changes -->
-- **Problem identified:**
-- **Scope of investigation:**
-- **Evidence collected:**
+- [ ] Bug fix (non-breaking change which fixes an issue)
+- [ ] New feature (non-breaking change which adds functionality)
+- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
+- [ ] Documentation update
+- [ ] Performance improvement
+- [ ] Refactoring
+- [ ] CI/CD changes
 
-#### 🧹 Clean - What was fixed/changed?
-<!-- Describe the changes and fixes applied -->
-- **Changes made:**
-- **Drift removed:**
-- **Guardrails applied:**
+## Performance Claims
+<!-- ⚠️ REQUIRED if this PR changes performance-related copy -->
 
-#### 📊 Report - What artifacts were generated?
-<!-- List any reports, logs, or evidence produced -->
-- [ ] ECRR report generated (if applicable): `CHAR/EVID/ECRR_REPORTS/`
-- [ ] Monitoring data exported (if applicable): `CHAR/EVID/artifacts/`
-- [ ] Documentation updated (if applicable): `CHAR/DOCS/`
-- [ ] Evidence attached or linked below
+- [ ] **I changed performance claims** (e.g., throughput, latency, uplift numbers)
+  - [ ] I have included a link to evidence report: `docs/ecrr/ECRR_REPORTS/EVIDENCE_YYYY-MM-DD.md`
+  - [ ] Evidence includes: baseline config, new config, 5+ trials per variant, statistical confidence (95% CI)
+  - [ ] Claims are scoped (e.g., "OTLP ingest throughput" not "product 7× faster")
+  - [ ] Publication rules followed (CI lower bound ≥6× for "up to 7×" claims)
 
-#### 👤 Role - Who is responsible?
-<!-- Identify the agent/role executing this change -->
-- **Agent/Role:** (e.g., BossCat OEM, Investigator, Gap-Closer, QA Scribe)
-- **Reviewer:** @BossCat
-- **Stakeholders:**
+**OR**
 
----
+- [ ] **I did NOT change performance claims** (no uplift numbers, no throughput values in hero/README/docs)
 
-### Tetragram Structure Compliance
-<!-- If this PR involves file moves or restructuring -->
-- [ ] Changes follow tetragram structure (ALFA/BRAV/CHAR/DELT)
-- [ ] Guardrails check passed: ✅ (GitHub Actions workflow)
-- [ ] Legacy shims created for backward compatibility (if needed)
-- [ ] Pathmap updated (if applicable)
-- [ ] No forbidden legacy root directories introduced
+> **Note:** CI guard will fail if banned patterns detected (`77×`, `196.7`, etc.). See `docs/ecrr/ECRR_REPORTS/EVIDENCE_TEMPLATE.md` for measurement workflow.
 
-**Affected planes:**
-- [ ] ALFA (Application)
-- [ ] BRAV (Build/Runtime/Automation/Verification)
-- [ ] CHAR (Compliance/Human/Audit/Review)
-- [ ] DELT (Data/Environment/Load/Test)
+## Testing
+<!-- Describe the tests you ran to verify your changes -->
 
----
+- [ ] Tested locally
+- [ ] Passes CI/CD checks
+- [ ] Added/updated tests
+- [ ] CI guard passes: `pwsh -File scripts/guard-inflated-metrics.ps1`
 
-### Testing & Validation
-- [ ] Manual testing completed
-- [ ] Automated tests pass
-- [ ] Canary tests executed: `pwsh -File BRAV/SCPT/canary-test.ps1`
-- [ ] Pipeline verified: `pwsh -File BRAV/SCPT/verify-pipeline.ps1`
-- [ ] SigNoz dashboard checked: http://localhost:8080
+## Checklist
+<!-- Mark with an 'x' all that apply -->
 
----
+- [ ] My code follows the style guidelines of this project
+- [ ] I have performed a self-review of my own code
+- [ ] I have commented my code, particularly in hard-to-understand areas
+- [ ] I have made corresponding changes to the documentation
+- [ ] My changes generate no new warnings or errors
+- [ ] I have added tests that prove my fix is effective or that my feature works
+- [ ] New and existing unit tests pass locally with my changes
+- [ ] Any dependent changes have been merged and published
 
-### Migration Checklist (if applicable)
-<!-- For repository restructuring PRs -->
-- [ ] Phase identified: B.1 (scripts) / B.2 (configs) / C (source) / D (docs)
-- [ ] Migration script used: `BRAV/SCPT/migrate_*.sh` or `.ps1`
-- [ ] Shims created for backward compatibility
-- [ ] CI/CD workflows updated to use new paths
-- [ ] Documentation references updated
-- [ ] Plan for shim removal after 2 green cycles
+## BossCat Compliance
+<!-- Required for ECRR/governance changes -->
 
----
+- [ ] ECRR methodology followed (if applicable): Examine → Clean → Report → Role
+- [ ] Budget compliance: Changes stay within lane/LOC limits
+- [ ] Evidence artifacts generated (if applicable)
+- [ ] BossCat OEM approval obtained (for critical infrastructure)
 
-### Gate Readiness
-<!-- For final consolidation PRs -->
-- [ ] All legacy directories removed
-- [ ] Guardrails check: **GREEN** ✅
-- [ ] Full CI/CD pipeline: **GREEN** ✅
-- [ ] Evidence bundle prepared
-- [ ] Ready for BossCat gate approval: **@cat ready-for-gate**
+## Related Issues
+<!-- Link to related issues -->
 
----
+Closes #
 
-### Additional Context
-<!-- Any other relevant information -->
-
-
----
-
-### Pre-merge Checklist
-- [ ] PR title follows ECRR format: `type(scope): description`
-- [ ] All CI checks passing
-- [ ] No merge conflicts
-- [ ] Documentation updated (if needed)
-- [ ] CODEOWNERS notified
-- [ ] BossCat approval obtained
-
----
-
-**Evidence Links:**
-<!-- Add links to ECRR reports, dashboard snapshots, or other artifacts -->
-- 
-- 
-
----
-
-🐾 **BossCat Charter Compliance**: This PR follows the BossCat Operating Principles:
-- [x] Local-first: All artifacts stored locally
-- [x] Proof-to-disk: Logs/reports generated
-- [x] Deterministic: Reproducible results
-- [x] Evidence-based: Backed by telemetry/data
+## Additional Context
+<!-- Add any other context about the PR here -->
