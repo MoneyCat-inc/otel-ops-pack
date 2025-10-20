@@ -1,0 +1,45 @@
+# 🚀 Proposal: Windows Day-2 Ops Kit (codex-local) — Autonomous Reference Implementation
+
+Hi OTel maintainers 👋
+
+We've been working on a **Windows-first Day-2 Operations Kit** called **codex-local**, designed to complement the OpenTelemetry Collector with *autonomous observability controls*. It's now production-hardened and we'd love to share it as a **reference implementation** for the community.
+
+## 🔑 What it provides
+
+* **Fleet orchestration** — multi-repo health aggregation + composite badges
+* **Policy as code** — versioned OPA bundles signed with cosign, enforced in CI/CD
+* **Supply chain integrity** — CycloneDX SBOMs + signed attestations attached to releases
+* **Cross-platform parity** — Windows service mode *and* Linux sidecar/Helm chart
+* **Autonomous ops** — guardrail enforcement (CSP/a11y), budget control, self-telemetry
+* **Community artifacts** — docs, Slack post drafts, upstream PR templates
+
+## 🛡️ Why it matters
+
+OpenTelemetry today has excellent cross-platform instrumentation & pipeline support. What's missing is **day-2 operational guardrails**, especially on Windows. codex-local shows how to:
+
+* Harden an OTel Collector deployment with automated guardrails
+* Embed policy-driven governance into dev workflows
+* Close the loop with self-telemetry and fleet-wide dashboards
+
+## 📦 Deliverables
+
+* [Fleet aggregation scripts (PS1 + Bash)](https://github.com/resonai/codex-local/blob/main/scripts/agent/status-fleet.ps1)
+* [OPA/Rego policy bundle v1.0, cosign-signed](https://github.com/resonai/codex-local/blob/main/policies/codex.rego)
+* [SBOM generation + attestation scripts](https://github.com/resonai/codex-local/blob/main/scripts/supplychain/)
+* [Windows service mode (NSSM) + Linux sidecar Helm chart](https://github.com/resonai/codex-local/blob/main/helm/codex-local/)
+* [Auto-PR bot scripts for guardrail fixes + doc refresh](https://github.com/resonai/codex-local/blob/main/scripts/agent/auto-pr.ps1)
+* [Upstream docs draft: *Windows Day-2 Ops Kit*](https://github.com/resonai/codex-local/blob/main/docs/OPEN_TELEMETRY_ALIGNMENT.md)
+
+## 🙏 What we're asking
+
+* Feedback on whether the community would accept this as an **example in `opentelemetry-collector/examples/`**
+* Guidance on aligning with OTel governance (e.g. SIG ownership, doc structure)
+* Maintainers interested in co-authoring the Windows Day-2 Ops Kit PR
+
+---
+
+💬 Would you find value in codex-local being added as a **reference "Day-2 Ops Kit"** for OpenTelemetry?
+Looking forward to your thoughts and happy to open a PR with the initial example set.
+
+Thanks!
+
