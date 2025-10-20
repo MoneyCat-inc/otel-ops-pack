@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Linux Sidecar & Helm Deployment</title>
+<meta name="description" content="Deploy OpenTelemetry Collector as sidecar or DaemonSet on Kubernetes.">
+<link rel="canonical" href="https://hub.resonai.uk/docs/examples/linux-sidecar-helm/">
+<link rel="stylesheet" href="/docs/assets/hub.css">
+</head>
+<body>
+<div class="container">
+<h1>🐧 Linux Sidecar & Helm Deployment</h1>
+<p><strong>Cross-platform patterns for Kubernetes and hybrid environments.</strong></p>
+
+<h2>Deployment Patterns</h2>
+
+<h3>Option 1: Sidecar Pattern</h3>
+<p>Run OTel Collector as a sidecar container alongside your application pod.</p>
+<pre><code>apiVersion: v1
+kind: Pod
+metadata:
+  name: app-with-otel
+spec:
+  containers:
+  - name: app
+    image: your-app:latest
+    env:
+    - name: OTEL_EXPORTER_OTLP_ENDPOINT
+      value: "http://localhost:4317"
+  - name: otel-collector
+    image: otel/opentelemetry-collector-contrib:latest
+    args: ["--config=/conf/config.yaml"]
+    volumeMounts:
+    - name: otel-config
+      mountPath: /conf
+  volumes:
+  - name: otel-config
+    configMap:
+      name: otel-collector-config
+</code></pre>
+
+<h3>Option 2: DaemonSet (Node-Level)</h3>
+<p>Deploy one OTel Collector per node using Helm.</p>
+<pre><code># Add OpenTelemetry Helm repo
+helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+helm repo update
+
+# Install as DaemonSet
+helm install otel-collector open-telemetry/opentelemetry-collector \
+  --set mode=daemonset \
+  --set config.exporters.otlp.endpoint="your-backend:4317"
+</code></pre>
+
+<h2>Reference</h2>
+<ul>
+<li><a href="/docs/day2/windows/overview/">Windows Day-2 Ops Kit Overview</a></li>
+<li><a href="https://opentelemetry.io/docs/kubernetes/" target="_blank" rel="noopener">Official OTel Kubernetes Docs</a></li>
+<li><a href="https://github.com/open-telemetry/opentelemetry-helm-charts" target="_blank" rel="noopener">OpenTelemetry Helm Charts</a></li>
+</ul>
+
+<div class="footer">
+<p><a href="/">← Back to BossCat Hub</a></p>
+<p><small>By <a href="https://patreon.com/FaeMcLachlan" target="_blank" rel="noopener">Fae McLachlan</a> • Evidence-First Observability</small></p>
+</div>
+</div>
+</body>
+</html>
+
