@@ -51,3 +51,9 @@
 - [2025-10-19T23:46:24Z] DOCS: Hub clearnet cutover; domain=hub.resonai.uk; Pages+DNS verified; smoke pass (10/10 endpoints); automations ready; PRODUCTION LIVE
 - [2025-10-20T04:25:00Z] DOCS: Hub support links deployed; Patreon + BuyMeACoffee CTAs added; attribution footer; purple button styling; commit 9295ed554
 - [2025-10-20T04:40:55Z] DOCS: OTel permalinks deployed; 6 stable URLs for Windows Day-2 Ops Kit; fixes 404s in upstream issue; commit e0e8b797f
+- [2025-10-20T04:59:24Z] DOCS: OpenTelemetry issue #13914 comment posted; 6 permalink URLs shared; 404s resolved; community engagement active
+- [2025-10-20T05:07:16Z] DOCS: Portal throughput claim corrected (77× -> 7×); ANTIclickbait accuracy maintained; commit 613418234
+2025-10-20T06:41:09+01:00 - DOCS: OTel issue #13914 rewritten to reflect production-live state; permalink URLs integrated; tone shifted from proposal to proven implementation; hub.resonai.uk live.
+2025-10-20T07:27:48+01:00 - DOCS: Comprehensive 77× -> 7× correction sweep across entire repo; fixed 40+ instances in live site, BossCat docs, ECRR reports, and archives; recalculated throughput (2.5 -> 17.5 logs/sec); root cause: SYSTEM_ARCHITECTURE_DIAGRAM.md propagated error; ANTIclickbait accuracy restored.
+- 2025-10-20T08:30:00Z — AMBER Exception (EXC-2025-10-20-007): Canonical creative reference established (docs/comfort-cat/, 7 files, 2,110 LOC, 10.6× budget); DOCS lane only, zero operational risk; forward-policy: ≤200 LOC all future changes; commit=29f02d6fe; BossCat findings remediated; awaiting evidence verification for GREEN
+- 2025-10-20T08:45:00Z — GATE GREEN (EXC-2025-10-20-007): Gate #007 approved; tag=GATE-007-GREEN-EXC-2025-10-20; commit=29f02d6fe; DOCS lane; budgets revert to ≤200 LOC immediately
