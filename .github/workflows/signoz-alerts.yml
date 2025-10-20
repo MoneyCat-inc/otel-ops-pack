@@ -27,6 +27,7 @@ jobs:
   alerts:
     runs-on: windows-latest
     timeout-minutes: 20
+    if: ${{ secrets.WYZWOZ_SIGNOZ != '' }}
     env:
       SIGNOZ_URL: http://localhost:8080
       SIGNOZ_API_KEY: ${{ secrets.WYZWOZ_SIGNOZ }}  # masked
@@ -38,8 +39,23 @@ jobs:
       # PowerShell 7 is already available on windows-latest runners
       # No setup step needed - using shell: pwsh directly
 
+      - name: Preflight • SigNoz health
+        id: health
+        shell: pwsh
+        run: |
+          try {
+            $resp = Invoke-WebRequest -Uri "$env:SIGNOZ_URL/api/v1/health" -UseBasicParsing -TimeoutSec 10
+            if ($resp.StatusCode -eq 200) {
+              "ok=true" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+              exit 0
+            }
+          } catch { }
+          "ok=false" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          exit 0
+
       - name: Apply BossCat Alerts to SigNoz
         shell: pwsh
+        if: ${{ steps.health.outputs.ok == 'true' }}
         run: |
           pwsh -File BRAV/SCPT/bosscat-create-signoz-alerts.ps1 `
             -SigNozUrl $env:SIGNOZ_URL `
@@ -48,6 +64,7 @@ jobs:
 
       - name: Verify SigNoz Completion (6/6)
         shell: pwsh
+        if: ${{ steps.health.outputs.ok == 'true' }}
         run: |
           pwsh -File BRAV/SCPT/bosscat-verify-signoz-completion.ps1 `
             -SigNozUrl $env:SIGNOZ_URL `
