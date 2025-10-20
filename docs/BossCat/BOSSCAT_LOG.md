@@ -48,3 +48,6 @@
 - 2025-10-16T11:30:00.000Z - ReviewerB Gate: docs lane workflow refactored to docs-lane-checks with GR-00..04 guard telemetry, guard.json artifact, and GREEN-only @cat signal
 - 2025-10-16T12:10:00.000Z - ReviewerB Gate: docs lane guard exports GR-xx codes via guard.json and guard comment, mirrors env telemetry, and preserves evidence on suppressed signals
 - 2025-10-18T04:47:27.8383096+01:00 - Bluesky Growth launch certified GREEN; commit=48dbe328a; automation+widget live, evidence log PASS, 48h watch active under BossCat seal
+- [2025-10-19T23:46:24Z] DOCS: Hub clearnet cutover; domain=hub.resonai.uk; Pages+DNS verified; smoke pass (10/10 endpoints); automations ready; PRODUCTION LIVE
+- [2025-10-20T04:25:00Z] DOCS: Hub support links deployed; Patreon + BuyMeACoffee CTAs added; attribution footer; purple button styling; commit 9295ed554
+- [2025-10-20T04:40:55Z] DOCS: OTel permalinks deployed; 6 stable URLs for Windows Day-2 Ops Kit; fixes 404s in upstream issue; commit e0e8b797f
