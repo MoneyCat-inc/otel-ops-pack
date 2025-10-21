@@ -27,3 +27,8 @@ DELT/ARTF/gpu-buffers/**
 
 # MILK Lane vendor bundles (minified, security-scanned separately)
 docs/BossCat/visuals/vendor/
+
+# SOCM Credentials (Bluesky App Passwords)
+.env.socm
+.env.social
+*.env.local
