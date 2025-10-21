@@ -4,16 +4,34 @@
 osint:
   - handle: bellingcat.bsky.social
     reason: Open-source investigations (org)
+  - handle: bellingcat.com
+    reason: Bellingcat main org account (domain-verified)
+    verified: true
+  - handle: eliothiggins.bsky.social
+    reason: Bellingcat founder - media forensics threads
   - handle: quiztime.bsky.social
     reason: Geolocation/verifications (community hub)
   - handle: sector035.bsky.social
     reason: Daily OSINT tips (individual)
+  - handle: mariannaspringbbc.bsky.social
+    reason: BBC Social Media Investigations - UK disinfo reporting
+  - handle: alistaircoleman.bsky.social
+    reason: Ex-BBC Verify/OSINT - verification & conspiracy-theory beat
 
 factcheck:
+  - handle: fullfact.org
+    reason: UK's independent fact-checker (domain-verified)
+    verified: true
+  - handle: factcheck.afp.com
+    reason: AFP Fact Check - global network, quick debunks on viral visuals
+    verified: true
   - handle: politifact.bsky.social
-    reason: Fact-checking outlet
+    reason: US fact-checking outlet - fast rumor control
   - handle: apfactcheck.bsky.social
     reason: AP Fact Check
+  - handle: reuters.com
+    reason: Reuters main + frequent Bluesky debunks
+    verified: true
 
 observability:
   - handle: opentelemetry.io
@@ -32,6 +50,10 @@ observability:
 media_literacy:
   - handle: firstdraftnews.bsky.social
     reason: Misinformation research & training
+  - handle: poynterinstitute.bsky.social
+    reason: Ethics, news literacy, PolitiFact parent
+  - handle: reutersinstitute.bsky.social
+    reason: Reuters Institute (Oxford) - research on news audiences & platforms
 
 platform:
   - handle: dot.net
