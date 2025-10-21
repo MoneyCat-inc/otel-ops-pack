@@ -2,8 +2,6 @@
 # Agent B reviews additions; Agent A applies with --apply flag
 
 osint:
-  - handle: bellingcat.bsky.social
-    reason: Open-source investigations (org)
   - handle: bellingcat.com
     reason: Bellingcat main org account (domain-verified)
     verified: true
@@ -27,8 +25,6 @@ factcheck:
     verified: true
   - handle: politifact.bsky.social
     reason: US fact-checking outlet - fast rumor control
-  - handle: apfactcheck.bsky.social
-    reason: AP Fact Check
   - handle: reuters.com
     reason: Reuters main + frequent Bluesky debunks
     verified: true
@@ -48,8 +44,6 @@ observability:
     verified: true
 
 media_literacy:
-  - handle: firstdraftnews.bsky.social
-    reason: Misinformation research & training
   - handle: poynterinstitute.bsky.social
     reason: Ethics, news literacy, PolitiFact parent
   - handle: reutersinstitute.bsky.social
