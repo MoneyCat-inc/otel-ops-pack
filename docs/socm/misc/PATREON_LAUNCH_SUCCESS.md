@@ -246,7 +246,7 @@ pwsh -File test-portal-links.ps1
 **Creator URL**: https://www.patreon.com/c/FaeMcLachlan  
 
 **Portal**: https://github.com/MoneyCat-inc/otel-ops-pack (README updated)  
-**Transparency Hub**: https://moneycat-inc.github.io/otel-ops-pack/docs/anticlickbait/ (live soon)
+**Transparency Hub**: https://hub.resonai.uk/ (LIVE)
 
 ---
 

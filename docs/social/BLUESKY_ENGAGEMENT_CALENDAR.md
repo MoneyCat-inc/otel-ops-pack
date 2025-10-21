@@ -167,7 +167,7 @@ Evidence:
 
 Limitation: Some exotic hosting scenarios need manual setup
 
-Full transparency: https://moneycat-inc.github.io/otel-ops-pack/anticlickbait/
+Full transparency: https://hub.resonai.uk/
 
 #OpenTelemetry #Evidence
 ```
@@ -203,7 +203,7 @@ Report: Transparent scoring
 
 No magic. No hand-waving. Just what actually works.
 
-Hub: https://moneycat-inc.github.io/otel-ops-pack/anticlickbait/
+Hub: https://hub.resonai.uk/
 ```
 
 **Target:** 1 methodology thread per 2 weeks, alternating with technique tutorials

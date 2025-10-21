@@ -245,7 +245,7 @@ npx tsx scripts/social/follow.ts --apply
    
    Curated for the AntiClickbait mission by @resonai.bsky.social
    
-   22 features scored 0-100: https://moneycat-inc.github.io/otel-ops-pack/anticlickbait/
+   22 features scored 0-100: https://hub.resonai.uk/
    ```
 5. **Add accounts:** All 21 from FOLLOW_LIST.yaml
 6. **Visibility:** Public
@@ -282,7 +282,7 @@ npx tsx scripts/social/follow.ts --apply
 
 ## Integration with AntiClickbait Hub
 
-**Cross-reference:** https://moneycat-inc.github.io/otel-ops-pack/anticlickbait/
+**Cross-reference:** https://hub.resonai.uk/
 
 **How follow list supports the mission:**
 

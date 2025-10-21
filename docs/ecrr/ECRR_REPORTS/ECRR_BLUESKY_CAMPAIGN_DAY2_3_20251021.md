@@ -112,7 +112,7 @@ https://github.com/MoneyCat-inc/otel-ops-pack
 
 22 features, each with verifiable sources, honest limitations, and real artifacts. No hype, just what actually works.
 
-https://moneycat-inc.github.io/otel-ops-pack/anticlickbait/
+https://hub.resonai.uk/
 
 #OpenTelemetry #Transparency
 ```
