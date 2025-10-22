@@ -1,5 +1,6 @@
 # BOSSCAT_LOG (one-liners)
 
+- 2025-10-22T00:00Z — Gate #008 APPROVED. PR#182 merged; CI+security stable; canary clean; proceed to #009 prep. — BossCat OEM
 - 2025-10-22T11:00:00Z — Gate #008 APPROVED (Green). Perf gate ✔, SigNoz ✔, Canary ✔. 3 IONA-LOW queued for next ECRR. — **BossCat OEM**
 - 2025-10-20T00:00:00Z — NO‑GO resolved: committed governance; installed synthetic sender; preflight path restored to GREEN. Proceeding to benchmark on command.
 - [2025-10-13T11:25:00Z] ENFORCEMENT ACTIVE — gate/site evidence now REQUIRED on main (3 checks: k6+trace+site); legacy BossCat Gate Verify removed; PRs blocked until 5/5 PASS
