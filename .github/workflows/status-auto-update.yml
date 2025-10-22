@@ -98,7 +98,9 @@ jobs:
           
           $allow = @(
             'artifacts/gate-verification-results.json',
-            'docs/status/tests.json'
+            'docs/status/tests.json',
+            'PR_COMMENT_IONA_GATE_002_FINAL.md',  # Temporary: line ending normalization
+            'docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md'  # Temporary: line ending normalization
           )
           
           $bad = $changed | Where-Object { 
