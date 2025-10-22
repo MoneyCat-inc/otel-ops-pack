@@ -36,3 +36,5 @@ docs/BossCat/visuals/vendor/
 # Ephemeral logs
 *.last.log
 logs/**/*.last.log
+*.docx
+*.pdf
