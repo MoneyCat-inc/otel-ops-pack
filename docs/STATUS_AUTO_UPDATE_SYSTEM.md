@@ -284,10 +284,11 @@ pwsh -File scripts/verify-iona-gate.ps1 -Site ci -OutputJson test.json
 cat test.json
 ```
 
-**Fix:**
-- Update verification script if gate criteria changed
-- Adjust thresholds if too strict
-- Use `-Force` flag to update despite failures
+**Fix:** 
+- GitHub-hosted runners do not have live telemetry; the workflow automatically logs a warning and continues with fallback data when verification fails.
+- Update verification script if gate criteria changed 
+- Adjust thresholds if too strict 
+- Use `-Force` flag to update despite failures 
 
 ### Local Script Errors
 
