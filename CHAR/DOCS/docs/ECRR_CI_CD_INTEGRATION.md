@@ -102,4 +102,4 @@ pwsh -File scripts/monitor-ecrr-compliance-trends.ps1 -GenerateReport
 
 # Test dashboard generation
 pwsh -File scripts/generate-compliance-dashboard.ps1
-\\\
+\\\
