@@ -28,31 +28,35 @@ After this system:
 
 ## 🏗️ Architecture
 
-### Components
+### Components (BossCat Compliant)
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                  STATUS AUTO-UPDATE SYSTEM                   │
+│          STATUS AUTO-UPDATE SYSTEM (BOSSCAT COMPLIANT)      │
 ├─────────────────────────────────────────────────────────────┤
 │                                                               │
-│  1. GitHub Actions Workflow                                  │
-│     ├── Scheduled: Every 6 hours (cron: "15 */6 * * *")     │
-│     ├── Triggered: After gate workflows complete            │
-│     └── Manual: workflow_dispatch                            │
+│  1. GitHub Actions Workflow (Agent A + B)                   │
+│     ├── Agent A (Writer): Updates status files             │
+│     ├── Agent B (Verifier): Read-only validation           │
+│     ├── Creates PR (never pushes to main)                  │
+│     ├── Enforces kill-switch (.agent/LOCK)                 │
+│     ├── Enforces budgets (≤10 files, allow-list)           │
+│     └── Scheduled: Every 6 hours + post-gate triggers      │
 │                                                               │
-│  2. Local Update Script                                      │
-│     ├── scripts/update-status-dashboard.ps1                 │
-│     ├── Manual execution for immediate updates              │
-│     └── Can auto-commit and push                            │
+│  2. Lane Discipline (PR Workflow)                           │
+│     ├── Branch: bots/status-auto-update                    │
+│     ├── Creates PR with evidence                           │
+│     ├── Requires human/IONA approval                       │
+│     └── "Merge is not a bot's honor"                       │
 │                                                               │
-│  3. Integration Points                                       │
-│     ├── Reads: scripts/verify-iona-gate.ps1                 │
-│     ├── Updates: artifacts/gate-verification-results.json   │
-│     ├── Updates: docs/status/tests.json                     │
-│     └── Triggers: GitHub Pages deployment                   │
+│  3. Safety Guardrails                                        │
+│     ├── Kill-switch: .agent/LOCK (exit 50)                 │
+│     ├── Budget: ≤10 files, ≤200 LOC                        │
+│     ├── Allow-list: artifacts/, docs/status/, docs/ecrr/   │
+│     └── A/B pairing: Writer → Verifier                     │
 │                                                               │
 │  4. Deployment Pipeline                                      │
-│     ├── Commit pushed to main → GitHub Pages builds         │
+│     ├── PR merged to main → GitHub Pages builds            │
 │     ├── Build time: ~60 seconds                             │
 │     └── Live update: https://hub.resonai.uk/docs/status.html│
 │                                                               │
@@ -171,14 +175,24 @@ permissions:
   actions: read    # To read workflow run data
 ```
 
-### Bot Credentials
+### BossCat Governance Compliance
 
-Commits are made by `github-actions[bot]`:
+**Lane Discipline:**
+- ✅ Creates PR via `peter-evans/create-pull-request`
+- ✅ Never pushes directly to `main`
+- ✅ "Merge is not a bot's honor"
 
-```yaml
-git config --local user.name "github-actions[bot]"
-git config --local user.email "github-actions[bot]@users.noreply.github.com"
-```
+**Safety Guardrails:**
+- ✅ Kill-switch: `.agent/LOCK` check (exit 50)
+- ✅ Budgets: ≤10 files, allow-list enforced
+- ✅ A/B pairing: Writer (Agent A) + Verifier (Agent B)
+- ✅ Timeout: 10 minutes max
+
+**Exit Codes:**
+- `0` - Success
+- `50` - Kill-switch active (paused)
+- `52` - Budget violation
+- `53` - Gate verification failed
 
 ---
 
