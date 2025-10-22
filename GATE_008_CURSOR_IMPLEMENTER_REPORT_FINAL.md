@@ -71,8 +71,8 @@ Gate #008 is **READY FOR APPROVAL** after comprehensive remediation.
 
 ### MAJOR: Working Tree Status
 - **Problem:** Claimed clean, actually had modified + untracked files
-- **Fix:** Committed all remediation artifacts (2 commits: b735243df, 2f12461cf)
-- **Result:** ✅ CORRECTED (ahead 2, with minor untracked research docs)
+- **Fix:** Committed all remediation artifacts (4 commits: b735243df, 2f12461cf, edbaa3b03, f3a45be88)
+- **Result:** ✅ CORRECTED (ahead 4, with modified log + 2 untracked research docs)
 
 ### MODERATE: Test Status
 - **Problem:** docs/status/tests.json dated 2025-10-16
@@ -105,13 +105,14 @@ Tests:                docs/status/tests.json (updated 2025-10-22)
 Implementer Report:   GATE_008_CURSOR_IMPLEMENTER_REPORT_FINAL.md (this file)
 ```
 
-### Git State ✅
+### Git State
 ```
 Branch:               main
-Latest Commits:       2f12461cf (summary) + b735243df (remediation)
-Working Tree:         Ahead 2 commits, mostly clean
+Latest Commits:       f3a45be88, edbaa3b03, 2f12461cf, b735243df (4 remediation commits)
+Working Tree:         Ahead 4 commits
   - Modified: logs/canary-check-min.last.log (from canary run)
   - Untracked: 2 research docs (docs/BossCat/Research/ - unrelated to gate)
+  - Status: Not fully clean (modified + untracked files present)
 Stale Artifacts:      Deleted (original incorrect files removed)
 ```
 

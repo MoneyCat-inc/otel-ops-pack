@@ -73,7 +73,7 @@
 | Lane Discipline | ✅ PASS | Perfect execution |
 | ECRR Methodology | ✅ PASS | 104 gate-related reports |
 | Evidence Trails | ✅ PASS | DELT/ARTF/ comprehensive (remediated JSON) |
-| Working Tree | ⚠️ IN PROGRESS | Ahead 3 commits, modified log + 2 untracked research docs (non-gate) |
+| Working Tree | ⚠️ IN PROGRESS | Ahead 4 commits, modified log + 2 untracked research docs (non-gate) |
 
 ---
 
@@ -285,7 +285,7 @@ Canonical Reference:       docs/comfort-cat/ (5 docs) ✅
 8. ✅ **Blockers:** 0 (all resolved)
 9. ✅ **Major Milestones Delivered:** 2 (Hub Production + Bluesky v1)
 10. ✅ **Evidence Package:** Corrected and comprehensive (remediated JSON + remediation log + dashboard)
-11. ⚠️ **Working Tree:** Ahead 3 commits (edbaa3b03, 2f12461cf, b735243df), modified log + 2 untracked research docs
+11. ⚠️ **Working Tree:** Ahead 4 commits (f3a45be88, edbaa3b03, 2f12461cf, b735243df), modified log + 2 untracked research docs
 12. ✅ **Metrics Corrected:** HTML files: 51 (not 42), Docker: 7 (not 4), Tests: current (not stale)
 
 ---
@@ -306,8 +306,10 @@ Canonical Reference:       docs/comfort-cat/ (5 docs) ✅
 
 ### Tracked Observations (Non-Blocking)
 
+**RESOLVED:**
+- ✅ Windows Collector service: Was STOPPED → Now RUNNING (remediated 2025-10-22)
+
 **P2 (Low Priority):**
-- Windows Collector service: STOPPED (Docker OTel collector operational, no impact)
 - IONA incidents: 3 LOW severity (2025-10-16: documented in IONA_ERRORS.md)
 
 **P3 (Cosmetic):**
