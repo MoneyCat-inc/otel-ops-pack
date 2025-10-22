@@ -85,7 +85,7 @@
     "@opentelemetry/instrumentation-fetch": "^0.206.0",
     "@opentelemetry/instrumentation-user-interaction": "^0.51.0",
     "@opentelemetry/instrumentation-xml-http-request": "^0.206.0",
-    "@opentelemetry/sdk-trace-web": "^2.1.0",
+    "@opentelemetry/sdk-trace-web": "^2.2.0",
     "@opentelemetry/semantic-conventions": "^1.37.0",
     "@prisma/client": "^6.17.1",
     "@types/sqlite3": "^5.1.0",
