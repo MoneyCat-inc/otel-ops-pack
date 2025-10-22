@@ -6,7 +6,7 @@
 **Session**: Rollout merge and ECRR completion phase  
 
 ---
-
+
 ## 🔍 **1. Examine**
 
 ### **Initial State Captured**

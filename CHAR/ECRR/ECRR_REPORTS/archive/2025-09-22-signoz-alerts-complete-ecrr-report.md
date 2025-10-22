@@ -265,7 +265,7 @@ The SigNoz alert configuration issues have been completely resolved, and working
 - [ ] **Evidence Quality**: All evidence is relevant, clear, and properly documented
 - [ ] **Action Clarity**: All actions taken are clearly described and justified
 
-------
+------
 ## 🔍 **1. Examine**
 
 ### **Initial State Captured**

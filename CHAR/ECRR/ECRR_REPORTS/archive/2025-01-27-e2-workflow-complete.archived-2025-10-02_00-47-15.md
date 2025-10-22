@@ -238,7 +238,7 @@ pwsh -File scripts/e2-ratio-sweep.ps1 -AgentTimeout 200ms -GatewayTimeout 5s
 - [ ] **Action Clarity**: All actions taken are clearly described and justified
 
 ------
-
+
 ## 🔍 **1. Examine**
 
 ### **Initial State Captured**
