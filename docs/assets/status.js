@@ -73,8 +73,14 @@
     `;
     const box = el.closest('.status');
     if (box) {
-      if (verdict !== 'READY') { box.classList.remove('ready'); box.classList.add('not-ready'); }
-      else { box.classList.add('ready'); box.classList.remove('not-ready'); }
+      const readyVerdicts = new Set(['READY', 'APPROVED', 'GREEN']);
+      if (!readyVerdicts.has(String(verdict).toUpperCase())) {
+        box.classList.remove('ready');
+        box.classList.add('not-ready');
+      } else {
+        box.classList.add('ready');
+        box.classList.remove('not-ready');
+      }
     }
 
     // GitHub links
@@ -112,7 +118,11 @@
       const siteCsp = document.getElementById('site-csp');
 
       // Use verdict as coarse signal; finer metrics can be wired later
-      if (gatePerf) gatePerf.textContent = verdict === 'READY' ? 'OK' : 'HOLD';
+      const isReady = (v => {
+        try { return ['READY', 'APPROVED', 'GREEN'].includes(String(v).toUpperCase()); }
+        catch { return false; }
+      })(verdict);
+      if (gatePerf) gatePerf.textContent = isReady ? 'OK' : 'HOLD';
       if (gateOtel) gateOtel.textContent = (data.checks && data.checks['docs/status.html']) ? 'OK' : '-';
       if (gateRes) gateRes.textContent = '-';
       if (gateEcrr) gateEcrr.textContent = verdict;
