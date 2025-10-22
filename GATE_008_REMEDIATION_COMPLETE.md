@@ -107,11 +107,11 @@ This Summary:         GATE_008_REMEDIATION_COMPLETE.md
 ### Git Status
 ```
 Branch:               main
-Latest Commits:       91ceaf8c2 (final sync), f3a45be88 (truth-telling), edbaa3b03 (corrections), 2f12461cf (summary), b735243df (remediation)
-Working Tree:         Ahead 5 commits
+Remediation Commits:  Multiple commits on main (remediation sequence complete)
+Working Tree:         Not fully clean
   - Modified: logs/canary-check-min.last.log (from canary run)
   - Untracked: 2 research docs in docs/BossCat/Research/ (unrelated to gate)
-  - Status: Not fully clean, but gate artifacts are committed
+  - Gate artifacts: All committed
 Stale Artifacts:      Removed (original incorrect JSON/reports deleted)
 ```
 
