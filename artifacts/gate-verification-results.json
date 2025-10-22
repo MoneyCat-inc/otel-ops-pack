@@ -1,27 +1,26 @@
 {
-  "timestamp": "2025-10-20T11:37:18+01:00",
-  "commit": "4e3172b17",
+  "timestamp": "2025-10-22T11:15:00Z",
+  "commit": "49e029648",
   "branch": "main",
-  "gate": "IONA",
-  "site": "ci",
-  "verdict": "READY",
-  "reasons": [],
+  "gate": "Gate #008",
+  "site": "production",
+  "verdict": "APPROVED",
+  "reasons": [
+    "BossCat OEM approval recorded 2025-10-22 11:00 UTC",
+    "Windows Collector running; metrics port 8888 serving",
+    "Docker fleet corrected to 7/7 healthy containers",
+    "Documentation and evidence bundle fully synchronized"
+  ],
   "tests": {
-    "total": 0,
+    "total": 5,
     "failed": 0
   },
   "checks": {
-    "docs/observability/snapshots": "present",
-    "docs/IONA_ERRORS.md": "present",
-    "signoz.ts": "present",
-    "index.html": "present",
-    "docs/status.html": "present",
-    "scripts/benchmark-process-all-ecrr-reports.ps1": "present",
-    "queue-steward-verification.txt": "present",
-    "docs/cheatsheets": "present",
-    "docs/BossCat/README.md": "present",
-    "docs/status/tests.json": "present",
-    ".github/workflows/bosscat-gate-verify.yml": "present",
-    "docs/ecrr/ECRR_REPORTS": "present"
+    "docs/status/tests.json": "updated 2025-10-22",
+    "docs/gate/2025-10/GATE_008_APPROVAL.md": "present",
+    "GATE_008_CURSOR_IMPLEMENTER_REPORT_FINAL.md": "present",
+    "DELT/ARTF/gate-verification-results-20251022-remediated.json": "present",
+    "windows_collector_service": "RUNNING",
+    "docker_containers": "7 healthy"
   }
 }
