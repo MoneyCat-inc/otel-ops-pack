@@ -107,8 +107,10 @@ This Summary:         GATE_008_REMEDIATION_COMPLETE.md
 ### Git Status ✅
 ```
 Branch:               main
-Latest Commit:        b735243df - Gate #008 remediation complete
-Working Tree:         Clean (1 modified log file from canary run)
+Latest Commits:       2f12461cf (summary), b735243df (remediation)
+Working Tree:         Mostly clean (ahead 2)
+  - Modified: logs/canary-check-min.last.log (from canary run)
+  - Untracked: 2 research docs in docs/BossCat/Research/ (unrelated to gate)
 Stale Artifacts:      Removed (original incorrect JSON/reports deleted)
 ```
 
