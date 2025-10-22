@@ -104,13 +104,14 @@ Implementer Report:   GATE_008_CURSOR_IMPLEMENTER_REPORT.md (retraction notice)
 This Summary:         GATE_008_REMEDIATION_COMPLETE.md
 ```
 
-### Git Status ✅
+### Git Status
 ```
 Branch:               main
-Latest Commits:       2f12461cf (summary), b735243df (remediation)
-Working Tree:         Mostly clean (ahead 2)
+Latest Commits:       edbaa3b03 (final corrections), 2f12461cf (summary), b735243df (remediation)
+Working Tree:         Ahead 3 commits
   - Modified: logs/canary-check-min.last.log (from canary run)
   - Untracked: 2 research docs in docs/BossCat/Research/ (unrelated to gate)
+  - Status: Not fully clean, but gate artifacts are committed
 Stale Artifacts:      Removed (original incorrect JSON/reports deleted)
 ```
 

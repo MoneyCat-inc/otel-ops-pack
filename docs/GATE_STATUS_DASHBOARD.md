@@ -54,7 +54,7 @@
 | SigNoz UI (8080) | ✅ PASS | Port accessible |
 | Synthetic Span | ✅ PASS | SUCCESS (fresh 2025-10-22 10:10:20) |
 | SigNoz Health API | ✅ PASS | {"status":"ok"} |
-| Docker Services | ✅ PASS | 7/7 healthy (27+ hours uptime) |
+| Docker Services | ✅ PASS | 7/7 healthy (27+ hours uptime) - corrected from initial claim of 4 |
 | Pipeline Processing | ✅ PASS | Fresh canary logs in ClickHouse, end-to-end functional |
 
 ### GATE-SITE ✅ PASS (CORRECTED)
@@ -73,7 +73,7 @@
 | Lane Discipline | ✅ PASS | Perfect execution |
 | ECRR Methodology | ✅ PASS | 104 gate-related reports |
 | Evidence Trails | ✅ PASS | DELT/ARTF/ comprehensive (remediated JSON) |
-| Working Tree | ✅ PASS | Remediation artifacts committed (2 commits ahead) |
+| Working Tree | ⚠️ IN PROGRESS | Ahead 3 commits, modified log + 2 untracked research docs (non-gate) |
 
 ---
 
@@ -191,10 +191,12 @@ Canonical Reference:       docs/comfort-cat/ (5 docs) ✅
 ### Immediate (Requires BossCat OEM - Next 24 Hours)
 1. 📋 **Review Gate #008 Evidence Package**
    - Remediation Summary: `GATE_008_REMEDIATION_COMPLETE.md`
+   - Final Report: `GATE_008_CURSOR_IMPLEMENTER_REPORT_FINAL.md`
    - Verification JSON: `DELT/ARTF/gate-verification-results-20251022-remediated.json`
    - Remediation Log: `docs/gate/2025-10/GATE_008_BLOCKED_STATUS.md`
    - Dashboard: `docs/GATE_STATUS_DASHBOARD.md` (this document)
    - Tests: `docs/status/tests.json` (updated 2025-10-22)
+   - Note: No standalone ECRR report - see remediation documents above
 
 2. 📋 **Approve Gate #008** (or delegate decision)
    - Command: `@cat approve-gate #008`
@@ -222,10 +224,13 @@ Canonical Reference:       docs/comfort-cat/ (5 docs) ✅
 
 ### Gate #008 Evidence Package (REMEDIATED - 2025-10-22) 🎉
 - [**Gate #008 Remediation Summary**](../GATE_008_REMEDIATION_COMPLETE.md) ✨
+- [**Gate #008 Final Report**](../GATE_008_CURSOR_IMPLEMENTER_REPORT_FINAL.md) ✨
 - [**Gate #008 Verification JSON (Remediated)**](../DELT/ARTF/gate-verification-results-20251022-remediated.json) ✨
 - [**Gate #008 Remediation Log**](gate/2025-10/GATE_008_BLOCKED_STATUS.md) ✨
 - [**Gate Status Dashboard**](GATE_STATUS_DASHBOARD.md) (this document - corrected) ✨
 - [**Tests JSON**](status/tests.json) (updated 2025-10-22) ✨
+
+**Note:** No standalone ECRR report exists for Gate #008. See remediation documents above for comprehensive evidence.
 
 ### Milestone Evidence (Since Gate #007)
 - [**Hub Production Live**](../HUB_PRODUCTION_LIVE.md) - hub.resonai.uk (2025-10-20)
@@ -280,7 +285,7 @@ Canonical Reference:       docs/comfort-cat/ (5 docs) ✅
 8. ✅ **Blockers:** 0 (all resolved)
 9. ✅ **Major Milestones Delivered:** 2 (Hub Production + Bluesky v1)
 10. ✅ **Evidence Package:** Corrected and comprehensive (remediated JSON + remediation log + dashboard)
-11. ✅ **Working Tree:** Remediation artifacts committed (2 commits ahead: b735243df, 2f12461cf)
+11. ⚠️ **Working Tree:** Ahead 3 commits (edbaa3b03, 2f12461cf, b735243df), modified log + 2 untracked research docs
 12. ✅ **Metrics Corrected:** HTML files: 51 (not 42), Docker: 7 (not 4), Tests: current (not stale)
 
 ---
