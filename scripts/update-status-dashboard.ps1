@@ -132,11 +132,30 @@ $testsFile = "docs/status/tests.json"
 if (Test-Path $testsFile) {
     try {
         $tests = Get-Content $testsFile -Raw | ConvertFrom-Json
-        $tests.endedAt = $verification.timestamp
-        $tests.commit = $verification.commit
-        $tests.verdict = $verification.verdict
-        $tests.automated = $false
-        $tests.manual = $true
+        
+        # Update existing properties
+        if ($tests.PSObject.Properties['endedAt']) {
+            $tests.endedAt = $verification.timestamp
+        }
+        if ($tests.PSObject.Properties['commit']) {
+            $tests.commit = $verification.commit
+        }
+        if ($tests.PSObject.Properties['verdict']) {
+            $tests.verdict = $verification.verdict
+        }
+        
+        # Add new properties if they don't exist
+        if (-not $tests.PSObject.Properties['automated']) {
+            $tests | Add-Member -NotePropertyName 'automated' -NotePropertyValue $false -Force
+        } else {
+            $tests.automated = $false
+        }
+        
+        if (-not $tests.PSObject.Properties['manual']) {
+            $tests | Add-Member -NotePropertyName 'manual' -NotePropertyValue $true -Force
+        } else {
+            $tests.manual = $true
+        }
         
         $tests | ConvertTo-Json -Depth 10 | Out-File -FilePath $testsFile -Encoding UTF8
         $filesUpdated += $testsFile
@@ -207,21 +226,21 @@ if ($AutoCommit) {
 # ============================================================================
 # SUMMARY
 # ============================================================================
-
-Write-Host ""
+    
+    Write-Host ""
 Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor Gray
 Write-Host "✅ Status Dashboard Update Complete" -ForegroundColor Green
 Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor Gray
-Write-Host ""
+    Write-Host ""
 Write-Host "Verdict:    $($verification.verdict)" -ForegroundColor $(if ($verification.verdict -eq 'APPROVED' -or $verification.verdict -eq 'READY') { 'Green' } else { 'Yellow' })
 Write-Host "Gate:       #$($verification.gate)"
 Write-Host "Commit:     $($verification.commit)"
 Write-Host "Timestamp:  $($verification.timestamp)"
-Write-Host ""
+        Write-Host ""
 Write-Host "Files Updated: $($filesUpdated.Count)"
 $filesUpdated | ForEach-Object { Write-Host "  - $_" -ForegroundColor Gray }
-Write-Host ""
-
+    Write-Host ""
+    
 if (-not $AutoCommit) {
     Write-Host "💡 Tip: Run with -AutoCommit to automatically commit and push changes" -ForegroundColor Cyan
     Write-Host "   pwsh -File scripts/update-status-dashboard.ps1 -AutoCommit" -ForegroundColor Gray
