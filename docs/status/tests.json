@@ -9,7 +9,8 @@
   "evidence": [
     "DELT/ARTF/gate-verification-results-20251022-remediated.json",
     "docs/gate/2025-10/GATE_008_BLOCKED_STATUS.md",
-    "docs/ecrr/ECRR_REPORTS/ECRR_GATE_008_READY_20251022.md"
+    "GATE_008_REMEDIATION_COMPLETE.md",
+    "docs/GATE_STATUS_DASHBOARD.md"
   ],
   "checks": [
     {
@@ -78,6 +79,8 @@
     "Documentation updated across all gate artifacts"
   ],
   "branch": "main",
-  "commit": "327dd382f9d26441026109601fcf9615a01a2c5d",
+  "commit": "2f12461cf",
+  "previousCommit": "b735243df (remediation)",
+  "originalCommit": "327dd382f (initial, retracted)",
   "gatePhrase": "@cat ready-for-gate (remediated)"
 }
