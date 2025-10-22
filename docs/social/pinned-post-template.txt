@@ -1,0 +1,20 @@
+🎯 New mission: AntiClickbait
+
+Evidence-first fact-checking + transparent observability.
+
+What we do:
+• Score claims 0-100 on evidence quality
+• Link every source (no "trust me")
+• Document limitations honestly
+• Build tools for verification at scale
+
+No hype. Just what actually works.
+
+🚀 Starter Pack: <PASTE_STARTER_PACK_URL>
+📡 Custom Feeds: <PASTE_FEED_URLS>
+🏠 Hub: https://hub.resonai.uk/
+
+Reply "CHECKLIST" for our verification template.
+
+#AntiClickbait #FactCheck #OpenTelemetry
+

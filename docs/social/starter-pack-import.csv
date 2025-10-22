@@ -1,0 +1,17 @@
+handle,display_name,category,confidence,rationale
+fullfact.org,Full Fact,factcheck,high,UK's independent fact-checker (domain-verified)
+factcheck.afp.com,AFP Fact Check,factcheck,high,Global network quick debunks (domain-verified)
+politifact.bsky.social,PolitiFact,factcheck,high,US fact-checking Truth-O-Meter
+reuters.com,Reuters,factcheck,high,Frequent Bluesky debunks (domain-verified)
+bellingcat.com,Bellingcat,osint,high,Open-source investigations (domain-verified)
+eliothiggins.bsky.social,Eliot Higgins,osint,high,Bellingcat founder media forensics
+sector035.bsky.social,Sector035,osint,high,Weekly OSINT tips and tool roundups
+mariannaspringbbc.bsky.social,Marianna Spring,osint,high,BBC Social Media Investigations
+quiztime.bsky.social,Quiztime,osint,medium,Geolocation verification community
+poynterinstitute.bsky.social,The Poynter Institute,media_literacy,high,Ethics news literacy PolitiFact parent
+reutersinstitute.bsky.social,Reuters Institute,media_literacy,high,Oxford research on news audiences
+opentelemetry.io,OpenTelemetry,observability,high,Official OTel project (domain-verified)
+grafana.bsky.social,Grafana,observability,high,OSS observability ecosystem
+clickhouse.com,ClickHouse,observability,high,Database for observability (domain-verified)
+resonai.bsky.social,BossCat,hub,high,Evidence-first observability + truth literacy
+
