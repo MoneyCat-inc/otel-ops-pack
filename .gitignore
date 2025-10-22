@@ -32,3 +32,7 @@ docs/BossCat/visuals/vendor/
 .env.socm
 .env.social
 *.env.local
+
+# Ephemeral logs
+*.last.log
+logs/**/*.last.log
