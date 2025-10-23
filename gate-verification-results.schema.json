@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://resonai.uk/schemas/gate-verification-results.schema.json",
+  "title": "Gate Verification Result (PR-1)",
+  "type": "object",
+  "required": ["timestamp", "commit", "verdict", "gate"],
+  "properties": {
+    "timestamp": { "type": "string", "format": "date-time" },
+    "commit": { "type": "string", "pattern": "^[0-9a-f]{7,40}$" },
+    "verdict": {
+      "type": "string",
+      "enum": ["READY", "DEGRADED", "BLOCKED", "ERROR", "UNKNOWN"]
+    },
+    "gate": { "type": "string", "minLength": 1 },
+
+    "site": { "type": "string" },
+    "runner": { "type": "string" },
+    "source": { "type": "string" },
+    "version": { "type": "string" },
+    "notes": { "type": "string" },
+
+    "checks": {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "status"],
+            "properties": {
+              "name": { "type": "string" },
+              "status": {
+                "type": "string",
+                "enum": ["OK", "WARN", "FAIL", "SKIP"]
+              },
+              "detail": { "type": "string" },
+              "ms": { "type": "number", "minimum": 0 }
+            },
+            "additionalProperties": true
+          }
+        }
+      ]
+    }
+  },
+  "additionalProperties": true
+}
