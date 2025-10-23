@@ -13,19 +13,19 @@
 
 | File | Purpose | Status |
 |------|---------|--------|
-| `BOSSCAT_OEM_SCHEMA_V3.md` | Complete automation architecture | ✅ Complete |
-| `BOSSCAT_OEM_SCHEMA_COMPONENTS.md` | Component definitions & data flow | ✅ Complete |
-| `SIGNOZ_V3_SCHEMA_REFERENCE.md` | Canonical query guide | ✅ Complete |
-| `V3_GATE_AUTOMATION_GUIDE.md` | Usage instructions | ✅ Complete |
+| `docs/BossCat/schema/BOSSCAT_OEM_SCHEMA_V3.md` | Complete automation architecture | ✅ Complete |
+| `docs/BossCat/schema/BOSSCAT_OEM_SCHEMA_COMPONENTS.md` | Component definitions & data flow | ✅ Complete |
+| `docs/BossCat/schema/SIGNOZ_V3_SCHEMA_REFERENCE.md` | Canonical query guide | ✅ Complete |
+| `docs/BossCat/schema/V3_GATE_AUTOMATION_GUIDE.md` | Usage instructions | ✅ Complete |
 
 ### **Supporting Documentation**
 
 | File | Purpose | Status |
 |------|---------|--------|
-| `BOSSCAT_RUNBOOK_UPDATE_DOCKER_EXEC.md` | Runbook alignment | ✅ Complete |
-| `GATE_SELF_SIGNAL_PROTOCOL.md` | Protocol documentation | ✅ Complete |
-| `GATE_GREEN_FLIP_PROCEDURE.md` | Gate advancement guide | ✅ Complete |
-| `SIGNOZ_V3_SCHEMA_DISCOVERY.md` | Schema discovery notes | ✅ Complete |
+| `docs/BossCat/schema/BOSSCAT_RUNBOOK_UPDATE_DOCKER_EXEC.md` | Runbook alignment | ✅ Complete |
+| `docs/gate/self-signal/GATE_SELF_SIGNAL_PROTOCOL.md` | Protocol documentation | ✅ Complete |
+| `docs/gate/2025-10/GATE_GREEN_FLIP_PROCEDURE.md` | Gate advancement guide | ✅ Complete |
+| `docs/BossCat/schema/SIGNOZ_V3_SCHEMA_DISCOVERY.md` | Schema discovery notes | ✅ Complete |
 
 ---
 

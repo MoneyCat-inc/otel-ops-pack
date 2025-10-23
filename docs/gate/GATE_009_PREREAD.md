@@ -41,10 +41,10 @@ Canary Emit → Edge Writer (14321) → ClickHouse v3 → BossCat Gate
    - `send-canary-trace-direct.ps1` - Edge writer canary routing
 
 4. **Documentation**
-   - `EDGE_WRITER_DEPLOYMENT_SUMMARY.md` - Complete reference
-   - `SIGNOZ_V3_SCHEMA_REFERENCE.md` - V3 schema documentation
-   - `BOSSCAT_OEM_SCHEMA_V3.md` - Automation architecture
-   - `V3_GATE_AUTOMATION_GUIDE.md` - Usage guide
+   - `docs/BossCat/schema/EDGE_WRITER_DEPLOYMENT_SUMMARY.md` - Complete reference
+   - `docs/BossCat/schema/SIGNOZ_V3_SCHEMA_REFERENCE.md` - V3 schema documentation
+   - `docs/BossCat/schema/BOSSCAT_OEM_SCHEMA_V3.md` - Automation architecture
+   - `docs/BossCat/schema/V3_GATE_AUTOMATION_GUIDE.md` - Usage guide
 
 ### Verified Metrics (2025-10-23)
 - **Traces Persisting:** 66 spans (canary-test) in `signoz_index_v3`
@@ -302,22 +302,22 @@ Critical Endpoints: 6 (Hub)
 ## 📚 **NEW: V3 Schema & Automation Documentation**
 
 ### Core Schema Files
-1. **BOSSCAT_OEM_SCHEMA_V3.md** - Comprehensive BossCat OEM architecture
+1. **docs/BossCat/schema/BOSSCAT_OEM_SCHEMA_V3.md** - Comprehensive BossCat OEM architecture
    - Automation framework
    - Gate discipline
    - Component definitions
 
-2. **SIGNOZ_V3_SCHEMA_REFERENCE.md** - ClickHouse v3 schema
+2. **docs/BossCat/schema/SIGNOZ_V3_SCHEMA_REFERENCE.md** - ClickHouse v3 schema
    - Table structures
    - Column mappings
    - Query examples
 
-3. **EDGE_WRITER_DEPLOYMENT_SUMMARY.md** - Complete deployment reference
+3. **docs/BossCat/schema/EDGE_WRITER_DEPLOYMENT_SUMMARY.md** - Complete deployment reference
    - Architecture overview
    - SLOs & health monitors
    - Rollback procedures
 
-4. **V3_GATE_AUTOMATION_GUIDE.md** - Usage guide
+4. **docs/BossCat/schema/V3_GATE_AUTOMATION_GUIDE.md** - Usage guide
    - Monitoring loop
    - One-liner wrapper
    - Troubleshooting
@@ -398,4 +398,3 @@ docker exec signoz-clickhouse clickhouse-client --query `
 **Next Gate:** #009 (TBD)
 
 🐾 _Gate #009 preparation - Edge Writer deployed, V3 schema active, automation operational_
-
