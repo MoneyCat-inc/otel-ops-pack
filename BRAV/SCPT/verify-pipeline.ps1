@@ -66,7 +66,8 @@ function Invoke-SigNozApiTraceCheck {
   )
   
   # Read API key from environment (prefer current process env var)
-  $apiKey = $env:$ApiKeyEnv
+  $apiKey = [Environment]::GetEnvironmentVariable($ApiKeyEnv, "Process")
+  if (-not $apiKey) { $apiKey = [Environment]::GetEnvironmentVariable($ApiKeyEnv, "User") }
   if (-not $apiKey) { $apiKey = [Environment]::GetEnvironmentVariable($ApiKeyEnv, "Machine") }
   if (-not $apiKey) { 
     Write-Warning "[api-check] No API key in $ApiKeyEnv environment variable"
@@ -77,15 +78,11 @@ function Invoke-SigNozApiTraceCheck {
   $nowMs = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
   $startMs = $nowMs - ($LookbackSeconds * 1000)
 
-  # Build filter expression: prefer traceID (pinpoint) over serviceName (fuzzy)
-  $filterExpr = if ($TraceId) { "traceID = '$TraceId'" } else { "serviceName = '$ServiceName'" }
-  $verificationMode = if ($TraceId) { "PINPOINT (traceID)" } else { "STANDARD (serviceName)" }
-
-  # SigNoz Trace API payload: requestType=raw, signal=traces
-  # Ref: https://signoz.io/docs/traces-management/trace-api/overview/
-  $payload = @{
-    start = $startMs
-    end   = $nowMs
+  # Helper to build payload for a given filter expression
+  function New-TraceApiPayload([string]$expr, [int]$s, [int]$e) {
+    return @{
+      start = $s
+      end   = $e
     requestType = "raw"
     compositeQuery = @{
       queries = @(
@@ -94,7 +91,7 @@ function Invoke-SigNozApiTraceCheck {
           spec = @{
             name   = "A"
             signal = "traces"
-            filter = @{ expression = $filterExpr }
+              filter = @{ expression = $expr }
             selectFields = @(
               @{ name = "traceID" }
               @{ name = "spanID" }
@@ -110,6 +107,12 @@ function Invoke-SigNozApiTraceCheck {
       )
     }
   } | ConvertTo-Json -Depth 12
+  }
+
+  # Build initial (traceID) payload if available; otherwise serviceName
+  $filterExpr = if ($TraceId) { "traceID = '$TraceId'" } else { "serviceName = '$ServiceName'" }
+  $verificationMode = if ($TraceId) { "PINPOINT (traceID)" } else { "STANDARD (serviceName)" }
+  $payload = New-TraceApiPayload -expr $filterExpr -s $startMs -e $nowMs
 
   try {
     $uri = $BaseUrl.TrimEnd('/') + "/api/v5/query_range"
@@ -138,6 +141,29 @@ function Invoke-SigNozApiTraceCheck {
       Write-Host "[api-check] $mode Span confirmed via SigNoz API" -ForegroundColor Green
       return @{ ok = $true; reason = "span_found"; timestampMs = $timestampMs; mode = $verificationMode }
     } else {
+      # Fallback to serviceName if traceID path empty
+      if ($TraceId) {
+        $fallbackExpr = "serviceName = '$ServiceName'"
+        Write-Host "[api-check] Fallback to serviceName filter..." -ForegroundColor Yellow
+        $payload2 = New-TraceApiPayload -expr $fallbackExpr -s $startMs -e $nowMs
+        try {
+          $resp2 = Invoke-RestMethod -Method Post -Uri $uri `
+            -Headers @{ "SIGNOZ-API-KEY" = $apiKey } `
+            -ContentType "application/json" -Body $payload2 -TimeoutSec 30
+          $json2 = ($resp2 | ConvertTo-Json -Depth 20)
+          $hasSpan2 = ($json2 -match '"traceID"')
+          $timestampMs2 = $null
+          $tsMatch2 = [regex]::Match($json2, '"timestamp"\s*:\s*([0-9]+)')
+          if ($tsMatch2.Success) {
+            $rawTs2 = [int64]$tsMatch2.Groups[1].Value
+            $timestampMs2 = if ($rawTs2 -gt 9999999999999) { [int64]($rawTs2 / 1000000) } else { $rawTs2 }
+          }
+          if ($hasSpan2) {
+            Write-Host "[api-check] STANDARD ✓ Span confirmed via SigNoz API (serviceName)" -ForegroundColor Green
+            return @{ ok = $true; reason = "span_found_service"; timestampMs = $timestampMs2; mode = "STANDARD (serviceName)" }
+          }
+        } catch { }
+      }
       Write-Warning "[api-check] No spans found (filter: $filterExpr, last $LookbackSeconds s)"
       return @{ ok = $false; reason = "no_span_found"; timestampMs = $null; mode = $verificationMode }
     }
