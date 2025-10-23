@@ -79,10 +79,10 @@ function Invoke-SigNozApiTraceCheck {
   $startMs = $nowMs - ($LookbackSeconds * 1000)
 
   # Helper to build payload for a given filter expression
-  function New-TraceApiPayload([string]$expr, [int]$s, [int]$e) {
+  function New-TraceApiPayload([string]$expr, [Int64]$StartMs, [Int64]$EndMs) {
     return @{
-      start = $s
-      end   = $e
+      start = $StartMs
+      end   = $EndMs
     requestType = "raw"
     compositeQuery = @{
       queries = @(
@@ -112,7 +112,7 @@ function Invoke-SigNozApiTraceCheck {
   # Build initial (traceID) payload if available; otherwise serviceName
   $filterExpr = if ($TraceId) { "traceID = '$TraceId'" } else { "serviceName = '$ServiceName'" }
   $verificationMode = if ($TraceId) { "PINPOINT (traceID)" } else { "STANDARD (serviceName)" }
-  $payload = New-TraceApiPayload -expr $filterExpr -s $startMs -e $nowMs
+  $payload = New-TraceApiPayload -expr $filterExpr -StartMs $startMs -EndMs $nowMs
 
   try {
     $uri = $BaseUrl.TrimEnd('/') + "/api/v5/query_range"
@@ -145,7 +145,7 @@ function Invoke-SigNozApiTraceCheck {
       if ($TraceId) {
         $fallbackExpr = "serviceName = '$ServiceName'"
         Write-Host "[api-check] Fallback to serviceName filter..." -ForegroundColor Yellow
-        $payload2 = New-TraceApiPayload -expr $fallbackExpr -s $startMs -e $nowMs
+        $payload2 = New-TraceApiPayload -expr $fallbackExpr -StartMs $startMs -EndMs $nowMs
         try {
           $resp2 = Invoke-RestMethod -Method Post -Uri $uri `
             -Headers @{ "SIGNOZ-API-KEY" = $apiKey } `
