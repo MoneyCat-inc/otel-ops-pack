@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://resonai.uk/schemas/tests.schema.json",
+  "title": "Status Tests Ledger (PR-1)",
+  "type": "object",
+  "required": ["endedAt", "commit"],
+  "properties": {
+    "version": { "type": "string" },
+    "endedAt": { "type": "string", "format": "date-time" },
+    "actor": { "type": "string" },
+    "authority": { "type": "string" },
+    "verdict": { "type": "string" },
+    "gate": { "type": ["string", "number"] },
+    "remediation": { "type": "boolean" },
+    "evidence": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": { "type": "string" },
+          "ok": { "type": "boolean" },
+          "status": { "type": "string" },
+          "remediated": { "type": "boolean" },
+          "previous": { "type": "string" },
+          "current": {},
+          "details": { "type": "object" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "reasons": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "branch": { "type": "string" },
+    "commit": { "type": "string", "pattern": "^[0-9a-f]{7,40}$" },
+    "previousCommit": { "type": "string" },
+    "originalCommit": { "type": "string" },
+    "gatePhrase": { "type": "string" },
+    "automated": { "type": "boolean" },
+    "manual": { "type": "boolean" }
+  },
+  "additionalProperties": true
+}
