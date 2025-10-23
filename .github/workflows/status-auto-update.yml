@@ -84,8 +84,36 @@ jobs:
               if ($tests.PSObject.Properties['commit']) { $tests.commit = $commit }
               if ($tests.PSObject.Properties['verdict']) { $tests.verdict = "APPROVED" }
               $tests | ConvertTo-Json -Depth 10 | Out-File -FilePath "docs/status/tests.json" -Encoding UTF8
-            }
           }
+        }
+
+      - name: Setup Node (for AJV)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Validate gate-verification-results.json
+        run: |
+          npx --yes -p ajv-cli@5.0.0 -p ajv-formats ajv validate \
+            -s ./gate-verification-results.schema.json \
+            -d ./artifacts/gate-verification-results.json \
+            --strict=false --all-errors --spec=draft2020 -c ajv-formats
+
+      - name: Validate tests.json
+        run: |
+          npx --yes -p ajv-cli@5.0.0 -p ajv-formats ajv validate \
+            -s ./tests.schema.json \
+            -d ./docs/status/tests.json \
+            --strict=false --all-errors --spec=draft2020 -c ajv-formats
+
+      - name: Upload JSON artifacts on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: status-json-on-failure
+          path: |
+            artifacts/gate-verification-results.json
+            docs/status/tests.json
 
       - name: Enforce budgets & allow-list
         shell: pwsh
