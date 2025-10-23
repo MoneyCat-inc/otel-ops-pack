@@ -1,9 +1,9 @@
-# 🔔 Gate Self-Signal Monitor — Continuous Background Loop
-# Runs every 30 minutes until platform fix detected (exit 0)
+# 🔔 Gate Self-Signal Monitor — Continuous Background Loop (Low-Latency Mode)
+# Runs every 2 minutes until platform fix detected (exit 0)
 # Then breaks with alert for manual gate advancement execution
 
 param(
-    [int]$IntervalSeconds = 1800,  # 30 minutes
+    [int]$IntervalSeconds = 120,  # 2 minutes (low-latency mode)
     [switch]$QuietMode = $false
 )
 
