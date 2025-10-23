@@ -31,58 +31,43 @@ Start-Sleep -Seconds 2
 Write-Host ""
 Write-Host "🔍 Step 2: Querying ClickHouse for canary-test traces..."
 
+# Query ClickHouse for recent canary-test spans
+Write-Host "Querying ClickHouse for recent canary-test traces..." -ForegroundColor Cyan
+
+# Use docker exec to query ClickHouse (HTTP port not mapped to host)
 $query = @"
-SELECT count() as span_count
-FROM signoz_traces.distributed_signoz_spans
-WHERE serviceName = 'canary-test'
-  AND toDateTime(startTime/1e9) >= now() - INTERVAL $MinutesWindow MINUTE
+SELECT count()
+FROM signoz_traces.span_attributes
+WHERE tagKey='service.name'
+  AND stringTagValue='canary-test'
+  AND timestamp >= now() - INTERVAL 10 MINUTE;
 "@
 
-if ($Verbose) {
-    Write-Host "   Query: $query" -ForegroundColor DarkGray
-}
-
 try {
-    $url = "http://localhost:8123/?query=$([uri]::EscapeDataString($query))"
-    $response = Invoke-WebRequest -UseBasicParsing -Uri $url -TimeoutSec 5 -ErrorAction Stop
-    $count = [int]($response.Content.Trim())
+    $result = docker exec signoz-clickhouse clickhouse-client --query $query 2>&1
+    $spanCount = [int]$result.Trim()
     
-    Write-Host "   Result: $count spans found" -ForegroundColor Cyan
-    Write-Host ""
+    Write-Host "Result: $spanCount spans found" -ForegroundColor Yellow
     
-    # Step 4: Evaluate signal
-    if ($count -gt 0) {
-        Write-Host "✅ SELF-SIGNAL: GREEN (traces detected)" -ForegroundColor Green
-        Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor Green
+    if ($spanCount -gt 0) {
         Write-Host ""
-        Write-Host "🎯 Platform fix detected! Traces are persisting to ClickHouse."
-        Write-Host "   Service name: canary-test"
-        Write-Host "   Span count (last $MinutesWindow min): $count"
+        Write-Host "✅ SUCCESS: Traces persisting to ClickHouse" -ForegroundColor Green
+        Write-Host "Service: canary-test" -ForegroundColor Green
+        Write-Host "Recent spans (10 min): $spanCount" -ForegroundColor Green
         Write-Host ""
-        Write-Host "📋 Next: Execute gate advancement runbook"
-        Write-Host "   1. Run canary 5x more (verify stability)"
-        Write-Host "   2. Capture evidence: query output + config excerpt"
-        Write-Host "   3. Regenerate ECRR artifacts"
-        Write-Host "   4. Post @cat ready-for-gate with bundle"
-        Write-Host ""
-        exit 0  # Success
+        exit 0
     } else {
-        Write-Host "⏳ SELF-SIGNAL: HOLDING at WARN (no traces yet)" -ForegroundColor Yellow
-        Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor Yellow
         Write-Host ""
-        Write-Host "🟠 Platform fix not yet landed. ClickHouse spans table remains empty."
-        Write-Host "   Service name searched: canary-test"
-        Write-Host "   Time window: last $MinutesWindow minutes"
+        Write-Host "⏳ HOLD: Platform gap persists (0 spans found)" -ForegroundColor Yellow
+        Write-Host "Service: canary-test" -ForegroundColor Yellow
+        Write-Host "ClickHouse query returned 0 rows" -ForegroundColor Yellow
         Write-Host ""
-        Write-Host "📋 Diagnostics:"
-        Write-Host "   ✅ Canary trace sent successfully"
-        Write-Host "   ❌ Traces not persisting in ClickHouse"
-        Write-Host "   → Blocker remains: exporter→ClickHouse gap"
-        Write-Host ""
-        exit 1  # Hold
+        exit 1
     }
 } catch {
-    Write-Host "❌ ClickHouse query failed: $_" -ForegroundColor Red
-    Write-Host "   (Verify ClickHouse is running on localhost:8123)" -ForegroundColor Red
+    Write-Host ""
+    Write-Host "⚠️ ERROR: ClickHouse query failed" -ForegroundColor Red
+    Write-Host "Details: $_" -ForegroundColor Red
+    Write-Host ""
     exit 2
 }
