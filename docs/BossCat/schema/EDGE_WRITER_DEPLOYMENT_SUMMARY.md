@@ -232,10 +232,10 @@ docker exec signoz-clickhouse clickhouse-client --query `
 
 ## 📚 Related Documentation
 
-- **V3 Schema Reference:** `SIGNOZ_V3_SCHEMA_REFERENCE.md`
-- **Gate Protocol:** `GATE_SELF_SIGNAL_PROTOCOL.md`
-- **BossCat OEM Schema:** `BOSSCAT_OEM_SCHEMA_V3.md`
-- **Automation Guide:** `V3_GATE_AUTOMATION_GUIDE.md`
+- **V3 Schema Reference:** `docs/BossCat/schema/SIGNOZ_V3_SCHEMA_REFERENCE.md`
+- **Gate Protocol:** `docs/gate/self-signal/GATE_SELF_SIGNAL_PROTOCOL.md`
+- **BossCat OEM Schema:** `docs/BossCat/schema/BOSSCAT_OEM_SCHEMA_V3.md`
+- **Automation Guide:** `docs/BossCat/schema/V3_GATE_AUTOMATION_GUIDE.md`
 - **BossCat Log:** `docs/BossCat/BOSSCAT_LOG.md`
 - **BossCat TODO:** `docs/BossCat/TODO.md`
 
