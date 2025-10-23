@@ -108,6 +108,7 @@ exporters:
 service:
   telemetry:
     logs:
+      level: debug
       encoding: json
   extensions:
     - health_check
