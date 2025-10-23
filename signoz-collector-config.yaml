@@ -63,7 +63,7 @@ processors:
     attributes:
       - key: service.name
         value: resonai-backend
-        action: upsert  # Change to "insert" to preserve original service names
+        action: insert
       - key: deployment.environment
         value: production
         action: upsert
