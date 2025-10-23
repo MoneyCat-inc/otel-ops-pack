@@ -12,7 +12,7 @@
     "approval_date": "2025-10-20T00:00:00Z",
     "authority": "BossCat OEM"
   },
-  "verdict": "WARN",
+  "verdict": "READY",
   "remediation_summary": {
     "blocker_resolved": "Windows Collector service enabled and started",
     "corrections_applied": [
@@ -24,7 +24,7 @@
   },
   "gate_matrix": {
     "GATE_CORE": {
-      "status": "WARN",
+      "status": "PASS",
       "components": {
         "windows_collector_service": {
           "status": "PASS",
@@ -58,10 +58,12 @@
           "threshold": "ok status"
         },
         "synthetic_span": {
-          "status": "WARN",
+          "status": "PASS",
           "test": "canary-test.ps1",
-          "result": "PENDING - Awaiting trace in SigNoz (service.name=\"canary-test\")",
-          "threshold": "Trace must appear in last 1h window"
+          "result": "SUCCESS - 30 traces confirmed in ClickHouse v3 (traceID 79108560b40440d3b40d5f4d51e408d5)",
+          "threshold": "End-to-end SUCCESS",
+          "timestamp": "2025-10-23 09:07:11.717800700",
+          "clickhouse_table": "signoz_traces.distributed_signoz_index_v3"
         },
         "docker_services": {
           "status": "PASS",
@@ -80,10 +82,11 @@
           "threshold": "All containers healthy"
         },
         "pipeline_processing": {
-          "status": "WARN",
+          "status": "PASS",
           "test": "verify-pipeline.ps1",
-          "result": "WARN - Canary span not yet confirmed in ClickHouse",
-          "threshold": "Logs ingested and queryable"
+          "result": "PASS - 30 canary traces in ClickHouse v3 (serviceName=resonai-backend, name=canary-test-span)",
+          "threshold": "Traces ingested and queryable",
+          "evidence": "traceID 79108560b40440d3b40d5f4d51e408d5 confirmed at 2025-10-23 09:07:11"
         }
       }
     },

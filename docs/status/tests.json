@@ -1,16 +1,17 @@
 {
   "version": "1.3",
-  "endedAt": "2025-10-22T20:11:34+00:00",
+  "endedAt": "2025-10-23T09:07:11+00:00",
   "actor": "Cursor{Implementer}",
   "authority": "BossCat OEM",
-  "verdict": "WARN",
+  "verdict": "READY",
   "gate": 8,
   "remediation": true,
   "evidence": [
     "DELT/ARTF/gate-verification-results-20251022-remediated.json",
     "docs/gate/2025-10/GATE_008_BLOCKED_STATUS.md",
-    "GATE_008_REMEDIATION_COMPLETE.md",
-    "docs/GATE_STATUS_DASHBOARD.md"
+    "docs/gate/misc/GATE_008_REMEDIATION_COMPLETE.md",
+    "docs/GATE_STATUS_DASHBOARD.md",
+    "docs/ecrr/ECRR_REPORTS/ECRR_GATE_WARN_TRACE_INGESTION_20251023.md"
   ],
   "checks": [
     {
@@ -55,11 +56,17 @@
     },
     {
       "name": "pipeline_verification",
-      "ok": false,
+      "ok": true,
       "details": {
-        "canaryTest": "PENDING",
-        "verifyPipeline": "WARN",
-        "logsInClickHouse": "Pending trace confirmation"
+        "canaryTest": "PASS",
+        "verifyPipeline": "PASS",
+        "traceID": "79108560b40440d3b40d5f4d51e408d5",
+        "serviceName": "resonai-backend",
+        "spanName": "canary-test-span",
+        "timestamp": "2025-10-23 09:07:11.717800700",
+        "clickhouseTable": "signoz_traces.distributed_signoz_index_v3",
+        "spanCount": 30,
+        "note": "Spans found in v3 schema (use_new_schema: true)"
       }
     },
     {
@@ -74,13 +81,14 @@
   "reasons": [
     "Gate #008 remediation complete - Windows Collector enabled and running",
     "All metrics corrected to match reality (7 containers, 51 HTML files)",
-    "Trace confirmation pending for canary span"
+    "Pipeline verification successful - 30 canary traces confirmed in ClickHouse v3",
+    "Trace ingestion confirmed: traceID 79108560b40440d3b40d5f4d51e408d5 at 2025-10-23 09:07:11"
   ],
-  "branch": "main",
-  "commit": "fa4ef0f4fd76",
+  "branch": "pr-4-verify-header",
+  "commit": "fad9fe097",
   "previousCommit": "09109664e (approval)",
   "originalCommit": "327dd382f (initial, retracted)",
-  "gatePhrase": "@cat ready-for-gate (PENDING)",
+  "gatePhrase": "@cat ready-for-gate",
   "automated": false,
   "manual": true
 }
