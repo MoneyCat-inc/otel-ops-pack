@@ -3,7 +3,7 @@
   "endedAt": "2025-10-22T20:11:34+00:00",
   "actor": "Cursor{Implementer}",
   "authority": "BossCat OEM",
-  "verdict": "READY",
+  "verdict": "WARN",
   "gate": 8,
   "remediation": true,
   "evidence": [
@@ -55,11 +55,11 @@
     },
     {
       "name": "pipeline_verification",
-      "ok": true,
+      "ok": false,
       "details": {
-        "canaryTest": "PASS",
-        "verifyPipeline": "PASS",
-        "logsInClickHouse": "Fresh logs 2025-10-22 10:10:20"
+        "canaryTest": "PENDING",
+        "verifyPipeline": "WARN",
+        "logsInClickHouse": "Pending trace confirmation"
       }
     },
     {
@@ -74,14 +74,13 @@
   "reasons": [
     "Gate #008 remediation complete - Windows Collector enabled and running",
     "All metrics corrected to match reality (7 containers, 51 HTML files)",
-    "Pipeline verification successful with fresh canary logs",
-    "Documentation updated across all gate artifacts"
+    "Trace confirmation pending for canary span"
   ],
   "branch": "main",
-  "commit": "72374038",
+  "commit": "fa4ef0f4fd76",
   "previousCommit": "09109664e (approval)",
   "originalCommit": "327dd382f (initial, retracted)",
-  "gatePhrase": "@cat ready-for-gate (APPROVED)",
+  "gatePhrase": "@cat ready-for-gate (PENDING)",
   "automated": false,
   "manual": true
 }
