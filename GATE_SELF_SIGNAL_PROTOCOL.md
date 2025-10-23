@@ -49,11 +49,9 @@ Once self-signal returns exit code **0** (traces detected):
 }
 
 # Re-query counts (should increase)
-$query = "SELECT count() FROM signoz_traces.distributed_signoz_spans
-          WHERE serviceName='canary-test'
-            AND toDateTime(startTime/1e9) >= now() - INTERVAL 5 MINUTE;"
-$url = "http://localhost:8123/?query=$([uri]::EscapeDataString($query))"
-(Invoke-WebRequest -UseBasicParsing $url).Content
+# Use docker exec method (actual live implementation)
+$query = "SELECT count() FROM signoz_traces.span_attributes WHERE tagKey='service.name' AND stringTagValue='canary-test' AND timestamp >= now() - INTERVAL 5 MINUTE;"
+docker exec signoz-clickhouse clickhouse-client --query $query
 ```
 
 **Expected:** Counts increase with each burst (traces persisting consistently)
@@ -69,11 +67,12 @@ Create `gate-advancement-evidence-YYYYMMDD.md`:
 - **Service:** canary-test
 - **Traces found:** [count from query]
 - **Query timestamp:** [UTC timestamp]
-- **ClickHouse query:**
+- **ClickHouse query (docker exec method):**
   ```sql
-  SELECT count() FROM signoz_traces.distributed_signoz_spans
-  WHERE serviceName='canary-test'
-    AND toDateTime(startTime/1e9) >= now() - INTERVAL 5 MINUTE;
+  SELECT count() FROM signoz_traces.span_attributes
+  WHERE tagKey='service.name'
+    AND stringTagValue='canary-test'
+    AND timestamp >= now() - INTERVAL 5 MINUTE;
   ```
 
 ## Config State
