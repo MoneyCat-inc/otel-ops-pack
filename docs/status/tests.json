@@ -1,17 +1,17 @@
 {
   "version": "1.3",
-  "endedAt": "2025-10-23T09:07:11+00:00",
+  "endedAt": "2025-10-23T12:46:00+00:00",
   "actor": "Cursor{Implementer}",
   "authority": "BossCat OEM",
-  "verdict": "READY",
+  "verdict": "GREEN",
   "gate": 8,
   "remediation": true,
   "evidence": [
-    "DELT/ARTF/gate-verification-results-20251022-remediated.json",
+    "docs/ecrr/ECRR_REPORTS/ECRR_GATE_008_GREEN_TRACE_RESOLUTION_20251023.md",
+    "docs/GATE_STATUS_DASHBOARD.md",
     "docs/gate/2025-10/GATE_008_BLOCKED_STATUS.md",
     "docs/gate/misc/GATE_008_REMEDIATION_COMPLETE.md",
-    "docs/GATE_STATUS_DASHBOARD.md",
-    "docs/ecrr/ECRR_REPORTS/ECRR_GATE_WARN_TRACE_INGESTION_20251023.md"
+    "DELT/ARTF/gate-verification-results-20251022-remediated.json"
   ],
   "checks": [
     {
@@ -58,35 +58,55 @@
       "name": "pipeline_verification",
       "ok": true,
       "details": {
-        "canaryTest": "PASS",
-        "verifyPipeline": "PASS",
-        "traceID": "79108560b40440d3b40d5f4d51e408d5",
+        "canaryTest": "PASS - 2 traces verified",
+        "verifyPipeline": "PASS - End-to-end confirmed",
+        "canary": [
+          {
+            "traceID": "60ac40b955744fe481355687acb7541b",
+            "type": "single-span",
+            "spanName": "canary-test-span",
+            "serviceName": "resonai-backend",
+            "timestamp": "2025-10-23 12:27:00 UTC",
+            "status": "CONFIRMED in ClickHouse v3"
+          },
+          {
+            "traceID": "5a71f5191e0740708775b4522a027a3f",
+            "type": "bulk-test",
+            "spanCount": 1100,
+            "spanRange": "bulk-test-span-0 to bulk-test-span-1099",
         "serviceName": "resonai-backend",
-        "spanName": "canary-test-span",
-        "timestamp": "2025-10-23 09:07:11.717800700",
+            "timestamp": "2025-10-23 12:43:43 UTC",
+            "status": "ALL 1,100 SPANS CONFIRMED in ClickHouse v3"
+          }
+        ],
         "clickhouseTable": "signoz_traces.distributed_signoz_index_v3",
-        "spanCount": 30,
-        "note": "Spans found in v3 schema (use_new_schema: true)"
+        "totalTraceCount": 1390,
+        "schema": "v3 (use_new_schema: true)",
+        "note": "Root cause resolved: resource/defaults processor overwrites service.name to resonai-backend. All traces successfully exported to ClickHouse."
       }
     },
     {
       "name": "working_tree",
       "ok": true,
       "details": {
-        "status": "Clean (post-approval)",
-        "action": "All artifacts committed and pushed"
+        "status": "Clean (post-GREEN resolution)",
+        "action": "All artifacts committed and pushed to origin/main"
       }
     }
   ],
   "reasons": [
-    "Gate #008 remediation complete - Windows Collector enabled and running",
-    "All metrics corrected to match reality (7 containers, 51 HTML files)",
-    "Pipeline verification successful - 30 canary traces confirmed in ClickHouse v3",
-    "Trace ingestion confirmed: traceID 79108560b40440d3b40d5f4d51e408d5 at 2025-10-23 09:07:11"
+    "Gate #008 upgraded to GREEN - Trace ingestion pipeline fully operational",
+    "Windows Collector running and exporting metrics (port 8888 SERVING)",
+    "All infrastructure corrected (7 containers, 51 HTML files, all services healthy)",
+    "End-to-end trace ingestion confirmed with 2 canary traces (1 + 1,100 spans)",
+    "1,390 total traces in ClickHouse v3 schema - production data flowing",
+    "Root cause analysis complete: service.name overwrite is by design (resource/defaults:action:upsert)",
+    "Debug logging enabled in SigNoz collector for troubleshooting",
+    "JSON Validation Gate live (PR #197 merged) - protecting future auto-updates"
   ],
-  "branch": "pr-4-verify-header",
-  "commit": "fad9fe097",
-  "previousCommit": "09109664e (approval)",
+  "branch": "main",
+  "commit": "740381fae",
+  "previousCommit": "fad9fe097",
   "originalCommit": "327dd382f (initial, retracted)",
   "gatePhrase": "@cat ready-for-gate",
   "automated": false,
