@@ -338,8 +338,19 @@ pwsh -File .\send-canary-trace-direct.ps1
 ```
 
 ### V3 Schema Query Examples
+
+**Canonical V3 Query (SSOT for Gate #009):**
 ```sql
--- Recent canary trace count (5 minutes)
+-- Recent canary trace count (5 minutes) - AUTHORITATIVE
+SELECT count()
+FROM signoz_traces.signoz_index_v3
+WHERE `resource_string_service$$name` = 'canary-test'
+  AND timestamp >= now() - INTERVAL 5 MINUTE;
+```
+
+**Additional Queries:**
+```sql
+-- Recent canary trace count (alternative format)
 SELECT count()
 FROM signoz_traces.signoz_index_v3
 WHERE resource_string_service$$name = 'canary-test'
@@ -377,6 +388,14 @@ docker exec signoz-clickhouse clickhouse-client --query `
 - [ ] No insert errors in logs
 - [ ] Ports 14320/14321 continuously available
 
+**SLO Targets:**
+
+| Metric                    | Target            | Alert Threshold       |
+|---------------------------|-------------------|-----------------------|
+| Ingest p95 (emit→v3)      | ≤ 5s              | > 15s                 |
+| Canary persistence        | ≥ 1 span / 2 min  | 0 spans in 6 min      |
+| Writer uptime (7 days)    | ≥ 99.9%           | >3 restarts/10 min    |
+
 ### V3 Schema Validation (NEW)
 - [ ] All traces persisting to `signoz_index_v3`
 - [ ] Service names preserved (no overwrites)
@@ -389,6 +408,37 @@ docker exec signoz-clickhouse clickhouse-client --query `
 - [ ] Gate checks returning accurate results
 - [ ] Complete automation wrapper functional
 - [ ] Documentation aligned with implementation
+
+---
+
+## 🧯 **Edge Writer Rollback Procedure (ECRR-Safe)**
+
+**If edge writer regresses or shows instability:**
+
+1. **Stop edge writer service:**
+   ```powershell
+   docker stop signoz-writer
+   ```
+
+2. **Revert canary routing:**
+   ```powershell
+   # Edit send-canary-trace-direct.ps1
+   # Change: http://localhost:14321/v1/traces
+   # Back to: http://localhost:14318/v1/traces
+   ```
+
+3. **Verify old path operational:**
+   ```powershell
+   pwsh -File .\send-canary-trace-direct.ps1
+   # Check logs arrive via main collector
+   ```
+
+4. **Attach ECRR incident note:**
+   - Evidence: Error logs, trace counts, timeline
+   - Impact: Gate returns to WARN
+   - Next steps: Investigation required
+
+**Blast Radius:** Controlled - only traces from canary affected, no production impact.
 
 ---
 
