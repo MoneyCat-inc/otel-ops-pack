@@ -35,13 +35,11 @@ jobs:
 
       - name: Install dependencies
         run: |
-          set -euo pipefail
           npm ci --ignore-scripts
           npx ajv --version
 
       - name: Validate docs/status/tests.json
         run: |
-          set -euo pipefail
           echo "Validating docs/status/tests.json..."
           npx ajv validate \
             -s schema/status-tests.schema.json \
@@ -53,7 +51,6 @@ jobs:
 
       - name: Validate artifacts/gate-verification-results.json (optional)
         run: |
-          set -euo pipefail
           if [ -f artifacts/gate-verification-results.json ]; then
             echo "Validating artifacts/gate-verification-results.json..."
             npx ajv validate \
