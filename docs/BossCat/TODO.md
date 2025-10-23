@@ -50,3 +50,17 @@ Purpose
 - Owner: BossCat OEM
 - Evidence: Get-Process -Id 3740,32900 confirms active workers
 - Status: **DONE** ✅
+
+3) 🚀 Implement Edge Writer - GATE FLIPPED TO GREEN (P0) - **COMPLETE 2025-10-23**
+- Path: signoz-writer.yaml + docker-compose-signoz.yml
+- Goal: Bypass flaky SigNoz transformer hop with direct ClickHouse v3 writer
+- Actions completed:
+  - ✅ Created signoz-writer.yaml (clickhousetraces exporter)
+  - ✅ Added signoz-writer service to docker-compose-signoz.yml
+  - ✅ Updated send-canary-trace-direct.ps1 to localhost:14321
+  - ✅ Launched edge writer service (ports 14320/14321)
+  - ✅ Verified 66 traces in signoz_index_v3 (serviceName='canary-test')
+  - ✅ Executed bosscat-oem-v3-complete.ps1 (gate advancement)
+- Owner: BossCat OEM
+- Evidence: docker ps shows signoz-writer running, ClickHouse query returns 66 spans
+- Status: **DONE** ✅
