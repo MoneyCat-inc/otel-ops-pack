@@ -86,7 +86,7 @@ processors:
 
 exporters:
   otlp:
-    endpoint: localhost:14317
+    endpoint: host.docker.internal:4318
     tls:
       insecure: true
     retry_on_failure:
