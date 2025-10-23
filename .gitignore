@@ -38,3 +38,10 @@ docs/BossCat/visuals/vendor/
 logs/**/*.last.log
 *.docx
 *.pdf
+
+# SigNoz / local secrets
+.env
+.env.local
+.env.*.local
+signoz.env
+secrets/
