@@ -38,15 +38,39 @@ while ($true) {
         Log-Status "✅✅✅ PLATFORM FIX DETECTED ✅✅✅" -Color Green
         Log-Status "Exit Code 0: Traces are persisting to ClickHouse" -Color Green
         Log-Status "" -Color Green
-        Log-Status "🎯 NEXT STEPS:" -Color Green
-        Log-Status "1. Execute gate advancement runbook" -Color Cyan
-        Log-Status "2. Verify stability (5 canary bursts)" -Color Cyan
-        Log-Status "3. Capture evidence" -Color Cyan
-        Log-Status "4. Regenerate ECRR artifacts" -Color Cyan
-        Log-Status "5. Post @cat ready-for-gate" -Color Cyan
+        Log-Status "🚀 EXECUTING COMPLETE AUTOMATION..." -Color Cyan
+        Log-Status "=====================================" -Color Cyan
         Log-Status "" -Color Green
-        Log-Status "See: GATE_SELF_SIGNAL_PROTOCOL.md" -Color Cyan
-        Log-Status "" -Color Green
+        
+        # Execute complete gate advancement automation
+        try {
+            Log-Status "🔔 Running V3 complete automation..." -Color Yellow
+            & pwsh -File ".\gate-v3-complete.ps1"
+            $completeExitCode = $LASTEXITCODE
+            
+            if ($completeExitCode -eq 0) {
+                Log-Status "" -Color Green
+                Log-Status "🎯 GATE ADVANCEMENT COMPLETE!" -Color Green
+                Log-Status "==============================" -Color Green
+                Log-Status "✅ Evidence packaged" -Color Green
+                Log-Status "✅ ECRR artifacts generated" -Color Green
+                Log-Status "✅ BossCat log updated" -Color Green
+                Log-Status "✅ Ready for @cat ready-for-gate" -Color Green
+                Log-Status "" -Color Green
+                Log-Status "🚦 VERDICT: 🟢 GREEN" -Color Green
+                Log-Status "" -Color Green
+            } else {
+                Log-Status "" -Color Yellow
+                Log-Status "⚠️ Gate advancement failed (exit $completeExitCode)" -Color Yellow
+                Log-Status "Manual intervention required" -Color Yellow
+                Log-Status "" -Color Yellow
+            }
+        } catch {
+            Log-Status "" -Color Red
+            Log-Status "❌ Automation execution failed: $_" -Color Red
+            Log-Status "Manual gate advancement required" -Color Red
+            Log-Status "" -Color Red
+        }
         
         # Break the loop
         break
