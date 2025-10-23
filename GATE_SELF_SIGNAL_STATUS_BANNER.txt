@@ -1,0 +1,152 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║                                                                            ║
+║              🐾 GATE SELF-SIGNAL MONITORING SYSTEM 🐾                      ║
+║                                                                            ║
+╠════════════════════════════════════════════════════════════════════════════╣
+║                                                                            ║
+║  STATUS: ✅ FULLY OPERATIONAL & MONITORING                               ║
+║  Date: 2025-10-23 16:30 UTC                                              ║
+║  Authority: Cursor{Implementer} under ECRR + BossCat discipline          ║
+║                                                                            ║
+╠════════════════════════════════════════════════════════════════════════════╣
+║ SYSTEM COMPONENTS                                                         ║
+╠════════════════════════════════════════════════════════════════════════════╣
+║                                                                            ║
+║  ✅ Canary Sender              send-canary-trace-direct.ps1               ║
+║     → Sends OTLP traces with service.name=canary-test                    ║
+║                                                                            ║
+║  ✅ Self-Signal Check          gate-self-signal-check.ps1                 ║
+║     → Queries ClickHouse via docker exec                                 ║
+║     → Returns: 0=GREEN, 1=HOLD, 2=ERROR                                  ║
+║                                                                            ║
+║  🟢 RUNNING: Monitoring Loop   gate-self-signal-monitor.ps1               ║
+║     → Polling every 30 minutes (background)                              ║
+║     → Breaks on exit 0 with alert                                        ║
+║                                                                            ║
+║  ✅ Protocol Runbook           GATE_SELF_SIGNAL_PROTOCOL.md               ║
+║     → 10-minute gate advancement steps                                   ║
+║     → Read when alert fires!                                             ║
+║                                                                            ║
+║  ✅ Infrastructure Fix         docker exec ClickHouse queries             ║
+║     → Fixed: HTTP port mapping issue                                     ║
+║     → Working: span_attributes table queries                             ║
+║                                                                            ║
+╠════════════════════════════════════════════════════════════════════════════╣
+║ CURRENT OPERATIONAL STATE                                                 ║
+╠════════════════════════════════════════════════════════════════════════════╣
+║                                                                            ║
+║  🟠 Gate Verdict:     WARN (holding for platform fix)                    ║
+║  🟢 Monitoring:       ACTIVE (background loop running)                   ║
+║  ✅ Self-Signal:      OPERATIONAL (exit 1 = HOLD, no traces yet)        ║
+║  📋 Protocol:         READY (gate advancement documented)                ║
+║                                                                            ║
+║  Polling Interval:    30 minutes                                         ║
+║  Last Check:          2025-10-23 16:25 (exit 1 - HOLD)                  ║
+║  Next Check:          ~2025-10-23 16:55                                  ║
+║                                                                            ║
+║  Canary Sender:       ✅ Working (HTTP 200)                             ║
+║  ClickHouse Access:   ✅ Working (docker exec)                          ║
+║  Query Schema:        ✅ Validated (span_attributes)                    ║
+║  Traces Present:      ❌ Not yet (awaiting platform fix)                ║
+║                                                                            ║
+╠════════════════════════════════════════════════════════════════════════════╣
+║ TEST RESULTS (2025-10-23 16:27:36)                                        ║
+╠════════════════════════════════════════════════════════════════════════════╣
+║                                                                            ║
+║  ✅ Canary sent to SigNoz (HTTP 200)                                     ║
+║  ✅ ClickHouse accessed via docker exec (working)                        ║
+║  ✅ Query schema correct (span_attributes table)                         ║
+║  ✅ Exit code 1 returned (HOLD - correct state)                          ║
+║  ❌ Traces not found (platform gap confirmed)                            ║
+║                                                                            ║
+║  Conclusion: All systems operational, awaiting SigNoz platform fix       ║
+║                                                                            ║
+╠════════════════════════════════════════════════════════════════════════════╣
+║ SUCCESS PATH (When Platform Fix Lands)                                    ║
+╠════════════════════════════════════════════════════════════════════════════╣
+║                                                                            ║
+║  Phase 1: Detection (Automatic)                                          ║
+║  ─────────────────────────────────────────────────────────────────────   ║
+║  ✅✅✅ PLATFORM FIX DETECTED ✅✅✅                                       ║
+║  Exit Code 0: Traces are persisting to ClickHouse                        ║
+║                                                                            ║
+║  Phase 2: Validation (Manual - 10 min)                                   ║
+║  ─────────────────────────────────────────────────────────────────────   ║
+║  1. Verify stability (5 canary bursts)                                   ║
+║  2. Capture evidence (query output + config)                             ║
+║  3. Regenerate ECRR artifacts                                            ║
+║  4. Post @cat ready-for-gate with bundle                                 ║
+║                                                                            ║
+║  Phase 3: Gate Advancement (Automatic)                                   ║
+║  ─────────────────────────────────────────────────────────────────────   ║
+║  🟠 WARN → 🟢 GREEN (All 5 criteria met)                                 ║
+║  Ready to promote                                                        ║
+║                                                                            ║
+╠════════════════════════════════════════════════════════════════════════════╣
+║ QUICK COMMANDS                                                            ║
+╠════════════════════════════════════════════════════════════════════════════╣
+║                                                                            ║
+║  Test Self-Signal:                                                       ║
+║    pwsh -File gate-self-signal-check.ps1                                 ║
+║                                                                            ║
+║  Start Monitoring Loop:                                                  ║
+║    pwsh -File gate-self-signal-monitor.ps1                               ║
+║                                                                            ║
+║  Query ClickHouse Directly:                                              ║
+║    docker exec signoz-clickhouse clickhouse-client --query               ║
+║      "SELECT count() FROM signoz_traces.span_attributes                  ║
+║       WHERE tagKey='service.name'                                        ║
+║       AND stringTagValue='canary-test'                                   ║
+║       AND timestamp >= now() - INTERVAL 10 MINUTE;"                      ║
+║                                                                            ║
+╠════════════════════════════════════════════════════════════════════════════╣
+║ DOCUMENTATION LINKS                                                       ║
+╠════════════════════════════════════════════════════════════════════════════╣
+║                                                                            ║
+║  📖 GATE_SELF_SIGNAL_README.md                                           ║
+║     → Quick reference guide (start here)                                 ║
+║                                                                            ║
+║  ⭐ GATE_SELF_SIGNAL_PROTOCOL.md                                         ║
+║     → Gate advancement runbook (read when alert fires!)                  ║
+║                                                                            ║
+║  📊 GATE_SELF_SIGNAL_FINAL_STATUS.md                                     ║
+║     → Complete operational summary                                       ║
+║                                                                            ║
+║  🔧 GATE_SELF_SIGNAL_INFRASTRUCTURE_FIX.md                               ║
+║     → Docker exec solution details                                       ║
+║                                                                            ║
+╠════════════════════════════════════════════════════════════════════════════╣
+║ COMMITS (Session)                                                         ║
+╠════════════════════════════════════════════════════════════════════════════╣
+║                                                                            ║
+║  ff76b5bc1 docs(gate): quick reference guide                             ║
+║  1e7958003 docs(gate): final operational status                          ║
+║  fdeae88de docs(gate): infrastructure fix applied                        ║
+║  84a1a4d69 ops(gate): fix self-signal to use docker exec                 ║
+║  e86396a71 docs(gate): operational summary                               ║
+║  387a4856a docs(gate): self-signal protocol                              ║
+║  0dfee5b4d ops(gate): add autonomous self-signal detection               ║
+║  863756b60 ops(gate): continuous background monitoring loop              ║
+║                                                                            ║
+╠════════════════════════════════════════════════════════════════════════════╣
+║ SYSTEM READY FOR GATE ADVANCEMENT                                         ║
+╠════════════════════════════════════════════════════════════════════════════╣
+║                                                                            ║
+║  🐾 Monitoring loop active. Standing by.                                 ║
+║  When SigNoz platform team fixes the exporter→ClickHouse gap:           ║
+║                                                                            ║
+║    1. Traces will appear in ClickHouse                                   ║
+║    2. Next self-signal poll will detect (exit 0)                         ║
+║    3. Monitoring loop will break with alert                              ║
+║    4. Execute 10-minute gate advancement runbook                         ║
+║    5. Gate verdict flips: 🟠 WARN → 🟢 GREEN                            ║
+║                                                                            ║
+║  System maintains ECRR compliance:                                       ║
+║  ✅ Evidence-first (objective trace detection)                           ║
+║  ✅ Autonomous (no human blocker required)                               ║
+║  ✅ Fast feedback (30-min polling, instant alert)                        ║
+║  ✅ Safe promotion (5-point criteria, all must pass)                     ║
+║                                                                            ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+🐾 When traces land → Gate advances → Ready certified → 🟢 GREEN
