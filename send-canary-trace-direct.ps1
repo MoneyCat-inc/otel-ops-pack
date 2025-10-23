@@ -1,7 +1,7 @@
 # Send OTLP traces directly to SigNoz (Path A smoke test)
 # Bypasses Windows otelcol; proves SigNoz ClickHouse ingestion works
 
-$endpoint = "http://localhost:5318/v1/traces"
+$endpoint = "http://localhost:14321/v1/traces"  # Edge writer HTTP endpoint
 $traceId = [guid]::NewGuid().ToString("N")
 $spanIds = @(
     [guid]::NewGuid().ToString("N").Substring(0, 16),
