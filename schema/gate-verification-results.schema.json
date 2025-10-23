@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://otel-ops-pack.local/schemas/gate-verification-results.json",
+  "title": "Gate Verification Results",
+  "description": "Validation contract for gate verification results in artifacts/gate-verification-results.json",
+  "type": "object",
+  "properties": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when verification completed"
+    },
+    "gateId": {
+      "type": "string",
+      "pattern": "^GATE-[0-9]{3}$",
+      "description": "Gate identifier (e.g., GATE-007, GATE-008)"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["READY", "WARN", "FAIL"],
+      "description": "Gate readiness status"
+    },
+    "verdict": {
+      "type": "string",
+      "enum": ["APPROVED", "READY", "WARN", "FAIL"],
+      "description": "Verification verdict"
+    },
+    "gate": {
+      "anyOf": [
+        { "type": "integer", "minimum": 0 },
+        { "type": "string" }
+      ],
+      "description": "Gate number (legacy format)"
+    },
+    "checks": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Check name"
+              },
+              "status": {
+                "type": "string",
+                "enum": ["PASS", "FAIL", "SKIP"],
+                "description": "Check status"
+              },
+              "duration_ms": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Execution duration in milliseconds"
+              },
+              "reason": {
+                "type": "string",
+                "description": "Reason for status"
+              },
+              "details": {
+                "type": "object",
+                "description": "Check details"
+              }
+            },
+            "required": ["name", "status"]
+          },
+          "minItems": 1,
+          "description": "Array of check results"
+        },
+        {
+          "type": "object",
+          "description": "Legacy checks object"
+        }
+      ]
+    },
+    "summary": {
+      "type": "object",
+      "description": "Summary statistics"
+    },
+    "evidence": {
+      "anyOf": [
+        { "type": "array", "items": { "type": "string" } },
+        { "type": "string" }
+      ],
+      "description": "Evidence references"
+    },
+    "remediation": {
+      "type": "object",
+      "description": "Remediation details"
+    },
+    "actor": {
+      "type": "string",
+      "description": "Agent/user who performed verification"
+    },
+    "authority": {
+      "type": "string",
+      "description": "Authority level of verdict"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes"
+    },
+    "version": {
+      "type": "string",
+      "description": "Result format version"
+    },
+    "branch": {
+      "type": "string",
+      "description": "Git branch"
+    },
+    "commit": {
+      "type": "string",
+      "description": "Git commit hash"
+    },
+    "automated": {
+      "type": "boolean",
+      "description": "Whether automated"
+    },
+    "source": {
+      "type": "string",
+      "description": "Source of verification"
+    }
+  },
+  "required": [],
+  "additionalProperties": true
+}

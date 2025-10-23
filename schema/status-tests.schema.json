@@ -1,0 +1,134 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://otel-ops-pack.local/schemas/status-tests.json",
+  "title": "Status Tests Results",
+  "description": "Validation contract for pipeline test results in docs/status/tests.json",
+  "type": "object",
+  "properties": {
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+$",
+      "description": "Schema version (semver)"
+    },
+    "endedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when test completed"
+    },
+    "actor": {
+      "type": "string",
+      "description": "Agent/user who executed the test"
+    },
+    "authority": {
+      "type": "string",
+      "enum": ["BossCat OEM", "Agent", "System"],
+      "description": "Authority level of verdict"
+    },
+    "verdict": {
+      "type": "string",
+      "enum": ["READY", "WARN", "FAIL"],
+      "description": "Gate readiness verdict"
+    },
+    "gate": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Gate number (e.g., 7, 8)"
+    },
+    "remediation": {
+      "type": "boolean",
+      "description": "Whether remediation was applied"
+    },
+    "evidence": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "References to supporting evidence files"
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Check identifier (e.g., 'windows_collector_service')"
+          },
+          "ok": {
+            "type": "boolean",
+            "description": "Check passed"
+          },
+          "remediated": {
+            "type": "boolean",
+            "description": "Whether this check was remediated"
+          },
+          "corrected": {
+            "type": "boolean",
+            "description": "Whether this check was corrected"
+          },
+          "previous": {
+            "type": "string",
+            "description": "Previous state before correction"
+          },
+          "current": {
+            "anyOf": [
+              { "type": "string" },
+              { "type": "integer" },
+              { "type": "number" }
+            ],
+            "description": "Current state after correction"
+          },
+          "details": {
+            "type": "object",
+            "description": "Detailed check information"
+          }
+        },
+        "required": ["name", "ok"]
+      },
+      "minItems": 1,
+      "description": "List of health checks performed"
+    },
+    "reasons": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Reasons for the verdict"
+    },
+    "branch": {
+      "type": "string",
+      "description": "Git branch where test ran"
+    },
+    "commit": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{7,40}$",
+      "description": "Git commit hash (short or full form)"
+    },
+    "previousCommit": {
+      "type": "string",
+      "description": "Previous commit reference"
+    },
+    "originalCommit": {
+      "type": "string",
+      "description": "Original commit reference"
+    },
+    "gatePhrase": {
+      "type": "string",
+      "description": "Gate trigger phrase used"
+    },
+    "automated": {
+      "type": "boolean",
+      "description": "Whether test was automated"
+    },
+    "manual": {
+      "type": "boolean",
+      "description": "Whether test was manual"
+    }
+  },
+  "required": [
+    "version",
+    "endedAt",
+    "actor",
+    "authority",
+    "verdict",
+    "gate",
+    "checks"
+  ],
+  "additionalProperties": true
+}
