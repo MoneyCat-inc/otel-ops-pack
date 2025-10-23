@@ -1,6 +1,6 @@
 {
   "source": "scripts/regenerate-workflows-registry.ps1",
-  "total": 78,
+  "total": 79,
   "items": [
     {
       "name": "adot-config-gate",
@@ -666,6 +666,23 @@
       }
     },
     {
+      "name": "json-validation-gate",
+      "modified": "2025-10-23T11:38:27.0849684Z",
+      "path": ".github/workflows/json-validation-gate.yml",
+      "size": 3578,
+      "triggers": {
+        "issues": false,
+        "other": [],
+        "pull_request": true,
+        "push": true,
+        "release": false,
+        "schedule": false,
+        "workflow_call": false,
+        "workflow_dispatch": true,
+        "workflow_run": false
+      }
+    },
+    {
       "name": "link-check",
       "modified": "2025-10-19T03:34:27.2798589Z",
       "path": ".github/workflows/link-check.yml",
@@ -1228,9 +1245,9 @@
     },
     {
       "name": "status-auto-update",
-      "modified": "2025-10-22T20:31:01.7158574Z",
+      "modified": "2025-10-23T11:48:08.5105579Z",
       "path": ".github/workflows/status-auto-update.yml",
-      "size": 10904,
+      "size": 11819,
       "triggers": {
         "issues": false,
         "other": [],
