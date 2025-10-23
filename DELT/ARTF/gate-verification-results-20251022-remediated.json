@@ -12,7 +12,7 @@
     "approval_date": "2025-10-20T00:00:00Z",
     "authority": "BossCat OEM"
   },
-  "verdict": "APPROVED",
+  "verdict": "WARN",
   "remediation_summary": {
     "blocker_resolved": "Windows Collector service enabled and started",
     "corrections_applied": [
@@ -24,7 +24,7 @@
   },
   "gate_matrix": {
     "GATE_CORE": {
-      "status": "PASS",
+      "status": "WARN",
       "components": {
         "windows_collector_service": {
           "status": "PASS",
@@ -58,10 +58,10 @@
           "threshold": "ok status"
         },
         "synthetic_span": {
-          "status": "PASS",
+          "status": "WARN",
           "test": "canary-test.ps1",
-          "result": "SUCCESS - OTLP trace and log sent to http://localhost:14318",
-          "threshold": "End-to-end SUCCESS"
+          "result": "PENDING - Awaiting trace in SigNoz (service.name=\"canary-test\")",
+          "threshold": "Trace must appear in last 1h window"
         },
         "docker_services": {
           "status": "PASS",
@@ -80,9 +80,9 @@
           "threshold": "All containers healthy"
         },
         "pipeline_processing": {
-          "status": "PASS",
+          "status": "WARN",
           "test": "verify-pipeline.ps1",
-          "result": "Fresh canary logs found in ClickHouse (2025-10-22 10:10:20)",
+          "result": "WARN - Canary span not yet confirmed in ClickHouse",
           "threshold": "Logs ingested and queryable"
         }
       }
@@ -256,14 +256,12 @@
     "blockers": 0
   },
   "blockers": [],
-  "risk_assessment": "LOW - Critical blocker resolved, all systems operational, corrections applied",
-  "recommendation": "APPROVED Gate #008 - Blocker remediated, documentation corrected, evidence accurate, pushed to origin/main",
+  "risk_assessment": "WARN - Awaiting canary trace confirmation before approval",
+  "recommendation": "PENDING - Hold gate signal until canary trace evidence is captured",
   "completed_actions": [
     "Documentation corrections completed",
-    "Updated docs/status/tests.json to reflect approval",
-    "All artifacts committed and pushed to origin/main",
-    "BossCat OEM approval received (2025-10-22T11:00:00Z)",
-    "Gate #008 approved and merged to main (commit 49e029648)"
+    "Updated docs/status/tests.json to reflect WARN posture",
+    "All remediation commits pushed to origin/main"
   ],
   "evidence_package": {
     "gate_verification_json": "DELT/ARTF/gate-verification-results-20251022-remediated.json",
@@ -281,10 +279,10 @@
     "fubumaki_review": "2025-10-22T09:00:00Z (Identified critical failures)",
     "remediation": "2025-10-22T09:15:00Z to 2025-10-22T10:15:00Z",
     "remediated_assessment": "2025-10-22T10:15:00Z",
-    "bosscat_approval": "2025-10-22T11:00:00Z",
-    "approver": "BossCat OEM (Reviewer B)",
+    "bosscat_approval": null,
+    "approver": null,
     "final_commit": "49e029648",
-    "attestation": "Gate #008 APPROVED. Blocker resolved (Windows Collector running). All metrics corrected (7 containers, 51 HTML). Documentation updated to reflect truth. Pipeline verified end-to-end. All commits pushed to origin/main."
+    "attestation": "Gate #008 pending: blocker resolved (Windows Collector running) and metrics corrected, but canary trace evidence still outstanding. Awaiting confirmation before signalling ready-for-gate."
   }
 }
 

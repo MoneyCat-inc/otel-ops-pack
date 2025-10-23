@@ -249,8 +249,21 @@
 /* ---------------------------
    CONFIG + FALLBACK SAMPLES
 ----------------------------*/
+const endpointInput = document.getElementById('endpoint');
+const storedEndpoint = localStorage.getItem('status:endpoint');
+if (endpointInput && !storedEndpoint && location.protocol !== 'file:') {
+  const currentValue = endpointInput.value.trim();
+  const isPlaceholder = currentValue === '' || /localhost:3003\/status\/?$/i.test(currentValue);
+  if (isPlaceholder) {
+    const prefix = location.pathname.replace(/\/docs\/status\.html$/i, '');
+    const derived = `${location.origin}${prefix}`;
+    if (derived && derived !== 'null') {
+      endpointInput.value = derived;
+    }
+  }
+}
 const state = {
-  endpoint: localStorage.getItem('status:endpoint') || document.getElementById('endpoint').value,
+  endpoint: storedEndpoint || (endpointInput ? endpointInput.value : ''),
   auto: false,
   timer: null,
   data: {
@@ -261,6 +274,9 @@ const state = {
     roadmap: null, tests: null, ssot: null
   }
 };
+if (endpointInput && endpointInput.value !== state.endpoint) {
+  endpointInput.value = state.endpoint;
+}
 const modeHint = document.getElementById('modeHint');
 if (modeHint) {
   if (location.protocol === 'file:') {

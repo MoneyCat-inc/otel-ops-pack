@@ -1,11 +1,11 @@
 # 🐾 BossCat Gate Status Dashboard
 
-**Last Updated:** 2025-10-22 11:00:00 +00:00  
+**Last Updated:** 2025-10-22 20:11:34 +00:00  
 **Gate:** #008  
-**Status:** 🎉 **APPROVED BY BOSSCAT OEM**
+**Status:** ⚠️ **WARN — Pending canary trace confirmation**
 
 **Previous Gate:** #007 APPROVED 2025-10-20 by BossCat OEM  
-**This Gate:** #008 APPROVED 2025-10-22 by BossCat OEM (Reviewer B)
+**This Gate:** #008 WARN 2025-10-22 — Awaiting BossCat OEM review
 
 ---
 
@@ -13,12 +13,12 @@
 
 ```
 ┌─────────────────────────────────────────────┐
-│  GATE #008 — APPROVED (GREEN)               │
+│  GATE #008 — WARN (PENDING)                 │
 │  ═════════════════════════════════════════  │
 │                                             │
-│  Verdict:     🎉 APPROVED                   │
-│  Authority:   BossCat OEM (Reviewer B)      │
-│  Approved:    2025-10-22 11:00:00 +00:00    │
+│  Verdict:     ⚠️ WARN                       │
+│  Authority:   BossCat OEM review pending    │
+│  Next Check:  Confirm canary trace in CH    │
 │  Branch:      main                          │
 │  Commits:     8 remediation commits         │
 │                                             │
@@ -26,7 +26,7 @@
 │  ✅ Windows Collector RUNNING               │
 │  ✅ Metrics port 8888 serving               │
 │  ✅ SigNoz health OK                        │
-│  ✅ Canary tests passing                    │
+│  ⚠️ Canary span pending confirmation        │
 │  ✅ Docker: 7/7 healthy                     │
 │  ✅ HTML: 51 files verified                 │
 │                                             │
@@ -34,8 +34,8 @@
 │  • Hub Production (hub.resonai.uk)          │
 │  • Bluesky v1 Campaign (complete)           │
 │                                             │
-│  BLOCKERS: ZERO                             │
-│  Evidence: Comprehensive & accurate         │
+│  STATUS: WARN — waiting for trace evidence  │
+│  Evidence: Updating to reflect WARN         │
 │                                             │
 └─────────────────────────────────────────────┘
 ```
@@ -44,17 +44,17 @@
 
 ## ✅ Gate Matrix Status
 
-### GATE-CORE ✅ PASS (REMEDIATED)
+### GATE-CORE ⚠️ WARN (Pending Trace)
 | Component | Status | Details |
 |-----------|--------|---------|
 | Windows Collector | ✅ PASS | RUNNING (remediated from STOPPED), metrics port 8888 serving |
 | OTLP gRPC (14317) | ✅ PASS | Port responding (< 200ms) |
 | OTLP HTTP (14318) | ✅ PASS | Port responding (< 200ms) |
 | SigNoz UI (8080) | ✅ PASS | Port accessible |
-| Synthetic Span | ✅ PASS | SUCCESS (fresh 2025-10-22 10:10:20) |
+| Synthetic Span | ⚠️ WARN | Pending trace confirmation (service.name="canary-test") |
 | SigNoz Health API | ✅ PASS | {"status":"ok"} |
 | Docker Services | ✅ PASS | 7/7 healthy (27+ hours uptime) - corrected from initial claim of 4 |
-| Pipeline Processing | ✅ PASS | Fresh canary logs in ClickHouse, end-to-end functional |
+| Pipeline Processing | ⚠️ WARN | Canary span not yet visible in ClickHouse logs |
 
 ### GATE-SITE ✅ PASS (CORRECTED)
 | Component | Status | Details |
@@ -65,13 +65,13 @@
 | Canonical Reference | ✅ PASS | docs/comfort-cat/ (5 docs) |
 | Asset Integrity | ✅ PASS | Registry + guards operational |
 
-### GOVERNANCE ✅ PASS (APPROVED)
+### GOVERNANCE ✅ PASS (Compliant)
 | Component | Status | Details |
 |-----------|--------|---------|
 | Budget Compliance | ✅ PASS | 100% compliance maintained |
 | Lane Discipline | ✅ PASS | Perfect execution |
 | ECRR Methodology | ✅ PASS | 104 gate-related reports |
-| Evidence Trails | ✅ PASS | DELT/ARTF/ comprehensive (approved JSON) |
+| Evidence Trails | ⚠️ WARN | DELT/ARTF/ bundle downgraded to WARN pending trace |
 | Working Tree | ✅ PASS | Clean (all commits pushed to origin/main) |
 
 ---
@@ -93,14 +93,14 @@
 
 ---
 
-## 🚦 Current Status (Gate #008) - READY (REMEDIATED)
+## 🚦 Current Status (Gate #008) - WARN (Trace Pending)
 
-### ✅ Green (All Systems Go - Remediated)
+### ⚠️ Pending Evidence (Trace Outstanding)
 - **✅ Windows Collector Service:** RUNNING (remediated from STOPPED)
   - Metrics port 8888: SERVING metrics
   - SigNoz scraping: Successful
   - Service startup: Automatic
-  - Canary checks: PASSING
+  - Canary checks: Pending trace confirmation
   
 - **✅ Docker Services:** All 7 containers healthy (27+ hours uptime)
   - signoz-otel-collector
@@ -134,7 +134,7 @@
 
 ### Repository Health
 ```
-Current Gate:              #008 (READY FOR APPROVAL)
+Current Gate:              #008 (WARN - Trace Pending)
 Previous Gate:             #007 (APPROVED 2025-10-20)
 Days Since Last Gate:      2 days
 Commits Since Gate #007:   40+ commits
@@ -153,8 +153,8 @@ Windows Collector:         RUNNING (remediated from STOPPED) ✅
 SigNoz Health API:         {"status":"ok"} ✅
 OTLP Endpoints:            3/3 operational (14317, 14318, 8080)
 Metrics Port 8888:         SERVING (remediated) ✅
-Synthetic Span:            SUCCESS (fresh 2025-10-22 10:10) ✅
-Pipeline Processing:       End-to-end functional ✅
+Synthetic Span:            Pending trace confirmation ⚠️
+Pipeline Processing:       WARN - Trace not yet visible ⚠️
 Working Tree:              Clean (pushed to origin/main)
 ```
 
@@ -178,7 +178,7 @@ Bluesky v1 Campaign:       ✅ COMPLETE
 Budget Compliance:         100% ✅
 Lane Discipline:           Perfect ✅
 ECRR Methodology:          100% ✅
-Evidence Trails:           Comprehensive ✅
+Evidence Trails:           Updating for WARN posture ⚠️
 Canonical Reference:       docs/comfort-cat/ (5 docs) ✅
 ```
 
@@ -265,9 +265,9 @@ Canonical Reference:       docs/comfort-cat/ (5 docs) ✅
 **Remediation:** 2025-10-22 09:15:00 to 10:15:00 +00:00  
 **Remediated Assessment:** 2025-10-22 10:15:00 +00:00
 
-**Verdict:** ✅ **GATE #008 APPROVED** (BossCat OEM)
+**Verdict:** ⚠️ **GATE #008 WARN** (Pending BossCat OEM review)
 
-**Status:** **APPROVED - Blocker resolved, metrics corrected, evidence accurate, pushed to origin/main**
+**Status:** **WARN - Blocker resolved but canary trace evidence outstanding**
 
 ---
 
@@ -331,13 +331,13 @@ Canonical Reference:       docs/comfort-cat/ (5 docs) ✅
 **Executor:** Cursor{Implementer}  
 **Delegated By:** **Fubumaki** (Repository Owner)  
 **Session:** Gate #008 Readiness Assessment  
-**Status:** ✅ **READY FOR APPROVAL** — Awaiting BossCat OEM review
+**Status:** ⚠️ **WARN (Trace Pending)** — Awaiting BossCat OEM review
 
 ---
 
-**Seal:** 🎉 **Gate #008 — APPROVED & COMPLETE**  
+**Seal:** ⚠️ **Gate #008 — WARN (Trace Pending)**  
 **Date:** 2025-10-22 11:00:00 +00:00  
-**Authority:** BossCat OEM (Reviewer B) — Approved by Fubumaki delegation
+**Authority:** BossCat OEM (Reviewer B) — Pending Fubumaki delegation review
 
-_Gate #008 APPROVED by BossCat OEM. Remediation complete. Windows Collector service RUNNING. All metrics corrected (7 containers, 51 HTML files). Pipeline verification successful with fresh canary logs. Documentation accurate across all artifacts. Zero blockers. All commits pushed to origin/main._ 🚀🐾
+_Gate #008 pending BossCat OEM approval. Windows Collector service RUNNING and metrics corrected, but canary trace evidence remains outstanding. Hold gate signal until the trace lands and artifacts are updated to READY._ ⚠️🐾
 
