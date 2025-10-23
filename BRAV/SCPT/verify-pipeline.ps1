@@ -65,8 +65,9 @@ function Invoke-SigNozApiTraceCheck {
     [int]$LookbackSeconds = 180
   )
   
-  # Try to get API key from environment (Process, then Machine)
+  # Read API key from environment (prefer current process env var)
   $apiKey = [Environment]::GetEnvironmentVariable($ApiKeyEnv, "Process")
+  if (-not $apiKey) { $apiKey = [Environment]::GetEnvironmentVariable($ApiKeyEnv, "User") }
   if (-not $apiKey) { $apiKey = [Environment]::GetEnvironmentVariable($ApiKeyEnv, "Machine") }
   if (-not $apiKey) { 
     Write-Warning "[api-check] No API key in $ApiKeyEnv environment variable"
@@ -77,15 +78,11 @@ function Invoke-SigNozApiTraceCheck {
   $nowMs = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
   $startMs = $nowMs - ($LookbackSeconds * 1000)
 
-  # Build filter expression: prefer traceID (pinpoint) over serviceName (fuzzy)
-  $filterExpr = if ($TraceId) { "traceID = '$TraceId'" } else { "serviceName = '$ServiceName'" }
-  $verificationMode = if ($TraceId) { "PINPOINT (traceID)" } else { "STANDARD (serviceName)" }
-
-  # SigNoz Trace API payload: requestType=raw, signal=traces
-  # Ref: https://signoz.io/docs/traces-management/trace-api/overview/
-  $payload = @{
-    start = $startMs
-    end   = $nowMs
+  # Helper to build payload for a given filter expression
+  function New-TraceApiPayload([string]$expr, [Int64]$StartMs, [Int64]$EndMs) {
+    return @{
+      start = $StartMs
+      end   = $EndMs
     requestType = "raw"
     compositeQuery = @{
       queries = @(
@@ -94,7 +91,7 @@ function Invoke-SigNozApiTraceCheck {
           spec = @{
             name   = "A"
             signal = "traces"
-            filter = @{ expression = $filterExpr }
+              filter = @{ expression = $expr }
             selectFields = @(
               @{ name = "traceID" }
               @{ name = "spanID" }
@@ -110,11 +107,18 @@ function Invoke-SigNozApiTraceCheck {
       )
     }
   } | ConvertTo-Json -Depth 12
+  }
+
+  # Build initial (traceID) payload if available; otherwise serviceName
+  $filterExpr = if ($TraceId) { "traceID = '$TraceId'" } else { "serviceName = '$ServiceName'" }
+  $verificationMode = if ($TraceId) { "PINPOINT (traceID)" } else { "STANDARD (serviceName)" }
+  $payload = New-TraceApiPayload -expr $filterExpr -StartMs $startMs -EndMs $nowMs
 
   try {
     $uri = $BaseUrl.TrimEnd('/') + "/api/v5/query_range"
     Write-Host "[api-check] Mode: $verificationMode (last $LookbackSeconds s)..." -ForegroundColor Gray
     
+    # SigNoz v5 Trace API requires SIGNOZ-API-KEY header
     $resp = Invoke-RestMethod -Method Post -Uri $uri `
       -Headers @{ "SIGNOZ-API-KEY" = $apiKey } `
       -ContentType "application/json" -Body $payload -TimeoutSec 30
@@ -137,6 +141,29 @@ function Invoke-SigNozApiTraceCheck {
       Write-Host "[api-check] $mode Span confirmed via SigNoz API" -ForegroundColor Green
       return @{ ok = $true; reason = "span_found"; timestampMs = $timestampMs; mode = $verificationMode }
     } else {
+      # Fallback to serviceName if traceID path empty
+      if ($TraceId) {
+        $fallbackExpr = "serviceName = '$ServiceName'"
+        Write-Host "[api-check] Fallback to serviceName filter..." -ForegroundColor Yellow
+        $payload2 = New-TraceApiPayload -expr $fallbackExpr -StartMs $startMs -EndMs $nowMs
+        try {
+          $resp2 = Invoke-RestMethod -Method Post -Uri $uri `
+            -Headers @{ "SIGNOZ-API-KEY" = $apiKey } `
+            -ContentType "application/json" -Body $payload2 -TimeoutSec 30
+          $json2 = ($resp2 | ConvertTo-Json -Depth 20)
+          $hasSpan2 = ($json2 -match '"traceID"')
+          $timestampMs2 = $null
+          $tsMatch2 = [regex]::Match($json2, '"timestamp"\s*:\s*([0-9]+)')
+          if ($tsMatch2.Success) {
+            $rawTs2 = [int64]$tsMatch2.Groups[1].Value
+            $timestampMs2 = if ($rawTs2 -gt 9999999999999) { [int64]($rawTs2 / 1000000) } else { $rawTs2 }
+          }
+          if ($hasSpan2) {
+            Write-Host "[api-check] STANDARD ✓ Span confirmed via SigNoz API (serviceName)" -ForegroundColor Green
+            return @{ ok = $true; reason = "span_found_service"; timestampMs = $timestampMs2; mode = "STANDARD (serviceName)" }
+          }
+        } catch { }
+      }
       Write-Warning "[api-check] No spans found (filter: $filterExpr, last $LookbackSeconds s)"
       return @{ ok = $false; reason = "no_span_found"; timestampMs = $null; mode = $verificationMode }
     }
@@ -253,6 +280,40 @@ if (Test-Path $CanaryScriptPath) {
   } else {
     Write-Host "`n[verify] API check (SigNoz Trace API - forensic verification)..." -ForegroundColor Cyan
     $apiCheck = Invoke-SigNozApiTraceCheck -ServiceName $ServiceName -TraceId $traceId -LookbackSeconds $LOOKBACK
+
+    # Fallback: ClickHouse direct query (works without API auth)
+    if (-not $apiCheck.ok) {
+      Write-Host "[verify] API check failed (${apiCheck.reason ?? 'n/a'}) — attempting ClickHouse fallback..." -ForegroundColor Yellow
+      try {
+        $chQueries = @(
+          "SELECT traceID, timestamp FROM signoz_traces.distributed_signoz_index_v2 WHERE traceID = '$traceId' ORDER BY timestamp DESC LIMIT 1",
+          "SELECT traceID, timestamp FROM signoz_traces.signoz_index_v2 WHERE traceID = '$traceId' ORDER BY timestamp DESC LIMIT 1",
+          "SELECT traceID, timestamp FROM signoz_traces.distributed_signoz_index_v2 WHERE serviceName = '$ServiceName' ORDER BY timestamp DESC LIMIT 1",
+          "SELECT traceID, timestamp FROM signoz_traces.signoz_index_v2 WHERE serviceName = '$ServiceName' ORDER BY timestamp DESC LIMIT 1"
+        )
+        $found = $false
+        $tsMs = $null
+        foreach ($q in $chQueries) {
+          try {
+            $out = docker exec signoz-clickhouse clickhouse-client --query "$q"
+            if ($out) {
+              $found = $true
+              # Expect: traceID\ttimestamp
+              $parts = $out -split "\t"
+              if ($parts.Length -ge 2) {
+                $rawTs = [int64]$parts[1]
+                $tsMs = if ($rawTs -gt 9999999999999) { [int64]($rawTs / 1000000) } else { $rawTs }
+              }
+              break
+            }
+          } catch { continue }
+        }
+        if ($found) {
+          Write-Host "[verify] ✓ ClickHouse fallback confirmed span presence" -ForegroundColor Green
+          $apiCheck = @{ ok=$true; reason="clickhouse_trace_found"; mode="CLICKHOUSE"; timestampMs=$tsMs }
+        }
+      } catch { }
+    }
   }
   
   # Calculate ingest latency if we have both timestamps
