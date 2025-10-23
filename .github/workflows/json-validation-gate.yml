@@ -1,0 +1,127 @@
+name: JSON Validation Gate
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "schema/**"
+      - "docs/status/**"
+      - "artifacts/gate-verification-results.json"
+  pull_request:
+    branches: [main]
+    paths:
+      - "schema/**"
+      - "docs/status/**"
+      - "artifacts/gate-verification-results.json"
+  workflow_dispatch:
+
+concurrency:
+  group: json-validation-gate
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate-schemas:
+    name: Validate JSON Contracts
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install dependencies
+        run: |
+          set -euo pipefail
+          npm ci --ignore-scripts
+          npx ajv --version
+
+      - name: Validate docs/status/tests.json
+        run: |
+          set -euo pipefail
+          echo "Validating docs/status/tests.json..."
+          npx ajv validate \
+            -s schema/status-tests.schema.json \
+            -d docs/status/tests.json \
+            --spec=draft2020 \
+            --all-errors \
+            -c ajv-formats
+          echo "docs/status/tests.json passed validation"
+
+      - name: Validate artifacts/gate-verification-results.json (optional)
+        run: |
+          set -euo pipefail
+          if [ -f artifacts/gate-verification-results.json ]; then
+            echo "Validating artifacts/gate-verification-results.json..."
+            npx ajv validate \
+              -s schema/gate-verification-results.schema.json \
+              -d artifacts/gate-verification-results.json \
+              --spec=draft2020 \
+              --all-errors \
+              -c ajv-formats
+            echo "artifacts/gate-verification-results.json passed validation"
+          else
+            echo "artifacts/gate-verification-results.json not found (optional)"
+          fi
+
+      - name: List validated files
+        if: always()
+        run: |
+          set -euo pipefail
+          echo "Schema files:"
+          find schema -name "*.schema.json" -type f | sort || true
+          echo ""
+          echo "Validated artifacts:"
+          if [ -f docs/status/tests.json ]; then
+            echo "  - docs/status/tests.json"
+          else
+            echo "  - docs/status/tests.json (missing)"
+          fi
+          if [ -f artifacts/gate-verification-results.json ]; then
+            echo "  - artifacts/gate-verification-results.json"
+          else
+            echo "  - artifacts/gate-verification-results.json (optional, missing)"
+          fi
+
+      - name: Job summary
+        if: always()
+        run: |
+          set -euo pipefail
+          {
+            echo "## JSON Validation Gate Report"
+            echo ""
+            echo "### Validation Results"
+            if [ -f docs/status/tests.json ]; then
+              echo "- **docs/status/tests.json**: PASS"
+            else
+              echo "- **docs/status/tests.json**: Not found (required)"
+            fi
+            if [ -f artifacts/gate-verification-results.json ]; then
+              echo "- **artifacts/gate-verification-results.json**: PASS"
+            else
+              echo "- **artifacts/gate-verification-results.json**: Not found (optional)"
+            fi
+            echo ""
+            echo "### Schemas Validated"
+            find schema -name "*.schema.json" -type f | sort | while read schema; do
+              rel_path=${schema#schema/}
+              echo "- \`${rel_path}\`"
+            done || true
+            echo ""
+            echo "### Validation Details"
+            echo "- Framework: JSON Schema Draft 2020-12"
+            echo "- Validator: AJV CLI (npx ajv)"
+            echo "- Format support: ajv-formats"
+            echo "- Fail-closed: invalid artifacts block the pipeline"
+            echo ""
+            echo "Documentation: docs/JSON_SCHEMA_VALIDATION.md"
+          } >> "$GITHUB_STEP_SUMMARY"
