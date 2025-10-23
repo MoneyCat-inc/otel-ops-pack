@@ -44,11 +44,26 @@ processors:
   resourcedetection:
     detectors: [env, system]
     timeout: 2s
+  # ────────────────────────────────────────────────────────────
+  # resource/defaults: Sets default resource attributes for all spans
+  # 
+  # CURRENT BEHAVIOR (action: upsert):
+  #   - Overwrites ALL incoming service.name values to "resonai-backend"
+  #   - Advantage: Single service identity for aggregation
+  #   - Disadvantage: Loses original service names for tracing multi-service calls
+  # 
+  # ALTERNATIVE (action: insert):
+  #   - Preserves original service.name if present
+  #   - Sets default only for spans without service.name
+  #   - Better for multi-service observability
+  # 
+  # To enable alternative: Change line 51 from "action: upsert" to "action: insert"
+  # ────────────────────────────────────────────────────────────
   resource/defaults:
     attributes:
       - key: service.name
         value: resonai-backend
-        action: upsert
+        action: upsert  # Change to "insert" to preserve original service names
       - key: deployment.environment
         value: production
         action: upsert
