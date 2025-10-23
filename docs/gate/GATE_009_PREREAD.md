@@ -1,9 +1,56 @@
 # 🐾 Gate #009 Pre-Read
 
 **Status:** PREPARATION  
-**Previous Gate:** #008 (APPROVED 2025-10-22)  
+**Previous Gate:** #008 (APPROVED 2025-10-22, EDGE WRITER DEPLOYED 2025-10-23)  
 **Target Date:** TBD  
 **Prepared:** 2025-10-22
+**Updated:** 2025-10-23 (Edge Writer & V3 Schema Integration)
+
+---
+
+## 🚀 **Major Update from Gate #008: Edge Writer Implementation**
+
+**Date:** 2025-10-23T22:38:27Z  
+**Status:** ✅ **DEPLOYED & OPERATIONAL**  
+**Commits:** 38 commits (ab0244396 → 4bfbe8556)
+
+### Edge Writer Architecture
+```
+Canary Emit → Edge Writer (14321) → ClickHouse v3 → BossCat Gate
+             (OTLP HTTP)           (signoz_index_v3)
+```
+
+**Key Achievement:** Bypassed flaky SigNoz transformer hop, established direct write path to ClickHouse v3 schema.
+
+### New Components (Gate #009 Baseline)
+1. **signoz-writer Service**
+   - Container: `signoz-writer` (signoz/signoz-otel-collector:latest)
+   - Ports: 14320 (gRPC), 14321 (HTTP)
+   - Purpose: Direct OTLP → ClickHouse v3 pipeline
+   - Config: `signoz-writer.yaml`
+
+2. **V3 Schema Queries**
+   - Primary Table: `signoz_traces.signoz_index_v3`
+   - Service Column: `resource_string_service$$name`
+   - Canonical Query Method: `docker exec signoz-clickhouse clickhouse-client`
+
+3. **Automation Scripts**
+   - `bosscat-oem-v3-monitor.ps1` - Autonomous monitoring loop
+   - `bosscat-oem-v3-check.ps1` - Single gate check
+   - `bosscat-oem-v3-complete.ps1` - Complete gate advancement
+   - `send-canary-trace-direct.ps1` - Edge writer canary routing
+
+4. **Documentation**
+   - `EDGE_WRITER_DEPLOYMENT_SUMMARY.md` - Complete reference
+   - `SIGNOZ_V3_SCHEMA_REFERENCE.md` - V3 schema documentation
+   - `BOSSCAT_OEM_SCHEMA_V3.md` - Automation architecture
+   - `V3_GATE_AUTOMATION_GUIDE.md` - Usage guide
+
+### Verified Metrics (2025-10-23)
+- **Traces Persisting:** 66 spans (canary-test) in `signoz_index_v3`
+- **Edge Writer Uptime:** Since 2025-10-23 22:01 UTC
+- **CI/CD Verification:** BossCat Gate Verification PASSED (4/4 environments)
+- **Security Scans:** Gitleaks, CodeQL, Trivy all GREEN
 
 ---
 
@@ -30,37 +77,53 @@
 
 ## 📊 Performance Baselines from Gate #008
 
-### System Metrics (2025-10-22)
+### System Metrics (Updated 2025-10-23)
 ```
 Windows Collector:
-  - Status: RUNNING (remediated from STOPPED)
+  - Status: RUNNING
   - Uptime: Since 2025-10-22 09:20 UTC
   - Metrics Port: 8888 serving
   - Service: Automatic startup
 
 Docker Containers:
-  - Count: 7/7 healthy
-  - Uptime: 27+ hours
-  - Services: signoz-otel-collector, signoz, 3× otel-gpu-*, clickhouse, zookeeper
+  - Count: 8/8 healthy (NEW: signoz-writer added)
+  - Services: 
+    * signoz-otel-collector
+    * signoz-writer (NEW - Edge Writer)
+    * signoz
+    * 3× otel-gpu-*
+    * clickhouse
+    * zookeeper
 
 OTLP Endpoints:
-  - gRPC: 14317 operational
-  - HTTP: 14318 operational
+  - Main Collector gRPC: 14317 operational
+  - Main Collector HTTP: 14318 operational
+  - Edge Writer gRPC: 14320 operational (NEW)
+  - Edge Writer HTTP: 14321 operational (NEW)
   - UI: 8080 operational
 
 SigNoz:
   - Health API: {"status":"ok"}
-  - Version: v0.96.1 (from previous gates)
+  - Version: v0.96.1
+  - ClickHouse v3 Schema: ACTIVE
 ```
 
-### Pipeline Performance
+### Pipeline Performance (Updated 2025-10-23)
 ```
 Canary Tests:
-  - Status: PASSING
+  - Status: PASSING (Edge Writer path)
   - End-to-end: SUCCESS
-  - Traces: Delivered to port 14318
+  - Traces: Delivered to port 14321 (Edge Writer)
   - Logs: Ingested to ClickHouse
-  - Fresh logs: 2025-10-22 10:10:20
+  - V3 Schema: 66 spans confirmed in signoz_index_v3
+  - Service Preservation: canary-test identity intact
+  - Fresh traces: 2025-10-23 22:38:27
+
+Edge Writer Performance:
+  - P95 Ingest Latency: ≤ 5s (target)
+  - Canary Persistence: ≥1 span/2 min (target)
+  - Writer Availability: ≥99.9% (target)
+  - Direct ClickHouse Write: Bypasses transformer hop
 ```
 
 ### Asset Metrics
@@ -77,10 +140,12 @@ Critical Endpoints: 6 (Hub)
 
 ### GATE-CORE
 - [x] Windows Collector: RUNNING with sustained uptime (> 7 days)
-- [ ] Docker containers: 7/7 healthy with no restarts
+- [ ] Docker containers: 8/8 healthy with no restarts (NEW: signoz-writer)
 - [ ] OTLP endpoints: All operational with < 200ms response
+- [ ] Edge Writer: Operational with 14320/14321 ports (NEW)
 - [ ] SigNoz health: "ok" status maintained
-- [ ] Canary tests: 100% pass rate over 7 days
+- [ ] Canary tests: 100% pass rate over 7 days (via Edge Writer)
+- [ ] V3 Schema: Traces persisting to signoz_index_v3 (NEW)
 - [ ] Metrics scraping: No "Failed to scrape" warnings
 
 ### GATE-SITE
@@ -105,18 +170,32 @@ Critical Endpoints: 6 (Hub)
 
 ## 📈 Canary Delta Tracking (Gate #008 Baseline)
 
-### Baseline Metrics (2025-10-22)
+### Baseline Metrics (Updated 2025-10-23)
 ```json
 {
-  "date": "2025-10-22",
-  "gate": 8,
+  "date": "2025-10-23",
+  "gate": "8 → 9 transition",
+  "edge_writer": {
+    "status": "DEPLOYED",
+    "container": "signoz-writer",
+    "ports": {
+      "grpc": 14320,
+      "http": 14321
+    },
+    "uptime_since": "2025-10-23T22:01:28Z"
+  },
   "canary_tests": {
     "total_runs": "~10",
     "success_rate": "100%",
     "avg_duration": "~30 seconds",
     "endpoints": {
-      "traces": "http://localhost:14318/v1/traces",
+      "traces": "http://localhost:14321/v1/traces",
       "logs": "http://localhost:14318/v1/logs"
+    },
+    "v3_schema": {
+      "table": "signoz_traces.signoz_index_v3",
+      "service_column": "resource_string_service$$name",
+      "verified_spans": 66
     }
   },
   "windows_event_log": {
@@ -218,9 +297,105 @@ Critical Endpoints: 6 (Hub)
 
 ---
 
+---
+
+## 📚 **NEW: V3 Schema & Automation Documentation**
+
+### Core Schema Files
+1. **BOSSCAT_OEM_SCHEMA_V3.md** - Comprehensive BossCat OEM architecture
+   - Automation framework
+   - Gate discipline
+   - Component definitions
+
+2. **SIGNOZ_V3_SCHEMA_REFERENCE.md** - ClickHouse v3 schema
+   - Table structures
+   - Column mappings
+   - Query examples
+
+3. **EDGE_WRITER_DEPLOYMENT_SUMMARY.md** - Complete deployment reference
+   - Architecture overview
+   - SLOs & health monitors
+   - Rollback procedures
+
+4. **V3_GATE_AUTOMATION_GUIDE.md** - Usage guide
+   - Monitoring loop
+   - One-liner wrapper
+   - Troubleshooting
+
+### Automation Scripts
+```powershell
+# Background monitoring (2-min intervals)
+pwsh -File .\bosscat-oem-v3-monitor.ps1
+
+# Single gate check
+pwsh -File .\bosscat-oem-v3-check.ps1
+
+# Complete gate advancement
+pwsh -File .\bosscat-oem-v3-complete.ps1
+
+# Send canary to edge writer
+pwsh -File .\send-canary-trace-direct.ps1
+```
+
+### V3 Schema Query Examples
+```sql
+-- Recent canary trace count (5 minutes)
+SELECT count()
+FROM signoz_traces.signoz_index_v3
+WHERE resource_string_service$$name = 'canary-test'
+  AND timestamp >= now() - INTERVAL 5 MINUTE;
+
+-- Timeline (last 30 minutes, per minute)
+SELECT toStartOfMinute(timestamp) AS t, count() AS n
+FROM signoz_traces.signoz_index_v3
+WHERE resource_string_service$$name = 'canary-test'
+  AND timestamp >= now() - INTERVAL 30 MINUTE
+GROUP BY t
+ORDER BY t;
+```
+
+### Quick Operator Loop
+```powershell
+# 1) Emit canary
+pwsh -File .\send-canary-trace-direct.ps1
+
+# 2) Verify in v3 (docker exec)
+docker exec signoz-clickhouse clickhouse-client --query `
+  "SELECT count() FROM signoz_traces.signoz_index_v3
+    WHERE resource_string_service$$name='canary-test'
+      AND timestamp >= now() - INTERVAL 5 MINUTE;"
+```
+
+---
+
+## 🎯 **Gate #009 New Requirements**
+
+### Edge Writer Stability (NEW)
+- [ ] 7-day uptime with no restarts
+- [ ] P95 ingest latency ≤ 5s
+- [ ] Canary persistence ≥1 span/2 min
+- [ ] No insert errors in logs
+- [ ] Ports 14320/14321 continuously available
+
+### V3 Schema Validation (NEW)
+- [ ] All traces persisting to `signoz_index_v3`
+- [ ] Service names preserved (no overwrites)
+- [ ] `resource_string_service$$name` column functional
+- [ ] Timeline queries returning expected results
+- [ ] No schema migration issues
+
+### Automation Health (NEW)
+- [ ] V3 monitoring scripts operational
+- [ ] Gate checks returning accurate results
+- [ ] Complete automation wrapper functional
+- [ ] Documentation aligned with implementation
+
+---
+
 **Prepared:** 2025-10-22  
-**Status:** Pre-read phase  
+**Updated:** 2025-10-23 (Edge Writer & V3 Schema Integration)  
+**Status:** Pre-read phase with major infrastructure update  
 **Next Gate:** #009 (TBD)
 
-🐾 _Gate #009 preparation - applying lessons from Gate #008 remediation cycle_
+🐾 _Gate #009 preparation - Edge Writer deployed, V3 schema active, automation operational_
 
