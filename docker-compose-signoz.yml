@@ -47,6 +47,23 @@ services:
       - signoz
     logging: *default-logging
 
+  signoz-writer:
+    image: signoz/signoz-otel-collector:latest
+    container_name: signoz-writer
+    restart: unless-stopped
+    depends_on:
+      signoz-clickhouse:
+        condition: service_healthy
+    command: ["--config=/etc/otel/config.yaml"]
+    volumes:
+      - ./signoz-writer.yaml:/etc/otel/config.yaml:ro
+    ports:
+      - "14320:4317"   # gRPC OTLP in
+      - "14321:4318"   # HTTP OTLP in
+    networks:
+      - signoz
+    logging: *default-logging
+
   signoz-schema-migrator-sync:
     image: signoz/signoz-schema-migrator:v0.129.6
     container_name: signoz-schema-migrator-sync
