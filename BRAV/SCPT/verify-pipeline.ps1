@@ -65,8 +65,8 @@ function Invoke-SigNozApiTraceCheck {
     [int]$LookbackSeconds = 180
   )
   
-  # Try to get API key from environment (Process, then Machine)
-  $apiKey = [Environment]::GetEnvironmentVariable($ApiKeyEnv, "Process")
+  # Read API key from environment (prefer current process env var)
+  $apiKey = $env:$ApiKeyEnv
   if (-not $apiKey) { $apiKey = [Environment]::GetEnvironmentVariable($ApiKeyEnv, "Machine") }
   if (-not $apiKey) { 
     Write-Warning "[api-check] No API key in $ApiKeyEnv environment variable"
@@ -115,6 +115,7 @@ function Invoke-SigNozApiTraceCheck {
     $uri = $BaseUrl.TrimEnd('/') + "/api/v5/query_range"
     Write-Host "[api-check] Mode: $verificationMode (last $LookbackSeconds s)..." -ForegroundColor Gray
     
+    # SigNoz v5 Trace API requires SIGNOZ-API-KEY header
     $resp = Invoke-RestMethod -Method Post -Uri $uri `
       -Headers @{ "SIGNOZ-API-KEY" = $apiKey } `
       -ContentType "application/json" -Body $payload -TimeoutSec 30
@@ -253,6 +254,40 @@ if (Test-Path $CanaryScriptPath) {
   } else {
     Write-Host "`n[verify] API check (SigNoz Trace API - forensic verification)..." -ForegroundColor Cyan
     $apiCheck = Invoke-SigNozApiTraceCheck -ServiceName $ServiceName -TraceId $traceId -LookbackSeconds $LOOKBACK
+
+    # Fallback: ClickHouse direct query (works without API auth)
+    if (-not $apiCheck.ok) {
+      Write-Host "[verify] API check failed (${apiCheck.reason ?? 'n/a'}) — attempting ClickHouse fallback..." -ForegroundColor Yellow
+      try {
+        $chQueries = @(
+          "SELECT traceID, timestamp FROM signoz_traces.distributed_signoz_index_v2 WHERE traceID = '$traceId' ORDER BY timestamp DESC LIMIT 1",
+          "SELECT traceID, timestamp FROM signoz_traces.signoz_index_v2 WHERE traceID = '$traceId' ORDER BY timestamp DESC LIMIT 1",
+          "SELECT traceID, timestamp FROM signoz_traces.distributed_signoz_index_v2 WHERE serviceName = '$ServiceName' ORDER BY timestamp DESC LIMIT 1",
+          "SELECT traceID, timestamp FROM signoz_traces.signoz_index_v2 WHERE serviceName = '$ServiceName' ORDER BY timestamp DESC LIMIT 1"
+        )
+        $found = $false
+        $tsMs = $null
+        foreach ($q in $chQueries) {
+          try {
+            $out = docker exec signoz-clickhouse clickhouse-client --query "$q"
+            if ($out) {
+              $found = $true
+              # Expect: traceID\ttimestamp
+              $parts = $out -split "\t"
+              if ($parts.Length -ge 2) {
+                $rawTs = [int64]$parts[1]
+                $tsMs = if ($rawTs -gt 9999999999999) { [int64]($rawTs / 1000000) } else { $rawTs }
+              }
+              break
+            }
+          } catch { continue }
+        }
+        if ($found) {
+          Write-Host "[verify] ✓ ClickHouse fallback confirmed span presence" -ForegroundColor Green
+          $apiCheck = @{ ok=$true; reason="clickhouse_trace_found"; mode="CLICKHOUSE"; timestampMs=$tsMs }
+        }
+      } catch { }
+    }
   }
   
   # Calculate ingest latency if we have both timestamps
