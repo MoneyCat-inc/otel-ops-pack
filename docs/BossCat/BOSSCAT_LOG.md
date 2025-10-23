@@ -66,3 +66,8 @@
 - 2025-10-22T19:52:15Z – status auto-update refreshed (Agent A, run 46)
 - 2025-10-22T20:11:36Z – status auto-update refreshed (Agent A, run 50)
 - 2025-10-23T01:12:09Z – status auto-update refreshed (Agent A, run 63)
+- 2025-10-23T22:38:04Z V3_GATE ✅ traces for canary-test persisted (count=18, window=5 MINUTE, v3_schema=signoz_index_v3, bosscat_oem=v3.0)
+- 2025-10-23T22:38:08Z V3_GATE ✅ traces for canary-test persisted (count=27, window=5 MINUTE, v3_schema=signoz_index_v3, bosscat_oem=v3.0)
+- 2025-10-23T22:38:27Z V3_GATE ✅ traces for canary-test persisted (count=39, window=5 MINUTE, v3_schema=signoz_index_v3, bosscat_oem=v3.0)
+- 2025-10-23T22:39:23Z V3_GATE ✅ traces for canary-test persisted (count=51, window=5 MINUTE, v3_schema=signoz_index_v3, bosscat_oem=v3.0)
+- 2025-10-23T22:39:37Z V3_GATE ✅ traces for canary-test persisted (count=63, window=5 MINUTE, v3_schema=signoz_index_v3, bosscat_oem=v3.0)

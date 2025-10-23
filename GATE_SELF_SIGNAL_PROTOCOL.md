@@ -36,184 +36,149 @@ pwsh -File gate-self-signal-check.ps1
 
 ---
 
-## 🚀 Gate Advancement Runbook (When Signal = GREEN)
+## ?? Section 1 - Re-Verify End-to-End Span Flow
 
-Once self-signal returns exit code **0** (traces detected):
-
-### **Step 1: Verify Stability (2 min)**
 ```powershell
-# Send 5 more canary bursts
-1..5 | % {
+# Send 5 canary bursts (ensures stability)
+1..5 | ForEach-Object {
     pwsh -File .\send-canary-trace-direct.ps1
     Start-Sleep -Seconds 2
 }
 
-# Re-query counts (should increase)
-# Use docker exec method (actual live implementation)
-$query = "SELECT count() FROM signoz_traces.span_attributes WHERE tagKey='service.name' AND stringTagValue='canary-test' AND timestamp >= now() - INTERVAL 5 MINUTE;"
-docker exec signoz-clickhouse clickhouse-client --query $query
+# Query ClickHouse using the vetted method
+$Query = @"
+SELECT count()
+FROM signoz_traces.span_attributes
+WHERE tagKey=''service.name''
+  AND stringTagValue=''canary-test''
+  AND timestamp >= now() - INTERVAL 5 MINUTE
+"@
+
+$count = docker exec signoz-clickhouse clickhouse-client --query "$Query"
+Write-Host "Traces found (last 5 minutes): $count"
 ```
 
-**Expected:** Counts increase with each burst (traces persisting consistently)
-
-### **Step 2: Capture Evidence (2 min)**
-
-Create `gate-advancement-evidence-YYYYMMDD.md`:
-
-```markdown
-# Gate Advancement Evidence — Platform Fix Confirmed
-
-## Evidence
-- **Service:** canary-test
-- **Traces found:** [count from query]
-- **Query timestamp:** [UTC timestamp]
-- **ClickHouse query (docker exec method):**
-  ```sql
-  SELECT count() FROM signoz_traces.span_attributes
-  WHERE tagKey='service.name'
-    AND stringTagValue='canary-test'
-    AND timestamp >= now() - INTERVAL 5 MINUTE;
-  ```
-
-## Config State
-- `signoz-collector-config.yaml` line 66: `action: insert` ✅
-- Service name preservation: CONFIRMED
-- Exporter endpoint: `tcp://signoz-clickhouse:9000/signoz_traces` ✅
-
-## Stability Test
-- Canary burst 1: X spans
-- Canary burst 2: X+N spans
-- Canary burst 3: X+2N spans
-- ... (consistent growth) ✅
-```
-
-### **Step 3: Regenerate ECRR Artifacts (3 min)**
-
-```powershell
-# Create compact gate-verification artifact
-$artifact = @{
-    gate = "trace-persistence"
-    verdict = "GREEN"
-    timestamp = (Get-Date -AsUTC).ToString("o")
-    evidence = @{
-        service_name = "canary-test"
-        span_count = [count from query]
-        stability = "confirmed"
-        config_state = "insert (not upsert)"
-    }
-    action = "ready-for-gate"
-} | ConvertTo-Json -Depth 4
-
-$artifact | Out-File "artifacts/gate-verification-YYYYMMDD.json"
-git add artifacts/gate-verification-YYYYMMDD.json
-git commit -m "gate(verification): platform fix confirmed - traces persisting"
-```
-
-### **Step 4: Signal Ready (2 min)**
-
-Post to repository (PR comment or status update):
-
-```
-@cat ready-for-gate
-
-🟢 GATE VERDICT: GREEN (Platform Fix Confirmed)
-
-✅ Evidence Bundle:
-- Traces for service.name='canary-test' detected in ClickHouse
-- Stability verified (5 canary bursts, consistent growth)
-- Collector config: service.name preservation active (insert, not upsert)
-- SigNoz exporter→ClickHouse gap: RESOLVED
-
-📦 Artifacts:
-- gate-advancement-evidence-YYYYMMDD.md (query output + verification)
-- gate-verification-YYYYMMDD.json (ECRR compact artifact)
-- signoz-collector-config.yaml (config excerpt)
-- send-canary-trace-direct.ps1 (reproducible test)
-
-🎯 Gate transitions: 🟠 WARN → 🟢 GREEN
-```
+- **Expectation:** `$count` increases as each canary burst lands. Record the starting value and the post-burst value.
+- **Result > 0:** Continue to Section 2.
+- **Result = 0:** Hold at ?? WARN and resume monitoring; do not advance the gate.
 
 ---
 
-## 🛡️ Continuous Monitoring (Optional)
+## ?? Section 2 - Regenerate Gate Artifacts (ECRR)
 
-Run self-signal check periodically to detect platform fix the moment it lands:
+Stay within budgets (<= 10 files, <= 200 LOC). Capture:
+
+1. **Query evidence markdown** (`TRACE_GATE_VERIFICATION_YYYYMMDD.md`)
+   ```markdown
+   # TRACE_GATE_VERIFICATION - 2025-10-23T17:30:00Z
+
+   ## Evidence
+   - Query method: docker exec signoz-clickhouse clickhouse-client
+   - Table: signoz_traces.span_attributes
+   - Filter: tagKey=''service.name'', stringTagValue=''canary-test''
+   - Window: now() - 5 minutes
+   - Result: COUNT = <N>
+   ```
+2. **Collector config excerpt** proving `resource/defaults` uses `action: insert`.
+3. **BossCat log entry** (`docs/BossCat/BOSSCAT_LOG.md`)
+   ```text
+   - 2025-10-23T17:30:00Z TRACE_GATE ✅ spans for canary-test persisted (count=N, window=5m, method=docker-exec)
+   ```
+4. **ECRR JSON artifact** (`artifacts/gate-verification-YYYYMMDD.json`)
+   ```json
+   {
+     "gate": "trace-persistence",
+     "verdict": "GREEN",
+     "timestamp": "2025-10-23T17:30:00Z",
+     "evidence": {
+       "service_name": "canary-test",
+       "span_count": "N",
+       "window": "5 minutes",
+       "query_method": "docker exec",
+       "table": "span_attributes",
+       "stability": "confirmed"
+     }
+   }
+   ```
+
+Keep the changed-paths tight; no extra files beyond the bundle above.
+
+---
+
+## ?? Section 3 - Flip the Verdict
+
+**Go GREEN only when all checklist items pass:**
+
+- `count() > 0` in `signoz_traces.span_attributes` for the last <= 10 minutes.
+- Stability proven (burst counts increase and are documented in Section 2 evidence).
+- `signoz-collector-config.yaml` shows `action: insert` (service.name preserved).
+- Evidence bundle assembled (markdown, JSON artifact, config excerpt, BossCat log entry, script reference).
+- No new blockers discovered during verification.
+
+**Ready-for-gate message (paste-ready):**
+```
+@cat ready-for-gate
+
+?? GATE VERDICT: GREEN (Platform Fix Confirmed)
+
+? Evidence:
+- docker exec signoz-clickhouse clickhouse-client query (span_attributes, service.name=''canary-test'')
+- Window: last 5 minutes, COUNT = N
+- Stability: 5 burst sample, counts increased each run
+- Collector resource/defaults: action=insert (service.name preserved)
+
+?? Artifacts:
+- TRACE_GATE_VERIFICATION_YYYYMMDD.md
+- artifacts/gate-verification-YYYYMMDD.json
+- docs/BossCat/BOSSCAT_LOG.md (entry appended)
+- signoz-collector-config.yaml excerpt
+- send-canary-trace-direct.ps1 (reference test)
+
+?? Gate Transition: ?? WARN -> ?? GREEN
+```
+If any item fails, return to monitoring and do **not** signal.
+
+---
+
+## ??? Continuous Monitoring (Optional)
+
+The background loop remains authorized until the platform fix lands:
 
 ```powershell
-# Check every 30 minutes (background job)
 while ($true) {
-    $result = & pwsh -File gate-self-signal-check.ps1
+    & pwsh -File gate-self-signal-check.ps1 | Out-Null
     if ($LASTEXITCODE -eq 0) {
-        Write-Host "✅ PLATFORM FIX DETECTED - Execute gate runbook" -ForegroundColor Green
+        Write-Host "?? PLATFORM FIX DETECTED - Execute runbook" -ForegroundColor Green
         break
     }
-    Start-Sleep -Seconds 1800  # 30 minutes
+    Start-Sleep -Seconds 1800
 }
 ```
 
 ---
 
-## 📊 State Transitions
+## ?? Appendix A - Environment Note
 
-```
-Initial State
-│
-├─ Self-Signal Check Runs
-│  │
-│  ├─ Exit 0 (traces found)
-│  │  └─ EXECUTE GATE RUNBOOK
-│  │     └─ Verify stability
-│  │     └─ Capture evidence
-│  │     └─ Regenerate ECRR
-│  │     └─ Signal ready-for-gate
-│  │     └─ VERDICT: 🟢 GREEN (promote)
-│  │
-│  └─ Exit 1 (no traces) OR Exit 2 (error)
-│     └─ HOLD at 🟠 WARN
-│     └─ Blocker persists
-│     └─ Re-check in 30 min (optional continuous monitoring)
-```
+- **Why docker exec:** ClickHouse HTTP port 8123 is not exposed to the Windows host. Executing the client inside the container reaches `tcp://signoz-clickhouse:9000/signoz_traces` without infrastructure changes.
+- **Schema nuance:** `service.name` resides in `signoz_traces.span_attributes` (`tagKey`, `stringTagValue`). Index tables queried by serviceName will return 0 even when data exists.
+- **Optional hardening:** To preserve original service names, keep `action: insert` (never `upsert`) in `resource/defaults`.
 
 ---
 
-## 🔐 Gate Advancement Criteria (Must ALL Pass)
-
-1. ✅ Self-signal returns **exit code 0** (traces detected)
-2. ✅ Stability verified (canary bursts show consistent trace growth)
-3. ✅ Service name preserved (no `upsert` overwrite)
-4. ✅ Evidence bundle attached (query output, config excerpt, ECRR artifact)
-5. ✅ No new issues detected in ClickHouse schema/permissions
-
-**Only when ALL 5 met:** Verdict flips 🟠 WARN → 🟢 GREEN
-
----
-
-## 📦 Handoff Kit (Final)
-
-Ready for immediate attachment when signal = GREEN:
-
-- ✅ `gate-advancement-evidence-YYYYMMDD.md` (query output + verification)
-- ✅ `gate-verification-YYYYMMDD.json` (ECRR compact artifact)
-- ✅ `signoz-collector-config.yaml` (config proof: insert not upsert)
-- ✅ `send-canary-trace-direct.ps1` (reproducible test)
-- ✅ `PLATFORM_ESCALATION_DIAGNOSTIC_20251023.md` (prior diagnostics)
-
----
-
-## 🐾 Doctrine Alignment
+## ?? Doctrine Alignment
 
 | Principle | Implementation |
 |-----------|-----------------|
-| **Fast feedback** | Self-signal runs anytime, no human blocker |
-| **ECRR compliance** | Evidence-first (objective trace presence) |
-| **Gate discipline** | Objective criteria: count() > 0 + repeatable |
-| **Single writer** | Lane clean, budgets enforced (<200 LOC artifacts) |
-| **Safe promotion** | All 5 criteria must pass before GREEN |
+| **Evidence-first** | docker exec + span_attributes query with recorded counts |
+| **Fast feedback** | Self-signal loop plus 5-burst verification |
+| **Gate discipline** | Checklist enforced before posting @cat ready-for-gate |
+| **Single writer** | Docs lane only, budgets within limits |
+| **Safe promotion** | GREEN signal only after evidence bundle is complete |
 
 ---
 
-**🔔 Self-signal active. Autonomous detection engaged. Awaiting platform resolution.**
+**?? Self-signal active. Autonomous detection engaged. Awaiting platform resolution.**
 
-When traces land → Gate advances → Ready-for-gate signal → 🟢 GREEN
+When traces land -> Gate advances -> Ready-for-gate signal -> ?? GREEN
 
-🐾
+??
