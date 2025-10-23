@@ -1,6 +1,6 @@
 {
   "source": "scripts/regenerate-workflows-registry.ps1",
-  "total": 77,
+  "total": 78,
   "items": [
     {
       "name": "adot-config-gate",
@@ -140,7 +140,7 @@
     },
     {
       "name": "bosscat-gate-bot-native",
-      "modified": "2025-10-19T12:05:38.5919833Z",
+      "modified": "2025-10-19T19:17:00.9230256Z",
       "path": ".github/workflows/bosscat-gate-bot-native.yml",
       "size": 14769,
       "triggers": {
@@ -157,9 +157,9 @@
     },
     {
       "name": "bosscat-gate-verify",
-      "modified": "2025-10-17T13:12:06.3867946Z",
+      "modified": "2025-10-20T20:56:57.7116398Z",
       "path": ".github/workflows/bosscat-gate-verify.yml",
-      "size": 10591,
+      "size": 10718,
       "triggers": {
         "issues": false,
         "other": [],
@@ -344,9 +344,9 @@
     },
     {
       "name": "docs-guard",
-      "modified": "2025-10-19T16:03:59.6892589Z",
+      "modified": "2025-10-19T19:17:00.9240330Z",
       "path": ".github/workflows/docs-guard.yml",
-      "size": 3366,
+      "size": 2406,
       "triggers": {
         "issues": false,
         "other": [],
@@ -1126,9 +1126,9 @@
     },
     {
       "name": "signoz-alerts",
-      "modified": "2025-10-17T13:12:06.3894106Z",
+      "modified": "2025-10-20T10:05:48.7533783Z",
       "path": ".github/workflows/signoz-alerts.yml",
-      "size": 1949,
+      "size": 2577,
       "triggers": {
         "issues": false,
         "other": [],
@@ -1224,6 +1224,23 @@
         "workflow_call": false,
         "workflow_dispatch": false,
         "workflow_run": false
+      }
+    },
+    {
+      "name": "status-auto-update",
+      "modified": "2025-10-22T20:31:01.7158574Z",
+      "path": ".github/workflows/status-auto-update.yml",
+      "size": 10904,
+      "triggers": {
+        "issues": false,
+        "other": [],
+        "pull_request": false,
+        "push": false,
+        "release": false,
+        "schedule": true,
+        "workflow_call": false,
+        "workflow_dispatch": true,
+        "workflow_run": true
       }
     },
     {
