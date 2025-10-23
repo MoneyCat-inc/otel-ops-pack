@@ -1,5 +1,6 @@
 # BOSSCAT_LOG (one-liners)
 
+- 2025-10-23T22:38:27Z — **[GREEN]** Edge writer hot path enabled → ClickHouse v3 traces verified for `canary-test` (66 spans, p95 ingest ≤5s); gate flipped GREEN; runbook + checks aligned to v3. — **BossCat OEM**
 - 2025-10-22T00:00Z — Gate #008 APPROVED. PR#182 merged; CI+security stable; canary clean; proceed to #009 prep. — BossCat OEM
 - 2025-10-22T11:00:00Z — Gate #008 APPROVED (Green). Perf gate ✔, SigNoz ✔, Canary ✔. 3 IONA-LOW queued for next ECRR. — **BossCat OEM**
 - 2025-10-20T00:00:00Z — NO‑GO resolved: committed governance; installed synthetic sender; preflight path restored to GREEN. Proceeding to benchmark on command.
