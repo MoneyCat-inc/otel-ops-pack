@@ -95,7 +95,11 @@ jobs:
       - name: Job summary
         if: always()
         run: |
-          set -euo pipefail
+          set -eo pipefail
+          if [ -z "${GITHUB_STEP_SUMMARY:-}" ]; then
+            echo "GITHUB_STEP_SUMMARY not set, skipping summary"
+            exit 0
+          fi
           {
             echo "## JSON Validation Gate Report"
             echo ""
