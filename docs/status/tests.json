@@ -1,6 +1,7 @@
 {
   "version": "1.3",
-  "endedAt": "2025-10-23T09:07:11+00:00",
+
+
   "actor": "Cursor{Implementer}",
   "authority": "BossCat OEM",
   "verdict": "READY",
@@ -84,6 +85,8 @@
     "Pipeline verification successful - 30 canary traces confirmed in ClickHouse v3",
     "Trace ingestion confirmed: traceID 79108560b40440d3b40d5f4d51e408d5 at 2025-10-23 09:07:11"
   ],
+  "branch": "main",
+  "commit": "12f51704",
   "branch": "pr-4-verify-header",
   "commit": "fad9fe097",
   "previousCommit": "09109664e (approval)",
