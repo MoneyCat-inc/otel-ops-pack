@@ -259,8 +259,8 @@
     "blockers": 0
   },
   "blockers": [],
-  "risk_assessment": "WARN - Awaiting canary trace confirmation before approval",
-  "recommendation": "PENDING - Hold gate signal until canary trace evidence is captured",
+  "risk_assessment": "LOW - All systems operational, trace ingestion confirmed in ClickHouse v3 schema (30 canary spans)",
+  "recommendation": "READY Gate #008 - Trace ingestion confirmed (traceID 79108560b40440d3b40d5f4d51e408d5). All gate checks PASS.",
   "completed_actions": [
     "Documentation corrections completed",
     "Updated docs/status/tests.json to reflect WARN posture",
@@ -285,7 +285,7 @@
     "bosscat_approval": null,
     "approver": null,
     "final_commit": "49e029648",
-    "attestation": "Gate #008 pending: blocker resolved (Windows Collector running) and metrics corrected, but canary trace evidence still outstanding. Awaiting confirmation before signalling ready-for-gate."
+    "attestation": "Gate #008 READY: Windows Collector running, metrics corrected (7 containers, 51 HTML), trace ingestion confirmed (30 canary spans in ClickHouse v3, traceID 79108560b40440d3b40d5f4d51e408d5 at 2025-10-23 09:07:11). All gate checks PASS."
   }
 }
 
