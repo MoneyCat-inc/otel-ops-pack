@@ -13,16 +13,10 @@ pwsh -File .\send-canary-trace-direct.ps1
 Write-Host ""
 
 # 2) Prove traces exist (5-min window)
-Write-Host "🔍 Step 2: Querying ClickHouse for traces..." -ForegroundColor Cyan
-$query = @"
-SELECT count()
-FROM signoz_traces.span_attributes
-WHERE tagKey='service.name'
-  AND stringTagValue='canary-test'
-  AND timestamp >= now() - INTERVAL 5 MINUTE
-"@
+Write-Host "🔍 Step 2: Querying ClickHouse for traces (v3 schema)..." -ForegroundColor Cyan
+$query = "SELECT count() FROM signoz_traces.signoz_index_v3 WHERE ``resource_string_service`$`$name``='canary-test' AND timestamp >= now() - INTERVAL 5 MINUTE;"
 
-[int]$count = docker exec signoz-clickhouse clickhouse-client --query "$query"
+[int]$count = docker exec signoz-clickhouse clickhouse-client --query $query
 Write-Host "   Traces found (last 5 min): $count" -ForegroundColor Yellow
 Write-Host ""
 
@@ -36,19 +30,10 @@ New-Item -ItemType Directory -Path $dir -Force | Out-Null
 $count | Out-File "$dir\trace_count_$ts.txt" -Encoding utf8
 Write-Host "   ✅ Saved: $dir\trace_count_$ts.txt" -ForegroundColor Green
 
-# Get timeline (last 30 min)
-$timelineQuery = @"
-SELECT toStartOfMinute(timestamp) AS minute, count() AS c
-FROM signoz_traces.span_attributes
-WHERE tagKey='service.name'
-  AND stringTagValue='canary-test'
-  AND timestamp >= now() - INTERVAL 30 MINUTE
-GROUP BY minute
-ORDER BY minute DESC
-LIMIT 10
-"@
+# Get timeline (last 30 min) - v3 schema
+$timelineQuery = "SELECT toStartOfMinute(timestamp) AS minute, count() AS c FROM signoz_traces.signoz_index_v3 WHERE ``resource_string_service`$`$name``='canary-test' AND timestamp >= now() - INTERVAL 30 MINUTE GROUP BY minute ORDER BY minute DESC LIMIT 10;"
 
-$timeline = docker exec signoz-clickhouse clickhouse-client --query "$timelineQuery"
+$timeline = docker exec signoz-clickhouse clickhouse-client --query $timelineQuery
 $timeline | Out-File "$dir\trace_timeline_$ts.txt" -Encoding utf8
 Write-Host "   ✅ Saved: $dir\trace_timeline_$ts.txt" -ForegroundColor Green
 

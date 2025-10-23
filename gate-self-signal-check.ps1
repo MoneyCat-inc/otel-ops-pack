@@ -31,17 +31,11 @@ Start-Sleep -Seconds 2
 Write-Host ""
 Write-Host "🔍 Step 2: Querying ClickHouse for canary-test traces..."
 
-# Query ClickHouse for recent canary-test spans
-Write-Host "Querying ClickHouse for recent canary-test traces..." -ForegroundColor Cyan
+# Query ClickHouse for recent canary-test spans (v3 schema)
+Write-Host "Querying ClickHouse for recent canary-test traces (v3 schema)..." -ForegroundColor Cyan
 
-# Use docker exec to query ClickHouse (HTTP port not mapped to host)
-$query = @"
-SELECT count()
-FROM signoz_traces.span_attributes
-WHERE tagKey='service.name'
-  AND stringTagValue='canary-test'
-  AND timestamp >= now() - INTERVAL 10 MINUTE;
-"@
+# Use docker exec to query ClickHouse - v3 uses signoz_index_v3 with resource_string_service$$name
+$query = "SELECT count() FROM signoz_traces.signoz_index_v3 WHERE ``resource_string_service`$`$name``='canary-test' AND timestamp >= now() - INTERVAL 10 MINUTE;"
 
 try {
     $result = docker exec signoz-clickhouse clickhouse-client --query $query 2>&1
