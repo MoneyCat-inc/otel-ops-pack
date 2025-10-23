@@ -23,7 +23,7 @@ pwsh -File gate-self-signal-check.ps1
 ### **What It Does**
 1. ✅ Sends canary trace (OTLP HTTP) with `service.name="canary-test"`
 2. ✅ Waits 2 seconds for ClickHouse ingestion
-3. ✅ Queries: `SELECT count() FROM signoz_traces.distributed_signoz_spans WHERE serviceName='canary-test' AND timestamp ≥ now() - 10 min`
+3. ✅ Queries: `SELECT count() FROM signoz_traces.span_attributes WHERE tagKey='service.name' AND stringTagValue='canary-test' AND timestamp >= now() - 10 min` (via docker exec)
 4. ✅ Returns exit code based on result
 
 ### **Exit Codes**

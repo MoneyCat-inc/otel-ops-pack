@@ -24,7 +24,7 @@
 
 1. ✅ Sends canary trace with `service.name="canary-test"` to SigNoz
 2. ✅ Waits 2 seconds for ClickHouse ingestion
-3. ✅ Queries ClickHouse: `SELECT count() ... WHERE serviceName='canary-test' AND timestamp ≥ now() - 10 min`
+3. ✅ Queries ClickHouse via docker exec: `SELECT count() FROM signoz_traces.span_attributes WHERE tagKey='service.name' AND stringTagValue='canary-test' AND timestamp >= now() - 10 min`
 4. ✅ Evaluates result:
    - **Exit 0** → Platform fix detected → BREAK LOOP → Alert + next steps
    - **Exit 1** → Platform gap persists → Wait 30 min, retry
