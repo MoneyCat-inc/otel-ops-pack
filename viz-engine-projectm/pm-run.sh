@@ -41,6 +41,11 @@ if [ "$AUDIO_PATH" = "pulse" ]; then
   pactl set-default-source pm_fifo || echo "[pm-run] Could not set default source"
   
   echo "[pm-run] PulseAudio pipe-source ready: ${PM_AUDIO_FIFO}"
+  
+  # Gate #013B: Launch audio monitor bridge
+  echo "[pm-run] Starting audio monitor bridge..."
+  /usr/local/bin/pm-audio-bridge &
+  echo $! > /tmp/pm-bridge.pid
 fi
 
 # 3) Launch Node API server (will spawn ProjectM as child)

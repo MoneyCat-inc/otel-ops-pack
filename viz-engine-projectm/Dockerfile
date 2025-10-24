@@ -41,8 +41,13 @@ WORKDIR /app
 COPY server.js ./server.js
 COPY pm-run.sh ./pm-run.sh
 COPY pm-settings.ini ./pm-settings.ini
+COPY pm-audio-bridge.cpp ./pm-audio-bridge.cpp
 RUN npm init -y && npm install --save express && npm ls
 RUN chmod +x /app/pm-run.sh
+
+# Gate #013B: Compile native audio bridge
+RUN g++ -O2 -std=c++17 /app/pm-audio-bridge.cpp -o /usr/local/bin/pm-audio-bridge \
+ && chmod +x /usr/local/bin/pm-audio-bridge
 
 # Presets directory (bind mount at runtime as well)
 RUN mkdir -p /presets
