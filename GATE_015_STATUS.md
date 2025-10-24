@@ -46,17 +46,17 @@ Status: ✅ PASS
 ```
 Iteration 1: Baseline
 - Preset: sample_basic.milk (original)
-- Blackout: 80%
-- Luma: 0.1999
+- Blackout: 73%
+- Luma: 0.2747
 - AI: N/A
 
 Iteration 2: AI-Modified
-- AI Suggestion: fDecay: 0.980 → 0.992
-- Reasoning: "Increasing decay makes elements persist longer, reducing black gaps"
+- AI Suggestion: fDecay: 0.980 → 0.965
+- Reasoning: "Decreasing fDecay makes elements persist longer, reducing black frames"
 - Modification: ✅ Applied to preset content
-- Preset: ai_modified_iter2_sample_basic.milk
-- Blackout: 77% (improved -3%)
-- Luma: 0.2312 (improved +15.7%)
+- Preset: ai_modified_iter2_working-preset-2.milk
+- Blackout: 62% (improved -11%)
+- Luma: 0.3846 (improved +40%)
 - Status: ✅ IMPROVEMENT VERIFIED
 ```
 
@@ -88,7 +88,7 @@ Iteration 2: AI-Modified
 | **Bedrock API Access** | Working | Claude 3.5 Sonnet v2 | ✅ **PASS** |
 | **AI Suggestions** | ≥2 iterations | 2 completed | ✅ **PASS** |
 | **Actual Application** | Modify preset | Parameter replacement working | ✅ **PASS** |
-| **Visual Improvement** | Measurable delta | -3% blackout, +15.7% luma | ✅ **PASS** |
+| **Visual Improvement** | Measurable delta | -11% blackout, +40% luma | ✅ **PASS** |
 | **Evidence JSONL** | Complete | Generated with AI fields | ✅ **PASS** |
 | **Snapshots** | ≥2 frames | 2 captured | ✅ **PASS** |
 | **Budget** | ≤10 files, ≤400 LOC | 6 files, ~395 LOC | ✅ **PASS** |
@@ -109,29 +109,29 @@ Iteration 2: AI-Modified
 
 ### Example AI Interaction
 **Input (Iteration 2):**
-- Previous blackout: 80%
-- Previous luma: 0.1999
-- Goal: "Reduce blackout and increase motion"
+- Previous blackout: 73%
+- Previous luma: 0.2747
+- Goal: "Reduce blackout percentage"
 
 **AI Response:**
 ```json
 {
-  "reasoning": "Increasing decay makes elements persist longer, reducing black gaps",
+  "reasoning": "Decreasing fDecay will make visual elements persist longer on screen, reducing black frames while maintaining visual interest",
   "parameter": "fDecay",
-  "change": "from 0.980 to 0.992",
-  "expected_impact": "reduced blackout"
+  "change": "from 0.980 to 0.965",
+  "expected_impact": "reduced blackout by ~10-15% while adding subtle trailing effects to motion"
 }
 ```
 
 **Application:**
-- Preset modified: `fDecay=0.980` → `fDecay=0.992`
-- Saved as: `ai_modified_iter2_sample_basic.milk`
-- Loaded and rendered
+- Preset modified: `fDecay=0.980` → `fDecay=0.965`
+- Saved as: `ai_modified_iter2_working-preset-2.milk`
+- Loaded and rendered in pm-engine
 
 **Verified Result:**
-- Blackout: 80% → 77% ✅ Improvement
-- Luma: 0.1999 → 0.2312 ✅ Improvement
-- Evidence: Captured in JSONL with `ai_applied: true`
+- Blackout: 73% → 62% ✅ -11% improvement
+- Luma: 0.2747 → 0.3846 ✅ +40% improvement
+- Evidence: Captured in JSONL with `ai_applied: true`, `parameter_modified: "fDecay"`, `new_value: "0.965"`
 
 ---
 
