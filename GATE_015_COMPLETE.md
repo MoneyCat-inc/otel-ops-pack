@@ -80,15 +80,15 @@ pwsh scripts/author-loop-ai.ps1 -PresetFile "presets-projectm/sample_basic.milk"
 **Results:**
 | Iteration | AI Suggestion | Blackout | Luma | Improvement |
 |-----------|---------------|----------|------|-------------|
-| 1 (Baseline) | N/A | 80% | 0.1999 | Baseline |
-| 2 (AI-assisted) | fDecay: 0.980→0.992 | 77% | 0.2312 | ✅ Better |
+| 1 (Baseline) | N/A | 73% | 0.2747 | Baseline |
+| 2 (AI-assisted) | fDecay: 0.980→0.965 | 62% | 0.3846 | ✅ -11% blackout, +40% luma |
 
 **AI Suggestion Quality:**
 ```
 {
-  "reasoning": "Increasing decay value will make visual elements persist longer on screen, reducing black gaps between effects",
+  "reasoning": "Decreasing fDecay will make visual elements persist longer on screen, reducing black frames while maintaining visual interest",
   "parameter": "fDecay",
-  "change": "from 0.980 to 0.992",
+  "change": "from 0.980 to 0.965",
   "expected_impact": "reduced blackout"
 }
 ```
