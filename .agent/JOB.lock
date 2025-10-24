@@ -1,0 +1,4 @@
+job=gate-013c-job-b
+executor=cursor-implementer
+started=2025-10-24T14:45:00Z
+ttl=90min
