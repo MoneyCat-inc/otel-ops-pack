@@ -54,6 +54,15 @@ COPY audio-test.cpp ./
 RUN g++ -O2 -std=c++17 audio-test.cpp -o /usr/local/bin/audio-test \
  && chmod +x /usr/local/bin/audio-test
 
+# Gate #013C Job B: Compile integration test with injector components
+COPY audio-injector.hpp audio-injector.cpp ./
+COPY projectm-injector.hpp projectm-injector.cpp ./
+COPY audio-integration-test.cpp ./
+RUN g++ -O2 -std=c++17 -c audio-injector.cpp -o audio-injector.o \
+ && g++ -O2 -std=c++17 -c projectm-injector.cpp -o projectm-injector.o \
+ && g++ -O2 -std=c++17 audio-integration-test.cpp audio-injector.o projectm-injector.o -o /usr/local/bin/audio-integration-test \
+ && chmod +x /usr/local/bin/audio-integration-test
+
 # Presets directory (bind mount at runtime as well)
 RUN mkdir -p /presets
 ENV PRESET_DIR=/presets
