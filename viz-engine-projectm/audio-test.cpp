@@ -1,142 +1,202 @@
-// Gate #013C - Job A - Audio Injector Test (SYNTHETIC ONLY)
+// Gate #013C - Job A - Audio Injector Test
 // ECRR: BossCat OEM | Executor: Cursor{Implementer}
-// Purpose: Validate Pearson r ≥ 0.90 for audio envelope tracking
-// NOTE: Fully synthetic - no audio devices or projectM initialization
+// Purpose: Validate Pearson r >= 0.90 for synthetic envelope tracking
 
+#include <algorithm>
 #include <cmath>
-#include <vector>
-#include <iostream>
+#include <cstdint>
 #include <iomanip>
+#include <iostream>
+#include <string>
+#include <vector>
 
-// Compute Pearson correlation coefficient
+namespace {
+
+constexpr int kSampleRate = 44100;
+constexpr int kDurationSeconds = 6;
+constexpr size_t kChunkSamples = static_cast<size_t>(kSampleRate / 10); // 100 ms windows
+constexpr float kPearsonTarget = 0.90f;
+constexpr float kPi = 3.14159265358979323846f;
+
 float pearson_r(const std::vector<float>& x, const std::vector<float>& y) {
     if (x.size() != y.size() || x.empty()) return 0.0f;
-    
-    size_t n = x.size();
-    float sum_x = 0, sum_y = 0, sum_xy = 0, sum_x2 = 0, sum_y2 = 0;
-    
+
+    const size_t n = x.size();
+    double sum_x = 0.0;
+    double sum_y = 0.0;
+    double sum_xy = 0.0;
+    double sum_x2 = 0.0;
+    double sum_y2 = 0.0;
+
     for (size_t i = 0; i < n; ++i) {
         sum_x += x[i];
         sum_y += y[i];
-        sum_xy += x[i] * y[i];
-        sum_x2 += x[i] * x[i];
-        sum_y2 += y[i] * y[i];
+        sum_xy += static_cast<double>(x[i]) * y[i];
+        sum_x2 += static_cast<double>(x[i]) * x[i];
+        sum_y2 += static_cast<double>(y[i]) * y[i];
     }
-    
-    float numerator = n * sum_xy - sum_x * sum_y;
-    float denominator = std::sqrt((n * sum_x2 - sum_x * sum_x) * (n * sum_y2 - sum_y * sum_y));
-    
-    if (denominator < 1e-10f) return 0.0f;
-    
-    return numerator / denominator;
+
+    const double numerator = n * sum_xy - sum_x * sum_y;
+    const double denominator = std::sqrt((n * sum_x2 - sum_x * sum_x) *
+                                         (n * sum_y2 - sum_y * sum_y));
+
+    if (denominator < 1e-12) return 0.0f;
+    return static_cast<float>(numerator / denominator);
 }
 
-// Compute RMS of a signal chunk
-float compute_rms(const std::vector<int16_t>& samples, size_t start, size_t count) {
-    double sum = 0.0;
-    for (size_t i = start; i < start + count && i < samples.size(); ++i) {
-        float normalized = samples[i] / 32768.0f;
-        sum += normalized * normalized;
+float compute_chunk_rms(const int16_t* samples, size_t count) {
+    if (!samples || count == 0) return 0.0f;
+
+    double sum_sq = 0.0;
+    for (size_t i = 0; i < count; ++i) {
+        const float sample = static_cast<float>(samples[i]) / 32768.0f;
+        sum_sq += sample * sample;
     }
-    return std::sqrt(sum / count);
+
+    return static_cast<float>(std::sqrt(sum_sq / static_cast<double>(count)));
 }
 
-// Generate sine wave burst: silence → tone → silence
+std::vector<float> compute_rms_series(const std::vector<int16_t>& samples) {
+    std::vector<float> rms_values;
+    rms_values.reserve((samples.size() + kChunkSamples - 1) / kChunkSamples);
+
+    for (size_t offset = 0; offset < samples.size(); offset += kChunkSamples) {
+        const size_t count = std::min(kChunkSamples, samples.size() - offset);
+        rms_values.push_back(compute_chunk_rms(samples.data() + offset, count));
+    }
+
+    return rms_values;
+}
+
 std::vector<int16_t> generate_sine_burst() {
-    const int sample_rate = 44100;
-    const float frequency = 440.0f;  // A4
-    const int duration_s = 6;  // 2s silent, 2s tone, 2s silent
-    
-    std::vector<int16_t> samples(sample_rate * duration_s);
-    
-    for (int i = 0; i < sample_rate * duration_s; ++i) {
-        float t = i / (float)sample_rate;
+    const float frequency_hz = 440.0f; // A4
+    std::vector<int16_t> samples(static_cast<size_t>(kSampleRate) * kDurationSeconds);
+
+    for (size_t i = 0; i < samples.size(); ++i) {
+        const float t = static_cast<float>(i) / kSampleRate;
         float amplitude = 0.0f;
-        
-        // Tone only in middle 2 seconds
+
         if (t >= 2.0f && t < 4.0f) {
-            amplitude = 0.7f * std::sin(2.0f * M_PI * frequency * t);
+            amplitude = 0.7f * std::sin(2.0f * kPi * frequency_hz * t);
         }
-        
-        samples[i] = (int16_t)(amplitude * 32767.0f);
+
+        samples[i] = static_cast<int16_t>(amplitude * 32767.0f);
     }
-    
+
     return samples;
 }
 
-// Generate expected RMS envelope (for correlation test)
-std::vector<float> generate_expected_envelope() {
-    const int sample_rate = 44100;
-    const int duration_s = 6;
-    const int window_samples = sample_rate / 10;  // 100ms windows
-    
+std::vector<float> expected_sine_burst_envelope() {
     std::vector<float> envelope;
-    
-    for (int i = 0; i < duration_s * 10; ++i) {  // 10 windows per second
-        float t = i / 10.0f;
-        float expected_rms = (t >= 2.0f && t < 4.0f) ? 0.7f : 0.0f;
-        envelope.push_back(expected_rms);
+    envelope.reserve(kDurationSeconds * 10);
+
+    for (int window = 0; window < kDurationSeconds * 10; ++window) {
+        const float t = window / 10.0f;
+        const bool active = (t >= 2.0f && t < 4.0f);
+        const float amplitude = active ? 0.7f : 0.0f;
+        // RMS of a pure sine with amplitude A equals A / sqrt(2)
+        envelope.push_back(amplitude / std::sqrt(2.0f));
     }
-    
+
     return envelope;
 }
 
-int main() {
-    std::cout << "🧪 Gate #013C - Job A - Audio Injector Test (SYNTHETIC)\n";
-    std::cout << "════════════════════════════════════════════════════\n\n";
-    
-    // Test 1: Sine Burst (Silent → Loud → Silent)
-    std::cout << "Test 1: Sine Burst Envelope Tracking\n";
-    std::cout << "  Generating 6s test signal (2s silence, 2s 440Hz tone, 2s silence)...\n";
-    
-    auto samples = generate_sine_burst();
-    auto expected_envelope = generate_expected_envelope();
-    
-    // Compute RMS in 100ms chunks directly from signal
-    std::vector<float> measured_rms;
-    const size_t chunk_size = 4410;  // 100ms chunks at 44.1kHz
-    
-    for (size_t i = 0; i < samples.size(); i += chunk_size) {
-        size_t count = std::min(chunk_size, samples.size() - i);
-        float rms = compute_rms(samples, i, count);
-        measured_rms.push_back(rms);
+std::vector<int16_t> generate_amplitude_modulated_sine() {
+    const float carrier_hz = 440.0f;
+    const float mod_hz = 2.0f;
+    const float carrier_amplitude = 0.8f;
+    const float mod_depth = 0.6f; // envelope varies between 0.2 and 1.0
+
+    std::vector<int16_t> samples(static_cast<size_t>(kSampleRate) * kDurationSeconds);
+
+    for (size_t i = 0; i < samples.size(); ++i) {
+        const float t = static_cast<float>(i) / kSampleRate;
+        const float envelope = 1.0f - mod_depth / 2.0f +
+                               (mod_depth / 2.0f) * std::sin(2.0f * kPi * mod_hz * t);
+        const float sample = carrier_amplitude * envelope *
+                             std::sin(2.0f * kPi * carrier_hz * t);
+        samples[i] = static_cast<int16_t>(sample * 32767.0f);
     }
-    
-    std::cout << "  ✓ Generated " << samples.size() << " samples\n";
-    std::cout << "  ✓ Computed " << measured_rms.size() << " RMS measurements\n";
-    
-    // Compute Pearson correlation
-    float r = pearson_r(expected_envelope, measured_rms);
-    
-    std::cout << "\n  Expected envelope shape: [0.0 (2s), 0.7 (2s), 0.0 (2s)]\n";
-    std::cout << "  Measured RMS windows: " << measured_rms.size() << "\n";
-    std::cout << "  Pearson r = " << std::fixed << std::setprecision(4) << r << "\n";
-    std::cout << "  Target: r ≥ 0.90\n";
-    std::cout << "  Result: " << (r >= 0.90f ? "✅ PASS" : "❌ FAIL") << "\n\n";
-    
-    // Show sample measurements for transparency
-    std::cout << "  Sample RMS values:\n";
-    for (size_t i = 0; i < std::min(size_t(10), measured_rms.size()); ++i) {
-        std::cout << "    t=" << std::setw(3) << (i * 100) << "ms: RMS=" 
-                  << std::fixed << std::setprecision(3) << measured_rms[i] 
-                  << " (expected=" << expected_envelope[i] << ")\n";
-    }
-    
-    // Summary
-    std::cout << "\n════════════════════════════════════════════════════\n";
-    if (r >= 0.90f) {
-        std::cout << "✅ Gate #013C Job A: Metric Validity PASS\n";
-        std::cout << "   Audio envelope tracking validated\n";
-        std::cout << "   Pearson r = " << r << " (≥0.90 ✓)\n";
-        std::cout << "   Injector design is sound for integration\n";
-        return 0;  // GREEN
-    } else {
-        std::cout << "❌ Gate #013C Job A: Metric Validity FAIL\n";
-        std::cout << "   Audio envelope correlation too low\n";
-        std::cout << "   Pearson r = " << r << " (<0.90 ✗)\n";
-        std::cout << "   Injector design needs revision\n";
-        return 1;  // RED
-    }
+
+    return samples;
 }
 
+std::vector<float> expected_amplitude_modulated_envelope() {
+    std::vector<float> envelope;
+    envelope.reserve(kDurationSeconds * 10);
 
+    const float mod_hz = 2.0f;
+    const float carrier_amplitude = 0.8f;
+    const float mod_depth = 0.6f;
+
+    for (int window = 0; window < kDurationSeconds * 10; ++window) {
+        // Sample the modulation envelope at the midpoint of each window.
+        const float t = (window + 0.5f) / 10.0f;
+        const float modulation = 1.0f - mod_depth / 2.0f +
+                                 (mod_depth / 2.0f) * std::sin(2.0f * kPi * mod_hz * t);
+        const float amplitude = carrier_amplitude * modulation;
+        envelope.push_back(amplitude / std::sqrt(2.0f));
+    }
+
+    return envelope;
+}
+
+struct TestCaseResult {
+    std::string name;
+    float correlation;
+    bool pass;
+};
+
+TestCaseResult run_envelope_test(const std::string& name,
+                                 const std::vector<int16_t>& samples,
+                                 const std::vector<float>& expected) {
+    const auto measured = compute_rms_series(samples);
+    const float correlation = pearson_r(expected, measured);
+    return {name, correlation, correlation >= kPearsonTarget};
+}
+
+void print_result(const TestCaseResult& result) {
+    std::cout << result.name << '\n';
+    std::cout << "  Pearson r = " << std::fixed << std::setprecision(4)
+              << result.correlation << " (target >= " << kPearsonTarget << ")\n";
+    std::cout << "  Result: " << (result.pass ? "PASS" : "FAIL") << "\n\n";
+}
+
+} // namespace
+
+int main() {
+    std::cout << "Gate #013C - Job A - Audio Injector Synthetic Test\n";
+    std::cout << "==================================================\n\n";
+
+    const auto burst_result = run_envelope_test(
+        "Test 1: Sine Burst Envelope Tracking",
+        generate_sine_burst(),
+        expected_sine_burst_envelope());
+
+    const auto am_result = run_envelope_test(
+        "Test 2: AM Sine Envelope Tracking",
+        generate_amplitude_modulated_sine(),
+        expected_amplitude_modulated_envelope());
+
+    print_result(burst_result);
+    print_result(am_result);
+
+    const bool all_green = burst_result.pass && am_result.pass;
+
+    std::cout << "--------------------------------------------------\n";
+    if (all_green) {
+        std::cout << "Gate #013C Job A: METRIC VALIDITY PASS\n";
+        std::cout << "  Pearson correlations meet or exceed " << kPearsonTarget << '\n';
+        std::cout << "  Synthetic scenarios confirm deterministic envelope tracking\n";
+        return 0;
+    }
+
+    std::cout << "Gate #013C Job A: METRIC VALIDITY FAIL\n";
+    if (!burst_result.pass) {
+        std::cout << "  - Sine burst correlation below target\n";
+    }
+    if (!am_result.pass) {
+        std::cout << "  - AM sine correlation below target\n";
+    }
+    return 1;
+}
