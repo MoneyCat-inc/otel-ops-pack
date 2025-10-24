@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Butterchurn Renderer</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background: #000;
+      overflow: hidden;
+    }
+    #canvas {
+      display: block;
+      width: 100vw;
+      height: 100vh;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+
+  <script src="https://unpkg.com/butterchurn@2.6.7/lib/butterchurn.min.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/butterchurn-presets@2.4.7/lib/butterchurnPresets.min.js" crossorigin="anonymous"></script>
+
+  <script>
+    // ECRR: BossCat - Firefox DPI/aspect skew fix
+    // Based on: https://webglfundamentals.org/webgl/lessons/webgl-resizing-the-canvas.html
+    
+    const canvas = document.getElementById('canvas');
+    // CRITICAL FIX: Expose on window for page.evaluate() access
+    window.visualizer = null;
+    window.audioContext = null;
+    window.analyser = null;
+
+    // Initialize visualizer with DPI-aware sizing
+    window.initVisualizer = function(targetWidth, targetHeight) {
+      // CRITICAL FIX: Check if Butterchurn loaded
+      if (!window.butterchurn || !window.butterchurnPresets) {
+        console.error('[renderer] Butterchurn not loaded - scripts may have failed');
+        document.body.innerHTML = '<div style="color:white;padding:20px">ERROR: Butterchurn failed to load. Check network connection.</div>';
+        return;
+      }
+
+      // CRITICAL FIX: Butterchurn exports as { default: ... } in CDN minified version
+      const butterchurnLib = window.butterchurn.default || window.butterchurn;
+      const butterchurnPresetsLib = window.butterchurnPresets.default || window.butterchurnPresets;
+
+      const dpr = window.devicePixelRatio || 1;
+      
+      // Set CSS size
+      canvas.style.width = targetWidth + 'px';
+      canvas.style.height = targetHeight + 'px';
+      
+      // Set drawing buffer size (CSS * DPR)
+      canvas.width = Math.floor(targetWidth * dpr);
+      canvas.height = Math.floor(targetHeight * dpr);
+
+      // Initialize audio context for Butterchurn
+      window.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      window.analyser = window.audioContext.createAnalyser();
+      window.analyser.fftSize = 2048;
+
+      // Connect silent audio source (baseline)
+      const oscillator = window.audioContext.createOscillator();
+      oscillator.frequency.value = 0;
+      oscillator.connect(window.analyser);
+      oscillator.start();
+      
+      // Initialize window.currentAudio for external audio injection (Gate #010)
+      window.currentAudio = {
+        bass: 0, mid: 0, treb: 0,
+        bass_att: 0, mid_att: 0, treb_att: 0
+      };
+      
+      // Initialize FFT data buffer for external injection
+      window.fftDataBuffer = new Uint8Array(64);
+
+      // Initialize Butterchurn visualizer
+      try {
+        window.visualizer = butterchurnLib.createVisualizer(window.audioContext, canvas, {
+          width: canvas.width,
+          height: canvas.height,
+          pixelRatio: dpr,
+          textureRatio: 1
+        });
+
+        // Set renderer size explicitly (fixes Firefox skew)
+        window.visualizer.setRendererSize(canvas.width, canvas.height);
+
+        // Load default preset
+        const presets = butterchurnPresetsLib.getPresets();
+        const defaultPreset = presets['Flexi - mindblob [flexi + geiss + martin]'];
+        window.visualizer.loadPreset(defaultPreset, 0);
+
+        // CRITICAL: Override Butterchurn's audio data getter
+        // Inject our external audio values into per_frame equations
+        const originalRender = window.visualizer.render.bind(window.visualizer);
+        window.visualizer.render = function() {
+          // Inject external audio before rendering
+          if (window.currentAudio && window.visualizer.preset) {
+            // Override audio variables that Milkdrop equations use
+            // Butterchurn's per_frame/per_pixel have access to bass, mid, treb
+            if (window.visualizer.preset.globalVars) {
+              Object.assign(window.visualizer.preset.globalVars, {
+                bass: window.currentAudio.bass,
+                mid: window.currentAudio.mid,
+                treb: window.currentAudio.treb,
+                bass_att: window.currentAudio.bass_att,
+                mid_att: window.currentAudio.mid_att,
+                treb_att: window.currentAudio.treb_att
+              });
+            }
+          }
+          // Call original render
+          return originalRender();
+        };
+
+        // Start render loop
+        requestAnimationFrame(render);
+
+        console.log(`[renderer] Initialized ${canvas.width}x${canvas.height} (DPR: ${dpr})`);
+        console.log('[renderer] Audio injection enabled via window.currentAudio');
+      } catch (err) {
+        console.error('[renderer] Butterchurn init error:', err);
+        document.body.innerHTML = '<div style="color:white;padding:20px">ERROR: ' + err.message + '</div>';
+      }
+    };
+
+    // Render loop
+    function render() {
+      if (window.visualizer) {
+        window.visualizer.render();
+      }
+      requestAnimationFrame(render);
+    }
+
+    // Wait for scripts to load before initializing
+    function checkScriptsLoaded() {
+      if (window.butterchurn && window.butterchurnPresets) {
+        const width = parseInt(new URLSearchParams(window.location.search).get('width')) || 1920;
+        const height = parseInt(new URLSearchParams(window.location.search).get('height')) || 1080;
+        window.initVisualizer(width, height);
+      } else {
+        console.log('[renderer] Waiting for Butterchurn scripts to load...');
+        setTimeout(checkScriptsLoaded, 100);
+      }
+    }
+
+    // Start checking after DOM loads
+    window.addEventListener('load', () => {
+      setTimeout(checkScriptsLoaded, 500);
+    });
+  </script>
+</body>
+</html>
+

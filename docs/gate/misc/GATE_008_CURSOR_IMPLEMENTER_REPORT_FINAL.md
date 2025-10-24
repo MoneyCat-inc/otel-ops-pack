@@ -8,6 +8,13 @@
 
 ---
 
+> **⚠️ RECONCILIATION NOTICE (2025-10-24)**  
+> This document reflects Gate #008 certification state (7 containers, clean tree).  
+> **Post-Gate-008 Work:** Gates #009-#014 executed, adding 3 containers and 58+ files.  
+> See `GATE_008_RECONCILIATION.md` for current state. **Current:** 10 containers, drift detected.
+
+---
+
 ## 🎯 FINAL STATUS: APPROVED BY BOSSCAT OEM
 
 **Original Assessment:** ✅ READY (2025-10-22 00:00 UTC) - **RETRACTED (incorrect)**  
@@ -89,7 +96,8 @@ Gate #008 was **APPROVED BY BOSSCAT OEM** (2025-10-22 11:00 UTC) after comprehen
 Windows Collector:    RUNNING (otelcol-contrib, startup: Automatic)
 Metrics Port 8888:    SERVING (/metrics endpoint operational)
 Metrics Port 8889:    Not configured (8888 sufficient for verification)
-Docker Containers:    7/7 healthy (27+ hours uptime)
+Docker Containers:    7/7 healthy (27+ hours uptime) - Gate #008 baseline
+                      [POST-GATE-008: Now 10 - added pm-engine, scorebot, signoz-writer]
 OTLP Endpoints:       14317, 14318, 8080 - all operational
 SigNoz Health API:    {"status":"ok"}
 Canary Test:          PASS (verified 2025-10-22 10:10:20)
@@ -110,16 +118,18 @@ Implementer Report:   GATE_008_CURSOR_IMPLEMENTER_REPORT_FINAL.md (this file)
 ```
 Branch:               main
 Remediation Commits:  Multiple commits pushed to origin (through 49e029648)
-Working Tree:         Clean (post-approval)
-  - Gate artifacts: All committed and pushed
+Working Tree:         Clean (post-approval) - Gate #008 certification state
+                      [POST-GATE-008: 58+ untracked files from Gates #009-#014]
+                      [Reconciliation required - see GATE_008_RECONCILIATION.md]
+  - Gate artifacts: All committed and pushed (as of Gate #008)
   - Approval commits: Pushed to origin/main
-  - Status: Up to date with origin/main
+  - Status: Drift detected post-Gate-008
 Stale Artifacts:      Deleted (original incorrect files removed)
 ```
 
 ### Metrics ✅
 ```
-Docker Containers:    7 (verified)
+Docker Containers:    7 (verified - Gate #008 baseline) [POST-GATE-008: Now 10]
 HTML Files:           51 (verified)
 ECRR Reports:         104 gate-related
 Test Failures:        0

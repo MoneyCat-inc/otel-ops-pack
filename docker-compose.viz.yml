@@ -1,0 +1,112 @@
+# Docker Compose - Milkdrop Visual Engine Stack (Gate #009)
+# ECRR: BossCat Mission - Containerized visual authoring loop
+# Authority: BossCat OEM | Executor: Cursor{Implementer}
+# Gate: #009 APPROVED - md3-engine + scorebot architecture
+
+services:
+  md3-engine:
+    build:
+      context: ./viz-engine-butterchurn
+      dockerfile: Dockerfile
+    container_name: md3-engine
+    ports:
+      - "7001:7001"  # Control API (REST + WebSocket)
+    shm_size: "1gb"
+    environment:
+      - VIZ_WIDTH=1920
+      - VIZ_HEIGHT=1080
+      - VIZ_ASPECT=16:9
+      - VIZ_FPS=60
+      - PRESET_DIR=/app/presets
+      - NODE_ENV=production
+    volumes:
+      - ./viz-engine-butterchurn/presets:/app/presets
+      - viz-snapshots:/app/snapshots
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "/app/src/health-check.js"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 40s
+    networks:
+      - viz-net
+
+  scorebot:
+    build:
+      context: ./scorebot
+      dockerfile: Dockerfile
+    container_name: scorebot
+    ports:
+      - "7010:7010"  # Metrics API (Prometheus + validation)
+    environment:
+      - FRAME_TAP_URL=http://pm-engine:7020/snap.jpg
+      - VIZ_ENGINE_URL=http://pm-engine:7020
+      - METRICS_PORT=7010
+      - SAMPLE_INTERVAL_MS=1000
+      - FAIL_ON_SKEW=true
+      - FAIL_ON_BLACKOUT=false  # Gate #012: Will enable after visual validation
+    depends_on:
+      pm-engine:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - viz-net
+
+  # Gate #012: ProjectM container (native .milk renderer)
+  pm-engine:
+    build:
+      context: ./viz-engine-projectm
+    image: bosscat/viz-engine-projectm:latest
+    container_name: pm-engine
+    ports:
+      - "7020:7020"  # Gate #012: ProjectM HTTP API
+    shm_size: "512mb"
+    environment:
+      - DISPLAY=:99
+      - PM_PRESET_DIR=/app/presets
+      - PM_FIFO=/dev/shm/md3.pcm
+      - PM_WIDTH=1920
+      - PM_HEIGHT=1080
+      - PM_FPS=30
+      - PM_WIN_CLASS=projectM
+      - PORT=7020
+    volumes:
+      - ./presets-projectm:/app/presets:ro
+      - ./artifacts/pm:/artifacts/pm
+    command: ["/bin/bash", "-lc", "/app/pm-run.sh"]
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:7020/health || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 30s
+    restart: unless-stopped
+    networks:
+      - viz-net
+
+  # Optional: WebRTC gateway for live streaming
+  # webrtc-gateway:
+  #   build:
+  #     context: ./gateway
+  #     dockerfile: Dockerfile
+  #   container_name: viz-webrtc-gateway
+  #   ports:
+  #     - "8443:8443"  # HTTPS/WebRTC
+  #   environment:
+  #     - VIZ_ENGINE_URL=http://viz-engine:7001
+  #   depends_on:
+  #     viz-engine:
+  #       condition: service_healthy
+  #   restart: unless-stopped
+  #   networks:
+  #     - viz-net
+
+volumes:
+  viz-snapshots:
+    driver: local
+
+networks:
+  viz-net:
+    driver: bridge
+
