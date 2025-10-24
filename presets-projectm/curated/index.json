@@ -1,0 +1,93 @@
+[
+  {
+    "name": "bass_pulse",
+    "file": "curated/bass_pulse.milk",
+    "tags": ["bass-reactive", "motion", "echo"],
+    "description": "Bass-driven zoom and warp effects with visible motion"
+  },
+  {
+    "name": "bright_trails",
+    "file": "curated/bright_trails.milk",
+    "tags": ["bright", "low-blackout", "trails", "waves"],
+    "description": "High gamma, additive waves, minimal blackout"
+  },
+  {
+    "name": "spiral_motion",
+    "file": "curated/spiral_motion.milk",
+    "tags": ["rotation", "spiral", "motion"],
+    "description": "Spiral angular effects with radial motion"
+  },
+  {
+    "name": "zoom_breath",
+    "file": "curated/zoom_breath.milk",
+    "tags": ["zoom", "breathing", "low-blackout"],
+    "description": "Breathing zoom effect with minimal blackout"
+  },
+  {
+    "name": "warp_field",
+    "file": "curated/warp_field.milk",
+    "tags": ["warp", "motion", "bass-reactive"],
+    "description": "Warp field with bass-driven displacement"
+  },
+  {
+    "name": "color_pulse",
+    "file": "curated/color_pulse.milk",
+    "tags": ["bright", "colorful", "waves", "low-blackout"],
+    "description": "High gamma color cycling with additive waves"
+  },
+  {
+    "name": "radial_burst",
+    "file": "curated/radial_burst.milk",
+    "tags": ["radial", "burst", "motion"],
+    "description": "Radial burst pattern with strong motion energy"
+  },
+  {
+    "name": "subtle_flow",
+    "file": "curated/subtle_flow.milk",
+    "tags": ["subtle", "flow", "calm"],
+    "description": "Gentle flow with subtle motion for ambient use"
+  },
+  {
+    "name": "echo_chamber",
+    "file": "curated/echo_chamber.milk",
+    "tags": ["echo", "bass-reactive", "trails"],
+    "description": "Strong echo with bass-driven zoom"
+  },
+  {
+    "name": "crystal_lattice",
+    "file": "curated/crystal_lattice.milk",
+    "tags": ["crystalline", "subtle", "low-blackout"],
+    "description": "High decay crystalline structure with minimal blackout"
+  },
+  {
+    "name": "wave_dance",
+    "file": "curated/wave_dance.milk",
+    "tags": ["waves", "bright", "motion", "low-blackout"],
+    "description": "Wave-driven motion with high visibility"
+  },
+  {
+    "name": "kaleidoscope",
+    "file": "curated/kaleidoscope.milk",
+    "tags": ["kaleidoscope", "rotation", "spiral"],
+    "description": "Kaleidoscopic angular effects with rotation"
+  },
+  {
+    "name": "flowing_silk",
+    "file": "curated/flowing_silk.milk",
+    "tags": ["flowing", "subtle", "smooth"],
+    "description": "Smooth flowing silk-like motion patterns"
+  },
+  {
+    "name": "vortex_spin",
+    "file": "curated/vortex_spin.milk",
+    "tags": ["vortex", "rotation", "bass-reactive", "motion"],
+    "description": "Vortex spin with strong rotational motion"
+  },
+  {
+    "name": "neon_grid",
+    "file": "curated/neon_grid.milk",
+    "tags": ["bright", "neon", "waves", "low-blackout"],
+    "description": "Neon bright grid with additive waves and high gamma"
+  }
+]
+
