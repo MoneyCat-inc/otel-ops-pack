@@ -8,6 +8,14 @@
 
 ---
 
+> **⚠️ RECONCILIATION NOTICE (2025-10-24)**  
+> This document reflects Gate #008 certification state (7 containers, clean tree).  
+> **Post-Gate-008 Work:** Gates #009-#014 added 3 containers (pm-engine, scorebot, signoz-writer)  
+> and 58+ untracked files. See `GATE_008_RECONCILIATION.md` for current state.  
+> **Current Reality:** 10 containers, working tree requires reconciliation.
+
+---
+
 ## 🎯 Executive Summary for BossCat OEM
 
 Gate #008 is **READY FOR APPROVAL** after successful remediation of initial assessment failures.
@@ -29,7 +37,7 @@ Gate #008 is **READY FOR APPROVAL** after successful remediation of initial asse
 ```
 ✅ Windows Collector:  RUNNING (Status: Running, StartType: Automatic)
 ✅ Metrics Port 8888:  SERVING (otelcol_exporter metrics available)
-✅ Docker Containers:  7/7 healthy
+✅ Docker Containers:  7/7 healthy (Gate #008 baseline)
    • signoz-otel-collector
    • signoz
    • otel-gpu-aggregation
@@ -37,11 +45,13 @@ Gate #008 is **READY FOR APPROVAL** after successful remediation of initial asse
    • otel-gpu-inference
    • signoz-clickhouse
    • signoz-zookeeper
+   [POST-GATE-008: +3 containers added: pm-engine, scorebot, signoz-writer]
 ✅ HTML Files:         51 (verified)
 ✅ SigNoz Health API:  {"status":"ok"}
 ✅ Canary Test:        PASSING (all [OK])
 ✅ Git Status:         Ahead 7 (remediation commits on main)
-✅ Working Tree:       Modified log + 2 untracked research docs
+✅ Working Tree:       Modified log + 2 untracked research docs (Gate #008 state)
+   [POST-GATE-008: +58 untracked files from Gates #009-#014]
 ```
 
 **Fubumaki Confirmation:** "Everything lines up now."

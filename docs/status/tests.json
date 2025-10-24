@@ -1,10 +1,12 @@
 {
-  "version": "1.3",
-  "endedAt": "2025-10-23T12:46:00+00:00",
+  "version": "1.4",
+  "endedAt": "2025-10-24T11:15:00+00:00",
   "actor": "Cursor{Implementer}",
   "authority": "BossCat OEM",
-  "verdict": "GREEN",
+  "verdict": "RECONCILIATION_REQUIRED",
   "gate": 8,
+  "reconciliation_gate": "008",
+  "post_gate_work": "Gates #009-#014 executed, uncommitted",
   "remediation": true,
   "evidence": [
     "docs/ecrr/ECRR_REPORTS/ECRR_GATE_008_GREEN_TRACE_RESOLUTION_20251023.md",
@@ -30,17 +32,27 @@
       "name": "docker_containers",
       "ok": true,
       "corrected": true,
-      "previous": "4 (INCORRECT)",
-      "current": 7,
+      "previous": "7 (Gate #008 baseline)",
+      "current": 10,
+      "note": "Post-Gate-008: Added pm-engine (Gate #012B), scorebot (Gate #009), signoz-writer",
       "details": {
         "containers": [
           "signoz-otel-collector",
           "signoz",
+          "signoz-writer",
           "otel-gpu-aggregation",
           "otel-gpu-compression",
           "otel-gpu-inference",
           "signoz-clickhouse",
-          "signoz-zookeeper"
+          "signoz-zookeeper",
+          "pm-engine",
+          "scorebot"
+        ],
+        "baseline_gate_008": 7,
+        "additions_post_gate_008": [
+          "pm-engine (visual rendering - Gate #012B/#013)",
+          "scorebot (metrics validation - Gate #009/#010)",
+          "signoz-writer (added for trace processing)"
         ]
       }
     },
@@ -87,22 +99,29 @@
     },
     {
       "name": "working_tree",
-      "ok": true,
+      "ok": false,
+      "reconciliation_required": true,
       "details": {
-        "status": "Clean (post-GREEN resolution)",
-        "action": "All artifacts committed and pushed to origin/main"
+        "status": "DRIFT DETECTED - Post-Gate-008 work uncommitted",
+        "modified_files": 2,
+        "untracked_files": 58,
+        "gates_executed_post_008": ["#009", "#010", "#011", "#012", "#012B", "#013", "#014"],
+        "action_required": "Reconciliation per GATE_008_RECONCILIATION.md",
+        "blocker_for": ["Gate #015"]
       }
     }
   ],
   "reasons": [
     "Gate #008 upgraded to GREEN - Trace ingestion pipeline fully operational",
     "Windows Collector running and exporting metrics (port 8888 SERVING)",
-    "All infrastructure corrected (7 containers, 51 HTML files, all services healthy)",
+    "Infrastructure baseline: 7 containers at Gate #008 certification, now 10 containers (added pm-engine, scorebot, signoz-writer post-Gate-008)",
+    "51 HTML files verified, all services healthy",
     "End-to-end trace ingestion confirmed with 2 canary traces (1 + 1,100 spans)",
     "1,390 total traces in ClickHouse v3 schema - production data flowing",
     "Root cause analysis complete: service.name overwrite is by design (resource/defaults:action:upsert)",
     "Debug logging enabled in SigNoz collector for troubleshooting",
-    "JSON Validation Gate live (PR #197 merged) - protecting future auto-updates"
+    "JSON Validation Gate live (PR #197 merged) - protecting future auto-updates",
+    "Post-Gate-008: Gates #009-#014 executed, adding visual engine stack (reconciliation required)"
   ],
   "branch": "main",
   "commit": "740381fae",

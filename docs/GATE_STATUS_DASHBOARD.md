@@ -1,11 +1,20 @@
 # 🐾 BossCat Gate Status Dashboard
 
-**Last Updated:** 2025-10-23 12:46:00 +00:00  
-**Gate:** #008  
-**Status:** ✅ **GREEN — End-to-End Pipeline Confirmed**
+**Last Updated:** 2025-10-24 11:15:00 +00:00  
+**Gate:** #008 (Certified) + Post-Gate Work (#009-#014)  
+**Status:** 🟨 **RECONCILIATION REQUIRED** (Post-Gate-008 drift detected)
 
-**Previous Gate:** #007 APPROVED 2025-10-20 by BossCat OEM  
-**This Gate:** #008 GREEN 2025-10-23 — Ready for BossCat OEM certification
+**Gate #008:** ✅ GREEN (Certified 2025-10-23)  
+**Post-Gate Work:** Gates #009-#014 executed (uncommitted)  
+**Current State:** 10 containers, 58+ untracked files  
+**See:** `GATE_008_RECONCILIATION.md` for full analysis
+
+---
+
+> **⚠️ RECONCILIATION NOTICE**  
+> Gate #008 was certified GREEN with 7 containers and clean tree.  
+> Post-certification work (Gates #009-#014) added 3 containers and 58+ files.  
+> This dashboard updated to reflect current reality pending BossCat directive.
 
 ---
 
@@ -13,16 +22,16 @@
 
 ```
 ┌─────────────────────────────────────────────┐
-│  GATE #008 — GREEN (READY)                  │
+│  GATE #008 — GREEN (CERTIFIED)              │
+│  POST-GATE WORK — RECONCILIATION REQUIRED   │
 │  ═════════════════════════════════════════  │
 │                                             │
-│  Verdict:     ✅ GREEN                      │
-│  Authority:   Ready for BossCat OEM cert    │
-│  Evidence:    1,390 traces in ClickHouse    │
-│  Branch:      main                          │
-│  Commits:     8 remediation commits         │
+│  Gate #008:   ✅ GREEN (2025-10-23)         │
+│  Post-Work:   Gates #009-#014 executed      │
+│  Current:     🟨 RECONCILIATION REQUIRED    │
+│  Evidence:    GATE_008_RECONCILIATION.md    │
 │                                             │
-│  ALL CRITERIA MET:                          │
+│  GATE #008 BASELINE (CERTIFIED):            │
 │  ✅ Windows Collector RUNNING               │
 │  ✅ Metrics port 8888 serving               │
 │  ✅ SigNoz health OK                        │
@@ -30,13 +39,15 @@
 │  ✅ Docker: 7/7 healthy                     │
 │  ✅ HTML: 51 files verified                 │
 │                                             │
-│  MAJOR MILESTONES DELIVERED:                │
-│  • Hub Production (hub.resonai.uk)          │
-│  • Bluesky v1 Campaign (complete)           │
-│  • JSON Validation Gate (PR #197 merged)    │
+│  POST-GATE-008 ADDITIONS:                   │
+│  + Docker: Now 10 containers                │
+│    (added: pm-engine, scorebot,             │
+│     signoz-writer)                          │
+│  + Files: 58+ untracked (Gates #009-#014)   │
+│  + Capabilities: Visual engine stack        │
 │                                             │
-│  STATUS: GREEN — Full observability active  │
-│  Logs ✅ | Metrics ✅ | Traces ✅            │
+│  STATUS: Reconciliation pending BossCat     │
+│  directive on commit strategy               │
 │                                             │
 └─────────────────────────────────────────────┘
 ```
@@ -54,7 +65,7 @@
 | SigNoz UI (8080) | ✅ PASS | Port accessible |
 | Synthetic Span | ✅ PASS | 1,390 traces confirmed in ClickHouse v3 (traceID: 60ac40b9..., 5a71f519...) |
 | SigNoz Health API | ✅ PASS | {"status":"ok"} |
-| Docker Services | ✅ PASS | 7/7 healthy (27+ hours uptime) - corrected from initial claim of 4 |
+| Docker Services | 🟨 UPDATED | 7/7 at Gate #008 → **Current: 10/10** (added pm-engine, scorebot, signoz-writer) |
 | Pipeline Processing | ✅ PASS | End-to-end confirmed (OTLP → Collector → ClickHouse v3) |
 
 ### GATE-SITE ✅ PASS (CORRECTED)
@@ -73,7 +84,7 @@
 | Lane Discipline | ✅ PASS | Perfect execution |
 | ECRR Methodology | ✅ PASS | 104+ gate-related reports |
 | Evidence Trails | ✅ PASS | DELT/ARTF/ bundle complete with trace evidence |
-| Working Tree | ✅ PASS | Clean (all commits pushed to origin/main) |
+| Working Tree | 🟨 DRIFT | Clean at Gate #008 → **Current: 2 modified + 58 untracked** (reconciliation required) |
 
 ---
 
@@ -103,14 +114,18 @@
   - Service startup: Automatic
   - Canary checks: Pending trace confirmation
   
-- **✅ Docker Services:** All 7 containers healthy (27+ hours uptime)
+- **✅ Docker Services:** All 7 containers healthy (Gate #008 baseline)  
+  **Current: 10 containers (post-Gate-008 additions)**
   - signoz-otel-collector
   - signoz
+  - signoz-writer ⬅️ **NEW** (post-Gate-008)
   - otel-gpu-aggregation
   - otel-gpu-compression
   - otel-gpu-inference
   - signoz-clickhouse
   - signoz-zookeeper
+  - pm-engine ⬅️ **NEW** (Gate #012B/#013 - ProjectM visual)
+  - scorebot ⬅️ **NEW** (Gate #009/#010 - Metrics validation)
 
 - **✅ Documentation:** Corrected across all gate artifacts
   - Docker count: 4 → 7 (accurate)
