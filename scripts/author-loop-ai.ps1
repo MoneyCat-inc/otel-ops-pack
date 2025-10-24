@@ -69,7 +69,7 @@ for ($iter = 1; $iter -le $Iterations; $iter++) {
         snapshot = ""
     }
     
-    # Step 1: Get AI suggestion and apply (if not first iteration)
+    # Step 1: Get AI suggestion and apply to working preset (if not first iteration)
     if ($iter -gt 1 -and $previousMetrics) {
         Write-Host "│  │  ▶ Requesting AI suggestion based on metrics..." -ForegroundColor Gray
         try {
@@ -77,26 +77,51 @@ for ($iter = 1; $iter -le $Iterations; $iter++) {
             $tempMetrics = "$env:TEMP\preset-metrics-$iter.json"
             $previousMetrics | ConvertTo-Json -Depth 5 | Set-Content $tempMetrics
             
-            $suggestion = npx tsx scripts/bedrock-coauthor.ts $PresetFile $iter $tempMetrics 2>&1 | Out-String
+            # Save current working preset to temp file
+            $tempPreset = "$env:TEMP\working-preset-$iter.milk"
+            $workingPreset | Set-Content $tempPreset
+            
+            $suggestion = npx tsx scripts/bedrock-coauthor.ts $tempPreset $iter $tempMetrics 2>&1 | Out-String
             $evidence.ai_suggestion = $suggestion.Trim()
             
             Write-Host "│  │  ✓ AI suggestion received" -ForegroundColor Green
             
-            # Parse suggestion if it's JSON format
+            # Parse and apply suggestion if it's JSON format
             try {
-                $suggestionJson = $suggestion | ConvertFrom-Json
+                $suggestionJson = $suggestion | ConvertFrom-Json -ErrorAction Stop
                 if ($suggestionJson.parameter -and $suggestionJson.change) {
                     Write-Host "│  │    Suggestion: $($suggestionJson.parameter) → $($suggestionJson.change)" -ForegroundColor Cyan
                     Write-Host "│  │    Reasoning: $($suggestionJson.reasoning)" -ForegroundColor Gray
-                    $evidence.ai_applied = $true
+                    
+                    # ACTUALLY APPLY: Simple parameter replacement in working preset
+                    # Extract the target value from "from X to Y" format
+                    if ($suggestionJson.change -match 'to\s+([\d.]+)') {
+                        $newValue = $matches[1]
+                        $param = $suggestionJson.parameter
+                        
+                        # Apply change to working preset content
+                        $workingPreset = $workingPreset -replace "(?m)^$param\s*=\s*[\d.]+", "$param=$newValue"
+                        $workingPreset | Set-Content $tempPreset
+                        
+                        Write-Host "│  │  ✓ Applied: $param = $newValue" -ForegroundColor Green
+                        $evidence.ai_applied = $true
+                        $evidence.parameter_modified = $param
+                        $evidence.new_value = $newValue
+                    } else {
+                        Write-Host "│  │  ⚠ Could not parse change value" -ForegroundColor Yellow
+                        $evidence.ai_applied = $false
+                    }
                 } else {
                     Write-Host "│  │    Raw: $($suggestion.Substring(0, [Math]::Min(100, $suggestion.Length)))..." -ForegroundColor Cyan
                     $evidence.ai_applied = $false
                 }
             } catch {
-                Write-Host "│  │    $($suggestion.Substring(0, [Math]::Min(100, $suggestion.Length)))..." -ForegroundColor Cyan
+                Write-Host "│  │    Non-JSON response: $($suggestion.Substring(0, [Math]::Min(100, $suggestion.Length)))..." -ForegroundColor Yellow
                 $evidence.ai_applied = $false
             }
+            
+            # Use modified preset for this iteration
+            $PresetFile = $tempPreset
             
             Remove-Item $tempMetrics -ErrorAction SilentlyContinue
         } catch {
@@ -109,13 +134,26 @@ for ($iter = 1; $iter -le $Iterations; $iter++) {
         $evidence.ai_applied = $false
     }
     
-    # Step 2: Load preset
+    # Step 2: Load preset (original or AI-modified version)
     try {
         Write-Host "│  │  ▶ Loading preset..." -ForegroundColor Gray
+        
+        # For iterations with AI changes, use the temp modified file
+        # For first iteration, use original
+        $presetToLoad = if ($iter -gt 1 -and $evidence.ai_applied) {
+            # Save modified preset to presets directory with unique name
+            $modifiedName = "ai_modified_iter$($iter)_$(Split-Path $PresetFile -Leaf)"
+            $modifiedPath = "presets-projectm/$modifiedName"
+            $workingPreset | Set-Content $modifiedPath
+            $modifiedName
+        } else {
+            $presetName
+        }
+        
         $sw = [System.Diagnostics.Stopwatch]::StartNew()
         $loadResult = Invoke-RestMethod -Uri "$PmEngineUrl/pm/preset" `
             -Method Post `
-            -Body (@{ name = $presetName } | ConvertTo-Json) `
+            -Body (@{ name = $presetToLoad } | ConvertTo-Json) `
             -ContentType "application/json" `
             -TimeoutSec 10
         $sw.Stop()
@@ -124,7 +162,11 @@ for ($iter = 1; $iter -le $Iterations; $iter++) {
             throw "Preset load failed: $($loadResult.error)"
         }
         
+        $evidence.preset_loaded = $presetToLoad
         Write-Host "│  │  ✓ Loaded in $($sw.ElapsedMilliseconds)ms" -ForegroundColor Green
+        if ($evidence.ai_applied) {
+            Write-Host "│  │    (AI-modified version)" -ForegroundColor Cyan
+        }
     } catch {
         Write-Host "│  │  ✗ Load failed: $_" -ForegroundColor Red
         $evidence.decision = "ERROR"
