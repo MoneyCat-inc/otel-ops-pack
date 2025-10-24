@@ -1,7 +1,7 @@
 # Scorebot Python Dependencies
 # ECRR: BossCat Mission
 
-flask==3.0.0
+flask==3.1.2
 requests==2.31.0
 opencv-python==4.8.1.78
 numpy==1.26.2
