@@ -49,6 +49,11 @@ RUN chmod +x /app/pm-run.sh
 RUN g++ -O2 -std=c++17 /app/pm-audio-bridge.cpp -o /usr/local/bin/pm-audio-bridge \
  && chmod +x /usr/local/bin/pm-audio-bridge
 
+# Gate #013C Job A: Compile synthetic audio test (standalone, no projectM deps)
+COPY audio-test.cpp ./
+RUN g++ -O2 -std=c++17 audio-test.cpp -o /usr/local/bin/audio-test \
+ && chmod +x /usr/local/bin/audio-test
+
 # Presets directory (bind mount at runtime as well)
 RUN mkdir -p /presets
 ENV PRESET_DIR=/presets
