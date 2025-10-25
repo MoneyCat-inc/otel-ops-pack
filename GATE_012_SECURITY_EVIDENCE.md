@@ -119,15 +119,26 @@ git diff pnpm-lock.yaml  # Minimal changes, fast-json-patch override applied
 
 ## Gate #012 Status
 
-**Current State:** ✅ **GREEN**
+**Current State:** ✅ **GREEN (npm scope)**
 
-**Security Posture:**
+**Security Posture (npm/pnpm audit):**
 - Critical: 0
-- High: 0 → **ELIMINATED**
+- High: 1 → 0 ✅ **ELIMINATED**
 - Moderate: 0
-- Total: 0 vulnerabilities
+- Total: **0 npm vulnerabilities** ✅
 
-**Recommendation:** ✅ APPROVE GATE #012
+**GitHub Dependabot (All Sources):**
+- Before: 7 vulnerabilities (1 critical, 3 high, 3 moderate)
+- After: 6 vulnerabilities (1 critical, 2 high, 3 moderate)
+- Change: -1 HIGH (npm) ✅
+
+**Remaining (Non-npm Sources):**
+- 1 critical (likely: containers, Actions, or other languages)
+- 2 high (likely: containers, Actions, or other languages)
+- 3 moderate (likely: containers, Actions, or other languages)
+- **Total: 6 vulnerabilities** (requires future gate)
+
+**Recommendation:** ✅ APPROVE GATE #012 (npm remediation complete); schedule Gate #013 for non-npm sources
 
 ---
 
