@@ -261,8 +261,9 @@ if ($DryRun) {
 } else {
     Write-Host "📝 Posting update to Issue #$IssueNumber..." -ForegroundColor Cyan
     
-    # Save to temp file for gh CLI
-    $tempFile = Join-Path $env:TEMP "sbom-tracking-update-$(Get-Date -Format 'yyyyMMddHHmmss').md"
+    # Save to temp file for gh CLI (use RUNNER_TEMP in GitHub Actions, fallback to TEMP/tmp)
+    $tempDir = if ($env:RUNNER_TEMP) { $env:RUNNER_TEMP } elseif ($env:TEMP) { $env:TEMP } else { "/tmp" }
+    $tempFile = Join-Path $tempDir "sbom-tracking-update-$(Get-Date -Format 'yyyyMMddHHmmss').md"
     $updateBody | Out-File -FilePath $tempFile -Encoding utf8
     
     # Post comment to issue
