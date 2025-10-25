@@ -85,6 +85,26 @@ services:
     networks:
       - viz-net
 
+  # Gate #011: Milk v0 viewer (MJPEG stream from pm-engine X display)
+  milk-v0:
+    build:
+      context: ./docs/milk-v0
+    container_name: milk-v0
+    ports:
+      - "8080:8080"  # Milk viewer HTTP
+    environment:
+      - DISPLAY=:99
+      - GEOMETRY=1920x1080
+      - FPS=30
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:ro  # Share X11 socket from pm-engine
+    depends_on:
+      pm-engine:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - viz-net
+
   # Optional: WebRTC gateway for live streaming
   # webrtc-gateway:
   #   build:
