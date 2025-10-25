@@ -92,7 +92,7 @@ services:
       context: ./docs/milk-v0
     container_name: milk-v0
     ports:
-      - "8080:8080"  # Milk viewer HTTP
+      - "8090:8080"  # Milk viewer HTTP (host 8090 -> container 8080)
     environment:
       - DISPLAY=:99
       - GEOMETRY=1920x1080
