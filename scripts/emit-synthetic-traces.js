@@ -1,10 +1,10 @@
 // Gate #016 Final Certification - Synthetic Trace Emission
 // Emit visuals and audio test spans to OTLP collector
 
-const { trace, context, ROOT_CONTEXT } = require('@opentelemetry/api');
-const { OTLPTraceExporter } = require('@opentelemetry/exporter-otlp-proto');
+const { trace } = require('@opentelemetry/api');
+const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-proto');
 const { Resource } = require('@opentelemetry/resources');
-const { SemanticResourceAttributes } = require('@opentelemetry/semantic-conventions');
+const { SEMRESATTRS_SERVICE_NAME, SEMRESATTRS_DEPLOYMENT_ENVIRONMENT } = require('@opentelemetry/semantic-conventions');
 const { NodeSDK } = require('@opentelemetry/sdk-node');
 const { getNodeAutoInstrumentations } = require('@opentelemetry/auto-instrumentations-node');
 
@@ -17,8 +17,8 @@ const otlpExporter = new OTLPTraceExporter({
 // Configure SDK
 const sdk = new NodeSDK({
   resource: new Resource({
-    [SemanticResourceAttributes.SERVICE_NAME]: process.env.OTEL_SERVICE_NAME || 'viz-engine-projectm',
-    [SemanticResourceAttributes.DEPLOYMENT_ENVIRONMENT]: process.env.DEPLOYMENT_ENVIRONMENT || 'staging',
+    [SEMRESATTRS_SERVICE_NAME]: process.env.OTEL_SERVICE_NAME || 'viz-engine-projectm',
+    [SEMRESATTRS_DEPLOYMENT_ENVIRONMENT]: process.env.DEPLOYMENT_ENVIRONMENT || 'staging',
     'release.gate': '016'
   }),
   traceExporter: otlpExporter,
