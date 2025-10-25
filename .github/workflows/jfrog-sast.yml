@@ -29,8 +29,9 @@ env:
   JF_TOKEN: ${{ secrets.JF_ACCESS_TOKEN }}
 jobs:
   analyze:
-    # BossCat policy: CI PRs skip paid vendor scans; enforce on main/schedule
-    if: ${{ github.event_name != 'pull_request' }}
+    # DISABLED 2025-10-25: Redundant with CodeQL + Trivy (SAST + SCA already GREEN)
+    # To re-enable: change to if: ${{ github.event_name != 'pull_request' }}
+    if: false
     name: Analyze
     runs-on: ubuntu-latest
     permissions:

@@ -27,8 +27,9 @@ permissions:
 
 jobs:
   build:
-    # Skip on PRs; enable on main releases/nightly
-    if: ${{ github.event_name != 'pull_request' }}
+    # DISABLED 2025-10-25: Code obfuscation not applicable to open-source project
+    # To re-enable: change to if: ${{ github.event_name != 'pull_request' }}
+    if: false
     runs-on: ubuntu-latest
     permissions:
       contents: read

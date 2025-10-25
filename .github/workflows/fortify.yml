@@ -32,8 +32,9 @@ concurrency:
 
 jobs:
   Fortify-AST-Scan:
-    # BossCat policy: run Fortify on main/schedule; skip on PR to prevent gating issues
-    if: ${{ github.event_name != 'pull_request' }}
+    # DISABLED 2025-10-25: Redundant with CodeQL (SAST already GREEN)
+    # To re-enable: change to if: ${{ github.event_name != 'pull_request' }}
+    if: false
     # Use the appropriate runner for building your source code. Ensure dev tools required to build your code are present and configured appropriately (MSBuild, Python, etc).
     runs-on: ubuntu-latest
     permissions:

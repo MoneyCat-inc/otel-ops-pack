@@ -36,8 +36,9 @@ on:
 
 jobs:
   mayhem-for-api:
-    # Skip on PRs; allow manual/scheduled runs
-    if: ${{ github.event_name != 'pull_request' }}
+    # DISABLED 2025-10-25: Redundant with APIsec (API testing already covered)
+    # To re-enable: change to if: ${{ github.event_name != 'pull_request' }}
+    if: false
     name: Mayhem for API
     # Mayhem for API runs on linux, mac and windows
     runs-on: ubuntu-latest
