@@ -74,6 +74,7 @@ services:
     volumes:
       - ./presets-projectm:/app/presets:ro
       - ./artifacts/pm:/artifacts/pm
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw  # Share X11 socket with milk-v0
     command: ["/bin/bash", "-lc", "/app/pm-run.sh"]
     healthcheck:
       test: ["CMD-SHELL", "curl -sf http://localhost:7020/health || exit 1"]
