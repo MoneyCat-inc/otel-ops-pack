@@ -26,7 +26,7 @@
     },
     "verdict": {
       "type": "string",
-      "enum": ["READY", "WARN", "FAIL", "GREEN"],
+      "enum": ["READY", "WARN", "FAIL", "GREEN", "RECONCILED", "APPROVED", "BLOCKED"],
       "description": "Gate readiness verdict"
     },
     "gate": {
