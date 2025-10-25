@@ -9,12 +9,7 @@
     "trace": "node emit-milk-trace.js"
   },
   "dependencies": {
-    "express": "^4.18.2",
-    "@opentelemetry/api": "^1.7.0",
-    "@opentelemetry/sdk-node": "^0.45.0",
-    "@opentelemetry/exporter-otlp-http": "^0.45.0",
-    "@opentelemetry/resources": "^1.17.0",
-    "@opentelemetry/semantic-conventions": "^1.17.0"
+    "express": "^4.18.2"
   }
 }
 
