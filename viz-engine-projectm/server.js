@@ -3,6 +3,7 @@
 const express = require('express');
 const { spawn } = require('child_process');
 const fs = require('fs');
+const { BrightnessGuard } = require('./brightness-guard');
 
 const app = express();
 app.use(express.json({ limit: '5mb' }));
@@ -37,6 +38,14 @@ let audioStats = {
 };
 const EMA_ALPHA = 0.1;  // Exponential moving average smoothing
 let audioFifoStream = null;
+
+// Gate #016: Brightness guard
+const brightnessGuard = new BrightnessGuard({
+  lMin: parseFloat(process.env.GUARD_LMIN || '0.07'),
+  guardWindowMs: parseInt(process.env.GUARD_WINDOW_MS || '120'),
+  guardMode: process.env.GUARD_MODE || 'auto_switch',
+  enabled: process.env.GUARD_ENABLED !== 'false'
+});
 
 // Ensure presets directory exists
 fs.mkdirSync(PM_PRESET_DIR, { recursive: true });
@@ -225,7 +234,7 @@ app.get('/snap.jpg', async (req, res) => {
   }
 });
 
-// GET /pm/metrics - Fast local luminance check
+// GET /pm/metrics - Fast local luminance check with brightness guard
 app.get('/pm/metrics', async (req, res) => {
   try {
     const { stdout } = await sh(
@@ -234,7 +243,23 @@ app.get('/pm/metrics', async (req, res) => {
     );
     const mean = parseFloat(stdout.trim()) || 0;
     const nonBlackPct = Math.round(mean * 100);
-    res.json({ ok: true, mean_luma: mean, non_black_pct: nonBlackPct });
+    
+    // Gate #016: Feed luma to brightness guard
+    const guardResult = brightnessGuard.checkFrame(mean);
+    
+    // If guard triggered and mode is auto_switch, trigger preset change
+    if (guardResult.triggered && guardResult.mode === 'auto_switch') {
+      console.log('[pm-metrics] Brightness guard triggered auto-switch');
+      // Trigger async (don't block response)
+      sendKey('n').catch(e => console.error('[pm-metrics] Auto-switch failed:', e));
+    }
+    
+    res.json({ 
+      ok: true, 
+      mean_luma: mean, 
+      non_black_pct: nonBlackPct,
+      guard: guardResult
+    });
   } catch (e) {
     res.status(500).json({ ok: false, error: String(e) });
   }
@@ -309,12 +334,25 @@ app.get('/audio/stats', (req, res) => {
   });
 });
 
+// Gate #016: Brightness guard endpoints
+// GET /guard/stats - Return brightness guard statistics
+app.get('/guard/stats', (req, res) => {
+  res.json({ ok: true, ...brightnessGuard.getStats() });
+});
+
+// POST /guard/reset - Reset brightness guard statistics
+app.post('/guard/reset', (req, res) => {
+  brightnessGuard.reset();
+  res.json({ ok: true, message: 'Brightness guard statistics reset' });
+});
+
 // Start HTTP server (Job 2 complete)
 app.listen(PORT, () => {
   console.log(`[pm-api] ProjectM HTTP API listening on port ${PORT}`);
   console.log(`[pm-api] Display: ${DISPLAY}, Size: ${PM_WIDTH}x${PM_HEIGHT}`);
-  console.log(`[pm-api] Endpoints: /health, /stats, /pm/presets, /pm/next, /pm/prev, /pm/random, /pm/preset, /snap.jpg, /pm/metrics, /audio, /audio/stats`);
+  console.log(`[pm-api] Endpoints: /health, /stats, /pm/presets, /pm/next, /pm/prev, /pm/random, /pm/preset, /snap.jpg, /pm/metrics, /audio, /audio/stats, /guard/stats, /guard/reset`);
   console.log(`[pm-api] Audio path: ${AUDIO_PATH}, FIFO: ${PM_AUDIO_FIFO}`);
+  console.log(`[pm-api] Brightness guard: L_min=${brightnessGuard.lMin}, window=${brightnessGuard.guardWindowMs}ms, mode=${brightnessGuard.guardMode}`);
   console.log(`[pm-api] Ready for preset authoring + scorebot validation`);
 });
 

@@ -155,3 +155,10 @@
 {"t":"2025-10-18T02:09:25.217Z","who":"A","type":"preflight","lane":"SOCM","msg":"start post"}
 {"t":"2025-10-18T02:09:25.218Z","who":"A","type":"report","lane":"SOCM","msg":"no approved drafts"}
 {"t":"2025-10-18T02:09:25.218Z","who":"A","type":"exit","lane":"SOCM","msg":"noop"}
+{"event":"plan","lane":"visual-016","timestamp":"2025-10-25T00:58:04Z","job":"V1"}
+{"git_state":"clean","event":"preflight","timestamp":"2025-10-25T00:58:04Z","kill_switch":"clear"}
+{"event":"lock","timestamp":"2025-10-25T00:58:04Z","acquired":true}
+{"loc_delta":150,"event":"edit","timestamp":"2025-10-25T01:22:37Z","job":"V1","files_touched":4}
+{"result":"PASS","timestamp":"2025-10-25T01:22:37Z","blackout_ratio_max":"0%","event":"test","job":"V1","all_presets_pass":15}
+{"job":"V1","status":"GREEN","event":"report","budget_pass":true,"timestamp":"2025-10-25T01:24:15Z","loc_delta":150,"files_touched":4}
+{"event":"exit","lock_released":true,"code":0,"job":"V1","timestamp":"2025-10-25T01:24:15Z"}
