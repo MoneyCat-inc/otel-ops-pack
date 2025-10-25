@@ -284,3 +284,47 @@ Combined Gate #016 totals (V1 + V1B):
 
 **Status:** Plan complete, ready to implement active guard remediation.  
 **Next:** Implement internal timer loop and optimized luma measurement.
+# Gate #016 — Job V2 Execution Plan
+## Frame-Timing Stabilizer & Jitter Budget
+
+**Lane:** `lane/visual-016`  
+**Job:** V2 (Frame-Timing Stabilizer)  
+**Lock:** Acquired 2025-10-24  
+**Executor:** Cursor{Implementer} (Writer A)  
+**Monitor:** IONA-CATS-DOCS-BETA (Reader B)  
+**Parent:** Job V1B (Active Guard Remediation)
+
+---
+
+## 🎯 Goal (≤150 words)
+
+Stabilize the visual guard sampler so the frame cadence holds target 100 ms intervals with ≤8 ms jitter while keeping the guard from thrashing. Introduce a `FrameTimingStabilizer` that records tick start times, caps in-flight samples, and enforces a pin budget (≤1/60s). Surface stabilizer stats via `/pm/metrics` and `/guard/stats` for BossCat validation. Guard resets must clear stabilizer state. Update validation tooling to ensure jitter and pin metrics remain within budget without regressing the ≥9 Hz cadence or blackout guarantees established in Job V1B. Budget: ≤200 LOC, ≤6 files, 1 job. ECRR discipline maintained.
+
+---
+
+## 🛠️ Components
+
+### 1. Frame Timing Stabilizer (server.js + new module)
+- Instantiate `FrameTimingStabilizer` with target interval, jitter budget, pin window.
+- Record tick starts inside guard timer, register pins when jitter exceeds budget or queue saturated.
+- Track active sample count and expose stats (avg, p95, max jitter, pin count).
+- Snapshot stabilizer metrics in cached guard state and APIs.
+
+### 2. Guard Reset Integration
+- Reset stabilizer alongside brightness guard.
+- Ensure cached state reflects reset (tick duration zeroed, pin count cleared).
+
+### 3. Validation Script (scripts/test-visual-guard-v2.ps1)
+- Warm-up, fetch metrics, assert:
+  - `stabilizer.jitterMaxMs ≤ 8`
+  - `stabilizer.stabilizerPinCount ≤ 1`
+  - Cadence ≥ 9 Hz, sufficient sample size.
+- Emit JSONL evidence summarizing jitter + pin metrics.
+
+---
+
+## 🔄 Rollback Plan
+
+If jitter budget fails: revert stabilizer integration, restore V1B timer loop from commit `640268256`, rerun validation, report failure (status 🔴 BLOCKED) with metrics snapshot.
+
+---

@@ -232,3 +232,14 @@ Budget: ✅ Within limits (8 files, ~250 LOC)
 **Files:** 6 (presets + index.json + scoring script); ~140 LOC (within budgets)  
 **Verdict:** AMBER accepted - functional library; GREEN requires audio reactivity (Gate #013C)
 
+## 2025-10-24 - GATE #016 V2 (Frame-Timing Stabilizer)
+
+**Executor:** Cursor{Implementer} | **Status:** ? VALIDATION IN PROGRESS  
+**Deliverable:** FrameTimingStabilizer module + jitter/pin budget telemetry  
+**Highlights:**
+- Guard timer now records tick jitter, pin budget, and active sample count
+-  `/pm/metrics` exposes stabilizer stats (`visual_tick_jitter_ms_max`, `stabilizer_pin_count`) 
+-  `/guard/reset` clears stabilizer state alongside brightness guard 
+- Added validation script  `scripts/test-visual-guard-v2.ps1` (asserts jitter <=8 ms, pins <=1/60s) 
+
+**Evidence (pending run):**  `GATE_016_JOB_V2_EVIDENCE.md`, `artifacts/pm/gate-016-v2-test.jsonl` 

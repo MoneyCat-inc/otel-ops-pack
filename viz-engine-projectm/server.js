@@ -4,6 +4,7 @@ const express = require('express');
 const { spawn } = require('child_process');
 const fs = require('fs');
 const { BrightnessGuard } = require('./brightness-guard');
+const { FrameTimingStabilizer } = require('./frame-timing-stabilizer');
 
 const app = express();
 app.use(express.json({ limit: '5mb' }));
@@ -16,6 +17,10 @@ const PM_FPS = process.env.PM_FPS || '30';
 const PM_PRESET_DIR = process.env.PM_PRESET_DIR || '/app/presets';
 const PM_AUDIO_FIFO = process.env.PM_AUDIO_FIFO || '/tmp/pm-audio.pcm';
 const AUDIO_PATH = process.env.AUDIO_PATH || 'pulse';
+const GUARD_INTERVAL_MS = parseInt(process.env.GUARD_INTERVAL_MS || '100', 10);
+const GUARD_JITTER_BUDGET_MS = parseInt(process.env.GUARD_JITTER_BUDGET_MS || '8', 10);
+const GUARD_PIN_WINDOW_MS = parseInt(process.env.GUARD_PIN_WINDOW_MS || '60000', 10);
+const GUARD_MAX_INFLIGHT = parseInt(process.env.GUARD_MAX_INFLIGHT || '4', 10);
 
 let pmProc = null;
 let currentPreset = null;
@@ -46,56 +51,85 @@ const brightnessGuard = new BrightnessGuard({
   guardMode: process.env.GUARD_MODE || 'auto_switch',
   enabled: process.env.GUARD_ENABLED !== 'false'
 });
+const frameTimingStabilizer = new FrameTimingStabilizer({
+  targetIntervalMs: GUARD_INTERVAL_MS,
+  jitterBudgetMs: GUARD_JITTER_BUDGET_MS,
+  pinWindowMs: GUARD_PIN_WINDOW_MS
+});
 
-// Job V1B: Cached guard state for active monitoring
+// Job V1B/V2: Cached guard state for active monitoring
 let cachedGuardState = {
   luma: 0,
   timestamp: Date.now(),
   guardResult: { triggered: false },
   tickCount: 0,
-  tickDurationMs: 0
+  tickDurationMs: 0,
+  inFlight: 0,
+  stabilizer: frameTimingStabilizer.getStats()
 };
+let totalGuardTicks = 0;
 
-// Job V1B: Active guard monitoring at 10 Hz
+// Job V2: Active guard monitoring with frame timing stabilizer
 let guardInterval = null;
-async function startGuardMonitoring() {
+let activeSamples = 0;
+function snapshotGuardState(extra = {}) {
+  cachedGuardState = {
+    ...cachedGuardState,
+    ...extra,
+    inFlight: Math.max(activeSamples, 0),
+    stabilizer: frameTimingStabilizer.getStats()
+  };
+}
+
+function startGuardMonitoring() {
   if (guardInterval) return;  // Already running
-  
-  console.log('[guard-timer] Starting active monitoring at 10 Hz');
-  
-  guardInterval = setInterval(async () => {
-    const startTick = Date.now();
-    
-    try {
-      // Fast luma measurement (xwd|convert is still used but runs async)
-      const { stdout } = await sh(
-        `xwd -display ${DISPLAY} -root -silent | convert xwd:- -colorspace Gray -format "%[fx:mean]" info:`,
-        { env: XENV, timeout: 5000 }
-      );
-      const luma = parseFloat(stdout.trim()) || 0;
-      
-      // Feed to guard
-      const guardResult = brightnessGuard.checkFrame(luma);
-      
-      // Auto-switch on trigger (timer context)
-      if (guardResult.triggered && guardResult.mode === 'auto_switch') {
-        console.log('[guard-timer] Brightness guard triggered auto-switch');
-        sendKey('n').catch(e => console.error('[guard-timer] Auto-switch failed:', e));
-      }
-      
-      // Cache state
-      const tickDuration = Date.now() - startTick;
-      cachedGuardState = {
-        luma,
-        timestamp: Date.now(),
-        guardResult,
-        tickCount: cachedGuardState.tickCount + 1,
-        tickDurationMs: tickDuration
-      };
-    } catch (e) {
-      console.error('[guard-timer] Luma measurement failed:', e);
+
+  console.log(`[guard-timer] Starting frame timing stabilizer at ${GUARD_INTERVAL_MS}ms (jitter≤${GUARD_JITTER_BUDGET_MS}ms, inflight≤${GUARD_MAX_INFLIGHT})`);
+
+  guardInterval = setInterval(() => {
+    const tickStart = Date.now();
+    frameTimingStabilizer.recordTickStart(tickStart);
+
+    if (activeSamples >= GUARD_MAX_INFLIGHT) {
+      frameTimingStabilizer.registerPin(tickStart);
+      snapshotGuardState({ timestamp: tickStart });
+      return;
     }
-  }, 100);  // 10 Hz = 100ms interval
+
+    activeSamples += 1;
+    let pendingSnapshot = null;
+
+    sampleLuma()
+      .then((luma) => {
+        const guardResult = brightnessGuard.checkFrame(luma);
+
+        if (guardResult.triggered && guardResult.mode === 'auto_switch') {
+          console.log('[guard-timer] Brightness guard triggered auto-switch');
+          sendKey('n').catch((e) => console.error('[guard-timer] Auto-switch failed:', e));
+        }
+
+        const durationMs = Date.now() - tickStart;
+        frameTimingStabilizer.recordDuration(durationMs);
+        totalGuardTicks += 1;
+
+        pendingSnapshot = {
+          luma,
+          timestamp: Date.now(),
+          guardResult,
+          tickCount: totalGuardTicks,
+          tickDurationMs: durationMs
+        };
+      })
+      .catch((err) => {
+        console.error('[guard-timer] Luma measurement failed:', err);
+        frameTimingStabilizer.registerPin();
+        pendingSnapshot = { timestamp: Date.now() };
+      })
+      .finally(() => {
+        activeSamples = Math.max(activeSamples - 1, 0);
+        snapshotGuardState(pendingSnapshot || { timestamp: Date.now() });
+      });
+  }, GUARD_INTERVAL_MS);
 }
 
 // Ensure presets directory exists
@@ -167,6 +201,14 @@ const sh = promisify(exec);
 const XENV = { DISPLAY };
 const PM_WIN_CLASS = process.env.PM_WIN_CLASS || 'projectM';
 let cachedWin = null;
+
+async function sampleLuma() {
+  const { stdout } = await sh(
+    `xwd -display ${DISPLAY} -root -silent | convert xwd:- -colorspace Gray -format "%[fx:mean]" info:`,
+    { env: XENV, timeout: 5000 }
+  );
+  return parseFloat(stdout.trim()) || 0;
+}
 
 // Find ProjectM window ID
 async function findWin() {
@@ -298,7 +340,11 @@ app.get('/pm/metrics', (req, res) => {
     cached_at: cachedGuardState.timestamp,
     cache_age_ms: age_ms,
     tick_count: cachedGuardState.tickCount,
-    tick_duration_ms: cachedGuardState.tickDurationMs
+    tick_duration_ms: cachedGuardState.tickDurationMs,
+    in_flight: cachedGuardState.inFlight,
+    stabilizer: cachedGuardState.stabilizer,
+    visual_tick_jitter_ms_max: cachedGuardState.stabilizer ? cachedGuardState.stabilizer.jitterMaxMs : 0,
+    stabilizer_pin_count: cachedGuardState.stabilizer ? cachedGuardState.stabilizer.stabilizerPinCount : 0
   });
 });
 
@@ -374,12 +420,22 @@ app.get('/audio/stats', (req, res) => {
 // Gate #016: Brightness guard endpoints
 // GET /guard/stats - Return brightness guard statistics
 app.get('/guard/stats', (req, res) => {
-  res.json({ ok: true, ...brightnessGuard.getStats() });
+  const guardStats = brightnessGuard.getStats();
+  res.json({
+    ok: true,
+    ...guardStats,
+    stabilizer: frameTimingStabilizer.getStats()
+  });
 });
 
 // POST /guard/reset - Reset brightness guard statistics
 app.post('/guard/reset', (req, res) => {
   brightnessGuard.reset();
+  frameTimingStabilizer.reset();
+  snapshotGuardState({
+    timestamp: Date.now(),
+    tickDurationMs: 0
+  });
   res.json({ ok: true, message: 'Brightness guard statistics reset' });
 });
 
@@ -397,4 +453,3 @@ app.listen(PORT, () => {
     startGuardMonitoring();
   }, 5000);  // Wait 5s for ProjectM to fully initialize
 });
-

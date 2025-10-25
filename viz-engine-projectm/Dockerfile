@@ -40,6 +40,7 @@ RUN cmake -S . -B build -DCMAKE_BUILD_TYPE=Release \
 WORKDIR /app
 COPY server.js ./server.js
 COPY brightness-guard.js ./brightness-guard.js
+COPY frame-timing-stabilizer.js ./frame-timing-stabilizer.js
 COPY pm-run.sh ./pm-run.sh
 COPY pm-settings.ini ./pm-settings.ini
 COPY pm-audio-bridge.cpp ./pm-audio-bridge.cpp

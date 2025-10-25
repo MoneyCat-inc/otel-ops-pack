@@ -170,3 +170,6 @@
 {"guard_independent":true,"timestamp":"2025-10-25T04:50:21Z","event":"test","cadence_hz":9.92,"result":"PASS","job":"V1B"}
 {"job":"V1B","status":"GREEN","timestamp":"2025-10-25T04:52:26Z","cadence_hz":9.92,"blockers_resolved":2,"event":"report"}
 {"event":"exit","timestamp":"2025-10-25T04:52:26Z","code":0,"job":"V1B","lock_released":true}
+{"pin_count":0,"jitter_p95_ms":2,"cadence_hz":9.94,"result":"PASS","event":"test","job":"V2","timestamp":"2025-10-25T05:57:00Z"}
+{"status":"GREEN","jitter_p95_ms":2,"cadence_hz":9.94,"timestamp":"2025-10-25T05:57:28Z","job":"V2","pin_count":0,"event":"report"}
+{"lock_released":true,"event":"exit","timestamp":"2025-10-25T05:57:28Z","code":0,"job":"V2"}
