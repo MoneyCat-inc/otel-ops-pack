@@ -30,14 +30,16 @@
 - Port 55679 (Debug): ✅ LISTENING
 
 **Docker Services:**
-- Total Containers: 11 (all healthy)
+- Total Containers: 11 (all running)
+- Containers with health checks: 9/11 (healthy)
+- Containers without health checks: 2/11 (running, operational)
 - SignNoz Stack: 8 containers operational
 - Visual Engine Stack: 2 containers (pm-engine, scorebot)
 - Other: 1 container (elastic_chandrasekhar)
 - Container Details:
   1. signoz-otel-collector (Up 44 hours, healthy)
   2. signoz (Up 2 days, healthy)
-  3. signoz-writer (Up 36 hours)
+  3. signoz-writer (Up 36 hours, running - no health check)
   4. signoz-clickhouse (Up 2 days, healthy)
   5. signoz-zookeeper (Up 2 days, healthy)
   6. otel-gpu-aggregation (Up 2 days, healthy)
@@ -45,7 +47,7 @@
   8. otel-gpu-inference (Up 2 days, healthy)
   9. pm-engine (Up 5 hours, healthy)
   10. scorebot (Up 26 hours, healthy)
-  11. elastic_chandrasekhar (Up 15 hours)
+  11. elastic_chandrasekhar (Up 15 hours, running - no health check)
 
 **Git Status:**
 - Working Tree: ✅ CLEAN (0 modified, 0 untracked)
@@ -56,9 +58,9 @@
 
 **System Performance:**
 - Windows Collector Uptime: 43h 33m (continuous operation)
-- Docker Containers: 10/10 healthy
+- Docker Containers: 11/11 running (9/11 with explicit health checks showing healthy)
 - Endpoint Availability: 4/4 operational
-- Health Check Pass Rate: 100%
+- Health Check Pass Rate: 100% (where applicable)
 
 **Asset Inventory:**
 - HTML Files: 12 files in docs/ directory
@@ -91,10 +93,10 @@ All critical systems operational:
 
 **Verification Checks Performed:**
 1. Windows Collector service status verified
-2. Docker container health confirmed (11 containers)
+2. Docker container health confirmed (11 containers: 9 healthy, 2 running without health checks)
 3. OTLP endpoint connectivity tested
 4. SigNoz health API checked
-5. Git working tree status confirmed
+5. Git working tree status confirmed (commit a8e32a898)
 6. Port connectivity validated
 7. HTML file count verified (12 files)
 
@@ -156,8 +158,9 @@ git status --short → CLEAN
 - ✅ OTLP gRPC: Port 5317 listening
 - ✅ OTLP HTTP: Port 5318 listening
 - ✅ SigNoz Health: {"status":"ok"}
-- ✅ Docker Services: 11/11 healthy
+- ✅ Docker Services: 11/11 running (9/11 with health checks showing healthy)
 - ✅ Container Uptime: 2+ days baseline
+- ✅ Git Status: CLEAN (commit a8e32a898)
 
 **GATE-SITE:**
 - ✅ HTML Files: 12 files verified in docs/
@@ -249,9 +252,9 @@ git status --short → CLEAN
 **Key Indicators:**
 - ✅ All GATE-CORE checks pass
 - ✅ Zero blockers
-- ✅ Clean working tree
+- ✅ Clean working tree (commit a8e32a898)
 - ✅ Systems stable (43h+ Windows Collector uptime)
-- ✅ Docker services healthy (11/11 containers)
+- ✅ Docker services operational (11/11 running, 9/11 with health checks)
 - ✅ Evidence complete
 
 **Risk Level:** LOW
