@@ -28,11 +28,12 @@
 **X11 Display Sharing:** Milk v0 connects to pm-engine's Xvfb display at `:99` via shared `/tmp/.X11-unix` socket. Milk v0 does NOT start its own Xvfb - it assumes pm-engine's X server is already running.
 
 **Implementation:**
-- pm-engine starts Xvfb at `:99` via pm-run.sh
-- docker-compose volumes `/tmp/.X11-unix` as rw mount to both containers
+- pm-engine starts Xvfb at `:99` via pm-run.sh and mounts host `/tmp/.X11-unix`
+- milk-v0 also mounts host `/tmp/.X11-unix` (same path, bidirectional share)
+- Both containers access the same X server socket on the host
 - milk-v0's ffmpeg connects to `:99` and captures projectM frames
 
-**Status:** ✅ Fixed - Milk v0 no longer starts conflicting Xvfb instance
+**Status:** ✅ Fixed - Both containers share host X11 socket for proper display sharing
 
 ---
 
