@@ -163,3 +163,10 @@
 {"job":"V1","status":"GREEN","event":"report","budget_pass":true,"timestamp":"2025-10-25T01:24:15Z","loc_delta":150,"files_touched":4}
 {"event":"exit","lock_released":true,"code":0,"job":"V1","timestamp":"2025-10-25T01:24:15Z"}
 {"job":"V1","original_status":"GREEN","event":"correction","timestamp":"2025-10-25T04:37:44Z","reason":"architectural_flaws","corrected_status":"BLOCKED"}
+{"parent":"V1","timestamp":"2025-10-25T04:41:15Z","lane":"visual-016","job":"V1B","event":"plan"}
+{"git_state":"blocked_v1","timestamp":"2025-10-25T04:41:15Z","kill_switch":"clear","event":"preflight"}
+{"timestamp":"2025-10-25T04:41:15Z","acquired":true,"event":"lock"}
+{"event":"edit","job":"V1B","loc_delta":95,"files_touched":3,"timestamp":"2025-10-25T04:50:21Z"}
+{"guard_independent":true,"timestamp":"2025-10-25T04:50:21Z","event":"test","cadence_hz":9.92,"result":"PASS","job":"V1B"}
+{"job":"V1B","status":"GREEN","timestamp":"2025-10-25T04:52:26Z","cadence_hz":9.92,"blockers_resolved":2,"event":"report"}
+{"event":"exit","timestamp":"2025-10-25T04:52:26Z","code":0,"job":"V1B","lock_released":true}
