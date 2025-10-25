@@ -1,55 +1,70 @@
 // docs/milk-v0/emit-milk-trace.js
-// Gate #011 Job M2 - Synthetic OTLP trace for Milk v0 viewer
-const { trace, context } = require('@opentelemetry/api');
-const { NodeSDK } = require('@opentelemetry/sdk-node');
-const { OTLPTraceExporter } = require('@opentelemetry/exporter-otlp-http');
-const { Resource } = require('@opentelemetry/resources');
-const { SemanticResourceAttributes } = require('@opentelemetry/semantic-conventions');
+// Gate #011 Job M2 - Synthetic OTLP trace for Milk v0 viewer (simple HTTP POST)
+const https = require('http');
 
-// Initialize OTLP exporter
-const sdk = new NodeSDK({
-  resource: new Resource({
-    [SemanticResourceAttributes.SERVICE_NAME]: 'milk-viewer',
-    'deployment.environment': 'staging',
-    'release.gate': '011',
-  }),
-  traceExporter: new OTLPTraceExporter({
-    url: process.env.OTEL_EXPORTER_OTLP_ENDPOINT || 'http://localhost:4318/v1/traces',
-  }),
+const OTEL_ENDPOINT = process.env.OTEL_EXPORTER_OTLP_ENDPOINT || 'http://localhost:4318';
+const traceID = '0123456789abcdef0123456789abcdef';
+const spanID = '0123456789abcdef';
+
+// Simple OTLP trace payload
+const tracePayload = JSON.stringify({
+  resourceSpans: [{
+    resource: {
+      attributes: [
+        { key: 'service.name', value: { stringValue: 'milk-viewer' } },
+        { key: 'deployment.environment', value: { stringValue: 'staging' } },
+        { key: 'release.gate', value: { stringValue: '011' } }
+      ]
+    },
+    scopeSpans: [{
+      spans: [{
+        traceId: traceID,
+        spanId: spanID,
+        name: 'milk.viewer.test',
+        kind: 'SPAN_KIND_INTERNAL',
+        startTimeUnixNano: Date.now() * 1000000,
+        endTimeUnixNano: (Date.now() + 100) * 1000000,
+        attributes: [
+          { key: 'test.duration', value: { intValue: '30' } },
+          { key: 'test.frames', value: { intValue: '20' } },
+          { key: 'test.status', value: { stringValue: 'PASS' } }
+        ]
+      }]
+    }]
+  }]
 });
 
-// Async function to properly await SDK initialization
-async function emitTrace() {
-  // Start SDK and wait for initialization
-  await sdk.start();
-  console.log('[trace] SDK started');
+// Send to OTLP endpoint
+const url = new URL(`${OTEL_ENDPOINT}/v1/traces`);
+const options = {
+  hostname: url.hostname,
+  port: url.port || 4318,
+  path: url.pathname,
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Content-Length': Buffer.byteLength(tracePayload)
+  }
+};
 
-  // Wait a moment for provider registration
-  await new Promise(resolve => setTimeout(resolve, 100));
+console.log(`[trace] Sending milk.viewer.test span to ${OTEL_ENDPOINT}/v1/traces`);
 
-  // Emit test span
-  const tracer = trace.getTracer('milk-viewer');
-  const span = tracer.startSpan('milk.viewer.test');
-  span.setAttribute('test.duration', 30);
-  span.setAttribute('test.frames', 20);
-  span.setAttribute('test.status', 'PASS');
-  span.end();
-
-  console.log('[trace] Emitted milk.viewer.test span');
-  console.log('[trace] Endpoint:', process.env.OTEL_EXPORTER_OTLP_ENDPOINT || 'http://localhost:4318/v1/traces');
-
-  // Wait for span export before shutdown
-  await new Promise(resolve => setTimeout(resolve, 500));
-
-  await sdk.shutdown();
-  console.log('[trace] Shutdown complete');
-}
-
-// Run async function
-emitTrace()
-  .then(() => process.exit(0))
-  .catch((err) => {
-    console.error('[trace] Error:', err);
+const req = https.request(options, (res) => {
+  console.log(`[trace] Response status: ${res.statusCode}`);
+  if (res.statusCode === 200) {
+    console.log('[trace] ✅ Trace sent successfully');
+    process.exit(0);
+  } else {
+    console.error(`[trace] ❌ Failed: HTTP ${res.statusCode}`);
     process.exit(1);
-  });
+  }
+});
+
+req.on('error', (err) => {
+  console.error('[trace] ❌ Error:', err.message);
+  process.exit(1);
+});
+
+req.write(tracePayload);
+req.end();
 

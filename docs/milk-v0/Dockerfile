@@ -6,8 +6,7 @@ FROM debian:stable-slim
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    xvfb fluxbox ffmpeg curl ca-certificates \
-    x11-apps libgl1-mesa-dri libgl1-mesa-glx libglu1-mesa mesa-utils \
+    xvfb ffmpeg curl ca-certificates \
     nodejs npm \
   && rm -rf /var/lib/apt/lists/*
 
