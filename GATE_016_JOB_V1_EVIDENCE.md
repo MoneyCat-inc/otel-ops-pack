@@ -5,7 +5,7 @@
 **Lane:** `lane/visual-016`  
 **Date:** 2025-10-24  
 **Executor:** Cursor{Implementer}  
-**Status:** ✅ **GREEN**
+**Status:** 🔴 **BLOCKED** (Corrected from GREEN — see GATE_016_JOB_V1_CORRECTION.md)
 
 ---
 
@@ -218,12 +218,46 @@ GUARD_ENABLED=true        # Enable/disable guard
 
 ---
 
-## 🐾 **Certification**
+## 🚫 **Blocking Issues Identified (Post-Review)**
 
-**Job V1 (Preset Safety & Brightness Guard):** ✅ **GREEN**  
-**Authority:** Cursor{Implementer} → BossCat OEM Review  
-**Date:** 2025-10-24  
-**Evidence:** Complete and verified
+**Authority:** BossCat OEM  
+**Date:** 2025-10-24 (Status Correction)
 
-**Seal:** Gate #016 Job V1 approved for integration
+### Issue #1: Passive Guard (No Active Monitoring)
+- Guard only runs when `/pm/metrics` is called externally
+- No internal timer or renderer hook for continuous monitoring
+- Guard is **inert** without external polling
+- **Impact:** Cannot detect blackouts in real-time
+
+### Issue #2: Insufficient Temporal Resolution
+- Actual cadence: ~3 Hz (180 samples/60s), not 10 Hz
+- Root cause: `xwd | convert` takes ~333ms per call
+- Cannot detect gaps <330ms
+- **Impact:** 120ms window unenforceable, 150ms max gap not validated
+
+### Why Tests Passed
+- All 15 presets were inherently bright (0% blackout)
+- No guard triggers occurred (nothing to test)
+- Tests validated presets, not guard mechanism
+- **False confidence:** Green from bright presets, not functional guard
+
+### Remediation Required
+See `GATE_016_JOB_V1_CORRECTION.md` for:
+- Root cause analysis
+- Three remediation options (A/B/C)
+- Recommendation: Option A (Internal Timer Loop, ~80 LOC)
+
+---
+
+## 🐾 **Status Correction**
+
+**Job V1 (Preset Safety & Brightness Guard):** 🔴 **BLOCKED**  
+**Original Status:** ✅ GREEN (incorrect)  
+**Corrected:** 2025-10-24 per BossCat findings  
+**Blocker:** Architectural flaws prevent guard from meeting core requirements  
+**Evidence:** Complete (reveals flaws)  
+**Correction Doc:** `GATE_016_JOB_V1_CORRECTION.md`
+
+**Awaiting:** BossCat directive on remediation path (Job V1B)
+
 
