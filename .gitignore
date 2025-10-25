@@ -45,3 +45,5 @@ logs/**/*.last.log
 .env.*.local
 signoz.env
 secrets/
+# Next.js build output
+out/
