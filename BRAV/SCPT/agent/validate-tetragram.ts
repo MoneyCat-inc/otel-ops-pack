@@ -7,7 +7,7 @@ const ROOT = process.cwd();
 const LOCK = path.join(ROOT, ".agent", "LOCK");
 const REG  = path.join(ROOT, ".agent", "bots.json");
 
-const LANES = new Set(["SSOT","FLAK","SELE","COMP","DOCS"]);
+const LANES = new Set(["SSOT","FLAK","SELE","COMP","DOCS","GATE","SITE"]);
 const RE_4  = /^[A-Z]{4}$/;
 
 function die(msg: string, code = 1): never { console.error("❌", msg); process.exit(code); }
