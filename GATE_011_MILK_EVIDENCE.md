@@ -25,14 +25,14 @@
 
 ## Architecture Note
 
-**X11 Display Sharing:** Milk v0 viewer requires access to pm-engine's Xvfb display at `:99` to capture rendered frames. Current Docker setup uses volume mount for X11 socket sharing, but pm-engine creates the socket internally.
+**X11 Display Sharing:** Milk v0 connects to pm-engine's Xvfb display at `:99` via shared `/tmp/.X11-unix` socket. Milk v0 does NOT start its own Xvfb - it assumes pm-engine's X server is already running.
 
-**Recommendation:** For production use, one of:
-1. Run Xvfb on Docker host and mount `/tmp/.X11-unix` to both containers
-2. Use network-based X11 forwarding (Xvnc/x11vnc)
-3. Integrate Milk v0 directly into pm-engine container as sidecar process
+**Implementation:**
+- pm-engine starts Xvfb at `:99` via pm-run.sh
+- docker-compose volumes `/tmp/.X11-unix` as rw mount to both containers
+- milk-v0's ffmpeg connects to `:99` and captures projectM frames
 
-**Current State:** MVP implementation complete; architecture should be finalized before deployment.
+**Status:** ✅ Fixed - Milk v0 no longer starts conflicting Xvfb instance
 
 ---
 

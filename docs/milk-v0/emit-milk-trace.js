@@ -18,21 +18,38 @@ const sdk = new NodeSDK({
   }),
 });
 
-sdk.start();
+// Async function to properly await SDK initialization
+async function emitTrace() {
+  // Start SDK and wait for initialization
+  await sdk.start();
+  console.log('[trace] SDK started');
 
-// Emit test span
-const tracer = trace.getTracer('milk-viewer');
-const span = tracer.startSpan('milk.viewer.test');
-span.setAttribute('test.duration', 30);
-span.setAttribute('test.frames', 20);
-span.setAttribute('test.status', 'PASS');
-span.end();
+  // Wait a moment for provider registration
+  await new Promise(resolve => setTimeout(resolve, 100));
 
-console.log('[trace] Emitted milk.viewer.test span');
-console.log('[trace] Endpoint:', process.env.OTEL_EXPORTER_OTLP_ENDPOINT || 'http://localhost:4318/v1/traces');
+  // Emit test span
+  const tracer = trace.getTracer('milk-viewer');
+  const span = tracer.startSpan('milk.viewer.test');
+  span.setAttribute('test.duration', 30);
+  span.setAttribute('test.frames', 20);
+  span.setAttribute('test.status', 'PASS');
+  span.end();
 
-sdk.shutdown().then(() => {
+  console.log('[trace] Emitted milk.viewer.test span');
+  console.log('[trace] Endpoint:', process.env.OTEL_EXPORTER_OTLP_ENDPOINT || 'http://localhost:4318/v1/traces');
+
+  // Wait for span export before shutdown
+  await new Promise(resolve => setTimeout(resolve, 500));
+
+  await sdk.shutdown();
   console.log('[trace] Shutdown complete');
-  process.exit(0);
-});
+}
+
+// Run async function
+emitTrace()
+  .then(() => process.exit(0))
+  .catch((err) => {
+    console.error('[trace] Error:', err);
+    process.exit(1);
+  });
 
