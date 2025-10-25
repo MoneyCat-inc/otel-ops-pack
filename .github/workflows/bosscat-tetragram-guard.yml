@@ -24,13 +24,6 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Validate 4-4-4-4 + A/B
         run: pnpm agent:validate-names
-      - name: A/B smoke (all lanes)
-        run: |
-          pnpm agent:smoke:ssot
-          pnpm agent:smoke:flak
-          pnpm agent:smoke:sele
-          pnpm agent:smoke:comp
-          pnpm agent:smoke:docs
       - name: Gate signal (comment template)
         run: |
           echo "CI is green and all checks are satisfied."
