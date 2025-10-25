@@ -96,8 +96,10 @@ services:
       - DISPLAY=:99
       - GEOMETRY=1920x1080
       - FPS=30
+    # Share X11 socket via bind mount from host
     volumes:
-      - /tmp/.X11-unix:/tmp/.X11-unix:ro  # Share X11 socket from pm-engine
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    # Start after pm-engine's Xvfb is ready
     depends_on:
       pm-engine:
         condition: service_healthy

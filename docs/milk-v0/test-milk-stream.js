@@ -51,7 +51,7 @@ async function testMilkStream() {
       
       res.on('end', () => {
         const duration = (Date.now() - startTime) / 1000;
-        const fps = frameCount / duration;
+        const fps = duration > 0 ? frameCount / duration : 0;
         
         console.log(`[test] Duration: ${duration.toFixed(1)}s`);
         console.log(`[test] Frames detected: ${frameCount}`);
@@ -69,10 +69,16 @@ async function testMilkStream() {
     
     req.on('error', reject);
     
-    // Auto-stop after duration
+    // Auto-stop after duration - validate BEFORE resolving
     setTimeout(() => {
       req.destroy();
-      resolve({ frameCount, duration: DURATION_MS / 1000 });
+      if (frameCount >= MIN_FRAMES) {
+        console.log(`[test] ✅ PASS - Frame count meets threshold after timeout (${frameCount} ≥ ${MIN_FRAMES})`);
+        resolve({ frameCount, duration: DURATION_MS / 1000 });
+      } else {
+        console.log(`[test] ❌ FAIL - Frame count below threshold after timeout (${frameCount} < ${MIN_FRAMES})`);
+        reject(new Error(`Insufficient frames after ${DURATION_MS/1000}s: ${frameCount} < ${MIN_FRAMES}`));
+      }
     }, DURATION_MS);
   });
 }
