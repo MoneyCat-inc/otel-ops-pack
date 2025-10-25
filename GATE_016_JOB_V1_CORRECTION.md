@@ -4,8 +4,9 @@
 **Authority:** BossCat OEM  
 **Executor:** Cursor{Implementer}  
 **Original Status:** ✅ GREEN (incorrect)  
-**Corrected Status:** 🔴 **BLOCKED**  
-**Reason:** Architectural flaws prevent guard from meeting core requirements
+**Corrected Status:** 🔴 **BLOCKED** → ✅ **REMEDIATED (Job V1B)**  
+**Reason:** Architectural flaws prevented guard from meeting core requirements  
+**Resolution:** Job V1B implemented active monitoring at 9.92 Hz (≥9 Hz requirement)
 
 ---
 
@@ -270,15 +271,42 @@ Convert passive guard to **active monitoring** with sufficient temporal resoluti
 
 ---
 
-## 🐾 **Awaiting Directive**
+## 🐾 **Resolution (Job V1B Completed)**
 
-**Options:**
-1. **Proceed with Job V1B (Option A)** — Fix active monitoring, re-test, then Job V2
-2. **Proceed with Job V1B (Option B)** — Renderer hook integration (longer path)
-3. **Accept AMBER** — Mark Job V1 AMBER, proceed to Job V2, defer guard enhancement
+**Option Selected:** Option A (Internal Timer Loop)  
+**Authority:** BossCat OEM Directive (2025-10-24)  
+**Execution:** Job V1B implemented and tested  
+**Status:** ✅ **REMEDIATED**
 
-**Recommendation:** Option A (Internal Timer Loop) for fastest path to GREEN
+### Job V1B Summary
+- **Implemented:** Active guard monitoring with `setInterval` at 100ms (10 Hz)
+- **Achieved Cadence:** 9.92 Hz (target ≥9 Hz) ✅
+- **Guard Independence:** Verified (33 ticks in 3s without HTTP calls) ✅
+- **Cached Metrics:** `/pm/metrics` reads from cache ✅
+- **Budget:** 3 files, ~95 LOC (within limits) ✅
 
-**Authority:** BossCat OEM  
-**Status:** ⏳ **BLOCKED — Awaiting Remediation Directive**
+### Blockers Resolved
+1. **Issue #1 (Passive Guard):** ✅ Resolved by internal timer loop
+2. **Issue #2 (Insufficient Cadence):** ✅ Resolved by achieving 9.92 Hz
+
+### Evidence
+- **Document:** `GATE_016_JOB_V1B_EVIDENCE.md`
+- **Test Results:** `artifacts/pm/gate-016-v1b-test.jsonl`
+- **Commit:** Pending
+
+**Final Status:** 🔴 BLOCKED → ✅ **GREEN (via Job V1B)**
+
+---
+
+## 📊 **Before vs. After Comparison**
+
+| Metric | Job V1 (BLOCKED) | Job V1B (GREEN) | Improvement |
+|--------|------------------|-----------------|-------------|
+| **Monitoring Type** | Passive (on HTTP call) | Active (background timer) | ✅ Real-time |
+| **Cadence** | ~3 Hz | **9.92 Hz** | **+230%** |
+| **Independence** | No (requires external polling) | Yes (runs continuously) | ✅ Independent |
+| **Guard Triggers** | HTTP handler context | Timer context | ✅ Real-time |
+| **Cache** | No (compute on demand) | Yes (read from cache) | ✅ Efficient |
+
+**Conclusion:** Job V1B successfully remediated all architectural flaws identified in Job V1.
 

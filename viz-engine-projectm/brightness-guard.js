@@ -17,6 +17,11 @@ class BrightnessGuard {
     this.maxBlackoutGapMs = 0;
     this.currentBlackoutStartMs = null;
     
+    // Job V1B: Cadence tracking
+    this.lastSampleTimestamp = null;
+    this.tickIntervals = [];
+    this.maxTickIntervals = 100;  // Sliding window for average
+    
     console.log(`[brightness-guard] Initialized: L_min=${this.lMin}, window=${this.guardWindowMs}ms, mode=${this.guardMode}`);
   }
   
@@ -24,10 +29,20 @@ class BrightnessGuard {
   checkFrame(luma) {
     if (!this.enabled) return { triggered: false };
     
+    const now = Date.now();
+    
+    // Job V1B: Track cadence
+    if (this.lastSampleTimestamp !== null) {
+      const interval = now - this.lastSampleTimestamp;
+      this.tickIntervals.push(interval);
+      if (this.tickIntervals.length > this.maxTickIntervals) {
+        this.tickIntervals.shift();  // Keep sliding window
+      }
+    }
+    this.lastSampleTimestamp = now;
+    
     this.frameCount++;
     this.lastLuma = luma;
-    
-    const now = Date.now();
     const isLowLuma = luma < this.lMin;
     
     if (isLowLuma) {
@@ -81,6 +96,8 @@ class BrightnessGuard {
       ? (this.lowLumaFrames / this.frameCount) * 100 
       : 0;
     
+    const timingStats = this.getTimingStats();
+    
     return {
       enabled: this.enabled,
       lMin: this.lMin,
@@ -91,7 +108,30 @@ class BrightnessGuard {
       blackoutRatio: Math.round(blackoutRatio * 100) / 100,  // 2 decimal places
       maxBlackoutGapMs: this.maxBlackoutGapMs,
       triggerCount: this.triggerCount,
-      lastLuma: Math.round(this.lastLuma * 10000) / 10000  // 4 decimal places
+      lastLuma: Math.round(this.lastLuma * 10000) / 10000,  // 4 decimal places
+      timingStats  // Job V1B: Cadence metrics
+    };
+  }
+  
+  // Job V1B: Get cadence and timing statistics
+  getTimingStats() {
+    if (this.tickIntervals.length === 0) {
+      return {
+        avgCadenceHz: 0,
+        avgIntervalMs: 0,
+        sampleCount: 0,
+        lastSampleTimestamp: this.lastSampleTimestamp
+      };
+    }
+    
+    const avgInterval = this.tickIntervals.reduce((a, b) => a + b, 0) / this.tickIntervals.length;
+    const avgCadenceHz = 1000 / avgInterval;
+    
+    return {
+      avgCadenceHz: Math.round(avgCadenceHz * 100) / 100,  // 2 decimal places
+      avgIntervalMs: Math.round(avgInterval * 100) / 100,  // 2 decimal places
+      sampleCount: this.tickIntervals.length,
+      lastSampleTimestamp: this.lastSampleTimestamp
     };
   }
   
@@ -104,9 +144,15 @@ class BrightnessGuard {
     this.lowLumaFrames = 0;
     this.maxBlackoutGapMs = 0;
     this.currentBlackoutStartMs = null;
+    
+    // Job V1B: Reset timing data
+    this.lastSampleTimestamp = null;
+    this.tickIntervals = [];
+    
     console.log('[brightness-guard] Statistics reset');
   }
 }
 
 module.exports = { BrightnessGuard };
+
 

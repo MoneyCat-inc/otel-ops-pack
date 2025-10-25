@@ -47,6 +47,57 @@ const brightnessGuard = new BrightnessGuard({
   enabled: process.env.GUARD_ENABLED !== 'false'
 });
 
+// Job V1B: Cached guard state for active monitoring
+let cachedGuardState = {
+  luma: 0,
+  timestamp: Date.now(),
+  guardResult: { triggered: false },
+  tickCount: 0,
+  tickDurationMs: 0
+};
+
+// Job V1B: Active guard monitoring at 10 Hz
+let guardInterval = null;
+async function startGuardMonitoring() {
+  if (guardInterval) return;  // Already running
+  
+  console.log('[guard-timer] Starting active monitoring at 10 Hz');
+  
+  guardInterval = setInterval(async () => {
+    const startTick = Date.now();
+    
+    try {
+      // Fast luma measurement (xwd|convert is still used but runs async)
+      const { stdout } = await sh(
+        `xwd -display ${DISPLAY} -root -silent | convert xwd:- -colorspace Gray -format "%[fx:mean]" info:`,
+        { env: XENV, timeout: 5000 }
+      );
+      const luma = parseFloat(stdout.trim()) || 0;
+      
+      // Feed to guard
+      const guardResult = brightnessGuard.checkFrame(luma);
+      
+      // Auto-switch on trigger (timer context)
+      if (guardResult.triggered && guardResult.mode === 'auto_switch') {
+        console.log('[guard-timer] Brightness guard triggered auto-switch');
+        sendKey('n').catch(e => console.error('[guard-timer] Auto-switch failed:', e));
+      }
+      
+      // Cache state
+      const tickDuration = Date.now() - startTick;
+      cachedGuardState = {
+        luma,
+        timestamp: Date.now(),
+        guardResult,
+        tickCount: cachedGuardState.tickCount + 1,
+        tickDurationMs: tickDuration
+      };
+    } catch (e) {
+      console.error('[guard-timer] Luma measurement failed:', e);
+    }
+  }, 100);  // 10 Hz = 100ms interval
+}
+
 // Ensure presets directory exists
 fs.mkdirSync(PM_PRESET_DIR, { recursive: true });
 
@@ -234,35 +285,21 @@ app.get('/snap.jpg', async (req, res) => {
   }
 });
 
-// GET /pm/metrics - Fast local luminance check with brightness guard
-app.get('/pm/metrics', async (req, res) => {
-  try {
-    const { stdout } = await sh(
-      `xwd -display ${DISPLAY} -root -silent | convert xwd:- -colorspace Gray -format "%[fx:mean]" info:`,
-      { env: XENV, timeout: 5000 }
-    );
-    const mean = parseFloat(stdout.trim()) || 0;
-    const nonBlackPct = Math.round(mean * 100);
-    
-    // Gate #016: Feed luma to brightness guard
-    const guardResult = brightnessGuard.checkFrame(mean);
-    
-    // If guard triggered and mode is auto_switch, trigger preset change
-    if (guardResult.triggered && guardResult.mode === 'auto_switch') {
-      console.log('[pm-metrics] Brightness guard triggered auto-switch');
-      // Trigger async (don't block response)
-      sendKey('n').catch(e => console.error('[pm-metrics] Auto-switch failed:', e));
-    }
-    
-    res.json({ 
-      ok: true, 
-      mean_luma: mean, 
-      non_black_pct: nonBlackPct,
-      guard: guardResult
-    });
-  } catch (e) {
-    res.status(500).json({ ok: false, error: String(e) });
-  }
+// GET /pm/metrics - Read cached guard state (Job V1B: active monitoring)
+app.get('/pm/metrics', (req, res) => {
+  // Job V1B: Return cached state from background timer
+  const age_ms = Date.now() - cachedGuardState.timestamp;
+  
+  res.json({ 
+    ok: true, 
+    mean_luma: cachedGuardState.luma, 
+    non_black_pct: Math.round(cachedGuardState.luma * 100),
+    guard: cachedGuardState.guardResult,
+    cached_at: cachedGuardState.timestamp,
+    cache_age_ms: age_ms,
+    tick_count: cachedGuardState.tickCount,
+    tick_duration_ms: cachedGuardState.tickDurationMs
+  });
 });
 
 // Gate #013: Audio endpoints
@@ -354,5 +391,10 @@ app.listen(PORT, () => {
   console.log(`[pm-api] Audio path: ${AUDIO_PATH}, FIFO: ${PM_AUDIO_FIFO}`);
   console.log(`[pm-api] Brightness guard: L_min=${brightnessGuard.lMin}, window=${brightnessGuard.guardWindowMs}ms, mode=${brightnessGuard.guardMode}`);
   console.log(`[pm-api] Ready for preset authoring + scorebot validation`);
+  
+  // Job V1B: Start active guard monitoring after ProjectM has time to initialize
+  setTimeout(() => {
+    startGuardMonitoring();
+  }, 5000);  // Wait 5s for ProjectM to fully initialize
 });
 
