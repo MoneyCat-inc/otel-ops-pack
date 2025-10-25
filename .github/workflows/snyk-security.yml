@@ -33,8 +33,9 @@ permissions:
 
 jobs:
   snyk:
-    # Skip on PRs; run on main/nightly
-    if: ${{ github.event_name != 'pull_request' }}
+    # DISABLED 2025-10-25: Redundant with Trivy (dependency + container scanning already GREEN)
+    # To re-enable: change to if: ${{ github.event_name != 'pull_request' }}
+    if: false
     permissions:
       contents: read # for actions/checkout to fetch code
       security-events: write # for github/codeql-action/upload-sarif to upload SARIF results

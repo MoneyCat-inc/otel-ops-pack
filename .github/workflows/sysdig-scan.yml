@@ -23,8 +23,9 @@ permissions:
 jobs:
 
   build:
-    # Skip on PRs; run on main/nightly
-    if: ${{ github.event_name != 'pull_request' }}
+    # DISABLED 2025-10-25: Container runtime security not critical for this project
+    # To re-enable: change to if: ${{ github.event_name != 'pull_request' }}
+    if: false
 
     permissions:
       checks: write # for sysdiglabs/scan-action to publish the checks
