@@ -1,7 +1,7 @@
 # ECRR Gate Run - BossCat Decision
 
-Timestamp: 2025-10-20 11:37:18 +01:00
-Commit: 4e3172b17
+Timestamp: 2025-10-25 20:46:27 +01:00
+Commit: 2eb9d02f9
 Branch: main
 Gate: IONA
 Site: ci
