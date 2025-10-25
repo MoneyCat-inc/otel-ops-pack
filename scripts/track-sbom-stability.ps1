@@ -253,7 +253,7 @@ Write-Host ""
 $updateBody = Format-EvidenceUpdate -SuccessfulRuns $successfulRuns
 
 if ($DryRun) {
-    Write-Host "🔍 DRY RUN — Would post to Issue #$IssueNumber:" -ForegroundColor Yellow
+    Write-Host "🔍 DRY RUN — Would post to Issue #$IssueNumber" -ForegroundColor Yellow
     Write-Host ""
     Write-Host $updateBody
     Write-Host ""
