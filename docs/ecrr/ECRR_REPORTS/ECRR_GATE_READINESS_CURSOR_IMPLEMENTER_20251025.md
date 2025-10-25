@@ -96,7 +96,7 @@ All critical systems operational:
 2. Docker container health confirmed (11 containers: 9 healthy, 2 running without health checks)
 3. OTLP endpoint connectivity tested
 4. SigNoz health API checked
-5. Git working tree status confirmed (commit a8e32a898)
+5. Git working tree status confirmed (commits a8e32a898, cf238f35c)
 6. Port connectivity validated
 7. HTML file count verified (12 files)
 
@@ -106,7 +106,7 @@ All critical systems operational:
 sc query otelcol-contrib → RUNNING
 
 # Container health
-docker ps → 10/10 healthy
+docker ps → 11 running (9 healthy, 2 without health checks)
 
 # Endpoint tests
 Test-NetConnection localhost -Port 5317 → SUCCESS
@@ -125,7 +125,7 @@ git status --short → CLEAN
 ### Validation
 
 - ✅ Windows Collector: RUNNING
-- ✅ Docker Services: 10/10 healthy
+- ✅ Docker Services: 11/11 running (9/11 healthy)
 - ✅ OTLP Endpoints: 4/4 operational
 - ✅ SigNoz Health: OK
 - ✅ Git Status: CLEAN
@@ -142,7 +142,7 @@ git status --short → CLEAN
 
 **Verification Results:**
 - Windows Collector: ✅ OPERATIONAL
-- Docker Containers: ✅ 10/10 HEALTHY
+- Docker Containers: ✅ 11/11 RUNNING (9/11 HEALTHY)
 - OTLP Endpoints: ✅ 4/4 ACCESSIBLE
 - SigNoz: ✅ HEALTHY
 - Git Status: ✅ CLEAN
@@ -160,7 +160,7 @@ git status --short → CLEAN
 - ✅ SigNoz Health: {"status":"ok"}
 - ✅ Docker Services: 11/11 running (9/11 with health checks showing healthy)
 - ✅ Container Uptime: 2+ days baseline
-- ✅ Git Status: CLEAN (commit a8e32a898)
+- ✅ Git Status: CLEAN (commits a8e32a898, cf238f35c)
 
 **GATE-SITE:**
 - ✅ HTML Files: 12 files verified in docs/
@@ -175,7 +175,7 @@ git status --short → CLEAN
 
 ### Evidence Archive
 
-**Committing to Git:** Pending BossCat OEM review and approval
+**Committed to Git:** ✅ COMPLETE (commits a8e32a898, cf238f35c)
 
 **Files Changed:** 1 (this ECRR report)
 
@@ -236,8 +236,8 @@ git status --short → CLEAN
 **Rationale:**
 - All critical systems operational
 - Zero blockers identified
-- Clean working tree
-- Docker containers stable (10/10 healthy)
+- Clean working tree (commits a8e32a898, cf238f35c)
+- Docker containers stable (11/11 running, 9/11 healthy)
 - Windows Collector running continuously
 - SigNoz healthy and responsive
 - OTLP endpoints accessible
@@ -252,7 +252,7 @@ git status --short → CLEAN
 **Key Indicators:**
 - ✅ All GATE-CORE checks pass
 - ✅ Zero blockers
-- ✅ Clean working tree (commit a8e32a898)
+- ✅ Clean working tree (commits a8e32a898, cf238f35c)
 - ✅ Systems stable (43h+ Windows Collector uptime)
 - ✅ Docker services operational (11/11 running, 9/11 with health checks)
 - ✅ Evidence complete
