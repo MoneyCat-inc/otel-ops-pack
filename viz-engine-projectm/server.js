@@ -7,6 +7,7 @@ const { BrightnessGuard } = require('./brightness-guard');
 const { FrameTimingStabilizer } = require('./frame-timing-stabilizer');
 const { CanaryDeployment } = require('./canary-deployment');  // Gate #020: Canary rollout
 const { OTLPEmitter } = require('./otlp-emitter');  // Gate #020: OTLP span emission
+const { audioSwitch, audioAdminRouter } = require('./lib/audio-switch-cluster');  // BOSSCAT-023A: Cluster-aware audio switch (Redis + file fallback)
 
 const app = express();
 app.use(express.json({ limit: '5mb' }));
@@ -19,8 +20,7 @@ const PM_FPS = process.env.PM_FPS || '30';
 const PM_PRESET_DIR = process.env.PM_PRESET_DIR || '/app/presets';
 const PM_AUDIO_FIFO = process.env.PM_AUDIO_FIFO || '/tmp/pm-audio.pcm';
 const AUDIO_PATH = process.env.AUDIO_PATH || 'pulse';
-// Gate #019 Job R2: Audio feature flag with kill-switch
-const AUDIO_ENABLED = process.env.AUDIO_ENABLED !== 'false';  // Default: true, kill-switch: AUDIO_ENABLED=false
+// BOSSCAT-021A: AudioSwitch module replaces static AUDIO_ENABLED flag
 const GUARD_INTERVAL_MS = parseInt(process.env.GUARD_INTERVAL_MS || '100', 10);
 const GUARD_JITTER_BUDGET_MS = parseInt(process.env.GUARD_JITTER_BUDGET_MS || '8', 10);
 const GUARD_PIN_WINDOW_MS = parseInt(process.env.GUARD_PIN_WINDOW_MS || '60000', 10);
@@ -83,6 +83,13 @@ const canaryDeployment = CANARY_ENABLED ? new CanaryDeployment({
   onBreach: (reason, phase) => {
     console.error(`[canary] BREACH at ${phase.name}: ${reason}`);
     console.error(`[canary] Auto-halt triggered - audio disabled`);
+    // BOSSCAT-021A: Actually disable audio via AudioSwitch
+    try {
+      audioSwitch.disable(`canary-breach: ${reason}`);
+      console.log('[canary] Audio disabled via AudioSwitch');
+    } catch (err) {
+      console.error('[canary] Failed to disable audio:', err.message);
+    }
     // Emit OTLP span for breach
     otlpEmitter.emitSpan('audio.enable.canary.breach', {
       'canary.phase': phase.name,
@@ -241,8 +248,8 @@ app.get('/health', (_req, res) => {
     engine: 'projectm',
     display: DISPLAY,
     pid: pmProc ? pmProc.pid : null,
-    // Gate #019 Job R2: Audio feature status
-    audio_enabled: AUDIO_ENABLED,
+    // BOSSCAT-021A: Dynamic audio state from AudioSwitch
+    audio: audioSwitch.getState(),
     envelope_follower: 'active',  // Gate #019 R1
     // Gate #020: Canary status
     canary_enabled: CANARY_ENABLED,
@@ -256,6 +263,9 @@ app.get('/stats', (_req, res) => {
   stats.preset = currentPreset;
   res.json(stats);
 });
+
+// BOSSCAT-021A: Admin control for audio kill switch (optionally protected by X-Admin-Token)
+app.use('/admin/audio', audioAdminRouter(process.env.ADMIN_TOKEN));
 
 // Gate #012 Job 2: Preset control + visual validation
 const { exec } = require('child_process');
@@ -417,9 +427,11 @@ app.get('/pm/metrics', (req, res) => {
 // Gate #013: Audio endpoints
 // POST /audio - Accept PCM audio data and feed to FIFO
 app.post('/audio', (req, res) => {
-  // Gate #019 Job R2: Hard kill-switch - reject audio when disabled
-  if (!AUDIO_ENABLED) {
-    return res.status(503).json({ ok: false, error: 'Audio disabled via AUDIO_ENABLED flag' });
+  // BOSSCAT-021A: Dynamic kill-switch - check AudioSwitch at request time
+  if (!audioSwitch.isEnabled()) {
+    const st = audioSwitch.getState();
+    console.log('[audio] Request rejected - audio disabled:', st.reason);
+    return res.status(503).json({ ok: false, error: 'audio-disabled', ...st });
   }
   
   if (AUDIO_PATH !== 'pulse') {
@@ -485,8 +497,8 @@ app.get('/audio/stats', (req, res) => {
     ok: true,
     ...audioStats,
     age_ms: Date.now() - audioStats.lastUpdate,
-    // Gate #019 Job R2: Audio feature flag status
-    audio_enabled: AUDIO_ENABLED,
+    // BOSSCAT-021A: Dynamic audio state
+    audio: audioSwitch.getState(),
     audio_path: AUDIO_PATH,
     envelope_follower: 'enabled'  // Gate #019 R1: Envelope follower active (20ms attack, 150ms release)
   });
@@ -535,12 +547,23 @@ app.post('/canary/halt', (req, res) => {
   res.json({ ok: true, ...result });
 });
 
+// POST /canary/reset - Reset canary deployment (BOSSCAT-021A)
+app.post('/canary/reset', (req, res) => {
+  if (!canaryDeployment) {
+    return res.status(404).json({ ok: false, error: 'Canary not enabled' });
+  }
+  
+  canaryDeployment.reset();
+  res.json({ ok: true, message: 'Canary reset - halted state cleared, audio re-enabled' });
+});
+
 // Start HTTP server (Job 2 complete)
 app.listen(PORT, () => {
   console.log(`[pm-api] ProjectM HTTP API listening on port ${PORT}`);
   console.log(`[pm-api] Display: ${DISPLAY}, Size: ${PM_WIDTH}x${PM_HEIGHT}`);
-  console.log(`[pm-api] Endpoints: /health, /stats, /pm/presets, /pm/next, /pm/prev, /pm/random, /pm/preset, /snap.jpg, /pm/metrics, /audio, /audio/stats, /guard/stats, /guard/reset, /canary/status, /canary/halt`);
-  console.log(`[pm-api] Audio path: ${AUDIO_PATH}, FIFO: ${PM_AUDIO_FIFO}, Audio enabled: ${AUDIO_ENABLED}`);
+  console.log(`[pm-api] Endpoints: /health, /stats, /admin/audio, /pm/presets, /pm/next, /pm/prev, /pm/random, /pm/preset, /snap.jpg, /pm/metrics, /audio, /audio/stats, /guard/stats, /guard/reset, /canary/status, /canary/halt`);
+  console.log(`[pm-api] Audio path: ${AUDIO_PATH}, FIFO: ${PM_AUDIO_FIFO}`);
+  console.log(`[pm-api] Audio switch: ${audioSwitch.isEnabled() ? 'ENABLED' : 'DISABLED'} (${audioSwitch.getState().reason || 'default'})`);
   console.log(`[pm-api] Brightness guard: L_min=${brightnessGuard.lMin}, window=${brightnessGuard.guardWindowMs}ms, mode=${brightnessGuard.guardMode}`);
   console.log(`[pm-api] Canary deployment: ${CANARY_ENABLED ? 'ENABLED' : 'DISABLED'}`);
   console.log(`[pm-api] Ready for preset authoring + scorebot validation`);
