@@ -36,6 +36,7 @@ public:
     // Stats for evidence
     float rms() const { return rms_; }
     float peak() const { return peak_; }
+    float envelope() const { return envelope_; }  // Gate #019: Envelope follower output
     
 private:
     std::vector<float> buffer_;
@@ -47,8 +48,14 @@ private:
     // Stats
     float rms_;
     float peak_;
+    float envelope_;  // Gate #019: Attack/release envelope follower
+    
+    // Gate #019: Envelope follower coefficients
+    float attack_coeff_;   // Attack time constant
+    float release_coeff_;  // Release time constant
     
     void update_stats(float sample);
+    void init_envelope(float attack_ms = 20.0f, float release_ms = 150.0f, float sample_rate = 44100.0f);
 };
 
 } // namespace audio

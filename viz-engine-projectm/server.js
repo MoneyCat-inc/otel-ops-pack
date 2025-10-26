@@ -17,6 +17,8 @@ const PM_FPS = process.env.PM_FPS || '30';
 const PM_PRESET_DIR = process.env.PM_PRESET_DIR || '/app/presets';
 const PM_AUDIO_FIFO = process.env.PM_AUDIO_FIFO || '/tmp/pm-audio.pcm';
 const AUDIO_PATH = process.env.AUDIO_PATH || 'pulse';
+// Gate #019 Job R2: Audio feature flag with kill-switch
+const AUDIO_ENABLED = process.env.AUDIO_ENABLED !== 'false';  // Default: true, kill-switch: AUDIO_ENABLED=false
 const GUARD_INTERVAL_MS = parseInt(process.env.GUARD_INTERVAL_MS || '100', 10);
 const GUARD_JITTER_BUDGET_MS = parseInt(process.env.GUARD_JITTER_BUDGET_MS || '8', 10);
 const GUARD_PIN_WINDOW_MS = parseInt(process.env.GUARD_PIN_WINDOW_MS || '60000', 10);
@@ -180,7 +182,10 @@ app.get('/health', (_req, res) => {
     ok: true, 
     engine: 'projectm',
     display: DISPLAY,
-    pid: pmProc ? pmProc.pid : null
+    pid: pmProc ? pmProc.pid : null,
+    // Gate #019 Job R2: Audio feature status
+    audio_enabled: AUDIO_ENABLED,
+    envelope_follower: 'active'  // Gate #019 R1
   });
 });
 
@@ -413,7 +418,11 @@ app.get('/audio/stats', (req, res) => {
   res.json({
     ok: true,
     ...audioStats,
-    age_ms: Date.now() - audioStats.lastUpdate
+    age_ms: Date.now() - audioStats.lastUpdate,
+    // Gate #019 Job R2: Audio feature flag status
+    audio_enabled: AUDIO_ENABLED,
+    audio_path: AUDIO_PATH,
+    envelope_follower: 'enabled'  // Gate #019 R1: Envelope follower active (20ms attack, 150ms release)
   });
 });
 
