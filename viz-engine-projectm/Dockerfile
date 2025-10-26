@@ -41,28 +41,36 @@ WORKDIR /app
 COPY server.js ./server.js
 COPY brightness-guard.js ./brightness-guard.js
 COPY frame-timing-stabilizer.js ./frame-timing-stabilizer.js
+COPY canary-deployment.js ./canary-deployment.js
+COPY otlp-emitter.js ./otlp-emitter.js
+COPY lib/ ./lib/
+COPY package.json ./package.json
 COPY pm-run.sh ./pm-run.sh
 COPY pm-settings.ini ./pm-settings.ini
 COPY pm-audio-bridge.cpp ./pm-audio-bridge.cpp
-RUN npm init -y && npm install --save express && npm ls
+RUN npm install && npm ls
 RUN chmod +x /app/pm-run.sh
 
 # Gate #013B: Compile native audio bridge
 RUN g++ -O2 -std=c++17 /app/pm-audio-bridge.cpp -o /usr/local/bin/pm-audio-bridge \
  && chmod +x /usr/local/bin/pm-audio-bridge
 
-# Gate #013C Job A: Compile synthetic audio test (standalone, no projectM deps)
-COPY audio-test.cpp ./
-RUN g++ -O2 -std=c++17 audio-test.cpp -o /usr/local/bin/audio-test \
- && chmod +x /usr/local/bin/audio-test
-
-# Gate #013C Job B: Compile integration test with injector components
+# Gate #013C: Copy audio test files first
 COPY audio-injector.hpp audio-injector.cpp ./
 COPY projectm-injector.hpp projectm-injector.cpp ./
+COPY audio-test.cpp ./
 COPY audio-integration-test.cpp ./
+
+# Gate #013C: Compile audio components
 RUN g++ -O2 -std=c++17 -c audio-injector.cpp -o audio-injector.o \
- && g++ -O2 -std=c++17 -c projectm-injector.cpp -o projectm-injector.o \
- && g++ -O2 -std=c++17 audio-integration-test.cpp audio-injector.o projectm-injector.o -o /usr/local/bin/audio-integration-test \
+ && g++ -O2 -std=c++17 -c projectm-injector.cpp -o projectm-injector.o
+
+# Gate #013C Job A: Compile synthetic audio test (links with audio-injector)
+RUN g++ -O2 -std=c++17 audio-test.cpp audio-injector.o -o /usr/local/bin/audio-test \
+ && chmod +x /usr/local/bin/audio-test
+
+# Gate #013C Job B: Compile integration test with all components
+RUN g++ -O2 -std=c++17 audio-integration-test.cpp audio-injector.o projectm-injector.o -o /usr/local/bin/audio-integration-test \
  && chmod +x /usr/local/bin/audio-integration-test
 
 # Presets directory (bind mount at runtime as well)

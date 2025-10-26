@@ -2,8 +2,32 @@
 # ECRR: BossCat Mission - Containerized visual authoring loop
 # Authority: BossCat OEM | Executor: Cursor{Implementer}
 # Gate: #009 APPROVED - md3-engine + scorebot architecture
+# Gate: #023 BOSSCAT-023A - Added Redis for cluster-aware AudioSwitch
 
 services:
+  # BOSSCAT-023A: Redis for distributed AudioSwitch
+  redis:
+    image: redis:7-alpine
+    container_name: redis-audioswitch
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "--appendonly", "yes"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+    networks:
+      - viz-net
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
   md3-engine:
     build:
       context: ./viz-engine-butterchurn
@@ -71,11 +95,21 @@ services:
       - PM_FPS=30
       - PM_WIN_CLASS=projectM
       - PORT=7020
+      - AUDIO_STATE_FILE=/app/config/audio-state.json  # BOSSCAT-021A: Persistent audio switch
+      - ADMIN_TOKEN=${ADMIN_TOKEN:-}  # BOSSCAT-021A: Optional admin API token
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379}  # BOSSCAT-023A: Cluster coordination
+      - AUDIO_STATE_KEY=${AUDIO_STATE_KEY:-audioswitch:state}  # BOSSCAT-023A: Redis key
+      - AUDIO_PUBSUB_CHANNEL=${AUDIO_PUBSUB_CHANNEL:-audioswitch:events}  # BOSSCAT-023A: Pub/sub channel
+      - AUDIO_VERSION_KEY=${AUDIO_VERSION_KEY:-audioswitch:version}  # BOSSCAT-023A: Version counter
     volumes:
       - ./presets-projectm:/app/presets:ro
       - ./artifacts/pm:/artifacts/pm
       - /tmp/.X11-unix:/tmp/.X11-unix:rw  # Share X11 socket with milk-v0
+      - ./config:/app/config  # BOSSCAT-021A: Persistent audio-state.json
     command: ["/bin/bash", "-lc", "/app/pm-run.sh"]
+    depends_on:
+      redis:
+        condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "curl -sf http://localhost:7020/health || exit 1"]
       interval: 10s
@@ -127,6 +161,8 @@ services:
 
 volumes:
   viz-snapshots:
+    driver: local
+  redis-data:
     driver: local
 
 networks:

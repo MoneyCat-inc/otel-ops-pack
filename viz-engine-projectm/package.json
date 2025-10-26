@@ -1,0 +1,18 @@
+{
+  "name": "viz-engine-projectm",
+  "version": "1.0.0",
+  "description": "ProjectM visual engine with HTTP API and audio canary deployment",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["projectm", "visualizer", "otel", "observability"],
+  "author": "BossCat OEM",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "redis": "^4.6.13"
+  }
+}
+
