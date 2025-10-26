@@ -356,6 +356,11 @@ app.get('/pm/metrics', (req, res) => {
 // Gate #013: Audio endpoints
 // POST /audio - Accept PCM audio data and feed to FIFO
 app.post('/audio', (req, res) => {
+  // Gate #019 Job R2: Hard kill-switch - reject audio when disabled
+  if (!AUDIO_ENABLED) {
+    return res.status(503).json({ ok: false, error: 'Audio disabled via AUDIO_ENABLED flag' });
+  }
+  
   if (AUDIO_PATH !== 'pulse') {
     return res.status(503).json({ ok: false, error: 'Audio path not configured for pulse' });
   }

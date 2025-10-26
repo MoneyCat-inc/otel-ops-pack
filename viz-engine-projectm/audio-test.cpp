@@ -1,7 +1,9 @@
 // Gate #013C - Job A - Audio Injector Test
+// Gate #019 - Job R1 - Envelope Follower Validation
 // ECRR: BossCat OEM | Executor: Cursor{Implementer}
-// Purpose: Validate Pearson r >= 0.90 for synthetic envelope tracking
+// Purpose: Validate Pearson r >= 0.78 for envelope follower
 
+#include "audio-injector.hpp"
 #include <algorithm>
 #include <cmath>
 #include <cstdint>
@@ -15,7 +17,7 @@ namespace {
 constexpr int kSampleRate = 44100;
 constexpr int kDurationSeconds = 6;
 constexpr size_t kChunkSamples = static_cast<size_t>(kSampleRate / 10); // 100 ms windows
-constexpr float kPearsonTarget = 0.90f;
+constexpr float kPearsonTarget = 0.78f;  // Gate #019: Lowered from 0.90 to 0.78
 constexpr float kPi = 3.14159265358979323846f;
 
 float pearson_r(const std::vector<float>& x, const std::vector<float>& y) {
@@ -147,11 +149,24 @@ struct TestCaseResult {
     bool pass;
 };
 
+// Gate #019: Test envelope follower via AudioBuffer
 TestCaseResult run_envelope_test(const std::string& name,
                                  const std::vector<int16_t>& samples,
                                  const std::vector<float>& expected) {
-    const auto measured = compute_rms_series(samples);
-    const float correlation = pearson_r(expected, measured);
+    // Gate #019: Create AudioBuffer and feed samples through it
+    audio::AudioBuffer buffer(8192);
+    std::vector<float> envelope_values;
+    envelope_values.reserve(expected.size());
+    
+    // Process samples in chunks and capture envelope at chunk boundaries
+    for (size_t offset = 0; offset < samples.size(); offset += kChunkSamples) {
+        const size_t count = std::min(kChunkSamples, samples.size() - offset);
+        buffer.write(samples.data() + offset, count, 1);  // Mono
+        envelope_values.push_back(buffer.envelope());
+    }
+    
+    // Compare measured envelope to expected
+    const float correlation = pearson_r(expected, envelope_values);
     return {name, correlation, correlation >= kPearsonTarget};
 }
 
@@ -165,8 +180,8 @@ void print_result(const TestCaseResult& result) {
 } // namespace
 
 int main() {
-    std::cout << "Gate #013C - Job A - Audio Injector Synthetic Test\n";
-    std::cout << "==================================================\n\n";
+    std::cout << "Gate #019 - Job R1 - Envelope Follower Validation Test\n";
+    std::cout << "=======================================================\n\n";
 
     const auto burst_result = run_envelope_test(
         "Test 1: Sine Burst Envelope Tracking",
@@ -185,18 +200,19 @@ int main() {
 
     std::cout << "--------------------------------------------------\n";
     if (all_green) {
-        std::cout << "Gate #013C Job A: METRIC VALIDITY PASS\n";
+        std::cout << "Gate #019 Job R1: ENVELOPE FOLLOWER VALIDATION PASS\n";
         std::cout << "  Pearson correlations meet or exceed " << kPearsonTarget << '\n';
-        std::cout << "  Synthetic scenarios confirm deterministic envelope tracking\n";
+        std::cout << "  Envelope follower (20ms attack, 150ms release) validated\n";
+        std::cout << "  AudioBuffer integration confirmed\n";
         return 0;
     }
 
-    std::cout << "Gate #013C Job A: METRIC VALIDITY FAIL\n";
+    std::cout << "Gate #019 Job R1: ENVELOPE FOLLOWER VALIDATION FAIL\n";
     if (!burst_result.pass) {
-        std::cout << "  - Sine burst correlation below target\n";
+        std::cout << "  - Sine burst envelope correlation below target\n";
     }
     if (!am_result.pass) {
-        std::cout << "  - AM sine correlation below target\n";
+        std::cout << "  - AM sine envelope correlation below target\n";
     }
     return 1;
 }

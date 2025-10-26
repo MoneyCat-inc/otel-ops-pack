@@ -31,12 +31,18 @@
 ```javascript
 // Gate #019 Job R2: Audio feature flag with kill-switch
 const AUDIO_ENABLED = process.env.AUDIO_ENABLED !== 'false';  // Default: true
+
+// POST /audio endpoint - Hard kill-switch implementation
+if (!AUDIO_ENABLED) {
+  return res.status(503).json({ ok: false, error: 'Audio disabled via AUDIO_ENABLED flag' });
+}
 ```
 
 **Behavior:**
 - **Default:** `AUDIO_ENABLED = true` (audio enabled by default)
 - **Kill-switch:** Set `AUDIO_ENABLED=false` to disable audio
-- **Hard disable:** Emergency fallback for production issues
+- **Hard disable:** `POST /audio` returns HTTP 503 when disabled
+- **Emergency fallback:** Prevents audio ingestion when flag is false
 
 ### 2. Feature Flag Exposure
 
@@ -113,15 +119,24 @@ curl http://localhost:7020/audio/stats
 ### Kill-Switch Test
 
 ```bash
-# Test kill-switch
+# Test kill-switch via /health endpoint
 docker exec pm-engine env AUDIO_ENABLED=false node server.js &
 curl http://localhost:7020/health
 # Expected: {"audio_enabled": false}
 
-# Test default (enabled)
+# Test kill-switch blocks audio ingestion
+curl -X POST http://localhost:7020/audio \
+  -H "Content-Type: application/json" \
+  -d '{"base64": "..."}'
+# Expected with AUDIO_ENABLED=false: 
+# HTTP 503 {"ok": false, "error": "Audio disabled via AUDIO_ENABLED flag"}
+
+# Test default (enabled) allows audio
 docker exec pm-engine node server.js &
-curl http://localhost:7020/health
-# Expected: {"audio_enabled": true}
+curl -X POST http://localhost:7020/audio \
+  -H "Content-Type: application/json" \
+  -d '{"base64": "..."}'
+# Expected with AUDIO_ENABLED=true: HTTP 200 {"ok": true}
 ```
 
 ---
