@@ -82,9 +82,8 @@ services:
     build:
       context: ./viz-engine-projectm
     image: bosscat/viz-engine-projectm:latest
-    container_name: pm-engine
-    ports:
-      - "7020:7020"  # Gate #012: ProjectM HTTP API
+    # BOSSCAT-023A: container_name removed to enable scaling
+    # BOSSCAT-023A: ports removed to allow multiple replicas (access via docker exec or internal network)
     shm_size: "512mb"
     environment:
       - DISPLAY=:99
