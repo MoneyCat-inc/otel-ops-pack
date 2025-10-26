@@ -4,7 +4,8 @@
 # =============================================================================
 # STAGE 1: Base Image with Node.js
 # =============================================================================
-FROM node:18-alpine AS base
+# Gate #018: Pinned to digest for supply-chain security
+FROM node:18-alpine@sha256:8d6421d663b4c28fd3ebc498332f249011d118945588d0a35cb9bc4b8ca09d9e AS base
 
 # Install system dependencies
 RUN apk add --no-cache \
@@ -53,7 +54,8 @@ RUN pnpm build
 # =============================================================================
 # STAGE 4: Production Runtime
 # =============================================================================
-FROM node:18-alpine AS runner
+# Gate #018: Pinned to digest for supply-chain security
+FROM node:18-alpine@sha256:8d6421d663b4c28fd3ebc498332f249011d118945588d0a35cb9bc4b8ca09d9e AS runner
 
 # Set environment
 ENV NODE_ENV=production
