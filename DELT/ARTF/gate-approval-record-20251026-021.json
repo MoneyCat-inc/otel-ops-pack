@@ -1,0 +1,116 @@
+{
+  "gate": 21,
+  "decision": "approved",
+  "state": "GREEN",
+  "decided_by": "BossCat OEM",
+  "decided_at_utc": "2025-10-26T23:00:00Z",
+  "risk": "LOW",
+  "executor": "Cursor{Implementer}",
+  "authority": "Fubumaki (Repository Owner)",
+  "patchset": "BOSSCAT-021A",
+  "defects_remediated": [
+    {
+      "id": "DEFECT-1",
+      "description": "Audio ingress not gated during canary breach",
+      "status": "RESOLVED",
+      "fix": "Replaced static AUDIO_ENABLED with dynamic AudioSwitch.isEnabled() check"
+    },
+    {
+      "id": "DEFECT-2",
+      "description": "Canary reset permanently locked (halted flag never cleared)",
+      "status": "RESOLVED",
+      "fix": "Added reset() method that clears halted flag and re-enables audio"
+    },
+    {
+      "id": "DEFECT-3",
+      "description": "Rollback script restarts without verifying audio OFF",
+      "status": "RESOLVED",
+      "fix": "Rewrote script with verification loop polling /health until audio.enabled=false"
+    }
+  ],
+  "smoke_tests": {
+    "total": 11,
+    "passed": 11,
+    "failed": 0,
+    "pass_rate": 100.0,
+    "suites": [
+      {
+        "name": "Test A: Manual Toggle",
+        "tests": 5,
+        "passed": 5,
+        "status": "PASS"
+      },
+      {
+        "name": "Test B: Breach/Reset Cycle",
+        "tests": 5,
+        "passed": 5,
+        "status": "PASS"
+      },
+      {
+        "name": "Test C: Rollback Script E2E",
+        "tests": 1,
+        "passed": 1,
+        "status": "PASS"
+      }
+    ]
+  },
+  "acceptance_criteria": [
+    {
+      "criterion": "/audio returns 503 with reason immediately after canary breach",
+      "status": "VERIFIED",
+      "evidence": "Test B.3 confirmed HTTP 503 with error='audio-disabled' and breach reason"
+    },
+    {
+      "criterion": "POST /canary/reset re-enables audio and clears halted state without restart",
+      "status": "VERIFIED",
+      "evidence": "Test B.4-B.5 confirmed audio re-enabled, code review confirms halted flag cleared"
+    },
+    {
+      "criterion": "scripts/rollback-audio.ps1 disables audio, restarts service, and /health confirms enabled=false",
+      "status": "VERIFIED",
+      "evidence": "Test C confirmed script exit 0, verification loop passed, audio.enabled=false"
+    }
+  ],
+  "evidence": [
+    "BOSSCAT_021A_IMPLEMENTATION_EVIDENCE.md",
+    "BOSSCAT_021A_SMOKE_TEST_RESULTS.md",
+    "DELT/ARTF/gate-verification-results-20251026-readiness-021.json",
+    "docs/GATE_STATUS_DASHBOARD.md",
+    "viz-engine-projectm/lib/audio-switch.js"
+  ],
+  "files_modified": [
+    "docker-compose.viz.yml",
+    "viz-engine-projectm/Dockerfile",
+    "viz-engine-projectm/server.js",
+    "viz-engine-projectm/canary-deployment.js",
+    "scripts/rollback-audio.ps1",
+    "docs/GATE_STATUS_DASHBOARD.md"
+  ],
+  "files_created": [
+    "viz-engine-projectm/lib/audio-switch.js",
+    "BOSSCAT_021A_IMPLEMENTATION_EVIDENCE.md",
+    "BOSSCAT_021A_SMOKE_TEST_RESULTS.md",
+    "GATE_021_APPROVAL.md",
+    "DELT/ARTF/gate-approval-record-20251026-021.json"
+  ],
+  "container_status": {
+    "image": "bosscat/viz-engine-projectm:latest",
+    "build_status": "SUCCESS",
+    "runtime_status": "HEALTHY",
+    "health_check": "PASS"
+  },
+  "notes": "AudioSwitch enforces runtime gating; canary breach disables; reset re-enables; rollback verifies /health until audio.enabled=false. P3 Windows Collector STOPPED remains non-blocking.",
+  "residuals": [
+    {
+      "id": "WINDOWS-COLLECTOR-001",
+      "severity": "P3",
+      "status": "NON-BLOCKING",
+      "description": "Windows Collector Service (otelcol-contrib) is STOPPED",
+      "impact": "None - OTLP ingestion operational via Docker-based signoz-otel-collector"
+    }
+  ],
+  "tag": "gate-021-green-2025-10-26",
+  "previous_gate": "gate-020-green-2025-10-26",
+  "next_gate": "TBD"
+}
+
