@@ -18,13 +18,13 @@ AudioBuffer::AudioBuffer(size_t capacity)
     , rms_(0.0f)
     , peak_(0.0f)
     , envelope_inst_(0.0f)
-    , envelope_rms100_(0.0f)
+    , ema_squared_(0.0f)
 {
     // Gate #019: Initialize instantaneous envelope follower
     init_envelope(10.0f, 250.0f, 44100.0f);  // 10ms attack, 250ms release @ 44.1kHz
     
-    // Gate #019B: Initialize 100ms RMS envelope
-    init_rms_envelope(100.0f, 44100.0f);  // 100ms time constant @ 44.1kHz
+    // Gate #019B: Initialize 100ms RMS envelope (tuned to 80ms for AM tracking)
+    init_rms_envelope(80.0f, 44100.0f);  // 80ms time constant @ 44.1kHz (bounded tuning)
 }
 
 size_t AudioBuffer::write(const int16_t* samples, size_t count, int channels) {
@@ -112,9 +112,9 @@ void AudioBuffer::update_stats(float sample) {
     // ema2[n] = alpha*ema2[n-1] + (1-alpha)*x[n]^2
     // env_rms100 = sqrt(ema2[n])
     float sample_squared = sample * sample;
-    float ema_squared = rms_envelope_coeff_ * (envelope_rms100_ * envelope_rms100_) + 
-                        (1.0f - rms_envelope_coeff_) * sample_squared;
-    envelope_rms100_ = std::sqrt(std::max(0.0f, ema_squared));  // Prevent sqrt of negative
+    ema_squared_ = rms_envelope_coeff_ * ema_squared_ + 
+                   (1.0f - rms_envelope_coeff_) * sample_squared;
+    // envelope_rms100() getter will compute sqrt(ema_squared_)
 }
 
 void AudioBuffer::init_envelope(float attack_ms, float release_ms, float sample_rate) {
