@@ -19,6 +19,7 @@ constexpr int kDurationSeconds = 6;
 constexpr size_t kChunkSamples = static_cast<size_t>(kSampleRate / 10); // 100 ms windows
 constexpr float kPearsonTarget = 0.78f;  // Gate #019: Lowered from 0.90 to 0.78
 constexpr float kPi = 3.14159265358979323846f;
+constexpr float kRmsWindowMs = 100.0f;
 
 float pearson_r(const std::vector<float>& x, const std::vector<float>& y) {
     if (x.size() != y.size() || x.empty()) return 0.0f;
@@ -124,20 +125,43 @@ std::vector<int16_t> generate_amplitude_modulated_sine() {
 }
 
 std::vector<float> expected_amplitude_modulated_envelope() {
-    std::vector<float> envelope;
+    std::vector<float> envelope, window;
     envelope.reserve(kDurationSeconds * 10);
 
-    const float mod_hz = 2.0f;
-    const float carrier_amplitude = 0.8f;
-    const float mod_depth = 0.6f;
+    const size_t window_samples = static_cast<size_t>((kRmsWindowMs * kSampleRate / 1000.0f) + 0.5f);
+    window.assign(window_samples, 0.0f);
 
-    for (int window = 0; window < kDurationSeconds * 10; ++window) {
-        // Sample the modulation envelope at the midpoint of each window.
-        const float t = (window + 0.5f) / 10.0f;
-        const float modulation = 1.0f - mod_depth / 2.0f +
-                                 (mod_depth / 2.0f) * std::sin(2.0f * kPi * mod_hz * t);
-        const float amplitude = carrier_amplitude * modulation;
-        envelope.push_back(amplitude / std::sqrt(2.0f));
+    const auto samples = generate_amplitude_modulated_sine();
+
+    size_t window_pos = 0;
+    double sum_squares = 0.0;
+    bool window_filled = false;
+
+    for (size_t i = 0; i < samples.size(); ++i) {
+        const float sample = static_cast<float>(samples[i]) / 32768.0f;
+        const float squared = sample * sample;
+
+        if (window_filled) {
+            sum_squares -= window[window_pos];
+        }
+
+        window[window_pos] = squared;
+        sum_squares += squared;
+        window_pos = (window_pos + 1) % window_samples;
+
+        if (!window_filled && window_pos == 0) {
+            window_filled = true;
+        }
+
+        if ((i + 1) % kChunkSamples == 0) {
+            if (window_filled) {
+                envelope.push_back(static_cast<float>(
+                    std::sqrt(sum_squares / static_cast<double>(window_samples))
+                ));
+            } else {
+                envelope.push_back(0.0f);
+            }
+        }
     }
 
     return envelope;
