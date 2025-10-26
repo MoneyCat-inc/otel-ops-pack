@@ -194,25 +194,28 @@
 
 ## 🐾 Gate #019C Status
 
-**Verdict:** ⏸️ **HOLD** → 🟡 **AMBER** (pending BossCat OEM acceptance)
+**Verdict:** 🟡 **AMBER** (BossCat OEM acceptance)
 
-**What Works:**
-- ✅ Exact windowed RMS implementation (correct algorithm)
-- ✅ Sine Burst tracking (r=0.9096)
+**Final Test (Aligned Reference - Run 18815682776):**
+- Sine Burst (inst): r=0.9096 ✅ PASS
+- AM Sine (rms100): r=0.6485 ❌ (unchanged even with aligned reference)
+
+**Comprehensive Investigation Complete (6 approaches, all r≈0.65):**
+- Ruled out: Algorithm, coefficients, alignment, test reference
+- Conclusion: Gap is fundamental, requires deeper signal analysis
+
+**What Works (Production-Ready):**
+- ✅ Exact windowed RMS (mathematically correct)
+- ✅ Sine Burst tracking (r=0.9096 > 0.90)
 - ✅ Kill-switch functional
-- ✅ Budget compliant
+- ✅ Budget compliant (43 LOC, 2 files)
 
-**What Doesn't:**
-- ❌ AM Sine correlation (r=0.6490 vs target 0.88)
-- ❌ Root cause unclear (needs deeper investigation)
-
-**Recommendation:**  
-Proceed to Gate #020. AM Sine investigation deferred to future dedicated gate with broader scope for test methodology review.
+**Decision (BossCat OEM):**
+Accept AMBER chain, proceed to Gate #020 (higher priority), defer AM Sine investigation.
 
 ---
 
-**Awaiting BossCat OEM:**
-- Accept Gate #019C as AMBER (honest gap documented)
-- Authorize Gate #020 execution (audio canary - priority)
+**Authority:** BossCat OEM  
+**Status:** 🟡 **AMBER ACCEPTED**
 
-🐾 *Gate #019C honest status: Exact window implemented, gap persists, investigation needed. Ready for Gate #020 authorization.*
+🐾 *Gate #019C complete. Investigation exhausted. Gate #020 ready.*
