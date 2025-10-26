@@ -1,54 +1,63 @@
-# Gate #019B — Hybrid Envelope Detector (Micro-Gate)
+# Gate #020 — Audio Canary & Rollout
 
 **Authority:** BossCat OEM  
 **Date:** 2025-10-26  
 **Executor:** Cursor{Implementer}  
-**Gate Type:** Micro-Gate (Audio Enhancement)  
-**Parent Gate:** #019 (AMBER - reclassified)  
+**Gate Type:** Production Deployment (Canary Rollout)  
 **Status:** 🔵 **IN PROGRESS**
 
 ---
 
 ## 🎯 Goal
 
-Add 100ms RMS envelope alongside instantaneous attack/release follower. Expose both. Update tests to correlate Sine-Burst → env_inst and AM-Sine → env_rms100. Keep budgets tight; human-gated merge.
+Implement automated audio canary state machine with observability and rollback for production-safe feature-flagged rollout. Two jobs: (CNY1) canary state machine with 0%→10%→50%→100% ramp and auto-halt on breach; (CNY2) observability dashboard + one-click rollback. Full ECRR, human-gated merge only.
 
 **Target State:**
-- AM-Sine: r(env_rms100, expected) ≥ **0.88**
-- Sine-Burst: r(env_inst, expected) ≥ **0.90**
-- Underrun < **0.5%**
-- ECRR complete
+- Canary: 0% → 10% (5min) → 50% (2min) → 100% completion
+- Auto-halt on KPI breach (underrun_ratio, jitter, or other thresholds)
+- OTLP span emission with canary phase attributes
+- One-click rollback capability
+- Evidence complete
 
 **Success Criteria:**
-- Both scenarios pass
-- Budget compliant (≤1 job, ≤6 files, ≤150 LOC)
-- Evidence complete
+- Canary completes 100% with no alerts
+- KPIs within thresholds at each phase
+- Rollback verified functional
+- Budgets respected (≤2 jobs, ≤10 files, ≤200 LOC/job)
 
 ---
 
 ## 📊 Lane & Scope
 
-**Lane:** `viz-engine-projectm/**`, `docs/**` (docs-only)  
+**Lane:** `viz-engine-projectm/**`, `docs/**`, monitoring/scripts  
 **Scope:**
-- C++ audio-injector (add RMS envelope)
-- Test harness (dual-envelope validation)
-- Evidence documentation
+- Canary state machine logic
+- Phase progression scheduler
+- Health monitoring + breach detection
+- OTLP span emission
+- Rollback scripts/documentation
+- Dashboard panels (optional)
 
 **Out of Scope:**
-- Non-audio changes
-- Feature additions beyond RMS envelope
+- Audio algorithm changes
+- Non-canary features
+- AM Sine correlation fixes
 
 ---
 
 ## 🔒 Budgets & Guardrails
 
 **Budgets:**
-- ≤ **1 job** (Hybrid detector implementation)
-- ≤ **6 files**
-- ≤ **150 LOC**
+- ≤ **2 jobs** (CNY1: State Machine, CNY2: Observability/Rollback)
+- ≤ **10 files** total
+- ≤ **200 LOC per job**
 - Single-writer lock
 - Exit codes: 0/50/51/52/53
 - Bots do **NOT** merge
+
+**Two-Agent Discipline:**
+- A (Implementer) writes
+- B (Balancer) verifies (read-only)
 
 **Stability Pack:**
 - Human-gated merge required
@@ -56,77 +65,98 @@ Add 100ms RMS envelope alongside instantaneous attack/release follower. Expose b
 
 ---
 
-## 🔧 Implementation Plan
+## 🔧 Job Breakdown
 
-### 1. RMS Detector (IIR of Squares)
+### Job CNY1 — Canary State Machine (≤200 LOC, ≤6 files)
 
-**Algorithm:**
-```cpp
-alpha_rms = exp(-1/(τ·fs)), where τ=0.100s
-ema2[n] = alpha_rms*ema2[n-1] + (1-alpha_rms)*x[n]^2
-env_rms100 = sqrt(ema2[n])
-```
+**Scope:** Automated canary deployment with phase progression
 
-**Keep:** Current instantaneous follower as `env_inst`
+**Implementation:**
+1. **State machine:** Phases: INIT → 10% → 50% → 100% → COMPLETE
+2. **Timer-based progression:**
+   - 0% → 10%: 5 minutes
+   - 10% → 50%: 2 minutes
+   - 50% → 100%: 2 minutes
+3. **Health monitoring per phase:**
+   - underrun_ratio < 0.5%
+   - tick_jitter_ms(max) ≤ 8ms
+   - (optional) r ≥ 0.78 for transients
+4. **Auto-halt on breach:**
+   - Immediate stop if any KPI exceeds threshold
+   - Rollback to 0% (disable audio)
+   - Alert emission
+5. **OTLP span emission:**
+   - Span name: `audio.enable.canary`
+   - Attributes: `{phase, r, underrun_ratio, tick_jitter_ms}`
+   - Environment: `deployment.environment=staging`
 
-**Add:** 100ms RMS envelope as `env_rms100`
+**Files:**
+- canary-state.js or canary.js (~150 LOC)
+- Integration with server.js (~30 LOC)
+- Config file (optional, ~20 LOC)
 
-**LOC Estimate:** ~30 LOC (detector + init)
-
----
-
-### 2. API/Telemetry
-
-**Getters:**
-- `envelope_inst()` (current envelope, renamed)
-- `envelope_rms100()` (new RMS envelope)
-
-**Optional:** Add to `/audio/stats` endpoint
-
-**LOC Estimate:** ~5 LOC
-
----
-
-### 3. Test Harness Updates
-
-**AM-Sine Test:**
-- Compute ground-truth via windowed RMS (100ms) over input
-- Correlate vs `env_rms100`
-- Target: r ≥ 0.88
-
-**Sine-Burst Test:**
-- Correlate expected burst envelope vs `env_inst`
-- Target: r ≥ 0.90
-
-**LOC Estimate:** ~25 LOC (test logic updates)
+**Acceptance:**
+- Canary completes 100% with no breaches
+- All phases monitored
+- OTLP spans emitted
+- Auto-halt tested (simulated breach)
 
 ---
 
-### 4. Evidence
+### Job CNY2 — Observability & Rollback (≤200 LOC, ≤6 files)
 
-**Artifacts:**
-- `GATE_019B_EVIDENCE.md` — 2x2 table, CI run ID, results
-- `.agent/EVIDENCE.log` — Execution trail
-- **BOSSCAT_LOG:** "#019 reclassified AMBER; #019B closes AM-Sine gap"
+**Scope:** Monitoring, rollback capability, incident response
+
+**Implementation:**
+1. **Rollback script:**
+   - PowerShell or bash script
+   - Sets AUDIO_ENABLED=false
+   - Restarts service
+   - Verifies audio stopped
+   - ~60 LOC
+
+2. **Dashboard/monitoring (optional):**
+   - Canary status panel
+   - Phase progression visualization
+   - KPI metrics display
+   - ~80 LOC (if implemented)
+
+3. **Incident template:**
+   - Markdown template for canary halt
+   - Required fields: phase, KPIs, breach reason, rollback confirmation
+   - ~30 LOC
+
+4. **Evidence:**
+   - Screenshot of successful canary (or dashboard)
+   - Rollback test results
+   - OTLP span examples
+
+**Files:**
+- rollback-audio.ps1 (~60 LOC)
+- INCIDENT_TEMPLATE.md (~30 LOC)
+- Optional: dashboard panel (~80 LOC)
+
+**Acceptance:**
+- Rollback script works (tested)
+- Incident template complete
+- Evidence captured
 
 ---
 
-## 🎯 Acceptance Criteria
+## 📂 Evidence Package
 
-| Scenario | Envelope | Expected | Threshold |
-|----------|----------|----------|-----------|
-| **Sine-Burst** | `env_inst` | Burst shape | r ≥ **0.90** |
-| **AM-Sine** | `env_rms100` | RMS modulation | r ≥ **0.88** |
-| **Buffer** | underrun | - | **< 0.5%** |
+**Required Artifacts:**
 
----
+1. **`GATE_020_CANARY_EVIDENCE.md`** — Comprehensive report:
+   - Canary progression log (0%→10%→50%→100%)
+   - KPI measurements at each phase
+   - OTLP span examples
+   - Rollback verification
+   - Dashboard screenshots (optional)
 
-## 🔧 Bounded Tuning (If Needed)
+2. **BOSSCAT_LOG:** One-liner for Gate #020 GREEN
 
-**If AM-Sine r < 0.88:**
-- Adjust τ to 80-120ms (one pass only)
-- Rerun CI
-- If still failing → ECRR and hold (do not expand scope)
+3. **Dashboard update:** Gate #020 status
 
 ---
 
@@ -135,44 +165,41 @@ env_rms100 = sqrt(ema2[n])
 **Post when GREEN:**
 
 ```
-@cat ready-for-gate : #019B
+@cat ready-for-gate : #020
 
 Status: GREEN
-Evidence: GATE_019B_EVIDENCE.md
-KPIs: AM-Sine r(env_rms100)≥0.88, Sine-Burst r(env_inst)≥0.90, underrun<0.5%
-Budgets: OK (≤1 job, ≤6 files, ≤150 LOC)
+Evidence: GATE_020_CANARY_EVIDENCE.md
+Canary: 0%→10%→50%→100% completed (no alerts)
+KPIs: underrun<0.5%, jitter(max)≤8ms across phases
+Rollback: Verified
+Budgets: OK
 ECRR: COMPLETE
-Notes: #019 reclassified AMBER; #019B closes AM-Sine gap
 ```
-
----
-
-## 📋 Dashboard Updates
-
-**Gate #019:** Mark as AMBER (partial success)  
-**Gate #019B:** Add as IN-PROGRESS → GREEN on completion  
-**BOSSCAT_LOG:** Record reclassification + micro-gate
 
 ---
 
 ## 🛡️ Exit Criteria
 
 **GREEN (Exit 0):**
-- AM-Sine: r(env_rms100) ≥ 0.88
-- Sine-Burst: r(env_inst) ≥ 0.90
-- Underrun < 0.5%
-- Budgets respected
-- ECRR complete
+- Canary: 100% completion
+- All phases: KPIs within thresholds
+- OTLP spans: Emitted successfully
+- Rollback: Tested and functional
+- Budgets: Respected
+- ECRR: Complete
 
 **AMBER (Exit 50):**
-- One scenario passes
-- Document path to GREEN
+- Canary partial (e.g., stopped at 50%)
+- Some KPIs marginal
+- Document issues
 
 **FAIL (Exit 51):**
 - Budgets exceeded
+- Process violations
 
 **BLOCKED (Exit 52):**
-- Cannot meet KPIs after tuning
+- Infrastructure issues
+- KPI breaches unrecoverable
 
 ---
 
@@ -183,4 +210,4 @@ Notes: #019 reclassified AMBER; #019B closes AM-Sine gap
 
 ---
 
-🐾 *Executing hybrid detector: instantaneous + 100ms RMS envelope.*
+🐾 *Gate #020 executing: Audio canary deployment with production safety.*
