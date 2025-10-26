@@ -17,12 +17,12 @@
 **Gate #019C:** 🟡 **AMBER** (Certified 2025-10-26) - **Exact Windowed RMS (Investigation Needed)**  
 **Gate #020:** ✅ GREEN (Certified 2025-10-26) - **Audio Canary & Rollout (Code-Complete)**  
 **Gate #021:** ✅ **GREEN** (APPROVED 2025-10-26) - **BOSSCAT-021A Audio Authority Remediation**  
-**Gate #022:** 📋 **READY** (Implementation Complete 2025-10-26) - **BOSSCAT-022A Windows Collector Stabilization**
+**Gate #022:** ✅ **GREEN** (APPROVED 2025-10-26) - **BOSSCAT-022A Windows Collector Stabilization (Code-Complete)**
 
-**Current State:** Patchset complete, scripts validated, documentation ready, awaiting deployment  
+**Current State:** Code complete (660 LOC), scripts validated, runbook comprehensive, deployment ready  
 **Infrastructure:** Production-ready observability + Windows collector infrastructure complete  
-**Gate #022 Status:** 📋 READY FOR DEPLOYMENT - 6 files created (660 LOC), scripts tested, runbook comprehensive  
-**Next Action:** Deploy to environment with OpenTelemetry Collector installed, verify WINCOLL-01/02/03
+**Gate #022 Status:** ✅ APPROVED - 4/4 WINCOLL objectives implemented, deployment deferred to target environment  
+**Next Action:** Deploy to environment with otelcol-contrib installed (playbook ready), or plan Gate #023
 
 ---
 
