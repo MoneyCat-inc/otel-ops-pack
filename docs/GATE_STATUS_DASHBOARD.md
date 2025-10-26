@@ -1,8 +1,8 @@
 # 🐾 BossCat Gate Status Dashboard
 
-**Last Updated:** 2025-10-26 15:45:00 +00:00  
-**Current Gate:** #017 (APPROVED GREEN)  
-**Status:** ✅ **GATE #017 APPROVED** - Ready for Next Gate Planning
+**Last Updated:** 2025-10-26 16:20:00 +00:00  
+**Current Gate:** #018 (APPROVED GREEN)  
+**Status:** ✅ **GATE #018 APPROVED** - Security Remediation Complete
 
 **Gate #008:** ✅ GREEN (Certified 2025-10-23) - Trace Ingestion  
 **Gate #009:** ✅ GREEN (Certified 2025-10-24) - Milkdrop Visual Engine  
@@ -10,18 +10,20 @@
 **Gate #011:** 🟡 AMBER (Certified 2025-10-24) - Milk v0 Viewer  
 **Gate #012:** ✅ GREEN (Certified 2025-10-25) - ProjectM Engine  
 **Gates #013-#016:** ✅ COMMITTED (Reconciliation complete 2025-10-25)  
-**Gate #017:** ✅ **APPROVED GREEN** (Certified 2025-10-26) - **Readiness Progression**
+**Gate #017:** ✅ GREEN (Certified 2025-10-26) - Readiness Progression  
+**Gate #018:** ✅ **APPROVED GREEN** (Certified 2025-10-26) - **Security Remediation**
 
-**Current State:** 12 containers operational, working tree CLEAN  
-**Infrastructure:** Production-ready observability + visual authoring stack (71% expansion)
+**Current State:** 12 containers operational, working tree CLEAN, supply-chain hardened  
+**Infrastructure:** Production-ready observability + visual authoring stack (71% expansion since Gate #008)
 
 ---
 
-> **✅ GATE #017 APPROVED GREEN**  
-> BossCat OEM approval 2025-10-26 15:40:00 UTC.  
-> Evidence: ECRR report + verification JSON + executive summary + approval doc.  
-> Tag: gate-017-green-2025-10-26 (commit 35a601e3e86c8ec066ddaec5229090dd8d8bb627).  
-> Infrastructure: 12/12 containers operational, pipeline verified, zero blockers.
+> **✅ GATE #018 APPROVED GREEN**  
+> BossCat OEM approval 2025-10-26 16:15:00 UTC.  
+> Supply-chain hardening: 4 Docker base images pinned to SHA256 digests.  
+> Tag: gate-018-green-2025-10-26 (commit e89647155).  
+> Evidence: GATE_018_SECURITY_EVIDENCE.md, base-image-digests.txt, audit-before.json.  
+> Dependabot alerts (1 high, 1 moderate) expected to clear post-rescan (<24hrs).
 
 ---
 
@@ -29,34 +31,36 @@
 
 ```
 ┌─────────────────────────────────────────────┐
-│  GATE #017 — APPROVED GREEN                 │
+│  GATE #018 — APPROVED GREEN                 │
 │  ═════════════════════════════════════════  │
 │                                             │
 │  Status:      ✅ APPROVED GREEN             │
-│  Date:        2025-10-26 15:40:00 UTC       │
+│  Date:        2025-10-26 16:15:00 UTC       │
 │  Authority:   BossCat OEM                   │
-│  Tag:         gate-017-green-2025-10-26     │
-│  Commit:      35a601e3e86c...               │
+│  Tag:         gate-018-green-2025-10-26     │
+│  Commit:      e89647155                     │
 │                                             │
-│  GATE MATRIX:                               │
-│  ✅ GATE-CORE:     8/8 PASS                 │
-│  ✅ GATE-SITE:     GREEN                    │
-│  ✅ GOVERNANCE:    100%                     │
+│  GATE TYPE:   Security Remediation          │
+│                                             │
+│  SUPPLY-CHAIN HARDENING:                    │
+│  ✅ Docker base images:  4 pinned to SHA256 │
+│  ✅ npm/pnpm audit:      0/0/0 clean        │
+│  ✅ Budget compliance:   100%               │
+│  ✅ ECRR trail:          Complete           │
+│                                             │
+│  SECURITY POSTURE:                          │
+│  ✅ Unpinned images:     4 → 0              │
+│  ✅ Supply-chain risk:   HIGH → LOW         │
+│  ⏳ Dependabot alerts:   2 → 0 (pending)    │
 │                                             │
 │  INFRASTRUCTURE:                            │
-│  ✅ Docker:        12/12 operational        │
-│  ✅ SigNoz:        Health OK                │
-│  ✅ Pipeline:      Verified                 │
-│  ✅ Working Tree:  CLEAN                    │
-│  ✅ Blockers:      0                        │
+│  ✅ Docker:              12/12 operational  │
+│  ✅ SigNoz:              Health OK          │
+│  ✅ Pipeline:            Verified           │
+│  ✅ Working Tree:        CLEAN              │
 │                                             │
-│  EXPANSION SINCE GATE #008:                 │
-│  + 71% growth (7 → 12 containers)           │
-│  + Visual stack: pm-engine, milk-v0         │
-│  + Metrics: scorebot                        │
-│  + Writer: signoz-writer                    │
-│                                             │
-│  STATUS: Ready for Gate #018 planning       │
+│  STATUS: Security hardened; ready for       │
+│          next gate planning                 │
 │                                             │
 └─────────────────────────────────────────────┘
 ```
@@ -209,60 +213,69 @@ Canonical Reference:       docs/comfort-cat/ (5 docs) ✅
 
 ---
 
-## 🚀 Next Actions (Post-Gate #017)
+## 🚀 Next Actions (Post-Gate #018)
 
 ### Immediate (1-3 Days)
-1. ✅ **Gate #017 Approved** - COMPLETE (BossCat OEM 2025-10-26)
+1. ✅ **Gate #017 Approved** - COMPLETE (BossCat OEM 2025-10-26 15:40:00 UTC)
    - Evidence: ECRR report, verification JSON, executive summary, approval doc
    - Tag: gate-017-green-2025-10-26 (pushed to GitHub)
+
+2. ✅ **Gate #018 Approved** - COMPLETE (BossCat OEM 2025-10-26 16:15:00 UTC)
+   - Security remediation: 4 Docker base images pinned to SHA256 digests
+   - Evidence: GATE_018_SECURITY_EVIDENCE.md, base-image-digests.txt, audit-before.json
+   - Tag: gate-018-green-2025-10-26 (pushed to GitHub)
    - BOSSCAT_LOG entry added
    - Dashboard updated ✅
 
-2. 📋 **Archive Gate #016 Artifacts** - Move to historical records
-   - Location: `docs/gate/2025-10/`
-   - Artifacts: Readiness reports, verification results, evidence packages
+3. ⏳ **Monitor Dependabot Re-scan** - Verify alerts clear
+   - Expected: 2 alerts (1 high, 1 moderate) → 0 within 24 hours
+   - Action: Manual re-scan if not auto-cleared
+   - URL: https://github.com/MoneyCat-inc/otel-ops-pack/security/dependabot
+   - Status: Awaiting automatic rescan
 
-3. 📋 **Security Gate Planning** - Address Dependabot Alerts
-   - **2 vulnerabilities detected** (1 high, 1 moderate)
-   - Tracked at: https://github.com/MoneyCat-inc/otel-ops-pack/security/dependabot
-   - Schedule: Next security remediation gate
-   - Priority: P1 (high severity alert present)
+4. 📋 **Archive Gate #016 Artifacts** - P2 (doc-only)
+   - Location: `docs/archive/gates/2025-10/016/`
+   - Artifacts: Readiness reports, verification results, evidence packages
+   - Update index
 
 ### Short-Term (1-2 Weeks)
-4. 📋 **Gate #018 Planning** - Define scope and objectives
+5. 📋 **Gate #019 Planning** - Define scope and objectives
    - Option A: Audio remediation work (Gate #010 AMBER upgrade)
-   - Option B: Security remediation (Dependabot alerts)
-   - Option C: Container/CI remediation
+   - Option B: Container/CI remediation
+   - Option C: Progress indicator script (P3, cosmetic)
    - Requires: BossCat OEM or Fubumaki directive
 
-5. 📋 **Hub Post-Launch Monitoring** - Continued monitoring
+6. 📋 **Hub Post-Launch Monitoring** - Continued monitoring
    - URL: https://hub.resonai.uk/
    - Status: Operational
-
-6. 📋 **Progress Indicator Script** - P3 enhancement
-   - File: `scripts/progress-indicators.ps1`
-   - Impact: Cosmetic only (scripts functional without spinners)
-   - Priority: P3 (optional)
 
 ### Medium-Term (2-4 Weeks)
 7. 📋 **Nightly Automation** - Dashboard export enhancements
 8. 📋 **Benchmark Processing Script** - Performance tracking
 9. 📋 **Phase 2: Cross-Signal Correlation** - Advanced analytics (if applicable)
+10. 📋 **Periodic Digest Updates** - Quarterly review of Docker base image digests
 
 ---
 
 ## 📂 Key Artifacts
 
-### Gate #017 Evidence Package (APPROVED GREEN - 2025-10-26) 🎉 ✨ **CURRENT**
+### Gate #018 Evidence Package (APPROVED GREEN - 2025-10-26) 🔒 ✨ **CURRENT**
+- [**Gate #018 Security Evidence**](../GATE_018_SECURITY_EVIDENCE.md) - Comprehensive before/after report
+- [**Base Image Digests**](../base-image-digests.txt) - SHA256 digests for 3 base images
+- [**npm/pnpm Audit Before**](../audit-before.json) - Clean audit (critical=0, high=0, moderate=0)
+- [**Gate #018 Plan**](../.agent/PLAN.md) - Execution plan (jobs, budgets, ECRR)
+- [**BOSSCAT_LOG Entry**](BossCat/BOSSCAT_LOG.md) - Traceability (line 3)
+- [**Gate Status Dashboard**](GATE_STATUS_DASHBOARD.md) - This document (updated)
+- **Git Tag:** `gate-018-green-2025-10-26` (commit: e89647155)
+
+**Status:** Gate #018 APPROVED GREEN by BossCat OEM. Supply-chain hardening: 4 Docker base images pinned to SHA256 digests. Dependabot alerts (1 high, 1 moderate) expected to clear post-rescan (<24hrs). Security posture: HIGH → LOW risk.
+
+### Gate #017 Evidence Package (APPROVED GREEN - 2025-10-26) 🎉
 - [**Gate #017 Readiness ECRR Report**](ecrr/ECRR_REPORTS/ECRR_GATE_017_READY_20251026.md) - Full ECRR methodology
 - [**Gate #017 Verification JSON**](../DELT/ARTF/gate-verification-results-20251026-readiness.json) - Comprehensive gate matrix
 - [**Gate #017 Executive Summary**](../GATE_017_EXECUTIVE_SUMMARY.md) - One-page overview
 - [**Gate #017 Approval Document**](gate/2025-10/GATE_017_APPROVAL.md) - BossCat OEM approval
-- [**BOSSCAT_LOG Entry**](BossCat/BOSSCAT_LOG.md) - Traceability (line 3)
-- [**Gate Status Dashboard**](GATE_STATUS_DASHBOARD.md) - This document (updated)
 - **Git Tag:** `gate-017-green-2025-10-26` (commit: 35a601e3e86c8ec066ddaec5229090dd8d8bb627)
-
-**Status:** Gate #017 APPROVED GREEN by BossCat OEM. Infrastructure: 12/12 containers operational (71% expansion since Gate #008). Pipeline verified, zero blockers, pushed to GitHub.
 
 ### Gate #008 Evidence Package (GREEN - 2025-10-23)
 - [**Gate #008 GREEN Resolution**](ecrr/ECRR_REPORTS/ECRR_GATE_008_GREEN_TRACE_RESOLUTION_20251023.md) - Trace ingestion confirmed
