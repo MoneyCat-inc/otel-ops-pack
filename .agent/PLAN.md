@@ -1,50 +1,53 @@
-# Gate #018 — Security Remediation Plan
+# Gate #019 — Audio Remediation Plan (AMBER → GREEN)
 
 **Authority:** BossCat OEM  
 **Date:** 2025-10-26  
 **Executor:** Cursor{Implementer}  
-**Gate Type:** Security Remediation  
+**Gate Type:** Audio Remediation (Upgrade Gate #010 from AMBER → GREEN)  
 **Status:** 🔵 **IN PROGRESS**
 
 ---
 
 ## 🎯 Goal
 
-Clear 2 Dependabot alerts (1 high, 1 moderate) without functional drift. Pin images/actions to safe versions. Produce before/after evidence. Two small jobs under budgets, ECRR trail complete, human-gated merge only.
+Improve audio reactivity and stability to promote **Gate #010** from AMBER → GREEN. Two small jobs: (R1) envelope calibration + feed mapping into projectM; (R2) enable audio by default via feature flag with canary and fallbacks. Keep budgets tight and evidence complete; merges remain human-gated.
 
 **Target State:**
-- critical = 0
-- high = 0  
-- moderate = 0 or documented with justification
+- r(envelope,intake) ≥ **0.78** across 3 scenarios
+- underrun < **0.5%**
+- overlay meter visible
+- canary clean
+- ECRR complete
 
 **Success Criteria:**
-- No test regressions
+- Gate #010 status: AMBER → GREEN
+- Audio reactivity meets KPI thresholds
+- No visual guard regressions
 - Budgets respected (≤2 jobs, ≤10 files, ≤200 LOC per job)
-- Complete evidence trail
-- Human-gated merge only
 
 ---
 
 ## 📊 Lane & Scope
 
-**Lane:** `security/*` and build/config files only  
+**Lane:** `viz-engine-projectm/**`, `docs/**` (docs-only), `viz-milk/**` (overlay only)  
 **Scope:**
-- `package.json` / lockfiles
-- `Dockerfile*`
-- `.github/workflows/**`
-- Build scripts that pin versions
+- C++/renderer audio envelope code
+- Audio intake mapping
+- Feature flags and configuration
+- Canary deployment logic
+- Optional: Milk v0 overlay meter
 
 **Out of Scope:**
-- Functional changes
-- Feature additions
-- Non-security refactoring
+- Non-audio visual changes
+- Unrelated feature additions
+- Breaking changes to existing APIs
 
 ---
 
 ## 🔒 Budgets & Guardrails
 
 **Budgets:**
-- ≤ **2 jobs** (SR1: Dependencies, SR2: Supply-chain)
+- ≤ **2 jobs** (R1: Envelope/Intake, R2: Feature Flag/Canary)
 - ≤ **10 files** total
 - ≤ **200 LOC per job**
 - Single-writer lock
@@ -65,49 +68,67 @@ Clear 2 Dependabot alerts (1 high, 1 moderate) without functional drift. Pin ima
 
 ## 🔧 Job Breakdown
 
-### Job SR1 — Dependency Remediation *(≤200 LOC, ≤6 files)*
+### Job R1 — Envelope Calibration & Intake Mapping *(≤200 LOC, ≤6 files)*
 
-**Scope:** Code/build dependencies  
-**Files:** `package.json`, lockfile(s), build scripts
+**Scope:** C++/renderer audio envelope improvements
 
-**Steps:**
-1. Run audit **before** → save `audit-before.json`
-2. Apply **patch/minor** upgrades (no breaking majors) to clear **high**
-3. Evaluate **moderate** (upgrade if safe)
-4. Rebuild and run changed-paths tests only
-5. Run audit **after** → save `audit-after.json`
+**Edits:**
+1. Add **attack/release** envelope
+   - Attack: 15-25 ms
+   - Release: 120-180 ms
+2. **Log-gain** mapping to highlight mid-energy dynamics
+3. Export intake metrics:
+   - `audio_rms_intake`
+   - `audio_envelope`
+   - `audio_peak`
+4. Optional: Tiny overlay in Milk v0 (OSD meter) or `/milk/health` JSON fields
+
+**Tests (changed-paths only):**
+- **Synthetic 3-pack (60s each):**
+  1. AM-sine
+  2. Percussive clicks
+  3. Bass sweep
+- Compute **Pearson r(envelope,intake)** vs known envelopes
+- **Pass criteria:** r ≥ **0.78** on each; underrun ratio < **0.5%**
+
+**Artifacts:**
+- `GATE_019_JOB_R1_EVIDENCE.md` (tables + brief plots)
+- `.agent/EVIDENCE.log`
 
 **Acceptance:**
-- `critical=0`, `high=0`
-- `moderate=0` **OR** justified in `SECURITY_NOTES.md` (CVE + reason + mitigation)
+- r(envelope,intake) ≥ 0.78 across all 3 scenarios
+- Underrun ratio < 0.5%
 - No test regressions
 - Budgets/process respected
 
 ---
 
-### Job SR2 — Supply-Chain Hardening *(≤200 LOC, ≤6 files)*
+### Job R2 — Feature-Flag Enable + Canary *(≤200 LOC, ≤6 files)*
 
-**Scope:** Containers & CI
+**Scope:** Feature flag deployment with canary rollout
 
-**Containers:**
-- Pin base images to immutable **digests**
-- Minimize OS packages
-- Clear caches
+**Edits:**
+1. Default `AUDIO_ENABLED=true` behind config/flag
+2. Keep **hard kill-switch** path for emergency disable
+3. Canary ramp: **0% → 10% (5 min) → 50% (2 min) → 100%**
+   - Auto-halt on breach
+4. Emit synthetic span `audio.enable.canary` with attributes:
+   - `r` (correlation)
+   - `underrun_ratio`
+   - `tick_jitter_ms`
 
-**CI/CD:**
-- Pin actions to stable tags/SHAs
-- Tighten `permissions` (default `contents:read`, raise per-job only as needed)
-- Record **branch-protection** snapshot (PR required + checks)
+**Acceptance (Go/No-Go):**
+- Canary completes with **no alert**
+- KPIs within thresholds:
+  - `underrun_ratio < 0.5%`
+  - `r ≥ 0.78`
+  - `tick_jitter_ms(max) ≤ 8 ms`
+- **No regressions** in visual guard metrics
 
 **Artifacts:**
-- Container scan report (before/after)
-- Base image digests list
-- Branch protection proof
-
-**Acceptance:**
-- No new critical/high in runtime images or CI surface
-- Branch-protection verified & recorded
-- Budgets/process respected
+- `GATE_019_JOB_R2_EVIDENCE.md`
+- Dashboard screenshot(s)
+- `.agent/EVIDENCE.log`
 
 ---
 
@@ -118,33 +139,33 @@ Clear 2 Dependabot alerts (1 high, 1 moderate) without functional drift. Pin ima
 1. **`.agent/EVIDENCE.log`** — Complete execution trail:
    - `plan → preflight → lock → edit → test → report → exit`
 
-2. **`GATE_018_SECURITY_EVIDENCE.md`** — Summary document:
-   - Before→After table
-   - Diffs
-   - `audit-before.json`
-   - `audit-after.json`
-   - `base-image-digests.txt`
-   - `scan-before.md`
-   - `scan-after.md`
-   - `bp-proof.png` (branch-protection snapshot)
+2. **`GATE_019_JOB_R1_EVIDENCE.md`** — R1 results:
+   - Envelope calibration details
+   - Test results (3 scenarios)
+   - Pearson r correlation tables
+   - Underrun analysis
 
-3. **(Optional)** Synthetic trace:
-   - `gate.018.security` tagged `deployment.environment=staging`
-   - Dashboard screenshot attached
+3. **`GATE_019_JOB_R2_EVIDENCE.md`** — R2 results:
+   - Canary deployment log
+   - KPI measurements
+   - Dashboard screenshots
+   - Visual guard confirmation
+
+4. **BOSSCAT_LOG** — One-liner if GREEN
 
 ---
 
 ## 🚦 Gate Hand-Off Signal
 
-**Post when evidence is complete:**
+**Post when GREEN:**
 
 ```
-@cat ready-for-gate : #018
+@cat ready-for-gate : #019
 
 Status: GREEN
-Evidence: GATE_018_SECURITY_EVIDENCE.md
-Security: critical=0, high=0; moderate=0 or justified
-Artifacts: audit-before.json, audit-after.json, base-image-digests.txt, scan-before.md, scan-after.md, bp-proof.png
+Evidence: GATE_019_JOB_R1_EVIDENCE.md, GATE_019_JOB_R2_EVIDENCE.md
+KPIs: r≥0.78 (3/3 scenarios), underrun<0.5%, jitter(max)≤8ms
+Canary: Completed (0%→10%→50%→100%) with no alerts
 Budgets: OK
 ECRR: COMPLETE
 ```
@@ -153,10 +174,12 @@ ECRR: COMPLETE
 
 ## 🏷️ Post-Approval Admin
 
-**Tag:** `gate-018-green-2025-10-26`
-- Annotate with remediation commit + evidence paths
+**Tag:** `gate-019-green-2025-10-26`
+- Annotate with commits + evidence paths
 
-**BOSSCAT_LOG:** One-liner acceptance entry
+**Updates:**
+- `docs/GATE_STATUS_DASHBOARD.md` (Gate #010 AMBER → GREEN)
+- `BOSSCAT_LOG` (one-liner acceptance entry)
 
 ---
 
@@ -167,29 +190,37 @@ ECRR: COMPLETE
 - Update index
 - Commit in DOCS lane (≤1 file move list + index)
 
-**P3 — Progress Indicator Script:**
-- Add `scripts/progress-indicators.ps1` in future cosmetic gate
-- Keep separate from security scope
+**Dependabot Rescan:**
+- Passive monitoring (24h)
+- Manual re-scan if needed
+- Screenshot for Gate #018 evidence addendum
 
 ---
 
 ## 🛡️ Exit Criteria
 
 **GREEN (Exit 0):**
-- critical = 0
-- high = 0
-- moderate = 0 or documented
-- Evidence complete
+- r(envelope,intake) ≥ 0.78 (3/3 scenarios)
+- underrun < 0.5%
+- tick_jitter_ms(max) ≤ 8 ms
+- Canary: 100% with no alerts
+- Visual guard: No regressions
 - Budgets respected
 - ECRR trail complete
+
+**AMBER (Exit 50):**
+- Partial success (1-2 scenarios pass)
+- Document path to GREEN
+- Evidence complete
 
 **FAIL (Exit 51):**
 - Budgets exceeded
 - Process violations
 
 **BLOCKED (Exit 52):**
-- Cannot clear critical/high
+- Cannot meet KPIs
 - Breaking changes required
+- Infrastructure issues
 
 ---
 
@@ -200,4 +231,4 @@ ECRR: COMPLETE
 
 ---
 
-🐾 *Security remediation in progress. Stability Pack guardrails enforced.*
+🐾 *Audio remediation in progress. Upgrading Gate #010 AMBER → GREEN.*

@@ -17,7 +17,11 @@ AudioBuffer::AudioBuffer(size_t capacity)
     , size_(0)
     , rms_(0.0f)
     , peak_(0.0f)
-{}
+    , envelope_(0.0f)
+{
+    // Gate #019: Initialize envelope follower with default parameters
+    init_envelope(20.0f, 150.0f, 44100.0f);  // 20ms attack, 150ms release @ 44.1kHz
+}
 
 size_t AudioBuffer::write(const int16_t* samples, size_t count, int channels) {
     if (!samples || count == 0) return 0;
@@ -88,6 +92,34 @@ void AudioBuffer::update_stats(float sample) {
     // Update RMS (exponential moving average for efficiency)
     const float alpha = 0.01f;  // Smoothing factor
     rms_ = alpha * (sample * sample) + (1.0f - alpha) * rms_;
+    
+    // Gate #019: Update envelope follower with attack/release
+    // Attack when signal rises, release when signal falls
+    float error = abs_sample - envelope_;
+    if (error > 0.0f) {
+        // Attack: signal rising
+        envelope_ += attack_coeff_ * error;
+    } else {
+        // Release: signal falling
+        envelope_ += release_coeff_ * error;
+    }
+}
+
+void AudioBuffer::init_envelope(float attack_ms, float release_ms, float sample_rate) {
+    // Gate #019: Calculate envelope follower coefficients
+    // Convert time constants (ms) to per-sample coefficients
+    // Formula: coeff = 1 - exp(-1 / (time_ms * sample_rate / 1000))
+    // This gives proper exponential attack/release behavior
+    
+    float attack_samples = attack_ms * sample_rate / 1000.0f;
+    float release_samples = release_ms * sample_rate / 1000.0f;
+    
+    // Prevent division by zero
+    if (attack_samples < 1.0f) attack_samples = 1.0f;
+    if (release_samples < 1.0f) release_samples = 1.0f;
+    
+    attack_coeff_ = 1.0f - std::exp(-1.0f / attack_samples);
+    release_coeff_ = 1.0f - std::exp(-1.0f / release_samples);
 }
 
 } // namespace audio
