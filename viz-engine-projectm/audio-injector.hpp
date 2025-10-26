@@ -55,7 +55,7 @@ private:
     float release_coeff_;  // Release time constant
     
     void update_stats(float sample);
-    void init_envelope(float attack_ms = 20.0f, float release_ms = 150.0f, float sample_rate = 44100.0f);
+    void init_envelope(float attack_ms = 10.0f, float release_ms = 250.0f, float sample_rate = 44100.0f);
 };
 
 } // namespace audio
