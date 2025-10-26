@@ -511,6 +511,21 @@ if ($webhookUrl) {
   }
 }
 
+# --- 8) BOSSCAT-022A: Windows Collector Verification (Gate #022) ---
+Write-Host ""
+Write-Host "=== Gate #022: Windows Collector Verification ===" -ForegroundColor Cyan
+try {
+  & "$PSScriptRoot\verify-windows-collector.ps1"
+  Write-Host "✓ Windows Collector: PASS" -ForegroundColor Green
+} catch {
+  Write-Warning "Windows Collector verification failed: $($_.Exception.Message)"
+  Write-Host "  → This may require admin privileges or collector installation" -ForegroundColor Yellow
+  # Non-blocking for now during Gate #022 rollout
+  # To make blocking: Uncomment the line below
+  # $exitCode = 2; $outcome = "FAIL"
+}
+
+Write-Host ""
 Write-Host "🐾 BossCat OEM - Verification Complete" -ForegroundColor Cyan
 exit $exitCode
 

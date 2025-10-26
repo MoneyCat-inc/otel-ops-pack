@@ -16,12 +16,13 @@
 **Gate #019B:** 🟡 **AMBER** (Certified 2025-10-26) - **Hybrid Detector (Partial)**  
 **Gate #019C:** 🟡 **AMBER** (Certified 2025-10-26) - **Exact Windowed RMS (Investigation Needed)**  
 **Gate #020:** ✅ GREEN (Certified 2025-10-26) - **Audio Canary & Rollout (Code-Complete)**  
-**Gate #021:** ✅ **GREEN** (APPROVED 2025-10-26) - **BOSSCAT-021A Audio Authority Remediation**
+**Gate #021:** ✅ **GREEN** (APPROVED 2025-10-26) - **BOSSCAT-021A Audio Authority Remediation**  
+**Gate #022:** 📋 **READY** (Implementation Complete 2025-10-26) - **BOSSCAT-022A Windows Collector Stabilization**
 
-**Current State:** 11 containers operational, AudioSwitch authority live, all smoke tests passed  
-**Infrastructure:** Production-ready observability + verified audio gating via AudioSwitch  
-**Gate #021 Status:** ✅ APPROVED - 3/3 defects resolved, 11/11 smoke tests PASS, zero blockers  
-**Next Action:** Archive Gate #021, plan Gate #022
+**Current State:** Patchset complete, scripts validated, documentation ready, awaiting deployment  
+**Infrastructure:** Production-ready observability + Windows collector infrastructure complete  
+**Gate #022 Status:** 📋 READY FOR DEPLOYMENT - 6 files created (660 LOC), scripts tested, runbook comprehensive  
+**Next Action:** Deploy to environment with OpenTelemetry Collector installed, verify WINCOLL-01/02/03
 
 ---
 

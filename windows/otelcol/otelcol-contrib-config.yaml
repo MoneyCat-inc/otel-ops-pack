@@ -1,0 +1,85 @@
+# BOSSCAT-022A: Windows OpenTelemetry Collector config
+# Purpose: Collect Windows host metrics and event logs for pipeline observability
+# Notes:
+# - Exposes internal telemetry at :8888 for local diagnostics
+# - Sends all data to the OTLP aggregator (gRPC)
+# - Toggle endpoint via OTLP_GRPC_ENDPOINT environment variable
+
+receivers:
+  hostmetrics:
+    collection_interval: 60s
+    scrapers:
+      - cpu
+      - memory
+      - disk
+      - network
+      - process
+
+  # Windows Event Log receiver
+  # Note: If your collector version uses 'windowseventlog' instead, rename accordingly
+  windowseventlog:
+    channel: Application
+    start_at: end
+    poll_interval: 1s
+
+  windowseventlog/system:
+    channel: System
+    start_at: end
+    poll_interval: 1s
+
+processors:
+  batch:
+    timeout: 10s
+    send_batch_size: 1024
+
+  memory_limiter:
+    check_interval: 2s
+    limit_mib: 512
+    spike_limit_mib: 128
+
+  # Add resource attributes for Windows host identification
+  resource:
+    attributes:
+      - key: host.type
+        value: windows
+        action: upsert
+      - key: deployment.environment
+        value: ${env:DEPLOY_ENV}
+        action: upsert
+
+exporters:
+  # Primary OTLP export to aggregator (gRPC)
+  otlp:
+    endpoint: ${env:OTLP_GRPC_ENDPOINT}
+    tls:
+      insecure: true
+    retry_on_failure:
+      enabled: true
+      initial_interval: 5s
+      max_interval: 30s
+      max_elapsed_time: 300s
+
+  # Logging exporter for local debugging (warn level to reduce noise)
+  logging:
+    loglevel: warn
+
+service:
+  telemetry:
+    logs:
+      level: warn
+    metrics:
+      address: "0.0.0.0:8888"
+
+  pipelines:
+    # Host metrics pipeline
+    metrics:
+      receivers: [hostmetrics]
+      processors: [memory_limiter, resource, batch]
+      exporters: [otlp, logging]
+
+    # Windows Event Logs pipeline
+    logs:
+      receivers: [windowseventlog, windowseventlog/system]
+      processors: [resource, batch]
+      exporters: [otlp, logging]
+
