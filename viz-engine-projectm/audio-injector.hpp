@@ -1,4 +1,5 @@
 // Gate #013C - Job A - Audio Injector Header
+// Gate #019B - Hybrid Envelope Detector
 // ECRR: BossCat OEM | Executor: Cursor{Implementer}
 // Purpose: Ring buffer with PCM format conversion (int16 → float32)
 
@@ -8,6 +9,8 @@
 #include <vector>
 #include <cstdint>
 #include <cstddef>
+#include <cmath>      // Gate #019B: For std::sqrt in envelope_rms100() getter
+#include <algorithm>  // Gate #019B: For std::max in envelope_rms100() getter
 
 namespace audio {
 
