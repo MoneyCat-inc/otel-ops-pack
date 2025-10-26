@@ -1,8 +1,8 @@
 # 🐾 BossCat Gate Status Dashboard
 
-**Last Updated:** 2025-10-26 16:50:00 +00:00  
-**Current Gate:** #019 (APPROVED GREEN)  
-**Status:** ✅ **GATE #019 APPROVED** - Audio Remediation Complete
+**Last Updated:** 2025-10-26 17:35:00 +00:00  
+**Current Gate:** #019B (AMBER - Partial Success)  
+**Status:** 🟡 **GATE #019/019B AMBER** - Audio Remediation Partial, Follow-Up Planned
 
 **Gate #008:** ✅ GREEN (Certified 2025-10-23) - Trace Ingestion  
 **Gate #009:** ✅ GREEN (Certified 2025-10-24) - Milkdrop Visual Engine  
@@ -12,20 +12,23 @@
 **Gates #013-#016:** ✅ COMMITTED (Reconciliation complete 2025-10-25)  
 **Gate #017:** ✅ GREEN (Certified 2025-10-26) - Readiness Progression  
 **Gate #018:** ✅ GREEN (Certified 2025-10-26) - Security Remediation  
-**Gate #019:** ✅ **APPROVED GREEN** (Certified 2025-10-26) - **Audio Remediation**
+**Gate #019:** 🟡 **AMBER** (Certified 2025-10-26) - **Audio Remediation (Partial)**  
+**Gate #019B:** 🟡 **AMBER** (Certified 2025-10-26) - **Hybrid Detector (Partial)**
 
-**Current State:** 12 containers operational, working tree CLEAN, audio enhanced  
-**Infrastructure:** Production-ready observability + visual authoring stack with envelope follower
+**Current State:** 12 containers operational, working tree CLEAN, audio enhanced (partial)  
+**Infrastructure:** Production-ready observability + visual authoring stack with dual envelope detector  
+**Follow-Up:** Gate #019C planned (exact windowed RMS, ~40-60 LOC)
 
 ---
 
-> **✅ GATE #019 APPROVED GREEN**  
-> BossCat OEM approval 2025-10-26 16:45:00 UTC.  
-> Audio remediation: Attack/release envelope follower (20ms/150ms) + feature flag (AUDIO_ENABLED).  
-> CI test results: Pearson r=1.0000, 0.9999 (target ≥0.78), underrun=0.00% (target <0.5%).  
-> Tag: gate-019-green-2025-10-26 (commits 9dd6a20e5, c4f4bb380, 6a7485835).  
-> Evidence: GATE_019_JOB_R1_EVIDENCE.md, GATE_019_JOB_R2_EVIDENCE.md, CI run 18812899265.  
-> Full canary deployment deferred to Gate #020.
+> **🟡 GATE #019/019B ACCEPTED AMBER**  
+> BossCat OEM reclassification 2025-10-26 17:30:00 UTC.  
+> Audio remediation: Dual envelope detector (instantaneous + 100ms RMS IIR) + kill-switch functional.  
+> Honest CI results: Sine Burst r=0.9096 PASS (inst, ≥0.90), AM Sine r=0.6599 FAIL (rms100, ≥0.88).  
+> Commits: 9dd6a20e5, 34b4e7d3c, 92d3f9f8d, bd65e74fc, e46b4870c, 2c0270d43, 32862fd8d.  
+> Evidence: GATE_019_JOB_R1_EVIDENCE.md, GATE_019_JOB_R2_EVIDENCE.md, GATE_019B_EVIDENCE.md.  
+> CI runs: 18813213898, 18813228465, 18813447287, 18813570589 (honest audit trail).  
+> Follow-up: Gate #019C (exact windowed RMS, ~40-60 LOC) - Gate #020 (canary) unblocked.
 
 ---
 
@@ -33,38 +36,38 @@
 
 ```
 ┌─────────────────────────────────────────────┐
-│  GATE #019 — APPROVED GREEN                 │
+│  GATE #019/019B — AMBER (Partial Success)   │
 │  ═════════════════════════════════════════  │
 │                                             │
-│  Status:      ✅ APPROVED GREEN             │
-│  Date:        2025-10-26 16:45:00 UTC       │
+│  Status:      🟡 AMBER                      │
+│  Date:        2025-10-26 17:30:00 UTC       │
 │  Authority:   BossCat OEM                   │
-│  Tag:         gate-019-green-2025-10-26     │
-│  Commits:     9dd6a20e5, c4f4bb380, 6a74858 │
+│  Commits:     9dd6a20e5...32862fd8d (7)     │
 │                                             │
-│  GATE TYPE:   Audio Remediation             │
+│  GATE TYPE:   Audio Remediation (Hybrid)    │
 │                                             │
 │  AUDIO ENHANCEMENTS:                        │
-│  ✅ Envelope follower:   20ms/150ms A/R     │
-│  ✅ CI test results:     r=1.00, r=0.9999   │
-│  ✅ Target exceeded:     ≥0.78 ✅           │
+│  ✅ Dual envelope:       inst + rms100      │
+│  ✅ Sine Burst:          r=0.9096 (≥0.90)   │
+│  ❌ AM Sine:             r=0.6599 (≥0.88)   │
+│  ✅ Kill-switch:         Functional (503)   │
 │  ✅ Feature flag:        AUDIO_ENABLED      │
-│  ✅ Kill-switch:         Functional         │
 │                                             │
-│  KPI PERFORMANCE:                           │
-│  ✅ Pearson r:           1.0000, 0.9999     │
+│  HONEST RESULTS:                            │
+│  ✅ Sine Burst (inst):   0.9096 PASS        │
+│  ❌ AM Sine (rms100):    0.6599 FAIL (-25%) │
 │  ✅ Underrun:            0.00% (<0.5%)      │
-│  ✅ Budget:              51/400 LOC (13%)   │
-│  ⏭️ Full canary:         Deferred to #020   │
+│  ✅ Budget:              67/150 LOC (45%)   │
+│  ✅ Tuning:              Exhausted (2 pass) │
+│                                             │
+│  FOLLOW-UP:                                 │
+│  📋 Gate #019C:          Exact windowed RMS │
+│  📋 LOC estimate:        ~40-60 LOC         │
+│  🚀 Gate #020:           Canary (unblocked) │
 │                                             │
 │  INFRASTRUCTURE:                            │
 │  ✅ Docker:              12/12 operational  │
-│  ✅ SigNoz:              Health OK          │
-│  ✅ Pipeline:            Verified           │
 │  ✅ Working Tree:        CLEAN              │
-│                                             │
-│  STATUS: Audio enhanced; ready for          │
-│          Gate #020 (canary deployment)      │
 │                                             │
 └─────────────────────────────────────────────┘
 ```
@@ -263,16 +266,21 @@ Canonical Reference:       docs/comfort-cat/ (5 docs) ✅
 
 ## 📂 Key Artifacts
 
-### Gate #019 Evidence Package (APPROVED GREEN - 2025-10-26) 🎵 ✨ **CURRENT**
-- [**Gate #019 Job R1 Evidence**](../GATE_019_JOB_R1_EVIDENCE.md) - Envelope follower + CI test results
-- [**Gate #019 Job R2 Evidence**](../GATE_019_JOB_R2_EVIDENCE.md) - Feature flag + scope clarification
-- [**Gate #019 Plan**](../.agent/PLAN.md) - Execution plan (jobs, budgets, ECRR)
-- **CI Test Run:** [18812899265](https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18812899265) - Envelope validation
-- [**BOSSCAT_LOG Entry**](BossCat/BOSSCAT_LOG.md) - Traceability (line 3)
+### Gate #019/019B Evidence Package (AMBER - 2025-10-26) 🎵 ✨ **CURRENT**
+- [**Gate #019B Evidence**](../GATE_019B_EVIDENCE.md) - Hybrid detector (AMBER, honest results)
+- [**Gate #019 Job R1 Evidence**](../GATE_019_JOB_R1_EVIDENCE.md) - Envelope follower + honest CI results
+- [**Gate #019 Job R2 Evidence**](../GATE_019_JOB_R2_EVIDENCE.md) - Kill-switch functional
+- [**Gate #019 Plan**](../.agent/PLAN.md) - Execution plan (Gate #019B micro-gate)
+- **CI Test Runs (Honest):** 
+  - [18813213898](https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18813213898) - Initial envelope
+  - [18813228465](https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18813228465) - Tuned instantaneous
+  - [18813447287](https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18813447287) - Initial hybrid
+  - [18813570589](https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18813570589) - Tuned hybrid (final)
+- [**BOSSCAT_LOG Entries**](BossCat/BOSSCAT_LOG.md) - Lines 3-4 (reclassification + AMBER)
 - [**Gate Status Dashboard**](GATE_STATUS_DASHBOARD.md) - This document (updated)
-- **Git Tag:** `gate-019-green-2025-10-26` (commits: 9dd6a20e5, c4f4bb380, 6a7485835)
+- **Status:** AMBER - Sine Burst PASS (r=0.9096), AM Sine FAIL (r=0.6599), kill-switch functional
 
-**Status:** Gate #019 APPROVED GREEN by BossCat OEM. Audio remediation: Attack/release envelope follower (r=1.0000, 0.9999 exceeds target ≥0.78), feature flag AUDIO_ENABLED=true with kill-switch. Full canary deferred to Gate #020.
+**Follow-Up:** Gate #019C (exact windowed RMS, ~40-60 LOC) planned to close AM Sine gap.
 
 ### Gate #018 Evidence Package (APPROVED GREEN - 2025-10-26) 🔒
 - [**Gate #018 Security Evidence**](../GATE_018_SECURITY_EVIDENCE.md) - Supply-chain hardening
