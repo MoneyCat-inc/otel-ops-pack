@@ -17,21 +17,54 @@ docs/archive/gates/
 
 ## 🏷️ Archived Gates
 
-### Gate #016 — Visual Guard & Jitter Stabilization
-**Status:** ✅ GREEN  
-**Certified:** 2025-10-24  
-**Archived:** 2025-10-26  
-**Location:** `docs/archive/gates/2025-10/016/`
+### Gate #016 — Visual Guard & Jitter Stabilization ✅ GREEN
+**Certified:** 2025-10-24 | **Archived:** 2025-10-26  
+**Location:** `docs/archive/gates/2025-10/016/`  
+**Files:** 11 documents
 
-**Summary:** Active visual guard monitoring with frame-timing stabilization
-- Active guard: 9.92 Hz monitoring cadence
-- Jitter stabilizer: P95 2ms (≤8ms budget)
-- Blackout detection: 0% unsafe presets
-- Synthetic traces: visuals.test.run + audio.test.run
+**Summary:** Active guard (9.92 Hz), jitter stabilizer (P95 2ms)
 
-**Files Archived:** 11 documents (evidence, corrections, certifications, summaries)
+### Gate #015 — AI Co-Author ✅ GREEN
+**Certified:** 2025-10-24 | **Archived:** 2025-10-26  
+**Location:** `docs/archive/gates/2025-10/015/`  
+**Files:** 3 documents
 
-**Related Code:** Retained in `viz-engine-projectm/` (brightness-guard.js, frame-timing-stabilizer.js)
+**Summary:** Bedrock Claude 3.5 Sonnet v2, blackout -11%, luma +40%
+
+### Gate #013 — Audio Reactivity (ProjectM) ✅ GREEN
+**Certified:** 2025-10-24 | **Archived:** 2025-10-26  
+**Location:** `docs/archive/gates/2025-10/013/`  
+**Files:** 10 documents
+
+**Summary:** Envelope tracking (r=1.0), renderer integration (0% underruns)
+
+### Gate #012 — ProjectM Engine & Security ✅ GREEN
+**Certified:** 2025-10-25 | **Archived:** 2025-10-26  
+**Location:** `docs/archive/gates/2025-10/012/`  
+**Files:** 8 documents
+
+**Summary:** Native .milk rendering, 1 HIGH vulnerability eliminated
+
+### Gate #011 — Milk v0 Viewer ✅ GREEN
+**Certified:** 2025-10-25 | **Archived:** 2025-10-26  
+**Location:** `docs/archive/gates/2025-10/011/`  
+**Files:** 4 documents
+
+**Summary:** MJPEG stream (55 frames/30s), X11 bidirectional sharing
+
+### Gate #010 — Audio Reactivity (Initial) 🟡 AMBER
+**Certified:** 2025-10-24 | **Archived:** 2025-10-26  
+**Location:** `docs/archive/gates/2025-10/010/`  
+**Files:** 8 documents
+
+**Summary:** Audio bridge (r=0.566), visual rendering blocked (Butterchurn)
+
+### Gate #008 — Reconciliation ✅ GREEN
+**Certified:** 2025-10-24 | **Archived:** 2025-10-26  
+**Location:** `docs/archive/gates/2025-10/008/`  
+**Files:** 1 document
+
+**Summary:** Documentation reconciliation framework
 
 ---
 
@@ -84,10 +117,10 @@ ls docs/archive/gates/*/
 
 ## 📊 Archive Statistics
 
-**Total Gates Archived:** 1  
-**Total Files Archived:** 11  
-**Earliest Archive:** 2025-10-24 (Gate #016)  
-**Latest Archive:** 2025-10-26 (Gate #016)
+**Total Gates Archived:** 7 (008, 010, 011, 012, 013, 015, 016)  
+**Total Files Archived:** 44 documents  
+**Earliest Archive:** 2025-10-24  
+**Latest Archive:** 2025-10-26
 
 ---
 
