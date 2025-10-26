@@ -1,157 +1,132 @@
-# Gate #019 — Audio Remediation Plan (AMBER → GREEN)
+# Gate #019B — Hybrid Envelope Detector (Micro-Gate)
 
 **Authority:** BossCat OEM  
 **Date:** 2025-10-26  
 **Executor:** Cursor{Implementer}  
-**Gate Type:** Audio Remediation (Upgrade Gate #010 from AMBER → GREEN)  
+**Gate Type:** Micro-Gate (Audio Enhancement)  
+**Parent Gate:** #019 (AMBER - reclassified)  
 **Status:** 🔵 **IN PROGRESS**
 
 ---
 
 ## 🎯 Goal
 
-Improve audio reactivity and stability to promote **Gate #010** from AMBER → GREEN. Two small jobs: (R1) envelope calibration + feed mapping into projectM; (R2) enable audio by default via feature flag with canary and fallbacks. Keep budgets tight and evidence complete; merges remain human-gated.
+Add 100ms RMS envelope alongside instantaneous attack/release follower. Expose both. Update tests to correlate Sine-Burst → env_inst and AM-Sine → env_rms100. Keep budgets tight; human-gated merge.
 
 **Target State:**
-- r(envelope,intake) ≥ **0.78** across 3 scenarios
-- underrun < **0.5%**
-- overlay meter visible
-- canary clean
+- AM-Sine: r(env_rms100, expected) ≥ **0.88**
+- Sine-Burst: r(env_inst, expected) ≥ **0.90**
+- Underrun < **0.5%**
 - ECRR complete
 
 **Success Criteria:**
-- Gate #010 status: AMBER → GREEN
-- Audio reactivity meets KPI thresholds
-- No visual guard regressions
-- Budgets respected (≤2 jobs, ≤10 files, ≤200 LOC per job)
+- Both scenarios pass
+- Budget compliant (≤1 job, ≤6 files, ≤150 LOC)
+- Evidence complete
 
 ---
 
 ## 📊 Lane & Scope
 
-**Lane:** `viz-engine-projectm/**`, `docs/**` (docs-only), `viz-milk/**` (overlay only)  
+**Lane:** `viz-engine-projectm/**`, `docs/**` (docs-only)  
 **Scope:**
-- C++/renderer audio envelope code
-- Audio intake mapping
-- Feature flags and configuration
-- Canary deployment logic
-- Optional: Milk v0 overlay meter
+- C++ audio-injector (add RMS envelope)
+- Test harness (dual-envelope validation)
+- Evidence documentation
 
 **Out of Scope:**
-- Non-audio visual changes
-- Unrelated feature additions
-- Breaking changes to existing APIs
+- Non-audio changes
+- Feature additions beyond RMS envelope
 
 ---
 
 ## 🔒 Budgets & Guardrails
 
 **Budgets:**
-- ≤ **2 jobs** (R1: Envelope/Intake, R2: Feature Flag/Canary)
-- ≤ **10 files** total
-- ≤ **200 LOC per job**
+- ≤ **1 job** (Hybrid detector implementation)
+- ≤ **6 files**
+- ≤ **150 LOC**
 - Single-writer lock
 - Exit codes: 0/50/51/52/53
 - Bots do **NOT** merge
 
-**Two-Agent Discipline:**
-- A (Implementer) writes
-- B (Balancer) verifies (read-only)
-- B never acquires locks or writes
-
 **Stability Pack:**
 - Human-gated merge required
 - Branch protection enforced
-- PR + required status checks
 
 ---
 
-## 🔧 Job Breakdown
+## 🔧 Implementation Plan
 
-### Job R1 — Envelope Calibration & Intake Mapping *(≤200 LOC, ≤6 files)*
+### 1. RMS Detector (IIR of Squares)
 
-**Scope:** C++/renderer audio envelope improvements
+**Algorithm:**
+```cpp
+alpha_rms = exp(-1/(τ·fs)), where τ=0.100s
+ema2[n] = alpha_rms*ema2[n-1] + (1-alpha_rms)*x[n]^2
+env_rms100 = sqrt(ema2[n])
+```
 
-**Edits:**
-1. Add **attack/release** envelope
-   - Attack: 15-25 ms
-   - Release: 120-180 ms
-2. **Log-gain** mapping to highlight mid-energy dynamics
-3. Export intake metrics:
-   - `audio_rms_intake`
-   - `audio_envelope`
-   - `audio_peak`
-4. Optional: Tiny overlay in Milk v0 (OSD meter) or `/milk/health` JSON fields
+**Keep:** Current instantaneous follower as `env_inst`
 
-**Tests (changed-paths only):**
-- **Synthetic 3-pack (60s each):**
-  1. AM-sine
-  2. Percussive clicks
-  3. Bass sweep
-- Compute **Pearson r(envelope,intake)** vs known envelopes
-- **Pass criteria:** r ≥ **0.78** on each; underrun ratio < **0.5%**
+**Add:** 100ms RMS envelope as `env_rms100`
+
+**LOC Estimate:** ~30 LOC (detector + init)
+
+---
+
+### 2. API/Telemetry
+
+**Getters:**
+- `envelope_inst()` (current envelope, renamed)
+- `envelope_rms100()` (new RMS envelope)
+
+**Optional:** Add to `/audio/stats` endpoint
+
+**LOC Estimate:** ~5 LOC
+
+---
+
+### 3. Test Harness Updates
+
+**AM-Sine Test:**
+- Compute ground-truth via windowed RMS (100ms) over input
+- Correlate vs `env_rms100`
+- Target: r ≥ 0.88
+
+**Sine-Burst Test:**
+- Correlate expected burst envelope vs `env_inst`
+- Target: r ≥ 0.90
+
+**LOC Estimate:** ~25 LOC (test logic updates)
+
+---
+
+### 4. Evidence
 
 **Artifacts:**
-- `GATE_019_JOB_R1_EVIDENCE.md` (tables + brief plots)
-- `.agent/EVIDENCE.log`
-
-**Acceptance:**
-- r(envelope,intake) ≥ 0.78 across all 3 scenarios
-- Underrun ratio < 0.5%
-- No test regressions
-- Budgets/process respected
+- `GATE_019B_EVIDENCE.md` — 2x2 table, CI run ID, results
+- `.agent/EVIDENCE.log` — Execution trail
+- **BOSSCAT_LOG:** "#019 reclassified AMBER; #019B closes AM-Sine gap"
 
 ---
 
-### Job R2 — Feature-Flag Enable + Canary *(≤200 LOC, ≤6 files)*
+## 🎯 Acceptance Criteria
 
-**Scope:** Feature flag deployment with canary rollout
-
-**Edits:**
-1. Default `AUDIO_ENABLED=true` behind config/flag
-2. Keep **hard kill-switch** path for emergency disable
-3. Canary ramp: **0% → 10% (5 min) → 50% (2 min) → 100%**
-   - Auto-halt on breach
-4. Emit synthetic span `audio.enable.canary` with attributes:
-   - `r` (correlation)
-   - `underrun_ratio`
-   - `tick_jitter_ms`
-
-**Acceptance (Go/No-Go):**
-- Canary completes with **no alert**
-- KPIs within thresholds:
-  - `underrun_ratio < 0.5%`
-  - `r ≥ 0.78`
-  - `tick_jitter_ms(max) ≤ 8 ms`
-- **No regressions** in visual guard metrics
-
-**Artifacts:**
-- `GATE_019_JOB_R2_EVIDENCE.md`
-- Dashboard screenshot(s)
-- `.agent/EVIDENCE.log`
+| Scenario | Envelope | Expected | Threshold |
+|----------|----------|----------|-----------|
+| **Sine-Burst** | `env_inst` | Burst shape | r ≥ **0.90** |
+| **AM-Sine** | `env_rms100` | RMS modulation | r ≥ **0.88** |
+| **Buffer** | underrun | - | **< 0.5%** |
 
 ---
 
-## 📂 Evidence Package
+## 🔧 Bounded Tuning (If Needed)
 
-**Required Artifacts:**
-
-1. **`.agent/EVIDENCE.log`** — Complete execution trail:
-   - `plan → preflight → lock → edit → test → report → exit`
-
-2. **`GATE_019_JOB_R1_EVIDENCE.md`** — R1 results:
-   - Envelope calibration details
-   - Test results (3 scenarios)
-   - Pearson r correlation tables
-   - Underrun analysis
-
-3. **`GATE_019_JOB_R2_EVIDENCE.md`** — R2 results:
-   - Canary deployment log
-   - KPI measurements
-   - Dashboard screenshots
-   - Visual guard confirmation
-
-4. **BOSSCAT_LOG** — One-liner if GREEN
+**If AM-Sine r < 0.88:**
+- Adjust τ to 80-120ms (one pass only)
+- Rerun CI
+- If still failing → ECRR and hold (do not expand scope)
 
 ---
 
@@ -160,67 +135,44 @@ Improve audio reactivity and stability to promote **Gate #010** from AMBER → G
 **Post when GREEN:**
 
 ```
-@cat ready-for-gate : #019
+@cat ready-for-gate : #019B
 
 Status: GREEN
-Evidence: GATE_019_JOB_R1_EVIDENCE.md, GATE_019_JOB_R2_EVIDENCE.md
-KPIs: r≥0.78 (3/3 scenarios), underrun<0.5%, jitter(max)≤8ms
-Canary: Completed (0%→10%→50%→100%) with no alerts
-Budgets: OK
+Evidence: GATE_019B_EVIDENCE.md
+KPIs: AM-Sine r(env_rms100)≥0.88, Sine-Burst r(env_inst)≥0.90, underrun<0.5%
+Budgets: OK (≤1 job, ≤6 files, ≤150 LOC)
 ECRR: COMPLETE
+Notes: #019 reclassified AMBER; #019B closes AM-Sine gap
 ```
 
 ---
 
-## 🏷️ Post-Approval Admin
+## 📋 Dashboard Updates
 
-**Tag:** `gate-019-green-2025-10-26`
-- Annotate with commits + evidence paths
-
-**Updates:**
-- `docs/GATE_STATUS_DASHBOARD.md` (Gate #010 AMBER → GREEN)
-- `BOSSCAT_LOG` (one-liner acceptance entry)
-
----
-
-## 📋 Parallel Housekeeping (Low-Risk, Doc-Only)
-
-**P2 — Archive Gate #016:**
-- Move to `docs/archive/gates/2025-10/016/`
-- Update index
-- Commit in DOCS lane (≤1 file move list + index)
-
-**Dependabot Rescan:**
-- Passive monitoring (24h)
-- Manual re-scan if needed
-- Screenshot for Gate #018 evidence addendum
+**Gate #019:** Mark as AMBER (partial success)  
+**Gate #019B:** Add as IN-PROGRESS → GREEN on completion  
+**BOSSCAT_LOG:** Record reclassification + micro-gate
 
 ---
 
 ## 🛡️ Exit Criteria
 
 **GREEN (Exit 0):**
-- r(envelope,intake) ≥ 0.78 (3/3 scenarios)
-- underrun < 0.5%
-- tick_jitter_ms(max) ≤ 8 ms
-- Canary: 100% with no alerts
-- Visual guard: No regressions
+- AM-Sine: r(env_rms100) ≥ 0.88
+- Sine-Burst: r(env_inst) ≥ 0.90
+- Underrun < 0.5%
 - Budgets respected
-- ECRR trail complete
+- ECRR complete
 
 **AMBER (Exit 50):**
-- Partial success (1-2 scenarios pass)
+- One scenario passes
 - Document path to GREEN
-- Evidence complete
 
 **FAIL (Exit 51):**
 - Budgets exceeded
-- Process violations
 
 **BLOCKED (Exit 52):**
-- Cannot meet KPIs
-- Breaking changes required
-- Infrastructure issues
+- Cannot meet KPIs after tuning
 
 ---
 
@@ -231,4 +183,4 @@ ECRR: COMPLETE
 
 ---
 
-🐾 *Audio remediation in progress. Upgrading Gate #010 AMBER → GREEN.*
+🐾 *Executing hybrid detector: instantaneous + 100ms RMS envelope.*

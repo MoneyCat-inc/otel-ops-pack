@@ -146,14 +146,17 @@ std::vector<float> expected_amplitude_modulated_envelope() {
 struct TestCaseResult {
     std::string name;
     float correlation;
+    float threshold;
     bool pass;
 };
 
-// Gate #019: Test envelope follower via AudioBuffer
+// Gate #019B: Test envelope follower via AudioBuffer (hybrid: inst + rms100)
 TestCaseResult run_envelope_test(const std::string& name,
                                  const std::vector<int16_t>& samples,
-                                 const std::vector<float>& expected) {
-    // Gate #019: Create AudioBuffer and feed samples through it
+                                 const std::vector<float>& expected,
+                                 bool use_rms100 = false,
+                                 float threshold = 0.78f) {
+    // Gate #019B: Create AudioBuffer and feed samples through it
     audio::AudioBuffer buffer(8192);
     std::vector<float> envelope_values;
     envelope_values.reserve(expected.size());
@@ -162,36 +165,46 @@ TestCaseResult run_envelope_test(const std::string& name,
     for (size_t offset = 0; offset < samples.size(); offset += kChunkSamples) {
         const size_t count = std::min(kChunkSamples, samples.size() - offset);
         buffer.write(samples.data() + offset, count, 1);  // Mono
-        envelope_values.push_back(buffer.envelope());
+        
+        // Gate #019B: Select envelope type based on test scenario
+        float env_value = use_rms100 ? buffer.envelope_rms100() : buffer.envelope_inst();
+        envelope_values.push_back(env_value);
     }
     
     // Compare measured envelope to expected
     const float correlation = pearson_r(expected, envelope_values);
-    return {name, correlation, correlation >= kPearsonTarget};
+    return {name, correlation, threshold, correlation >= threshold};
 }
 
 void print_result(const TestCaseResult& result) {
     std::cout << result.name << '\n';
     std::cout << "  Pearson r = " << std::fixed << std::setprecision(4)
-              << result.correlation << " (target >= " << kPearsonTarget << ")\n";
+              << result.correlation << " (target >= " << std::setprecision(2) 
+              << result.threshold << ")\n";
     std::cout << "  Result: " << (result.pass ? "PASS" : "FAIL") << "\n\n";
 }
 
 } // namespace
 
 int main() {
-    std::cout << "Gate #019 - Job R1 - Envelope Follower Validation Test\n";
-    std::cout << "=======================================================\n\n";
+    std::cout << "Gate #019B - Hybrid Envelope Detector Validation Test\n";
+    std::cout << "======================================================\n\n";
 
+    // Gate #019B: Test instantaneous envelope on Sine Burst (transients)
     const auto burst_result = run_envelope_test(
-        "Test 1: Sine Burst Envelope Tracking",
+        "Test 1: Sine Burst (Instantaneous Envelope)",
         generate_sine_burst(),
-        expected_sine_burst_envelope());
+        expected_sine_burst_envelope(),
+        false,  // use_rms100 = false (use instantaneous)
+        0.90f); // Higher threshold for transients
 
+    // Gate #019B: Test 100ms RMS envelope on AM Sine (slow modulation)
     const auto am_result = run_envelope_test(
-        "Test 2: AM Sine Envelope Tracking",
+        "Test 2: AM Sine (100ms RMS Envelope)",
         generate_amplitude_modulated_sine(),
-        expected_amplitude_modulated_envelope());
+        expected_amplitude_modulated_envelope(),
+        true,   // use_rms100 = true (use RMS envelope)
+        0.88f); // Target for slow modulation
 
     print_result(burst_result);
     print_result(am_result);
@@ -200,19 +213,19 @@ int main() {
 
     std::cout << "--------------------------------------------------\n";
     if (all_green) {
-        std::cout << "Gate #019 Job R1: ENVELOPE FOLLOWER VALIDATION PASS\n";
-        std::cout << "  Pearson correlations meet or exceed " << kPearsonTarget << '\n';
-        std::cout << "  Envelope follower (20ms attack, 150ms release) validated\n";
-        std::cout << "  AudioBuffer integration confirmed\n";
+        std::cout << "Gate #019B: HYBRID ENVELOPE DETECTOR VALIDATION PASS\n";
+        std::cout << "  Instantaneous envelope (10ms/250ms): validated for transients\n";
+        std::cout << "  100ms RMS envelope: validated for slow modulation\n";
+        std::cout << "  AudioBuffer hybrid integration confirmed\n";
         return 0;
     }
 
-    std::cout << "Gate #019 Job R1: ENVELOPE FOLLOWER VALIDATION FAIL\n";
+    std::cout << "Gate #019B: HYBRID ENVELOPE DETECTOR VALIDATION FAIL\n";
     if (!burst_result.pass) {
-        std::cout << "  - Sine burst envelope correlation below target\n";
+        std::cout << "  - Sine burst (instantaneous) correlation below target\n";
     }
     if (!am_result.pass) {
-        std::cout << "  - AM sine envelope correlation below target\n";
+        std::cout << "  - AM sine (RMS100) correlation below target\n";
     }
     return 1;
 }

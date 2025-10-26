@@ -36,7 +36,8 @@ public:
     // Stats for evidence
     float rms() const { return rms_; }
     float peak() const { return peak_; }
-    float envelope() const { return envelope_; }  // Gate #019: Envelope follower output
+    float envelope_inst() const { return envelope_inst_; }  // Gate #019: Instantaneous envelope
+    float envelope_rms100() const { return envelope_rms100_; }  // Gate #019B: 100ms RMS envelope
     
 private:
     std::vector<float> buffer_;
@@ -48,14 +49,19 @@ private:
     // Stats
     float rms_;
     float peak_;
-    float envelope_;  // Gate #019: Attack/release envelope follower
+    float envelope_inst_;  // Gate #019: Instantaneous attack/release envelope
+    float envelope_rms100_;  // Gate #019B: 100ms RMS envelope (IIR of squares)
     
-    // Gate #019: Envelope follower coefficients
+    // Gate #019: Instantaneous envelope coefficients
     float attack_coeff_;   // Attack time constant
     float release_coeff_;  // Release time constant
     
+    // Gate #019B: RMS envelope coefficient
+    float rms_envelope_coeff_;  // 100ms RMS time constant
+    
     void update_stats(float sample);
     void init_envelope(float attack_ms = 10.0f, float release_ms = 250.0f, float sample_rate = 44100.0f);
+    void init_rms_envelope(float tau_ms = 100.0f, float sample_rate = 44100.0f);
 };
 
 } // namespace audio
