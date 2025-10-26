@@ -18,13 +18,16 @@ AudioBuffer::AudioBuffer(size_t capacity)
     , rms_(0.0f)
     , peak_(0.0f)
     , envelope_inst_(0.0f)
-    , ema_squared_(0.0f)
+    , rms_window_size_(0)
+    , rms_window_pos_(0)
+    , rms_sum_squares_(0.0)
+    , rms_window_filled_(false)
 {
     // Gate #019: Initialize instantaneous envelope follower
     init_envelope(10.0f, 250.0f, 44100.0f);  // 10ms attack, 250ms release @ 44.1kHz
     
-    // Gate #019B: Initialize 100ms RMS envelope (tuned to 80ms for AM tracking)
-    init_rms_envelope(80.0f, 44100.0f);  // 80ms time constant @ 44.1kHz (bounded tuning)
+    // Gate #019C: Initialize exact 100ms windowed RMS
+    init_rms_window(100.0f, 44100.0f);  // 100ms window @ 44.1kHz
 }
 
 size_t AudioBuffer::write(const int16_t* samples, size_t count, int channels) {
@@ -108,13 +111,27 @@ void AudioBuffer::update_stats(float sample) {
         envelope_inst_ += release_coeff_ * error;
     }
     
-    // Gate #019B: Update 100ms RMS envelope (IIR of squares)
-    // ema2[n] = alpha*ema2[n-1] + (1-alpha)*x[n]^2
-    // env_rms100 = sqrt(ema2[n])
-    float sample_squared = sample * sample;
-    ema_squared_ = rms_envelope_coeff_ * ema_squared_ + 
-                   (1.0f - rms_envelope_coeff_) * sample_squared;
-    // envelope_rms100() getter will compute sqrt(ema_squared_)
+    // Gate #019C: Update exact 100ms windowed RMS
+    if (rms_window_size_ > 0) {
+        float sample_squared = sample * sample;
+        
+        // Subtract old value if window is full
+        if (rms_window_filled_) {
+            rms_sum_squares_ -= rms_window_[rms_window_pos_];
+        }
+        
+        // Add new squared sample
+        rms_window_[rms_window_pos_] = sample_squared;
+        rms_sum_squares_ += sample_squared;
+        
+        // Advance position
+        rms_window_pos_ = (rms_window_pos_ + 1) % rms_window_size_;
+        
+        // Mark as filled after first complete pass
+        if (rms_window_pos_ == 0) {
+            rms_window_filled_ = true;
+        }
+    }
 }
 
 void AudioBuffer::init_envelope(float attack_ms, float release_ms, float sample_rate) {
@@ -134,18 +151,19 @@ void AudioBuffer::init_envelope(float attack_ms, float release_ms, float sample_
     release_coeff_ = 1.0f - std::exp(-1.0f / release_samples);
 }
 
-void AudioBuffer::init_rms_envelope(float tau_ms, float sample_rate) {
-    // Gate #019B: Calculate 100ms RMS envelope coefficient
-    // Formula: alpha = exp(-1 / (tau_ms * sample_rate / 1000))
-    // This gives exponential smoothing for RMS tracking
+void AudioBuffer::init_rms_window(float window_ms, float sample_rate) {
+    // Gate #019C: Initialize exact windowed RMS (sliding window)
+    // Calculate window size in samples
+    rms_window_size_ = static_cast<size_t>((window_ms * sample_rate / 1000.0f) + 0.5f);
     
-    float tau_samples = tau_ms * sample_rate / 1000.0f;
+    // Minimum window size
+    if (rms_window_size_ < 1) rms_window_size_ = 1;
     
-    // Prevent division by zero
-    if (tau_samples < 1.0f) tau_samples = 1.0f;
-    
-    // alpha coefficient for IIR filter: ema[n] = alpha*ema[n-1] + (1-alpha)*x[n]
-    rms_envelope_coeff_ = std::exp(-1.0f / tau_samples);
+    // Allocate circular buffer for squared samples
+    rms_window_.resize(rms_window_size_, 0.0f);
+    rms_window_pos_ = 0;
+    rms_sum_squares_ = 0.0;
+    rms_window_filled_ = false;
 }
 
 } // namespace audio
