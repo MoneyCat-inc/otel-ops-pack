@@ -40,7 +40,11 @@ public:
     float rms() const { return rms_; }
     float peak() const { return peak_; }
     float envelope_inst() const { return envelope_inst_; }  // Gate #019: Instantaneous envelope
-    float envelope_rms100() const { return std::sqrt(std::max(0.0f, ema_squared_)); }  // Gate #019B: 100ms RMS envelope
+    // Gate #019C: Exact 100ms windowed RMS envelope
+    float envelope_rms100() const { 
+        if (!rms_window_filled_ || rms_window_size_ == 0) return 0.0f;
+        return std::sqrt(rms_sum_squares_ / static_cast<double>(rms_window_size_));
+    }
     
 private:
     std::vector<float> buffer_;
@@ -53,18 +57,21 @@ private:
     float rms_;
     float peak_;
     float envelope_inst_;  // Gate #019: Instantaneous attack/release envelope
-    float ema_squared_;    // Gate #019B: EMA of squared samples (for RMS envelope)
+    
+    // Gate #019C: Exact 100ms windowed RMS envelope
+    std::vector<float> rms_window_;  // Circular buffer for windowed RMS
+    size_t rms_window_size_;         // Window size in samples (100ms worth)
+    size_t rms_window_pos_;          // Current position in window
+    double rms_sum_squares_;         // Running sum of squares in window
+    bool rms_window_filled_;         // True after first full window
     
     // Gate #019: Instantaneous envelope coefficients
     float attack_coeff_;   // Attack time constant
     float release_coeff_;  // Release time constant
     
-    // Gate #019B: RMS envelope coefficient
-    float rms_envelope_coeff_;  // 100ms RMS time constant (alpha for IIR)
-    
     void update_stats(float sample);
     void init_envelope(float attack_ms = 10.0f, float release_ms = 250.0f, float sample_rate = 44100.0f);
-    void init_rms_envelope(float tau_ms = 100.0f, float sample_rate = 44100.0f);
+    void init_rms_window(float window_ms = 100.0f, float sample_rate = 44100.0f);
 };
 
 } // namespace audio
