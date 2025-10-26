@@ -17,11 +17,14 @@ AudioBuffer::AudioBuffer(size_t capacity)
     , size_(0)
     , rms_(0.0f)
     , peak_(0.0f)
-    , envelope_(0.0f)
+    , envelope_inst_(0.0f)
+    , envelope_rms100_(0.0f)
 {
-    // Gate #019: Initialize envelope follower with tuned parameters
-    // Tuned for 2 Hz AM modulation (500ms period) - slower release tracks modulation better
+    // Gate #019: Initialize instantaneous envelope follower
     init_envelope(10.0f, 250.0f, 44100.0f);  // 10ms attack, 250ms release @ 44.1kHz
+    
+    // Gate #019B: Initialize 100ms RMS envelope
+    init_rms_envelope(100.0f, 44100.0f);  // 100ms time constant @ 44.1kHz
 }
 
 size_t AudioBuffer::write(const int16_t* samples, size_t count, int channels) {
@@ -94,20 +97,28 @@ void AudioBuffer::update_stats(float sample) {
     const float alpha = 0.01f;  // Smoothing factor
     rms_ = alpha * (sample * sample) + (1.0f - alpha) * rms_;
     
-    // Gate #019: Update envelope follower with attack/release
+    // Gate #019: Update instantaneous envelope follower with attack/release
     // Attack when signal rises, release when signal falls
-    float error = abs_sample - envelope_;
+    float error = abs_sample - envelope_inst_;
     if (error > 0.0f) {
         // Attack: signal rising
-        envelope_ += attack_coeff_ * error;
+        envelope_inst_ += attack_coeff_ * error;
     } else {
         // Release: signal falling
-        envelope_ += release_coeff_ * error;
+        envelope_inst_ += release_coeff_ * error;
     }
+    
+    // Gate #019B: Update 100ms RMS envelope (IIR of squares)
+    // ema2[n] = alpha*ema2[n-1] + (1-alpha)*x[n]^2
+    // env_rms100 = sqrt(ema2[n])
+    float sample_squared = sample * sample;
+    float ema_squared = rms_envelope_coeff_ * (envelope_rms100_ * envelope_rms100_) + 
+                        (1.0f - rms_envelope_coeff_) * sample_squared;
+    envelope_rms100_ = std::sqrt(std::max(0.0f, ema_squared));  // Prevent sqrt of negative
 }
 
 void AudioBuffer::init_envelope(float attack_ms, float release_ms, float sample_rate) {
-    // Gate #019: Calculate envelope follower coefficients
+    // Gate #019: Calculate instantaneous envelope follower coefficients
     // Convert time constants (ms) to per-sample coefficients
     // Formula: coeff = 1 - exp(-1 / (time_ms * sample_rate / 1000))
     // This gives proper exponential attack/release behavior
@@ -121,6 +132,20 @@ void AudioBuffer::init_envelope(float attack_ms, float release_ms, float sample_
     
     attack_coeff_ = 1.0f - std::exp(-1.0f / attack_samples);
     release_coeff_ = 1.0f - std::exp(-1.0f / release_samples);
+}
+
+void AudioBuffer::init_rms_envelope(float tau_ms, float sample_rate) {
+    // Gate #019B: Calculate 100ms RMS envelope coefficient
+    // Formula: alpha = exp(-1 / (tau_ms * sample_rate / 1000))
+    // This gives exponential smoothing for RMS tracking
+    
+    float tau_samples = tau_ms * sample_rate / 1000.0f;
+    
+    // Prevent division by zero
+    if (tau_samples < 1.0f) tau_samples = 1.0f;
+    
+    // alpha coefficient for IIR filter: ema[n] = alpha*ema[n-1] + (1-alpha)*x[n]
+    rms_envelope_coeff_ = std::exp(-1.0f / tau_samples);
 }
 
 } // namespace audio
