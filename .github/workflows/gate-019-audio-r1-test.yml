@@ -1,0 +1,80 @@
+name: Gate 019 - Audio R1 Envelope Test
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'viz-engine-projectm/audio-injector.*'
+      - 'viz-engine-projectm/audio-test.cpp'
+      - '.github/workflows/gate-019-audio-r1-test.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: gate-019-audio-r1-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-test:
+    name: Audio Envelope Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup Build
+        run: |
+          mkdir -p .agent/bin .agent/out
+          echo "Build directory ready"
+      
+      - name: Compile Audio Test
+        run: |
+          g++ -std=c++17 -O2 \
+            viz-engine-projectm/audio-injector.cpp \
+            viz-engine-projectm/audio-test.cpp \
+            -I viz-engine-projectm \
+            -o .agent/bin/audio-test
+          echo "Compilation successful"
+      
+      - name: Run Envelope Tests
+        id: test
+        run: |
+          ./.agent/bin/audio-test | tee .agent/out/audio-test-results.txt
+          echo "exit_code=$?" >> $GITHUB_OUTPUT
+      
+      - name: Parse Results
+        if: always()
+        run: |
+          if [ -f .agent/out/audio-test-results.txt ]; then
+            echo "### Gate #019 Job R1 - Audio Envelope Test Results" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            cat .agent/out/audio-test-results.txt >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+          fi
+      
+      - name: Upload Evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gate-019-audio-r1-results
+          path: .agent/out/**
+          retention-days: 14
+      
+      - name: Run Summary
+        if: always()
+        run: |
+          {
+            echo '### ${{ github.workflow }} - Run Summary';
+            echo '';
+            echo "**Workflow:** ${{ github.workflow }}";
+            echo "**Run:** #${{ github.run_number }}";
+            echo "**Status:** ${{ job.status }}";
+            echo "**Test Exit Code:** ${{ steps.test.outputs.exit_code }}";
+            echo '';
+            echo '[View full run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})';
+          } >> "$GITHUB_STEP_SUMMARY"
+
