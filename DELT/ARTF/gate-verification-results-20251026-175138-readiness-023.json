@@ -1,0 +1,34 @@
+{
+  "gate": 23,
+  "phase": "readiness-cluster",
+  "patchset": "BOSSCAT-023A",
+  "timestamp": "2025-10-26T17:51:38.8461790Z",
+  "replicas": 3,
+  "checks": {
+    "CLUSTERAUDIO-01": "PASS",
+    "CLUSTERAUDIO-02": "PASS",
+    "CLUSTERAUDIO-03": "PENDING",
+    "CLUSTERAUDIO-04": "PASS",
+    "CLUSTERAUDIO-05": "PASS"
+  },
+  "timing": {
+    "disable_ms": 1279,
+    "enable_ms": 1158,
+    "target_ms": 2000
+  },
+  "containers": [
+    {
+      "id": "547ae1d57f2a",
+      "name": "/otel-pm-engine-1"
+    },
+    {
+      "id": "713ffd6b40ea",
+      "name": "/otel-pm-engine-2"
+    },
+    {
+      "id": "81848ff830fe",
+      "name": "/otel-pm-engine-3"
+    }
+  ],
+  "decided_at_utc": "2025-10-26T17:51:39.0821645Z"
+}
