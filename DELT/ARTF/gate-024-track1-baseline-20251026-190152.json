@@ -1,0 +1,41 @@
+{
+  "target_criteria": {
+    "p95_target_ms": 1300,
+    "error_rate_target": 0.01,
+    "p50_target_ms": 1000
+  },
+  "timestamp": "2025-10-26T19:01:52.3451215Z",
+  "phase": "baseline",
+  "configuration": {
+    "replicas": 3,
+    "iterations": 100,
+    "service": "pm-engine"
+  },
+  "gate": 24,
+  "pass_criteria": {
+    "p50_pass": false,
+    "p95_pass": true,
+    "error_rate_pass": true
+  },
+  "statistics": {
+    "disable": {
+      "p95": 1235,
+      "p50": 1037.42
+    },
+    "enable": {
+      "p95": 1283,
+      "p50": 1050.14
+    },
+    "iterations": 100,
+    "all": {
+      "p50": 1043.78,
+      "p95": 1235,
+      "max": 1338.0,
+      "min": 845.0,
+      "p99": 1338
+    },
+    "errors": 0,
+    "error_rate": 0
+  },
+  "track": "performance"
+}
