@@ -1,0 +1,24 @@
+{
+  "gate": 23,
+  "phase": "readiness-cluster",
+  "patchset": "BOSSCAT-023A",
+  "timestamp": "2025-10-26T17:04:53.7708356Z",
+  "replicas": 1,
+  "checks": {
+    "CLUSTERAUDIO-01": "PASS",
+    "CLUSTERAUDIO-02": "PASS",
+    "CLUSTERAUDIO-03": "PENDING",
+    "CLUSTERAUDIO-04": "PASS",
+    "CLUSTERAUDIO-05": "PASS"
+  },
+  "timing": {
+    "disable_ms": 661,
+    "enable_ms": 550,
+    "target_ms": 2000
+  },
+  "containers": {
+    "id": "9c55ac9f7e38",
+    "name": "/pm-engine"
+  },
+  "decided_at_utc": "2025-10-26T17:04:53.9536307Z"
+}
