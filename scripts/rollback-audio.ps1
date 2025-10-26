@@ -1,72 +1,103 @@
-# Gate #020 - Job CNY2 - Audio Rollback Script
+# Gate #021 - BOSSCAT-021A - Audio Rollback Script (Rewritten)
 # ECRR: BossCat OEM | Executor: Cursor{Implementer}
-# Purpose: One-click audio rollback with verification
+# Purpose: One-click audio rollback with verification via AudioSwitch
 
 param(
-    [switch]$DryRun,
-    [switch]$Verify
+    [string]$BaseUrl = "http://localhost:7020",
+    [string]$AdminToken = $env:ADMIN_TOKEN,
+    [string]$Service = "pm-engine",
+    [int]$VerifyTimeoutSec = 15
 )
 
 $ErrorActionPreference = "Stop"
 
-Write-Host "🔄 Audio Canary Rollback Script" -ForegroundColor Cyan
-Write-Host "================================`n"
+Write-Host "🔄 Audio Rollback Script (BOSSCAT-021A)" -ForegroundColor Cyan
+Write-Host "========================================`n" -ForegroundColor Cyan
 
-if ($DryRun) {
-    Write-Host "⚠️  DRY RUN MODE - No changes will be applied`n" -ForegroundColor Yellow
-}
+# Step 1: Disable audio via admin API
+Write-Host "[1/4] Disabling audio via admin API..." -ForegroundColor White
 
-# Step 1: Disable audio via feature flag
-Write-Host "[1/4] Disabling audio feature flag..." -ForegroundColor White
-
-if (-not $DryRun) {
-    # Set environment variable (requires container restart to take effect)
-    Write-Host "  → Setting AUDIO_ENABLED=false in environment"
-    $env:AUDIO_ENABLED = "false"
+$headers = @{}
+if ($AdminToken) { 
+    $headers["X-Admin-Token"] = $AdminToken 
+    Write-Host "  → Using admin token for authentication" -ForegroundColor Gray
 } else {
-    Write-Host "  → [DRY RUN] Would set AUDIO_ENABLED=false"
+    Write-Host "  → No admin token (trusted network mode)" -ForegroundColor Gray
 }
 
-Write-Host "  ✓ Feature flag disabled`n" -ForegroundColor Green
-
-# Step 2: Restart pm-engine container
-Write-Host "[2/4] Restarting pm-engine container..." -ForegroundColor White
-
-if (-not $DryRun) {
-    try {
-        docker restart pm-engine | Out-Null
-        Write-Host "  → Container restarting..."
-        Start-Sleep -Seconds 5
-    } catch {
-        Write-Host "  ✗ Failed to restart container: $_" -ForegroundColor Red
-        exit 1
-    }
-} else {
-    Write-Host "  → [DRY RUN] Would execute: docker restart pm-engine"
+$disabled = $false
+try {
+    $body = @{ enabled = $false; reason = "rollback" } | ConvertTo-Json
+    $result = Invoke-RestMethod -Method Post -Uri "$BaseUrl/admin/audio" -Headers $headers -ContentType "application/json" -Body $body -ErrorAction Stop
+    Write-Host "  ✓ Audio disabled via API: $($result.reason)" -ForegroundColor Green
+    $disabled = $true
+} catch {
+    Write-Host "  ⚠️  Admin API unavailable: $_" -ForegroundColor Yellow
+    Write-Host "  → Falling back to file-based switch inside container..." -ForegroundColor Yellow
 }
 
-Write-Host "  ✓ Container restarted`n" -ForegroundColor Green
-
-# Step 3: Verify audio disabled
-Write-Host "[3/4] Verifying audio disabled..." -ForegroundColor White
-
-if (-not $DryRun) {
-    Start-Sleep -Seconds 3  # Wait for container to be ready
+if (-not $disabled) {
+    # Fallback: Write persisted state file inside container (bind-mounted)
+    Write-Host "  → Writing audio-state.json directly in container..."
+    $timestamp = (Get-Date).ToString("o")
+    $json = "{`"enabled`":false,`"reason`":`"rollback`",`"changedAt`":`"$timestamp`"}"
     
     try {
-        $response = Invoke-RestMethod -Uri "http://localhost:7020/health" -Method Get
-        
-        if ($response.audio_enabled -eq $false) {
-            Write-Host "  ✓ Audio confirmed disabled (audio_enabled: false)" -ForegroundColor Green
+        docker exec $Service sh -c "mkdir -p /app/config && printf '%s' '$json' > /app/config/audio-state.json"
+        Write-Host "  ✓ Audio state file written directly" -ForegroundColor Green
+        $disabled = $true
+    } catch {
+        Write-Host "  ✗ Failed to write state file: $_" -ForegroundColor Red
+        Write-Host "  → Manual intervention required" -ForegroundColor Red
+        exit 1
+    }
+}
+
+Write-Host ""
+
+# Step 2: Restart pm-engine container
+Write-Host "[2/4] Restarting service $Service..." -ForegroundColor White
+
+try {
+    docker compose -f docker-compose.viz.yml restart $Service | Out-Null
+    Write-Host "  → Container restarting..." -ForegroundColor Gray
+    Start-Sleep -Seconds 5
+    Write-Host "  ✓ Container restarted" -ForegroundColor Green
+} catch {
+    Write-Host "  ✗ Failed to restart container: $_" -ForegroundColor Red
+    exit 1
+}
+
+Write-Host ""
+
+# Step 3: Verify audio is OFF
+Write-Host "[3/4] Verifying audio is OFF..." -ForegroundColor White
+
+$deadline = (Get-Date).AddSeconds($VerifyTimeoutSec)
+$ok = $false
+
+do {
+    Start-Sleep -Seconds 1
+    try {
+        $st = Invoke-RestMethod -Method Get -Uri "$BaseUrl/health" -ErrorAction Stop
+        if ($st.audio -and $st.audio.enabled -eq $false) {
+            Write-Host "  ✓ Audio verified OFF" -ForegroundColor Green
+            Write-Host "    - Reason: $($st.audio.reason)" -ForegroundColor Gray
+            Write-Host "    - Changed at: $($st.audio.changedAt)" -ForegroundColor Gray
+            $ok = $true
+            break
         } else {
-            Write-Host "  ⚠️  Warning: audio_enabled still true" -ForegroundColor Yellow
-            Write-Host "  → May need manual intervention"
+            Write-Host "  → Audio still enabled, retrying..." -ForegroundColor Yellow
         }
     } catch {
-        Write-Host "  ⚠️  Could not verify (endpoint may not be ready yet)" -ForegroundColor Yellow
+        Write-Host "  → Health endpoint not ready yet, retrying..." -ForegroundColor Gray
     }
-} else {
-    Write-Host "  → [DRY RUN] Would verify: curl http://localhost:7020/health"
+} while ((Get-Date) -lt $deadline)
+
+if (-not $ok) {
+    Write-Host "  ✗ Rollback verification FAILED: audio still enabled or health endpoint unreachable." -ForegroundColor Red
+    Write-Host "  → Check container logs: docker logs $Service" -ForegroundColor Yellow
+    exit 1
 }
 
 Write-Host ""
@@ -74,35 +105,42 @@ Write-Host ""
 # Step 4: Test audio ingestion blocked
 Write-Host "[4/4] Testing audio ingestion blocked..." -ForegroundColor White
 
-if (-not $DryRun -and -not $Verify) {
-    Write-Host "  → Skipped (use -Verify to test POST /audio blocking)"
-} elseif ($Verify) {
-    try {
-        $testData = @{ base64 = "AAAA" }  # Minimal test payload
-        $response = Invoke-RestMethod -Uri "http://localhost:7020/audio" -Method Post -Body ($testData | ConvertTo-Json) -ContentType "application/json" -SkipHttpErrorCheck
-        
-        if ($response.ok -eq $false -and $response.error -match "Audio disabled") {
-            Write-Host "  ✓ Audio ingestion properly blocked (HTTP 503)" -ForegroundColor Green
-        } else {
-            Write-Host "  ⚠️  Warning: Audio may not be properly blocked" -ForegroundColor Yellow
-        }
-    } catch {
-        # HTTP 503 expected, catch and confirm
-        if ($_.Exception.Response.StatusCode -eq 503) {
-            Write-Host "  ✓ Audio ingestion properly blocked (HTTP 503)" -ForegroundColor Green
-        } else {
-            Write-Host "  ⚠️  Unexpected error: $_" -ForegroundColor Yellow
-        }
+try {
+    # Send a test audio request (should return 503)
+    $testData = @{ base64 = "AAAA" }  # Minimal test payload
+    $response = Invoke-RestMethod -Uri "$BaseUrl/audio" -Method Post -Body ($testData | ConvertTo-Json) -ContentType "application/json" -SkipHttpErrorCheck
+    
+    # Check for proper rejection
+    if ($response.error -eq "audio-disabled" -and $response.enabled -eq $false) {
+        Write-Host "  ✓ Audio ingestion properly blocked (HTTP 503)" -ForegroundColor Green
+        Write-Host "    - Reason: $($response.reason)" -ForegroundColor Gray
+    } else {
+        Write-Host "  ⚠️  Warning: Unexpected response from /audio endpoint" -ForegroundColor Yellow
+        Write-Host "    - Response: $($response | ConvertTo-Json -Compress)" -ForegroundColor Gray
+    }
+} catch {
+    # HTTP 503 expected for PowerShell < 7.0 (no -SkipHttpErrorCheck)
+    if ($_.Exception.Response.StatusCode -eq 503) {
+        Write-Host "  ✓ Audio ingestion properly blocked (HTTP 503)" -ForegroundColor Green
+    } else {
+        Write-Host "  ⚠️  Unexpected error: $_" -ForegroundColor Yellow
     }
 }
 
-Write-Host "`n================================"
+Write-Host "`n========================================" -ForegroundColor Cyan
 Write-Host "✅ Rollback Complete" -ForegroundColor Green
-Write-Host "`nAudio Status: DISABLED"
-Write-Host "Container: pm-engine (restarted)"
-Write-Host "Feature Flag: AUDIO_ENABLED=false"
-Write-Host "`nTo re-enable audio:"
-Write-Host "  1. Set AUDIO_ENABLED=true in environment"
-Write-Host "  2. Restart pm-engine: docker restart pm-engine"
-Write-Host "  3. Verify: curl http://localhost:7020/health"
-
+Write-Host "`nAudio Status: DISABLED" -ForegroundColor White
+Write-Host "Container: $Service (restarted)" -ForegroundColor White
+Write-Host "Verification: PASS" -ForegroundColor Green
+Write-Host "`nTo re-enable audio:" -ForegroundColor White
+Write-Host "  1. Via API:" -ForegroundColor Gray
+Write-Host "     curl -X POST $BaseUrl/admin/audio \" -ForegroundColor Gray
+Write-Host "       -H 'Content-Type: application/json' \" -ForegroundColor Gray
+if ($AdminToken) {
+    Write-Host "       -H 'X-Admin-Token: $AdminToken' \" -ForegroundColor Gray
+}
+Write-Host "       -d '{`"enabled`":true,`"reason`":`"manual-enable`"}'" -ForegroundColor Gray
+Write-Host "  2. Via canary reset:" -ForegroundColor Gray
+Write-Host "     curl -X POST $BaseUrl/canary/reset" -ForegroundColor Gray
+Write-Host "  3. Verify: curl $BaseUrl/health" -ForegroundColor Gray
+Write-Host ""

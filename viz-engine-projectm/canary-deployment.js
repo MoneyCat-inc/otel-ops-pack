@@ -1,9 +1,14 @@
 // Gate #020 - Job CNY1 - Audio Canary State Machine
 // ECRR: BossCat OEM | Executor: Cursor{Implementer}
 // Purpose: Production-safe audio rollout with auto-halt on breach
+// BOSSCAT-021A: Fixed reset logic to clear halted state + drive AudioSwitch
 
-class CanaryDeployment {
+const EventEmitter = require('events');
+const { audioSwitch } = require('./lib/audio-switch');
+
+class CanaryDeployment extends EventEmitter {
   constructor(config = {}) {
+    super();
     this.phases = [
       { name: 'INIT', target: 0, durationMs: 0 },
       { name: 'RAMP_10', target: 10, durationMs: 5 * 60 * 1000 },  // 5 minutes
@@ -17,6 +22,7 @@ class CanaryDeployment {
     this.phaseStartTime = null;
     this.halted = false;
     this.haltReason = null;
+    this._tickHandle = null;
     
     // KPI thresholds
     this.thresholds = {
@@ -126,7 +132,41 @@ class CanaryDeployment {
     this.halted = true;
     this.haltReason = reason;
     console.error(`[canary] HALTED: ${reason}`);
+    this._clearTimers();
+    try { 
+      audioSwitch.disable(`canary-breach: ${reason}`); 
+      console.log('[canary] Audio disabled via AudioSwitch');
+    } catch (err) {
+      console.error('[canary] Failed to disable audio:', err.message);
+    }
     this.onBreach(reason, this.getCurrentPhase());
+    this.emit('breach', { reason, at: new Date().toISOString() });
+  }
+  
+  reset() {
+    // BOSSCAT-021A: Clear halted state and re-enable audio
+    console.log('[canary] RESET triggered - clearing halted state');
+    this._clearTimers();
+    this.halted = false;
+    this.haltReason = null;
+    this.currentPhaseIdx = 0;
+    this.startTime = null;
+    this.phaseStartTime = null;
+    try { 
+      audioSwitch.enable('canary-reset'); 
+      console.log('[canary] Audio re-enabled via AudioSwitch');
+    } catch (err) {
+      console.error('[canary] Failed to enable audio:', err.message);
+    }
+    this.emit('reset');
+    console.log('[canary] Reset complete - ready to restart');
+  }
+  
+  _clearTimers() {
+    if (this._tickHandle) {
+      clearInterval(this._tickHandle);
+      this._tickHandle = null;
+    }
   }
   
   getStatus() {
