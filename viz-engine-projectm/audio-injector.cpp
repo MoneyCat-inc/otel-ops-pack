@@ -19,8 +19,9 @@ AudioBuffer::AudioBuffer(size_t capacity)
     , peak_(0.0f)
     , envelope_(0.0f)
 {
-    // Gate #019: Initialize envelope follower with default parameters
-    init_envelope(20.0f, 150.0f, 44100.0f);  // 20ms attack, 150ms release @ 44.1kHz
+    // Gate #019: Initialize envelope follower with tuned parameters
+    // Tuned for 2 Hz AM modulation (500ms period) - slower release tracks modulation better
+    init_envelope(10.0f, 250.0f, 44100.0f);  // 10ms attack, 250ms release @ 44.1kHz
 }
 
 size_t AudioBuffer::write(const int16_t* samples, size_t count, int channels) {
