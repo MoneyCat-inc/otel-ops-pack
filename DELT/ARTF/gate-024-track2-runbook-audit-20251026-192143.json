@@ -1,0 +1,45 @@
+{
+  "runbooks": [
+    {
+      "name": "audioswitch-cluster.md",
+      "checks": {
+        "budget": true,
+        "troubleshooting_count": 0,
+        "ecrr": true,
+        "kill_switch": true,
+        "recovery": true,
+        "troubleshooting": true
+      },
+      "compliant": true,
+      "recommendations": [
+        "Add more troubleshooting scenarios (current: 0, target: ≥3)"
+      ]
+    },
+    {
+      "name": "windows-collector.md",
+      "checks": {
+        "budget": true,
+        "troubleshooting_count": 0,
+        "ecrr": false,
+        "kill_switch": true,
+        "recovery": true,
+        "troubleshooting": true
+      },
+      "compliant": true,
+      "recommendations": [
+        "Add more troubleshooting scenarios (current: 0, target: ≥3)",
+        "Add ECRR evidence generation guidance"
+      ]
+    }
+  ],
+  "phase": "runbook-audit",
+  "timestamp": "2025-10-26T19:21:43.1547876Z",
+  "gate": 24,
+  "track": "hardening",
+  "summary": {
+    "total_runbooks": 2,
+    "needs_work": 0,
+    "compliant": 2,
+    "compliance_rate": 100
+  }
+}
