@@ -121,8 +121,8 @@
 **IONA Error Ledger:**  
 `docs/IONA_ERRORS.md` (0 active incidents)
 
-**Git Commit:**  
-`8c9e77a3eec51f0c5796bc1062cbacadacc321b0` (2025-10-26)
+**Artifact Commit:**  
+`35a601e3e86c8ec066ddaec5229090dd8d8bb627` (2025-10-26 15:35:00 UTC)
 
 ---
 
