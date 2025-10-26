@@ -1,8 +1,8 @@
 # 🐾 BossCat Gate Status Dashboard
 
-**Last Updated:** 2025-10-26 17:35:00 +00:00  
-**Current Gate:** #019B (AMBER - Partial Success)  
-**Status:** 🟡 **GATE #019/019B AMBER** - Audio Remediation Partial, Follow-Up Planned
+**Last Updated:** 2025-10-26 18:05:00 +00:00  
+**Current Gate:** #019C (AMBER - Investigation Needed)  
+**Status:** 🟡 **GATE #019/019B/019C AMBER CHAIN** - Audio Enhancement Functional, AM Sine Deferred
 
 **Gate #008:** ✅ GREEN (Certified 2025-10-23) - Trace Ingestion  
 **Gate #009:** ✅ GREEN (Certified 2025-10-24) - Milkdrop Visual Engine  
@@ -13,11 +13,13 @@
 **Gate #017:** ✅ GREEN (Certified 2025-10-26) - Readiness Progression  
 **Gate #018:** ✅ GREEN (Certified 2025-10-26) - Security Remediation  
 **Gate #019:** 🟡 **AMBER** (Certified 2025-10-26) - **Audio Remediation (Partial)**  
-**Gate #019B:** 🟡 **AMBER** (Certified 2025-10-26) - **Hybrid Detector (Partial)**
+**Gate #019B:** 🟡 **AMBER** (Certified 2025-10-26) - **Hybrid Detector (Partial)**  
+**Gate #019C:** 🟡 **AMBER** (Certified 2025-10-26) - **Exact Windowed RMS (Investigation Needed)**
 
-**Current State:** 12 containers operational, working tree CLEAN, audio enhanced (partial)  
-**Infrastructure:** Production-ready observability + visual authoring stack with dual envelope detector  
-**Follow-Up:** Gate #019C planned (exact windowed RMS, ~40-60 LOC)
+**Current State:** 12 containers operational, working tree CLEAN, audio enhanced (kill-switch + transients)  
+**Infrastructure:** Production-ready observability + visual authoring with exact windowed RMS detector  
+**AM Sine Gap:** Deferred (requires test methodology review beyond micro-gate scope)  
+**Next Priority:** Gate #020 (Audio Canary & Rollout)
 
 ---
 
