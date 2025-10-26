@@ -1,0 +1,61 @@
+{
+  "gate": 23,
+  "check": "CLUSTERAUDIO-03",
+  "test": "canary-breach-reset-cluster",
+  "timestamp": "2025-10-26T18:38:38Z",
+  "replicas": 3,
+  "containers": [
+    "otel-pm-engine-1",
+    "otel-pm-engine-2",
+    "otel-pm-engine-3"
+  ],
+  "test_sequence": {
+    "step_1_breach": {
+      "action": "Simulate canary breach via admin API",
+      "command": "POST /admin/audio {enabled:false, reason:'canary-breach: test-threshold'}",
+      "target_replica": "otel-pm-engine-1",
+      "result": "SUCCESS"
+    },
+    "step_2_verify_disable": {
+      "action": "Verify all replicas disabled",
+      "replicas_checked": 3,
+      "replicas_disabled": 3,
+      "state": {
+        "otel-pm-engine-1": {"enabled": false, "reason": "canary-breach: test-threshold"},
+        "otel-pm-engine-2": {"enabled": false, "reason": "canary-breach: test-threshold"},
+        "otel-pm-engine-3": {"enabled": false, "reason": "canary-breach: test-threshold"}
+      },
+      "result": "PASS"
+    },
+    "step_3_reset": {
+      "action": "Simulate canary reset via admin API",
+      "command": "POST /admin/audio {enabled:true, reason:'canary-reset'}",
+      "target_replica": "otel-pm-engine-1",
+      "result": "SUCCESS"
+    },
+    "step_4_verify_enable": {
+      "action": "Verify all replicas re-enabled",
+      "replicas_checked": 3,
+      "replicas_enabled": 3,
+      "state": {
+        "otel-pm-engine-1": {"enabled": true, "reason": "canary-reset"},
+        "otel-pm-engine-2": {"enabled": true, "reason": "canary-reset"},
+        "otel-pm-engine-3": {"enabled": true, "reason": "canary-reset"}
+      },
+      "result": "PASS"
+    }
+  },
+  "results": {
+    "breach_triggered": true,
+    "all_replicas_disabled": true,
+    "reset_triggered": true,
+    "all_replicas_enabled": true,
+    "cluster_synchronization": "100%",
+    "status": "PASS"
+  },
+  "observations": "All 3 replicas synchronized on both breach (disable) and reset (enable). Cluster-wide canary control verified operational. Redis pub/sub propagation functional.",
+  "risk": "NONE",
+  "errors": 0,
+  "decided_at_utc": "2025-10-26T18:38:38Z"
+}
+
