@@ -2,7 +2,8 @@
 # ECRR: BossCat Mission - Containerized visual authoring loop
 # Authority: BossCat OEM | Executor: Cursor{Implementer}
 
-FROM node:20-bullseye
+# Gate #018: Pinned to digest for supply-chain security
+FROM node:20-bullseye@sha256:fd16d0493915f578fe2b2bfb9d9179267076ffc899e47e4bcec9ecd42687c6e7
 
 # Install Chromium and dependencies for headless rendering
 # CRITICAL FIX: Add canvas build deps (cairo, pango, jpeg, gif)

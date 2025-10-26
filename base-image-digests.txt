@@ -1,0 +1,19 @@
+# Gate #018 - Base Image Digests
+# Supply-chain hardening: Docker images pinned to SHA256 digests
+# Date: 2025-10-26
+# Authority: BossCat OEM | Executor: Cursor{Implementer}
+
+# Node.js 18 Alpine (used in main Dockerfile - 2 occurrences)
+node:18-alpine@sha256:8d6421d663b4c28fd3ebc498332f249011d118945588d0a35cb9bc4b8ca09d9e
+
+# Python 3.11 Slim (used in scorebot/Dockerfile)
+python:3.11-slim@sha256:8eb5fc663972b871c528fef04be4eaa9ab8ab4539a5316c4b8c133771214a617
+
+# Node.js 20 Bullseye (used in viz-engine-butterchurn/Dockerfile)
+node:20-bullseye@sha256:fd16d0493915f578fe2b2bfb9d9179267076ffc899e47e4bcec9ecd42687c6e7
+
+# Verification:
+# - All digests retrieved via: docker pull <image> 2>&1 | Select-String "Digest:"
+# - Date retrieved: 2025-10-26
+# - Pinned in Dockerfiles with comment: "# Gate #018: Pinned to digest for supply-chain security"
+
