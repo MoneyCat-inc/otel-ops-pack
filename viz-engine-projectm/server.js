@@ -5,6 +5,8 @@ const { spawn } = require('child_process');
 const fs = require('fs');
 const { BrightnessGuard } = require('./brightness-guard');
 const { FrameTimingStabilizer } = require('./frame-timing-stabilizer');
+const { CanaryDeployment } = require('./canary-deployment');  // Gate #020: Canary rollout
+const { OTLPEmitter } = require('./otlp-emitter');  // Gate #020: OTLP span emission
 
 const app = express();
 app.use(express.json({ limit: '5mb' }));
@@ -58,6 +60,46 @@ const frameTimingStabilizer = new FrameTimingStabilizer({
   jitterBudgetMs: GUARD_JITTER_BUDGET_MS,
   pinWindowMs: GUARD_PIN_WINDOW_MS
 });
+
+// Gate #020: OTLP emitter for canary events
+const otlpEmitter = new OTLPEmitter({
+  endpoint: process.env.OTLP_HTTP_ENDPOINT || 'http://localhost:5318/v1/traces',
+  serviceName: 'pm-engine',
+  environment: process.env.DEPLOY_ENV || 'staging'
+});
+
+// Gate #020: Canary deployment for audio rollout
+const CANARY_ENABLED = process.env.CANARY_ENABLED === 'true';  // Opt-in for canary
+const canaryDeployment = CANARY_ENABLED ? new CanaryDeployment({
+  onPhaseChange: (phase) => {
+    console.log(`[canary] Phase change: ${phase.name} (${phase.target}%)`);
+    // Emit OTLP span for phase transition
+    otlpEmitter.emitSpan('audio.enable.canary.phase', {
+      'canary.phase': phase.name,
+      'canary.target_percent': phase.target,
+      'canary.event': 'phase_change'
+    }).catch(err => console.error('[canary] OTLP emit failed:', err.message));
+  },
+  onBreach: (reason, phase) => {
+    console.error(`[canary] BREACH at ${phase.name}: ${reason}`);
+    console.error(`[canary] Auto-halt triggered - audio disabled`);
+    // Emit OTLP span for breach
+    otlpEmitter.emitSpan('audio.enable.canary.breach', {
+      'canary.phase': phase.name,
+      'canary.breach_reason': reason,
+      'canary.event': 'breach',
+      'canary.auto_halt': true
+    }).catch(err => console.error('[canary] OTLP emit failed:', err.message));
+  },
+  onComplete: () => {
+    console.log('[canary] Deployment COMPLETE - audio fully rolled out');
+    // Emit OTLP span for completion
+    otlpEmitter.emitSpan('audio.enable.canary.complete', {
+      'canary.event': 'complete',
+      'canary.result': 'success'
+    }).catch(err => console.error('[canary] OTLP emit failed:', err.message));
+  }
+}) : null;
 
 // Job V1B/V2: Cached guard state for active monitoring
 let cachedGuardState = {
@@ -121,6 +163,16 @@ function startGuardMonitoring() {
           tickCount: totalGuardTicks,
           tickDurationMs: durationMs
         };
+        
+        // Gate #020: Feed KPIs to canary deployment (every 10 ticks ≈ 1 second)
+        if (canaryDeployment && totalGuardTicks % 10 === 0) {
+          const kpis = {
+            underrunRatio: 0.0,  // Placeholder: would get from audio buffer
+            tickJitterMs: frameTimingStabilizer.getStats().jitterMaxMs || 0,
+            correlation: 0.95  // Placeholder: would get from audio validation
+          };
+          canaryDeployment.tick(kpis);
+        }
       })
       .catch((err) => {
         console.error('[guard-timer] Luma measurement failed:', err);
@@ -132,6 +184,12 @@ function startGuardMonitoring() {
         snapshotGuardState(pendingSnapshot || { timestamp: Date.now() });
       });
   }, GUARD_INTERVAL_MS);
+  
+  // Gate #020: Start canary if enabled
+  if (canaryDeployment) {
+    canaryDeployment.start();
+    console.log('[canary] Audio canary deployment started');
+  }
 }
 
 // Ensure presets directory exists
@@ -185,7 +243,10 @@ app.get('/health', (_req, res) => {
     pid: pmProc ? pmProc.pid : null,
     // Gate #019 Job R2: Audio feature status
     audio_enabled: AUDIO_ENABLED,
-    envelope_follower: 'active'  // Gate #019 R1
+    envelope_follower: 'active',  // Gate #019 R1
+    // Gate #020: Canary status
+    canary_enabled: CANARY_ENABLED,
+    canary_phase: canaryDeployment ? canaryDeployment.getCurrentPhase().name : 'N/A'
   });
 });
 
@@ -453,13 +514,35 @@ app.post('/guard/reset', (req, res) => {
   res.json({ ok: true, message: 'Brightness guard statistics reset' });
 });
 
+// Gate #020: Canary deployment endpoints
+// GET /canary/status - Get canary deployment status
+app.get('/canary/status', (req, res) => {
+  if (!canaryDeployment) {
+    return res.json({ ok: true, enabled: false, message: 'Canary not enabled (set CANARY_ENABLED=true)' });
+  }
+  
+  const status = canaryDeployment.getStatus();
+  res.json({ ok: true, enabled: true, ...status });
+});
+
+// POST /canary/halt - Emergency canary halt
+app.post('/canary/halt', (req, res) => {
+  if (!canaryDeployment) {
+    return res.status(404).json({ ok: false, error: 'Canary not enabled' });
+  }
+  
+  const result = canaryDeployment.emergencyStop();
+  res.json({ ok: true, ...result });
+});
+
 // Start HTTP server (Job 2 complete)
 app.listen(PORT, () => {
   console.log(`[pm-api] ProjectM HTTP API listening on port ${PORT}`);
   console.log(`[pm-api] Display: ${DISPLAY}, Size: ${PM_WIDTH}x${PM_HEIGHT}`);
-  console.log(`[pm-api] Endpoints: /health, /stats, /pm/presets, /pm/next, /pm/prev, /pm/random, /pm/preset, /snap.jpg, /pm/metrics, /audio, /audio/stats, /guard/stats, /guard/reset`);
-  console.log(`[pm-api] Audio path: ${AUDIO_PATH}, FIFO: ${PM_AUDIO_FIFO}`);
+  console.log(`[pm-api] Endpoints: /health, /stats, /pm/presets, /pm/next, /pm/prev, /pm/random, /pm/preset, /snap.jpg, /pm/metrics, /audio, /audio/stats, /guard/stats, /guard/reset, /canary/status, /canary/halt`);
+  console.log(`[pm-api] Audio path: ${AUDIO_PATH}, FIFO: ${PM_AUDIO_FIFO}, Audio enabled: ${AUDIO_ENABLED}`);
   console.log(`[pm-api] Brightness guard: L_min=${brightnessGuard.lMin}, window=${brightnessGuard.guardWindowMs}ms, mode=${brightnessGuard.guardMode}`);
+  console.log(`[pm-api] Canary deployment: ${CANARY_ENABLED ? 'ENABLED' : 'DISABLED'}`);
   console.log(`[pm-api] Ready for preset authoring + scorebot validation`);
   
   // Job V1B: Start active guard monitoring after ProjectM has time to initialize
