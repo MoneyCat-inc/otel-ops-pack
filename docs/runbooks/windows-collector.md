@@ -1,8 +1,86 @@
 # Windows Collector (otelcol-contrib) — Runbook
 
 **Authority:** BossCat OEM  
-**Gate:** #022 (BOSSCAT-022A)  
-**Purpose:** Collect Windows host metrics and Event Logs for observability pipeline
+**Gate:** #022 (BOSSCAT-022A - Deployed & Hardened)  
+**Purpose:** Collect Windows host metrics and Event Logs for observability pipeline  
+**Version:** 1.1.0 (Post-Op Hardened)
+
+---
+
+## 🚨 Canonical Configuration Path (CRITICAL)
+
+**Service Binary Path:**
+```
+"C:\Program Files\OpenTelemetry Collector\otelcol-contrib.exe" --config "C:\otel\config.yaml"
+```
+
+**Canonical Config Location:** `C:\otel\config.yaml` ← **AUTHORITATIVE**
+
+**⚠️ RED Condition:** Any service pointing to a different config path is INCORRECT and will cause export failures.
+
+**Verification Command:**
+```powershell
+sc qc otelcol-contrib | findstr /i "BINARY_PATH_NAME"
+```
+
+**Expected Output:**
+```
+BINARY_PATH_NAME   : "C:\Program Files\OpenTelemetry Collector\otelcol-contrib.exe" --config "C:\otel\config.yaml"
+```
+
+**Critical Requirements:**
+- ✅ Endpoint MUST be: `127.0.0.1:14317` (gRPC to localhost aggregator)
+- ❌ OLD/WRONG: `host.docker.internal:4318` (causes connection refused errors)
+- ✅ Collector Version: `v0.104.0` (tested and verified)
+- ✅ Config Syntax: Standard receivers format (see compatibility notes below)
+
+**Drift Guard Health Check:**
+```powershell
+pwsh -File .\scripts\windows\health-check-collector-config.ps1
+```
+Run every 15 minutes via Task Scheduler. Exit code 20/21 = RED condition.
+
+---
+
+## 📡 Trace Paths — Canonical Endpoints (Gate #027)
+
+**For .NET Auto-Instrumentation (OTLP Exporters):**
+
+### PRIMARY PATH (Recommended) — Direct to SigNoz ✅
+**Endpoint:** `http://127.0.0.1:14317` (OTLP gRPC)  
+**Status:** ✅ **PROVEN WORKING** (Gate #026A verified)  
+**Use Case:** .NET services, direct telemetry export  
+**Advantages:**
+- Minimal hops (app → SigNoz)
+- Verified with opentelemetry-dotnet-instrumentation v1.12.0
+- Traces, metrics, and logs confirmed working
+- 2.63% overhead measured
+
+**Configuration:**
+```powershell
+$env:OTEL_EXPORTER_OTLP_ENDPOINT = "http://127.0.0.1:14317"
+$env:OTEL_EXPORTER_OTLP_PROTOCOL = "grpc"
+```
+
+### SECONDARY PATH (Optional) — Via Windows Collector ⏳
+**Endpoint:** `http://127.0.0.1:5317` (Windows Collector OTLP gRPC)  
+**Status:** ⏳ **CONFIGURED BUT UNTESTED** (Gate #027 investigation)  
+**Use Case:** Centralized collection, preprocessing, multi-export  
+**Config:** Receiver on 5317 → Processors → Export to SigNoz 14317
+
+**Configuration:**
+```powershell
+$env:OTEL_EXPORTER_OTLP_ENDPOINT = "http://127.0.0.1:5317"
+$env:OTEL_EXPORTER_OTLP_PROTOCOL = "grpc"
+```
+
+**Health Probe:**
+```powershell
+pwsh -File .\scripts\windows\verify-collector-traces.ps1
+# Verifies: receiver.accepted_spans ≈ exporter.sent_spans (±1%)
+```
+
+**Note:** As of Gate #027, collector path configured but has received 0 traces (never tested with live app). Direct path (14317) is production baseline.
 
 ---
 
@@ -13,6 +91,21 @@ The Windows OpenTelemetry Collector (`otelcol-contrib`) runs as a Windows servic
 - **Event Logs:** Application and System logs (real-time)
 
 All telemetry is exported to the OTLP aggregator (signoz-otel-collector) via gRPC on port 14317.
+
+**Version Compatibility Notes (v0.104.0):**
+- **Host Metrics Syntax:** Uses list format for scrapers (not map format)
+  ```yaml
+  # ✅ CORRECT (v0.104.0):
+  receivers:
+    hostmetrics:
+      collection_interval: 60s
+      scrapers:
+        - cpu
+        - memory
+        - disk
+  ```
+- **Windows Event Log Receiver:** Uses `windowseventlog` receiver name
+- **Known Issue:** Map-style scraper syntax will fail with "unexpected sub-config value kind" error
 
 ---
 

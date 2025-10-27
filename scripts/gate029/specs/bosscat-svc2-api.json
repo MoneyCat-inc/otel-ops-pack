@@ -1,0 +1,10 @@
+{
+  "name": "bosscat-svc2-api",
+  "port": 5556,
+  "appPath": "dotnet-test-app/bin/Debug/net8.0/dotnet-test-app.dll",
+  "healthUrl": "http://localhost:5556/",
+  "otelServiceName": "bosscat-svc2-api",
+  "useCollector": true,
+  "description": "API service exporting via Windows Collector (5317)"
+}
+

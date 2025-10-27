@@ -1,0 +1,173 @@
+# Gate #026 Track B: CI Performance Gate with k6
+# Authority: BossCat OEM | Executor: Cursor{Implementer}
+# Purpose: Blocking load test with threshold enforcement
+
+name: Gate-026 Performance Gate
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'dotnet-test-app/**'
+      - 'scripts/gate026/**'
+      - '.github/workflows/gate-026-performance.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'dotnet-test-app/**'
+      - 'scripts/gate026/**'
+  workflow_dispatch:
+    inputs:
+      target_url:
+        description: 'Target URL for testing'
+        required: false
+        default: 'http://localhost:5555'
+
+# Concurrency: Cancel previous runs on new push (ALFA track pattern)
+concurrency:
+  group: gate-026-perf-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  performance-gate:
+    name: k6 Performance Gate
+    runs-on: windows-latest
+    
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: 📦 Build .NET Test App
+        run: |
+          cd dotnet-test-app
+          dotnet build -c Release
+        shell: pwsh
+
+      - name: 🚀 Start Test App (Background)
+        run: |
+          $appPath = "dotnet-test-app\bin\Release\net8.0\dotnet-test-app.dll"
+          Start-Process -FilePath "dotnet" -ArgumentList "exec", $appPath -NoNewWindow
+          
+          # Wait for app to start
+          $maxRetries = 10
+          $retries = 0
+          while ($retries -lt $maxRetries) {
+            try {
+              $response = Invoke-RestMethod -Uri "http://localhost:5555/health" -TimeoutSec 2
+              Write-Host "✅ App started: $($response.status)"
+              break
+            } catch {
+              $retries++
+              Write-Host "Waiting for app to start... ($retries/$maxRetries)"
+              Start-Sleep -Seconds 2
+            }
+          }
+          
+          if ($retries -eq $maxRetries) {
+            Write-Host "❌ App failed to start"
+            exit 1
+          }
+        shell: pwsh
+
+      - name: 🔍 Synthetic Trace Injection (Observability Gate)
+        run: |
+          Write-Host "📡 Injecting synthetic trace to verify observability..."
+          
+          # Call each endpoint once to generate telemetry
+          try {
+            Invoke-RestMethod -Uri "http://localhost:5555/" | Out-Null
+            Invoke-RestMethod -Uri "http://localhost:5555/health" | Out-Null
+            Invoke-RestMethod -Uri "http://localhost:5555/test" | Out-Null
+            
+            Write-Host "✅ Synthetic traces injected"
+          } catch {
+            Write-Host "❌ Synthetic trace injection failed: $($_.Exception.Message)"
+            exit 1
+          }
+          
+          # Wait for telemetry to propagate
+          Write-Host "⏳ Waiting 5 seconds for telemetry propagation..."
+          Start-Sleep -Seconds 5
+        shell: pwsh
+
+      - name: 🔧 Setup k6
+        uses: grafana/setup-k6-action@v1
+
+      - name: 🏃 Run k6 Performance Test
+        id: k6
+        continue-on-error: true  # Capture exit code but don't fail yet
+        run: |
+          Write-Host "=== Gate #026 Track B: k6 Performance Gate ===" -ForegroundColor Cyan
+          
+          k6 run scripts/gate026/k6-performance-gate.js `
+            --out json=artifacts/k6-results.json `
+            --env TARGET_URL=http://localhost:5555
+          
+          $exitCode = $LASTEXITCODE
+          echo "k6_exit_code=$exitCode" >> $env:GITHUB_OUTPUT
+          
+          if ($exitCode -ne 0) {
+            Write-Host "❌ k6 test failed with thresholds violations (exit code: $exitCode)" -ForegroundColor Red
+          } else {
+            Write-Host "✅ k6 test passed all thresholds" -ForegroundColor Green
+          }
+          
+          exit $exitCode
+        shell: pwsh
+
+      - name: 📊 Archive k6 Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: k6-results-${{ github.run_number }}
+          path: artifacts/k6-results.json
+          retention-days: 14
+
+      - name: 📋 Performance Gate Summary
+        if: always()
+        run: |
+          $exitCode = "${{ steps.k6.outputs.k6_exit_code }}"
+          
+          echo "### 🚦 Gate #026 Performance Gate Results" >> $env:GITHUB_STEP_SUMMARY
+          echo "" >> $env:GITHUB_STEP_SUMMARY
+          
+          if ($exitCode -eq "0") {
+            echo "**Status:** ✅ **PASS**" >> $env:GITHUB_STEP_SUMMARY
+            echo "" >> $env:GITHUB_STEP_SUMMARY
+            echo "All performance thresholds met:" >> $env:GITHUB_STEP_SUMMARY
+            echo "- ✅ P50 <= 900ms" >> $env:GITHUB_STEP_SUMMARY
+            echo "- ✅ P95 <= 1200ms" >> $env:GITHUB_STEP_SUMMARY
+            echo "- ✅ Error rate < 1%" >> $env:GITHUB_STEP_SUMMARY
+          } else {
+            echo "**Status:** ❌ **FAIL**" >> $env:GITHUB_STEP_SUMMARY
+            echo "" >> $env:GITHUB_STEP_SUMMARY
+            echo "⚠️ Performance thresholds violated (see k6 output)" >> $env:GITHUB_STEP_SUMMARY
+            echo "" >> $env:GITHUB_STEP_SUMMARY
+            echo "**Thresholds:**" >> $env:GITHUB_STEP_SUMMARY
+            echo "- P50 must be <= 900ms" >> $env:GITHUB_STEP_SUMMARY
+            echo "- P95 must be <= 1200ms" >> $env:GITHUB_STEP_SUMMARY
+            echo "- Error rate must be < 1%" >> $env:GITHUB_STEP_SUMMARY
+          }
+          
+          echo "" >> $env:GITHUB_STEP_SUMMARY
+          echo "**Workflow:** ${{ github.workflow }}" >> $env:GITHUB_STEP_SUMMARY
+          echo "**Run:** #${{ github.run_number }} (attempt ${{ github.run_attempt }})" >> $env:GITHUB_STEP_SUMMARY
+          echo "**Ref:** \`${{ github.ref }}\`" >> $env:GITHUB_STEP_SUMMARY
+          echo "**Actor:** @${{ github.actor }}" >> $env:GITHUB_STEP_SUMMARY
+          echo "" >> $env:GITHUB_STEP_SUMMARY
+          echo "[View k6 results artifact](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $env:GITHUB_STEP_SUMMARY
+        shell: pwsh
+
+      - name: ❌ Fail if Thresholds Violated
+        if: steps.k6.outputs.k6_exit_code != '0'
+        run: |
+          Write-Host "❌ Performance gate FAILED - thresholds violated" -ForegroundColor Red
+          Write-Host "   Review k6 output and artifact for details" -ForegroundColor Yellow
+          exit 1
+        shell: pwsh
+

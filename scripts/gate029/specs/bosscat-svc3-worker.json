@@ -1,0 +1,10 @@
+{
+  "name": "bosscat-svc3-worker",
+  "port": 5557,
+  "appPath": "dotnet-test-app/bin/Debug/net8.0/dotnet-test-app.dll",
+  "healthUrl": "http://localhost:5557/",
+  "otelServiceName": "bosscat-svc3-worker",
+  "useCollector": false,
+  "description": "Worker service exporting direct to SigNoz (14317)"
+}
+
