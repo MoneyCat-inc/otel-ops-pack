@@ -1,8 +1,8 @@
 # 🐾 BossCat Gate Status Dashboard
 
-**Last Updated:** 2025-10-27 15:45:00 +00:00  
-**Current Gate:** #029 (APPROVED GREEN)  
-**Status:** ✅ **GATE #029 APPROVED GREEN** - Deployment Orchestrator Production-Ready, All Objectives Met, BossCat OEM Approved
+**Last Updated:** 2025-10-27 16:50:00 +00:00  
+**Current Gate:** #030 (PARTIAL AMBER)  
+**Status:** ⚠️ **GATE #030 PARTIAL AMBER** - Evidence-as-Code v1 Delivered (Traces + Logs Working, Metrics Deferred to v2)
 
 **Gate #008:** ✅ GREEN (Certified 2025-10-23) - Trace Ingestion  
 **Gate #009:** ✅ GREEN (Certified 2025-10-24) - Milkdrop Visual Engine  
@@ -24,15 +24,17 @@
 **Gate #026A:** ✅ **GREEN** (APPROVED 2025-10-27) - **.NET Auto-Instrumentation (Track A Complete)**  
 **Gate #027:** ⚠️ **AMBER** (PARTIAL 2025-10-27) - **Trace Unification + Coverage + ICF Lift (Foundations, Verification Incomplete)**  
 **Gate #028:** ⚠️ **AMBER** (PARTIAL 2025-10-27) - **ICF Bug Fix Complete (1/3 tracks), Service Deployment Deferred)**  
-**Gate #029:** ✅ **GREEN** (APPROVED 2025-10-27) - **.NET Deployment Orchestrator Complete (Production-Ready, BossCat OEM Approved)**
+**Gate #029:** ✅ **GREEN** (APPROVED 2025-10-27) - **.NET Deployment Orchestrator Complete (Production-Ready, BossCat OEM Approved)**  
+**Gate #030:** ⚠️ **AMBER** (PARTIAL 2025-10-27) - **Evidence-as-Code v1 (Traces + Logs Operational, Metrics Deferred to v2)**
 
-**Current State:** Gate #029 APPROVED GREEN - Deployment orchestrator production-ready, proceeding to hygiene patch  
-**Infrastructure:** Production-ready observability + .NET deployment orchestration + collector path (5317) verified  
+**Current State:** Gate #030 PARTIAL AMBER - Evidence-as-Code v1 delivered (2/3 signals operational)  
+**Infrastructure:** Production-ready observability + unified telemetry proofs + collector path verified (5317 working)  
 **Gate #026A Status:** ✅ APPROVED - Traces, metrics, and logs verified in SigNoz (direct OTLP port 14317)  
 **Gate #027 Status:** ⚠️ AMBER - Partial delivery (foundations complete, verification deferred to #028)  
 **Gate #028 Status:** ⚠️ AMBER - Track 28C complete (ICF bug fix ✅), Tracks 28A/28B deferred to #029  
-**Gate #029 Status:** ✅ **APPROVED GREEN** - Framework delivered + verified + approved (orchestrator production-ready ✅, collector path 5317 verified ✅, 0.87% overhead ✅, BossCat OEM approved ✅)  
-**Next Action:** Gate #029 approved, proceeding to hygiene patch (SigNoz API-signed proofs)
+**Gate #029 Status:** ✅ **APPROVED GREEN** - Framework delivered + verified + approved (orchestrator ✅, collector 5317 verified ✅, hygiene patch H1 ✅, BossCat OEM approved ✅)  
+**Gate #030 Status:** ⚠️ **PARTIAL AMBER** - Evidence-as-Code v1 delivered (traces ✅, logs ✅, metrics deferred to v2)  
+**Next Action:** Gate #030 ready for approval (2/3 signals working, metrics enhancement planned for v2)
 
 ---
 
@@ -156,6 +158,87 @@
 3. Run: `pwsh -File .\scripts\windows\health-check-otlp.ps1 -ServiceName "bosscat-svc2-api" -UseApiProof`
 
 **Expected:** Proof artifact generated to `artifacts/proofs/proof-traces-*.json`
+
+---
+
+## ⚠️ Gate #030 Partial Delivery (2025-10-27 16:50:00 UTC)
+
+**Executor:** Cursor{Implementer} (Code Writer-Executioner)  
+**Authority:** BossCat OEM (Fubumaki)  
+**Status:** ⚠️ **PARTIAL AMBER (2/3 Signals)**
+
+### Implementation Results
+
+**Objective:** Unified telemetry proofs for traces + logs + metrics
+
+**Delivered:** 2/3 signals operational
+
+| Signal | Status | Details |
+|--------|--------|---------|
+| **Traces** | ✅ GREEN | Service-scoped query working, 2 traces found in test |
+| **Logs** | ✅ GREEN | Global query working, 14 logs found in test |
+| **Metrics** | ⚠️ DEFERRED | Requires metric-specific query structure (v2 enhancement) |
+
+### Files Created
+
+| File | LOC | Status |
+|------|-----|--------|
+| `scripts/windows/proof-of-telemetry.ps1` | 223 | ✅ Complete |
+| `docs/runbooks/unified-telemetry-proofs.md` | ~500 | ✅ Complete |
+| `GATE_030_SCOPE.md` | ~200 | ✅ Complete |
+| `GATE_030_IMPLEMENTATION_COMPLETE.md` | ~300 | ✅ Complete |
+
+**Total:** 4 files (1 over budget, justified by documentation)  
+**Code LOC:** 223/250 ✅ (within budget, +27 LOC margin)
+
+### Test Results
+
+**Service:** iona-app  
+**Lookback:** 60 minutes
+
+- ✅ Traces: 2 found (PASS)
+- ✅ Logs: 14 found (PASS)
+- ⚠️ Metrics: 0 found (DEFERRED)
+
+**Proof Artifact:** `artifacts/proofs/unified-proof-iona-app-20251027-164412.json`
+
+**Exit Codes Tested:**
+- Permissive mode: 0 (GREEN) ✅
+- Strict mode (-ExpectAll): 1 (AMBER) ✅
+
+### Features Implemented
+
+- ✅ Query-SigNozSignal function (generic for all signal types)
+- ✅ Unified proof artifact generation
+- ✅ Exit logic (permissive/strict modes)
+- ✅ Environment variable support
+- ✅ Color-coded console output
+- ✅ Error handling for API failures
+
+### Known Limitations (v1)
+
+1. **Metrics:** Deferred to v2 (requires metric name, different query structure)
+2. **Logs:** Not service-scoped (counts all logs, not just specified service)
+3. **File count:** 4 instead of 3 (scope + evidence docs)
+
+### Budget Assessment
+
+- Files: 4/3 ⚠️ (+1, docs only)
+- LOC: 223/250 ✅ (within budget)
+- **Justification:** Scope + evidence documents are standard overhead
+
+### Evidence
+
+- **Implementation:** `GATE_030_IMPLEMENTATION_COMPLETE.md`
+- **Runbook:** `docs/runbooks/unified-telemetry-proofs.md`
+- **Scope:** `GATE_030_SCOPE.md`
+- **Proof Artifact:** `artifacts/proofs/unified-proof-iona-app-20251027-164412.json`
+
+### Recommendation
+
+**Verdict:** ⚠️ **APPROVE AMBER** (Partial Delivery)  
+**Reasoning:** Core functionality working (2/3 signals), metrics enhancement feasible for v2  
+**Tag Suggestion:** `gate-030-amber-2025-10-27`
 
 ---
 
