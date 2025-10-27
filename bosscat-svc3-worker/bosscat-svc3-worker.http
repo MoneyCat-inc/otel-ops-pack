@@ -1,0 +1,6 @@
+@bosscat_svc3_worker_HostAddress = http://localhost:5015
+
+GET {{bosscat_svc3_worker_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
