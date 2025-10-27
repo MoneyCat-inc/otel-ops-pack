@@ -1,0 +1,6 @@
+@bosscat_svc2_api_HostAddress = http://localhost:5287
+
+GET {{bosscat_svc2_api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
