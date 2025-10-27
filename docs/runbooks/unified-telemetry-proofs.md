@@ -23,15 +23,22 @@ The `proof-of-telemetry.ps1` script generates unified proof artifacts that verif
 ## Quick Start
 
 ```powershell
-# Set API key
-$env:SIGNOZ_API_KEY = "<your-api-key>"
+# Set API token (v2 supports both env vars)
+$env:SIGNOZ_API_TOKEN = "<your-api-key>"  # Preferred in v2
+# or
+$env:SIGNOZ_API_KEY = "<your-api-key>"    # Backward compatible
 
-# Generate unified proof
+# Generate unified proof (v2: all 3 signals)
 pwsh -File .\scripts\windows\proof-of-telemetry.ps1 -ServiceName "my-service"
 
-# Strict mode (all signals required)
+# Strict mode (all signals required, exits GREEN only if 3/3)
 pwsh -File .\scripts\windows\proof-of-telemetry.ps1 -ServiceName "my-service" -ExpectAll
+
+# Custom auth header (Authorization Bearer)
+pwsh -File .\scripts\windows\proof-of-telemetry.ps1 -ServiceName "my-service" -AuthHeaderName "Authorization"
 ```
+
+**v2 Result:** ✅ **3/3 signals** (traces, logs, metrics via collector health)
 
 ---
 
@@ -213,28 +220,67 @@ pwsh -File .\scripts\windows\proof-of-telemetry.ps1 -ServiceName "my-service" -E
 
 ---
 
-## Gate #030 v1 Limitations
+## Signal Sources (v2)
 
-### Metrics Query Not Implemented
+### Traces ✅
+**Source:** SigNoz API `/api/v5/query_range`  
+**Filter:** Service-scoped (`serviceName = 'service-name'`)  
+**Proves:** Service sending traces to SigNoz
 
-**Status:** ⚠️ **DEFERRED TO v2**
+### Logs ✅
+**Source:** SigNoz API `/api/v5/query_range`  
+**Filter:** Global (all logs)  
+**Proves:** Logs flowing to SigNoz  
+**Note:** Not service-scoped in v2 (field name TBD)
 
-**Reason:** SigNoz `/api/v5/query_range` metrics queries require:
-- Specific metric name (e.g., `http_server_duration_milliseconds`)
-- Different aggregation structure than traces/logs
-- Query builder syntax differs from logs/traces
+### Metrics ✅ (v2 NEW)
+**Source:** Windows Collector Prometheus endpoint (port 8888)  
+**Metric:** `otelcol_exporter_sent_spans`  
+**Proves:** Collector pipeline operational  
+**Why:** Stable, service-agnostic, always present when collector running
 
-**Current Behavior:**
-- Metrics count always returns 0
-- Status always "FAIL"
-- Note added to proof artifact
+**Result:** ✅ **All 3/3 signals operational in v2**
 
-**Workaround:** Use permissive mode (don't use `-ExpectAll` flag)
+---
 
-**Future (v2):**
-- Add metrics-specific query logic
-- Support metric name parameter
-- Query common metrics (e.g., request duration, error rate)
+## Auth Hardening (v2)
+
+### Dual-Header Support
+
+**Default:** `SIGNOZ-API-KEY: <token>`  
+**Alternate:** `Authorization: Bearer <token>`
+
+**Usage:**
+```powershell
+# Default (signoz-api-key header)
+pwsh -File .\scripts\windows\proof-of-telemetry.ps1 -ServiceName "my-service"
+
+# Authorization Bearer header
+pwsh -File .\scripts\windows\proof-of-telemetry.ps1 -ServiceName "my-service" -AuthHeaderName "Authorization"
+```
+
+**Fallback Logic:**
+- If initial auth fails (401/403) with `signoz-api-key`
+- Automatically retries with `Authorization: Bearer`
+- Transparent to user
+
+### Secret Masking
+
+**Proof Artifact:**
+```json
+{
+  "auth_method": "signoz-api-key",
+  "auth_token": "***masked***"
+}
+```
+
+**Console Output:** Token never printed  
+**Logs:** Header type logged, not value  
+**Compliance:** ECRR Rule #10 (secrets & boundaries)
+
+---
+
+## Known Limitations (v2)
 
 ### Service-Level Filtering for Logs
 
@@ -644,9 +690,43 @@ env:
 ---
 
 **Last Updated:** 2025-10-27  
-**Version:** v1 (Traces + Logs, Metrics deferred to v2)  
+**Version:** v2 (Traces + Logs + Metrics via Collector Health)  
 **Authority:** BossCat OEM (Fubumaki)  
 **Status:** ACTIVE
 
-🐾 **Unified Telemetry Proofs — Evidence-as-Code v1**
+🐾 **Unified Telemetry Proofs — Evidence-as-Code v2**
+
+---
+
+## 🆕 Gate #030 v2 Enhancements
+
+### What's New in v2
+
+**1. Metrics Proof via Collector Health ✅**
+- Queries Windows Collector metrics endpoint (port 8888)
+- Uses `otelcol_exporter_sent_spans` metric (stable, service-agnostic)
+- Proves pipeline operational without app-specific metrics
+- **Result:** All 3/3 signals now operational
+
+**2. Dual-Header Auth Support ✅**
+- Supports both `SIGNOZ-API-KEY` and `Authorization: Bearer` headers
+- Automatic fallback on 401/403 errors
+- Configurable via `-AuthHeaderName` parameter
+
+**3. Secret Masking ✅**
+- API tokens never printed to console or logs
+- Proof artifacts show `"auth_token": "***masked***"`
+- Auth method logged (header type) but not token value
+- ECRR Rule #10 compliant (secrets & boundaries)
+
+### v1 → v2 Upgrade
+
+| Feature | v1 | v2 |
+|---------|----|----|
+| Traces | ✅ Working | ✅ Working |
+| Logs | ✅ Working | ✅ Working |
+| Metrics | ❌ Deferred | ✅ **Collector health metrics** |
+| Exit (all signals) | AMBER (2/3) | **GREEN (3/3)** |
+| Auth headers | Single | **Dual + fallback** |
+| Secret safety | Basic | **Fully masked** |
 

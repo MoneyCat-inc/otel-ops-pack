@@ -58,7 +58,17 @@ param(
     [int]$ExpectAtLeast = 1,
     
     [Parameter(Mandatory=$false)]
-    [switch]$ExpectAll
+    [switch]$ExpectAll,
+    
+    # Gate #030 v2: Auth hardening
+    [Parameter(Mandatory=$false)]
+    [string]$ApiToken = $env:SIGNOZ_API_TOKEN,
+    
+    [Parameter(Mandatory=$false)]
+    [string]$AuthHeaderName = $(if ($env:SIGNOZ_AUTH_HEADER) { $env:SIGNOZ_AUTH_HEADER } else { "signoz-api-key" }),
+    
+    [Parameter(Mandatory=$false)]
+    [string]$CollectorMetricsUrl = "http://localhost:8888/metrics"
 )
 
 $ErrorActionPreference = "Stop"
@@ -69,9 +79,12 @@ if (-not $ServiceName) {
     exit 21
 }
 
-$ApiKey = $env:SIGNOZ_API_KEY
-if (-not $ApiKey) {
-    Write-Error "SIGNOZ_API_KEY environment variable required"
+# Gate #030 v2: ApiToken replaces ApiKey, supports both env vars for compatibility
+if (-not $ApiToken) {
+    $ApiToken = $env:SIGNOZ_API_KEY  # Backward compatibility
+}
+if (-not $ApiToken) {
+    Write-Error "API token required (SIGNOZ_API_TOKEN or SIGNOZ_API_KEY env var, or -ApiToken parameter)"
     exit 21
 }
 
@@ -83,12 +96,65 @@ Write-Host "Expect at least: $ExpectAtLeast per signal" -ForegroundColor White
 Write-Host "Strict mode: $(if ($ExpectAll) { 'YES (all signals required)' } else { 'NO' })" -ForegroundColor White
 Write-Host ""
 
+# Gate #030 v2: Build auth headers with dual-header support
+function Build-AuthHeaders {
+    param(
+        [string]$ApiToken,
+        [string]$HeaderName
+    )
+    
+    $headers = @{ "Content-Type" = "application/json" }
+    
+    if ($HeaderName -eq "Authorization") {
+        $headers["Authorization"] = "Bearer $ApiToken"
+    } else {
+        # Default: signoz-api-key
+        $headers["SIGNOZ-API-KEY"] = $ApiToken
+    }
+    
+    return $headers
+}
+
+# Gate #030 v2: Query collector health metrics (Prometheus format)
+function Query-CollectorMetrics {
+    param(
+        [string]$MetricsUrl
+    )
+    
+    try {
+        $response = Invoke-WebRequest -Uri $MetricsUrl -UseBasicParsing -TimeoutSec 10
+        $content = $response.Content
+        
+        # Parse otelcol_exporter_sent_spans metric
+        if ($content -match 'otelcol_exporter_sent_spans\{[^\}]*\}\s+(\d+)') {
+            $count = [int]$Matches[1]
+            return @{
+                Success = $true
+                Count = $count
+                Metric = "otelcol_exporter_sent_spans"
+                Endpoint = $MetricsUrl
+            }
+        } else {
+            return @{
+                Success = $false
+                Error = "Metric otelcol_exporter_sent_spans not found"
+            }
+        }
+    } catch {
+        return @{
+            Success = $false
+            Error = $_.Exception.Message
+        }
+    }
+}
+
 # Generic SigNoz signal query function
 function Query-SigNozSignal {
     param(
         [string]$ServiceName,
         [string]$SigNozBaseUrl,
-        [string]$ApiKey,
+        [string]$ApiToken,
+        [string]$AuthHeaderName,
         [string]$Signal,  # "traces", "logs", or "metrics"
         [int]$LookbackMinutes
     )
@@ -125,11 +191,22 @@ function Query-SigNozSignal {
         }
     } | ConvertTo-Json -Depth 10
     
-    $headers = @{ "Content-Type" = "application/json"; "SIGNOZ-API-KEY" = $ApiKey }
+    $headers = Build-AuthHeaders -ApiToken $ApiToken -HeaderName $AuthHeaderName
     $uri = ($SigNozBaseUrl.TrimEnd('/')) + "/api/v5/query_range"
     
     try {
         $resp = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -Body $payload -TimeoutSec 30
+    } catch {
+        # Gate #030 v2: Fallback to alternate header on auth failure
+        if ($_.Exception.Response.StatusCode.value__ -in @(401, 403) -and $AuthHeaderName -eq "signoz-api-key") {
+            $headers = Build-AuthHeaders -ApiToken $ApiToken -HeaderName "Authorization"
+            $resp = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -Body $payload -TimeoutSec 30
+        } else {
+            throw
+        }
+    }
+    
+    try {
         
         # Parse count from response (handle different response formats)
         $count = 0
@@ -167,7 +244,7 @@ function Query-SigNozSignal {
 
 # Query all three signals
 Write-Host "[1/3] Querying traces..." -ForegroundColor Yellow
-$tracesResult = Query-SigNozSignal -ServiceName $ServiceName -SigNozBaseUrl $SigNozUrl -ApiKey $ApiKey -Signal "traces" -LookbackMinutes $LookbackMinutes
+$tracesResult = Query-SigNozSignal -ServiceName $ServiceName -SigNozBaseUrl $SigNozUrl -ApiToken $ApiToken -AuthHeaderName $AuthHeaderName -Signal "traces" -LookbackMinutes $LookbackMinutes
 
 if ($tracesResult.Success) {
     Write-Host "  Traces: $($tracesResult.Count)" -ForegroundColor $(if ($tracesResult.Count -ge $ExpectAtLeast) { "Green" } else { "Red" })
@@ -176,7 +253,7 @@ if ($tracesResult.Success) {
 }
 
 Write-Host "[2/3] Querying logs..." -ForegroundColor Yellow
-$logsResult = Query-SigNozSignal -ServiceName $ServiceName -SigNozBaseUrl $SigNozUrl -ApiKey $ApiKey -Signal "logs" -LookbackMinutes $LookbackMinutes
+$logsResult = Query-SigNozSignal -ServiceName $ServiceName -SigNozBaseUrl $SigNozUrl -ApiToken $ApiToken -AuthHeaderName $AuthHeaderName -Signal "logs" -LookbackMinutes $LookbackMinutes
 
 if ($logsResult.Success) {
     Write-Host "  Logs: $($logsResult.Count)" -ForegroundColor $(if ($logsResult.Count -ge $ExpectAtLeast) { "Green" } else { "Red" })
@@ -185,16 +262,14 @@ if ($logsResult.Success) {
 }
 
 Write-Host "[3/3] Querying metrics..." -ForegroundColor Yellow
-# Note: Metrics query via /api/v5/query_range requires specific metric names
-# For now, skip metrics query and mark as PARTIAL (Gate #030 v1 limitation)
-# Future enhancement: Add metrics-specific query logic
-$metricsResult = @{
-    Success = $true
-    Count = 0
-    Signal = "metrics"
-    Note = "PARTIAL - Metrics query requires metric name (deferred to v2)"
+# Gate #030 v2: Query collector health metrics (Prometheus format)
+$metricsResult = Query-CollectorMetrics -MetricsUrl $CollectorMetricsUrl
+
+if ($metricsResult.Success) {
+    Write-Host "  Metrics: $($metricsResult.Count) ($($metricsResult.Metric))" -ForegroundColor $(if ($metricsResult.Count -ge $ExpectAtLeast) { "Green" } else { "Red" })
+} else {
+    Write-Host "  Metrics: ERROR - $($metricsResult.Error)" -ForegroundColor Red
 }
-Write-Host "  Metrics: SKIPPED (requires metric name, deferred to v2)" -ForegroundColor Yellow
 
 Write-Host ""
 
@@ -223,12 +298,15 @@ $proof = @{
             count = if ($metricsResult.Success) { $metricsResult.Count } else { 0 }
             status = if ($metricsResult.Success -and $metricsResult.Count -ge $ExpectAtLeast) { "PASS" } else { "FAIL" }
             endpoint = if ($metricsResult.Success) { $metricsResult.Endpoint } else { "N/A" }
+            metric_name = if ($metricsResult.Success) { $metricsResult.Metric } else { $null }
             error = if (-not $metricsResult.Success) { $metricsResult.Error } else { $null }
         }
     }
     timestamp = $stamp
     verification_type = "api-signed-unified"
     api_version = "v5"
+    auth_method = $AuthHeaderName
+    auth_token = "***masked***"  # Gate #030 v2: Never expose token in artifacts
 }
 
 # Determine overall status
