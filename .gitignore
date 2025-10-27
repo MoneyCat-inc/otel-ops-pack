@@ -47,3 +47,37 @@ signoz.env
 secrets/
 # Next.js build output
 out/
+
+# --- Phase 4: Binary Bloat & Debug Script Guard (Gate #030 Disposition) ---
+# Authority: BossCat OEM (Fubumaki) | Executor: Cursor{Implementer}
+# Date: 2025-10-27 | Protects repo from 395+ binary artifacts
+
+# .NET build outputs (Gate #026-029 services)
+bosscat-svc*/bin/
+bosscat-svc*/obj/
+dotnet-test-app/
+dotnet-autoinstrumentation/
+
+# Debug scripts (quarantined - not for production)
+debug-*.ps1
+test-api-proof.ps1
+test-signoz-api.ps1
+scripts/dev/
+
+# Keep textual evidence artifacts only
+artifacts/**/*
+!artifacts/**/*.md
+!artifacts/**/*.txt
+!artifacts/**/*.json
+!artifacts/**/*.csv
+!artifacts/.manifest/
+
+# Allow curated screenshots (managed via Phase 1 curation)
+!artifacts/gate026/*.png
+
+# Block bulk binaries and temp files
+artifacts/**/*.zip
+artifacts/**/*.7z
+artifacts/**/*.gz
+artifacts/**/*.bin
+artifacts/**/tmp/
