@@ -1,0 +1,82 @@
+name: k6 Performance Gate
+
+# Gate #026 Track B: CI Performance Gate
+# Authority: BossCat OEM | Executor: Cursor{Implementer}
+# Purpose: Block merges on performance regression
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  k6-load-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create artifacts directory
+        run: mkdir -p artifacts
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Start dotnet test app
+        run: |
+          cd dotnet-test-app
+          nohup dotnet run --urls http://localhost:5555 > /tmp/dotnet-app.log 2>&1 &
+          echo $! > /tmp/dotnet-app.pid
+        
+      - name: Wait for service to be ready
+        run: |
+          echo "Waiting for dotnet app on port 5555..."
+          timeout 30 bash -c 'until nc -z localhost 5555; do sleep 1; done'
+          echo "Service is ready!"
+
+      - name: Verify service health
+        run: |
+          curl -f http://localhost:5555/health || (echo "Health check failed" && exit 1)
+
+      - name: Install k6
+        run: |
+          curl https://github.com/grafana/k6/releases/download/v0.48.0/k6-v0.48.0-linux-amd64.tar.gz -L | tar xvz --strip-components 1
+          sudo mv k6 /usr/local/bin/
+
+      - name: Run k6 Performance Gate
+        id: k6
+        run: |
+          k6 run scripts/perf/k6-performance-gate.js
+        continue-on-error: true
+
+      - name: Upload k6 results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: k6-results
+          path: artifacts/k6-summary.json
+          retention-days: 14
+
+      - name: Check k6 exit code
+        if: steps.k6.outcome == 'failure'
+        run: |
+          echo "❌ Performance gate FAILED - thresholds violated"
+          echo "Check the k6 results artifact for details"
+          exit 1
+
+      - name: Performance gate passed
+        if: steps.k6.outcome == 'success'
+        run: |
+          echo "✅ Performance gate PASSED - all thresholds met"
+
+      - name: Stop dotnet app
+        if: always()
+        run: |
+          if [ -f /tmp/dotnet-app.pid ]; then
+            kill $(cat /tmp/dotnet-app.pid) || true
+          fi
+
