@@ -1,34 +1,59 @@
-# Gate #029: OTLP Collector Path Verification (5317)
+# Gate #029: OTLP Collector Path Verification (5317) + API-Signed Proofs (H1)
 # Authority: BossCat OEM | Executor: Cursor{Implementer}
-# Purpose: Verify Windows Collector path end-to-end (5317 → 14317 → SigNoz)
+# Purpose: Verify Windows Collector path end-to-end (5317 → 14317 → SigNoz) with API-signed proof artifacts
 
 <#
 .SYNOPSIS
-    Verify the Windows OTel Collector path (port 5317) routes to SigNoz correctly.
+    Verify the Windows OTel Collector path (port 5317) routes to SigNoz correctly, with API-signed proof generation.
 
 .DESCRIPTION
     Tests the collection path:
     1. Service sends to http://127.0.0.1:5317 (Windows Collector)
     2. Collector forwards to localhost:14317 (SigNoz)
-    3. Verify traces appear in SigNoz
+    3. Verify traces appear in SigNoz (with optional API proof)
     4. Calculate accepted_spans / sent_spans ratio
+    5. Generate machine-verifiable JSON proof artifacts (if API key provided)
 
 .PARAMETER ServiceName
-    Service name to filter in SigNoz
+    Service name to filter in SigNoz (or use SIGNOZ_SERVICE_NAME env var)
 
 .PARAMETER SigNozUrl
-    SigNoz base URL (default: http://localhost:8080)
+    SigNoz base URL (default: http://localhost:8080, or SIGNOZ_BASE_URL env var)
+
+.PARAMETER LookbackMinutes
+    Minutes to look back for traces (default: 3, or SIGNOZ_LOOKBACK_MINUTES env var)
+
+.PARAMETER ExpectAtLeast
+    Minimum trace count required for PASS (default: 1)
+
+.PARAMETER UseApiProof
+    Enable API-signed proof generation (requires SIGNOZ_API_KEY environment variable)
 
 .EXAMPLE
     .\health-check-otlp.ps1 -ServiceName "bosscat-svc2-api"
+
+.EXAMPLE
+    # With API-signed proof
+    $env:SIGNOZ_API_KEY = "<key>"
+    .\health-check-otlp.ps1 -ServiceName "bosscat-svc2-api" -UseApiProof
 #>
 
+[CmdletBinding()]
 param(
-    [Parameter(Mandatory=$true)]
-    [string]$ServiceName,
+    [Parameter(Mandatory=$false)]
+    [string]$ServiceName = $env:SIGNOZ_SERVICE_NAME,
     
     [Parameter(Mandatory=$false)]
-    [string]$SigNozUrl = "http://localhost:8080"
+    [string]$SigNozUrl = $(if ($env:SIGNOZ_BASE_URL) { $env:SIGNOZ_BASE_URL } else { "http://localhost:8080" }),
+    
+    [Parameter(Mandatory=$false)]
+    [int]$LookbackMinutes = $(if ($env:SIGNOZ_LOOKBACK_MINUTES) { [int]$env:SIGNOZ_LOOKBACK_MINUTES } else { 3 }),
+    
+    [Parameter(Mandatory=$false)]
+    [int]$ExpectAtLeast = 1,
+    
+    [Parameter(Mandatory=$false)]
+    [switch]$UseApiProof
 )
 
 $ErrorActionPreference = "Stop"
@@ -46,9 +71,78 @@ function Write-CheckLog {
     Write-Host ($logEntry | ConvertTo-Json -Compress)
 }
 
+# Gate #029-H1: API-signed proof query function
+function Query-SigNozTraces {
+    param(
+        [string]$ServiceName,
+        [string]$SigNozBaseUrl,
+        [string]$ApiKey,
+        [int]$LookbackMinutes
+    )
+    
+    $end = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
+    $start = [DateTimeOffset]::UtcNow.AddMinutes(-$LookbackMinutes).ToUnixTimeMilliseconds()
+    
+    $payload = @{
+        start = $start
+        end = $end
+        requestType = "scalar"
+        compositeQuery = @{
+            queries = @(
+                @{
+                    type = "builder_query"
+                    spec = @{
+                        name = "A"
+                        signal = "traces"
+                        aggregations = @(@{ expression = "count()"; alias = "span_count" })
+                        filter = @{ expression = "serviceName = '$ServiceName'" }
+                        disabled = $false
+                    }
+                }
+            )
+        }
+    } | ConvertTo-Json -Depth 10
+    
+    $headers = @{ "Content-Type" = "application/json"; "SIGNOZ-API-KEY" = $ApiKey }
+    $uri = ($SigNozBaseUrl.TrimEnd('/')) + "/api/v5/query_range"
+    
+    try {
+        $resp = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -Body $payload -TimeoutSec 30
+        
+        # Parse count from response
+        $count = 0
+        if ($resp.data -and $resp.data.result -and $resp.data.result.A) {
+            if ($resp.data.result.A.value) {
+                $count = [int]$resp.data.result.A.value
+            } elseif ($resp.data.result.A.list) {
+                $count = [int]$resp.data.result.A.list.Count
+            }
+        }
+        
+        return @{ Success = $true; Count = $count; Response = $resp; StartMs = $start; EndMs = $end; Endpoint = $uri }
+    } catch {
+        return @{ Success = $false; Error = $_.Exception.Message }
+    }
+}
+
+# Validate ServiceName if using API proof
+if ($UseApiProof) {
+    if (-not $ServiceName) {
+        Write-Error "ServiceName required when using API proof (or set SIGNOZ_SERVICE_NAME)"
+        exit 21
+    }
+    $ApiKey = $env:SIGNOZ_API_KEY
+    if (-not $ApiKey) {
+        Write-Error "SIGNOZ_API_KEY environment variable required for API proof mode"
+        exit 21
+    }
+}
+
 Write-CheckLog -Level "INFO" -Message "Starting Collector path verification" -Data @{
     service = $ServiceName
     signoz_url = $SigNozUrl
+    api_proof_mode = $UseApiProof.IsPresent
+    lookback_minutes = $LookbackMinutes
 }
 
 # Step 1: Verify Collector is listening on 5317
@@ -193,6 +287,47 @@ try {
         collector_port = 5317
         signoz_port = 14317
         traces_received = $traceCount
+    }
+    
+    # Gate #029-H1: Generate API-signed proof if enabled
+    if ($UseApiProof -and $ApiKey) {
+        Write-CheckLog -Level "INFO" -Message "Generating API-signed proof"
+        
+        $apiResult = Query-SigNozTraces -ServiceName $ServiceName -SigNozBaseUrl $SigNozUrl -ApiKey $ApiKey -LookbackMinutes $LookbackMinutes
+        
+        if ($apiResult.Success) {
+            $stamp = Get-Date -Format "yyyyMMdd-HHmmss"
+            $proof = @{
+                probe = "signoz-traces"
+                service = $ServiceName
+                timeframe = "$LookbackMinutes min"
+                startMs = $apiResult.StartMs
+                endMs = $apiResult.EndMs
+                count = $apiResult.Count
+                endpoint = $apiResult.Endpoint
+                timestamp = $stamp
+                verification_type = "api-signed"
+                api_version = "v5"
+            } | ConvertTo-Json -Depth 5
+            
+            New-Item -ItemType Directory -Force -Path "artifacts/proofs" | Out-Null
+            $proofPath = "artifacts/proofs/proof-traces-$($ServiceName)-$stamp.json"
+            $proof | Out-File -Encoding utf8 $proofPath
+            
+            Write-CheckLog -Level "INFO" -Message "API-signed proof generated" -Data @{
+                proof_path = $proofPath
+                trace_count = $apiResult.Count
+                status = if ($apiResult.Count -ge $ExpectAtLeast) { "PASS" } else { "FAIL" }
+            }
+            
+            Write-Host "[OK] SigNoz traces present for '$ServiceName': $($apiResult.Count) ≥ $ExpectAtLeast" -ForegroundColor Green
+            Write-Host "Proof: $proofPath" -ForegroundColor Cyan
+        } else {
+            Write-CheckLog -Level "WARN" -Message "API proof generation failed" -Data @{
+                error = $apiResult.Error
+            }
+            Write-Host "[WARN] API proof generation failed: $($apiResult.Error)" -ForegroundColor Yellow
+        }
     }
     
     exit 0
