@@ -48,24 +48,24 @@ try {
   $grpcTest = Test-NetConnection -ComputerName $AggregatorHost -Port $GrpcPort -WarningAction SilentlyContinue -InformationLevel Quiet
   if ($grpcTest) {
     $grpcReachable = $true
-    Write-Host "  ✓ gRPC port $GrpcPort: REACHABLE" -ForegroundColor Green
+    Write-Host "  [OK] gRPC port ${GrpcPort}: REACHABLE" -ForegroundColor Green
   }
 } catch {
-  Write-Host "  ✗ gRPC port $GrpcPort: UNREACHABLE" -ForegroundColor Yellow
+  Write-Host "  [FAIL] gRPC port ${GrpcPort}: UNREACHABLE" -ForegroundColor Yellow
 }
 
 try {
   $httpTest = Test-NetConnection -ComputerName $AggregatorHost -Port $HttpPort -WarningAction SilentlyContinue -InformationLevel Quiet
   if ($httpTest) {
     $httpReachable = $true
-    Write-Host "  ✓ HTTP port $HttpPort: REACHABLE" -ForegroundColor Green
+    Write-Host "  [OK] HTTP port ${HttpPort}: REACHABLE" -ForegroundColor Green
   }
 } catch {
-  Write-Host "  ✗ HTTP port $HttpPort: UNREACHABLE" -ForegroundColor Yellow
+  Write-Host "  [FAIL] HTTP port ${HttpPort}: UNREACHABLE" -ForegroundColor Yellow
 }
 
 if (-not ($grpcReachable -or $httpReachable)) {
-  Write-Error "Aggregator not reachable on $AggregatorHost:$GrpcPort or :$HttpPort"
+  Write-Error "Aggregator not reachable on ${AggregatorHost}:${GrpcPort} or :${HttpPort}"
   Write-Host ""
   Write-Host "  Troubleshooting:" -ForegroundColor Yellow
   Write-Host "  - Ensure Docker containers are running: docker ps" -ForegroundColor Gray

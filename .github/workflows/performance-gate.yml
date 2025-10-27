@@ -1,0 +1,93 @@
+# Gate #026 Track B: CI Performance Gates
+# Authority: BossCat OEM | Executor: Cursor{Implementer}
+# Purpose: Block promotion on performance threshold breach
+
+name: Performance Gate (k6)
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: perf-gate-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  performance-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Start Services
+        run: |
+          echo "Starting test environment..."
+          docker compose up -d --wait
+      
+      - name: Synthetic Trace Injection (Pre-flight)
+        run: |
+          echo "Injecting synthetic trace to verify telemetry..."
+          curl -X POST http://localhost:14318/v1/traces \
+            -H 'Content-Type: application/json' \
+            -d '{
+              "resourceSpans": [{
+                "resource": {
+                  "attributes": [{
+                    "key": "service.name",
+                    "value": {"stringValue": "ci-synthetic-test"}
+                  }]
+                },
+                "scopeSpans": [{
+                  "spans": [{
+                    "traceId": "00000000000000000000000000000001",
+                    "spanId": "0000000000000001",
+                    "name": "ci-pre-flight",
+                    "startTimeUnixNano": "1698000000000000000",
+                    "endTimeUnixNano": "1698000001000000000"
+                  }]
+                }]
+              }]
+            }'
+          echo "Pre-flight trace sent"
+      
+      - name: Run k6 Load Test with Thresholds
+        uses: grafana/k6-action@v0.3.1
+        with:
+          filename: scripts/perf/k6-performance-gate.js
+          flags: --out json=artifacts/k6-results.json
+        continue-on-error: true
+        id: k6
+      
+      - name: Check Thresholds
+        run: |
+          if [ ${{ steps.k6.outcome }} == 'failure' ]; then
+            echo "::error::Performance gate FAILED - thresholds breached"
+            exit 1
+          fi
+          echo "::notice::Performance gate PASSED"
+      
+      - name: Upload Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-gate-results
+          path: artifacts/k6-results.json
+          retention-days: 14
+      
+      - name: Job Summary
+        if: always()
+        run: |
+          {
+            echo '### Performance Gate - Run Summary';
+            echo '';
+            echo "**Workflow:** ${{ github.workflow }}";
+            echo "**Run:** #${{ github.run_number }}";
+            echo "**Status:** ${{ job.status }}";
+            echo "**k6 Outcome:** ${{ steps.k6.outcome }}";
+            echo '';
+            echo '[View full run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})';
+          } >> "$GITHUB_STEP_SUMMARY"
+
