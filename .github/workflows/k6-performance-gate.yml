@@ -12,6 +12,8 @@ on:
 
 jobs:
   k6-load-test:
+    # Skip workflow if BASE_URL not set (prevents noisy failures when no test target exists)
+    if: ${{ vars.BASE_URL != '' || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     
     steps:
