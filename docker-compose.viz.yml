@@ -128,7 +128,7 @@ services:
       - "8090:8080"  # Milk viewer HTTP (host 8090 -> container 8080)
     environment:
       - DISPLAY=:99
-      - GEOMETRY=1920x1080
+      - GEOMETRY=1280x720  # Reduced from 1920x1080 to lower CPU load (44% fewer pixels)
       - FPS=30
     # Share X11 socket via bind mount from host
     volumes:
