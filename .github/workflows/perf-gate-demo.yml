@@ -1,0 +1,124 @@
+name: Performance Gate - Investor Demo
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/demo/**'
+      - 'scripts/perf/k6-investor-demo.js'
+      - '.github/workflows/perf-gate-demo.yml'
+  workflow_dispatch:
+    inputs:
+      duration:
+        description: 'Test duration'
+        required: false
+        default: '1m'
+
+# ALFA Pattern: Concurrency control
+concurrency:
+  group: perf-gate-demo-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  performance-gate:
+    name: k6 Performance Gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup k6
+        uses: grafana/setup-k6-action@v1
+        with:
+          k6-version: 'latest'
+
+      - name: Start demo services (mock)
+        run: |
+          # In CI, use mock endpoints or deployed services
+          # For actual demo, point to running Windows services
+          echo "Demo services: Using localhost endpoints"
+          echo "SVC2_URL=http://localhost:5556" >> $GITHUB_ENV
+          echo "SVC3_URL=http://localhost:5557" >> $GITHUB_ENV
+
+      - name: Run k6 performance test
+        id: k6-test
+        run: |
+          k6 run scripts/perf/k6-investor-demo.js \
+            --out json=artifacts/demo/k6-output.json \
+            --summary-export=artifacts/demo/k6-summary.json \
+            || echo "k6_exit_code=$?" >> $GITHUB_ENV
+        continue-on-error: true
+
+      - name: Parse k6 results
+        id: parse-results
+        run: |
+          if [ -f artifacts/demo/k6-demo-results.json ]; then
+            verdict=$(jq -r '.verdict' artifacts/demo/k6-demo-results.json)
+            p95=$(jq -r '.metrics.p95_latency_ms' artifacts/demo/k6-demo-results.json)
+            errors=$(jq -r '.metrics.error_rate' artifacts/demo/k6-demo-results.json)
+            
+            echo "verdict=$verdict" >> $GITHUB_OUTPUT
+            echo "p95=$p95" >> $GITHUB_OUTPUT
+            echo "error_rate=$errors" >> $GITHUB_OUTPUT
+            
+            # Set badge color
+            if [ "$verdict" = "GREEN" ]; then
+              echo "badge_color=success" >> $GITHUB_OUTPUT
+            else
+              echo "badge_color=critical" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "verdict=UNKNOWN" >> $GITHUB_OUTPUT
+            echo "badge_color=inactive" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Upload k6 results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: k6-performance-results
+          path: artifacts/demo/k6-*.json
+          retention-days: 14  # BRAV Pattern
+
+      - name: Generate performance badge
+        if: always()
+        run: |
+          verdict="${{ steps.parse-results.outputs.verdict }}"
+          p95="${{ steps.parse-results.outputs.p95 }}"
+          
+          echo "### Performance Gate: $verdict" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**P95 Latency:** ${p95}ms (threshold: <300ms)" >> $GITHUB_STEP_SUMMARY
+          echo "**Error Rate:** ${{ steps.parse-results.outputs.error_rate }}% (threshold: <1%)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "$verdict" = "GREEN" ]; then
+            echo "✅ **PASS** - All thresholds met" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ **FAIL** - Thresholds breached" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Job Summary (CHAR Pattern)
+        if: always()
+        run: |
+          {
+            echo '### ${{ github.workflow }} - Run Summary';
+            echo '';
+            echo "**Workflow:** ${{ github.workflow }}";
+            echo "**Run:** #${{ github.run_number }} (attempt ${{ github.run_attempt }})";
+            echo "**Ref:** \`${{ github.ref }}\`";
+            echo "**Actor:** @${{ github.actor }}";
+            echo "**Status:** ${{ job.status }}";
+            echo "**Verdict:** ${{ steps.parse-results.outputs.verdict }}";
+            echo '';
+            echo '[View full run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})';
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Fail on threshold breach
+        if: steps.parse-results.outputs.verdict != 'GREEN'
+        run: |
+          echo "❌ Performance gate FAILED - thresholds breached"
+          echo "   Review k6 results artifact for details"
+          exit 1
+
