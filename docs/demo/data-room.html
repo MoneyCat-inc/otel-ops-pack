@@ -526,6 +526,17 @@
             }
         }
 
+        // Fetch live metrics from visual stack
+        async function fetchMetrics() {
+            const success = await fetchLiveMetrics();
+            if (success) {
+                console.log('Metrics updated:', mockMetrics);
+            } else {
+                console.warn('Metrics fetch failed, using fallback values');
+            }
+            updateMetrics();
+        }
+
         // Update metrics display
         function updateMetrics() {
             document.getElementById('metric-rps').textContent = mockMetrics.rps;
