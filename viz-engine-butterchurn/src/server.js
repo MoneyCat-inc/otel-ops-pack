@@ -515,6 +515,31 @@ function broadcast(data) {
 const server = app.listen(port, async () => {
   console.log(`[viz-engine] Control API listening on port ${port}`);
   await initBrowser();
+  console.log(`[viz-engine] Ready at ${config.width}x${config.height} @ ${config.fps}fps`);
+  
+  // Auto-load first preset from library for investor demo
+  try {
+    console.log('[viz-engine] Auto-loading starter preset...');
+    const result = await page.evaluate(() => {
+      if (window.butterchurnPresets && window.visualizer) {
+        const presetsLib = window.butterchurnPresets.default || window.butterchurnPresets;
+        const presets = presetsLib.getPresets();
+        const presetNames = Object.keys(presets);
+        if (presetNames.length > 0) {
+          const firstPreset = presets[presetNames[0]];
+          window.visualizer.loadPreset(firstPreset, 0);
+          return { ok: true, preset: presetNames[0] };
+        }
+      }
+      return { ok: false };
+    });
+    if (result.ok) {
+      currentPreset = result.preset;
+      console.log(`[viz-engine] Loaded preset: ${currentPreset}`);
+    }
+  } catch (err) {
+    console.warn('[viz-engine] Preset auto-load failed:', err.message);
+  }
 });
 
 server.on('upgrade', (request, socket, head) => {
