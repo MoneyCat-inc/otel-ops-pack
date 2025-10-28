@@ -1,0 +1,46 @@
+{
+  "timestamp": "2025-10-28T15:51:00Z",
+  "phase": "PRE_GPU_BASELINE",
+  "description": "Performance metrics before GPU acceleration (Mesa/Xvfb software rendering)",
+  "system": {
+    "host_os": "Windows 10 (Build 26220)",
+    "docker_runtime": "nvidia (available but not utilized)",
+    "gpu_hardware": "NVIDIA GeForce RTX 2080 SUPER",
+    "gpu_driver": "535+ (host)",
+    "container_runtime": "Mesa/llvmpipe (software)"
+  },
+  "container": {
+    "name": "otel-pm-engine-3",
+    "image": "bosscat/viz-engine-projectm:latest",
+    "display": ":99 (Xvfb)",
+    "x_server": "Xvfb (CPU-only virtual framebuffer)"
+  },
+  "opengl": {
+    "vendor": "Mesa",
+    "renderer": "llvmpipe (LLVM 15.0.7, 256 bits)",
+    "version": "4.5 (Compatibility Profile) Mesa 23.2.1",
+    "acceleration": "Software (CPU)",
+    "note": "Xvfb does not support GPU passthrough without VirtualGL"
+  },
+  "performance": {
+    "cpu_percent": "1016.87%",
+    "memory_usage": "148.5 MiB / 15.58 GiB",
+    "stream_quality": "Pausing under load",
+    "fps_stability": "Variable (15 target, actual <10 during load)",
+    "bottleneck": "CPU-bound rendering (10+ cores saturated)"
+  },
+  "target_improvement": {
+    "cpu_percent": "<100% (10x reduction)",
+    "opengl_vendor": "NVIDIA Corporation",
+    "stream_quality": "Smooth, no pausing",
+    "fps_stability": "Stable 30 FPS"
+  },
+  "gate_decision": {
+    "track_a_demo": "GREEN - locked for investor presentation",
+    "track_b_gpu": "APPROVED - post-demo implementation",
+    "methodology": "ECRR with evidence trail",
+    "budget": "<=2 jobs, <=10 files, <=200 LOC"
+  },
+  "authority": "BossCat OEM",
+  "executor": "Cursor{Implementer}"
+}

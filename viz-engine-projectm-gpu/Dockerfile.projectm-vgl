@@ -1,0 +1,73 @@
+# Dockerfile.projectm-vgl
+# GPU-accelerated ProjectM with VirtualGL bridging
+# 
+# ARCHITECTURE:
+#   Xvfb :99 (2D X server for app compatibility)
+#   VirtualGL (intercepts GLX, routes to GPU X server :0)
+#   ProjectM (renders on GPU via VirtualGL)
+#
+# REQUIREMENTS:
+#   Host: Ubuntu 22.04+ with NVIDIA driver + Container Toolkit
+#   Host: Headless Xorg :0 on GPU (see docs/gpu/RUN_AND_VERIFY.md)
+#
+# USAGE:
+#   docker build -f Dockerfile.projectm-vgl -t bosscat/viz-engine-projectm-gpu:latest .
+#   docker run --gpus all --runtime nvidia \
+#     -e NVIDIA_VISIBLE_DEVICES=all \
+#     -e NVIDIA_DRIVER_CAPABILITIES=graphics,utility,video \
+#     -e DISPLAY=:99 -e VGL_DISPLAY=:0 \
+#     -v /tmp/.X11-unix:/tmp/.X11-unix \
+#     -p 8090:8090 \
+#     bosscat/viz-engine-projectm-gpu:latest
+#
+# Authority: BossCat OEM | Executor: Cursor{Implementer}
+
+FROM nvidia/opengl:1.2-glvnd-runtime-ubuntu22.04
+
+LABEL maintainer="BossCat OEM"
+LABEL version="1.0.0-gpu"
+LABEL description="ProjectM with NVIDIA GPU acceleration via VirtualGL"
+
+# Install runtime dependencies
+# NOTE: Do NOT apt-install nvidia-* drivers - NVIDIA Container Toolkit injects them
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    # VirtualGL for GPU bridging
+    virtualgl \
+    # X server components
+    xvfb x11-xserver-utils x11-utils \
+    # OpenGL utilities (for verification)
+    mesa-utils \
+    # ProjectM
+    projectm-pulseaudio projectm-data \
+    # Audio
+    pulseaudio \
+    # Utilities
+    curl ca-certificates procps \
+    && rm -rf /var/lib/apt/lists/*
+
+# Preset directory
+RUN mkdir -p /app/presets /dev/shm
+COPY presets/*.milk /app/presets/ 2>/dev/null || echo "No presets copied (OK)"
+
+# Entrypoint script
+COPY docker/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Environment defaults
+ENV DISPLAY=:99
+ENV VGL_DISPLAY=:0
+ENV PM_WIDTH=1280
+ENV PM_HEIGHT=720
+ENV PM_FPS=30
+ENV PM_PRESET_DIR=/app/presets
+ENV PM_FIFO=/dev/shm/md3.pcm
+
+# Health check (verify Xvfb is running)
+HEALTHCHECK --interval=15s --timeout=5s --start-period=10s --retries=3 \
+  CMD xdpyinfo -display :99 >/dev/null 2>&1 || exit 1
+
+EXPOSE 8090
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["projectm"]
+
