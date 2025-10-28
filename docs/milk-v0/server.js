@@ -51,9 +51,12 @@ setInterval(() => {
 app.get('/milk.mjpg', async (req, res) => {
   // Limit concurrent streams to prevent accumulation
   if (activeStreams >= MAX_STREAMS) {
+    console.log(`[milk] Stream rejected: ${activeStreams}/${MAX_STREAMS} active`);
     res.status(503).send('Too many active streams, please retry');
     return;
   }
+  
+  console.log(`[milk] New stream started (${activeStreams + 1}/${MAX_STREAMS})`);
 
   const boundary = 'md3frame';
   res.writeHead(200, {
@@ -72,6 +75,7 @@ app.get('/milk.mjpg', async (req, res) => {
     cleaned = true;
     activeStreams--;
     if (interval) clearInterval(interval);
+    console.log(`[milk] Stream ended (${activeStreams}/${MAX_STREAMS} remaining)`);
     try { res.end(); } catch (e) {}
   };
 
