@@ -20,10 +20,9 @@ if (-not (Test-Path $fullOutputDir)) {
 }
 
 $bundlePath = Join-Path $fullOutputDir $BundleName
-$tempDir = Join-Path $env:TEMP "investor-demo-bundle-$(Get-Date -Ticks)"
+$tempDir = Join-Path $env:TEMP "investor-demo-bundle-$((Get-Date).Ticks)"
 
 Write-Host "[1/6] Creating temporary staging directory..." -ForegroundColor White
-$tempDir = Join-Path $env:TEMP "investor-demo-bundle-$((Get-Date).Ticks)"
 New-Item -ItemType Directory -Path $tempDir -Force | Out-Null
 Write-Host "   → $tempDir" -ForegroundColor Gray
 
