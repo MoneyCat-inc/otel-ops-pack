@@ -50,6 +50,11 @@ app.get('/milk.mjpg', (req, res) => {
     '-c:v', 'mjpeg',
     '-q:v', '15',  // Fast streaming quality
     '-huffman', 'optimal',
+    '-pix_fmt', 'yuvj420p',  // MJPEG color space
+    '-vsync', 'cfr',  // Constant frame rate (drop/duplicate to maintain timing)
+    '-r', FPS,  // Output frame rate
+    '-bufsize', '1M',  // 1MB buffer for smoother delivery
+    '-maxrate', '10M',  // Max bitrate cap
     '-f', 'mpjpeg',
     '-boundary_tag', boundary,
     'pipe:1'
