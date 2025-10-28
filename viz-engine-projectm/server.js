@@ -172,13 +172,16 @@ function startGuardMonitoring() {
         };
         
         // Gate #020: Feed KPIs to canary deployment (every 10 ticks ≈ 1 second)
+        // GATE-020-R1: Await async tick() for cluster coordination
         if (canaryDeployment && totalGuardTicks % 10 === 0) {
           const kpis = {
             underrunRatio: 0.0,  // Placeholder: would get from audio buffer
             tickJitterMs: frameTimingStabilizer.getStats().jitterMaxMs || 0,
             correlation: 0.95  // Placeholder: would get from audio validation
           };
-          canaryDeployment.tick(kpis);
+          canaryDeployment.tick(kpis).catch((err) => {
+            console.error('[guard-timer] Canary tick failed:', err);
+          });
         }
       })
       .catch((err) => {
@@ -538,23 +541,25 @@ app.get('/canary/status', (req, res) => {
 });
 
 // POST /canary/halt - Emergency canary halt
-app.post('/canary/halt', (req, res) => {
+// GATE-020-R1: Async handler for cluster coordination
+app.post('/canary/halt', async (req, res) => {
   if (!canaryDeployment) {
     return res.status(404).json({ ok: false, error: 'Canary not enabled' });
   }
   
-  const result = canaryDeployment.emergencyStop();
+  const result = await canaryDeployment.emergencyStop();
   res.json({ ok: true, ...result });
 });
 
 // POST /canary/reset - Reset canary deployment (BOSSCAT-021A)
-app.post('/canary/reset', (req, res) => {
+// GATE-020-R1: Async handler for cluster coordination
+app.post('/canary/reset', async (req, res) => {
   if (!canaryDeployment) {
     return res.status(404).json({ ok: false, error: 'Canary not enabled' });
   }
   
-  canaryDeployment.reset();
-  res.json({ ok: true, message: 'Canary reset - halted state cleared, audio re-enabled' });
+  await canaryDeployment.reset();
+  res.json({ ok: true, message: 'Canary reset - halted state cleared, audio re-enabled (cluster-wide)' });
 });
 
 // Start HTTP server (Job 2 complete)
