@@ -86,9 +86,17 @@ app.get('/milk.mjpg', async (req, res) => {
       lastFrameTime = now;
 
       const response = await fetch('http://md3-engine:7001/snap.jpg');
-      if (!response.ok) throw new Error(`md3-engine returned ${response.status}`);
+      if (!response.ok) {
+        console.error(`[milk] md3-engine returned ${response.status}`);
+        return; // Skip this frame, try again next interval
+      }
       
       const buffer = await response.arrayBuffer();
+      if (!buffer || buffer.byteLength === 0) {
+        console.error('[milk] Empty frame from md3-engine');
+        return;
+      }
+      
       const frame = Buffer.from(buffer);
       
       // Write MJPEG frame with boundary
@@ -100,7 +108,7 @@ app.get('/milk.mjpg', async (req, res) => {
       res.write('\r\n');
     } catch (err) {
       console.error('[milk] Frame fetch error:', err.message);
-      cleanup();
+      // Don't cleanup on single frame errors, just skip and retry
     }
   };
 
