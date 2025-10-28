@@ -49,6 +49,17 @@ let stats = {
 app.use(express.json());
 app.use(express.static('public'));
 
+// CORS middleware for investor demo (Data Room fetch from port 3000)
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  next();
+});
+
 // Serve renderer.html (CRITICAL: serve via HTTP for CDN scripts to load)
 const path = require('path');
 app.get('/renderer.html', (req, res) => {
