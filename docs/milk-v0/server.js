@@ -38,7 +38,8 @@ app.get('/milk.mjpg', (req, res) => {
     '-vf', `fps=${FPS}`,
     '-an',
     '-c:v', 'mjpeg',
-    '-q:v', '5',
+    '-q:v', '15',  // Increased from 5 (near-lossless) to 15 (fast, good quality for streaming)
+    '-huffman', 'optimal',  // Better compression without CPU overhead
     '-f', 'mpjpeg',
     '-boundary_tag', boundary,
     'pipe:1'
