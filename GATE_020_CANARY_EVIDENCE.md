@@ -385,5 +385,73 @@ Rationale:
 **Authority:** Fubumaki (Repository Owner)  
 **Executor:** Cursor{Implementer}
 
-🐾 *Gate #020-R1 remediation complete. Canary now honors Gate #023 cluster architecture. Rollback script hardened for multi-replica deployments.*
+---
+
+## 🔧 GATE-020-R1B Iteration (2025-10-28)
+
+**Additional Blockers:** 2 issues found in R1 remediation
+
+### Blocker #3: Rollback Fleet-Wide Guarantee Broken ⚠️ HIGH
+
+**Issue:** `rollback-audio.ps1:25` only used `$containers[0]` (first replica). Fallback path wrote audio-state.json to single container (line 78), restart only hit one container (line 95). Remaining replicas continued with audio enabled.
+
+**Impact:** Fleet-wide rollback guarantee broken when admin API unavailable.
+
+**Fix (Job R1B-A - 37 LOC):**
+- ✅ Lines 19-44: Capture `$allContainers` array (all replicas, not just first)
+- ✅ Lines 68-96: Loop over all containers for `docker exec` (write state file to each)
+- ✅ Lines 100-124: Loop over all containers for `docker restart` (restart each)
+- ✅ Added failure tracking and helpful error messages
+
+**Result:** Rollback script now affects all replicas in both fallback and restart paths.
+
+---
+
+### Blocker #4: Unhandled Promise Rejection in onBreach ⚠️ MEDIUM
+
+**Issue:** `server.js:88` called `audioSwitch.disable()` synchronously, but it's now async (returns promise). Try/catch doesn't handle promise rejection. Causes unhandled rejection, potentially terminating Node process.
+
+**Impact:** Redis network hiccup during breach handling could crash pm-engine.
+
+**Analysis:** Call was redundant—`CanaryDeployment.halt()` already awaits `audioSwitch.disable()`. Duplicate call unnecessary and risky.
+
+**Fix (Job R1B-B - 15 LOC removed):**
+- ✅ Lines 86-92: Removed redundant `audioSwitch.disable()` call
+- ✅ Added comment explaining why (already handled in `halt()`)
+
+**Result:** No unhandled promise rejections, cleaner code path.
+
+---
+
+### Budget Status (R1B)
+
+| Iteration | LOC | Status |
+|-----------|-----|--------|
+| R1A: Cluster façade | 10 | ✅ Complete |
+| R1B: Rollback script | 24 | ✅ Complete |
+| R1B-A: Fleet-wide rollback | 37 | ✅ Complete |
+| R1B-B: Remove redundant call | -15 | ✅ Complete |
+| **Total R1 + R1B** | **56 net (+71 gross)** | ✅ Within 100 LOC budget |
+
+**Files Modified (R1B):**
+1. `scripts/rollback-audio.ps1` (+37 net: all-replicas loops)
+2. `viz-engine-projectm/server.js` (-15: removed redundant call)
+
+---
+
+### Remediation Status (R1B)
+
+**Status:** ✅ **COMPLETE**  
+**Confidence:** HIGH (all 4 blockers resolved)  
+**Manual Validation:** Still environment-dependent (unchanged)  
+**Recommendation:** Update gate status to **GREEN-R1B** (fully remediated, ready for manual validation)
+
+---
+
+**R1B Commit:** 6106d0bd1  
+**R1B Date:** 2025-10-28  
+**Authority:** Fubumaki (Repository Owner)  
+**Executor:** Cursor{Implementer}
+
+🐾 *Gate #020-R1B iteration complete. Fleet-wide rollback guarantee restored. Unhandled promise rejection eliminated. All blockers resolved.*
 
