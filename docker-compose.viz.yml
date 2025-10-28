@@ -64,10 +64,10 @@ services:
     ports:
       - "7010:7010"  # Metrics API (Prometheus + validation)
     environment:
-      - FRAME_TAP_URL=http://md3-engine:7001/snap.jpg
-      - VIZ_ENGINE_URL=http://md3-engine:7001
+      - FRAME_TAP_URL=http://pm-engine:7020/snap.jpg  # Use pm-engine (active renderer)
+      - VIZ_ENGINE_URL=http://pm-engine:7020
       - METRICS_PORT=7010
-      - SAMPLE_INTERVAL_MS=1000
+      - SAMPLE_INTERVAL_MS=2000  # Reduced frequency to lighten CPU load
       - FAIL_ON_SKEW=true
       - FAIL_ON_BLACKOUT=false  # Gate #012: Will enable after visual validation
     depends_on:
