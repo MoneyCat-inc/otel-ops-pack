@@ -58,18 +58,37 @@ if (-not $DryRun) {
 
 Write-Host ""
 
-# Step 3: Open demo interfaces
-Write-Host "[3/5] Opening demo interfaces..." -ForegroundColor White
+# Step 3: Start Data Room HTTP server (for CORS-free metrics)
+Write-Host "[3/5] Starting Data Room HTTP server..." -ForegroundColor White
 
 if (-not $DryRun) {
+    # Check if server already running
+    $serverRunning = $false
+    try {
+        $test = Invoke-WebRequest -Uri "http://localhost:3000" -UseBasicParsing -TimeoutSec 1 -ErrorAction Stop
+        $serverRunning = $true
+    } catch {}
+    
+    if (-not $serverRunning) {
+        Write-Host "   → Starting http-server on port 3000..." -ForegroundColor Gray
+        $dataRoomJob = Start-Job -ScriptBlock {
+            Set-Location C:\otel\docs\demo
+            npx --yes http-server . -p 3000 --cors --silent
+        }
+        Write-Host "   → Data Room server starting (job: $($dataRoomJob.Id))" -ForegroundColor Gray
+        Start-Sleep -Seconds 3
+        Write-Host "   ✅ Data Room HTTP server running" -ForegroundColor Green
+    } else {
+        Write-Host "   ✅ Data Room server already running on port 3000" -ForegroundColor Green
+    }
+    Write-Host ""
+    Write-Host "   → Opening demo interfaces..." -ForegroundColor Gray
     Start-Process "http://localhost:8080" # SigNoz
     Start-Sleep -Milliseconds 500
-    Start-Process "file:///C:/otel/docs/demo/dashboard.html" # Executive Dashboard
-    Start-Sleep -Milliseconds 500
-    Start-Process "file:///C:/otel/docs/demo/data-room.html" # Data Room
-    Write-Host "   ✅ Opened: SigNoz, Dashboard, Data Room" -ForegroundColor Green
+    Start-Process "http://localhost:3000/data-room.html" # Data Room (HTTP, not file://)
+    Write-Host "   ✅ Opened: SigNoz, Data Room" -ForegroundColor Green
 } else {
-    Write-Host "   [DRY RUN] Would open: SigNoz, Dashboard, Data Room" -ForegroundColor Gray
+    Write-Host "   [DRY RUN] Would start HTTP server and open UIs" -ForegroundColor Gray
 }
 
 Write-Host ""
