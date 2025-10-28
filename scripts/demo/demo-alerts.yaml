@@ -1,0 +1,123 @@
+# Investor Demo: Alert Configuration
+# Authority: BossCat OEM | Executor: Cursor{Implementer}
+# Phase 3: Alert rules for demo scenarios
+#
+# Integration: SigNoz Alert Manager or standalone Prometheus AlertManager
+# Purpose: Fire alerts on chaos scenarios for investor visibility
+
+# Alert Rules
+groups:
+  - name: investor_demo_performance
+    interval: 10s
+    rules:
+      # P95 Latency Threshold
+      - alert: HighLatency
+        expr: histogram_quantile(0.95, http_server_duration_milliseconds_bucket) > 300
+        for: 30s
+        labels:
+          severity: warning
+          demo: investor
+          category: performance
+        annotations:
+          summary: "P95 latency exceeded threshold"
+          description: "P95 latency is {{ $value }}ms (threshold: 300ms)"
+          action: "Check traces in SigNoz for slow spans"
+
+      # Error Rate Threshold
+      - alert: HighErrorRate
+        expr: rate(http_server_requests_total{status=~"5.."}[1m]) > 0.01
+        for: 30s
+        labels:
+          severity: critical
+          demo: investor
+          category: availability
+        annotations:
+          summary: "Error rate exceeded 1%"
+          description: "Error rate is {{ $value | humanizePercentage }}"
+          action: "Investigate error logs and traces in SigNoz"
+
+      # Throughput Drop
+      - alert: ThroughputDrop
+        expr: rate(http_server_requests_total[1m]) < 5
+        for: 1m
+        labels:
+          severity: warning
+          demo: investor
+          category: traffic
+        annotations:
+          summary: "Request throughput below baseline"
+          description: "Current RPS: {{ $value }} (baseline: 10 RPS)"
+          action: "Check service health and upstream traffic"
+
+  - name: investor_demo_chaos
+    interval: 10s
+    rules:
+      # Network Delay Detected
+      - alert: NetworkDelayInjected
+        expr: histogram_quantile(0.95, http_client_duration_milliseconds_bucket{service="bosscat-svc2-api"}) > 400
+        for: 20s
+        labels:
+          severity: info
+          demo: investor
+          category: chaos
+        annotations:
+          summary: "Network delay chaos scenario active"
+          description: "HttpClient P95 latency: {{ $value }}ms"
+          action: "Demo scenario - network delay injected"
+
+      # Service Down Detected
+      - alert: ServiceUnavailable
+        expr: up{service=~"bosscat-svc.*"} == 0
+        for: 10s
+        labels:
+          severity: critical
+          demo: investor
+          category: chaos
+        annotations:
+          summary: "Service down chaos scenario active"
+          description: "Service {{ $labels.service }} is unavailable"
+          action: "Demo scenario - service failure injected"
+
+  - name: investor_demo_compliance
+    interval: 30s
+    rules:
+      # ECRR Violation (Budget Overrun)
+      - alert: BudgetOverrun
+        expr: ecrr_budget_loc_used / ecrr_budget_loc_limit > 1.0
+        for: 1m
+        labels:
+          severity: warning
+          demo: investor
+          category: governance
+        annotations:
+          summary: "ECRR budget limit exceeded"
+          description: "LOC used: {{ $value | humanizePercentage }} of limit"
+          action: "Review job scope and split into smaller units"
+
+# Receivers (demo-friendly outputs)
+receivers:
+  - name: console_log
+    type: stdout
+    config:
+      format: "[ALERT] {{ .Annotations.summary }}"
+
+  - name: demo_webhook
+    type: webhook
+    config:
+      url: "http://localhost:7020/admin/alerts"
+      method: POST
+      headers:
+        Content-Type: application/json
+
+# Routes
+routes:
+  - match:
+      demo: investor
+    receiver: console_log
+    continue: true
+
+  - match:
+      severity: critical
+    receiver: demo_webhook
+    continue: false
+
