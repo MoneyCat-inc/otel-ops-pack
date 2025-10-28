@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; connect-src 'self' http://localhost:* ws://localhost:*; img-src 'self' data:; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'">
+  <title>Visualizer - Evidence-as-Code | BossCat</title>
+  <link rel="stylesheet" href="../assets/status.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav>
+    <a href="../index.html">Home</a>
+    <a href="../status.html">Status</a>
+    <a href="index.html" style="font-weight: 600;">Visualizer</a>
+    <a href="http://localhost:8080" target="_blank">SigNoz</a>
+  </nav>
+
+  <div class="dashboard-container">
+    <h1>🔭 Visualizer - Evidence-as-Code</h1>
+    
+    <div class="controls-bar">
+      <label>
+        <span>Service:</span>
+        <select id="service-picker">
+          <option value="iona-app" selected>iona-app</option>
+          <option value="bosscat-svc2-api">bosscat-svc2-api</option>
+          <option value="bosscat-026a-dotnet">bosscat-026a-dotnet</option>
+        </select>
+      </label>
+      
+      <label>
+        <span>Time Range:</span>
+        <select id="time-range">
+          <option value="15">Last 15 minutes</option>
+          <option value="60" selected>Last 1 hour</option>
+          <option value="1440">Last 24 hours</option>
+        </select>
+      </label>
+      
+      <button id="run-proof-btn" class="btn-primary">
+        <span id="proof-status">▶</span> Run Proof
+      </button>
+      
+      <button id="refresh-btn" class="btn-secondary">
+        🔄 Refresh
+      </button>
+    </div>
+
+    <div class="grid-4">
+      <!-- Traces Panel -->
+      <div class="panel traces-panel">
+        <h2>📊 Traces</h2>
+        <div class="panel-content" id="traces-content">
+          <div class="metric-card">
+            <div class="metric-label">Count</div>
+            <div class="metric-value" id="traces-count">—</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Last Seen</div>
+            <div class="metric-value small" id="traces-timestamp">—</div>
+          </div>
+          <div class="status-badge" id="traces-status">PENDING</div>
+        </div>
+      </div>
+
+      <!-- Logs Panel -->
+      <div class="panel logs-panel">
+        <h2>📝 Logs</h2>
+        <div class="panel-content" id="logs-content">
+          <div class="metric-card">
+            <div class="metric-label">Count</div>
+            <div class="metric-value" id="logs-count">—</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Last Seen</div>
+            <div class="metric-value small" id="logs-timestamp">—</div>
+          </div>
+          <div class="status-badge" id="logs-status">PENDING</div>
+        </div>
+      </div>
+
+      <!-- Metrics Panel (Placeholder for Phase 2) -->
+      <div class="panel metrics-panel">
+        <h2>📈 Metrics</h2>
+        <div class="panel-content" id="metrics-content">
+          <div class="metric-card">
+            <div class="metric-label">Status</div>
+            <div class="metric-value" id="metrics-count">Phase 2</div>
+          </div>
+          <div class="info-message">
+            Metrics panel coming in Gate #032 (Phase 2)
+          </div>
+          <div class="status-badge amber">PLANNED</div>
+        </div>
+      </div>
+
+      <!-- Health Panel -->
+      <div class="panel health-panel">
+        <h2>💚 Health</h2>
+        <div class="panel-content" id="health-content">
+          <div class="metric-card">
+            <div class="metric-label">Pipeline</div>
+            <div class="metric-value" id="health-pipeline">—</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Collector</div>
+            <div class="metric-value" id="health-collector">—</div>
+          </div>
+          <div class="status-badge" id="health-status">PENDING</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ICF Panel (Phase 1 - Lightweight) -->
+    <div class="panel icf-panel">
+      <h2>🎯 ICF - Last 5 Improvement Actions</h2>
+      <div class="panel-content" id="icf-content">
+        <div id="icf-actions" class="info-message">Run proof to load ICF data...</div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <p>
+        Gate #031 (Phase 1 MVP) | 
+        <a href="README.md">Documentation</a> | 
+        BossCat OEM Certified
+      </p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
+
