@@ -74,20 +74,52 @@ if (-not $DryRun) {
 
 Write-Host ""
 
-# Step 4: Display service start instructions
-Write-Host "[4/5] Service deployment commands:" -ForegroundColor White
-Write-Host ""
-Write-Host "   Terminal 1 (API Service):" -ForegroundColor Cyan
-Write-Host "   pwsh .\scripts\demo\deploy-demo-service.ps1 -ServiceName bosscat-svc2-api -Port 5556 -EnableDemo" -ForegroundColor Gray
-Write-Host ""
-Write-Host "   Terminal 2 (Worker Service):" -ForegroundColor Cyan
-Write-Host "   pwsh .\scripts\demo\deploy-demo-service.ps1 -ServiceName bosscat-svc3-worker -Port 5557 -EnableDemo" -ForegroundColor Gray
-Write-Host ""
+# Step 4: Auto-start demo services (background processes)
+Write-Host "[4/5] Starting demo services..." -ForegroundColor White
 
 if (-not $DryRun) {
-    Write-Host "   ⏳ Start services manually in separate terminals" -ForegroundColor Yellow
-    Write-Host "   Press any key when services are running..." -ForegroundColor Yellow
-    $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+    # Check if services already running
+    $svc2Running = $false
+    $svc3Running = $false
+    
+    try {
+        $result = Invoke-WebRequest -Uri "http://localhost:5556/health" -UseBasicParsing -TimeoutSec 2 -ErrorAction Stop
+        $svc2Running = ($result.StatusCode -eq 200)
+    } catch {}
+    
+    try {
+        $result = Invoke-WebRequest -Uri "http://localhost:5557/health" -UseBasicParsing -TimeoutSec 2 -ErrorAction Stop
+        $svc3Running = ($result.StatusCode -eq 200)
+    } catch {}
+    
+    if ($svc2Running -and $svc3Running) {
+        Write-Host "   ✅ Services already running (ports 5556, 5557)" -ForegroundColor Green
+    } else {
+        Write-Host "   → Starting bosscat-svc2-api (port 5556)..." -ForegroundColor Gray
+        if (-not $svc2Running) {
+            $svc2Job = Start-Job -ScriptBlock {
+                Set-Location C:\otel
+                pwsh -File .\scripts\demo\deploy-demo-service.ps1 -ServiceName "bosscat-svc2-api" -Port 5556 -EnableDemo
+            }
+            Write-Host "   → Service 2 starting (job: $($svc2Job.Id))" -ForegroundColor Gray
+        }
+        
+        Write-Host "   → Starting bosscat-svc3-worker (port 5557)..." -ForegroundColor Gray
+        if (-not $svc3Running) {
+            $svc3Job = Start-Job -ScriptBlock {
+                Set-Location C:\otel
+                pwsh -File .\scripts\demo\deploy-demo-service.ps1 -ServiceName "bosscat-svc3-worker" -Port 5557 -EnableDemo
+            }
+            Write-Host "   → Service 3 starting (job: $($svc3Job.Id))" -ForegroundColor Gray
+        }
+        
+        Write-Host "   → Waiting for services to initialize (15s)..." -ForegroundColor Gray
+        Start-Sleep -Seconds 15
+        Write-Host "   ✅ Services started in background" -ForegroundColor Green
+        Write-Host ""
+        Write-Host "   Note: View background jobs with 'Get-Job'" -ForegroundColor Gray
+        Write-Host "   Stop services: 'Stop-Job -Id <id>' or Ctrl+C in demo" -ForegroundColor Gray
+    }
 } else {
     Write-Host "   [DRY RUN] Services not started" -ForegroundColor Gray
 }
@@ -97,26 +129,47 @@ Write-Host ""
 # Step 5: Final readiness check
 Write-Host "[5/5] Final readiness check..." -ForegroundColor White
 
-if (-not $DryRun -and -not $SkipVerification) {
+if (-not $DryRun) {
     Write-Host "   Verifying services..." -ForegroundColor Gray
+    
+    # Give services a bit more time if just started
+    Start-Sleep -Seconds 5
     
     $svc2Ok = $false
     $svc3Ok = $false
+    $retries = 3
     
-    try {
-        $result = Invoke-WebRequest -Uri "http://localhost:5556/health" -UseBasicParsing -TimeoutSec 3 -ErrorAction Stop
-        $svc2Ok = ($result.StatusCode -eq 200)
-    } catch {}
+    for ($i = 0; $i -lt $retries; $i++) {
+        try {
+            $result = Invoke-WebRequest -Uri "http://localhost:5556/health" -UseBasicParsing -TimeoutSec 3 -ErrorAction Stop
+            $svc2Ok = ($result.StatusCode -eq 200)
+            if ($svc2Ok) { break }
+        } catch {
+            if ($i -lt ($retries - 1)) {
+                Start-Sleep -Seconds 2
+            }
+        }
+    }
     
-    try {
-        $result = Invoke-WebRequest -Uri "http://localhost:5557/health" -UseBasicParsing -TimeoutSec 3 -ErrorAction Stop
-        $svc3Ok = ($result.StatusCode -eq 200)
-    } catch {}
+    for ($i = 0; $i -lt $retries; $i++) {
+        try {
+            $result = Invoke-WebRequest -Uri "http://localhost:5557/health" -UseBasicParsing -TimeoutSec 3 -ErrorAction Stop
+            $svc3Ok = ($result.StatusCode -eq 200)
+            if ($svc3Ok) { break }
+        } catch {
+            if ($i -lt ($retries - 1)) {
+                Start-Sleep -Seconds 2
+            }
+        }
+    }
     
     if ($svc2Ok -and $svc3Ok) {
-        Write-Host "   ✅ Both services healthy" -ForegroundColor Green
+        Write-Host "   ✅ Both services healthy and responding" -ForegroundColor Green
     } else {
-        Write-Host "   ⚠️  Services not responding (start them manually)" -ForegroundColor Yellow
+        Write-Host "   ⚠️  Services not fully ready yet" -ForegroundColor Yellow
+        if (-not $svc2Ok) { Write-Host "      - bosscat-svc2-api (5556): Not responding" -ForegroundColor Gray }
+        if (-not $svc3Ok) { Write-Host "      - bosscat-svc3-worker (5557): Not responding" -ForegroundColor Gray }
+        Write-Host "      Services may still be initializing (check 'Get-Job')" -ForegroundColor Gray
     }
 }
 

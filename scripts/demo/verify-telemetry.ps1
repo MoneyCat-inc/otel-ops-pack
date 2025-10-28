@@ -13,15 +13,30 @@ param(
 $ErrorActionPreference = "Stop"
 $passCount = 0
 $totalChecks = 0
+$infraPassCount = 0
+$infraTotalChecks = 0
+$servicePassCount = 0
+$serviceTotalChecks = 0
 
 Write-Host "=== Investor Demo: Telemetry Verification ===" -ForegroundColor Cyan
 Write-Host ""
 
 # Helper function for checks
 function Test-Check {
-    param([string]$Name, [scriptblock]$Test)
+    param(
+        [string]$Name, 
+        [scriptblock]$Test,
+        [ValidateSet('infrastructure', 'service', 'artifact')]
+        [string]$Category = 'infrastructure'
+    )
     
     $script:totalChecks++
+    if ($Category -eq 'infrastructure') {
+        $script:infraTotalChecks++
+    } elseif ($Category -eq 'service') {
+        $script:serviceTotalChecks++
+    }
+    
     Write-Host "[$script:totalChecks] $Name..." -ForegroundColor White -NoNewline
     
     try {
@@ -29,6 +44,11 @@ function Test-Check {
         if ($result) {
             Write-Host " ✅ PASS" -ForegroundColor Green
             $script:passCount++
+            if ($Category -eq 'infrastructure') {
+                $script:infraPassCount++
+            } elseif ($Category -eq 'service') {
+                $script:servicePassCount++
+            }
             return $true
         } else {
             Write-Host " ❌ FAIL" -ForegroundColor Red
@@ -44,22 +64,22 @@ function Test-Check {
 Test-Check "Docker containers operational" {
     $containers = docker ps --format "{{.Names}}" | Select-String "signoz|pm-engine|redis"
     return ($containers.Count -ge 10)
-}
+} -Category 'infrastructure'
 
 Test-Check "SigNoz health API responding" {
     $health = Invoke-RestMethod -Uri "$SigNozUrl/api/v1/health" -TimeoutSec 5 -ErrorAction Stop
     return ($health.status -eq "ok")
-}
+} -Category 'infrastructure'
 
 Test-Check "Windows Collector running" {
     $status = sc query otelcol-contrib 2>&1
     return ($status -match "RUNNING")
-}
+} -Category 'infrastructure'
 
 Test-Check "OTLP gRPC endpoint (14317)" {
     $result = Test-NetConnection localhost -Port 14317 -WarningAction SilentlyContinue
     return ($result.TcpTestSucceeded -eq $true)
-}
+} -Category 'infrastructure'
 
 # 2. Service Health Checks
 Test-Check "Service 1 (${Service1}:${Port1}) responding" {
@@ -69,7 +89,7 @@ Test-Check "Service 1 (${Service1}:${Port1}) responding" {
     } catch {
         return $false
     }
-}
+} -Category 'service'
 
 Test-Check "Service 2 (${Service2}:${Port2}) responding" {
     try {
@@ -78,7 +98,7 @@ Test-Check "Service 2 (${Service2}:${Port2}) responding" {
     } catch {
         return $false
     }
-}
+} -Category 'service'
 
 # 3. Telemetry Flow Checks
 Write-Host ""
@@ -99,37 +119,30 @@ Test-Check "SigNoz UI accessible" {
     } catch {
         return $false
     }
-}
+} -Category 'infrastructure'
 
 # Note: Actual trace verification requires SigNoz API key
 # For demo, we verify infrastructure is ready
 Test-Check "Collector metrics endpoint (8888)" {
     $result = Test-NetConnection localhost -Port 8888 -WarningAction SilentlyContinue
     return ($result.TcpTestSucceeded -eq $true)
-}
+} -Category 'infrastructure'
 
 # 4. Demo Artifact Checks
 Test-Check "Data Room harness exists" {
     return (Test-Path "docs\demo\data-room.html")
-}
+} -Category 'artifact'
 
 Test-Check "Demo script exists" {
     return (Test-Path "docs\demo\DEMO_SCRIPT.md")
-}
+} -Category 'artifact'
 
 # Summary
 Write-Host ""
 Write-Host "=== Verification Summary ===" -ForegroundColor Cyan
-Write-Host "Passed: $passCount / $totalChecks" -ForegroundColor $(if ($passCount -eq $totalChecks) { 'Green' } elseif ($passCount -ge ($totalChecks * 0.6)) { 'Yellow' } else { 'Red' })
-
-# Infrastructure checks (1-4, 7-10) = 8 critical
-# Service checks (5-6) = 2 non-critical (services start manually per demo flow)
-$infraChecks = 8
-$infraPassed = $passCount
-if ($passCount -lt $totalChecks) {
-    # Assume service checks failed (acceptable)
-    $infraPassed = [Math]::Min($passCount, $infraChecks)
-}
+Write-Host "Infrastructure: $infraPassCount / $infraTotalChecks" -ForegroundColor $(if ($infraPassCount -eq $infraTotalChecks) { 'Green' } elseif ($infraPassCount -ge ($infraTotalChecks - 1)) { 'Yellow' } else { 'Red' })
+Write-Host "Services:       $servicePassCount / $serviceTotalChecks" -ForegroundColor $(if ($servicePassCount -eq $serviceTotalChecks) { 'Green' } else { 'Yellow' })
+Write-Host "Total:          $passCount / $totalChecks" -ForegroundColor White
 
 if ($passCount -eq $totalChecks) {
     Write-Host ""
@@ -141,13 +154,14 @@ if ($passCount -eq $totalChecks) {
     Write-Host "  3. Review script: C:\otel\docs\demo\DEMO_SCRIPT.md" -ForegroundColor Gray
     Write-Host ""
     exit 0
-} elseif ($infraPassed -ge 7) {
+} elseif ($infraPassCount -ge ($infraTotalChecks - 1)) {
     Write-Host ""
-    Write-Host "⚠️  DEMO PARTIAL - Infrastructure ready, services not started (expected)" -ForegroundColor Yellow
-    Write-Host "   Start services manually per DEMO_SCRIPT.md" -ForegroundColor Yellow
-    Write-Host ""
-    Write-Host "Infrastructure: $infraPassed/8 PASS" -ForegroundColor Green
-    Write-Host "Services: Services not running (start with deploy-demo-service.ps1)" -ForegroundColor Yellow
+    if ($servicePassCount -eq 0) {
+        Write-Host "⚠️  DEMO PARTIAL - Infrastructure ready, services not started" -ForegroundColor Yellow
+        Write-Host "   Services will auto-start via launcher" -ForegroundColor Yellow
+    } else {
+        Write-Host "⚠️  DEMO PARTIAL - Some checks failed (non-critical)" -ForegroundColor Yellow
+    }
     Write-Host ""
     Write-Host "✅ Proceeding - Infrastructure healthy" -ForegroundColor Green
     Write-Host ""
@@ -155,6 +169,7 @@ if ($passCount -eq $totalChecks) {
 } else {
     Write-Host ""
     Write-Host "❌ DEMO BLOCKED - Critical infrastructure checks failed" -ForegroundColor Red
+    Write-Host "   Infrastructure: $infraPassCount/$infraTotalChecks PASS (need ≥$($infraTotalChecks - 1))" -ForegroundColor Red
     Write-Host "   Fix infrastructure issues before proceeding" -ForegroundColor Red
     Write-Host ""
     exit 2
