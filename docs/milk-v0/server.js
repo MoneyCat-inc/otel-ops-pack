@@ -17,8 +17,8 @@ app.use('/milk', express.static('public'));
 // Health endpoint
 app.get('/milk/health', (_, res) => res.json({ 
   ok: true, 
-  display: DISPLAY, 
-  geometry: GEOMETRY, 
+  source: 'md3-engine',  // Updated from Xvfb/pm-engine
+  geometry: '1920x1080',  // md3-engine native resolution
   fps: Number(FPS) 
 }));
 
