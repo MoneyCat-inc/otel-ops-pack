@@ -104,7 +104,7 @@ Test-Check "SigNoz UI accessible" {
 # Note: Actual trace verification requires SigNoz API key
 # For demo, we verify infrastructure is ready
 Test-Check "Collector metrics endpoint (8888)" {
-    $result = Test-NetConnection localhost -Port 18888 -WarningAction SilentlyContinue
+    $result = Test-NetConnection localhost -Port 8888 -WarningAction SilentlyContinue
     return ($result.TcpTestSucceeded -eq $true)
 }
 
