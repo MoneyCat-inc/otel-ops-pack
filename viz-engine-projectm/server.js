@@ -83,13 +83,9 @@ const canaryDeployment = CANARY_ENABLED ? new CanaryDeployment({
   onBreach: (reason, phase) => {
     console.error(`[canary] BREACH at ${phase.name}: ${reason}`);
     console.error(`[canary] Auto-halt triggered - audio disabled`);
-    // BOSSCAT-021A: Actually disable audio via AudioSwitch
-    try {
-      audioSwitch.disable(`canary-breach: ${reason}`);
-      console.log('[canary] Audio disabled via AudioSwitch');
-    } catch (err) {
-      console.error('[canary] Failed to disable audio:', err.message);
-    }
+    // GATE-020-R1B: Removed redundant audioSwitch.disable() call
+    // Audio disable is already handled by CanaryDeployment.halt() with proper await
+    // Keeping this call would cause unhandled promise rejection (async not awaited)
     // Emit OTLP span for breach
     otlpEmitter.emitSpan('audio.enable.canary.breach', {
       'canary.phase': phase.name,

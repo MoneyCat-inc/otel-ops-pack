@@ -15,17 +15,21 @@ $ErrorActionPreference = "Stop"
 Write-Host "🔄 Audio Rollback Script (BOSSCAT-021A + GATE-020-R1)" -ForegroundColor Cyan
 Write-Host "========================================`n" -ForegroundColor Cyan
 
-# GATE-020-R1: Detect pm-engine replica containers
+# GATE-020-R1B: Detect pm-engine replica containers (all replicas for fleet-wide rollback)
+$allContainers = @()
 if ([string]::IsNullOrEmpty($Service)) {
     Write-Host "[0/4] Detecting pm-engine containers..." -ForegroundColor White
-    $containers = docker ps --filter "name=pm-engine" --format "{{.Names}}" | Where-Object { $_ -match "pm-engine" }
+    $detectedContainers = docker ps --filter "name=pm-engine" --format "{{.Names}}" | Where-Object { $_ -match "pm-engine" }
     
-    if ($containers) {
-        if ($containers -is [array]) {
-            $Service = $containers[0]  # Use first replica
-            Write-Host "  → Found $($containers.Count) replicas, using: $Service" -ForegroundColor Gray
+    if ($detectedContainers) {
+        if ($detectedContainers -is [array]) {
+            $allContainers = $detectedContainers
+            $Service = $detectedContainers[0]  # Use first for API test
+            Write-Host "  → Found $($allContainers.Count) replicas: $($allContainers -join ', ')" -ForegroundColor Gray
+            Write-Host "  → Primary: $Service (for health checks)" -ForegroundColor Gray
         } else {
-            $Service = $containers
+            $allContainers = @($detectedContainers)
+            $Service = $detectedContainers
             Write-Host "  → Found single container: $Service" -ForegroundColor Gray
         }
     } else {
@@ -34,6 +38,9 @@ if ([string]::IsNullOrEmpty($Service)) {
         exit 1
     }
     Write-Host ""
+} else {
+    # User provided explicit service name
+    $allContainers = @($Service)
 }
 
 # Step 1: Disable audio via admin API
@@ -59,47 +66,62 @@ try {
 }
 
 if (-not $disabled) {
-    # Fallback: Write persisted state file inside container (bind-mounted)
-    Write-Host "  → Writing audio-state.json directly in container..." -ForegroundColor Gray
-    
-    # GATE-020-R1: Validate container exists before exec
-    $containerExists = docker ps --filter "name=$Service" --format "{{.Names}}" | Select-Object -First 1
-    if (-not $containerExists) {
-        Write-Host "  ✗ Container '$Service' not found!" -ForegroundColor Red
-        Write-Host "  → Available containers:" -ForegroundColor Yellow
-        docker ps --filter "name=pm-engine" --format "  - {{.Names}}" | Write-Host
-        exit 1
-    }
+    # Fallback: Write persisted state file inside ALL containers (bind-mounted)
+    # GATE-020-R1B: Fleet-wide rollback requires hitting all replicas
+    Write-Host "  → Writing audio-state.json to all replicas..." -ForegroundColor Gray
     
     $timestamp = (Get-Date).ToString("o")
     $json = "{`"enabled`":false,`"reason`":`"rollback`",`"changedAt`":`"$timestamp`"}"
     
-    try {
-        docker exec $Service sh -c "mkdir -p /app/config && printf '%s' '$json' > /app/config/audio-state.json"
-        Write-Host "  ✓ Audio state file written directly to $Service" -ForegroundColor Green
-        $disabled = $true
-    } catch {
-        Write-Host "  ✗ Failed to write state file: $_" -ForegroundColor Red
+    $failedContainers = @()
+    foreach ($container in $allContainers) {
+        try {
+            docker exec $container sh -c "mkdir -p /app/config && printf '%s' '$json' > /app/config/audio-state.json" 2>&1 | Out-Null
+            Write-Host "  ✓ $container" -ForegroundColor Green
+        } catch {
+            Write-Host "  ✗ $container failed: $_" -ForegroundColor Red
+            $failedContainers += $container
+        }
+    }
+    
+    if ($failedContainers.Count -gt 0) {
+        Write-Host "  ✗ Failed to write state file to $($failedContainers.Count)/$($allContainers.Count) containers" -ForegroundColor Red
+        Write-Host "  → Failed: $($failedContainers -join ', ')" -ForegroundColor Red
         Write-Host "  → Manual intervention required" -ForegroundColor Red
         exit 1
     }
+    
+    Write-Host "  ✓ Audio state written to all $($allContainers.Count) replicas" -ForegroundColor Green
+    $disabled = $true
 }
 
 Write-Host ""
 
-# Step 2: Restart pm-engine container
-# GATE-020-R1: Use docker restart with detected container name
-Write-Host "[2/4] Restarting container $Service..." -ForegroundColor White
+# Step 2: Restart all pm-engine containers
+# GATE-020-R1B: Fleet-wide restart for all replicas
+Write-Host "[2/4] Restarting all pm-engine containers..." -ForegroundColor White
 
-try {
-    docker restart $Service | Out-Null
-    Write-Host "  → Container restarting..." -ForegroundColor Gray
-    Start-Sleep -Seconds 5
-    Write-Host "  ✓ Container restarted" -ForegroundColor Green
-} catch {
-    Write-Host "  ✗ Failed to restart container: $_" -ForegroundColor Red
+$failedRestarts = @()
+foreach ($container in $allContainers) {
+    try {
+        Write-Host "  → Restarting $container..." -ForegroundColor Gray
+        docker restart $container 2>&1 | Out-Null
+        Write-Host "  ✓ $container restarted" -ForegroundColor Green
+    } catch {
+        Write-Host "  ✗ $container failed: $_" -ForegroundColor Red
+        $failedRestarts += $container
+    }
+}
+
+if ($failedRestarts.Count -gt 0) {
+    Write-Host "  ✗ Failed to restart $($failedRestarts.Count)/$($allContainers.Count) containers" -ForegroundColor Red
+    Write-Host "  → Failed: $($failedRestarts -join ', ')" -ForegroundColor Red
     exit 1
 }
+
+Write-Host "  → Waiting for containers to initialize..." -ForegroundColor Gray
+Start-Sleep -Seconds 5
+Write-Host "  ✓ All $($allContainers.Count) replicas restarted" -ForegroundColor Green
 
 Write-Host ""
 
