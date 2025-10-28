@@ -1,9 +1,8 @@
 // /opt/viz/server.js
 // Gate #011 - Milk v0 Viewer HTTP Server
-// Now fetches from md3-engine instead of x11grab (3500× more efficient)
+// Rollback: x11grab from pm-engine (with GPU acceleration for lower CPU)
 const express = require('express');
 const { spawn } = require('child_process');
-const fetch = require('node-fetch');
 const app = express();
 
 const PORT = process.env.PORT || 8080;
@@ -17,48 +16,14 @@ app.use('/milk', express.static('public'));
 // Health endpoint
 app.get('/milk/health', (_, res) => res.json({ 
   ok: true, 
-  source: 'md3-engine',  // Updated from Xvfb/pm-engine
-  geometry: '1920x1080',  // md3-engine native resolution
+  display: DISPLAY, 
+  geometry: GEOMETRY, 
   fps: Number(FPS) 
 }));
 
-// Track active streams to prevent accumulation
-let activeStreams = 0;
-const MAX_STREAMS = 2;  // Allow 1 active + 1 reconnecting (browser refresh gracefully)
-const activeProcesses = new Map();  // Track ffmpeg PIDs for watchdog
-
-// Watchdog: Kill stale ffmpeg processes every 30 seconds
-setInterval(() => {
-  const now = Date.now();
-  for (const [pid, startTime] of activeProcesses.entries()) {
-    const age = now - startTime;
-    // Kill ffmpeg that's been running > 5 minutes (stale)
-    if (age > 5 * 60 * 1000) {
-      console.log(`[milk] Watchdog: Killing stale ffmpeg PID ${pid} (age: ${Math.round(age/1000)}s)`);
-      try {
-        process.kill(pid, 'SIGKILL');
-        activeProcesses.delete(pid);
-        activeStreams = Math.max(0, activeStreams - 1);
-      } catch (e) {
-        // Process already dead
-        activeProcesses.delete(pid);
-      }
-    }
-  }
-}, 30000);
-
-// MJPEG stream: fetch from md3-engine /snap.jpg -> multipart stream
-app.get('/milk.mjpg', async (req, res) => {
-  // Limit concurrent streams to prevent accumulation
-  if (activeStreams >= MAX_STREAMS) {
-    console.log(`[milk] Stream rejected: ${activeStreams}/${MAX_STREAMS} active`);
-    res.status(503).send('Too many active streams, please retry');
-    return;
-  }
-  
-  console.log(`[milk] New stream started (${activeStreams + 1}/${MAX_STREAMS})`);
-
-  const boundary = 'md3frame';
+// MJPEG stream: ffmpeg x11grab -> mpjpeg muxer -> direct pipe
+app.get('/milk.mjpg', (req, res) => {
+  const boundary = 'ffmjpeg';
   res.writeHead(200, {
     'Cache-Control': 'no-cache, no-store, must-revalidate',
     'Pragma': 'no-cache',
@@ -66,77 +31,35 @@ app.get('/milk.mjpg', async (req, res) => {
     'Content-Type': `multipart/x-mixed-replace; boundary=${boundary}`,
   });
 
-  activeStreams++;
-  let cleaned = false;
-  let interval;
+  const ff = spawn('ffmpeg', [
+    '-hide_banner', '-loglevel', 'error',
+    '-f', 'x11grab',
+    '-video_size', GEOMETRY,
+    '-framerate', FPS,
+    '-i', `${DISPLAY}.0`,
+    '-c:v', 'mjpeg',
+    '-q:v', '15',  // Fast streaming quality
+    '-pix_fmt', 'yuvj420p',
+    '-r', FPS,
+    '-vsync', 'cfr',  // Constant frame rate
+    '-preset', 'ultrafast',
+    '-tune', 'zerolatency',
+    '-f', 'mpjpeg',
+    '-boundary_tag', boundary,
+    'pipe:1'
+  ]);
+
+  ff.stdout.pipe(res);
 
   const cleanup = () => {
-    if (cleaned) return;
-    cleaned = true;
-    activeStreams--;
-    if (interval) clearInterval(interval);
-    console.log(`[milk] Stream ended (${activeStreams}/${MAX_STREAMS} remaining)`);
+    try { ff.kill('SIGKILL'); } catch (e) {}
     try { res.end(); } catch (e) {}
   };
-
-  // Fetch frames from md3-engine at target FPS
-  const frameDelay = 1000 / Number(FPS);
-  let lastFrameTime = Date.now();
   
-  const fetchAndSendFrame = async () => {
-    try {
-      const now = Date.now();
-      if (now - lastFrameTime < frameDelay) return; // Rate limit
-      lastFrameTime = now;
-
-      const response = await fetch('http://md3-engine:7001/snap.jpg');
-      if (!response.ok) {
-        console.error(`[milk] md3-engine returned ${response.status}`);
-        return; // Skip this frame, try again next interval
-      }
-      
-      const buffer = await response.arrayBuffer();
-      if (!buffer || buffer.byteLength === 0) {
-        console.error('[milk] Empty frame from md3-engine');
-        return;
-      }
-      
-      const frame = Buffer.from(buffer);
-      
-      // Write MJPEG frame with proper multipart boundary format
-      try {
-        res.write(`--${boundary}\r\n`);
-        res.write(`Content-Type: image/jpeg\r\n`);
-        res.write(`Content-Length: ${frame.length}\r\n`);
-        res.write(`\r\n`);
-        res.write(frame);
-        res.write(`\r\n`);
-      } catch (writeErr) {
-        console.error('[milk] Write error:', writeErr.message);
-        cleanup();
-      }
-    } catch (err) {
-      console.error('[milk] Frame fetch error:', err.message, err.stack);
-      // Don't cleanup on single frame errors, just skip and retry
-    }
-  };
-
-  // Start frame fetching loop
-  interval = setInterval(fetchAndSendFrame, frameDelay);
-  
-  // Also fetch immediately
-  fetchAndSendFrame();
-
-  // Cleanup on disconnect
   req.on('close', cleanup);
   req.on('finish', cleanup);
   req.on('error', cleanup);
-
-  // Safety timeout: 5 minutes
-  setTimeout(() => {
-    console.log('[milk] Stream timeout, closing');
-    cleanup();
-  }, 5 * 60 * 1000);
+  ff.on('close', () => { try { res.end(); } catch (e) {} });
 });
 
 app.listen(PORT, () => console.log(`[milk] viewer up on http://localhost:${PORT}/milk`));
