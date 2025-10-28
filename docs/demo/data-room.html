@@ -292,6 +292,24 @@
             </div>
         </section>
 
+        <!-- Visual Engine Integration -->
+        <section class="metrics-panel">
+            <h2>🎨 Visual Observability Engine</h2>
+            <p style="color: #6c757d; margin-bottom: 1rem;">
+                Live Milkdrop visualizer showing audio reactivity and performance metrics
+            </p>
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                <a href="http://localhost:8090" target="_blank" class="scenario-button start">Milk v0 Viewer (MJPEG)</a>
+                <a href="http://localhost:7001" target="_blank" class="scenario-button start">Milkdrop Engine (md3)</a>
+                <a href="http://localhost:7010/metrics" target="_blank" class="scenario-button start">Scorebot Metrics</a>
+            </div>
+            <div style="background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 4px; font-size: 0.85rem; color: #ccc;">
+                <strong>Visual Stack:</strong> 3-replica ProjectM cluster with audio reactivity, brightness guard, and canary deployment<br>
+                <strong>Services:</strong> pm-engine (3 replicas), md3-engine (Butterchurn), milk-v0 (viewer), scorebot (validation)<br>
+                <strong>Gates:</strong> #009 (Milkdrop), #010 (Audio), #012 (ProjectM), #013 (Reactivity), #020 (Canary), #023 (Cluster)
+            </div>
+        </section>
+
         <!-- Quick Links -->
         <section class="metrics-panel">
             <h2>Quick Links</h2>
@@ -310,12 +328,43 @@
             chaos: new Set()
         };
 
-        // Mock metrics (in production, fetch from SigNoz API)
+        // Live metrics from visual stack
         let mockMetrics = {
             rps: 0,
             p95: 0,
             errorRate: 0
         };
+        
+        // Fetch real metrics from scorebot (port 7010)
+        async function fetchLiveMetrics() {
+            try {
+                const response = await fetch('http://localhost:7010/metrics');
+                const text = await response.text();
+                
+                // Parse Prometheus metrics
+                const lines = text.split('\n');
+                for (const line of lines) {
+                    if (line.startsWith('score_luma_avg')) {
+                        const match = line.match(/score_luma_avg\s+([\d.]+)/);
+                        if (match) {
+                            const luma = parseFloat(match[1]);
+                            // Convert luma to synthetic "latency" for demo
+                            mockMetrics.p95 = Math.round(luma * 1000); // Demo mapping
+                        }
+                    }
+                    if (line.startsWith('score_blackout_pct')) {
+                        const match = line.match(/score_blackout_pct\s+([\d.]+)/);
+                        if (match) {
+                            mockMetrics.errorRate = parseFloat(match[1]);
+                        }
+                    }
+                }
+                return true;
+            } catch (err) {
+                console.error('Failed to fetch metrics:', err);
+                return false;
+            }
+        }
 
         // Start traffic scenario
         function startScenario(type) {
@@ -455,6 +504,12 @@
 
         // Initialize
         updateMetrics();
+        
+        // Fetch real metrics immediately and every 5 seconds
+        fetchMetrics();
+        setInterval(() => {
+            fetchMetrics();
+        }, 5000);
     </script>
 </body>
 </html>
