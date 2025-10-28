@@ -360,73 +360,76 @@
             errorRate: 0
         };
         
-        // Fetch real metrics from md3-engine (port 7001) - Visual Engine
+        // Fetch real metrics from scorebot (port 7010) - Visual Quality Metrics
         async function fetchLiveMetrics() {
             try {
-                // Note: CORS may block file:// → http:// fetch
-                // Workaround: Use script tag or serve Data Room via http-server
-                const response = await fetch('http://localhost:7001/stats', {
+                const response = await fetch('http://localhost:7010/metrics', {
                     mode: 'cors',
                     credentials: 'omit'
                 });
                 if (!response.ok) {
-                    throw new Error(`md3-engine returned ${response.status}`);
+                    throw new Error(`Scorebot returned ${response.status}`);
                 }
                 
-                const stats = await response.json();
+                const metrics = await response.json();
                 
-                // Map visual engine stats to demo display
-                // FPS -> "Latency" (inverted: higher FPS = lower "latency")
-                if (stats.fps !== undefined) {
-                    // Map 60 FPS = 112ms, lower FPS = higher "latency"
-                    mockMetrics.p95 = Math.round((60 / Math.max(stats.fps, 1)) * 112);
+                // Map scorebot visual quality metrics to display
+                // Luma mean (0-1 brightness) -> Brightness display (0-255 scale)
+                if (metrics.luma_mean !== undefined) {
+                    mockMetrics.p95 = Math.round(metrics.luma_mean * 255);
                 }
                 
-                // Frame time -> Visual performance indicator
-                if (stats.frameTimeMs !== undefined) {
-                    // Directly map frame time to latency metric
-                    mockMetrics.p95 = Math.round(stats.frameTimeMs * 100);
+                // Black ratio (0-1) -> Blackout percentage
+                if (metrics.black_ratio !== undefined) {
+                    mockMetrics.errorRate = metrics.black_ratio * 100;
                 }
                 
-                // Dropped frames -> Error rate proxy
-                if (stats.droppedFrames !== undefined) {
-                    // Map dropped frames to error percentage (max 10%)
-                    mockMetrics.errorRate = Math.min(stats.droppedFrames / 10, 10);
+                // Motion magnitude -> Motion Energy (scale up for visibility)
+                if (metrics.motion_magnitude !== undefined) {
+                    mockMetrics.rps = Math.round(metrics.motion_magnitude * 100);
                 }
                 
-                // FPS -> Throughput (frames per second)
-                if (stats.fps !== undefined) {
-                    mockMetrics.rps = Math.round(stats.fps);
+                // Also fetch FPS from md3-engine for frame rate display
+                try {
+                    const statsResp = await fetch('http://localhost:7001/stats');
+                    if (statsResp.ok) {
+                        const stats = await statsResp.json();
+                        if (stats.fps !== undefined) {
+                            // Override RPS with actual FPS
+                            mockMetrics.rps = Math.round(stats.fps);
+                        }
+                    }
+                } catch (err) {
+                    console.warn('Could not fetch FPS from md3-engine:', err);
                 }
                 
                 return true;
             } catch (err) {
-                console.error('Failed to fetch md3-engine stats:', err);
-                // Try milk-v0 as fallback
-                return await fetchMilkv0Metrics();
+                console.error('Failed to fetch scorebot metrics:', err);
+                // Try md3-engine as fallback
+                return await fetchMd3Metrics();
             }
         }
         
-        // Fallback: Try milk-v0 if md3-engine unavailable
-        async function fetchMilkv0Metrics() {
+        // Fallback: Try md3-engine if scorebot unavailable
+        async function fetchMd3Metrics() {
             try {
-                const response = await fetch('http://localhost:8090/milk/api/status');
+                const response = await fetch('http://localhost:7001/stats');
                 if (response.ok) {
-                    const data = await response.json();
-                    // Use any available metrics
-                    mockMetrics.rps = 30; // Assume 30 FPS MJPEG
-                    mockMetrics.p95 = 33; // ~33ms per frame at 30 FPS
-                    mockMetrics.errorRate = 0;
+                    const stats = await response.json();
+                    mockMetrics.rps = Math.round(stats.fps || 0);
+                    mockMetrics.p95 = Math.round((stats.frameTimeMs || 0) * 100);
+                    mockMetrics.errorRate = stats.droppedFrames || 0;
                     return true;
                 }
             } catch (err) {
-                console.error('Fallback milk-v0 also failed:', err);
+                console.error('Fallback md3-engine also failed:', err);
             }
             
             // Final fallback: baseline
             mockMetrics.p95 = 112;
             mockMetrics.errorRate = 0;
-            mockMetrics.rps = 30;
+            mockMetrics.rps = 60;
             return false;
         }
 
