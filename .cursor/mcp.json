@@ -3,7 +3,7 @@
     "bedrock": {
       "command": "npx",
       "args": [
-        "ts-node",
+        "tsx",
         "scripts/demo/explain-trace.ts"
       ],
       "env": {
