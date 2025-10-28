@@ -20,8 +20,18 @@ app.get('/milk/health', (_, res) => res.json({
   fps: Number(FPS) 
 }));
 
+// Track active streams to prevent accumulation
+let activeStreams = 0;
+const MAX_STREAMS = 3;  // Safety limit
+
 // MJPEG stream: ffmpeg x11grab -> mpjpeg muxer -> direct pipe
 app.get('/milk.mjpg', (req, res) => {
+  // Limit concurrent streams to prevent process accumulation
+  if (activeStreams >= MAX_STREAMS) {
+    res.status(503).send('Too many active streams, please retry');
+    return;
+  }
+
   const boundary = 'ffmjpeg';
   res.writeHead(200, {
     'Cache-Control': 'no-cache, no-store, must-revalidate',
@@ -38,19 +48,50 @@ app.get('/milk.mjpg', (req, res) => {
     '-vf', `fps=${FPS}`,
     '-an',
     '-c:v', 'mjpeg',
-    '-q:v', '15',  // Increased from 5 (near-lossless) to 15 (fast, good quality for streaming)
-    '-huffman', 'optimal',  // Better compression without CPU overhead
+    '-q:v', '15',  // Fast streaming quality
+    '-huffman', 'optimal',
     '-f', 'mpjpeg',
     '-boundary_tag', boundary,
     'pipe:1'
   ]);
 
+  activeStreams++;
+  let cleaned = false;
+
+  const cleanup = () => {
+    if (cleaned) return;
+    cleaned = true;
+    activeStreams--;
+    
+    try {
+      if (!ff.killed) {
+        ff.kill('SIGKILL');  // Force kill immediately (SIGINT too gentle)
+      }
+    } catch (e) {
+      console.error('[milk] Cleanup error:', e.message);
+    }
+    
+    try { res.end(); } catch (e) {}
+  };
+
+  // Pipe with error handling
+  ff.stdout.on('error', cleanup);
   ff.stdout.pipe(res);
 
-  const end = () => { try { ff.kill('SIGINT'); } catch (e) {} };
-  req.on('close', end);
-  req.on('finish', end);
-  ff.on('close', () => { try { res.end(); } catch (e) {} });
+  // Cleanup on all disconnect events
+  req.on('close', cleanup);
+  req.on('finish', cleanup);
+  req.on('error', cleanup);
+  ff.on('close', cleanup);
+  ff.on('error', cleanup);
+
+  // Safety timeout: kill after 5 minutes
+  const timeout = setTimeout(() => {
+    console.log('[milk] Stream timeout, killing ffmpeg');
+    cleanup();
+  }, 5 * 60 * 1000);
+  
+  req.on('close', () => clearTimeout(timeout));
 });
 
 app.listen(PORT, () => console.log(`[milk] viewer up on http://localhost:${PORT}/milk`));
