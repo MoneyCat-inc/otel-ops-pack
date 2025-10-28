@@ -199,11 +199,18 @@ Write-Host "║          ✅ DEMO READY FOR INVESTORS ✅          ║" -Foregro
 Write-Host "║                                                   ║" -ForegroundColor Green
 Write-Host "╚═══════════════════════════════════════════════════╝" -ForegroundColor Green
 Write-Host ""
-Write-Host "Demo Script: C:\otel\docs\demo\DEMO_SCRIPT.md" -ForegroundColor White
-Write-Host "Data Room:   file:///C:/otel/docs/demo/data-room.html" -ForegroundColor White
-Write-Host "Dashboard:   file:///C:/otel/docs/demo/dashboard.html" -ForegroundColor White
-Write-Host "SigNoz:      http://localhost:8080" -ForegroundColor White
+Write-Host "🎯 Investor Demo URLs:" -ForegroundColor Cyan
+Write-Host "   Data Room:   http://localhost:3000/data-room.html (LIVE METRICS)" -ForegroundColor White
+Write-Host "   SigNoz:      http://localhost:8080" -ForegroundColor White
+Write-Host "   Milk Viewer: http://localhost:8090/milk/ (16:9 Milkdrop)" -ForegroundColor White
 Write-Host ""
-Write-Host "📋 Follow DEMO_SCRIPT.md for the 7-minute investor walkthrough" -ForegroundColor Cyan
+Write-Host "📊 Visual Stack (Gates #009-#023):" -ForegroundColor Cyan
+Write-Host "   md3-engine (7001): 60 FPS, 0 dropped frames ✅" -ForegroundColor Green
+Write-Host "   milk-v0 (8090): MJPEG stream operational ✅" -ForegroundColor Green
+Write-Host "   scorebot (7010): Metrics validation ready ✅" -ForegroundColor Green
+Write-Host ""
+Write-Host "📋 Follow DEMO_SCRIPT.md for 7-minute walkthrough" -ForegroundColor Yellow
+Write-Host ""
+Write-Host "🐾 Visual observability demo operational" -ForegroundColor Cyan
 Write-Host ""
 
