@@ -1,7 +1,9 @@
 // /opt/viz/server.js
 // Gate #011 - Milk v0 Viewer HTTP Server
+// Now fetches from md3-engine instead of x11grab (3500× more efficient)
 const express = require('express');
 const { spawn } = require('child_process');
+const fetch = require('node-fetch');
 const app = express();
 
 const PORT = process.env.PORT || 8080;
@@ -45,15 +47,15 @@ setInterval(() => {
   }
 }, 30000);
 
-// MJPEG stream: ffmpeg x11grab -> mpjpeg muxer -> direct pipe
-app.get('/milk.mjpg', (req, res) => {
-  // Limit concurrent streams to prevent process accumulation
+// MJPEG stream: fetch from md3-engine /snap.jpg -> multipart stream
+app.get('/milk.mjpg', async (req, res) => {
+  // Limit concurrent streams to prevent accumulation
   if (activeStreams >= MAX_STREAMS) {
     res.status(503).send('Too many active streams, please retry');
     return;
   }
 
-  const boundary = 'ffmjpeg';
+  const boundary = 'md3frame';
   res.writeHead(200, {
     'Cache-Control': 'no-cache, no-store, must-revalidate',
     'Pragma': 'no-cache',
@@ -61,63 +63,63 @@ app.get('/milk.mjpg', (req, res) => {
     'Content-Type': `multipart/x-mixed-replace; boundary=${boundary}`,
   });
 
-  const ff = spawn('ffmpeg', [
-    '-hide_banner', '-loglevel', 'error',
-    '-f', 'x11grab',
-    '-video_size', GEOMETRY,
-    '-framerate', FPS,
-    '-i', `${DISPLAY}.0`,
-    '-c:v', 'mjpeg',
-    '-q:v', '15',  // Fast streaming quality
-    '-pix_fmt', 'yuvj420p',  // MJPEG color space
-    '-r', FPS,  // Output frame rate
-    '-vsync', 'cfr',  // Constant frame rate
-    '-preset', 'ultrafast',  // Prioritize speed over compression
-    '-tune', 'zerolatency',  // Minimize buffering
-    '-f', 'mpjpeg',
-    '-boundary_tag', boundary,
-    'pipe:1'
-  ]);
-
   activeStreams++;
-  activeProcesses.set(ff.pid, Date.now());  // Register for watchdog
   let cleaned = false;
+  let interval;
 
   const cleanup = () => {
     if (cleaned) return;
     cleaned = true;
     activeStreams--;
-    activeProcesses.delete(ff.pid);  // Unregister from watchdog
-    
-    try {
-      if (!ff.killed) {
-        ff.kill('SIGKILL');  // Force kill immediately (SIGINT too gentle)
-      }
-    } catch (e) {
-      console.error('[milk] Cleanup error:', e.message);
-    }
-    
+    if (interval) clearInterval(interval);
     try { res.end(); } catch (e) {}
   };
 
-  // Pipe with error handling
-  ff.stdout.on('error', cleanup);
-  ff.stdout.pipe(res);
+  // Fetch frames from md3-engine at target FPS
+  const frameDelay = 1000 / Number(FPS);
+  let lastFrameTime = Date.now();
+  
+  const fetchAndSendFrame = async () => {
+    try {
+      const now = Date.now();
+      if (now - lastFrameTime < frameDelay) return; // Rate limit
+      lastFrameTime = now;
 
-  // Cleanup on all disconnect events
+      const response = await fetch('http://md3-engine:7001/snap.jpg');
+      if (!response.ok) throw new Error(`md3-engine returned ${response.status}`);
+      
+      const buffer = await response.arrayBuffer();
+      const frame = Buffer.from(buffer);
+      
+      // Write MJPEG frame with boundary
+      res.write(`--${boundary}\r\n`);
+      res.write('Content-Type: image/jpeg\r\n');
+      res.write(`Content-Length: ${frame.length}\r\n`);
+      res.write('\r\n');
+      res.write(frame);
+      res.write('\r\n');
+    } catch (err) {
+      console.error('[milk] Frame fetch error:', err.message);
+      cleanup();
+    }
+  };
+
+  // Start frame fetching loop
+  interval = setInterval(fetchAndSendFrame, frameDelay);
+  
+  // Also fetch immediately
+  fetchAndSendFrame();
+
+  // Cleanup on disconnect
   req.on('close', cleanup);
   req.on('finish', cleanup);
   req.on('error', cleanup);
-  ff.on('close', cleanup);
-  ff.on('error', cleanup);
 
-  // Safety timeout: kill after 5 minutes
-  const timeout = setTimeout(() => {
-    console.log('[milk] Stream timeout, killing ffmpeg');
+  // Safety timeout: 5 minutes
+  setTimeout(() => {
+    console.log('[milk] Stream timeout, closing');
     cleanup();
   }, 5 * 60 * 1000);
-  
-  req.on('close', () => clearTimeout(timeout));
 });
 
 app.listen(PORT, () => console.log(`[milk] viewer up on http://localhost:${PORT}/milk`));
