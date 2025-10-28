@@ -129,7 +129,7 @@ services:
     environment:
       - DISPLAY=:99
       - GEOMETRY=1280x720  # Reduced from 1920x1080 to lower CPU load (44% fewer pixels)
-      - FPS=30
+      - FPS=15  # Reduced from 30 to 15 for CPU headroom and smoother encoding
     # Share X11 socket via bind mount from host
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw

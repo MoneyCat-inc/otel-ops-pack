@@ -22,7 +22,7 @@ app.get('/milk/health', (_, res) => res.json({
 
 // Track active streams to prevent accumulation
 let activeStreams = 0;
-const MAX_STREAMS = 3;  // Safety limit
+const MAX_STREAMS = 2;  // Allow 1 active + 1 reconnecting (browser refresh gracefully)
 
 // MJPEG stream: ffmpeg x11grab -> mpjpeg muxer -> direct pipe
 app.get('/milk.mjpg', (req, res) => {
