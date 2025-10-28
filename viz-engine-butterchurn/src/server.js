@@ -528,14 +528,15 @@ const server = app.listen(port, async () => {
         if (presetNames.length > 0) {
           const firstPreset = presets[presetNames[0]];
           window.visualizer.loadPreset(firstPreset, 0);
-          return { ok: true, preset: presetNames[0] };
+          // Return full preset object for verification
+          return { ok: true, preset: presetNames[0], body: firstPreset };
         }
       }
       return { ok: false };
     });
     if (result.ok) {
-      currentPreset = result.preset;
-      console.log(`[viz-engine] Loaded preset: ${currentPreset}`);
+      currentPreset = result.body;  // Store full preset object, not just name
+      console.log(`[viz-engine] Loaded preset: ${result.preset}`);
     }
   } catch (err) {
     console.warn('[viz-engine] Preset auto-load failed:', err.message);
