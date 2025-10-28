@@ -19,8 +19,9 @@
 1. ✅ **Collector port mismatch** (18888 → 8888) - Fixed
 2. ✅ **TypeScript execution** (ts-node → tsx) - Fixed
 3. ✅ **Shebang consistency** (cosmetic polish) - Updated
-4. ✅ **Verification strictness** (services not running = blocker) - Fixed to be permissive
+4. ✅ **Verification strictness** (services not running = blocker) - Fixed with separate tracking
 5. ✅ **Get-Date syntax** (invalid -Ticks parameter) - Fixed to property access
+6. ✅ **Manual service startup** (CRITICAL - investor blocker) - Fully automated via Start-Job
 
 ---
 
@@ -68,17 +69,23 @@ pwsh scripts/demo/verify-telemetry.ps1
 # Expected: 7/10 or better (infrastructure ready)
 ```
 
-### Manual Service Start (Per Demo Flow)
+### Automated Service Startup (Zero Manual Steps)
+**Launcher now auto-starts services via PowerShell background jobs:**
+- Checks if services already running (idempotent)
+- Starts via `Start-Job` if not running
+- Waits 15s for initialization + 5s verification
+- Retries health checks 3 times with 2s backoff
+- Displays job IDs for manual control if needed
+
+**Result:** True one-click demo (zero manual intervention)
+
 ```powershell
-# Terminal 1: API Service
-pwsh scripts/demo/deploy-demo-service.ps1 -ServiceName bosscat-svc2-api -Port 5556 -EnableDemo
+# Single command - services auto-start
+pwsh scripts/demo/run-investor-demo.ps1
 
-# Terminal 2: Worker Service
-pwsh scripts/demo/deploy-demo-service.ps1 -ServiceName bosscat-svc3-worker -Port 5557 -EnableDemo
-
-# After services running, re-verify:
+# Verify afterward:
 pwsh scripts/demo/verify-telemetry.ps1
-# Expected: 10/10 PASS
+# Expected: Infrastructure 6/6, Services 2/2, Total 10/10 PASS
 ```
 
 ---
@@ -233,4 +240,5 @@ Services: Services not running (start with deploy-demo-service.ps1)
 **Status:** ✅ **OPERATIONAL - READY FOR INVESTORS**
 
 🐾 **Cat Nap Control Room - Investor Demo Complete, All Blockers Resolved, Automation Tested**
+
 
