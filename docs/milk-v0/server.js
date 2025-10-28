@@ -23,6 +23,27 @@ app.get('/milk/health', (_, res) => res.json({
 // Track active streams to prevent accumulation
 let activeStreams = 0;
 const MAX_STREAMS = 2;  // Allow 1 active + 1 reconnecting (browser refresh gracefully)
+const activeProcesses = new Map();  // Track ffmpeg PIDs for watchdog
+
+// Watchdog: Kill stale ffmpeg processes every 30 seconds
+setInterval(() => {
+  const now = Date.now();
+  for (const [pid, startTime] of activeProcesses.entries()) {
+    const age = now - startTime;
+    // Kill ffmpeg that's been running > 5 minutes (stale)
+    if (age > 5 * 60 * 1000) {
+      console.log(`[milk] Watchdog: Killing stale ffmpeg PID ${pid} (age: ${Math.round(age/1000)}s)`);
+      try {
+        process.kill(pid, 'SIGKILL');
+        activeProcesses.delete(pid);
+        activeStreams = Math.max(0, activeStreams - 1);
+      } catch (e) {
+        // Process already dead
+        activeProcesses.delete(pid);
+      }
+    }
+  }
+}, 30000);
 
 // MJPEG stream: ffmpeg x11grab -> mpjpeg muxer -> direct pipe
 app.get('/milk.mjpg', (req, res) => {
@@ -59,12 +80,14 @@ app.get('/milk.mjpg', (req, res) => {
   ]);
 
   activeStreams++;
+  activeProcesses.set(ff.pid, Date.now());  // Register for watchdog
   let cleaned = false;
 
   const cleanup = () => {
     if (cleaned) return;
     cleaned = true;
     activeStreams--;
+    activeProcesses.delete(ff.pid);  // Unregister from watchdog
     
     try {
       if (!ff.killed) {
