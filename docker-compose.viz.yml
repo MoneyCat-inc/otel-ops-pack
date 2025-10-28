@@ -85,15 +85,11 @@ services:
     # BOSSCAT-023A: container_name removed to enable scaling
     # BOSSCAT-023A: ports removed to allow multiple replicas (access via docker exec or internal network)
     shm_size: "512mb"
-    # GPU passthrough for hardware-accelerated rendering
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
+    # NVIDIA GPU runtime for hardware-accelerated rendering
+    runtime: nvidia
     environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=graphics,utility,compute
       - DISPLAY=:99
       - PM_PRESET_DIR=/app/presets
       - PM_FIFO=/dev/shm/md3.pcm
