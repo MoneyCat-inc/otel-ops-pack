@@ -1,12 +1,15 @@
 FROM ubuntu:22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
+ENV NVIDIA_VISIBLE_DEVICES=all
+ENV NVIDIA_DRIVER_CAPABILITIES=graphics,utility,compute
 
 # Base deps (without nodejs/npm - will install from NodeSource)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates curl git build-essential cmake pkg-config \
     xvfb x11-apps xdotool imagemagick ffmpeg \
     libglu1-mesa-dev mesa-utils libgl1-mesa-dri \
+    libglvnd0 libglx0 libglx-mesa0 libglvnd-dev libgl1 \
     pulseaudio pulseaudio-utils libpulse0 \
     python3 python3-pip \
     && rm -rf /var/lib/apt/lists/*
