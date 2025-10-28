@@ -99,15 +99,20 @@ app.get('/milk.mjpg', async (req, res) => {
       
       const frame = Buffer.from(buffer);
       
-      // Write MJPEG frame with boundary
-      res.write(`--${boundary}\r\n`);
-      res.write('Content-Type: image/jpeg\r\n');
-      res.write(`Content-Length: ${frame.length}\r\n`);
-      res.write('\r\n');
-      res.write(frame);
-      res.write('\r\n');
+      // Write MJPEG frame with proper multipart boundary format
+      try {
+        res.write(`--${boundary}\r\n`);
+        res.write(`Content-Type: image/jpeg\r\n`);
+        res.write(`Content-Length: ${frame.length}\r\n`);
+        res.write(`\r\n`);
+        res.write(frame);
+        res.write(`\r\n`);
+      } catch (writeErr) {
+        console.error('[milk] Write error:', writeErr.message);
+        cleanup();
+      }
     } catch (err) {
-      console.error('[milk] Frame fetch error:', err.message);
+      console.error('[milk] Frame fetch error:', err.message, err.stack);
       // Don't cleanup on single frame errors, just skip and retry
     }
   };
