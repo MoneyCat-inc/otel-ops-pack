@@ -77,19 +77,22 @@ services:
     networks:
       - viz-net
 
-  # Gate #012: ProjectM container (native .milk renderer)
-  # NOTE: Not required for investor demo - milk-v0 now fetches from md3-engine
-  # Disabled by default to save 10 CPU cores (855-1028% CPU when running)
-  # To enable: docker-compose -f docker-compose.viz.yml up -d pm-engine
+  # Gate #012: ProjectM container (native .milk renderer with GPU acceleration)
   pm-engine:
-    profiles:
-      - projectm  # Disabled unless explicitly started with --profile projectm
     build:
       context: ./viz-engine-projectm
     image: bosscat/viz-engine-projectm:latest
     # BOSSCAT-023A: container_name removed to enable scaling
     # BOSSCAT-023A: ports removed to allow multiple replicas (access via docker exec or internal network)
     shm_size: "512mb"
+    # GPU passthrough for hardware-accelerated rendering
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
     environment:
       - DISPLAY=:99
       - PM_PRESET_DIR=/app/presets
@@ -124,7 +127,7 @@ services:
     networks:
       - viz-net
 
-  # Gate #011: Milk v0 viewer (MJPEG stream from md3-engine Butterchurn)
+  # Gate #011: Milk v0 viewer (MJPEG stream from pm-engine X display)
   milk-v0:
     build:
       context: ./docs/milk-v0
@@ -132,11 +135,15 @@ services:
     ports:
       - "8090:8080"  # Milk viewer HTTP (host 8090 -> container 8080)
     environment:
-      - FPS=15  # Frame rate for MJPEG stream from md3-engine
-    # No X11 socket needed - fetches from md3-engine HTTP endpoint
-    # Start after md3-engine is ready
+      - DISPLAY=:99
+      - GEOMETRY=1280x720
+      - FPS=15  # Frame rate for MJPEG stream (reduced for smooth encoding)
+    # Share X11 socket via bind mount from pm-engine
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    # Start after pm-engine's Xvfb is ready
     depends_on:
-      md3-engine:
+      pm-engine:
         condition: service_healthy
     restart: unless-stopped
     networks:
