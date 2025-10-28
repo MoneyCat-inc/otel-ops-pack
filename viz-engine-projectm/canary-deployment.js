@@ -2,9 +2,10 @@
 // ECRR: BossCat OEM | Executor: Cursor{Implementer}
 // Purpose: Production-safe audio rollout with auto-halt on breach
 // BOSSCAT-021A: Fixed reset logic to clear halted state + drive AudioSwitch
+// GATE-020-R1: Cluster façade integration (async disable/enable for Redis pub/sub)
 
 const EventEmitter = require('events');
-const { audioSwitch } = require('./lib/audio-switch');
+const { audioSwitch } = require('./lib/audio-switch-cluster');
 
 class CanaryDeployment extends EventEmitter {
   constructor(config = {}) {
@@ -76,13 +77,13 @@ class CanaryDeployment extends EventEmitter {
     };
   }
   
-  tick(kpis = {}) {
+  async tick(kpis = {}) {
     if (this.halted) return { halted: true, reason: this.haltReason };
     
     // Check KPIs for breach
     const breach = this.checkBreach(kpis);
     if (breach) {
-      this.halt(breach);
+      await this.halt(breach);
       return { halted: true, reason: breach };
     }
     
@@ -128,14 +129,14 @@ class CanaryDeployment extends EventEmitter {
     return null;
   }
   
-  halt(reason) {
+  async halt(reason) {
     this.halted = true;
     this.haltReason = reason;
     console.error(`[canary] HALTED: ${reason}`);
     this._clearTimers();
     try { 
-      audioSwitch.disable(`canary-breach: ${reason}`); 
-      console.log('[canary] Audio disabled via AudioSwitch');
+      await audioSwitch.disable(`canary-breach: ${reason}`); 
+      console.log('[canary] Audio disabled via AudioSwitch (cluster-wide)');
     } catch (err) {
       console.error('[canary] Failed to disable audio:', err.message);
     }
@@ -143,8 +144,9 @@ class CanaryDeployment extends EventEmitter {
     this.emit('breach', { reason, at: new Date().toISOString() });
   }
   
-  reset() {
+  async reset() {
     // BOSSCAT-021A: Clear halted state and re-enable audio
+    // GATE-020-R1: Cluster façade async enable for Redis propagation
     console.log('[canary] RESET triggered - clearing halted state');
     this._clearTimers();
     this.halted = false;
@@ -153,8 +155,8 @@ class CanaryDeployment extends EventEmitter {
     this.startTime = null;
     this.phaseStartTime = null;
     try { 
-      audioSwitch.enable('canary-reset'); 
-      console.log('[canary] Audio re-enabled via AudioSwitch');
+      await audioSwitch.enable('canary-reset'); 
+      console.log('[canary] Audio re-enabled via AudioSwitch (cluster-wide)');
     } catch (err) {
       console.error('[canary] Failed to enable audio:', err.message);
     }
@@ -183,8 +185,8 @@ class CanaryDeployment extends EventEmitter {
   }
   
   // Emergency rollback
-  emergencyStop() {
-    this.halt('Emergency stop triggered');
+  async emergencyStop() {
+    await this.halt('Emergency stop triggered');
     return { halted: true, reason: 'Emergency stop' };
   }
 }

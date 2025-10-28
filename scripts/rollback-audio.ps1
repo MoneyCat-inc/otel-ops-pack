@@ -1,18 +1,40 @@
 # Gate #021 - BOSSCAT-021A - Audio Rollback Script (Rewritten)
 # ECRR: BossCat OEM | Executor: Cursor{Implementer}
 # Purpose: One-click audio rollback with verification via AudioSwitch
+# GATE-020-R1: Multi-replica container discovery for scaled pm-engine
 
 param(
     [string]$BaseUrl = "http://localhost:7020",
     [string]$AdminToken = $env:ADMIN_TOKEN,
-    [string]$Service = "pm-engine",
+    [string]$Service = "",  # Auto-detect if empty
     [int]$VerifyTimeoutSec = 15
 )
 
 $ErrorActionPreference = "Stop"
 
-Write-Host "🔄 Audio Rollback Script (BOSSCAT-021A)" -ForegroundColor Cyan
+Write-Host "🔄 Audio Rollback Script (BOSSCAT-021A + GATE-020-R1)" -ForegroundColor Cyan
 Write-Host "========================================`n" -ForegroundColor Cyan
+
+# GATE-020-R1: Detect pm-engine replica containers
+if ([string]::IsNullOrEmpty($Service)) {
+    Write-Host "[0/4] Detecting pm-engine containers..." -ForegroundColor White
+    $containers = docker ps --filter "name=pm-engine" --format "{{.Names}}" | Where-Object { $_ -match "pm-engine" }
+    
+    if ($containers) {
+        if ($containers -is [array]) {
+            $Service = $containers[0]  # Use first replica
+            Write-Host "  → Found $($containers.Count) replicas, using: $Service" -ForegroundColor Gray
+        } else {
+            $Service = $containers
+            Write-Host "  → Found single container: $Service" -ForegroundColor Gray
+        }
+    } else {
+        Write-Host "  ✗ No pm-engine containers found!" -ForegroundColor Red
+        Write-Host "  → Run: docker ps | grep pm-engine" -ForegroundColor Yellow
+        exit 1
+    }
+    Write-Host ""
+}
 
 # Step 1: Disable audio via admin API
 Write-Host "[1/4] Disabling audio via admin API..." -ForegroundColor White
@@ -38,13 +60,23 @@ try {
 
 if (-not $disabled) {
     # Fallback: Write persisted state file inside container (bind-mounted)
-    Write-Host "  → Writing audio-state.json directly in container..."
+    Write-Host "  → Writing audio-state.json directly in container..." -ForegroundColor Gray
+    
+    # GATE-020-R1: Validate container exists before exec
+    $containerExists = docker ps --filter "name=$Service" --format "{{.Names}}" | Select-Object -First 1
+    if (-not $containerExists) {
+        Write-Host "  ✗ Container '$Service' not found!" -ForegroundColor Red
+        Write-Host "  → Available containers:" -ForegroundColor Yellow
+        docker ps --filter "name=pm-engine" --format "  - {{.Names}}" | Write-Host
+        exit 1
+    }
+    
     $timestamp = (Get-Date).ToString("o")
     $json = "{`"enabled`":false,`"reason`":`"rollback`",`"changedAt`":`"$timestamp`"}"
     
     try {
         docker exec $Service sh -c "mkdir -p /app/config && printf '%s' '$json' > /app/config/audio-state.json"
-        Write-Host "  ✓ Audio state file written directly" -ForegroundColor Green
+        Write-Host "  ✓ Audio state file written directly to $Service" -ForegroundColor Green
         $disabled = $true
     } catch {
         Write-Host "  ✗ Failed to write state file: $_" -ForegroundColor Red
@@ -56,10 +88,11 @@ if (-not $disabled) {
 Write-Host ""
 
 # Step 2: Restart pm-engine container
-Write-Host "[2/4] Restarting service $Service..." -ForegroundColor White
+# GATE-020-R1: Use docker restart with detected container name
+Write-Host "[2/4] Restarting container $Service..." -ForegroundColor White
 
 try {
-    docker compose -f docker-compose.viz.yml restart $Service | Out-Null
+    docker restart $Service | Out-Null
     Write-Host "  → Container restarting..." -ForegroundColor Gray
     Start-Sleep -Seconds 5
     Write-Host "  ✓ Container restarted" -ForegroundColor Green

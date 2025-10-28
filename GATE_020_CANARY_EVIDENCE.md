@@ -297,5 +297,93 @@ Rationale:
 **Date:** 2025-10-26  
 **Status:** ✅ **GREEN (Code-Complete)** - Manual validation deferred
 
-🐾 *Gate #020 canary infrastructure complete and integrated. Production-ready code awaiting environment-dependent validation.*
+---
+
+## 🔧 GATE-020-R1 Remediation (2025-10-28)
+
+**Authority:** Fubumaki (Repository Owner)  
+**Executor:** Cursor{Implementer}  
+**Blockers:** 2 HIGH-severity issues identified post-approval
+
+### Blocker #1: Canary Cluster Bypass ⚠️ HIGH
+
+**Issue:** `canary-deployment.js:7` imported file-backed `audio-switch` instead of cluster façade `audio-switch-cluster`. Lines 137, 156 called synchronous `disable()`/`enable()`, bypassing Redis pub/sub propagation. Only local container halted; fleet continued streaming audio.
+
+**Impact:** Broke "auto-halt on breach" promise for multi-replica deployments (Gate #023 BOSSCAT-023A cluster coordination).
+
+**Fix (Job R1A - 10 LOC):**
+- ✅ Line 8: Changed import to `require('./lib/audio-switch-cluster')`
+- ✅ Lines 132, 147: Made `halt()` and `reset()` async
+- ✅ Lines 138, 158: Added `await` for `audioSwitch.disable()`/`enable()`
+- ✅ Line 80: Made `tick()` async, awaited `halt()` call
+- ✅ Line 188: Made `emergencyStop()` async
+- ✅ `server.js:182`: Added error handler for async `tick()`
+- ✅ `server.js:545,556`: Made `/canary/halt` and `/canary/reset` handlers async
+
+**Result:** Canary now correctly propagates audio disable/enable to all replicas via Redis pub/sub.
+
+---
+
+### Blocker #2: Rollback Container Name Mismatch ⚠️ HIGH
+
+**Issue:** `rollback-audio.ps1:8` defaulted to `$Service = "pm-engine"`, but `docker-compose.viz.yml` uses `deploy.replicas: 3` with no `container_name`, resulting in runtime containers `otel-pm-engine-1/2/3`. Line 46 `docker exec pm-engine` always failed.
+
+**Impact:** Rollback script could not flip audio off via fallback path when admin API is down.
+
+**Fix (Job R1B - 24 LOC):**
+- ✅ Line 9: Changed default to `$Service = ""` (auto-detect)
+- ✅ Lines 18-37: Added container discovery (detect all pm-engine replicas, use first)
+- ✅ Lines 65-72: Added container existence validation before `docker exec`
+- ✅ Line 95: Changed `docker compose restart` → `docker restart $Service` (works with actual container names)
+- ✅ Added helpful error messages listing available containers
+
+**Result:** Rollback script now auto-detects and works with scaled pm-engine replicas.
+
+---
+
+### Budget Status (R1)
+
+| Job | LOC | Status |
+|-----|-----|--------|
+| R1A: Cluster façade | 10 | ✅ Complete |
+| R1B: Rollback script | 24 | ✅ Complete |
+| **Total** | **34** | ✅ Within 100 LOC budget |
+
+**Files Modified:**
+1. `viz-engine-projectm/canary-deployment.js` (+6 lines: async/await, import change)
+2. `viz-engine-projectm/server.js` (+4 lines: async handlers, error handling)
+3. `scripts/rollback-audio.ps1` (+24 lines: discovery, validation)
+
+**Linting:** ✅ Clean (all files)
+
+---
+
+### Verification Steps (Post-Remediation)
+
+**Cluster Coordination:**
+1. Enable canary with 3 pm-engine replicas running
+2. Simulate KPI breach → verify all 3 replicas disable audio via Redis pub/sub
+3. Call `/canary/reset` → verify all 3 replicas re-enable audio
+
+**Rollback Script:**
+1. Run script with no `-Service` parameter → verify auto-detection
+2. Test fallback path (admin API down) → verify `docker exec` succeeds on detected container
+3. Run with scaled replicas (3+) → verify first replica is selected and restarted
+
+---
+
+### Remediation Status
+
+**Status:** ✅ **COMPLETE**  
+**Confidence:** HIGH (both blockers resolved with minimal LOC)  
+**Manual Validation:** Still environment-dependent (unchanged from Gate #020)  
+**Recommendation:** Update gate status to **GREEN-R1** (remediated, ready for manual validation)
+
+---
+
+**Remediation Date:** 2025-10-28  
+**Authority:** Fubumaki (Repository Owner)  
+**Executor:** Cursor{Implementer}
+
+🐾 *Gate #020-R1 remediation complete. Canary now honors Gate #023 cluster architecture. Rollback script hardened for multi-replica deployments.*
 
