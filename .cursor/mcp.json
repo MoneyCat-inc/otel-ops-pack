@@ -1,8 +1,9 @@
 {
   "mcpServers": {
     "bedrock": {
-      "command": "node",
+      "command": "npx",
       "args": [
+        "ts-node",
         "scripts/demo/explain-trace.ts"
       ],
       "env": {
