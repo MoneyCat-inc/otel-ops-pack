@@ -78,7 +78,12 @@ services:
       - viz-net
 
   # Gate #012: ProjectM container (native .milk renderer)
+  # NOTE: Not required for investor demo - milk-v0 now fetches from md3-engine
+  # Disabled by default to save 10 CPU cores (855-1028% CPU when running)
+  # To enable: docker-compose -f docker-compose.viz.yml up -d pm-engine
   pm-engine:
+    profiles:
+      - projectm  # Disabled unless explicitly started with --profile projectm
     build:
       context: ./viz-engine-projectm
     image: bosscat/viz-engine-projectm:latest
@@ -119,7 +124,7 @@ services:
     networks:
       - viz-net
 
-  # Gate #011: Milk v0 viewer (MJPEG stream from pm-engine X display)
+  # Gate #011: Milk v0 viewer (MJPEG stream from md3-engine Butterchurn)
   milk-v0:
     build:
       context: ./docs/milk-v0
@@ -127,15 +132,11 @@ services:
     ports:
       - "8090:8080"  # Milk viewer HTTP (host 8090 -> container 8080)
     environment:
-      - DISPLAY=:99
-      - GEOMETRY=1280x720  # Reduced from 1920x1080 to lower CPU load (44% fewer pixels)
-      - FPS=15  # Reduced from 30 to 15 for CPU headroom and smoother encoding
-    # Share X11 socket via bind mount from host
-    volumes:
-      - /tmp/.X11-unix:/tmp/.X11-unix:rw
-    # Start after pm-engine's Xvfb is ready
+      - FPS=15  # Frame rate for MJPEG stream from md3-engine
+    # No X11 socket needed - fetches from md3-engine HTTP endpoint
+    # Start after md3-engine is ready
     depends_on:
-      pm-engine:
+      md3-engine:
         condition: service_healthy
     restart: unless-stopped
     networks:
