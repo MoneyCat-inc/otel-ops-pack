@@ -89,9 +89,9 @@ services:
       - DISPLAY=:99
       - PM_PRESET_DIR=/app/presets
       - PM_FIFO=/dev/shm/md3.pcm
-      - PM_WIDTH=1920
-      - PM_HEIGHT=1080
-      - PM_FPS=30
+      - PM_WIDTH=1280  # Match milk-v0 output (was 1920)
+      - PM_HEIGHT=720  # Match milk-v0 output (was 1080)
+      - PM_FPS=15      # Match milk-v0 output (was 30) - reduces CPU by 8×
       - PM_WIN_CLASS=projectM
       - PORT=7020
       - AUDIO_STATE_FILE=/app/config/audio-state.json  # BOSSCAT-021A: Persistent audio switch
