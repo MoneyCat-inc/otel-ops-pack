@@ -1,10 +1,11 @@
-#!/usr/bin/env ts-node
+#!/usr/bin/env tsx
 /**
  * Investor Demo: Bedrock-Powered Trace Explanation
  * Authority: BossCat OEM | Executor: Cursor{Implementer}
  * Phase 3: AI-powered trace analysis via Amazon Bedrock
  * 
  * Extracts trace summary and sends to Bedrock Claude for natural-language explanation
+ * Execution: npx tsx scripts/demo/explain-trace.ts
  */
 
 import {
