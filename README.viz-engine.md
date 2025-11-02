@@ -13,6 +13,14 @@ Containerized Milkdrop (Butterchurn WebGL) visual engine with:
 - **Automated quality scoring** (aspect, motion, beat sync)
 - **ECRR integration** (artifacts, rollback on FAIL)
 
+## [Documentation Updates]
+
+1. **GPU Container Setup**: Detailed instructions on setting up the GPU container for optimal performance.
+2. **Troubleshooting Runbook**: A comprehensive guide for common issues encountered with the viz-engine → [vizr-troubleshooting.md](docs/runbooks/vizr-troubleshooting.md)
+3. **VirtualGL Deployment**: Steps for deploying VirtualGL and its rendering pipeline.
+4. **ECRR Report**: Current state of the visualizer documented for compliance.
+5. **Architecture Diagram**: Visual representation of telemetry flow for better understanding → [architecture-diagram.md](docs/ecrr/architecture-diagram.md)
+
 ---
 
 ## [Quick Start]
