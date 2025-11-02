@@ -1,0 +1,71 @@
+name: Quil DOCS Lane Automation
+
+on:
+  workflow_dispatch:
+    inputs:
+      ticket:
+        description: 'Ticket number (1-3)'
+        required: true
+        default: '1'
+      dryRun:
+        description: 'Dry run only'
+        required: false
+        default: 'true'
+  schedule:
+    - cron: '0 4 * * 1'  # Mondays at 04:00 UTC (after weekly review)
+
+concurrency:
+  group: quil-docs-lane-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  quil-docs-lane:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 20
+
+      - name: 🔐 Configure secrets
+        run: |
+          if (-not "$env:QUIL_API_KEY") {
+            Write-Error "QUIL_API_KEY secret not configured."
+            exit 1
+          }
+        env:
+          QUIL_API_KEY: ${{ secrets.QUIL_API_KEY }}
+
+      - name: 🪶 Invoke Quil
+        env:
+          OPENAI_API_KEY: ${{ secrets.QUIL_API_KEY }}
+        run: |
+          $ticket = [int]::Parse('${{ github.event.inputs.ticket || '1' }}')
+          $dry = '${{ github.event.inputs.dryRun || 'true' }}'
+
+          Write-Host "Running Quil for DOCS Ticket $ticket (DryRun=$dry)"
+
+          $params = @{
+            Ticket = $ticket
+          }
+          if ($dry -eq 'true') {
+            $params['DryRun'] = $true
+          }
+
+          pwsh -File scripts/invoke-quil.ps1 @params
+
+      - name: ✅ Summary
+        if: always()
+        run: |
+          if (Test-Path artifacts\codex\cursor-instructions.md) {
+            echo "### Quil Output" >> $env:GITHUB_STEP_SUMMARY
+            echo "- Ticket: ${{ github.event.inputs.ticket || '1' }}" >> $env:GITHUB_STEP_SUMMARY
+            echo "- Dry Run: ${{ github.event.inputs.dryRun || 'true' }}" >> $env:GITHUB_STEP_SUMMARY
+            echo "- Workplan: [cursor-instructions.md](./artifacts/codex/cursor-instructions.md)" >> $env:GITHUB_STEP_SUMMARY
+          } else {
+            echo "Quil did not produce a workplan. Check logs." >> $env:GITHUB_STEP_SUMMARY
+          }

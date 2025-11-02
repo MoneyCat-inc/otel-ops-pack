@@ -1,0 +1,71 @@
+name: Lumi VIZR Lane Automation
+
+on:
+  workflow_dispatch:
+    inputs:
+      ticket:
+        description: 'Ticket number (4-5)'
+        required: true
+        default: '4'
+      dryRun:
+        description: 'Dry run only'
+        required: false
+        default: 'true'
+  schedule:
+    - cron: '30 4 * * 1'  # Mondays at 04:30 UTC (after Quil)
+
+concurrency:
+  group: lumi-vizr-lane-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  lumi-vizr-lane:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 20
+
+      - name: 🔐 Configure secrets
+        run: |
+          if (-not "$env:LUMI_API_KEY") {
+            Write-Error "LUMI_API_KEY secret not configured."
+            exit 1
+          }
+        env:
+          LUMI_API_KEY: ${{ secrets.LUMI_API_KEY }}
+
+      - name: ✨ Invoke Lumi
+        env:
+          OPENAI_API_KEY: ${{ secrets.LUMI_API_KEY }}
+        run: |
+          $ticket = [int]::Parse('${{ github.event.inputs.ticket || '4' }}')
+          $dry = '${{ github.event.inputs.dryRun || 'true' }}'
+
+          Write-Host "Running Lumi for VIZR Ticket $ticket (DryRun=$dry)"
+
+          $params = @{
+            Ticket = $ticket
+          }
+          if ($dry -eq 'true') {
+            $params['DryRun'] = $true
+          }
+
+          pwsh -File scripts/invoke-lumi.ps1 @params
+
+      - name: ✅ Summary
+        if: always()
+        run: |
+          if (Test-Path artifacts\codex\cursor-instructions.md) {
+            echo "### Lumi Output" >> $env:GITHUB_STEP_SUMMARY
+            echo "- Ticket: ${{ github.event.inputs.ticket || '4' }}" >> $env:GITHUB_STEP_SUMMARY
+            echo "- Dry Run: ${{ github.event.inputs.dryRun || 'true' }}" >> $env:GITHUB_STEP_SUMMARY
+            echo "- Workplan: [cursor-instructions.md](./artifacts/codex/cursor-instructions.md)" >> $env:GITHUB_STEP_SUMMARY
+          } else {
+            echo "Lumi did not produce a workplan. Check logs." >> $env:GITHUB_STEP_SUMMARY
+          }
