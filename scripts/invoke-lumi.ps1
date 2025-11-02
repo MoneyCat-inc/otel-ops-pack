@@ -92,16 +92,19 @@ Ticket Prompt:
 $($ticketInfo.prompt)
 "@
 
-# Include relevant files explicitly
+# Include relevant files explicitly (not directories - codex-scan skips dirs)
 $includePaths = @(
     "README.viz-engine.md",
-    "docs/vizr",
-    "docs/audio",
-    "docs/runbooks",
-    "scripts",
+    "docs/vizr/ARCHITECTURE_DIAGRAM.md",
+    "docs/runbooks/vizr-troubleshooting.md",
+    "docs/gpu/RUN_AND_VERIFY.md",
+    "viz-engine-projectm-gpu/README.md",
+    "viz-engine-projectm-gpu/Dockerfile.projectm-vgl",
+    "docker-compose.viz.yml",
     "docs/ecrr/ECRR_TEMPLATE.md",
-    "docs/ecrr/INDEX.md"
-)
+    "docs/ecrr/INDEX.md",
+    "docs/ecrr/REMEDIATION_PLAN.md"
+) | Where-Object { Test-Path (Join-Path $root $_) } | Select-Object -Unique
 
 if ($DryRun) {
     Write-Host "[DRY RUN] Lumi would run with question:" -ForegroundColor Yellow

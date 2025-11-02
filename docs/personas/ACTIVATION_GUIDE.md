@@ -107,12 +107,15 @@ code artifacts\codex\cursor-instructions.md
 # Human backup (Maya Singh) reviews
 # Commit when approved
 git add .
-git commit -m "[DOCS] Architecture docs cleanup (Quil/Ticket 1)
+$commitMsg = @"
+[DOCS] Architecture docs cleanup (Quil/Ticket 1)
 
 @cat ready-for-gate
 
 Co-authored-by: VelvetQuill-42 <quil@catnap.local>
-Reviewed-by: Maya Singh <maya@example.com>"
+Reviewed-by: Maya Singh <maya@example.com>
+"@
+git commit -m $commitMsg
 ```
 
 ### Option B: GitHub Actions Workflow
