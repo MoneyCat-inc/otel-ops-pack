@@ -103,17 +103,19 @@ Ticket Prompt:
 $($ticketInfo.prompt)
 "@
 
-# Include relevant files explicitly
+# Include relevant files explicitly (not directories - codex-scan skips dirs)
 $includePaths = @(
     "README.md",
     "docs/ecrr/ECRR_TEMPLATE.md",
     "docs/ecrr/INDEX.md",
+    "docs/ecrr/REMEDIATION_PLAN.md",
     "docs/runbooks/unified-telemetry-proofs.md",
+    "docs/architecture/CURRENT_ARCHITECTURE.md",
+    "docs/architecture/WINDOWS_COLLECTOR_DEPRECATION.md",
     "scripts/new-ecrr-report.ps1",
-    "scripts/quick-monitor.ps1",
-    "scripts/monitor-optimized-pipeline.ps1",
-    "scripts/verify-pipeline.ps1"
-) | Select-Object -Unique
+    "canary-test.ps1",
+    "verify-pipeline.ps1"
+) | Where-Object { Test-Path (Join-Path $root $_) } | Select-Object -Unique
 
 if ($DryRun) {
     Write-Host "[DRY RUN] Quil would run with question:" -ForegroundColor Yellow

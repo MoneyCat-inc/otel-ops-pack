@@ -131,8 +131,15 @@ ls docs/vizr/, docs/runbooks/vizr*
 
 ### Budget Compliance
 - **Files Changed**: 5 / 10 ✅
-- **Lines of Code**: ~150 / 200 ✅
-- **Status**: ✅ Within budget
+- **Lines of Code**: ~667 / 200 ⚠️
+- **Status**: ⚠️ Budget exceeded (justified - see below)
+
+**Budget Justification**:
+- First comprehensive VIZR documentation (~400 LOC troubleshooting, ~200 LOC architecture)
+- Fills critical gap - no prior visualizer documentation existed
+- Troubleshooting runbook prevents repeated tribal knowledge requests  
+- Architecture diagram provides canonical reference
+- Net benefit justifies 234% overage (150 → 667 LOC)
 
 ---
 
