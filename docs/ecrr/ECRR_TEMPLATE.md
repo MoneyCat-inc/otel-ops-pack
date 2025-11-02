@@ -14,6 +14,11 @@
 
 **Note**: This template reflects the current **direct-to-SigNoz architecture**. See [docs/architecture/CURRENT_ARCHITECTURE.md](../architecture/CURRENT_ARCHITECTURE.md) for details.
 
+**Resources**:
+- Troubleshooting guides: [docs/runbooks/](../runbooks/)
+- Architecture diagrams: [docs/vizr/ARCHITECTURE_DIAGRAM.md](../vizr/ARCHITECTURE_DIAGRAM.md)
+- Current architecture: [docs/architecture/CURRENT_ARCHITECTURE.md](../architecture/CURRENT_ARCHITECTURE.md)
+
 ---
 
 ## 1️⃣ Examine
