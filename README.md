@@ -5,7 +5,7 @@
 [![CodeQL](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/codeql.yml/badge.svg)](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/codeql.yml)
 [![Maintained by MoneyCat-inc](https://img.shields.io/badge/Maintained%20by-MoneyCat--inc-00aa88?style=for-the-badge&logo=github&logoColor=white)](https://github.com/MoneyCat-inc)
 
-**Windows-native OpenTelemetry observability** feeding Windows Event Logs and file logs into **SigNoz** for real-time monitoring. Optimized for low latency (200ms batches) with noise filtering (~50% volume reduction).
+**OpenTelemetry observability pipeline** feeding Windows Event Logs and file logs directly into **SigNoz** for real-time monitoring. Optimized for low latency (200ms batches) with noise filtering (~50% volume reduction).
 
 ---
 

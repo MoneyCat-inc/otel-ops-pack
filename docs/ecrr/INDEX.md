@@ -8,6 +8,8 @@ Generated: 2025-11-01 23:23:17
 - **Archived Gate Reports**: 75
 - **Total Corpus**: 318
 
+**Architecture Note**: Reports reference the **direct-to-SigNoz architecture** as canonical (effective 2025-10-27). See [Windows Collector Deprecation](../architecture/WINDOWS_COLLECTOR_DEPRECATION.md) for migration details.
+
 ## Recent Reports (Last 30)
 
 | Date | Report | Status |
