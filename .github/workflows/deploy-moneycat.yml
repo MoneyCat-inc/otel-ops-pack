@@ -28,15 +28,15 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Pages
-        uses: actions/configure-pages@v4
+        uses: actions/configure-pages@v5
 
       - name: Build Pages artifact (hub root + MoneyCat subdirectory)
         run: |
           set -euo pipefail
           mkdir -p deploy
 
-          # Preserve hub root content
-          cp -v CNAME deploy/CNAME
+          # Preserve hub root content (only if files exist)
+          [ -f "CNAME" ] && cp -v CNAME deploy/CNAME || echo "CNAME not found, skipping"
           touch deploy/.nojekyll
           for f in index.html portal.html robots.txt humans.txt _config.yml favicon.svg favicon.ico; do
             if [ -f "$f" ]; then
@@ -45,16 +45,26 @@ jobs:
           done
 
           # Copy hub assets (only if directories exist)
-          [ -d "docs" ] && cp -r docs deploy/ || true
-          [ -d "assets" ] && cp -r assets deploy/ || true
-          [ -d "CHAR" ] && cp -r CHAR deploy/ || true
+          [ -d "docs" ] && cp -r docs deploy/ || echo "docs/ not found, skipping"
+          [ -d "assets" ] && cp -r assets deploy/ || echo "assets/ not found, skipping"
+          [ -d "CHAR" ] && cp -r CHAR deploy/ || echo "CHAR/ not found, skipping"
 
           # MoneyCat lives under /moneycat (no standalone CNAME)
-          [ -d "moneycat" ] && cp -r moneycat deploy/ || true
-          rm -f deploy/moneycat/CNAME
+          if [ -d "moneycat" ]; then
+            cp -r moneycat deploy/
+            rm -f deploy/moneycat/CNAME
+          else
+            echo "ERROR: moneycat/ directory not found!"
+            exit 1
+          fi
+          
+          # Verify deployment structure
+          echo "Deployment structure:"
+          ls -la deploy/
+          [ -d "deploy/moneycat" ] && echo "✓ moneycat/ copied successfully" || (echo "✗ moneycat/ missing!" && exit 1)
       
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: './deploy'
           retention-days: 30
