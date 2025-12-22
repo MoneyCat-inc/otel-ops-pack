@@ -1,0 +1,66 @@
+name: Deploy MoneyCat Website
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'moneycat/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Build Pages artifact (hub root + MoneyCat subdirectory)
+        run: |
+          set -euo pipefail
+          mkdir -p deploy
+
+          # Preserve hub root content
+          cp -v CNAME deploy/CNAME
+          touch deploy/.nojekyll
+          for f in index.html portal.html robots.txt humans.txt _config.yml favicon.svg favicon.ico; do
+            if [ -f "$f" ]; then
+              cp -v "$f" "deploy/$f"
+            fi
+          done
+
+          # Copy hub assets
+          rsync -av docs/ deploy/docs/
+          rsync -av assets/ deploy/assets/
+          rsync -av CHAR/ deploy/CHAR/
+
+          # MoneyCat lives under /moneycat (no standalone CNAME)
+          rsync -av moneycat/ deploy/moneycat/
+          rm -f deploy/moneycat/CNAME
+      
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './deploy'
+          retention-days: 30
+      # Note: Deploys Hub at root and MoneyCat at /moneycat
+      # Final URLs: hub.resonai.uk/ and hub.resonai.uk/moneycat/
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
