@@ -44,13 +44,13 @@ jobs:
             fi
           done
 
-          # Copy hub assets
-          rsync -av docs/ deploy/docs/
-          rsync -av assets/ deploy/assets/
-          rsync -av CHAR/ deploy/CHAR/
+          # Copy hub assets (only if directories exist)
+          [ -d "docs" ] && cp -r docs deploy/ || true
+          [ -d "assets" ] && cp -r assets deploy/ || true
+          [ -d "CHAR" ] && cp -r CHAR deploy/ || true
 
           # MoneyCat lives under /moneycat (no standalone CNAME)
-          rsync -av moneycat/ deploy/moneycat/
+          [ -d "moneycat" ] && cp -r moneycat deploy/ || true
           rm -f deploy/moneycat/CNAME
       
       - name: Upload artifact
