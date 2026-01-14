@@ -105,3 +105,7 @@ test-*.jpg
 __pycache__/
 *.pyc
 
+
+# ECRR compliance check runtime artifacts (timestamped JSON reports)
+artifacts/ecrr-compliance-check-*.json
+
