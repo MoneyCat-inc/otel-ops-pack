@@ -1,0 +1,93 @@
+# 🐾 AUTO-BOTS Registry (Tetragram Edition)
+
+**Grammar:** SET-SET-LANE-ROLE (4-4-4-4)  
+**Writers:** AUTO-BOTS-*-ALFA (Agent A - modifies files)  
+**Monitors:** IONA-CATS-*-BETA (Agent B - reads only, validates)
+
+> Budgets & lanes enforced; kill-switch respected; gate signal: **`@cat ready-for-gate`**
+
+---
+
+## The Bots
+
+| Badge | Bot Code | Title | Lane | Role | Task |
+|---|---|---|---|---|---|
+| <img src="./badges/auto-bots-ssot-alfa.svg" alt="AUTO-SSOT-ALFA" height="20"/> | **AUTO-BOTS-SSOT-ALFA** | SSOT Refresher | `SSOT` | ALFA | Regenerate SSOT and RUN_AND_VERIFY.md |
+| <img src="./badges/iona-cats-ssot-beta.svg" alt="IONA-SSOT-BETA" height="20"/> | **IONA-CATS-SSOT-BETA** | SSOT Auditor | `SSOT` | BETA | Verify docs-only diffs, ECRR, BOSSCAT_LOG |
+| <img src="./badges/auto-bots-flak-alfa.svg" alt="AUTO-FLAK-ALFA" height="20"/> | **AUTO-BOTS-FLAK-ALFA** | Flaky Test Quarantiner | `FLAK` | ALFA | Mark @flaky/skip and isolate |
+| <img src="./badges/iona-cats-flak-beta.svg" alt="IONA-FLAK-BETA" height="20"/> | **IONA-CATS-FLAK-BETA** | Test Stability Watch | `FLAK` | BETA | Validate scope (tests), collect evidence |
+| <img src="./badges/auto-bots-sele-alfa.svg" alt="AUTO-SELE-ALFA" height="20"/> | **AUTO-BOTS-SELE-ALFA** | Selector Hygienist | `SELE` | ALFA | Add data-testid + small ARIA |
+| <img src="./badges/iona-cats-sele-beta.svg" alt="IONA-SELE-BETA" height="20"/> | **IONA-CATS-SELE-BETA** | Selector Inspector | `SELE` | BETA | Check allowed files; ensure tests green |
+| <img src="./badges/auto-bots-comp-alfa.svg" alt="AUTO-COMP-ALFA" height="20"/> | **AUTO-BOTS-COMP-ALFA** | Security & A11y Fixer | `COMP` | ALFA | Remove inline scripts/styles; add a11y metadata |
+| <img src="./badges/iona-cats-comp-beta.svg" alt="IONA-COMP-BETA" height="20"/> | **IONA-CATS-COMP-BETA** | Compliance Auditor | `COMP` | BETA | Validate CSP/WCAG AA; ECRR trail |
+| <img src="./badges/auto-bots-docs-alfa.svg" alt="AUTO-DOCS-ALFA" height="20"/> | **AUTO-BOTS-DOCS-ALFA** | Docs Synchronizer | `DOCS` | ALFA | Refresh docs/runbooks to match reality |
+| <img src="./badges/iona-cats-docs-beta.svg" alt="IONA-DOCS-BETA" height="20"/> | **IONA-CATS-DOCS-BETA** | Docs Proofreader | `DOCS` | BETA | Lint/consistency; BOSSCAT_LOG + gate |
+| <img src="./badges/auto-bots-gate-alfa.svg" alt="AUTO-GATE-ALFA" height="20"/> | **AUTO-BOTS-GATE-ALFA** | Gate Runner | `GATE` | ALFA | Run perf + synthetic trace; emit ECRR; do not merge |
+| <img src="./badges/iona-cats-gate-beta.svg" alt="IONA-GATE-BETA" height="20"/> | **IONA-CATS-GATE-BETA** | Gate Monitor | `GATE` | BETA | Enforce budgets; collect evidence; advise BossCat |
+| <img src="./badges/auto-bots-site-alfa.svg" alt="AUTO-SITE-ALFA" height="20"/> | **AUTO-BOTS-SITE-ALFA** | Site Builder | `SITE` | ALFA | Build site + a11y + links; emit ECRR; do not merge |
+| <img src="./badges/iona-cats-site-beta.svg" alt="IONA-SITE-BETA" height="20"/> | **IONA-CATS-SITE-BETA** | Site Monitor | `SITE` | BETA | Validate CSP/WCAG/links; collect evidence; advise BossCat |
+
+---
+
+## Lane Definitions
+
+| Lane Code | Full Name | Purpose | Allow Patterns |
+|-----------|-----------|---------|----------------|
+| **SSOT** | Single Source of Truth | Artifact refresh | `**/.artifacts/**`, `**/RUN_AND_VERIFY.md` |
+| **FLAK** | Flaky Tests | Test quarantine | `**/tests/**`, `**/playwright/**` |
+| **SELE** | Selector Hygiene | Test stability | `**/components/**`, `**/tests/**` |
+| **COMP** | Compliance | Security & A11y | `**/*.html`, `**/*.tsx`, `**/*.ts` |
+| **DOCS** | Documentation | Docs drift | `**/docs/**`, `README.md` |
+| **GATE** | Quality Gate | Perf + Observability evidence | `tests/perf/**`, `scripts/synth-trace.ts`, read `docs/status.html`, `docs/assets/status.js` |
+| **SITE** | Site Health | Build, links, a11y, CSP | `docs/**`, write `artifacts/ecrr/site/**` |
+
+Budgets (all lanes): jobs ≤ 2, files ≤ 10, lines ≤ 200 per job.
+
+### Gate & Site — Quick Access
+
+[![Gate & Site Evidence](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/gate-site-evidence.yml/badge.svg)](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/gate-site-evidence.yml)
+[View Latest Status JSON](https://MoneyCat-inc.github.io/otel-ops-pack/status/LATEST.json) · [Open Dashboard](https://MoneyCat-inc.github.io/otel-ops-pack/docs/status.html)
+
+---
+
+## Usage
+
+### Run Writer (AUTO-BOTS-*-ALFA)
+```bash
+pnpm agent:run:ssot      # AUTO-BOTS-SSOT-ALFA
+pnpm agent:run:flaky     # AUTO-BOTS-FLAK-ALFA
+pnpm agent:run:selector  # AUTO-BOTS-SELE-ALFA
+pnpm agent:run:comp      # AUTO-BOTS-COMP-ALFA
+pnpm agent:run:docs      # AUTO-BOTS-DOCS-ALFA
+```
+
+### Monitor (IONA-CATS-*-BETA)
+```bash
+# IONA-CATS bots read artifacts/ecrr/<lane>/*.json
+# Validate ECRR structure, check budgets, append BOSSCAT_LOG
+# Never modify files or acquire locks
+```
+
+---
+
+## Tetragram Rules
+
+1. **4 letters per segment** - AUTO, BOTS, SSOT, ALFA
+2. **Hyphen-separated** - AUTO-BOTS-SSOT-ALFA
+3. **All uppercase** - No lowercase allowed
+4. **NATO spelling for roles** - ALFA (not ALPHA), BETA
+
+---
+
+## Evidence Trail
+
+Every bot run generates:
+- **ECRR artifact:** `artifacts/ecrr/<lane>/<timestamp>.json`
+- **BossCat log entry:** `docs/BossCat/BOSSCAT_LOG.md` (one-liner)
+- **Gate signal:** `@cat ready-for-gate` in PR when ready
+
+---
+
+**Last updated:** 2025-10-09T01:23:04.311Z  
+**Generated by:** `pnpm agent:setup`  
+**Authority:** 🐾 BossCat OEM (Executive Overseer Manager)

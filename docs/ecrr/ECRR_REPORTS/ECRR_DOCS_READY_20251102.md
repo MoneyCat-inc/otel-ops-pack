@@ -1,5 +1,17 @@
 # ECRR Report Template
 
+**Agent:** Cursor{Implementer}
+**Date:** 2026-01-14
+
+---
+
+
+**Agent:** Cursor{Implementer}
+**Date:** 2025-12-11
+
+---
+
+
 **Copy this template for every new ECRR report to ensure all 4 phases are documented.**
 
 ---
@@ -137,6 +149,22 @@ pwsh -File scripts\canary-test.ps1
 **Sign-off**:
 - **A (Writer)**: [Name, Date]
 - **B (Monitor)**: [Name, Date]
+
+## Examine
+
+<!-- Add examination details here -->
+
+## Clean
+
+<!-- Add cleanup/implementation details here -->
+
+## Report
+
+<!-- Add report/summary details here -->
+
+## Role
+
+<!-- Add role/next actions here -->
 
 ### Next Actions
 1. [Action 1: e.g., "Monitor for 24h"]

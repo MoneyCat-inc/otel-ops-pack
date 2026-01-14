@@ -118,7 +118,7 @@ See [Status Dashboard](docs/status.html) for detailed metrics.
 
 ```powershell
 # Health check
-pwsh scripts/quick-monitor.ps1
+pwsh BRAV\SCPT\quick-monitor.ps1
 
 # Detailed monitoring
 pwsh scripts/monitor-optimized-pipeline.ps1 -DurationMinutes 10
