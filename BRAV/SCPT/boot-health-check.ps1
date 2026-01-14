@@ -202,7 +202,7 @@ Write-BootLog "Checking IONA Integration..." -Level INFO
 # IONA Boot Telemetry
 if ($SendTelemetry) {
     Test-ComponentHealth -Name "IONA Boot Telemetry" -Required $false -Check {
-        $ionaScript = Join-Path $PSScriptRoot "..\scripts\send_iona_boot_span.mjs"
+        $ionaScript = Join-Path $PSScriptRoot "send_iona_boot_span.mjs"
         if (Test-Path $ionaScript) {
             try {
                 & node $ionaScript 2>&1 | Out-Null
