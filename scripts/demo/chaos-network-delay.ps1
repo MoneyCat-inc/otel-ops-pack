@@ -12,7 +12,8 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-Write-Host "=== Network Delay Chaos ===" -ForegroundColor Yellow
+try {
+    Write-Host "=== Network Delay Chaos ===" -ForegroundColor Yellow
 
 if ($Action -eq 'start') {
     Write-Host "🐌 Injecting ${DelayMs}ms latency..." -ForegroundColor Yellow
@@ -31,5 +32,10 @@ if ($Action -eq 'start') {
     Write-Host "✅ Clearing network delay..." -ForegroundColor Green
     Write-Host "   Expected impact: P95 latency returns to ~112ms baseline" -ForegroundColor Gray
     exit 0
+}
+} catch {
+    Write-Error "Chaos script failed: $_"
+    Write-Host "Rollback: No changes applied" -ForegroundColor Yellow
+    exit 1
 }
 
