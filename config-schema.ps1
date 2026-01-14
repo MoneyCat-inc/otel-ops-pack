@@ -115,7 +115,7 @@ if ($configContent -match "processors:") {
     Add-Warning "Memory limiter processor not configured"
   }
   
-  if ($configContent -match "batch:") {
+  if ($configContent -match "(?m)^\s+batch[^:]*:") {
     Add-Pass "Batch processor configured"
   } else {
     Add-Warning "Batch processor not configured"

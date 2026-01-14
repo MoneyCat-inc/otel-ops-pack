@@ -1,0 +1,162 @@
+name: Weekly Executive Review
+
+on:
+  schedule:
+    # Every Monday at 3 AM UTC (after weekly cleanup)
+    - cron: '0 3 * * 1'
+  workflow_dispatch:
+    inputs:
+      maxFiles:
+        description: 'Max files per chunk'
+        required: false
+        default: '30'
+      model:
+        description: 'OpenAI model to use'
+        required: false
+        default: 'gpt-4o-mini'
+
+concurrency:
+  group: executive-review-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  executive-review:
+    runs-on: windows-latest
+    # Allow manual runs from any maintainer, auto-run on schedule
+    
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 50  # Last 50 commits for analysis
+      
+      - name: 🔍 Chunk 1 - Configuration & Infrastructure
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          $question = @"
+          Executive review of OTel configuration and infrastructure:
+          - Architecture soundness
+          - Deployment readiness
+          - Configuration drift risks
+          - Performance settings (batch timeouts)
+          "@
+          
+          .\codex\codex-review-openai.ps1 `
+            -Since HEAD~20 `
+            -MaxFiles ${{ github.event.inputs.maxFiles || '30' }} `
+            -Model "${{ github.event.inputs.model || 'gpt-4o-mini' }}" `
+            -Question $question `
+            -IncludePaths @("config.yaml", "windows/otelcol/otelcol-contrib-config.yaml")
+          
+          Copy-Item artifacts\codex\review.json artifacts\codex\review-chunk1-config.json -Force
+          Copy-Item artifacts\codex\review-summary.md artifacts\codex\review-chunk1-config.md -Force
+      
+      - name: 🔍 Chunk 2 - Monitoring & Validation
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          $question = @"
+          Executive review of monitoring and validation infrastructure:
+          - Observability completeness
+          - Testing coverage gaps
+          - Error detection capabilities
+          "@
+          
+          .\codex\codex-review-openai.ps1 `
+            -Since HEAD~20 `
+            -MaxFiles ${{ github.event.inputs.maxFiles || '30' }} `
+            -Model "${{ github.event.inputs.model || 'gpt-4o-mini' }}" `
+            -Question $question `
+            -IncludePaths @("canary-test.ps1", "verify-pipeline.ps1")
+          
+          Copy-Item artifacts\codex\review.json artifacts\codex\review-chunk2-monitoring.json -Force
+          Copy-Item artifacts\codex\review-summary.md artifacts\codex\review-chunk2-monitoring.md -Force
+      
+      - name: 🔍 Chunk 3 - Chaos & Demo
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          $question = @"
+          Executive review of chaos engineering:
+          - Demo reliability
+          - Error handling robustness
+          - Resource cleanup patterns
+          "@
+          
+          .\codex\codex-review-openai.ps1 `
+            -Since HEAD~20 `
+            -MaxFiles ${{ github.event.inputs.maxFiles || '25' }} `
+            -Model "${{ github.event.inputs.model || 'gpt-4o-mini' }}" `
+            -Question $question
+          
+          Copy-Item artifacts\codex\review.json artifacts\codex\review-chunk3-chaos.json -Force
+          Copy-Item artifacts\codex\review-summary.md artifacts\codex\review-chunk3-chaos.md -Force
+      
+      - name: 🔍 Chunk 4 - Documentation
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          $question = @"
+          Executive review of documentation:
+          - Runbook completeness
+          - Documentation gaps
+          - Onboarding clarity
+          "@
+          
+          .\codex\codex-review-openai.ps1 `
+            -Since HEAD~20 `
+            -MaxFiles ${{ github.event.inputs.maxFiles || '25' }} `
+            -Model "${{ github.event.inputs.model || 'gpt-4o-mini' }}" `
+            -Question $question `
+            -IncludePaths @("README.md", "docs/runbooks/windows-collector.md")
+          
+          Copy-Item artifacts\codex\review.json artifacts\codex\review-chunk4-docs.json -Force
+          Copy-Item artifacts\codex\review-summary.md artifacts\codex\review-chunk4-docs.md -Force
+      
+      - name: 📊 Consolidate Reviews
+        run: |
+          pwsh -File scripts/consolidate-executive-review.ps1
+      
+      - name: 📈 Generate Trend Analysis
+        run: |
+          pwsh -File scripts/executive-review-trend.ps1
+      
+      - name: 📋 Generate Summary
+        if: always()
+        run: |
+          $master = Get-Content artifacts\codex\executive-review-master.json | ConvertFrom-Json
+          
+          echo "### 📊 Weekly Executive Review" >> $env:GITHUB_STEP_SUMMARY
+          echo "" >> $env:GITHUB_STEP_SUMMARY
+          echo "**Date:** $(Get-Date -Format 'yyyy-MM-dd HH:mm UTC')" >> $env:GITHUB_STEP_SUMMARY
+          echo "**Model:** ${{ github.event.inputs.model || 'gpt-4o-mini' }}" >> $env:GITHUB_STEP_SUMMARY
+          echo "**Chunks:** 4" >> $env:GITHUB_STEP_SUMMARY
+          echo "" >> $env:GITHUB_STEP_SUMMARY
+          echo "#### Findings" >> $env:GITHUB_STEP_SUMMARY
+          echo "- Strengths: $($master.strengths.Count)" >> $env:GITHUB_STEP_SUMMARY
+          echo "- Risks: $($master.risks.Count) (HIGH: $(($master.risks | Where-Object {$_.severity -eq 'HIGH'}).Count))" >> $env:GITHUB_STEP_SUMMARY
+          echo "- Recommendations: $($master.recommendations.Count)" >> $env:GITHUB_STEP_SUMMARY
+          echo "" >> $env:GITHUB_STEP_SUMMARY
+          echo "[Download Full Review](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $env:GITHUB_STEP_SUMMARY
+      
+      - name: 📤 Upload Executive Review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: executive-review-${{ github.run_number }}
+          path: |
+            artifacts/codex/executive-review-*.json
+            artifacts/codex/executive-review-*.md
+            artifacts/codex/review-chunk*.json
+            artifacts/codex/review-chunk*.md
+          retention-days: 30
+
+      - name: 📊 Upload Dashboard
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: executive-dashboard-${{ github.run_number }}
+          path: docs/executive-dashboard.html
+          retention-days: 30
+

@@ -61,7 +61,12 @@ jobs:
           # Verify deployment structure
           echo "Deployment structure:"
           ls -la deploy/
-          [ -d "deploy/moneycat" ] && echo "✓ moneycat/ copied successfully" || (echo "✗ moneycat/ missing!" && exit 1)
+          if [ -d "deploy/moneycat" ]; then
+            echo "[OK] moneycat/ copied successfully"
+          else
+            echo "[ERROR] moneycat/ missing!"
+            exit 1
+          fi
       
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
