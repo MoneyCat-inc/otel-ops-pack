@@ -44,9 +44,6 @@
   // Contact Form Handling
   const contactForm = document.querySelector('.contact-form');
   if (contactForm) {
-    const submitButton = contactForm.querySelector('button[type="submit"]');
-    const originalButtonText = submitButton ? submitButton.textContent : null;
-    
     contactForm.addEventListener('submit', function(event) {
       event.preventDefault();
       
@@ -57,11 +54,6 @@
       // Basic validation
       if (!data.name || !data.email || !data.subject || !data.message) {
         alert('Please fill in all required fields.');
-        // Reset button state on validation failure
-        if (submitButton && originalButtonText) {
-          submitButton.textContent = originalButtonText;
-          submitButton.disabled = false;
-        }
         return;
       }
 
@@ -69,11 +61,6 @@
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(data.email)) {
         alert('Please enter a valid email address.');
-        // Reset button state on validation failure
-        if (submitButton && originalButtonText) {
-          submitButton.textContent = originalButtonText;
-          submitButton.disabled = false;
-        }
         return;
       }
 
@@ -81,12 +68,6 @@
       // For now, we'll just show a success message
       alert('Thank you for your message! We\'ll get back to you soon. 🐾');
       contactForm.reset();
-      
-      // Reset button state after successful submission
-      if (submitButton && originalButtonText) {
-        submitButton.textContent = originalButtonText;
-        submitButton.disabled = false;
-      }
     });
   }
 
