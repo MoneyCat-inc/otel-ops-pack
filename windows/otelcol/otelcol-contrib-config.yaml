@@ -27,10 +27,20 @@ receivers:
     start_at: end
     poll_interval: 1s
 
+  # OTLP receiver for application telemetry (Gate #029 fix)
+  # Accepts traces/metrics/logs from instrumented applications
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:5317  # Listen on port 5317 for gRPC
+      http:
+        endpoint: 0.0.0.0:5318  # Listen on port 5318 for HTTP
+
 processors:
   batch:
-    timeout: 10s
-    send_batch_size: 1024
+    timeout: 200ms
+    send_batch_size: 512
+    send_batch_max_size: 1024
 
   memory_limiter:
     check_interval: 2s
@@ -81,5 +91,12 @@ service:
     logs:
       receivers: [windowseventlog, windowseventlog/system]
       processors: [resource, batch]
+      exporters: [otlp, logging]
+
+    # Application traces pipeline (Gate #029 fix)
+    # Forwards OTLP traces from instrumented apps to SigNoz
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, resource, batch]
       exporters: [otlp, logging]
 
