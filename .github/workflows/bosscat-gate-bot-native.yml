@@ -83,6 +83,13 @@ jobs:
       - name: 📋 Validate Compose File
         shell: bash
         run: docker compose -f "$SIGNOZ_COMPOSE" config >/dev/null
+
+      - name: 🕸️ Ensure external network exists
+        shell: bash
+        run: |
+          # docker-compose-signoz.yml declares signoz-net as external.
+          # CI runners start with no user-defined networks, so create it.
+          docker network create signoz-net >/dev/null 2>&1 || true
       
       - name: 📥 Pre-pull SigNoz Images (3 attempts)
         shell: bash
