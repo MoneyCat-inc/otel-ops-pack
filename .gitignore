@@ -35,6 +35,7 @@ docs/BossCat/visuals/vendor/
 
 # Ephemeral logs
 *.last.log
+logs/
 logs/**/*.last.log
 *.docx
 *.pdf
@@ -109,3 +110,9 @@ __pycache__/
 # ECRR compliance check runtime artifacts (timestamped JSON reports)
 artifacts/ecrr-compliance-check-*.json
 
+
+# Boot health reports and runtime artifacts
+scripts/artifacts/
+
+# Generated health check reports
+HEALTH_CHECK_REPORT.md
