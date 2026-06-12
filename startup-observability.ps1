@@ -72,14 +72,24 @@ function Start-DockerDesktop {
 function Start-SigNozStack {
     Write-Host "📊 Starting SigNoz Stack..." -ForegroundColor Cyan
     
-    if (-not (Test-Path "docker-compose.yml")) {
-        Write-Host "❌ docker-compose.yml not found" -ForegroundColor Red
+    # Check for docker-compose.yml in script directory or current directory
+    $scriptDir = Split-Path -Parent $MyInvocation.PSCommandPath
+    $composeFile = Join-Path $scriptDir "docker-compose.yml"
+    if (-not (Test-Path $composeFile)) {
+        $composeFile = "docker-compose.yml"
+    }
+    
+    if (-not (Test-Path $composeFile)) {
+        Write-Host "❌ docker-compose.yml not found in $scriptDir or current directory" -ForegroundColor Red
+        Write-Host "   Current directory: $(Get-Location)" -ForegroundColor Yellow
         return $false
     }
     
     try {
-        Write-Host "🔄 Starting SigNoz containers..." -ForegroundColor Yellow
-        docker-compose up -d
+        Write-Host "🔄 Starting SigNoz containers from $composeFile..." -ForegroundColor Yellow
+        Push-Location $scriptDir
+        docker-compose -f $composeFile up -d
+        Pop-Location
         
         if ($LASTEXITCODE -eq 0) {
             Write-Host "✅ SigNoz stack started successfully" -ForegroundColor Green
@@ -164,17 +174,47 @@ function Start-WindowsCollector {
         return $false
     }
     
+    # Check if service is disabled
+    if ($service.StartType -eq 'Disabled') {
+        Write-Host "⚠️  Service is disabled. Attempting to enable..." -ForegroundColor Yellow
+        
+        # Check if we have admin rights
+        if (-not (Test-Administrator)) {
+            Write-Host "❌ Administrator rights required to enable Windows Collector service" -ForegroundColor Red
+            Write-Host "   Please run PowerShell as Administrator and run:" -ForegroundColor Yellow
+            Write-Host "   Set-Service -Name 'otelcol-contrib' -StartupType Automatic" -ForegroundColor Gray
+            Write-Host "   Start-Service -Name 'otelcol-contrib'" -ForegroundColor Gray
+            return $false
+        }
+        
+        try {
+            Set-Service -Name "otelcol-contrib" -StartupType Automatic
+            Write-Host "✅ Service enabled successfully" -ForegroundColor Green
+        } catch {
+            Write-Host "❌ Failed to enable service: $($_.Exception.Message)" -ForegroundColor Red
+            return $false
+        }
+    }
+    
     # Start the service
     try {
         if ($service.Status -ne "Running") {
-            Start-Service -Name "otelcol-contrib"
-            Write-Host "✅ Windows OTEL Collector started" -ForegroundColor Green
+            Start-Service -Name "otelcol-contrib" -ErrorAction Stop
+            Start-Sleep -Seconds 2
+            $service = Get-Service -Name "otelcol-contrib"
+            if ($service.Status -eq "Running") {
+                Write-Host "✅ Windows OTEL Collector started successfully" -ForegroundColor Green
+            } else {
+                Write-Host "❌ Service started but status is: $($service.Status)" -ForegroundColor Red
+                return $false
+            }
         } else {
             Write-Host "✅ Windows OTEL Collector already running" -ForegroundColor Green
         }
         return $true
     } catch {
         Write-Host "❌ Failed to start Windows Collector: $($_.Exception.Message)" -ForegroundColor Red
+        Write-Host "   Service Status: $($service.Status), StartType: $($service.StartType)" -ForegroundColor Yellow
         return $false
     }
 }

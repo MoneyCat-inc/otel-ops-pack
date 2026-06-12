@@ -12,7 +12,8 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-Write-Host "=== CPU Throttle Chaos ===" -ForegroundColor Yellow
+try {
+    Write-Host "=== CPU Throttle Chaos ===" -ForegroundColor Yellow
 
 if ($Action -eq 'start') {
     Write-Host "🔥 Injecting CPU throttle (${CpuLimitPercent}% limit)..." -ForegroundColor Yellow
@@ -31,5 +32,10 @@ if ($Action -eq 'start') {
     Write-Host "✅ Clearing CPU throttle..." -ForegroundColor Green
     Write-Host "   Expected impact: Processing returns to normal, latency stabilizes" -ForegroundColor Gray
     exit 0
+}
+} catch {
+    Write-Error "Chaos script failed: $_"
+    Write-Host "Rollback: No changes applied" -ForegroundColor Yellow
+    exit 1
 }
 

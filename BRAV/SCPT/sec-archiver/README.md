@@ -122,7 +122,7 @@ All operations follow **ECRR methodology**:
 ## Related Documentation
 
 - **Cheatsheet**: `docs/cheatsheets/security-notifications-archiver.md`
-- **BossCat Charter**: `docs/BossCat/AGENTS.md`
+- **BossCat Charter**: `docs/BossCat/CHARTER.md`
 - **ECRR Reports**: `docs/ecrr/ECRR_REPORTS/`
 - **Index Schemas**: `docs/BossCat/{security,notifications}/*.schema.json`
 
@@ -132,4 +132,3 @@ All operations follow **ECRR methodology**:
 **Status**: Production-ready
 
 🐾 **BossCat Security Conveyor**
-

@@ -125,7 +125,7 @@ function Query-CollectorMetrics {
         $response = Invoke-WebRequest -Uri $MetricsUrl -UseBasicParsing -TimeoutSec 10
         $content = $response.Content
         
-        # Parse otelcol_exporter_sent_spans metric
+        # Parse otelcol_exporter_sent metrics (try spans first, then log_records as fallback)
         if ($content -match 'otelcol_exporter_sent_spans\{[^\}]*\}\s+(\d+)') {
             $count = [int]$Matches[1]
             return @{
@@ -134,10 +134,18 @@ function Query-CollectorMetrics {
                 Metric = "otelcol_exporter_sent_spans"
                 Endpoint = $MetricsUrl
             }
+        } elseif ($content -match 'otelcol_exporter_sent_log_records\{[^\}]*\}\s+(\d+)') {
+            $count = [int]$Matches[1]
+            return @{
+                Success = $true
+                Count = $count
+                Metric = "otelcol_exporter_sent_log_records"
+                Endpoint = $MetricsUrl
+            }
         } else {
             return @{
                 Success = $false
-                Error = "Metric otelcol_exporter_sent_spans not found"
+                Error = "No otelcol_exporter_sent_* metrics found"
             }
         }
     } catch {

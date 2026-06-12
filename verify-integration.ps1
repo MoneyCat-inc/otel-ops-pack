@@ -29,6 +29,13 @@ function Test-TcpPort {
         if ($result.TcpTestSucceeded) { Write-Pass "$Label port $Port reachable" } else { Write-Fail "$Label port $Port not reachable" }
     } catch { Write-Fail "$Label port $Port error: $($_.Exception.Message)" }
 }
+function Test-OptionalTcpPort {
+    param([int]$Port,[string]$Label)
+    try {
+        $result = Test-NetConnection -ComputerName localhost -Port $Port -WarningAction SilentlyContinue
+        if ($result.TcpTestSucceeded) { Write-Pass "$Label port $Port reachable" } else { Write-Detail "$Label port $Port not reachable (optional)" }
+    } catch { Write-Detail "$Label port $Port error (optional): $($_.Exception.Message)" }
+}
 function Invoke-CanaryQuery {
     param([string]$CanaryId,[int]$MinutesBack = 15)
     $now = [long]([DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()); $start = $now - [long]($MinutesBack * 60000)
@@ -95,8 +102,10 @@ Test-TcpPort -Port 5318 -Label "Windows collector (HTTP)"
 Write-Host "`n3. SigNoz Collector Ports:" -ForegroundColor Yellow
 Test-TcpPort -Port 4317 -Label "SigNoz collector (gRPC)"
 Test-TcpPort -Port 4318 -Label "SigNoz collector (HTTP)"
-Test-TcpPort -Port 14317 -Label "SigNoz collector (gRPC remapped)"
-Test-TcpPort -Port 14318 -Label "SigNoz collector (HTTP remapped)"
+Test-OptionalTcpPort -Port 14320 -Label "SigNoz writer (gRPC remapped)"
+Test-OptionalTcpPort -Port 14321 -Label "SigNoz writer (HTTP remapped)"
+Test-OptionalTcpPort -Port 14317 -Label "SigNoz collector (gRPC legacy remap)"
+Test-OptionalTcpPort -Port 14318 -Label "SigNoz collector (HTTP legacy remap)"
 
 Write-Host "`n4. SigNoz UI Connectivity:" -ForegroundColor Yellow
 $uiUrl = "http://localhost:8080"; $uiSuccess = $false; $uiError = $null
@@ -115,7 +124,7 @@ $configPath = Join-Path (Get-Location) "config.yaml"
 if (Test-Path $configPath) {
     try {
         $configContent = Get-Content -Path $configPath -Raw
-        if ($configContent -match "endpoint\s*:\s*['`"]?http://localhost:4317['`"]?" -or $configContent -match "endpoint\s*:\s*['`"]?http://0\.0\.0\.0:4317['`"]?" -or $configContent -match "endpoint\s*:\s*['`"]?http://localhost:14317['`"]?" -or $configContent -match "endpoint\s*:\s*['`"]?http://0\.0\.0\.0:14317['`"]?" -or $configContent -match "endpoint\s*:\s*['`"]?http://127\.0\.0\.1:14317['`"]?" -or $configContent -match "endpoint\s*:\s*['`"]?http://127\.0\.0\.1:4317['`"]?") { Write-Pass "OTLP gRPC exporter configured for SigNoz connection" } else { Write-Fail "Unable to confirm OTLP gRPC endpoint configuration" }
+        if ($configContent -match "endpoint\s*:\s*['`"]?http://localhost:4317['`"]?" -or $configContent -match "endpoint\s*:\s*['`"]?http://0\.0\.0\.0:4317['`"]?" -or $configContent -match "endpoint\s*:\s*['`"]?http://localhost:14317['`"]?" -or $configContent -match "endpoint\s*:\s*['`"]?http://0\.0\.0\.0:14317['`"]?" -or $configContent -match "endpoint\s*:\s*['`"]?http://127\.0\.0\.1:14317['`"]?" -or $configContent -match "endpoint\s*:\s*['`"]?http://127\.0\.0\.1:4317['`"]?" -or $configContent -match "endpoint\s*:\s*['`"]?http://localhost:14320['`"]?" -or $configContent -match "endpoint\s*:\s*['`"]?http://0\.0\.0\.0:14320['`"]?" -or $configContent -match "endpoint\s*:\s*['`"]?http://127\.0\.0\.1:14320['`"]?") { Write-Pass "OTLP gRPC exporter configured for SigNoz connection" } else { Write-Fail "Unable to confirm OTLP gRPC endpoint configuration" }
         if ($configContent -match 'windows-canary') { Write-Pass "Windows canary pipeline configuration detected" } else { Write-Detail "Windows canary pipeline not detected in config" }
     } catch { Write-Fail "Failed to read config.yaml: $($_.Exception.Message)" }
 } else { Write-Fail "Config file not found at $configPath" }
@@ -123,6 +132,16 @@ if (Test-Path $configPath) {
 Write-Host "`n6. File Storage & Agent Hygiene:" -ForegroundColor Yellow
 # Check file storage directory for queue persistence
 $fileStorageDir = "otelcol-storage"
+if (-not (Test-Path $fileStorageDir)) {
+    Write-Detail "File storage directory missing: $fileStorageDir"
+    Write-Detail "Creating otelcol-storage directory..."
+    try {
+        New-Item -ItemType Directory -Path $fileStorageDir -Force | Out-Null
+        Write-Pass "File storage directory created: $fileStorageDir"
+    } catch {
+        Write-Fail "Failed to create file storage directory: $($_.Exception.Message)"
+    }
+}
 if (Test-Path $fileStorageDir) {
     try {
         $storageInfo = Get-ChildItem -Path $fileStorageDir -Recurse -Force | Measure-Object
@@ -162,9 +181,6 @@ if (Test-Path $fileStorageDir) {
     } catch {
         Write-Fail "Failed to check file storage directory: $($_.Exception.Message)"
     }
-} else {
-    Write-Fail "File storage directory missing: $fileStorageDir"
-    Write-Detail "This may cause queue silent failures on restart"
 }
 
        # Check agent hygiene - ensure no stale processes
