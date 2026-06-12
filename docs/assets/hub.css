@@ -14,7 +14,16 @@ a:hover{color:#6a4de6}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.5rem;margin:2.5rem 0}
 .card{background:#1f2330;border:1px solid #252b3a;padding:1.75rem;border-radius:8px;transition:all .3s ease}
 .card:hover{transform:translateY(-3px);border-color:#7c5cff;box-shadow:0 8px 16px rgba(124,92,255,.2)}
-.card h3{margin:0;font-size:1.125rem}
+.card h3{margin:0 0 .5rem;font-size:1.125rem}
+.card-desc{color:#b4bac9;font-size:.9rem;line-height:1.45;margin:0}
+.kpi-updated{text-align:center;color:#77809a;font-size:.875rem;margin:-1rem 0 2rem}
+.kpi-updated a{color:#7c5cff}
+.bsky-section{background:#1f2330;border:1px solid #252b3a;padding:1.75rem;border-radius:8px;margin:2.5rem 0}
+.bsky-section h2{font-size:1.25rem;margin-bottom:1rem;color:#e9edf7}
+.bsky-section .bsky-card{background:#0b0d12;border-color:#252b3a}
+.bsky-section .bsky-text{color:#e9edf7}
+.bsky-section .bsky-meta{color:#b4bac9}
+.bsky-section .bsky-link{color:#7c5cff}
 .support-section{background:#1f2330;border:1px solid #252b3a;padding:2rem;border-radius:8px;margin:2.5rem 0;text-align:center}
 .support-section h3{color:#e9edf7;margin-bottom:1rem}
 .support-section p{color:#b4bac9;margin-bottom:1.5rem}

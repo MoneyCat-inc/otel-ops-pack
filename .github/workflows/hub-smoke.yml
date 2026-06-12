@@ -12,12 +12,13 @@ jobs:
         run: |
           set -euo pipefail
           urls=(
-            "https://hub.resonai.io/"
-            "https://hub.resonai.io/assets/hub.js"
-            "https://hub.resonai.io/docs/status/kpis.json"
-            "https://hub.resonai.io/docs/status.html"
-            "https://hub.resonai.io/docs/dashboards/live-metrics.html"
-            "https://hub.resonai.io/docs/BossCat/data_room_enhanced.html"
+            "https://hub.resonai.uk/"
+            "https://hub.resonai.uk/assets/hub.js"
+            "https://hub.resonai.uk/docs/status/kpis.json"
+            "https://hub.resonai.uk/docs/status.html"
+            "https://hub.resonai.uk/CHAR/DOCS/docs/dashboards/live-metrics.html"
+            "https://hub.resonai.uk/docs/BossCat/data_room_enhanced.html"
+            "https://hub.resonai.uk/docs/widgets/bluesky-latest.json"
           )
           for u in "${urls[@]}"; do
             code=$(curl -s -o /dev/null -w "%{http_code}" "$u")

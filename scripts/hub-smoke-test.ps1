@@ -10,7 +10,7 @@
 #>
 
 param(
-    [string]$BaseUrl = "https://hub.resonai.io"
+    [string]$BaseUrl = "https://hub.resonai.uk"
 )
 
 $ErrorActionPreference = "Stop"
@@ -20,11 +20,12 @@ Write-Host "`n🐾 BossCat Hub Smoke Test — $BaseUrl`n" -ForegroundColor Cyan
 
 $endpoints = @(
     @{ Path = "/"; Name = "Hub Landing" }
-    @{ Path = "/assets/hub.v1.js"; Name = "Hub JS (v1)" }
+    @{ Path = "/assets/hub.js"; Name = "Hub JS" }
     @{ Path = "/docs/status/kpis.json"; Name = "KPI Feed" }
     @{ Path = "/docs/status.html"; Name = "Status Page" }
-    @{ Path = "/docs/dashboards/live-metrics.html"; Name = "Live Metrics" }
+    @{ Path = "/CHAR/DOCS/docs/dashboards/live-metrics.html"; Name = "Live Metrics" }
     @{ Path = "/docs/BossCat/data_room_enhanced.html"; Name = "Data Room" }
+    @{ Path = "/docs/widgets/bluesky-latest.json"; Name = "Bluesky Widget Feed" }
     @{ Path = "/robots.txt"; Name = "SEO Robots" }
     @{ Path = "/favicon.svg"; Name = "Favicon" }
     @{ Path = "/.well-known/security.txt"; Name = "Security Policy" }
