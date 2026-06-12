@@ -117,3 +117,9 @@ scripts/artifacts/
 
 # Generated health check reports
 HEALTH_CHECK_REPORT.md
+
+# Unrelated local project trees (not part of otel-ops-pack)
+NHA/
+
+# TypeScript incremental build cache
+*.tsbuildinfo
