@@ -140,9 +140,9 @@
     },
     {
       "name": "bosscat-gate-bot-native",
-      "modified": "2026-01-24T09:37:22.9837966Z",
+      "modified": "2026-06-12T11:34:11.9965474Z",
       "path": ".github/workflows/bosscat-gate-bot-native.yml",
-      "size": 15070,
+      "size": 15035,
       "triggers": {
         "issues": false,
         "other": [],
@@ -157,9 +157,9 @@
     },
     {
       "name": "bosscat-gate-verify",
-      "modified": "2025-10-20T20:56:57.7116398Z",
+      "modified": "2026-06-12T11:34:12.5239733Z",
       "path": ".github/workflows/bosscat-gate-verify.yml",
-      "size": 10718,
+      "size": 10683,
       "triggers": {
         "issues": false,
         "other": [],
@@ -225,9 +225,9 @@
     },
     {
       "name": "bosscat-tetragram-guard",
-      "modified": "2025-10-25T20:20:25.7316927Z",
+      "modified": "2026-06-12T11:34:12.7703761Z",
       "path": ".github/workflows/bosscat-tetragram-guard.yml",
-      "size": 837,
+      "size": 808,
       "triggers": {
         "issues": false,
         "other": [],
