@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resonai Data Room — Test Harness & Chaos Engineering</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #0b0d12;
+    --card: #121520;
+    --muted: #77809a;
+    --fg: #e9edf7;
+    --green: #4caf50;
+    --yellow: #ffc107;
+    --red: #f44336;
+    --blue: #7c5cff;
+    --teal: #00c2b2;
+    --orange: #f57c00;
+    --border: #252b3a;
+    --gradient-primary: linear-gradient(135deg, #7c5cff 0%, #4caf50 100%);
+  }
+  
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  body {
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    line-height: 1.6;
+  }
+  
+  .header {
+    background: var(--gradient-primary);
+    padding: 32px 24px;
+    text-align: center;
+  }
+  
+  .header h1 {
+    font-size: 32px;
+    font-weight: 800;
+    color: white;
+    margin-bottom: 8px;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  
+  .header p {
+    color: rgba(255,255,255,0.9);
+    font-size: 14px;
+  }
+  
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+  
+  .controls-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  
+  .btn {
+    padding: 14px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  }
+  
+  .btn-laminar { background: var(--green); }
+  .btn-laminar:hover { background: #2e7d32; }
+  
+  .btn-chaotic { background: var(--orange); }
+  .btn-chaotic:hover { background: #d84315; }
+  
+  .btn-test { background: var(--blue); }
+  .btn-test:hover { background: #5a3cc4; }
+  
+  .btn-canary { background: var(--teal); }
+  .btn-canary:hover { background: #008c7f; }
+  
+  .btn-stop { background: var(--red); }
+  .btn-stop:hover { background: #b71c1c; }
+  
+  .btn-clear { background: var(--muted); }
+  .btn-clear:hover { background: #5f6679; }
+  
+  .section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+  
+  .section-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: var(--fg);
+  }
+  
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  
+  .metric-card {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+  }
+  
+  .metric-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  
+  .metric-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--fg);
+  }
+  
+  .metric-value.ok { color: var(--green); }
+  .metric-value.warn { color: var(--yellow); }
+  .metric-value.bad { color: var(--red); }
+  
+  .chart-container {
+    position: relative;
+    height: 300px;
+    margin-top: 16px;
+  }
+  
+  .logs-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .logs-table th {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 2px solid var(--border);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  
+  .logs-table td {
+    padding: 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  
+  .logs-table tr:hover {
+    background: rgba(255,255,255,0.02);
+  }
+  
+  .log-level {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  
+  .log-level.INFO { background: rgba(0,194,178,.18); color: var(--teal); }
+  .log-level.WARN { background: rgba(255,193,7,.20); color: var(--yellow); }
+  .log-level.ERROR { background: rgba(244,67,54,.18); color: var(--red); }
+  .log-level.DEBUG { background: rgba(124,92,255,.18); color: var(--blue); }
+  
+  .status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: rgba(76,175,80,.18);
+    border: 1px solid rgba(76,175,80,.35);
+    border-radius: 8px;
+    margin-bottom: 24px;
+  }
+  
+  .status-bar.active { background: rgba(76,175,80,.18); border-color: rgba(76,175,80,.35); }
+  .status-bar.stopped { background: rgba(244,67,54,.18); border-color: rgba(244,67,54,.35); }
+  
+  .status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+  }
+  
+  .status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+  
+  .chaos-scenarios {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 12px;
+  }
+  
+  .scenario-card {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .scenario-card:hover {
+    border-color: var(--blue);
+    background: rgba(124,92,255,0.1);
+  }
+  
+  .scenario-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  
+  .scenario-desc {
+    font-size: 12px;
+    color: var(--muted);
+  }
+  
+  .footer {
+    text-align: center;
+    padding: 24px;
+    color: var(--muted);
+    font-size: 12px;
+  }
+  
+  .footer a {
+    color: var(--blue);
+    text-decoration: none;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🧪 Resonai Data Room — Test Harness</h1>
+  <p>Chaos Engineering • Load Testing • Signal Generation • BossCat OEM Certified</p>
+</div>
+
+<div class="container">
+
+  <!-- Status Bar -->
+  <div class="status-bar active" id="statusBar">
+    <div class="status-indicator">
+      <span class="status-dot"></span>
+      <span id="statusText">Test Harness Active</span>
+    </div>
+    <div style="font-size: 12px;">
+      Last update: <span id="lastUpdate">--:--:--</span>
+    </div>
+  </div>
+
+  <!-- Primary Controls -->
+  <div class="section">
+    <h2 class="section-title">🎛️ Primary Controls</h2>
+    <div class="controls-grid">
+      <button class="btn btn-laminar" onclick="generateData('laminar')">
+        🌊 Laminar Flow
+      </button>
+      <button class="btn btn-chaotic" onclick="generateData('chaotic')">
+        🌀 Chaotic Flow
+      </button>
+      <button class="btn btn-test" onclick="generateData('test')">
+        🧪 Test Signal
+      </button>
+      <button class="btn btn-canary" onclick="generateData('canary')">
+        🐤 Canary Test
+      </button>
+      <button class="btn btn-stop" onclick="stopData()">
+        🛑 Stop Signals
+      </button>
+      <button class="btn btn-clear" onclick="clearLogs()">
+        🗑️ Clear Logs
+      </button>
+    </div>
+  </div>
+
+  <!-- Real-Time Metrics -->
+  <div class="section">
+    <h2 class="section-title">📊 Real-Time Metrics</h2>
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-label">Throughput</div>
+        <div class="metric-value ok" id="throughput">0</div>
+        <div style="font-size: 12px; color: var(--muted); margin-top: 4px;">req/sec</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Total Events</div>
+        <div class="metric-value" id="totalEvents">0</div>
+        <div style="font-size: 12px; color: var(--muted); margin-top: 4px;">cumulative</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Error Rate</div>
+        <div class="metric-value ok" id="errorRate">0%</div>
+        <div style="font-size: 12px; color: var(--muted); margin-top: 4px;">percentage</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Active Tests</div>
+        <div class="metric-value ok" id="activeTests">0</div>
+        <div style="font-size: 12px; color: var(--muted); margin-top: 4px;">running</div>
+      </div>
+    </div>
+    <div class="chart-container">
+      <canvas id="metricsChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Chaos Engineering Scenarios -->
+  <div class="section">
+    <h2 class="section-title">💥 Chaos Engineering Scenarios</h2>
+    <div class="chaos-scenarios">
+      <div class="scenario-card" onclick="runChaos('network-delay')">
+        <div class="scenario-title">🔌 Network Delay</div>
+        <div class="scenario-desc">Simulate 200-500ms latency</div>
+      </div>
+      <div class="scenario-card" onclick="runChaos('service-down')">
+        <div class="scenario-title">❌ Service Down</div>
+        <div class="scenario-desc">Simulate service unavailability</div>
+      </div>
+      <div class="scenario-card" onclick="runChaos('memory-spike')">
+        <div class="scenario-title">📈 Memory Spike</div>
+        <div class="scenario-desc">Trigger memory pressure</div>
+      </div>
+      <div class="scenario-card" onclick="runChaos('cpu-throttle')">
+        <div class="scenario-title">⚡ CPU Throttle</div>
+        <div class="scenario-desc">Simulate high CPU load</div>
+      </div>
+      <div class="scenario-card" onclick="runChaos('disk-full')">
+        <div class="scenario-title">💾 Disk Full</div>
+        <div class="scenario-desc">Simulate storage exhaustion</div>
+      </div>
+      <div class="scenario-card" onclick="runChaos('packet-loss')">
+        <div class="scenario-title">📦 Packet Loss</div>
+        <div class="scenario-desc">Drop 10% of packets</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Event Logs -->
+  <div class="section">
+    <h2 class="section-title">📋 Event Logs</h2>
+    <table class="logs-table">
+      <thead>
+        <tr>
+          <th>Timestamp</th>
+          <th>Level</th>
+          <th>Source</th>
+          <th>Message</th>
+          <th>Details</th>
+        </tr>
+      </thead>
+      <tbody id="logsBody">
+        <tr>
+          <td colspan="5" style="text-align: center; color: var(--muted); padding: 32px;">
+            No events logged yet. Click a button above to generate test data.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<div class="footer">
+  <p>🐾 <strong>Resonai [OTel] Test Harness</strong> • BossCat OEM Certified</p>
+  <p>
+    <a href="../../index.html">← Back to Project Hub</a> • 
+    <a href="signoz_dashboard_live.html">Live Dashboard</a> • 
+    <a href="SYSTEM_ARCHITECTURE_DIAGRAM.html">Architecture</a>
+  </p>
+</div>
+
+<script>
+  // ===== State Management =====
+  let chart;
+  let eventCount = 0;
+  let errorCount = 0;
+  let activeTests = 0;
+  let metricsHistory = [];
+  
+  const metricsData = {
+    labels: [],
+    datasets: [{
+      label: 'Throughput (req/sec)',
+      data: [],
+      borderColor: '#7c5cff',
+      backgroundColor: 'rgba(124,92,255,0.2)',
+      tension: 0.4,
+      fill: true
+    }]
+  };
+  
+  // ===== Chart Initialization =====
+  function initChart() {
+    const ctx = document.getElementById('metricsChart').getContext('2d');
+    chart = new Chart(ctx, {
+      type: 'line',
+      data: metricsData,
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: true, labels: { color: '#e9edf7' } },
+          tooltip: { mode: 'index', intersect: false }
+        },
+        scales: {
+          x: { display: false },
+          y: {
+            beginAtZero: true,
+            grid: { color: 'rgba(255,255,255,0.05)' },
+            ticks: { color: '#77809a' }
+          }
+        }
+      }
+    });
+  }
+  
+  // ===== Metrics Update =====
+  function updateMetrics(type) {
+    const time = new Date().toLocaleTimeString();
+    let value;
+    
+    switch(type) {
+      case 'laminar':
+        value = Math.floor(Math.random() * 50 + 400); // 400-450 steady
+        break;
+      case 'chaotic':
+        value = Math.floor(Math.random() * 400 + 300); // 300-700 volatile
+        break;
+      case 'canary':
+        value = Math.floor(Math.random() * 30 + 100); // 100-130 low
+        break;
+      case 'test':
+      default:
+        value = Math.floor(Math.random() * 100 + 200); // 200-300 test
+        break;
+    }
+    
+    metricsData.labels.push(time);
+    metricsData.datasets[0].data.push(value);
+    
+    if (metricsData.labels.length > 30) {
+      metricsData.labels.shift();
+      metricsData.datasets[0].data.shift();
+    }
+    
+    chart.update();
+    
+    // Update KPI cards
+    document.getElementById('throughput').textContent = value;
+    document.getElementById('totalEvents').textContent = ++eventCount;
+    document.getElementById('errorRate').textContent = 
+      eventCount > 0 ? ((errorCount / eventCount) * 100).toFixed(1) + '%' : '0%';
+  }
+  
+  // ===== Log Management =====
+  function addLog(level, source, message, details = '') {
+    const tbody = document.getElementById('logsBody');
+    
+    // Remove placeholder if exists
+    if (tbody.children.length === 1 && tbody.children[0].cells.length === 1) {
+      tbody.innerHTML = '';
+    }
+    
+    const row = document.createElement('tr');
+    const timestamp = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    
+    row.innerHTML = `
+      <td style="font-family: 'Courier New', monospace; font-size: 12px; color: var(--muted);">${timestamp}</td>
+      <td><span class="log-level ${level}">${level}</span></td>
+      <td>${source}</td>
+      <td>${message}</td>
+      <td style="font-size: 12px; color: var(--muted);">${details}</td>
+    `;
+    
+    tbody.insertBefore(row, tbody.firstChild);
+    
+    // Keep only last 100 logs
+    while (tbody.children.length > 100) {
+      tbody.removeChild(tbody.lastChild);
+    }
+    
+    if (level === 'ERROR') errorCount++;
+  }
+  
+  // ===== Data Generation =====
+  function generateData(type) {
+    updateMetrics(type);
+    activeTests++;
+    document.getElementById('activeTests').textContent = activeTests;
+    
+    switch(type) {
+      case 'laminar':
+        addLog('INFO', 'Laminar', 'Laminar flow operational', 'Steady-state throughput 400-450 req/sec');
+        break;
+      case 'chaotic':
+        addLog('WARN', 'Chaotic', 'Turbulence detected', 'Volatile throughput 300-700 req/sec');
+        break;
+      case 'canary':
+        addLog('INFO', 'Canary', 'Canary test initiated', `ID: canary-${Date.now().toString(36)}`);
+        break;
+      case 'test':
+        addLog('DEBUG', 'Test', 'Test signal generated', 'Baseline throughput 200-300 req/sec');
+        break;
+    }
+    
+    updateTimestamp();
+    setTimeout(() => {
+      activeTests = Math.max(0, activeTests - 1);
+      document.getElementById('activeTests').textContent = activeTests;
+    }, 2000);
+  }
+  
+  // ===== Chaos Engineering =====
+  function runChaos(scenario) {
+    addLog('WARN', 'Chaos', `Chaos scenario: ${scenario}`, 'Simulated failure condition');
+    
+    // Simulate chaos effects on metrics
+    for (let i = 0; i < 5; i++) {
+      setTimeout(() => {
+        updateMetrics('chaotic');
+      }, i * 1000);
+    }
+    
+    // Add specific chaos logs
+    setTimeout(() => {
+      switch(scenario) {
+        case 'network-delay':
+          addLog('ERROR', 'Network', 'Request timeout after 500ms', 'Service: otel-collector');
+          break;
+        case 'service-down':
+          addLog('ERROR', 'Service', 'Connection refused', 'Target: http://localhost:8080');
+          break;
+        case 'memory-spike':
+          addLog('WARN', 'Memory', 'Memory usage: 87%', 'Threshold exceeded');
+          break;
+        case 'cpu-throttle':
+          addLog('WARN', 'CPU', 'CPU usage: 94%', 'Throttling detected');
+          break;
+        case 'disk-full':
+          addLog('ERROR', 'Disk', 'Disk space: 98% full', 'Write operations blocked');
+          break;
+        case 'packet-loss':
+          addLog('WARN', 'Network', 'Packet loss: 12%', 'Retransmission required');
+          break;
+      }
+    }, 2000);
+    
+    updateTimestamp();
+  }
+  
+  // ===== Control Functions =====
+  function stopData() {
+    addLog('INFO', 'Control', 'Stop signal issued', 'Test harness halted by operator');
+    const statusBar = document.getElementById('statusBar');
+    statusBar.classList.remove('active');
+    statusBar.classList.add('stopped');
+    document.getElementById('statusText').textContent = 'Test Harness Stopped';
+    
+    setTimeout(() => {
+      statusBar.classList.remove('stopped');
+      statusBar.classList.add('active');
+      document.getElementById('statusText').textContent = 'Test Harness Active';
+    }, 3000);
+    
+    updateTimestamp();
+  }
+  
+  function clearLogs() {
+    const tbody = document.getElementById('logsBody');
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="5" style="text-align: center; color: var(--muted); padding: 32px;">
+          Logs cleared. Click a button above to generate test data.
+        </td>
+      </tr>
+    `;
+    eventCount = 0;
+    errorCount = 0;
+    document.getElementById('totalEvents').textContent = '0';
+    document.getElementById('errorRate').textContent = '0%';
+    addLog('INFO', 'Control', 'Logs cleared by operator', '');
+    updateTimestamp();
+  }
+  
+  function updateTimestamp() {
+    document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
+  }
+  
+  // ===== Initialization =====
+  window.onload = () => {
+    initChart();
+    updateTimestamp();
+    setInterval(updateTimestamp, 1000);
+    
+    // Welcome message
+    addLog('INFO', 'System', 'Test harness initialized', 'BossCat OEM Certified');
+  };
+</script>
+
+</body>
+</html>
+

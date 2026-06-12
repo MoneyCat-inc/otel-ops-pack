@@ -5,24 +5,25 @@
 [![CodeQL](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/codeql.yml/badge.svg)](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/codeql.yml)
 [![Maintained by MoneyCat-inc](https://img.shields.io/badge/Maintained%20by-MoneyCat--inc-00aa88?style=for-the-badge&logo=github&logoColor=white)](https://github.com/MoneyCat-inc)
 
-**OpenTelemetry observability pipeline** feeding Windows Event Logs and file logs directly into **SigNoz** for real-time monitoring. Optimized for low latency (200ms batches) with noise filtering (~50% volume reduction).
+**OpenTelemetry observability pipeline** feeding Windows Event Logs and file logs into **SigNoz** for real-time monitoring. Optimized for low latency (200ms batches) with noise filtering (~50% volume reduction).
 
 ---
 
 ## 🚀 Quick Start
 
-**Professional site rebuild (2025-10-07)** unified all navigation and documentation.
+### 📚 Start Here
+👉 **[Documentation Hub](docs/index.html)** — main entry point  
+👉 **[Canonical References Map](docs/status/REFERENCES_MAP.md)** — single source of truth for working parts  
+👉 **[Repository Index (AGENTS.md)](AGENTS.md)** — governance and agent entry point
 
-### 📚 **Start Here**
-👉 **[Documentation Hub](docs/index.html)** — Your main entry point  
-👉 **[Canonical References Map](docs/status/REFERENCES_MAP.md)** — Single source of truth for all working parts
+### 🎛️ Live Dashboards
+- **[Status Dashboard](docs/status.html)** — real-time metrics and system health
+- **[Executive Status](docs/status/misc/STATUS.md)** — gate, SBOM, and pipeline summary
 
-### 🎛️ **Live Dashboards**
-- **[Status Dashboard](docs/status.html)** — Real-time metrics and system health
-
-### 📊 **Key Resources**
+### 📊 Key Resources
 - **[Gate Archive (2025-10)](docs/gate/2025-10/)** — October 2025 gate verification evidence
-- **[Security Master Guide](docs/BossCat/SECURITY_MAINTENANCE_MASTER_GUIDE.md)** — Security and maintenance procedures
+- **[Security Master Guide](docs/BossCat/SECURITY_MAINTENANCE_MASTER_GUIDE.md)** — security and maintenance procedures
+- **[Windows Collector Runbook](docs/runbooks/windows-collector.md)** — OTLP ports and service config
 
 ---
 
@@ -49,7 +50,10 @@ A **small, evidence-first** Windows observability pack:
 - **PowerShell 7+** (monitoring scripts)
 - **Docker** (SigNoz stack)
 - **SigNoz UI:** http://localhost:8080
-- **OTLP Endpoints:** 5317 (gRPC), 5318 (HTTP)
+- **OTLP ingest (Windows collector):** 5317 (gRPC), 5318 (HTTP)
+- **OTLP export (collector → SigNoz):** localhost:4317
+
+See [windows/otelcol/README.md](windows/otelcol/README.md) for canonical service configuration.
 
 ---
 
@@ -58,33 +62,28 @@ A **small, evidence-first** Windows observability pack:
 [![Patreon](https://img.shields.io/badge/Support-Patreon-FF424D?style=for-the-badge&logo=patreon&logoColor=white)](https://www.patreon.com/c/FaeMcLachlan)
 [![Ko-fi](https://img.shields.io/badge/Ko--fi-FF5E5B?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/fubumaki)
 
-Help fund development of BossCat automation lanes, deeper SigNoz playbooks, and the anti-clickbait transparency hub. Every contribution supports evidence-first observability infrastructure.
-
-**Sponsorship Tiers:**
-- **🐱 Comfort Cat** ($5/mo) — Early access to new features
-- **🦁 BossCat Tier** ($15/mo) — Priority support + quarterly roadmap input
-- **🐯 Executive Tier** ($50/mo) — All benefits + monthly 1:1 consultation
+Help fund BossCat automation lanes, SigNoz playbooks, and the anti-clickbait transparency hub.
 
 ---
 
 ## 📖 Documentation
 
-All documentation is centralized in the **[Documentation Hub](docs/index.html)** with the **[Canonical References Map](docs/status/REFERENCES_MAP.md)** serving as the single source of truth.
+All documentation is centralized in the **[Documentation Hub](docs/index.html)** with the **[Canonical References Map](docs/status/REFERENCES_MAP.md)** as the navigation index.
 
 ### Key Documentation Sections
-- **Gate & Readiness** — Production verification procedures
-- **Persona & Governance** — Merge discipline and ECRR methodology  
-- **Stakeholder Evidence** — Executive packages and audit trails
-- **Security & Maintenance** — Security procedures and risk waivers
-- **Dashboards & Data Room** — Live observability interfaces
-- **Bots & Lanes** — AUTO-BOTS registry and lane enforcement
-- **Rebuild History** — Professional site rebuild documentation
+- **Gate & Readiness** — production verification procedures
+- **Persona & Governance** — [Charter](docs/BossCat/CHARTER.md), [Persona v1.1](docs/BossCat/IMMUTABLE_PERSONA_v1.1.md)
+- **Stakeholder Evidence** — executive packages and audit trails
+- **Security & Maintenance** — security procedures and risk waivers
+- **Runbooks** — [Windows collector](docs/runbooks/windows-collector.md), [Docker recovery](docs/runbooks/misc/docker-fix-steps.md)
+- **ECRR Reports** — [complete audit trail](docs/ecrr/ECRR_REPORTS/)
 
 ---
 
 ## 🔐 Security
 
 - **Security scanning:** CodeQL, Gitleaks, Dependabot
+- **SBOM:** blocking on prod gate (see [FOLLOWUP_SBOM_BLOCKING.md](docs/BossCat/FOLLOWUP_SBOM_BLOCKING.md))
 - **Master guide:** [Security & Maintenance](docs/BossCat/SECURITY_MAINTENANCE_MASTER_GUIDE.md)
 - **Error ledger:** [IONA_ERRORS.md](docs/IONA_ERRORS.md)
 
@@ -92,51 +91,52 @@ All documentation is centralized in the **[Documentation Hub](docs/index.html)**
 
 ## 🤝 Contributing
 
-We follow strict **BossCat governance** with immutable merge rules:
+We follow **BossCat governance** with immutable merge rules:
 
 - **Budget enforcement:** ≤10 files, ≤200 LOC per merge
-- **ECRR methodology:** All changes follow Examine → Clean → Report → Role
-- **Gate verification:** Must pass before merge
-- **Kill-switch:** Active for drift control
+- **ECRR methodology:** Examine → Clean → Report → Role
+- **Gate verification:** must pass before merge
+- **Kill-switch:** active for drift control
 
-See: [ECRR Manual](docs/BossCat/misc/ART_OF_ECRR.md) | [Agents & Hierarchy](docs/BossCat/CHARTER.md)
+See: [AGENTS.md](AGENTS.md) | [ECRR Manual](docs/BossCat/misc/ART_OF_ECRR.md) | [Charter](docs/BossCat/CHARTER.md)
 
 ---
 
 ## 📊 Project Status
 
-**System Health:** ✅ 96/100 (Excellent)  
-**Gate Pass Rate:** 96% (78/81 ready)  
-**ECRR Reports:** 195+ comprehensive reports  
-**Active Development:** 11+ consecutive days
+**Last updated:** June 2026 — see [Executive Status](docs/status/misc/STATUS.md) for current gate, SBOM, and pipeline health.
 
-See [Status Dashboard](docs/status.html) for detailed metrics.
+- **Main branch gates:** green (BossCat Gate Verify, CodeQL, Gitleaks)
+- **Local pipeline:** Docker + SigNoz + Windows collector (`quick-monitor` health check)
+- **ECRR reports:** 350+ under `docs/ecrr/ECRR_REPORTS/`
+
+Live metrics: [Status Dashboard](docs/status.html)
 
 ---
 
 ## 🎯 Quick Commands
 
 ```powershell
-# Health check
+# Fast health check
 pwsh BRAV\SCPT\quick-monitor.ps1
 
 # Detailed monitoring
-pwsh scripts/monitor-optimized-pipeline.ps1 -DurationMinutes 10
+pwsh scripts\monitor-optimized-pipeline.ps1 -DurationMinutes 10
 
 # Generate canary test
-pwsh scripts/canary-test.ps1
+pwsh canary-test.ps1
 
-# Verify pipeline
-pwsh scripts/verify-pipeline.ps1
+# Verify pipeline end-to-end
+pwsh verify-pipeline.ps1
 ```
 
 ---
 
 ## 📚 Additional Resources
 
-- **[Cheat Sheets](docs/cheatsheets/README.md)** — Quick reference guides
-- **[ECRR Reports](docs/ecrr/ECRR_REPORTS/)** — Complete audit trail
-- **[Observability Snapshots](docs/observability/snapshots/)** — Dashboard exports
+- **[Cheat Sheets](docs/cheatsheets/README.md)** — quick reference guides
+- **[ECRR Reports](docs/ecrr/ECRR_REPORTS/)** — complete audit trail
+- **[Observability Snapshots](docs/observability/snapshots/)** — dashboard exports
 
 ---
 
@@ -153,11 +153,9 @@ pwsh scripts/verify-pipeline.ps1
 
 **Maintained by:** MoneyCat-inc  
 **Authority:** BossCat OEM (Executive Overseer Manager)  
-**Methodology:** ECRR (Examine → Clean → Report → Role)  
-**Creative Guide:** See Documentation Hub for creative references
+**Methodology:** ECRR (Examine → Clean → Report → Role)
 
-**Professional Site Rebuild:** October 7, 2025  
-Unified navigation, docs hub, and observability interfaces.
+**Site hub:** unified navigation via [docs/index.html](docs/index.html) (rebuilt October 2025, refreshed June 2026).
 
 ---
 
