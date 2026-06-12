@@ -58,7 +58,7 @@ out/
 # .NET build outputs (Gate #026-029 services)
 bosscat-svc*/bin/
 bosscat-svc*/obj/
-dotnet-test-app/
+dotnet-test-app/bin/`ndotnet-test-app/obj/
 dotnet-autoinstrumentation/
 
 # Debug scripts (quarantined - not for production)
