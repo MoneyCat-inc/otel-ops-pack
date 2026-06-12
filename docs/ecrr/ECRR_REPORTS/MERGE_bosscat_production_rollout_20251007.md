@@ -148,10 +148,12 @@ artifacts/
     └── backup-20251007-171036/ (config backup)
 
 docs/ecrr/ECRR_REPORTS/
-├── DEPLOYMENT_production_20251007-171046.md
-├── DEPLOYMENT_production_20251007-171147.md
+├── DEPLOYMENT_production_20251007.md
 ├── NIGHTLY_ORCHESTRATION_nightly-20251007-164923.md
-└── NIGHTLY_ORCHESTRATION_nightly-20251007-165940.md
+├── NIGHTLY_ORCHESTRATION_nightly-20251007-165940.md
+└── archive/2025-10-07/
+    ├── DEPLOYMENT_production_20251007-171046.md
+    └── DEPLOYMENT_production_20251007-171147.md
 
 docs/observability/snapshots/
 ├── nightly-orchestration-nightly-20251007-164923.json (9 agents, 100%)
@@ -325,4 +327,3 @@ pwsh -File scripts/boot-health-check.ps1  # Verify
 **New Files:** 6 scripts, 5 boot reports, 2 deployment reports, 4 ECRR reports
 
 🐾 **The Cat Nap Control Room is purring in production!**
-

@@ -39,46 +39,61 @@ if ($ECRRDirs.Count -eq 0) {
     throw "ECRR reports directory not found. Checked: $($candidateDirs -join ', ')"
 }
 
+# BossCat Order B: templates excluded from compliance scoring (scaffolding, not evidence).
+# Archive paths/markers excluded to avoid double-counting post-consolidation.
+$ExcludeTemplates = @("EVIDENCE_TEMPLATE.md", "OTEL_SYNTH_TEMPLATE.md")
+$ExcludePatternTemplates = "*TEMPLATE*.md"
+$ExcludePatternArchived = "*archived*"
+
+function Test-ComplianceScored($f) {
+    if ($f.FullName -like "*archive*") { return $false }
+    if ($f.Name -like $ExcludePatternArchived) { return $false }
+    if ($ExcludeTemplates -contains $f.Name) { return $false }
+    if ($f.Name -like $ExcludePatternTemplates) { return $false }
+    return $true
+}
+
 Write-Host "📁 Processing $($ECRRDirs.Count) ECRR report directories" -ForegroundColor Green
 
 # Initialize analysis data
 $AnalysisData = @{
-    TotalReports = 0
-    ProcessedReports = 0
-    ComplianceMetrics = @{
+    TotalReports            = 0
+    ProcessedReports        = 0
+    ComplianceMetrics       = @{
         FourSectionStructure = 0
-        ECRRGates = 0
-        ActorDeclarations = 0
-        EvidenceReferences = 0
-        StatusDeclarations = 0
-        ProductionReady = 0
+        ECRRGates            = 0
+        ActorDeclarations    = 0
+        EvidenceReferences   = 0
+        StatusDeclarations   = 0
+        ProductionReady      = 0
     }
-    AgentDistribution = @{}
-    ReportCategories = @{
-        Implementation = 0
-        Verification = 0
-        Completion = 0
+    AgentDistribution       = @{}
+    ReportCategories        = @{
+        Implementation  = 0
+        Verification    = 0
+        Completion      = 0
         MergeDeployment = 0
-        Other = 0
+        Other           = 0
     }
-    TemporalPatterns = @{}
+    TemporalPatterns        = @{}
     ConsolidationCandidates = @()
-    QualityIssues = @()
-    MissingFourSection = @()
-    MissingStatus = @()
-    Recommendations = @()
-    DirectoryBreakdown = @{}
+    QualityIssues           = @()
+    MissingFourSection      = @()
+    MissingStatus           = @()
+    Recommendations         = @()
+    DirectoryBreakdown      = @{}
 }
 
-# Get all ECRR report files from all directories
+# Get all ECRR report files from all directories (templates/archive excluded from compliance)
 $ECRRFiles = @()
 foreach ($ECRRDir in $ECRRDirs) {
-    $files = Get-ChildItem -Path $ECRRDir -Filter "*.md" -File | Where-Object { 
-        $_.Name -notlike "workshop-*" -and 
-        $_.Name -notlike "README.md" -and 
+    $raw = Get-ChildItem -Path $ECRRDir -Filter "*.md" -File -Recurse:$false | Where-Object {
+        $_.Name -notlike "workshop-*" -and
+        $_.Name -notlike "README.md" -and
         $_.Name -notlike "*backup*" -and
-        $_.FullName -notlike "*archive*"
+        (Test-ComplianceScored $_)
     }
+    $files = @($raw)
     $ECRRFiles += $files
     $AnalysisData.DirectoryBreakdown[$ECRRDir] = $files.Count
     Write-Host "  - $ECRRDir : $($files.Count) reports" -ForegroundColor Yellow
@@ -99,10 +114,12 @@ if ($AutoParallel) {
             if ($estimatedParallel -gt $MaxParallel) {
                 $MaxParallel = $estimatedParallel
             }
-        } else {
+        }
+        else {
             Write-Host "VRAM detection returned no data; falling back to CPU estimate" -ForegroundColor Yellow
         }
-    } catch {
+    }
+    catch {
         Write-Host ("VRAM detection failed: {0}" -f $_.Exception.Message) -ForegroundColor Yellow
     }
 }
@@ -130,18 +147,18 @@ $ReportProcessor = {
     Write-Host "Processing: $($file.Name)" -ForegroundColor Yellow
 
     $result = [ordered]@{
-        Name = $file.Name
-        FourSection = $false
-        ECRRGate = $false
-        ActorDeclaration = $false
-        EvidenceReference = $false
-        StatusDeclaration = $false
-        ProductionReady = $false
-        AgentType = "Other"
-        Category = "Other"
-        TemporalGroup = $null
+        Name                   = $file.Name
+        FourSection            = $false
+        ECRRGate               = $false
+        ActorDeclaration       = $false
+        EvidenceReference      = $false
+        StatusDeclaration      = $false
+        ProductionReady        = $false
+        AgentType              = "Other"
+        Category               = "Other"
+        TemporalGroup          = $null
         ConsolidationCandidate = $false
-        Error = $null
+        Error                  = $null
     }
 
     try {
@@ -156,37 +173,46 @@ $ReportProcessor = {
 
         if ($content -match "Cursor Agent") {
             $result.AgentType = "Cursor Agent"
-        } elseif ($content -match "Cursor-Local") {
+        }
+        elseif ($content -match "Cursor-Local") {
             $result.AgentType = "Cursor-Local"
-        } elseif ($content -match "ChatGPT Agent") {
+        }
+        elseif ($content -match "ChatGPT Agent") {
             $result.AgentType = "ChatGPT Agent"
-        } elseif ($content -match "Codex Agent") {
+        }
+        elseif ($content -match "Codex Agent") {
             $result.AgentType = "Codex Agent"
         }
 
         $name = $file.Name
         if ($name -match "implementation" -or $name -match "deployment") {
             $result.Category = "Implementation"
-        } elseif ($name -match "verification" -or $name -match "validation" -or $name -match "test") {
+        }
+        elseif ($name -match "verification" -or $name -match "validation" -or $name -match "test") {
             $result.Category = "Verification"
-        } elseif ($name -match "complete" -or $name -match "completion") {
+        }
+        elseif ($name -match "complete" -or $name -match "completion") {
             $result.Category = "Completion"
-        } elseif ($name -match "merge" -or $name -match "rollout") {
+        }
+        elseif ($name -match "merge" -or $name -match "rollout") {
             $result.Category = "MergeDeployment"
         }
 
         if ($name -match "2025-09") {
             $result.TemporalGroup = "September 2025"
-        } elseif ($name -match "2025-01") {
+        }
+        elseif ($name -match "2025-01") {
             $result.TemporalGroup = "January 2025"
-        } elseif ($name -match "2024-12") {
+        }
+        elseif ($name -match "2024-12") {
             $result.TemporalGroup = "December 2024"
         }
 
         if ($name -match "rollout-merge" -or $name -match "ecrr-01" -or $name -match "signoz-alerts") {
             $result.ConsolidationCandidate = $true
         }
-    } catch {
+    }
+    catch {
         $result.Error = $_.Exception.Message
         Write-Warning "Error processing $($file.Name): $($result.Error)"
     }
@@ -202,7 +228,8 @@ if ($MaxParallel -gt 1) {
         $processor = [ScriptBlock]::Create($using:ReportProcessorText)
         & $processor $_
     } -ThrottleLimit $MaxParallel
-} else {
+}
+else {
     $reportResults = foreach ($file in $ECRRFiles) {
         & $ReportProcessor $file
     }
@@ -223,18 +250,18 @@ $AnalysisData.MissingStatus = @($reportResults | Where-Object { -not $_.StatusDe
 $AnalysisData.QualityIssues = @($reportResults | Where-Object { $_.Error } | ForEach-Object { "Error processing $($_.Name): $($_.Error)" })
 $AnalysisData.ConsolidationCandidates = @($reportResults | Where-Object { $_.ConsolidationCandidate } | Select-Object -ExpandProperty Name)
 
-$agentKeys = @('Cursor Agent','Cursor-Local','ChatGPT Agent','Codex Agent','Other')
+$agentKeys = @('Cursor Agent', 'Cursor-Local', 'ChatGPT Agent', 'Codex Agent', 'Other')
 $AnalysisData.AgentDistribution = @{}
 foreach ($agent in $agentKeys) {
     $AnalysisData.AgentDistribution[$agent] = ($reportResults | Where-Object { $_.AgentType -eq $agent }).Count
 }
 
 $AnalysisData.ReportCategories = @{
-    Implementation = ($reportResults | Where-Object { $_.Category -eq 'Implementation' }).Count
-    Verification = ($reportResults | Where-Object { $_.Category -eq 'Verification' }).Count
-    Completion = ($reportResults | Where-Object { $_.Category -eq 'Completion' }).Count
+    Implementation  = ($reportResults | Where-Object { $_.Category -eq 'Implementation' }).Count
+    Verification    = ($reportResults | Where-Object { $_.Category -eq 'Verification' }).Count
+    Completion      = ($reportResults | Where-Object { $_.Category -eq 'Completion' }).Count
     MergeDeployment = ($reportResults | Where-Object { $_.Category -eq 'MergeDeployment' }).Count
-    Other = ($reportResults | Where-Object { $_.Category -eq 'Other' }).Count
+    Other           = ($reportResults | Where-Object { $_.Category -eq 'Other' }).Count
 }
 
 $AnalysisData.TemporalPatterns = @{}
@@ -247,7 +274,8 @@ $CompliancePercentages = @{}
 foreach ($metric in $AnalysisData.ComplianceMetrics.Keys) {
     if ($AnalysisData.TotalReports -gt 0) {
         $CompliancePercentages[$metric] = [math]::Round(($AnalysisData.ComplianceMetrics[$metric] / $AnalysisData.TotalReports) * 100, 1)
-    } else {
+    }
+    else {
         $CompliancePercentages[$metric] = 0
     }
 }
@@ -260,7 +288,8 @@ if ($GenerateSummary) {
 **Date**: $(Get-Date -Format "yyyy-MM-dd HH:mm:ss UTC")  
 **Agent**: Cursor Agent - Observability Copilot  
 **Task**: Process all ECRR reports and generate comprehensive analysis  
-**Status**: ✅ **PROCESSING COMPLETE**
+**Status**: ✅ **PROCESSING COMPLETE**  
+**Scope**: Templates (EVIDENCE_TEMPLATE, OTEL_SYNTH_TEMPLATE, *TEMPLATE*.md) and archived paths excluded from compliance scoring (BossCat Order B).
 
 ---
 
@@ -483,7 +512,7 @@ if ($GenerateSummary) {
 ### **Analysis Documentation**
 - `$OutputDir/ecrr-processing-complete-analysis.md` - This comprehensive analysis
 - `$OutputDir/ecrr-compliance-metrics.json` - Detailed compliance metrics
-- `$OutputDir/ecrr-consolidation-candidates.json` - Consolidation opportunities
+- `$OutputDir/ecrr-consolidation-plan.json` - Consolidation opportunities
 
 ### **Compliance Metrics**
 - **Structural Compliance**: $($CompliancePercentages.FourSectionStructure)% complete ECRR structure
@@ -540,18 +569,18 @@ The ECRR processing analysis provides complete visibility into framework usage, 
 # Generate JSON compliance metrics
 if ($GenerateComplianceReport) {
     $ComplianceReport = @{
-        ProcessingDate = Get-Date -Format "yyyy-MM-dd HH:mm:ss UTC"
-        TotalReports = $AnalysisData.TotalReports
-        ProcessedReports = $AnalysisData.ProcessedReports
-        ComplianceMetrics = $CompliancePercentages
-        AgentDistribution = $AnalysisData.AgentDistribution
-        ReportCategories = $AnalysisData.ReportCategories
-        TemporalPatterns = $AnalysisData.TemporalPatterns
+        ProcessingDate          = Get-Date -Format "yyyy-MM-dd HH:mm:ss UTC"
+        TotalReports            = $AnalysisData.TotalReports
+        ProcessedReports        = $AnalysisData.ProcessedReports
+        ComplianceMetrics       = $CompliancePercentages
+        AgentDistribution       = $AnalysisData.AgentDistribution
+        ReportCategories        = $AnalysisData.ReportCategories
+        TemporalPatterns        = $AnalysisData.TemporalPatterns
         ConsolidationCandidates = $AnalysisData.ConsolidationCandidates
-        QualityIssues = $AnalysisData.QualityIssues
-        MissingFourSection = $AnalysisData.MissingFourSection
-        MissingStatus = $AnalysisData.MissingStatus
-        Recommendations = @(
+        QualityIssues           = $AnalysisData.QualityIssues
+        MissingFourSection      = $AnalysisData.MissingFourSection
+        MissingStatus           = $AnalysisData.MissingStatus
+        Recommendations         = @(
             "Add ECRR gates to $($AnalysisData.TotalReports - $AnalysisData.ComplianceMetrics.ECRRGates) missing reports",
             "Ensure 4-section structure in $($AnalysisData.TotalReports - $AnalysisData.ComplianceMetrics.FourSectionStructure) reports",
             "Add explicit status to $($AnalysisData.TotalReports - $AnalysisData.ComplianceMetrics.StatusDeclarations) reports",
@@ -566,25 +595,36 @@ if ($GenerateComplianceReport) {
 # Generate consolidation plan
 if ($GenerateConsolidationPlan) {
     $ConsolidationPlan = @{
-        ProcessingDate = Get-Date -Format "yyyy-MM-dd HH:mm:ss UTC"
-        TotalCandidates = $AnalysisData.ConsolidationCandidates.Count
-        Candidates = $AnalysisData.ConsolidationCandidates
+        ProcessingDate      = Get-Date -Format "yyyy-MM-dd HH:mm:ss UTC"
+        TotalCandidates     = $AnalysisData.ConsolidationCandidates.Count
+        Candidates          = $AnalysisData.ConsolidationCandidates
         ConsolidationGroups = @{
-            "Rollout Merge Reports" = @()
-            "ECRR-01 Reports" = @()
-            "SigNoz Alert Reports" = @()
+            "Rollout Merge Reports"         = @()
+            "ECRR-01 Reports"               = @()
+            "SigNoz Alert Reports"          = @()
             "Production Deployment Reports" = @()
-            "GPU Automation Reports" = @()
+            "GPU Automation Reports"        = @()
         }
-        ImplementationPlan = @{
+        ImplementationPlan  = @{
             Phase1 = "Consolidate high-priority groups (12 reports → 3 reports)"
             Phase2 = "Consolidate secondary groups (7 reports → 2 reports)"
             Phase3 = "Archive originals and update references"
         }
-        ExpectedImpact = @{
-            ReportReduction = "15% fewer reports"
+    }
+    # Order D: ExpectedImpact only when candidates > 0; otherwise n/a to avoid misleading impact
+    $n = $AnalysisData.ConsolidationCandidates.Count
+    if ($n -gt 0) {
+        $ConsolidationPlan.ExpectedImpact = @{
+            ReportReduction      = "15% fewer reports"
             ContentDeduplication = "90% reduction in redundant content"
-            QualityImprovement = "Enhanced ECRR compliance and clarity"
+            QualityImprovement   = "Enhanced ECRR compliance and clarity"
+        }
+    }
+    else {
+        $ConsolidationPlan.ExpectedImpact = @{
+            ReportReduction      = "n/a"
+            ContentDeduplication = "n/a"
+            QualityImprovement   = "n/a (no consolidation candidates)"
         }
     }
     
