@@ -14,7 +14,8 @@ export async function GET(req: NextRequest) {
     zip.file(name, JSON.stringify(s, null, 2));
   });
   const blob = await zip.generateAsync({ type: "nodebuffer" });
-  return new NextResponse(blob, {
+  const body = new Uint8Array(blob);
+  return new NextResponse(body, {
     status: 200,
     headers: {
       "content-type": "application/zip",

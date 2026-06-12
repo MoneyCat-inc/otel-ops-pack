@@ -11,7 +11,7 @@ import { MeterProvider, PeriodicExportingMetricReader } from '@opentelemetry/sdk
 
 // SigNoz configuration
 const SIGNOZ_API_KEY = process.env['SIGNOZ_API_KEY'] || process.env['OTEL_EXPORTER_OTLP_HEADERS']?.split('=')[1] || '';
-const SIGNOZ_ENDPOINT = process.env['OTEL_EXPORTER_OTLP_ENDPOINT'] || 'http://localhost:14317';
+const SIGNOZ_ENDPOINT = process.env['OTEL_EXPORTER_OTLP_ENDPOINT'] || 'http://localhost:4317';
 const SERVICE_NAME = process.env['OTEL_SERVICE_NAME'] || 'resonai-backend';
 const SERVICE_VERSION = process.env['OTEL_SERVICE_VERSION'] || '1.0.0';
 const ENVIRONMENT = process.env['OTEL_ENVIRONMENT'] || 'development';
@@ -45,20 +45,19 @@ export function initializeSigNoz(): Promise<void> {
 
     meterProvider = new MeterProvider({
       resource,
-    });
-
-    meterProvider.addMetricReader(
-      new PeriodicExportingMetricReader({
-        exporter: new OTLPMetricExporter({
-          url: `${SIGNOZ_ENDPOINT}/v1/metrics`,
-          headers: {
-            Authorization: `Bearer ${SIGNOZ_API_KEY}`,
-            'Content-Type': 'application/json',
-          },
+      readers: [
+        new PeriodicExportingMetricReader({
+          exporter: new OTLPMetricExporter({
+            url: `${SIGNOZ_ENDPOINT}/v1/metrics`,
+            headers: {
+              Authorization: `Bearer ${SIGNOZ_API_KEY}`,
+              'Content-Type': 'application/json',
+            },
+          }),
+          exportIntervalMillis: 10000,
         }),
-        exportIntervalMillis: 10000,
-      }),
-    );
+      ],
+    });
 
     metricsApi.setGlobalMeterProvider(meterProvider);
 

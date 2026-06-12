@@ -12,8 +12,8 @@ let tracerProvider: NodeTracerProvider | undefined;
 let shuttingDown = false;
 
 export async function register() {
-  if (typeof window !== 'undefined') {
-    // Instrumentation only runs on the server
+  // Avoid referencing `window` (not in default TS lib); skip only in browser runtimes.
+  if (typeof globalThis !== 'undefined' && 'window' in globalThis) {
     return;
   }
 
@@ -21,7 +21,7 @@ export async function register() {
 
   const serviceName = process.env['OTEL_SERVICE_NAME'] || 'resonai-backend';
   const otlpEndpoint =
-    process.env['OTEL_EXPORTER_OTLP_ENDPOINT'] || 'http://127.0.0.1:14318';
+    process.env['OTEL_EXPORTER_OTLP_ENDPOINT'] || 'http://127.0.0.1:4318';
 
   const traceExporter = new OTLPTraceExporter({
     url: `${otlpEndpoint.replace(/\/$/, '')}/v1/traces`,
