@@ -52,7 +52,7 @@ $env:OTEL_METRICS_EXPORTER = "otlp"
 $env:OTEL_LOGS_EXPORTER = "otlp"
 
 # OTLP Endpoint (Direct to SigNoz for demo visibility)
-$env:OTEL_EXPORTER_OTLP_ENDPOINT = "http://127.0.0.1:14317"
+$env:OTEL_EXPORTER_OTLP_ENDPOINT = "http://127.0.0.1:4317"
 $env:OTEL_EXPORTER_OTLP_PROTOCOL = "grpc"
 
 # Core Instrumentation (all enabled)
@@ -87,7 +87,7 @@ if ($EnableDemo) {
 }
 
 Write-Host "   ✅ Service: $ServiceName" -ForegroundColor Green
-Write-Host "   ✅ Endpoint: http://127.0.0.1:14317 (SigNoz)" -ForegroundColor Green
+Write-Host "   ✅ Endpoint: http://127.0.0.1:4317 (SigNoz)" -ForegroundColor Green
 Write-Host "   ✅ Port: $Port" -ForegroundColor Green
 Write-Host "   ✅ Instrumentation: ASP.NET Core, HttpClient, SqlClient, Redis" -ForegroundColor Green
 Write-Host "   ✅ Custom Sources: InvestorDemo.*, BossCat.*, DemoApp.*" -ForegroundColor Green
