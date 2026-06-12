@@ -24,21 +24,31 @@
 <h1>🐾 BossCat Hub</h1>
 <p>Observability • Data Room • MILK Visualizer</p>
 
-<div class="metrics">
+<div class="metrics" aria-label="Live KPI summary">
 <div class="metric"><div aria-label="Gate score">Gate</div><div class="value" id="gateScore" aria-live="polite" aria-atomic="true">—</div></div>
 <div class="metric"><div aria-label="Error rate">Error</div><div class="value" id="errorRate" aria-live="polite" aria-atomic="true">—</div></div>
 <div class="metric"><div aria-label="Canary count">Canary</div><div class="value" id="canaryCount" aria-live="polite" aria-atomic="true">—</div></div>
 <div class="metric"><div aria-label="OpenTelemetry health">OTel</div><div class="value" id="otelHealth" aria-live="polite" aria-atomic="true">—</div></div>
 </div>
+<p class="kpi-updated" id="kpiUpdated" aria-live="polite">Loading metrics…</p>
 
 <div class="grid">
-<div class="card"><h3>📊 <a href="CHAR/DOCS/docs/dashboards/live-metrics.html">Live Metrics</a></h3></div>
-<div class="card"><h3>🧪 <a href="CHAR/DOCS/docs/BossCat/data_room_enhanced.html">Data Room</a></h3></div>
-<div class="card"><h3>🎛️ <a href="portal.html">MILK Visualizer</a></h3></div>
-<div class="card"><h3>🧭 <a href="docs/status.html">Status</a></h3></div>
-<div class="card"><h3>📚 <a href="CHAR/DOCS/docs/index.html">Docs</a></h3></div>
-<div class="card"><h3>🛡️ <a href="docs/anticlickbait/index.html">AntiClickbait</a></h3></div>
+<div class="card"><h3>📊 <a href="CHAR/DOCS/docs/dashboards/live-metrics.html">Live Metrics</a></h3><p class="card-desc">Real-time pipeline KPIs and SigNoz dashboards.</p></div>
+<div class="card"><h3>🧪 <a href="docs/BossCat/data_room_enhanced.html">Data Room</a></h3><p class="card-desc">Chaos scenarios: Laminar → Chaotic → Canary → Stop.</p></div>
+<div class="card"><h3>🎛️ <a href="docs/milk-v0/public/index.html">MILK Visualizer</a></h3><p class="card-desc">Visual evidence viewer for MILK pipeline output.</p></div>
+<div class="card"><h3>🧭 <a href="docs/status.html">Status</a></h3><p class="card-desc">Latest gate verdict and ECRR closeout.</p></div>
+<div class="card"><h3>📚 <a href="docs/index.html">Docs</a></h3><p class="card-desc">Guides, runbooks, and BossCat operations index.</p></div>
+<div class="card"><h3>🛡️ <a href="docs/anticlickbait/index.html">AntiClickbait</a></h3><p class="card-desc">Claim scores with cited sources — no hype.</p></div>
 </div>
+
+<section class="bsky-section" aria-labelledby="bsky-heading">
+<h2 id="bsky-heading">🦋 Latest on Bluesky</h2>
+<div data-bsky-latest data-src="docs/widgets/bluesky-latest.json"
+     data-fallback='<p><a href="https://bsky.app/profile/resonai.bsky.social">Follow @resonai.bsky.social</a></p>'>
+<p>Loading…</p>
+</div>
+</section>
+<link rel="stylesheet" href="docs/assets/bluesky-widget.css">
 
 <div class="support-section">
 <h3>☕ Support This Project</h3>
@@ -62,5 +72,6 @@
 </div>
 </div>
 <script src="/assets/hub.js"></script>
+<script src="docs/assets/bluesky-widget.js" defer></script>
 </body>
 </html>
