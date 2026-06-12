@@ -6,6 +6,16 @@ on:
       - main
     paths:
       - 'moneycat/**'
+      - 'index.html'
+      - 'portal.html'
+      - 'assets/**'
+      - 'docs/**'
+      - 'CHAR/**'
+      - 'CNAME'
+      - 'favicon.*'
+      - 'robots.txt'
+      - 'humans.txt'
+      - '_config.yml'
   workflow_dispatch:
 
 permissions:
