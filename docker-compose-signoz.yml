@@ -22,7 +22,7 @@ services:
       timeout: 10s
       retries: 5
     networks:
-      - signoz
+      - signoz-net
     logging: *default-logging
 
   signoz-clickhouse:
@@ -44,11 +44,11 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      - signoz
+      - signoz-net
     logging: *default-logging
 
   signoz-writer:
-    image: signoz/signoz-otel-collector:latest
+    image: signoz/signoz-otel-collector:v0.129.6
     container_name: signoz-writer
     restart: unless-stopped
     depends_on:
@@ -61,7 +61,7 @@ services:
       - "14320:4317"   # gRPC OTLP in
       - "14321:4318"   # HTTP OTLP in
     networks:
-      - signoz
+      - signoz-net
     logging: *default-logging
 
   signoz-schema-migrator-sync:
@@ -73,7 +73,7 @@ services:
         condition: service_healthy
     restart: on-failure
     networks:
-      - signoz
+      - signoz-net
     logging: *default-logging
 
   signoz-schema-migrator-async:
@@ -87,7 +87,7 @@ services:
         condition: service_completed_successfully
     restart: on-failure
     networks:
-      - signoz
+      - signoz-net
     logging: *default-logging
 
   signoz:
@@ -121,7 +121,7 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      - signoz
+      - signoz-net
     logging: *default-logging
 
   signoz-otel-collector:
@@ -150,7 +150,7 @@ services:
       timeout: 10s
       retries: 5
     networks:
-      - signoz
+      - signoz-net
     logging: *default-logging
 
 volumes:
@@ -159,6 +159,6 @@ volumes:
   signoz_zookeeper_data:
 
 networks:
-  signoz:
-    name: signoz
-    driver: bridge
+  signoz-net:
+    external: true
+    name: signoz-net

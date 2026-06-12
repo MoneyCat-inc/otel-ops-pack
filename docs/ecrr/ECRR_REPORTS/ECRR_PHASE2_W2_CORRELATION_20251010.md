@@ -1,5 +1,17 @@
 # ECRR Phase 2 · Week 2 — Correlation ID Adoption
 
+**Agent:** Cursor{Implementer}
+**Date:** 2026-01-14
+
+---
+
+
+**Agent:** Cursor{Implementer}
+**Date:** 2025-12-11
+
+---
+
+
 Evidence: Correlation ID generation, propagation, and verification across logs and traces.
 
 - Examine
@@ -31,3 +43,20 @@ Artifacts
 Notes
 - SigNoz API check is best-effort; verifier exits 0 if API unavailable, but prints a note.
 
+
+
+## Examine
+
+<!-- Add examination details here -->
+
+## Clean
+
+<!-- Add cleanup/implementation details here -->
+
+## Report
+
+<!-- Add report/summary details here -->
+
+## Role
+
+<!-- Add role/next actions here -->

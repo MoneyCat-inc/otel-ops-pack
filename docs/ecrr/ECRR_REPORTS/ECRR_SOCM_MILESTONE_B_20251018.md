@@ -428,3 +428,12 @@ npm run social:post
 
 🦋 **Ready to post to Bluesky whenever you are!**
 
+
+
+## Report
+
+<!-- Add report/summary details here -->
+
+## Role
+
+<!-- Add role/next actions here -->

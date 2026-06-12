@@ -334,7 +334,7 @@ cat test.json
 - **Verification Script:** `scripts/verify-iona-gate.ps1`
 - **Gate Protocol:** `docs/comfort-cat/GATE_PROTOCOL.md`
 - **Hub Production:** `HUB_PRODUCTION_LIVE.md`
-- **BossCat Agent:** `docs/BossCat/AGENTS.md`
+- **BossCat Charter:** `docs/BossCat/CHARTER.md`
 
 ---
 
@@ -368,4 +368,3 @@ Potential improvements:
 **Authority:** Fubumaki
 
 _Auto-update system deployed. Status dashboard will remain current without manual intervention._ 🐾
-

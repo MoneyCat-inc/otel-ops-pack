@@ -1,5 +1,17 @@
 # ECRR CI Report
 
+**Agent:** Cursor{Implementer}
+**Date:** 2026-01-14
+
+---
+
+
+**Agent:** Cursor{Implementer}
+**Date:** 2025-12-11
+
+---
+
+
 Timestamp: 2025-10-10 01:28:27 +0100
 Commit: d6f22c3
 Branch: main
@@ -18,3 +30,19 @@ Verdict: READY
 - docs/status/tests.json: present
 - docs/cheatsheets: present
 - index.html: present
+
+## Examine
+
+<!-- Add examination details here -->
+
+## Clean
+
+<!-- Add cleanup/implementation details here -->
+
+## Report
+
+<!-- Add report/summary details here -->
+
+## Role
+
+<!-- Add role/next actions here -->

@@ -43,17 +43,51 @@ frame_delta_history = []
 bass_history = []
 
 
+def _candidate_frame_sources():
+    """Yield candidate snapshot URLs in priority order."""
+    seen = set()
+
+    frame_tap = os.getenv('FRAME_TAP_URL')
+    if frame_tap:
+        seen.add(frame_tap)
+        yield frame_tap
+
+    default = f'{VIZ_ENGINE_URL}/snap.jpg'
+    if default not in seen:
+        seen.add(default)
+        yield default
+
+    # Investor demo fallback: md3-engine HTTP server (public 7001)
+    fallback_hosts = [
+        'http://md3-engine:7001/snap.jpg',
+        'http://localhost:7001/snap.jpg'
+    ]
+    for url in fallback_hosts:
+        if url not in seen:
+            seen.add(url)
+            yield url
+
+
 def fetch_snapshot():
-    """Fetch current frame from viz-engine"""
-    try:
-        response = requests.get(f'{VIZ_ENGINE_URL}/snap.jpg', timeout=5)
-        if response.status_code == 200:
-            img = Image.open(BytesIO(response.content))
-            return cv2.cvtColor(np.array(img), cv2.COLOR_RGB2BGR)
-        return None
-    except Exception as e:
-        print(f'[scorebot] Snapshot error: {e}')
-        return None
+    """Fetch current frame from viz-engine or fallback sources."""
+    for url in _candidate_frame_sources():
+        try:
+            response = requests.get(url, timeout=5)
+            if response.status_code != 200:
+                print(f'[scorebot] Snapshot warning: {url} returned {response.status_code}')
+                continue
+
+            try:
+                img = Image.open(BytesIO(response.content))
+                return cv2.cvtColor(np.array(img), cv2.COLOR_RGB2BGR)
+            except Exception as img_err:
+                print(f'[scorebot] Snapshot decode error from {url}: {img_err}')
+                continue
+        except Exception as req_err:
+            print(f'[scorebot] Snapshot fetch error from {url}: {req_err}')
+
+    print('[scorebot] Snapshot error: all frame sources failed')
+    return None
 
 
 def compute_metrics(frame, audio_state=None):
