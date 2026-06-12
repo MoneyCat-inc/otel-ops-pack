@@ -1,5 +1,17 @@
 # ECRR Gate Closeout — SITE_HTML_CSP • SITE_REFMAP_PREVIEW
 
+**Agent:** Cursor{Implementer}
+**Date:** 2026-01-14
+
+---
+
+
+**Agent:** Cursor{Implementer}
+**Date:** 2025-12-11
+
+---
+
+
 Date: 2025-10-12 00:26:07 +01:00
 PR: #128
 Status: ✅ PASS

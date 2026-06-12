@@ -1,0 +1,43 @@
+[INFO] ECRR-Enhanced Canary Test - Examine -> Clean -> Report -> Role
+[INFO] Timestamp: 2026-01-26 19:17:02
+[INFO] Working directory: C:\otel
+[SECTION] EXAMINE: Environment State
+[OK] SigNoz UI accessible at http://localhost:8080
+[OK] OTel Collector service: Stopped
+[WARN] OTLP endpoint 14317 not reachable
+[WARN] OTLP endpoint 14318 not reachable
+[OK] Found 18 OTel scheduled tasks
+[INFO]   - OTel Benchmark ECRR Processor: Ready
+[INFO]   - OTel GPU Smoke Nightly: Ready
+[INFO]   - OTel Monitor Optimized Pipeline Hourly: Ready
+[INFO]   - OTel-Analytics-Monitoring: Ready
+[INFO]   - OTel-Artifacts-Cleanup: Ready
+[INFO]   - OTel-Canary-ECRR: Running
+[INFO]   - OTel-Canary-Test: Ready
+[INFO]   - OTel-Daily-Health-Check: Ready
+[INFO]   - OTel-ECRR-Canary: Ready
+[INFO]   - OTel-Parser-Error-Monitor: Ready
+[INFO]   - OTel-Parser-Monitoring: Ready
+[INFO]   - OTel-Service-Monitoring: Ready
+[INFO]   - OTel-Test-Task: Ready
+[INFO]   - OTel-Wiring-Verification-Weekly: Ready
+[INFO]   - otel_canary_10m: Ready
+[INFO]   - otel_config_backup_daily: Ready
+[INFO]   - otel_drift_guard_15m: Ready
+[INFO]   - otel_queue_watch_5m: Ready
+[SECTION] CLEAN: Address Drift
+[OK] Log file sizes are reasonable
+[SECTION] REPORT: Execute Canary Test
+[INFO] Executing canary test...
+[OK] Created canary log entry: ECRR-Canary-Test-20260126-191704
+[OK] Created Windows Event Log entry
+[WARN] Failed to send OTLP log to collector
+[SECTION] ROLE: Agent Responsibilities
+[INFO] Role: Observability Copilot - ECRR Canary Automation
+[INFO] Responsibilities: Examine environment, clean drift, report canary execution, document role
+[INFO] Artifacts: This report, canary logs, OTLP traces, Windows Event Log entries
+[SECTION] Summary
+[FAIL] OTel Collector service not running
+[WARN] OTLP endpoint 14317 not reachable
+[WARN] OTLP endpoint 14318 not reachable
+[WARN] Failed to send OTLP log

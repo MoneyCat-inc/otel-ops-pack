@@ -312,3 +312,12 @@ JSON
 
 🟢 **GATE/SITE ENFORCEMENT ACTIVE · 6/6 REQUIRED CHECKS · PRs BLOCKED UNTIL 5/5 PASS · BOSSCAT ORDER EXECUTED** 🟢
 
+
+
+## Report
+
+<!-- Add report/summary details here -->
+
+## Role
+
+<!-- Add role/next actions here -->

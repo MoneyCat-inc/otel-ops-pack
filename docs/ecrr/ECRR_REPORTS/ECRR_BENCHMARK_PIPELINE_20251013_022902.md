@@ -231,3 +231,16 @@ docs/ecrr/ECRR_REPORTS/
 
 🐾 **End of ECRR Report**
 
+
+
+## Examine
+
+<!-- Add examination details here -->
+
+## Report
+
+<!-- Add report/summary details here -->
+
+## Role
+
+<!-- Add role/next actions here -->

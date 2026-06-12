@@ -1,0 +1,32 @@
+name: "code_quality_gate"
+description: "Ensures code meets quality standards before merge"
+
+requirements:
+  - name: "tests_passing"
+    evidence_type: "telemetry_span"
+    span_name: "test_execution_complete"
+    required_attributes:
+      - "tests.total > 0"
+      - "tests.passed = tests.total"
+      - "tests.coverage > 80"
+    
+  - name: "security_scan"
+    evidence_type: "telemetry_span"
+    span_name: "security_scan_complete"
+    required_attributes:
+      - "vulnerabilities.critical = 0"
+      - "vulnerabilities.high = 0"
+    
+  - name: "code_review"
+    evidence_type: "telemetry_query"
+    query: |
+      SELECT COUNT(*) as reviews 
+      FROM spans 
+      WHERE span_name = 'code_review_complete' 
+      AND parent_id = '{task_id}'
+    pass_threshold: "reviews >= 1"
+
+status:
+  all_requirements_met: "GREEN"
+  some_requirements_met: "AMBER"
+  no_requirements_met: "RED"
