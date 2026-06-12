@@ -1,0 +1,57 @@
+name: Weekly Repository Cleanup
+
+on:
+  schedule:
+    # Every Monday at 2 AM UTC
+    - cron: '0 2 * * 1'
+  workflow_dispatch:  # Manual trigger
+
+concurrency:
+  group: weekly-cleanup-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for analysis
+      
+      - name: 🧹 Run Cleanup (Dry Run)
+        run: |
+          pwsh -File scripts/repo-cleanup.ps1 -DryRun -Verbose
+      
+      - name: 📊 Generate Cleanup Report
+        if: always()
+        run: |
+          {
+            echo '### 🧹 Weekly Cleanup Report';
+            echo '';
+            echo "**Date:** $(date -u +'%Y-%m-%d %H:%M UTC')";
+            echo "**Workflow:** ${{ github.workflow }}";
+            echo "**Run:** #${{ github.run_number }}";
+            echo '';
+            echo '#### Summary';
+            echo 'Dry-run completed. Review output above for cleanup candidates.';
+            echo '';
+            echo '#### Next Steps';
+            echo '- Review cleanup candidates';
+            echo '- Run manual cleanup if needed: `.\scripts\repo-cleanup.ps1`';
+            echo '- Archive old gate reports to docs/archive/gates/';
+            echo '';
+            echo '[View full output](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})';
+          } >> "$GITHUB_STEP_SUMMARY"
+      
+      - name: 📋 Upload Artifact Inventory
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cleanup-report-${{ github.run_number }}
+          path: |
+            artifacts/**/*.json
+            !artifacts/archive/**
+          retention-days: 14
+

@@ -33,6 +33,7 @@ jobs:
       - name: Enable corepack & verify pnpm
         run: |
           corepack enable
+          corepack prepare pnpm@10.18.1 --activate
           pnpm --version
 
       - name: Install dependencies

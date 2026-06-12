@@ -1,5 +1,17 @@
 # ECRR Report: Gate #008 WARN - Trace Ingestion Blocked
 
+**Agent:** Cursor{Implementer}
+**Date:** 2026-01-14
+
+---
+
+
+**Agent:** Cursor{Implementer}
+**Date:** 2025-12-11
+
+---
+
+
 **Date:** 2025-10-23  
 **Actor:** Cursor{Implementer}  
 **Authority:** Fubumaki (Repository Owner)  
@@ -183,6 +195,14 @@ HTTP server started on 0.0.0.0:4318
 **Current Owner:** Cursor{Implementer} (diagnostic investigation)  
 **Escalation:** BossCat OEM / Infrastructure Team  
 **Next Actor:** System Administrator (ClickHouse/SigNoz expert)
+
+## Report
+
+<!-- Add report/summary details here -->
+
+## Role
+
+<!-- Add role/next actions here -->
 
 ### Next Actions (Priority Order)
 

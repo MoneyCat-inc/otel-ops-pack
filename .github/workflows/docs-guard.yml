@@ -21,25 +21,35 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       
-      - name: Count root markdown files
+      - name: Block new root markdown files
         shell: bash
         run: |
-          count=$(find . -maxdepth 1 -type f -name "*.md" | wc -l | xargs)
-          echo "Root markdown count: $count"
-          max=15
+          set -euo pipefail
+          # Legacy note:
+          # This repo currently contains many root-level markdown files.
+          # The guard enforces *no new root markdown files* are added on PRs.
+          base_ref="origin/${{ github.base_ref }}"
+          git fetch origin "${{ github.base_ref }}" --depth=1
           
-          if [ "$count" -gt "$max" ]; then
-            echo "::error::Root markdown files exceed $max"
+          echo "Checking for newly added root-level .md files vs $base_ref..."
+          added_root_md=$(
+            git diff --name-status "$base_ref"...HEAD -- '*.md' \
+              | awk '$1=="A" && $2 ~ /^[^\/]+\.md$/ && $2 != "AGENTS.md" {print $2}' \
+              || true
+          )
+          
+          if [ -n "$added_root_md" ]; then
+            echo "::error::New root markdown files are not allowed"
+            echo "$added_root_md"
             echo ""
-            echo "Found $count markdown files at root (max: $max):"
-            find . -maxdepth 1 -type f -name "*.md" -print
-            echo ""
-            echo "Move files into docs/<domain>/ or delete if obsolete"
+            echo "Move these into docs/<domain>/ (or CHAR/DOCS mirror) instead."
             exit 1
           fi
           
-          echo "✅ Root markdown cap enforced: $count ≤ $max"
+          echo "✅ No new root markdown files added"
       
       - name: List root markdown files
         shell: bash

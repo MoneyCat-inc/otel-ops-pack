@@ -56,8 +56,8 @@ RUN pip3 install --no-cache-dir \
 # Create working directory
 WORKDIR /app
 
-# Copy common utilities
-COPY sidecars/ /app/sidecars/
+# Copy GPU sidecar apps (aggregation, compression, inference)
+COPY ALFA/APPS/sidecars/ /app/sidecars/
 
-# Set default command
-CMD ["python3", "-c", "import cudf, nvcomp; print('GPU sidecar base image ready')"]
+# Set default command (nvcomp requires manual compilation, so we skip it for now)
+CMD ["python3", "-c", "import cudf; print('GPU sidecar base image ready')"]

@@ -1,5 +1,17 @@
 # ECRR Maintenance — OTel Collector Hostname/Auth Fix
 
+**Agent:** Cursor{Implementer}
+**Date:** 2026-01-14
+
+---
+
+
+**Agent:** Cursor{Implementer}
+**Date:** 2025-12-11
+
+---
+
+
 Timestamp: 2025-10-12
 Actor: BossCat OEM
 Scope: OTel collector → ClickHouse connectivity
