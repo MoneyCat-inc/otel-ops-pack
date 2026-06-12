@@ -1,7 +1,7 @@
 # 🗺️ Resonai [OTel] — Canonical References Map
 
-**Version:** 1.1  
-**Updated:** 2025-10-19  
+**Version:** 1.2  
+**Updated:** 2026-06-12  
 **Purpose:** Single source of truth for all working parts
 
 **What's New in v1.1:**
@@ -26,11 +26,17 @@
 ### 2. Persona & Governance
 **Immutable rules for merge discipline, budgets, and ECRR methodology**
 
-- **[The Art of ECRR (Manual)](../bosscat/misc/ART_OF_ECRR.md)**  
+- **[The Art of ECRR (Manual)](../BossCat/misc/ART_OF_ECRR.md)**  
   Paired-agent protocol, kill-switch, strict budgets
 
-- **[Agents & Hierarchy](../bosscat/misc/AGENTS.md)**  
-  Agent roles and ECRR methodology
+- **[BossCat Charter](../BossCat/CHARTER.md)**  
+  Canonical governance and agent hierarchy
+
+- **[Immutable Persona v1.1](../BossCat/IMMUTABLE_PERSONA_v1.1.md)**  
+  Merge discipline and executive voice
+
+- **[Repository Index (AGENTS.md)](../../AGENTS.md)**  
+  Canonical agent entry point
 
 ---
 
@@ -103,7 +109,7 @@ The root consolidation organized 177 files into domain-specific folders:
 - **Root Docs Consolidated:** 177
 - **Inventory Files:** 4 (complete)
 - **Registries:** 3 (operational)
-- **Last Updated:** 2025-10-19T13:00:00+00:00
+- **Last Updated:** 2026-06-12T13:00:00+00:00
 
 ---
 
