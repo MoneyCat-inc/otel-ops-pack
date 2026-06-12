@@ -18,7 +18,7 @@ on:
       auto_remediate:
         description: 'Auto-remediate non-compliant files'
         required: false
-        default: 'false'
+        default: false
         type: boolean
 
 concurrency:
@@ -32,9 +32,6 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      
-    - name: Setup PowerShell
-      uses: PowerShell/setup-powershell@v2
       
     - name: Check ECRR Compliance
       id: compliance_check

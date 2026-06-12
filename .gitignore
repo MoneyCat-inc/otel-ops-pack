@@ -35,6 +35,7 @@ docs/BossCat/visuals/vendor/
 
 # Ephemeral logs
 *.last.log
+logs/
 logs/**/*.last.log
 *.docx
 *.pdf
@@ -57,7 +58,8 @@ out/
 # .NET build outputs (Gate #026-029 services)
 bosscat-svc*/bin/
 bosscat-svc*/obj/
-dotnet-test-app/
+dotnet-test-app/bin/
+dotnet-test-app/obj/
 dotnet-autoinstrumentation/
 
 # Debug scripts (quarantined - not for production)
@@ -109,3 +111,9 @@ __pycache__/
 # ECRR compliance check runtime artifacts (timestamped JSON reports)
 artifacts/ecrr-compliance-check-*.json
 
+
+# Boot health reports and runtime artifacts
+scripts/artifacts/
+
+# Generated health check reports
+HEALTH_CHECK_REPORT.md
