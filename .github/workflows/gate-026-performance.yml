@@ -97,6 +97,8 @@ jobs:
 
       - name: 🔧 Setup k6
         uses: grafana/setup-k6-action@v1
+        with:
+          k6-version: '0.57.0'
 
       - name: 🏃 Run k6 Performance Test
         id: k6
@@ -132,11 +134,13 @@ jobs:
         if: always()
         run: |
           $exitCode = '${{ steps.k6.outputs.k6_exit_code }}'
+          if ([string]::IsNullOrEmpty($exitCode)) { $exitCode = '1' }
           $runUrl = '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+          $status = if ($exitCode -eq '0') { '**Status:** PASS' } else { '**Status:** FAIL' }
           $lines = @(
             '### Gate #026 Performance Gate Results',
             '',
-            if ($exitCode -eq '0') { '**Status:** PASS' } else { '**Status:** FAIL' },
+            $status,
             '',
             "**Workflow:** ${{ github.workflow }}",
             "**Run:** #${{ github.run_number }} (attempt ${{ github.run_attempt }})",
