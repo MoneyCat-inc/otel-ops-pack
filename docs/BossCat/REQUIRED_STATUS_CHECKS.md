@@ -239,7 +239,7 @@ gh run download <run-id> --name ecrr-docs
 
 - **Reviewer B Playbook**: `docs/BossCat/ReviewerB_Playbook.md`
 - **Evidence Templates**: `.agent/TEMPLATES/PLAN.md`, `.agent/TEMPLATES/EVIDENCE.log.stub`
-- **BossCat Charter**: `docs/BossCat/AGENTS.md`
+- **BossCat Charter**: `docs/BossCat/CHARTER.md`
 - **Workflow Patterns**: `docs/AGENTS.md`
 
 ---
@@ -249,4 +249,3 @@ gh run download <run-id> --name ecrr-docs
 **Last Updated**: 2025-10-15
 
 🐾 **BossCat Branch Protection — Governance Framework**
-
