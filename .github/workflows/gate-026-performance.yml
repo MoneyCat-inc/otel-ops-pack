@@ -131,36 +131,21 @@ jobs:
       - name: 📋 Performance Gate Summary
         if: always()
         run: |
-          $exitCode = "${{ steps.k6.outputs.k6_exit_code }}"
-          
-          echo "### 🚦 Gate #026 Performance Gate Results" >> $env:GITHUB_STEP_SUMMARY
-          echo "" >> $env:GITHUB_STEP_SUMMARY
-          
-          if ($exitCode -eq "0") {
-            echo "**Status:** ✅ **PASS**" >> $env:GITHUB_STEP_SUMMARY
-            echo "" >> $env:GITHUB_STEP_SUMMARY
-            echo "All performance thresholds met:" >> $env:GITHUB_STEP_SUMMARY
-            echo "- ✅ P50 <= 900ms" >> $env:GITHUB_STEP_SUMMARY
-            echo "- ✅ P95 <= 1200ms" >> $env:GITHUB_STEP_SUMMARY
-            echo "- ✅ Error rate < 1%" >> $env:GITHUB_STEP_SUMMARY
-          } else {
-            echo "**Status:** ❌ **FAIL**" >> $env:GITHUB_STEP_SUMMARY
-            echo "" >> $env:GITHUB_STEP_SUMMARY
-            echo "⚠️ Performance thresholds violated (see k6 output)" >> $env:GITHUB_STEP_SUMMARY
-            echo "" >> $env:GITHUB_STEP_SUMMARY
-            echo "**Thresholds:**" >> $env:GITHUB_STEP_SUMMARY
-            echo "- P50 must be <= 900ms" >> $env:GITHUB_STEP_SUMMARY
-            echo "- P95 must be <= 1200ms" >> $env:GITHUB_STEP_SUMMARY
-            echo "- Error rate must be < 1%" >> $env:GITHUB_STEP_SUMMARY
-          }
-          
-          echo "" >> $env:GITHUB_STEP_SUMMARY
-          echo "**Workflow:** ${{ github.workflow }}" >> $env:GITHUB_STEP_SUMMARY
-          echo "**Run:** #${{ github.run_number }} (attempt ${{ github.run_attempt }})" >> $env:GITHUB_STEP_SUMMARY
-          echo "**Ref:** \`${{ github.ref }}\`" >> $env:GITHUB_STEP_SUMMARY
-          echo "**Actor:** @${{ github.actor }}" >> $env:GITHUB_STEP_SUMMARY
-          echo "" >> $env:GITHUB_STEP_SUMMARY
-          echo "[View k6 results artifact](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $env:GITHUB_STEP_SUMMARY
+          $exitCode = '${{ steps.k6.outputs.k6_exit_code }}'
+          $runUrl = '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+          $lines = @(
+            '### Gate #026 Performance Gate Results',
+            '',
+            if ($exitCode -eq '0') { '**Status:** PASS' } else { '**Status:** FAIL' },
+            '',
+            "**Workflow:** ${{ github.workflow }}",
+            "**Run:** #${{ github.run_number }} (attempt ${{ github.run_attempt }})",
+            "**Ref:** ${{ github.ref }}",
+            "**Actor:** @${{ github.actor }}",
+            '',
+            "[View k6 results artifact]($runUrl)"
+          )
+          $lines | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
         shell: pwsh
 
       - name: ❌ Fail if Thresholds Violated

@@ -497,9 +497,9 @@
     },
     {
       "name": "gate-026-performance",
-      "modified": "2025-10-27T08:27:34.6101681Z",
+      "modified": "2026-06-12T11:41:19.5071548Z",
       "path": ".github/workflows/gate-026-performance.yml",
-      "size": 6582,
+      "size": 5477,
       "triggers": {
         "issues": false,
         "other": [],
