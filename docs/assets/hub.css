@@ -19,6 +19,9 @@ a:hover{color:#6a4de6}
 .support-section h3{color:#e9edf7;margin-bottom:1rem}
 .support-section p{color:#b4bac9;margin-bottom:1.5rem}
 .support-links{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+.community-links{margin-top:1.25rem;color:#b4bac9}
+.community-links a{color:#7c5cff}
+.community-links a:hover{color:#6a4de6}
 .btn{display:inline-block;padding:.75rem 1.5rem;background:#7c5cff;color:#fff;border-radius:6px;font-weight:600;transition:all .3s}
 .btn:hover{background:#6a4de6;transform:translateY(-2px);box-shadow:0 4px 12px rgba(124,92,255,.3);color:#fff}
 .footer{margin-top:3rem;padding-top:2rem;border-top:1px solid #252b3a;color:#77809a;font-size:.875rem;text-align:center}
