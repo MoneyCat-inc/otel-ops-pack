@@ -2,6 +2,9 @@ packages:
   - '.'
   - 'resonai-mock'
 
+overrides:
+  fast-json-patch: '>=3.1.1'
+
 onlyBuiltDependencies:
   - '@prisma/client'
   - '@prisma/engines'

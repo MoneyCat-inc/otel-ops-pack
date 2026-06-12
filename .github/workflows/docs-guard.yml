@@ -37,7 +37,7 @@ jobs:
           echo "Checking for newly added root-level .md files vs $base_ref..."
           added_root_md=$(
             git diff --name-status "$base_ref"...HEAD -- '*.md' \
-              | awk '$1=="A" && $2 ~ /^[^\/]+\.md$/ {print $2}' \
+              | awk '$1=="A" && $2 ~ /^[^\/]+\.md$/ && $2 != "AGENTS.md" {print $2}' \
               || true
           )
           

@@ -1,6 +1,6 @@
 {
   "source": "scripts/regenerate-workflows-registry.ps1",
-  "total": 79,
+  "total": 90,
   "items": [
     {
       "name": "adot-config-gate",
@@ -140,9 +140,9 @@
     },
     {
       "name": "bosscat-gate-bot-native",
-      "modified": "2025-10-19T19:17:00.9230256Z",
+      "modified": "2026-01-24T09:37:22.9837966Z",
       "path": ".github/workflows/bosscat-gate-bot-native.yml",
-      "size": 14769,
+      "size": 15070,
       "triggers": {
         "issues": false,
         "other": [],
@@ -225,9 +225,9 @@
     },
     {
       "name": "bosscat-tetragram-guard",
-      "modified": "2025-10-16T09:19:29.2054799Z",
+      "modified": "2025-10-25T20:20:25.7316927Z",
       "path": ".github/workflows/bosscat-tetragram-guard.yml",
-      "size": 1048,
+      "size": 837,
       "triggers": {
         "issues": false,
         "other": [],
@@ -326,6 +326,23 @@
       }
     },
     {
+      "name": "deploy-moneycat",
+      "modified": "2025-12-22T13:28:16.4950450Z",
+      "path": ".github/workflows/deploy-moneycat.yml",
+      "size": 2323,
+      "triggers": {
+        "issues": false,
+        "other": [],
+        "pull_request": false,
+        "push": true,
+        "release": false,
+        "schedule": false,
+        "workflow_call": false,
+        "workflow_dispatch": true,
+        "workflow_run": false
+      }
+    },
+    {
       "name": "devskim",
       "modified": "2025-10-17T13:12:06.3883739Z",
       "path": ".github/workflows/devskim.yml",
@@ -344,9 +361,9 @@
     },
     {
       "name": "docs-guard",
-      "modified": "2025-10-19T19:17:00.9240330Z",
+      "modified": "2026-06-12T11:24:09.5246135Z",
       "path": ".github/workflows/docs-guard.yml",
-      "size": 2406,
+      "size": 2826,
       "triggers": {
         "issues": false,
         "other": [],
@@ -395,9 +412,9 @@
     },
     {
       "name": "ecrr-compliance",
-      "modified": "2025-10-17T13:12:06.3888967Z",
+      "modified": "2026-01-24T09:37:22.9843031Z",
       "path": ".github/workflows/ecrr-compliance.yml",
-      "size": 978,
+      "size": 2344,
       "triggers": {
         "issues": false,
         "other": [],
@@ -406,15 +423,32 @@
         "release": false,
         "schedule": false,
         "workflow_call": false,
-        "workflow_dispatch": false,
+        "workflow_dispatch": true,
+        "workflow_run": false
+      }
+    },
+    {
+      "name": "ecrr-compliance-scheduled",
+      "modified": "2025-12-11T17:43:19.9022278Z",
+      "path": ".github/workflows/ecrr-compliance-scheduled.yml",
+      "size": 2717,
+      "triggers": {
+        "issues": false,
+        "other": [],
+        "pull_request": false,
+        "push": false,
+        "release": false,
+        "schedule": true,
+        "workflow_call": false,
+        "workflow_dispatch": true,
         "workflow_run": false
       }
     },
     {
       "name": "ethicalcheck",
-      "modified": "2025-10-16T09:19:29.2155902Z",
+      "modified": "2025-10-25T20:56:30.9209834Z",
       "path": ".github/workflows/ethicalcheck.yml",
-      "size": 3440,
+      "size": 3479,
       "triggers": {
         "issues": false,
         "other": [],
@@ -429,9 +463,9 @@
     },
     {
       "name": "fortify",
-      "modified": "2025-10-16T09:19:29.2155902Z",
+      "modified": "2025-10-25T20:56:30.9204482Z",
       "path": ".github/workflows/fortify.yml",
-      "size": 10713,
+      "size": 10735,
       "triggers": {
         "issues": false,
         "other": [],
@@ -439,6 +473,40 @@
         "push": true,
         "release": false,
         "schedule": true,
+        "workflow_call": false,
+        "workflow_dispatch": true,
+        "workflow_run": false
+      }
+    },
+    {
+      "name": "gate-019-audio-r1-test",
+      "modified": "2025-10-26T04:20:22.2425887Z",
+      "path": ".github/workflows/gate-019-audio-r1-test.yml",
+      "size": 2474,
+      "triggers": {
+        "issues": false,
+        "other": [],
+        "pull_request": false,
+        "push": true,
+        "release": false,
+        "schedule": false,
+        "workflow_call": false,
+        "workflow_dispatch": true,
+        "workflow_run": false
+      }
+    },
+    {
+      "name": "gate-026-performance",
+      "modified": "2025-10-27T08:27:34.6101681Z",
+      "path": ".github/workflows/gate-026-performance.yml",
+      "size": 6582,
+      "triggers": {
+        "issues": false,
+        "other": [],
+        "pull_request": true,
+        "push": true,
+        "release": false,
+        "schedule": false,
         "workflow_call": false,
         "workflow_dispatch": true,
         "workflow_run": false
@@ -633,9 +701,9 @@
     },
     {
       "name": "jfrog-sast",
-      "modified": "2025-10-16T09:19:29.2175958Z",
+      "modified": "2025-10-25T20:56:30.9204482Z",
       "path": ".github/workflows/jfrog-sast.yml",
-      "size": 1668,
+      "size": 1714,
       "triggers": {
         "issues": false,
         "other": [],
@@ -650,9 +718,9 @@
     },
     {
       "name": "jscrambler-code-integrity",
-      "modified": "2025-10-16T09:19:29.2185950Z",
+      "modified": "2025-10-25T20:56:30.9204482Z",
       "path": ".github/workflows/jscrambler-code-integrity.yml",
-      "size": 2177,
+      "size": 2248,
       "triggers": {
         "issues": false,
         "other": [],
@@ -667,14 +735,31 @@
     },
     {
       "name": "json-validation-gate",
-      "modified": "2025-10-23T11:38:27.0849684Z",
+      "modified": "2025-10-23T12:20:47.8055079Z",
       "path": ".github/workflows/json-validation-gate.yml",
-      "size": 3578,
+      "size": 3573,
       "triggers": {
         "issues": false,
         "other": [],
         "pull_request": true,
         "push": true,
+        "release": false,
+        "schedule": false,
+        "workflow_call": false,
+        "workflow_dispatch": true,
+        "workflow_run": false
+      }
+    },
+    {
+      "name": "k6-performance-gate",
+      "modified": "2025-10-27T14:15:11.7613606Z",
+      "path": ".github/workflows/k6-performance-gate.yml",
+      "size": 2544,
+      "triggers": {
+        "issues": false,
+        "other": [],
+        "pull_request": true,
+        "push": false,
         "release": false,
         "schedule": false,
         "workflow_call": false,
@@ -700,6 +785,23 @@
       }
     },
     {
+      "name": "lumi-vizr-lane",
+      "modified": "2025-11-01T23:45:13.8634449Z",
+      "path": ".github/workflows/lumi-vizr-lane.yml",
+      "size": 2095,
+      "triggers": {
+        "issues": false,
+        "other": [],
+        "pull_request": false,
+        "push": false,
+        "release": false,
+        "schedule": true,
+        "workflow_call": false,
+        "workflow_dispatch": true,
+        "workflow_run": false
+      }
+    },
+    {
       "name": "main",
       "modified": "2025-10-16T03:41:51.2307851Z",
       "path": ".github/workflows/main.yml",
@@ -718,9 +820,9 @@
     },
     {
       "name": "mayhem-for-api",
-      "modified": "2025-10-16T09:19:29.2185950Z",
+      "modified": "2025-10-25T20:56:30.9209834Z",
       "path": ".github/workflows/mayhem-for-api.yml",
-      "size": 2290,
+      "size": 2362,
       "triggers": {
         "issues": false,
         "other": [],
@@ -887,6 +989,40 @@
       }
     },
     {
+      "name": "perf-gate-demo",
+      "modified": "2025-10-28T06:44:45.0853013Z",
+      "path": ".github/workflows/perf-gate-demo.yml",
+      "size": 4530,
+      "triggers": {
+        "issues": false,
+        "other": [],
+        "pull_request": true,
+        "push": false,
+        "release": false,
+        "schedule": false,
+        "workflow_call": false,
+        "workflow_dispatch": true,
+        "workflow_run": false
+      }
+    },
+    {
+      "name": "performance-gate",
+      "modified": "2025-10-27T00:49:55.2653933Z",
+      "path": ".github/workflows/performance-gate.yml",
+      "size": 3026,
+      "triggers": {
+        "issues": false,
+        "other": [],
+        "pull_request": true,
+        "push": false,
+        "release": false,
+        "schedule": false,
+        "workflow_call": false,
+        "workflow_dispatch": true,
+        "workflow_run": false
+      }
+    },
+    {
       "name": "powershell",
       "modified": "2025-10-16T03:41:51.2358088Z",
       "path": ".github/workflows/powershell.yml",
@@ -900,6 +1036,23 @@
         "schedule": true,
         "workflow_call": false,
         "workflow_dispatch": false,
+        "workflow_run": false
+      }
+    },
+    {
+      "name": "quil-docs-lane",
+      "modified": "2025-11-01T23:45:04.0503682Z",
+      "path": ".github/workflows/quil-docs-lane.yml",
+      "size": 2104,
+      "triggers": {
+        "issues": false,
+        "other": [],
+        "pull_request": false,
+        "push": false,
+        "release": false,
+        "schedule": true,
+        "workflow_call": false,
+        "workflow_dispatch": true,
         "workflow_run": false
       }
     },
@@ -1211,9 +1364,9 @@
     },
     {
       "name": "snyk-security",
-      "modified": "2025-10-16T09:19:29.2276216Z",
+      "modified": "2025-10-25T20:56:30.9204482Z",
       "path": ".github/workflows/snyk-security.yml",
-      "size": 3439,
+      "size": 3536,
       "triggers": {
         "issues": false,
         "other": [],
@@ -1245,9 +1398,9 @@
     },
     {
       "name": "status-auto-update",
-      "modified": "2025-10-23T11:48:08.5105579Z",
+      "modified": "2025-10-23T12:20:47.8055079Z",
       "path": ".github/workflows/status-auto-update.yml",
-      "size": 11819,
+      "size": 11486,
       "triggers": {
         "issues": false,
         "other": [],
@@ -1296,9 +1449,9 @@
     },
     {
       "name": "sysdig-scan",
-      "modified": "2025-10-16T09:19:29.2286216Z",
+      "modified": "2025-10-25T20:56:30.9204482Z",
       "path": ".github/workflows/sysdig-scan.yml",
-      "size": 2462,
+      "size": 2547,
       "triggers": {
         "issues": false,
         "other": [],
@@ -1333,6 +1486,40 @@
       "modified": "2025-10-19T03:34:27.2808712Z",
       "path": ".github/workflows/update-kpis.yml",
       "size": 890,
+      "triggers": {
+        "issues": false,
+        "other": [],
+        "pull_request": false,
+        "push": false,
+        "release": false,
+        "schedule": true,
+        "workflow_call": false,
+        "workflow_dispatch": true,
+        "workflow_run": false
+      }
+    },
+    {
+      "name": "weekly-cleanup",
+      "modified": "2025-11-01T22:40:04.7748641Z",
+      "path": ".github/workflows/weekly-cleanup.yml",
+      "size": 1820,
+      "triggers": {
+        "issues": false,
+        "other": [],
+        "pull_request": false,
+        "push": false,
+        "release": false,
+        "schedule": true,
+        "workflow_call": false,
+        "workflow_dispatch": true,
+        "workflow_run": false
+      }
+    },
+    {
+      "name": "weekly-executive-review",
+      "modified": "2025-11-01T23:10:13.0766868Z",
+      "path": ".github/workflows/weekly-executive-review.yml",
+      "size": 6551,
       "triggers": {
         "issues": false,
         "other": [],
