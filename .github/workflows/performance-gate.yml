@@ -7,6 +7,10 @@ name: Performance Gate (k6)
 on:
   pull_request:
     branches: [main]
+    paths:
+      - 'dotnet-test-app/**'
+      - 'scripts/perf/**'
+      - '.github/workflows/performance-gate.yml'
   workflow_dispatch:
 
 concurrency:
@@ -17,66 +21,65 @@ jobs:
   performance-gate:
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      
-      - name: Start Services
-        run: |
-          echo "Starting test environment..."
-          docker compose up -d --wait
-      
-      - name: Synthetic Trace Injection (Pre-flight)
-        run: |
-          echo "Injecting synthetic trace to verify telemetry..."
-          curl -X POST http://localhost:14318/v1/traces \
-            -H 'Content-Type: application/json' \
-            -d '{
-              "resourceSpans": [{
-                "resource": {
-                  "attributes": [{
-                    "key": "service.name",
-                    "value": {"stringValue": "ci-synthetic-test"}
-                  }]
-                },
-                "scopeSpans": [{
-                  "spans": [{
-                    "traceId": "00000000000000000000000000000001",
-                    "spanId": "0000000000000001",
-                    "name": "ci-pre-flight",
-                    "startTimeUnixNano": "1698000000000000000",
-                    "endTimeUnixNano": "1698000001000000000"
-                  }]
-                }]
-              }]
-            }'
-          echo "Pre-flight trace sent"
-      
-      - name: Run k6 Load Test with Thresholds
-        uses: grafana/k6-action@v0.3.1
+
+      - name: Create artifacts directory
+        run: mkdir -p artifacts
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
         with:
-          filename: scripts/perf/k6-performance-gate.js
-          flags: --out json=artifacts/k6-results.json
-        continue-on-error: true
-        id: k6
-      
-      - name: Check Thresholds
+          dotnet-version: '8.0.x'
+
+      - name: Build .NET test app
+        run: dotnet build dotnet-test-app/dotnet-test-app.csproj -c Release
+
+      - name: Start .NET test app
         run: |
-          if [ ${{ steps.k6.outcome }} == 'failure' ]; then
+          nohup dotnet run --project dotnet-test-app/dotnet-test-app.csproj -c Release --no-build > /tmp/dotnet-test-app.log 2>&1 &
+          echo $! > /tmp/dotnet-test-app.pid
+
+      - name: Wait for test app health
+        run: |
+          echo "Waiting for dotnet-test-gate026 on port 5555..."
+          timeout 60 bash -c 'until curl -sf http://localhost:5555/health >/dev/null; do sleep 1; done'
+          curl -f http://localhost:5555/health
+
+      - name: Setup k6
+        uses: grafana/setup-k6-action@v1
+
+      - name: Run k6 load test with thresholds
+        id: k6
+        run: k6 run scripts/perf/k6-performance-gate.js
+        continue-on-error: true
+
+      - name: Check thresholds
+        run: |
+          if [ "${{ steps.k6.outcome }}" == "failure" ]; then
             echo "::error::Performance gate FAILED - thresholds breached"
             exit 1
           fi
           echo "::notice::Performance gate PASSED"
-      
-      - name: Upload Artifacts
+
+      - name: Upload artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: performance-gate-results
-          path: artifacts/k6-results.json
+          path: artifacts/k6-summary.json
           retention-days: 14
-      
+          if-no-files-found: ignore
+
+      - name: Stop .NET test app
+        if: always()
+        run: |
+          if [ -f /tmp/dotnet-test-app.pid ]; then
+            kill "$(cat /tmp/dotnet-test-app.pid)" || true
+          fi
+
       - name: Job Summary
         if: always()
         run: |
@@ -90,4 +93,3 @@ jobs:
             echo '';
             echo '[View full run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})';
           } >> "$GITHUB_STEP_SUMMARY"
-

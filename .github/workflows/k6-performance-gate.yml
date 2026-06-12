@@ -8,14 +8,16 @@ on:
   pull_request:
     branches:
       - main
+    paths:
+      - 'dotnet-test-app/**'
+      - 'scripts/perf/**'
+      - '.github/workflows/k6-performance-gate.yml'
   workflow_dispatch:
 
 jobs:
   k6-load-test:
-    # Skip workflow if BASE_URL not set (prevents noisy failures when no test target exists)
-    if: ${{ vars.BASE_URL != '' || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -28,31 +30,28 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
+      - name: Build .NET test app
+        run: dotnet build dotnet-test-app/dotnet-test-app.csproj -c Release
+
       - name: Start dotnet test app
         run: |
-          cd dotnet-test-app
-          nohup dotnet run --urls http://localhost:5555 > /tmp/dotnet-app.log 2>&1 &
+          nohup dotnet run --project dotnet-test-app/dotnet-test-app.csproj -c Release --no-build > /tmp/dotnet-app.log 2>&1 &
           echo $! > /tmp/dotnet-app.pid
-        
+
       - name: Wait for service to be ready
         run: |
-          echo "Waiting for dotnet app on port 5555..."
-          timeout 30 bash -c 'until nc -z localhost 5555; do sleep 1; done'
-          echo "Service is ready!"
+          echo "Waiting for dotnet-test-gate026 on port 5555..."
+          timeout 60 bash -c 'until curl -sf http://localhost:5555/health >/dev/null; do sleep 1; done'
+          curl -f http://localhost:5555/health
 
-      - name: Verify service health
-        run: |
-          curl -f http://localhost:5555/health || (echo "Health check failed" && exit 1)
-
-      - name: Install k6
-        run: |
-          curl https://github.com/grafana/k6/releases/download/v0.48.0/k6-v0.48.0-linux-amd64.tar.gz -L | tar xvz --strip-components 1
-          sudo mv k6 /usr/local/bin/
+      - name: Setup k6
+        uses: grafana/setup-k6-action@v1
 
       - name: Run k6 Performance Gate
         id: k6
-        run: |
-          k6 run scripts/perf/k6-performance-gate.js
+        env:
+          BASE_URL: ${{ vars.BASE_URL || 'http://localhost:5555' }}
+        run: k6 run scripts/perf/k6-performance-gate.js
         continue-on-error: true
 
       - name: Upload k6 results

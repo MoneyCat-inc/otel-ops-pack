@@ -752,9 +752,9 @@
     },
     {
       "name": "k6-performance-gate",
-      "modified": "2025-10-27T14:15:11.7613606Z",
+      "modified": "2026-06-12T11:36:44.1317350Z",
       "path": ".github/workflows/k6-performance-gate.yml",
-      "size": 2544,
+      "size": 2430,
       "triggers": {
         "issues": false,
         "other": [],
@@ -1007,9 +1007,9 @@
     },
     {
       "name": "performance-gate",
-      "modified": "2025-10-27T00:49:55.2653933Z",
+      "modified": "2026-06-12T11:36:39.8872559Z",
       "path": ".github/workflows/performance-gate.yml",
-      "size": 3026,
+      "size": 2987,
       "triggers": {
         "issues": false,
         "other": [],
