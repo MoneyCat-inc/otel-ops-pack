@@ -1,5 +1,17 @@
 # ECRR Report: Gate Ready — Docs Governance & Security Archiver
 
+**Agent:** Cursor{Implementer}
+**Date:** 2026-01-14
+
+---
+
+
+**Agent:** Cursor{Implementer}
+**Date:** 2025-12-11
+
+---
+
+
 **Date**: 2025-10-15 07:20:00 UTC  
 **Authority**: cursor{implementer} + fubumaki  
 **Gate**: IONA  

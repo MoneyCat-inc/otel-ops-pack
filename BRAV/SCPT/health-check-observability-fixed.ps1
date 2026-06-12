@@ -9,6 +9,10 @@ param(
 # Set working directory to script location
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $RepoRoot = Split-Path -Parent $ScriptDir
+# If we're in BRAV\SCPT, go up two levels to get to repo root
+if ($ScriptDir -like "*BRAV\SCPT*") {
+    $RepoRoot = Split-Path -Parent (Split-Path -Parent $ScriptDir)
+}
 Set-Location $RepoRoot
 
 # Initialize results object
@@ -90,7 +94,15 @@ function Test-DockerContainers {
 
 function Test-CanaryGeneration {
     try {
-        $canaryOutput = & canary 2>&1
+        $canaryScript = Join-Path $RepoRoot "canary-check-min.ps1"
+        if (-not (Test-Path $canaryScript)) {
+            $result = @{ Status = "UNHEALTHY"; Details = "Canary script not found" }
+            if (-not $Quiet) { Write-Host "   ❌ SCRIPT NOT FOUND" -ForegroundColor Red }
+            $HealthResults.Components["Canary Generation"] = $result
+            return $result
+        }
+        
+        $canaryOutput = & pwsh -File $canaryScript 2>&1 | Out-String
         $tokenMatch = $canaryOutput | Select-String -Pattern "token=([a-f0-9]+)" -AllMatches
         if ($tokenMatch -and $tokenMatch.Matches.Count -gt 0) {
             $token = $tokenMatch.Matches[0].Groups[1].Value
@@ -102,13 +114,19 @@ function Test-CanaryGeneration {
                 $result = @{ Status = "HEALTHY"; Details = "Canary Executed Successfully" }
                 if (-not $Quiet) { Write-Host "   ✅ SUCCESS (Canary Executed)" -ForegroundColor Green }
             } else {
-                $result = @{ Status = "UNHEALTHY"; Details = "No Token Generated" }
-                if (-not $Quiet) { Write-Host "   ❌ FAILED" -ForegroundColor Red }
+                # Check exit code
+                if ($LASTEXITCODE -eq 0) {
+                    $result = @{ Status = "HEALTHY"; Details = "Canary Passed" }
+                    if (-not $Quiet) { Write-Host "   ✅ SUCCESS (Exit Code 0)" -ForegroundColor Green }
+                } else {
+                    $result = @{ Status = "UNHEALTHY"; Details = "Canary Failed (Exit Code: $LASTEXITCODE)" }
+                    if (-not $Quiet) { Write-Host "   ❌ FAILED (Exit Code: $LASTEXITCODE)" -ForegroundColor Red }
+                }
             }
         }
     } catch {
-        $result = @{ Status = "UNHEALTHY"; Details = "Execution Error" }
-        if (-not $Quiet) { Write-Host "   ❌ ERROR" -ForegroundColor Red }
+        $result = @{ Status = "UNHEALTHY"; Details = "Execution Error: $($_.Exception.Message)" }
+        if (-not $Quiet) { Write-Host "   ❌ ERROR: $($_.Exception.Message)" -ForegroundColor Red }
     }
     
     $HealthResults.Components["Canary Generation"] = $result

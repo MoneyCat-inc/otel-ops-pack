@@ -1,5 +1,17 @@
 # 🐾 ECRR RSI BatchSize Discovery — Non-Regressing Improvement
 
+**Agent:** Cursor{Implementer}
+**Date:** 2026-01-14
+
+---
+
+
+**Agent:** Cursor{Implementer}
+**Date:** 2025-12-11
+
+---
+
+
 **Authority**: cursor{implementer} + Fubumaki  
 **Date**: 2025-10-15 02:45:00 UTC  
 **Discovery**: **BatchSize=1500 provides +6.4% throughput improvement** ✅
@@ -288,3 +300,20 @@ pwsh BRAV/SCPT/rsi-bench/sweep-batchsize.ps1 -SampleN 2000 -Concurrency 8
 
 **Improvement**: +6.4% throughput | **Risk**: LOW | **Status**: Awaiting BossCat approval
 
+
+
+## Examine
+
+<!-- Add examination details here -->
+
+## Clean
+
+<!-- Add cleanup/implementation details here -->
+
+## Report
+
+<!-- Add report/summary details here -->
+
+## Role
+
+<!-- Add role/next actions here -->

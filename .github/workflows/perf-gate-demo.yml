@@ -31,7 +31,7 @@ jobs:
       - name: Setup k6
         uses: grafana/setup-k6-action@v1
         with:
-          k6-version: 'latest'
+          k6-version: '0.57.0'
 
       - name: Start demo services (mock)
         run: |

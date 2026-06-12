@@ -19,16 +19,19 @@ RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
     && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
 
-# --- Build libprojectM + SDL frontend from source
+# --- Build libprojectM + SDL frontend from source (PR #942)
 WORKDIR /opt/build
 RUN git clone --depth=1 https://github.com/projectM-visualizer/projectm.git
 WORKDIR /opt/build/projectm
+# Fetch PR #942 head (glad-loader) from GitHub pull ref
+RUN git fetch --depth=1 origin pull/942/head:pr-942 \
+ && git checkout pr-942
 # Initialize submodules for vendored dependencies
 RUN git submodule update --init --recursive || true
 # Add missing build dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libsdl2-dev libglm-dev libpulse-dev && rm -rf /var/lib/apt/lists/*
-# Configure and build
+    libsdl2-dev libglm-dev libpulse-dev libx11-dev libgl1-mesa-dev && rm -rf /var/lib/apt/lists/*
+# Configure and build (PR #942: projectM now uses GLAD internally, no GLEW)
 RUN cmake -S . -B build -DCMAKE_BUILD_TYPE=Release \
     -DENABLE_SDL_UI=ON \
     -DENABLE_PULSEAUDIO=ON \
@@ -76,6 +79,24 @@ RUN g++ -O2 -std=c++17 audio-test.cpp audio-injector.o -o /usr/local/bin/audio-t
 RUN g++ -O2 -std=c++17 audio-integration-test.cpp audio-injector.o projectm-injector.o -o /usr/local/bin/audio-integration-test \
  && chmod +x /usr/local/bin/audio-integration-test
 
+# PR #942 Migration: Copy new library integration components
+COPY gl_proc_resolver.hpp gl_proc_resolver.cpp ./
+COPY projectm_renderer.hpp projectm_renderer.cpp ./
+COPY projectm-smoke-test.cpp ./
+COPY gl_diagnostics.cpp ./
+COPY CMakeLists.txt ./
+
+# PR #942 Migration: Build library integration components
+# Using CMake for proper dependency management
+RUN mkdir -p /app/build && cd /app/build \
+ && cmake .. \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DPROJECTM_INCLUDE_DIR=/usr/local/include \
+    -DPROJECTM_LIBRARY=/usr/local/lib/libprojectM.so \
+ && cmake --build . -j$(nproc) \
+ && cmake --install . \
+ && chmod +x /usr/local/bin/projectm-smoke-test
+
 # Presets directory (bind mount at runtime as well)
 RUN mkdir -p /presets
 ENV PRESET_DIR=/presets
@@ -83,4 +104,3 @@ ENV WIDTH=1920 HEIGHT=1080 FPS=30 DISPLAY=:99 PROJECTM_BIN=projectMSDL
 
 EXPOSE 7020
 ENTRYPOINT ["/app/pm-run.sh"]
-

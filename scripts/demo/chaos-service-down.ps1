@@ -12,7 +12,8 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-Write-Host "=== Service Down Chaos ===" -ForegroundColor Yellow
+try {
+    Write-Host "=== Service Down Chaos ===" -ForegroundColor Yellow
 
 if ($Action -eq 'start') {
     Write-Host "💥 Simulating service failure..." -ForegroundColor Yellow
@@ -29,5 +30,10 @@ if ($Action -eq 'start') {
     Write-Host "   Restart service process or container" -ForegroundColor Gray
     Write-Host "   Expected impact: Error rate returns to 0%, alerts clear" -ForegroundColor Gray
     exit 0
+}
+} catch {
+    Write-Error "Chaos script failed: $_"
+    Write-Host "Rollback: No changes applied" -ForegroundColor Yellow
+    exit 1
 }
 

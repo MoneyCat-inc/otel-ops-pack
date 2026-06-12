@@ -1,5 +1,17 @@
 # ECRR: IONA-LOW Incidents Remediation
 
+**Agent:** Cursor{Implementer}
+**Date:** 2026-01-14
+
+---
+
+
+**Agent:** Cursor{Implementer}
+**Date:** 2025-12-11
+
+---
+
+
 **Date:** 2025-10-22  
 **Executor:** Cursor{Implementer}  
 **Authority:** Fubumaki delegation (Post Gate #008 approval)  
@@ -92,6 +104,22 @@
 - **Executor:** Cursor{Implementer}
 - **Authority:** Fubumaki delegation
 - **Review:** BossCat OEM (post Gate #008 approval condition)
+
+## Examine
+
+<!-- Add examination details here -->
+
+## Clean
+
+<!-- Add cleanup/implementation details here -->
+
+## Report
+
+<!-- Add report/summary details here -->
+
+## Role
+
+<!-- Add role/next actions here -->
 
 ### Next Actions
 1. ✅ **Update IONA_ERRORS.md** - Mark incidents as resolved/clarified

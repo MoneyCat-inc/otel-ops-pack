@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Contact - MoneyCat Inc</title>
+<meta name="description" content="Get in touch with MoneyCat Inc to discuss your observability needs and learn how we can help.">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="stylesheet" href="styles.css">
+<meta property="og:url" content="https://hub.resonai.uk/moneycat/contact.html">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; connect-src 'self'">
+</head>
+<body>
+<header class="header">
+  <nav class="nav" aria-label="Main navigation">
+    <div class="nav-container">
+      <a href="index.html" class="logo">
+        <span class="logo-icon">🐾</span>
+        <span class="logo-text">MoneyCat Inc</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="contact.html" aria-current="page">Contact</a></li>
+      </ul>
+      <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <section class="page-hero">
+    <div class="container">
+      <h1 class="page-title">Contact Us</h1>
+      <p class="page-subtitle">Let's Discuss Your Observability Needs</p>
+    </div>
+  </section>
+
+  <section class="contact-section">
+    <div class="container">
+      <div class="contact-grid">
+        <div class="contact-form-container">
+          <h2 class="form-title">Send Us a Message</h2>
+          <form class="contact-form" action="#" method="post" aria-label="Contact form">
+            <div class="form-group">
+              <label for="name">Name <span class="required" aria-label="required">*</span></label>
+              <input type="text" id="name" name="name" required aria-required="true" autocomplete="name">
+            </div>
+            <div class="form-group">
+              <label for="email">Email <span class="required" aria-label="required">*</span></label>
+              <input type="email" id="email" name="email" required aria-required="true" autocomplete="email">
+            </div>
+            <div class="form-group">
+              <label for="company">Company</label>
+              <input type="text" id="company" name="company" autocomplete="organization">
+            </div>
+            <div class="form-group">
+              <label for="subject">Subject <span class="required" aria-label="required">*</span></label>
+              <select id="subject" name="subject" required aria-required="true">
+                <option value="">Select a topic...</option>
+                <option value="assessment">Observability Assessment</option>
+                <option value="implementation">OpenTelemetry Implementation</option>
+                <option value="windows">Windows Monitoring</option>
+                <option value="governance">Gate-Based Governance</option>
+                <option value="support">Support & Maintenance</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="message">Message <span class="required" aria-label="required">*</span></label>
+              <textarea id="message" name="message" rows="6" required aria-required="true"></textarea>
+            </div>
+            <button type="submit" class="btn btn--primary btn--large">🐾 Send Message</button>
+          </form>
+        </div>
+
+        <div class="contact-info">
+          <h2 class="info-title">Get in Touch</h2>
+          <p class="info-description">
+            We'd love to hear from you. Whether you're looking for a comprehensive observability 
+            solution or have questions about our services, we're here to help.
+          </p>
+
+          <div class="info-block">
+            <h3 class="info-block-title">📧 Email</h3>
+            <p class="info-block-content">
+              <a href="mailto:contact@moneycat.inc">contact@moneycat.inc</a>
+            </p>
+          </div>
+
+          <div class="info-block">
+            <h3 class="info-block-title">🌐 Resources</h3>
+            <ul class="info-links">
+              <li><a href="../docs/index.html">Documentation</a></li>
+              <li><a href="../docs/BossCat/README.md">BossCat Framework</a></li>
+              <li><a href="https://opentelemetry.io" target="_blank" rel="noopener">OpenTelemetry</a></li>
+            </ul>
+          </div>
+
+          <div class="info-block">
+            <h3 class="info-block-title">⏱️ Response Time</h3>
+            <p class="info-block-content">
+              We typically respond within 24-48 hours during business days.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3 class="footer-title">MoneyCat Inc</h3>
+        <p class="footer-tagline">Evidence-First Observability</p>
+      </div>
+      <div class="footer-section">
+        <h4 class="footer-heading">Company</h4>
+        <ul class="footer-links">
+          <li><a href="about.html">About</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4 class="footer-heading">Resources</h4>
+        <ul class="footer-links">
+          <li><a href="../docs/index.html">Documentation</a></li>
+          <li><a href="../docs/BossCat/README.md">BossCat Framework</a></li>
+          <li><a href="https://opentelemetry.io" target="_blank" rel="noopener">OpenTelemetry</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 MoneyCat Inc · Resonai [OTel] · All rights reserved</p>
+      <p class="footer-note">🐾 Cat Nap Control Room - Calm, Efficient, Professional</p>
+    </div>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

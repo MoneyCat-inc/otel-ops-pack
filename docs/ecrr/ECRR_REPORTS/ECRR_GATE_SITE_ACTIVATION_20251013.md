@@ -435,3 +435,16 @@ git revert HEAD~1..HEAD  # (if already pushed)
 
 🎉 **GATE/SITE LANES ACTIVE · WORKFLOW OPERATIONAL · EVIDENCE AUTOMATED · 100% ECRR COMPLIANT** 🎉
 
+
+
+## Examine
+
+<!-- Add examination details here -->
+
+## Report
+
+<!-- Add report/summary details here -->
+
+## Role
+
+<!-- Add role/next actions here -->
