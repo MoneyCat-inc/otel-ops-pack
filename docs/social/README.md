@@ -218,8 +218,8 @@ scripts/social/
 
 ## 🔗 Related Docs
 
-- **BossCat Charter**: `AGENTS.md`
-- **ECRR Methodology**: `docs/BossCat/AGENTS.md`
+- **BossCat Charter**: `docs/BossCat/CHARTER.md`
+- **ECRR Methodology**: `docs/BossCat/CHARTER.md`
 - **Stability Pack**: `docs/BossCat/WORKFLOW_IMMEDIATE_WINS_PATTERN.md`
 - **Bluesky Platform Guide**: `BLUESKY_PLATFORM_GUIDE.md`
 - **Integration Plan**: See implementation plan docs

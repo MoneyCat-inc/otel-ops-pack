@@ -92,18 +92,13 @@
     "express": "^5.1.0",
     "glob": "^11.0.3",
     "jsonwebtoken": "^9.0.2",
-    "next": "^15.5.6",
+    "next": "^15.5.7",
     "pino": "^10.1.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "sqlite3": "^5.1.7",
     "yaml": "^2.4.0",
     "zod": "^4.1.12"
-  },
-  "pnpm": {
-    "overrides": {
-      "fast-json-patch": ">=3.1.1"
-    }
   },
   "devDependencies": {
     "@jest/globals": "^30.2.0",
@@ -139,6 +134,7 @@
     "typescript": "^5.9.3",
     "wait-on": "^9.0.1"
   },
+  "packageManager": "pnpm@10.18.1",
   "engines": {
     "node": ">=18.0.0"
   },

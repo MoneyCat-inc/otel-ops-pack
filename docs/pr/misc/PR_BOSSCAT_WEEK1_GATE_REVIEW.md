@@ -256,7 +256,7 @@ Root:
 
 ### Master Reference
 - **Complete Handbook**: [docs/BossCat/SECURITY_MAINTENANCE_MASTER_GUIDE.md](docs/BossCat/SECURITY_MAINTENANCE_MASTER_GUIDE.md)
-- **Implementation Report**: [BOSSCAT_WEEK1_IMPLEMENTATION_COMPLETE.md](docs/bosscat/misc/BOSSCAT_WEEK1_IMPLEMENTATION_COMPLETE.md)
+- **Implementation Report**: [BOSSCAT_WEEK1_IMPLEMENTATION_COMPLETE.md](docs/BossCat/misc/BOSSCAT_WEEK1_IMPLEMENTATION_COMPLETE.md)
 
 ---
 
@@ -426,10 +426,10 @@ Risk: LOW
 
 ## References
 
-- **Implementation Report**: [BOSSCAT_WEEK1_IMPLEMENTATION_COMPLETE.md](docs/bosscat/misc/BOSSCAT_WEEK1_IMPLEMENTATION_COMPLETE.md)
+- **Implementation Report**: [BOSSCAT_WEEK1_IMPLEMENTATION_COMPLETE.md](docs/BossCat/misc/BOSSCAT_WEEK1_IMPLEMENTATION_COMPLETE.md)
 - **Documentation Hub**: [docs/BossCat/README.md](docs/BossCat/README.md)
 - **Master Guide**: [docs/BossCat/SECURITY_MAINTENANCE_MASTER_GUIDE.md](docs/BossCat/SECURITY_MAINTENANCE_MASTER_GUIDE.md)
-- **AGENTS.md**: [AGENTS.md](docs/bosscat/misc/AGENTS.md) - Agent hierarchy
+- **BossCat Charter**: [CHARTER.md](docs/BossCat/CHARTER.md) - Agent hierarchy
 - **Quick Reference**: [docs/BossCat/QUICK_START_CARD.md](docs/BossCat/QUICK_START_CARD.md)
 
 ---
@@ -437,4 +437,3 @@ Risk: LOW
 **Version**: 1.0  
 **Format**: ASCII-friendly, copy-paste ready  
 **Last Updated**: 2025-10-07
-
