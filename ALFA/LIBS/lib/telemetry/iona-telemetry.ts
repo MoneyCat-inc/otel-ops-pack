@@ -9,7 +9,7 @@
  * Gate: BossCat Gate Verify
  */
 
-import { trace, context, SpanStatusCode } from '@opentelemetry/api';
+import { trace, SpanStatusCode } from '@opentelemetry/api';
 import { WebTracerProvider } from '@opentelemetry/sdk-trace-web';
 import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
@@ -19,7 +19,7 @@ import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions'
 // Configuration
 const OTEL_ENABLED = process.env.NEXT_PUBLIC_OTEL_ENABLED === 'true' || process.env.NODE_ENV === 'development';
 const OTEL_ENDPOINT =
-  process.env.NEXT_PUBLIC_OTEL_ENDPOINT || 'http://127.0.0.1:14318/v1/traces';
+  process.env.NEXT_PUBLIC_OTEL_ENDPOINT || 'http://127.0.0.1:4318/v1/traces';
 const SERVICE_NAME = 'iona-app';
 const SERVICE_VERSION = '1.0.0';
 
@@ -54,11 +54,6 @@ export function initializeTelemetry(): void {
       'app.component': 'frontend',
     });
 
-    // Create tracer provider
-    provider = new WebTracerProvider({
-      resource,
-    });
-
     // Configure OTLP exporter
     const exporter = new OTLPTraceExporter({
       url: OTEL_ENDPOINT,
@@ -67,7 +62,6 @@ export function initializeTelemetry(): void {
       },
     });
 
-    // Add batch span processor
     const spanProcessor = new BatchSpanProcessor(exporter, {
       maxQueueSize: 100,
       maxExportBatchSize: 10,
@@ -75,15 +69,10 @@ export function initializeTelemetry(): void {
       exportTimeoutMillis: 30000,
     });
 
-    if (typeof provider.addSpanProcessor === 'function') {
-      provider.addSpanProcessor(spanProcessor);
-    } else if ((provider as unknown as { _activeSpanProcessor?: { addSpanProcessor?: (processor: BatchSpanProcessor) => void } })._activeSpanProcessor?.addSpanProcessor) {
-      (provider as unknown as { _activeSpanProcessor: { addSpanProcessor: (processor: BatchSpanProcessor) => void } })._activeSpanProcessor.addSpanProcessor(spanProcessor);
-    } else {
-      console.warn('[iona-telemetry] Unable to attach span processor; telemetry will be disabled');
-      isInitialized = false;
-      return;
-    }
+    provider = new WebTracerProvider({
+      resource,
+      spanProcessors: [spanProcessor],
+    });
 
     // Register provider
     provider.register();

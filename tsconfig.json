@@ -2,57 +2,18 @@
   "compilerOptions": {
     "target": "ES2020",
     "module": "commonjs",
-    "lib": [
-      "ES2020"
-    ],
-    "outDir": "./dist",
-    "rootDir": "./",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    "removeComments": false,
-    "noImplicitAny": true,
-    "noImplicitReturns": true,
-    "noImplicitThis": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "exactOptionalPropertyTypes": true,
-    "noImplicitOverride": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "noUncheckedIndexedAccess": true,
-    "allowJs": true,
     "noEmit": true,
     "incremental": true,
     "moduleResolution": "node",
     "isolatedModules": true,
-    "jsx": "preserve",
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
-    "baseUrl": ".",
-    "paths": {
-      "@/*": [
-        "./*"
-      ]
-    }
+    "jsx": "preserve"
   },
-  "include": [
-    "scripts/**/*",
-    "*.ts",
-    "*.js",
-    ".next/types/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "**/*.test.ts",
-    "**/*.spec.ts"
-  ]
+  "files": ["instrumentation.ts"],
+  "exclude": ["node_modules"]
 }
