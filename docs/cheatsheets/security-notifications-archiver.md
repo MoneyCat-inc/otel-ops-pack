@@ -723,7 +723,7 @@ jobs:
 
 ## Related Documentation
 
-- **BossCat Charter**: `docs/BossCat/AGENTS.md`
+- **BossCat Charter**: `docs/BossCat/CHARTER.md`
 - **ECRR Methodology**: `docs/ecrr/ECRR_REPORTS/`
 - **Security Workflows**: `.github/workflows/`
 - **Index Schemas**: `docs/BossCat/security/*.schema.json`, `docs/BossCat/notifications/*.schema.json`
@@ -735,4 +735,3 @@ jobs:
 **Last Updated**: 2025-10-15
 
 🐾 **BossCat Security Conveyor — Local-First, Evidence-Based**
-

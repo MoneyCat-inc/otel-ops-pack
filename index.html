@@ -5,8 +5,19 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>BossCat Hub</title>
 <meta name="description" content="BossCat OEM hub: AntiClickbait, MILK visualizer, Data Room, live metrics">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="alternate icon" href="/favicon.ico">
 <link rel="stylesheet" href="docs/assets/hub.css">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; connect-src 'self' http://localhost:* ws://localhost:*">
+<!-- Open Graph -->
+<meta property="og:title" content="BossCat Hub - Observability Dashboard">
+<meta property="og:description" content="Central hub for BossCat observability, data room, and MILK visualizer">
+<meta property="og:url" content="https://hub.resonai.uk/">
+<meta property="og:type" content="website">
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="BossCat Hub">
+<meta name="twitter:description" content="Observability • Data Room • MILK Visualizer">
 </head>
 <body>
 <div class="container">
@@ -14,10 +25,10 @@
 <p>Observability • Data Room • MILK Visualizer</p>
 
 <div class="metrics">
-<div class="metric"><div>Gate</div><div class="value" id="gateScore">—</div></div>
-<div class="metric"><div>Error</div><div class="value" id="errorRate">—</div></div>
-<div class="metric"><div>Canary</div><div class="value" id="canaryCount">—</div></div>
-<div class="metric"><div>OTel</div><div class="value" id="otelHealth">—</div></div>
+<div class="metric"><div aria-label="Gate score">Gate</div><div class="value" id="gateScore" aria-live="polite" aria-atomic="true">—</div></div>
+<div class="metric"><div aria-label="Error rate">Error</div><div class="value" id="errorRate" aria-live="polite" aria-atomic="true">—</div></div>
+<div class="metric"><div aria-label="Canary count">Canary</div><div class="value" id="canaryCount" aria-live="polite" aria-atomic="true">—</div></div>
+<div class="metric"><div aria-label="OpenTelemetry health">OTel</div><div class="value" id="otelHealth" aria-live="polite" aria-atomic="true">—</div></div>
 </div>
 
 <div class="grid">

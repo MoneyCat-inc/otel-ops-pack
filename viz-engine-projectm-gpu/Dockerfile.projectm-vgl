@@ -71,3 +71,24 @@ EXPOSE 8090
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["projectm"]
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

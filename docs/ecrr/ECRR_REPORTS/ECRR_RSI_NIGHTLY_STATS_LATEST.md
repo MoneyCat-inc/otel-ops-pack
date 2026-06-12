@@ -1,5 +1,17 @@
 # ECRR — RSI Sweep Statistical Analysis
 
+**Agent:** Cursor{Implementer}
+**Date:** 2026-01-14
+
+---
+
+
+**Agent:** Cursor{Implementer}
+**Date:** 2025-12-11
+
+---
+
+
 **Timestamp**: 2025-10-15 05:22:43 +01:00
 **Tag Pattern**: `repeat-*-bs*`
 **Samples per BatchSize**: 3
@@ -94,6 +106,22 @@ _CV = Coefficient of Variation (lower is more consistent)_
 - Statistical significance: **NOT significant** (CIs overlap)
 
 ---
+
+## Clean
+
+<!-- Add cleanup/implementation details here -->
+
+## Examine
+
+<!-- Add examination details here -->
+
+## Report
+
+<!-- Add report/summary details here -->
+
+## Role
+
+<!-- Add role/next actions here -->
 
 ## Conclusion
 

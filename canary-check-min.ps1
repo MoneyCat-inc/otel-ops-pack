@@ -4,8 +4,7 @@
 [CmdletBinding()]
 param(
   [string]$OtlpUrl    = "http://127.0.0.1:5318/v1/logs",
-  [string]$Metrics889  = "http://127.0.0.1:8889/metrics",
-  [string]$Metrics888  = "http://127.0.0.1:8888/metrics",
+  [string]$MetricsUrl  = "http://127.0.0.1:8888/metrics",
   [int]$TimeoutSec     = 5
 )
 
@@ -51,11 +50,8 @@ function Get-AcceptedLogCount {
 }
 
 function Get-MetricsCount {
-  # Try 8889 then 8888
-  $c = Get-AcceptedLogCount -Url $Metrics889
-  if ($c -ge 0) { return @{ Count=$c; Url=$Metrics889 } }
-  $c = Get-AcceptedLogCount -Url $Metrics888
-  if ($c -ge 0) { return @{ Count=$c; Url=$Metrics888 } }
+  $c = Get-AcceptedLogCount -Url $MetricsUrl
+  if ($c -ge 0) { return @{ Count=$c; Url=$MetricsUrl } }
   return @{ Count=[int64](-1); Url="" }
 }
 
@@ -107,7 +103,7 @@ function Send-Canary {
 Write-Host "Reading baseline metrics..."
 $baseline = Get-MetricsCount
 if ($baseline.Count -lt 0) {
-  Write-Error "Could not read collector metrics on 8889 or 8888."
+  Write-Error "Could not read collector metrics on $MetricsUrl."
   try { Stop-Transcript | Out-Null } catch {}
   exit 3
 }

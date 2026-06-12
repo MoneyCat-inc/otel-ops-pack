@@ -1,7 +1,14 @@
+# Canonical Windows collector config (otelcol-contrib service loads this file).
+# Reference template: windows/otelcol/otelcol-contrib-config.yaml
 extensions:
   health_check:
-    endpoint: 0.0.0.0:13134
+    endpoint: 127.0.0.1:13134
     path: /healthz
+  file_storage:
+    directory: C:\ProgramData\Otelcol\FileStorage
+    timeout: 10s
+    compaction:
+      on_start: true
 
 receivers:
   # OTLP receivers for direct application log ingestion
@@ -10,7 +17,7 @@ receivers:
       grpc:
         endpoint: 127.0.0.1:5317
       http:
-        endpoint: 0.0.0.0:5318
+        endpoint: 127.0.0.1:5318
   windowseventlog/application:
     channel: Application
     start_at: end
@@ -87,7 +94,7 @@ processors:
 
 exporters:
   otlp:
-    endpoint: localhost:14317
+    endpoint: localhost:4317
     tls:
       insecure: true
     retry_on_failure:
@@ -99,10 +106,12 @@ exporters:
       enabled: true
       num_consumers: 8
       queue_size: 2048
+      storage: file_storage
 
 service:
   extensions:
     - health_check
+    - file_storage
   pipelines:
     # Gate #026: Traces pipeline for .NET auto-instrumentation
     traces:

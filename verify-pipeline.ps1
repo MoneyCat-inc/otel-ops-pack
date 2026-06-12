@@ -3,7 +3,12 @@
 # Updated with progress indicators for better user experience
 
 # Import progress indicators module
-. .\scripts\progress-indicators.ps1
+$progressScript = if (Test-Path ".\scripts\progress-indicators.ps1") {
+    ".\scripts\progress-indicators.ps1"
+} else {
+    ".\BRAV\SCPT\progress-indicators.ps1"
+}
+. $progressScript
 
 Write-Host "=== SigNoz Pipeline Verification ===" -ForegroundColor Green
 

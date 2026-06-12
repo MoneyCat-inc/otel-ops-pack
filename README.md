@@ -1,6 +1,6 @@
 # 🐾 Resonai [OTel] — OpenTelemetry Observability Pack
 
-[![ECRR](https://img.shields.io/badge/ECRR-Examine→Clean→Report→Role-7c5cff?style=for-the-badge&logo=gitbook&logoColor=white)](docs/bosscat/misc/AGENTS.md#-agents--ecrr-mantra)
+[![ECRR](https://img.shields.io/badge/ECRR-Examine→Clean→Report→Role-7c5cff?style=for-the-badge&logo=gitbook&logoColor=white)](docs/BossCat/CHARTER.md)
 [![BossCat Gate](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/bosscat-gate-verify.yml/badge.svg)](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/bosscat-gate-verify.yml)
 [![CodeQL](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/codeql.yml/badge.svg)](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/codeql.yml)
 [![Maintained by MoneyCat-inc](https://img.shields.io/badge/Maintained%20by-MoneyCat--inc-00aa88?style=for-the-badge&logo=github&logoColor=white)](https://github.com/MoneyCat-inc)
@@ -99,7 +99,7 @@ We follow strict **BossCat governance** with immutable merge rules:
 - **Gate verification:** Must pass before merge
 - **Kill-switch:** Active for drift control
 
-See: [ECRR Manual](docs/bosscat/misc/ART_OF_ECRR.md) | [Agents & Hierarchy](docs/bosscat/misc/AGENTS.md)
+See: [ECRR Manual](docs/BossCat/misc/ART_OF_ECRR.md) | [Agents & Hierarchy](docs/BossCat/CHARTER.md)
 
 ---
 
@@ -118,7 +118,7 @@ See [Status Dashboard](docs/status.html) for detailed metrics.
 
 ```powershell
 # Health check
-pwsh scripts/quick-monitor.ps1
+pwsh BRAV\SCPT\quick-monitor.ps1
 
 # Detailed monitoring
 pwsh scripts/monitor-optimized-pipeline.ps1 -DurationMinutes 10

@@ -69,7 +69,12 @@ function Test-QuickHealth {
 if ($PreflightCheck) {
     Write-Host "🔍 Running Preflight OTLP Endpoint Check" -ForegroundColor Cyan
     try {
-        $preflightResult = & ".\scripts\preflight-health-check.ps1" -Verbose
+        $preflightScript = if (Test-Path ".\scripts\preflight-health-check.ps1") {
+            ".\scripts\preflight-health-check.ps1"
+        } else {
+            ".\BRAV\SCPT\preflight-health-check.ps1"
+        }
+        $preflightResult = & $preflightScript -Verbose
         if ($LASTEXITCODE -eq 0) {
             Write-Host "✅ Preflight check passed" -ForegroundColor Green
         } else {

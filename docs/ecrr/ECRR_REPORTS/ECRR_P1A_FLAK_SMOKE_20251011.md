@@ -1,5 +1,17 @@
 # ECRR – P1-A: FLAK Changed-Paths Smoke Gate
 
+**Agent:** Cursor{Implementer}
+**Date:** 2026-01-14
+
+---
+
+
+**Agent:** Cursor{Implementer}
+**Date:** 2025-12-11
+
+---
+
+
 **Date:** 2025-10-11T13:00:00Z  
 **Lane:** FLAK  
 **Owner:** AUTO-BOTS-FLAK-ALFA  
@@ -173,6 +185,10 @@ bash BRAV/SCPT/flak-changed-paths-smoke.sh
 - ✅ BOSSCAT_LOG entry (next action)
 - ✅ Budget compliance (2 files, 85 LOC)
 - ✅ Lane governance respected
+
+## Role
+
+<!-- Add role/next actions here -->
 
 ### Next Actions
 1. Update BOSSCAT_LOG with one-liner
