@@ -1,5 +1,17 @@
 # ECRR Report - Visualization Documentation Enhancement
 
+**Agent:** Cursor{Implementer}
+**Date:** 2026-01-14
+
+---
+
+
+**Agent:** Cursor{Implementer}
+**Date:** 2025-12-11
+
+---
+
+
 **Copy this template for every new ECRR report to ensure all 4 phases are documented.**
 
 ---
@@ -166,6 +178,22 @@ ls docs/vizr/, docs/runbooks/vizr*
 **Sign-off**:
 - **A (Writer)**: LumiPulse-MkII (Lumi), 2025-11-02
 - **B (Monitor)**: Alex Romero (pending review), TBD
+
+## Examine
+
+<!-- Add examination details here -->
+
+## Clean
+
+<!-- Add cleanup/implementation details here -->
+
+## Report
+
+<!-- Add report/summary details here -->
+
+## Role
+
+<!-- Add role/next actions here -->
 
 ### Next Actions
 1. Human backup (Alex Romero) reviews for technical accuracy

@@ -180,7 +180,8 @@ $watchdogHealthy = Test-ComponentHealth -Name "BossCat Watchdog" -Required $fals
     
     # Auto-start watchdog
     try {
-        $watchdogScript = Join-Path $PSScriptRoot "agent/watchdog.ps1"
+        $repoRoot = Split-Path $PSScriptRoot -Parent
+        $watchdogScript = Join-Path $repoRoot "BRAV/SCPT/agent/watchdog.ps1"
         if (Test-Path $watchdogScript) {
             Start-Process pwsh -ArgumentList "-NoLogo","-NoProfile","-File","`"$watchdogScript`"" -WindowStyle Hidden
             Start-Sleep -Seconds 2
@@ -202,7 +203,8 @@ Write-BootLog "Checking IONA Integration..." -Level INFO
 # IONA Boot Telemetry
 if ($SendTelemetry) {
     Test-ComponentHealth -Name "IONA Boot Telemetry" -Required $false -Check {
-        $ionaScript = Join-Path $PSScriptRoot "..\scripts\send_iona_boot_span.mjs"
+        $repoRoot = Split-Path $PSScriptRoot -Parent
+        $ionaScript = Join-Path $repoRoot "BRAV/SCPT/send_iona_boot_span.mjs"
         if (Test-Path $ionaScript) {
             try {
                 & node $ionaScript 2>&1 | Out-Null

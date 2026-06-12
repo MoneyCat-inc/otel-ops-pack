@@ -1,5 +1,17 @@
 # ECRR: Inflated Metrics Remediation
 
+**Agent:** Cursor{Implementer}
+**Date:** 2026-01-14
+
+---
+
+
+**Agent:** Cursor{Implementer}
+**Date:** 2025-12-11
+
+---
+
+
 **Date:** 2025-10-20  
 **Authority:** cursor{implementer} under BossCat OEM direction  
 **Incident:** Inflated performance claims (77×, 196.7 logs/sec) in production files  

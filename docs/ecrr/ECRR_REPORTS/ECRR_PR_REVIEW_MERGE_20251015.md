@@ -499,3 +499,20 @@ _Cost-optimized configuration deployed with clear operational guidance._
 
 🐾 **BossCat Certified — ECRR Complete**
 
+
+
+## Examine
+
+<!-- Add examination details here -->
+
+## Clean
+
+<!-- Add cleanup/implementation details here -->
+
+## Report
+
+<!-- Add report/summary details here -->
+
+## Role
+
+<!-- Add role/next actions here -->

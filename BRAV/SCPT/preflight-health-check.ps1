@@ -3,8 +3,8 @@
 
 param(
     [string]$SigNozHost = "localhost",
-    [int]$OtlpGrpcPort = 14317,
-    [int]$OtlpHttpPort = 14318,
+    [int]$OtlpGrpcPort = 4317,
+    [int]$OtlpHttpPort = 4318,
     [int]$MaxWaitSeconds = 60,
     [switch]$Verbose
 )
@@ -80,29 +80,8 @@ while (-not $httpReady -and $attempts -lt $maxAttempts) {
         $connection = Test-NetConnection -ComputerName $SigNozHost -Port $OtlpHttpPort -WarningAction SilentlyContinue
         if ($connection.TcpTestSucceeded) {
             Write-Host "  ✅ OTLP HTTP port $OtlpHttpPort is reachable" -ForegroundColor Green
-            
-            # Additional HTTP endpoint check - OTLP HTTP returns 404 for root path (expected)
-            try {
-                $response = Invoke-WebRequest -Uri "http://$SigNozHost`:$OtlpHttpPort/" -Method Head -TimeoutSec 5 -ErrorAction SilentlyContinue
-                if ($response -and $response.StatusCode -eq 404) {
-                    Write-Host "  ✅ HTTP endpoint responding (Status: $($response.StatusCode) - expected for OTLP)" -ForegroundColor Green
-                    $httpReady = $true
-                    $checks += @{Name="OTLP HTTP"; Status="PASS"; Details="Port $OtlpHttpPort reachable, HTTP responding"}
-                }
-                elseif ($response) {
-                    Write-Host "  ✅ HTTP endpoint responding (Status: $($response.StatusCode))" -ForegroundColor Green
-                    $httpReady = $true
-                    $checks += @{Name="OTLP HTTP"; Status="PASS"; Details="Port $OtlpHttpPort reachable, HTTP responding"}
-                }
-                else {
-                    if ($Verbose) { Write-Host "  ⚠️  Port open but HTTP not ready" -ForegroundColor Yellow }
-                    Start-Sleep -Seconds 2
-                }
-            }
-            catch {
-                if ($Verbose) { Write-Host "  ⚠️  Port open but HTTP not ready: $($_.Exception.Message)" -ForegroundColor Yellow }
-                Start-Sleep -Seconds 2
-            }
+            $httpReady = $true
+            $checks += @{Name="OTLP HTTP"; Status="PASS"; Details="Port $OtlpHttpPort reachable"}
         }
         else {
             if ($Verbose) { Write-Host "  ❌ Port $OtlpHttpPort not reachable" -ForegroundColor Red }

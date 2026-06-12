@@ -18,7 +18,7 @@ if (-not (Test-Path $OutputDir)) {
     New-Item -ItemType Directory -Path $OutputDir -Force | Out-Null
 }
 
-# ECRR Reports directory (support tetragram + legacy fallbacks)
+# ECRR Reports directories (support tetragram + legacy fallbacks)
 $candidateDirs = @(
     "CHAR/ECRR/ECRR_REPORTS",
     "docs/ECRR_REPORTS",
@@ -26,16 +26,20 @@ $candidateDirs = @(
     "CHAR/DOCS/docs/ECRR_REPORTS"
 )
 
-$ECRRDir = $null
+# Find all existing ECRR report directories
+$ECRRDirs = @()
 foreach ($cand in $candidateDirs) {
-    if (Test-Path $cand) { $ECRRDir = $cand; break }
+    if (Test-Path $cand) { 
+        $ECRRDirs += $cand
+        Write-Host "Found ECRR directory: $cand" -ForegroundColor Cyan
+    }
 }
 
-if (-not $ECRRDir) {
+if ($ECRRDirs.Count -eq 0) {
     throw "ECRR reports directory not found. Checked: $($candidateDirs -join ', ')"
 }
 
-$ArchiveDir = "$ECRRDir/archive"
+Write-Host "📁 Processing $($ECRRDirs.Count) ECRR report directories" -ForegroundColor Green
 
 # Initialize analysis data
 $AnalysisData = @{
@@ -63,11 +67,21 @@ $AnalysisData = @{
     MissingFourSection = @()
     MissingStatus = @()
     Recommendations = @()
+    DirectoryBreakdown = @{}
 }
 
-# Get all ECRR report files
-$ECRRFiles = Get-ChildItem -Path $ECRRDir -Filter "*.md" -File | Where-Object { 
-    $_.Name -notlike "workshop-*" 
+# Get all ECRR report files from all directories
+$ECRRFiles = @()
+foreach ($ECRRDir in $ECRRDirs) {
+    $files = Get-ChildItem -Path $ECRRDir -Filter "*.md" -File | Where-Object { 
+        $_.Name -notlike "workshop-*" -and 
+        $_.Name -notlike "README.md" -and 
+        $_.Name -notlike "*backup*" -and
+        $_.FullName -notlike "*archive*"
+    }
+    $ECRRFiles += $files
+    $AnalysisData.DirectoryBreakdown[$ECRRDir] = $files.Count
+    Write-Host "  - $ECRRDir : $($files.Count) reports" -ForegroundColor Yellow
 }
 
 $AnalysisData.TotalReports = $ECRRFiles.Count
@@ -253,10 +267,19 @@ if ($GenerateSummary) {
 ## 🔍 **1. Examine - Complete ECRR Repository Analysis**
 
 ### **ECRR Reports Inventory**
-- **Total Reports**: $($AnalysisData.TotalReports) ECRR reports in `docs/ECRR_REPORTS/`
+- **Total Reports**: $($AnalysisData.TotalReports) ECRR reports across $($ECRRDirs.Count) directories
 - **Processed Reports**: $($AnalysisData.ProcessedReports) reports successfully processed
-- **Date Range**: December 2024 - September 2025
-- **Latest Reports**: September 29, 2025 (most recent activity)
+- **Directory Breakdown**: 
+"@
+
+    foreach ($dir in $AnalysisData.DirectoryBreakdown.Keys) {
+        $SummaryReport += "`n  - $dir : $($AnalysisData.DirectoryBreakdown[$dir]) reports"
+    }
+
+    $SummaryReport += @"
+
+- **Date Range**: December 2024 - October 2025
+- **Latest Reports**: $(Get-Date -Format "yyyy-MM-dd") (current processing)
 - **Report Types**: Implementation, verification, completion, merge gates, deployment
 
 ### **ECRR Framework Compliance Analysis**

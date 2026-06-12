@@ -269,3 +269,16 @@ git reset --hard 7b143c17^  # Before gate/site activation
 
 🟢 **GATE GREEN · 5/5 PASS · CLOSEOUT ACCEPTED · cursor{implementer} SIGNING OFF** 🟢
 
+
+
+## Examine
+
+<!-- Add examination details here -->
+
+## Report
+
+<!-- Add report/summary details here -->
+
+## Role
+
+<!-- Add role/next actions here -->

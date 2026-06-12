@@ -1,5 +1,7 @@
 # BossCat Agent Standards & Workflow Patterns
 
+NOTE: This file defines workflow standards. Canonical index: AGENTS.md (repo root). Canonical charter: docs/BossCat/CHARTER.md.
+
 **Authority:** BossCat OEM (Executive Overseer Manager)  
 **Status:** ✅ **ACTIVE STANDARD** — All agents must comply  
 **Last Updated:** 2025-10-10 (Phase 1 Immediate Wins)
@@ -8,7 +10,7 @@
 
 ## 🐾 Agent Hierarchy
 
-See: `docs/BossCat/AGENTS.md` (from charter) for full agent hierarchy and ECRR methodology.
+See: `docs/BossCat/CHARTER.md` (charter) for full agent hierarchy and ECRR methodology.
 
 ---
 
@@ -149,7 +151,7 @@ When creating or updating workflows:
 
 - **Loop-Closing Machine:** `docs/BossCat/LOOP_CLOSING_MACHINE_ARCHITECTURE.md`
 - **Pattern Library:** `docs/BossCat/WORKFLOW_IMMEDIATE_WINS_PATTERN.md`
-- **ECRR Charter:** `docs/BossCat/AGENTS.md` (from charter)
+- **ECRR Charter:** `docs/BossCat/CHARTER.md`
 - **Phase 1 ECRR:** `docs/ecrr/ECRR_REPORTS/ECRR_PHASE1_IMMEDIATE_WINS_*.md`
 
 ---
@@ -157,4 +159,3 @@ When creating or updating workflows:
 **Last Updated:** 2025-10-10 (Phase 1 execution)  
 **Status:** Active standard - all new workflows must comply  
 **Seal:** 🐾 **BossCat Executive Standard**
-

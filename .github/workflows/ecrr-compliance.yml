@@ -4,13 +4,22 @@ on:
   push:
     branches: [ main, develop ]
     paths:
-      - 'docs/ECRR_REPORTS/**'
-      - 'scripts/lint-ecrr-compliance.ps1'
+      - 'docs/ecrr/ECRR_REPORTS/**'
+      - 'scripts/ecrr-compliance-check.ps1'
+      - 'scripts/remediate-ecrr-compliance.ps1'
   pull_request:
     branches: [ main, develop ]
     paths:
-      - 'docs/ECRR_REPORTS/**'
-      - 'scripts/lint-ecrr-compliance.ps1'
+      - 'docs/ecrr/ECRR_REPORTS/**'
+      - 'scripts/ecrr-compliance-check.ps1'
+      - 'scripts/remediate-ecrr-compliance.ps1'
+  workflow_dispatch:
+    inputs:
+      auto_remediate:
+        description: 'Auto-remediate non-compliant files'
+        required: false
+        default: false
+        type: boolean
 
 concurrency:
   group: ecrr-compliance-${{ github.workflow }}-${{ github.ref }}
@@ -24,17 +33,40 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       
-    - name: Setup PowerShell
-      uses: PowerShell/setup-powershell@v2
-      
-    - name: Run ECRR Compliance Lint
+    - name: Check ECRR Compliance
+      id: compliance_check
       run: |
-        pwsh -NoLogo -File BRAV/SCPT/lint-ecrr-compliance.ps1 -FailOnError -Verbose
+        $output = pwsh -NoLogo -File scripts/ecrr-compliance-check.ps1 2>&1 | Out-String
+        Write-Host $output
+        # Extract compliance rate from output
+        if ($output -match 'Compliance Rate:\s*(\d+\.?\d*)%') {
+          $rate = $Matches[1]
+          echo "compliance_rate=$rate" >> $env:GITHUB_OUTPUT
+          echo "compliance_rate=$rate"
+        } else {
+          echo "compliance_rate=0" >> $env:GITHUB_OUTPUT
+        }
+        
+    - name: Auto-Remediate (if enabled and below threshold)
+      if: |
+        (github.event_name == 'workflow_dispatch' && inputs.auto_remediate == true) ||
+        (steps.compliance_check.outputs.compliance_rate < 80 && github.ref == 'refs/heads/main')
+      run: |
+        Write-Host "Running auto-remediation..."
+        pwsh -NoLogo -File scripts/remediate-ecrr-compliance.ps1
+        Write-Host "Re-checking compliance after remediation..."
+        pwsh -NoLogo -File scripts/ecrr-compliance-check.ps1
         
     - name: Upload Compliance Report
       if: always()
       uses: actions/upload-artifact@v4
       with:
         name: ecrr-compliance-report
-        path: artifacts/ecrr-compliance-report.json
+        path: artifacts/ecrr-compliance-check-*.json
         retention-days: 30
+        
+    - name: Fail if below threshold
+      if: steps.compliance_check.outputs.compliance_rate < 80
+      run: |
+        Write-Host "❌ Compliance rate (${{ steps.compliance_check.outputs.compliance_rate }}%) is below 80% threshold"
+        exit 1

@@ -8,11 +8,23 @@ services:
   gpu-aggregation:
     image: otel-gpu-sidecar:latest
     container_name: gpu-aggregation
+    gpus: all
+    command: ["python3", "/app/sidecars/aggregation/aggregation_sidecar.py"]
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+      - CUDA_VISIBLE_DEVICES=0
     ports:
       - "8002:8002"
     restart: unless-stopped
     networks:
       - signoz-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
     logging:
       driver: json-file
       options:
@@ -22,11 +34,23 @@ services:
   gpu-inference:
     image: otel-gpu-sidecar:latest
     container_name: gpu-inference
+    gpus: all
+    command: ["python3", "/app/sidecars/inference/inference_sidecar.py"]
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+      - CUDA_VISIBLE_DEVICES=0
     ports:
       - "8003:8003"
     restart: unless-stopped
     networks:
       - signoz-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8003/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
     logging:
       driver: json-file
       options:
@@ -36,11 +60,23 @@ services:
   gpu-compression:
     image: otel-gpu-sidecar:latest
     container_name: gpu-compression
+    gpus: all
+    command: ["python3", "/app/sidecars/compression/compression_sidecar.py", "--host", "0.0.0.0", "--port", "8001"]
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+      - CUDA_VISIBLE_DEVICES=0
     ports:
       - "8001:8001"
     restart: unless-stopped
     networks:
       - signoz-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
     logging:
       driver: json-file
       options:
@@ -270,4 +306,4 @@ networks:
     driver: bridge
     ipam:
       config:
-        - subnet: 172.20.0.0/16
+        - subnet: 172.24.0.0/16

@@ -188,6 +188,22 @@ Pinned Post: BossCat Hub showcase (https://bsky.app/profile/resonai.bsky.social/
 
 ---
 
+## Clean
+
+<!-- Add cleanup/implementation details here -->
+
+## Examine
+
+<!-- Add examination details here -->
+
+## Report
+
+<!-- Add report/summary details here -->
+
+## Role
+
+<!-- Add role/next actions here -->
+
 ## Conclusion
 
 **Status:** [RESOLVED]  

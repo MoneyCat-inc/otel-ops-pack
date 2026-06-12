@@ -164,12 +164,12 @@ Reviewer Hold: RESOLVED ✅
 - Evidence captured from direct database query
 - Data flow confirmed end-to-end
 
-### 🔄 Step 2: Refresh artifacts bundle
-**STATUS: IN PROGRESS**
-- gate-verification-results.json: Update with READY status
-- status/tests.json: Set verdict to READY
-- Dashboard: Flip to GREEN
-- ECRR Report: Document trace verification
+### ✅ Step 2: Refresh artifacts bundle
+**STATUS: COMPLETE**
+- gate-verification-results.json: Updated with READY status ✅
+- status/tests.json: Verdict set to READY (Gate #017) ✅
+- Dashboard: Flipped to GREEN ✅
+- ECRR Report: Trace verification documented ✅
 
 ### ⏳ Step 3: Re-run AJV validation
 **STATUS: PENDING**

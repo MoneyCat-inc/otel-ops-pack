@@ -241,4 +241,36 @@ Services: Services not running (start with deploy-demo-service.ps1)
 
 🐾 **Cat Nap Control Room - Investor Demo Complete, All Blockers Resolved, Automation Tested**
 
+---
+
+## 🎮 DOOM Break Room
+
+**Need a break from the observability grind? Time to fight some demons.**
+
+<div style="text-align: center; margin: 20px 0;">
+  <iframe 
+    src="https://dos.zone/player/?bundleUrl=https%3A%2F%2Fcdn.dos.zone%2Fcustom%2Fdos%2Fdoom.jsdos?anonymous=1" 
+    width="800" 
+    height="600" 
+    style="border: 3px solid #333; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.3);"
+    allowfullscreen>
+  </iframe>
+</div>
+
+**Controls:**
+- **Arrow Keys** - Move
+- **Ctrl** - Fire
+- **Space** - Use/Open doors
+- **Alt** - Strafe
+- **1-7** - Weapon select
+
+**Pro Tips:**
+- Press `Esc` to access the menu
+- Remember: IDKFA for weapons & ammo (classic cheat code)
+- The demons are tougher than production incidents
+- Unlike observability pipelines, you can actually shoot the problems here
+
+*When you're done fragging, run `pwsh scripts/demo/run-investor-demo.ps1` to get back to business.*
+
+---
 

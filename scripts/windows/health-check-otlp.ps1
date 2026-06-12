@@ -1,6 +1,6 @@
 # Gate #029: OTLP Collector Path Verification (5317) + API-Signed Proofs (H1)
 # Authority: BossCat OEM | Executor: Cursor{Implementer}
-# Purpose: Verify Windows Collector path end-to-end (5317 → 14317 → SigNoz) with API-signed proof artifacts
+# Purpose: Verify Windows Collector path end-to-end (5317 → 4317 → SigNoz) with API-signed proof artifacts
 
 <#
 .SYNOPSIS
@@ -9,7 +9,7 @@
 .DESCRIPTION
     Tests the collection path:
     1. Service sends to http://127.0.0.1:5317 (Windows Collector)
-    2. Collector forwards to localhost:14317 (SigNoz)
+    2. Collector forwards to localhost:4317 (SigNoz)
     3. Verify traces appear in SigNoz (with optional API proof)
     4. Calculate accepted_spans / sent_spans ratio
     5. Generate machine-verifiable JSON proof artifacts (if API key provided)
@@ -285,7 +285,7 @@ try {
     Write-CheckLog -Level "INFO" -Message "Collector path verification complete" -Data @{
         status = "GREEN"
         collector_port = 5317
-        signoz_port = 14317
+        signoz_port = 4317
         traces_received = $traceCount
     }
     

@@ -76,8 +76,8 @@ Test-Check "Windows Collector running" {
     return ($status -match "RUNNING")
 } -Category 'infrastructure'
 
-Test-Check "OTLP gRPC endpoint (14317)" {
-    $result = Test-NetConnection localhost -Port 14317 -WarningAction SilentlyContinue
+Test-Check "OTLP gRPC endpoint (4317)" {
+    $result = Test-NetConnection localhost -Port 4317 -WarningAction SilentlyContinue
     return ($result.TcpTestSucceeded -eq $true)
 } -Category 'infrastructure'
 
