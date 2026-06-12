@@ -1,9 +1,9 @@
 # 🐾 BossCat OEM - Current Status
 
-**Last Updated:** 2025-10-12 (Gate #007 Production Deployment)  
-**Gate Status:** ✅ **GATE #007 DEPLOYED TO PRODUCTION**  
-**SBOM Status:** 🔒 **BLOCKING ENFORCEMENT LIVE**  
-**System State:** Production + Monitoring
+**Last Updated:** 2026-06-12 (Pipeline restore + SBOM closeout)  
+**Gate Status:** ✅ **GATES GREEN ON MAIN**  
+**SBOM Status:** 🔒 **PROD BLOCKING ENABLED** (Issue #135 closed, PR #226)  
+**System State:** Production + local pipeline healthy
 
 ---
 
@@ -21,7 +21,10 @@
 - ✅ SBOM blocking LIVE for prod gates
 - ✅ Governance framework deployed (Tetragram + budgets)
 - ✅ Branch protection active (1 review, 4 required checks)
-- ✅ Issue #135 monitoring SBOM stability
+- ✅ Issue #135 closed — 3-run SBOM evidence + prod blocking (PR #226)
+- ✅ Pipeline OTLP restored (collector `4317`/`4318`, PR #223)
+- ✅ ALFA tracing aligned to OTel SDK 2.x (PR #227)
+- ✅ Tetragram guardrails allowlist updated (PR #228)
 
 **Verification:**
 ```bash
@@ -76,7 +79,7 @@ Status: BLOCKING for prod gates
 Path Resilience: 3 search locations
 Checksums: SHA256 audit trail
 Retention: 90 days (compliance)
-Monitoring: Issue #135 (automated tracking)
+Evidence: Issue #135 closed; tracker workflow optional
 ```
 
 ### Observability Stack: ✅ **HEALTHY**
