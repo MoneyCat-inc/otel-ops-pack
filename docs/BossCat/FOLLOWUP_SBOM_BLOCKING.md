@@ -2,7 +2,7 @@
 
 **Authority**: BossCat OEM  
 **Prerequisite**: 3 successful prod gate runs with SBOM generation  
-**Status**: ⏳ PENDING EVIDENCE
+**Status**: ✅ COMPLETE (evidence collected 2026-06-12, blocking enabled)
 
 ---
 
@@ -16,9 +16,9 @@ Make SBOM generation **mandatory** for prod gate after verifying stability over 
 
 **Required Evidence** (collect from prod gate runs):
 
-- [ ] **Run 1**: SBOM generated successfully at `DELT/ARTF/sbom.json`
-- [ ] **Run 2**: SBOM generated successfully at `DELT/ARTF/sbom.json`
-- [ ] **Run 3**: SBOM generated successfully at `DELT/ARTF/sbom.json`
+- [x] **Run 1**: [actions/runs/27414150700](https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/27414150700) — `sbom-attestation-923`
+- [x] **Run 2**: [actions/runs/27414081486](https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/27414081486) — `sbom-attestation-920`
+- [x] **Run 3**: [actions/runs/27414026380](https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/27414026380) — `sbom-attestation-916`
 
 **Success Criteria**:
 - ✅ SBOM generation succeeds (no tooling errors)
@@ -193,7 +193,7 @@ gh issue create \
 
 ---
 
-**Status**: ⏳ PENDING EVIDENCE (awaiting 3 successful prod runs)  
-**Owner**: cursor{implementer} (or designated)  
-**Next Review**: After 3 prod gate runs with SBOM verification
+**Status**: ✅ COMPLETE — 3/3 prod runs passed (Issue #135); prod SBOM generation is blocking  
+**Owner**: cursor{implementer}  
+**Closed**: 2026-06-12 via PR enabling `continue-on-error: ${{ matrix.site != 'prod' }}`
 
