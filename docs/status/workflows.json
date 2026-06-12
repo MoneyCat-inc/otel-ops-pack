@@ -548,9 +548,9 @@
     },
     {
       "name": "gate-verify",
-      "modified": "2025-10-16T03:41:51.2257687Z",
+      "modified": "2026-06-12T11:30:10.9524006Z",
       "path": ".github/workflows/gate-verify.yml",
-      "size": 6998,
+      "size": 7049,
       "triggers": {
         "issues": false,
         "other": [],
