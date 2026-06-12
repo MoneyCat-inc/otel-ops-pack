@@ -146,7 +146,7 @@ jobs:
             cp signature-registry.json DELT/ARTF/sbom/
             sha256sum DELT/ARTF/sbom/signature-registry.json > DELT/ARTF/sbom/signature-registry.json.sha256 || true
           fi
-        continue-on-error: true
+        continue-on-error: ${{ matrix.site != 'prod' }}
       
       - name: Verify SBOM (strict when SBOM_STRICT=true)
         if: matrix.site == 'prod' && always()
