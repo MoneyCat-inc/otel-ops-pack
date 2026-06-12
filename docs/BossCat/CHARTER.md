@@ -1,4 +1,6 @@
-# 🐾 AGENTS.md
+# 🐾 BossCat Charter (Canonical)
+
+NOTE: This is the canonical BossCat charter. Index: AGENTS.md (repo root).
 
 **MoneyCat Inc · Resonai [OTel] · otel-ops-pack**  
 **Issued by:** BossCat OEM (Executive Overseer Manager)

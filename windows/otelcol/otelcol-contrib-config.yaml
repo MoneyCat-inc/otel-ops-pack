@@ -1,9 +1,10 @@
-# BOSSCAT-022A: Windows OpenTelemetry Collector config
+# BOSSCAT-022A: Windows OpenTelemetry Collector config (REFERENCE TEMPLATE)
+# Canonical production config: C:\otel\config.yaml (see README.md in this folder)
 # Purpose: Collect Windows host metrics and event logs for pipeline observability
 # Notes:
 # - Exposes internal telemetry at :8888 for local diagnostics
-# - Sends all data to the OTLP aggregator (gRPC)
-# - Toggle endpoint via OTLP_GRPC_ENDPOINT environment variable
+# - Sends all data to SigNoz OTLP gRPC on localhost:4317
+# - Override via OTLP_GRPC_ENDPOINT environment variable if needed
 
 receivers:
   hostmetrics:
@@ -60,7 +61,7 @@ processors:
 exporters:
   # Primary OTLP export to aggregator (gRPC)
   otlp:
-    endpoint: ${env:OTLP_GRPC_ENDPOINT}
+    endpoint: localhost:4317
     tls:
       insecure: true
     retry_on_failure:
