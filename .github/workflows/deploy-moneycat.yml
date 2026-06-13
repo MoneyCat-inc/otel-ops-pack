@@ -16,6 +16,8 @@ on:
       - 'robots.txt'
       - 'humans.txt'
       - '_config.yml'
+      - '.well-known/**'
+      - 'og/**'
   workflow_dispatch:
 
 permissions:
@@ -58,6 +60,8 @@ jobs:
           [ -d "docs" ] && cp -r docs deploy/ || echo "docs/ not found, skipping"
           [ -d "assets" ] && cp -r assets deploy/ || echo "assets/ not found, skipping"
           [ -d "CHAR" ] && cp -r CHAR deploy/ || echo "CHAR/ not found, skipping"
+          [ -d ".well-known" ] && cp -r .well-known deploy/ || echo ".well-known/ not found, skipping"
+          [ -d "og" ] && cp -r og deploy/ || echo "og/ not found, skipping"
 
           # MoneyCat lives under /moneycat (no standalone CNAME)
           if [ -d "moneycat" ]; then

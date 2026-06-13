@@ -66,6 +66,7 @@
     "notify:archive:mark": "pwsh -File BRAV/SCPT/sec-archiver/run-notifications.ps1 -ChunkSize 500 -MarkRead",
     "notify:archive:dry": "pwsh -File BRAV/SCPT/sec-archiver/run-notifications.ps1 -ChunkSize 50 -DryRun",
     "anticlickbait:verify": "node BRAV/SCPT/verify-anticlickbait-lane.js",
+    "hub:kpis": "pwsh -File scripts/generate-hub-kpis.ps1",
     "social:compose": "tsx scripts/social/compose.ts",
     "social:approve": "tsx scripts/social/approve.ts",
     "social:post": "tsx scripts/social/post.ts",
@@ -73,6 +74,10 @@
     "social:export": "tsx scripts/social/export-latest.ts --out docs/widgets/bluesky-latest.json",
     "social:trends": "tsx scripts/social/trends.ts --out artifacts/social/trends.json --suggest docs/social/TAGS.suggestions.yaml",
     "social:recommend-follows": "tsx scripts/social/recommend-follows.ts --out artifacts/social/follow_suggestions.jsonl",
+    "social:follow-suggestions": "tsx scripts/social/follow-top-suggestions.ts",
+    "social:sync-bsky": "tsx scripts/social/sync-bsky-profile.ts",
+    "social:week2": "tsx scripts/social/post-week2-engagement.ts",
+    "social:progress-batch": "tsx scripts/social/post-progress-batch.ts",
     "social:icf-lesson": "tsx scripts/social/icf-lesson-intake.ts"
   },
   "dependencies": {

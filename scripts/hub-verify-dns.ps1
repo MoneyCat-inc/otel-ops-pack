@@ -5,11 +5,11 @@
 .SYNOPSIS
     BossCat Hub — DNS Verification
 .DESCRIPTION
-    Checks DNS configuration for hub.resonai.io
+    Checks DNS configuration for hub.resonai.uk
 #>
 
 param(
-    [string]$Domain = "hub.resonai.io",
+    [string]$Domain = "hub.resonai.uk",
     [string]$ExpectedTarget = "moneycat-inc.github.io"
 )
 

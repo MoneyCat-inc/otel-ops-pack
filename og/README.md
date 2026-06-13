@@ -28,7 +28,7 @@ Create `og-default.svg` then export:
   <text x="600" y="350" font-family="system-ui" font-size="36" 
         fill="#b4bac9" text-anchor="middle">Stay Human. Kill the Clickbait.</text>
   <text x="600" y="420" font-family="system-ui" font-size="24" 
-        fill="#7c5cff" text-anchor="middle">hub.resonai.io</text>
+        fill="#7c5cff" text-anchor="middle">hub.resonai.uk</text>
 </svg>
 ```
 

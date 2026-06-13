@@ -7,7 +7,7 @@ Write-Host ""
 # Test URLs
 $urls = @{
     "GitHub Sponsors" = "https://github.com/sponsors/MoneyCat-inc"
-    "Buy Me a Coffee" = "https://buymeacoffee.com/fubumaki"
+    "Ko-fi" = "https://ko-fi.com/fubumaki"
     "Patreon" = "https://www.patreon.com/c/FaeMcLachlan"
 }
 
