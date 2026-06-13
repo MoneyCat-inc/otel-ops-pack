@@ -19,6 +19,7 @@ jobs:
             "https://hub.resonai.uk/CHAR/DOCS/docs/dashboards/live-metrics.html"
             "https://hub.resonai.uk/docs/BossCat/data_room_enhanced.html"
             "https://hub.resonai.uk/docs/widgets/bluesky-latest.json"
+            "https://hub.resonai.uk/.well-known/security.txt"
           )
           for u in "${urls[@]}"; do
             code=$(curl -s -o /dev/null -w "%{http_code}" "$u")

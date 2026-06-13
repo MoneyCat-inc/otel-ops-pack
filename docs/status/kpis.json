@@ -1,10 +1,12 @@
 {
-  "gate": "99.5%",
-  "error": "0.6%",
-  "canary": 3,
+  "gate": "100%",
+  "error": "0%",
+  "canary": 6,
   "otel": "ok",
-  "ts": "2025-10-18T20:00:00Z",
-  "source": "nightly-kpi-export",
-  "version": "1.0"
+  "ts": "2026-06-13T12:41:28+01:00",
+  "source": "gate-verification",
+  "version": "1.1",
+  "verdict": "READY",
+  "commit": "2075a72a6",
+  "site": "ci"
 }
-

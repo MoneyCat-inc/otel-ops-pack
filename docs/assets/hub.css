@@ -1,6 +1,9 @@
 /* BossCat Hub - Compact Stylesheet */
 *{margin:0;padding:0;box-sizing:border-box}
 body{font:16px/1.6 system-ui,sans-serif;background:#0b0d12;color:#e9edf7;padding:2rem}
+.hub-nav{display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;max-width:1100px;margin:0 auto 1.5rem;padding:.75rem 1rem;background:#1f2330;border:1px solid #252b3a;border-radius:8px}
+.hub-nav a{color:#b4bac9;font-weight:600;font-size:.9rem}
+.hub-nav a:hover{color:#7c5cff}
 .container{max-width:1100px;margin:0 auto}
 h1{font-size:2.25rem;margin-bottom:1rem;color:#e9edf7}
 h3{color:#e9edf7;margin-bottom:.5rem}
