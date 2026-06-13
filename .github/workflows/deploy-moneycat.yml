@@ -87,6 +87,7 @@ jobs:
         with:
           path: './deploy'
           retention-days: 30
+          include-hidden-files: true
       # Note: Deploys Hub at root and MoneyCat at /moneycat
       # Final URLs: hub.resonai.uk/ and hub.resonai.uk/moneycat/
 
