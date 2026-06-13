@@ -107,19 +107,19 @@ npm run social:post
 
 **Text**:
 ```
-Resonai [OTel] is MIT-licensed and free. If you find it useful, support us on Patreon or Buy Me a Coffee. Your support funds more automation lanes, deeper SigNoz playbooks, and the anti-clickbait transparency hub. PRs welcome. 💚
+Resonai [OTel] is MIT-licensed and free. If you find it useful, support us on Patreon or Ko-fi. Your support funds more automation lanes, deeper SigNoz playbooks, and the anti-clickbait transparency hub. PRs welcome. 💚
 ```
 
 **Tags**: `OpenSource`  
-**Links**: `https://www.patreon.com/c/FaeMcLachlan,https://buymeacoffee.com/fubumaki`  
+**Links**: `https://www.patreon.com/c/FaeMcLachlan,https://ko-fi.com/fubumaki`  
 **Length**: 267 chars ✅
 
 **Execute**:
 ```bash
 npm run social:compose -- \
-  --text "Resonai [OTel] is MIT-licensed and free. If you find it useful, support us on Patreon or Buy Me a Coffee. Your support funds more automation lanes, deeper SigNoz playbooks, and the anti-clickbait transparency hub. PRs welcome. 💚" \
+  --text "Resonai [OTel] is MIT-licensed and free. If you find it useful, support us on Patreon or Ko-fi. Your support funds more automation lanes, deeper SigNoz playbooks, and the anti-clickbait transparency hub. PRs welcome. 💚" \
   --tags "OpenSource" \
-  --links "https://www.patreon.com/c/FaeMcLachlan,https://buymeacoffee.com/fubumaki"
+  --links "https://www.patreon.com/c/FaeMcLachlan,https://ko-fi.com/fubumaki"
 
 npm run social:approve
 npm run social:post

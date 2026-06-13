@@ -61,8 +61,11 @@ See [windows/otelcol/README.md](windows/otelcol/README.md) for canonical service
 
 [![Patreon](https://img.shields.io/badge/Support-Patreon-FF424D?style=for-the-badge&logo=patreon&logoColor=white)](https://www.patreon.com/c/FaeMcLachlan)
 [![Ko-fi](https://img.shields.io/badge/Ko--fi-FF5E5B?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/fubumaki)
+[![Bluesky](https://img.shields.io/badge/Bluesky-0285FF?style=for-the-badge&logo=bluesky&logoColor=white)](https://bsky.app/profile/resonai.bsky.social)
 
-Help fund BossCat automation lanes, SigNoz playbooks, and the anti-clickbait transparency hub.
+Help fund BossCat automation lanes, SigNoz playbooks, and the [anti-clickbait transparency hub](https://hub.resonai.uk/).
+
+**Bluesky Starter Pack** (one-click follow list): [AntiClickbait — Trusted Sources](https://bsky.app/starter-pack/resonai.bsky.social/3m3rct677yo2t)
 
 ---
 
@@ -143,7 +146,9 @@ pwsh verify-pipeline.ps1
 ## 📞 Contact & Links
 
 - **GitHub:** [MoneyCat-inc/otel-ops-pack](https://github.com/MoneyCat-inc/otel-ops-pack)
-- **Bluesky:** [@resonai.bsky.social](https://bsky.app/profile/resonai.bsky.social)
+- **Bluesky:** [@resonai.bsky.social](https://bsky.app/profile/resonai.bsky.social) · [Starter Pack](https://bsky.app/starter-pack/resonai.bsky.social/3m3rct677yo2t)
+- **Hub:** [hub.resonai.uk](https://hub.resonai.uk/)
+- **Ko-fi:** [ko-fi.com/fubumaki](https://ko-fi.com/fubumaki)
 - **Documentation Hub:** [docs/index.html](docs/index.html)
 - **Status Dashboard:** [docs/status.html](docs/status.html)
 

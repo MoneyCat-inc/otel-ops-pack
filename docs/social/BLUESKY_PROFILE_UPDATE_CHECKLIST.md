@@ -3,7 +3,7 @@
 **Date:** 2025-10-21  
 **Authority:** Fubumaki  
 **Actor:** Manual execution (browser automation unavailable)  
-**Status:** [PENDING] Awaiting manual execution
+**Status:** [OK] Last synced 2026-06-12 via `npx tsx scripts/social/sync-bsky-profile.ts`
 
 ---
 
