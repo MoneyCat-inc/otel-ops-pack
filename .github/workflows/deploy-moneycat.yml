@@ -16,6 +16,7 @@ on:
       - 'robots.txt'
       - 'humans.txt'
       - '_config.yml'
+      - '.github/workflows/deploy-moneycat.yml'
       - '.well-known/**'
       - 'og/**'
   workflow_dispatch:
@@ -83,9 +84,14 @@ jobs:
           fi
       
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v4
+        run: |
+          tar --dereference --hard-dereference \
+            -cvf "$RUNNER_TEMP/artifact.tar" \
+            -C deploy .
+      - uses: actions/upload-artifact@v4
         with:
-          path: './deploy'
+          name: github-pages
+          path: ${{ runner.temp }}/artifact.tar
           retention-days: 30
           include-hidden-files: true
       # Note: Deploys Hub at root and MoneyCat at /moneycat
