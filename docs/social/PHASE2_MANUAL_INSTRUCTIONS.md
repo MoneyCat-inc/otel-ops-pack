@@ -11,7 +11,7 @@
 2. **Fill Form:**
    - **Service:** `bsky.social` (pre-filled)
    - **Username:** `resonai.bsky.social`
-   - **App Password:** `]&nFF4NrBMFXdSa`
+   - **App Password:** from `.env.socm` (`BSKY_APP_PASSWORD`)
 3. **Click:** "Continue"
 4. **Result:** You'll be logged into SkyFeed dashboard
 

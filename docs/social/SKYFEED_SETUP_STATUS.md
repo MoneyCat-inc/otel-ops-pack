@@ -6,15 +6,25 @@
 
 ---
 
-## Status: Manual setup required
+## Status: Use interactive wizard
 
-Custom Bluesky feeds are configured in [SkyFeed](https://skyfeed.app/) (no API in this repo). Use this checklist when you have 30–45 minutes at a desktop.
+```powershell
+npm run social:skyfeed-wizard
+```
+
+When all 3 feeds are published in SkyFeed + added to the Starter Pack:
+
+```powershell
+npm run social:skyfeed-finalize
+```
 
 | Feed | Generator slug | Status |
 |------|----------------|--------|
 | Fact-Check Firehose | `factcheck-firehose` | ⬜ Not created |
 | OSINT + Verification | `osint-verification` | ⬜ Not created |
 | AntiClickbait HQ | `anticlickbait-hq` | ⬜ Not created |
+
+Live URIs (auto-generated): `docs/social/skyfeed-feeds-live.json`
 
 ---
 
