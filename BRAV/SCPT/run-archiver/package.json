@@ -11,12 +11,12 @@
   "dependencies": {
     "@octokit/rest": "^20.1.1",
     "adm-zip": "^0.5.12",
-    "fast-xml-parser": "^5.7.0",
     "bottleneck": "^2.19.5",
-    "p-queue": "^7.4.1",
-    "undici": "^6.19.8",
     "cli-progress": "^3.12.0",
-    "pretty-ms": "^9.1.0"
+    "fast-xml-parser": "^5.7.0",
+    "p-queue": "^7.4.1",
+    "pretty-ms": "^9.1.0",
+    "resonai-backend": "file:../../..",
+    "undici": "^6.24.0"
   }
 }
-
