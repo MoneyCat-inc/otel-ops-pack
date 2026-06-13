@@ -20,5 +20,15 @@ Other AGENTS.md files are scoped; do not treat them as repo-wide rules unless no
   - Source of truth lives under docs/
   - See CHAR/DOCS/README.md
 
+## Recurring maintenance
+- Patreon weekly upkeep (7-day cadence): docs/BossCat/PATREON_WEEKLY_MAINTENANCE.md
+  - Check: `pwsh -File scripts/patreon-weekly-reminder.ps1`
+- Ko-fi weekly upkeep (7-day cadence): docs/BossCat/KOFI_WEEKLY_MAINTENANCE.md
+  - Check: `pwsh -File scripts/kofi-weekly-reminder.ps1`
+- Bluesky weekly upkeep (7-day cadence): docs/BossCat/BSKY_WEEKLY_MAINTENANCE.md
+  - Check: `pwsh -File scripts/bsky-weekly-reminder.ps1`
+  - Engagement: docs/BossCat/BSKY_ENGAGEMENT_PLAYBOOK.md
+- Cursor `sessionStart` hooks nudge agents when any of the above is overdue (`.cursor/hooks.json`)
+
 ## Archives
 - Archived historical copy (not canonical): docs/BossCat/misc/AGENTS.md

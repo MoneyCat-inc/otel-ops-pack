@@ -1,0 +1,33 @@
+title: "Q&A — Windows OTel / Resonai"
+labels: ["question", "community"]
+body:
+  - type: markdown
+    value: |
+      Thanks for asking. We answer with **sources and reproducible steps** — see [hub.resonai.uk](https://hub.resonai.uk/) and the [README](https://github.com/MoneyCat-inc/otel-ops-pack).
+
+      Bluesky updates: [@resonai.bsky.social](https://bsky.app/profile/resonai.bsky.social)
+  - type: textarea
+    id: question
+    attributes:
+      label: Your question
+      description: What are you trying to observe or verify on Windows?
+      placeholder: e.g. Windows Event Logs not appearing in SigNoz after collector upgrade…
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Windows OTel Collector
+        - SigNoz / Docker
+        - BossCat gates / CI
+        - AntiClickbait / verification
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Environment (optional)
+      placeholder: Windows 11, otelcol v0.x, SigNoz 0.x

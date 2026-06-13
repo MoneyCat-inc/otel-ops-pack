@@ -90,19 +90,49 @@ npm run social:compose -- \
 
 **Text**:
 ```
-Resonai [OTel] is free & open source. If you find it useful, consider supporting development on Patreon or Buy Me a Coffee. Your support funds more automation lanes, deeper playbooks, and the anti-clickbait transparency hub. 💚
+Resonai [OTel] is free & open source. If you find it useful, consider supporting development on Patreon or Ko-fi. Your support funds more automation lanes, deeper playbooks, and the anti-clickbait transparency hub. 💚
 ```
 
 **Tags**: `OpenSource`  
-**Links**: `https://www.patreon.com/c/FaeMcLachlan,https://buymeacoffee.com/fubumaki`
+**Links**: `https://www.patreon.com/c/FaeMcLachlan,https://ko-fi.com/fubumaki`
 
 **Compose Command**:
 ```bash
 npm run social:compose -- \
-  --text "Resonai [OTel] is free & open source. If you find it useful, consider supporting development on Patreon or Buy Me a Coffee. Your support funds more automation lanes, deeper playbooks, and the anti-clickbait transparency hub. 💚" \
+  --text "Resonai [OTel] is free & open source. If you find it useful, consider supporting development on Patreon or Ko-fi. Your support funds more automation lanes, deeper playbooks, and the anti-clickbait transparency hub. 💚" \
   --tags "OpenSource" \
-  --links "https://www.patreon.com/c/FaeMcLachlan,https://buymeacoffee.com/fubumaki"
+  --links "https://www.patreon.com/c/FaeMcLachlan,https://ko-fi.com/fubumaki"
 ```
+
+---
+
+## 📣 Progress batch (published 2026-06-12)
+
+Six live posts — progress + marketing. Re-run or adapt via `scripts/social/post-progress-batch.ts`.
+
+| # | Theme | URL |
+|---|--------|-----|
+| 1 | Pipeline + support pages synced | https://bsky.app/profile/resonai.bsky.social/post/3mo3vp5gvef2a |
+| 2 | Core pitch (OTel → SigNoz) | https://bsky.app/profile/resonai.bsky.social/post/3mo3vp7yloe2o |
+| 3 | Ko-fi launch | https://bsky.app/profile/resonai.bsky.social/post/3mo3vpckc6h2i |
+| 4 | Patreon vs Ko-fi paths | https://bsky.app/profile/resonai.bsky.social/post/3mo3vpf54zb2m |
+| 5 | Windows SRE / GitHub CTA | https://bsky.app/profile/resonai.bsky.social/post/3mo3vpholev2z |
+| 6 | AntiClickbait Starter Pack | https://bsky.app/profile/resonai.bsky.social/post/3mo3vpk7wgc2k |
+
+```powershell
+npm run social:progress-batch
+npm run social:week2
+npm run social:export
+```
+
+### Week-2 engagement (published 2026-06-12)
+
+| # | Theme | URL |
+|---|--------|-----|
+| 1 | quick-monitor tip | https://bsky.app/profile/resonai.bsky.social/post/3mo3vzmob7a2u |
+| 2 | Dashboard myth-buster | https://bsky.app/profile/resonai.bsky.social/post/3mo3vzp7s7o2m |
+| 3 | Starter Pack promo | https://bsky.app/profile/resonai.bsky.social/post/3mo3vzrrif72a |
+| — | CHECKLIST on pinned | https://bsky.app/profile/resonai.bsky.social/post/3mo3vzucy6l2i |
 
 ---
 

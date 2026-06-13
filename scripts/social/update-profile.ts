@@ -51,7 +51,9 @@ async function main() {
     // Update profile
     const newBio = `Evidence-first observability + truth literacy.
 22 OTel features scored 0-100.
-Hub: https://hub.resonai.uk/`;
+Hub: https://hub.resonai.uk/
+GitHub: github.com/MoneyCat-inc/otel-ops-pack
+Support: ko-fi.com/fubumaki · patreon.com/c/FaeMcLachlan`;
     
     console.log('\n🔄 Updating profile...');
     console.log(`   New Bio: ${newBio}`);

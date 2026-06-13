@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "hooks": {
+    "sessionStart": [
+      {
+        "command": "pwsh -NoProfile -File .cursor/hooks/patreon-weekly-reminder-hook.ps1"
+      },
+      {
+        "command": "pwsh -NoProfile -File .cursor/hooks/kofi-weekly-reminder-hook.ps1"
+      },
+      {
+        "command": "pwsh -NoProfile -File .cursor/hooks/bsky-weekly-reminder-hook.ps1"
+      }
+    ]
+  }
+}
