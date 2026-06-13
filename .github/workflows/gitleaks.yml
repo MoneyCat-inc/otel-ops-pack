@@ -24,11 +24,24 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0 # Full history for better detection
+
+      # OSS CLI avoids gitleaks-action org license requirement on Dependabot PRs
+      # (Dependabot workflows cannot read repository secrets like GITLEAKS_LICENSE).
+      - name: Install Gitleaks CLI
+        run: |
+          GITLEAKS_VERSION=8.24.3
+          curl -sSfL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" | tar -xz gitleaks
+          sudo mv gitleaks /usr/local/bin/gitleaks
+          gitleaks version
+
       - name: Run Gitleaks
-        uses: gitleaks/gitleaks-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            gitleaks detect --redact --verbose --config .gitleaks.toml --report-format json --report-path gitleaks-report.json --log-opts="${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}"
+          else
+            gitleaks detect --redact --verbose --config .gitleaks.toml --report-format json --report-path gitleaks-report.json --log-opts=-1
+          fi
+
       - name: Upload Gitleaks report
         uses: actions/upload-artifact@v4
         if: always()
@@ -36,4 +49,3 @@ jobs:
           name: gitleaks-report
           path: gitleaks-report.json
           retention-days: 30
-
