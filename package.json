@@ -117,7 +117,7 @@
     "@opentelemetry/exporter-otlp-proto": "^0.26.0",
     "@opentelemetry/exporter-trace-otlp-http": "^0.207.0",
     "@opentelemetry/exporter-trace-otlp-proto": "^0.207.0",
-    "@opentelemetry/resources": "^2.2.0",
+    "@opentelemetry/resources": "^2.8.0",
     "@opentelemetry/sdk-node": "^0.207.0",
     "@opentelemetry/sdk-trace-base": "^2.2.0",
     "@opentelemetry/sdk-trace-node": "^2.1.0",
