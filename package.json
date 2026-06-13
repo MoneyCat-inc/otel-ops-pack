@@ -67,6 +67,8 @@
     "notify:archive:dry": "pwsh -File BRAV/SCPT/sec-archiver/run-notifications.ps1 -ChunkSize 50 -DryRun",
     "anticlickbait:verify": "node BRAV/SCPT/verify-anticlickbait-lane.js",
     "hub:kpis": "pwsh -File scripts/generate-hub-kpis.ps1",
+    "hub:links": "pwsh -File scripts/check-hub-links.ps1",
+    "social:maintenance:register": "pwsh -File scripts/setup-social-maintenance-tasks.ps1",
     "social:compose": "tsx scripts/social/compose.ts",
     "social:approve": "tsx scripts/social/approve.ts",
     "social:post": "tsx scripts/social/post.ts",
@@ -82,7 +84,7 @@
   },
   "dependencies": {
     "@atproto/api": "^0.13.0",
-    "@aws-sdk/client-bedrock-runtime": "^3.922.0",
+    "@aws-sdk/client-bedrock-runtime": "^3.1068.0",
     "@opentelemetry/core": "^2.2.0",
     "@opentelemetry/exporter-otlp-http": "^0.26.0",
     "@opentelemetry/instrumentation-document-load": "^0.53.0",
@@ -140,6 +142,12 @@
     "wait-on": "^9.0.1"
   },
   "packageManager": "pnpm@10.18.1",
+  "pnpm": {
+    "overrides": {
+      "protobufjs": ">=8.0.1",
+      "fast-xml-parser": ">=5.3.4"
+    }
+  },
   "engines": {
     "node": ">=18.0.0"
   },

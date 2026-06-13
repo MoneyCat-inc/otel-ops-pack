@@ -26,7 +26,12 @@
     if (metrics.gateScore) metrics.gateScore.textContent = data.gate || '—';
     if (metrics.errorRate) metrics.errorRate.textContent = data.error || '—';
     if (metrics.canaryCount) metrics.canaryCount.textContent = data.canary || '—';
-    if (metrics.otelHealth) metrics.otelHealth.textContent = data.otel || '—';
+    if (metrics.otelHealth) {
+      metrics.otelHealth.textContent = data.otel || '—';
+      metrics.otelHealth.classList.remove('status-warn', 'status-fail');
+      if (data.otel === 'warn') metrics.otelHealth.classList.add('status-warn');
+      if (data.otel === 'fail') metrics.otelHealth.classList.add('status-fail');
+    }
 
     if (kpiUpdated && data.ts) {
       const when = new Date(data.ts);

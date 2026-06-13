@@ -1,0 +1,997 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Resonai [OTel] · Dashboard Hub</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="../LOGO/Resonai_LOGO_ICONonly.png?v=1">
+  <link rel="stylesheet" href="../assets/resonai-tokens.css">
+  <link rel="stylesheet" href="../assets/resonai-system.css">
+  <style>
+    :root {
+      --bg: var(--surface-900, #07090f);
+      --card: var(--surface-800, #0f1320);
+      --border: var(--border-strong, rgba(255,255,255,0.12));
+      --fg: var(--text-primary, #f4f6fb);
+      --muted: var(--text-subtle, #9197b5);
+      --accent: var(--accent-500, #7c5cff);
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--fg);
+      font: 15px/1.55 "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+    }
+    header {
+      position: sticky;
+      top: 0;
+      padding: 18px 24px;
+      background: linear-gradient(180deg, rgba(12,17,34,0.95), rgba(12,17,34,0.7) 60%, rgba(12,17,34,0));
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(12px);
+      z-index: 8;
+    }
+    .crumbs {
+      display: flex;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--muted);
+      align-items: center;
+    }
+    .crumbs a {
+      color: inherit;
+      text-decoration: none;
+    }
+    .crumbs svg {
+      width: 14px;
+      height: 14px;
+      opacity: .55;
+    }
+    h1 {
+      margin: 10px 0 4px 0;
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+    .subhead {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+    main {
+      padding: 32px min(5vw, 56px) 48px;
+      display: grid;
+      gap: 36px;
+    }
+    .grid {
+      display: grid;
+      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
+    .card {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(124,92,255,.28), transparent 58%);
+      opacity: 0;
+      transition: opacity .25s ease;
+    }
+    .card:hover::before { opacity: 1; }
+    .eyebrow {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+    }
+    .card h2 {
+      margin: 4px 0;
+      font-size: 20px;
+      font-weight: 600;
+    }
+    .card p {
+      margin: 0;
+      color: var(--text-secondary, rgba(244,246,251,0.78));
+      font-size: 14px;
+    }
+    .metrics {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 6px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      background: rgba(124,92,255,0.16);
+      border: 1px solid rgba(124,92,255,0.32);
+    }
+    .badge svg { width: 14px; height: 14px; }
+    .card-footer {
+      margin-top: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+    .links {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.14);
+      color: var(--fg);
+      text-decoration: none;
+      font-size: 13px;
+      transition: border-color .2s ease, background .2s ease;
+    }
+    .nav-link:hover {
+      border-color: rgba(124,92,255,0.55);
+      background: rgba(124,92,255,0.12);
+    }
+    footer {
+      padding: 24px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--muted);
+      border-top: 1px solid rgba(255,255,255,0.08);
+      background: rgba(8,10,18,0.92);
+    }
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #f7f8fb;
+        --card: #ffffff;
+        --border: rgba(12,17,34,0.08);
+        --fg: #0b0f1f;
+        --muted: #5b6380;
+      }
+      .card::before { background: radial-gradient(circle at top right, rgba(124,92,255,.16), transparent 58%); }
+      .nav-link { border-color: rgba(12,17,34,0.12); }
+    }
+    
+    /* Live Data Styles */
+    .live-metrics, .iona-status {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    
+    .metric-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    
+    .metric-row:last-child {
+      border-bottom: none;
+    }
+    
+    .metric-label {
+      font-size: 13px;
+      color: var(--muted);
+    }
+    
+    .metric-value {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--fg);
+    }
+    
+    .metric-value.ok { color: #4caf50; }
+    .metric-value.warn { color: #ffc107; }
+    .metric-value.error { color: #f44336; }
+    
+    .log-stream {
+      max-height: 200px;
+      overflow-y: auto;
+      background: rgba(0,0,0,0.2);
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 12px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+    }
+    
+    .log-entry {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 6px;
+      align-items: center;
+    }
+    
+    .log-time {
+      color: var(--muted);
+      min-width: 60px;
+    }
+    
+    .log-level {
+      min-width: 50px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 600;
+      text-align: center;
+    }
+    
+    .log-level.info { background: rgba(76,175,80,0.2); color: #4caf50; }
+    .log-level.warn { background: rgba(255,193,7,0.2); color: #ffc107; }
+    .log-level.error { background: rgba(244,67,54,0.2); color: #f44336; }
+    
+    .log-message {
+      flex: 1;
+      color: var(--fg);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 12px;
+    }
+    
+    .metric-card {
+      text-align: center;
+      padding: 12px;
+      background: rgba(124,92,255,0.08);
+      border-radius: 8px;
+      border: 1px solid rgba(124,92,255,0.16);
+    }
+    
+    .metric-card .metric-value {
+      display: block;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    
+    .metric-card .metric-label {
+      display: block;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .status-indicator {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 6px;
+    }
+    
+    .status-indicator.online { background: #4caf50; }
+    .status-indicator.offline { background: #f44336; }
+    .status-indicator.checking { background: #ffc107; animation: pulse 1.5s infinite; }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="../../index.html">Home</a>
+      <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+        <path d="M6.22 3.22a.75.75 0 0 1 1.06 0l3.5 3.5a.75.75 0 0 1 0 1.06l-3.5 3.5a.75.75 0 1 1-1.06-1.06L8.94 8 6.22 5.28a.75.75 0 0 1 0-1.06Z"/>
+      </svg>
+      <span aria-current="page">Dashboards</span>
+    </nav>
+    <h1>Observability Dashboards</h1>
+    <p class="subhead">Explore curated radar, resilience, and diagnostics boards that surface layered live data for BossCat operations.</p>
+  </header>
+
+  <main>
+    <section aria-labelledby="mission">
+      <h2 id="mission" class="eyebrow">Operational Lanes</h2>
+      <div class="grid">
+        <article class="card">
+          <span class="eyebrow">Executive Layer</span>
+          <h2>Executive Status Console</h2>
+          <p>Concise pulse on KPIs, roadmaps, ECRR compliance, and persona assignments. Built for nightly executive review.</p>
+          <div class="metrics">
+            <span class="badge">
+              <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 1.5A8.5 8.5 0 1 0 18.5 10 8.51 8.51 0 0 0 10 1.5Zm.75 4.75a.75.75 0 0 0-1.5 0v4.4a.75.75 0 0 0 .22.53l2.5 2.5a.75.75 0 1 0 1.06-1.06L10.75 10.9Z"/></svg>
+              30s refresh
+            </span>
+            <span class="badge">
+              <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a8 8 0 1 0 8 8 8.01 8.01 0 0 0-8-8Zm3.5 8.75h-7a.75.75 0 0 1 0-1.5h7a.75.75 0 0 1 0 1.5Z"/></svg>
+              Persona rollups
+            </span>
+          </div>
+          <div class="card-footer">
+            <div class="links">
+              <a class="nav-link" href="../status.html">
+                View dashboard
+              </a>
+              <a class="nav-link" href="../ecrr/ECRR_REPORTS/STATUS_UPDATE_EXECUTIVE_SUMMARY_20251007.md">
+                Latest report
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <span class="eyebrow">Live Telemetry</span>
+          <h2>Pipeline Live Metrics</h2>
+          <p>Charted OTLP throughput, ingestion latency, error envelopes, and saturation levels driven by SigNoz data feeds.</p>
+          <div class="metrics">
+            <span class="badge">
+              <svg viewBox="0 0 20 20" fill="currentColor"><path d="M17.75 10a.75.75 0 0 1-.75.75H11v6a.75.75 0 0 1-1.5 0v-6H3a.75.75 0 0 1 0-1.5h6.5V3.25a.75.75 0 0 1 1.5 0V9.5h6a.75.75 0 0 1 .75.75Z"/></svg>
+              SigNoz feed
+            </span>
+            <span class="badge">
+              <svg viewBox="0 0 20 20" fill="currentColor"><path d="M9 3a1 1 0 1 1 2 0v12a1 1 0 1 1-2 0V3Zm-6 6a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2H4a1 1 0 0 1-1-1Zm10 0a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2h-3a1 1 0 0 1-1-1Z"/></svg>
+              Chart.js v4
+            </span>
+          </div>
+          <div class="card-footer">
+            <div class="links">
+              <a class="nav-link" href="live-metrics.html">
+                View dashboard
+              </a>
+              <a class="nav-link" href="../status/kpis.json">
+                KPI JSON feed
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <span class="eyebrow">Diagnostics</span>
+          <h2>Connection Diagnostics</h2>
+          <p>Layered health probes for OTLP, ClickHouse, and pipeline collectors with deep-dive event traces and remediation steps.</p>
+          <div class="metrics">
+            <span class="badge">
+              <svg viewBox="0 0 20 20" fill="currentColor"><path d="M7.293 14.707a1 1 0 0 1 0-1.414L10.586 10 7.293 6.707a1 1 0 0 1 1.414-1.414l4 4a1 1 0 0 1 0 1.414l-4 4a1 1 0 0 1-1.414 0Z"/></svg>
+              Interactive probes
+            </span>
+            <span class="badge">
+              <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a.75.75 0 0 1 .66.39l6 11a.75.75 0 0 1-.66 1.11H4a.75.75 0 0 1-.66-1.11l6-11A.75.75 0 0 1 10 2Zm0 3.27L5.74 12.5h8.52L10 5.27Zm0 4.48a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0V10.5a.75.75 0 0 1 .75-.75Zm0 4a1 1 0 1 1-1 1 .999.999 0 0 1 1-1Z"/></svg>
+              Remediation tips
+            </span>
+          </div>
+          <div class="card-footer">
+            <div class="links">
+              <a class="nav-link" href="connection-diagnostics.html">
+                View dashboard
+              </a>
+              <a class="nav-link" href="../../scripts/verify-wiring.ps1">
+                Run wiring check
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <span class="eyebrow">Resilience Testing</span>
+          <h2>Telemetry Test Harness</h2>
+          <p>Chaos controls for log storm, latency spike, and OTLP flood scenarios with instant feedback and SigNoz trace helpers.</p>
+          <div class="metrics">
+            <span class="badge">
+              <svg viewBox="0 0 20 20" fill="currentColor"><path d="M4.5 5a1.5 1.5 0 1 1 2.996-.155L7.5 5v10a1.5 1.5 0 0 1-2.996.145L4.5 15V5Zm6 0a1.5 1.5 0 1 1 2.996-.155L13.5 5v10a1.5 1.5 0 0 1-2.996.145L10.5 15V5Z"/></svg>
+              Chaos scenarios
+            </span>
+            <span class="badge">
+              <svg viewBox="0 0 20 20" fill="currentColor"><path d="M3 4.75A1.75 1.75 0 0 1 4.75 3h10.5A1.75 1.75 0 0 1 17 4.75v10.5A1.75 1.75 0 0 1 15.25 17H4.75A1.75 1.75 0 0 1 3 15.25Zm4.25.75a.75.75 0 1 0 0 1.5h5.5a.75.75 0 0 0 0-1.5Z"/></svg>
+              Log capture
+            </span>
+          </div>
+          <div class="card-footer">
+            <div class="links">
+              <a class="nav-link" href="test-harness.html">
+                View dashboard
+              </a>
+              <a class="nav-link" href="stress-testing.html">
+                ⚡ Stress Testing
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <span class="eyebrow">Load Generation</span>
+          <h2>Stress Testing Suite</h2>
+          <p>Comprehensive signal generators for multi-source logs, synthetic metrics, randomized noise, health probes, and fixture replay.</p>
+          <div class="metrics">
+            <span class="badge">
+              <svg viewBox="0 0 20 20" fill="currentColor"><path d="M3 4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4Zm0 4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8Zm0 4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-2Z"/></svg>
+              Multi-source
+            </span>
+            <span class="badge">
+              <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a.75.75 0 0 1 .66.39l6 11a.75.75 0 0 1-.66 1.11H4a.75.75 0 0 1-.66-1.11l6-11A.75.75 0 0 1 10 2Zm0 3.27L5.74 12.5h8.52L10 5.27Zm0 4.48a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0V10.5a.75.75 0 0 1 .75-.75Zm0 4a1 1 0 1 1-1 1 .999.999 0 0 1 1-1Z"/></svg>
+              Noise injection
+            </span>
+          </div>
+          <div class="card-footer">
+            <div class="links">
+              <a class="nav-link" href="stress-testing.html">
+                View dashboard
+              </a>
+              <a class="nav-link" href="../../scripts/start-dashboard-server.ps1">
+                Start server
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <span class="eyebrow">Visualization</span>
+          <h2>Error Rate Heatmap</h2>
+          <p>Interactive 7×24 grid visualization of error patterns with color-coded severity levels and hover details for precise analysis.</p>
+          <div class="metrics">
+            <span class="badge">
+              <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a.75.75 0 0 1 .66.39l6 11a.75.75 0 0 1-.66 1.11H4a.75.75 0 0 1-.66-1.11l6-11A.75.75 0 0 1 10 2Zm0 3.27L5.74 12.5h8.52L10 5.27Zm0 4.48a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0V10.5a.75.75 0 0 1 .75-.75Zm0 4a1 1 0 1 1-1 1 .999.999 0 0 1 1-1Z"/></svg>
+              Interactive
+            </span>
+            <span class="badge">
+              <svg viewBox="0 0 20 20" fill="currentColor"><path d="M3 4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4Zm0 4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8Zm0 4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-2Z"/></svg>
+              Color-coded
+            </span>
+          </div>
+          <div class="card-footer">
+            <div class="links">
+              <a class="nav-link" href="error-heatmap.html">
+                View heatmap
+              </a>
+              <a class="nav-link" href="../../scripts/start-dashboard-server.ps1">
+                Start server
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <span class="eyebrow">Health Monitoring</span>
+          <h2>IONA Health Score Trends</h2>
+          <p>Time-series visualization of IONA controller health score (0-100) over the last 48 hours with interactive date/time range controls.</p>
+          <div class="metrics">
+            <span class="badge">
+              <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>
+              Real-time
+            </span>
+            <span class="badge">
+              <svg viewBox="0 0 20 20" fill="currentColor"><path d="M3 4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4Zm0 4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8Zm0 4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-2Z"/></svg>
+              Time-series
+            </span>
+          </div>
+          <div class="card-footer">
+            <div class="links">
+              <a class="nav-link" href="iona-health.html">
+                View trends
+              </a>
+              <a class="nav-link" href="../../scripts/start-dashboard-server.ps1">
+                Start server
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <span class="eyebrow">Advanced Analytics</span>
+          <h2>Advanced Visualizations</h2>
+          <p>Correlation analysis and enhanced heatmaps including throughput vs error rate scatter plots and per-service error pattern visualization.</p>
+          <div class="metrics">
+            <span class="badge">
+              <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>
+              Correlation
+            </span>
+            <span class="badge">
+              <svg viewBox="0 0 20 20" fill="currentColor"><path d="M3 4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4Zm0 4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8Zm0 4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-2Z"/></svg>
+              Heatmaps
+            </span>
+          </div>
+          <div class="card-footer">
+            <div class="links">
+              <a class="nav-link" href="advanced-visualizations.html">
+                View analytics
+              </a>
+              <a class="nav-link" href="../../scripts/start-dashboard-server.ps1">
+                Start server
+              </a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+    <!-- Live Data Feed Section -->
+    <section aria-labelledby="live-data">
+      <h2 id="live-data" class="eyebrow">Live System Status</h2>
+      <div class="grid">
+        <article class="card">
+          <span class="eyebrow">Pipeline Health</span>
+          <h2>OTel Collector Status</h2>
+          <div class="live-metrics" id="otelStatus">
+            <div class="metric-row">
+              <span class="metric-label">Service Status:</span>
+              <span class="metric-value" id="collectorStatus">Checking...</span>
+            </div>
+            <div class="metric-row">
+              <span class="metric-label">Port 5318:</span>
+              <span class="metric-value" id="portStatus">Checking...</span>
+            </div>
+            <div class="metric-row">
+              <span class="metric-label">Last Log:</span>
+              <span class="metric-value" id="lastLogTime">--</span>
+            </div>
+          </div>
+          <div class="card-footer">
+            <div class="links">
+              <button class="nav-link" onclick="checkOTelStatus()">
+                Refresh Status
+              </button>
+              <a class="nav-link" href="http://localhost:8080" target="_blank">
+                SigNoz UI
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <span class="eyebrow">Recent Activity</span>
+          <h2>Live Log Stream</h2>
+          <div class="log-stream" id="logStream">
+            <div class="log-entry">
+              <span class="log-time">--:--:--</span>
+              <span class="log-level info">INFO</span>
+              <span class="log-message">Connecting to SigNoz...</span>
+            </div>
+          </div>
+          <div class="card-footer">
+            <div class="links">
+              <button class="nav-link" onclick="fetchRecentLogs()">
+                Load Recent
+              </button>
+              <button class="nav-link" onclick="toggleAutoRefresh()">
+                <span id="autoRefreshText">Enable Auto</span>
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <span class="eyebrow">Performance</span>
+          <h2>Throughput Metrics</h2>
+          <div class="metrics-grid" id="throughputMetrics">
+            <div class="metric-card">
+              <div class="metric-value" id="logsPerSecond">--</div>
+              <div class="metric-label">Logs/sec</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-value" id="totalLogs">--</div>
+              <div class="metric-label">Total Today</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-value" id="errorRate">--</div>
+              <div class="metric-label">Error Rate</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-value" id="avgLatency">--</div>
+              <div class="metric-label">Avg Latency</div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <div class="links">
+              <button class="nav-link" onclick="updateMetrics()">
+                Refresh Metrics
+              </button>
+              <a class="nav-link" href="live-metrics.html">
+                Detailed View
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <span class="eyebrow">System Health</span>
+          <h2>IONA Controller</h2>
+          <div class="iona-status" id="ionaStatus">
+            <div class="metric-row">
+              <span class="metric-label">Health Score:</span>
+              <span class="metric-value" id="ionaHealth">--/100</span>
+            </div>
+            <div class="metric-row">
+              <span class="metric-label">Active Anomalies:</span>
+              <span class="metric-value" id="ionaAnomalies">--</span>
+            </div>
+            <div class="metric-row">
+              <span class="metric-label">Pipeline State:</span>
+              <span class="metric-value" id="pipelineState">--</span>
+            </div>
+          </div>
+          <div class="card-footer">
+            <div class="links">
+              <button class="nav-link" onclick="checkIONAHealth()">
+                Check Health
+              </button>
+              <a class="nav-link" href="../IONA_ERRORS.md">
+                Error Ledger
+              </a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <!-- Quick Setup Instructions -->
+  <section aria-labelledby="setup" style="margin-top: 48px; padding: 24px; background: rgba(124,92,255,0.05); border-radius: 12px; border: 1px solid rgba(124,92,255,0.16);">
+    <h2 id="setup" style="margin: 0 0 16px 0; font-size: 18px; font-weight: 600;">🚀 Quick Setup</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+      <div>
+        <h3 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600; color: var(--accent);">For Full Live Data</h3>
+        <p style="margin: 0 0 12px 0; font-size: 13px; color: var(--muted);">Run via web server to avoid CORS restrictions:</p>
+        <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 6px; font-family: 'Courier New', monospace; font-size: 12px;">
+          <div style="color: #4caf50; margin-bottom: 4px;"># Terminal command:</div>
+          <div style="color: var(--fg);">python -m http.server 3000</div>
+          <div style="color: #4caf50; margin: 8px 0 4px 0;"># Or use helper scripts:</div>
+          <div style="color: var(--fg);">pwsh scripts/start-dashboard-server.ps1</div>
+          <div style="color: var(--fg);">scripts/start-dashboard-server.bat</div>
+          <div style="color: #4caf50; margin: 8px 0 4px 0;"># Then visit:</div>
+          <div style="color: var(--fg);">http://localhost:3000/docs/dashboards/</div>
+        </div>
+      </div>
+      <div>
+        <h3 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600; color: var(--accent);">Prerequisites</h3>
+        <ul style="margin: 0; padding-left: 16px; font-size: 13px; color: var(--muted);">
+          <li>SigNoz running on localhost:8080</li>
+          <li>OTel Collector on localhost:5318</li>
+          <li>Python 3.x (for web server)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    BossCat OEM · Resonai [OTel] Observability Stack · Evidence-first dashboards for nightly review.
+  </footer>
+
+<script>
+  // Configuration
+  const config = {
+    signozEndpoint: 'http://localhost:8080',
+    otelEndpoint: 'http://localhost:5318',
+    refreshInterval: 10000, // 10 seconds
+    logLimit: 20,
+    corsMode: 'cors', // Use 'no-cors' for file:// origins
+    timeout: 5000 // 5 second timeout
+  };
+  
+  // Detect if running from file:// protocol
+  const isFileProtocol = window.location.protocol === 'file:';
+  if (isFileProtocol) {
+    config.corsMode = 'no-cors';
+    showCORSWarning();
+  }
+  
+  let autoRefreshEnabled = false;
+  let refreshInterval = null;
+  
+  // Show CORS warning for file:// protocol
+  function showCORSWarning() {
+    const warning = document.createElement('div');
+    warning.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(255, 193, 7, 0.95);
+      color: #000;
+      padding: 16px;
+      border-radius: 8px;
+      border: 1px solid #ffc107;
+      max-width: 400px;
+      z-index: 1000;
+      font-size: 14px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    `;
+    warning.innerHTML = `
+      <div style="font-weight: bold; margin-bottom: 8px;">⚠️ CORS Warning</div>
+      <div style="margin-bottom: 12px;">Running from file:// protocol. Live data may be limited.</div>
+      <div style="font-size: 12px; margin-bottom: 12px;">
+        <strong>Solution:</strong> Run a local web server:<br>
+        <code style="background: rgba(0,0,0,0.1); padding: 2px 4px; border-radius: 3px;">
+          python -m http.server 3000
+        </code><br>
+        Then visit: <code>http://localhost:3000/docs/dashboards/index.html</code>
+      </div>
+      <button onclick="this.parentElement.remove()" style="
+        background: #000;
+        color: #fff;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+      ">Got it</button>
+    `;
+    document.body.appendChild(warning);
+    
+    // Auto-remove after 10 seconds
+    setTimeout(() => {
+      if (warning.parentElement) warning.remove();
+    }, 10000);
+  }
+  
+  // Enhanced fetch with timeout and CORS handling
+  async function safeFetch(url, options = {}) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), config.timeout);
+    
+    try {
+      const response = await fetch(url, {
+        ...options,
+        mode: config.corsMode,
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+      return response;
+    } catch (error) {
+      clearTimeout(timeoutId);
+      if (error.name === 'AbortError') {
+        throw new Error('Request timeout');
+      }
+      throw error;
+    }
+  }
+  
+  // Initialize on page load
+  window.onload = () => {
+    checkOTelStatus();
+    fetchRecentLogs();
+    updateMetrics();
+    checkIONAHealth();
+  };
+  
+  // OTel Collector Status Check
+  async function checkOTelStatus() {
+    const statusEl = document.getElementById('collectorStatus');
+    const portEl = document.getElementById('portStatus');
+    const lastLogEl = document.getElementById('lastLogTime');
+    
+    // Set checking state
+    statusEl.innerHTML = '<span class="status-indicator checking"></span>Checking...';
+    portEl.innerHTML = '<span class="status-indicator checking"></span>Testing...';
+    
+    try {
+      // Test OTel Collector endpoint
+      const response = await safeFetch(`${config.otelEndpoint}/v1/logs`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          resourceLogs: [{
+            resource: { attributes: [{ key: 'service.name', value: { stringValue: 'health-check' } }] },
+            scopeLogs: [{
+              scope: { name: 'health', version: '1.0' },
+              logRecords: [{
+                timeUnixNano: (Date.now() * 1000000).toString(),
+                severityNumber: 9,
+                severityText: 'INFO',
+                body: { stringValue: 'Health check from dashboard hub' }
+              }]
+            }]
+          }]
+        })
+      });
+      
+      if (response.ok) {
+        statusEl.innerHTML = '<span class="status-indicator online"></span>Running';
+        portEl.innerHTML = '<span class="status-indicator online"></span>5318 Open';
+        lastLogEl.textContent = new Date().toLocaleTimeString();
+      } else {
+        throw new Error(`HTTP ${response.status}`);
+      }
+    } catch (error) {
+      statusEl.innerHTML = '<span class="status-indicator offline"></span>Offline';
+      portEl.innerHTML = '<span class="status-indicator offline"></span>5318 Closed';
+      lastLogEl.textContent = 'Never';
+    }
+  }
+  
+  // Fetch Recent Logs from SigNoz
+  async function fetchRecentLogs() {
+    const logStream = document.getElementById('logStream');
+    
+    try {
+      const response = await safeFetch(`${config.signozEndpoint}/api/v1/logs`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          limit: config.logLimit,
+          orderBy: { columnName: 'timestamp', order: 'desc' },
+          filters: { items: [] }
+        })
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        const logs = data.logs || [];
+        
+        if (logs.length > 0) {
+          logStream.innerHTML = logs.map(log => {
+            const timestamp = new Date(log.timestamp / 1000000).toLocaleTimeString();
+            const level = log.severity_text || 'INFO';
+            const message = log.body || 'No message';
+            const service = log.resource?.attributes?.find(attr => attr.key === 'service.name')?.value?.stringValue || 'unknown';
+            
+            return `
+              <div class="log-entry">
+                <span class="log-time">${timestamp}</span>
+                <span class="log-level ${level.toLowerCase()}">${level}</span>
+                <span class="log-message">[${service}] ${message}</span>
+              </div>
+            `;
+          }).join('');
+        } else {
+          logStream.innerHTML = `
+            <div class="log-entry">
+              <span class="log-time">--:--:--</span>
+              <span class="log-level info">INFO</span>
+              <span class="log-message">No recent logs found</span>
+            </div>
+          `;
+        }
+      } else {
+        throw new Error(`HTTP ${response.status}`);
+      }
+    } catch (error) {
+      if (isFileProtocol && error.message.includes('CORS')) {
+        logStream.innerHTML = `
+          <div class="log-entry">
+            <span class="log-time">--:--:--</span>
+            <span class="log-level warn">WARN</span>
+            <span class="log-message">CORS blocked - run via web server for live data</span>
+          </div>
+          <div class="log-entry">
+            <span class="log-time">--:--:--</span>
+            <span class="log-level info">INFO</span>
+            <span class="log-message">Use: python -m http.server 3000</span>
+          </div>
+        `;
+      } else {
+        logStream.innerHTML = `
+          <div class="log-entry">
+            <span class="log-time">--:--:--</span>
+            <span class="log-level error">ERROR</span>
+            <span class="log-message">Failed to fetch logs: ${error.message}</span>
+          </div>
+        `;
+      }
+    }
+  }
+  
+  // Update Performance Metrics
+  async function updateMetrics() {
+    try {
+      // Fetch logs to calculate metrics
+      const response = await safeFetch(`${config.signozEndpoint}/api/v1/logs`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          limit: 1000,
+          orderBy: { columnName: 'timestamp', order: 'desc' },
+          filters: { items: [] }
+        })
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        const logs = data.logs || [];
+        
+        // Calculate metrics
+        const now = Date.now();
+        const oneHourAgo = now - (60 * 60 * 1000);
+        const recentLogs = logs.filter(log => log.timestamp / 1000000 > oneHourAgo);
+        
+        const logsPerSecond = (recentLogs.length / 3600).toFixed(1);
+        const errorCount = recentLogs.filter(log => log.severity_text === 'ERROR').length;
+        const errorRate = recentLogs.length > 0 ? ((errorCount / recentLogs.length) * 100).toFixed(1) : '0.0';
+        
+        // Update UI
+        document.getElementById('logsPerSecond').textContent = logsPerSecond;
+        document.getElementById('totalLogs').textContent = recentLogs.length;
+        document.getElementById('errorRate').textContent = errorRate + '%';
+        document.getElementById('avgLatency').textContent = '<200ms'; // Placeholder
+      }
+    } catch (error) {
+      document.getElementById('logsPerSecond').textContent = '--';
+      document.getElementById('totalLogs').textContent = '--';
+      document.getElementById('errorRate').textContent = '--';
+      document.getElementById('avgLatency').textContent = '--';
+    }
+  }
+  
+  // Check IONA Controller Health
+  async function checkIONAHealth() {
+    try {
+      // Fetch recent logs to calculate health
+      const response = await safeFetch(`${config.signozEndpoint}/api/v1/logs`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          limit: 100,
+          orderBy: { columnName: 'timestamp', order: 'desc' },
+          filters: { items: [] }
+        })
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        const logs = data.logs || [];
+        
+        const errorCount = logs.filter(log => log.severity_text === 'ERROR').length;
+        const totalCount = logs.length;
+        const healthScore = totalCount > 0 ? Math.max(0, Math.min(100, Math.floor(100 - (errorCount / totalCount) * 100))) : 100;
+        
+        document.getElementById('ionaHealth').textContent = `${healthScore}/100`;
+        document.getElementById('ionaAnomalies').textContent = errorCount.toString();
+        document.getElementById('pipelineState').textContent = totalCount > 0 ? 'Active' : 'Idle';
+        
+        // Update health score color
+        const healthEl = document.getElementById('ionaHealth');
+        healthEl.className = 'metric-value';
+        if (healthScore >= 90) healthEl.classList.add('ok');
+        else if (healthScore >= 70) healthEl.classList.add('warn');
+        else healthEl.classList.add('error');
+      }
+    } catch (error) {
+      document.getElementById('ionaHealth').textContent = '--/100';
+      document.getElementById('ionaAnomalies').textContent = '--';
+      document.getElementById('pipelineState').textContent = 'Unknown';
+    }
+  }
+  
+  // Toggle Auto Refresh
+  function toggleAutoRefresh() {
+    const button = document.getElementById('autoRefreshText');
+    
+    if (autoRefreshEnabled) {
+      clearInterval(refreshInterval);
+      autoRefreshEnabled = false;
+      button.textContent = 'Enable Auto';
+    } else {
+      refreshInterval = setInterval(() => {
+        fetchRecentLogs();
+        updateMetrics();
+        checkIONAHealth();
+      }, config.refreshInterval);
+      autoRefreshEnabled = true;
+      button.textContent = 'Disable Auto';
+    }
+  }
+  
+  // Cleanup on page unload
+  window.onbeforeunload = () => {
+    if (refreshInterval) clearInterval(refreshInterval);
+  };
+</script>
+
+</body>
+</html>

@@ -1,0 +1,106 @@
+/* Resonai Brand System - Shared CSS Tokens */
+/* Include this file in all dashboard pages for consistent branding */
+
+:root {
+  /* Resonai Brand Tokens */
+  --rsn-bg: #000;
+  --rsn-fg: #fff;
+  --rsn-grad-blue: #2D9CFF;
+  --rsn-grad-purple: #9B51E0;
+  --rsn-grad-magenta: #E040FB;
+  --rsn-grad-orange: #FF6A00;
+  
+  /* Logo System Classes */
+  --rsn-logo-header-height: 36px;
+  --rsn-logo-footer-height: 16px;
+  --rsn-logo-wordmark-height: 28px;
+  --rsn-logo-gap: 0.5rem;
+  --rsn-logo-opacity: 0.7;
+  
+  /* Dashboard Theme Tokens (can be overridden) */
+  --rsn-page-bg: #f5f5f5;
+  --rsn-surface: #ffffff;
+  --rsn-surface-muted: #f8f9fa;
+  --rsn-text: #1d2233;
+  --rsn-muted: #5b6274;
+  --rsn-accent: #667eea;
+  --rsn-border: #e0e6f2;
+  --rsn-success: #4caf50;
+  --rsn-warning: #ffc107;
+  --rsn-error: #f44336;
+}
+
+/* Dark Mode Overrides */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --rsn-page-bg: #0b0d12;
+    --rsn-surface: #121520;
+    --rsn-surface-muted: rgba(255,255,255,0.05);
+    --rsn-text: #f1f4ff;
+    --rsn-muted: #9aa2be;
+    --rsn-accent: #9b51e0;
+    --rsn-border: #252b3a;
+  }
+}
+
+/* Logo System CSS Classes */
+.logo-container {
+  display: flex;
+  gap: var(--rsn-logo-gap);
+  align-items: center;
+}
+
+.logo-wordmark {
+  height: var(--rsn-logo-wordmark-height);
+}
+
+.logo-mono {
+  height: var(--rsn-logo-footer-height);
+  opacity: var(--rsn-logo-opacity);
+}
+
+/* Print Optimizations */
+@media print {
+  .logo-container img {
+    height: 24px !important;
+  }
+  .logo-wordmark {
+    height: 20px !important;
+  }
+  header, footer {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
+/* SVG-First Preparation (for future use) */
+.logo-svg {
+  width: auto;
+  height: var(--rsn-logo-header-height);
+}
+
+.logo-svg-mono {
+  width: auto;
+  height: var(--rsn-logo-footer-height);
+  opacity: var(--rsn-logo-opacity);
+}
+
+.logo-svg-wordmark {
+  width: auto;
+  height: var(--rsn-logo-wordmark-height);
+}
+
+/* Utility Classes for Brand Colors */
+.bg-rsn-gradient {
+  background: linear-gradient(135deg, var(--rsn-grad-blue) 0%, var(--rsn-grad-purple) 55%, var(--rsn-grad-magenta) 100%);
+}
+
+.text-rsn-blue { color: var(--rsn-grad-blue); }
+.text-rsn-purple { color: var(--rsn-grad-purple); }
+.text-rsn-magenta { color: var(--rsn-grad-magenta); }
+.text-rsn-orange { color: var(--rsn-grad-orange); }
+
+.bg-rsn-blue { background-color: var(--rsn-grad-blue); }
+.bg-rsn-purple { background-color: var(--rsn-grad-purple); }
+.bg-rsn-magenta { background-color: var(--rsn-grad-magenta); }
+.bg-rsn-orange { background-color: var(--rsn-grad-orange); }

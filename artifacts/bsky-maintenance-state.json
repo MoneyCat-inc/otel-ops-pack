@@ -1,0 +1,8 @@
+{
+  "last_completed_utc": "2026-06-13T11:50:52.8188442Z",
+  "next_due_utc": "2026-06-20T11:50:52.8188442Z",
+  "cadence_days": 7,
+  "bsky_url": "https://bsky.app/profile/resonai.bsky.social",
+  "runbook": "docs/BossCat/BSKY_WEEKLY_MAINTENANCE.md",
+  "notes": "Hub widget + engagement scripts shipped"
+}

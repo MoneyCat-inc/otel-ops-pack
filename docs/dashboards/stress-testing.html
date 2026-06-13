@@ -1,0 +1,2508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stress Testing Suite — Resonai [OTel]</title>
+<link rel="icon" type="image/png" href="../LOGO/Resonai_LOGO_ICONonly.png">
+<link rel="stylesheet" href="../assets/resonai-system.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  .stress-controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-2xl);
+  }
+  
+  .stress-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-xl);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .stress-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top right, rgba(124,92,255,.15), transparent 60%);
+    opacity: 0;
+    transition: opacity .25s ease;
+  }
+  
+  .stress-card:hover::before { opacity: 1; }
+  
+  .stress-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--spacing-sm);
+    color: var(--primary);
+  }
+  
+  .stress-description {
+    color: var(--fg-muted);
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .stress-controls-inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+  
+  .control-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--spacing-md);
+  }
+  
+  .control-label {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+  }
+  
+  .control-value {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-sm);
+    color: var(--primary);
+  }
+  
+  .btn-stress {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: white;
+    border: none;
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border-radius: var(--border-radius-md);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .btn-stress:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+  }
+  
+  .btn-stress:active {
+    transform: translateY(0);
+  }
+  
+  .btn-stress.active {
+    background: linear-gradient(135deg, var(--success), var(--accent));
+    animation: pulse 2s infinite;
+  }
+  
+  .btn-stress.danger {
+    background: linear-gradient(135deg, var(--error), #ff6b6b);
+  }
+  
+  .btn-stress.warning {
+    background: linear-gradient(135deg, var(--warning), #ffa726);
+  }
+  
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+  }
+  
+  .status-indicator {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: var(--spacing-xs);
+  }
+  
+  .status-indicator.active { background: var(--success); animation: pulse 1.5s infinite; }
+  .status-indicator.inactive { background: var(--fg-muted); }
+  .status-indicator.error { background: var(--error); }
+  
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-lg);
+  }
+  
+  .metric-card {
+    background: rgba(124,92,255,0.08);
+    border: 1px solid rgba(124,92,255,0.16);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-md);
+    text-align: center;
+  }
+  
+  .metric-value {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--primary);
+    display: block;
+  }
+  
+  .metric-label {
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--fg-muted);
+    margin-top: var(--spacing-xs);
+  }
+  
+  .log-stream {
+    background: #000;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-lg);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-xs);
+    max-height: 300px;
+    overflow-y: auto;
+    margin-top: var(--spacing-lg);
+  }
+  
+  .log-entry {
+    margin-bottom: var(--spacing-xs);
+    display: flex;
+    gap: var(--spacing-sm);
+    align-items: center;
+  }
+  
+  .log-time {
+    color: var(--fg-muted);
+    min-width: 60px;
+  }
+  
+  .log-level {
+    min-width: 50px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  .log-level.info { background: rgba(76,175,80,0.2); color: var(--success); }
+  .log-level.warn { background: rgba(255,193,7,0.2); color: var(--warning); }
+  .log-level.error { background: rgba(244,67,54,0.2); color: var(--error); }
+  
+  .log-message {
+    flex: 1;
+    color: var(--fg);
+  }
+  
+  .slider-container {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin: var(--spacing-sm) 0;
+  }
+  
+  .slider {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--border-color);
+    outline: none;
+  }
+  
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--primary);
+    cursor: pointer;
+  }
+  
+  .slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--primary);
+    cursor: pointer;
+    border: none;
+  }
+  
+  /* Backend Selection Styles */
+  .backend-checkbox {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 8px 0;
+    user-select: none;
+  }
+  
+  .backend-checkbox input[type="checkbox"] {
+    opacity: 0;
+    position: absolute;
+    cursor: pointer;
+  }
+  
+  .checkmark {
+    height: 18px;
+    width: 18px;
+    background-color: var(--bg-primary);
+    border: 2px solid var(--border-color);
+    border-radius: 4px;
+    margin-right: 12px;
+    position: relative;
+    transition: all 0.2s ease;
+  }
+  
+  .backend-checkbox:hover input ~ .checkmark {
+    border-color: var(--primary);
+  }
+  
+  .backend-checkbox input:checked ~ .checkmark {
+    background-color: var(--primary);
+    border-color: var(--primary);
+  }
+  
+  .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+  }
+  
+  .backend-checkbox input:checked ~ .checkmark:after {
+    display: block;
+  }
+  
+  .backend-checkbox .checkmark:after {
+    left: 5px;
+    top: 2px;
+    width: 4px;
+    height: 8px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+  
+  .backend-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--fg);
+  }
+  
+  .backend-icon {
+    font-size: 16px;
+  }
+  
+  .backend-status {
+    font-size: 12px;
+    margin-left: auto;
+  }
+  
+  .backend-status.healthy { color: #4caf50; }
+  .backend-status.warning { color: #ffc107; }
+  .backend-status.unhealthy { color: #f44336; }
+  .backend-status.unknown { color: #888888; }
+</style>
+</head>
+<body>
+
+<!-- Breadcrumb -->
+<nav class="breadcrumb" style="padding: 8px 24px; background: var(--bg-primary); border-bottom: 1px solid var(--border-color);">
+  <a href="../../index.html">🏠 Home</a>
+  <span class="breadcrumb-separator">/</span>
+  <a href="index.html">Dashboards</a>
+  <span class="breadcrumb-separator">/</span>
+  <span>Stress Testing</span>
+</nav>
+
+<!-- Header -->
+<header class="resonai-header">
+  <div class="resonai-header-content">
+    <div class="resonai-logo">⚡ Stress Testing Suite</div>
+    <nav class="resonai-nav">
+      <a href="../../index.html">Home</a>
+      <a href="index.html">Dashboard Hub</a>
+      <a href="test-harness.html">Test Harness</a>
+      <a href="connection-diagnostics.html">Diagnostics</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Main Content -->
+<main class="container">
+
+  <!-- CORS Warning (shown only for file:// protocol) -->
+  <div class="alert alert-error" id="corsWarning" style="display: none;">
+    <strong>🚨 CORS Restriction Detected:</strong> You're running this page from the file system (file:// protocol). 
+    Live OTLP log sending is disabled to prevent CORS errors. 
+    <strong>For full functionality:</strong> Run via web server using 
+    <code>python -m http.server 3000</code> or use the helper scripts in the scripts/ directory.
+    <div style="margin-top: 8px;">
+      <a href="../../scripts/start-dashboard-server.ps1" class="nav-link" style="display: inline-block; margin-right: 12px;">
+        📁 PowerShell Script
+      </a>
+      <a href="../../scripts/start-dashboard-server.bat" class="nav-link" style="display: inline-block;">
+        📁 Batch Script
+      </a>
+    </div>
+  </div>
+
+  <!-- Status Alert -->
+  <div class="alert alert-warning">
+    <strong>⚡ Stress Testing Mode:</strong> This suite generates synthetic load to validate your observability pipeline. 
+    Monitor your dashboards and SigNoz UI to observe the impact of different stress patterns.
+  </div>
+
+  <!-- Stress Testing Controls -->
+  <section class="section">
+    <h2 class="mb-lg">🎛️ Signal Generators</h2>
+    <div class="stress-controls">
+      
+      <!-- Multi-Source Log Generator -->
+      <div class="stress-card">
+        <div class="stress-title">📊 Multi-Source Log Generator</div>
+        <div class="stress-description">
+          Generates logs from multiple simulated services with varying formats, severity levels, and frequencies.
+        </div>
+        <div class="stress-controls-inner">
+          <div class="control-row">
+            <span class="control-label">Status:</span>
+            <span class="control-value">
+              <span class="status-indicator inactive" id="multiSourceStatus"></span>
+              <span id="multiSourceText">Inactive</span>
+            </span>
+          </div>
+          <div class="control-row">
+            <span class="control-label">Services:</span>
+            <span class="control-value" id="multiSourceCount">0</span>
+          </div>
+          <div class="slider-container">
+            <span class="control-label">Frequency:</span>
+            <input type="range" class="slider" id="multiSourceFreq" min="1" max="10" value="3">
+            <span class="control-value" id="multiSourceFreqText">3/sec</span>
+          </div>
+          <button class="btn-stress" id="multiSourceBtn" onclick="toggleMultiSource()">
+            Start Multi-Source
+          </button>
+        </div>
+      </div>
+
+      <!-- Synthetic Metrics Generator -->
+      <div class="stress-card">
+        <div class="stress-title">📈 Synthetic Metrics</div>
+        <div class="stress-description">
+          Emits OpenTelemetry metrics (counters, gauges, histograms) with randomized values for visualization testing.
+        </div>
+        <div class="stress-controls-inner">
+          <div class="control-row">
+            <span class="control-label">Status:</span>
+            <span class="control-value">
+              <span class="status-indicator inactive" id="metricsStatus"></span>
+              <span id="metricsText">Inactive</span>
+            </span>
+          </div>
+          <div class="control-row">
+            <span class="control-label">Metrics/sec:</span>
+            <span class="control-value" id="metricsCount">0</span>
+          </div>
+          <div class="slider-container">
+            <span class="control-label">Volume:</span>
+            <input type="range" class="slider" id="metricsVolume" min="1" max="20" value="5">
+            <span class="control-value" id="metricsVolumeText">5/sec</span>
+          </div>
+          <button class="btn-stress" id="metricsBtn" onclick="toggleMetrics()">
+            Start Metrics
+          </button>
+        </div>
+      </div>
+
+      <!-- Noise Generator -->
+      <div class="stress-card">
+        <div class="stress-title">🌪️ Randomized Noise</div>
+        <div class="stress-description">
+          Generates bursts of arbitrarily structured logs at irregular intervals to simulate unpredictable traffic spikes.
+        </div>
+        <div class="stress-controls-inner">
+          <div class="control-row">
+            <span class="control-label">Status:</span>
+            <span class="control-value">
+              <span class="status-indicator inactive" id="noiseStatus"></span>
+              <span id="noiseText">Inactive</span>
+            </span>
+          </div>
+          <div class="control-row">
+            <span class="control-label">Burst Size:</span>
+            <span class="control-value" id="noiseBurstSize">0</span>
+          </div>
+          <div class="slider-container">
+            <span class="control-label">Intensity:</span>
+            <input type="range" class="slider" id="noiseIntensity" min="1" max="5" value="2">
+            <span class="control-value" id="noiseIntensityText">Medium</span>
+          </div>
+          <button class="btn-stress warning" id="noiseBtn" onclick="toggleNoise()">
+            Start Noise
+          </button>
+        </div>
+      </div>
+
+      <!-- Health Check Probes -->
+      <div class="stress-card">
+        <div class="stress-title">🏥 Health Check Probes</div>
+        <div class="stress-description">
+          Continuously probes API endpoints and logs responses to generate real diagnostic signals.
+        </div>
+        <div class="stress-controls-inner">
+          <div class="control-row">
+            <span class="control-label">Status:</span>
+            <span class="control-value">
+              <span class="status-indicator inactive" id="probeStatus"></span>
+              <span id="probeText">Inactive</span>
+            </span>
+          </div>
+          <div class="control-row">
+            <span class="control-label">Endpoints:</span>
+            <span class="control-value" id="probeEndpoints">0</span>
+          </div>
+          <div class="slider-container">
+            <span class="control-label">Interval:</span>
+            <input type="range" class="slider" id="probeInterval" min="1" max="30" value="5">
+            <span class="control-value" id="probeIntervalText">5s</span>
+          </div>
+          <button class="btn-stress" id="probeBtn" onclick="toggleProbes()">
+            Start Probes
+          </button>
+        </div>
+      </div>
+
+      <!-- Synthetic Traces Generator -->
+      <div class="stress-card">
+        <div class="stress-title">🔗 Synthetic Traces</div>
+        <div class="stress-description">
+          Generates OpenTelemetry traces with spans, parent-child relationships, and realistic timing patterns.
+        </div>
+        <div class="stress-controls-inner">
+          <div class="control-row">
+            <span class="control-label">Status:</span>
+            <span class="control-value">
+              <span class="status-indicator inactive" id="tracesStatus"></span>
+              <span id="tracesText">Inactive</span>
+            </span>
+          </div>
+          <div class="control-row">
+            <span class="control-label">Traces/sec:</span>
+            <span class="control-value" id="tracesCount">0</span>
+          </div>
+          <div class="slider-container">
+            <span class="control-label">Rate:</span>
+            <input type="range" class="slider" id="tracesRate" min="1" max="15" value="5">
+            <span class="control-value" id="tracesRateText">5/sec</span>
+          </div>
+          <button class="btn-stress" id="tracesBtn" onclick="toggleTraces()">
+            Start Traces
+          </button>
+        </div>
+      </div>
+
+      <!-- System Metrics Generator -->
+      <div class="stress-card">
+        <div class="stress-title">💻 System Metrics</div>
+        <div class="stress-description">
+          Generates CPU, memory, GPU usage, and queue-depth metrics with realistic system behavior patterns.
+        </div>
+        <div class="stress-controls-inner">
+          <div class="control-row">
+            <span class="control-label">Status:</span>
+            <span class="control-value">
+              <span class="status-indicator inactive" id="systemStatus"></span>
+              <span id="systemText">Inactive</span>
+            </span>
+          </div>
+          <div class="control-row">
+            <span class="control-label">Metrics/sec:</span>
+            <span class="control-value" id="systemCount">0</span>
+          </div>
+          <div class="slider-container">
+            <span class="control-label">Intensity:</span>
+            <input type="range" class="slider" id="systemIntensity" min="1" max="10" value="3">
+            <span class="control-value" id="systemIntensityText">Medium</span>
+          </div>
+          <button class="btn-stress" id="systemBtn" onclick="toggleSystemMetrics()">
+            Start System
+          </button>
+        </div>
+      </div>
+
+      <!-- Fixture Replay -->
+      <div class="stress-card">
+        <div class="stress-title">📁 Fixture Replay</div>
+        <div class="stress-description">
+          Replays pre-loaded static log files representing known error conditions for alerting validation.
+        </div>
+        <div class="stress-controls-inner">
+          <div class="control-row">
+            <span class="control-label">Status:</span>
+            <span class="control-value">
+              <span class="status-indicator inactive" id="fixtureStatus"></span>
+              <span id="fixtureText">Inactive</span>
+            </span>
+          </div>
+          <div class="control-row">
+            <span class="control-label">Fixtures:</span>
+            <span class="control-value" id="fixtureCount">3</span>
+          </div>
+          <div class="slider-container">
+            <span class="control-label">Speed:</span>
+            <input type="range" class="slider" id="fixtureSpeed" min="1" max="10" value="3">
+            <span class="control-value" id="fixtureSpeedText">3x</span>
+          </div>
+          <button class="btn-stress" id="fixtureBtn" onclick="toggleFixtureReplay()">
+            Start Replay
+          </button>
+        </div>
+      </div>
+
+      <!-- Backend Selection -->
+      <div class="stress-card">
+        <div class="stress-title">🔗 Multi-Backend Integration</div>
+        <div class="stress-description">
+          Select observability backends to receive telemetry data from stress testing scenarios.
+        </div>
+        <div class="stress-controls-inner">
+          <div class="control-row">
+            <label class="backend-checkbox">
+              <input type="checkbox" id="backendSignoz" checked>
+              <span class="checkmark"></span>
+              <span class="backend-label">
+                <span class="backend-icon">📊</span>
+                SigNoz
+                <span class="backend-status" id="signozStatus">●</span>
+              </span>
+            </label>
+          </div>
+          <div class="control-row">
+            <label class="backend-checkbox">
+              <input type="checkbox" id="backendPrometheus">
+              <span class="checkmark"></span>
+              <span class="backend-label">
+                <span class="backend-icon">⚡</span>
+                Prometheus
+                <span class="backend-status" id="prometheusStatus">●</span>
+              </span>
+            </label>
+          </div>
+          <div class="control-row">
+            <label class="backend-checkbox">
+              <input type="checkbox" id="backendDatadog">
+              <span class="checkmark"></span>
+              <span class="backend-label">
+                <span class="backend-icon">🐕</span>
+                Datadog
+                <span class="backend-status" id="datadogStatus">●</span>
+              </span>
+            </label>
+          </div>
+          <div class="control-row">
+            <button class="btn-stress" onclick="checkBackendHealth()">
+              🔍 Check Backend Health
+            </button>
+            <button class="btn-stress" onclick="validateMultiBackend()">
+              ✅ Validate Multi-Backend
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Custom Scenarios -->
+      <div class="stress-card">
+        <div class="stress-title">📋 Custom Scenarios</div>
+        <div class="stress-description">
+          Load predefined test patterns for repeatable stress testing scenarios.
+        </div>
+        <div class="stress-controls-inner">
+          <div class="control-row">
+            <span class="control-label">Scenario:</span>
+            <select id="scenarioSelect" style="padding: 4px 8px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); color: var(--fg);">
+              <option value="">Select a scenario...</option>
+              <option value="light-load">Light Load Test (~3 logs/sec)</option>
+              <option value="medium-load">Medium Load Test (~25 logs/sec)</option>
+              <option value="chaos-test">Chaos Engineering Test (~80 logs/sec)</option>
+              <option value="ramp-up">Ramp-Up Test (2→100+ logs/sec)</option>
+              <option value="burst-test">Burst Test (1→150+ logs/sec)</option>
+            </select>
+          </div>
+          <div class="control-row">
+            <span class="control-label">Duration:</span>
+            <span class="control-value" id="scenarioDuration">--</span>
+          </div>
+          <button class="btn-stress" id="loadScenarioBtn" onclick="loadSelectedScenario()">
+            Load Scenario
+          </button>
+          <button class="btn-stress" id="runScenarioBtn" onclick="runSelectedScenario()" disabled>
+            ▶️ Run Scenario
+          </button>
+        </div>
+      </div>
+
+      <!-- Master Controls -->
+      <div class="stress-card">
+        <div class="stress-title">🎯 Master Controls</div>
+        <div class="stress-description">
+          Control all stress testing generators simultaneously with coordinated patterns.
+        </div>
+        <div class="stress-controls-inner">
+          <div class="control-row">
+            <span class="control-label">Active Generators:</span>
+            <span class="control-value" id="activeGenerators">0</span>
+          </div>
+          <div class="control-row">
+            <span class="control-label">Total Logs/sec:</span>
+            <span class="control-value" id="totalLogsPerSec">0</span>
+          </div>
+          <button class="btn-stress" id="masterBtn" onclick="toggleAllGenerators()">
+            Start All Generators
+          </button>
+          <button class="btn-stress danger" onclick="stopAllGenerators()">
+            🛑 Stop All
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Alert Thresholds Configuration -->
+  <section class="section">
+    <h2 class="mb-lg">🚨 Alert Thresholds</h2>
+    <div class="thresholds-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--spacing-lg);">
+      
+      <!-- Throughput Threshold -->
+      <div class="threshold-card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--border-radius-lg); padding: var(--spacing-lg);">
+        <h3 style="margin: 0 0 var(--spacing-md) 0; font-size: var(--font-size-md); color: var(--primary);">📊 Throughput</h3>
+        <div class="threshold-controls">
+          <div class="control-row">
+            <span class="control-label">Warning:</span>
+            <input type="number" id="throughputWarning" value="50" min="1" max="1000" 
+                   style="width: 80px; padding: 4px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); color: var(--fg);">
+            <span class="control-unit">logs/sec</span>
+          </div>
+          <div class="control-row">
+            <span class="control-label">Critical:</span>
+            <input type="number" id="throughputCritical" value="100" min="1" max="1000" 
+                   style="width: 80px; padding: 4px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); color: var(--fg);">
+            <span class="control-unit">logs/sec</span>
+          </div>
+        </div>
+        <div class="threshold-status" id="throughputStatus" style="margin-top: var(--spacing-sm); padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold;">
+          <span class="status-indicator" id="throughputIndicator" style="background: var(--success);"></span>
+          <span>Normal</span>
+        </div>
+      </div>
+
+      <!-- Error Rate Threshold -->
+      <div class="threshold-card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--border-radius-lg); padding: var(--spacing-lg);">
+        <h3 style="margin: 0 0 var(--spacing-md) 0; font-size: var(--font-size-md); color: var(--primary);">⚠️ Error Rate</h3>
+        <div class="threshold-controls">
+          <div class="control-row">
+            <span class="control-label">Warning:</span>
+            <input type="number" id="errorRateWarning" value="10" min="0" max="100" 
+                   style="width: 80px; padding: 4px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); color: var(--fg);">
+            <span class="control-unit">%</span>
+          </div>
+          <div class="control-row">
+            <span class="control-label">Critical:</span>
+            <input type="number" id="errorRateCritical" value="25" min="0" max="100" 
+                   style="width: 80px; padding: 4px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); color: var(--fg);">
+            <span class="control-unit">%</span>
+          </div>
+        </div>
+        <div class="threshold-status" id="errorRateStatus" style="margin-top: var(--spacing-sm); padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold;">
+          <span class="status-indicator" id="errorRateIndicator" style="background: var(--success);"></span>
+          <span>Normal</span>
+        </div>
+      </div>
+
+      <!-- Response Time Threshold -->
+      <div class="threshold-card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--border-radius-lg); padding: var(--spacing-lg);">
+        <h3 style="margin: 0 0 var(--spacing-md) 0; font-size: var(--font-size-md); color: var(--primary);">⏱️ Response Time</h3>
+        <div class="threshold-controls">
+          <div class="control-row">
+            <span class="control-label">Warning:</span>
+            <input type="number" id="responseTimeWarning" value="500" min="1" max="10000" 
+                   style="width: 80px; padding: 4px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); color: var(--fg);">
+            <span class="control-unit">ms</span>
+          </div>
+          <div class="control-row">
+            <span class="control-label">Critical:</span>
+            <input type="number" id="responseTimeCritical" value="1000" min="1" max="10000" 
+                   style="width: 80px; padding: 4px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); color: var(--fg);">
+            <span class="control-unit">ms</span>
+          </div>
+        </div>
+        <div class="threshold-status" id="responseTimeStatus" style="margin-top: var(--spacing-sm); padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold;">
+          <span class="status-indicator" id="responseTimeIndicator" style="background: var(--success);"></span>
+          <span>Normal</span>
+        </div>
+      </div>
+
+      <!-- CPU Usage Threshold -->
+      <div class="threshold-card" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--border-radius-lg); padding: var(--spacing-lg);">
+        <h3 style="margin: 0 0 var(--spacing-md) 0; font-size: var(--font-size-md); color: var(--primary);">💻 CPU Usage</h3>
+        <div class="threshold-controls">
+          <div class="control-row">
+            <span class="control-label">Warning:</span>
+            <input type="number" id="cpuUsageWarning" value="70" min="0" max="100" 
+                   style="width: 80px; padding: 4px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); color: var(--fg);">
+            <span class="control-unit">%</span>
+          </div>
+          <div class="control-row">
+            <span class="control-label">Critical:</span>
+            <input type="number" id="cpuUsageCritical" value="90" min="0" max="100" 
+                   style="width: 80px; padding: 4px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); color: var(--fg);">
+            <span class="control-unit">%</span>
+          </div>
+        </div>
+        <div class="threshold-status" id="cpuUsageStatus" style="margin-top: var(--spacing-sm); padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold;">
+          <span class="status-indicator" id="cpuUsageIndicator" style="background: var(--success);"></span>
+          <span>Normal</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Real-time Metrics -->
+  <section class="section">
+    <h2 class="mb-lg">📊 Stress Test Metrics</h2>
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-value" id="totalLogsSent">0</div>
+        <div class="metric-label">Total Logs Sent</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" id="currentLogsPerSec">0.0</div>
+        <div class="metric-label">Current Logs/sec</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" id="activeServices">0</div>
+        <div class="metric-label">Active Services</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" id="errorRate">0%</div>
+        <div class="metric-label">Error Rate</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Historical Trend Charts -->
+  <section class="section">
+    <h2 class="mb-lg">📈 Historical Trends</h2>
+    <div class="charts-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: var(--spacing-lg);">
+      
+      <!-- Throughput Trend Chart -->
+      <div class="chart-container" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--border-radius-lg); padding: var(--spacing-lg);">
+        <h3 style="margin: 0 0 var(--spacing-md) 0; font-size: var(--font-size-md); color: var(--primary);">📊 Throughput Over Time</h3>
+        <canvas id="throughputChart" width="400" height="200"></canvas>
+        <div style="margin-top: var(--spacing-sm); display: flex; justify-content: space-between; font-size: var(--font-size-xs); color: var(--fg-muted);">
+          <span>Logs/sec</span>
+          <span id="throughputRange">Last 60 seconds</span>
+        </div>
+      </div>
+
+      <!-- Generator Activity Chart -->
+      <div class="chart-container" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--border-radius-lg); padding: var(--spacing-lg);">
+        <h3 style="margin: 0 0 var(--spacing-md) 0; font-size: var(--font-size-md); color: var(--primary);">🎛️ Generator Activity</h3>
+        <canvas id="activityChart" width="400" height="200"></canvas>
+        <div style="margin-top: var(--spacing-sm); display: flex; justify-content: space-between; font-size: var(--font-size-xs); color: var(--fg-muted);">
+          <span>Active Generators</span>
+          <span id="activityRange">Last 60 seconds</span>
+        </div>
+      </div>
+
+      <!-- Error Rate Trend Chart -->
+      <div class="chart-container" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--border-radius-lg); padding: var(--spacing-lg);">
+        <h3 style="margin: 0 0 var(--spacing-md) 0; font-size: var(--font-size-md); color: var(--primary);">⚠️ Error Rate Trend</h3>
+        <canvas id="errorRateChart" width="400" height="200"></canvas>
+        <div style="margin-top: var(--spacing-sm); display: flex; justify-content: space-between; font-size: var(--font-size-xs); color: var(--fg-muted);">
+          <span>Error %</span>
+          <span id="errorRange">Last 60 seconds</span>
+        </div>
+      </div>
+
+      <!-- System Metrics Trend Chart -->
+      <div class="chart-container" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--border-radius-lg); padding: var(--spacing-lg);">
+        <h3 style="margin: 0 0 var(--spacing-md) 0; font-size: var(--font-size-md); color: var(--primary);">💻 System Metrics Trend</h3>
+        <canvas id="systemMetricsChart" width="400" height="200"></canvas>
+        <div style="margin-top: var(--spacing-sm); display: flex; justify-content: space-between; font-size: var(--font-size-xs); color: var(--fg-muted);">
+          <span>CPU/Memory/GPU %</span>
+          <span id="systemRange">Last 60 seconds</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Error Rate Heatmap -->
+  <section class="section">
+    <h2 class="mb-lg">🔥 Error Rate Heatmap</h2>
+    <div class="heatmap-container" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--border-radius-lg); padding: var(--spacing-lg);">
+      <div class="heatmap-controls" style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-md); flex-wrap: wrap; gap: var(--spacing-sm);">
+        <div style="display: flex; align-items: center; gap: var(--spacing-sm);">
+          <span style="color: var(--fg-secondary); font-size: 12px;">Time Window:</span>
+          <select id="heatmapWindow" onchange="updateHeatmapSettings()" style="padding: 4px 8px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); color: var(--fg);">
+            <option value="60">Last 60 seconds</option>
+            <option value="300">Last 5 minutes</option>
+            <option value="600">Last 10 minutes</option>
+          </select>
+        </div>
+        <div style="display: flex; align-items: center; gap: var(--spacing-sm);">
+          <span style="color: var(--fg-secondary); font-size: 12px;">Granularity:</span>
+          <select id="heatmapGranularity" onchange="updateHeatmapSettings()" style="padding: 4px 8px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); color: var(--fg);">
+            <option value="5">5 seconds</option>
+            <option value="10" selected>10 seconds</option>
+            <option value="30">30 seconds</option>
+          </select>
+        </div>
+      </div>
+      <canvas id="errorHeatmapChart" width="800" height="300"></canvas>
+      <div class="heatmap-legend" style="display: flex; justify-content: space-around; margin-top: var(--spacing-md); padding-top: var(--spacing-md); border-top: 1px solid var(--border-color); font-size: 11px; color: var(--fg-secondary); flex-wrap: wrap; gap: var(--spacing-sm);">
+        <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 16px; height: 16px; background: #4caf50; border-radius: 4px; display: inline-block;"></span> 0% errors</span>
+        <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 16px; height: 16px; background: #ffc107; border-radius: 4px; display: inline-block;"></span> 1-5% errors</span>
+        <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 16px; height: 16px; background: #ff9800; border-radius: 4px; display: inline-block;"></span> 6-15% errors</span>
+        <span style="display: flex; align-items: center; gap: 4px;"><span style="width: 16px; height: 16px; background: #f44336; border-radius: 4px; display: inline-block;"></span> 16%+ errors</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Activity Log -->
+  <section class="section">
+    <h2 class="mb-lg">📋 Stress Test Activity</h2>
+    <div class="log-stream" id="stressActivityLog">
+      <div class="log-entry">
+        <span class="log-time">--:--:--</span>
+        <span class="log-level info">INFO</span>
+        <span class="log-message">Stress testing suite initialized - ready for load generation</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Setup Section -->
+  <section class="section" style="margin-top: 48px; padding: 24px; background: rgba(124,92,255,0.05); border-radius: 12px; border: 1px solid rgba(124,92,255,0.16);">
+    <h2 style="margin: 0 0 16px 0; font-size: 18px; font-weight: 600;">🚀 Quick Setup for Full Functionality</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+      <div>
+        <h3 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600; color: var(--accent);">PowerShell Users</h3>
+        <p style="margin: 0 0 12px 0; font-size: 13px; color: var(--muted);">Run the enhanced PowerShell script:</p>
+        <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 6px; font-family: 'Courier New', monospace; font-size: 12px;">
+          <div style="color: #4caf50; margin-bottom: 4px;"># From repository root:</div>
+          <div style="color: var(--fg);">pwsh scripts\start-dashboard-server.ps1</div>
+          <div style="color: #4caf50; margin: 8px 0 4px 0;"># Or with custom port:</div>
+          <div style="color: var(--fg);">pwsh scripts\start-dashboard-server.ps1 -Port 8080</div>
+        </div>
+      </div>
+      <div>
+        <h3 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600; color: var(--accent);">Batch/CMD Users</h3>
+        <p style="margin: 0 0 12px 0; font-size: 13px; color: var(--muted);">Run the batch script:</p>
+        <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 6px; font-family: 'Courier New', monospace; font-size: 12px;">
+          <div style="color: #4caf50; margin-bottom: 4px;"># From repository root:</div>
+          <div style="color: var(--fg);">scripts\start-dashboard-server.bat</div>
+        </div>
+      </div>
+      <div>
+        <h3 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600; color: var(--accent);">Manual Setup</h3>
+        <p style="margin: 0 0 12px 0; font-size: 13px; color: var(--muted);">Standard Python HTTP server:</p>
+        <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 6px; font-family: 'Courier New', monospace; font-size: 12px;">
+          <div style="color: #4caf50; margin-bottom: 4px;"># From repository root:</div>
+          <div style="color: var(--fg);">python -m http.server 3000</div>
+          <div style="color: #4caf50; margin: 8px 0 4px 0;"># Then visit:</div>
+          <div style="color: var(--fg);">http://localhost:3000/docs/dashboards/</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Footer -->
+<footer class="resonai-footer">
+  <div class="resonai-footer-content">
+    <div class="resonai-footer-logo">🐾 Resonai • MoneyCat Inc.</div>
+    <nav class="resonai-footer-links">
+      <a href="../../index.html">Home</a>
+      <a href="index.html">Dashboard Hub</a>
+      <a href="test-harness.html">Test Harness</a>
+      <a href="https://github.com/MoneyCat-inc/otel-ops-pack" target="_blank">GitHub</a>
+    </nav>
+    <p class="resonai-footer-text">
+      Local-First • Privacy-Focused • ECRR-Compliant • BossCat OEM Certified
+    </p>
+  </div>
+</footer>
+
+<script>
+  // Configuration
+  const config = {
+    otelEndpoint: 'http://localhost:5318',
+    corsMode: window.location.protocol === 'file:' ? 'no-cors' : 'cors',
+    timeout: 5000,
+    isFileProtocol: window.location.protocol === 'file:'
+  };
+  
+  // State tracking
+  const generators = {
+    multiSource: { active: false, interval: null, count: 0 },
+    metrics: { active: false, interval: null, count: 0 },
+    noise: { active: false, interval: null, burstSize: 0 },
+    probes: { active: false, interval: null, endpoints: 0 },
+    traces: { active: false, interval: null, count: 0 },
+    system: { active: false, interval: null, count: 0 },
+    fixture: { active: false, interval: null, count: 0 }
+  };
+  
+  let totalLogsSent = 0;
+  let startTime = Date.now();
+  
+  // Historical data tracking
+  const historicalData = {
+    throughput: [],
+    activity: [],
+    errorRate: [],
+    systemMetrics: {
+      cpu: [],
+      memory: [],
+      gpu: []
+    },
+    timestamps: []
+  };
+  
+  // Chart instances
+  let throughputChart, activityChart, errorRateChart, systemMetricsChart, errorHeatmapChart;
+  
+  // Heatmap settings
+  const heatmapSettings = {
+    window: 60, // seconds
+    granularity: 10, // seconds
+    data: [] // Array of {timestamp, errorRate, generator}
+  };
+  
+  // Alert thresholds
+  const alertThresholds = {
+    throughput: { warning: 50, critical: 100 },
+    errorRate: { warning: 10, critical: 25 },
+    responseTime: { warning: 500, critical: 1000 },
+    cpuUsage: { warning: 70, critical: 90 }
+  };
+  
+  // Scenario management
+  let currentScenario = null;
+  let scenarioData = null;
+  
+  // Multi-backend configuration
+  const backendConfig = {
+    signoz: {
+      name: 'SigNoz',
+      enabled: true,
+      endpoints: {
+        logs: 'http://localhost:8080/api/v1/logs',
+        metrics: 'http://localhost:8080/api/v1/metrics',
+        otlp: 'http://localhost:5318/v1'
+      },
+      status: 'unknown'
+    },
+    prometheus: {
+      name: 'Prometheus',
+      enabled: false,
+      endpoints: {
+        metrics: 'http://localhost:9090/api/v1/query',
+        targets: 'http://localhost:9090/api/v1/targets',
+        otlp: 'http://localhost:8889/metrics'
+      },
+      status: 'unknown'
+    },
+    datadog: {
+      name: 'Datadog',
+      enabled: false,
+      endpoints: {
+        logs: 'https://http-intake.logs.datadoghq.com/v1/input',
+        metrics: 'https://api.datadoghq.com/api/v1/series',
+        otlp: 'https://api.datadoghq.com/v1/input'
+      },
+      status: 'unknown'
+    }
+  };
+  
+  // Service templates for multi-source generation
+  const serviceTemplates = [
+    { name: 'web-api', patterns: ['HTTP request', 'Database query', 'Cache miss', 'Response sent'] },
+    { name: 'auth-service', patterns: ['Login attempt', 'Token validation', 'Permission check', 'Session created'] },
+    { name: 'payment-gateway', patterns: ['Payment processed', 'Transaction failed', 'Refund issued', 'Fraud check'] },
+    { name: 'notification-service', patterns: ['Email sent', 'SMS queued', 'Push notification', 'Template rendered'] },
+    { name: 'analytics-engine', patterns: ['Event tracked', 'Aggregation complete', 'Report generated', 'Data exported'] },
+    { name: 'user-service', patterns: ['Profile updated', 'Preference changed', 'Account created', 'Password reset'] }
+  ];
+  
+  // Trace templates with realistic span patterns
+  const traceTemplates = [
+    { 
+      name: 'web-request', 
+      spans: [
+        { name: 'http.request', duration: [50, 200], children: ['database.query', 'cache.lookup'] },
+        { name: 'database.query', duration: [10, 100], children: [] },
+        { name: 'cache.lookup', duration: [1, 10], children: [] }
+      ]
+    },
+    { 
+      name: 'user-auth', 
+      spans: [
+        { name: 'auth.validate', duration: [20, 80], children: ['token.verify', 'permission.check'] },
+        { name: 'token.verify', duration: [5, 25], children: [] },
+        { name: 'permission.check', duration: [2, 15], children: [] }
+      ]
+    },
+    { 
+      name: 'payment-flow', 
+      spans: [
+        { name: 'payment.process', duration: [100, 500], children: ['fraud.check', 'gateway.call'] },
+        { name: 'fraud.check', duration: [50, 150], children: [] },
+        { name: 'gateway.call', duration: [200, 800], children: [] }
+      ]
+    }
+  ];
+  
+  // System metrics patterns
+  const systemMetrics = [
+    { name: 'cpu.usage', type: 'gauge', range: [10, 90], unit: '%' },
+    { name: 'memory.usage', type: 'gauge', range: [20, 85], unit: '%' },
+    { name: 'gpu.usage', type: 'gauge', range: [5, 95], unit: '%' },
+    { name: 'disk.io', type: 'counter', range: [100, 10000], unit: 'bytes/sec' },
+    { name: 'network.io', type: 'counter', range: [500, 50000], unit: 'bytes/sec' },
+    { name: 'queue.depth', type: 'gauge', range: [0, 1000], unit: 'items' },
+    { name: 'active.connections', type: 'gauge', range: [10, 500], unit: 'connections' },
+    { name: 'response.time', type: 'histogram', range: [1, 5000], unit: 'ms' }
+  ];
+  
+  // Error patterns for noise generation
+  const errorPatterns = [
+    'Connection timeout',
+    'Database connection lost',
+    'Memory allocation failed',
+    'Disk space low',
+    'Network unreachable',
+    'Service unavailable',
+    'Authentication failed',
+    'Rate limit exceeded'
+  ];
+  
+  // Fixture data for replay
+  const fixtureData = [
+    { level: 'ERROR', message: 'Critical system failure detected', service: 'system-monitor' },
+    { level: 'WARN', message: 'High memory usage alert', service: 'resource-monitor' },
+    { level: 'ERROR', message: 'Database connection pool exhausted', service: 'database-service' },
+    { level: 'INFO', message: 'Scheduled maintenance completed', service: 'maintenance-service' },
+    { level: 'ERROR', message: 'External API rate limit exceeded', service: 'api-gateway' }
+  ];
+  
+  // Enhanced fetch with CORS handling
+  async function safeFetch(url, options = {}) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), config.timeout);
+    
+    try {
+      const response = await fetch(url, {
+        ...options,
+        mode: config.corsMode,
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+      return response;
+    } catch (error) {
+      clearTimeout(timeoutId);
+      if (error.name === 'AbortError') {
+        throw new Error('Request timeout');
+      }
+      throw error;
+    }
+  }
+  
+  // Log activity
+  function logActivity(message, level = 'info') {
+    const timestamp = new Date().toLocaleTimeString();
+    const activityLog = document.getElementById('stressActivityLog');
+    const entry = document.createElement('div');
+    entry.className = 'log-entry';
+    entry.innerHTML = `
+      <span class="log-time">${timestamp}</span>
+      <span class="log-level ${level}">${level.toUpperCase()}</span>
+      <span class="log-message">${message}</span>
+    `;
+    activityLog.insertBefore(entry, activityLog.firstChild);
+    while (activityLog.children.length > 50) activityLog.removeChild(activityLog.lastChild);
+  }
+  
+  // Send OTLP log (multi-backend)
+  async function sendOTLPLog(serviceName, message, level = 'INFO', attributes = {}) {
+    const severityMap = { INFO: 9, WARN: 13, ERROR: 17, DEBUG: 5 };
+    
+    // If running from file:// protocol, simulate log sending without actual network call
+    if (config.isFileProtocol) {
+      // Simulate successful log sending
+      totalLogsSent++;
+      updateMetrics();
+      return;
+    }
+    
+    // Send to all enabled backends
+    const enabledBackends = Object.keys(backendConfig).filter(k => backendConfig[k].enabled);
+    
+    for (const backend of enabledBackends) {
+      await sendToBackend(backend, 'log', `${serviceName}: ${message}`);
+    }
+    
+    // Update metrics after sending to all backends
+    totalLogsSent++;
+    updateMetrics();
+  }
+  
+  // Update heatmap settings
+  function updateHeatmapSettings() {
+    heatmapSettings.window = parseInt(document.getElementById('heatmapWindow').value);
+    heatmapSettings.granularity = parseInt(document.getElementById('heatmapGranularity').value);
+    updateErrorHeatmap();
+  }
+  
+  // Update error heatmap data
+  function updateHeatmapData() {
+    const now = Date.now();
+    const errorRateValue = parseFloat(document.getElementById('errorRate').textContent);
+    
+    // Add new data point for each active generator
+    Object.keys(generators).forEach(generatorName => {
+      if (generators[generatorName].active) {
+        heatmapSettings.data.push({
+          timestamp: now,
+          errorRate: errorRateValue + (Math.random() * 5 - 2.5), // Add some variation per generator
+          generator: generatorName
+        });
+      }
+    });
+    
+    // Remove old data outside time window
+    const cutoff = now - (heatmapSettings.window * 1000);
+    heatmapSettings.data = heatmapSettings.data.filter(d => d.timestamp >= cutoff);
+  }
+  
+  // Get color for error rate
+  function getHeatmapColor(errorRate) {
+    if (errorRate <= 0) return '#4caf50'; // Green
+    if (errorRate <= 5) return '#ffc107'; // Yellow
+    if (errorRate <= 15) return '#ff9800'; // Orange
+    return '#f44336'; // Red
+  }
+  
+  // Update error heatmap visualization
+  function updateErrorHeatmap() {
+    if (!errorHeatmapChart) return;
+    
+    const canvas = document.getElementById('errorHeatmapChart');
+    const ctx = canvas.getContext('2d');
+    const width = canvas.width;
+    const height = canvas.height;
+    
+    // Clear canvas
+    ctx.clearRect(0, 0, width, height);
+    
+    if (heatmapSettings.data.length === 0) {
+      ctx.fillStyle = '#888888';
+      ctx.font = '14px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('No data yet - start generators to populate heatmap', width / 2, height / 2);
+      return;
+    }
+    
+    // Get unique generators and time buckets
+    const generators = [...new Set(heatmapSettings.data.map(d => d.generator))];
+    const now = Date.now();
+    const oldest = now - (heatmapSettings.window * 1000);
+    const numBuckets = Math.floor(heatmapSettings.window / heatmapSettings.granularity);
+    
+    const cellWidth = width / numBuckets;
+    const cellHeight = (height - 40) / generators.length; // Reserve 40px for labels
+    
+    // Draw cells
+    for (let i = 0; i < numBuckets; i++) {
+      const bucketStart = oldest + (i * heatmapSettings.granularity * 1000);
+      const bucketEnd = bucketStart + (heatmapSettings.granularity * 1000);
+      
+      generators.forEach((generator, genIdx) => {
+        // Get data points in this bucket for this generator
+        const bucketData = heatmapSettings.data.filter(d =>
+          d.generator === generator &&
+          d.timestamp >= bucketStart &&
+          d.timestamp < bucketEnd
+        );
+        
+        // Calculate average error rate
+        const avgErrorRate = bucketData.length > 0
+          ? bucketData.reduce((sum, d) => sum + d.errorRate, 0) / bucketData.length
+          : 0;
+        
+        // Draw cell
+        const x = i * cellWidth;
+        const y = genIdx * cellHeight;
+        
+        ctx.fillStyle = getHeatmapColor(avgErrorRate);
+        ctx.fillRect(x, y, cellWidth - 1, cellHeight - 1);
+        
+        // Draw value if cell is large enough
+        if (cellWidth > 40 && cellHeight > 20 && bucketData.length > 0) {
+          ctx.fillStyle = '#ffffff';
+          ctx.font = '10px monospace';
+          ctx.textAlign = 'center';
+          ctx.fillText(avgErrorRate.toFixed(1) + '%', x + cellWidth / 2, y + cellHeight / 2 + 3);
+        }
+      });
+    }
+    
+    // Draw generator labels
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '12px monospace';
+    ctx.textAlign = 'left';
+    generators.forEach((generator, idx) => {
+      const y = idx * cellHeight + cellHeight / 2 + 4;
+      ctx.fillText(generator, 5, y);
+    });
+    
+    // Draw time axis
+    ctx.fillStyle = '#888888';
+    ctx.font = '10px monospace';
+    ctx.textAlign = 'center';
+    for (let i = 0; i <= 4; i++) {
+      const x = (width / 4) * i;
+      const secondsAgo = heatmapSettings.window - (heatmapSettings.window / 4 * i);
+      ctx.fillText(`-${secondsAgo}s`, x, height - 5);
+    }
+  }
+  
+  // Initialize charts
+  function initializeCharts() {
+    const chartOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          labels: {
+            color: '#ffffff',
+            font: { size: 11 }
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: { color: '#888888', font: { size: 10 } },
+          grid: { color: 'rgba(255,255,255,0.1)' }
+        },
+        y: {
+          ticks: { color: '#888888', font: { size: 10 } },
+          grid: { color: 'rgba(255,255,255,0.1)' }
+        }
+      }
+    };
+
+    // Throughput Chart
+    throughputChart = new Chart(document.getElementById('throughputChart'), {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [{
+          label: 'Logs/sec',
+          data: [],
+          borderColor: '#7c5cff',
+          backgroundColor: 'rgba(124,92,255,0.1)',
+          tension: 0.4,
+          fill: true
+        }]
+      },
+      options: { ...chartOptions }
+    });
+
+    // Activity Chart
+    activityChart = new Chart(document.getElementById('activityChart'), {
+      type: 'bar',
+      data: {
+        labels: [],
+        datasets: [{
+          label: 'Active Generators',
+          data: [],
+          backgroundColor: 'rgba(76,175,80,0.8)',
+          borderColor: '#4caf50',
+          borderWidth: 1
+        }]
+      },
+      options: { ...chartOptions }
+    });
+
+    // Error Rate Chart
+    errorRateChart = new Chart(document.getElementById('errorRateChart'), {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [{
+          label: 'Error Rate %',
+          data: [],
+          borderColor: '#f44336',
+          backgroundColor: 'rgba(244,67,54,0.1)',
+          tension: 0.4,
+          fill: true
+        }]
+      },
+      options: { ...chartOptions }
+    });
+
+    // System Metrics Chart
+    systemMetricsChart = new Chart(document.getElementById('systemMetricsChart'), {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [
+          {
+            label: 'CPU %',
+            data: [],
+            borderColor: '#ff9800',
+            backgroundColor: 'rgba(255,152,0,0.1)',
+            tension: 0.4
+          },
+          {
+            label: 'Memory %',
+            data: [],
+            borderColor: '#2196f3',
+            backgroundColor: 'rgba(33,150,243,0.1)',
+            tension: 0.4
+          },
+          {
+            label: 'GPU %',
+            data: [],
+            borderColor: '#9c27b0',
+            backgroundColor: 'rgba(156,39,176,0.1)',
+            tension: 0.4
+          }
+        ]
+      },
+      options: { ...chartOptions }
+    });
+  }
+
+  // Update historical data
+  function updateHistoricalData() {
+    const now = new Date();
+    const timestamp = now.toLocaleTimeString();
+    
+    // Calculate current metrics
+    const elapsed = (Date.now() - startTime) / 1000;
+    const logsPerSec = elapsed > 0 ? parseFloat((totalLogsSent / elapsed).toFixed(1)) : 0;
+    const activeServices = Object.values(generators).filter(g => g.active).length;
+    
+    // Calculate error rate (simplified - based on noise generator activity)
+    const errorRate = generators.noise.active ? 
+      Math.min(100, parseInt(document.getElementById('noiseIntensity').value) * 10) : 0;
+    
+    // Add to historical data
+    historicalData.throughput.push(logsPerSec);
+    historicalData.activity.push(activeServices);
+    historicalData.errorRate.push(errorRate);
+    historicalData.timestamps.push(timestamp);
+    
+    // System metrics (simulated for demo)
+    historicalData.systemMetrics.cpu.push(Math.floor(Math.random() * 30) + 40);
+    historicalData.systemMetrics.memory.push(Math.floor(Math.random() * 25) + 50);
+    historicalData.systemMetrics.gpu.push(Math.floor(Math.random() * 40) + 20);
+    
+    // Keep only last 60 data points (60 seconds)
+    const maxPoints = 60;
+    if (historicalData.throughput.length > maxPoints) {
+      historicalData.throughput.shift();
+      historicalData.activity.shift();
+      historicalData.errorRate.shift();
+      historicalData.systemMetrics.cpu.shift();
+      historicalData.systemMetrics.memory.shift();
+      historicalData.systemMetrics.gpu.shift();
+      historicalData.timestamps.shift();
+    }
+    
+    // Update charts
+    updateCharts();
+  }
+
+  // Update chart data
+  function updateCharts() {
+    const labels = historicalData.timestamps.slice(-20); // Show last 20 points
+    
+    // Throughput Chart
+    throughputChart.data.labels = labels;
+    throughputChart.data.datasets[0].data = historicalData.throughput.slice(-20);
+    throughputChart.update('none');
+    
+    // Activity Chart
+    activityChart.data.labels = labels;
+    activityChart.data.datasets[0].data = historicalData.activity.slice(-20);
+    activityChart.update('none');
+    
+    // Error Rate Chart
+    errorRateChart.data.labels = labels;
+    errorRateChart.data.datasets[0].data = historicalData.errorRate.slice(-20);
+    errorRateChart.update('none');
+    
+    // System Metrics Chart
+    systemMetricsChart.data.labels = labels;
+    systemMetricsChart.data.datasets[0].data = historicalData.systemMetrics.cpu.slice(-20);
+    systemMetricsChart.data.datasets[1].data = historicalData.systemMetrics.memory.slice(-20);
+    systemMetricsChart.data.datasets[2].data = historicalData.systemMetrics.gpu.slice(-20);
+    systemMetricsChart.update('none');
+  }
+
+  // Check alert thresholds
+  function checkAlertThresholds() {
+    // Get current values
+    const currentThroughput = parseFloat(document.getElementById('currentLogsPerSec').textContent);
+    const currentErrorRate = parseFloat(document.getElementById('errorRate').textContent);
+    const currentResponseTime = historicalData.systemMetrics.cpu.length > 0 ? 
+      historicalData.systemMetrics.cpu[historicalData.systemMetrics.cpu.length - 1] : 0;
+    const currentCpuUsage = historicalData.systemMetrics.cpu.length > 0 ? 
+      historicalData.systemMetrics.cpu[historicalData.systemMetrics.cpu.length - 1] : 0;
+    
+    // Check thresholds and update status
+    updateThresholdStatus('throughput', currentThroughput, alertThresholds.throughput);
+    updateThresholdStatus('errorRate', currentErrorRate, alertThresholds.errorRate);
+    updateThresholdStatus('responseTime', currentResponseTime, alertThresholds.responseTime);
+    updateThresholdStatus('cpuUsage', currentCpuUsage, alertThresholds.cpuUsage);
+  }
+  
+  // Update threshold status display
+  function updateThresholdStatus(metric, currentValue, thresholds) {
+    const statusElement = document.getElementById(`${metric}Status`);
+    const indicatorElement = document.getElementById(`${metric}Indicator`);
+    const statusText = statusElement.querySelector('span:last-child');
+    
+    let status, color, text;
+    
+    if (currentValue >= thresholds.critical) {
+      status = 'critical';
+      color = 'var(--error)';
+      text = 'Critical';
+    } else if (currentValue >= thresholds.warning) {
+      status = 'warning';
+      color = 'var(--warning)';
+      text = 'Warning';
+    } else {
+      status = 'normal';
+      color = 'var(--success)';
+      text = 'Normal';
+    }
+    
+    // Update indicator
+    indicatorElement.style.background = color;
+    statusText.textContent = text;
+    
+    // Update status background
+    statusElement.style.background = status === 'critical' ? 'rgba(244,67,54,0.2)' : 
+                                   status === 'warning' ? 'rgba(255,193,7,0.2)' : 
+                                   'rgba(76,175,80,0.2)';
+    statusElement.style.color = status === 'critical' ? 'var(--error)' : 
+                              status === 'warning' ? 'var(--warning)' : 
+                              'var(--success)';
+    
+    // Log alerts
+    if (status === 'critical') {
+      logActivity(`🚨 CRITICAL: ${metric} threshold exceeded (${currentValue})`, 'error');
+    } else if (status === 'warning') {
+      logActivity(`⚠️ WARNING: ${metric} threshold exceeded (${currentValue})`, 'warn');
+    }
+  }
+  
+  // Load thresholds from inputs
+  function loadThresholdsFromInputs() {
+    alertThresholds.throughput.warning = parseInt(document.getElementById('throughputWarning').value);
+    alertThresholds.throughput.critical = parseInt(document.getElementById('throughputCritical').value);
+    alertThresholds.errorRate.warning = parseInt(document.getElementById('errorRateWarning').value);
+    alertThresholds.errorRate.critical = parseInt(document.getElementById('errorRateCritical').value);
+    alertThresholds.responseTime.warning = parseInt(document.getElementById('responseTimeWarning').value);
+    alertThresholds.responseTime.critical = parseInt(document.getElementById('responseTimeCritical').value);
+    alertThresholds.cpuUsage.warning = parseInt(document.getElementById('cpuUsageWarning').value);
+    alertThresholds.cpuUsage.critical = parseInt(document.getElementById('cpuUsageCritical').value);
+  }
+  
+  // Load scenario from JSON file
+  async function loadScenarioData() {
+    try {
+      const response = await fetch('scenarios-example.json');
+      scenarioData = await response.json();
+      logActivity('📋 Scenario data loaded successfully', 'info');
+    } catch (error) {
+      logActivity(`❌ Failed to load scenario data: ${error.message}`, 'error');
+    }
+  }
+  
+  // Load selected scenario
+  function loadSelectedScenario() {
+    const scenarioSelect = document.getElementById('scenarioSelect');
+    const scenarioName = scenarioSelect.value;
+    
+    if (!scenarioName || !scenarioData) {
+      logActivity('❌ No scenario selected or data not loaded', 'error');
+      return;
+    }
+    
+    const scenario = scenarioData.scenarios[scenarioName];
+    if (!scenario) {
+      logActivity(`❌ Scenario '${scenarioName}' not found`, 'error');
+      return;
+    }
+    
+    currentScenario = scenario;
+    
+    // Update duration display
+    document.getElementById('scenarioDuration').textContent = `${scenario.duration}s`;
+    
+    // Enable run button
+    document.getElementById('runScenarioBtn').disabled = false;
+    
+    logActivity(`📋 Scenario loaded: ${scenario.name}`, 'info');
+    logActivity(`📝 Description: ${scenario.description}`, 'info');
+    logActivity(`⏱️ Duration: ${scenario.duration}s`, 'info');
+    logActivity(`📊 Expected: ${scenario.expectedThroughput}`, 'info');
+  }
+  
+  // Run selected scenario
+  function runSelectedScenario() {
+    if (!currentScenario) {
+      logActivity('❌ No scenario loaded', 'error');
+      return;
+    }
+    
+    logActivity(`🚀 Starting scenario: ${currentScenario.name}`, 'info');
+    
+    if (currentScenario.phases) {
+      runMultiPhaseScenario(currentScenario);
+    } else {
+      runSinglePhaseScenario(currentScenario);
+    }
+  }
+  
+  // Run single-phase scenario
+  function runSinglePhaseScenario(scenario) {
+    // Stop all generators first
+    stopAllGenerators();
+    
+    // Apply settings
+    applyGeneratorSettings(scenario.settings);
+    
+    // Log scenario start
+    logActivity(`▶️ Scenario running: ${scenario.name}`, 'info');
+    logActivity(`📊 Expected throughput: ${scenario.expectedThroughput}`, 'info');
+    
+    // Auto-stop after duration
+    setTimeout(() => {
+      stopAllGenerators();
+      logActivity(`✅ Scenario completed: ${scenario.name}`, 'info');
+    }, scenario.duration * 1000);
+  }
+  
+  // Run multi-phase scenario
+  function runMultiPhaseScenario(scenario) {
+    logActivity(`🔄 Starting multi-phase scenario: ${scenario.name}`, 'info');
+    
+    let currentPhase = 0;
+    let totalElapsed = 0;
+    
+    function runNextPhase() {
+      if (currentPhase >= scenario.phases.length) {
+        logActivity(`✅ Multi-phase scenario completed: ${scenario.name}`, 'info');
+        return;
+      }
+      
+      const phase = scenario.phases[currentPhase];
+      logActivity(`📋 Phase ${currentPhase + 1}: ${phase.name}`, 'info');
+      
+      // Stop all generators
+      stopAllGenerators();
+      
+      // Apply phase settings
+      applyGeneratorSettings(phase.settings);
+      
+      // Schedule next phase
+      setTimeout(() => {
+        currentPhase++;
+        runNextPhase();
+      }, phase.duration * 1000);
+    }
+    
+    runNextPhase();
+  }
+  
+  // Apply generator settings from scenario
+  function applyGeneratorSettings(settings) {
+    // Multi-Source
+    if (settings.multiSource.enabled) {
+      document.getElementById('multiSourceFreq').value = settings.multiSource.frequency;
+      if (!generators.multiSource.active) toggleMultiSource();
+    }
+    
+    // Metrics
+    if (settings.metrics.enabled) {
+      document.getElementById('metricsVolume').value = settings.metrics.volume;
+      if (!generators.metrics.active) toggleMetrics();
+    }
+    
+    // Noise
+    if (settings.noise.enabled) {
+      document.getElementById('noiseIntensity').value = settings.noise.intensity;
+      if (!generators.noise.active) toggleNoise();
+    }
+    
+    // Probes
+    if (settings.probes.enabled) {
+      document.getElementById('probeInterval').value = settings.probes.interval;
+      if (!generators.probes.active) toggleProbes();
+    }
+    
+    // Traces
+    if (settings.traces.enabled) {
+      document.getElementById('tracesRate').value = settings.traces.rate;
+      if (!generators.traces.active) toggleTraces();
+    }
+    
+    // System
+    if (settings.system.enabled) {
+      document.getElementById('systemIntensity').value = settings.system.intensity;
+      if (!generators.system.active) toggleSystemMetrics();
+    }
+    
+    // Fixture
+    if (settings.fixture.enabled) {
+      document.getElementById('fixtureSpeed').value = settings.fixture.speed;
+      if (!generators.fixture.active) toggleFixtureReplay();
+    }
+    
+    // Update slider displays
+    updateSliderTexts();
+  }
+
+  // Update metrics display
+  function updateMetrics() {
+    const elapsed = (Date.now() - startTime) / 1000;
+    const logsPerSec = elapsed > 0 ? (totalLogsSent / elapsed).toFixed(1) : '0.0';
+    
+    document.getElementById('totalLogsSent').textContent = totalLogsSent;
+    document.getElementById('currentLogsPerSec').textContent = logsPerSec;
+    
+    const activeServices = Object.values(generators).filter(g => g.active).length;
+    document.getElementById('activeServices').textContent = activeServices;
+    document.getElementById('activeGenerators').textContent = activeServices;
+    
+    // Calculate total logs per second from all generators
+    let totalLPS = 0;
+    if (generators.multiSource.active) totalLPS += parseInt(document.getElementById('multiSourceFreq').value);
+    if (generators.metrics.active) totalLPS += parseInt(document.getElementById('metricsVolume').value);
+    if (generators.noise.active) totalLPS += parseInt(document.getElementById('noiseIntensity').value) * 2;
+    if (generators.probes.active) totalLPS += 1;
+    if (generators.traces.active) totalLPS += parseInt(document.getElementById('tracesRate').value) * 2; // Traces generate multiple spans
+    if (generators.system.active) totalLPS += parseInt(document.getElementById('systemIntensity').value) * systemMetrics.length;
+    if (generators.fixture.active) totalLPS += parseInt(document.getElementById('fixtureSpeed').value);
+    
+    document.getElementById('totalLogsPerSec').textContent = totalLPS;
+    
+    // Update historical data
+    updateHistoricalData();
+    
+    // Check alert thresholds
+    checkAlertThresholds();
+    
+    // Update heatmap data
+    updateHeatmapData();
+  }
+  
+  // Multi-source log generator
+  function toggleMultiSource() {
+    const btn = document.getElementById('multiSourceBtn');
+    const status = document.getElementById('multiSourceStatus');
+    const text = document.getElementById('multiSourceText');
+    
+    if (generators.multiSource.active) {
+      clearInterval(generators.multiSource.interval);
+      generators.multiSource.active = false;
+      btn.textContent = 'Start Multi-Source';
+      btn.classList.remove('active');
+      status.className = 'status-indicator inactive';
+      text.textContent = 'Inactive';
+      logActivity('Multi-source log generator stopped', 'info');
+    } else {
+      const desiredRate = parseInt(document.getElementById('multiSourceFreq').value);
+      const numServices = serviceTemplates.length;
+      const perServiceRate = desiredRate / numServices;
+      const intervalMs = Math.max(100, 1000 / perServiceRate); // Minimum 100ms between ticks
+      
+      generators.multiSource.interval = setInterval(() => {
+        // Emit one log per service on each tick
+        serviceTemplates.forEach((service, index) => {
+          const pattern = service.patterns[Math.floor(Math.random() * service.patterns.length)];
+          const level = Math.random() > 0.1 ? 'INFO' : (Math.random() > 0.5 ? 'WARN' : 'ERROR');
+          
+          sendOTLPLog(service.name, pattern, level, {
+            'generator': 'multi-source',
+            'desired.rate': desiredRate.toString(),
+            'service.index': index.toString()
+          });
+          
+          generators.multiSource.count++;
+        });
+        
+        document.getElementById('multiSourceCount').textContent = generators.multiSource.count;
+      }, intervalMs);
+      
+      generators.multiSource.active = true;
+      btn.textContent = 'Stop Multi-Source';
+      btn.classList.add('active');
+      status.className = 'status-indicator active';
+      text.textContent = 'Active';
+      logActivity(`Multi-source log generator started (${desiredRate}/sec across ${numServices} services, ${intervalMs}ms interval)`, 'info');
+    }
+  }
+  
+  // Synthetic metrics generator
+  function toggleMetrics() {
+    const btn = document.getElementById('metricsBtn');
+    const status = document.getElementById('metricsStatus');
+    const text = document.getElementById('metricsText');
+    
+    if (generators.metrics.active) {
+      clearInterval(generators.metrics.interval);
+      generators.metrics.active = false;
+      btn.textContent = 'Start Metrics';
+      btn.classList.remove('active');
+      status.className = 'status-indicator inactive';
+      text.textContent = 'Inactive';
+      logActivity('Synthetic metrics generator stopped', 'info');
+    } else {
+      const desiredRate = parseInt(document.getElementById('metricsVolume').value);
+      const numMetricTypes = 3; // counter, gauge, histogram
+      const perMetricRate = desiredRate / numMetricTypes;
+      const intervalMs = Math.max(100, 1000 / perMetricRate); // Minimum 100ms between ticks
+      
+      generators.metrics.interval = setInterval(() => {
+        // Generate counter metrics
+        const counterValue = Math.floor(Math.random() * 1000);
+        sendOTLPLog('metrics-generator', `Counter metric: requests_total=${counterValue}`, 'INFO', {
+          'metric.type': 'counter',
+          'metric.name': 'requests_total',
+          'metric.value': counterValue.toString(),
+          'desired.rate': desiredRate.toString()
+        });
+        
+        // Generate gauge metrics
+        const gaugeValue = (Math.random() * 100).toFixed(2);
+        sendOTLPLog('metrics-generator', `Gauge metric: memory_usage=${gaugeValue}%`, 'INFO', {
+          'metric.type': 'gauge',
+          'metric.name': 'memory_usage',
+          'metric.value': gaugeValue,
+          'desired.rate': desiredRate.toString()
+        });
+        
+        // Generate histogram metrics
+        const histogramValue = Math.floor(Math.random() * 500);
+        sendOTLPLog('metrics-generator', `Histogram metric: response_time=${histogramValue}ms`, 'INFO', {
+          'metric.type': 'histogram',
+          'metric.name': 'response_time',
+          'metric.value': histogramValue.toString(),
+          'desired.rate': desiredRate.toString()
+        });
+        
+        generators.metrics.count += 3;
+        document.getElementById('metricsCount').textContent = generators.metrics.count;
+      }, intervalMs);
+      
+      generators.metrics.active = true;
+      btn.textContent = 'Stop Metrics';
+      btn.classList.add('active');
+      status.className = 'status-indicator active';
+      text.textContent = 'Active';
+      logActivity(`Synthetic metrics generator started (${desiredRate}/sec across ${numMetricTypes} types, ${intervalMs}ms interval)`, 'info');
+    }
+  }
+  
+  // Randomized noise generator
+  function toggleNoise() {
+    const btn = document.getElementById('noiseBtn');
+    const status = document.getElementById('noiseStatus');
+    const text = document.getElementById('noiseText');
+    
+    if (generators.noise.active) {
+      clearInterval(generators.noise.interval);
+      generators.noise.active = false;
+      btn.textContent = 'Start Noise';
+      btn.classList.remove('active');
+      status.className = 'status-indicator inactive';
+      text.textContent = 'Inactive';
+      logActivity('Randomized noise generator stopped', 'info');
+    } else {
+      const intensity = parseInt(document.getElementById('noiseIntensity').value);
+      // More predictable burst pattern: burst every 3-8 seconds based on intensity
+      const baseInterval = 5000; // 5 seconds base
+      const intensityVariation = (6 - intensity) * 1000; // Higher intensity = shorter intervals
+      const intervalMs = baseInterval + intensityVariation;
+      
+      generators.noise.interval = setInterval(() => {
+        // Burst probability increases with intensity (20% to 80%)
+        const burstProbability = 0.2 + (intensity - 1) * 0.15;
+        
+        if (Math.random() < burstProbability) {
+          // Burst size: 1-5 logs for low intensity, 5-20 for high intensity
+          const minBurst = 1;
+          const maxBurst = intensity * 4;
+          const burstSize = Math.floor(Math.random() * (maxBurst - minBurst + 1)) + minBurst;
+          generators.noise.burstSize += burstSize;
+          
+          for (let i = 0; i < burstSize; i++) {
+            const error = errorPatterns[Math.floor(Math.random() * errorPatterns.length)];
+            const service = serviceTemplates[Math.floor(Math.random() * serviceTemplates.length)].name;
+            const level = Math.random() > 0.3 ? 'ERROR' : 'WARN';
+            
+            sendOTLPLog(service, error, level, {
+              'generator': 'noise',
+              'burst.id': Date.now().toString(),
+              'burst.size': burstSize.toString(),
+              'intensity': intensity.toString()
+            });
+          }
+          
+          document.getElementById('noiseBurstSize').textContent = generators.noise.burstSize;
+          logActivity(`Noise burst: ${burstSize} logs generated (intensity ${intensity})`, 'warn');
+        }
+      }, intervalMs);
+      
+      generators.noise.active = true;
+      btn.textContent = 'Stop Noise';
+      btn.classList.add('active');
+      status.className = 'status-indicator active';
+      text.textContent = 'Active';
+      logActivity(`Randomized noise generator started (intensity: ${intensity}, interval: ${intervalMs}ms)`, 'info');
+    }
+  }
+  
+  // Health check probes
+  function toggleProbes() {
+    const btn = document.getElementById('probeBtn');
+    const status = document.getElementById('probeStatus');
+    const text = document.getElementById('probeText');
+    
+    if (generators.probes.active) {
+      clearInterval(generators.probes.interval);
+      generators.probes.active = false;
+      btn.textContent = 'Start Probes';
+      btn.classList.remove('active');
+      status.className = 'status-indicator inactive';
+      text.textContent = 'Inactive';
+      logActivity('Health check probes stopped', 'info');
+    } else {
+      const interval = parseInt(document.getElementById('probeInterval').value);
+      const endpoints = ['/api/health', '/api/auth/session', '/api/metrics', '/api/status'];
+      
+      generators.probes.interval = setInterval(async () => {
+        const endpoint = endpoints[Math.floor(Math.random() * endpoints.length)];
+        const startTime = Date.now();
+        
+        try {
+          // Simulate API call
+          await new Promise(resolve => setTimeout(resolve, Math.random() * 100 + 50));
+          const responseTime = Date.now() - startTime;
+          const status = responseTime > 200 ? 'WARN' : 'INFO';
+          
+          sendOTLPLog('health-probe', `Probe: ${endpoint} - ${responseTime}ms`, status, {
+            'probe.endpoint': endpoint,
+            'probe.response_time': responseTime.toString(),
+            'probe.status': status
+          });
+          
+          generators.probes.endpoints++;
+          document.getElementById('probeEndpoints').textContent = generators.probes.endpoints;
+        } catch (error) {
+          sendOTLPLog('health-probe', `Probe failed: ${endpoint}`, 'ERROR', {
+            'probe.endpoint': endpoint,
+            'probe.error': error.message
+          });
+        }
+      }, interval * 1000);
+      
+      generators.probes.active = true;
+      btn.textContent = 'Stop Probes';
+      btn.classList.add('active');
+      status.className = 'status-indicator active';
+      text.textContent = 'Active';
+      logActivity(`Health check probes started (${interval}s interval)`, 'info');
+    }
+  }
+  
+  // Synthetic traces generator
+  function toggleTraces() {
+    const btn = document.getElementById('tracesBtn');
+    const status = document.getElementById('tracesStatus');
+    const text = document.getElementById('tracesText');
+    
+    if (generators.traces.active) {
+      clearInterval(generators.traces.interval);
+      generators.traces.active = false;
+      btn.textContent = 'Start Traces';
+      btn.classList.remove('active');
+      status.className = 'status-indicator inactive';
+      text.textContent = 'Inactive';
+      logActivity('Synthetic traces generator stopped', 'info');
+    } else {
+      const desiredRate = parseInt(document.getElementById('tracesRate').value);
+      const intervalMs = Math.max(200, 1000 / desiredRate); // Minimum 200ms between traces
+      
+      generators.traces.interval = setInterval(() => {
+        const template = traceTemplates[Math.floor(Math.random() * traceTemplates.length)];
+        const traceId = generateTraceId();
+        const startTime = Date.now();
+        
+        // Generate parent span
+        const parentSpan = template.spans[0];
+        const parentDuration = Math.floor(Math.random() * (parentSpan.duration[1] - parentSpan.duration[0])) + parentSpan.duration[0];
+        
+        sendOTLPTrace(template.name, traceId, parentSpan.name, null, startTime, parentDuration, {
+          'trace.template': template.name,
+          'span.type': 'parent',
+          'generator': 'synthetic-traces'
+        });
+        
+        // Generate child spans
+        parentSpan.children.forEach((childName, index) => {
+          const childSpan = template.spans.find(s => s.name === childName);
+          if (childSpan) {
+            const childDuration = Math.floor(Math.random() * (childSpan.duration[1] - childSpan.duration[0])) + childSpan.duration[0];
+            const childStartTime = startTime + Math.floor(Math.random() * (parentDuration - childDuration));
+            
+            sendOTLPTrace(template.name, traceId, childSpan.name, parentSpan.name, childStartTime, childDuration, {
+              'trace.template': template.name,
+              'span.type': 'child',
+              'parent.span': parentSpan.name,
+              'generator': 'synthetic-traces'
+            });
+          }
+        });
+        
+        generators.traces.count++;
+        document.getElementById('tracesCount').textContent = generators.traces.count;
+      }, intervalMs);
+      
+      generators.traces.active = true;
+      btn.textContent = 'Stop Traces';
+      btn.classList.add('active');
+      status.className = 'status-indicator active';
+      text.textContent = 'Active';
+      logActivity(`Synthetic traces generator started (${desiredRate}/sec, ${intervalMs}ms interval)`, 'info');
+    }
+  }
+  
+  // System metrics generator
+  function toggleSystemMetrics() {
+    const btn = document.getElementById('systemBtn');
+    const status = document.getElementById('systemStatus');
+    const text = document.getElementById('systemText');
+    
+    if (generators.system.active) {
+      clearInterval(generators.system.interval);
+      generators.system.active = false;
+      btn.textContent = 'Start System';
+      btn.classList.remove('active');
+      status.className = 'status-indicator inactive';
+      text.textContent = 'Inactive';
+      logActivity('System metrics generator stopped', 'info');
+    } else {
+      const intensity = parseInt(document.getElementById('systemIntensity').value);
+      const numMetrics = systemMetrics.length;
+      const perMetricRate = intensity / numMetrics;
+      const intervalMs = Math.max(100, 1000 / perMetricRate);
+      
+      generators.system.interval = setInterval(() => {
+        systemMetrics.forEach((metric, index) => {
+          let value;
+          if (metric.type === 'gauge') {
+            // Gauge values fluctuate realistically
+            const baseValue = (metric.range[0] + metric.range[1]) / 2;
+            const variation = (metric.range[1] - metric.range[0]) * 0.3;
+            value = Math.max(metric.range[0], Math.min(metric.range[1], 
+              baseValue + (Math.random() - 0.5) * variation));
+          } else if (metric.type === 'counter') {
+            // Counter values increment
+            value = Math.floor(Math.random() * (metric.range[1] - metric.range[0])) + metric.range[0];
+          } else if (metric.type === 'histogram') {
+            // Histogram values with realistic distribution
+            const percentile = Math.random();
+            if (percentile < 0.5) {
+              value = metric.range[0] + Math.random() * (metric.range[1] - metric.range[0]) * 0.3;
+            } else if (percentile < 0.9) {
+              value = metric.range[0] + (metric.range[1] - metric.range[0]) * 0.3 + 
+                     Math.random() * (metric.range[1] - metric.range[0]) * 0.4;
+            } else {
+              value = metric.range[0] + (metric.range[1] - metric.range[0]) * 0.7 + 
+                     Math.random() * (metric.range[1] - metric.range[0]) * 0.3;
+            }
+            value = Math.floor(value);
+          }
+          
+          sendOTLPLog('system-metrics', `${metric.name}: ${value}${metric.unit}`, 'INFO', {
+            'metric.type': metric.type,
+            'metric.name': metric.name,
+            'metric.value': value.toString(),
+            'metric.unit': metric.unit,
+            'generator': 'system-metrics',
+            'intensity': intensity.toString()
+          });
+          
+          generators.system.count++;
+        });
+        
+        document.getElementById('systemCount').textContent = generators.system.count;
+      }, intervalMs);
+      
+      generators.system.active = true;
+      btn.textContent = 'Stop System';
+      btn.classList.add('active');
+      status.className = 'status-indicator active';
+      text.textContent = 'Active';
+      logActivity(`System metrics generator started (intensity: ${intensity}, ${intervalMs}ms interval)`, 'info');
+    }
+  }
+  
+  // Generate random trace ID
+  function generateTraceId() {
+    return Array.from({length: 16}, () => Math.floor(Math.random() * 16).toString(16)).join('');
+  }
+  
+  // Send OTLP trace (simplified - would need proper OTLP trace format in production)
+  async function sendOTLPTrace(serviceName, traceId, spanName, parentSpan, startTime, duration, attributes) {
+    const endTime = startTime + duration;
+    
+    // For now, send as structured log with trace information
+    // In production, this would use proper OTLP trace protocol
+    const traceMessage = `Trace[${traceId}]: ${spanName}${parentSpan ? ` (child of ${parentSpan})` : ''} - ${duration}ms`;
+    
+    sendOTLPLog(serviceName, traceMessage, 'INFO', {
+      'trace.id': traceId,
+      'span.name': spanName,
+      'span.start_time': startTime.toString(),
+      'span.duration': duration.toString(),
+      'span.end_time': endTime.toString(),
+      'parent.span': parentSpan || '',
+      ...attributes
+    });
+  }
+
+  // Fixture replay
+  function toggleFixtureReplay() {
+    const btn = document.getElementById('fixtureBtn');
+    const status = document.getElementById('fixtureStatus');
+    const text = document.getElementById('fixtureText');
+    
+    if (generators.fixture.active) {
+      clearInterval(generators.fixture.interval);
+      generators.fixture.active = false;
+      btn.textContent = 'Start Replay';
+      btn.classList.remove('active');
+      status.className = 'status-indicator inactive';
+      text.textContent = 'Inactive';
+      logActivity('Fixture replay stopped', 'info');
+    } else {
+      const speed = parseInt(document.getElementById('fixtureSpeed').value);
+      const intervalMs = Math.max(500, 1000 / speed); // Minimum 500ms between fixtures
+      let fixtureIndex = 0;
+      
+      generators.fixture.interval = setInterval(() => {
+        const fixture = fixtureData[fixtureIndex % fixtureData.length];
+        sendOTLPLog(fixture.service, fixture.message, fixture.level, {
+          'generator': 'fixture-replay',
+          'fixture.id': fixtureIndex.toString(),
+          'replay.speed': speed.toString(),
+          'fixture.total': fixtureData.length.toString()
+        });
+        
+        fixtureIndex++;
+        generators.fixture.count++;
+        document.getElementById('fixtureCount').textContent = generators.fixture.count;
+      }, intervalMs);
+      
+      generators.fixture.active = true;
+      btn.textContent = 'Stop Replay';
+      btn.classList.add('active');
+      status.className = 'status-indicator active';
+      text.textContent = 'Active';
+      logActivity(`Fixture replay started (${speed}x speed, ${intervalMs}ms interval)`, 'info');
+    }
+  }
+  
+  // Master controls
+  function toggleAllGenerators() {
+    const btn = document.getElementById('masterBtn');
+    const anyActive = Object.values(generators).some(g => g.active);
+    
+    if (anyActive) {
+      stopAllGenerators();
+    } else {
+      // Start all generators with default settings
+      toggleMultiSource();
+      toggleMetrics();
+      toggleNoise();
+      toggleProbes();
+      toggleTraces();
+      toggleSystemMetrics();
+      toggleFixtureReplay();
+      btn.textContent = 'Stop All Generators';
+      btn.classList.add('active');
+      logActivity('All stress test generators started', 'info');
+    }
+  }
+  
+  function stopAllGenerators() {
+    if (generators.multiSource.active) toggleMultiSource();
+    if (generators.metrics.active) toggleMetrics();
+    if (generators.noise.active) toggleNoise();
+    if (generators.probes.active) toggleProbes();
+    if (generators.traces.active) toggleTraces();
+    if (generators.system.active) toggleSystemMetrics();
+    if (generators.fixture.active) toggleFixtureReplay();
+    
+    document.getElementById('masterBtn').textContent = 'Start All Generators';
+    document.getElementById('masterBtn').classList.remove('active');
+    logActivity('All stress test generators stopped', 'info');
+  }
+  
+  // Update slider text displays
+  function updateSliderTexts() {
+    document.getElementById('multiSourceFreqText').textContent = document.getElementById('multiSourceFreq').value + '/sec';
+    document.getElementById('metricsVolumeText').textContent = document.getElementById('metricsVolume').value + '/sec';
+    
+    const intensity = document.getElementById('noiseIntensity').value;
+    const intensityText = ['Low', 'Medium', 'High', 'Very High', 'Extreme'][intensity - 1];
+    document.getElementById('noiseIntensityText').textContent = intensityText;
+    
+    document.getElementById('probeIntervalText').textContent = document.getElementById('probeInterval').value + 's';
+    document.getElementById('tracesRateText').textContent = document.getElementById('tracesRate').value + '/sec';
+    
+    const systemIntensity = document.getElementById('systemIntensity').value;
+    const systemIntensityText = ['Very Low', 'Low', 'Medium', 'High', 'Very High', 'Extreme', 'Intense', 'Max', 'Ultra', 'Peak'][systemIntensity - 1];
+    document.getElementById('systemIntensityText').textContent = systemIntensityText;
+    
+    document.getElementById('fixtureSpeedText').textContent = document.getElementById('fixtureSpeed').value + 'x';
+  }
+  
+  // Initialize
+  window.onload = () => {
+    updateSliderTexts();
+    updateMetrics();
+    
+    // Initialize charts
+    initializeCharts();
+    
+    // Load scenario data
+    loadScenarioData();
+    
+    // Show CORS warning if running from file:// protocol
+    if (config.isFileProtocol) {
+      document.getElementById('corsWarning').style.display = 'block';
+      logActivity('⚠️ Running from file:// protocol - OTLP sending disabled due to CORS restrictions', 'warn');
+    }
+    
+    // Add event listeners for sliders
+    document.getElementById('multiSourceFreq').addEventListener('input', updateSliderTexts);
+    document.getElementById('metricsVolume').addEventListener('input', updateSliderTexts);
+    document.getElementById('noiseIntensity').addEventListener('input', updateSliderTexts);
+    document.getElementById('probeInterval').addEventListener('input', updateSliderTexts);
+    document.getElementById('tracesRate').addEventListener('input', updateSliderTexts);
+    document.getElementById('systemIntensity').addEventListener('input', updateSliderTexts);
+    document.getElementById('fixtureSpeed').addEventListener('input', updateSliderTexts);
+    
+    // Add event listeners for threshold inputs
+    document.getElementById('throughputWarning').addEventListener('input', loadThresholdsFromInputs);
+    document.getElementById('throughputCritical').addEventListener('input', loadThresholdsFromInputs);
+    document.getElementById('errorRateWarning').addEventListener('input', loadThresholdsFromInputs);
+    document.getElementById('errorRateCritical').addEventListener('input', loadThresholdsFromInputs);
+    document.getElementById('responseTimeWarning').addEventListener('input', loadThresholdsFromInputs);
+    document.getElementById('responseTimeCritical').addEventListener('input', loadThresholdsFromInputs);
+    
+    // Backend checkbox event listeners
+    document.getElementById('backendSignoz').addEventListener('change', updateBackendSelection);
+    document.getElementById('backendPrometheus').addEventListener('change', updateBackendSelection);
+    document.getElementById('backendDatadog').addEventListener('change', updateBackendSelection);
+    document.getElementById('cpuUsageWarning').addEventListener('input', loadThresholdsFromInputs);
+    document.getElementById('cpuUsageCritical').addEventListener('input', loadThresholdsFromInputs);
+    
+    // Initialize heatmap canvas
+    errorHeatmapChart = document.getElementById('errorHeatmapChart');
+    
+    // Update metrics every second
+    setInterval(updateMetrics, 1000);
+    
+    // Update heatmap every 2 seconds
+    setInterval(updateErrorHeatmap, 2000);
+    
+    logActivity('Stress testing suite ready for load generation', 'info');
+  };
+  
+  // Multi-backend functions
+  function updateBackendSelection() {
+    backendConfig.signoz.enabled = document.getElementById('backendSignoz').checked;
+    backendConfig.prometheus.enabled = document.getElementById('backendPrometheus').checked;
+    backendConfig.datadog.enabled = document.getElementById('backendDatadog').checked;
+    
+    logActivity(`Backend selection updated: ${Object.keys(backendConfig).filter(k => backendConfig[k].enabled).join(', ')}`, 'info');
+  }
+  
+  async function checkBackendHealth() {
+    logActivity('🔍 Checking backend health...', 'info');
+    
+    // Check SigNoz
+    if (backendConfig.signoz.enabled) {
+      try {
+        const response = await safeFetch(backendConfig.signoz.endpoints.logs, { method: 'GET' });
+        if (response.ok || response.status === 400) { // 400 is expected for GET on OTLP endpoint
+          updateBackendStatus('signoz', 'healthy');
+          logActivity('✅ SigNoz is healthy', 'success');
+        } else {
+          updateBackendStatus('signoz', 'warning');
+          logActivity(`⚠️ SigNoz responded with status ${response.status}`, 'warning');
+        }
+      } catch (error) {
+        updateBackendStatus('signoz', 'unhealthy');
+        logActivity(`❌ SigNoz health check failed: ${error.message}`, 'error');
+      }
+    }
+    
+    // Check Prometheus
+    if (backendConfig.prometheus.enabled) {
+      try {
+        const response = await safeFetch(backendConfig.prometheus.endpoints.targets, { method: 'GET' });
+        if (response.ok) {
+          updateBackendStatus('prometheus', 'healthy');
+          logActivity('✅ Prometheus is healthy', 'success');
+        } else {
+          updateBackendStatus('prometheus', 'warning');
+          logActivity(`⚠️ Prometheus responded with status ${response.status}`, 'warning');
+        }
+      } catch (error) {
+        updateBackendStatus('prometheus', 'unhealthy');
+        logActivity(`❌ Prometheus health check failed: ${error.message}`, 'error');
+      }
+    }
+    
+    // Check Datadog
+    if (backendConfig.datadog.enabled) {
+      try {
+        // Datadog API requires authentication, so we'll simulate a check
+        const response = await safeFetch('https://api.datadoghq.com/api/v1/validate', { method: 'GET' });
+        if (response.ok || response.status === 403) { // 403 is expected without API key
+          updateBackendStatus('datadog', 'healthy');
+          logActivity('✅ Datadog endpoint is reachable', 'success');
+        } else {
+          updateBackendStatus('datadog', 'warning');
+          logActivity(`⚠️ Datadog responded with status ${response.status}`, 'warning');
+        }
+      } catch (error) {
+        updateBackendStatus('datadog', 'unhealthy');
+        logActivity(`❌ Datadog health check failed: ${error.message}`, 'error');
+      }
+    }
+  }
+  
+  function updateBackendStatus(backend, status) {
+    backendConfig[backend].status = status;
+    const statusElement = document.getElementById(`${backend}Status`);
+    statusElement.className = `backend-status ${status}`;
+    
+    switch (status) {
+      case 'healthy':
+        statusElement.textContent = '●';
+        break;
+      case 'warning':
+        statusElement.textContent = '⚠';
+        break;
+      case 'unhealthy':
+        statusElement.textContent = '✗';
+        break;
+      default:
+        statusElement.textContent = '●';
+    }
+  }
+  
+  async function validateMultiBackend() {
+    logActivity('✅ Starting multi-backend validation...', 'info');
+    
+    const enabledBackends = Object.keys(backendConfig).filter(k => backendConfig[k].enabled);
+    
+    if (enabledBackends.length === 0) {
+      logActivity('⚠️ No backends selected for validation', 'warning');
+      return;
+    }
+    
+    logActivity(`🔍 Validating ${enabledBackends.length} backend(s): ${enabledBackends.join(', ')}`, 'info');
+    
+    // Send test payload to each enabled backend
+    for (const backend of enabledBackends) {
+      await sendToBackend(backend, 'test', 'Multi-backend validation test payload');
+    }
+    
+    logActivity('✅ Multi-backend validation completed', 'success');
+  }
+  
+  async function sendToBackend(backend, type, message) {
+    const config = backendConfig[backend];
+    
+    if (!config.enabled) {
+      return;
+    }
+    
+    try {
+      let endpoint;
+      let payload;
+      
+      switch (type) {
+        case 'log':
+          endpoint = config.endpoints.otlp + '/logs';
+          payload = generateOTLPLogPayload(message);
+          break;
+        case 'metric':
+          endpoint = config.endpoints.otlp + '/metrics';
+          payload = generateOTLPMetricPayload(message);
+          break;
+        case 'trace':
+          endpoint = config.endpoints.otlp + '/traces';
+          payload = generateOTLPTracePayload(message);
+          break;
+        case 'test':
+          endpoint = config.endpoints.otlp + '/logs';
+          payload = generateOTLPLogPayload(`[VALIDATION] ${message} - Backend: ${config.name}`);
+          break;
+        default:
+          endpoint = config.endpoints.otlp + '/logs';
+          payload = generateOTLPLogPayload(message);
+      }
+      
+      if (config.isFileProtocol) {
+        logActivity(`[SIM] Sent ${type} to ${config.name}`, 'info');
+        return;
+      }
+      
+      const response = await safeFetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+      
+      if (response.ok) {
+        logActivity(`✅ Sent ${type} to ${config.name}`, 'success');
+      } else {
+        logActivity(`⚠️ Failed to send ${type} to ${config.name}: ${response.status}`, 'warning');
+      }
+    } catch (error) {
+      logActivity(`❌ Error sending ${type} to ${config.name}: ${error.message}`, 'error');
+    }
+  }
+  
+  function generateOTLPLogPayload(message) {
+    return {
+      resourceLogs: [{
+        resource: {
+          attributes: [
+            { key: 'service.name', value: { stringValue: 'stress-test-suite' } },
+            { key: 'multi.backend', value: { boolValue: true } }
+          ]
+        },
+        scopeLogs: [{
+          logRecords: [{
+            timeUnixNano: Date.now() * 1_000_000,
+            severityText: 'INFO',
+            body: { stringValue: message },
+            attributes: [
+              { key: 'generator', value: { stringValue: 'multi-backend' } },
+              { key: 'timestamp', value: { stringValue: new Date().toISOString() } }
+            ]
+          }]
+        }]
+      }]
+    };
+  }
+  
+  function generateOTLPMetricPayload(name) {
+    return {
+      resourceMetrics: [{
+        resource: {
+          attributes: [
+            { key: 'service.name', value: { stringValue: 'stress-test-suite' } },
+            { key: 'multi.backend', value: { boolValue: true } }
+          ]
+        },
+        scopeMetrics: [{
+          metrics: [{
+            name: name,
+            description: `Multi-backend metric: ${name}`,
+            unit: '1',
+            gauge: {
+              dataPoints: [{
+                asDouble: Math.random() * 100,
+                startTimeUnixNano: Date.now() * 1_000_000,
+                timeUnixNano: Date.now() * 1_000_000,
+                attributes: [
+                  { key: 'generator', value: { stringValue: 'multi-backend' } }
+                ]
+              }]
+            }
+          }]
+        }]
+      }]
+    };
+  }
+  
+  function generateOTLPTracePayload(name) {
+    const traceId = Array.from({ length: 16 }, () => Math.floor(Math.random() * 256).toString(16).padStart(2, '0')).join('');
+    const spanId = Array.from({ length: 8 }, () => Math.floor(Math.random() * 256).toString(16).padStart(2, '0')).join('');
+    
+    return {
+      resourceSpans: [{
+        resource: {
+          attributes: [
+            { key: 'service.name', value: { stringValue: 'stress-test-suite' } },
+            { key: 'multi.backend', value: { boolValue: true } }
+          ]
+        },
+        scopeSpans: [{
+          spans: [{
+            traceId: traceId,
+            spanId: spanId,
+            name: name,
+            kind: 2, // SPAN_KIND_SERVER
+            startTimeUnixNano: Date.now() * 1_000_000,
+            endTimeUnixNano: (Date.now() + 50) * 1_000_000,
+            attributes: [
+              { key: 'generator', value: { stringValue: 'multi-backend' } },
+              { key: 'http.method', value: { stringValue: 'POST' } },
+              { key: 'http.route', value: { stringValue: '/api/multi-backend' } }
+            ]
+          }]
+        }]
+      }]
+    };
+  }
+
+  // Cleanup on page unload
+  window.onbeforeunload = () => {
+    stopAllGenerators();
+  };
+</script>
+
+</body>
+</html>

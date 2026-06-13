@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IONA Health Score Trends - BossCat OEM</title>
+    <link rel="stylesheet" href="../assets/resonai-system.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .health-container {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .health-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-md);
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+        }
+        
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin: var(--spacing-md) 0;
+        }
+        
+        .health-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-lg);
+        }
+        
+        .health-metric {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-md);
+            text-align: center;
+        }
+        
+        .health-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .health-label {
+            font-size: 0.875rem;
+            color: var(--fg-secondary);
+        }
+        
+        .health-good { color: #4caf50; }
+        .health-warning { color: #ffc107; }
+        .health-critical { color: #f44336; }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-good { background: #4caf50; }
+        .status-warning { background: #ffc107; }
+        .status-critical { background: #f44336; }
+        
+        .health-timeline {
+            margin-top: var(--spacing-lg);
+        }
+        
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-sm);
+            border-left: 3px solid var(--border-color);
+            margin-bottom: var(--spacing-sm);
+            background: var(--bg-primary);
+            border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0;
+        }
+        
+        .timeline-time {
+            font-size: 0.75rem;
+            color: var(--fg-secondary);
+            min-width: 80px;
+        }
+        
+        .timeline-content {
+            flex: 1;
+            margin-left: var(--spacing-sm);
+        }
+        
+        .timeline-title {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        
+        .timeline-description {
+            font-size: 0.875rem;
+            color: var(--fg-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <div class="brand">
+                    <h1>🏥 IONA Health Score Trends</h1>
+                    <p class="tagline">BossCat OEM - Intelligent Operations & Navigation Assistant</p>
+                </div>
+                <nav class="nav">
+                    <a href="index.html" class="nav-link">← Dashboard Hub</a>
+                    <a href="error-heatmap.html" class="nav-link">Error Heatmap</a>
+                    <a href="stress-testing.html" class="nav-link">Stress Testing</a>
+                    <a href="../../scripts/start-dashboard-server.ps1" class="nav-link">Start Server</a>
+                </nav>
+            </div>
+        </header>
+
+        <main class="main">
+            <!-- CORS Warning -->
+            <div class="alert alert-warning" id="corsWarning" style="display: none;">
+                <strong>⚠️ CORS Restriction Detected:</strong> You're running this page from the file system (file:// protocol). 
+                For full functionality, run via web server using 
+                <code>python -m http.server 3000</code> or use the helper scripts.
+            </div>
+
+            <!-- Current Health Status -->
+            <section class="section">
+                <h2 class="mb-lg">🏥 Current IONA Health Status</h2>
+                <div class="health-metrics">
+                    <div class="health-metric">
+                        <div class="health-value health-good" id="currentHealth">85</div>
+                        <div class="health-label">Current Health Score</div>
+                    </div>
+                    <div class="health-metric">
+                        <div class="health-value health-good" id="avgHealth">82</div>
+                        <div class="health-label">48h Average</div>
+                    </div>
+                    <div class="health-metric">
+                        <div class="health-value health-warning" id="minHealth">45</div>
+                        <div class="health-label">48h Minimum</div>
+                    </div>
+                    <div class="health-metric">
+                        <div class="health-value health-good" id="maxHealth">95</div>
+                        <div class="health-label">48h Maximum</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Health Trends Chart -->
+            <section class="section">
+                <div class="health-container">
+                    <div class="health-controls">
+                        <div class="control-group">
+                            <span style="color: var(--fg-secondary); font-size: 12px;">Time Range:</span>
+                            <select id="timeRange" style="padding: 4px 8px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); color: var(--fg);">
+                                <option value="24">Last 24 hours</option>
+                                <option value="48" selected>Last 48 hours</option>
+                                <option value="168">Last week</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <span style="color: var(--fg-secondary); font-size: 12px;">Granularity:</span>
+                            <select id="granularity" style="padding: 4px 8px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); color: var(--fg);">
+                                <option value="1" selected>1 hour</option>
+                                <option value="2">2 hours</option>
+                                <option value="6">6 hours</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <button class="btn btn-primary" onclick="updateChart()">🔄 Refresh</button>
+                            <button class="btn btn-ghost" onclick="toggleAutoRefresh()">⏸️ Auto-Refresh</button>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <canvas id="healthChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Health Factors -->
+            <section class="section">
+                <h2 class="mb-lg">🔍 Health Factors</h2>
+                <div class="health-metrics">
+                    <div class="health-metric">
+                        <div class="health-value health-good" id="pipelineHealth">92</div>
+                        <div class="health-label">Pipeline Health</div>
+                    </div>
+                    <div class="health-metric">
+                        <div class="health-value health-good" id="errorRate">3.2%</div>
+                        <div class="health-label">Error Rate</div>
+                    </div>
+                    <div class="health-metric">
+                        <div class="health-value health-warning" id="latency">245ms</div>
+                        <div class="health-label">Avg Latency</div>
+                    </div>
+                    <div class="health-metric">
+                        <div class="health-value health-good" id="throughput">1,247</div>
+                        <div class="health-label">Events/min</div>
+                    </div>
+                    <div class="health-metric">
+                        <div class="health-value health-good" id="anomalies">2</div>
+                        <div class="health-label">Active Anomalies</div>
+                    </div>
+                    <div class="health-metric">
+                        <div class="health-value health-good" id="drift">0.8%</div>
+                        <div class="health-label">Drift Score</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Health Timeline -->
+            <section class="section">
+                <h2 class="mb-lg">📋 Recent Health Events</h2>
+                <div class="health-timeline" id="healthTimeline">
+                    <!-- Timeline items will be populated by JavaScript -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Configuration
+        const config = {
+            isFileProtocol: window.location.protocol === 'file:',
+            corsMode: window.location.protocol === 'file:' ? 'no-cors' : 'cors'
+        };
+
+        // Chart instance
+        let healthChart = null;
+        let autoRefreshInterval = null;
+        let autoRefreshEnabled = false;
+
+        // Health data
+        let healthData = {
+            timestamps: [],
+            scores: [],
+            factors: {
+                pipeline: [],
+                errorRate: [],
+                latency: [],
+                throughput: []
+            }
+        };
+
+        // Initialize
+        window.onload = () => {
+            // Show CORS warning if needed
+            if (config.isFileProtocol) {
+                document.getElementById('corsWarning').style.display = 'block';
+            }
+            
+            // Initialize chart
+            initializeChart();
+            
+            // Generate initial data
+            generateHealthData();
+            updateChart();
+            updateTimeline();
+            
+            // Add event listeners
+            document.getElementById('timeRange').addEventListener('change', updateChart);
+            document.getElementById('granularity').addEventListener('change', updateChart);
+            
+            logActivity('IONA Health Score Trends initialized', 'info');
+        };
+
+        // Initialize Chart.js
+        function initializeChart() {
+            const ctx = document.getElementById('healthChart').getContext('2d');
+            
+            healthChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [
+                        {
+                            label: 'Health Score',
+                            data: [],
+                            borderColor: '#7c5cff',
+                            backgroundColor: 'rgba(124,92,255,0.1)',
+                            tension: 0.4,
+                            fill: true,
+                            pointRadius: 3,
+                            pointHoverRadius: 6
+                        },
+                        {
+                            label: 'Pipeline Health',
+                            data: [],
+                            borderColor: '#4caf50',
+                            backgroundColor: 'rgba(76,175,80,0.1)',
+                            tension: 0.4,
+                            fill: false,
+                            pointRadius: 2,
+                            pointHoverRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#ffffff',
+                                font: { size: 12 }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0,0,0,0.8)',
+                            titleColor: '#ffffff',
+                            bodyColor: '#ffffff',
+                            borderColor: '#7c5cff',
+                            borderWidth: 1
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { 
+                                color: '#888888', 
+                                font: { size: 11 },
+                                maxTicksLimit: 12
+                            },
+                            grid: { color: 'rgba(255,255,255,0.1)' },
+                            title: {
+                                display: true,
+                                text: 'Time',
+                                color: '#888888',
+                                font: { size: 12 }
+                            }
+                        },
+                        y: {
+                            min: 0,
+                            max: 100,
+                            ticks: { 
+                                color: '#888888', 
+                                font: { size: 11 }
+                            },
+                            grid: { color: 'rgba(255,255,255,0.1)' },
+                            title: {
+                                display: true,
+                                text: 'Health Score',
+                                color: '#888888',
+                                font: { size: 12 }
+                            }
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    }
+                }
+            });
+        }
+
+        // Generate health data
+        function generateHealthData() {
+            const timeRange = parseInt(document.getElementById('timeRange').value);
+            const granularity = parseInt(document.getElementById('granularity').value);
+            
+            healthData = {
+                timestamps: [],
+                scores: [],
+                factors: {
+                    pipeline: [],
+                    errorRate: [],
+                    latency: [],
+                    throughput: []
+                }
+            };
+            
+            const now = new Date();
+            const points = Math.floor(timeRange / granularity);
+            
+            let currentScore = 85;
+            let currentPipeline = 92;
+            let currentErrorRate = 3.2;
+            let currentLatency = 245;
+            let currentThroughput = 1247;
+            
+            for (let i = points; i >= 0; i--) {
+                const timestamp = new Date(now.getTime() - (i * granularity * 60 * 60 * 1000));
+                
+                // Generate realistic health patterns
+                // Health score tends to be stable with occasional dips
+                const healthChange = (Math.random() - 0.5) * 4;
+                currentScore = Math.max(0, Math.min(100, currentScore + healthChange));
+                
+                // Pipeline health follows similar pattern
+                const pipelineChange = (Math.random() - 0.5) * 3;
+                currentPipeline = Math.max(0, Math.min(100, currentPipeline + pipelineChange));
+                
+                // Error rate varies more dramatically
+                const errorChange = (Math.random() - 0.5) * 2;
+                currentErrorRate = Math.max(0, Math.min(20, currentErrorRate + errorChange));
+                
+                // Latency has some correlation with error rate
+                const latencyChange = (Math.random() - 0.5) * 50;
+                currentLatency = Math.max(50, Math.min(1000, currentLatency + latencyChange));
+                
+                // Throughput inversely correlated with latency
+                const throughputChange = (Math.random() - 0.5) * 200;
+                currentThroughput = Math.max(500, Math.min(2000, currentThroughput + throughputChange));
+                
+                healthData.timestamps.push(timestamp);
+                healthData.scores.push(currentScore);
+                healthData.factors.pipeline.push(currentPipeline);
+                healthData.factors.errorRate.push(currentErrorRate);
+                healthData.factors.latency.push(currentLatency);
+                healthData.factors.throughput.push(currentThroughput);
+            }
+        }
+
+        // Update chart
+        function updateChart() {
+            if (!healthChart) return;
+            
+            generateHealthData();
+            
+            // Format labels
+            const labels = healthData.timestamps.map(ts => 
+                ts.toLocaleString('en-US', { 
+                    month: 'short', 
+                    day: 'numeric', 
+                    hour: '2-digit',
+                    minute: '2-digit'
+                })
+            );
+            
+            // Update chart data
+            healthChart.data.labels = labels;
+            healthChart.data.datasets[0].data = healthData.scores;
+            healthChart.data.datasets[1].data = healthData.factors.pipeline;
+            
+            healthChart.update('none');
+            
+            // Update metrics
+            updateMetrics();
+            
+            logActivity(`Chart updated with ${healthData.scores.length} data points`, 'info');
+        }
+
+        // Update metrics display
+        function updateMetrics() {
+            const scores = healthData.scores;
+            const currentScore = scores[scores.length - 1];
+            const avgScore = scores.reduce((a, b) => a + b, 0) / scores.length;
+            const minScore = Math.min(...scores);
+            const maxScore = Math.max(...scores);
+            
+            // Update main metrics
+            document.getElementById('currentHealth').textContent = Math.round(currentScore);
+            document.getElementById('avgHealth').textContent = Math.round(avgScore);
+            document.getElementById('minHealth').textContent = Math.round(minScore);
+            document.getElementById('maxHealth').textContent = Math.round(maxScore);
+            
+            // Update health factor metrics
+            const factors = healthData.factors;
+            document.getElementById('pipelineHealth').textContent = Math.round(factors.pipeline[factors.pipeline.length - 1]);
+            document.getElementById('errorRate').textContent = factors.errorRate[factors.errorRate.length - 1].toFixed(1) + '%';
+            document.getElementById('latency').textContent = Math.round(factors.latency[factors.latency.length - 1]) + 'ms';
+            document.getElementById('throughput').textContent = Math.round(factors.throughput[factors.throughput.length - 1]).toLocaleString();
+            
+            // Update anomaly count (simulate)
+            const anomalies = Math.floor(Math.random() * 5);
+            document.getElementById('anomalies').textContent = anomalies;
+            
+            // Update drift score (simulate)
+            const drift = (Math.random() * 2).toFixed(1);
+            document.getElementById('drift').textContent = drift + '%';
+            
+            // Update health colors based on current score
+            updateHealthColors(currentScore);
+        }
+
+        // Update health colors
+        function updateHealthColors(score) {
+            const currentHealth = document.getElementById('currentHealth');
+            const avgHealth = document.getElementById('avgHealth');
+            const minHealth = document.getElementById('minHealth');
+            const maxHealth = document.getElementById('maxHealth');
+            
+            const healthClass = score >= 80 ? 'health-good' : score >= 60 ? 'health-warning' : 'health-critical';
+            
+            currentHealth.className = `health-value ${healthClass}`;
+        }
+
+        // Update timeline
+        function updateTimeline() {
+            const timeline = document.getElementById('healthTimeline');
+            timeline.innerHTML = '';
+            
+            // Generate recent health events
+            const events = [
+                {
+                    time: '2 min ago',
+                    title: 'Health Score Improved',
+                    description: 'Pipeline optimization completed, error rate decreased by 1.2%',
+                    type: 'good'
+                },
+                {
+                    time: '15 min ago',
+                    title: 'Minor Latency Spike',
+                    description: 'Average response time increased to 280ms during peak load',
+                    type: 'warning'
+                },
+                {
+                    time: '1 hour ago',
+                    title: 'System Maintenance',
+                    description: 'Scheduled maintenance window completed successfully',
+                    type: 'good'
+                },
+                {
+                    time: '2 hours ago',
+                    title: 'Error Rate Alert',
+                    description: 'Temporary error rate spike to 8.5% detected and resolved',
+                    type: 'critical'
+                },
+                {
+                    time: '4 hours ago',
+                    title: 'Throughput Peak',
+                    description: 'Record throughput of 1,847 events/min achieved',
+                    type: 'good'
+                }
+            ];
+            
+            events.forEach(event => {
+                const item = document.createElement('div');
+                item.className = 'timeline-item';
+                
+                const statusClass = event.type === 'good' ? 'status-good' : 
+                                  event.type === 'warning' ? 'status-warning' : 'status-critical';
+                
+                item.innerHTML = `
+                    <div class="timeline-time">${event.time}</div>
+                    <div class="timeline-content">
+                        <div class="timeline-title">
+                            <span class="status-indicator ${statusClass}"></span>
+                            ${event.title}
+                        </div>
+                        <div class="timeline-description">${event.description}</div>
+                    </div>
+                `;
+                
+                timeline.appendChild(item);
+            });
+        }
+
+        // Toggle auto-refresh
+        function toggleAutoRefresh() {
+            autoRefreshEnabled = !autoRefreshEnabled;
+            const button = event.target;
+            
+            if (autoRefreshEnabled) {
+                button.textContent = '⏸️ Auto-Refresh';
+                button.style.background = 'var(--warning)';
+                autoRefreshInterval = setInterval(() => {
+                    updateChart();
+                    updateTimeline();
+                }, 30000); // 30 seconds
+                logActivity('Auto-refresh enabled (30s interval)', 'info');
+            } else {
+                button.textContent = '▶️ Auto-Refresh';
+                button.style.background = 'var(--primary)';
+                if (autoRefreshInterval) {
+                    clearInterval(autoRefreshInterval);
+                    autoRefreshInterval = null;
+                }
+                logActivity('Auto-refresh disabled', 'info');
+            }
+        }
+
+        // Activity logging
+        function logActivity(message, level = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            console.log(`[${timestamp}] ${level.toUpperCase()}: ${message}`);
+        }
+
+        // Cleanup on page unload
+        window.onbeforeunload = () => {
+            if (autoRefreshInterval) {
+                clearInterval(autoRefreshInterval);
+            }
+        };
+    </script>
+</body>
+</html>

@@ -28,6 +28,7 @@ Other AGENTS.md files are scoped; do not treat them as repo-wide rules unless no
 - Bluesky weekly upkeep (7-day cadence): docs/BossCat/BSKY_WEEKLY_MAINTENANCE.md
   - Check: `pwsh -File scripts/bsky-weekly-reminder.ps1`
   - Engagement: docs/BossCat/BSKY_ENGAGEMENT_PLAYBOOK.md
+  - SkyFeed feeds (manual): docs/social/SKYFEED_SETUP_STATUS.md
 - Cursor `sessionStart` hooks nudge agents when any of the above is overdue (`.cursor/hooks.json`)
 
 ## Archives

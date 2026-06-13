@@ -16,7 +16,7 @@ jobs:
             "https://hub.resonai.uk/assets/hub.js"
             "https://hub.resonai.uk/docs/status/kpis.json"
             "https://hub.resonai.uk/docs/status.html"
-            "https://hub.resonai.uk/CHAR/DOCS/docs/dashboards/live-metrics.html"
+            "https://hub.resonai.uk/docs/dashboards/live-metrics.html"
             "https://hub.resonai.uk/docs/BossCat/data_room_enhanced.html"
             "https://hub.resonai.uk/docs/widgets/bluesky-latest.json"
             "https://hub.resonai.uk/.well-known/security.txt"

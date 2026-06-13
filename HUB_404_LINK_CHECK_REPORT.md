@@ -19,11 +19,11 @@
 
 | Link | Status | URL |
 |------|--------|-----|
-| Live Metrics | ✅ 200 | `CHAR/DOCS/docs/dashboards/live-metrics.html` |
-| Data Room | ✅ 200 | `CHAR/DOCS/docs/BossCat/data_room_enhanced.html` |
-| MILK Visualizer | ✅ 200 | `portal.html` |
+| Live Metrics | ✅ 200 | `docs/dashboards/live-metrics.html` |
+| Data Room | ✅ 200 | `docs/BossCat/data_room_enhanced.html` |
+| MILK Visualizer | ✅ 200 | `docs/milk-v0/public/index.html` |
 | Status | ✅ 200 | `docs/status.html` |
-| Docs | ✅ 200 | `CHAR/DOCS/docs/index.html` |
+| Docs | ✅ 200 | `docs/index.html` |
 | AntiClickbait | ✅ 200 | `docs/anticlickbait/index.html` |
 | CSS Stylesheet | ✅ 200 | `docs/assets/hub.css` |
 | Favicon | ✅ 200 | `favicon.svg` |
@@ -76,7 +76,7 @@ These are external links that were not checked (would require different validati
 | Link | Type | URL |
 |------|------|-----|
 | Patreon | External | `https://patreon.com/FaeMcLachlan` |
-| Buy Me a Coffee | External | `https://buymeacoffee.com/fubumaki` |
+| Ko-fi | External | `https://ko-fi.com/fubumaki` |
 | SigNoz UI | Localhost | `http://localhost:8080` |
 
 **Note:** External links and localhost links are not included in 404 check as they:

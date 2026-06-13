@@ -29,11 +29,11 @@
 Source:        Deploy from a branch
 Branch:        main
 Folder:        / (root)
-Custom domain: hub.resonai.io
+Custom domain: hub.resonai.uk
 Enforce HTTPS: ✅ (checked)
 ```
 
-**Expected Result:** Green checkmark + "Your site is published at https://hub.resonai.io"
+**Expected Result:** Green checkmark + "Your site is published at https://hub.resonai.uk"
 
 ---
 
@@ -109,7 +109,7 @@ Failed: 0
 ### **Browser Verification**
 
 **Manual Checks:**
-1. Open https://hub.resonai.io/
+1. Open https://hub.resonai.uk/
 2. **Console:** No CSP violations
 3. **Hero Metrics:** Values load from `kpis.json`
 4. **Click "Data Room"** → Verify page loads
@@ -172,7 +172,7 @@ Failed: 0
    OTEL_SERVICE_NAME=hub-synth
    OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317
    ```
-3. Hit `https://hub.resonai.io/robots.txt`
+3. Hit `https://hub.resonai.uk/robots.txt`
 4. Confirm trace in SigNoz
 5. Screenshot → `docs/ecrr/ECRR_REPORTS/OTEL_SYNTH_<date>.md`
 

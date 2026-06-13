@@ -38,7 +38,7 @@ dotnet add package System.Net.Http
 @"
 using System.Net.Http;
 var http = new HttpClient();
-var resp = await http.GetAsync("https://hub.resonai.io/robots.txt");
+var resp = await http.GetAsync("https://hub.resonai.uk/robots.txt");
 Console.WriteLine($"Status: {(int)resp.StatusCode}");
 "@ | Set-Content Program.cs
 
@@ -68,7 +68,7 @@ After running, create `docs/ecrr/ECRR_REPORTS/OTEL_SYNTH_<DATE>.md` using the te
 ## Expected Result
 
 - ✅ Span appears in SigNoz (service: hub-synth)
-- ✅ HTTP GET to https://hub.resonai.io/robots.txt captured
+- ✅ HTTP GET to https://hub.resonai.uk/robots.txt captured
 - ✅ No errors or warnings
 - ✅ Confirms auto-instrumentation path operational
 
