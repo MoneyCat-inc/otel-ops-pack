@@ -23,7 +23,7 @@ $endpoints = @(
     @{ Path = "/assets/hub.js"; Name = "Hub JS" }
     @{ Path = "/docs/status/kpis.json"; Name = "KPI Feed" }
     @{ Path = "/docs/status.html"; Name = "Status Page" }
-    @{ Path = "/CHAR/DOCS/docs/dashboards/live-metrics.html"; Name = "Live Metrics" }
+    @{ Path = "/docs/dashboards/live-metrics.html"; Name = "Live Metrics" }
     @{ Path = "/docs/BossCat/data_room_enhanced.html"; Name = "Data Room" }
     @{ Path = "/docs/widgets/bluesky-latest.json"; Name = "Bluesky Widget Feed" }
     @{ Path = "/robots.txt"; Name = "SEO Robots" }

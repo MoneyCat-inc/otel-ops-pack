@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Visualizations - BossCat OEM</title>
+    <link rel="stylesheet" href="../assets/resonai-system.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .viz-container {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin: var(--spacing-md) 0;
+        }
+        
+        .viz-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-md);
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+        }
+        
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        
+        .heatmap-grid {
+            display: grid;
+            grid-template-columns: repeat(24, 1fr);
+            gap: 2px;
+            margin: var(--spacing-md) 0;
+        }
+        
+        .heatmap-cell {
+            aspect-ratio: 1;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+        }
+        
+        .heatmap-cell:hover {
+            transform: scale(1.1);
+            z-index: 10;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        
+        .heatmap-cell.level-0 { background: #4caf50; } /* Green - 0% errors */
+        .heatmap-cell.level-1 { background: #8bc34a; } /* Light Green - 1-5% */
+        .heatmap-cell.level-2 { background: #cddc39; } /* Lime - 6-10% */
+        .heatmap-cell.level-3 { background: #ffc107; } /* Yellow - 11-15% */
+        .heatmap-cell.level-4 { background: #ff9800; } /* Orange - 16-20% */
+        .heatmap-cell.level-5 { background: #f44336; } /* Red - 21%+ */
+        
+        .service-labels {
+            display: grid;
+            grid-template-rows: repeat(6, 1fr);
+            gap: 2px;
+            margin-right: var(--spacing-sm);
+        }
+        
+        .service-label {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 8px;
+            font-size: 12px;
+            color: var(--fg-secondary);
+            font-weight: 500;
+        }
+        
+        .tooltip {
+            position: absolute;
+            background: rgba(0,0,0,0.9);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            pointer-events: none;
+            z-index: 1000;
+            white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-lg);
+        }
+        
+        .stat-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-md);
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--fg-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <div class="brand">
+                    <h1>📊 Advanced Visualizations</h1>
+                    <p class="tagline">BossCat OEM - Correlation Analysis & Enhanced Heatmaps</p>
+                </div>
+                <nav class="nav">
+                    <a href="index.html" class="nav-link">← Dashboard Hub</a>
+                    <a href="stress-testing.html" class="nav-link">Stress Testing</a>
+                    <a href="error-heatmap.html" class="nav-link">Error Heatmap</a>
+                    <a href="iona-health.html" class="nav-link">IONA Health</a>
+                    <a href="../../scripts/start-dashboard-server.ps1" class="nav-link">Start Server</a>
+                </nav>
+            </div>
+        </header>
+
+        <main class="main">
+            <!-- CORS Warning -->
+            <div class="alert alert-warning" id="corsWarning" style="display: none;">
+                <strong>⚠️ CORS Restriction Detected:</strong> You're running this page from the file system (file:// protocol). 
+                For full functionality, run via web server using 
+                <code>python -m http.server 3000</code> or use the helper scripts.
+            </div>
+
+            <!-- Throughput vs Error Rate Correlation -->
+            <section class="section">
+                <div class="viz-container">
+                    <div class="viz-controls">
+                        <div class="control-group">
+                            <span style="color: var(--fg-secondary); font-size: 12px;">Data Points:</span>
+                            <select id="correlationPoints" style="padding: 4px 8px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); color: var(--fg);">
+                                <option value="50" selected>50 points</option>
+                                <option value="100">100 points</option>
+                                <option value="200">200 points</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <button class="btn btn-primary" onclick="generateCorrelationData()">
+                                🔄 Regenerate Data
+                            </button>
+                            <button class="btn btn-ghost" onclick="toggleCorrelationAutoRefresh()">
+                                ⏸️ Auto-Refresh
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <h2 style="margin: 0 0 var(--spacing-md) 0; font-size: var(--font-size-lg); color: var(--primary);">
+                        📈 Throughput vs Error Rate Correlation
+                    </h2>
+                    
+                    <div class="chart-container">
+                        <canvas id="correlationChart"></canvas>
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="correlationCoeff">0.0</div>
+                            <div class="stat-label">Correlation Coefficient</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="maxThroughput">0</div>
+                            <div class="stat-label">Max Throughput (logs/sec)</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="maxErrorRate">0.0%</div>
+                            <div class="stat-label">Max Error Rate</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="dataPoints">50</div>
+                            <div class="stat-label">Data Points</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Enhanced Error Heatmap -->
+            <section class="section">
+                <div class="viz-container">
+                    <div class="viz-controls">
+                        <div class="control-group">
+                            <span style="color: var(--fg-secondary); font-size: 12px;">Services:</span>
+                            <select id="serviceCount" style="padding: 4px 8px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); color: var(--fg);">
+                                <option value="6" selected>6 services</option>
+                                <option value="8">8 services</option>
+                                <option value="12">12 services</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <button class="btn btn-primary" onclick="generateHeatmapData()">
+                                🔄 Regenerate Heatmap
+                            </button>
+                            <button class="btn btn-ghost" onclick="toggleHeatmapAutoRefresh()">
+                                ⏸️ Auto-Refresh
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <h2 style="margin: 0 0 var(--spacing-md) 0; font-size: var(--font-size-lg); color: var(--primary);">
+                        🔥 Enhanced Error Heatmap (Per-Service)
+                    </h2>
+                    
+                    <div style="display: flex; align-items: flex-start;">
+                        <div class="service-labels" id="serviceLabels">
+                            <!-- Service labels will be populated by JavaScript -->
+                        </div>
+                        <div class="heatmap-grid" id="enhancedHeatmapGrid">
+                            <!-- Heatmap cells will be populated by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <!-- Time axis -->
+                    <div style="display: grid; grid-template-columns: repeat(24, 1fr); gap: 2px; margin-top: var(--spacing-sm); font-size: 10px; color: var(--fg-secondary); text-align: center;">
+                        <script>
+                            for (let i = 0; i < 24; i++) {
+                                document.write(`<div>${i.toString().padStart(2, '0')}:00</div>`);
+                            }
+                        </script>
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="avgErrorRate">0.0%</div>
+                            <div class="stat-label">Average Error Rate</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="criticalHours">0</div>
+                            <div class="stat-label">Critical Hours (>20%)</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="mostProblematicService">--</div>
+                            <div class="stat-label">Most Problematic Service</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="totalServices">6</div>
+                            <div class="stat-label">Total Services</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Configuration
+        const config = {
+            isFileProtocol: window.location.protocol === 'file:',
+            corsMode: window.location.protocol === 'file:' ? 'no-cors' : 'cors'
+        };
+
+        // Chart instances
+        let correlationChart = null;
+        let correlationAutoRefreshInterval = null;
+        let correlationAutoRefreshEnabled = false;
+        let heatmapAutoRefreshInterval = null;
+        let heatmapAutoRefreshEnabled = false;
+
+        // Data storage
+        let correlationData = { throughput: [], errorRates: [] };
+        let heatmapData = [];
+        let serviceNames = ['web-api', 'auth-service', 'payment-gateway', 'notification-service', 'analytics-engine', 'user-management'];
+
+        // Initialize
+        window.onload = () => {
+            // Show CORS warning if needed
+            if (config.isFileProtocol) {
+                document.getElementById('corsWarning').style.display = 'block';
+            }
+            
+            // Initialize charts
+            initializeCorrelationChart();
+            
+            // Generate initial data
+            generateCorrelationData();
+            generateHeatmapData();
+            
+            // Add event listeners
+            document.getElementById('correlationPoints').addEventListener('change', generateCorrelationData);
+            document.getElementById('serviceCount').addEventListener('change', generateHeatmapData);
+            
+            logActivity('Advanced Visualizations initialized', 'info');
+        };
+
+        // Initialize correlation chart
+        function initializeCorrelationChart() {
+            const ctx = document.getElementById('correlationChart').getContext('2d');
+            
+            correlationChart = new Chart(ctx, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: 'Throughput vs Error Rate',
+                        data: [],
+                        backgroundColor: 'rgba(124, 92, 255, 0.6)',
+                        borderColor: '#7c5cff',
+                        borderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#ffffff',
+                                font: { size: 12 }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0,0,0,0.8)',
+                            titleColor: '#ffffff',
+                            bodyColor: '#ffffff',
+                            borderColor: '#7c5cff',
+                            borderWidth: 1,
+                            callbacks: {
+                                title: function(context) {
+                                    return `Data Point ${context[0].dataIndex + 1}`;
+                                },
+                                label: function(context) {
+                                    return [
+                                        `Throughput: ${context.parsed.x.toFixed(1)} logs/sec`,
+                                        `Error Rate: ${context.parsed.y.toFixed(1)}%`
+                                    ];
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Throughput (logs/sec)',
+                                color: '#888888',
+                                font: { size: 12 }
+                            },
+                            ticks: { 
+                                color: '#888888', 
+                                font: { size: 11 }
+                            },
+                            grid: { color: 'rgba(255,255,255,0.1)' }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Error Rate (%)',
+                                color: '#888888',
+                                font: { size: 12 }
+                            },
+                            ticks: { 
+                                color: '#888888', 
+                                font: { size: 11 }
+                            },
+                            grid: { color: 'rgba(255,255,255,0.1)' }
+                        }
+                    },
+                    interaction: {
+                        intersect: false
+                    }
+                }
+            });
+        }
+
+        // Generate correlation data
+        function generateCorrelationData() {
+            const points = parseInt(document.getElementById('correlationPoints').value);
+            
+            correlationData = { throughput: [], errorRates: [] };
+            
+            // Generate realistic correlation data
+            // Higher throughput tends to correlate with higher error rates
+            for (let i = 0; i < points; i++) {
+                // Base throughput with some randomness
+                const baseThroughput = 50 + Math.random() * 200; // 50-250 logs/sec
+                
+                // Error rate correlated with throughput (but with noise)
+                const correlation = 0.3; // Moderate positive correlation
+                const baseErrorRate = (baseThroughput / 250) * 15; // Max 15% at high throughput
+                const noise = (Math.random() - 0.5) * 8; // ±4% noise
+                const errorRate = Math.max(0, Math.min(25, baseErrorRate + noise));
+                
+                // Add some random variation to throughput
+                const throughput = Math.max(10, baseThroughput + (Math.random() - 0.5) * 50);
+                
+                correlationData.throughput.push(throughput);
+                correlationData.errorRates.push(errorRate);
+            }
+            
+            // Update chart
+            correlationChart.data.datasets[0].data = correlationData.throughput.map((throughput, i) => ({
+                x: throughput,
+                y: correlationData.errorRates[i]
+            }));
+            
+            correlationChart.update('none');
+            
+            // Update statistics
+            updateCorrelationStats();
+            
+            logActivity(`Generated ${points} correlation data points`, 'info');
+        }
+
+        // Update correlation statistics
+        function updateCorrelationStats() {
+            const { throughput, errorRates } = correlationData;
+            
+            // Calculate correlation coefficient
+            const correlationCoeff = calculateCorrelationCoefficient(throughput, errorRates);
+            
+            // Find maximums
+            const maxThroughput = Math.max(...throughput);
+            const maxErrorRate = Math.max(...errorRates);
+            
+            // Update display
+            document.getElementById('correlationCoeff').textContent = correlationCoeff.toFixed(3);
+            document.getElementById('maxThroughput').textContent = maxThroughput.toFixed(1);
+            document.getElementById('maxErrorRate').textContent = maxErrorRate.toFixed(1) + '%';
+            document.getElementById('dataPoints').textContent = throughput.length;
+        }
+
+        // Calculate correlation coefficient
+        function calculateCorrelationCoefficient(x, y) {
+            const n = x.length;
+            const sumX = x.reduce((a, b) => a + b, 0);
+            const sumY = y.reduce((a, b) => a + b, 0);
+            const sumXY = x.reduce((sum, xi, i) => sum + xi * y[i], 0);
+            const sumX2 = x.reduce((sum, xi) => sum + xi * xi, 0);
+            const sumY2 = y.reduce((sum, yi) => sum + yi * yi, 0);
+            
+            const numerator = n * sumXY - sumX * sumY;
+            const denominator = Math.sqrt((n * sumX2 - sumX * sumX) * (n * sumY2 - sumY * sumY));
+            
+            return denominator === 0 ? 0 : numerator / denominator;
+        }
+
+        // Generate heatmap data
+        function generateHeatmapData() {
+            const serviceCount = parseInt(document.getElementById('serviceCount').value);
+            
+            // Update service names based on count
+            serviceNames = [
+                'web-api', 'auth-service', 'payment-gateway', 'notification-service',
+                'analytics-engine', 'user-management', 'inventory-service', 'order-processor',
+                'customer-support', 'reporting-service', 'cache-service', 'message-queue'
+            ].slice(0, serviceCount);
+            
+            heatmapData = [];
+            
+            // Generate error rates for each service across 24 hours
+            for (let serviceIndex = 0; serviceIndex < serviceCount; serviceIndex++) {
+                const service = serviceNames[serviceIndex];
+                const serviceData = [];
+                
+                for (let hour = 0; hour < 24; hour++) {
+                    // Generate realistic error patterns
+                    let errorRate;
+                    
+                    // Different services have different error patterns
+                    if (service.includes('web-api') || service.includes('payment')) {
+                        // High-traffic services: higher errors during business hours
+                        if (hour >= 9 && hour <= 17) {
+                            errorRate = Math.random() * 15 + 2; // 2-17% during business hours
+                        } else {
+                            errorRate = Math.random() * 8 + 0.5; // 0.5-8.5% during off hours
+                        }
+                    } else if (service.includes('auth') || service.includes('notification')) {
+                        // Critical services: generally lower errors but occasional spikes
+                        errorRate = Math.random() * 8 + 1; // 1-9%
+                        if (Math.random() < 0.1) { // 10% chance of spike
+                            errorRate = Math.random() * 20 + 10; // 10-30% spike
+                        }
+                    } else {
+                        // Other services: moderate error rates
+                        errorRate = Math.random() * 12 + 1; // 1-13%
+                    }
+                    
+                    serviceData.push({
+                        service,
+                        hour,
+                        errorRate
+                    });
+                }
+                
+                heatmapData.push(serviceData);
+            }
+            
+            // Update display
+            updateHeatmapDisplay();
+            updateHeatmapStats();
+            
+            logActivity(`Generated heatmap data for ${serviceCount} services`, 'info');
+        }
+
+        // Update heatmap display
+        function updateHeatmapDisplay() {
+            const serviceLabelsContainer = document.getElementById('serviceLabels');
+            const heatmapGrid = document.getElementById('enhancedHeatmapGrid');
+            
+            // Clear existing content
+            serviceLabelsContainer.innerHTML = '';
+            heatmapGrid.innerHTML = '';
+            
+            // Update service labels
+            serviceNames.forEach(service => {
+                const label = document.createElement('div');
+                label.className = 'service-label';
+                label.textContent = service;
+                serviceLabelsContainer.appendChild(label);
+            });
+            
+            // Generate heatmap cells
+            heatmapData.forEach((serviceData, serviceIndex) => {
+                serviceData.forEach((data, hourIndex) => {
+                    const cell = document.createElement('div');
+                    cell.className = `heatmap-cell level-${getErrorLevel(data.errorRate)}`;
+                    
+                    // Add tooltip
+                    cell.addEventListener('mouseenter', (e) => {
+                        showTooltip(e, data);
+                    });
+                    
+                    cell.addEventListener('mouseleave', hideTooltip);
+                    
+                    heatmapGrid.appendChild(cell);
+                });
+            });
+        }
+
+        // Get error level for color coding
+        function getErrorLevel(errorRate) {
+            if (errorRate === 0) return 0;
+            if (errorRate <= 5) return 1;
+            if (errorRate <= 10) return 2;
+            if (errorRate <= 15) return 3;
+            if (errorRate <= 20) return 4;
+            return 5;
+        }
+
+        // Show tooltip
+        function showTooltip(event, data) {
+            const tooltip = document.createElement('div');
+            tooltip.className = 'tooltip';
+            tooltip.innerHTML = `
+                <strong>${data.service}</strong><br>
+                Hour: ${data.hour.toString().padStart(2, '0')}:00<br>
+                Error Rate: ${data.errorRate.toFixed(1)}%
+            `;
+            
+            document.body.appendChild(tooltip);
+            
+            const rect = event.target.getBoundingClientRect();
+            tooltip.style.left = rect.right + 10 + 'px';
+            tooltip.style.top = rect.top + 'px';
+        }
+
+        // Hide tooltip
+        function hideTooltip() {
+            const tooltip = document.querySelector('.tooltip');
+            if (tooltip) {
+                tooltip.remove();
+            }
+        }
+
+        // Update heatmap statistics
+        function updateHeatmapStats() {
+            let totalErrorRate = 0;
+            let totalDataPoints = 0;
+            let criticalHours = 0;
+            let serviceErrorTotals = {};
+            
+            heatmapData.forEach(serviceData => {
+                serviceData.forEach(data => {
+                    totalErrorRate += data.errorRate;
+                    totalDataPoints++;
+                    
+                    if (data.errorRate > 20) {
+                        criticalHours++;
+                    }
+                    
+                    if (!serviceErrorTotals[data.service]) {
+                        serviceErrorTotals[data.service] = { total: 0, count: 0 };
+                    }
+                    serviceErrorTotals[data.service].total += data.errorRate;
+                    serviceErrorTotals[data.service].count++;
+                });
+            });
+            
+            // Find most problematic service
+            let mostProblematicService = '--';
+            let highestAvgError = 0;
+            
+            Object.entries(serviceErrorTotals).forEach(([service, stats]) => {
+                const avgError = stats.total / stats.count;
+                if (avgError > highestAvgError) {
+                    highestAvgError = avgError;
+                    mostProblematicService = service;
+                }
+            });
+            
+            // Update display
+            document.getElementById('avgErrorRate').textContent = (totalErrorRate / totalDataPoints).toFixed(1) + '%';
+            document.getElementById('criticalHours').textContent = criticalHours;
+            document.getElementById('mostProblematicService').textContent = mostProblematicService;
+            document.getElementById('totalServices').textContent = serviceNames.length;
+        }
+
+        // Toggle correlation auto-refresh
+        function toggleCorrelationAutoRefresh() {
+            correlationAutoRefreshEnabled = !correlationAutoRefreshEnabled;
+            const button = event.target;
+            
+            if (correlationAutoRefreshEnabled) {
+                button.textContent = '⏸️ Auto-Refresh';
+                button.style.background = 'var(--warning)';
+                correlationAutoRefreshInterval = setInterval(generateCorrelationData, 30000);
+                logActivity('Correlation auto-refresh enabled (30s interval)', 'info');
+            } else {
+                button.textContent = '▶️ Auto-Refresh';
+                button.style.background = 'var(--primary)';
+                if (correlationAutoRefreshInterval) {
+                    clearInterval(correlationAutoRefreshInterval);
+                    correlationAutoRefreshInterval = null;
+                }
+                logActivity('Correlation auto-refresh disabled', 'info');
+            }
+        }
+
+        // Toggle heatmap auto-refresh
+        function toggleHeatmapAutoRefresh() {
+            heatmapAutoRefreshEnabled = !heatmapAutoRefreshEnabled;
+            const button = event.target;
+            
+            if (heatmapAutoRefreshEnabled) {
+                button.textContent = '⏸️ Auto-Refresh';
+                button.style.background = 'var(--warning)';
+                heatmapAutoRefreshInterval = setInterval(generateHeatmapData, 30000);
+                logActivity('Heatmap auto-refresh enabled (30s interval)', 'info');
+            } else {
+                button.textContent = '▶️ Auto-Refresh';
+                button.style.background = 'var(--primary)';
+                if (heatmapAutoRefreshInterval) {
+                    clearInterval(heatmapAutoRefreshInterval);
+                    heatmapAutoRefreshInterval = null;
+                }
+                logActivity('Heatmap auto-refresh disabled', 'info');
+            }
+        }
+
+        // Activity logging
+        function logActivity(message, level = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            console.log(`[${timestamp}] ${level.toUpperCase()}: ${message}`);
+        }
+
+        // Cleanup on page unload
+        window.onbeforeunload = () => {
+            if (correlationAutoRefreshInterval) {
+                clearInterval(correlationAutoRefreshInterval);
+            }
+            if (heatmapAutoRefreshInterval) {
+                clearInterval(heatmapAutoRefreshInterval);
+            }
+        };
+    </script>
+</body>
+</html>

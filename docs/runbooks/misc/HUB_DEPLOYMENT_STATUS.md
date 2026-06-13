@@ -26,7 +26,7 @@
 
 ### Phase 3: GitHub Pages Configuration ✅
 - **Source:** main / (root)
-- **Custom Domain:** hub.resonai.io
+- **Custom Domain:** hub.resonai.uk
 - **CNAME File:** Present in repository
 - **Status:** Configured, awaiting DNS activation
 
@@ -178,10 +178,10 @@ When DNS is active, Cursor{Implementer} will execute:
 Resolve-DnsName resonai.io -Type NS
 
 # Check CNAME
-Resolve-DnsName hub.resonai.io -Type CNAME
+Resolve-DnsName hub.resonai.uk -Type CNAME
 
 # Full resolution
-Resolve-DnsName hub.resonai.io
+Resolve-DnsName hub.resonai.uk
 ```
 
 **Production Smoke:**
@@ -190,16 +190,16 @@ Resolve-DnsName hub.resonai.io
 pwsh scripts/hub-smoke-test.ps1
 
 # Or manual checks
-irm https://hub.resonai.io/ -Method Head -SkipHeaderValidation
-irm https://hub.resonai.io/assets/hub.v1.js -Method Head -SkipHeaderValidation
-irm https://hub.resonai.io/docs/status/kpis.json -Method Head -SkipHeaderValidation
+irm https://hub.resonai.uk/ -Method Head -SkipHeaderValidation
+irm https://hub.resonai.uk/assets/hub.v1.js -Method Head -SkipHeaderValidation
+irm https://hub.resonai.uk/docs/status/kpis.json -Method Head -SkipHeaderValidation
 ```
 
 ### Acceptance Criteria
 
 **DNS Resolution:**
 - ✅ NS records show: amit.ns.cloudflare.com, chelsea.ns.cloudflare.com
-- ✅ CNAME shows: hub.resonai.io → moneycat-inc.github.io
+- ✅ CNAME shows: hub.resonai.uk → moneycat-inc.github.io
 - ✅ A records resolve to GitHub Pages IPs
 
 **Production Endpoints:**

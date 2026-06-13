@@ -1,0 +1,230 @@
+{
+  "scenarios": {
+    "light-load": {
+      "name": "Light Load Test",
+      "description": "Gentle load for baseline testing and development environments",
+      "duration": 60,
+      "settings": {
+        "multiSource": {
+          "frequency": 2,
+          "enabled": true
+        },
+        "metrics": {
+          "volume": 3,
+          "enabled": false
+        },
+        "noise": {
+          "intensity": 1,
+          "enabled": false
+        },
+        "probes": {
+          "interval": 10,
+          "enabled": true
+        },
+        "traces": {
+          "rate": 1,
+          "enabled": false
+        },
+        "system": {
+          "intensity": 2,
+          "enabled": false
+        },
+        "fixture": {
+          "speed": 1,
+          "enabled": false
+        }
+      },
+      "expectedThroughput": "~3 logs/sec",
+      "useCase": "Development testing, baseline validation"
+    },
+    "medium-load": {
+      "name": "Medium Load Test",
+      "description": "Moderate load for staging environments and performance validation",
+      "duration": 120,
+      "settings": {
+        "multiSource": {
+          "frequency": 5,
+          "enabled": true
+        },
+        "metrics": {
+          "volume": 8,
+          "enabled": true
+        },
+        "noise": {
+          "intensity": 2,
+          "enabled": false
+        },
+        "probes": {
+          "interval": 5,
+          "enabled": true
+        },
+        "traces": {
+          "rate": 3,
+          "enabled": true
+        },
+        "system": {
+          "intensity": 4,
+          "enabled": true
+        },
+        "fixture": {
+          "speed": 2,
+          "enabled": false
+        }
+      },
+      "expectedThroughput": "~25 logs/sec",
+      "useCase": "Staging validation, performance testing"
+    },
+    "chaos-test": {
+      "name": "Chaos Engineering Test",
+      "description": "High-intensity load with error injection for resilience testing",
+      "duration": 180,
+      "settings": {
+        "multiSource": {
+          "frequency": 8,
+          "enabled": true
+        },
+        "metrics": {
+          "volume": 15,
+          "enabled": true
+        },
+        "noise": {
+          "intensity": 4,
+          "enabled": true
+        },
+        "probes": {
+          "interval": 2,
+          "enabled": true
+        },
+        "traces": {
+          "rate": 5,
+          "enabled": true
+        },
+        "system": {
+          "intensity": 7,
+          "enabled": true
+        },
+        "fixture": {
+          "speed": 5,
+          "enabled": true
+        }
+      },
+      "expectedThroughput": "~80 logs/sec",
+      "useCase": "Production resilience, chaos engineering"
+    },
+    "ramp-up": {
+      "name": "Ramp-Up Test",
+      "description": "Gradually increasing load to find breaking points",
+      "duration": 300,
+      "phases": [
+        {
+          "name": "Phase 1 - Warm-up",
+          "duration": 60,
+          "settings": {
+            "multiSource": { "frequency": 2, "enabled": true },
+            "metrics": { "volume": 3, "enabled": false },
+            "noise": { "intensity": 1, "enabled": false },
+            "probes": { "interval": 10, "enabled": true },
+            "traces": { "rate": 1, "enabled": false },
+            "system": { "intensity": 2, "enabled": false },
+            "fixture": { "speed": 1, "enabled": false }
+          }
+        },
+        {
+          "name": "Phase 2 - Moderate",
+          "duration": 60,
+          "settings": {
+            "multiSource": { "frequency": 5, "enabled": true },
+            "metrics": { "volume": 8, "enabled": true },
+            "noise": { "intensity": 2, "enabled": false },
+            "probes": { "interval": 5, "enabled": true },
+            "traces": { "rate": 3, "enabled": true },
+            "system": { "intensity": 4, "enabled": true },
+            "fixture": { "speed": 2, "enabled": false }
+          }
+        },
+        {
+          "name": "Phase 3 - High Load",
+          "duration": 60,
+          "settings": {
+            "multiSource": { "frequency": 8, "enabled": true },
+            "metrics": { "volume": 15, "enabled": true },
+            "noise": { "intensity": 3, "enabled": true },
+            "probes": { "interval": 3, "enabled": true },
+            "traces": { "rate": 5, "enabled": true },
+            "system": { "intensity": 7, "enabled": true },
+            "fixture": { "speed": 3, "enabled": true }
+          }
+        },
+        {
+          "name": "Phase 4 - Peak Load",
+          "duration": 120,
+          "settings": {
+            "multiSource": { "frequency": 10, "enabled": true },
+            "metrics": { "volume": 20, "enabled": true },
+            "noise": { "intensity": 4, "enabled": true },
+            "probes": { "interval": 2, "enabled": true },
+            "traces": { "rate": 7, "enabled": true },
+            "system": { "intensity": 9, "enabled": true },
+            "fixture": { "speed": 5, "enabled": true }
+          }
+        }
+      ],
+      "expectedThroughput": "2→25→50→100+ logs/sec",
+      "useCase": "Breaking point analysis, capacity planning"
+    },
+    "burst-test": {
+      "name": "Burst Test",
+      "description": "Short bursts of high load to test spike handling",
+      "duration": 240,
+      "phases": [
+        {
+          "name": "Idle Period",
+          "duration": 30,
+          "settings": {
+            "multiSource": { "frequency": 1, "enabled": true },
+            "metrics": { "volume": 2, "enabled": false },
+            "noise": { "intensity": 1, "enabled": false },
+            "probes": { "interval": 15, "enabled": true },
+            "traces": { "rate": 1, "enabled": false },
+            "system": { "intensity": 1, "enabled": false },
+            "fixture": { "speed": 1, "enabled": false }
+          }
+        },
+        {
+          "name": "Burst Load",
+          "duration": 10,
+          "settings": {
+            "multiSource": { "frequency": 15, "enabled": true },
+            "metrics": { "volume": 25, "enabled": true },
+            "noise": { "intensity": 5, "enabled": true },
+            "probes": { "interval": 1, "enabled": true },
+            "traces": { "rate": 10, "enabled": true },
+            "system": { "intensity": 10, "enabled": true },
+            "fixture": { "speed": 8, "enabled": true }
+          }
+        },
+        {
+          "name": "Recovery Period",
+          "duration": 30,
+          "settings": {
+            "multiSource": { "frequency": 2, "enabled": true },
+            "metrics": { "volume": 5, "enabled": false },
+            "noise": { "intensity": 1, "enabled": false },
+            "probes": { "interval": 10, "enabled": true },
+            "traces": { "rate": 2, "enabled": false },
+            "system": { "intensity": 3, "enabled": true },
+            "fixture": { "speed": 2, "enabled": false }
+          }
+        }
+      ],
+      "expectedThroughput": "1→150+→5 logs/sec (cyclical)",
+      "useCase": "Spike handling, recovery testing"
+    }
+  },
+  "metadata": {
+    "version": "1.0",
+    "author": "BossCat OEM",
+    "created": "2025-01-08",
+    "description": "Custom stress testing scenarios for Resonai [OTel] observability pipeline validation"
+  }
+}
