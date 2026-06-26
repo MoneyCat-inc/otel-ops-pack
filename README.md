@@ -121,16 +121,16 @@ Live metrics: [Status Dashboard](docs/status.html)
 
 ```powershell
 # Fast health check
-pwsh BRAV\SCPT\quick-monitor.ps1
+pwsh -File scripts\quick-monitor.ps1
 
 # Detailed monitoring
-pwsh scripts\monitor-optimized-pipeline.ps1 -DurationMinutes 10
+pwsh -File scripts\monitor-optimized-pipeline.ps1 -DurationMinutes 10
 
-# Generate canary test
-pwsh canary-test.ps1
+# Generate and verify OTLP canary signals
+pwsh -File scripts\windows\test-otlp-e2e.ps1
 
-# Verify pipeline end-to-end
-pwsh verify-pipeline.ps1
+# Verify pipeline readiness
+pwsh -File scripts\preflight-health-check.ps1
 ```
 
 ---
