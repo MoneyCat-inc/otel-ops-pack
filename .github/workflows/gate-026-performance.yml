@@ -58,9 +58,11 @@ jobs:
           $retries = 0
           while ($retries -lt $maxRetries) {
             try {
-              $response = Invoke-RestMethod -Uri "http://localhost:5555/health" -TimeoutSec 2
-              Write-Host "✅ App started: $($response.status)"
-              break
+              $response = Invoke-WebRequest -Uri "http://127.0.0.1:5555/health" -UseBasicParsing -TimeoutSec 2
+              if ($response.StatusCode -eq 200) {
+                Write-Host "✅ App started: HTTP $($response.StatusCode)"
+                break
+              }
             } catch {
               $retries++
               Write-Host "Waiting for app to start... ($retries/$maxRetries)"
