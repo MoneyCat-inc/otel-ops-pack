@@ -15,7 +15,7 @@
 param(
     [string]$OutputPath = 'docs/observability/snapshots',
     
-    [string]$ECRRPath = 'docs/ecrr/ECRR_REPORTS',
+    [string]$ECRRPath = 'CHAR/ECRR/ECRR_REPORTS',
     
     [int]$MaxConcurrentAgents = 0,
     
@@ -573,3 +573,4 @@ if ($nightlyResults.SuccessRate -ge 90) {
 } else {
     Write-Host "⚠️ Review failed agents before next nightly run" -ForegroundColor Yellow
 }
+

@@ -33,7 +33,7 @@
   - `artifacts/ecrr-01-playwright-isolation.json`
   - `artifacts/ecrr-01-playwright-offline.json`
   - `ECRR-01-SMOKE-TEST-RESULTS.md`
-  - `docs/ECRR_REPORTS/2025-09-29-ecrr-01-consolidated.md`
+  - `CHAR/ECRR/ECRR_REPORTS/2025-09-29-ecrr-01-consolidated.md`
 
 ### Role
 - Actor: Cursor Agent — Observability Copilot
@@ -195,3 +195,4 @@
 - Integrates with observability stack and monitoring systems
 
 ---
+

@@ -47,7 +47,7 @@ BossCat OEM has reviewed and approved Gate #017 Readiness Package.
 `DELT/ARTF/gate-verification-results-20251026-readiness.json`
 
 ✅ **ECRR Report:**  
-`docs/ecrr/ECRR_REPORTS/ECRR_GATE_017_READY_20251026.md`
+`CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_017_READY_20251026.md`
 
 ✅ **Executive Summary:**  
 `GATE_017_EXECUTIVE_SUMMARY.md`
@@ -176,7 +176,7 @@ BossCat OEM has reviewed and approved Gate #017 Readiness Package.
 @cat approve-gate #017
 
 Status: GREEN
-Evidence: docs/ecrr/ECRR_REPORTS/ECRR_GATE_017_READY_20251026.md
+Evidence: CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_017_READY_20251026.md
 Artifact Commit: 35a601e3e86c8ec066ddaec5229090dd8d8bb627
 Verification: GATE-CORE 8/8 ✅, GATE-SITE ✅, GOVERNANCE 100% ✅
 Blockers: 0
@@ -239,4 +239,5 @@ Gate #017 approved by BossCat OEM. All gate matrix checks PASS. Working tree cle
 ---
 
 🐾 *Gate #017 approved. Proceed with hand-off and recordkeeping.*
+
 

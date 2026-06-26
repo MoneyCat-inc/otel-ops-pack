@@ -198,7 +198,7 @@ GROUP BY ts ORDER BY ts;
 - ✅ `scripts/import-queue-dashboard.ps1` - Executed successfully
 - ✅ `docs/queue-steward-dashboard.json` - Ready for manual import
 - ✅ `docs/SIGNOZ_ECRR_COMPLIANCE_ALERT_GUIDE.md` - Updated with verification queries
-- ✅ `docs/ECRR_REPORTS/2025-09-29-signoz-dashboard-import.md` - This report
+- ✅ `CHAR/ECRR/ECRR_REPORTS/2025-09-29-signoz-dashboard-import.md` - This report
 
 ## 🎭 Role
 
@@ -354,4 +354,5 @@ GROUP BY ts ORDER BY ts;
 - Scope:
 
 ---
+
 

@@ -1,6 +1,6 @@
 [CmdletBinding()]
 param(
-    [string]$ReportsPath = "docs/ECRR_REPORTS",
+    [string]$ReportsPath = "CHAR/ECRR/ECRR_REPORTS",
     [int]$Threshold = 95,
     [switch]$FailOnRegression = $false,
     [string]$OutputPath = "artifacts",
@@ -224,3 +224,4 @@ Write-Host ""
 Write-Host "🎉 ECRR CI/CD Integration completed!" -ForegroundColor Green
 
 exit 0
+

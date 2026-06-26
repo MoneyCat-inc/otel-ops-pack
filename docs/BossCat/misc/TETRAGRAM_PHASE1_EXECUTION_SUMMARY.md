@@ -10,7 +10,7 @@ What changed
 - Job summaries appended to GITHUB_STEP_SUMMARY for critical workflows.
 
 Evidence
-- ECRR: docs/ecrr/ECRR_REPORTS/ECRR_PHASE1_IMMEDIATE_WINS_20251010.md
+- ECRR: CHAR/ECRR/ECRR_REPORTS/ECRR_PHASE1_IMMEDIATE_WINS_20251010.md
 - Audit: CHAR/EVID/audit/workflow-concurrency-audit-20251010-090838.json
 - Ledger: .agent/EVIDENCE.log (phase1_immediate_wins_complete)
 
@@ -23,3 +23,4 @@ Next
 - Validate concurrency cancellation on PR with multiple pushes.
 - Extend job summaries to remaining workflows.
 - Begin Phase 2 (Loop-Closing Machine MVP) per bot-native-otel-enhancements.plan.md
+

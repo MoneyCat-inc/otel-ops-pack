@@ -177,6 +177,7 @@ Before submitting this report, verify:
 **Usage**:
 ```powershell
 # Create new report from template
-Copy-Item docs\ecrr\ECRR_TEMPLATE.md docs\ecrr\ECRR_REPORTS\ECRR_GATE_XXX_YYYYMMDD.md
+Copy-Item docs\ecrr\ECRR_TEMPLATE.md CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_XXX_YYYYMMDD.md
 ```
+
 

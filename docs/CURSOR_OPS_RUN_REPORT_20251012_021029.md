@@ -65,7 +65,7 @@ DELT/ARTF/cursor-runs/run_20251012_021029/
 **Note:** status.png files not present in iteration directories (see Screenshots section)
 
 ### ECRR Report
-**File:** `docs/ecrr/ECRR_REPORTS/ECRR_CURSOR_RUN_20251012_021029.md` ✅
+**File:** `CHAR/ECRR/ECRR_REPORTS/ECRR_CURSOR_RUN_20251012_021029.md` ✅
 
 ### Dashboard Data
 **File:** `docs/status/tests.json` ✅ **UPDATED**
@@ -327,4 +327,5 @@ Opening `docs/status.html` should show:
 ---
 
 _End of Cursor Ops Run Report_
+
 

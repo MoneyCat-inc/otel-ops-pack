@@ -1,5 +1,5 @@
 param(
-  [string]$SigNozOtlpEndpoint = 'http://localhost:14318/v1/logs',
+  [string]$SigNozOtlpEndpoint = 'http://localhost:4318/v1/logs',
   [string]$SidecarHealthUrl = 'http://localhost:8003/health/deep'
 )
 $ErrorActionPreference = 'Stop'

@@ -137,7 +137,7 @@ npx tsx scripts/social/post.ts
 - `BLUESKY_CLI_SUMMARY.md` - Strategy guide
 - `BLUESKY_PROFILE_UPDATE_SUCCESS.md` - Personal profile update
 - `SOCM_MILESTONE_A_COMPLETE.md` - Milestone completion
-- `docs/ecrr/ECRR_REPORTS/ECRR_SOCM_MILESTONE_A_20251018.md` - ECRR report
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_SOCM_MILESTONE_A_20251018.md` - ECRR report
 - `docs/social/README.md` - SOCM lane documentation
 
 **Evidence**:
@@ -499,4 +499,5 @@ npx tsx scripts/social/post.ts
 **Next Session**: Milestone B implementation (after gate)
 
 🦋 **Bluesky Integration: Foundation Complete**
+
 

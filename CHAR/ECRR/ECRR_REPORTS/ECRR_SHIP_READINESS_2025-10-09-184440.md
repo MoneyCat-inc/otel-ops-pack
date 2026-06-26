@@ -67,7 +67,7 @@
 - Issue: 391 ECRR reports scattered across 3 locations
 - Breakdown: 
   - CHAR/EVID/ECRR_REPORTS/: 3 files
-  - CHAR/DOCS/docs/ECRR_REPORTS/: 387 files  
+  - CHAR/DOCS/CHAR/ECRR/ECRR_REPORTS/: 387 files  
   - CHAR/ECRR/ECRR_REPORTS/: 2 files (pre-existing)
 - Impact: Difficult to maintain and track compliance
 - Resolution: Consolidate all to CHAR/ECRR/ECRR_REPORTS/
@@ -138,7 +138,7 @@ Git history preserved: Yes (git mv used)
 - **Action**: Consolidated all ECRR reports to single location
 - **Commands**: 
   - Moved 3 files from CHAR/EVID/ECRR_REPORTS/
-  - Moved 387 files from CHAR/DOCS/docs/ECRR_REPORTS/
+  - Moved 387 files from CHAR/DOCS/CHAR/ECRR/ECRR_REPORTS/
   - Preserved 2 pre-existing files in CHAR/ECRR/ECRR_REPORTS/
 - **Method**: Used `git mv` to preserve history
 - **Result**: 391 reports in unified location with README index
@@ -645,4 +645,5 @@ Get-ChildItem CHAR/ECRR/ECRR_REPORTS -File -Recurse | Measure-Object
 *"Ship readiness substantially complete. Guardrails passing. ECRR consolidated. SigNoz enhanced. Manual steps documented. Ready for final review and deployment decision."*
 
 **END OF ECRR REPORT**
+
 

@@ -126,7 +126,7 @@
     "ecrr_evidence": {
       "status": "COMPLETE",
       "reports": "35+",
-      "location": "docs/ecrr/ECRR_REPORTS/"
+      "location": "CHAR/ECRR/ECRR_REPORTS/"
     },
     "documentation": {
       "status": "ENHANCED",
@@ -136,7 +136,7 @@
       "status": "OPERATIONAL",
       "impact": "POSITIVE",
       "recovered": "2025-10-17T23:39:23Z",
-      "evidence": "docs/ecrr/ECRR_REPORTS/ECRR_DOCKER_TROUBLESHOOTING_20251017.md"
+      "evidence": "CHAR/ECRR/ECRR_REPORTS/ECRR_DOCKER_TROUBLESHOOTING_20251017.md"
     }
   },
   "infrastructure": {
@@ -146,7 +146,7 @@
       "version": "4.48.0 (207573)",
       "engine_version": "28.5.1",
       "recovered_at": "2025-10-17T23:39:23Z",
-      "evidence": "docs/ecrr/ECRR_REPORTS/ECRR_DOCKER_TROUBLESHOOTING_20251017.md"
+      "evidence": "CHAR/ECRR/ECRR_REPORTS/ECRR_DOCKER_TROUBLESHOOTING_20251017.md"
     },
     "wsl2": {
       "status": "RUNNING",
@@ -184,7 +184,7 @@
       "status": "STAGED"
     },
     {
-      "file": "docs/ecrr/ECRR_REPORTS/ECRR_GATE_READY_20251017.md",
+      "file": "CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_READY_20251017.md",
       "type": "comprehensive_ecrr",
       "lines": "~550",
       "status": "STAGED"
@@ -215,7 +215,7 @@
     "clean": "COMPLETE",
     "report": "COMPLETE",
     "role": "COMPLETE",
-    "evidence_location": "docs/ecrr/ECRR_REPORTS/ECRR_GATE_READY_20251017.md"
+    "evidence_location": "CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_READY_20251017.md"
   },
   "bosscatl_charter_compliance": {
     "local_first": true,
@@ -244,7 +244,7 @@
         "status": "COMPLETE",
         "completed_at": "2025-10-17T23:39:23Z",
         "resolution_time_seconds": 25,
-        "evidence": "docs/ecrr/ECRR_REPORTS/ECRR_DOCKER_TROUBLESHOOTING_20251017.md"
+        "evidence": "CHAR/ECRR/ECRR_REPORTS/ECRR_DOCKER_TROUBLESHOOTING_20251017.md"
       },
       {
         "action": "Monitor Deployments",
@@ -314,4 +314,5 @@
     "total_ecrr_reports": "35+"
   }
 }
+
 

@@ -26,7 +26,7 @@ param(
     [string]$SignozUrl = "http://localhost:8080",
     [string[]]$BenchmarkPaths = @("C:\Users\fubum\nodejs_benchmark", "C:\Users\fubum\codex_local_test"),
     [string]$OutputRoot = "artifacts/nightly-tetragrammaton-ci",
-    [string]$ECRRReportDir = "docs/ecrr/ECRR_REPORTS",
+    [string]$ECRRReportDir = "CHAR/ECRR/ECRR_REPORTS",
     [string]$BossCatSnapshotDir = "docs/observability/snapshots",
     [switch]$DryRun,
     [switch]$IncludeDashboardExport = $true,
@@ -445,3 +445,4 @@ Write-Host "📊 Cross-Language Capability: PROVEN" -ForegroundColor Yellow
 Write-Host "🏛️ BossCat Governance: COMPLIANT" -ForegroundColor Yellow
 Write-Host "📈 Evidence Pipeline: ACTIVE" -ForegroundColor Yellow
 Write-Host "⏱️ Total Duration: $([math]::Round($script:nightlyData.Duration, 2)) minutes" -ForegroundColor Cyan
+

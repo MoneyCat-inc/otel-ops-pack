@@ -320,7 +320,7 @@ pwsh -File scripts/verify-iona-gate.ps1 -Site prod -Strict
 - SUCCESSOR_HANDOFF_20251011.md (this document)
 
 **All ECRR Reports:**
-- `docs/ecrr/ECRR_REPORTS/` (60 reports)
+- `CHAR/ECRR/ECRR_REPORTS/` (60 reports)
 - Including: ECRR_GATE_SITE_MATRIX_DEPLOYMENT_20251011.md (this session)
 
 ### Key Documentation
@@ -364,7 +364,7 @@ ROLE: cursor{implementer} under BossCat OEM authority
 
 ### Evidence Requirements
 - All major operations produce ECRR reports
-- Reports filed in docs/ecrr/ECRR_REPORTS/
+- Reports filed in CHAR/ECRR/ECRR_REPORTS/
 - Artifacts stored in DELT/ARTF/
 - Session evidence in CHAR/EVID/
 
@@ -626,7 +626,7 @@ gh run list --limit 10
 - Operations log: `BOSSCAT_LOG.md`
 - Agent charter: `AGENTS.md`
 - System status: `STATUS.md`
-- ECRR reports: `docs/ecrr/ECRR_REPORTS/`
+- ECRR reports: `CHAR/ECRR/ECRR_REPORTS/`
 
 ---
 
@@ -732,4 +732,5 @@ gh run list --limit 10
 **Production Authorized · All Systems GO** 🐾
 
 **End of Handoff**
+
 

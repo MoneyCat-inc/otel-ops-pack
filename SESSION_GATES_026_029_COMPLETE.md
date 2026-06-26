@@ -92,7 +92,7 @@ Single-track implementation:
 6. `GATE_029_SCOPE.md` — Scope document
 7. `GATE_029_IMPLEMENTATION_COMPLETE.md` — Implementation summary
 8. `GATE_029_FINAL_SUMMARY.md` — Final summary
-9. `docs/ecrr/ECRR_REPORTS/ECRR_GATE_029_READY_20251027.md` — ECRR report
+9. `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_029_READY_20251027.md` — ECRR report
 
 **Changes:** 1,600 insertions
 
@@ -222,7 +222,7 @@ Single-track implementation:
 
 **Gate #029 (3 files):**
 - Scope, implementation complete, final summary
-- ECRR report (docs/ecrr/ECRR_REPORTS/ECRR_GATE_029_READY_20251027.md)
+- ECRR report (CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_029_READY_20251027.md)
 
 **Total:** 11 comprehensive documentation files
 
@@ -393,4 +393,5 @@ Extract shared helpers to reduce LOC:
 **Repository:** MoneyCat-inc/otel-ops-pack  
 **Tags:** gate-026-green-2025-10-27, gate-029-green-2025-10-27  
 **Executor:** Cursor{Implementer} standing by for next mission. 🎯
+
 

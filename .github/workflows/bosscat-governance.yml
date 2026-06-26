@@ -80,7 +80,7 @@ jobs:
             
             if (-not $ecrrReports) {
               Write-Host "⚠️ Script changes without ECRR documentation" -ForegroundColor Yellow
-              Write-Host "Consider adding ECRR report to docs/ecrr/ECRR_REPORTS/" -ForegroundColor Gray
+              Write-Host "Consider adding ECRR report to CHAR/ECRR/ECRR_REPORTS/" -ForegroundColor Gray
             } else {
               Write-Host "✅ ECRR documentation present" -ForegroundColor Green
             }
@@ -147,5 +147,6 @@ jobs:
           name: bosscat-governance-${{ github.run_number }}
           path: artifacts/bosscat-governance-report.md
           retention-days: 90
+
 
 

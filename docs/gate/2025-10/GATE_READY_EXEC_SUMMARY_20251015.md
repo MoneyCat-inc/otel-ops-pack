@@ -129,7 +129,7 @@ The Resonai [OTel] observability stack has achieved **gate-ready status** with *
 ## 📦 Evidence Package
 
 **Primary Evidence**:
-- ✅ ECRR Report: `docs/ecrr/ECRR_REPORTS/ECRR_GATE_READY_20251015_015500.md`
+- ✅ ECRR Report: `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_READY_20251015_015500.md`
 - ✅ Guardrails Output: Terminal logs (Exit Code 0)
 - ✅ SigNoz Health: API response ({"status":"ok"})
 - ✅ Docker Status: Container logs (7/7 healthy)
@@ -190,7 +190,7 @@ The Resonai [OTel] observability stack has achieved **gate-ready status** with *
 
 **1. Commit Structural Fixes**
 ```bash
-git add DELT/CONF/adot/*.yaml CHAR/EVID/conveyor/ docs/ecrr/ECRR_REPORTS/ECRR_GATE_READY_20251015_015500.md
+git add DELT/CONF/adot/*.yaml CHAR/EVID/conveyor/ CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_READY_20251015_015500.md
 git commit -m "fix(gap): remediate guardrails violations - ADOT configs to DELT/CONF"
 ```
 
@@ -310,4 +310,5 @@ As **cursor{implementer}** operating under Fubumaki executive delegation, I cert
 ---
 
 🐾 **GATE CERTIFIED · 100% COMPLIANT · ZERO BLOCKERS · READY FOR PRODUCTION** 🐾
+
 

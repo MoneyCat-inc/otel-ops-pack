@@ -19,7 +19,7 @@
 - **Contradiction:** Initial assessment claimed "Synthetic Span ✅" - **FALSE**
 - **Files with false claims:**
   - `docs/GATE_STATUS_DASHBOARD.md:49`
-  - `docs/ecrr/ECRR_REPORTS/ECRR_GATE_008_READY_20251022.md:104`
+  - `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_008_READY_20251022.md:104`
   - `docs/gate/2025-10/GATE_008_APPROVAL_TEMPLATE.md:28`
 
 ### MAJOR ISSUE #1 ⚠️
@@ -47,7 +47,7 @@
   - Untracked: 4 gate artifacts (JSON, reports, templates)
 - **Files with false claims:**
   - `docs/GATE_STATUS_DASHBOARD.md:70`
-  - `docs/ecrr/ECRR_REPORTS/ECRR_GATE_008_READY_20251022.md:70`
+  - `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_008_READY_20251022.md:70`
   - `docs/gate/2025-10/GATE_008_APPROVAL_TEMPLATE.md:45`
 
 ### MAJOR ISSUE #3 ⚠️
@@ -160,7 +160,7 @@ Start-Service otelcol-contrib
 - 🔄 `DELT/ARTF/gate-verification-results-20251022.json` - Will update verdict to BLOCKED
 
 **Original (Now Incorrect) Files:**
-- ⚠️ `docs/ecrr/ECRR_REPORTS/ECRR_GATE_008_READY_20251022.md` - Contains false claims
+- ⚠️ `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_008_READY_20251022.md` - Contains false claims
 - ⚠️ `docs/gate/2025-10/GATE_008_APPROVAL_TEMPLATE.md` - Based on false assessment
 
 ---
@@ -187,4 +187,5 @@ _Initial READY assessment retracted. Truth-telling in progress. Working to unblo
 ---
 
 **End of BLOCKED Status Document**
+
 

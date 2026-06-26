@@ -17,9 +17,10 @@
     "docs/cheatsheets": "present",
     "docs/IONA_ERRORS.md": "present",
     "docs/status/tests.json": "present",
-    "docs/ecrr/ECRR_REPORTS": "present",
+    "CHAR/ECRR/ECRR_REPORTS": "present",
     ".github/workflows/bosscat-gate-verify.yml": "present",
     "index.html": "present",
     "docs/status.html": "present"
   }
 }
+

@@ -174,7 +174,7 @@ Failed: 0
    ```
 3. Hit `https://hub.resonai.uk/robots.txt`
 4. Confirm trace in SigNoz
-5. Screenshot → `docs/ecrr/ECRR_REPORTS/OTEL_SYNTH_<date>.md`
+5. Screenshot → `CHAR/ECRR/ECRR_REPORTS/OTEL_SYNTH_<date>.md`
 
 ---
 
@@ -258,4 +258,5 @@ artifacts/hub-smoke-<timestamp>.json
 **Next Action:** Complete Steps 1-3 above, then run verification scripts.
 
 **Signal:** Reply with "Pages enabled + DNS configured" when ready for automated verification.
+
 

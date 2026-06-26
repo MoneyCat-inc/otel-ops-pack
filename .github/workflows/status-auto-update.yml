@@ -147,7 +147,7 @@ jobs:
             'artifacts/gate-verification-results.json',
             'docs/status/tests.json',
             'PR_COMMENT_IONA_GATE_002_FINAL.md',  # Temporary: line ending normalization
-            'docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md'  # Temporary: line ending normalization
+            'CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md'  # Temporary: line ending normalization
           )
           
           $bad = $changed | Where-Object { 
@@ -324,5 +324,6 @@ jobs:
           - Budget: Enforced
           - JSON validation: PASS
           SUMMARY
+
 
 

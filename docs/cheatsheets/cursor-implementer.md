@@ -14,7 +14,7 @@ What it does
 - Probes SigNoz UI `/api/v1/health` and collector (13134/healthz or 18888/metrics)
 - Captures status page screenshot under `docs/observability/snapshots/`
 - Writes dashboard data to `docs/status/tests.json`
-- Produces an ECRR report under `docs/ecrr/ECRR_REPORTS/`
+- Produces an ECRR report under `CHAR/ECRR/ECRR_REPORTS/`
 - Organizes per-run artifacts in `DELT/ARTF/cursor-runs/run_<timestamp>/`
 
 Options
@@ -30,9 +30,10 @@ Outputs
 - DELT/ARTF/cursor-runs/run_YYYYMMDD_HHMMSS/iter-XX/
   - gate-results.json, summary.json, status.png, status.json
 - docs/status/tests.json: gate dashboard input
-- docs/ecrr/ECRR_REPORTS/ECRR_CURSOR_RUN_<timestamp>.md
+- CHAR/ECRR/ECRR_REPORTS/ECRR_CURSOR_RUN_<timestamp>.md
 
 Notes
 - SigNoz UI must be reachable at `http://127.0.0.1:8080`
 - Collector health is probed via host ports 13134 or 18888
 - Screenshots are CSP-safe (served from localhost)
+

@@ -20,8 +20,9 @@
     "docs/observability/snapshots": "present",
     "docs/IONA_ERRORS.md": "present",
     "docs/cheatsheets": "present",
-    "docs/ecrr/ECRR_REPORTS": "present",
+    "CHAR/ECRR/ECRR_REPORTS": "present",
     "index.html": "present",
     "docs/status.html": "present"
   }
 }
+

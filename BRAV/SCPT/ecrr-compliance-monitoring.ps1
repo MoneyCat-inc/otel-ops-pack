@@ -1,7 +1,7 @@
 # ECRR Automated Compliance Monitoring System
 
 param(
-    [string]$ReportPath = "docs/ECRR_REPORTS",
+    [string]$ReportPath = "CHAR/ECRR/ECRR_REPORTS",
     [string]$OutputPath = "artifacts/ecrr-compliance-monitoring",
     [string]$ConfigPath = "config/ecrr-monitoring.json",
     [switch]$Continuous,
@@ -427,3 +427,4 @@ function Start-ECRRComplianceMonitoring {
 if ($MyInvocation.InvocationName -ne '.') {
     Start-ECRRComplianceMonitoring -ReportPath $ReportPath -OutputPath $OutputPath -ConfigPath $ConfigPath -Continuous:$Continuous -Alert:$Alert -Dashboard:$Dashboard -Threshold $Threshold
 }
+

@@ -29,7 +29,7 @@
 | **Synthetic span captured** | ✅ | iona.boot via OTLP HTTP |
 | **k6 JSON with P95 ≤ 200ms** | ✅ | baseline-test P95=1.92ms |
 | **Snapshots present** | ✅ | 15 files in docs/observability/snapshots/ |
-| **ECRR MD+JSON created** | ✅ | docs/ecrr/ECRR_REPORTS/ECRR_GPU_FIX_20251011.md |
+| **ECRR MD+JSON created** | ✅ | CHAR/ECRR/ECRR_REPORTS/ECRR_GPU_FIX_20251011.md |
 | **BossCat logs updated** | ✅ | Root + docs/BossCat/BOSSCAT_LOG.md |
 | **Guardrails check exit 0** | ✅ | Clean pass, 0 violations |
 | **Budgets ≤10 files, ≤200 LOC** | ✅ | 6 files, ~300 total (docs excluded) |
@@ -59,7 +59,7 @@
 3. **.github/workflows/bosscat-gate-verify.yml** (modified)
    - Added GPU_FIX lane step
    - Fixed DELT/ART → DELT/ARTF path errors
-   - Added docs/ecrr/ECRR_REPORTS directory creation
+   - Added CHAR/ECRR/ECRR_REPORTS directory creation
    - Added docs/observability/snapshots directory creation
 
 4. **DELT/ARTF/gate-verification-results.json** (created/updated)
@@ -67,7 +67,7 @@
    - All metrics captured
    - Timestamps, attempts, status
 
-5. **docs/ecrr/ECRR_REPORTS/ECRR_GPU_FIX_20251011.md** (created)
+5. **CHAR/ECRR/ECRR_REPORTS/ECRR_GPU_FIX_20251011.md** (created)
    - ECRR report with all evidence
    - Lane: GPU_FIX
    - Ports: 5317=True, 5318=True
@@ -130,7 +130,7 @@ DELT/ARTF/gate-verification-results.json
 
 **ECRR Report:**
 ```
-docs/ecrr/ECRR_REPORTS/ECRR_GPU_FIX_20251011.md
+CHAR/ECRR/ECRR_REPORTS/ECRR_GPU_FIX_20251011.md
 ```
 
 **k6 Test File:**
@@ -146,7 +146,7 @@ ALFA/TEST/unit/k6/baseline-test.js
 ### Links to Artifacts
 
 - **Gate Verification Results:** [DELT/ARTF/gate-verification-results.json](../../DELT/ARTF/gate-verification-results.json)
-- **ECRR Report:** [docs/ecrr/ECRR_REPORTS/ECRR_GPU_FIX_20251011.md](../../docs/ecrr/ECRR_REPORTS/ECRR_GPU_FIX_20251011.md)
+- **ECRR Report:** [CHAR/ECRR/ECRR_REPORTS/ECRR_GPU_FIX_20251011.md](../../CHAR/ECRR/ECRR_REPORTS/ECRR_GPU_FIX_20251011.md)
 - **GPU_FIX Lane Script:** [scripts/gpu-fix-lane.ps1](../../scripts/gpu-fix-lane.ps1)
 - **Playwright Export Script:** [scripts/playwright-dashboard-export.ps1](../../scripts/playwright-dashboard-export.ps1)
 
@@ -285,7 +285,7 @@ Exit code: 0
 **Directories Created:**
 - `DELT/ARTF/` - Evidence artifacts
 - `docs/BossCat/reports/` - BOSS reports
-- `docs/ecrr/ECRR_REPORTS/` - ECRR reports
+- `CHAR/ECRR/ECRR_REPORTS/` - ECRR reports
 - `docs/observability/snapshots/` - Dashboard snapshots
 
 **Path Corrections:**
@@ -351,7 +351,7 @@ Exit code: 0
 ### Artifact Links
 
 - **Evidence JSON:** [DELT/ARTF/gate-verification-results.json](../../DELT/ARTF/gate-verification-results.json)
-- **ECRR Report:** [docs/ecrr/ECRR_REPORTS/ECRR_GPU_FIX_20251011.md](../../docs/ecrr/ECRR_REPORTS/ECRR_GPU_FIX_20251011.md)
+- **ECRR Report:** [CHAR/ECRR/ECRR_REPORTS/ECRR_GPU_FIX_20251011.md](../../CHAR/ECRR/ECRR_REPORTS/ECRR_GPU_FIX_20251011.md)
 - **GPU_FIX Script:** [scripts/gpu-fix-lane.ps1](../../scripts/gpu-fix-lane.ps1)
 - **Playwright Script:** [scripts/playwright-dashboard-export.ps1](../../scripts/playwright-dashboard-export.ps1)
 - **Workflow:** [.github/workflows/bosscat-gate-verify.yml](../../.github/workflows/bosscat-gate-verify.yml)
@@ -395,4 +395,5 @@ Exit code: 0
 *Evidence comprehensive. Latency excellent. Gate GREEN. Mission complete.*
 
 🐾 **BossCat OEM** · Resonai [OTel] · MoneyCat Inc
+
 

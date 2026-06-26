@@ -44,7 +44,7 @@
 2. ✅ `GATE_029_EXECUTIVE_SUMMARY.md` — 1-page summary
 3. ✅ `GATE_029_COMPLETE_SUMMARY.md` — Comprehensive summary
 4. ✅ `DELT/ARTF/gate-verification-results-20251027-readiness-029.json` — Gate matrix
-5. ✅ `docs/ecrr/ECRR_REPORTS/ECRR_GATE_029_READY_20251027.md` — ECRR report
+5. ✅ `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_029_READY_20251027.md` — ECRR report
 
 ### Evidence Archived
 
@@ -246,7 +246,7 @@ Forwarding Ratio: 100% (zero packet loss)
 6. docs/gate/2025-10/GATE_029_APPROVAL.md
 7. docs/gate/2025-10/GATE_029_EXECUTIVE_SUMMARY.md
 8. DELT/ARTF/gate-verification-results-20251027-readiness-029.json
-9. docs/ecrr/ECRR_REPORTS/ECRR_GATE_029_READY_20251027.md
+9. CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_029_READY_20251027.md
 10. COLLECTOR_5317_INVESTIGATION.md
 11. COLLECTOR_5317_ROOT_CAUSE_ANALYSIS.md
 12. COLLECTOR_5317_INVESTIGATION_COMPLETE.md
@@ -257,7 +257,7 @@ Forwarding Ratio: 100% (zero packet loss)
 **Files Modified:** 4
 1. scripts/windows/health-check-otlp.ps1 (+97 LOC)
 2. docs/GATE_STATUS_DASHBOARD.md (approval status + H1 section)
-3. docs/ecrr/ECRR_REPORTS/ECRR_GATE_029_READY_20251027.md
+3. CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_029_READY_20251027.md
 4. GATE_026_TRACK_A_BLOCKER.md (resolution update)
 
 **Artifacts Generated:** 1
@@ -506,4 +506,5 @@ All planned work complete. Awaiting next directive from BossCat OEM.
 **Status:** ✅ **ALL COMPLETE**
 
 🐾 **Ready-for-Gate #029 — Execution Complete, All Objectives Met**
+
 

@@ -2,7 +2,7 @@
 # Outputs JSON + Markdown summaries in artifacts/
 
 param(
-    [string]$ReportsPath = "docs/ECRR_REPORTS",
+    [string]$ReportsPath = "CHAR/ECRR/ECRR_REPORTS",
     [string]$OutDir = "artifacts",
     [switch]$Verbose,
     # Aliases/new-style params used by orchestrators
@@ -32,7 +32,12 @@ function Test-HasSection {
 }
 
 $files = Get-ChildItem -Path $ReportsPath -Recurse -Filter *.md | Where-Object {
-    $_.FullName -notmatch "(/|\\)(archive|backup)(/|\\)" -and $_.Name -notmatch "^\.gitkeep$"
+    $_.FullName -notmatch "(/|\\)(archive|backup)(/|\\)" -and
+    $_.Name -notmatch "^\.gitkeep$" -and
+    $_.Name -ne "README.md" -and
+    $_.Name -ne "EVIDENCE_TEMPLATE.md" -and
+    $_.Name -ne "OTEL_SYNTH_TEMPLATE.md" -and
+    $_.Name -notlike "*TEMPLATE*.md"
 }
 
 $total = 0
@@ -156,3 +161,4 @@ if ($PSBoundParameters.ContainsKey('OutJson') -and -not [string]::IsNullOrWhiteS
 }
 
 return $result
+

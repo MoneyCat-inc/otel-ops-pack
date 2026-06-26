@@ -114,7 +114,7 @@ if (typeof presetData === 'string') {
 | `viz-engine-butterchurn/src/server.js` | MODIFIED | Parser integration | +30 |
 | `README.viz-engine.md` | MODIFIED | Unicode cleanup | ~10 |
 | `docs/MILKDROP_PRESET_AUTHORING.md` | MODIFIED | Unicode cleanup | ~5 |
-| `docs/ecrr/ECRR_REPORTS/ECRR_VIZ_ENGINE_REMEDIATION_2_20251023.md` | NEW | ECRR artifact | 280 |
+| `CHAR/ECRR/ECRR_REPORTS/ECRR_VIZ_ENGINE_REMEDIATION_2_20251023.md` | NEW | ECRR artifact | 280 |
 | `docs/BossCat/BOSSCAT_LOG.md` | UPDATED | Log entry | +1 |
 | `REMEDIATION_2_SUMMARY.md` | NEW | This doc | 200 |
 
@@ -189,7 +189,7 @@ if (typeof presetData === 'string') {
 ## Evidence Artifacts
 
 1. **ECRR Report:**  
-   `docs/ecrr/ECRR_REPORTS/ECRR_VIZ_ENGINE_REMEDIATION_2_20251023.md`
+   `CHAR/ECRR/ECRR_REPORTS/ECRR_VIZ_ENGINE_REMEDIATION_2_20251023.md`
 
 2. **BossCat Log Entry:**
    ```
@@ -234,4 +234,5 @@ if (typeof presetData === 'string') {
 **Status:** REMEDIATION #2 COMPLETE - AWAITING RE-REVIEW
 
 **Cat Nap Control Room - Core Requirement Restored**
+
 

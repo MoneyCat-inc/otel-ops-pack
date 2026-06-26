@@ -367,7 +367,7 @@ app.post('/audio', async (req, res) => {
 
 **Fix:** Created `/audio/history` endpoint that returns actual time series:
 
-```147:170:docs/ecrr/ECRR_REPORTS/ECRR_GATE_010_REMEDIATION_AUDIO_BRIDGE_20251024.md
+```147:170:CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_010_REMEDIATION_AUDIO_BRIDGE_20251024.md
 #### B. Audio History Endpoint (CRITICAL)
 
 **File:** viz-engine-butterchurn/src/server.js  
@@ -575,4 +575,5 @@ Every phase generated:
 **Status:** ✅ Patterns Validated, Capabilities Documented
 
 🐾 **Cat Nap Control Room - Agent Execution Insights Complete**
+
 

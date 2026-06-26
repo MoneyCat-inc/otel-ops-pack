@@ -22,7 +22,7 @@
 
 **Evidence:**
 - `DELT/ARTF/gate-verification-results.json` - Verdict: READY
-- `docs/ecrr/ECRR_REPORTS/ECRR_PR_MERGE_20251010.md` - Complete ECRR
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_PR_MERGE_20251010.md` - Complete ECRR
 - `CHAR/EVID/phases/BOSSCAT_PR_MERGE_FINAL_REPORT.md` - Executive summary
 
 **Commits Merged:**
@@ -242,4 +242,5 @@ Tech Debt: TD-001 (Windows service troubleshooting)
 **Status:** ✅ GATE APPROVED
 
 🐾 **Gate #007 Approved. Production Ready.**
+
 

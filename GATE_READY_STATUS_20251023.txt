@@ -76,7 +76,7 @@
 ║                                                                            ║
 ║  📚 DOCUMENTATION                                                         ║
 ║                                                                            ║
-║  Full Report:  docs/ecrr/ECRR_REPORTS/                                   ║
+║  Full Report:  CHAR/ECRR/ECRR_REPORTS/                                   ║
 ║                ECRR_GATE_READY_EXAMINATION_20251023_143000.md             ║
 ║                                                                            ║
 ║  Quick Summary: ECRR_EXAMINATION_SUMMARY_20251023.md                      ║
@@ -133,3 +133,4 @@
 ║  Oversight: BossCat OEM                                                   ║
 ║                                                                            ║
 ╚════════════════════════════════════════════════════════════════════════════╝
+

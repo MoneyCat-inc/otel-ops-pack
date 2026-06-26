@@ -24,7 +24,7 @@
 - **Archive Candidates Identified**: 110 reports
 - **Reports Archived**: 110 reports (100% success rate)
 - **Archive Errors**: 0 errors
-- **Archive Location**: `docs/ECRR_REPORTS/archive/`
+- **Archive Location**: `CHAR/ECRR/ECRR_REPORTS/archive/`
 
 ### Archive Results:
 - **Active Reports Remaining**: 52 reports
@@ -39,7 +39,7 @@
 - **Threshold Met**: ✅ Exceeds 95% target
 
 ### Generated Artifacts:
-- **Archive Summary**: `docs/ECRR_REPORTS/archive-summary-2025-10-02_00-47-15.json`
+- **Archive Summary**: `CHAR/ECRR/ECRR_REPORTS/archive-summary-2025-10-02_00-47-15.json`
 - **Compliance Report**: `artifacts/ecrr-compliance-report-2025-10-02_00-47-27.json`
 - **HTML Dashboard**: `artifacts/ecrr-compliance-dashboard.html`
 
@@ -121,3 +121,4 @@
 - ✅ **Production Ready**: System optimized and ready for ongoing use
 
 **ECRR Archive Management: MISSION ACCOMPLISHED!** 🎉
+

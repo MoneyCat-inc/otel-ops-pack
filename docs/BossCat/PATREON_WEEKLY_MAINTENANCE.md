@@ -61,7 +61,7 @@ State file: `artifacts/patreon-maintenance-state.json` (last completed + next du
 | Item | Canonical source |
 |------|------------------|
 | Patreon URL | `README.md`, `portal.html` |
-| Tier names/prices | This doc + `docs/ecrr/ECRR_REPORTS/ECRR_PATREON_SETUP_20251017.md` |
+| Tier names/prices | This doc + `CHAR/ECRR/ECRR_REPORTS/ECRR_PATREON_SETUP_20251017.md` |
 | Brand color | `#7C5CFF` (ECRR purple) |
 | Creative | `docs/comfort-cat/` |
 
@@ -74,3 +74,4 @@ When `artifacts/patreon-maintenance-state.json` shows `next_due_utc` in the past
 1. Run `scripts/patreon-weekly-reminder.ps1`
 2. Offer to walk through the checklist in browser (logged-in creator session required)
 3. On completion, run with `-MarkComplete` and append a one-line note to `docs/BossCat/BOSSCAT_LOG.md` if anything changed
+

@@ -35,6 +35,7 @@ ECRR
 - Role: BossCat OEM to approve remaining administrative merges
 
 Notes
-- Evidence-first: Gate artifacts exist locally (see `docs/ecrr/ECRR_REPORTS/` and `DELT/ARTF/`).
+- Evidence-first: Gate artifacts exist locally (see `CHAR/ECRR/ECRR_REPORTS/` and `DELT/ARTF/`).
 - SBOM strictness remains toggle-based; verify `SBOM_STRICT` policy prior to prod promotion.
+
 

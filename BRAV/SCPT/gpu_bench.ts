@@ -39,7 +39,7 @@ class GPUBenchmarker {
   private dashboardDir: string;
 
   constructor() {
-    this.resultsDir = 'docs/ecrr/ECRR_REPORTS';
+    this.resultsDir = 'CHAR/ECRR/ECRR_REPORTS';
     this.dashboardDir = 'docs/bench';
     
     // Ensure directories exist
@@ -298,3 +298,4 @@ if (require.main === module) {
 }
 
 export { GPUBenchmarker, BenchmarkResult, BenchmarkSuite };
+
