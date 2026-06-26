@@ -189,17 +189,17 @@ function Wait-Healthy {
 
 # Stop service process
 function Stop-ServiceProcess {
-    param([int]$PID, [switch]$Force)
+    param([int]$ProcessId, [switch]$Force)
     
-    if (-not $PID) {
+    if (-not $ProcessId) {
         Write-Host "⚠️  No PID to stop" -ForegroundColor Yellow
         return
     }
     
-    Ecrr-Log "stop" "Stopping service: PID=$PID"
+    Ecrr-Log "stop" "Stopping service: PID=$ProcessId"
     
     try {
-        $process = Get-Process -Id $PID -ErrorAction Stop
+        $process = Get-Process -Id $ProcessId -ErrorAction Stop
         
         if (-not $Force) {
             # Graceful shutdown
@@ -208,13 +208,13 @@ function Stop-ServiceProcess {
         }
         
         if (-not $process.HasExited) {
-            Ecrr-Log "stop" "Force killing process: PID=$PID"
-            Stop-Process -Id $PID -Force
+            Ecrr-Log "stop" "Force killing process: PID=$ProcessId"
+            Stop-Process -Id $ProcessId -Force
         }
         
         Ecrr-Log "stop" "Service stopped ✅"
     } catch {
-        Ecrr-Log "stop" "Process not found or already stopped: PID=$PID"
+        Ecrr-Log "stop" "Process not found or already stopped: PID=$ProcessId"
     }
 }
 
@@ -251,7 +251,7 @@ try {
     
     if (-not $healthy) {
         Write-Host "❌ Service failed health check" -ForegroundColor Red
-        Stop-ServiceProcess -PID $global:ServicePID -Force
+        Stop-ServiceProcess -ProcessId $global:ServicePID -Force
         exit 20  # RED
     }
     
@@ -272,7 +272,7 @@ try {
     Write-Host "Press any key to stop service and exit..."
     $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
     
-    Stop-ServiceProcess -PID $global:ServicePID
+    Stop-ServiceProcess -ProcessId $global:ServicePID
     
     exit 0  # GREEN
     
@@ -281,7 +281,7 @@ try {
     Ecrr-Log "error" "Deployment failed: $($_.Exception.Message)"
     
     if ($global:ServicePID) {
-        Stop-ServiceProcess -PID $global:ServicePID -Force
+        Stop-ServiceProcess -ProcessId $global:ServicePID -Force
     }
     
     exit 20  # RED
