@@ -172,8 +172,8 @@ function Test-Integration {
         # Basic port checks
         $ports = @(
             @{ Port = 8080; Name = "SigNoz UI" }
-            @{ Port = 14317; Name = "SigNoz gRPC" }
-            @{ Port = 14318; Name = "SigNoz HTTP" }
+            @{ Port = 4317; Name = "SigNoz gRPC" }
+            @{ Port = 4318; Name = "SigNoz HTTP" }
             @{ Port = 5317; Name = "Windows OTEL gRPC" }
             @{ Port = 5318; Name = "Windows OTEL HTTP" }
         )

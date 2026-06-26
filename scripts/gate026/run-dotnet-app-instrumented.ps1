@@ -56,8 +56,8 @@ if (-not $Baseline) {
     $env:OTEL_METRICS_EXPORTER = "otlp"
     $env:OTEL_LOGS_EXPORTER = "otlp"
     
-    # OTLP Endpoint (Gate #026A: Direct to SigNoz port 14317, not Windows Collector 5317)
-    $env:OTEL_EXPORTER_OTLP_ENDPOINT = "http://127.0.0.1:14317"
+    # OTLP Endpoint (Gate #026A: Direct to SigNoz port 4317, not Windows Collector 5317)
+    $env:OTEL_EXPORTER_OTLP_ENDPOINT = "http://127.0.0.1:4317"
     $env:OTEL_EXPORTER_OTLP_PROTOCOL = "grpc"
     
     # Instrumentation configuration

@@ -62,7 +62,7 @@ exporters:
     verbosity: basic
   
   otlp/signoz:
-    endpoint: http://localhost:14317
+    endpoint: http://localhost:4317
     tls:
       insecure: true
     compression: {{COMPRESSION}}

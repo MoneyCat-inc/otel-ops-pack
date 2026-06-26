@@ -4,7 +4,7 @@ Write-Host "🔧 Setting up Resonai OTel environment..." -ForegroundColor Cyan
 $envContent = @"
 # Local OTel Integration
 OTEL_EXPORTER_OTLP_PROTOCOL=http/json
-OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:14318
+OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
 OTEL_SERVICE_NAME=resonai-local
 OTEL_RESOURCE_ATTRIBUTES=deployment.environment=dev,service.version=1.0.0,service.instance.id=resonai-dev-001
 "@
@@ -17,7 +17,7 @@ Write-Host "📝 Environment variables set for OTel integration" -ForegroundColo
 
 # Also set them in current session for immediate use
 $env:OTEL_EXPORTER_OTLP_PROTOCOL = "http/json"
-$env:OTEL_EXPORTER_OTLP_ENDPOINT = "http://localhost:14318"
+$env:OTEL_EXPORTER_OTLP_ENDPOINT = "http://localhost:4318"
 $env:OTEL_SERVICE_NAME = "resonai-local"
 $env:OTEL_RESOURCE_ATTRIBUTES = "deployment.environment=dev,service.version=1.0.0,service.instance.id=resonai-dev-001"
 

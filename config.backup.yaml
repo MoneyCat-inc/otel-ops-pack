@@ -77,7 +77,7 @@ processors:
 
 exporters:
   otlp:
-    endpoint: localhost:14317
+    endpoint: localhost:4317
     tls:
       insecure: true
     retry_on_failure:
