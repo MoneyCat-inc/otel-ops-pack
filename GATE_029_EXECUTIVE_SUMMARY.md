@@ -189,5 +189,6 @@ Gate #029 delivers a **production-ready .NET deployment orchestrator** (728 LOC,
 
 ---
 
-*Executive summary prepared per Gate Protocol §99-111. Full details in ECRR report (`docs/ecrr/ECRR_REPORTS/ECRR_GATE_029_READY_20251027.md`).*
+*Executive summary prepared per Gate Protocol §99-111. Full details in ECRR report (`CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_029_READY_20251027.md`).*
+
 

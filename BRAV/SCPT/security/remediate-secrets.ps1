@@ -104,7 +104,7 @@ SIGNOZ_API_URL=http://localhost:8080/api/v1
 SIGNOZ_JWT_SECRET=your-jwt-secret-here
 
 # OpenTelemetry Configuration
-OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:14317
+OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317
 OTEL_EXPORTER_OTLP_HEADERS=Authorization=Bearer your-signoz-api-key-here
 OTEL_SERVICE_NAME=resonai-backend
 OTEL_SERVICE_VERSION=1.0.0

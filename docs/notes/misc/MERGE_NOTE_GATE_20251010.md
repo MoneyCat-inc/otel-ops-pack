@@ -27,10 +27,10 @@ BossCat OEM has completed ECRR gate verification and approves this changeset for
 ## Key Artifacts
 
 **ECRR Reports:**
-- `docs/ecrr/ECRR_REPORTS/ECRR_GATE_APPROVAL_20251010.md` - Full gate report
-- `docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md` - Latest verification
-- `docs/ecrr/ECRR_REPORTS/BOSS_V2_RUN.md` - BOSS v2 run
-- `docs/ecrr/ECRR_REPORTS/ECRR_RUN.md` - CI report
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_APPROVAL_20251010.md` - Full gate report
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md` - Latest verification
+- `CHAR/ECRR/ECRR_REPORTS/BOSS_V2_RUN.md` - BOSS v2 run
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_RUN.md` - CI report
 
 **Evidence Bundles:**
 - `DELT/ARTF/evidence-set-20251010_013046.tar.gz`
@@ -50,7 +50,7 @@ BossCat OEM has completed ECRR gate verification and approves this changeset for
 
 **Modified Files:**
 - `scripts/verify-iona-gate.ps1` - Fixed Unicode dash for ASCII-safe logs
-- `docs/ecrr/ECRR_REPORTS/*` - Gate evidence reports
+- `CHAR/ECRR/ECRR_REPORTS/*` - Gate evidence reports
 - `DELT/ARTF/*` - Verification artifacts
 - `PR_COMMENT_IONA_GATE_002_FINAL.md` - IONA verdict
 
@@ -130,7 +130,7 @@ I hereby authorize the merge of this changeset to production. All gate criteria 
 
 ## Contact
 
-**Questions:** Refer to `docs/ecrr/ECRR_REPORTS/ECRR_GATE_APPROVAL_20251010.md`  
+**Questions:** Refer to `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_APPROVAL_20251010.md`  
 **Evidence:** See `DELT/ARTF/evidence-set-20251010_013046.tar.gz`  
 **Framework:** AGENTS.md (BossCat charter)
 
@@ -139,4 +139,5 @@ I hereby authorize the merge of this changeset to production. All gate criteria 
 🏆 **MERGE APPROVED - PRODUCTION READY** 🏆
 
 **MoneyCat Inc · Resonai [OTel] · BossCat Operations**
+
 

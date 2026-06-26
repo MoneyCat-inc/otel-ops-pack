@@ -18,7 +18,7 @@
 <!-- ⚠️ REQUIRED if this PR changes performance-related copy -->
 
 - [ ] **I changed performance claims** (e.g., throughput, latency, uplift numbers)
-  - [ ] I have included a link to evidence report: `docs/ecrr/ECRR_REPORTS/EVIDENCE_YYYY-MM-DD.md`
+  - [ ] I have included a link to evidence report: `CHAR/ECRR/ECRR_REPORTS/EVIDENCE_YYYY-MM-DD.md`
   - [ ] Evidence includes: baseline config, new config, 5+ trials per variant, statistical confidence (95% CI)
   - [ ] Claims are scoped (e.g., "OTLP ingest throughput" not "product 7× faster")
   - [ ] Publication rules followed (CI lower bound ≥6× for "up to 7×" claims)
@@ -27,7 +27,7 @@
 
 - [ ] **I did NOT change performance claims** (no uplift numbers, no throughput values in hero/README/docs)
 
-> **Note:** CI guard will fail if banned patterns detected (`77×`, `196.7`, etc.). See `docs/ecrr/ECRR_REPORTS/EVIDENCE_TEMPLATE.md` for measurement workflow.
+> **Note:** CI guard will fail if banned patterns detected (`77×`, `196.7`, etc.). See `CHAR/ECRR/ECRR_REPORTS/EVIDENCE_TEMPLATE.md` for measurement workflow.
 
 ## Testing
 <!-- Describe the tests you ran to verify your changes -->
@@ -64,3 +64,4 @@ Closes #
 
 ## Additional Context
 <!-- Add any other context about the PR here -->
+

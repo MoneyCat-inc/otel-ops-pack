@@ -92,7 +92,7 @@ Gate #027 attempted to deliver three tracks in one session:
 5. `scripts/gate027/deploy-dotnet-service3.ps1` — Service #3 deployment (90 LOC)
 6. `scripts/gate027/generate-traffic.ps1` — Traffic generator (28 LOC)
 7. `GATE_027_CYCLE_RETROSPECTIVE.md` — Honest assessment (180 LOC)
-8. `docs/ecrr/ECRR_REPORTS/ECRR_GATE_027_PARTIAL_20251027.md` — ECRR report (320 LOC)
+8. `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_027_PARTIAL_20251027.md` — ECRR report (320 LOC)
 
 **Total LOC:** ~840 (including all documentation)
 
@@ -252,8 +252,9 @@ Gate #027 exemplifies this:
 - `GATE_027_SCOPE.md`
 - `GATE_027_CYCLE_RETROSPECTIVE.md`
 - `GATE_027_FINAL_SUMMARY.md` (this document)
-- `docs/ecrr/ECRR_REPORTS/ECRR_GATE_027_PARTIAL_20251027.md`
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_027_PARTIAL_20251027.md`
 - `scripts/gate027/*.ps1` (3 files)
 - `scripts/windows/verify-collector-traces.ps1`
 - `docs/runbooks/windows-collector.md` (updated)
+
 

@@ -73,9 +73,9 @@
 ## 📊 Gate Evidence Package
 
 **ECRR Reports:**
-- docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_20251025_204303.md (local IONA)
-- docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_20251025_204628.md (CI mirror)
-- docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md (symlink/latest)
+- CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_RUN_20251025_204303.md (local IONA)
+- CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_RUN_20251025_204628.md (CI mirror)
+- CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md (symlink/latest)
 
 **Artifacts:**
 - DELT/ARTF/ecrr-benchmark.json (84/86 READY, 0 WARN)
@@ -182,5 +182,6 @@
 **Commit:** d5b0089f7  
 **Authority:** Cursor{Implementer} under Fubumaki delegation  
 **Cat Nap Control Room - All Systems Operational** 🐾
+
 
 

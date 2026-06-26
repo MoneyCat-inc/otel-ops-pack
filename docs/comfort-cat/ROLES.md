@@ -61,7 +61,7 @@
 
 #### QA Scribe 📑
 - Generate ECRR reports after test runs
-- Output Markdown + PDF to `docs/ecrr/ECRR_REPORTS/`
+- Output Markdown + PDF to `CHAR/ECRR/ECRR_REPORTS/`
 - Maintain nightly dashboard snapshots
 
 ---
@@ -193,4 +193,5 @@ IONA (Monitoring) + Cursor Agents (Specialized)
 
 🐾 **Agent Roles & Authority Hierarchy**  
 *This document defines the canonical authority structure for all agent operations*
+
 

@@ -291,7 +291,7 @@ pnpm roadmap:update
 ## 📁 Evidence Storage
 
 ### Primary Locations
-- **ECRR Reports**: `docs/ecrr/ECRR_REPORTS/`
+- **ECRR Reports**: `CHAR/ECRR/ECRR_REPORTS/`
 - **Artifacts**: `artifacts/` (temporary), `DELT/ARTF/` (permanent)
 - **Dashboards**: `docs/status.html`, `docs/GATE_STATUS_DASHBOARD.md`
 - **Monitoring**: `docs/observability/snapshots/`
@@ -366,7 +366,7 @@ ECRR Compliance = (ECRR Reports Generated) / (ECRR-Triggering Events) × 100%
 
 ### Questions About ECRR
 - **Reference**: This document (`docs/comfort-cat/ECRR_FRAMEWORK.md`)
-- **Examples**: `docs/ecrr/ECRR_REPORTS/` directory
+- **Examples**: `CHAR/ECRR/ECRR_REPORTS/` directory
 - **Escalation**: BossCat OEM
 
 ### ECRR Tool Issues
@@ -383,4 +383,5 @@ ECRR Compliance = (ECRR Reports Generated) / (ECRR-Triggering Events) × 100%
 
 🐾 **ECRR Framework**  
 *Examine → Clean → Report → Role: The foundation of all Cat Nap Control Room operations*
+
 

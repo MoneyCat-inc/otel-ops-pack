@@ -1,6 +1,6 @@
 # Focused ECRR Compliance Checker (Main Directory Only)
 param(
-    [string]$ReportsPath = "docs/ECRR_REPORTS"
+    [string]$ReportsPath = "CHAR/ECRR/ECRR_REPORTS"
 )
 
 Write-Host "🔍 Focused ECRR Compliance Checker" -ForegroundColor Cyan
@@ -102,3 +102,4 @@ if ($complianceRate -ge 95) {
 }
 
 exit 0
+

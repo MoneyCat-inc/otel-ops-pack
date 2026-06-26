@@ -6,7 +6,7 @@ param(
   [string]$ConfigSource = ".\windows\otelcol\otelcol-contrib-config.yaml",
   [string]$ProgramDataPath = "$env:ProgramData\otelcol-contrib",
   [string]$ServiceName = "otelcol-contrib",
-  [string]$OtlpGrpcEndpoint = "127.0.0.1:14317"
+  [string]$OtlpGrpcEndpoint = "127.0.0.1:4317"
 )
 
 $ErrorActionPreference = "Stop"

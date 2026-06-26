@@ -119,8 +119,8 @@ BossCat **End of ECRR Report** - BossCat OEM Agent Simplified Reporting
 
     // Save ECRR report
     try {
-        fs.mkdirSync('docs/ecrr/ECRR_REPORTS', { recursive: true });
-        const ecrrReportFile = `docs/ecrr/ECRR_REPORTS/${reportId}.md`;
+        fs.mkdirSync('CHAR/ECRR/ECRR_REPORTS', { recursive: true });
+        const ecrrReportFile = `CHAR/ECRR/ECRR_REPORTS/${reportId}.md`;
         fs.writeFileSync(ecrrReportFile, reportContent);
         console.log(`  OK ECRR Report Generated: ${ecrrReportFile}`);
     } catch (error) {
@@ -164,6 +164,7 @@ async function main() {
 if (import.meta.url === `file://${process.argv[1]}`) {
     await main();
 }
+
 
 
 

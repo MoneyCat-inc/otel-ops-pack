@@ -421,7 +421,7 @@ $reportGenerationResult = Start-TimedOperation -Operation "ECRR Report Generatio
 "@
 
     # Ensure ECRR_REPORTS directory exists
-    $ecrrDir = "docs/ECRR_REPORTS"
+    $ecrrDir = "CHAR/ECRR/ECRR_REPORTS"
     if (!(Test-Path $ecrrDir)) {
         New-Item -ItemType Directory -Path $ecrrDir -Force | Out-Null
     }
@@ -433,3 +433,4 @@ $reportGenerationResult = Start-TimedOperation -Operation "ECRR Report Generatio
 }
 
 Write-Host "[REPORT] ECRR report saved: $reportGenerationResult" -ForegroundColor Cyan
+

@@ -19,7 +19,7 @@
 - **Alert Framework**: 6 critical alerts configured
 
 ### **ECRR Framework Enhancement Status**
-- **Total Reports**: 78 ECRR reports in `docs/ECRR_REPORTS/`
+- **Total Reports**: 78 ECRR reports in `CHAR/ECRR/ECRR_REPORTS/`
 - **ECRR Gate Coverage**: 100% (78/78 reports)
 - **4-Section Structure**: 100% (78/78 reports)
 - **Phase 2 Consolidation**: 4 groups consolidated
@@ -111,9 +111,9 @@
 - `artifacts/webhook-notification-config.json`
 
 #### **ECRR Reports**
-- `docs/ECRR_REPORTS/2025-01-27-windows-canary-alert-deployment.md`
-- `docs/ECRR_REPORTS/2025-01-27-three-task-sprint-completion.md`
-- `docs/ECRR_REPORTS/2025-09-29-rollout-merge-consolidated.md`
+- `CHAR/ECRR/ECRR_REPORTS/2025-01-27-windows-canary-alert-deployment.md`
+- `CHAR/ECRR/ECRR_REPORTS/2025-01-27-three-task-sprint-completion.md`
+- `CHAR/ECRR/ECRR_REPORTS/2025-09-29-rollout-merge-consolidated.md`
 
 ### **Results Achieved**
 
@@ -313,3 +313,4 @@ git status
 - Integrates with observability stack and monitoring systems
 
 ---
+

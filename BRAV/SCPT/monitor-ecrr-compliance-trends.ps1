@@ -16,7 +16,7 @@ if (-not (Test-Path $script:ArtifactsDirectory)) {
 if (-not [System.IO.Path]::IsPathRooted($OutputPath)) {
     $OutputPath = Join-Path $script:RepoRoot $OutputPath
 }
-$script:ReportsDirectory = Join-Path $script:RepoRoot 'docs/ECRR_REPORTS'
+$script:ReportsDirectory = Join-Path $script:RepoRoot 'CHAR/ECRR/ECRR_REPORTS'
 $script:ComplianceReportPath = Join-Path $script:ArtifactsDirectory 'ecrr-compliance-report.json'
 $script:TrendMarkdownPath = Join-Path $script:ArtifactsDirectory 'ecrr-compliance-trends-report.md'
 $OutputDirectory = Split-Path -Parent $OutputPath
@@ -329,6 +329,7 @@ catch {
     Write-Error "Stack trace: $($_.ScriptStackTrace)"
     exit 1
 }
+
 
 
 

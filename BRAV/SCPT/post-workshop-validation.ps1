@@ -3,7 +3,7 @@
 
 param(
     [string]$WorkshopName = "workshop-$(Get-Date -Format 'yyyy-MM-dd-HHmm')",
-    [string]$ReportsPath = "docs/ECRR_REPORTS",
+    [string]$ReportsPath = "CHAR/ECRR/ECRR_REPORTS",
     [switch]$GenerateTrends,
     [switch]$SendAlerts,
     [int]$ComplianceThreshold = 80
@@ -235,3 +235,4 @@ try {
     Write-Error "Stack trace: $($_.ScriptStackTrace)"
     exit 1
 }
+

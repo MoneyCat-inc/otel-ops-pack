@@ -128,7 +128,7 @@ fModWaveAlphaStart: 'modwavealphastart' // ✅ Fixed: start
 | File | Changes |
 |------|---------|
 | `viz-engine-butterchurn/src/milk-parser.js` | 11 key corrections + 2 default value fixes |
-| `docs/ecrr/ECRR_REPORTS/ECRR_VIZ_ENGINE_REMEDIATION_4_FINAL_20251024.md` | Complete evidence report |
+| `CHAR/ECRR/ECRR_REPORTS/ECRR_VIZ_ENGINE_REMEDIATION_4_FINAL_20251024.md` | Complete evidence report |
 | `docs/BossCat/BOSSCAT_LOG.md` | +1 log entry |
 | `REMEDIATION_4_ABSOLUTE_FINAL.md` | This summary |
 
@@ -215,4 +215,5 @@ parameters now apply correctly.
 **Core Requirement:** **MET** (parameters will apply correctly)  
 
 **Cat Nap Control Room - Schema Keys Verified Against Actual Butterchurn Format - Ready for Final Approval**
+
 

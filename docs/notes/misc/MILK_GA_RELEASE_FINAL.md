@@ -111,7 +111,7 @@ tsx scripts/visuals/milk-signoz-mapper.ts test
 ## 📋 DOCUMENTATION
 
 **Primary Guides**:
-- Consolidated: `docs/ecrr/ECRR_REPORTS/ECRR_MILK_CONSOLIDATED_LATEST.md`
+- Consolidated: `CHAR/ECRR/ECRR_REPORTS/ECRR_MILK_CONSOLIDATED_LATEST.md`
 - Control Surface: `docs/BossCat/visuals/CONTROL_README.md`
 - WebSocket Bridge: `docs/BossCat/visuals/WS_BRIDGE_README.md`
 - SigNoz Integration: `docs/BossCat/visuals/SIGNOZ_INTEGRATION_README.md`
@@ -231,3 +231,4 @@ Research confirmed:
 ---
 
 **cursor{implementer}** | MILK Lane | **GA RELEASE COMPLETE** | Session: CLOSED 🎉
+

@@ -53,7 +53,7 @@ $ecrrMetrics = Get-Content $ecrrMetricsPath -Raw | ConvertFrom-Json
 $bossSummary = Get-Content $bossSummaryPath -Raw | ConvertFrom-Json
 
 # Build naive ECRR timestamp index from report names if present
-$ecrrReportsDir = 'docs/ECRR_REPORTS'
+$ecrrReportsDir = 'CHAR/ECRR/ECRR_REPORTS'
 $ecrrFiles = Get-ChildItem -Path $ecrrReportsDir -Filter '*.md' -File
 $ecrrIndex = @()
 foreach ($f in $ecrrFiles) {
@@ -113,5 +113,6 @@ $outCorr = Join-Path $EcrrOutputDir 'ecrr-boss-correlation.json'
 ($correlation | ConvertTo-Json -Depth 8) | Out-File -Encoding UTF8 $outCorr
 Write-Host "✅ Correlation generated: $outCorr (pairs: $($pairs.Count))" -ForegroundColor Green
 exit 0
+
 
 

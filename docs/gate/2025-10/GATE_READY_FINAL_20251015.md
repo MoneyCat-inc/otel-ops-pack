@@ -47,7 +47,7 @@ The **@cat ready-for-gate** command has been successfully executed with **BossCa
 - ✅ `.github/workflows/bosscat-gate-verify.yml`
 - ✅ `docs/BossCat/README.md`
 - ✅ `docs/cheatsheets`
-- ✅ `docs/ecrr/ECRR_REPORTS`
+- ✅ `CHAR/ECRR/ECRR_REPORTS`
 - ✅ `docs/IONA_ERRORS.md`
 - ✅ `docs/observability/snapshots`
 - ✅ `docs/status.html`
@@ -93,13 +93,13 @@ The **@cat ready-for-gate** command has been successfully executed with **BossCa
 
 **Files Added** (3):
 - `.agent/CODEX_CLOUD_BRIEF_GATE_READY_20251014.md` (handoff brief)
-- `docs/ecrr/ECRR_REPORTS/ECRR_GATE_READY_BOSSCAT_20251015.md` (comprehensive report)
-- `docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_20251015_004942.md` (gate execution)
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_READY_BOSSCAT_20251015.md` (comprehensive report)
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_RUN_20251015_004942.md` (gate execution)
 
 **Files Modified** (3):
 - `DELT/ARTF/gate-verification-results.json` (structured results)
 - `PR_COMMENT_IONA_GATE_002_FINAL.md` (PR comment)
-- `docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md` (latest symlink)
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md` (latest symlink)
 
 **Stats**: 6 files changed, 555 insertions(+), 19 deletions(-)
 
@@ -265,8 +265,9 @@ The Resonai [OTel] observability stack has successfully passed **BossCat Gate Re
 ---
 
 **Authority**: cursor{implementer} | BossCat OEM Executive Delegation  
-**Evidence**: `docs/ecrr/ECRR_REPORTS/ECRR_GATE_READY_BOSSCAT_20251015.md`  
+**Evidence**: `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_READY_BOSSCAT_20251015.md`  
 **Commit**: b2eebd5ae | **Tag**: v1.1-gate-ready
 
 🐾 **BossCat OEM — Executive Certification Complete**
+
 

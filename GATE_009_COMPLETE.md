@@ -53,7 +53,7 @@ Infrastructure:
 +-- README.viz-engine.md (235+ lines, quick start)
 
 ECRR Artifacts:
-+-- docs/ecrr/ECRR_REPORTS/ECRR_VIZ_ENGINE_*.md (6 reports)
++-- CHAR/ECRR/ECRR_REPORTS/ECRR_VIZ_ENGINE_*.md (6 reports)
 +-- artifacts/viz-engine/gate-009-test-results.json
 +-- REMEDIATION_*_SUMMARY.md (4 summaries)
 ```
@@ -211,4 +211,5 @@ ECRR Artifacts:
 **Gate:** #009 GREEN  
 
 **Cat Nap Control Room - Milkdrop Visual Engine Operational - Gate #009 Complete**
+
 

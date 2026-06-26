@@ -18,10 +18,11 @@
     ".github/workflows/bosscat-gate-verify.yml": "present",
     "docs/cheatsheets": "present",
     "docs/IONA_ERRORS.md": "present",
-    "docs/ecrr/ECRR_REPORTS": "present",
+    "CHAR/ECRR/ECRR_REPORTS": "present",
     "docs/observability/snapshots": "present",
     "queue-steward-verification.txt": "present",
     "docs/status/tests.json": "present",
     "index.html": "present"
   }
 }
+

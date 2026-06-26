@@ -2,7 +2,7 @@
 # This script can be used in CI/CD pipelines to validate ECRR compliance
 
 param(
-    [string]$ReportsDir = "docs/ECRR_REPORTS",
+    [string]$ReportsDir = "CHAR/ECRR/ECRR_REPORTS",
     [int]$MinFourSectionPct = 95,
     [int]$MinGatePct = 90,
     [string]$OutputJson = "artifacts/ecrr-ci-validation.json",
@@ -84,3 +84,4 @@ if (-not $validationResult.passed) {
     Write-Host "`n✅ ECRR compliance check completed successfully" -ForegroundColor Green
     exit 0
 }
+

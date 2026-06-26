@@ -27,9 +27,9 @@
 - `DELT/ARTF/watchdog-gate-evidence.json` - Service health proof
 
 **ECRR Reports:**
-- `docs/ecrr/ECRR_REPORTS/ECRR_GATE_APPROVAL_20251010.md` - Full ECRR
-- `docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md` - Latest run
-- `docs/ecrr/ECRR_REPORTS/BOSS_V2_RUN.md` - BOSS v2 verification
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_APPROVAL_20251010.md` - Full ECRR
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md` - Latest run
+- `CHAR/ECRR/ECRR_REPORTS/BOSS_V2_RUN.md` - BOSS v2 verification
 - PDF exports preserved
 
 **Observability Snapshots:**
@@ -62,7 +62,7 @@ ECRR: Examine → Clean → Report → Role — complete; artifacts published
 
 Receipts:
 • Gate results & watchdog logs in DELT/ARTF/
-• ECRR MD+PDF in docs/ecrr/ECRR_REPORTS/
+• ECRR MD+PDF in CHAR/ECRR/ECRR_REPORTS/
 • Weekly re-cert workflow active; snapshots in docs/observability/snapshots/
 • Port normalization applied (13133→13134) in operational scripts/docs (archives preserved)
 
@@ -90,7 +90,7 @@ python BRAV/SCPT/check_guardrails.py --config BRAV/SCPT/guardrails.json
 pwsh -File scripts/verify-iona-gate-full.ps1
 
 # ECRR quick status
-Get-ChildItem docs/ecrr/ECRR_REPORTS/*.md | Sort-Object LastWriteTime -Descending | Select-Object -First 5 Name
+Get-ChildItem CHAR/ECRR/ECRR_REPORTS/*.md | Sort-Object LastWriteTime -Descending | Select-Object -First 5 Name
 ```
 
 ---
@@ -347,4 +347,5 @@ Gate #006 is **CLOSED** and **PRODUCTION CERTIFIED**.
 **End of Gate #006 Closeout — Production Certified**
 
 *MoneyCat Inc · Resonai [OTel] · BossCat Operations*
+
 

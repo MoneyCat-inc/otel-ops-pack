@@ -145,7 +145,7 @@ $($deploymentStatus | ConvertTo-Json -Depth 2)
 - **Role**: Cursor Agent - Observability Copilot
 "@
 
-$reportPath = "docs/ECRR_REPORTS/$(Get-Date -Format 'yyyy-MM-dd')-pressure-monitoring-deployment.md"
+$reportPath = "CHAR/ECRR/ECRR_REPORTS/$(Get-Date -Format 'yyyy-MM-dd')-pressure-monitoring-deployment.md"
 $reportContent | Out-File -FilePath $reportPath -Encoding UTF8
 Write-Host "`n📄 Report saved: $reportPath" -ForegroundColor Cyan
 
@@ -164,3 +164,4 @@ if (!$DryRun) {
 }
 
 Write-Host "`n🚀 Pressure monitoring is ready for production use!" -ForegroundColor Green
+

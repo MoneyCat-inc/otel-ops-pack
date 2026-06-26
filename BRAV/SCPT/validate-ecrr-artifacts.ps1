@@ -7,7 +7,7 @@ Write-Host "`n🔍 ECRR Artifacts Validation" -ForegroundColor Cyan
 Write-Host "=" * 60
 
 # Validate JSON files
-$jsonFiles = Get-ChildItem -Path "docs\ecrr\ECRR_REPORTS" -Recurse -Include "*.json" -File
+$jsonFiles = Get-ChildItem -Path "CHAR\ECRR\ECRR_REPORTS" -Recurse -Include "*.json" -File
 Write-Host "`n📋 JSON Evidence Validation:" -ForegroundColor Yellow
 Write-Host "   Total JSON files: $($jsonFiles.Count)"
 
@@ -42,7 +42,7 @@ Write-Host "   📊 Validation Rate: $validationRate%" -ForegroundColor $(if ($v
 # Check artifact references
 Write-Host "`n📦 Artifact References:" -ForegroundColor Yellow
 
-$mdFiles = Get-ChildItem -Path "docs\ecrr\ECRR_REPORTS" -Recurse -Include "*.md" -File
+$mdFiles = Get-ChildItem -Path "CHAR\ECRR\ECRR_REPORTS" -Recurse -Include "*.md" -File
 $reportsWithArtifacts = 0
 $totalArtifactReferences = 0
 
@@ -148,4 +148,5 @@ $validationReport = @{
 $reportPath = "artifacts\ecrr-artifact-validation-$(Get-Date -Format 'yyyyMMdd-HHmmss').json"
 $validationReport | ConvertTo-Json -Depth 10 | Out-File $reportPath -Encoding utf8
 Write-Host "📁 Validation report exported to: $reportPath" -ForegroundColor Cyan
+
 

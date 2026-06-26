@@ -54,7 +54,7 @@ function Get-OTelStatus {
     
     # Check ports
     Write-Host "`nPorts:" -ForegroundColor Cyan
-    $ports = @(14317, 14318)
+    $ports = @(4317, 4318)
     foreach ($port in $ports) {
         $ok = Test-NetConnection -ComputerName "localhost" -Port $port -WarningAction SilentlyContinue
         $status = if ($ok.TcpTestSucceeded) { "✅ Listening" } else { "❌ Closed" }
@@ -90,7 +90,7 @@ function Send-OTelCanary {
     } | ConvertTo-Json -Depth 7
 
     try {
-        $resp = Invoke-RestMethod -Method Post -Uri "http://localhost:14318/v1/logs" -ContentType "application/json" -Body $body
+        $resp = Invoke-RestMethod -Method Post -Uri "http://localhost:4318/v1/logs" -ContentType "application/json" -Body $body
         Write-Host "✅ Canary sent successfully" -ForegroundColor Green
         Write-Host "📊 Check SigNoz for 'otel-canary' service logs" -ForegroundColor Yellow
     } catch { 
@@ -104,7 +104,7 @@ function Test-OTelHealth {
     
     # Test collector endpoint
     try {
-        $response = Invoke-WebRequest -Uri "http://localhost:14318/v1/logs" -Method Post -ContentType "application/json" -Body '{"test":"health"}' -TimeoutSec 5
+        $response = Invoke-WebRequest -Uri "http://localhost:4318/v1/logs" -Method Post -ContentType "application/json" -Body '{"test":"health"}' -TimeoutSec 5
         Write-Host "Collector HTTP: ✅ Responding" -ForegroundColor Green
     } catch {
         Write-Host "Collector HTTP: ❌ Not responding" -ForegroundColor Red

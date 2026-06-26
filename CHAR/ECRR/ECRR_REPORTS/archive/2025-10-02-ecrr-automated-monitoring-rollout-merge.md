@@ -44,7 +44,7 @@
 - **Archive Exclusion**: Modified compliance monitor to exclude archived files
 - **Regex Standardization**: Updated section header patterns to support both numerical and emoji formats
 - **Duplicate Cleanup**: Excluded duplicate prefixed files (20250929-200755-)
-- **File Organization**: Maintained clean directory structure in `docs/ECRR_REPORTS/`
+- **File Organization**: Maintained clean directory structure in `CHAR/ECRR/ECRR_REPORTS/`
 
 ### **Guardrails Enforced**
 - **ECRR Methodology**: Strict adherence to Examine → Clean → Report → Role framework
@@ -157,3 +157,4 @@
 ---
 
 **ECRR Gate Summary**: ECRR Automated Monitoring System successfully implemented with 100% compliance across all 151 reports. Complete automation system deployed with scheduled monitoring, CI/CD integration, pre-commit hooks, and comprehensive documentation. Ready for production rollout merge.
+

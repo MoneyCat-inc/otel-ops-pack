@@ -26,7 +26,7 @@ $bannedPatterns = @(
 # Define production file patterns (exclude archives)
 $productionPatterns = @(
     "docs/*.md",
-    "docs/ecrr/ECRR_REPORTS/*.md",
+    "CHAR/ECRR/ECRR_REPORTS/*.md",
     "DELT/ARTF/*.json",
     "*.html",
     "README*.md",
@@ -96,4 +96,5 @@ Write-Host "✅ No inflated metrics detected in production files" -ForegroundCol
 Write-Host ""
 
 exit 0
+
 
