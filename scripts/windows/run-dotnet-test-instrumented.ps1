@@ -41,7 +41,7 @@ $env:OTEL_DOTNET_AUTO_TRACES_CONSOLE_EXPORTER_ENABLED = "false"
 $env:OTEL_DOTNET_AUTO_METRICS_CONSOLE_EXPORTER_ENABLED = "false"
 
 Write-Host "  Service name: $ServiceName" -ForegroundColor Gray
-Write-Host "  OTLP endpoint: http://127.0.0.1:14317" -ForegroundColor Gray
+Write-Host "  OTLP endpoint: http://127.0.0.1:4317" -ForegroundColor Gray
 Write-Host "  Profiler: Enabled" -ForegroundColor Gray
 
 Write-Host ""
@@ -65,7 +65,7 @@ $appJob = Start-Job -ScriptBlock {
     DOTNET_STARTUP_HOOKS = $startupHookDll
     OTEL_DOTNET_AUTO_HOME = $installDir
     OTEL_SERVICE_NAME = $ServiceName
-    OTEL_EXPORTER_OTLP_ENDPOINT = "http://127.0.0.1:14317"
+    OTEL_EXPORTER_OTLP_ENDPOINT = "http://127.0.0.1:4317"
     OTEL_TRACES_EXPORTER = "otlp"
     OTEL_METRICS_EXPORTER = "otlp"
     OTEL_LOGS_EXPORTER = "otlp"
