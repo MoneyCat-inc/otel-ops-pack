@@ -2,7 +2,7 @@
 # Validates compliance improvements and generates final report
 
 param(
-    [string]$ReportsPath = "docs/ECRR_REPORTS",
+    [string]$ReportsPath = "CHAR/ECRR/ECRR_REPORTS",
     [string]$OutputPath = "artifacts/ecrr-compliance-validation.json",
     [switch]$Verbose
 )
@@ -310,3 +310,4 @@ Write-Host ""
 Write-Host "Validation results exported to: $OutputPath" -ForegroundColor Green
 Write-Host ""
 Write-Host "ECRR Mantra: Examine → Clean → Report → Role - Every change must begin with evidence, remove drift, leave an artifact, and declare its actor." -ForegroundColor Magenta
+

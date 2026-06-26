@@ -3,7 +3,7 @@
   lane: tests
   budget: {files_max: 10, loc_max: 2000}
   icf: true
-  paths_allow: ["tests/smoke/**", "docs/ecrr/ECRR_REPORTS/**"]
+  paths_allow: ["tests/smoke/**", "CHAR/ECRR/ECRR_REPORTS/**"]
   verify: ["ICF_COMPLIANCE", "SITE_HTML_CSP"]
   rollback: "disable helper via feature flag if any gate flips RED"
 
@@ -24,4 +24,5 @@
   paths_allow: [".github/workflows/bosscat-gate-verify.yml"]
   verify: ["ICF_COMPLIANCE"]
   rollback: "revert comment step only"
+
 

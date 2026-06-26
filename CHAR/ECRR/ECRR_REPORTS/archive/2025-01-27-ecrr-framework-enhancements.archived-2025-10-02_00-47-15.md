@@ -342,7 +342,7 @@
 - `scripts/ecrr-compliance-monitor.ps1` - Automated compliance monitoring and reporting script
 
 ### **Documentation**
-- `docs/ECRR_REPORTS/2025-01-27-ecrr-framework-enhancements.md` - This comprehensive enhancement report
+- `CHAR/ECRR/ECRR_REPORTS/2025-01-27-ecrr-framework-enhancements.md` - This comprehensive enhancement report
 - `artifacts/ecrr-compliance-report.json` - Baseline compliance metrics and analysis
 - `artifacts/ecrr-compliance-report-dashboard.html` - Interactive compliance dashboard
 
@@ -440,4 +440,5 @@
 - Scope:
 
 ---
+
 

@@ -9,7 +9,7 @@
 ## Key Outcomes
 - Option B validated on simple SigNoz stack (P95 < 200ms)
 - Nightly dashboard automation to continue as scheduled
-- Governance and audit artifacts present under docs/ecrr/ECRR_REPORTS/
+- Governance and audit artifacts present under CHAR/ECRR/ECRR_REPORTS/
 
 ## Risk & Mitigation
 - Local workspace ahead of origin/main (non-blocking). No push performed.
@@ -19,4 +19,5 @@
 - Monitor nightly runs and soft-fail behavior
 - Track P95 latency trends in dashboards
 - Remove obsolete `version` key from docker-compose-signoz.yml when convenient
+
 

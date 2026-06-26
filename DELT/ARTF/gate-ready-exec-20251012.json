@@ -88,9 +88,9 @@
     "gate_success_rate": ">95%"
   },
   "artifacts": [
-    "docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_20251012_010257.md",
-    "docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md",
-    "docs/ecrr/ECRR_REPORTS/ECRR_GATE_READY_EXEC_20251012.md",
+    "CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_RUN_20251012_010257.md",
+    "CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md",
+    "CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_READY_EXEC_20251012.md",
     "DELT/ARTF/gate-verification-results.json",
     "DELT/ARTF/gate-ready-exec-20251012.json",
     "PR_COMMENT_IONA_GATE_002_FINAL.md"
@@ -104,4 +104,5 @@
     "verdict": "READY FOR GATE #007"
   }
 }
+
 

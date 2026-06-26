@@ -181,10 +181,10 @@ A  DELT/ARTF/gate-ready-certification-20251017.json
 A  GATE_READY_20251017.md
 M  docs/anticlickbait/index.html (Patreon URL updated)
 A  docs/cheatsheets/cursor-support-runbook.md
-A  docs/ecrr/ECRR_REPORTS/ECRR_DOCKER_TROUBLESHOOTING_20251017.md
-A  docs/ecrr/ECRR_REPORTS/ECRR_GATE_READY_20251017.md
-A  docs/ecrr/ECRR_REPORTS/ECRR_MONETIZATION_SETUP_20251017.md
-A  docs/ecrr/ECRR_REPORTS/ECRR_PATREON_SETUP_20251017.md
+A  CHAR/ECRR/ECRR_REPORTS/ECRR_DOCKER_TROUBLESHOOTING_20251017.md
+A  CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_READY_20251017.md
+A  CHAR/ECRR/ECRR_REPORTS/ECRR_MONETIZATION_SETUP_20251017.md
+A  CHAR/ECRR/ECRR_REPORTS/ECRR_PATREON_SETUP_20251017.md
 M  portal.html (Patreon URL updated)
 A  test-portal-links.ps1
 ```
@@ -244,4 +244,5 @@ A  test-portal-links.ps1
 **cursor{implementer}** | Patreon Setup Complete | **Standing by for cover photo & publish**
 
 🐾 **Awaiting your final publish when cover photo is ready!**
+
 

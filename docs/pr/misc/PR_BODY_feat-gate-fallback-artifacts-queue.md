@@ -17,7 +17,7 @@
 
 ## Evidence
 - Gate verdict + checks: `DELT/ARTF/gate-verification-results.json`
-- ECRR latest: `docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md`
+- ECRR latest: `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md`
 - Benchmark JSON: `DELT/ARTF/ecrr-benchmark.json`
 - Trend CSV: `DELT/ARTF/ecrr-benchmark-trend.csv`, mirror `artifacts/ecrr-benchmark-trend.csv`
 - Queue steward evidence: `artifacts/queue-steward-verification.txt`
@@ -25,4 +25,5 @@
 ## Governance
 - ECRR: Examine, Clean, Report, Role satisfied with artifacts written to disk.
 - BossCat OEM approval required before merge.
+
 

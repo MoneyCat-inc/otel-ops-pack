@@ -400,7 +400,7 @@ Retrospective”  section. After each job or daily run, have BossCat append a sh
 
 went well, what needed human intervention or retries, any rule violations or budget near-misses.
 This can be automated by parsing  .agent/EVIDENCE.log  and test results at the end of a run. The
-summary is then stored (in  docs/ECRR_REPORTS/  or a new  ICF_REPORT.md ). By implementing
+summary is then stored (in  CHAR/ECRR/ECRR_REPORTS/  or a new  ICF_REPORT.md ). By implementing
 
 this, we create a baseline record of system performance and pain points without yet acting on them.
 
@@ -1212,3 +1212,4 @@ file://file-RMtgy2R7TbL9BvBkRLBet1
 https://arxiv.org/abs/2410.04444
 
 11
+

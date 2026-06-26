@@ -115,7 +115,7 @@
 - `.github/workflows/bosscat-gate-verify.yml` → present
 - `docs/status.html` → present
 - `docs/status/tests.json` → present
-- `docs/ecrr/ECRR_REPORTS` → present
+- `CHAR/ECRR/ECRR_REPORTS` → present
 - `docs/observability/snapshots` → present
 - `docs/IONA_ERRORS.md` → present
 - `docs/cheatsheets` → present
@@ -145,7 +145,7 @@
 - `PR_COMMENT_IONA_GATE_002_FINAL.md` (from gate run)
 - `docs/BossCat/PLANNER_BRIEF_20251012.md` (metadata update)
 - `docs/IONA_ERRORS.md` (from gate run)
-- `docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md` (from gate run)
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md` (from gate run)
 - `package.json` (metadata update)
 
 **Untracked (~30 files/directories):**
@@ -163,12 +163,12 @@
 ## Evidence Trail
 
 ### ECRR Documentation ✅
-1. **Primary Report:** `docs/ecrr/ECRR_REPORTS/ECRR_CURSOR_IMPLEMENTER_PRIORITY_TASKS_20251013.md`
+1. **Primary Report:** `CHAR/ECRR/ECRR_REPORTS/ECRR_CURSOR_IMPLEMENTER_PRIORITY_TASKS_20251013.md`
    - Comprehensive ECRR (Examine → Clean → Report → Role)
    - 4,000+ words
    - Complete evidence chain
 
-2. **Gate Report:** `docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md`
+2. **Gate Report:** `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md`
    - Gate verdict: READY
    - All checks passing
    - Zero test failures
@@ -250,7 +250,7 @@ Net LOC: +32
    ```bash
    git add DELT/ARTF/gate-verification-results.json
    git add DELT/ARTF/ecrr-benchmark*.{json,csv}
-   git add docs/ecrr/ECRR_REPORTS/ECRR_*.md
+   git add CHAR/ECRR/ECRR_REPORTS/ECRR_*.md
    git add docs/BossCat/PLANNER_BRIEF_20251012.md
    ```
 
@@ -390,9 +390,10 @@ pnpm playwright test
 **Commit:** 672c1699  
 **Gate Status:** ✅ READY  
 **Session Report:** `BOSSCAT_SESSION_REPORT_20251013.md`  
-**ECRR Report:** `docs/ecrr/ECRR_REPORTS/ECRR_CURSOR_IMPLEMENTER_PRIORITY_TASKS_20251013.md`
+**ECRR Report:** `CHAR/ECRR/ECRR_REPORTS/ECRR_CURSOR_IMPLEMENTER_PRIORITY_TASKS_20251013.md`
 
 🚀 **ALL PRIORITY TASKS COMPLETE · GATE VERIFIED · EVIDENCE DELIVERED** 🚀
+
 
 
 

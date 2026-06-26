@@ -97,8 +97,8 @@ All tasks have been implemented with comprehensive ECRR-compliant documentation,
 - `artifacts/hurst-drift-alert-setup-summary.md` - Setup summary
 
 ### ECRR 3. Reports Created
-- `docs/ECRR_REPORTS/2025-10-01-log-pattern-fractal-validation.md` - Pattern drills
-- `docs/ECRR_REPORTS/2025-10-01-comprehensive-implementation-summary.md` - This summary
+- `CHAR/ECRR/ECRR_REPORTS/2025-10-01-log-pattern-fractal-validation.md` - Pattern drills
+- `CHAR/ECRR/ECRR_REPORTS/2025-10-01-comprehensive-implementation-summary.md` - This summary
 
 ---
 
@@ -270,6 +270,7 @@ The observability pipeline now includes:
 - ✅ Clean: Remediation steps executed with guardrail alignment.
 - ✅ Report: Artifacts exported to disk and cross-referenced in this report.
 - ✅ Role: Actor declaration recorded in this addendum.
+
 
 
 

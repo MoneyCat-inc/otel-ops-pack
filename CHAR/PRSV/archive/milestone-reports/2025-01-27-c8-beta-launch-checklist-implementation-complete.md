@@ -152,7 +152,7 @@
 - [Tester Onboarding Guide](docs/cohort-onboarding.md)
 - [Rollback Procedures](docs/rollback-procedures.md)
 - [C8 Beta Launch Release Notes](docs/release-notes/c8-beta-launch.md)
-- [Cohort Launch Pack Rollout](docs/ECRR_REPORTS/2025-01-27-cohort-launch-pack-rollout.md)
+- [Cohort Launch Pack Rollout](CHAR/ECRR/ECRR_REPORTS/2025-01-27-cohort-launch-pack-rollout.md)
 - [Merge Documentation](docs/MERGE_DOCUMENTATION.md)
 
 ## 🏁 Production Readiness

@@ -76,7 +76,7 @@
 - ✅ `scripts/verify-option-b-results.ps1` - Validation script
 
 **ECRR Reports:**
-- ✅ `docs/ecrr/ECRR_REPORTS/ECRR_PR_MERGE_20251010.md` - PR merge report
+- ✅ `CHAR/ECRR/ECRR_REPORTS/ECRR_PR_MERGE_20251010.md` - PR merge report
 - ✅ Multiple gate run reports with evidence
 
 ### Code Changes
@@ -376,4 +376,5 @@ The observability stack is now **production-ready** with:
 **Handoff:** Clean - all artifacts in place, documentation complete
 
 🐾 **End of Session**
+
 

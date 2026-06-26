@@ -34,7 +34,7 @@ Scope: Build reproducible ECRR‑01 evidence tooling; normalize/verify artifacts
     - `artifacts/ecrr-01-playwright-isolation.json`
     - `artifacts/ecrr-01-playwright-offline.json`
     - `ECRR-01-SMOKE-TEST-RESULTS.md`
-    - `docs/ECRR_REPORTS/2025-09-29-ecrr-01-consolidated.md`
+    - `CHAR/ECRR/ECRR_REPORTS/2025-09-29-ecrr-01-consolidated.md`
 - Comfort Cat folder merge
   - Created `scripts/merge-comfort-cat.ps1` for safe copy with `.conflict` suffix on differences
   - Archived conflicts to `artifacts/comfort-cat-conflicts/`
@@ -55,7 +55,7 @@ Scope: Build reproducible ECRR‑01 evidence tooling; normalize/verify artifacts
 - Comfort Cat merge evidence
   - Conflicts (if any) saved under: `artifacts/comfort-cat-conflicts/`
   - Final merge summary: `artifacts/comfort-cat-merge-final.txt`
-  - Incident record: `docs/ECRR_REPORTS/2025-09-22-comfort-cat-folder-duplication.md`
+  - Incident record: `CHAR/ECRR/ECRR_REPORTS/2025-09-22-comfort-cat-folder-duplication.md`
 
 ## Role
 - You (fubumaki)
@@ -75,7 +75,7 @@ Scope: Build reproducible ECRR‑01 evidence tooling; normalize/verify artifacts
 - Commands
 ```
 # Verify bundle quickly
-$files = 'artifacts/ecrr-01-verification.log','artifacts/ecrr-01-playwright-isolation.json','artifacts/ecrr-01-playwright-offline.json','ECRR-01-SMOKE-TEST-RESULTS.md','docs/ECRR_REPORTS/2025-09-29-ecrr-01-consolidated.md'
+$files = 'artifacts/ecrr-01-verification.log','artifacts/ecrr-01-playwright-isolation.json','artifacts/ecrr-01-playwright-offline.json','ECRR-01-SMOKE-TEST-RESULTS.md','CHAR/ECRR/ECRR_REPORTS/2025-09-29-ecrr-01-consolidated.md'
 $files | % { "{0} => {1}" -f $_, (Test-Path $_) }
 (Get-Content 'artifacts/ecrr-01-playwright-isolation.json' -Raw | ConvertFrom-Json).stats.unexpected
 (Get-Content 'artifacts/ecrr-01-playwright-offline.json' -Raw | ConvertFrom-Json).stats.unexpected
@@ -219,3 +219,4 @@ $files | % { "{0} => {1}" -f $_, (Test-Path $_) }
 - Integrates with observability stack and monitoring systems
 
 ---
+

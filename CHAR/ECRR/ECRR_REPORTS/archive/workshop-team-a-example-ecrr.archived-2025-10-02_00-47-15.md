@@ -18,7 +18,7 @@
 - **Health Monitoring**: ✅ **ACTIVE** - Comprehensive health check scripts implemented
 
 ### **ECRR Framework Enhancement Status**
-- **Total Reports**: 9 ECRR reports in `docs/ECRR_REPORTS/`
+- **Total Reports**: 9 ECRR reports in `CHAR/ECRR/ECRR_REPORTS/`
 - **ECRR Gate Coverage**: 100% (9/9 reports)
 - **4-Section Structure**: 100% (9/9 reports)
 - **Phase 2 Consolidation**: Complete compliance achieved
@@ -358,7 +358,7 @@ Get-ChildItem .agent\tickets\ -Filter "*.json" | Select-Object Name, LastWriteTi
 - `.agent/templates/` - Ticket templates for all roles
 
 ### **Documentation and Reports**
-- `docs/ECRR_REPORTS/` - Complete ECRR compliance reports
+- `CHAR/ECRR/ECRR_REPORTS/` - Complete ECRR compliance reports
 - `MONITORING_SETUP_GUIDE.md` - SigNoz implementation guide
 - `artifacts/ecrr-compliance-report.json` - Compliance validation results
 - `artifacts/signoz-*.json` - SigNoz configuration artifacts
@@ -475,4 +475,5 @@ Test outputs: ECRR compliance results, health check reports, canary monitoring d
 - Scope:
 
 ---
+
 

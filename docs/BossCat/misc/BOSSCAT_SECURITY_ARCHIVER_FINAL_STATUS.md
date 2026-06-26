@@ -346,8 +346,8 @@ b52b16087 docs(bosscat): Add security archiver integration summary
 7. `SECURITY_ARCHIVER_COMPLETE.md` (395 LOC)
 
 **ECRR Reports** (2):
-8. `docs/ecrr/ECRR_REPORTS/ECRR_SECURITY_ARCHIVER_OPERATIONAL_20251015_063225.md` (258 LOC)
-9. `docs/ecrr/ECRR_REPORTS/ECRR_SECURITY_ARCHIVER_VALIDATED_20251015_063400.md` (302 LOC)
+8. `CHAR/ECRR/ECRR_REPORTS/ECRR_SECURITY_ARCHIVER_OPERATIONAL_20251015_063225.md` (258 LOC)
+9. `CHAR/ECRR/ECRR_REPORTS/ECRR_SECURITY_ARCHIVER_VALIDATED_20251015_063400.md` (302 LOC)
 
 **Total Documentation**: 2,973 LOC
 
@@ -596,4 +596,5 @@ function Show-Progress($current, $total, $type, $id){
 🐾 **BossCat Security Conveyor — Production Deployment Complete**
 
 **Beautifully Visualized | Evidence-First | Automated | Battle-Tested**
+
 

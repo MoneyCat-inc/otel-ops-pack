@@ -20,8 +20,9 @@
     "docs/cheatsheets": "present",
     "docs/observability/snapshots": "present",
     "docs/IONA_ERRORS.md": "present",
-    "docs/ecrr/ECRR_REPORTS": "present",
+    "CHAR/ECRR/ECRR_REPORTS": "present",
     "signoz.ts": "present",
     ".github/workflows/bosscat-gate-verify.yml": "present"
   }
 }
+

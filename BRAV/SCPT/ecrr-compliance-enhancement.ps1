@@ -5,8 +5,8 @@
 # 3. Add explicit status declarations to 23 reports lacking formal status
 
 param(
-    [string]$ReportsPath = "docs/ECRR_REPORTS",
-    [string]$BackupPath = "docs/ECRR_REPORTS/backup",
+    [string]$ReportsPath = "CHAR/ECRR/ECRR_REPORTS",
+    [string]$BackupPath = "CHAR/ECRR/ECRR_REPORTS/backup",
     [string]$OutputPath = "artifacts/ecrr-compliance-enhancement.json",
     [switch]$DryRun,
     [switch]$Verbose
@@ -580,3 +580,4 @@ Write-Host ""
 Write-Host "Results exported to: $OutputPath" -ForegroundColor Green
 Write-Host ""
 Write-Host "ECRR Mantra: Examine → Clean → Report → Role - Every change must begin with evidence, remove drift, leave an artifact, and declare its actor." -ForegroundColor Magenta
+

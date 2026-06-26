@@ -203,8 +203,8 @@ Ready to proceed to **Gate #017+** (next milestone TBD)
 - GATE_010_IMPLEMENTATION_SUMMARY.md (root)
 
 **ECRR Reports:**
-- docs/ecrr/ECRR_REPORTS/ECRR_GATE_010_AUDIO_REACTIVITY_READY_20251024.md
-- docs/ecrr/ECRR_REPORTS/ECRR_GATE_010_REMEDIATION_*.md
+- CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_010_AUDIO_REACTIVITY_READY_20251024.md
+- CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_010_REMEDIATION_*.md
 
 **BOSSCAT_LOG Entries:**
 - 2025-10-24T08:35Z — Gate #010 AMBER CERTIFICATION
@@ -233,5 +233,6 @@ Ready to proceed to **Gate #017+** (next milestone TBD)
 **Authority:** Cursor{Implementer} (Assessment) → Fubumaki (Review)  
 **Date:** 2025-10-25  
 **Cat Nap Control Room - Gate #010 Assessment Complete** 🐾
+
 
 

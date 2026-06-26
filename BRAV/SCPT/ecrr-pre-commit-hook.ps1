@@ -9,7 +9,7 @@ Write-Host "======================" -ForegroundColor Cyan
 # If no files specified, get staged files from git
 if ($ChangedFiles.Count -eq 0) {
     try {
-        $ChangedFiles = git diff --cached --name-only --diff-filter=A | Where-Object { $_ -match 'docs/ECRR_REPORTS/.*\.md$' }
+        $ChangedFiles = git diff --cached --name-only --diff-filter=A | Where-Object { $_ -match 'CHAR/ECRR/ECRR_REPORTS/.*\.md$' }
     } catch {
         Write-Host "⚠️  Could not get git staged files. Please specify files manually." -ForegroundColor Yellow
         exit 0
@@ -18,7 +18,7 @@ if ($ChangedFiles.Count -eq 0) {
 
 # Filter for ECRR report files
 $ecrrFiles = $ChangedFiles | Where-Object { 
-    $_ -match 'docs/ECRR_REPORTS/.*\.md$' -and
+    $_ -match 'CHAR/ECRR/ECRR_REPORTS/.*\.md$' -and
     $_ -match '\d{4}-\d{2}-\d{2}'
 }
 
@@ -170,3 +170,4 @@ if ($failedFiles.Count -gt 0) {
     Write-Host "🚀 Commit can proceed" -ForegroundColor Green
     exit 0
 }
+

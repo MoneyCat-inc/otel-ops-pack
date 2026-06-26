@@ -98,7 +98,7 @@ if ($healthy) {
     Write-Host "🔍 Troubleshooting:" -ForegroundColor Yellow
     Write-Host "   1. Check collector config: C:\otel\config.yaml (traces pipeline)" -ForegroundColor White
     Write-Host "   2. Restart collector: Restart-Service otelcol-contrib" -ForegroundColor White
-    Write-Host "   3. Verify SigNoz endpoint: http://localhost:14317" -ForegroundColor White
+    Write-Host "   3. Verify SigNoz endpoint: http://localhost:4317" -ForegroundColor White
     exit 1
 }
 

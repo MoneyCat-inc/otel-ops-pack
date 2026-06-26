@@ -87,7 +87,7 @@ Once the dashboard is verified/created:
 2. Wait for panels to load data
 3. Capture full dashboard screenshot
 4. Save to: `docs/observability/snapshots/queue-steward-dashboard-20251211.png`
-5. Embed in ECRR report: `docs/ecrr/ECRR_REPORTS/`
+5. Embed in ECRR report: `CHAR/ECRR/ECRR_REPORTS/`
 
 ---
 
@@ -111,3 +111,4 @@ If dashboard was created:
 ---
 
 **Recommendation:** Manually verify if dashboard exists in SigNoz, then proceed with screenshot capture.
+

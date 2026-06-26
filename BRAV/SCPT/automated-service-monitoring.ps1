@@ -108,7 +108,7 @@ $services = @(
     @{
         Name = "SigNoz Collector"
         Type = "port"
-        Endpoint = "localhost:14317"
+        Endpoint = "localhost:4317"
         Critical = $true
     },
     @{

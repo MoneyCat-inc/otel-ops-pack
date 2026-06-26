@@ -245,7 +245,7 @@ function Invoke-TaskDecomposition {
         
         'ecrr-compliance-check' {
             # Decompose ECRR reports into parallel validation tasks
-            $reportDirs = @('docs/ecrr/ECRR_REPORTS', 'docs/observability/snapshots')
+            $reportDirs = @('CHAR/ECRR/ECRR_REPORTS', 'docs/observability/snapshots')
             
             foreach ($dir in $reportDirs) {
                 if (Test-Path $dir) {
@@ -825,3 +825,4 @@ if ($sessionResults.SuccessRate -ge 90) {
 } else {
     Write-Host "⚠️ Production Gate: Review failed agents before deployment" -ForegroundColor Yellow
 }
+

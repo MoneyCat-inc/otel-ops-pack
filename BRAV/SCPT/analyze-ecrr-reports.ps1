@@ -7,7 +7,7 @@ Write-Host "`n📊 ECRR Reports Analysis" -ForegroundColor Cyan
 Write-Host "=" * 60
 
 # Get all ECRR reports
-$reportsPath = "docs\ecrr\ECRR_REPORTS"
+$reportsPath = "CHAR\ECRR\ECRR_REPORTS"
 $mdReports = Get-ChildItem -Path $reportsPath -Recurse -Include "*.md" -File
 $jsonFiles = Get-ChildItem -Path $reportsPath -Recurse -Include "*.json" -File
 
@@ -142,4 +142,5 @@ $summary = @{
 $summaryPath = "artifacts\ecrr-processing-summary-$(Get-Date -Format 'yyyyMMdd-HHmmss').json"
 $summary | ConvertTo-Json -Depth 10 | Out-File $summaryPath -Encoding utf8
 Write-Host "📁 Summary exported to: $summaryPath" -ForegroundColor Cyan
+
 

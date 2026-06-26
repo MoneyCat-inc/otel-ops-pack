@@ -24,14 +24,14 @@ on:
   push:
     branches: [ main, develop ]
     paths:
-      - 'docs/ECRR_REPORTS/**'
+      - 'CHAR/ECRR/ECRR_REPORTS/**'
       - 'scripts/lint-ecrr-compliance.ps1'
       - 'scripts/monitor-ecrr-compliance-trends.ps1'
       - 'scripts/post-workshop-validation.ps1'
   pull_request:
     branches: [ main, develop ]
     paths:
-      - 'docs/ECRR_REPORTS/**'
+      - 'CHAR/ECRR/ECRR_REPORTS/**'
       - 'scripts/lint-ecrr-compliance.ps1'
       - 'scripts/monitor-ecrr-compliance-trends.ps1'
       - 'scripts/post-workshop-validation.ps1'
@@ -462,3 +462,4 @@ try {
     Write-Error "Stack trace: $($_.ScriptStackTrace)"
     exit 1
 }
+

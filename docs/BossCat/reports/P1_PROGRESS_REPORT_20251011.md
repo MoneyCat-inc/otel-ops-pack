@@ -34,7 +34,7 @@
 - `BRAV/SCPT/flak-changed-paths-smoke.sh` - Fast changed-paths smoke
 - `BRAV/SCPT/README_FLAK_LANE.md` - Documentation
 
-**ECRR:** `docs/ecrr/ECRR_REPORTS/ECRR_P1A_FLAK_SMOKE_20251011.md`  
+**ECRR:** `CHAR/ECRR/ECRR_REPORTS/ECRR_P1A_FLAK_SMOKE_20251011.md`  
 **BOSSCAT_LOG:** 13:00 UTC entry  
 **Lesson:** Targeted testing >> full pipeline
 
@@ -67,7 +67,7 @@
 
 **Total:** 7 files, ~314 LOC (via 2 budget-compliant jobs) ✅
 
-**ECRR:** `docs/ecrr/ECRR_REPORTS/ECRR_P1B_JOB1_20251011.md`  
+**ECRR:** `CHAR/ECRR/ECRR_REPORTS/ECRR_P1B_JOB1_20251011.md`  
 **BOSSCAT_LOG:** 13:50 UTC entry  
 **Lesson:** Multi-job splits >> single overbudget job
 
@@ -157,8 +157,8 @@ Governance: 100% compliance ✅
 ## 🔗 **ARTIFACTS**
 
 **ECRR Reports:**
-1. `docs/ecrr/ECRR_REPORTS/ECRR_P1A_FLAK_SMOKE_20251011.md`
-2. `docs/ecrr/ECRR_REPORTS/ECRR_P1B_JOB1_20251011.md`
+1. `CHAR/ECRR/ECRR_REPORTS/ECRR_P1A_FLAK_SMOKE_20251011.md`
+2. `CHAR/ECRR/ECRR_REPORTS/ECRR_P1B_JOB1_20251011.md`
 3. `docs/BossCat/reports/P1_PROGRESS_REPORT_20251011.md` (this document)
 
 **Commits:**
@@ -198,4 +198,5 @@ Governance: 100% compliance ✅
 **Date:** 2025-10-11T14:00:00Z
 
 **All work ECRR-compliant, budget-disciplined, gate-ready.** 🚀
+
 

@@ -140,7 +140,7 @@ class AgentSystemDeployment {
       '.agent/state',
       '.agent/logs',
       '.agent/backups',
-      'docs/ECRR_REPORTS',
+      'CHAR/ECRR/ECRR_REPORTS',
       'scripts/agent',
       'artifacts'
     ];
@@ -486,7 +486,7 @@ pnpm agent:stop
 
 1. **Start the system**: \`pnpm agent:start\`
 2. **Monitor status**: \`pnpm agent:status-system\`
-3. **Check compliance**: Review \`docs/ECRR_REPORTS/\`
+3. **Check compliance**: Review \`CHAR/ECRR/ECRR_REPORTS/\`
 4. **Configure agents**: Edit \`.agent/config/*.json\`
 
 ## 🛡️ Safety Features
@@ -571,3 +571,4 @@ if (require.main === module) {
 }
 
 export { AgentSystemDeployment };
+

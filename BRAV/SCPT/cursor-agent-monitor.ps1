@@ -16,7 +16,7 @@ $StateFile = "$AgentDir/state.json"
 $QueueFile = "$AgentDir/task_queue.json"
 $LockFile = "$AgentDir/LOCK"
 $MonitorPidFile = "$AgentDir/monitor.pid"
-$ReportsDir = "docs/ECRR_REPORTS"
+$ReportsDir = "CHAR/ECRR/ECRR_REPORTS"
 
 function Write-ColorOutput {
     param([string]$Message, [string]$Color = "White")
@@ -227,3 +227,4 @@ if ($StartMonitoring) {
     Write-ColorOutput "  -IntervalMinutes    Set monitoring interval (default: 15)" "Gray"
     Write-ColorOutput "  -Verbose            Show detailed output" "Gray"
 }
+

@@ -196,9 +196,9 @@ Status: Ready for implementation
 - `EXEC_SUMMARY_GITHUB_COMPLIANCE_20251012.md` - Compliance summary
 
 ### ECRR Reports (Gate #007)
-- `docs/ecrr/ECRR_REPORTS/ECRR_GITHUB_COMPLIANCE_20251012_090325.md` - GitHub compliance (4K words)
-- `docs/ecrr/ECRR_REPORTS/ECRR_CURSOR_IMPLEMENTER_20251012_085425.md` - Implementation (4K words)
-- `docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_*` - Multiple gate run reports
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_GITHUB_COMPLIANCE_20251012_090325.md` - GitHub compliance (4K words)
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_CURSOR_IMPLEMENTER_20251012_085425.md` - Implementation (4K words)
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_RUN_*` - Multiple gate run reports
 
 ### Governance Framework
 - `docs/BOSS/CATX/RESE/SYAR/BOSS-CATX-RESE-SYAR.json` - Tetragram map (canonical)
@@ -332,3 +332,4 @@ Status Page: docs/status.html
 **Next:** Monitor SBOM stability + P0/P1 tasks
 
 🚀 **GATE #007 LIVE · SBOM BLOCKING ACTIVE · GOVERNANCE OPERATIONAL** 🚀
+

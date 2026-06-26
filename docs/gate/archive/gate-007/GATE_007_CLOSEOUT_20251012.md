@@ -97,8 +97,8 @@ Gate #007 objectives achieved across two major work streams:
 - `docs/BOSS/CATX/RESE/SYAR/BOSS-CATX-RESE-SYAR.json` — Canonical map
 
 **ECRR Reports**:
-- `docs/ecrr/ECRR_REPORTS/ECRR_GITHUB_COMPLIANCE_20251012_090325.md`
-- `docs/ecrr/ECRR_REPORTS/ECRR_CURSOR_IMPLEMENTER_20251012_085425.md`
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_GITHUB_COMPLIANCE_20251012_090325.md`
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_CURSOR_IMPLEMENTER_20251012_085425.md`
 
 **Executive Summaries**:
 - `GOVERNANCE_FRAMEWORK_COMPLETE_20251012.md`
@@ -177,4 +177,5 @@ Gate #007 objectives achieved across two major work streams:
 **Date**: 2025-10-12  
 **Gate**: #007  
 **Status**: ✅ CLOSEOUT COMPLETE
+
 

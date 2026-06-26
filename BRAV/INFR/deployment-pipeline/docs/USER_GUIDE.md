@@ -349,7 +349,7 @@ env:
 
 For issues or questions:
 - Check existing documentation
-- Review ECRR reports in `docs/ecrr/ECRR_REPORTS/`
+- Review ECRR reports in `CHAR/ECRR/ECRR_REPORTS/`
 - Examine deployment metrics in `docs/metrics/`
 - Submit GitHub issues with detailed information
 
@@ -361,3 +361,4 @@ For issues or questions:
 **Orchestration**: Kubernetes + Docker Compose  
 **CI/CD**: GitHub Actions  
 **Governance**: ECRR Framework + BossCat Compliance**
+

@@ -152,8 +152,8 @@ The 51.77% CI is an honest baseline reflecting post-Gate #025 reconciliation. Th
 - `GATE_026_SCOPE.md` — Original planning
 - `GATE_026_IMPLEMENTATION_SUMMARY.md` — Technical details
 - `GATE_026_VERIFICATION_GUIDE.md` — Execution guide
-- `docs/ecrr/ECRR_REPORTS/ECRR_GATE_026_IMPLEMENTATION_20251027.md` — Implementation ECRR
-- `docs/ecrr/ECRR_REPORTS/ECRR_GATE_026_VERIFICATION_20251027.md` — Verification ECRR
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_026_IMPLEMENTATION_20251027.md` — Implementation ECRR
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_026_VERIFICATION_20251027.md` — Verification ECRR
 - `GATE_026B_026C_APPROVAL.md` — Approval document (this precursor)
 - `GATE_026B_026C_FINAL_SUMMARY.md` — This document
 
@@ -258,4 +258,5 @@ The 51.77% CI is an honest baseline reflecting post-Gate #025 reconciliation. Th
 **Seal:** 🐾 **Gate #026B+026C — Approved & Delivered**
 
 _Gate #026 split approval: Tracks B (k6 CI gates) and C (ICF telemetry) delivered with exceptional results and tagged gate-026b-026c-green-2025-10-27. Track A (.NET auto-instrumentation) deferred to Gate #026A for telemetry debugging. Honest ECRR assessment applied: 2/3 tracks production-ready, immediate delivery prioritized over blocking on investigation._
+
 
