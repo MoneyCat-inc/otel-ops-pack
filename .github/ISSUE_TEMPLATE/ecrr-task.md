@@ -30,7 +30,7 @@ assignees: ''
 - [ ] Test validation
 
 **Report**: What artifacts must be generated?
-- [ ] ECRR report in docs/ecrr/ECRR_REPORTS/
+- [ ] ECRR report in CHAR/ECRR/ECRR_REPORTS/
 - [ ] SigNoz dashboard export
 - [ ] Evidence collection artifacts
 - [ ] Compliance verification
@@ -120,3 +120,4 @@ scripts/update-docs-index.ps1
 ---
 
 🐾 **Task authorized by BossCat OEM. All agents must maintain ECRR discipline throughout execution.**
+

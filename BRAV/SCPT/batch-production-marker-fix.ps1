@@ -1,6 +1,6 @@
 # Batch Production Marker Fix Script
 param(
-    [string]$ReportsPath = "docs/ECRR_REPORTS",
+    [string]$ReportsPath = "CHAR/ECRR/ECRR_REPORTS",
     [switch]$DryRun = $false
 )
 
@@ -101,3 +101,4 @@ if ($DryRun) {
 }
 
 exit 0
+

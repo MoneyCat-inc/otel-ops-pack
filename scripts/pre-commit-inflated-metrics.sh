@@ -25,13 +25,14 @@ if git diff --cached --name-only | grep -v 'archive/' | xargs -I {} git grep -nE
     echo "FIX:"
     echo "  1. Remove inflated claims from staged files"
     echo "  2. Replace with verifiable statements"
-    echo "  3. Link to evidence: docs/ecrr/ECRR_REPORTS/EVIDENCE_YYYY-MM-DD.md"
+    echo "  3. Link to evidence: CHAR/ECRR/ECRR_REPORTS/EVIDENCE_YYYY-MM-DD.md"
     echo ""
-    echo "TEMPLATE: docs/ecrr/ECRR_REPORTS/EVIDENCE_TEMPLATE.md"
+    echo "TEMPLATE: CHAR/ECRR/ECRR_REPORTS/EVIDENCE_TEMPLATE.md"
     echo ""
     exit 1
 fi
 
 echo "✅ No inflated metrics detected"
 exit 0
+
 

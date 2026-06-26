@@ -19,9 +19,10 @@
     "docs/cheatsheets": "present",
     "docs/BossCat/README.md": "present",
     "docs/status.html": "present",
-    "docs/ecrr/ECRR_REPORTS": "present",
+    "CHAR/ECRR/ECRR_REPORTS": "present",
     "docs/IONA_ERRORS.md": "present",
     "queue-steward-verification.txt": "present",
     ".github/workflows/bosscat-gate-verify.yml": "present"
   }
 }
+

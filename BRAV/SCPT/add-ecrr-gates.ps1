@@ -2,7 +2,7 @@
 # Automatically adds ECRR Gate sections to reports that are missing them
 
 param(
-    [string]$ReportPath = "docs/ECRR_REPORTS",
+    [string]$ReportPath = "CHAR/ECRR/ECRR_REPORTS",
     [string]$OutputPath = "artifacts/ecrr-gate-addition-report.json",
     [switch]$DryRun,
     [switch]$Verbose
@@ -227,3 +227,4 @@ try {
     Write-Error "ECRR Gate addition failed: $($_.Exception.Message)"
     exit 3
 }
+

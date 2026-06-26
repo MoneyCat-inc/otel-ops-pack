@@ -3,7 +3,7 @@
 
 param(
     [string]$TemplatePath = "docs/ECRR_REPORT_TEMPLATE.md",
-    [string]$ReportsPath = "docs/ECRR_REPORTS",
+    [string]$ReportsPath = "CHAR/ECRR/ECRR_REPORTS",
     [switch]$Force = $false,
     [switch]$Validate = $false
 )
@@ -247,3 +247,4 @@ Write-Host "🎭 Agent-specific templates created for all agent types" -Foregrou
 if ($Validate) {
     Write-Host "🔍 Template usage validation completed" -ForegroundColor Green
 }
+

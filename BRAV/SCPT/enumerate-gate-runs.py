@@ -323,7 +323,7 @@ def enumerate_gate_runs(reports_dir: str, output_path: str) -> Dict:
         "extra": extra,
         "details": {
             "authoritative_source": {
-                "file": "docs/ecrr/ECRR_REPORTS/ECRR_PROCESSING_SUMMARY_20251019.md",
+                "file": "CHAR/ECRR/ECRR_REPORTS/ECRR_PROCESSING_SUMMARY_20251019.md",
                 "line": "195-198",
                 "expected_total": expected_total,
                 "expected_ready": expected_ready,
@@ -348,7 +348,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Enumerate gate run reports")
     parser.add_argument(
         "--reports-dir",
-        default="docs/ecrr/ECRR_REPORTS",
+        default="CHAR/ECRR/ECRR_REPORTS",
         help="Directory containing ECRR gate run reports"
     )
     parser.add_argument(
@@ -384,3 +384,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+

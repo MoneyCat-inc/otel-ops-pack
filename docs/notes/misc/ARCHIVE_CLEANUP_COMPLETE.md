@@ -63,7 +63,7 @@ gate-007/
 - ✅ `CHAR/EVID/phases/` (phase documentation)
 
 **ECRR Reports (Kept):**
-- ✅ `docs/ecrr/ECRR_REPORTS/` (55 reports - permanent record)
+- ✅ `CHAR/ECRR/ECRR_REPORTS/` (55 reports - permanent record)
 
 ---
 
@@ -176,4 +176,5 @@ ls CHAR/PRSV/archive/gate-007/option-b/
 ```powershell
 cat TODO_NEXT_SESSION.md
 ```
+
 

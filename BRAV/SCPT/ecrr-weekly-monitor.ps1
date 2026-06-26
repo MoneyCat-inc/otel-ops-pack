@@ -10,7 +10,7 @@ param(
 
 # ECRR Weekly Monitoring Functions
 function Get-WeeklyComplianceData {
-    $reportsPath = "docs/ECRR_REPORTS"
+    $reportsPath = "CHAR/ECRR/ECRR_REPORTS"
     if (-not (Test-Path $reportsPath)) {
         Write-Warning "ECRR reports directory not found: $reportsPath"
         return @{}
@@ -285,3 +285,4 @@ if ($weeklyData.QualityAlerts.Count -gt 0) {
 }
 
 Write-Host "`n✅ Weekly compliance monitoring complete!" -ForegroundColor Green
+

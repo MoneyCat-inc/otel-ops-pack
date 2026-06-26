@@ -54,7 +54,7 @@
 - Fast changed-paths smoke: 30s-2m runtime (60-80% faster than full pipeline)
 - Scope: Rule #7 compliant (tests/, playwright/ only)
 - Lane: FLAK, Evidence: `.agent/EVIDENCE.log`, DoD: 6/6 met
-- ECRR: `docs/ecrr/ECRR_REPORTS/ECRR_P1A_FLAK_SMOKE_20251011.md`
+- ECRR: `CHAR/ECRR/ECRR_REPORTS/ECRR_P1A_FLAK_SMOKE_20251011.md`
 - **Lesson**: Targeted testing >> full pipeline; fast feedback drives quality
 - **Next**: P1-B security scanners (COMP lane)
 
@@ -93,7 +93,7 @@
 - Workspace: 59 uncommitted files categorized (17 modified, 42 untracked)
 - Deliverables: 2 ECRR reports (session closeout + handoff), complete categorization
 - Decisions Required: (1) Commit strategy for 59 files, (2) PR #118 remediation approval, (3) Origin sync
-- Evidence: docs/ecrr/ECRR_REPORTS/ECRR_CURSOR_IMPLEMENTER_SESSION_20251012.md, docs/CURSOR_IMPLEMENTER_HANDOFF_20251012.md
+- Evidence: CHAR/ECRR/ECRR_REPORTS/ECRR_CURSOR_IMPLEMENTER_SESSION_20251012.md, docs/CURSOR_IMPLEMENTER_HANDOFF_20251012.md
 - **Lesson**: Always check gate status first; session was post-gate assessment & workspace management
 - **Status**: All tasks complete; 3 decisions pending from BossCat OEM
 - **Next**: BossCat review of handoff report + PR #118 remediation authorization
@@ -104,7 +104,7 @@
 - P1 remediation: ✅ 100% COMPLETE (6/6 tasks, 8 jobs, ~934 LOC)
 - SITE_HTML_CSP: ✅ GREEN (PR #128 ready for merge, 0 violations)
 - Outstanding: PR #118 post-merge remediation (P0, tracked, non-blocking for gate)
-- ECRR: `docs/ecrr/ECRR_REPORTS/ECRR_GATE_READY_EXEC_20251012.md`
+- ECRR: `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_READY_EXEC_20251012.md`
 - **Lesson**: Systematic gate readiness == clear decision path; evidence-driven approval
 - **Status**: All gates GREEN (CORE + SITE), comprehensive evidence, certified ready
 - **Next**: BossCat OEM final review → PR #128 merge → Gate #007 signal → PR #118 remediation
@@ -178,7 +178,7 @@
 
 **03:29 UTC** - 🚦 Gate #007 — Release Approved
 - Closeout finalized and marked as RELEASE APPROVED by BossCat OEM
-- Files: `docs/ecrr/ECRR_REPORTS/ECRR_GATE_CLOSEOUT_20251012_032900.md`, `docs/ecrr/ECRR_REPORTS/ECRR_GATE_CLOSEOUT_LATEST.md`
+- Files: `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_CLOSEOUT_20251012_032900.md`, `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_CLOSEOUT_LATEST.md`
 - Evidence attached: status-latest screenshot, latest gate run, cursor runs
 
 ---
@@ -208,3 +208,4 @@ _BossCat Seal: 🐾_
 [2025-10-16 11:50:00 +00:00] MILK-PHASE3C | SigNoz alert integration complete | a7cc83cdd | main | Lane: MILK | Files: 4/4 | LOC: 191/200 | Priority: HIGH | cursor{implementer}
 [2025-10-16 12:05:00 +00:00] MILK-PRESETS | Preset authoring infrastructure complete | a7cc83cdd | main | Lane: MILK | Pack: 6 presets | Tools: 2 (validator+installer) | Safety: 100% | cursor{implementer}
 [2025-10-16 12:10:00 +00:00] MILK-GA-RELEASE | v0.1.0-milk tagged and released | a7cc83cdd | main | Lane: MILK | Phases: 4 complete | Status: PRODUCTION | URL: https://github.com/MoneyCat-inc/otel-ops-pack/releases/tag/v0.1.0-milk
+

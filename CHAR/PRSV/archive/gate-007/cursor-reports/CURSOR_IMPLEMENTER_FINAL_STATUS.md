@@ -95,7 +95,7 @@
 **Reports Filed:**
 
 1. **PR Merge Mission:**
-   - `docs/ecrr/ECRR_REPORTS/ECRR_PR_MERGE_20251010.md`
+   - `CHAR/ECRR/ECRR_REPORTS/ECRR_PR_MERGE_20251010.md`
    - Complete ECRR framework (Examine → Clean → Report → Role)
    - 100% success metrics documented
    - Lessons learned captured
@@ -115,7 +115,7 @@
 ### Gate #007: PR-Merge ✅
 - **Verdict:** READY
 - **Evidence:** `DELT/ARTF/gate-verification-results.json`
-- **ECRR:** `docs/ecrr/ECRR_REPORTS/ECRR_PR_MERGE_20251010.md`
+- **ECRR:** `CHAR/ECRR/ECRR_REPORTS/ECRR_PR_MERGE_20251010.md`
 - **Status:** Production approved
 
 ### Option B: Windows Collector ⚠️
@@ -193,7 +193,7 @@ pnpm otel:optionB
 - `BOSSCAT_PR_MERGE_FINAL_REPORT.md`
 
 **ECRR Reports (1 file):**
-- `docs/ecrr/ECRR_REPORTS/ECRR_PR_MERGE_20251010.md`
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_PR_MERGE_20251010.md`
 
 **Helper Scripts (3 files):**
 - `scripts/verify-option-b-results.ps1`
@@ -285,4 +285,5 @@ pnpm otel:optionB
 🐾 **Cursor{Implementer} signing off - Standing by for Option B completion.**
 
 **Session Summary:** All primary objectives complete. Awaiting final validation.
+
 

@@ -130,7 +130,7 @@ WARNING: [Gate][ci] queue-steward evidence missing (OK in mock/non-prod).
 - Verification: Guardrails now passing (Exit Code 0)
 - Risk: LOW (untracked directories, no git history affected)
 
-**Evidence**: `docs/ecrr/ECRR_REPORTS/ECRR_READY_FOR_GATE_ASSESSMENT_20251013.md`
+**Evidence**: `CHAR/ECRR/ECRR_REPORTS/ECRR_READY_FOR_GATE_ASSESSMENT_20251013.md`
 
 ---
 
@@ -145,7 +145,7 @@ M BRAV/SCPT/signoz-snapshot.spec.ts              (uses waitReady helper)
 M DELT/ARTF/gate-verification-results.json       (latest gate run)
 M PR_COMMENT_IONA_GATE_002_FINAL.md              (latest gate comment)
 M docs/BossCat/README.md                         (Quick Commands section)
-M docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md (latest run)
+M CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md (latest run)
 M scripts/verify-iona-gate.ps1                   (line ending changes)
 ```
 
@@ -162,8 +162,8 @@ Ephemeral (ignored):
   logs/, tmp/, node_modules/
 
 New Evidence:
-  docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_*.md (5 new reports)
-  docs/ecrr/ECRR_REPORTS/ECRR_READY_FOR_GATE_ASSESSMENT_20251013.md
+  CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_RUN_*.md (5 new reports)
+  CHAR/ECRR/ECRR_REPORTS/ECRR_READY_FOR_GATE_ASSESSMENT_20251013.md
 
 New Scripts:
   scripts/append-ecrr-benchmark-trend.ps1
@@ -251,7 +251,7 @@ git add -u  # Stage deletions only
 git commit -m "fix(structure): remove migrated/ephemeral artifacts"
 
 # Commit ECRR evidence
-git add docs/ecrr/ECRR_REPORTS/ECRR_*.md
+git add CHAR/ECRR/ECRR_REPORTS/ECRR_*.md
 git commit -m "docs(ecrr): add gate run evidence 20251013"
 
 # Review and selectively add new scripts
@@ -415,4 +415,5 @@ git commit -m "feat(scripts): add ECRR processing automation"
 ---
 
 🚀 **GATE-READY · 100% STRUCTURAL COMPLIANCE · 4/4 CHECKS PASSING · ALL DIRECTIVES COMPLETE · ECRR CERTIFIED** 🚀
+
 

@@ -137,7 +137,7 @@ config/
 ### Evidence & Reports (8+ ECRR files)
 
 ```
-docs/ecrr/ECRR_REPORTS/
+CHAR/ECRR/ECRR_REPORTS/
 ├── ECRR_MILK_CONSOLIDATED_20251016.md         [Master summary]
 ├── ECRR_MILK_CONSOLIDATED_LATEST.md           [Latest link]
 ├── ECRR_MILK_PHASE2_FINAL_20251016.md
@@ -513,4 +513,5 @@ pwsh -File scripts/visuals/Install-PresetPack.ps1 -Validate
 
 *cursor{implementer} | MILK Lane | Session: COMPLETE*  
 *All phases approved | Gates: GREEN | Standing by for final directive*
+
 

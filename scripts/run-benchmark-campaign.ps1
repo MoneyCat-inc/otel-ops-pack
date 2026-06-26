@@ -1,5 +1,5 @@
 # Ready-to-Run Benchmark Campaign (BossCat OEM Harness)
-# Produces: docs/ecrr/ECRR_REPORTS/EVIDENCE_YYYY-MM-DD.md + artifacts with medians
+# Produces: CHAR/ECRR/ECRR_REPORTS/EVIDENCE_YYYY-MM-DD.md + artifacts with medians
 # Usage: pwsh -File scripts/run-benchmark-campaign.ps1
 
 param(
@@ -14,7 +14,7 @@ param(
 $DATE = Get-Date -Format "yyyy-MM-dd"
 $ART  = "artifacts/metrics_$DATE"
 $PY   = "synthetic\send_synthetic_otel_simple.py"
-$EV   = "docs/ecrr/ECRR_REPORTS/EVIDENCE_$DATE.md"
+$EV   = "CHAR/ECRR/ECRR_REPORTS/EVIDENCE_$DATE.md"
 
 Write-Host "🧪 Benchmark Campaign: OTLP Ingest Uplift Measurement" -ForegroundColor Cyan
 Write-Host ""
@@ -80,8 +80,8 @@ if (-not (Test-Path $PY)) {
 }
 
 # Duplicate template
-if (Test-Path "docs/ecrr/ECRR_REPORTS/EVIDENCE_TEMPLATE.md") {
-    Copy-Item "docs/ecrr/ECRR_REPORTS/EVIDENCE_TEMPLATE.md" $EV
+if (Test-Path "CHAR/ECRR/ECRR_REPORTS/EVIDENCE_TEMPLATE.md") {
+    Copy-Item "CHAR/ECRR/ECRR_REPORTS/EVIDENCE_TEMPLATE.md" $EV
     Write-Host "📋 Created evidence document from template: $EV" -ForegroundColor Green
 } else {
     Write-Host "⚠️  WARNING: Evidence template not found" -ForegroundColor Yellow
@@ -201,3 +201,4 @@ Write-Host "   - No inflated claims (77×, 196.7) without evidence" -ForegroundC
 Write-Host "   - CODEOWNERS will require BossCat OEM approval" -ForegroundColor White
 Write-Host ""
 Write-Host "✅ Campaign data collected. Complete the evidence document and commit." -ForegroundColor Green
+

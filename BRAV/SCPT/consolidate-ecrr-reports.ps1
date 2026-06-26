@@ -1,9 +1,9 @@
 # Consolidate ECRR Reports - Merge duplicates into consolidated files (with dry-run)
 param(
     [switch]$DryRun = $true,
-    [string]$EcrrDir = "docs/ECRR_REPORTS",
-    [string]$ArchiveDir = "docs/ECRR_REPORTS/archive",
-    [string]$OutputDir = "docs/ECRR_REPORTS"
+    [string]$EcrrDir = "CHAR/ECRR/ECRR_REPORTS",
+    [string]$ArchiveDir = "CHAR/ECRR/ECRR_REPORTS/archive",
+    [string]$OutputDir = "CHAR/ECRR/ECRR_REPORTS"
 )
 
 $ErrorActionPreference = "Stop"
@@ -106,3 +106,4 @@ foreach ($group in $groups) {
 }
 
 Write-Host "Consolidation pass complete." -ForegroundColor Green
+

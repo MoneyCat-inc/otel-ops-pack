@@ -1,7 +1,7 @@
 # Enforce 4-Section Structure on ECRR Reports (with dry-run)
 param(
     [switch]$DryRun = $true,
-    [string]$EcrrDir = "docs/ECRR_REPORTS"
+    [string]$EcrrDir = "CHAR/ECRR/ECRR_REPORTS"
 )
 
 $ErrorActionPreference = "Stop"
@@ -50,3 +50,4 @@ foreach ($f in $files) {
 }
 
 Write-Host "Completed. Files updated: $updated" -ForegroundColor Green
+

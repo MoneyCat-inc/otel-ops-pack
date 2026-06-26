@@ -40,7 +40,7 @@ function Commit-BenchmarkResults {
     
     try {
         # Add benchmark results
-        git add docs/ecrr/ECRR_REPORTS/gpu_bench_*.json
+        git add CHAR/ECRR/ECRR_REPORTS/gpu_bench_*.json
         git add docs/bench/index.md
         
         # Check if there are changes to commit
@@ -67,7 +67,7 @@ if ($DryRun) {
     Write-BossCatLog "🔍 DRY RUN MODE - Would run benchmark suite and commit results"
     Write-Host "Commands that would be executed:" -ForegroundColor Yellow
     Write-Host "  1. npx tsx scripts/gpu_bench.ts" -ForegroundColor White
-    Write-Host "  2. git add docs/ecrr/ECRR_REPORTS/gpu_bench_*.json" -ForegroundColor White
+    Write-Host "  2. git add CHAR/ECRR/ECRR_REPORTS/gpu_bench_*.json" -ForegroundColor White
     Write-Host "  3. git add docs/bench/index.md" -ForegroundColor White
     Write-Host "  4. git commit -m '$CommitMessage'" -ForegroundColor White
     exit 0
@@ -94,7 +94,8 @@ Write-Host "✅ Dashboard updated" -ForegroundColor Green
 
 Write-Host "`n📊 Next steps:" -ForegroundColor Cyan
 Write-Host "1. Review dashboard: docs/bench/index.md" -ForegroundColor White
-Write-Host "2. Check raw results: docs/ecrr/ECRR_REPORTS/gpu_bench_*.json" -ForegroundColor White
+Write-Host "2. Check raw results: CHAR/ECRR/ECRR_REPORTS/gpu_bench_*.json" -ForegroundColor White
 Write-Host "3. Monitor performance trends" -ForegroundColor White
 
 Write-Host "`n🐾 BossCat Nightly Automation - Complete" -ForegroundColor Cyan
+

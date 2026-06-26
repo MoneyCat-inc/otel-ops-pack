@@ -177,7 +177,7 @@
 ### Documentation ✅
 - `docs/BossCat/GATE_CRITERIA.md`: Hard gate specifications
 - `docs/BossCat/SITE_CRITERIA.md`: Site quality specifications
-- `docs/ecrr/ECRR_REPORTS/ECRR_GATE_SITE_ACTIVATION_20251013.md`: ECRR evidence
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_SITE_ACTIVATION_20251013.md`: ECRR evidence
 - `docs/BossCat/BOSSCAT_LOG.md`: GREEN flip entry
 
 ---
@@ -322,7 +322,7 @@
 3. `docs/BossCat/SITE_CRITERIA.md` (specifications)
 4. `scripts/synth-trace.ts` (OTLP emitter)
 5. `tests/perf/gate.js` (k6 test)
-6. `docs/ecrr/ECRR_REPORTS/ECRR_GATE_SITE_ACTIVATION_20251013.md` (ECRR)
+6. `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_SITE_ACTIVATION_20251013.md` (ECRR)
 7. `docs/BossCat/BOSSCAT_LOG.md` (GREEN flip entry)
 8. `CURSOR_IMPLEMENTER_GATE_SITE_SESSION_20251013.md` (interim report)
 9. `CURSOR_IMPLEMENTER_GATE_GREEN_SESSION_20251013.md` (this document)
@@ -430,4 +430,5 @@
 🎉 **5/5 PASS · GATE GREEN · AMBER→GREEN FLIP COMPLETE · WORKFLOW OPERATIONAL · SELF-CONTAINED · 100% ECRR COMPLIANT** 🎉
 
 **Commits**: 15 pushed | **Runs**: 17 executed | **Score**: 100% (5/5) | **State**: 🟢 GREEN | **Quality**: EXCEPTIONAL
+
 

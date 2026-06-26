@@ -29,7 +29,7 @@
 
 | Document | Purpose | Audience |
 |----------|---------|----------|
-| **`docs/ecrr/ECRR_REPORTS/ECRR_GATE_APPROVAL_20251010.md`** | Full ECRR report | Audit/Compliance |
+| **`CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_APPROVAL_20251010.md`** | Full ECRR report | Audit/Compliance |
 | **`BOSSCAT_HYGIENE_COMPLETION_20251010.md`** | Hygiene task evidence | Operations |
 | **`DELT/ARTF/evidence-set-20251010_013046.tar.gz`** | Complete evidence bundle | Audit |
 
@@ -85,7 +85,7 @@ Consolidated status with scorecard and attestation.
 7. **`MERGE_NOTE_GATE_20251010.md`** - Merge authorization
 8. **`BOSSCAT_HYGIENE_COMPLETION_20251010.md`** - Hygiene task report
 9. **`HARDENING_PLAN_30_60_90.md`** - Progressive enhancement plan
-10. **`docs/ecrr/ECRR_REPORTS/ECRR_GATE_APPROVAL_20251010.md`** - Full ECRR
+10. **`CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_APPROVAL_20251010.md`** - Full ECRR
 11. **`PR_COMMENT_IONA_GATE_002_FINAL.md`** - IONA verdict (updated)
 
 ---
@@ -190,4 +190,5 @@ Persona v1.1 supersedes older strategic plan constraints:
 **End of Master Index — Gate #006**
 
 *All documentation complete. All evidence filed. All systems green.*
+
 

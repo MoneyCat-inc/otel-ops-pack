@@ -73,7 +73,7 @@ config/
 ### Evidence & Reports (6 files)
 
 ```
-docs/ecrr/ECRR_REPORTS/
+CHAR/ECRR/ECRR_REPORTS/
 ├── ECRR_VISU_PHASE2_20251016.md            [Phase-2] Audit
 ├── ECRR_MILK_PHASE2_FINAL_20251016.md      [Phase-2] Final
 ├── ECRR_MILK_PHASE3A_20251016.md           [Phase-3A] Audit
@@ -370,4 +370,5 @@ Optional: Phase-3B (AI presets) or Phase-3D (voice) on future demand.
 *cursor{implementer} | MILK Lane | Phases 2, 3A, 3C: COMPLETE*  
 *Budget: 100% compliant | Security: localhost-hardened | Gates: GREEN*  
 *Ready for @cat ready-for-gate final certification*
+
 

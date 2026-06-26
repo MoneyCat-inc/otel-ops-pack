@@ -210,7 +210,7 @@ gh pr list --label auto-promotion
 **View statistical trends**:
 ```bash
 # Last 7 days of stats reports
-ls -lt docs/ecrr/ECRR_REPORTS/ECRR_RSI_NIGHTLY_STATS_*.md | head -7
+ls -lt CHAR/ECRR/ECRR_REPORTS/ECRR_RSI_NIGHTLY_STATS_*.md | head -7
 ```
 
 ### Alerts
@@ -320,4 +320,5 @@ ls -lt docs/ecrr/ECRR_REPORTS/ECRR_RSI_NIGHTLY_STATS_*.md | head -7
 **Status**: Production-ready with human oversight  
 **Safety**: Statistical rigor + governance gates  
 **Audit**: Complete evidence trail maintained
+
 

@@ -12,5 +12,6 @@ CHAR (Workflow):
 DELT (Governance):
 - ECRR report + evidence ledger entries; audit JSON recorded
 
-Refs: docs/ecrr/ECRR_REPORTS/ECRR_PHASE1_IMMEDIATE_WINS_20251010.md
+Refs: CHAR/ECRR/ECRR_REPORTS/ECRR_PHASE1_IMMEDIATE_WINS_20251010.md
 Gate: @cat ready-for-gate
+

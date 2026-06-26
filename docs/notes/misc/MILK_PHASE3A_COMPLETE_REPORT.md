@@ -59,7 +59,7 @@ control.html (Butterchurn visualization)
 
 ### 3. ECRR Report (`ECRR_MILK_PHASE3A_20251016.md`) ✅
 
-**Location**: `docs/ecrr/ECRR_REPORTS/ECRR_MILK_PHASE3A_20251016.md`
+**Location**: `CHAR/ECRR/ECRR_REPORTS/ECRR_MILK_PHASE3A_20251016.md`
 
 **Sections**:
 - Examine (mission authorization, requirements)
@@ -171,7 +171,7 @@ curl http://localhost:8899/health
 
 **Generated**:
 - ✅ `.agent/EVIDENCE.log` - Phase-3A events appended
-- ✅ `docs/ecrr/ECRR_REPORTS/ECRR_MILK_PHASE3A_20251016.md` - Full ECRR
+- ✅ `CHAR/ECRR/ECRR_REPORTS/ECRR_MILK_PHASE3A_20251016.md` - Full ECRR
 - ✅ `BOSSCAT_LOG.md` - Timeline entry: `[2025-10-16 11:45:00] MILK-PHASE3A`
 - ✅ `MILK_PHASE3A_COMPLETE_REPORT.md` - This report
 
@@ -233,7 +233,7 @@ MILK Phase-3A complete — **all gates GREEN**.
 **Artifacts**:
 - scripts/visuals/milk-ws-bridge.ts
 - docs/BossCat/visuals/WS_BRIDGE_README.md
-- docs/ecrr/ECRR_REPORTS/ECRR_MILK_PHASE3A_20251016.md
+- CHAR/ECRR/ECRR_REPORTS/ECRR_MILK_PHASE3A_20251016.md
 - .agent/EVIDENCE.log (updated)
 - BOSSCAT_LOG.md (updated)
 
@@ -249,4 +249,5 @@ MILK Phase-3A complete — **all gates GREEN**.
 
 *cursor{implementer} | MILK Lane | Phase-3A: COMPLETE*  
 *Budget: 100% compliant | Security: localhost-hardened | Gates: GREEN*
+
 

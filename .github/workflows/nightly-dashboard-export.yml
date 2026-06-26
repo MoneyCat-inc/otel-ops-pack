@@ -157,7 +157,7 @@ jobs:
           UTURN=$(git log --since='7 days ago' --oneline --grep='revert' --grep='rollback' -i | wc -l || true)
           
           # Self-heals: auto-fix mentions in ECRR reports (7 days)
-          SELF=$(find docs/ecrr/ECRR_REPORTS -name "*.md" -mtime -7 -exec grep -ci 'self-heal\|auto-fix\|auto-remediation' {} + 2>/dev/null | awk '{sum+=$1} END {print sum+0}')
+          SELF=$(find CHAR/ECRR/ECRR_REPORTS -name "*.md" -mtime -7 -exec grep -ci 'self-heal\|auto-fix\|auto-remediation' {} + 2>/dev/null | awk '{sum+=$1} END {print sum+0}')
           
           # KB coverage: one-liner lessons in BossCat log
           KB=$(grep -cE '^(- |## )[0-9]{4}-[0-9]{2}-[0-9]{2}' docs/BossCat/BOSSCAT_LOG.md 2>/dev/null || true)
@@ -318,7 +318,7 @@ jobs:
             test -f docs/status.html
             grep -q "Latest ECRR closeout" docs/status.html
             grep -q "assets/vendor/mermaid/mermaid-10.9.4.min.js" docs/status.html
-            test -f docs/ecrr/ECRR_REPORTS/ECRR_GATE_CLOSEOUT_LATEST.md || echo "(info) closeout latest missing — skip"
+            test -f CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_CLOSEOUT_LATEST.md || echo "(info) closeout latest missing — skip"
           done
       - name: Collector liveness
         shell: bash
@@ -332,5 +332,6 @@ jobs:
           name: nightly-deploy-verify-${{ github.run_number }}
           path: |
             docs/status.html
-            docs/ecrr/ECRR_REPORTS/ECRR_GATE_CLOSEOUT_LATEST.md
+            CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_CLOSEOUT_LATEST.md
           retention-days: 14
+

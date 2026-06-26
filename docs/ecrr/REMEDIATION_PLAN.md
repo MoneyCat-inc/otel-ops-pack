@@ -49,7 +49,7 @@
 - [ ] Update architecture diagrams (remove dual-hop)
 - [ ] Add `docs/architecture/WINDOWS_COLLECTOR_DEPRECATION.md` to all training materials
 - [ ] Update onboarding checklist (point to current architecture)
-- [ ] Audit all ECRR reports in `docs/ecrr/ECRR_REPORTS/` for Windows Collector mentions
+- [ ] Audit all ECRR reports in `CHAR/ECRR/ECRR_REPORTS/` for Windows Collector mentions
 - [ ] Add deprecation note to any report still referencing old architecture
 
 **Evidence**:
@@ -320,4 +320,5 @@ Use the Codex executive review to assess:
 **Last Updated**: 2025-11-01  
 **Owner**: ECRR Audit Team  
 **Status**: Ready for Implementation
+
 
