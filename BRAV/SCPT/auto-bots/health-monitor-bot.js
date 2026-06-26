@@ -14,7 +14,7 @@ const path = require('path');
 // Configuration
 const CONFIG = {
   signozUrl: 'http://localhost:8080',
-  otelCollectorUrl: 'http://localhost:14318',
+  otelCollectorUrl: 'http://localhost:4318',
   windowsCollectorUrl: 'http://localhost:5318',
   checkInterval: 30000, // 30 seconds
   reportInterval: 300000, // 5 minutes
