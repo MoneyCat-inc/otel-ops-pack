@@ -59,7 +59,7 @@ Gate #029 delivers a **production-ready .NET deployment orchestrator** with veri
 
 **Verification Evidence:**
 - ✅ `DELT/ARTF/gate-verification-results-20251027-readiness-029.json`
-- ✅ `docs/ecrr/ECRR_REPORTS/ECRR_GATE_029_READY_20251027.md`
+- ✅ `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_029_READY_20251027.md`
 - ✅ Boot health check: `artifacts/boot-reports/boot-health-20251027-151851.json`
 - ✅ Pipeline verification: Console output (10/27/2025 15:19:05)
 - ✅ Canary test: ALL PASS
@@ -201,7 +201,7 @@ CI GREEN only if **traces + logs + metrics** all produce ≥1 result in last N m
 - `DELT/ARTF/ecrr-benchmark.json`
 - `docs/BossCat/BOSSCAT_LOG.md`
 - `docs/GATE_STATUS_DASHBOARD.md`
-- `docs/ecrr/ECRR_REPORTS/ECRR_GATE_029_READY_20251027.md`
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_029_READY_20251027.md`
 - `docs/runbooks/windows-collector.md`
 - `scripts/windows/verify-otel-collector.ps1`
 - `viz-engine-projectm/lib/audio-switch-cluster.js`
@@ -391,7 +391,7 @@ CI GREEN only if **traces + logs + metrics** all produce ≥1 result in last N m
 - [Gate #029 Implementation Complete](GATE_029_IMPLEMENTATION_COMPLETE.md)
 - [Gate #029 Final Summary](GATE_029_FINAL_SUMMARY.md)
 - [Gate #029 Scope](GATE_029_SCOPE.md)
-- [Gate #029 ECRR Report](docs/ecrr/ECRR_REPORTS/ECRR_GATE_029_READY_20251027.md)
+- [Gate #029 ECRR Report](CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_029_READY_20251027.md)
 
 ### Hygiene Patch H1
 
@@ -435,4 +435,5 @@ Gate #029 (+ Hygiene Patch H1) delivers:
 **Status:** ✅ **COMPLETE**
 
 **Seal:** 🐾 **Gate #029 + H1 — All Deliverables Complete, Ready for Git Operations**
+
 

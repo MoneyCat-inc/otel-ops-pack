@@ -1,9 +1,9 @@
 # Post-process consolidated ECRR reports: redact tokens and normalize markers
 param(
     [string[]]$Files = @(
-        "docs/ECRR_REPORTS/2025-09-29-rollout-merge-consolidated.md",
-        "docs/ECRR_REPORTS/2025-09-29-ecrr-01-consolidated.md",
-        "docs/ECRR_REPORTS/2025-09-29-compliance-automation-consolidated.md"
+        "CHAR/ECRR/ECRR_REPORTS/2025-09-29-rollout-merge-consolidated.md",
+        "CHAR/ECRR/ECRR_REPORTS/2025-09-29-ecrr-01-consolidated.md",
+        "CHAR/ECRR/ECRR_REPORTS/2025-09-29-compliance-automation-consolidated.md"
     )
 )
 
@@ -37,3 +37,4 @@ foreach ($f in $Files) {
     Set-Content -Path $f -Encoding UTF8 -Value $c
     Write-Host "Normalized & redacted: $f" -ForegroundColor Green
 }
+

@@ -29,7 +29,7 @@ param(
     [string]$Language = "both",
     
     [string]$OutputPath = "artifacts/tetragrammaton-benchmarks",
-    [string]$ECRRReportDir = "docs/ecrr/ECRR_REPORTS",
+    [string]$ECRRReportDir = "CHAR/ECRR/ECRR_REPORTS",
     [string]$BossCatSnapshotDir = "docs/observability/snapshots",
     [switch]$DryRun,
     [switch]$IncludeMetrics = $true,
@@ -607,3 +607,4 @@ Write-Host "🐾 Tetragrammaton Benchmark Automation Complete" -ForegroundColor 
 Write-Host "📊 Cross-language capability: PROVEN" -ForegroundColor Yellow
 Write-Host "🏛️ BossCat governance: COMPLIANT" -ForegroundColor Yellow
 Write-Host "📈 Evidence pipeline: ACTIVE" -ForegroundColor Yellow
+

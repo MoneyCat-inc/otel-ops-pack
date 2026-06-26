@@ -356,7 +356,7 @@ otel-stop; otel-start
 **SigNoz UI:** http://localhost:8080
 "@
 
-$ecrrFile = Join-Path "docs/ecrr/ECRR_REPORTS" "DEPLOYMENT_$($Environment)_$(Get-Date -Format 'yyyyMMdd-HHmmss').md"
+$ecrrFile = Join-Path "CHAR/ECRR/ECRR_REPORTS" "DEPLOYMENT_$($Environment)_$(Get-Date -Format 'yyyyMMdd-HHmmss').md"
 $ecrrReport | Out-File -FilePath $ecrrFile -Encoding UTF8
 
 # Final Summary
@@ -376,4 +376,5 @@ if ($deployment.Status -eq 'success') {
     Write-DeployLog "Review: $reportFile" -Level INFO
     exit 1
 }
+
 

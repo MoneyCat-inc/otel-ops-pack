@@ -45,7 +45,7 @@ They follow the **ECRR mantra**:
 
 * **QA Scribe** 📑
   * Generates ECRR reports after test runs
-  * Outputs both Markdown + PDF to `docs/ecrr/ECRR_REPORTS/`
+  * Outputs both Markdown + PDF to `CHAR/ECRR/ECRR_REPORTS/`
   * Maintains nightly dashboard snapshots in `docs/observability/snapshots/`
 
 ---
@@ -80,7 +80,7 @@ They follow the **ECRR mantra**:
 
 ## 📂 Required Artifacts
 
-* `docs/ecrr/ECRR_REPORTS/…` → Audit trails with PDF exports
+* `CHAR/ECRR/ECRR_REPORTS/…` → Audit trails with PDF exports
 * `docs/observability/snapshots/…` → Automated dashboard captures
 * `docs/cheatsheets/…` → Quick reference guides
 * `docs/IONA_ERRORS.md` → Error ledger and anomaly tracking
@@ -160,3 +160,4 @@ pnpm run export:signoz:playwright
 🐾 **End of BossCat Charter.**
 
 *This charter supersedes all previous agent documentation and becomes the foundational governance framework for Resonai [OTel] operations.*
+

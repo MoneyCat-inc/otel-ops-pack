@@ -283,7 +283,7 @@ Total: 9/9 SUCCESS (100%)
 5. `DELT/ARTF/pr-126-checks-all-green.png` - Full checks page (all GREEN)
 
 **Reports:**
-1. `docs/ecrr/ECRR_REPORTS/ECRR_GPU_FIX_V11.md` - Phase 2 micro-report
+1. `CHAR/ECRR/ECRR_REPORTS/ECRR_GPU_FIX_V11.md` - Phase 2 micro-report
 2. `CHAR/EVID/GPU_FIX_V1.1_DEPLOYMENT_SUCCESS_20251011.md` - This report
 
 **Repository:**
@@ -484,4 +484,5 @@ DELT/ARTF/
 
 **MoneyCat Inc · Resonai [OTel] · GPU_FIX v1.1**  
 **Production Authorized · All Systems GO** 🐾
+
 

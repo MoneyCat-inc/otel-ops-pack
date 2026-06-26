@@ -42,9 +42,9 @@ $repoRoot = Get-Location
 # Resolve ECRR reports directory (tetragram first, with legacy fallbacks)
 $candidateEcrr = @(
     (Join-Path $repoRoot 'CHAR/ECRR/ECRR_REPORTS'),
-    (Join-Path $repoRoot 'docs/ECRR_REPORTS'),
-    (Join-Path $repoRoot 'docs/ecrr/ECRR_REPORTS'),
-    (Join-Path $repoRoot 'CHAR/DOCS/docs/ECRR_REPORTS')
+    (Join-Path $repoRoot 'CHAR/ECRR/ECRR_REPORTS'),
+    (Join-Path $repoRoot 'CHAR/ECRR/ECRR_REPORTS'),
+    (Join-Path $repoRoot 'CHAR/DOCS/CHAR/ECRR/ECRR_REPORTS')
 )
 $ecrrDir = $null
 foreach ($cand in $candidateEcrr) {
@@ -518,5 +518,6 @@ if (-not $KeepSyntheticReports) {
 }
 
 Write-Host "[Benchmark] Complete" -ForegroundColor Green
+
 
 

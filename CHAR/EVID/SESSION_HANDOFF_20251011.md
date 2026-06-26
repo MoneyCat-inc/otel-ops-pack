@@ -262,7 +262,7 @@ gh workflow run bosscat-regression-matrix.yml
 - `CHAR/EVID/SESSION_HANDOFF_20251011.md` - This document
 
 ### **ECRR Reports**
-- `docs/ecrr/ECRR_REPORTS/ECRR_GPU_FIX_20251011.md` - GPU lane report
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_GPU_FIX_20251011.md` - GPU lane report
 - `DELT/ARTF/gate-verification-results.json` - Latest evidence JSON
 
 ### **Logs**
@@ -330,4 +330,5 @@ This session executed comprehensive GPU_FIX pipeline deployment following ECRR m
 ---
 
 🐾 **Good luck, successor! The fortress awaits.**
+
 

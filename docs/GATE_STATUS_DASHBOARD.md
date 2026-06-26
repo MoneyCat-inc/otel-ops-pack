@@ -99,7 +99,7 @@ Application → OTLP (14317/14318) → SigNoz Docker Collector → ClickHouse �
 
 ### Evidence Package
 
-- ✅ **ECRR Report:** `docs/ecrr/ECRR_REPORTS/ECRR_GATE_READINESS_20251101.md`
+- ✅ **ECRR Report:** `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_READINESS_20251101.md`
 - ✅ **Executive Summary:** `GATE_READINESS_EXECUTIVE_SUMMARY_20251101.md`
 - ✅ **Verification JSON:** `DELT/ARTF/gate-verification-results-20251101-readiness.json`
 - ✅ **Verification Logs:** Quick monitor, pipeline verification, canary test outputs
@@ -667,7 +667,7 @@ The Convergence Index measures system learning and adaptation:
 
 ### Evidence Artifacts
 - Gate Verification JSON: `DELT/ARTF/gate-verification-results-20251026-readiness-021.json`
-- ECRR Readiness Report: `docs/ecrr/ECRR_REPORTS/ECRR_GATE_021_READY_20251026.md`
+- ECRR Readiness Report: `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_021_READY_20251026.md`
 - Executive Summary: `GATE_021_EXECUTIVE_SUMMARY.md`
 
 ### BossCat OEM Decision
@@ -1091,7 +1091,7 @@ Canonical Reference:       docs/comfort-cat/ (5 docs) ✅
 - Status: ✅ APPROVED GREEN
 - Date: 2025-10-23
 - Authority: BossCat OEM
-- Evidence: docs/ecrr/ECRR_REPORTS/ECRR_GATE_008_GREEN_TRACE_RESOLUTION_20251023.md
+- Evidence: CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_008_GREEN_TRACE_RESOLUTION_20251023.md
 
 ---
 
@@ -1115,5 +1115,6 @@ Canonical Reference:       docs/comfort-cat/ (5 docs) ✅
 **Dashboard Updated:** 2025-10-27 01:20:00 UTC
 
 _Gates #023-#024 approved by BossCat OEM. Distributed AudioSwitch operational with Redis cluster coordination (1.2s propagation). Performance baseline validated (p50=1044ms). Runbooks hardened (100% compliant). ICF doctrine established. System production-ready. Dashboard reconciled with BOSSCAT_LOG. Awaiting Gate #025 definition._ ✅🐾
+
 
 

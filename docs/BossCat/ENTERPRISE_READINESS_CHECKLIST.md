@@ -235,7 +235,7 @@ foreach ($doc in $complianceDocs) {
 }
 
 # Verify ECRR reports exist
-Get-ChildItem "docs/ecrr/ECRR_REPORTS/" -ErrorAction SilentlyContinue | Measure-Object
+Get-ChildItem "CHAR/ECRR/ECRR_REPORTS/" -ErrorAction SilentlyContinue | Measure-Object
 ```
 
 ---
@@ -563,5 +563,6 @@ if ($score -eq $total) {
 **🐾 BossCat OEM - Enterprise-Grade Observability**
 
 *True enterprise readiness means security, reliability, compliance, and operational excellence all working together.*
+
 
 

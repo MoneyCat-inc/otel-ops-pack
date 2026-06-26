@@ -132,7 +132,7 @@ The **Cat Nap Control Room** observability pipeline has been **fully examined, v
 ### Artifacts Generated
 
 **Full Reports:**
-- `docs/ecrr/ECRR_REPORTS/ECRR_GATE_READY_EXAMINATION_20251023_143000.md` — 600+ line comprehensive report
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_READY_EXAMINATION_20251023_143000.md` — 600+ line comprehensive report
 - `ECRR_EXAMINATION_SUMMARY_20251023.md` — Quick reference summary
 
 **Status Banners:**
@@ -272,7 +272,7 @@ CERTIFICATION BOX
 ## 📚 Documentation References
 
 ### Full ECRR Report
-- **Location:** `docs/ecrr/ECRR_REPORTS/ECRR_GATE_READY_EXAMINATION_20251023_143000.md`
+- **Location:** `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_READY_EXAMINATION_20251023_143000.md`
 - **Size:** 600+ lines (comprehensive gate readiness certification)
 - **Coverage:** All 4 ECRR phases with detailed evidence
 
@@ -326,3 +326,4 @@ All ECRR phases have been completed with comprehensive evidence. The observabili
 **Status:** ✅ **READY FOR NEXT PHASE**
 
 🐾 *Examine → Clean → Report → Role: Complete*
+

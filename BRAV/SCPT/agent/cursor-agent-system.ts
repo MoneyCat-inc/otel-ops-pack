@@ -303,7 +303,7 @@ ${complianceReport}
     setInterval(async () => {
       try {
         const report = await this.compliance.generateComplianceReport();
-        const reportPath = `docs/ECRR_REPORTS/compliance-${Date.now()}.md`;
+        const reportPath = `CHAR/ECRR/ECRR_REPORTS/compliance-${Date.now()}.md`;
         
         await fs.mkdir(path.dirname(reportPath), { recursive: true });
         await fs.writeFile(reportPath, report);
@@ -391,3 +391,4 @@ if (require.main === module) {
 }
 
 export { CursorAgentSystem };
+

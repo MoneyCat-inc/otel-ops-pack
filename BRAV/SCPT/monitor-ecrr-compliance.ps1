@@ -1,6 +1,6 @@
 # Monitor ECRR compliance over time: append validation metrics with timestamp
 param(
-    [string]$ReportsDir = "docs/ECRR_REPORTS",
+    [string]$ReportsDir = "CHAR/ECRR/ECRR_REPORTS",
     [string]$HistoryFile = "artifacts/ecrr-compliance-history.jsonl"
 )
 
@@ -28,3 +28,4 @@ $entry = @{
 ($entry | ConvertTo-Json -Depth 4 -Compress) | Add-Content -Path $HistoryFile -Encoding UTF8
 
 Write-Host ("Appended compliance entry: four={0}%, gates={1}%" -f $entry.fourSectionPct,$entry.gatePct) -ForegroundColor Green
+

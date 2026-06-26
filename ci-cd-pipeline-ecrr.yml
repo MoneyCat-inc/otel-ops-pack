@@ -4,12 +4,12 @@ on:
   push:
     branches: [ main, develop ]
     paths:
-      - 'docs/ECRR_REPORTS/**'
+      - 'CHAR/ECRR/ECRR_REPORTS/**'
       - 'scripts/lint-ecrr-compliance.ps1'
   pull_request:
     branches: [ main, develop ]
     paths:
-      - 'docs/ECRR_REPORTS/**'
+      - 'CHAR/ECRR/ECRR_REPORTS/**'
       - 'scripts/lint-ecrr-compliance.ps1'
 
 jobs:
@@ -34,3 +34,4 @@ jobs:
         name: ecrr-compliance-report
         path: artifacts/ecrr-compliance-report.json
         retention-days: 30
+

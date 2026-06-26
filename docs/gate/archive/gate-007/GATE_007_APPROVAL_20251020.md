@@ -102,7 +102,7 @@ Gate #007 meets all critical readiness criteria with comprehensive evidence. Obs
 - **Status:** Complete, comprehensive
 
 ### ECRR Report
-- **Report:** `docs/ecrr/ECRR_REPORTS/ECRR_GATE_READY_20251020.md`
+- **Report:** `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_READY_20251020.md`
 - **Status:** Complete, executive summary included
 
 ### Dashboard
@@ -212,4 +212,5 @@ cursor{implementer}: [Executing gate approval protocol]
 ```
 
 **End of Gate #007 Approval Record** 🐾
+
 

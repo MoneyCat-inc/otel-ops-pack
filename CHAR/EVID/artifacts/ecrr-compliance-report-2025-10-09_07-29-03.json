@@ -20,7 +20,7 @@
     }
   ],
   "Settings": {
-    "ReportsPath": "docs/ECRR_REPORTS",
+    "ReportsPath": "CHAR/ECRR/ECRR_REPORTS",
     "OutputPath": "artifacts",
     "IncludeArchived": false,
     "Threshold": 95
@@ -524,3 +524,4 @@
   ],
   "Timestamp": "2025-10-09_07-29-03"
 }
+

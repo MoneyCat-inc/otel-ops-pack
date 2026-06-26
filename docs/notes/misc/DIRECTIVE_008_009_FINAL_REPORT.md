@@ -112,7 +112,7 @@
 2. `scripts/rsi-extract.mjs` — P1b RSI extractor (37 LOC)
 3. `scripts/verify-iona-gate.ps1` — P2 budget pills (43 LOC added)
 4. `.github/workflows/bosscat-gate-verify.yml` — P1b CI integration (11 LOC)
-5. `docs/ecrr/ECRR_REPORTS/ECRR_DIRECTIVE_008_20251013.md` — Comprehensive ECRR
+5. `CHAR/ECRR/ECRR_REPORTS/ECRR_DIRECTIVE_008_20251013.md` — Comprehensive ECRR
 
 ### Directive 009 (Workflow Unblocker)
 6. `.github/workflows/bosscat-gate-verify.yml` — Minimal skeleton (replaced, 180 lines)
@@ -223,4 +223,5 @@ b141b6dd  P0: Add required files to git
 **Status**: ✅ **STANDING BY FOR NEXT DIRECTIVE**
 
 🚀 **WORKFLOW OPERATIONAL · CI PASSING · P1/P2 DELIVERED · EVIDENCE COMPREHENSIVE** 🚀
+
 

@@ -138,7 +138,7 @@ All 18 accounts confirmed visible at https://bsky.app/profile/resonai.bsky.socia
 ## Artifacts Generated
 
 ### Documentation
-1. `docs/ecrr/ECRR_REPORTS/ECRR_BLUESKY_PROFILE_UPDATE_20251021.md` - Full ECRR report
+1. `CHAR/ECRR/ECRR_REPORTS/ECRR_BLUESKY_PROFILE_UPDATE_20251021.md` - Full ECRR report
 2. `BLUESKY_AUTOMATION_SESSION_20251021.md` - This session summary
 3. `docs/social/ANTICLICKBAIT_FOLLOW_STRATEGY.md` - Follow strategy documentation
 4. `docs/social/BLUESKY_ENGAGEMENT_CALENDAR.md` - 90-day growth playbook
@@ -288,4 +288,5 @@ Awaiting user approval to commit all changes and push to origin/main.
 **Agent:** BossCat Observability Kit  
 **Operator:** fubumaki  
 **Status:** Ready for commit  
+
 

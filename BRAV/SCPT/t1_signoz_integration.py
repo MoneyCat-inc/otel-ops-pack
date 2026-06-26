@@ -165,7 +165,7 @@ class T1SigNozIntegration:
             print(f"❌ SigNoz health check error: {e}")
             return False
     
-    def integrate_t1_metrics(self, evidence_file: str = "docs/ecrr/ECRR_REPORTS/t1_production_evidence.json") -> bool:
+    def integrate_t1_metrics(self, evidence_file: str = "CHAR/ECRR/ECRR_REPORTS/t1_production_evidence.json") -> bool:
         """Integrate T1 metrics with SigNoz"""
         print("🐾 T1 Rolling-Stats SigNoz Integration")
         print("======================================")
@@ -209,3 +209,4 @@ def main():
 
 if __name__ == '__main__':
     exit(main())
+

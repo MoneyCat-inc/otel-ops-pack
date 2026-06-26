@@ -355,7 +355,7 @@ This project uses the BossCat OEM framework for enterprise-grade observability o
 ## Evidence Artifacts
 - Security scans: .github/workflows/security-scan.yml
 - Dashboard exports: docs/observability/snapshots/
-- ECRR reports: docs/ecrr/ECRR_REPORTS/
+- ECRR reports: CHAR/ECRR/ECRR_REPORTS/
 - Rotation log: docs/BossCat/CREDENTIAL_ROTATION_CALENDAR.md
 - Incident procedures: docs/BossCat/SECURITY_MAINTENANCE_MASTER_GUIDE.md
 
@@ -852,5 +852,6 @@ After production deployment:
 ---
 
 **🚀 Let's Ship It! - Record Speed, Enterprise Quality**
+
 
 

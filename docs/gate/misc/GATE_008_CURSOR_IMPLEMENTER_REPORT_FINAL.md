@@ -191,7 +191,7 @@ Major Milestones:     2 (Hub Production + Bluesky v1)
 
 ### Removed (Stale)
 - ❌ `DELT/ARTF/gate-verification-results-20251022.json` (incorrect)
-- ❌ `docs/ecrr/ECRR_REPORTS/ECRR_GATE_008_READY_20251022.md` (false claims)
+- ❌ `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_008_READY_20251022.md` (false claims)
 - ❌ `docs/gate/2025-10/GATE_008_APPROVAL_TEMPLATE.md` (based on false assessment)
 
 ### Kept (Still Relevant)
@@ -280,4 +280,5 @@ _Gate #008 APPROVED by BossCat OEM. Remediation complete. All corrections verifi
 ---
 
 **End of Final Report**
+
 

@@ -1,6 +1,6 @@
 # ECRR Compliance Monitor - Automated Monitoring System
 param(
-    [string]$ReportsPath = "docs/ECRR_REPORTS",
+    [string]$ReportsPath = "CHAR/ECRR/ECRR_REPORTS",
     [string]$OutputPath = "artifacts",
     [switch]$Verbose = $false,
     [switch]$FailOnNonCompliant = $false,
@@ -355,6 +355,7 @@ if ($FailOnNonCompliant -and -not $thresholdMet) {
 }
 
 exit 0
+
 
 
 

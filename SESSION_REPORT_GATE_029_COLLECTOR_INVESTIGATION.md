@@ -43,7 +43,7 @@ This session completed two major objectives:
 - `GATE_029_APPROVAL.md` — BossCat OEM approval
 - `GATE_029_EXECUTIVE_SUMMARY.md` — 1-page summary
 - `GATE_029_COMPLETE_SUMMARY.md` — Comprehensive summary
-- `docs/ecrr/ECRR_REPORTS/ECRR_GATE_029_READY_20251027.md` — ECRR report
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_029_READY_20251027.md` — ECRR report
 - `DELT/ARTF/gate-verification-results-20251027-readiness-029.json` — Gate matrix
 
 **Budget:**
@@ -208,7 +208,7 @@ Extend Query-SigNozTraces to include logs and metrics, generating unified proof 
 **Files Modified:** 3
 1. scripts/windows/health-check-otlp.ps1 (+97 LOC)
 2. docs/GATE_STATUS_DASHBOARD.md (approval status + H1 section)
-3. docs/ecrr/ECRR_REPORTS/ECRR_GATE_029_READY_20251027.md (minor updates)
+3. CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_029_READY_20251027.md (minor updates)
 
 **Code Added:** +97 LOC (API proof functionality)  
 **Artifacts Generated:** 1 (proof-traces-any-service-20251027-160903.json)
@@ -501,4 +501,5 @@ Extend Query-SigNozTraces to include logs and metrics, generating unified proof 
 **Status:** ✅ **COMPLETE**
 
 🐾 **Session Report: Gate #029 + Collector Investigation — All Objectives Met**
+
 

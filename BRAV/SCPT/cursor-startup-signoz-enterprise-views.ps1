@@ -7,7 +7,7 @@
 .SYNOPSIS
   BossCat-approved startup script: Create enterprise-level Saved Views in SigNoz.
   Falls back to dashboard panels if Saved Views API is not available.
-  Generates ECRR compliance reports to artifacts/ and docs/ecrr/ECRR_REPORTS/
+  Generates ECRR compliance reports to artifacts/ and CHAR/ECRR/ECRR_REPORTS/
 
 .DESCRIPTION
   This script follows BossCat governance framework:
@@ -35,7 +35,7 @@
   Skip post-creation verification checks (not recommended for production).
 
 .PARAMETER ExportReport
-  Export detailed ECRR report to docs/ecrr/ECRR_REPORTS/ (default: true)
+  Export detailed ECRR report to CHAR/ECRR/ECRR_REPORTS/ (default: true)
 
 .EXAMPLE
   pwsh -File scripts\cursor-startup-signoz-enterprise-views.ps1 `
@@ -64,7 +64,7 @@ if (Test-Path $secretsPath) {
 # ==================== ECRR Framework ====================
 $script:StartTime = Get-Date
 $script:ArtifactPath = "artifacts\enterprise-views-$(Get-Date -Format 'yyyyMMdd-HHmmss').json"
-$script:ECRRPath = "docs\ecrr\ECRR_REPORTS\enterprise-views-ecrr-$(Get-Date -Format 'yyyyMMdd-HHmmss').md"
+$script:ECRRPath = "CHAR\ECRR\ECRR_REPORTS\enterprise-views-ecrr-$(Get-Date -Format 'yyyyMMdd-HHmmss').md"
 
 $script:ECRRReport = @{
   Examine = @{
@@ -176,7 +176,7 @@ try {
 }
 
 # Check 3: Directory structure
-$requiredDirs = @("artifacts", "docs\ecrr\ECRR_REPORTS")
+$requiredDirs = @("artifacts", "CHAR\ECRR\ECRR_REPORTS")
 foreach ($dir in $requiredDirs) {
   if (-not (Test-Path $dir)) {
     Log "Creating directory: $dir" "Yellow" "WARN"
@@ -716,4 +716,5 @@ if ($failedViews.Count -gt 0 -or $script:ECRRReport.Report.Status -ne "SUCCESS")
   exit 1
 }
 exit 0
+
 

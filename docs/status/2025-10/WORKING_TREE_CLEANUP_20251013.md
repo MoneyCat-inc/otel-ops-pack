@@ -380,7 +380,7 @@ To https://github.com/MoneyCat-inc/otel-ops-pack.git
 - CURSOR_IMPLEMENTER_SESSION_FINAL_20251013.md
 - CURSOR_IMPLEMENTER_GATE_SITE_SESSION_20251013.md
 
-**ECRR Reports**: docs/ecrr/ECRR_REPORTS/ECRR_*_20251013*.md  
+**ECRR Reports**: CHAR/ECRR/ECRR_REPORTS/ECRR_*_20251013*.md  
 **Commits**: 3e843cba...86b4dd40 (6 commits)
 
 ---
@@ -393,4 +393,5 @@ To https://github.com/MoneyCat-inc/otel-ops-pack.git
 ---
 
 🚀 **WORKING TREE CLEAN · 6 COMMITS PUSHED · 100% COMPLIANT · READY FOR P1 TASKS** 🚀
+
 

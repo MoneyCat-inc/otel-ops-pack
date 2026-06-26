@@ -34,7 +34,7 @@ Write-Host "  - [CHRONICLE]: Update docs/RESONAI_CHRONICLE.md executive summary"
 Write-Host "  - [INDEX]: Update archive/ARCHIVE_INDEX.md counts/references" -ForegroundColor White  
 Write-Host "  - [BACKUP]: Archive original files (preserve emoji artifacts)" -ForegroundColor White
 Write-Host ""
-Write-Host "[POLICY] Full Policy: docs/ECRR_REPORTS/backup/ARCHIVE_POLICY.md" -ForegroundColor Cyan
+Write-Host "[POLICY] Full Policy: CHAR/ECRR/ECRR_REPORTS/backup/ARCHIVE_POLICY.md" -ForegroundColor Cyan
 Write-Host "[TEMPLATE] Full Template: docs/COMMIT_TEMPLATE.md" -ForegroundColor Cyan
 Write-Host ""
 
@@ -49,3 +49,4 @@ if ($currentTemplate -eq ".gitmessage") {
 
 Write-Host ""
 Write-Host "[READY] Commit messages will now include archive lifecycle reminders." -ForegroundColor Green
+

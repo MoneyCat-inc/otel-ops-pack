@@ -27,7 +27,7 @@ docs/comfort-cat/ECRR_FRAMEWORK.md                         | 386 +++++++++++++++
 docs/comfort-cat/GATE_PROTOCOL.md                          | 261 ++++++++++
 docs/comfort-cat/README.md                                 |  63 +++
 docs/comfort-cat/ROLES.md                                  | 196 ++++++++
-docs/ecrr/ECRR_REPORTS/ECRR_GATE_007_READY_FUBUMAKI_20251020.md | 527 +++++++++++++++++++++
+CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_007_READY_FUBUMAKI_20251020.md | 527 +++++++++++++++++++++
 7 files changed, 2110 insertions(+)
 ```
 
@@ -39,7 +39,7 @@ docs/ecrr/ECRR_REPORTS/ECRR_GATE_007_READY_FUBUMAKI_20251020.md | 527 ++++++++++
 
 - `GATE_007_CURSOR_IMPLEMENTER_REPORT.md` - Root (allowed: executive summary)
 - `docs/comfort-cat/**` - DOCS lane ✅
-- `docs/ecrr/ECRR_REPORTS/**` - DOCS lane ✅
+- `CHAR/ECRR/ECRR_REPORTS/**` - DOCS lane ✅
 
 **No code changes:** ✅ Confirmed  
 **No config changes:** ✅ Confirmed  
@@ -108,4 +108,5 @@ This is **foundational infrastructure**. Future changes to these docs will be:
 **Authority:** BossCat OEM
 
 🐾 **Budget Variance Ledger Complete**
+
 
