@@ -2,7 +2,7 @@
 # PowerShell wrapper for gpu-metrics-emitter.py
 
 param(
-    [string]$OtlpEndpoint = "http://localhost:14317",
+    [string]$OtlpEndpoint = "http://localhost:4317",
     [int]$Duration = 300,
     [int]$Interval = 15,
     [switch]$Background,

@@ -46,8 +46,8 @@ try {
 
 # If docker path not available, fall back to firewall block
 if (-not $didDocker) {
-  WL "Applying firewall block to localhost:14317,14318..."
-  netsh advfirewall firewall add rule name="$ruleName" dir=out action=block protocol=TCP remoteip=127.0.0.1 remoteport=14317,14318 | Out-Null
+  WL "Applying firewall block to localhost:4317,4318..."
+  netsh advfirewall firewall add rule name="$ruleName" dir=out action=block protocol=TCP remoteip=127.0.0.1 remoteport=4317,4318 | Out-Null
 }
 
 # Generate some traffic during outage

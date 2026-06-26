@@ -1,14 +1,14 @@
 # ECRR Compliance Report
 
-Generated: 2026-06-26T14:38:35Z
+Generated: 2026-06-26T17:37:36Z
 
 ## Metrics
-- Total Reports: 385
+- Total Reports: 386
 - Four-Section Compliance: 100%
 - ECRR Gate Compliance: 100%
 - Actor Declaration Compliance: 100%
 - Production Marker Presence: 23.6%
-- Fully Compliant: 23.6% (91/385)
+- Fully Compliant: 23.6% (91/386)
 
 ## Top Non-compliance Samples (up to 20)
 - `C:\otel\CHAR\ECRR\ECRR_REPORTS\BOSS_V2_RUN.md`: missing_production_marker
