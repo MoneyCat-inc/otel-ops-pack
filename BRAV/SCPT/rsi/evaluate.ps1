@@ -71,7 +71,7 @@ $tldr += ""
 $tldr += "## Archive"
 $tldr += "- Δ score: $($scoreArch.score) • pass=$($scoreArch.pass) • arch_qps_effective=$($scoreArch.arch.primary.arch_qps_effective)"
 
-$mdPath = 'docs/ecrr/ECRR_REPORTS/RSI_EVAL_LATEST.md'
+$mdPath = 'CHAR/ECRR/ECRR_REPORTS/RSI_EVAL_LATEST.md'
 $mdDir = Split-Path -Parent $mdPath
 if (-not (Test-Path $mdDir)) { New-Item -ItemType Directory -Force -Path $mdDir | Out-Null }
 Set-Content -LiteralPath $mdPath -Value ($tldr -join "`r`n") -Encoding utf8
@@ -85,3 +85,4 @@ if (-not $pass) {
 } else {
   Write-Host 'RSI candidate passes gates. Prepare PR (skeleton).' -ForegroundColor Green
 }
+

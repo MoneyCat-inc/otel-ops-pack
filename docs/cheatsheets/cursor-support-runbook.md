@@ -110,7 +110,7 @@ Please check the internal trace for the Request ID above. Let me know if this is
 
 - Attach the `cursor-support-bundle.zip` from the PowerShell script.
 - Keep the email/body ready as a template for future incidents; update the Request ID per case.
-- Store a copy of the sent package under `docs/ecrr/ECRR_REPORTS/` for audit traceability.
+- Store a copy of the sent package under `CHAR/ECRR/ECRR_REPORTS/` for audit traceability.
 
 ## 4. Follow-Up Scenarios
 
@@ -120,7 +120,8 @@ Please check the internal trace for the Request ID above. Let me know if this is
 
 ## 5. Evidence Logging
 
-- Record the completed steps, probe results, and support ticket reference in an ECRR report (`docs/ecrr/ECRR_REPORTS/`).
+- Record the completed steps, probe results, and support ticket reference in an ECRR report (`CHAR/ECRR/ECRR_REPORTS/`).
 - Update `artifacts/queue-steward-verification.txt` or the relevant queue tracker with the ticket status.
 - Inform BossCat OEM if repeated failures occur to align with nightly governance checks.
+
 

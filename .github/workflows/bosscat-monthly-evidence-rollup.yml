@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SNAPSHOT_DIR: docs/observability/snapshots
-      ECRR_DIR: docs/ecrr/ECRR_REPORTS
+      ECRR_DIR: CHAR/ECRR/ECRR_REPORTS
       ARTIFACT_DIR: DELT/ARTF
       ARCHIVE_DIR: CHAR/PRSV/evidence-archives
 
@@ -218,4 +218,5 @@ jobs:
           else
             echo "ℹ️ No files to archive this cycle"
           fi
+
 

@@ -24,7 +24,7 @@
 
 ## Key Documents
 
-1. **ECRR Gate Report:** `docs/ecrr/ECRR_REPORTS/ECRR_GATE_APPROVAL_20251010.md`
+1. **ECRR Gate Report:** `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_APPROVAL_20251010.md`
 2. **Merge Note:** `MERGE_NOTE_GATE_20251010.md`
 3. **Decision Record:** `BOSSCAT_GATE_DECISION_20251010.md`
 4. **Executive Summary:** `GATE_APPROVED_20251010.md`
@@ -46,4 +46,5 @@ pwsh -File scripts/verify-iona-gate.ps1
 ---
 
 🐾 **BossCat OEM - Gate Approved and Tagged**
+
 

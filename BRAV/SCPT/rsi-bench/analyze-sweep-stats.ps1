@@ -18,7 +18,7 @@
 
 Param(
   [string]$TagPattern = "nightly-sweep-r*-bs*",
-  [string]$OutputReport = "docs/ecrr/ECRR_REPORTS/ECRR_RSI_NIGHTLY_STATS_LATEST.md",
+  [string]$OutputReport = "CHAR/ECRR/ECRR_REPORTS/ECRR_RSI_NIGHTLY_STATS_LATEST.md",
   [double]$ConfidenceLevel = 0.95
 )
 
@@ -253,4 +253,5 @@ if ($baseline) {
     Write-Host "  Significance: Significant (consider $bestBS)" -ForegroundColor Green
   }
 }
+
 

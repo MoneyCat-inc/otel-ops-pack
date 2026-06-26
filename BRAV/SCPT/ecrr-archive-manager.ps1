@@ -1,7 +1,7 @@
 # ECRR Archive Manager - Intelligent Report Archiving
 param(
-    [string]$ReportsPath = "docs/ECRR_REPORTS",
-    [string]$ArchivePath = "docs/ECRR_REPORTS/archive",
+    [string]$ReportsPath = "CHAR/ECRR/ECRR_REPORTS",
+    [string]$ArchivePath = "CHAR/ECRR/ECRR_REPORTS/archive",
     [switch]$DryRun = $false,
     [switch]$Force = $false,
     [int]$TargetActiveReports = 50,
@@ -285,3 +285,4 @@ $summary = @{
 
 $summary | ConvertTo-Json -Depth 10 | Set-Content -Path $summaryPath -Encoding UTF8
 Write-Host "📄 Summary report: $summaryPath" -ForegroundColor Gray
+

@@ -207,8 +207,8 @@ curl -s http://localhost:8080/api/v1/health
 - `scripts\setup-comprehensive-monitoring.ps1` - Comprehensive monitoring setup
 
 ### Documentation
-- `docs\ECRR_REPORTS\2025-09-22-signoz-alerts-*.md` - Multiple ECRR reports
-- `docs\ECRR_REPORTS\2025-09-22-observability-copilot-*.md` - Health check reports
+- `CHAR\ECRR\ECRR_REPORTS\2025-09-22-signoz-alerts-*.md` - Multiple ECRR reports
+- `CHAR\ECRR\ECRR_REPORTS\2025-09-22-observability-copilot-*.md` - Health check reports
 
 ## 🏆 Final Status
 
@@ -392,3 +392,4 @@ The SigNoz alert configuration issues have been completely resolved, and working
 - Integrates with observability stack and monitoring systems
 
 ---
+

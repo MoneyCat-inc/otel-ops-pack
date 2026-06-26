@@ -2,7 +2,7 @@
 # This script enhances actor declarations in ECRR reports that have incomplete or missing declarations
 
 param(
-    [string]$ReportsPath = "docs/ECRR_REPORTS",
+    [string]$ReportsPath = "CHAR/ECRR/ECRR_REPORTS",
     [switch]$DryRun = $false,
     [switch]$Verbose = $false
 )

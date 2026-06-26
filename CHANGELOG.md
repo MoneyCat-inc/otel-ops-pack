@@ -64,7 +64,7 @@
 ### Added
 - `docs/BossCat/RELEASE_NOTES_IONA_PROD_READY_20251013.md` - Official release notes for IONA gate PROD promotion
 - `artifacts/queue-steward-verification.txt` - PROD queue-steward evidence template (gitignored, presence-checked only)
-- `docs/ecrr/ECRR_REPORTS/ECRR_FORBIDDEN_ROOTS_REMEDIATION_20251013.md` - Complete ECRR report for structural compliance restoration
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_FORBIDDEN_ROOTS_REMEDIATION_20251013.md` - Complete ECRR report for structural compliance restoration
 - `EXEC_GATE_READY_FOR_PROGRESSION_20251013.md` - Executive gate readiness assessment
 - `CURSOR_IMPLEMENTER_READY_FOR_GATE_SESSION_20251013.md` - Comprehensive session report
 
@@ -73,7 +73,7 @@
   - Guardrails: Exit Code 1 → 0 (PASSING)
   - Forbidden Roots: 2 → 0 (100% elimination)
 - **Gate Verification Results**: DELT/ARTF/gate-verification-results.json updated to PROD site, READY verdict
-- **ECRR Latest Report**: docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md refreshed with PROD evidence
+- **ECRR Latest Report**: CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md refreshed with PROD evidence
 - **PR Comments**: PR_COMMENT_IONA_GATE_002_FINAL.md updated to PROD site, READY verdict
 
 ### Fixed
@@ -121,7 +121,7 @@ python BRAV\SCPT\check_guardrails.py --config BRAV\SCPT\guardrails.json
   - CI job performance summary with defensive guards
   - Node/pnpm setup for ECRR processing
   - Gate/Site/GPU_Option_B workflow dispatch inputs
-- `docs/ecrr/ECRR_REPORTS/ECRR_GPU_FIX_20251011.md` - Complete ECRR report for GPU_FIX execution
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_GPU_FIX_20251011.md` - Complete ECRR report for GPU_FIX execution
 - `CHAR/EVID/GPU_FIX_EXECUTION_SUMMARY_20251011.md` - Executive summary of GPU_FIX mission
 - BossCat Gate Verification status badge in README.md
 
@@ -162,9 +162,9 @@ python BRAV\SCPT\check_guardrails.py --config BRAV\SCPT\guardrails.json
 - `artifacts/ecrr-processing-complete-analysis.md` - Comprehensive analysis of all 140 ECRR reports
 - `artifacts/ecrr-compliance-metrics.json` - Detailed compliance metrics and percentages
 - `artifacts/ecrr-consolidation-plan.json` - Consolidation strategy and implementation plan
-- `docs/ECRR_REPORTS/2025-09-29-rollout-merge-consolidated.md` - Consolidated rollout/merge reports
-- `docs/ECRR_REPORTS/2025-09-29-ecrr-01-consolidated.md` - Consolidated ECRR-01 reports
-- `docs/ECRR_REPORTS/2025-09-29-compliance-automation-consolidated.md` - Consolidated compliance reports
+- `CHAR/ECRR/ECRR_REPORTS/2025-09-29-rollout-merge-consolidated.md` - Consolidated rollout/merge reports
+- `CHAR/ECRR/ECRR_REPORTS/2025-09-29-ecrr-01-consolidated.md` - Consolidated ECRR-01 reports
+- `CHAR/ECRR/ECRR_REPORTS/2025-09-29-compliance-automation-consolidated.md` - Consolidated compliance reports
 
 ### Changed
 - **ECRR Framework Compliance**: Improved from 55% to 97.9% for 4-section structure
@@ -198,3 +198,4 @@ python BRAV\SCPT\check_guardrails.py --config BRAV\SCPT\guardrails.json
 ---
 
 **Impact**: Significant reduction in report redundancy while maintaining complete audit trail and improving ECRR framework compliance.
+

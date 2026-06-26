@@ -121,7 +121,7 @@
 
 3. **QA Scribe** 📑
    - Generates ECRR reports after test runs
-   - Outputs Markdown + PDF to `docs/ecrr/ECRR_REPORTS/`
+   - Outputs Markdown + PDF to `CHAR/ECRR/ECRR_REPORTS/`
    - Maintains nightly dashboard snapshots
 
 ### IONA (Intelligent Operations & Navigation Assistant)
@@ -443,4 +443,5 @@ pwsh -File scripts/boot-health-check.ps1
 **Contact:** BossCat OEM for production approvals
 
 *This summary provides executive-level visibility into the Resonai [OTel] autonomous observability pipeline status and operations.*
+
 

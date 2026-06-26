@@ -1,4 +1,4 @@
-﻿# BossCat Environment Setup Script (Windows PowerShell)
+# BossCat Environment Setup Script (Windows PowerShell)
 # MoneyCat Inc - Resonai [OTel] - otel-ops-pack
 # ECRR Framework: Examine -> Clean -> Report -> Role
 
@@ -218,7 +218,7 @@ $directories = @(
     "artifacts\reports",
     "artifacts\snapshots",
     "docs\BossCat\reports",
-    "docs\ecrr\ECRR_REPORTS",
+    "CHAR\ECRR\ECRR_REPORTS",
     "docs\observability\snapshots",
     "docs\cheatsheets"
 )
@@ -321,7 +321,7 @@ $ecrrCompliance = 0
 $totalChecks = 5
 
 # Check for ECRR reports directory
-if (Test-Path "docs\ecrr\ECRR_REPORTS") {
+if (Test-Path "CHAR\ECRR\ECRR_REPORTS") {
     Write-Status "ECRR reports directory present"
     $ecrrCompliance++
 } else {
@@ -460,3 +460,4 @@ Write-Host "4. Monitor SigNoz UI: http://localhost:8080"
 Write-Host ""
 Write-Host "BossCat environment ready for CI workflow execution!" -ForegroundColor Green
 Write-Host "Timestamp: $Timestamp" -ForegroundColor Cyan
+

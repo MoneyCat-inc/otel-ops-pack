@@ -399,7 +399,7 @@ PR → [@cat ready-for-gate] → CI Approve → CI Post → Bluesky
 
 - [ ] `docs/social/README.md` - Add Milestone B usage examples
 - [ ] `SOCM_MILESTONE_B_COMPLETE.md` - Create completion report
-- [ ] `docs/ecrr/ECRR_REPORTS/ECRR_SOCM_MILESTONE_B_*.md` - ECRR report
+- [ ] `CHAR/ECRR/ECRR_REPORTS/ECRR_SOCM_MILESTONE_B_*.md` - ECRR report
 - [ ] Root README - Add SOCM lane mention (optional)
 
 ### To Create
@@ -715,4 +715,5 @@ When you're ready to integrate Milestone B:
 4. Deploy after `@cat ready-for-gate`
 
 🦋 **Standing by for Milestone B deployment!**
+
 

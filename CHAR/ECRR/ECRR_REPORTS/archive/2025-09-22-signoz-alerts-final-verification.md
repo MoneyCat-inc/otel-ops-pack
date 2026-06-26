@@ -206,7 +206,7 @@ curl -s http://localhost:8080/api/v1/health
 **Files Ready**:
 - `artifacts\signoz-alerts.json` - 3 working alert configurations
 - `scripts\canary-ecrr.ps1` - Canary test data generator
-- `docs\ECRR_REPORTS\` - Complete documentation
+- `CHAR\ECRR\ECRR_REPORTS\` - Complete documentation
 
 
 ## ✅ **ECRR Gate - MANDATORY VALIDATION**
@@ -373,4 +373,5 @@ curl -s http://localhost:8080/api/v1/health
 - Automated assessment based on report content analysis
 - Manual review recommended for final production approval
 - Status may require updates based on current system state
+
 

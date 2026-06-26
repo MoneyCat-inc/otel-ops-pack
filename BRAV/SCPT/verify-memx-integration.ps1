@@ -19,10 +19,10 @@ Write-Host "✅ MEMX mock directory found" -ForegroundColor Green
 $otelConfigPath = "config.yaml"
 if (Test-Path $otelConfigPath) {
     $config = Get-Content $otelConfigPath -Raw
-    if ($config -match "5318" -and $config -match "14318") {
+    if ($config -match "5318" -and $config -match "4318") {
         Write-Host "✅ OTel collector configured for MEMX integration" -ForegroundColor Green
         Write-Host "   - Port 5318: Windows OTel HTTP receiver" -ForegroundColor Gray
-        Write-Host "   - Port 14318: SigNoz OTel HTTP receiver" -ForegroundColor Gray
+        Write-Host "   - Port 4318: SigNoz OTel HTTP receiver" -ForegroundColor Gray
     } else {
         Write-Host "⚠️  OTel collector may need MEMX port configuration" -ForegroundColor Yellow
     }
@@ -73,7 +73,7 @@ Write-Host "🔍 Checking port availability..." -ForegroundColor Cyan
 
 $requiredPorts = @(
     @{Port=5318; Description="Windows OTel HTTP receiver"},
-    @{Port=14318; Description="SigNoz OTel HTTP receiver"},
+    @{Port=4318; Description="SigNoz OTel HTTP receiver"},
     @{Port=3000; Description="Resonai dev server"},
     @{Port=8080; Description="SigNoz UI"}
 )

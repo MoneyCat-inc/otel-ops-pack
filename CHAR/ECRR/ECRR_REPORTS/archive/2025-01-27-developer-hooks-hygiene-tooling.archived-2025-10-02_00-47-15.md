@@ -255,7 +255,7 @@ npm run hygiene
 - `scripts/setup-branch-protection.ps1` - Branch protection setup
 - `docs/LEFTHOOK_SETUP.md` - Lefthook installation guide
 - `.github/ISSUE_TEMPLATE/hygiene_debt.md` - Hygiene debt tracker
-- `docs/ECRR_REPORTS/2025-01-27-developer-hooks-hygiene-tooling.md` - This report
+- `CHAR/ECRR/ECRR_REPORTS/2025-01-27-developer-hooks-hygiene-tooling.md` - This report
 
 ---
 
@@ -406,4 +406,5 @@ gh api /repos/fubumaki/otel-ops-pack/branches/main/protection
 - Scope:
 
 ---
+
 

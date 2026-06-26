@@ -17,7 +17,7 @@ if sys.platform == "win32":
 
 def main():
     # Load production evidence
-    with open('docs/ecrr/ECRR_REPORTS/t1_production_evidence.json') as f:
+    with open('CHAR/ECRR/ECRR_REPORTS/t1_production_evidence.json') as f:
         evidence = json.load(f)
 
     print('🎯 T1 Rolling-Stats Production Deployment Summary')
@@ -49,3 +49,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+

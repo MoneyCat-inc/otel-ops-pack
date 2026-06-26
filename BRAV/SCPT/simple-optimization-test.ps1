@@ -34,8 +34,8 @@ try {
 
 $portChecks = @(
     @{ Port = 5318; Name = "Windows Collector OTLP HTTP" },
-    @{ Port = 14317; Name = "SigNoz OTLP gRPC" },
-    @{ Port = 14318; Name = "SigNoz OTLP HTTP" },
+    @{ Port = 4317; Name = "SigNoz OTLP gRPC" },
+    @{ Port = 4318; Name = "SigNoz OTLP HTTP" },
     @{ Port = 8080; Name = "SigNoz UI" },
     @{ Port = 3003; Name = "Resonai API" }
 )

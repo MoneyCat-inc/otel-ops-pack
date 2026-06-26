@@ -79,7 +79,7 @@
 1. **[GATE_029_SCOPE.md](GATE_029_SCOPE.md)** - Gate charter and objectives
 2. **[GATE_029_IMPLEMENTATION_COMPLETE.md](GATE_029_IMPLEMENTATION_COMPLETE.md)** - Implementation summary
 3. **[GATE_029_FINAL_SUMMARY.md](GATE_029_FINAL_SUMMARY.md)** - Executive summary
-4. **[docs/ecrr/ECRR_REPORTS/ECRR_GATE_029_READY_20251027.md](docs/ecrr/ECRR_REPORTS/ECRR_GATE_029_READY_20251027.md)** - ECRR compliance report
+4. **[CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_029_READY_20251027.md](CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_029_READY_20251027.md)** - ECRR compliance report
 
 ### Key Deliverables
 
@@ -312,4 +312,5 @@
 **Authority:** BossCat OEM (Fubumaki)
 
 **Seal:** 🐾 **Gates #026 & #029 Reports Processed**
+
 

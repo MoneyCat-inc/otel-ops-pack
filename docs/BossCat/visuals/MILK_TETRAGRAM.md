@@ -18,9 +18,10 @@ MILK = MilkDrop Integration Layer & Kit
 ## Governance
 - Lane: MILK (Tetragram)
 - Budgets: ≤10 files/change, ≤200 LOC/job
-- Evidence: docs/ecrr/ECRR_REPORTS/*, DELT/ARTF/*
+- Evidence: CHAR/ECRR/ECRR_REPORTS/*, DELT/ARTF/*
 
 ## Phase History
 - Phase 1: Default preset + installer (complete)
 - Phase 2: Control surface (complete)
 - Phase 3: IPC/OSC automation (planned)
+

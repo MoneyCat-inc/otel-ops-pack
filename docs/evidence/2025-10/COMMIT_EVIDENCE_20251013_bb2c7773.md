@@ -61,14 +61,14 @@
 - `EXEC_READY_FOR_GATE_20251013.md` — Comprehensive gate readiness assessment
 
 #### ECRR Evidence Reports (8)
-- `docs/ecrr/ECRR_REPORTS/ECRR_READY_FOR_GATE_ASSESSMENT_20251013.md` — Drift remediation
-- `docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_20251012_235308.md` — Gate run evidence
-- `docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_20251013_032857.md` — Gate run evidence
-- `docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_20251013_035036.md` — Gate run evidence
-- `docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_20251013_035136.md` — Gate run evidence
-- `docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_20251013_085308.md` — Gate run evidence
-- `docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_20251013_085503.md` — Gate run evidence
-- `docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_20251013_085551.md` — Gate run evidence
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_READY_FOR_GATE_ASSESSMENT_20251013.md` — Drift remediation
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_RUN_20251012_235308.md` — Gate run evidence
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_RUN_20251013_032857.md` — Gate run evidence
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_RUN_20251013_035036.md` — Gate run evidence
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_RUN_20251013_035136.md` — Gate run evidence
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_RUN_20251013_085308.md` — Gate run evidence
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_RUN_20251013_085503.md` — Gate run evidence
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_RUN_20251013_085551.md` — Gate run evidence
 
 #### Automation Scripts (3)
 - `scripts/append-ecrr-benchmark-trend.ps1` — ECRR trend tracking
@@ -96,7 +96,7 @@
 - `DELT/ARTF/gate-verification-results.json` — Latest gate run results
 - `PR_COMMENT_IONA_GATE_002_FINAL.md` — Latest PR gate comment
 - `docs/BossCat/README.md` — Quick Commands section updated
-- `docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md` — Latest run evidence
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md` — Latest run evidence
 - `scripts/verify-iona-gate.ps1` — LF→CRLF (PowerShell standard)
 
 ---
@@ -404,4 +404,5 @@ Other:
 ---
 
 🚀 **OPTION A EXECUTED · 26 FILES COMMITTED · GUARDRAILS PASSING · PUSHED TO MAIN · ECRR CERTIFIED** 🚀
+
 

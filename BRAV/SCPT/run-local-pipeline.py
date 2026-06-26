@@ -3,7 +3,7 @@ import argparse, json, os, time, sys
 
 REQUIRED = [
   ".github/workflows/bosscat-gate-verify.yml", "docs/status/tests.json",
-  "docs/status.html", "docs/ecrr/ECRR_REPORTS", "docs/observability/snapshots",
+  "docs/status.html", "CHAR/ECRR/ECRR_REPORTS", "docs/observability/snapshots",
   "docs/IONA_ERRORS.md", "docs/cheatsheets", "index.html"
 ]
 PRIMARY_DIR = "artifacts"
@@ -33,7 +33,7 @@ def main():
     if not os.path.exists("docs/status.html"):
         with open("docs/status.html","w",encoding="utf-8") as f:
             f.write("<!doctype html><title>BossCat Status</title>")
-    for d in ["docs/ecrr/ECRR_REPORTS","docs/observability/snapshots","docs/cheatsheets"]:
+    for d in ["CHAR/ECRR/ECRR_REPORTS","docs/observability/snapshots","docs/cheatsheets"]:
         os.makedirs(d, exist_ok=True)
     if not os.path.exists("docs/IONA_ERRORS.md"):
         with open("docs/IONA_ERRORS.md","w",encoding="utf-8") as f: f.write("# IONA Error Ledger\n")
@@ -64,3 +64,4 @@ def main():
     if args.verbose: print(json.dumps(obj, indent=2))
     return 0 if verdict!="NOT_READY" else 2
 if __name__=="__main__": sys.exit(main())
+

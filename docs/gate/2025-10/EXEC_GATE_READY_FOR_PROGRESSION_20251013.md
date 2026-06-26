@@ -76,7 +76,7 @@ Exit Code: 0 ✅
 - ✅ .github/workflows/bosscat-gate-verify.yml
 - ✅ docs/BossCat/README.md
 - ✅ docs/status.html
-- ✅ docs/ecrr/ECRR_REPORTS/
+- ✅ CHAR/ECRR/ECRR_REPORTS/
 - ✅ docs/observability/snapshots/
 
 ---
@@ -149,7 +149,7 @@ d57788ca — fix(gate): explicitly pass OTLP_HTTP env to tsx step
    - **Issue**: 2 forbidden legacy root directories (configs/, tests/)
    - **Action**: Removed empty configs/, migrated tests/perf/gate.js to ALFA/TEST/load/k6/
    - **Result**: Guardrails Exit Code 1 → 0 (PASSING)
-   - **Evidence**: `docs/ecrr/ECRR_REPORTS/ECRR_FORBIDDEN_ROOTS_REMEDIATION_20251013.md`
+   - **Evidence**: `CHAR/ECRR/ECRR_REPORTS/ECRR_FORBIDDEN_ROOTS_REMEDIATION_20251013.md`
 
 2. **Structural Compliance Restoration** ✅
    - **Before**: 2 forbidden roots, Exit Code 1, Gate BLOCKED
@@ -197,7 +197,7 @@ d57788ca — fix(gate): explicitly pass OTLP_HTTP env to tsx step
 - **API Health**: `{"status":"ok"}`
 
 ### Documentation Health ✅
-- **ECRR Reports**: 60+ reports in `docs/ecrr/ECRR_REPORTS/`
+- **ECRR Reports**: 60+ reports in `CHAR/ECRR/ECRR_REPORTS/`
 - **Status Page**: `docs/status.html` (all links working)
 - **Evidence Trail**: Complete and comprehensive
 - **BossCat Docs**: Current and team-ready
@@ -349,5 +349,6 @@ d57788ca — fix(gate): explicitly pass OTLP_HTTP env to tsx step
 🎉 **GATE READY · 100% COMPLIANT · ALL SYSTEMS GREEN · ZERO BLOCKERS · APPROVED FOR PROGRESSION** 🎉
 
 **Structural**: ✅ PASSING | **Operational**: ✅ HEALTHY | **GPU**: ✅ VALIDATED | **Evidence**: ✅ COMPREHENSIVE | **Risk**: 🟢 LOW
+
 
 

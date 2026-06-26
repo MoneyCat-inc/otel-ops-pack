@@ -400,7 +400,7 @@
 
 ### 📄 NIGHTLY_ORCHESTRATION_nightly-20251008-030002.md
 
-- **Path:** `BRAV\SCPT\docs\ecrr\ECRR_REPORTS\NIGHTLY_ORCHESTRATION_nightly-20251008-030002.md`
+- **Path:** `BRAV\SCPT\CHAR\ECRR\ECRR_REPORTS\NIGHTLY_ORCHESTRATION_nightly-20251008-030002.md`
 - **Modified:** 16.10.25 04:41:51
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -408,7 +408,7 @@
 
 ### 📄 NIGHTLY_ORCHESTRATION_nightly-20251009-030001.md
 
-- **Path:** `BRAV\SCPT\docs\ecrr\ECRR_REPORTS\NIGHTLY_ORCHESTRATION_nightly-20251009-030001.md`
+- **Path:** `BRAV\SCPT\CHAR\ECRR\ECRR_REPORTS\NIGHTLY_ORCHESTRATION_nightly-20251009-030001.md`
 - **Modified:** 16.10.25 04:41:51
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -3008,7 +3008,7 @@
 
 ### 📄 ECRR_SANITIZATION_COMPLETE.md
 
-- **Path:** `CHAR\DOCS\docs\ecrr\ECRR_REPORTS\ecrr-processing-analysis-20251007-053351\ECRR_SANITIZATION_COMPLETE.md`
+- **Path:** `CHAR\DOCS\CHAR\ECRR\ECRR_REPORTS\ecrr-processing-analysis-20251007-053351\ECRR_SANITIZATION_COMPLETE.md`
 - **Modified:** 16.10.25 04:41:52
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -3016,7 +3016,7 @@
 
 ### 📄 ecrr-processing-complete-analysis.md
 
-- **Path:** `CHAR\DOCS\docs\ecrr\ECRR_REPORTS\ecrr-processing-analysis-20251007-053351\ecrr-processing-complete-analysis.md`
+- **Path:** `CHAR\DOCS\CHAR\ECRR\ECRR_REPORTS\ecrr-processing-analysis-20251007-053351\ecrr-processing-complete-analysis.md`
 - **Modified:** 16.10.25 04:41:52
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -3024,7 +3024,7 @@
 
 ### 📄 demo-report.md
 
-- **Path:** `CHAR\DOCS\docs\ecrr\ECRR_REPORTS\parallel-agent-framework-validation-20251007-050629\demo-report.md`
+- **Path:** `CHAR\DOCS\CHAR\ECRR\ECRR_REPORTS\parallel-agent-framework-validation-20251007-050629\demo-report.md`
 - **Modified:** 16.10.25 04:41:52
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -3032,7 +3032,7 @@
 
 ### 📄 task-summary-20251007-050530.md
 
-- **Path:** `CHAR\DOCS\docs\ecrr\ECRR_REPORTS\parallel-agent-framework-validation-20251007-050629\task-summary-20251007-050530.md`
+- **Path:** `CHAR\DOCS\CHAR\ECRR\ECRR_REPORTS\parallel-agent-framework-validation-20251007-050629\task-summary-20251007-050530.md`
 - **Modified:** 16.10.25 04:41:52
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -3040,7 +3040,7 @@
 
 ### 📄 PARALLEL_AGENT_FRAMEWORK_GUIDE.md
 
-- **Path:** `CHAR\DOCS\docs\ecrr\ECRR_REPORTS\parallel-agent-framework-validation-20251007-051511\PARALLEL_AGENT_FRAMEWORK_GUIDE.md`
+- **Path:** `CHAR\DOCS\CHAR\ECRR\ECRR_REPORTS\parallel-agent-framework-validation-20251007-051511\PARALLEL_AGENT_FRAMEWORK_GUIDE.md`
 - **Modified:** 16.10.25 04:41:52
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -3048,7 +3048,7 @@
 
 ### 📄 PARALLEL_AGENT_FRAMEWORK_IMPLEMENTATION_COMPLETE.md
 
-- **Path:** `CHAR\DOCS\docs\ecrr\ECRR_REPORTS\parallel-agent-framework-validation-20251007-051511\PARALLEL_AGENT_FRAMEWORK_IMPLEMENTATION_COMPLETE.md`
+- **Path:** `CHAR\DOCS\CHAR\ECRR\ECRR_REPORTS\parallel-agent-framework-validation-20251007-051511\PARALLEL_AGENT_FRAMEWORK_IMPLEMENTATION_COMPLETE.md`
 - **Modified:** 16.10.25 04:41:52
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -3056,7 +3056,7 @@
 
 ### 📄 AUTO_BOTS_FIXES_2025-10-09.md
 
-- **Path:** `CHAR\DOCS\docs\ecrr\ECRR_REPORTS\AUTO_BOTS_FIXES_2025-10-09.md`
+- **Path:** `CHAR\DOCS\CHAR\ECRR\ECRR_REPORTS\AUTO_BOTS_FIXES_2025-10-09.md`
 - **Modified:** 16.10.25 04:41:52
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -3064,7 +3064,7 @@
 
 ### 📄 AUTO_BOTS_STABILITY_PACK_2025-10-09.md
 
-- **Path:** `CHAR\DOCS\docs\ecrr\ECRR_REPORTS\AUTO_BOTS_STABILITY_PACK_2025-10-09.md`
+- **Path:** `CHAR\DOCS\CHAR\ECRR\ECRR_REPORTS\AUTO_BOTS_STABILITY_PACK_2025-10-09.md`
 - **Modified:** 16.10.25 04:41:52
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -3072,7 +3072,7 @@
 
 ### 📄 AUTO_BOTS_TETRAGRAM_STANDARDIZATION_2025-10-09.md
 
-- **Path:** `CHAR\DOCS\docs\ecrr\ECRR_REPORTS\AUTO_BOTS_TETRAGRAM_STANDARDIZATION_2025-10-09.md`
+- **Path:** `CHAR\DOCS\CHAR\ECRR\ECRR_REPORTS\AUTO_BOTS_TETRAGRAM_STANDARDIZATION_2025-10-09.md`
 - **Modified:** 16.10.25 04:41:52
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -3080,7 +3080,7 @@
 
 ### 📄 BOSSCAT_GATE_ASSESSMENT_2025-10-09.md
 
-- **Path:** `CHAR\DOCS\docs\ecrr\ECRR_REPORTS\BOSSCAT_GATE_ASSESSMENT_2025-10-09.md`
+- **Path:** `CHAR\DOCS\CHAR\ECRR\ECRR_REPORTS\BOSSCAT_GATE_ASSESSMENT_2025-10-09.md`
 - **Modified:** 16.10.25 04:41:52
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -3088,7 +3088,7 @@
 
 ### 📄 DOCKER_SECURITY_ASSESSMENT_2025-10-09.md
 
-- **Path:** `CHAR\DOCS\docs\ecrr\ECRR_REPORTS\DOCKER_SECURITY_ASSESSMENT_2025-10-09.md`
+- **Path:** `CHAR\DOCS\CHAR\ECRR\ECRR_REPORTS\DOCKER_SECURITY_ASSESSMENT_2025-10-09.md`
 - **Modified:** 16.10.25 04:41:52
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -3096,7 +3096,7 @@
 
 ### 📄 ECRR-2025-10-03-200230.md
 
-- **Path:** `CHAR\DOCS\docs\ecrr\ECRR_REPORTS\ECRR-2025-10-03-200230.md`
+- **Path:** `CHAR\DOCS\CHAR\ECRR\ECRR_REPORTS\ECRR-2025-10-03-200230.md`
 - **Modified:** 16.10.25 04:41:52
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -3104,7 +3104,7 @@
 
 ### 📄 FINAL_SESSION_SUMMARY_2025-10-09.md
 
-- **Path:** `CHAR\DOCS\docs\ecrr\ECRR_REPORTS\FINAL_SESSION_SUMMARY_2025-10-09.md`
+- **Path:** `CHAR\DOCS\CHAR\ECRR\ECRR_REPORTS\FINAL_SESSION_SUMMARY_2025-10-09.md`
 - **Modified:** 16.10.25 04:41:52
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -3112,7 +3112,7 @@
 
 ### 📄 HARDENING_PACK_SUCCESS_2025-10-09.md
 
-- **Path:** `CHAR\DOCS\docs\ecrr\ECRR_REPORTS\HARDENING_PACK_SUCCESS_2025-10-09.md`
+- **Path:** `CHAR\DOCS\CHAR\ECRR\ECRR_REPORTS\HARDENING_PACK_SUCCESS_2025-10-09.md`
 - **Modified:** 16.10.25 04:41:52
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -3120,7 +3120,7 @@
 
 ### 📄 HARDENING_PACK_TETRAGRAM_2025-10-09.md
 
-- **Path:** `CHAR\DOCS\docs\ecrr\ECRR_REPORTS\HARDENING_PACK_TETRAGRAM_2025-10-09.md`
+- **Path:** `CHAR\DOCS\CHAR\ECRR\ECRR_REPORTS\HARDENING_PACK_TETRAGRAM_2025-10-09.md`
 - **Modified:** 16.10.25 04:41:52
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -3128,7 +3128,7 @@
 
 ### 📄 NIGHTLY_ORCHESTRATION_nightly-20251009-020003.md
 
-- **Path:** `CHAR\DOCS\docs\ecrr\ECRR_REPORTS\NIGHTLY_ORCHESTRATION_nightly-20251009-020003.md`
+- **Path:** `CHAR\DOCS\CHAR\ECRR\ECRR_REPORTS\NIGHTLY_ORCHESTRATION_nightly-20251009-020003.md`
 - **Modified:** 16.10.25 04:41:52
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -3136,7 +3136,7 @@
 
 ### 📄 REPOSITORY_CLEANUP_2025-10-09.md
 
-- **Path:** `CHAR\DOCS\docs\ecrr\ECRR_REPORTS\REPOSITORY_CLEANUP_2025-10-09.md`
+- **Path:** `CHAR\DOCS\CHAR\ECRR\ECRR_REPORTS\REPOSITORY_CLEANUP_2025-10-09.md`
 - **Modified:** 16.10.25 04:41:52
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -3144,7 +3144,7 @@
 
 ### 📄 SECURITY_REMEDIATION_ANALYSIS_2025-10-09.md
 
-- **Path:** `CHAR\DOCS\docs\ecrr\ECRR_REPORTS\SECURITY_REMEDIATION_ANALYSIS_2025-10-09.md`
+- **Path:** `CHAR\DOCS\CHAR\ECRR\ECRR_REPORTS\SECURITY_REMEDIATION_ANALYSIS_2025-10-09.md`
 - **Modified:** 16.10.25 04:41:52
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -3152,7 +3152,7 @@
 
 ### 📄 SIGNOZ_HEALTH_VERIFICATION_2025-10-09.md
 
-- **Path:** `CHAR\DOCS\docs\ecrr\ECRR_REPORTS\SIGNOZ_HEALTH_VERIFICATION_2025-10-09.md`
+- **Path:** `CHAR\DOCS\CHAR\ECRR\ECRR_REPORTS\SIGNOZ_HEALTH_VERIFICATION_2025-10-09.md`
 - **Modified:** 16.10.25 04:41:52
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -3160,7 +3160,7 @@
 
 ### 📄 TRIVY_SCAN_RESULTS_2025-10-09.md
 
-- **Path:** `CHAR\DOCS\docs\ecrr\ECRR_REPORTS\TRIVY_SCAN_RESULTS_2025-10-09.md`
+- **Path:** `CHAR\DOCS\CHAR\ECRR\ECRR_REPORTS\TRIVY_SCAN_RESULTS_2025-10-09.md`
 - **Modified:** 16.10.25 04:41:52
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140232,7 +140232,7 @@
 
 ### 📄 BOSS_V2_RUN.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\BOSS_V2_RUN.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\BOSS_V2_RUN.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140240,7 +140240,7 @@
 
 ### 📄 BOSSCAT_GITHUB_ACTIONS_CLEANUP_20251014.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\BOSSCAT_GITHUB_ACTIONS_CLEANUP_20251014.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\BOSSCAT_GITHUB_ACTIONS_CLEANUP_20251014.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140248,7 +140248,7 @@
 
 ### 📄 ECRR_ANTICLICKBAIT_DOCS_LANE_20251016.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_ANTICLICKBAIT_DOCS_LANE_20251016.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_ANTICLICKBAIT_DOCS_LANE_20251016.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140256,7 +140256,7 @@
 
 ### 📄 ECRR_ANTICLICKBAIT_PORTAL_20251016.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_ANTICLICKBAIT_PORTAL_20251016.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_ANTICLICKBAIT_PORTAL_20251016.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140264,7 +140264,7 @@
 
 ### 📄 ECRR_AUTH_GITHUB_UI_20251010_035500.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_AUTH_GITHUB_UI_20251010_035500.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_AUTH_GITHUB_UI_20251010_035500.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140272,7 +140272,7 @@
 
 ### 📄 ECRR_BENCHMARK_LATEST.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_BENCHMARK_LATEST.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_BENCHMARK_LATEST.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140280,7 +140280,7 @@
 
 ### 📄 ECRR_BENCHMARK_PIPELINE_20251013_022902.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_BENCHMARK_PIPELINE_20251013_022902.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_BENCHMARK_PIPELINE_20251013_022902.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140288,7 +140288,7 @@
 
 ### 📄 ECRR_BENCHMARK_SUMMARY_20251013_022745.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_BENCHMARK_SUMMARY_20251013_022745.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_BENCHMARK_SUMMARY_20251013_022745.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140296,7 +140296,7 @@
 
 ### 📄 ECRR_CONVEYOR_CHUNK_20251014_093649.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_CONVEYOR_CHUNK_20251014_093649.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_CONVEYOR_CHUNK_20251014_093649.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140304,7 +140304,7 @@
 
 ### 📄 ECRR_CURSOR_IMPLEMENTER_20251012_085425.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_CURSOR_IMPLEMENTER_20251012_085425.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_CURSOR_IMPLEMENTER_20251012_085425.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140312,7 +140312,7 @@
 
 ### 📄 ECRR_CURSOR_IMPLEMENTER_PRIORITY_TASKS_20251013.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_CURSOR_IMPLEMENTER_PRIORITY_TASKS_20251013.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_CURSOR_IMPLEMENTER_PRIORITY_TASKS_20251013.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140320,7 +140320,7 @@
 
 ### 📄 ECRR_CURSOR_IMPLEMENTER_SESSION_20251012.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_CURSOR_IMPLEMENTER_SESSION_20251012.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_CURSOR_IMPLEMENTER_SESSION_20251012.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140328,7 +140328,7 @@
 
 ### 📄 ECRR_CURSOR_IMPLEMENTER_SESSION_HALT_20251013.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_CURSOR_IMPLEMENTER_SESSION_HALT_20251013.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_CURSOR_IMPLEMENTER_SESSION_HALT_20251013.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140336,7 +140336,7 @@
 
 ### 📄 ECRR_CURSOR_RUN_20251012_020515.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_CURSOR_RUN_20251012_020515.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_CURSOR_RUN_20251012_020515.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140344,7 +140344,7 @@
 
 ### 📄 ECRR_CURSOR_RUN_20251012_021029.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_CURSOR_RUN_20251012_021029.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_CURSOR_RUN_20251012_021029.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140352,7 +140352,7 @@
 
 ### 📄 ECRR_DIRECTIVE_008_20251013.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_DIRECTIVE_008_20251013.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_DIRECTIVE_008_20251013.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140360,7 +140360,7 @@
 
 ### 📄 ECRR_DOCKER_TROUBLESHOOTING_20251017.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_DOCKER_TROUBLESHOOTING_20251017.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_DOCKER_TROUBLESHOOTING_20251017.md`
 - **Modified:** 17.10.25 23:42:25
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140368,7 +140368,7 @@
 
 ### 📄 ECRR_ENFORCEMENT_ACTIVATION_20251013.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_ENFORCEMENT_ACTIVATION_20251013.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_ENFORCEMENT_ACTIVATION_20251013.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140376,7 +140376,7 @@
 
 ### 📄 ECRR_FORBIDDEN_ROOTS_REMEDIATION_20251013.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_FORBIDDEN_ROOTS_REMEDIATION_20251013.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_FORBIDDEN_ROOTS_REMEDIATION_20251013.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140384,7 +140384,7 @@
 
 ### 📄 ECRR_GATE_007_FINAL_PUSH_20251011.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_007_FINAL_PUSH_20251011.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_007_FINAL_PUSH_20251011.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140392,7 +140392,7 @@
 
 ### 📄 ECRR_GATE_APPROVAL_20251010.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_APPROVAL_20251010.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_APPROVAL_20251010.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140400,7 +140400,7 @@
 
 ### 📄 ECRR_GATE_CLOSEOUT_20251012_002607.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_CLOSEOUT_20251012_002607.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_CLOSEOUT_20251012_002607.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140408,7 +140408,7 @@
 
 ### 📄 ECRR_GATE_CLOSEOUT_20251012_032900.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_CLOSEOUT_20251012_032900.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_CLOSEOUT_20251012_032900.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140416,7 +140416,7 @@
 
 ### 📄 ECRR_GATE_CLOSEOUT_20251013_133713.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_CLOSEOUT_20251013_133713.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_CLOSEOUT_20251013_133713.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140424,7 +140424,7 @@
 
 ### 📄 ECRR_GATE_GREEN_CLOSEOUT_20251013.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_GREEN_CLOSEOUT_20251013.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_GREEN_CLOSEOUT_20251013.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140432,7 +140432,7 @@
 
 ### 📄 ECRR_GATE_READY_20251015_015500.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_READY_20251015_015500.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_READY_20251015_015500.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140440,7 +140440,7 @@
 
 ### 📄 ECRR_GATE_READY_20251017.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_READY_20251017.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_READY_20251017.md`
 - **Modified:** 17.10.25 23:37:08
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140448,7 +140448,7 @@
 
 ### 📄 ECRR_GATE_READY_BOSSCAT_20251015.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_READY_BOSSCAT_20251015.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_READY_BOSSCAT_20251015.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140456,7 +140456,7 @@
 
 ### 📄 ECRR_GATE_READY_DOCS_GOVERNANCE_20251015.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_READY_DOCS_GOVERNANCE_20251015.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_READY_DOCS_GOVERNANCE_20251015.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140464,7 +140464,7 @@
 
 ### 📄 ECRR_GATE_READY_FINAL_20251015_073616.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_READY_FINAL_20251015_073616.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_READY_FINAL_20251015_073616.md`
 - **Modified:** 16.10.25 10:19:29
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140472,7 +140472,7 @@
 
 ### 📄 ECRR_GATE_READY_MILK_FINAL_20251016.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_READY_MILK_FINAL_20251016.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_READY_MILK_FINAL_20251016.md`
 - **Modified:** 16.10.25 12:11:54
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140480,7 +140480,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251009_235042.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251009_235042.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251009_235042.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140488,7 +140488,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251009_235512.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251009_235512.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251009_235512.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140496,7 +140496,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251009_235910.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251009_235910.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251009_235910.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140504,7 +140504,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251010_000026.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251010_000026.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251010_000026.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140512,7 +140512,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251010_000205.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251010_000205.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251010_000205.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140520,7 +140520,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251010_012920.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251010_012920.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251010_012920.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140528,7 +140528,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251010_013309.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251010_013309.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251010_013309.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140536,7 +140536,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251010_013322.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251010_013322.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251010_013322.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140544,7 +140544,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251010_014244.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251010_014244.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251010_014244.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140552,7 +140552,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251010_014833.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251010_014833.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251010_014833.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140560,7 +140560,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251010_015020.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251010_015020.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251010_015020.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140568,7 +140568,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251010_015235.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251010_015235.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251010_015235.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140576,7 +140576,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251012_010257.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251012_010257.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251012_010257.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140584,7 +140584,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251012_020516.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251012_020516.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251012_020516.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140592,7 +140592,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251012_021029.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251012_021029.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251012_021029.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140600,7 +140600,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251012_021039.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251012_021039.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251012_021039.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140608,7 +140608,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251012_021048.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251012_021048.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251012_021048.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140616,7 +140616,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251012_033013.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251012_033013.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251012_033013.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140624,7 +140624,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251012_235308.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251012_235308.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251012_235308.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140632,7 +140632,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251013_000035.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251013_000035.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251013_000035.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140640,7 +140640,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251013_002424.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251013_002424.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251013_002424.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140648,7 +140648,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251013_003103.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251013_003103.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251013_003103.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140656,7 +140656,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251013_011703.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251013_011703.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251013_011703.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140664,7 +140664,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251013_025504.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251013_025504.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251013_025504.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140672,7 +140672,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251013_025824.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251013_025824.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251013_025824.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140680,7 +140680,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251013_030727.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251013_030727.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251013_030727.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140688,7 +140688,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251013_032004.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251013_032004.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251013_032004.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140696,7 +140696,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251013_032857.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251013_032857.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251013_032857.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140704,7 +140704,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251013_035036.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251013_035036.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251013_035036.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140712,7 +140712,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251013_035136.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251013_035136.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251013_035136.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140720,7 +140720,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251013_085308.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251013_085308.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251013_085308.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140728,7 +140728,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251013_085503.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251013_085503.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251013_085503.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140736,7 +140736,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251013_085551.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251013_085551.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251013_085551.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140744,7 +140744,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251013_131646.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251013_131646.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251013_131646.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140752,7 +140752,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251013_131753.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251013_131753.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251013_131753.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140760,7 +140760,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251013_133713.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251013_133713.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251013_133713.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140768,7 +140768,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251013_135424.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251013_135424.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251013_135424.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140776,7 +140776,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251013_205605.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251013_205605.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251013_205605.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140784,7 +140784,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251015_000012.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251015_000012.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251015_000012.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140792,7 +140792,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251015_004942.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251015_004942.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251015_004942.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140800,7 +140800,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251015_013114.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251015_013114.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251015_013114.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140808,7 +140808,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251015_053452.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251015_053452.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251015_053452.md`
 - **Modified:** 16.10.25 10:19:29
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140816,7 +140816,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251015_071752.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251015_071752.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251015_071752.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140824,7 +140824,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251015_073616.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251015_073616.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251015_073616.md`
 - **Modified:** 16.10.25 10:19:29
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140832,7 +140832,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251016_044334.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251016_044334.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251016_044334.md`
 - **Modified:** 16.10.25 04:43:34
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140840,7 +140840,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251016_045453.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251016_045453.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251016_045453.md`
 - **Modified:** 16.10.25 04:54:53
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140848,7 +140848,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251016_051314.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251016_051314.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251016_051314.md`
 - **Modified:** 16.10.25 05:13:14
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140856,7 +140856,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251016_100740.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251016_100740.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251016_100740.md`
 - **Modified:** 16.10.25 10:07:40
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140864,7 +140864,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251016_101037.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251016_101037.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251016_101037.md`
 - **Modified:** 16.10.25 10:10:37
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140872,7 +140872,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251016_101604.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251016_101604.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251016_101604.md`
 - **Modified:** 16.10.25 10:16:04
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140880,7 +140880,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251016_102200.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251016_102200.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251016_102200.md`
 - **Modified:** 16.10.25 10:22:00
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140888,7 +140888,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251016_103057.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251016_103057.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251016_103057.md`
 - **Modified:** 16.10.25 10:30:57
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140896,7 +140896,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251016_103814.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251016_103814.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251016_103814.md`
 - **Modified:** 16.10.25 10:38:14
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140904,7 +140904,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251016_104419.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251016_104419.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251016_104419.md`
 - **Modified:** 16.10.25 10:44:19
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140912,7 +140912,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251016_104522.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251016_104522.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251016_104522.md`
 - **Modified:** 16.10.25 10:45:22
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140920,7 +140920,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251016_105244.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251016_105244.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251016_105244.md`
 - **Modified:** 16.10.25 10:52:44
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140928,7 +140928,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251016_105427.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251016_105427.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251016_105427.md`
 - **Modified:** 16.10.25 10:54:27
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140936,7 +140936,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251016_105806.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251016_105806.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251016_105806.md`
 - **Modified:** 16.10.25 10:58:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140944,7 +140944,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251016_110123.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251016_110123.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251016_110123.md`
 - **Modified:** 16.10.25 11:01:23
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140952,7 +140952,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251016_110523.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251016_110523.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251016_110523.md`
 - **Modified:** 16.10.25 11:05:23
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140960,7 +140960,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251016_111358.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251016_111358.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251016_111358.md`
 - **Modified:** 16.10.25 11:13:58
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140968,7 +140968,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251016_111542.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251016_111542.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251016_111542.md`
 - **Modified:** 16.10.25 11:15:42
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140976,7 +140976,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251016_112301.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251016_112301.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251016_112301.md`
 - **Modified:** 16.10.25 11:23:01
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140984,7 +140984,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251016_113735.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251016_113735.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251016_113735.md`
 - **Modified:** 16.10.25 11:37:35
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -140992,7 +140992,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251016_115822.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251016_115822.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251016_115822.md`
 - **Modified:** 16.10.25 11:58:22
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141000,7 +141000,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251016_121909.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251016_121909.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251016_121909.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141008,7 +141008,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251016_122533.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251016_122533.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251016_122533.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141016,7 +141016,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251016_122855.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251016_122855.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251016_122855.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141024,7 +141024,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251016_123159.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251016_123159.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251016_123159.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141032,7 +141032,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251016_131651.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251016_131651.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251016_131651.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141040,7 +141040,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251016_144407.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251016_144407.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251016_144407.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141048,7 +141048,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251016_144816.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251016_144816.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251016_144816.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141056,7 +141056,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251016_145114.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251016_145114.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251016_145114.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141064,7 +141064,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251016_152732.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251016_152732.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251016_152732.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141072,7 +141072,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251016_152919.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251016_152919.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251016_152919.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141080,7 +141080,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251016_163354.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251016_163354.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251016_163354.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141088,7 +141088,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251016_234218.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251016_234218.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251016_234218.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141096,7 +141096,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251016_234303.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251016_234303.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251016_234303.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141104,7 +141104,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251017_091048.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251017_091048.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251017_091048.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141112,7 +141112,7 @@
 
 ### 📄 ECRR_GATE_RUN_20251017_234457.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_20251017_234457.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_20251017_234457.md`
 - **Modified:** 17.10.25 23:44:57
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141120,7 +141120,7 @@
 
 ### 📄 ECRR_GATE_RUN_LATEST.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_RUN_LATEST.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_RUN_LATEST.md`
 - **Modified:** 19.10.25 06:56:03
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141128,7 +141128,7 @@
 
 ### 📄 ECRR_GATE_SITE_ACTIVATION_20251013.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_SITE_ACTIVATION_20251013.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_SITE_ACTIVATION_20251013.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141136,7 +141136,7 @@
 
 ### 📄 ECRR_GATE_SITE_MATRIX_DEPLOYMENT_20251011.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GATE_SITE_MATRIX_DEPLOYMENT_20251011.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GATE_SITE_MATRIX_DEPLOYMENT_20251011.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141144,7 +141144,7 @@
 
 ### 📄 ECRR_GITHUB_COMPLIANCE_20251012_090325.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GITHUB_COMPLIANCE_20251012_090325.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GITHUB_COMPLIANCE_20251012_090325.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141152,7 +141152,7 @@
 
 ### 📄 ECRR_GPU_FIX_V11_DEPLOYMENT_20251011.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GPU_FIX_V11_DEPLOYMENT_20251011.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GPU_FIX_V11_DEPLOYMENT_20251011.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141160,7 +141160,7 @@
 
 ### 📄 ECRR_GPU_FIX_V11.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GPU_FIX_V11.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GPU_FIX_V11.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141168,7 +141168,7 @@
 
 ### 📄 ECRR_GPU_PIPELINE_ALIGNMENT_20251013.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_GPU_PIPELINE_ALIGNMENT_20251013.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_GPU_PIPELINE_ALIGNMENT_20251013.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141176,7 +141176,7 @@
 
 ### 📄 ECRR_HALT_20251012.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_HALT_20251012.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_HALT_20251012.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141184,7 +141184,7 @@
 
 ### 📄 ECRR_HALT_20251015_025500.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_HALT_20251015_025500.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_HALT_20251015_025500.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141192,7 +141192,7 @@
 
 ### 📄 ECRR_HALT_20251015.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_HALT_20251015.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_HALT_20251015.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141200,7 +141200,7 @@
 
 ### 📄 ECRR_HALT_20251016_100341.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_HALT_20251016_100341.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_HALT_20251016_100341.md`
 - **Modified:** 16.10.25 10:06:31
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141208,7 +141208,7 @@
 
 ### 📄 ECRR_HALT_LATEST.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_HALT_LATEST.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_HALT_LATEST.md`
 - **Modified:** 16.10.25 10:18:58
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141216,7 +141216,7 @@
 
 ### 📄 ECRR_HALT_MILK_SESSION_20251016.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_HALT_MILK_SESSION_20251016.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_HALT_MILK_SESSION_20251016.md`
 - **Modified:** 16.10.25 12:03:51
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141224,7 +141224,7 @@
 
 ### 📄 ECRR_HALT_RUN_ARCHIVER_20251016_100436.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_HALT_RUN_ARCHIVER_20251016_100436.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_HALT_RUN_ARCHIVER_20251016_100436.md`
 - **Modified:** 16.10.25 10:04:36
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141232,7 +141232,7 @@
 
 ### 📄 ECRR_HUB_DEPLOYMENT_GATE_20251019.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_HUB_DEPLOYMENT_GATE_20251019.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_HUB_DEPLOYMENT_GATE_20251019.md`
 - **Modified:** 19.10.25 06:56:03
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141240,7 +141240,7 @@
 
 ### 📄 ECRR_ICF_PR-118.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_ICF_PR-118.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_ICF_PR-118.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141248,7 +141248,7 @@
 
 ### 📄 ECRR_MAINTENANCE_LATEST.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_MAINTENANCE_LATEST.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_MAINTENANCE_LATEST.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141256,7 +141256,7 @@
 
 ### 📄 ECRR_MAINTENANCE_SIG_NOZ_COLLECTOR_20251012.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_MAINTENANCE_SIG_NOZ_COLLECTOR_20251012.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_MAINTENANCE_SIG_NOZ_COLLECTOR_20251012.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141264,7 +141264,7 @@
 
 ### 📄 ECRR_MILK_CONSOLIDATED_20251016.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_MILK_CONSOLIDATED_20251016.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_MILK_CONSOLIDATED_20251016.md`
 - **Modified:** 16.10.25 11:22:37
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141272,7 +141272,7 @@
 
 ### 📄 ECRR_MILK_CONSOLIDATED_LATEST.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_MILK_CONSOLIDATED_LATEST.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_MILK_CONSOLIDATED_LATEST.md`
 - **Modified:** 16.10.25 11:22:43
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141280,7 +141280,7 @@
 
 ### 📄 ECRR_MILK_PHASE2_FINAL_20251016.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_MILK_PHASE2_FINAL_20251016.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_MILK_PHASE2_FINAL_20251016.md`
 - **Modified:** 16.10.25 10:57:14
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141288,7 +141288,7 @@
 
 ### 📄 ECRR_MILK_PHASE3A_20251016.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_MILK_PHASE3A_20251016.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_MILK_PHASE3A_20251016.md`
 - **Modified:** 16.10.25 11:03:47
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141296,7 +141296,7 @@
 
 ### 📄 ECRR_MILK_PHASE3C_20251016.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_MILK_PHASE3C_20251016.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_MILK_PHASE3C_20251016.md`
 - **Modified:** 16.10.25 11:22:55
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141304,7 +141304,7 @@
 
 ### 📄 ECRR_MILK_PHASE4_20251016.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_MILK_PHASE4_20251016.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_MILK_PHASE4_20251016.md`
 - **Modified:** 16.10.25 12:18:26
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141312,7 +141312,7 @@
 
 ### 📄 ECRR_MILK_PHASE5_20251016.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_MILK_PHASE5_20251016.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_MILK_PHASE5_20251016.md`
 - **Modified:** 16.10.25 12:24:34
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141320,7 +141320,7 @@
 
 ### 📄 ECRR_MILK_PRESETS_20251016.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_MILK_PRESETS_20251016.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_MILK_PRESETS_20251016.md`
 - **Modified:** 16.10.25 11:35:47
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141328,7 +141328,7 @@
 
 ### 📄 ECRR_MONETIZATION_SETUP_20251017.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_MONETIZATION_SETUP_20251017.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_MONETIZATION_SETUP_20251017.md`
 - **Modified:** 18.10.25 00:03:18
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141336,7 +141336,7 @@
 
 ### 📄 ECRR_P1_TASKS_20251013.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_P1_TASKS_20251013.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_P1_TASKS_20251013.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141344,7 +141344,7 @@
 
 ### 📄 ECRR_P1A_FLAK_SMOKE_20251011.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_P1A_FLAK_SMOKE_20251011.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_P1A_FLAK_SMOKE_20251011.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141352,7 +141352,7 @@
 
 ### 📄 ECRR_P1B_COMP_20251011.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_P1B_COMP_20251011.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_P1B_COMP_20251011.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141360,7 +141360,7 @@
 
 ### 📄 ECRR_P1B_COMP_FINAL_20251011.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_P1B_COMP_FINAL_20251011.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_P1B_COMP_FINAL_20251011.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141368,7 +141368,7 @@
 
 ### 📄 ECRR_P1B_JOB1_20251011.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_P1B_JOB1_20251011.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_P1B_JOB1_20251011.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141376,7 +141376,7 @@
 
 ### 📄 ECRR_PATREON_SETUP_20251017.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_PATREON_SETUP_20251017.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_PATREON_SETUP_20251017.md`
 - **Modified:** 18.10.25 00:17:26
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141384,7 +141384,7 @@
 
 ### 📄 ECRR_PHASE1_IMMEDIATE_WINS_20251010.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_PHASE1_IMMEDIATE_WINS_20251010.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_PHASE1_IMMEDIATE_WINS_20251010.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141392,7 +141392,7 @@
 
 ### 📄 ECRR_PHASE2_W2_CORRELATION_20251010.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_PHASE2_W2_CORRELATION_20251010.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_PHASE2_W2_CORRELATION_20251010.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141400,7 +141400,7 @@
 
 ### 📄 ECRR_PR_124_MERGE_20251011.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_PR_124_MERGE_20251011.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_PR_124_MERGE_20251011.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141408,7 +141408,7 @@
 
 ### 📄 ECRR_PR_REVIEW_MERGE_20251015.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_PR_REVIEW_MERGE_20251015.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_PR_REVIEW_MERGE_20251015.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141416,7 +141416,7 @@
 
 ### 📄 ECRR_PROCESSING_SUMMARY_20251016.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_PROCESSING_SUMMARY_20251016.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_PROCESSING_SUMMARY_20251016.md`
 - **Modified:** 16.10.25 10:23:24
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141424,7 +141424,7 @@
 
 ### 📄 ECRR_PROCESSING_SUMMARY_20251019.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_PROCESSING_SUMMARY_20251019.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_PROCESSING_SUMMARY_20251019.md`
 - **Modified:** 19.10.25 06:56:03
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141432,7 +141432,7 @@
 
 ### 📄 ECRR_PROCESSING_SUMMARY_LATEST.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_PROCESSING_SUMMARY_LATEST.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_PROCESSING_SUMMARY_LATEST.md`
 - **Modified:** 19.10.25 06:56:03
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141440,7 +141440,7 @@
 
 ### 📄 ECRR_READY_FOR_GATE_ASSESSMENT_20251013.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_READY_FOR_GATE_ASSESSMENT_20251013.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_READY_FOR_GATE_ASSESSMENT_20251013.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141448,7 +141448,7 @@
 
 ### 📄 ECRR_REPO_CLEANUP_COMPLETE_20251016.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_REPO_CLEANUP_COMPLETE_20251016.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_REPO_CLEANUP_COMPLETE_20251016.md`
 - **Modified:** 16.10.25 08:09:34
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141456,7 +141456,7 @@
 
 ### 📄 ECRR_RSI_BATCHSIZE_DISCOVERY_20251015_024619.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_RSI_BATCHSIZE_DISCOVERY_20251015_024619.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_RSI_BATCHSIZE_DISCOVERY_20251015_024619.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141464,7 +141464,7 @@
 
 ### 📄 ECRR_RSI_BATCHSIZE_DISCOVERY_20251015_024701.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_RSI_BATCHSIZE_DISCOVERY_20251015_024701.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_RSI_BATCHSIZE_DISCOVERY_20251015_024701.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141472,7 +141472,7 @@
 
 ### 📄 ECRR_RSI_BATCHSIZE_DISCOVERY_20251015_024805.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_RSI_BATCHSIZE_DISCOVERY_20251015_024805.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_RSI_BATCHSIZE_DISCOVERY_20251015_024805.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141480,7 +141480,7 @@
 
 ### 📄 ECRR_RSI_BATCHSIZE_DISCOVERY_20251015_024859.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_RSI_BATCHSIZE_DISCOVERY_20251015_024859.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_RSI_BATCHSIZE_DISCOVERY_20251015_024859.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141488,7 +141488,7 @@
 
 ### 📄 ECRR_RSI_BATCHSIZE_DISCOVERY_20251015_051840.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_RSI_BATCHSIZE_DISCOVERY_20251015_051840.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_RSI_BATCHSIZE_DISCOVERY_20251015_051840.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141496,7 +141496,7 @@
 
 ### 📄 ECRR_RSI_BATCHSIZE_DISCOVERY_20251015_051841.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_RSI_BATCHSIZE_DISCOVERY_20251015_051841.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_RSI_BATCHSIZE_DISCOVERY_20251015_051841.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141504,7 +141504,7 @@
 
 ### 📄 ECRR_RSI_BATCHSIZE_DISCOVERY_20251015_051843.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_RSI_BATCHSIZE_DISCOVERY_20251015_051843.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_RSI_BATCHSIZE_DISCOVERY_20251015_051843.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141512,7 +141512,7 @@
 
 ### 📄 ECRR_RSI_BATCHSIZE_DISCOVERY_20251015_052130.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_RSI_BATCHSIZE_DISCOVERY_20251015_052130.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_RSI_BATCHSIZE_DISCOVERY_20251015_052130.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141520,7 +141520,7 @@
 
 ### 📄 ECRR_RSI_BATCHSIZE_DISCOVERY_20251015_052200.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_RSI_BATCHSIZE_DISCOVERY_20251015_052200.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_RSI_BATCHSIZE_DISCOVERY_20251015_052200.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141528,7 +141528,7 @@
 
 ### 📄 ECRR_RSI_BATCHSIZE_DISCOVERY_20251015_052231.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_RSI_BATCHSIZE_DISCOVERY_20251015_052231.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_RSI_BATCHSIZE_DISCOVERY_20251015_052231.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141536,7 +141536,7 @@
 
 ### 📄 ECRR_RSI_BATCHSIZE_DISCOVERY_20251015.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_RSI_BATCHSIZE_DISCOVERY_20251015.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_RSI_BATCHSIZE_DISCOVERY_20251015.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141544,7 +141544,7 @@
 
 ### 📄 ECRR_RSI_BATCHSIZE_DISCOVERY_LATEST.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_RSI_BATCHSIZE_DISCOVERY_LATEST.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_RSI_BATCHSIZE_DISCOVERY_LATEST.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141552,7 +141552,7 @@
 
 ### 📄 ECRR_RSI_NIGHTLY_STATS_LATEST.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_RSI_NIGHTLY_STATS_LATEST.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_RSI_NIGHTLY_STATS_LATEST.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141560,7 +141560,7 @@
 
 ### 📄 ECRR_RSI_PRODUCTION_EVIDENCE_20251015.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_RSI_PRODUCTION_EVIDENCE_20251015.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_RSI_PRODUCTION_EVIDENCE_20251015.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141568,7 +141568,7 @@
 
 ### 📄 ECRR_RSI_VALIDATION_20251015.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_RSI_VALIDATION_20251015.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_RSI_VALIDATION_20251015.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141576,7 +141576,7 @@
 
 ### 📄 ECRR_RUN.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_RUN.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_RUN.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141584,7 +141584,7 @@
 
 ### 📄 ECRR_SECURITY_ARCHIVER_OPERATIONAL_20251015_063225.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_SECURITY_ARCHIVER_OPERATIONAL_20251015_063225.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_SECURITY_ARCHIVER_OPERATIONAL_20251015_063225.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141592,7 +141592,7 @@
 
 ### 📄 ECRR_SECURITY_ARCHIVER_VALIDATED_20251015_063400.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_SECURITY_ARCHIVER_VALIDATED_20251015_063400.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_SECURITY_ARCHIVER_VALIDATED_20251015_063400.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141600,7 +141600,7 @@
 
 ### 📄 ECRR_SECURITY_NOTIFICATIONS_DRYRUN_20251015_070607.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_SECURITY_NOTIFICATIONS_DRYRUN_20251015_070607.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_SECURITY_NOTIFICATIONS_DRYRUN_20251015_070607.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141608,7 +141608,7 @@
 
 ### 📄 ECRR_SESSION_CLOSEOUT_20251012_021200.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_SESSION_CLOSEOUT_20251012_021200.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_SESSION_CLOSEOUT_20251012_021200.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141616,7 +141616,7 @@
 
 ### 📄 ECRR_SESSION_COMPLETE_20251015_073535.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_SESSION_COMPLETE_20251015_073535.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_SESSION_COMPLETE_20251015_073535.md`
 - **Modified:** 16.10.25 10:19:29
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141624,7 +141624,7 @@
 
 ### 📄 ECRR_SESSION_CONSOLIDATED_20251011.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_SESSION_CONSOLIDATED_20251011.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_SESSION_CONSOLIDATED_20251011.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141632,7 +141632,7 @@
 
 ### 📄 ECRR_SOCM_MILESTONE_A_20251018.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_SOCM_MILESTONE_A_20251018.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_SOCM_MILESTONE_A_20251018.md`
 - **Modified:** 18.10.25 02:27:32
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141640,7 +141640,7 @@
 
 ### 📄 ECRR_SOCM_MILESTONE_B_20251018.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_SOCM_MILESTONE_B_20251018.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_SOCM_MILESTONE_B_20251018.md`
 - **Modified:** 18.10.25 02:48:08
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141648,7 +141648,7 @@
 
 ### 📄 ECRR_TIE_OFF_20251011.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_TIE_OFF_20251011.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_TIE_OFF_20251011.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141656,7 +141656,7 @@
 
 ### 📄 ECRR_VISU_PHASE2_20251016.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_VISU_PHASE2_20251016.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_VISU_PHASE2_20251016.md`
 - **Modified:** 16.10.25 10:45:17
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141664,7 +141664,7 @@
 
 ### 📄 ECRR_WORKFLOW_CONCURRENCY_REVIEW_20251011.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\ECRR_WORKFLOW_CONCURRENCY_REVIEW_20251011.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\ECRR_WORKFLOW_CONCURRENCY_REVIEW_20251011.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141672,7 +141672,7 @@
 
 ### 📄 OTEL_SYNTH_TEMPLATE.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\OTEL_SYNTH_TEMPLATE.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\OTEL_SYNTH_TEMPLATE.md`
 - **Modified:** 19.10.25 04:47:11
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141680,7 +141680,7 @@
 
 ### 📄 RSI_EVAL_LATEST.md
 
-- **Path:** `docs\ecrr\ECRR_REPORTS\RSI_EVAL_LATEST.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\RSI_EVAL_LATEST.md`
 - **Modified:** 16.10.25 04:42:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141696,7 +141696,7 @@
 
 ### 📄 compliance-1760689725130.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760689725130.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760689725130.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141704,7 +141704,7 @@
 
 ### 📄 compliance-1760690025133.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760690025133.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760690025133.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141712,7 +141712,7 @@
 
 ### 📄 compliance-1760690325138.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760690325138.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760690325138.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141720,7 +141720,7 @@
 
 ### 📄 compliance-1760690625150.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760690625150.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760690625150.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141728,7 +141728,7 @@
 
 ### 📄 compliance-1760690925154.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760690925154.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760690925154.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141736,7 +141736,7 @@
 
 ### 📄 compliance-1760691225162.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760691225162.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760691225162.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141744,7 +141744,7 @@
 
 ### 📄 compliance-1760691525168.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760691525168.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760691525168.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141752,7 +141752,7 @@
 
 ### 📄 compliance-1760691825175.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760691825175.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760691825175.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141760,7 +141760,7 @@
 
 ### 📄 compliance-1760692046715.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760692046715.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760692046715.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141768,7 +141768,7 @@
 
 ### 📄 compliance-1760692125185.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760692125185.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760692125185.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141776,7 +141776,7 @@
 
 ### 📄 compliance-1760692346725.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760692346725.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760692346725.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141784,7 +141784,7 @@
 
 ### 📄 compliance-1760692425193.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760692425193.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760692425193.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141792,7 +141792,7 @@
 
 ### 📄 compliance-1760692646727.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760692646727.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760692646727.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141800,7 +141800,7 @@
 
 ### 📄 compliance-1760692725199.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760692725199.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760692725199.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141808,7 +141808,7 @@
 
 ### 📄 compliance-1760692946730.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760692946730.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760692946730.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141816,7 +141816,7 @@
 
 ### 📄 compliance-1760693025210.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760693025210.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760693025210.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141824,7 +141824,7 @@
 
 ### 📄 compliance-1760693246730.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760693246730.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760693246730.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141832,7 +141832,7 @@
 
 ### 📄 compliance-1760693325223.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760693325223.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760693325223.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141840,7 +141840,7 @@
 
 ### 📄 compliance-1760693546732.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760693546732.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760693546732.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141848,7 +141848,7 @@
 
 ### 📄 compliance-1760693625232.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760693625232.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760693625232.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141856,7 +141856,7 @@
 
 ### 📄 compliance-1760693846738.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760693846738.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760693846738.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141864,7 +141864,7 @@
 
 ### 📄 compliance-1760693925238.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760693925238.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760693925238.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141872,7 +141872,7 @@
 
 ### 📄 compliance-1760694146739.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760694146739.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760694146739.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141880,7 +141880,7 @@
 
 ### 📄 compliance-1760694225241.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760694225241.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760694225241.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141888,7 +141888,7 @@
 
 ### 📄 compliance-1760694446744.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760694446744.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760694446744.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141896,7 +141896,7 @@
 
 ### 📄 compliance-1760694525255.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760694525255.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760694525255.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141904,7 +141904,7 @@
 
 ### 📄 compliance-1760694746756.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760694746756.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760694746756.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141912,7 +141912,7 @@
 
 ### 📄 compliance-1760694825257.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760694825257.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760694825257.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141920,7 +141920,7 @@
 
 ### 📄 compliance-1760695046769.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760695046769.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760695046769.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141928,7 +141928,7 @@
 
 ### 📄 compliance-1760695125274.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760695125274.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760695125274.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141936,7 +141936,7 @@
 
 ### 📄 compliance-1760695346769.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760695346769.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760695346769.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141944,7 +141944,7 @@
 
 ### 📄 compliance-1760695425280.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760695425280.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760695425280.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141952,7 +141952,7 @@
 
 ### 📄 compliance-1760695646773.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760695646773.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760695646773.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141960,7 +141960,7 @@
 
 ### 📄 compliance-1760695725287.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760695725287.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760695725287.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141968,7 +141968,7 @@
 
 ### 📄 compliance-1760695946785.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760695946785.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760695946785.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141976,7 +141976,7 @@
 
 ### 📄 compliance-1760696025298.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760696025298.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760696025298.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141984,7 +141984,7 @@
 
 ### 📄 compliance-1760696246797.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760696246797.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760696246797.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -141992,7 +141992,7 @@
 
 ### 📄 compliance-1760696325302.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760696325302.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760696325302.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -142000,7 +142000,7 @@
 
 ### 📄 compliance-1760696546806.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760696546806.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760696546806.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -142008,7 +142008,7 @@
 
 ### 📄 compliance-1760696625303.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760696625303.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760696625303.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -142016,7 +142016,7 @@
 
 ### 📄 compliance-1760697108755.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760697108755.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760697108755.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -142024,7 +142024,7 @@
 
 ### 📄 compliance-1760697408761.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760697408761.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760697408761.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -142032,7 +142032,7 @@
 
 ### 📄 compliance-1760697708777.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760697708777.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760697708777.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -142040,7 +142040,7 @@
 
 ### 📄 compliance-1760698008786.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760698008786.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760698008786.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -142048,7 +142048,7 @@
 
 ### 📄 compliance-1760698308794.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760698308794.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760698308794.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -142056,7 +142056,7 @@
 
 ### 📄 compliance-1760698608795.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760698608795.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760698608795.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -142064,7 +142064,7 @@
 
 ### 📄 compliance-1760698908805.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760698908805.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760698908805.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -142072,7 +142072,7 @@
 
 ### 📄 compliance-1760699208815.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760699208815.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760699208815.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -142080,7 +142080,7 @@
 
 ### 📄 compliance-1760699508815.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760699508815.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760699508815.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -142088,7 +142088,7 @@
 
 ### 📄 compliance-1760699808817.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760699808817.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760699808817.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -142096,7 +142096,7 @@
 
 ### 📄 compliance-1760700108819.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760700108819.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760700108819.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -142104,7 +142104,7 @@
 
 ### 📄 compliance-1760700408831.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760700408831.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760700408831.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -142112,7 +142112,7 @@
 
 ### 📄 compliance-1760700708844.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760700708844.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760700708844.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -142120,7 +142120,7 @@
 
 ### 📄 compliance-1760701008855.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760701008855.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760701008855.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -142128,7 +142128,7 @@
 
 ### 📄 compliance-1760701308858.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760701308858.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760701308858.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -142136,7 +142136,7 @@
 
 ### 📄 compliance-1760701608865.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760701608865.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760701608865.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -142144,7 +142144,7 @@
 
 ### 📄 compliance-1760701908879.md
 
-- **Path:** `docs\ECRR_REPORTS\compliance-1760701908879.md`
+- **Path:** `CHAR\ECRR\ECRR_REPORTS\compliance-1760701908879.md`
 - **Modified:** 17.10.25 14:12:06
 - **Triage:** 🔴 Pending
 - **Action:** _[keep / merge / archive]_
@@ -144188,3 +144188,4 @@
 ---
 
 *Maintained under BossCat governance — ECRR methodology*
+

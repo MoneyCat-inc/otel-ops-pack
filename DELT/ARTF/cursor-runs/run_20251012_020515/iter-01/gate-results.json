@@ -15,7 +15,7 @@
     "scripts/benchmark-process-all-ecrr-reports.ps1": "missing",
     "signoz.ts": "present",
     "docs/status/tests.json": "present",
-    "docs/ecrr/ECRR_REPORTS": "present",
+    "CHAR/ECRR/ECRR_REPORTS": "present",
     "docs/IONA_ERRORS.md": "present",
     ".github/workflows/bosscat-gate-verify.yml": "present",
     "index.html": "present",
@@ -25,3 +25,4 @@
     "docs/observability/snapshots": "present"
   }
 }
+

@@ -18,10 +18,11 @@
     "docs/observability/snapshots": "present",
     "docs/status/tests.json": "present",
     "docs/cheatsheets": "present",
-    "docs/ecrr/ECRR_REPORTS": "present",
+    "CHAR/ECRR/ECRR_REPORTS": "present",
     "scripts/benchmark-process-all-ecrr-reports.ps1": "present",
     "index.html": "present",
     "docs/status.html": "present",
     "queue-steward-verification.txt": "present"
   }
 }
+

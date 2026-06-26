@@ -77,7 +77,7 @@ Discipline > speed, because discipline *creates* speed. 🛡️
 
 **Evidence**:
 - ECRR definition: `ART_OF_ECRR.md:1-50`
-- Real ECRR reports: `docs/ecrr/ECRR_REPORTS/` (60+ examples)
+- Real ECRR reports: `CHAR/ECRR/ECRR_REPORTS/` (60+ examples)
 - Incident handling: `rollback_plan.md`
 
 **Why This Reply**:
@@ -408,7 +408,7 @@ For high-value questions, provide **specific examples** from repo:
 ```
 "Can I see a real ECRR report?"
 
-→ Link to docs/ecrr/ECRR_REPORTS/ECRR_GATE_READY_20251017.md
+→ Link to CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_READY_20251017.md
 → Show structure: Examine/Clean/Report/Role
 → Emphasize "public audit trail"
 ```
@@ -696,4 +696,5 @@ Transparency > being right. 🐾"
 ---
 
 🐾 **Day 3 Thread Pack Complete - Governance transparency established!** 🛡️
+
 

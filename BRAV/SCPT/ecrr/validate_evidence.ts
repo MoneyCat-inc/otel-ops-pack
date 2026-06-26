@@ -122,7 +122,7 @@ function main(): void {
   
   if (args.length === 0) {
     console.log('Usage: tsx scripts/ecrr/validate_evidence.ts <directory> [maxFiles]');
-    console.log('Example: tsx scripts/ecrr/validate_evidence.ts docs/ecrr/ECRR_REPORTS/ 10');
+    console.log('Example: tsx scripts/ecrr/validate_evidence.ts CHAR/ECRR/ECRR_REPORTS/ 10');
     process.exit(1);
   }
 
@@ -140,3 +140,4 @@ function main(): void {
 }
 
 main();
+
