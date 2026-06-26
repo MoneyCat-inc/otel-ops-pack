@@ -56,7 +56,7 @@ Write-Host "[4/4] Evidence summary..." -ForegroundColor White
 Write-Host "  Auto-instrumentation installed: YES" -ForegroundColor Green
 Write-Host "  Test app built: YES" -ForegroundColor Green
 Write-Host "  Test traffic generated: 10 incoming + 5 outbound" -ForegroundColor Green
-Write-Host "  OTLP endpoint configured: http://127.0.0.1:14317" -ForegroundColor Green
+Write-Host "  OTLP endpoint configured: http://127.0.0.1:4317" -ForegroundColor Green
 Write-Host ""
 
 Write-Host "========================================" -ForegroundColor Cyan

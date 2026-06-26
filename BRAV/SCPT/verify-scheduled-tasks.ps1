@@ -69,11 +69,11 @@ try {
 # Check OTLP endpoints
 Write-Host ""
 Write-Host "🔗 OTLP Endpoints:" -ForegroundColor Cyan
-$grpcTest = Test-NetConnection -ComputerName localhost -Port 14317 -WarningAction SilentlyContinue
-$httpTest = Test-NetConnection -ComputerName localhost -Port 14318 -WarningAction SilentlyContinue
+$grpcTest = Test-NetConnection -ComputerName localhost -Port 4317 -WarningAction SilentlyContinue
+$httpTest = Test-NetConnection -ComputerName localhost -Port 4318 -WarningAction SilentlyContinue
 
-Write-Host "   OTLP gRPC (14317): $(if($grpcTest.TcpTestSucceeded) {'✅ Accessible'} else {'❌ Unreachable'})" -ForegroundColor $(if($grpcTest.TcpTestSucceeded) {'Green'} else {'Red'})
-Write-Host "   OTLP HTTP (14318): $(if($httpTest.TcpTestSucceeded) {'✅ Accessible'} else {'❌ Unreachable'})" -ForegroundColor $(if($httpTest.TcpTestSucceeded) {'Green'} else {'Red'})
+Write-Host "   OTLP gRPC (4317): $(if($grpcTest.TcpTestSucceeded) {'✅ Accessible'} else {'❌ Unreachable'})" -ForegroundColor $(if($grpcTest.TcpTestSucceeded) {'Green'} else {'Red'})
+Write-Host "   OTLP HTTP (4318): $(if($httpTest.TcpTestSucceeded) {'✅ Accessible'} else {'❌ Unreachable'})" -ForegroundColor $(if($httpTest.TcpTestSucceeded) {'Green'} else {'Red'})
 
 # Test task execution (if tasks exist)
 if ($tasks) {

@@ -5,8 +5,8 @@
 param(
   [string]$ServiceName = "otelcol-contrib",
   [string]$AggregatorHost = "127.0.0.1",
-  [int]$GrpcPort = 14317,
-  [int]$HttpPort = 14318,
+  [int]$GrpcPort = 4317,
+  [int]$HttpPort = 4318,
   [string]$CanarySource = "VizCanary",
   [int]$WaitSeconds = 3
 )
@@ -69,7 +69,7 @@ if (-not ($grpcReachable -or $httpReachable)) {
   Write-Host ""
   Write-Host "  Troubleshooting:" -ForegroundColor Yellow
   Write-Host "  - Ensure Docker containers are running: docker ps" -ForegroundColor Gray
-  Write-Host "  - Check signoz-otel-collector exposes ports 14317/14318" -ForegroundColor Gray
+  Write-Host "  - Check signoz-otel-collector exposes ports 4317/4318" -ForegroundColor Gray
   Write-Host "  - Verify firewall rules allow localhost connections" -ForegroundColor Gray
   exit 1
 }

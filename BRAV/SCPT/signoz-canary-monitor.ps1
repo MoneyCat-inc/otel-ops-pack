@@ -98,25 +98,25 @@ if ($VerifySigNoz) {
     
     # Check SigNoz OTLP ports
     try {
-        $grpcTest = Test-NetConnection -ComputerName localhost -Port 14317 -WarningAction SilentlyContinue
+        $grpcTest = Test-NetConnection -ComputerName localhost -Port 4317 -WarningAction SilentlyContinue
         if ($grpcTest.TcpTestSucceeded) {
-            Write-Host "✓ SigNoz OTLP gRPC (14317): OPEN" -ForegroundColor Green
+            Write-Host "✓ SigNoz OTLP gRPC (4317): OPEN" -ForegroundColor Green
         } else {
-            Write-Host "✗ SigNoz OTLP gRPC (14317): CLOSED" -ForegroundColor Red
+            Write-Host "✗ SigNoz OTLP gRPC (4317): CLOSED" -ForegroundColor Red
         }
     } catch {
-        Write-Host "✗ SigNoz OTLP gRPC (14317): ERROR" -ForegroundColor Red
+        Write-Host "✗ SigNoz OTLP gRPC (4317): ERROR" -ForegroundColor Red
     }
     
     try {
-        $httpTest = Test-NetConnection -ComputerName localhost -Port 14318 -WarningAction SilentlyContinue
+        $httpTest = Test-NetConnection -ComputerName localhost -Port 4318 -WarningAction SilentlyContinue
         if ($httpTest.TcpTestSucceeded) {
-            Write-Host "✓ SigNoz OTLP HTTP (14318): OPEN" -ForegroundColor Green
+            Write-Host "✓ SigNoz OTLP HTTP (4318): OPEN" -ForegroundColor Green
         } else {
-            Write-Host "✗ SigNoz OTLP HTTP (14318): CLOSED" -ForegroundColor Red
+            Write-Host "✗ SigNoz OTLP HTTP (4318): CLOSED" -ForegroundColor Red
         }
     } catch {
-        Write-Host "✗ SigNoz OTLP HTTP (14318): ERROR" -ForegroundColor Red
+        Write-Host "✗ SigNoz OTLP HTTP (4318): ERROR" -ForegroundColor Red
     }
     
     # Check SigNoz health endpoint

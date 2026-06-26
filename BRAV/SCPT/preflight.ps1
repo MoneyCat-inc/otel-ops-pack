@@ -37,7 +37,7 @@
 param(
   [string]$ServiceName = "otelcol-contrib",
   [string]$OtlpHost = "127.0.0.1",
-  [int]$OtlpPort = 14318,  # Docker mapped port (14318->4318)
+  [int]$OtlpPort = 4318,
   [string]$VenvHint = "C:\otel\.venv"
 )
 
