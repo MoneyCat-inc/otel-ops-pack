@@ -18,7 +18,7 @@ from opentelemetry.sdk.resources import Resource
 
 def main():
     # Configure OTLP endpoint (default to local collector)
-    otlp_endpoint = os.getenv('OTEL_EXPORTER_OTLP_ENDPOINT', 'http://127.0.0.1:14318')
+    otlp_endpoint = os.getenv('OTEL_EXPORTER_OTLP_ENDPOINT', 'http://127.0.0.1:4318')
     
     print(f"[iona-boot] Initializing OTLP exporter...")
     print(f"[iona-boot] Endpoint: {otlp_endpoint}")

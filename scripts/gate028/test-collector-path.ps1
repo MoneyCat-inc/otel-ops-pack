@@ -66,7 +66,7 @@ $appPath = Join-Path $PSScriptRoot "..\..\dotnet-test-app\bin\Debug\net8.0\dotne
 Write-Host ""
 Write-Host "[LAUNCH] Starting service on port $Port..." -ForegroundColor Cyan
 Write-Host "   Service will export to COLLECTOR (5317)" -ForegroundColor Yellow
-Write-Host "   Collector will forward to SigNoz (14317)" -ForegroundColor Yellow
+Write-Host "   Collector will forward to SigNoz (4317)" -ForegroundColor Yellow
 Write-Host ""
 Write-Host "Press Ctrl+C to stop..." -ForegroundColor Gray
 Write-Host ""

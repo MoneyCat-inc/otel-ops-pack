@@ -51,6 +51,8 @@ jobs:
       - name: 🚀 Start Test App (Background)
         run: |
           $appPath = "dotnet-test-app\bin\Release\net8.0\dotnet-test-app.dll"
+          # Prevent GitHub Actions cleanup from killing the app between steps.
+          $env:RUNNER_TRACKING_ID = ''
           Start-Process -FilePath "dotnet" -ArgumentList "exec", $appPath -NoNewWindow
           
           # Wait for app to start
@@ -58,9 +60,11 @@ jobs:
           $retries = 0
           while ($retries -lt $maxRetries) {
             try {
-              $response = Invoke-RestMethod -Uri "http://localhost:5555/health" -TimeoutSec 2
-              Write-Host "✅ App started: $($response.status)"
-              break
+              $response = Invoke-WebRequest -Uri "http://127.0.0.1:5555/health" -UseBasicParsing -TimeoutSec 2
+              if ($response.StatusCode -eq 200) {
+                Write-Host "✅ App started: HTTP $($response.StatusCode)"
+                break
+              }
             } catch {
               $retries++
               Write-Host "Waiting for app to start... ($retries/$maxRetries)"
@@ -77,12 +81,28 @@ jobs:
       - name: 🔍 Synthetic Trace Injection (Observability Gate)
         run: |
           Write-Host "📡 Injecting synthetic trace to verify observability..."
+          try {
+            Invoke-WebRequest -Uri "http://127.0.0.1:5555/health" -UseBasicParsing -TimeoutSec 2 | Out-Null
+          } catch {
+            Write-Host "🔁 Test app not reachable; restarting for injection step..."
+            $env:RUNNER_TRACKING_ID = ''
+            $appPath = "dotnet-test-app\bin\Release\net8.0\dotnet-test-app.dll"
+            Start-Process -FilePath "dotnet" -ArgumentList "exec", $appPath -NoNewWindow
+            for ($i = 1; $i -le 10; $i++) {
+              try {
+                Invoke-WebRequest -Uri "http://127.0.0.1:5555/health" -UseBasicParsing -TimeoutSec 2 | Out-Null
+                break
+              } catch {
+                Start-Sleep -Seconds 2
+              }
+            }
+          }
           
           # Call each endpoint once to generate telemetry
           try {
-            Invoke-RestMethod -Uri "http://localhost:5555/" | Out-Null
-            Invoke-RestMethod -Uri "http://localhost:5555/health" | Out-Null
-            Invoke-RestMethod -Uri "http://localhost:5555/test" | Out-Null
+            Invoke-RestMethod -Uri "http://127.0.0.1:5555/" | Out-Null
+            Invoke-RestMethod -Uri "http://127.0.0.1:5555/health" | Out-Null
+            Invoke-RestMethod -Uri "http://127.0.0.1:5555/test" | Out-Null
             
             Write-Host "✅ Synthetic traces injected"
           } catch {
@@ -105,10 +125,27 @@ jobs:
         continue-on-error: true  # Capture exit code but don't fail yet
         run: |
           Write-Host "=== Gate #026 Track B: k6 Performance Gate ===" -ForegroundColor Cyan
+          try {
+            Invoke-WebRequest -Uri "http://127.0.0.1:5555/health" -UseBasicParsing -TimeoutSec 2 | Out-Null
+          } catch {
+            Write-Host "🔁 Test app not reachable; restarting for k6 step..." -ForegroundColor Yellow
+            $env:RUNNER_TRACKING_ID = ''
+            $appPath = "dotnet-test-app\bin\Release\net8.0\dotnet-test-app.dll"
+            Start-Process -FilePath "dotnet" -ArgumentList "exec", $appPath -NoNewWindow
+            for ($i = 1; $i -le 10; $i++) {
+              try {
+                Invoke-WebRequest -Uri "http://127.0.0.1:5555/health" -UseBasicParsing -TimeoutSec 2 | Out-Null
+                break
+              } catch {
+                Start-Sleep -Seconds 2
+              }
+            }
+          }
+          New-Item -ItemType Directory -Force -Path artifacts | Out-Null
           
           k6 run scripts/gate026/k6-performance-gate.js `
             --out json=artifacts/k6-results.json `
-            --env TARGET_URL=http://localhost:5555
+            --env TARGET_URL=http://127.0.0.1:5555
           
           $exitCode = $LASTEXITCODE
           echo "k6_exit_code=$exitCode" >> $env:GITHUB_OUTPUT

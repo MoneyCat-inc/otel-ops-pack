@@ -300,6 +300,34 @@ pip install --upgrade parent-package
 3. If risk to CI secrets: Prioritize as High severity
 4. Update using standard process
 
+### Scenario 5: Serial Lockfile Conflicts Across Dependabot PRs
+
+**Problem**: Several Dependabot PRs touch `package.json` and `pnpm-lock.yaml`. Merging them one-by-one can make later PR branches dirty or conflicting even when each PR was green before the first merge.
+
+**Solution**:
+1. Merge the green, non-conflicting PRs first through the normal PR gate.
+2. If the remaining PRs conflict only in dependency manifests or lockfiles, stop serial merges.
+3. Create one combined dependency update from fresh `origin/main`.
+4. Apply each remaining intended bump explicitly:
+   - Runtime npm dependency: `pnpm add -w <package>@<range> --lockfile-only`
+   - Dev npm dependency: `pnpm add -Dw <package>@<range> --lockfile-only`
+   - Python requirement: edit the scoped `requirements*.txt` line and keep already-merged bumps.
+5. Verify `package.json`, `requirements*.txt`, and `pnpm-lock.yaml` have no conflict markers.
+6. Commit the combined update and close the superseded Dependabot PRs with a comment that points to the combined commit.
+7. Record the closeout in `CHAR/ECRR/ECRR_REPORTS/`.
+
+**Reference command sketch**:
+
+```powershell
+git fetch origin main
+git switch -c chore/deps-combined origin/main
+pnpm add -w '@opentelemetry/instrumentation-fetch@^0.219.0' --lockfile-only
+pnpm add -Dw '@opentelemetry/semantic-conventions@^1.41.1' '@jest/globals@^30.4.1' --lockfile-only
+git diff --check
+git add package.json pnpm-lock.yaml requirements*.txt
+git commit -m "chore(deps): apply remaining Dependabot updates"
+```
+
 ---
 
 ## Dependabot PR Review Checklist

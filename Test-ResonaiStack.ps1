@@ -2,7 +2,7 @@ function Test-ResonaiStack {
   param(
     [string]$ResonaiUrl = "http://localhost:3003",
     [string]$SigNozUrl  = "http://localhost:8080",
-    [string]$OtlpHttp   = "http://localhost:14318"
+    [string]$OtlpHttp   = "http://localhost:4318"
   )
 
   Write-Host "== OTel Collector presence ==" -ForegroundColor Cyan
@@ -18,7 +18,7 @@ function Test-ResonaiStack {
   }
 
   Write-Host "`n== Ports check ==" -ForegroundColor Cyan
-  $ports = @(14317,14318,3003,8080)
+  $ports = @(4317,4318,3003,8080)
   foreach ($p in $ports) {
     $ok = Test-NetConnection -ComputerName "localhost" -Port $p -WarningAction SilentlyContinue
     $status = if($ok.TcpTestSucceeded){"LISTENING/OK"}else{"closed"}
@@ -62,7 +62,7 @@ function Test-ResonaiStack {
   @(
     "• In SigNoz, search logs for service.name = resonai-local",
     "• In Resonai, trigger a quick /try mic session and watch the pitch HUD",
-    "• If 14317/14318 are closed, ensure the collector is running with the expected config"
+    "• If 4317/4318 are closed, ensure the collector is running with the expected config"
   ) | ForEach-Object { Write-Host $_ -ForegroundColor White }
 }
 

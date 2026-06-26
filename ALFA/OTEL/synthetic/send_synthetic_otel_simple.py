@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Synthetic OTLP log sender (local, deterministic).
-- Sends logs to OTLP HTTP (default :14318) or gRPC (:14317)
+- Sends logs to OTLP HTTP (default :4318) or gRPC (:4317)
 - Prints a one-line JSON summary for each run (label/run/sent/rate)
 - Use fixed window to compute logs/sec locally; SigNoz will record visibility.
 """
@@ -21,7 +21,7 @@ def build_exporter(protocol: str, endpoint: str):
             from opentelemetry.exporter.otlp.proto.grpc._log_exporter import OTLPLogExporter
         except ImportError:
             from opentelemetry.exporter.otlp.proto.grpc.log_exporter import OTLPLogExporter
-        # endpoint example: http://localhost:14317
+        # endpoint example: http://localhost:4317
         return OTLPLogExporter(endpoint=endpoint)
     else:
         # http/protobuf exporter
@@ -29,7 +29,7 @@ def build_exporter(protocol: str, endpoint: str):
             from opentelemetry.exporter.otlp.proto.http._log_exporter import OTLPLogExporter
         except ImportError:
             from opentelemetry.exporter.otlp.proto.http.log_exporter import OTLPLogExporter
-        # endpoint example: http://localhost:14318/v1/logs
+        # endpoint example: http://localhost:4318/v1/logs
         return OTLPLogExporter(endpoint=endpoint)
 
 def parse_args():
@@ -50,9 +50,9 @@ def main():
 
     # Endpoint defaults
     if args.protocol == "http":
-        endpoint = args.endpoint or "http://localhost:14318/v1/logs"
+        endpoint = args.endpoint or "http://localhost:4318/v1/logs"
     else:
-        endpoint = args.endpoint or "http://localhost:14317"
+        endpoint = args.endpoint or "http://localhost:4317"
 
     # OTel setup
     resource = Resource.create({

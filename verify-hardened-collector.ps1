@@ -73,16 +73,16 @@ try {
 # 5. Test SigNoz connectivity
 Write-Host "`n5. Testing SigNoz connectivity..." -ForegroundColor Yellow
 try {
-    $signozTest = Test-NetConnection -ComputerName localhost -Port 14317 -WarningAction SilentlyContinue
+    $signozTest = Test-NetConnection -ComputerName localhost -Port 4317 -WarningAction SilentlyContinue
     if ($signozTest.TcpTestSucceeded) {
-        Write-Host "✓ SigNoz OTLP port 14317: OPEN" -ForegroundColor Green
+        Write-Host "✓ SigNoz OTLP port 4317: OPEN" -ForegroundColor Green
         $signozOpen = $true
     } else {
-        Write-Host "✗ SigNoz OTLP port 14317: CLOSED" -ForegroundColor Red
+        Write-Host "✗ SigNoz OTLP port 4317: CLOSED" -ForegroundColor Red
         $signozOpen = $false
     }
 } catch {
-    Write-Host "✗ SigNoz OTLP port 14317: ERROR" -ForegroundColor Red
+    Write-Host "✗ SigNoz OTLP port 4317: ERROR" -ForegroundColor Red
     $signozOpen = $false
 }
 
@@ -93,7 +93,7 @@ Write-Host "Service Status: $(if($serviceRunning){'✓ RUNNING'}else{'✗ STOPPE
 Write-Host "gRPC Port 5317: $(if($grpcOpen){'✓ OPEN'}else{'✗ CLOSED'})" -ForegroundColor $(if($grpcOpen){'Green'}else{'Red'})
 Write-Host "HTTP Port 5318: $(if($httpOpen){'✓ OPEN'}else{'✗ CLOSED'})" -ForegroundColor $(if($httpOpen){'Green'}else{'Red'})
 Write-Host "Health Endpoint: $(if($healthOk){'✓ AVAILABLE'}else{'✗ UNAVAILABLE'})" -ForegroundColor $(if($healthOk){'Green'}else{'Red'})
-Write-Host "SigNoz Port 14317: $(if($signozOpen){'✓ OPEN'}else{'✗ CLOSED'})" -ForegroundColor $(if($signozOpen){'Green'}else{'Red'})
+Write-Host "SigNoz Port 4317: $(if($signozOpen){'✓ OPEN'}else{'✗ CLOSED'})" -ForegroundColor $(if($signozOpen){'Green'}else{'Red'})
 
 # 7. Next steps
 Write-Host "`n=== NEXT STEPS ===" -ForegroundColor Cyan
@@ -121,4 +121,4 @@ Write-Host "✓ Larger queue (50k items, 8 consumers)" -ForegroundColor Green
 Write-Host "✓ GZIP compression enabled" -ForegroundColor Green
 Write-Host "✓ Extended timeout (30s)" -ForegroundColor Green
 Write-Host "✓ Resource enrichment (host.name, service.version)" -ForegroundColor Green
-Write-Host "✓ Proper SigNoz endpoint (http://localhost:14317)" -ForegroundColor Green
+Write-Host "✓ Proper SigNoz endpoint (http://localhost:4317)" -ForegroundColor Green

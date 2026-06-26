@@ -37,7 +37,7 @@ import sys
 service_name = os.getenv("SERVICE_NAME", "synthetic-windows-check")
 
 # Accept base or full path; normalize to full /v1/traces
-raw = os.getenv("OTEL_EXPORTER_OTLP_TRACES_ENDPOINT") or os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT") or "http://127.0.0.1:14318"
+raw = os.getenv("OTEL_EXPORTER_OTLP_TRACES_ENDPOINT") or os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT") or "http://127.0.0.1:4318"
 if not raw.endswith("/v1/traces"):
     endpoint = raw.rstrip("/") + "/v1/traces"
 else:

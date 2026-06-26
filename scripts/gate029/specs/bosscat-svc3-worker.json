@@ -5,6 +5,6 @@
   "healthUrl": "http://localhost:5557/",
   "otelServiceName": "bosscat-svc3-worker",
   "useCollector": false,
-  "description": "Worker service exporting direct to SigNoz (14317)"
+  "description": "Worker service exporting direct to SigNoz (4317)"
 }
 
