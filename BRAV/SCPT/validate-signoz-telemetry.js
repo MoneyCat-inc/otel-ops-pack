@@ -12,7 +12,7 @@ const https = require('https');
 // Configuration
 const CONFIG = {
   signozUrl: 'http://localhost:8080',
-  otelCollectorUrl: 'http://localhost:14318',
+  otelCollectorUrl: 'http://localhost:4318',
   validationDuration: 60000, // 60 seconds
   logInterval: 1000, // 1 second
   metricInterval: 2000, // 2 seconds

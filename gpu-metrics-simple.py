@@ -23,7 +23,7 @@ except ImportError as e:
     exit(1)
 
 class SimpleGPUMetricsEmitter:
-    def __init__(self, otlp_endpoint="http://localhost:14317", service_name="gpu-monitor"):
+    def __init__(self, otlp_endpoint="http://localhost:4317", service_name="gpu-monitor"):
         self.otlp_endpoint = otlp_endpoint
         self.service_name = service_name
         
@@ -289,8 +289,8 @@ def main():
     import argparse
     
     parser = argparse.ArgumentParser(description="Simple GPU Metrics Emitter for SigNoz")
-    parser.add_argument("--endpoint", default="http://localhost:14317", 
-                       help="OTLP endpoint (default: http://localhost:14317)")
+    parser.add_argument("--endpoint", default="http://localhost:4317",
+                       help="OTLP endpoint (default: http://localhost:4317)")
     parser.add_argument("--duration", type=int, default=300,
                        help="Duration in seconds (default: 300)")
     parser.add_argument("--interval", type=int, default=15,

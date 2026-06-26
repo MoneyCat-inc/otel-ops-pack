@@ -121,7 +121,7 @@ if ($healthy) {
     Write-Host "   1. Verify service using collector endpoint: OTEL_EXPORTER_OTLP_ENDPOINT=http://127.0.0.1:5317" -ForegroundColor White
     Write-Host "   2. Check collector config: C:\otel\config.yaml (traces pipeline)" -ForegroundColor White
     Write-Host "   3. Restart collector: Restart-Service otelcol-contrib" -ForegroundColor White
-    Write-Host "   4. Verify SigNoz endpoint: http://localhost:14317" -ForegroundColor White
+    Write-Host "   4. Verify SigNoz endpoint: http://localhost:4317" -ForegroundColor White
     
     exit 10  # AMBER
 }

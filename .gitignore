@@ -129,3 +129,10 @@ artifacts/ecrr-compliance-*
 artifacts/ecrr-consolidation-plan.json
 artifacts/ecrr-processing-complete-analysis.md
 artifacts/quick-monitor-*.json
+# Local dependency installs and generated smoke reports
+node_modules/
+**/node_modules/
+artifacts/hub-smoke-*.json
+artifacts/monitoring-report-*.json
+artifacts/canary-ecrr-report.txt
+

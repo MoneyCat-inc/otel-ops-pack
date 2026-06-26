@@ -12,7 +12,7 @@ on:
       otlp_http:
         description: 'OTLP HTTP endpoint for synthetic trace'
         required: false
-        default: 'http://localhost:14318/v1/traces'
+        default: 'http://localhost:4318/v1/traces'
 
 permissions:
   contents: read

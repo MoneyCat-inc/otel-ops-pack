@@ -16,7 +16,7 @@ const { OTLPTraceExporter } = require("@opentelemetry/exporter-trace-otlp-http")
 const { resourceFromAttributes } = require("@opentelemetry/resources");
 
 // Configuration
-const endpoint = (process.env.OTEL_EXPORTER_OTLP_ENDPOINT || "http://127.0.0.1:14318").replace(/\/$/, "");
+const endpoint = (process.env.OTEL_EXPORTER_OTLP_ENDPOINT || "http://127.0.0.1:4318").replace(/\/$/, "");
 const url = `${endpoint}/v1/traces`;
 
 const sdk = new NodeSDK({

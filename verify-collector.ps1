@@ -78,33 +78,33 @@ try {
 # 5. Test SigNoz connectivity
 Write-Host "`n5. Testing SigNoz connectivity..." -ForegroundColor Yellow
 
-# SigNoz gRPC (14317)
+# SigNoz gRPC (4317)
 try {
-    $signozGrpcTest = Test-NetConnection -ComputerName localhost -Port 14317 -WarningAction SilentlyContinue
+    $signozGrpcTest = Test-NetConnection -ComputerName localhost -Port 4317 -WarningAction SilentlyContinue
     if ($signozGrpcTest.TcpTestSucceeded) {
-        Write-Host "✓ SigNoz OTLP gRPC port 14317: OPEN" -ForegroundColor Green
+        Write-Host "✓ SigNoz OTLP gRPC port 4317: OPEN" -ForegroundColor Green
         $signozGrpcOpen = $true
     } else {
-        Write-Host "✗ SigNoz OTLP gRPC port 14317: CLOSED" -ForegroundColor Red
+        Write-Host "✗ SigNoz OTLP gRPC port 4317: CLOSED" -ForegroundColor Red
         $signozGrpcOpen = $false
     }
 } catch {
-    Write-Host "✗ SigNoz OTLP gRPC port 14317: ERROR" -ForegroundColor Red
+    Write-Host "✗ SigNoz OTLP gRPC port 4317: ERROR" -ForegroundColor Red
     $signozGrpcOpen = $false
 }
 
-# SigNoz HTTP (14318)
+# SigNoz HTTP (4318)
 try {
-    $signozHttpTest = Test-NetConnection -ComputerName localhost -Port 14318 -WarningAction SilentlyContinue
+    $signozHttpTest = Test-NetConnection -ComputerName localhost -Port 4318 -WarningAction SilentlyContinue
     if ($signozHttpTest.TcpTestSucceeded) {
-        Write-Host "✓ SigNoz OTLP HTTP port 14318: OPEN" -ForegroundColor Green
+        Write-Host "✓ SigNoz OTLP HTTP port 4318: OPEN" -ForegroundColor Green
         $signozHttpOpen = $true
     } else {
-        Write-Host "✗ SigNoz OTLP HTTP port 14318: CLOSED" -ForegroundColor Red
+        Write-Host "✗ SigNoz OTLP HTTP port 4318: CLOSED" -ForegroundColor Red
         $signozHttpOpen = $false
     }
 } catch {
-    Write-Host "✗ SigNoz OTLP HTTP port 14318: ERROR" -ForegroundColor Red
+    Write-Host "✗ SigNoz OTLP HTTP port 4318: ERROR" -ForegroundColor Red
     $signozHttpOpen = $false
 }
 # 6. Summary
@@ -114,8 +114,8 @@ Write-Host "Service Status: $(if($serviceRunning){'✓ RUNNING'}else{'✗ STOPPE
 Write-Host "Health Endpoint: $(if($healthOk){'✓ AVAILABLE'}else{'✗ UNAVAILABLE'})" -ForegroundColor $(if($healthOk){'Green'}else{'Red'})
 Write-Host "gRPC Port 5317: $(if($grpcOpen){'✓ OPEN'}else{'✗ CLOSED'})" -ForegroundColor $(if($grpcOpen){'Green'}else{'Red'})
 Write-Host "HTTP Port 5318: $(if($httpOpen){'✓ OPEN'}else{'✗ CLOSED'})" -ForegroundColor $(if($httpOpen){'Green'}else{'Red'})
-Write-Host "SigNoz gRPC Port 14317: $(if($signozGrpcOpen){'✓ OPEN'}else{'✗ CLOSED'})" -ForegroundColor $(if($signozGrpcOpen){'Green'}else{'Red'})
-Write-Host "SigNoz HTTP Port 14318: $(if($signozHttpOpen){'✓ OPEN'}else{'✗ CLOSED'})" -ForegroundColor $(if($signozHttpOpen){'Green'}else{'Red'})
+Write-Host "SigNoz gRPC Port 4317: $(if($signozGrpcOpen){'✓ OPEN'}else{'✗ CLOSED'})" -ForegroundColor $(if($signozGrpcOpen){'Green'}else{'Red'})
+Write-Host "SigNoz HTTP Port 4318: $(if($signozHttpOpen){'✓ OPEN'}else{'✗ CLOSED'})" -ForegroundColor $(if($signozHttpOpen){'Green'}else{'Red'})
 
 # 7. Hardening features applied
 Write-Host "`n=== HARDENING FEATURES APPLIED ===" -ForegroundColor Green
@@ -125,7 +125,7 @@ Write-Host "✓ Bounded send queue (2048 items, 8 consumers)" -ForegroundColor G
 Write-Host "✓ Sensitive header redaction active" -ForegroundColor Green
 Write-Host "✓ Windows event noise filters (IDs 6005/6006/7036)" -ForegroundColor Green
 Write-Host "✓ Resource defaults (deployment.env/service.name)" -ForegroundColor Green
-Write-Host "✓ SigNoz OTLP endpoints (http://localhost:14317 gRPC, http://localhost:14318 HTTP)" -ForegroundColor Green
+Write-Host "✓ SigNoz OTLP endpoints (http://localhost:4317 gRPC, http://localhost:4318 HTTP)" -ForegroundColor Green
 
 # 8. Next steps
 Write-Host "`n=== NEXT STEPS ===" -ForegroundColor Cyan
@@ -138,7 +138,7 @@ if (-not $serviceRunning) {
 if (-not ($signozGrpcOpen -and $signozHttpOpen)) {
     Write-Host "2. Ensure SigNoz is running:" -ForegroundColor Yellow
     Write-Host "   docker ps | findstr signoz" -ForegroundColor White
-    Write-Host "   # Expect signoz-otel-collector to expose 14317/14318" -ForegroundColor Gray
+    Write-Host "   # Expect signoz-otel-collector to expose 4317/4318" -ForegroundColor Gray
 }
 
 Write-Host "`n3. Test log ingestion:" -ForegroundColor Yellow
