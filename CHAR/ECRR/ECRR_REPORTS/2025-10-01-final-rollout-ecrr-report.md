@@ -73,7 +73,7 @@ All systems are operational, tested, and ready for production deployment.
 - `docs/SIGNOZ_QUERY_SYNTAX_FIX.md` - Query syntax reference
 - `docs/SIGNOZ_NO_DATA_TROUBLESHOOTING.md` - Troubleshooting guide
 - `docs/SIGNOZ_NO_DATA_SOLUTION.md` - Solution guide
-- `docs/ECRR_REPORTS/` - Complete ECRR documentation
+- `CHAR/ECRR/ECRR_REPORTS/` - Complete ECRR documentation
 
 ### 4. Artifacts (Generated and Verified)
 - `artifacts/canary-pattern-results.json` - Pattern analysis results
@@ -160,7 +160,7 @@ All systems are operational, tested, and ready for production deployment.
 
 ### Files Ready for Commit
 ```
-docs/ECRR_REPORTS/2025-10-01-*.md (Complete ECRR documentation)
+CHAR/ECRR/ECRR_REPORTS/2025-10-01-*.md (Complete ECRR documentation)
 scripts/*.ps1 (All operational scripts)
 docs/SIGNOZ_*.md (Complete SigNoz guides)
 signoz-*-alert.json (Alert configurations)
@@ -265,6 +265,7 @@ The implementation exceeds requirements with enhanced features, comprehensive do
 - ✅ Clean: Remediation steps executed with guardrail alignment.
 - ✅ Report: Artifacts exported to disk and cross-referenced in this report.
 - ✅ Role: Actor declaration recorded in this addendum.
+
 
 
 

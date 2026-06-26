@@ -72,7 +72,7 @@
 - **Remediation Script**: `scripts/agent/remediation.ps1`
 - **Alert Templates**: `config/signoz-*-alert.json`
 - **Deployment Guides**: `docs/PRODUCTION_*.md`
-- **ECRR Compliance**: `docs/ECRR_REPORTS/2025-10-02-ecrr-rollout-merge-complete.md`
+- **ECRR Compliance**: `CHAR/ECRR/ECRR_REPORTS/2025-10-02-ecrr-rollout-merge-complete.md`
 
 ### **System Validation Results**
 - **Health Check Parsing**: Fixed Substring errors in remediation script
@@ -122,3 +122,4 @@
 **Production Marker**: ✅ **PRODUCTION-READY**  
 **Rollout Status**: ✅ **MERGED AND DEPLOYED**  
 **System Status**: ✅ **OPERATIONAL**
+

@@ -52,7 +52,7 @@ foreach ($Port in $OtlpPorts) {
 }
 
 # Check SigNoz Ports
-$SigNozPorts = @(14317, 14318)
+$SigNozPorts = @(4317, 4318)
 foreach ($Port in $SigNozPorts) {
     try {
         $Connection = Test-NetConnection -ComputerName localhost -Port $Port -InformationLevel Quiet

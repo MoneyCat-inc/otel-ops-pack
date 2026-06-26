@@ -130,7 +130,7 @@
         "ecrr_methodology": {
           "status": "PASS",
           "reports_total": 104,
-          "gate_reports": "104 gate-related reports in docs/ecrr/ECRR_REPORTS",
+          "gate_reports": "104 gate-related reports in CHAR/ECRR/ECRR_REPORTS",
           "latest": "ECRR_GATE_008_READY_20251022.md (corrected)",
           "remediation_report": "docs/gate/2025-10/GATE_008_BLOCKED_STATUS.md"
         },
@@ -268,7 +268,7 @@
   ],
   "evidence_package": {
     "gate_verification_json": "DELT/ARTF/gate-verification-results-20251022-remediated.json",
-    "ecrr_report": "docs/ecrr/ECRR_REPORTS/ECRR_GATE_008_READY_20251022.md (to be updated)",
+    "ecrr_report": "CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_008_READY_20251022.md (to be updated)",
     "gate_status_dashboard": "docs/GATE_STATUS_DASHBOARD.md (corrected)",
     "gate_blocked_status": "docs/gate/2025-10/GATE_008_BLOCKED_STATUS.md (remediation log)",
     "iona_error_ledger": "docs/IONA_ERRORS.md",
@@ -288,4 +288,5 @@
     "attestation": "Gate #008 READY: Windows Collector running, metrics corrected (7 containers, 51 HTML), trace ingestion confirmed (30 canary spans in ClickHouse v3, traceID 79108560b40440d3b40d5f4d51e408d5 at 2025-10-23 09:07:11). All gate checks PASS."
   }
 }
+
 

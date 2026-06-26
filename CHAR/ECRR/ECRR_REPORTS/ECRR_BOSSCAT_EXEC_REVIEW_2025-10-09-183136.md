@@ -414,7 +414,7 @@ Get-Content .agent/agent_queue.json | ConvertFrom-Json | Select-Object -ExpandPr
 Get-ChildItem .agent/task_queue/pending/*.json | Measure-Object
 
 # Reproduce ECRR inventory
-Get-ChildItem CHAR/DOCS/docs/ECRR_REPORTS -File -Recurse | Measure-Object
+Get-ChildItem CHAR/DOCS/CHAR/ECRR/ECRR_REPORTS -File -Recurse | Measure-Object
 ```
 
 ### **Approval Status**
@@ -631,4 +631,5 @@ Test-Path .agent/queue.db
 *"Evidence captured. Compliance maintained. Assessment complete. Gate passed. Ready for next action."*
 
 **END OF ECRR REPORT**
+
 

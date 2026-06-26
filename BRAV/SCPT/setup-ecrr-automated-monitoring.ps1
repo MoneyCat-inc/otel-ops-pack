@@ -129,11 +129,11 @@ on:
   push:
     branches: [ main, develop ]
     paths:
-      - 'docs/ECRR_REPORTS/**/*.md'
+      - 'CHAR/ECRR/ECRR_REPORTS/**/*.md'
   pull_request:
     branches: [ main, develop ]
     paths:
-      - 'docs/ECRR_REPORTS/**/*.md'
+      - 'CHAR/ECRR/ECRR_REPORTS/**/*.md'
   schedule:
     # Run daily at 2 AM UTC
     - cron: '0 2 * * *'
@@ -198,7 +198,7 @@ trigger:
       - develop
   paths:
     include:
-      - docs/ECRR_REPORTS/**/*.md
+      - CHAR/ECRR/ECRR_REPORTS/**/*.md
 
 schedules:
 - cron: "0 2 * * *"
@@ -304,3 +304,4 @@ Write-Host "  CI Summary: artifacts/ecrr-ci-summary.json" -ForegroundColor Gray
 Write-Host ""
 Write-Host "🎉 ECRR Automated Monitoring Setup Complete!" -ForegroundColor Green
 Write-Host "🚀 Your repository now has automated ECRR compliance monitoring!" -ForegroundColor Green
+

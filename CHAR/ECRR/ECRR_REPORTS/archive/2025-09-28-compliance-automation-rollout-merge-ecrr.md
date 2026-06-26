@@ -52,7 +52,7 @@ The ECRR compliance monitoring automation system has been successfully rolled ou
 ## 📝 **3. Report**
 
 ### Artifacts Created
-- **Verification Report**: `docs/ECRR_REPORTS/2025-09-28-compliance-alert-verification.md`
+- **Verification Report**: `CHAR/ECRR/ECRR_REPORTS/2025-09-28-compliance-alert-verification.md`
 - **Dashboard Configuration**: `artifacts/signoz-ecrr-compliance-dashboard.json`
 - **Alert Configuration**: `alerts/ecrr-compliance-threshold.json`
 - **Webhook Configuration**: `docs/ECRR_WEBHOOK_CONFIGURATION.md`
@@ -170,4 +170,5 @@ The ECRR compliance monitoring automation system has been successfully rolled ou
 ✅ **ROLLOUT MERGE COMPLETE** - The ECRR compliance monitoring automation system has been successfully rolled out and merged into production. All components are operational, verified, and documented. The system provides real-time compliance monitoring with automated alerting and comprehensive observability through SigNoz.
 
 **System Status**: 🟢 **FULLY OPERATIONAL**
+
 

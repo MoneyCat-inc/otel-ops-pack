@@ -30,7 +30,7 @@
 ### Task 2: Address 3 IONA-LOW Incidents ✅
 **Status:** COMPLETE  
 **Actions:**
-- Created ECRR report: `docs/ecrr/ECRR_REPORTS/ECRR_IONA_LOW_REMEDIATION_20251022.md`
+- Created ECRR report: `CHAR/ECRR/ECRR_REPORTS/ECRR_IONA_LOW_REMEDIATION_20251022.md`
 - Updated IONA_ERRORS.md with resolution status
 - **Commit:** 4e64ba06f
 
@@ -162,7 +162,7 @@ Total Commits Pushed: 16 (Gate #008 remediation + approval + post-approval)
 2. `scripts/monitor-bluesky-metrics.ps1` - Bluesky metrics guide
 
 ### ECRR Reports (1 new file)
-1. `docs/ecrr/ECRR_REPORTS/ECRR_IONA_LOW_REMEDIATION_20251022.md`
+1. `CHAR/ECRR/ECRR_REPORTS/ECRR_IONA_LOW_REMEDIATION_20251022.md`
 
 ### Updates (2 files)
 1. `docs/IONA_ERRORS.md` - Incidents marked resolved
@@ -216,4 +216,5 @@ _All BossCat OEM conditions met. Gate #007 archived. IONA incidents addressed. M
 ---
 
 **End of Post-Approval Summary**
+
 

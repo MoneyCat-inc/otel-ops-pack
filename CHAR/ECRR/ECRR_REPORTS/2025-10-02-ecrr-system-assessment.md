@@ -46,7 +46,7 @@
 ## 📝 3. Report
 
 ### Artifacts Generated
-- **ECRR Report**: `docs/ECRR_REPORTS/2025-10-02-ecrr-system-assessment.md`
+- **ECRR Report**: `CHAR/ECRR/ECRR_REPORTS/2025-10-02-ecrr-system-assessment.md`
 - **Canary Test Results**: Windows Event Log and file log entries created
 - **Verification Output**: Pipeline and integration test results captured
 
@@ -106,6 +106,7 @@
 - ✅ Clean: Remediation steps executed with guardrail alignment.
 - ✅ Report: Artifacts exported to disk and cross-referenced in this report.
 - ✅ Role: Actor declaration recorded in this addendum.
+
 
 
 

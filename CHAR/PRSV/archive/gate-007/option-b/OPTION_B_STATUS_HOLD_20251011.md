@@ -221,7 +221,7 @@ Status: Production ready with monitoring
 ### PR-Merge Gate (Separate Lane)
 ✅ **READY** - All 7 PRs merged successfully  
 ✅ Evidence: `DELT/ARTF/gate-verification-results.json`  
-✅ ECRR Report: `docs/ecrr/ECRR_REPORTS/ECRR_PR_MERGE_20251010.md`
+✅ ECRR Report: `CHAR/ECRR/ECRR_REPORTS/ECRR_PR_MERGE_20251010.md`
 
 ### Option B Gate
 ⚠️ **HOLD** - Windows collector service required  
@@ -260,4 +260,5 @@ pnpm otel:optionB
 **Timeline Estimate:** 2-3 minutes for service start + test execution
 
 **I'm ready to verify immediately upon completion.**
+
 

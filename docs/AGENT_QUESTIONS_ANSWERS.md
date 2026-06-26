@@ -183,7 +183,7 @@ const CONFIG = {
 3. Agent applies fix
 4. Agent generates ECRR report documenting pattern
 5. Pattern added to `behaviorData.failurePatterns[]`
-6. Pattern documented in `docs/ecrr/ECRR_REPORTS/`
+6. Pattern documented in `CHAR/ECRR/ECRR_REPORTS/`
 
 **Path 2: Automatic Detection (Future)**
 ```471:492:BRAV/SCPT/agent/background-agent-orchestrator.ts
@@ -213,7 +213,7 @@ const CONFIG = {
 
 **Pattern Storage:**
 - **Runtime:** `behaviorData` Map (in-memory)
-- **Persistent:** ECRR reports (`docs/ecrr/ECRR_REPORTS/`)
+- **Persistent:** ECRR reports (`CHAR/ECRR/ECRR_REPORTS/`)
 - **Index:** `CHAR/DOCS/docs/patterns/PATTERN_INDEX.md`
 
 ---
@@ -222,7 +222,7 @@ const CONFIG = {
 
 **Answer:** Here's the complete ECRR report showing pattern establishment:
 
-```1:460:CHAR/DOCS/docs/ecrr/ECRR_REPORTS/GATE_GUARDIAN_PATTERN_ESTABLISHMENT_2025-10-09.md
+```1:460:CHAR/DOCS/CHAR/ECRR/ECRR_REPORTS/GATE_GUARDIAN_PATTERN_ESTABLISHMENT_2025-10-09.md
 # ECRR Report: Gate Guardian Pattern Establishment
 **Date:** 2025-10-09 07:25:00 UTC  
 **Initiative ID:** BOSSCAT-PATTERN-BGP-001  
@@ -443,7 +443,7 @@ Pattern: Every 3-8 hours → Service failure → Manual recovery required
 
 **Implementation:**
 
-```57:70:CHAR/DOCS/docs/ecrr/ECRR_REPORTS/GATE_GUARDIAN_PATTERN_ESTABLISHMENT_2025-10-09.md
+```57:70:CHAR/DOCS/CHAR/ECRR/ECRR_REPORTS/GATE_GUARDIAN_PATTERN_ESTABLISHMENT_2025-10-09.md
 #### Bot 1: Guardian (Fast Loop)
 **Mission:** Keep the gate open
 - **Speed:** Check every 1-5 minutes
@@ -488,7 +488,7 @@ Pattern: Every 3-8 hours → Service failure → Manual recovery required
 
 **Evidence:**
 
-```307:325:CHAR/DOCS/docs/ecrr/ECRR_REPORTS/GATE_GUARDIAN_PATTERN_ESTABLISHMENT_2025-10-09.md
+```307:325:CHAR/DOCS/CHAR/ECRR/ECRR_REPORTS/GATE_GUARDIAN_PATTERN_ESTABLISHMENT_2025-10-09.md
 **Initial Audit Results:**
 ```json
 {
@@ -682,7 +682,7 @@ Success Criteria:
 
 ### Example 1: Actual ECRR Report (BGP-001 Pattern Application)
 
-**Full Report:** See `CHAR/DOCS/docs/ecrr/ECRR_REPORTS/GATE_GUARDIAN_PATTERN_ESTABLISHMENT_2025-10-09.md`
+**Full Report:** See `CHAR/DOCS/CHAR/ECRR/ECRR_REPORTS/GATE_GUARDIAN_PATTERN_ESTABLISHMENT_2025-10-09.md`
 
 **Key Sections:**
 - **E — Examine:** 8 disables in 48h identified
@@ -889,4 +889,5 @@ function Get-SuspiciousPatterns {
 **Status:** ✅ All Questions Answered
 
 🐾 **Cat Nap Control Room - Deep Technical Q&A Complete**
+
 

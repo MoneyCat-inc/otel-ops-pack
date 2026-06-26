@@ -125,7 +125,7 @@ ExcludeRules                   {PSAvoidUsingWriteHost}
 
 **Agent Signature**: cursor-gap-closer  
 **Completion Timestamp**: 2025-01-29  
-**Evidence Archive**: docs/ECRR_REPORTS/ECRR_ROLLOUT_MERGE_REPORT_2025-01-29.md
+**Evidence Archive**: CHAR/ECRR/ECRR_REPORTS/ECRR_ROLLOUT_MERGE_REPORT_2025-01-29.md
 
 ---
 
@@ -136,3 +136,4 @@ ExcludeRules                   {PSAvoidUsingWriteHost}
 **Completion Summary**: PSScriptAnalyzer GitHub Actions fix successfully implemented. PowerShell hashtable format corrected, line endings fixed, validation passed. All technical requirements met. Merge conflicts detected require separate resolution strategy.
 
 **Final Status**: ✅ **SUCCESS** - PSScriptAnalyzer fix complete, GitHub Actions ready, all validation passed, ECRR compliance maintained.
+

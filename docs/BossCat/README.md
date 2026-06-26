@@ -14,12 +14,12 @@
 Purpose: Governance and local-first operations for Resonai [OTel].
 
 Key Artifacts:
-- docs/ecrr/ECRR_REPORTS/ - ECRR audit trails
+- CHAR/ECRR/ECRR_REPORTS/ - ECRR audit trails
 - docs/observability/snapshots/ - Dashboard exports
 - docs/status/ - Status and test summaries
 - docs/IONA_ERRORS.md - Error ledger
 - docs/BossCat/visuals/ - MILK control surface
-- docs/ecrr/ECRR_REPORTS/ECRR_MILK_CONSOLIDATED_LATEST.md - MILK lane summary
+- CHAR/ECRR/ECRR_REPORTS/ECRR_MILK_CONSOLIDATED_LATEST.md - MILK lane summary
 - docs/BossCat/visuals/presets/registry.json - MILK preset registry (moods/tags)
 
 Runbooks:
@@ -46,7 +46,7 @@ pnpm run agent:ready-for-gate:prod
   - Produces:
     - `artifacts/gate-verification-results.json` - Gate verification results with verdict
   - `PR_COMMENT_IONA_GATE_002_FINAL.md` - Formatted PR comment for gate approval
-  - ECRR gate reports (when applicable) in `docs/ecrr/ECRR_REPORTS/`
+  - ECRR gate reports (when applicable) in `CHAR/ECRR/ECRR_REPORTS/`
 - Use cases:
   - Local pre-flight checks before PR submission
   - Manual gate verification during development
@@ -75,7 +75,7 @@ node scripts/visuals/visu-shim.ts test
 
 ## BossCat Seal
 
-All operations follow ECRR methodology (Examine -> Clean -> Report -> Role) and maintain full audit trails in `docs/ecrr/ECRR_REPORTS/`.
+All operations follow ECRR methodology (Examine -> Clean -> Report -> Role) and maintain full audit trails in `CHAR/ECRR/ECRR_REPORTS/`.
 
 **Tetragram Lanes**:
 - **ALFA**: Agent Framework & Automation
@@ -85,3 +85,4 @@ All operations follow ECRR methodology (Examine -> Clean -> Report -> Role) and 
 - **MILK**: MilkDrop Integration Layer & Kit
 
 For detailed documentation, see lane-specific subdirectories under `docs/BossCat/`.
+

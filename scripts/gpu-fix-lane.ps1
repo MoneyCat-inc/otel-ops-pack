@@ -172,7 +172,7 @@ function Run-K6Smoke {
 # ------------------------------
 New-DirIfMissing 'DELT/ARTF'
 New-DirIfMissing 'artifacts'
-New-DirIfMissing 'docs/ecrr/ECRR_REPORTS'
+New-DirIfMissing 'CHAR/ECRR/ECRR_REPORTS'
 New-DirIfMissing 'docs/observability/snapshots'
 New-DirIfMissing '.agent'
 
@@ -260,7 +260,7 @@ try {
   $md += "- artifacts/k6-summary.json"
   if ($evidence.snapshots) { $md += "- Snapshots captured: $($evidence.snapshots.Count) files" }
   $mdText = $md -join "`n"
-  $reportPath = "docs/ecrr/ECRR_REPORTS/ECRR_GPU_FIX_$dateTag.md"
+  $reportPath = "CHAR/ECRR/ECRR_REPORTS/ECRR_GPU_FIX_$dateTag.md"
   $mdText | Set-Content -Path $reportPath -Encoding UTF8
 
   # BossCat logs (both root and docs path if present)
@@ -277,3 +277,4 @@ finally {
   try { Get-Job | Where-Object { $_.ScriptBlock -like '*heartbeat*' } | Remove-Job -Force -ErrorAction SilentlyContinue } catch {}
   Release-Lock -LockPath $lockPath
 }
+

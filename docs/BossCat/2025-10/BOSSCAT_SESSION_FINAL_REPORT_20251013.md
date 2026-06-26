@@ -122,7 +122,7 @@
 ### **Documentation** (Complete Audit Trail)
 13. `STATUS.md` — Updated to current state
 14. `CURSOR_IMPLEMENTER_STATUS_REPORT_20251012.md` — Initial session status
-15. `docs/ecrr/ECRR_REPORTS/ECRR_DIRECTIVE_008_20251013.md` — Directive 008 ECRR
+15. `CHAR/ECRR/ECRR_REPORTS/ECRR_DIRECTIVE_008_20251013.md` — Directive 008 ECRR
 16. `docs/BossCat/CI_GATE_VERIFY_TRACKING.md` — P0 resolution history
 17. `docs/BossCat/DIRECTIVE_009_GATE_WORKFLOW_UNBLOCKER.md` — Directive 009 tracking
 18. `DIRECTIVE_008_009_FINAL_REPORT.md` — Combined directives report
@@ -207,7 +207,7 @@
 ## 📚 EVIDENCE ARTIFACTS
 
 ### **ECRR Reports** (Comprehensive)
-- `docs/ecrr/ECRR_REPORTS/ECRR_DIRECTIVE_008_20251013.md`
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_DIRECTIVE_008_20251013.md`
 - 10+ Gate #007 ECRR reports
 - Multiple gate run reports from testing
 
@@ -462,4 +462,5 @@ Features: All P1/P2 delivered within budget ✅
 **Evidence**: Complete audit trail delivered
 
 🚀 **ALL DIRECTIVES COMPLETE · 4/4 CHECKS PASSING · GUARDS OPERATIONAL · TOGGLE-BASED PROMOTION · ECRR CERTIFIED** 🚀
+
 

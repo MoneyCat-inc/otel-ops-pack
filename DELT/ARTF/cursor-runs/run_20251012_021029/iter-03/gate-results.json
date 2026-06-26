@@ -19,9 +19,10 @@
     "docs/status/tests.json": "present",
     "signoz.ts": "present",
     "index.html": "present",
-    "docs/ecrr/ECRR_REPORTS": "present",
+    "CHAR/ECRR/ECRR_REPORTS": "present",
     "docs/status.html": "present",
     ".github/workflows/bosscat-gate-verify.yml": "present",
     "docs/cheatsheets": "present"
   }
 }
+

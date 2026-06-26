@@ -98,7 +98,7 @@ $cleanupCategories = @{
     )
     
     "ECRR Backup Reports" = @(
-        "docs\ECRR_REPORTS\*.backup-*"
+        "CHAR\ECRR\ECRR_REPORTS\*.backup-*"
     )
 }
 
@@ -330,7 +330,7 @@ $reportGenerationResult = Start-TimedOperation -Operation "ECRR Report Generatio
 "@
 
     # Ensure ECRR_REPORTS directory exists
-    $ecrrDir = "docs/ECRR_REPORTS"
+    $ecrrDir = "CHAR/ECRR/ECRR_REPORTS"
     if (!(Test-Path $ecrrDir)) {
         New-Item -ItemType Directory -Path $ecrrDir -Force | Out-Null
     }
@@ -342,3 +342,4 @@ $reportGenerationResult = Start-TimedOperation -Operation "ECRR Report Generatio
 }
 
 Write-Host "📝 ECRR report saved: $reportGenerationResult" -ForegroundColor Cyan
+

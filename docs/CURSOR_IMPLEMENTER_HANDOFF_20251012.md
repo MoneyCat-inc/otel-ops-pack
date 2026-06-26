@@ -45,7 +45,7 @@
 
 **Recommendation:** Option A with BossCat review of Category B files (configs, workflows)
 
-**Evidence:** See `docs/ecrr/ECRR_REPORTS/ECRR_CURSOR_IMPLEMENTER_SESSION_20251012.md` for full categorization.
+**Evidence:** See `CHAR/ECRR/ECRR_REPORTS/ECRR_CURSOR_IMPLEMENTER_SESSION_20251012.md` for full categorization.
 
 ---
 
@@ -111,7 +111,7 @@ git push origin main
 ## 📂 **ARTIFACTS DELIVERED**
 
 ### ECRR Reports
-1. **Session Closeout:** `docs/ecrr/ECRR_REPORTS/ECRR_CURSOR_IMPLEMENTER_SESSION_20251012.md`
+1. **Session Closeout:** `CHAR/ECRR/ECRR_REPORTS/ECRR_CURSOR_IMPLEMENTER_SESSION_20251012.md`
    - Complete assessment of current state
    - 59 file categorization (5 categories)
    - Commit strategy recommendations
@@ -298,10 +298,11 @@ git push origin main
 **Next Step:** BossCat OEM review and decision on 3 pending action items.
 
 **Evidence Index:**
-- Session Closeout: `docs/ecrr/ECRR_REPORTS/ECRR_CURSOR_IMPLEMENTER_SESSION_20251012.md`
+- Session Closeout: `CHAR/ECRR/ECRR_REPORTS/ECRR_CURSOR_IMPLEMENTER_SESSION_20251012.md`
 - Handoff Report: `docs/CURSOR_IMPLEMENTER_HANDOFF_20251012.md` (this document)
 - Gate Status: `docs/GATE_STATUS_DASHBOARD.md`
 - BossCat TODO: `docs/BossCat/TODO.md`
 
 _End of cursor{implementer} Handoff Report_
+
 

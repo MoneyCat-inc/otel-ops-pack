@@ -32,7 +32,7 @@
 | `SOCM_MILESTONE_A_COMPLETE.md` | 128 | Milestone A completion |
 | `SOCM_MILESTONE_B_READY.md` | 718 | Milestone B integration guide |
 | `docs/social/README.md` | 200 | SOCM lane documentation |
-| `docs/ecrr/ECRR_REPORTS/ECRR_SOCM_MILESTONE_A_20251018.md` | 345 | ECRR compliance report |
+| `CHAR/ECRR/ECRR_REPORTS/ECRR_SOCM_MILESTONE_A_20251018.md` | 345 | ECRR compliance report |
 
 **Total Documentation**: 2,485 LOC
 
@@ -520,4 +520,5 @@ Everything is committed and documented:
 **Session End**: 2025-10-18 02:35 UTC  
 **Authority**: cursor{implementer} under Fubumaki  
 **Status**: Mission accomplished - standing by for next directive
+
 

@@ -71,7 +71,7 @@
 - `artifacts/signoz-dashboard-config.json` (added 3 E2 panels)
 - `scripts/publish-e2-results.ps1` (fixed timestamp generation)
 - `scripts/verify-e2-dashboard.ps1` (verification framework)
-- `docs/ECRR_REPORTS/2025-01-27-e2-dashboard-complete.md` (this report)
+- `CHAR/ECRR/ECRR_REPORTS/2025-01-27-e2-dashboard-complete.md` (this report)
 
 **OTLP Publisher Features**:
 - Sends E2 results via HTTP OTLP to `http://127.0.0.1:5318/v1/logs`
@@ -143,7 +143,7 @@ pwsh -File scripts/publish-e2-results.ps1
 
 ### 2. Capture SigNoz Screenshot
 - Take screenshot of "OTel Queue Pressure Dashboard"
-- Save to `docs/ECRR_REPORTS/2025-01-27-e2-dashboard-screenshot.png`
+- Save to `CHAR/ECRR/ECRR_REPORTS/2025-01-27-e2-dashboard-screenshot.png`
 - Document panel visibility and data population
 
 ### 3. Extend with Alerts
@@ -367,4 +367,5 @@ pwsh -File scripts/verify-e2-dashboard.ps1
 - Scope:
 
 ---
+
 

@@ -59,7 +59,7 @@ $smoke += "  - artifacts/ecrr-01-playwright-offline.json"
 Set-Content -Path $smokePath -Value $smoke -Encoding utf8
 
 # 4) Write terminal session report
-$sessionDir = "docs/ECRR_REPORTS"
+$sessionDir = "CHAR/ECRR/ECRR_REPORTS"
 $null = New-Item -ItemType Directory -Force -Path $sessionDir | Out-Null
 $sessionPath = Join-Path $sessionDir "2025-09-22-terminal-session-ecrr-01.md"
 
@@ -80,3 +80,4 @@ Set-Content -Path $sessionPath -Value $session -Encoding utf8
 # 5) Emit final artifact inventory
 $verificationLog = "artifacts/ecrr-01-verification.log"
 Get-Item $verificationLog, $isoJsonPath, $offlineJsonPath, $smokePath, $sessionPath | Select-Object FullName, Length
+

@@ -53,7 +53,7 @@ Write-Host "🧹 Cleaning configuration drift..." -ForegroundColor Yellow
 $directories = @(
     "docs/BossCat",
     "docs/observability/snapshots",
-    "docs/ecrr/ECRR_REPORTS",
+    "CHAR/ECRR/ECRR_REPORTS",
     "artifacts/auto-bots"
 )
 
@@ -80,7 +80,7 @@ $statusReport = @{
         }
         trace_ingestion = @{
             status = "green"
-            endpoints = @("14317", "14318")
+            endpoints = @("4317", "4318")
             canary_tests = "passing"
         }
         dashboards = @{
@@ -199,3 +199,4 @@ Write-Host "   • Alert Rules: docs/BossCat/bosscat-alert-rules.json" -Foregrou
 Write-Host "`n🐾 BossCat Executive Decision: FULL AUTOMATION COMPLETE" -ForegroundColor Green
 Write-Host "Authority: BossCat OEM | Status: ALL GREEN | Gate: READY-FOR-PRODUCTION" -ForegroundColor Yellow
 Write-Host "Feline Silence: The system now watches itself with peaceful vigilance." -ForegroundColor Cyan
+

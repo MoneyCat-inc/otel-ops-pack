@@ -96,7 +96,7 @@ try {
     "Content-Type" = "application/json"
   }
   
-  $response = Invoke-WebRequest -Uri "http://127.0.0.1:14318/v1/traces" `
+  $response = Invoke-WebRequest -Uri "http://127.0.0.1:4318/v1/traces" `
     -Method POST `
     -Headers $headers `
     -Body $tracePayload `

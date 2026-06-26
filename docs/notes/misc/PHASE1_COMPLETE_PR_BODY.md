@@ -14,7 +14,7 @@ Scope
 - Critical paths covered: gate verification, nightly dashboards/reports, bot-native jobs, key security scans.
 
 Artifacts
-- ECRR: docs/ecrr/ECRR_REPORTS/ECRR_PHASE1_IMMEDIATE_WINS_20251010.md
+- ECRR: CHAR/ECRR/ECRR_REPORTS/ECRR_PHASE1_IMMEDIATE_WINS_20251010.md
 - Evidence: .agent/EVIDENCE.log (Phase 1 completion entry)
 - Audit: CHAR/EVID/audit/workflow-concurrency-audit-20251010-090838.json
 
@@ -33,3 +33,4 @@ Tags
 
 Signal
 - @cat ready-for-gate
+

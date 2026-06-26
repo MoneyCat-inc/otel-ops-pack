@@ -2,7 +2,7 @@
 # This script adds explicit production readiness markers to ECRR reports that lack them
 
 param(
-    [string]$ReportsPath = "docs/ECRR_REPORTS",
+    [string]$ReportsPath = "CHAR/ECRR/ECRR_REPORTS",
     [switch]$DryRun = $false,
     [switch]$Verbose = $false
 )
@@ -137,3 +137,4 @@ return @{
     Errors = $errorCount
     Total = $reportFiles.Count
 }
+

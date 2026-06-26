@@ -16,7 +16,7 @@ if str(ROOT_DIR) not in sys.path:
 
 from rolling_run import get_git_sha, run_benchmark, run_validator
 
-PRODUCTION_EVIDENCE = Path("docs/ecrr/ECRR_REPORTS/t1_production_evidence.json")
+PRODUCTION_EVIDENCE = Path("CHAR/ECRR/ECRR_REPORTS/t1_production_evidence.json")
 
 
 def ensure_utf8() -> None:
@@ -116,3 +116,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
+

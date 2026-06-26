@@ -2,7 +2,7 @@
 # Ensures consistent validation logic across all reporting formats
 
 param(
-    [string]$ReportsPath = "docs/ECRR_REPORTS",
+    [string]$ReportsPath = "CHAR/ECRR/ECRR_REPORTS",
     [string]$OutputPath = "artifacts",
     [switch]$Verbose = $false,
     [int]$Threshold = 95
@@ -316,3 +316,4 @@ Write-Host ""
 Write-Host "✅ Unified ECRR Compliance Validation completed" -ForegroundColor Green
 
 return $result
+

@@ -92,7 +92,7 @@ The session data implicitly confirms all four required spot checks:
 
 ### Artifact Links
 - **Session Data**: [`artifacts/resonai-session-2025-09-22.json`](../../artifacts/resonai-session-2025-09-22.json)
-- **ECRR-01 Report**: [`docs/ECRR_REPORTS/2025-09-29-ecrr-01-consolidated.md`](2025-09-29-ecrr-01-consolidated.md)
+- **ECRR-01 Report**: [`CHAR/ECRR/ECRR_REPORTS/2025-09-29-ecrr-01-consolidated.md`](2025-09-29-ecrr-01-consolidated.md)
 - **Verification Logs**: [`artifacts/ecrr-01-verification.log`](../../artifacts/ecrr-01-verification.log)
 
 ## 🎭 Role
@@ -327,4 +327,5 @@ The observability pipeline continues its serene operation at sub-200ms cadence. 
 - Scope:
 
 ---
+
 

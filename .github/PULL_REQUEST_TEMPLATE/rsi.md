@@ -20,5 +20,6 @@ pwsh BRAV/SCPT/rsi/evaluate.ps1 -Candidate .agent/rsi-candidate.json
 
 - `CHAR/EVID/artifacts/ecrr/index/METRICS.jsonl`
 - `CHAR/EVID/artifacts/ecrr/arch/METRICS.jsonl`
-- `docs/ecrr/ECRR_REPORTS/RSI_EVAL_LATEST.md`
+- `CHAR/ECRR/ECRR_REPORTS/RSI_EVAL_LATEST.md`
+
 

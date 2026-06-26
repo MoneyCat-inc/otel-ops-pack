@@ -18,7 +18,7 @@
 - **Fully Compliant**: 99.3% (145/146)
 
 ### **Non-Compliant Report Identified**
-- **File**: `docs/ECRR_REPORTS/2025-09-29-queue-steward-verification.md`
+- **File**: `CHAR/ECRR/ECRR_REPORTS/2025-09-29-queue-steward-verification.md`
 - **Issues**: Missing four-section structure, missing ECRR gate, missing production marker
 - **Priority**: High (single remaining non-compliant report)
 
@@ -376,3 +376,4 @@ The ECRR compliance tracking system provides complete visibility into framework 
 - Scope: ECRR compliance tracking and strategic recommendations
 
 ---
+

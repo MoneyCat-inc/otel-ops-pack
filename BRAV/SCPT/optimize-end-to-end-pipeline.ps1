@@ -230,11 +230,11 @@ try {
 
 # Check critical ports
 $port5318 = Test-Port -Port 5318 -Label "Windows Collector (OTLP/HTTP)"
-$port14317 = Test-Port -Port 14317 -Label "SigNoz OTLP (gRPC)"
-$port14318 = Test-Port -Port 14318 -Label "SigNoz OTLP (HTTP)"
+$port4317 = Test-Port -Port 4317 -Label "SigNoz OTLP (gRPC)"
+$port4318 = Test-Port -Port 4318 -Label "SigNoz OTLP (HTTP)"
 $port8080 = Test-Port -Port 8080 -Label "SigNoz UI"
 
-if (-not ($port5318 -and $port14317 -and $port14318 -and $port8080)) {
+if (-not ($port5318 -and $port4317 -and $port4318 -and $port8080)) {
     $script:allChecksPassed = $false
 }
 
@@ -286,10 +286,10 @@ if (Test-Path $configPath) {
     if ($configContent -match 'endpoint: 127\.0\.0\.1:5318') {
         $optimizations += "OTLP HTTP endpoint configured correctly"
     }
-    if ($configContent -match 'endpoint: 127\.0\.0\.1:14317') {
+    if ($configContent -match 'endpoint: 127\.0\.0\.1:4317') {
         $optimizations += "SigNoz gRPC export configured correctly"
     }
-    if ($configContent -match 'endpoint: http://127\.0\.0\.1:14318') {
+    if ($configContent -match 'endpoint: http://127\.0\.0\.1:4318') {
         $optimizations += "SigNoz HTTP export configured correctly"
     }
     if ($configContent -match 'C:/logs/\*\*/\*\.log') {

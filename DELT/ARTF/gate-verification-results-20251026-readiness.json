@@ -225,7 +225,7 @@
   },
   "evidence_package": {
     "gate_verification_json": "DELT/ARTF/gate-verification-results-20251026-readiness.json",
-    "ecrr_report": "docs/ecrr/ECRR_REPORTS/ECRR_GATE_017_READY_20251026.md",
+    "ecrr_report": "CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_017_READY_20251026.md",
     "gate_status_dashboard": "docs/GATE_STATUS_DASHBOARD.md",
     "iona_error_ledger": "docs/IONA_ERRORS.md",
     "canonical_reference": "docs/comfort-cat/"
@@ -243,4 +243,5 @@
     "attestation": "Gate #017 READY: All verification checks PASS. Working tree clean. Docker: 12/12 containers operational (infrastructure expanded 71% since Gate #008). SigNoz health: OK. Pipeline processing: Verified. Gates #008-#016 reconciled and committed. Zero blockers. Recommend gate progression."
   }
 }
+
 

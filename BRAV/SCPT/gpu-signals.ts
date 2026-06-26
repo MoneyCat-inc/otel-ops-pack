@@ -45,7 +45,7 @@ class SigNozGPUHealthMonitor {
   private reportDir: string;
 
   constructor() {
-    this.signalsDir = 'docs/ecrr/ECRR_REPORTS';
+    this.signalsDir = 'CHAR/ECRR/ECRR_REPORTS';
     this.reportDir = 'docs/observability';
     
     // Ensure directories exist
@@ -402,3 +402,4 @@ if (require.main === module) {
 }
 
 export { SigNozGPUHealthMonitor, GPUHealthSignal, GPUHealthReport };
+

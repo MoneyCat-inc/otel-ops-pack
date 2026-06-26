@@ -147,7 +147,7 @@ All hygiene follow-ups from Gate #006 audit have been executed or confirmed comp
 ## 📂 Reference Documentation
 
 **Gate Approval:** `BOSSCAT_GATE_DECISION_20251010.md`  
-**ECRR Report:** `docs/ecrr/ECRR_REPORTS/ECRR_GATE_APPROVAL_20251010.md`  
+**ECRR Report:** `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_APPROVAL_20251010.md`  
 **Merge Note:** `MERGE_NOTE_GATE_20251010.md`  
 **Commit:** `7ccf34c` - Port normalization  
 **Tag:** `gate-20251010-approved`
@@ -157,4 +157,5 @@ All hygiene follow-ups from Gate #006 audit have been executed or confirmed comp
 **End of Hygiene Completion Report**
 
 *MoneyCat Inc · Resonai [OTel] · BossCat Operations*
+
 
