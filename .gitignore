@@ -134,3 +134,5 @@ node_modules/
 **/node_modules/
 artifacts/hub-smoke-*.json
 artifacts/monitoring-report-*.json
+artifacts/canary-ecrr-report.txt
+
