@@ -16,7 +16,7 @@
 - **Integrate compliance checking into CI/CD**: GitHub Actions workflow and automation needed
 
 ### **Current ECRR Framework State**
-- **Total Reports**: 75 ECRR reports in `docs/ECRR_REPORTS/`
+- **Total Reports**: 75 ECRR reports in `CHAR/ECRR/ECRR_REPORTS/`
 - **Compliance Rate**: 47% (35/75) for 4-section structure
 - **ECRR Gate Coverage**: 38% (28/75) with ECRR gates
 - **Consolidation Status**: Phase 1 completed (3 reports → 1 consolidated)
@@ -295,4 +295,5 @@
 - Scope:
 
 ---
+
 

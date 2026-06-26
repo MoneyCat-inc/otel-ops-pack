@@ -63,7 +63,7 @@
 - `artifacts/signoz-e2-alerts.json` (4 E2 alerts + notification channels)
 - `scripts/e2-ratio-sweep.ps1` (added auto-publish integration)
 - `scripts/wire-publisher-to-sweep.ps1` (publisher integration script)
-- `docs/ECRR_REPORTS/2025-01-27-e2-workflow-complete.md` (this report)
+- `CHAR/ECRR/ECRR_REPORTS/2025-01-27-e2-workflow-complete.md` (this report)
 
 **Test Results**:
 - ✅ **Sweep Execution**: Single combination tested successfully
@@ -384,4 +384,5 @@ pwsh -File scripts/e2-ratio-sweep.ps1 -AgentTimeout 200ms -GatewayTimeout 5s
 - Scope:
 
 ---
+
 

@@ -79,7 +79,7 @@ All documentation is centralized in the **[Documentation Hub](docs/index.html)**
 - **Stakeholder Evidence** — executive packages and audit trails
 - **Security & Maintenance** — security procedures and risk waivers
 - **Runbooks** — [Windows collector](docs/runbooks/windows-collector.md), [Docker recovery](docs/runbooks/misc/docker-fix-steps.md)
-- **ECRR Reports** — [complete audit trail](docs/ecrr/ECRR_REPORTS/)
+- **ECRR Reports** — [complete audit trail](CHAR/ECRR/ECRR_REPORTS/)
 
 ---
 
@@ -111,7 +111,7 @@ See: [AGENTS.md](AGENTS.md) | [ECRR Manual](docs/BossCat/misc/ART_OF_ECRR.md) | 
 
 - **Main branch gates:** green (BossCat Gate Verify, CodeQL, Gitleaks)
 - **Local pipeline:** Docker + SigNoz + Windows collector (`quick-monitor` health check)
-- **ECRR reports:** 350+ under `docs/ecrr/ECRR_REPORTS/`
+- **ECRR reports:** 385 under `CHAR/ECRR/ECRR_REPORTS/`
 
 Live metrics: [Status Dashboard](docs/status.html)
 
@@ -121,16 +121,16 @@ Live metrics: [Status Dashboard](docs/status.html)
 
 ```powershell
 # Fast health check
-pwsh BRAV\SCPT\quick-monitor.ps1
+pwsh -File scripts\quick-monitor.ps1
 
 # Detailed monitoring
-pwsh scripts\monitor-optimized-pipeline.ps1 -DurationMinutes 10
+pwsh -File scripts\monitor-optimized-pipeline.ps1 -DurationMinutes 10
 
-# Generate canary test
-pwsh canary-test.ps1
+# Generate and verify OTLP canary signals
+pwsh -File scripts\windows\test-otlp-e2e.ps1
 
-# Verify pipeline end-to-end
-pwsh verify-pipeline.ps1
+# Verify pipeline readiness
+pwsh -File scripts\preflight-health-check.ps1
 ```
 
 ---
@@ -138,7 +138,7 @@ pwsh verify-pipeline.ps1
 ## 📚 Additional Resources
 
 - **[Cheat Sheets](docs/cheatsheets/README.md)** — quick reference guides
-- **[ECRR Reports](docs/ecrr/ECRR_REPORTS/)** — complete audit trail
+- **[ECRR Reports](CHAR/ECRR/ECRR_REPORTS/)** — complete audit trail
 - **[Observability Snapshots](docs/observability/snapshots/)** — dashboard exports
 
 ---
@@ -165,3 +165,4 @@ pwsh verify-pipeline.ps1
 ---
 
 **🎯 Start with the [Documentation Hub](docs/index.html) for complete navigation.**
+

@@ -235,13 +235,13 @@ while ($page -le $maxPages) {
             }
         }
 
-        Write-Host "    Page $page: added $($runs.Count) (total kept: $($allRuns.Count))" -ForegroundColor DarkGray
+        Write-Host "    Page ${page}: added $($runs.Count) (total kept: $($allRuns.Count))" -ForegroundColor DarkGray
 
         if ($runs.Count -lt $perPage) { break } # Last page
         $page++
     }
     catch {
-        Write-Host "    ⚠️  Error fetching page $page`: $_" -ForegroundColor Yellow
+        Write-Host "    ⚠️  Error fetching page ${page}: $_" -ForegroundColor Yellow
         break
     }
 }

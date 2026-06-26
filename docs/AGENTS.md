@@ -152,10 +152,11 @@ When creating or updating workflows:
 - **Loop-Closing Machine:** `docs/BossCat/LOOP_CLOSING_MACHINE_ARCHITECTURE.md`
 - **Pattern Library:** `docs/BossCat/WORKFLOW_IMMEDIATE_WINS_PATTERN.md`
 - **ECRR Charter:** `docs/BossCat/CHARTER.md`
-- **Phase 1 ECRR:** `docs/ecrr/ECRR_REPORTS/ECRR_PHASE1_IMMEDIATE_WINS_*.md`
+- **Phase 1 ECRR:** `CHAR/ECRR/ECRR_REPORTS/ECRR_PHASE1_IMMEDIATE_WINS_*.md`
 
 ---
 
 **Last Updated:** 2025-10-10 (Phase 1 execution)  
 **Status:** Active standard - all new workflows must comply  
 **Seal:** 🐾 **BossCat Executive Standard**
+

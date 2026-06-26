@@ -8,7 +8,7 @@
 ## ✅ ECRR Gate
 - [ ] **Examine** — isolation, mic, flow, CI/SSOT state captured
 - [ ] **Clean** — caches/IDB reset, guardrails applied, ports clean, no regressions
-- [ ] **Report** — linked: `docs/ECRR_REPORTS/<date>-<slug>.md`
+- [ ] **Report** — linked: `CHAR/ECRR/ECRR_REPORTS/<date>-<slug>.md`
 - [ ] **Role** — ChatGPT / Cursor / Codex / codex-local / Human
 
 ## 🧪 Tests
@@ -21,3 +21,4 @@
 ## 📎 Links
 - ECRR: `docs/ECRR_MANTRA.md`
 - Issue: #
+

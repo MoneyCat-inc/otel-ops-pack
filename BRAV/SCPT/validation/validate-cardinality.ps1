@@ -84,7 +84,7 @@ try {
         )
     } | ConvertTo-Json -Depth 10
 
-    $response = Invoke-RestMethod -Uri "http://localhost:14318/v1/logs" -Method Post -Body $highCardinalityPayload -ContentType "application/json" -TimeoutSec 10
+    $response = Invoke-RestMethod -Uri "http://localhost:4318/v1/logs" -Method Post -Body $highCardinalityPayload -ContentType "application/json" -TimeoutSec 10
     Write-Host "✅ High cardinality data sent successfully" -ForegroundColor Green
 } catch {
     $issues += "High cardinality data test failed: $($_.Exception.Message)"

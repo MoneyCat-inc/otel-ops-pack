@@ -20,7 +20,7 @@ BossCat has verified the IONA gate for both CI and PROD. All required evidence i
 ## Evidence Links
 
 - Gate Results (JSON): DELT/ARTF/gate-verification-results.json
-- Latest ECRR Gate Report: docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md
+- Latest ECRR Gate Report: CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md
 - PR Comment: PR_COMMENT_IONA_GATE_002_FINAL.md
 - Status Inputs:
   - .github/workflows/bosscat-gate-verify.yml
@@ -57,3 +57,4 @@ pwsh -File scripts/verify-iona-gate.ps1 -Gate IONA -Site prod
 ## ECRR Declaration
 
 Evidence recorded to disk; decisions traceable to artifacts listed above. Promotion remains subject to BossCat OEM approval in accordance with governance policy.
+

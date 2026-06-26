@@ -71,7 +71,7 @@ info     → 2.7s blend, cycle ON, current preset
 
 ### 4. ECRR Report (`ECRR_MILK_PHASE3C_20251016.md`) ✅
 
-**Location**: `docs/ecrr/ECRR_REPORTS/ECRR_MILK_PHASE3C_20251016.md`
+**Location**: `CHAR/ECRR/ECRR_REPORTS/ECRR_MILK_PHASE3C_20251016.md`
 
 Complete audit trail with Examine → Clean → Report → Role sections.
 
@@ -289,7 +289,7 @@ MILK Phase-3C complete — **SigNoz integration operational, gates GREEN**.
 - scripts/visuals/milk-signoz-mapper.ts
 - docs/BossCat/visuals/SIGNOZ_INTEGRATION_README.md
 - config/milk-preset-mapping.json
-- docs/ecrr/ECRR_REPORTS/ECRR_MILK_PHASE3C_20251016.md
+- CHAR/ECRR/ECRR_REPORTS/ECRR_MILK_PHASE3C_20251016.md
 - BOSSCAT_LOG.md (updated)
 - .agent/EVIDENCE.log (updated)
 
@@ -298,3 +298,4 @@ MILK Phase-3C complete — **SigNoz integration operational, gates GREEN**.
 ---
 
 **🐾 cursor{implementer}** | MILK Lane | Phase-3C COMPLETE | Priority: HIGH delivered
+

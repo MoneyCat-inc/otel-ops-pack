@@ -4,7 +4,7 @@
 
 **Scope:** 
 - 34 root evidence files (GATE_*.md, BOSSCAT_*.md, SESSION_*.md, REPORTS_*.md)
-- 6 ECRR reports (docs/ecrr/ECRR_REPORTS/)
+- 6 ECRR reports (CHAR/ECRR/ECRR_REPORTS/)
 - 1 artifact JSON (DELT/ARTF/)
 - 6-10 curated screenshots ≤2MB
 - SHA256 manifest for all artifacts/
@@ -16,3 +16,4 @@
 **Lane:** DOCS (evidence documentation)
 
 **Exit:** GREEN (0) → HOLD-INV-PH1
+

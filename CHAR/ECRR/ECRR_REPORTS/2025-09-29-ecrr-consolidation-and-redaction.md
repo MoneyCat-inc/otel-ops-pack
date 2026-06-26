@@ -13,9 +13,9 @@
 - Inputs:
   - Consolidation targets (24 files across 3 groups)
   - New consolidated outputs:  
-    - `docs/ECRR_REPORTS/2025-09-29-rollout-merge-consolidated.md`  
-    - `docs/ECRR_REPORTS/2025-09-29-ecrr-01-consolidated.md`  
-    - `docs/ECRR_REPORTS/2025-09-29-compliance-automation-consolidated.md`
+    - `CHAR/ECRR/ECRR_REPORTS/2025-09-29-rollout-merge-consolidated.md`  
+    - `CHAR/ECRR/ECRR_REPORTS/2025-09-29-ecrr-01-consolidated.md`  
+    - `CHAR/ECRR/ECRR_REPORTS/2025-09-29-compliance-automation-consolidated.md`
 - Evidence (pre): Files enumerated via `Get-ChildItem` and previous processing artifacts.
 
 ---
@@ -24,7 +24,7 @@
 
 - Actions:
   - Consolidated 24 source reports into 3 consolidated files
-  - Archived originals under `docs/ECRR_REPORTS/archive/`
+  - Archived originals under `CHAR/ECRR/ECRR_REPORTS/archive/`
   - Added Production Readiness, Actor Declaration, and 4-section structure where missing
   - Redacted token-like strings to `[REDACTED]`
   - Normalized mojibake markers to plain text
@@ -44,12 +44,12 @@
   - Created: 3 consolidated files; 21 archived originals  
 - Validation:
   - Redaction check:  
-    `Select-String -Path docs/ECRR_REPORTS/2025-09-29-*-consolidated.md -Pattern 'REDACTED'`
+    `Select-String -Path CHAR/ECRR/ECRR_REPORTS/2025-09-29-*-consolidated.md -Pattern 'REDACTED'`
   - Repo status:  
     `git status -sb` showed new consolidated files and archived sources pre-commit
 - Artifacts:
   - Consolidated reports (see above)
-  - Archived originals at `docs/ECRR_REPORTS/archive/`
+  - Archived originals at `CHAR/ECRR/ECRR_REPORTS/archive/`
 
 ---
 
@@ -77,10 +77,10 @@
 
 ```powershell
 # Confirm redactions remain in place
-Select-String -Path docs/ECRR_REPORTS/2025-09-29-*-consolidated.md -Pattern 'REDACTED'
+Select-String -Path CHAR/ECRR/ECRR_REPORTS/2025-09-29-*-consolidated.md -Pattern 'REDACTED'
 
 # Show archived originals
-Get-ChildItem docs/ECRR_REPORTS/archive/ | Select-Object Name
+Get-ChildItem CHAR/ECRR/ECRR_REPORTS/archive/ | Select-Object Name
 ```
 
 
@@ -197,4 +197,5 @@ Get-ChildItem docs/ECRR_REPORTS/archive/ | Select-Object Name
 - Scope:
 
 ---
+
 

@@ -33,7 +33,7 @@
 1. **[GATE_027_SCOPE.md](GATE_027_SCOPE.md)** - Gate charter and objectives
 2. **[GATE_027_CYCLE_RETROSPECTIVE.md](GATE_027_CYCLE_RETROSPECTIVE.md)** - Honest assessment and learnings
 3. **[GATE_027_FINAL_SUMMARY.md](GATE_027_FINAL_SUMMARY.md)** - Executive summary
-4. **[docs/ecrr/ECRR_REPORTS/ECRR_GATE_027_PARTIAL_20251027.md](docs/ecrr/ECRR_REPORTS/ECRR_GATE_027_PARTIAL_20251027.md)** - ECRR compliance report
+4. **[CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_027_PARTIAL_20251027.md](CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_027_PARTIAL_20251027.md)** - ECRR compliance report
 
 ### Key Deliverables
 - Health probe: `scripts/windows/verify-collector-traces.ps1` (80 LOC)
@@ -55,7 +55,7 @@
 ### Core Documentation
 1. **[GATE_028_SCOPE.md](GATE_028_SCOPE.md)** - Gate charter and objectives
 2. **[GATE_028_FINAL_SUMMARY.md](GATE_028_FINAL_SUMMARY.md)** - Executive summary
-3. **[docs/ecrr/ECRR_REPORTS/ECRR_GATE_028_PARTIAL_20251027.md](docs/ecrr/ECRR_REPORTS/ECRR_GATE_028_PARTIAL_20251027.md)** - ECRR compliance report
+3. **[CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_028_PARTIAL_20251027.md](CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_028_PARTIAL_20251027.md)** - ECRR compliance report
 
 ### Key Deliverables
 - ICF bug fix: `scripts/icf/analyze-convergence.ps1` (filter simplified)
@@ -79,7 +79,7 @@
 ### Core Documentation
 1. **[GATE_029_SCOPE.md](GATE_029_SCOPE.md)** - Gate charter and objectives
 2. **[GATE_029_FINAL_SUMMARY.md](GATE_029_FINAL_SUMMARY.md)** - Comprehensive executive summary
-3. **[docs/ecrr/ECRR_REPORTS/ECRR_GATE_029_FRAMEWORK_20251027.md](docs/ecrr/ECRR_REPORTS/ECRR_GATE_029_FRAMEWORK_20251027.md)** - ECRR compliance report
+3. **[CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_029_FRAMEWORK_20251027.md](CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_029_FRAMEWORK_20251027.md)** - ECRR compliance report
 
 ### Key Deliverables
 - **Orchestrator:** `scripts/gate029/orchestrator.ps1` (270 LOC) - **Production-ready**
@@ -192,4 +192,5 @@
 **Index Generated:** 2025-10-27 11:50:00 UTC  
 **Authority:** Cursor{Implementer}  
 **Seal:** 🐾 **Reports Index — Quick Access to Session Documentation**
+
 

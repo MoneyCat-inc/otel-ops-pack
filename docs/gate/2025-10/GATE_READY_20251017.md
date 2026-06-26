@@ -171,7 +171,7 @@ pwsh -NoProfile -File BRAV\SCPT\quick-monitor.ps1
 
 ```
 docs/cheatsheets/cursor-support-runbook.md (NEW, 127 lines)
-docs/ecrr/ECRR_REPORTS/ECRR_GATE_READY_20251017.md (NEW, ~550 lines)
+CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_READY_20251017.md (NEW, ~550 lines)
 ```
 
 **Commit Message** (Proposed):
@@ -314,4 +314,5 @@ BossCat OEM review and authorization for:
 **Certification**: ✅ **READY FOR PROGRESSION**
 
 🐾 **Standing by for BossCat OEM review** 🐾
+
 

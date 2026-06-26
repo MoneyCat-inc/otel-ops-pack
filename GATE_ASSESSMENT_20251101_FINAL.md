@@ -142,7 +142,7 @@ redis-audioswitch        healthy
 ## Evidence Package
 
 **Generated Artifacts:**
-1. ✅ `docs/ecrr/ECRR_REPORTS/ECRR_GATE_READINESS_20251101.md`
+1. ✅ `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_READINESS_20251101.md`
 2. ✅ `GATE_READINESS_EXECUTIVE_SUMMARY_20251101.md`
 3. ✅ `DELT/ARTF/gate-verification-results-20251101-readiness.json`
 4. ✅ `docs/GATE_STATUS_DASHBOARD.md` (updated with assessment)
@@ -182,4 +182,5 @@ redis-audioswitch        healthy
 **Executor:** Cursor{Implementer}
 
 🐾 **C:\otel Gate Assessment — GREEN (Architecture Operating as Designed)**
+
 

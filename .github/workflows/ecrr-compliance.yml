@@ -4,13 +4,13 @@ on:
   push:
     branches: [ main, develop ]
     paths:
-      - 'docs/ecrr/ECRR_REPORTS/**'
+      - 'CHAR/ECRR/ECRR_REPORTS/**'
       - 'scripts/ecrr-compliance-check.ps1'
       - 'scripts/remediate-ecrr-compliance.ps1'
   pull_request:
     branches: [ main, develop ]
     paths:
-      - 'docs/ecrr/ECRR_REPORTS/**'
+      - 'CHAR/ECRR/ECRR_REPORTS/**'
       - 'scripts/ecrr-compliance-check.ps1'
       - 'scripts/remediate-ecrr-compliance.ps1'
   workflow_dispatch:
@@ -70,3 +70,4 @@ jobs:
       run: |
         Write-Host "❌ Compliance rate (${{ steps.compliance_check.outputs.compliance_rate }}%) is below 80% threshold"
         exit 1
+

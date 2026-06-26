@@ -307,7 +307,7 @@ metric_name =~ gpu_.*
 **GPU Pipeline**:
 - Sidecar code: `ALFA/APPS/sidecars/{aggregation,compression,inference}/`
 - Docker compose: `docker-compose.gpu.yml`
-- Alignment ECRR: `docs/ecrr/ECRR_REPORTS/ECRR_GPU_PIPELINE_ALIGNMENT_20251013.md`
+- Alignment ECRR: `CHAR/ECRR/ECRR_REPORTS/ECRR_GPU_PIPELINE_ALIGNMENT_20251013.md`
 
 **SigNoz Integration**:
 - Collector config: `signoz-collector-config.yaml`
@@ -396,4 +396,5 @@ curl http://localhost:8080/api/v1/health
 ---
 
 🎉 **GPU PIPELINE OPERATIONAL · SIGNOZ VALIDATED · RTX 2080 SUPER DETECTED · METRICS FLOWING** 🎉
+
 

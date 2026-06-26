@@ -1,6 +1,6 @@
 # [INDEX] Resonai Archive Index
 
-**Archive Policy**: See `docs/ECRR_REPORTS/backup/ARCHIVE_POLICY.md` for emoji preservation rationale
+**Archive Policy**: See `CHAR/ECRR/ECRR_REPORTS/backup/ARCHIVE_POLICY.md` for emoji preservation rationale
 **Created**: January 27, 2025  
 **Purpose**: Central index of all archived reports and documentation  
 **Maintainer**: Cursor Agent - Observability Copilot
@@ -86,7 +86,7 @@ System audits and validation reports:
 
 ### **Primary Documentation**:
 - **Chronicle**: `docs/RESONAI_CHRONICLE.md` - Executive summaries
-- **Active Reports**: `docs/ECRR_REPORTS/` - Current ECRR reports
+- **Active Reports**: `CHAR/ECRR/ECRR_REPORTS/` - Current ECRR reports
 - **Governance**: `TASKS.md`, `DECISIONS.md`, `AGENTS.md` - Active governance
 
 ### **Archive Directories**:
@@ -116,4 +116,5 @@ System audits and validation reports:
 ---
 
 *This archive index is maintained as the central reference for all archived Resonai project documentation. All reports are preserved with full audit trails and cross-references to the main Chronicle.*
+
 

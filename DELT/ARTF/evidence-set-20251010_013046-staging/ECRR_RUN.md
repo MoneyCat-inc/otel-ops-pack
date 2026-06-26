@@ -10,7 +10,7 @@ Verdict: READY
 - docs/observability/snapshots: present
 - docs/status.html: present
 - scripts/benchmark-process-all-ecrr-reports.ps1: present
-- docs/ecrr/ECRR_REPORTS: present
+- CHAR/ECRR/ECRR_REPORTS: present
 - ALFA/TEST/helpers/signoz.ts: present
 - .github/workflows/bosscat-gate-verify.yml: present
 - docs/IONA_ERRORS.md: present

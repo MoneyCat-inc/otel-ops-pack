@@ -1,0 +1,19 @@
+{
+  "total": 385,
+  "fourSection": {
+    "count": 385,
+    "pct": 100.0
+  },
+  "ecrrGate": {
+    "count": 385,
+    "pct": 100.0
+  },
+  "actor": 385,
+  "evidence": 91,
+  "status": 91,
+  "thresholds": {
+    "minFourSectionPct": 0,
+    "minGatePct": 0
+  },
+  "passed": true
+}

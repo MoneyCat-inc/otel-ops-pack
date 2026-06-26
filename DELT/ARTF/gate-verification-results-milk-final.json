@@ -17,7 +17,7 @@
     "docs/status/tests.json": "present",
     "queue-steward-verification.txt": "present",
     "docs/IONA_ERRORS.md": "present",
-    "docs/ecrr/ECRR_REPORTS": "present",
+    "CHAR/ECRR/ECRR_REPORTS": "present",
     "index.html": "present",
     "docs/BossCat/README.md": "present",
     "docs/status.html": "present",
@@ -25,3 +25,4 @@
     "docs/observability/snapshots": "present"
   }
 }
+

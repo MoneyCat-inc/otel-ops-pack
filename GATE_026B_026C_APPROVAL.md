@@ -214,8 +214,8 @@ The 51.77% CI is an **honest baseline** reflecting the system's state immediatel
 - ✅ `docs/GATE_STATUS_DASHBOARD.md:29-61`
 - ✅ `GATE_026_SCOPE.md`
 - ✅ `GATE_026_IMPLEMENTATION_SUMMARY.md`
-- ✅ `docs/ecrr/ECRR_REPORTS/ECRR_GATE_026_IMPLEMENTATION_20251027.md`
-- ✅ `docs/ecrr/ECRR_REPORTS/ECRR_GATE_026_VERIFICATION_20251027.md`
+- ✅ `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_026_IMPLEMENTATION_20251027.md`
+- ✅ `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_026_VERIFICATION_20251027.md`
 - ✅ `GATE_026B_026C_APPROVAL.md` (this document)
 
 ### Deferred Track (A)
@@ -277,4 +277,5 @@ The 51.77% CI is an **honest baseline** reflecting the system's state immediatel
 **Seal:** 🐾 **Gate #026B+026C — APPROVED (Tracks B & C Delivered)**
 
 _k6 CI performance gates and ICF convergence telemetry verified and approved for immediate delivery. .NET auto-instrumentation deferred to Gate #026A for debugging. Honest ECRR assessment: 2/3 tracks production-ready, 1/3 requires investigation. Tag: gate-026b-026c-green-2025-10-27._
+
 

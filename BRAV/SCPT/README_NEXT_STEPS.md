@@ -110,7 +110,7 @@ pwsh -File .\BRAV\SCPT\cleanup_shims.ps1
 
 **Mapping:**
 - `docs/` → `CHAR/DOCS/`
-- `docs/ecrr/ECRR_REPORTS/` → `CHAR/EVID/ECRR_REPORTS/`
+- `CHAR/ECRR/ECRR_REPORTS/` → `CHAR/EVID/ECRR_REPORTS/`
 - `docs/observability/` → `CHAR/DOCS/observability/`
 
 ---
@@ -319,4 +319,5 @@ git add -A && git commit -m "chore(repo): remove legacy shims after validation"
 _Last updated: 2025-10-09_  
 _Version: 1.0.0_  
 _Maintained by: BossCat OEM_
+
 

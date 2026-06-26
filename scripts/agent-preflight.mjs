@@ -18,7 +18,7 @@ try {
   }
 
   // Prepare required dirs (idempotent)
-  ['artifacts', 'docs', 'docs/ecrr', 'docs/ecrr/ECRR_REPORTS', 'docs/observability', 'docs/observability/snapshots', '.agent', '.agent/tmp']
+  ['artifacts', 'docs', 'docs/ecrr', 'CHAR/ECRR/ECRR_REPORTS', 'docs/observability', 'docs/observability/snapshots', '.agent', '.agent/tmp']
     .forEach((d) => { try { mkdirSync(d, { recursive: true }); } catch {} });
 
   // CI scope note (hook for future lane validations)
@@ -31,4 +31,5 @@ try {
 } catch (err) {
   fail(err?.message || String(err));
 }
+
 

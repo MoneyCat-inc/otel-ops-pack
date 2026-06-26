@@ -284,7 +284,7 @@ fi
 print_section "4. Role - Directory Structure Setup"
 
 mkdir -p artifacts artifacts/benchmarks artifacts/reports artifacts/snapshots
-mkdir -p docs/BossCat/reports docs/ecrr/ECRR_REPORTS docs/observability/snapshots docs/cheatsheets
+mkdir -p docs/BossCat/reports CHAR/ECRR/ECRR_REPORTS docs/observability/snapshots docs/cheatsheets
 
 print_status "Directory structure prepared"
 
@@ -362,7 +362,7 @@ print_section "5. ECRR Compliance Verification"
 ECRR_COMPLIANCE=0
 TOTAL_CHECKS=5
 
-if [[ -d "docs/ecrr/ECRR_REPORTS" ]]; then
+if [[ -d "CHAR/ECRR/ECRR_REPORTS" ]]; then
     print_status "ECRR reports directory present"
     ((++ECRR_COMPLIANCE))
 else
@@ -446,3 +446,4 @@ echo
 
 echo -e "${GREEN}BossCat environment ready for CI workflow execution!${NC}"
 echo -e "${CYAN}Timestamp: ${TIMESTAMP}${NC}"
+

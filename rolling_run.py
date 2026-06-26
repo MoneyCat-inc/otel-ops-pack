@@ -661,7 +661,7 @@ def main() -> None:
     if evidence['run']['fellBackToCpu']:
         print("  Note: fell back to CPU execution")
 
-    evidence_path = Path("docs/ecrr/ECRR_REPORTS/rolling_stats_evidence.json")
+    evidence_path = Path("CHAR/ECRR/ECRR_REPORTS/rolling_stats_evidence.json")
     evidence_path.parent.mkdir(parents=True, exist_ok=True)
     evidence_path.write_text(json.dumps(evidence, indent=2), encoding="utf-8")
 
@@ -677,4 +677,5 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
 

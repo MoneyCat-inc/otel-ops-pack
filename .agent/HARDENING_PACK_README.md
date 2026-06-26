@@ -203,8 +203,8 @@ rm .agent/LOCK
 ## 📚 Documentation
 
 **Full Reports:**
-- `docs/ecrr/ECRR_REPORTS/HARDENING_PACK_TETRAGRAM_2025-10-09.md` (deployment)
-- `docs/ecrr/ECRR_REPORTS/HARDENING_PACK_SUCCESS_2025-10-09.md` (verification)
+- `CHAR/ECRR/ECRR_REPORTS/HARDENING_PACK_TETRAGRAM_2025-10-09.md` (deployment)
+- `CHAR/ECRR/ECRR_REPORTS/HARDENING_PACK_SUCCESS_2025-10-09.md` (verification)
 
 **Quick Reference:** This file
 
@@ -245,4 +245,5 @@ rm .agent/LOCK
 **Maintained By:** 🐾 BossCat OEM
 
 **Status:** ✅ **OPERATIONAL** - Crash prevention active
+
 

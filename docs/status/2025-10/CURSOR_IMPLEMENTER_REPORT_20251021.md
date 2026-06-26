@@ -36,7 +36,7 @@
 
 ### 3️⃣ REPORT Phase
 - ✅ Generated comprehensive ECRR report
-  - Path: `docs/ecrr/ECRR_REPORTS/ECRR_ANTICLICKBAIT_HTML_REMEDIATION_20251021.md`
+  - Path: `CHAR/ECRR/ECRR_REPORTS/ECRR_ANTICLICKBAIT_HTML_REMEDIATION_20251021.md`
   - Length: ~520 lines, comprehensive evidence
 - ✅ Documented before/after state with evidence
 - ✅ Cat Nap Control Room aesthetic compliance verified
@@ -80,7 +80,7 @@
 
 ### New Files Created (2)
 ```
-?? docs/ecrr/ECRR_REPORTS/ECRR_ANTICLICKBAIT_HTML_REMEDIATION_20251021.md
+?? CHAR/ECRR/ECRR_REPORTS/ECRR_ANTICLICKBAIT_HTML_REMEDIATION_20251021.md
 ?? CURSOR_IMPLEMENTER_REPORT_20251021.md (this file)
 ```
 
@@ -88,7 +88,7 @@
 ```
  M DELT/ARTF/benchmark-results-2025-10-20.json
  M DELT/ARTF/ecrr-benchmark.json
- M docs/ecrr/ECRR_REPORTS/EVIDENCE_2025-10-20.md
+ M CHAR/ECRR/ECRR_REPORTS/EVIDENCE_2025-10-20.md
  M logs/canary-check-min.last.log
 ?? "docs/BossCat/reports/Run benchmark campaign.txt"
 ?? "docs/BossCat/reports/Run benchmark campaign2.txt"
@@ -101,7 +101,7 @@
 **Option 1: Remediation Only (Recommended)**
 ```bash
 git add docs/anticlickbait/index.html
-git add docs/ecrr/ECRR_REPORTS/ECRR_ANTICLICKBAIT_HTML_REMEDIATION_20251021.md
+git add CHAR/ECRR/ECRR_REPORTS/ECRR_ANTICLICKBAIT_HTML_REMEDIATION_20251021.md
 git add CURSOR_IMPLEMENTER_REPORT_20251021.md
 
 git commit -m "docs(anticlickbait): Remove embedded SOCM documentation from HTML
@@ -145,7 +145,7 @@ git commit -m "[Same message as above]"
 
 ### Immediate (Now)
 1. **📖 Review ECRR Report** (optional)
-   - File: `docs/ecrr/ECRR_REPORTS/ECRR_ANTICLICKBAIT_HTML_REMEDIATION_20251021.md`
+   - File: `CHAR/ECRR/ECRR_REPORTS/ECRR_ANTICLICKBAIT_HTML_REMEDIATION_20251021.md`
    - Length: ~520 lines (comprehensive)
 
 2. **✅ Approve & Commit Changes**
@@ -274,4 +274,5 @@ _Mission accomplished. HTML integrity restored. ANTIclickbait Transparency Hub o
 ---
 
 **End of Report**
+
 

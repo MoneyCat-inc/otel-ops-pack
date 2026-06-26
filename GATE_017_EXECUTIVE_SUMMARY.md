@@ -113,7 +113,7 @@
 `DELT/ARTF/gate-verification-results-20251026-readiness.json`
 
 **ECRR Report:**  
-`docs/ecrr/ECRR_REPORTS/ECRR_GATE_017_READY_20251026.md`
+`CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_017_READY_20251026.md`
 
 **Gate Status Dashboard:**  
 `docs/GATE_STATUS_DASHBOARD.md`
@@ -172,4 +172,5 @@ All gate matrix checks PASS. Working tree clean. Docker: 12/12 operational. SigN
 ---
 
 🐾 *Cat Nap Control Room - Serene, Efficient, Ready*
+
 

@@ -13,7 +13,7 @@ Parses 318 ECRR reports to extract:
 #>
 
 param(
-    [string]$ReportsDir = "docs/ecrr/ECRR_REPORTS",
+    [string]$ReportsDir = "CHAR/ECRR/ECRR_REPORTS",
     [string]$ArchiveDir = "docs/archive/gates/2025-11",
     [string]$OutputDir = "artifacts/ecrr-analytics"
 )
@@ -267,4 +267,5 @@ $html += @"
 $html | Out-File -Encoding UTF8 $htmlPath
 Write-Host "✅ HTML dashboard exported to: $htmlPath" -ForegroundColor Green
 Write-Host ""
+
 
