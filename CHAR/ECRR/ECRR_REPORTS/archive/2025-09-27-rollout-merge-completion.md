@@ -351,7 +351,7 @@
 ## 📋 **Artifacts Created**
 
 ### **Documentation**
-- `docs/ECRR_REPORTS/2025-09-27-rollout-merge-completion.md` - This ECRR report
+- `CHAR/ECRR/ECRR_REPORTS/2025-09-27-rollout-merge-completion.md` - This ECRR report
 
 ### **System State**
 - Commit: 1aa88ac - T03 Canary Monitoring COMPLETED
@@ -392,6 +392,7 @@
 **Status**: Cat Nap Control Room operational - bots doing laps, cat can nap
 
 *ECRR or it didn't happen.*
+
 
 
 

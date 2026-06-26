@@ -50,7 +50,7 @@
 ### **Repository Cleanup Executed**
 - **Removed 175+ files** across multiple categories:
   - 36 config backup files (`config.bak.*.yaml`)
-  - 126 ECRR report backups (`docs/ECRR_REPORTS/*.backup-*`)
+  - 126 ECRR report backups (`CHAR/ECRR/ECRR_REPORTS/*.backup-*`)
   - 5 redundant status reports (`FINAL_*.md`)
   - Test artifacts (`validation-evidence-*`, `SigNoz _ Home_files/`)
   - 3 duplicate documentation files
@@ -370,4 +370,5 @@
 - Scope:
 
 ---
+
 

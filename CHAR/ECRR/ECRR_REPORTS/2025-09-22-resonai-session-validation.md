@@ -227,7 +227,7 @@
 ## Artifacts Created
 
 ### Documentation
-- `docs/ECRR_REPORTS/2025-09-22-resonai-session-validation.md` - this report.
+- `CHAR/ECRR/ECRR_REPORTS/2025-09-22-resonai-session-validation.md` - this report.
 
 ### Existing Evidence Referenced
 - `artifacts/resonai-session-2025-09-22.json`
@@ -333,3 +333,4 @@
 - Integrates with observability stack and monitoring systems
 
 ---
+

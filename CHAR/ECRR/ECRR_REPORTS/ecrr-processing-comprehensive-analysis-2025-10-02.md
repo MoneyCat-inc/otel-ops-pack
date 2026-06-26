@@ -10,9 +10,9 @@
 
 ### **Report Inventory Summary**
 - **Total Reports Found**: 149+ ECRR reports across repository
-- **Primary Location**: `docs/ECRR_REPORTS/` (74 reports)
+- **Primary Location**: `CHAR/ECRR/ECRR_REPORTS/` (74 reports)
 - **Artifacts Location**: `artifacts/` (47 ECRR-related files)
-- **Archive Location**: `docs/ECRR_REPORTS/archive/` (28+ archived reports)
+- **Archive Location**: `CHAR/ECRR/ECRR_REPORTS/archive/` (28+ archived reports)
 - **Date Range**: December 2024 - October 2025
 - **Latest Activity**: October 2, 2025 (current processing)
 
@@ -248,9 +248,9 @@ Activity Distribution:
 ## 📋 **Processing Artifacts Created**
 
 ### **Analysis Documentation**
-- `docs/ECRR_REPORTS/ecrr-processing-comprehensive-analysis-2025-10-02.md` - This comprehensive analysis
-- `docs/ECRR_REPORTS/2025-10-01-ecrr-processing-final-consolidated-report.md` - Previous processing summary
-- `docs/ECRR_REPORTS/2025-09-29-ecrr-action-items-and-recommendations.md` - Action items and recommendations
+- `CHAR/ECRR/ECRR_REPORTS/ecrr-processing-comprehensive-analysis-2025-10-02.md` - This comprehensive analysis
+- `CHAR/ECRR/ECRR_REPORTS/2025-10-01-ecrr-processing-final-consolidated-report.md` - Previous processing summary
+- `CHAR/ECRR/ECRR_REPORTS/2025-09-29-ecrr-action-items-and-recommendations.md` - Action items and recommendations
 
 ### **Framework Enhancements**
 - Enhanced ECRR templates with mandatory requirements
@@ -395,3 +395,4 @@ The comprehensive ECRR processing analysis provides complete visibility into fra
 - Scope: Complete ECRR reports processing and comprehensive analysis
 
 ---
+

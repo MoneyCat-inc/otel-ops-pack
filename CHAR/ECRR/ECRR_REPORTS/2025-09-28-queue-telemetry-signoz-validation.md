@@ -119,7 +119,7 @@ GROUP BY ts ORDER BY ts;
 - ✅ `docs/SIGNOZ_ECRR_COMPLIANCE_ALERT_GUIDE.md` - Updated with correct field names and verification queries
 - ✅ `docs/queue-steward-dashboard.json` - Updated all queries to use `message` field
 - ✅ `scripts/import-queue-dashboard.ps1` - Verified import script functionality
-- ✅ `docs/ECRR_REPORTS/2025-09-28-queue-telemetry-signoz-validation.md` - This report
+- ✅ `CHAR/ECRR/ECRR_REPORTS/2025-09-28-queue-telemetry-signoz-validation.md` - This report
 
 ## 🎭 Role
 
@@ -270,4 +270,5 @@ GROUP BY ts ORDER BY ts;
 - Scope:
 
 ---
+
 

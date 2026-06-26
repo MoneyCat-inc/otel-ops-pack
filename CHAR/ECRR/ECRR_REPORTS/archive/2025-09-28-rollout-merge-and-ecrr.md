@@ -314,10 +314,10 @@ Cursor Agent - Observability Copilot successfully completed automated compliance
 - `docs/ECRR_AUTOMATED_MONITORING_TRAINING_GUIDE.md` - Team training guide
 
 ### **Documentation and Reports**
-- `docs/ECRR_REPORTS/2025-09-28-automated-compliance-monitoring-deployment-complete.md` - Deployment summary
-- `docs/ECRR_REPORTS/2025-09-28-automated-compliance-monitoring-implementation.md` - Implementation report
-- `docs/ECRR_REPORTS/2025-09-28-ecrr-processing-complete.md` - ECRR processing report
-- `docs/ECRR_REPORTS/2025-09-29-rollout-merge-consolidated.md` - This rollout merge report
+- `CHAR/ECRR/ECRR_REPORTS/2025-09-28-automated-compliance-monitoring-deployment-complete.md` - Deployment summary
+- `CHAR/ECRR/ECRR_REPORTS/2025-09-28-automated-compliance-monitoring-implementation.md` - Implementation report
+- `CHAR/ECRR/ECRR_REPORTS/2025-09-28-ecrr-processing-complete.md` - ECRR processing report
+- `CHAR/ECRR/ECRR_REPORTS/2025-09-29-rollout-merge-consolidated.md` - This rollout merge report
 
 ### **Configuration and Settings**
 - **Monitoring Thresholds**: Critical (50%), Warning (70%), Target (80%), Excellent (90%)
@@ -448,3 +448,4 @@ The automated compliance monitoring system rollout merge provides complete CI/CD
 - Integrates with observability stack and monitoring systems
 
 ---
+

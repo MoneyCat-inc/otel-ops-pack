@@ -245,7 +245,7 @@
 
 ### Documentation
 - `docs/CREATIVE_HANDOFF.md` - Comfort Cat stakeholder showcase (updated)
-- `docs/ECRR_REPORTS/2025-09-22-comfort-cat-compliance.md` - this report
+- `CHAR/ECRR/ECRR_REPORTS/2025-09-22-comfort-cat-compliance.md` - this report
 
 ---
 
@@ -344,3 +344,4 @@
 - Integrates with observability stack and monitoring systems
 
 ---
+
