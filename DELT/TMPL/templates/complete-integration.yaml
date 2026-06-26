@@ -110,7 +110,7 @@ processors:
 exporters:
   # SigNoz exporter (primary)
   otlp:
-    endpoint: 127.0.0.1:14318
+    endpoint: 127.0.0.1:4318
     tls:
       insecure: true
     retry_on_failure:

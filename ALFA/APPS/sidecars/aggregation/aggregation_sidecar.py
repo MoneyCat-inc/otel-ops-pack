@@ -37,7 +37,7 @@ logger = logging.getLogger(__name__)
 class AggregationConfig:
     """Configuration for GPU aggregation sidecar"""
     input_dir: str = "/app/gpu-buffers/analytics"
-    output_endpoint: str = "http://localhost:14318/v1/metrics"
+    output_endpoint: str = "http://localhost:4318/v1/metrics"
     batch_size: int = 10000  # records
     batch_timeout: float = 30.0  # seconds
     poll_interval: float = 2.0  # seconds

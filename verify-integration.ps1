@@ -104,8 +104,6 @@ Test-TcpPort -Port 4317 -Label "SigNoz collector (gRPC)"
 Test-TcpPort -Port 4318 -Label "SigNoz collector (HTTP)"
 Test-OptionalTcpPort -Port 14320 -Label "SigNoz writer (gRPC remapped)"
 Test-OptionalTcpPort -Port 14321 -Label "SigNoz writer (HTTP remapped)"
-Test-OptionalTcpPort -Port 14317 -Label "SigNoz collector (gRPC legacy remap)"
-Test-OptionalTcpPort -Port 14318 -Label "SigNoz collector (HTTP legacy remap)"
 
 Write-Host "`n4. SigNoz UI Connectivity:" -ForegroundColor Yellow
 $uiUrl = "http://localhost:8080"; $uiSuccess = $false; $uiError = $null
@@ -124,7 +122,7 @@ $configPath = Join-Path (Get-Location) "config.yaml"
 if (Test-Path $configPath) {
     try {
         $configContent = Get-Content -Path $configPath -Raw
-        if ($configContent -match "endpoint\s*:\s*['`"]?http://localhost:4317['`"]?" -or $configContent -match "endpoint\s*:\s*['`"]?http://0\.0\.0\.0:4317['`"]?" -or $configContent -match "endpoint\s*:\s*['`"]?http://localhost:14317['`"]?" -or $configContent -match "endpoint\s*:\s*['`"]?http://0\.0\.0\.0:14317['`"]?" -or $configContent -match "endpoint\s*:\s*['`"]?http://127\.0\.0\.1:14317['`"]?" -or $configContent -match "endpoint\s*:\s*['`"]?http://127\.0\.0\.1:4317['`"]?" -or $configContent -match "endpoint\s*:\s*['`"]?http://localhost:14320['`"]?" -or $configContent -match "endpoint\s*:\s*['`"]?http://0\.0\.0\.0:14320['`"]?" -or $configContent -match "endpoint\s*:\s*['`"]?http://127\.0\.0\.1:14320['`"]?") { Write-Pass "OTLP gRPC exporter configured for SigNoz connection" } else { Write-Fail "Unable to confirm OTLP gRPC endpoint configuration" }
+        if ($configContent -match "endpoint\s*:\s*['`"]?http://localhost:4317['`"]?" -or $configContent -match "endpoint\s*:\s*['`"]?http://0\.0\.0\.0:4317['`"]?" -or $configContent -match "endpoint\s*:\s*['`"]?http://127\.0\.0\.1:4317['`"]?" -or $configContent -match "endpoint\s*:\s*['`"]?http://localhost:14320['`"]?" -or $configContent -match "endpoint\s*:\s*['`"]?http://0\.0\.0\.0:14320['`"]?" -or $configContent -match "endpoint\s*:\s*['`"]?http://127\.0\.0\.1:14320['`"]?") { Write-Pass "OTLP gRPC exporter configured for SigNoz connection" } else { Write-Fail "Unable to confirm OTLP gRPC endpoint configuration" }
         if ($configContent -match 'windows-canary') { Write-Pass "Windows canary pipeline configuration detected" } else { Write-Detail "Windows canary pipeline not detected in config" }
     } catch { Write-Fail "Failed to read config.yaml: $($_.Exception.Message)" }
 } else { Write-Fail "Config file not found at $configPath" }

@@ -44,6 +44,6 @@ docker-compose -f docker-compose-signoz.yml ps
 
 Write-Host "SigNoz stack is ready!" -ForegroundColor Green
 Write-Host "   - SigNoz UI: http://localhost:8080" -ForegroundColor Cyan
-Write-Host "   - OTLP gRPC: localhost:14317" -ForegroundColor Cyan
-Write-Host "   - OTLP HTTP: localhost:14318" -ForegroundColor Cyan
+Write-Host "   - OTLP gRPC: localhost:4317" -ForegroundColor Cyan
+Write-Host "   - OTLP HTTP: localhost:4318" -ForegroundColor Cyan
 Write-Host "   - ClickHouse: http://localhost:8123" -ForegroundColor Cyan
