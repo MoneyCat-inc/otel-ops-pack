@@ -30,7 +30,7 @@
 - Role: Observability Copilot
 - Responsibilities: plan, execute, validate, record
 - Artifacts delivered: docs/ECRR.md, docs/ECRR_REPORT_TEMPLATE.md, scripts/ecrr-doctor.ps1, .github/PULL_REQUEST_TEMPLATE.md, README.md updates
-- Handoff notes: ECRR framework operational; use `pwsh -File scripts/ecrr-doctor.ps1` before changes; evidence in PR body, artifacts in docs/ECRR_REPORTS
+- Handoff notes: ECRR framework operational; use `pwsh -File scripts/ecrr-doctor.ps1` before changes; evidence in PR body, artifacts in CHAR/ECRR/ECRR_REPORTS
 
 ## ✅ **ECRR Gate - MANDATORY VALIDATION**
 
@@ -180,4 +180,5 @@
 - Scope:
 
 ---
+
 

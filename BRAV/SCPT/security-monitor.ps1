@@ -121,8 +121,8 @@ while ((Get-Date) -lt $endTime) {
     
     # 4. Check OTLP Endpoints
     $endpoints = @(
-        @{ Port = 14317; Name = "OTLP gRPC" },
-        @{ Port = 14318; Name = "OTLP HTTP" }
+        @{ Port = 4317; Name = "OTLP gRPC" },
+        @{ Port = 4318; Name = "OTLP HTTP" }
     )
     
     foreach ($ep in $endpoints) {

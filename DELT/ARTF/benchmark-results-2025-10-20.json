@@ -46,7 +46,7 @@
     "throughput_adequate": true
   },
   "evidence": {
-    "report": "docs/ecrr/ECRR_REPORTS/EVIDENCE_2025-10-20.md",
+    "report": "CHAR/ECRR/ECRR_REPORTS/EVIDENCE_2025-10-20.md",
     "artifacts": "artifacts/metrics_2025-10-20/ (see campaign2 output file)",
     "source_file": "docs/BossCat/reports/Run benchmark campaign2.txt"
   },
@@ -57,5 +57,6 @@
     "fail_closed_principle": "MAINTAINED"
   }
 }
+
 
 

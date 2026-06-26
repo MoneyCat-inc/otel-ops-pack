@@ -69,7 +69,7 @@ function New-EcrrReport([string]$Verdict,[string[]]$Reasons,[hashtable]$Checks){
     $lines += 'Reasons:'
     foreach($r in $Reasons){ $lines += "- $r" }
   }
-  $dir = 'docs/ecrr/ECRR_REPORTS'
+  $dir = 'CHAR/ECRR/ECRR_REPORTS'
   Ensure-Dirs @($dir)
   $name = Join-Path $dir ("ECRR_GATE_RUN_" + (Get-Date -Format 'yyyyMMdd_HHmmss') + '.md')
   $content = $lines -join "`r`n"
@@ -130,7 +130,7 @@ function Write-PrComment([string]$Verdict,[string[]]$Reasons,[string]$OutputPath
 $primaryOutputPath='artifacts/gate-verification-results.json'
 $legacyOutputPath='DELT/ARTF/gate-verification-results.json'
 $legacyMirrorRequested=$false
-$tsIso=Get-Date -Format 'yyyy-MM-ddTHH:mm:ssK'; Ensure-Dirs @('artifacts','docs/ecrr/ECRR_REPORTS')
+$tsIso=Get-Date -Format 'yyyy-MM-ddTHH:mm:ssK'; Ensure-Dirs @('artifacts','CHAR/ECRR/ECRR_REPORTS')
 if ((Test-Path -LiteralPath $legacyOutputPath) -and -not (Test-Path -LiteralPath $primaryOutputPath)) {
   try {
     Copy-Item -LiteralPath $legacyOutputPath -Destination $primaryOutputPath -Force
@@ -169,7 +169,7 @@ $queueRequired = ($Site -eq 'prod' -and -not $useMock)
 # Default strictness by site if not explicitly provided
 if (-not $PSBoundParameters.ContainsKey('Strict')) { $Strict = ($Site -eq 'prod') }
 if (Get-Command Update-BossCatProgress -ErrorAction SilentlyContinue) { Update-BossCatProgress -Phase 'Collecting required assets' -CompletedSeconds 3 }
-$required=@('.github/workflows/bosscat-gate-verify.yml','docs/status/tests.json','docs/status.html','docs/ecrr/ECRR_REPORTS','docs/observability/snapshots','docs/IONA_ERRORS.md','docs/cheatsheets','index.html')
+$required=@('.github/workflows/bosscat-gate-verify.yml','docs/status/tests.json','docs/status.html','CHAR/ECRR/ECRR_REPORTS','docs/observability/snapshots','docs/IONA_ERRORS.md','docs/cheatsheets','index.html')
 $nonCritical=@('scripts/benchmark-process-all-ecrr-reports.ps1','docs/BossCat/README.md')
 Ensure-Dirs @('docs/observability/snapshots','docs/cheatsheets')
 $checks=@{}; $missing=New-Object System.Collections.ArrayList
@@ -230,3 +230,4 @@ $report=New-EcrrReport -Verdict $verdict -Reasons @($reasons) -Checks $checks
 Write-PrComment -Verdict $verdict -Reasons @($reasons) -OutputPath $PrCommentPath -Checks $checks
 if (Get-Command Complete-BossCatProgress -ErrorAction SilentlyContinue) { Complete-BossCatProgress }
 if($verdict -eq 'NOT_READY' -and -not $NoFailOnMissing){ exit 2 } else { exit 0 }
+

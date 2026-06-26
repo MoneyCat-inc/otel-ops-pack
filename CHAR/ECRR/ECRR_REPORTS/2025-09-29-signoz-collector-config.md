@@ -60,7 +60,7 @@ Test-NetConnection -ComputerName 127.0.0.1 -Port 14318
 ### Artifacts Generated
 1. **`docs/SIGNOZ_COLLECTOR_STATUS.md`**: Complete status and maintenance guide
 2. **`docs/LOGS_STRATEGY_OPTIONS.md`**: Three approaches for logs pipeline re-enablement
-3. **`docs/ECRR_REPORTS/2025-09-29-signoz-collector-config.md`**: This ECRR report
+3. **`CHAR/ECRR/ECRR_REPORTS/2025-09-29-signoz-collector-config.md`**: This ECRR report
 
 ### Evidence of Success
 ```bash
@@ -268,4 +268,5 @@ This ECRR report documents the configuration update executed by **Cursor Agent -
 - Scope:
 
 ---
+
 

@@ -113,7 +113,7 @@ function New-ECRRIncidentReport {
     param($Incident, $RecoveryResult)
     
     $timestamp = Get-Date -Format "yyyyMMdd-HHmmss"
-    $reportPath = "docs\ecrr\ECRR_REPORTS\AUTOBOT_GUARDIAN_RECOVERY_$timestamp.md"
+    $reportPath = "CHAR\ECRR\ECRR_REPORTS\AUTOBOT_GUARDIAN_RECOVERY_$timestamp.md"
     
     $report = @"
 # ECRR Report: AutoBot Guardian Service Recovery
@@ -308,4 +308,5 @@ else {
 }
 
 Write-GuardianLog "AutoBot Guardian session ended" "INFO"
+
 

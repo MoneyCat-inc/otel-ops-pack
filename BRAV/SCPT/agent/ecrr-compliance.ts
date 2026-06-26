@@ -402,7 +402,7 @@ ${this.complianceHistory.slice(-5).map(report =>
   }
 
   private async saveReport(report: ECRRReport): Promise<void> {
-    const reportDir = 'docs/ECRR_REPORTS';
+    const reportDir = 'CHAR/ECRR/ECRR_REPORTS';
     await fs.mkdir(reportDir, { recursive: true });
     
     const filename = `${report.createdAt.split('T')[0]}-${report.id}.md`;
@@ -479,7 +479,7 @@ ${report.role.accountability.map(a => `- ${a}`).join('\n')}
 
   private async loadExistingReports(): Promise<void> {
     try {
-      const reportDir = 'docs/ECRR_REPORTS';
+      const reportDir = 'CHAR/ECRR/ECRR_REPORTS';
       const files = await fs.readdir(reportDir);
       
       for (const file of files) {
@@ -668,3 +668,4 @@ if (require.main === module) {
 
 export { ECRRComplianceEngine };
 export type { ECRRReport, ECRRExamine, ECRRClean, ECRRRole, ComplianceRule };
+

@@ -60,7 +60,7 @@ Every gate run follows:
 - **Schedule:** 1st day of month, 02:00 UTC
 - **Action:** Archive snapshots and ECRR reports older than 30 days
 - **Archive:** `CHAR/PRSV/evidence-archives/evidence-rollup-YYYY-MM.tar.gz`
-- **Report:** `docs/ecrr/ECRR_REPORTS/ECRR_EVIDENCE_ROLLUP_YYYY-MM.md`
+- **Report:** `CHAR/ECRR/ECRR_REPORTS/ECRR_EVIDENCE_ROLLUP_YYYY-MM.md`
 - **Retention:** 90-day artifact retention, indefinite archive
 - **Workflow:** `.github/workflows/bosscat-monthly-evidence-rollup.yml`
 
@@ -68,4 +68,5 @@ Every gate run follows:
 ```
 GitHub Actions → "Monthly Evidence Rollup" → Run workflow
 ```
+
 

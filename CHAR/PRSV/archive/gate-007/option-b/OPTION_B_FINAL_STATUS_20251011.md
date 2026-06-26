@@ -134,7 +134,7 @@ Status: Production ready, Option B informational
 ### PR-Merge Lane ✅
 - **Status:** READY
 - **Evidence:** `DELT/ARTF/gate-verification-results.json`
-- **ECRR:** `docs/ecrr/ECRR_REPORTS/ECRR_PR_MERGE_20251010.md`
+- **ECRR:** `CHAR/ECRR/ECRR_REPORTS/ECRR_PR_MERGE_20251010.md`
 - **PRs:** 7/7 merged successfully
 
 ### Option B Lane ⚠️
@@ -188,4 +188,5 @@ Rationale:
 1. `"use docker"` - I'll guide Docker Compose setup
 2. `"debug service"` - I'll help troubleshoot Windows service
 3. `"approve gate"` - I'll post qualified approval message
+
 

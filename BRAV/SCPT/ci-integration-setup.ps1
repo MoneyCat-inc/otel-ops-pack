@@ -195,7 +195,7 @@ if ($LASTEXITCODE -ne 0) {
 
 ## Troubleshooting
 - Ensure PowerShell 7.4+ is available in CI environment
-- Check that ECRR reports exist in `docs/ECRR_REPORTS/`
+- Check that ECRR reports exist in `CHAR/ECRR/ECRR_REPORTS/`
 - Verify artifacts directory is writable
 "@
 
@@ -220,3 +220,4 @@ Write-Host "Next steps:" -ForegroundColor Yellow
 Write-Host "1. Choose your CI platform and copy the appropriate workflow/pipeline" -ForegroundColor White
 Write-Host "2. Test the integration with a test commit" -ForegroundColor White
 Write-Host "3. Set up monitoring and alerts for compliance drops" -ForegroundColor White
+

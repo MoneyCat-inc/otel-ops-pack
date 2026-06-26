@@ -21,7 +21,7 @@ param(
     [string]$SignozUrl = "http://localhost:8080",
     [string]$MetricsPath = "artifacts/tetragrammaton-benchmarks",
     [string]$DashboardConfig = "scripts/tetragrammaton-dashboard-config.json",
-    [string]$ECRRReportDir = "docs/ecrr/ECRR_REPORTS",
+    [string]$ECRRReportDir = "CHAR/ECRR/ECRR_REPORTS",
     [switch]$DryRun
 )
 
@@ -493,3 +493,4 @@ Write-Host "🐾 Tetragrammaton Dashboard Metrics Complete" -ForegroundColor Gre
 Write-Host "📊 Architecture Validation: YHWH structure confirmed" -ForegroundColor Yellow
 Write-Host "🏛️ BossCat Compliance: Dashboard visibility achieved" -ForegroundColor Yellow
 Write-Host "📈 ECRR Evidence: Metrics pipeline operational" -ForegroundColor Yellow
+

@@ -205,7 +205,7 @@
 15. CURSOR_IMPLEMENTER_READY_FOR_GATE_FINAL_20251013.md (this doc)
 
 **ECRR Reports**:
-16. docs/ecrr/ECRR_REPORTS/ECRR_P1_TASKS_20251013.md
+16. CHAR/ECRR/ECRR_REPORTS/ECRR_P1_TASKS_20251013.md
 17-22. ECRR_GATE_RUN_20251013_* (6 gate run reports)
 
 **Total Evidence**: 22+ comprehensive documents
@@ -572,4 +572,5 @@ git reset --hard 2cbfa5f  # Before session start
 - 🐾 Compliance: 100% ECRR-aligned
 
 **Ready for BossCat approval and backfill execution** 🚀
+
 

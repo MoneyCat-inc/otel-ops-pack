@@ -184,7 +184,7 @@ All Phase-2 decisions validated by independent research.
 
 **Generated Artifacts**:
 - ✅ `.agent/EVIDENCE.log` - JSON telemetry
-- ✅ `docs/ecrr/ECRR_REPORTS/ECRR_VISU_PHASE2_20251016.md` - Full ECRR
+- ✅ `CHAR/ECRR/ECRR_REPORTS/ECRR_VISU_PHASE2_20251016.md` - Full ECRR
 - ✅ `BOSSCAT_LOG.md` - Timeline entry: `[2025-10-16 11:30:00] MILK-PHASE2`
 - ✅ `MILK_RESEARCH_INTEGRATION.md` - Research validation analysis
 - ✅ `MILK_PHASE3_ROADMAP.md` - Future execution plan
@@ -290,4 +290,5 @@ MILK Phase-2 complete — **all gates GREEN**.
 ---
 
 *cursor{implementer} | ECRR Complete | Lane: MILK | Tetragram-Compliant*
+
 

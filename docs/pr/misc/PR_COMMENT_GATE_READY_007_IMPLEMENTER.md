@@ -36,7 +36,7 @@
 5. `.github/PULL_REQUEST_TEMPLATE_ICF.md` — **ICF PR template**
 6. `docs/status/metrics.json` — **RSI tracking structure**
 7. `DELT/ARTF/gate-ready-exec-20251012.json` — **Gate certification (READY)**
-8. `docs/ecrr/ECRR_REPORTS/ECRR_CURSOR_IMPLEMENTER_20251012_085425.md` — **This run's ECRR**
+8. `CHAR/ECRR/ECRR_REPORTS/ECRR_CURSOR_IMPLEMENTER_20251012_085425.md` — **This run's ECRR**
 
 **Supporting Artifacts**:
 - `DELT/ARTF/refmap-gate.json` (PASS)
@@ -66,7 +66,7 @@
 ### Evidence Chain
 
 **Gate Artifacts**:
-- 44 ECRR reports in `docs/ecrr/ECRR_REPORTS/`
+- 44 ECRR reports in `CHAR/ECRR/ECRR_REPORTS/`
 - 10 observability snapshots in `docs/observability/snapshots/`
 - Research conversions in `docs/BossCat/Research/`
 - Cursor run evidence in `DELT/ARTF/cursor-runs/`
@@ -101,7 +101,7 @@ git add .github/PULL_REQUEST_TEMPLATE_ICF.md
 git add docs/BossCat/PLANNER_BRIEF_20251012.md
 git add docs/status.html
 git add docs/status/metrics.json
-git add docs/ecrr/ECRR_REPORTS/ECRR_CURSOR_IMPLEMENTER_20251012_085425.md
+git add CHAR/ECRR/ECRR_REPORTS/ECRR_CURSOR_IMPLEMENTER_20251012_085425.md
 git add DELT/ARTF/gate-ready-exec-20251012.json
 
 git commit -m "docs(ecrr): gate #007 prep - sentinels + ICF heuristic + status dashboard
@@ -141,6 +141,7 @@ Gate #007 Readiness Check
 ---
 
 **Seal**: 🐾 cursor{implementer} — BossCat OEM Delegation  
-**Evidence**: `docs/ecrr/ECRR_REPORTS/ECRR_CURSOR_IMPLEMENTER_20251012_085425.md`  
+**Evidence**: `CHAR/ECRR/ECRR_REPORTS/ECRR_CURSOR_IMPLEMENTER_20251012_085425.md`  
 **Next Action**: BossCat OEM review → Stage → Commit → Signal Gate #007
+
 

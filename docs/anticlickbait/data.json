@@ -60,7 +60,7 @@
         "35+ ECRR reports generated for MILK Lane alone",
         "Complete audit trail for all operations"
       ],
-      "evidence": "docs/ecrr/ECRR_REPORTS/*.md, 200+ reports total",
+      "evidence": "CHAR/ECRR/ECRR_REPORTS/*.md, 200+ reports total",
       "limitations": "Documentation-heavy, requires discipline"
     },
     {
@@ -334,5 +334,6 @@
     }
   }
 }
+
 
 

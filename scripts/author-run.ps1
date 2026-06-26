@@ -160,7 +160,7 @@ $sessionArtifact = @{
 $sessionArtifact | Set-Content "$sessionDir/session-summary.json" -Encoding UTF8
 
 # BOSSCAT_LOG entry
-$logEntry = "- $(Get-Date -Format 'yyyy-MM-ddTHH:mm:ssZ') - [AUTHORING] Session $sessionId: $($cycles.Count) cycles, best score $($bestScore.ToString('F2')) ($bestPreset), style='$StyleBrief'. - Cursor{Implementer}"
+$logEntry = "- $(Get-Date -Format 'yyyy-MM-ddTHH:mm:ssZ') - [AUTHORING] Session ${sessionId}: $($cycles.Count) cycles, best score $($bestScore.ToString('F2')) ($bestPreset), style='$StyleBrief'. - Cursor{Implementer}"
 
 Write-Host "BOSSCAT_LOG entry:" -ForegroundColor Gray
 Write-Host $logEntry -ForegroundColor Gray

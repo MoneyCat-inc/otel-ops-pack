@@ -622,7 +622,7 @@ All security-relevant actions must be:
 |----------|----------|-----------|---------|
 | Dashboard Snapshots | `docs/observability/snapshots/` | Permanent | Visual proof of metrics |
 | Security Scan Results | GitHub Actions artifacts | 90 days | Vulnerability tracking |
-| ECRR Reports | `docs/ecrr/ECRR_REPORTS/` | Permanent | Compliance evidence |
+| ECRR Reports | `CHAR/ECRR/ECRR_REPORTS/` | Permanent | Compliance evidence |
 | Rotation Log | `docs/security/rotation-log.md` | Permanent | Credential management |
 | Incident Reports | `docs/security/incidents/` | Permanent | Incident history |
 | Workflow Logs | GitHub Actions | 90 days | Process verification |
@@ -871,4 +871,5 @@ Track improvements in GitHub Issues with labels:
 **🐾 End of Security & Maintenance Master Guide**
 
 *For questions or clarifications, open an issue with the `documentation` label.*
+
 

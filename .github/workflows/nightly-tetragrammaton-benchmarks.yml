@@ -31,7 +31,7 @@ env:
   NODEJS_BENCHMARK_PATH: C:\Users\fubum\nodejs_benchmark
   PYTHON_BENCHMARK_PATH: C:\Users\fubum\codex_local_test
   OUTPUT_ROOT: artifacts/nightly-tetragrammaton-ci
-  ECRR_REPORT_DIR: docs/ecrr/ECRR_REPORTS
+  ECRR_REPORT_DIR: CHAR/ECRR/ECRR_REPORTS
   BOSSCAT_SNAPSHOT_DIR: docs/observability/snapshots
 
 jobs:
@@ -120,3 +120,4 @@ jobs:
         required: false
         default: "false"
         type: boolean
+

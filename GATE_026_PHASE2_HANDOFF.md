@@ -41,8 +41,8 @@ Gate #026 implementation and automated verification are complete. All three trac
 - ✅ `GATE_026_SCOPE.md` — Objectives & success criteria
 - ✅ `GATE_026_IMPLEMENTATION_SUMMARY.md` — Technical details
 - ✅ `GATE_026_VERIFICATION_GUIDE.md` — Step-by-step execution guide
-- ✅ `docs/ecrr/ECRR_REPORTS/ECRR_GATE_026_IMPLEMENTATION_20251027.md` — Implementation ECRR
-- ✅ `docs/ecrr/ECRR_REPORTS/ECRR_GATE_026_VERIFICATION_20251027.md` — Verification ECRR
+- ✅ `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_026_IMPLEMENTATION_20251027.md` — Implementation ECRR
+- ✅ `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_026_VERIFICATION_20251027.md` — Verification ECRR
 - ✅ `GATE_026_PHASE2_HANDOFF.md` — This document
 
 ---
@@ -263,7 +263,7 @@ Gate #026 implementation and automated verification are complete. All three trac
 ### Immediate (BossCat OEM)
 
 1. **Review Verification ECRR:**
-   - Read: `docs/ecrr/ECRR_REPORTS/ECRR_GATE_026_VERIFICATION_20251027.md`
+   - Read: `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_026_VERIFICATION_20251027.md`
    - Assess: All three track results
    - Decision: APPROVE / DEFER / REJECT
 
@@ -318,8 +318,8 @@ Gate #026 implementation and automated verification are complete. All three trac
 2. `GATE_026_IMPLEMENTATION_SUMMARY.md`
 3. `GATE_026_VERIFICATION_GUIDE.md`
 4. `GATE_026_PHASE2_HANDOFF.md` (this document)
-5. `docs/ecrr/ECRR_REPORTS/ECRR_GATE_026_IMPLEMENTATION_20251027.md`
-6. `docs/ecrr/ECRR_REPORTS/ECRR_GATE_026_VERIFICATION_20251027.md`
+5. `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_026_IMPLEMENTATION_20251027.md`
+6. `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_026_VERIFICATION_20251027.md`
 
 ### Evidence Files (3 + pending screenshots)
 1. `artifacts/gate026/track-a-overhead-results.txt`
@@ -373,4 +373,5 @@ Gate #026 implementation and automated verification are complete. All three trac
 **Seal:** 🐾 **Gate #026 — Phase 2 Review Ready**
 
 _Automated verification complete with exceptional results. Track A: 2.63% overhead. Track B: All thresholds crushed. Track C: 51.77% CI baseline. SigNoz screenshots pending for complete evidence package. Recommend APPROVE with tag gate-026-green-2025-10-27._
+
 

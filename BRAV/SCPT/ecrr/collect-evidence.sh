@@ -25,7 +25,7 @@ fi
 
 # 3) Write smoke results if PowerShell is present (to keep one format)
 SMOKE_FILE="ECRR-01-SMOKE-TEST-RESULTS.md"
-SESSION_FILE="docs/ECRR_REPORTS/2025-09-22-terminal-session-ecrr-01.md"
+SESSION_FILE="CHAR/ECRR/ECRR_REPORTS/2025-09-22-terminal-session-ecrr-01.md"
 mkdir -p "$(dirname "$SESSION_FILE")"
 
 if command -v pwsh >/dev/null 2>&1; then
@@ -73,7 +73,7 @@ INSTALL_BROWSERS="${INSTALL_BROWSERS:-0}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 ART_DIR="${REPO_ROOT}/artifacts"
-REPORT_DIR="${REPO_ROOT}/docs/ECRR_REPORTS"
+REPORT_DIR="${REPO_ROOT}/CHAR/ECRR/ECRR_REPORTS"
 
 mkdir -p "${ART_DIR}" "${REPORT_DIR}"
 
@@ -147,3 +147,4 @@ SESSION_FILE="${REPORT_DIR}/2025-09-22-terminal-session-ecrr-01.md"
 } > "${SESSION_FILE}"
 
 ls -lh "${VERIFICATION_LOG}" "${ISO_JSON}" "${OFFLINE_JSON}" "${SMOKE_FILE}" "${SESSION_FILE}"
+

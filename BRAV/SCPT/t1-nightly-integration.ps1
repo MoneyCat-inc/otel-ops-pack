@@ -27,9 +27,9 @@ if ($GenerateArtifacts) {
         timestamp = $timestamp
         source = "t1-rolling-stats-nightly"
         artifacts = @(
-            "docs/ecrr/ECRR_REPORTS/rolling_stats_evidence.json",
-            "docs/ecrr/ECRR_REPORTS/t1_scaling_analysis.json",
-            "docs/ecrr/ECRR_REPORTS/2025-10-04-t1-rolling-stats-capability-tour.md"
+            "CHAR/ECRR/ECRR_REPORTS/rolling_stats_evidence.json",
+            "CHAR/ECRR/ECRR_REPORTS/t1_scaling_analysis.json",
+            "CHAR/ECRR/ECRR_REPORTS/2025-10-04-t1-rolling-stats-capability-tour.md"
         )
         summary = @{
             capability_tour_complete = $true
@@ -39,7 +39,7 @@ if ($GenerateArtifacts) {
         }
     }
     
-    $nightlySummary | ConvertTo-Json -Depth 4 | Out-File -FilePath "docs/ecrr/ECRR_REPORTS/t1_nightly_summary_$timestamp.json" -Encoding UTF8
+    $nightlySummary | ConvertTo-Json -Depth 4 | Out-File -FilePath "CHAR/ECRR/ECRR_REPORTS/t1_nightly_summary_$timestamp.json" -Encoding UTF8
     Write-Host "✅ T1 artifacts generated for nightly export" -ForegroundColor Green
 }
 
@@ -65,9 +65,9 @@ if ($Test) {
     
     # Verify artifacts exist
     $artifacts = @(
-        "docs/ecrr/ECRR_REPORTS/rolling_stats_evidence.json",
-        "docs/ecrr/ECRR_REPORTS/t1_scaling_analysis.json",
-        "docs/ecrr/ECRR_REPORTS/2025-10-04-t1-rolling-stats-capability-tour.md"
+        "CHAR/ECRR/ECRR_REPORTS/rolling_stats_evidence.json",
+        "CHAR/ECRR/ECRR_REPORTS/t1_scaling_analysis.json",
+        "CHAR/ECRR/ECRR_REPORTS/2025-10-04-t1-rolling-stats-capability-tour.md"
     )
     
     $allExist = $true
@@ -99,3 +99,4 @@ if (-not $GenerateArtifacts -and -not $UpdateNightly -and -not $Test) {
     Write-Host "Test integration:" -ForegroundColor White
     Write-Host "  .\scripts\t1-nightly-integration.ps1 -Test" -ForegroundColor Gray
 }
+

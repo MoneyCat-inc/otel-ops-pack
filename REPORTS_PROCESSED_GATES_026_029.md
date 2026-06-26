@@ -52,7 +52,7 @@
 1. GATE_029_SCOPE.md (7,125 bytes)
 2. GATE_029_IMPLEMENTATION_COMPLETE.md (8,934 bytes)
 3. GATE_029_FINAL_SUMMARY.md (varies, updated)
-4. docs/ecrr/ECRR_REPORTS/ECRR_GATE_029_READY_20251027.md (varies, updated)
+4. CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_029_READY_20251027.md (varies, updated)
 
 **Evidence:**
 - ✅ SigNoz: bosscat-svc2-api via Collector 5317
@@ -271,4 +271,5 @@
 ---
 
 **Cookie status:** 🍪 Received and appreciated!
+
 

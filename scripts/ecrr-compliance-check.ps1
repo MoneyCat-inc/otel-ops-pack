@@ -1,6 +1,6 @@
 # CI entrypoint: ECRR compliance rate check (workflow artifact + threshold gate)
 param(
-    [string]$ReportsPath = "docs/ecrr/ECRR_REPORTS",
+    [string]$ReportsPath = "CHAR/ECRR/ECRR_REPORTS",
     [int]$MinCompliancePct = 80
 )
 
@@ -27,3 +27,4 @@ if ($complianceRate -lt $MinCompliancePct) {
     exit 1
 }
 exit 0
+

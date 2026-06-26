@@ -4,7 +4,7 @@
       "id": "ecrr-validation-hourly",
       "kind": "compliance",
       "payload": {
-        "target": "docs/ecrr/ECRR_REPORTS",
+        "target": "CHAR/ECRR/ECRR_REPORTS",
         "rules": [
           "four-section",
           "actor-declaration"
@@ -118,3 +118,4 @@
     "tasks_per_cycle": 4
   }
 }
+

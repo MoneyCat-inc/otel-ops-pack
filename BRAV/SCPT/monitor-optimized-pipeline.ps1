@@ -73,11 +73,11 @@ function Get-PipelineMetrics {
             $logsUI = $false
         }
         
-        # Check OTLP endpoints availability
+        # Check SigNoz OTLP endpoints availability
         $otlpGrpc = $false
         $otlpHttp = $false
         try {
-            $grpcTest = Test-NetConnection -ComputerName localhost -Port 14317 -WarningAction SilentlyContinue
+            $grpcTest = Test-NetConnection -ComputerName localhost -Port 4317 -WarningAction SilentlyContinue
             $otlpGrpc = $grpcTest.TcpTestSucceeded
         }
         catch {
@@ -85,7 +85,7 @@ function Get-PipelineMetrics {
         }
         
         try {
-            $httpTest = Test-NetConnection -ComputerName localhost -Port 14318 -WarningAction SilentlyContinue
+            $httpTest = Test-NetConnection -ComputerName localhost -Port 4318 -WarningAction SilentlyContinue
             $otlpHttp = $httpTest.TcpTestSucceeded
         }
         catch {
@@ -98,8 +98,8 @@ function Get-PipelineMetrics {
             SigNozVersion = $version.version
             SetupCompleted = $version.setupCompleted
             LogsUIAccessible = $logsUI
-            OTLP_GRPC_14317 = $otlpGrpc
-            OTLP_HTTP_14318 = $otlpHttp
+            OTLP_GRPC_4317 = $otlpGrpc
+            OTLP_HTTP_4318 = $otlpHttp
             Timestamp = Get-Date
         }
     }
@@ -182,8 +182,8 @@ function Show-KeyMetrics {
         Write-Host "   SigNoz Version: $($metrics.SigNozVersion)" -ForegroundColor White
         Write-Host "   Setup Completed: $($metrics.SetupCompleted)" -ForegroundColor White
         Write-Host "   Logs UI: $($metrics.LogsUIAccessible)" -ForegroundColor $(if($metrics.LogsUIAccessible) {"Green"} else {"Yellow"})
-        Write-Host "   OTLP gRPC (14317): $($metrics.OTLP_GRPC_14317)" -ForegroundColor $(if($metrics.OTLP_GRPC_14317) {"Green"} else {"Red"})
-        Write-Host "   OTLP HTTP (14318): $($metrics.OTLP_HTTP_14318)" -ForegroundColor $(if($metrics.OTLP_HTTP_14318) {"Green"} else {"Red"})
+        Write-Host "   OTLP gRPC (4317): $($metrics.OTLP_GRPC_4317)" -ForegroundColor $(if($metrics.OTLP_GRPC_4317) {"Green"} else {"Red"})
+        Write-Host "   OTLP HTTP (4318): $($metrics.OTLP_HTTP_4318)" -ForegroundColor $(if($metrics.OTLP_HTTP_4318) {"Green"} else {"Red"})
         Write-Host "   Batch Processing: 200ms windows" -ForegroundColor White
         Write-Host "   Noise Filtering: Active" -ForegroundColor White
         Write-Host "   Export Target: ClickHouse" -ForegroundColor White
@@ -240,27 +240,27 @@ function Test-AlertThresholds {
     }
     
     # Check OTLP gRPC endpoint
-    if ($thresholds.RequireOTLP_GRPC -and -not $Metrics.OTLP_GRPC_14317) {
+    if ($thresholds.RequireOTLP_GRPC -and -not $Metrics.OTLP_GRPC_4317) {
         $alert = @{
             Timestamp = Get-Date
             Type = "OTLP gRPC Endpoint Unavailable"
             Severity = "High"
-            Message = "OTLP gRPC endpoint on port 14317 is not reachable"
+            Message = "OTLP gRPC endpoint on port 4317 is not reachable"
         }
         $script:monitoringData.Alerts += $alert
-        Write-Host "⚠️  ALERT: OTLP gRPC endpoint (14317) not reachable" -ForegroundColor Red
+        Write-Host "⚠️  ALERT: OTLP gRPC endpoint (4317) not reachable" -ForegroundColor Red
     }
     
     # Check OTLP HTTP endpoint
-    if ($thresholds.RequireOTLP_HTTP -and -not $Metrics.OTLP_HTTP_14318) {
+    if ($thresholds.RequireOTLP_HTTP -and -not $Metrics.OTLP_HTTP_4318) {
         $alert = @{
             Timestamp = Get-Date
             Type = "OTLP HTTP Endpoint Unavailable"
             Severity = "High"
-            Message = "OTLP HTTP endpoint on port 14318 is not reachable"
+            Message = "OTLP HTTP endpoint on port 4318 is not reachable"
         }
         $script:monitoringData.Alerts += $alert
-        Write-Host "⚠️  ALERT: OTLP HTTP endpoint (14318) not reachable" -ForegroundColor Red
+        Write-Host "⚠️  ALERT: OTLP HTTP endpoint (4318) not reachable" -ForegroundColor Red
     }
 }
 

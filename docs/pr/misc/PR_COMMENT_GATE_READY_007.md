@@ -98,13 +98,13 @@
 
 ## 📂 Artifacts & Evidence
 
-**Executive Report:** `docs/ecrr/ECRR_REPORTS/ECRR_GATE_READY_EXEC_20251012.md`  
+**Executive Report:** `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_READY_EXEC_20251012.md`  
 **Gate Verification:** `DELT/ARTF/gate-verification-results.json`  
 **JSON Summary:** `DELT/ARTF/gate-ready-exec-20251012.json`  
 **BossCat Log:** `BOSSCAT_LOG.md` (entry: 2025-10-12 01:05 UTC)
 
-**P1 Remediation:** `docs/ecrr/ECRR_REPORTS/ECRR_P1_COMPLETE_20251011.md`  
-**Latest Closeout:** `docs/ecrr/ECRR_REPORTS/ECRR_GATE_CLOSEOUT_LATEST.md`
+**P1 Remediation:** `CHAR/ECRR/ECRR_REPORTS/ECRR_P1_COMPLETE_20251011.md`  
+**Latest Closeout:** `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_CLOSEOUT_LATEST.md`
 
 ---
 
@@ -122,4 +122,5 @@
 **Seal:** 🐾 **BossCat Gate #007 Readiness — CERTIFIED**
 
 _All gates GREEN. Evidence comprehensive. Ready for BossCat approval._ 🚀🐾
+
 

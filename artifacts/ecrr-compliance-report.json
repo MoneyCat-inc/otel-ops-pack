@@ -1,0 +1,1784 @@
+{
+  "generatedAt": "2026-06-26T14:38:35Z",
+  "metrics": {
+    "totalReports": 385,
+    "hasFourSection": 385,
+    "hasEcrrGate": 385,
+    "hasActor": 385,
+    "hasProductionMarker": 91
+  },
+  "complianceRates": {
+    "fourSection": 100.0,
+    "ecrrGate": 100.0,
+    "actor": 100.0,
+    "production": 23.6,
+    "fullyCompliant": 23.6
+  },
+  "fullyCompliantCount": 91,
+  "nonCompliant": [
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\BOSS_V2_RUN.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\BOSSCAT_GITHUB_ACTIONS_CLEANUP_20251014.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760689725130.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760690025133.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760690325138.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760690625150.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760690925154.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760691225162.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760691525168.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760691825175.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760692046715.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760692125185.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760692346725.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760692425193.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760692646727.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760692725199.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760692946730.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760693025210.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760693246730.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760693325223.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760693546732.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760693625232.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760693846738.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760693925238.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760694146739.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760694225241.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760694446744.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760694525255.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760694746756.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760694825257.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760695046769.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760695125274.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760695346769.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760695425280.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760695646773.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760695725287.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760695946785.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760696025298.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760696246797.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760696325302.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760696546806.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760696625303.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760697108755.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760697408761.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760697708777.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760698008786.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760698308794.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760698608795.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760698908805.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760699208815.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760699508815.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760699808817.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760700108819.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760700408831.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760700708844.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760701008855.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760701308858.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760701608865.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\compliance-1760701908879.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_ANTICLICKBAIT_DOCS_LANE_20251016.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_ANTICLICKBAIT_HTML_REMEDIATION_20251021.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_ANTICLICKBAIT_PORTAL_20251016.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_AUTH_GITHUB_UI_20251010_035500.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_BENCHMARK_LATEST.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_BENCHMARK_PIPELINE_20251013_022902.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_BENCHMARK_SUMMARY_20251013_022745.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_BLUESKY_CAMPAIGN_DAY2_3_20251021.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_BLUESKY_PROFILE_UPDATE_20251021.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_BLUESKY_PROFILE_UPDATE_20251022.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_BOSSCAT_EXEC_REVIEW_2025-10-09-183136.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_CONVEYOR_CHUNK_20251014_093649.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_CURSOR_IMPLEMENTER_20251012_085425.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_CURSOR_IMPLEMENTER_PRIORITY_TASKS_20251013.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_CURSOR_IMPLEMENTER_SESSION_20251012.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_CURSOR_IMPLEMENTER_SESSION_HALT_20251013.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_CURSOR_RUN_20251012_020515.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_CURSOR_RUN_20251012_021029.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_DIRECTIVE_008_20251013.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_DOCKER_TROUBLESHOOTING_20251017.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_DOCS_READY_20251102.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_ENFORCEMENT_ACTIVATION_20251013.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_EXAMINATION_SUMMARY_20251023.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_FORBIDDEN_ROOTS_REMEDIATION_20251013.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_FULL_HEALTH_CHECK_20251227.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_007_READY_FUBUMAKI_20251020.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_010_AUDIO_REACTIVITY_READY_20251024.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_010_REMEDIATION_2_AUDIO_INJECTION_20251024.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_010_REMEDIATION_AUDIO_BRIDGE_20251024.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_017_READY_20251026.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_026_IMPLEMENTATION_20251027.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_026_VERIFICATION_20251027.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_026A_SUCCESS_20251027.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_027_PARTIAL_20251027.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_028_PARTIAL_20251027.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_029_READY_20251027.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_20251009-182440.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_APPROVAL_20251010.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_CLOSEOUT_20251012_002607.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_CLOSEOUT_20251012_032900.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_CLOSEOUT_20251013_133713.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_CLOSEOUT_LATEST.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_READINESS_CURSOR_IMPLEMENTER_20251025.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_READY_20251017.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_READY_20251020.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_READY_BOSSCAT_20251015.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_READY_DOCS_GOVERNANCE_20251015.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_READY_EXAMINATION_20251023_143000.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_READY_EXEC_20251012.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_READY_FINAL_2025-10-10.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_READY_FINAL_20251015_073616.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_READY_INDEX_20251023.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_READY_LATEST.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RECONCILIATION_20251027.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251009_235042.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251009_235512.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251009_235910.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251010_000026.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251010_000205.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251010_012920.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251010_013309.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251010_013322.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251010_014244.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251010_014833.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251010_015020.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251010_015235.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251012_010257.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251012_020516.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251012_021029.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251012_021039.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251012_021048.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251012_033013.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251012_235308.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251013_000035.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251013_002424.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251013_003103.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251013_011703.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251013_025504.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251013_025824.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251013_030727.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251013_032004.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251013_032857.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251013_035036.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251013_035136.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251013_085308.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251013_085503.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251013_085551.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251013_131646.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251013_131753.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251013_133713.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251013_135424.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251013_205605.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251015_000012.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251015_004942.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251015_013114.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251015_053452.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251015_071752.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251015_073616.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251016_044334.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251016_045453.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251016_051314.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251016_100740.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251016_101037.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251016_101604.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251016_102200.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251016_103057.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251016_103814.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251016_104419.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251016_104522.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251016_105244.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251016_105427.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251016_105806.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251016_110123.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251016_110523.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251016_111358.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251016_111542.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251016_112301.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251016_113735.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251016_115822.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251016_121909.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251016_122533.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251016_122855.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251016_123159.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251016_131651.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251016_144407.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251016_144816.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251016_145114.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251016_152732.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251016_152919.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251016_163354.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251016_234218.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251016_234303.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251017_091048.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251017_234457.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251019_202827.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251020_102909.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251020_113718.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251025_204303.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20251025_204628.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20260123_141312.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20260123_141631.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20260128_095857.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20260128_100553.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20260128_104831.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20260613_124129.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_LATEST.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_SITE_ACTIVATION_20251013.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_SITE_MATRIX_DEPLOYMENT_20251011.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_VERIFY_2025-10-09.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_WARN_TRACE_INGESTION_20251023.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GITHUB_COMPLIANCE_20251012_090325.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GOVERNANCE_KNOBS_20251020.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GPU_FIX_20251011.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GPU_FIX_V11.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GPU_PIPELINE_ALIGNMENT_20251013.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_HALT_20251012.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_HALT_20251015.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_HALT_20251016_100341.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_HALT_LATEST.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_HALT_MILK_SESSION_20251016.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_HALT_RUN_ARCHIVER_20251016_100436.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_HUB_DEPLOYMENT_GATE_20251019.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_HUB_LINK_CORRECTION_20251021.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_ICF_PR-118.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_INFLATED_METRICS_HARDENING_20251020.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_INFLATED_METRICS_REMEDIATION_20251020.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_IONA_LOW_REMEDIATION_20251022.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_MAINTENANCE_LATEST.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_MAINTENANCE_SIG_NOZ_COLLECTOR_20251012.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_MILK_CONSOLIDATED_20251016.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_MILK_CONSOLIDATED_LATEST.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_MILK_PHASE2_FINAL_20251016.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_MILK_PHASE3A_20251016.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_MILK_PHASE3C_20251016.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_MILK_PHASE4_20251016.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_MILK_PHASE5_20251016.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_MILK_PRESETS_20251016.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_MONETIZATION_SETUP_20251017.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_P1_COMPLETE_20251011.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_P1_TASKS_20251013.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_P1A_FLAK_SMOKE_20251011.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_P1B_COMP_20251011.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_P1B_COMP_FINAL_20251011.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_P1B_JOB1_20251011.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_PATREON_SETUP_20251017.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_PHASE1_IMMEDIATE_WINS_20251010.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_PHASE2_W2_CORRELATION_20251010.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_PR_124_MERGE_20251011.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_PR_REVIEW_MERGE_20251015.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_PROCESSING_SUMMARY_20251016.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_PROCESSING_SUMMARY_20251019.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_PROCESSING_SUMMARY_LATEST.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_READY_FOR_GATE_ASSESSMENT_20251013.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_REMEDIATION_GATE_SUMMARY_20260626-142954.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_REMEDIATION_GATE_SUMMARY_LATEST.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_REPO_CLEANUP_COMPLETE_20251016.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_RSI_BATCHSIZE_DISCOVERY_20251015_024619.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_RSI_BATCHSIZE_DISCOVERY_20251015_024701.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_RSI_BATCHSIZE_DISCOVERY_20251015_024805.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_RSI_BATCHSIZE_DISCOVERY_20251015_024859.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_RSI_BATCHSIZE_DISCOVERY_20251015_051840.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_RSI_BATCHSIZE_DISCOVERY_20251015_051841.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_RSI_BATCHSIZE_DISCOVERY_20251015_051843.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_RSI_BATCHSIZE_DISCOVERY_20251015_052130.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_RSI_BATCHSIZE_DISCOVERY_20251015_052200.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_RSI_BATCHSIZE_DISCOVERY_20251015_052231.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_RSI_BATCHSIZE_DISCOVERY_20251015.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_RSI_BATCHSIZE_DISCOVERY_LATEST.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_RSI_NIGHTLY_STATS_LATEST.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_RUN.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_SECURITY_ARCHIVER_OPERATIONAL_20251015_063225.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_SECURITY_ARCHIVER_VALIDATED_20251015_063400.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_SECURITY_NOTIFICATIONS_DRYRUN_20251015_070607.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_SESSION_CLOSEOUT_20251012_021200.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_SESSION_COMPLETE_20251015_073535.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_SESSION_CONSOLIDATED_20251011.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_SHIP_READINESS_2025-10-09-184440.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_SOCM_MILESTONE_A_20251018.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_STATUS_AUTO_UPDATE_GREEN_20251022.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_STATUS_AUTO_UPDATE_REMEDIATION_20251022.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_TIE_OFF_20251011.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_VISU_PHASE2_20251016.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_VIZ_ENGINE_GATE_009_GREEN_20251024.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_VIZ_ENGINE_MILKDROP_FOUNDATION_20251023.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_VIZ_ENGINE_REMEDIATION_2_20251023.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_VIZ_ENGINE_REMEDIATION_20251023.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_VIZ_ENGINE_REMEDIATION_3_20251024.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_VIZ_ENGINE_REMEDIATION_4_FINAL_20251024.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_VIZ_ENGINE_REMEDIATION_4B_20251024.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_VIZR_READY_20251102.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_WORKFLOW_CONCURRENCY_REVIEW_20251011.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\EVIDENCE_2025-10-20.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\NIGHTLY_ORCHESTRATION_nightly-20251007-164923.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\NIGHTLY_ORCHESTRATION_nightly-20251007-165940.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\RSI_EVAL_LATEST.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    }
+  ]
+}

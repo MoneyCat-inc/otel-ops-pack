@@ -69,7 +69,7 @@ jobs:
 
     - name: Prepare directories
       run: |
-        mkdir -p artifacts DELT/ARTF docs/BossCat/reports docs/ecrr/ECRR_REPORTS docs/observability/snapshots
+        mkdir -p artifacts DELT/ARTF docs/BossCat/reports CHAR/ECRR/ECRR_REPORTS docs/observability/snapshots
 
     - name: Run IONA Gate Verification
       shell: pwsh
@@ -176,3 +176,4 @@ jobs:
           docs/BossCat/reports/
           PR_COMMENT_IONA_GATE_002_FINAL.md
         retention-days: 14
+
