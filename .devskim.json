@@ -4,6 +4,7 @@
     "docs/BossCat/visuals/vendor/**/*.js",
     "**/*.vend.js",
     "**/*.min.js",
+    "pnpm-lock.yaml",
     "third_party/**",
     "node_modules/**"
   ],
