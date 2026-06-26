@@ -68,7 +68,7 @@
 - Collector logs free of scrape/schema errors post-restart
 
 ### Artifacts Generated
-- **ECRR Report**: `docs/ECRR_REPORTS/2025-09-29-signoz-collector-cleanup.md`
+- **ECRR Report**: `CHAR/ECRR/ECRR_REPORTS/2025-09-29-signoz-collector-cleanup.md`
 - **Documentation**: `docs/SIGNOZ_COLLECTOR_STATUS.md`, `docs/LOGS_STRATEGY_OPTIONS.md`
 - **Configuration**: Updated collector YAML + compose
 
@@ -212,4 +212,5 @@
 - Scope:
 
 ---
+
 

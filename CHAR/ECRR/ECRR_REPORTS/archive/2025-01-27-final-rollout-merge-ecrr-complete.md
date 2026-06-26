@@ -197,7 +197,7 @@
 - `COMPLETE_AUTHENTICATION_AND_DASHBOARD_SETUP.md` - Setup guide
 - `FINAL_AUTHENTICATION_AND_SETUP_COMPLETE.md` - Final summary
 - `QUEUE_OPTIMIZATION_AND_TESTING_COMPLETE.md` - Optimization report
-- `docs/ECRR_REPORTS/2025-01-27-final-rollout-merge-ecrr-complete.md` - This report
+- `CHAR/ECRR/ECRR_REPORTS/2025-01-27-final-rollout-merge-ecrr-complete.md` - This report
 
 ### **Test Results**
 - `artifacts/end-to-end-pipeline-test-20250927-081611.md` - Pipeline test results
@@ -284,3 +284,4 @@
 - Integrates with observability stack and monitoring systems
 
 ---
+

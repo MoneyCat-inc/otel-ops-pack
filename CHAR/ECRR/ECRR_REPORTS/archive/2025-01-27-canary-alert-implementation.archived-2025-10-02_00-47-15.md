@@ -223,7 +223,7 @@
 - `artifacts/signoz-canary-alert.json` - Alert configuration
 - `scripts/deploy-alerts.ps1` - Enhanced with API authentication
 - `scripts/test-canary-alert.ps1` - Comprehensive test framework
-- `docs/ECRR_REPORTS/2025-01-27-canary-alert-implementation.md` - This report
+- `CHAR/ECRR/ECRR_REPORTS/2025-01-27-canary-alert-implementation.md` - This report
 
 ### **Integration Points**
 - **SigNoz UI:** Manual alert import required
@@ -416,4 +416,5 @@ The canary alert monitoring system is now **fully operational** and ready for de
 - Scope:
 
 ---
+
 

@@ -22,7 +22,7 @@
 - **Processing Status**: All ECRR reports processed with framework enhancement complete
 
 ### **Attached Evidence**
-- ECRR reports: 77+ reports in `docs/ECRR_REPORTS/` directory
+- ECRR reports: 77+ reports in `CHAR/ECRR/ECRR_REPORTS/` directory
 - Task queue: 4 pending tasks in `.agent/task_queue.json`
 - Agent status: ECRR processing marked as complete in `.agent/status.json`
 
@@ -353,4 +353,5 @@ The ECRR processing provides complete coverage of all reports and tasks with com
 - Scope:
 
 ---
+
 
