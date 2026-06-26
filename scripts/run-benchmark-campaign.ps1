@@ -6,8 +6,8 @@ param(
     [int]$Trials = 5,
     [int]$DurationSec = 60,
     [string]$Protocol = "http",
-    [string]$HttpEndpoint = "http://localhost:14318/v1/logs",
-    [string]$GrpcEndpoint = "http://localhost:14317",
+    [string]$HttpEndpoint = "http://localhost:4318/v1/logs",
+    [string]$GrpcEndpoint = "http://localhost:4317",
     [double]$Rate = 0
 )
 
