@@ -72,7 +72,7 @@ try {
     Add-ReportLine -Level 'WARN' -Message 'SigNoz UI did not respond on http://localhost:8080' -Color Yellow
 }
 
-$ports = 5317, 5318, 14317, 14318
+$ports = 5317, 5318, 4317, 4318
 foreach ($port in $ports) {
     if (Test-Port -Port $port) {
         Add-ReportLine -Level 'OK' -Message ("Port $port accepts TCP connections") -Color Green
@@ -114,18 +114,18 @@ if (Test-Path '.agent') {
 
 # ECRR reports directory
 Add-ReportLine -Level 'SECTION' -Message 'ECRR report storage' -Color Yellow
-if (-not (Test-Path 'docs/ECRR_REPORTS')) {
-    New-Item -ItemType Directory -Path 'docs/ECRR_REPORTS' -Force | Out-Null
-    Add-ReportLine -Level 'OK' -Message 'Created docs/ECRR_REPORTS directory' -Color Green
+if (-not (Test-Path 'CHAR/ECRR/ECRR_REPORTS')) {
+    New-Item -ItemType Directory -Path 'CHAR/ECRR/ECRR_REPORTS' -Force | Out-Null
+    Add-ReportLine -Level 'OK' -Message 'Created CHAR/ECRR/ECRR_REPORTS directory' -Color Green
 } else {
-    $count = (Get-ChildItem 'docs/ECRR_REPORTS' -Filter '*.md' | Measure-Object).Count
-    Add-ReportLine -Level 'OK' -Message ("docs/ECRR_REPORTS present with $count markdown files") -Color Green
+    $count = (Get-ChildItem 'CHAR/ECRR/ECRR_REPORTS' -Filter '*.md' | Measure-Object).Count
+    Add-ReportLine -Level 'OK' -Message ("CHAR/ECRR/ECRR_REPORTS present with $count markdown files") -Color Green
 }
 
 # Suggested manual checks
 Add-ReportLine -Level 'SECTION' -Message 'Manual follow-up checks' -Color Yellow
 Add-ReportLine -Level 'NOTE' -Message 'Run pwsh -File scripts/canary-test.ps1 and confirm SigNoz logs show the canary message within 30 seconds.'
-Add-ReportLine -Level 'NOTE' -Message 'Inspect config.yaml to confirm OTLP exporters target http://localhost:14317.'
+Add-ReportLine -Level 'NOTE' -Message 'Inspect config.yaml to confirm OTLP exporters target http://localhost:4317.'
 Add-ReportLine -Level 'NOTE' -Message 'Review SigNoz Logs with filter: message contains "SigNoz test".'
 
 # Summary
@@ -157,3 +157,4 @@ if ($issues.Count -gt 0) {
 } else {
     exit 0
 }
+

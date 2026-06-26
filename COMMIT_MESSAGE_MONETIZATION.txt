@@ -28,7 +28,7 @@ Anti-Clickbait Score: 100/100 (PERFECT - all URLs active)
 - Transparent about use of funds
 
 Evidence:
-- ECRR Report: docs/ecrr/ECRR_REPORTS/ECRR_MONETIZATION_SETUP_20251017.md
+- ECRR Report: CHAR/ECRR/ECRR_REPORTS/ECRR_MONETIZATION_SETUP_20251017.md
 - Button HTML: Ready-to-use snippets documented
 - LinkedIn template: Prepared for community launch
 - Patreon tiers: Recommended structure (Verifier/Signal Booster/Gatekeeper)
@@ -52,4 +52,5 @@ Authority: Fubumaki
 Status: READY FOR COMMUNITY LAUNCH
 
 🐾 BossCat Compliance: Anti-clickbait certified, evidence-based transparency maintained
+
 

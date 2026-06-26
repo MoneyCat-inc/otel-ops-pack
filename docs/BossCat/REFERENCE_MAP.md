@@ -15,7 +15,7 @@ Key Components (by flow)
   - Logger: `scripts/lib/logger.ts`
   - Emitters: `scripts/emit-synthetic-span.ts`, `scripts/examples/log-with-trace.ts`
   - Verifier: `scripts/verify-correlation.ps1`
-  - Evidence + Report: `.agent/EVIDENCE.log`, `docs/ecrr/ECRR_REPORTS/ECRR_PHASE2_W2_CORRELATION_*.md`
+  - Evidence + Report: `.agent/EVIDENCE.log`, `CHAR/ECRR/ECRR_REPORTS/ECRR_PHASE2_W2_CORRELATION_*.md`
 
 - Ingest (ALFA‑2)
   - Webhook/CLI: `scripts/ingest-worker.ts`, helpers: `scripts/ingest-utils.ts`
@@ -73,7 +73,7 @@ Workflows
 
 Evidence & Reports
 - Evidence ledger: `.agent/EVIDENCE.log`
-- ECRR reports: `docs/ecrr/ECRR_REPORTS/*`
+- ECRR reports: `CHAR/ECRR/ECRR_REPORTS/*`
 - Validation summaries: `PHASE2_VALIDATION_COMPLETE.md`, `PHASE1_COMPLETE_PR_BODY.md`, `TETRAGRAM_PHASE1_EXECUTION_SUMMARY.md`
 
 Reference Map (machine‑readable)
@@ -94,3 +94,4 @@ Importance System (Docs Priority)
   - P3 Low — archival, historical snapshots
 - Source of truth: `docs/reference/docs-index.json`
 - Display: surfaced in `docs/reference/reference-map.json` and status.html (counts + top P0)
+

@@ -37,9 +37,9 @@ Operations follow BossCat's immutable persona v1.1:
 - Manifest: Included with SHA256 checksums
 
 **ECRR Reports:**
-- Full Report: `docs/ecrr/ECRR_REPORTS/ECRR_GATE_APPROVAL_20251010.md`
-- Latest Run: `docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md`
-- BOSS v2: `docs/ecrr/ECRR_REPORTS/BOSS_V2_RUN.md`
+- Full Report: `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_APPROVAL_20251010.md`
+- Latest Run: `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md`
+- BOSS v2: `CHAR/ECRR/ECRR_REPORTS/BOSS_V2_RUN.md`
 
 **Watchdog:**
 - Operational health: `DELT/ARTF/watchdog-gate-evidence.json`
@@ -117,7 +117,7 @@ python BRAV/SCPT/check_guardrails.py --config BRAV/SCPT/guardrails.json
 ## Documentation
 
 **Decision Record:** `BOSSCAT_GATE_DECISION_20251010.md`  
-**ECRR Report:** `docs/ecrr/ECRR_REPORTS/ECRR_GATE_APPROVAL_20251010.md`  
+**ECRR Report:** `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_APPROVAL_20251010.md`  
 **Merge Note:** `MERGE_NOTE_GATE_20251010.md`  
 **Hygiene Report:** `BOSSCAT_HYGIENE_COMPLETION_20251010.md`  
 **Quick Reference:** `GATE_STATUS_20251010.md`
@@ -144,4 +144,5 @@ python BRAV/SCPT/check_guardrails.py --config BRAV/SCPT/guardrails.json
 **BossCat OEM** 🐾 — *Repository Health Guardian*
 
 **End of Public Summary**
+
 

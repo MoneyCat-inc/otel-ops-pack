@@ -45,7 +45,7 @@ if (Test-Path $LedgerFile) {
 
 # Generate ECRR report
 $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
-$reportPath = "docs/ecrr/ECRR_REPORTS/ECRR_CONVEYOR_CHUNK_$timestamp.md"
+$reportPath = "CHAR/ECRR/ECRR_REPORTS/ECRR_CONVEYOR_CHUNK_$timestamp.md"
 
 $report = @"
 # 🐾 ECRR Report — BossCat Conveyor Chunk Execution
@@ -240,4 +240,5 @@ Write-Host "   Archive: $($latestMetrics.phases.archive.n) runs in $(([TimeSpan]
 Write-Host "   Delete: $($latestMetrics.phases.delete.n) runs in $(([TimeSpan]::FromMilliseconds($latestMetrics.phases.delete.ms)).ToString('hh\:mm\:ss'))"
 Write-Host "   K-factors: Archive=$($latestMetrics.eta.k_factor.archive), Delete=$($latestMetrics.eta.k_factor.delete)"
 Write-Host "`nView report: $reportPath"
+
 

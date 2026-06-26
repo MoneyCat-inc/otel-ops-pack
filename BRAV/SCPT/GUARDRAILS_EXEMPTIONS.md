@@ -27,7 +27,7 @@
 **Purpose:** Operational documentation and ECRR audit trails  
 **Rationale:** Local-first evidence requirement  
 **Contents:**
-- `docs/ecrr/ECRR_REPORTS/` - ECRR audit trails (391+ reports)
+- `CHAR/ECRR/ECRR_REPORTS/` - ECRR audit trails (391+ reports)
 - `docs/observability/snapshots/` - Dashboard exports
 - `docs/status/` - Status and test summaries
 - `docs/IONA_ERRORS.md` - Error ledger
@@ -168,4 +168,5 @@
 **Signed:** BossCat OEM  
 **Date:** 2025-10-09  
 **Seal:** 🐾
+
 

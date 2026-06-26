@@ -54,22 +54,22 @@ Status: Integration complete, pending build/runtime validation
 
 **Modified gate files:**
 - `PR_COMMENT_IONA_GATE_002_FINAL.md` (modified)
-- `docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md` (modified)
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md` (modified)
 
 **New gate artifacts:**
 - `artifacts/gate-verification-results.json` (auto-generated)
 - `artifacts/canary-ecrr-report.txt` (evidence)
-- `docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_20260123_141312.md` (timestamped ECRR)
-- `docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_20260123_141631.md` (timestamped ECRR)
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_RUN_20260123_141312.md` (timestamped ECRR)
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_RUN_20260123_141631.md` (timestamped ECRR)
 
 **Analysis:**
 - `.gitignore` allows `artifacts/**/*.json` and `artifacts/**/*.txt` (exceptions)
-- ECRR reports in `docs/ecrr/ECRR_REPORTS/` are typically tracked (evidence trail)
+- ECRR reports in `CHAR/ECRR/ECRR_REPORTS/` are typically tracked (evidence trail)
 - Gate verification results are auto-generated and frequently updated
 - PR comment templates are operational artifacts
 
 **Recommendation:**
-- ✅ **Commit:** ECRR reports (`docs/ecrr/ECRR_REPORTS/*.md`) - These are evidence artifacts
+- ✅ **Commit:** ECRR reports (`CHAR/ECRR/ECRR_REPORTS/*.md`) - These are evidence artifacts
 - ❓ **Optional:** `PR_COMMENT_IONA_GATE_002_FINAL.md` - PR comment template (operational)
 - ❌ **Skip:** `artifacts/gate-verification-results.json` - Auto-generated, frequently updated
 - ❓ **Optional:** `artifacts/canary-ecrr-report.txt` - Evidence, but in artifacts/ (check if needed)
@@ -77,8 +77,8 @@ Status: Integration complete, pending build/runtime validation
 **If committing gate artifacts:**
 ```bash
 # ECRR reports (evidence trail)
-git add docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_20260123_*.md
-git add docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md
+git add CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_RUN_20260123_*.md
+git add CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md
 
 # PR comment (if keeping as template)
 git add PR_COMMENT_IONA_GATE_002_FINAL.md
@@ -110,7 +110,7 @@ git add viz-engine-projectm/*.cpp viz-engine-projectm/*.hpp viz-engine-projectm/
 git commit -m "feat(projectm): PR #942 migration - resolver-aware API integration"
 
 # Commit 2: Gate artifacts (if desired)
-git add docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_*.md PR_COMMENT_IONA_GATE_002_FINAL.md
+git add CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_RUN_*.md PR_COMMENT_IONA_GATE_002_FINAL.md
 git commit -m "docs(ecrr): Gate verification evidence - 2026-01-23"
 ```
 
@@ -124,3 +124,4 @@ git commit -m "docs(ecrr): Gate verification evidence - 2026-01-23"
 4. **❌ Skip:** `artifacts/gate-verification-results.json` (auto-generated, frequently updated)
 
 **Suggested approach:** Two commits - one for PR #942 implementation, one for gate evidence (if keeping evidence).
+

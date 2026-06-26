@@ -1,5 +1,5 @@
 Param(
-  [string]$ReportsDir = 'docs/ecrr/ECRR_REPORTS',
+  [string]$ReportsDir = 'CHAR/ECRR/ECRR_REPORTS',
   [string]$OutputJson = 'DELT/ARTF/ecrr-benchmark.json'
 )
 $ErrorActionPreference = 'Stop'
@@ -69,4 +69,5 @@ $out = [ordered]@{
 
 ($out | ConvertTo-Json -Depth 4) | Set-Content -Path $OutputJson -Encoding utf8
 Write-Host "Wrote benchmark summary to $OutputJson"
+
 

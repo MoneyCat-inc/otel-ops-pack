@@ -162,7 +162,7 @@ Time     who type      Message
 - [ ] Run one "Service Down" drill in Data Room
 - [ ] Record ECRR (Evidence → Contain → Rollback → Report)
 - [ ] Confirm rollback hygiene
-- **Evidence**: ECRR report in `docs/ecrr/ECRR_REPORTS/`
+- **Evidence**: ECRR report in `CHAR/ECRR/ECRR_REPORTS/`
 
 ---
 
@@ -400,7 +400,7 @@ start docs/anticlickbait/index.html
 ```powershell
 # Run one chaos drill
 # Capture ECRR (Evidence → Contain → Rollback → Report)
-# Document in docs/ecrr/ECRR_REPORTS/
+# Document in CHAR/ECRR/ECRR_REPORTS/
 ```
 
 ---
@@ -457,4 +457,5 @@ start docs/anticlickbait/index.html
 🚀 **Week 1 execution: GO LIVE!**
 
 **Everything inside guardrails. Everything evidence-first. Everything safe.** ✅
+
 

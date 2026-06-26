@@ -228,7 +228,7 @@ otelcol_exporter_queue_size{exporter="otlp/sigz"} 0
 ### **Files Created/Modified**
 - `signoz-queue-pressure-dashboard.json` - Dashboard configuration
 - `artifacts/dashboard-import-status.json` - Import status report
-- `docs/ECRR_REPORTS/2025-01-27-queue-pressure-dashboard-complete.md` - This report
+- `CHAR/ECRR/ECRR_REPORTS/2025-01-27-queue-pressure-dashboard-complete.md` - This report
 
 ### **Integration Points**
 - **SigNoz UI:** Dashboard accessible at http://localhost:8080/d//otel-queue-pressure
@@ -422,4 +422,5 @@ The queue pressure monitoring dashboard is now **fully operational** and integra
 - Scope:
 
 ---
+
 

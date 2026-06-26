@@ -471,7 +471,7 @@ Get-ChildItem .agent\tickets\ -Filter "*.json" | Select-Object Name, LastWriteTi
 - `.agent/templates/` - Ticket templates for all roles
 
 ### **Documentation and Reports**
-- `docs/ECRR_REPORTS/` - Complete ECRR compliance reports
+- `CHAR/ECRR/ECRR_REPORTS/` - Complete ECRR compliance reports
 - `MONITORING_SETUP_GUIDE.md` - SigNoz implementation guide
 - `artifacts/ecrr-compliance-report.json` - Compliance validation results
 - `artifacts/signoz-*.json` - SigNoz configuration artifacts
@@ -614,4 +614,5 @@ Test outputs: ECRR compliance results, health check reports, canary monitoring d
 - Scope:
 
 ---
+
 

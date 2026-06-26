@@ -61,7 +61,7 @@ CI is green and all checks are satisfied.
 **@cat ready-for-gate** 🚪✅
 ```
 
-**Epic Reference:** [GPU Pattern-Sifter EPIC](docs/ecrr/ECRR_REPORTS/GPU_PATTERN_SIFTER_EPIC.md)
+**Epic Reference:** [GPU Pattern-Sifter EPIC](CHAR/ECRR/ECRR_REPORTS/GPU_PATTERN_SIFTER_EPIC.md)
 "@
     },
     @{
@@ -94,7 +94,7 @@ CI is green and all checks are satisfied.
 **@cat ready-for-gate** 🚪✅
 ```
 
-**Epic Reference:** [GPU Pattern-Sifter EPIC](docs/ecrr/ECRR_REPORTS/GPU_PATTERN_SIFTER_EPIC.md)
+**Epic Reference:** [GPU Pattern-Sifter EPIC](CHAR/ECRR/ECRR_REPORTS/GPU_PATTERN_SIFTER_EPIC.md)
 "@
     },
     @{
@@ -127,7 +127,7 @@ CI is green and all checks are satisfied.
 **@cat ready-for-gate** 🚪✅
 ```
 
-**Epic Reference:** [GPU Pattern-Sifter EPIC](docs/ecrr/ECRR_REPORTS/GPU_PATTERN_SIFTER_EPIC.md)
+**Epic Reference:** [GPU Pattern-Sifter EPIC](CHAR/ECRR/ECRR_REPORTS/GPU_PATTERN_SIFTER_EPIC.md)
 "@
     },
     @{
@@ -173,7 +173,7 @@ CI is green and all checks are satisfied.
 **@cat ready-for-gate** 🚪✅
 ```
 
-**Epic Reference:** [GPU Pattern-Sifter EPIC](docs/ecrr/ECRR_REPORTS/GPU_PATTERN_SIFTER_EPIC.md)
+**Epic Reference:** [GPU Pattern-Sifter EPIC](CHAR/ECRR/ECRR_REPORTS/GPU_PATTERN_SIFTER_EPIC.md)
 "@
     },
     @{
@@ -186,7 +186,7 @@ Track performance gains and regressions over time with automated benchmarking an
 
 ## 📋 **What**
 - Add `scripts/gpu_bench.ts`
-- Save JSON under `docs/ecrr/ECRR_REPORTS/`
+- Save JSON under `CHAR/ECRR/ECRR_REPORTS/`
 - Generate `docs/bench/index.md` static dashboard
 
 ## ✅ **Acceptance Criteria**
@@ -206,7 +206,7 @@ CI is green and all checks are satisfied.
 **@cat ready-for-gate** 🚪✅
 ```
 
-**Epic Reference:** [GPU Pattern-Sifter EPIC](docs/ecrr/ECRR_REPORTS/GPU_PATTERN_SIFTER_EPIC.md)
+**Epic Reference:** [GPU Pattern-Sifter EPIC](CHAR/ECRR/ECRR_REPORTS/GPU_PATTERN_SIFTER_EPIC.md)
 "@
     },
     @{
@@ -239,7 +239,7 @@ CI is green and all checks are satisfied.
 **@cat ready-for-gate** 🚪✅
 ```
 
-**Epic Reference:** [GPU Pattern-Sifter EPIC](docs/ecrr/ECRR_REPORTS/GPU_PATTERN_SIFTER_EPIC.md)
+**Epic Reference:** [GPU Pattern-Sifter EPIC](CHAR/ECRR/ECRR_REPORTS/GPU_PATTERN_SIFTER_EPIC.md)
 "@
     }
 )
@@ -323,3 +323,4 @@ Write-Host "Next steps:" -ForegroundColor Cyan
 Write-Host "1. Start T1 (Rolling Stats Kernel)" -ForegroundColor White
 Write-Host "2. Start T2 (Evidence Schema)" -ForegroundColor White
 Write-Host "3. Follow BossCat governance: ≤10 files, ≤200 LOC per PR" -ForegroundColor White
+

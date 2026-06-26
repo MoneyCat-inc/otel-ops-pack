@@ -85,7 +85,7 @@
 /README*.md @BossCat
 /docs/**/*.md @BossCat
 /docs/GATE_STATUS_DASHBOARD.md @BossCat
-/docs/ecrr/ECRR_REPORTS/ @BossCat @audit-team
+/CHAR/ECRR/ECRR_REPORTS/ @BossCat @audit-team
 
 # Guard scripts are critical infrastructure
 /scripts/guard-inflated-metrics.ps1 @BossCat

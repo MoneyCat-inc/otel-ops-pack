@@ -37,7 +37,7 @@
 **Files:**
 - `GATE_017_EXECUTIVE_SUMMARY.md` (one-page summary)
 - `docs/gate/2025-10/GATE_017_APPROVAL.md` (approval document)
-- `docs/ecrr/ECRR_REPORTS/ECRR_GATE_017_READY_20251026.md` (ECRR report)
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_017_READY_20251026.md` (ECRR report)
 - `DELT/ARTF/gate-verification-results-20251026-readiness.json` (verification results)
 
 ---
@@ -177,4 +177,5 @@ docs/archive/gates/:
 **Authority:** BossCat OEM
 
 🐾 *Reports indexed. Archive candidates identified (29 files). Ready for cleanup directive.*
+
 

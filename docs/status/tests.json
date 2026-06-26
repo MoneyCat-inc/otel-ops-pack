@@ -10,7 +10,7 @@
   "remediation": true,
   "reconciliation_complete": true,
   "evidence": [
-    "docs/ecrr/ECRR_REPORTS/ECRR_GATE_008_GREEN_TRACE_RESOLUTION_20251023.md",
+    "CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_008_GREEN_TRACE_RESOLUTION_20251023.md",
     "docs/GATE_STATUS_DASHBOARD.md",
     "docs/gate/2025-10/GATE_008_BLOCKED_STATUS.md",
     "docs/gate/misc/GATE_008_REMEDIATION_COMPLETE.md",
@@ -133,3 +133,4 @@
   "automated": false,
   "manual": true
 }
+

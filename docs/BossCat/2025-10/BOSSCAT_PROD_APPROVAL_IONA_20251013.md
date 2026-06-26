@@ -128,7 +128,7 @@ Created: 2025-10-13
 - ✅ Release Notes: `docs/BossCat/RELEASE_NOTES_IONA_PROD_READY_20251013.md`
 - ✅ CHANGELOG: Entry dated 2025-10-13
 - ✅ Gate Results: `DELT/ARTF/gate-verification-results.json`
-- ✅ Latest ECRR: `docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md`
+- ✅ Latest ECRR: `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md`
 - ✅ Queue-Steward: `artifacts/queue-steward-verification.txt`
 - ✅ Status Page: `docs/status.html` (release notes linked)
 
@@ -198,5 +198,6 @@ If any step deviates from GREEN:
 🎉 **IONA PROD DEPLOYMENT — APPROVED & TAGGED — READY FOR OPERATOR EXECUTION** 🎉
 
 **Tag**: `IONA-2025-10-13-PROD` | **Commit**: `1aafc1f0` | **Gate**: GREEN ✅ | **Status**: AWAITING DEPLOYMENT
+
 
 

@@ -24,5 +24,6 @@ jobs:
           name: rsi-artifacts
           path: |
             CHAR/EVID/artifacts/ecrr/**
-            docs/ecrr/ECRR_REPORTS/RSI_EVAL_LATEST.md
+            CHAR/ECRR/ECRR_REPORTS/RSI_EVAL_LATEST.md
+
 

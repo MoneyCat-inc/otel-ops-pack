@@ -32,7 +32,7 @@ Three gates completed in single session, all closed AMBER with full ECRR complia
 - `GATE_027_CYCLE_RETROSPECTIVE.md` - Honest assessment (180 LOC)
 - `GATE_027_FINAL_SUMMARY.md` - Executive summary
 - `GATE_027_CRITICAL_FINDINGS.md` - Track A blocker analysis
-- `docs/ecrr/ECRR_REPORTS/ECRR_GATE_027_PARTIAL_20251027.md` - ECRR report
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_027_PARTIAL_20251027.md` - ECRR report
 - `scripts/windows/verify-collector-traces.ps1` - Health probe (80 LOC)
 - `docs/runbooks/windows-collector.md` - Updated with trace paths (+52 LOC)
 - `scripts/gate027/deploy-dotnet-service2.ps1` (90 LOC)
@@ -57,7 +57,7 @@ Three gates completed in single session, all closed AMBER with full ECRR complia
 **Files Created:**
 - `GATE_028_SCOPE.md` - Gate charter
 - `GATE_028_FINAL_SUMMARY.md` - Executive summary
-- `docs/ecrr/ECRR_REPORTS/ECRR_GATE_028_PARTIAL_20251027.md` - ECRR report
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_028_PARTIAL_20251027.md` - ECRR report
 - `scripts/gate028/test-collector-path.ps1` (89 LOC)
 - `scripts/gate028/generate-collector-test-traffic.ps1` (22 LOC)
 - `scripts/icf/test-regex.ps1` - Debug script (32 LOC)
@@ -83,7 +83,7 @@ Three gates completed in single session, all closed AMBER with full ECRR complia
 **Files Created:**
 - `GATE_029_SCOPE.md` - Gate charter
 - `GATE_029_FINAL_SUMMARY.md` - Executive summary (comprehensive)
-- `docs/ecrr/ECRR_REPORTS/ECRR_GATE_029_FRAMEWORK_20251027.md` - ECRR report
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_029_FRAMEWORK_20251027.md` - ECRR report
 - `scripts/gate029/orchestrator.ps1` - Core framework (270 LOC)
 - `scripts/gate029/specs/bosscat-svc2-api.json` - Service #2 spec
 - `scripts/gate029/specs/bosscat-svc3-worker.json` - Service #3 spec
@@ -299,9 +299,9 @@ Three gates completed in single session, all closed AMBER with full ECRR complia
 ## 📋 Complete File Inventory
 
 ### ECRR Reports (3)
-- `docs/ecrr/ECRR_REPORTS/ECRR_GATE_027_PARTIAL_20251027.md`
-- `docs/ecrr/ECRR_REPORTS/ECRR_GATE_028_PARTIAL_20251027.md`
-- `docs/ecrr/ECRR_REPORTS/ECRR_GATE_029_FRAMEWORK_20251027.md`
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_027_PARTIAL_20251027.md`
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_028_PARTIAL_20251027.md`
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_029_FRAMEWORK_20251027.md`
 
 ### Gate Summaries (9)
 - `GATE_027_SCOPE.md`
@@ -347,4 +347,5 @@ Three gates completed in single session, all closed AMBER with full ECRR complia
 **Report Generated:** 2025-10-27 11:40:00 UTC  
 **Authority:** Cursor{Implementer}  
 **Seal:** 🐾 **Session Report — Gates #027-#029 Complete**
+
 

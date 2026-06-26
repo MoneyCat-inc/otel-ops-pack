@@ -23,7 +23,7 @@ param(
     [string]$BenchmarkPath,
     
     [string]$OutputPath = "artifacts/tetragrammaton-quadrants",
-    [string]$ECRRReportDir = "docs/ecrr/ECRR_REPORTS",
+    [string]$ECRRReportDir = "CHAR/ECRR/ECRR_REPORTS",
     [switch]$IncludeDetailedMetrics = $true,
     [switch]$DryRun
 )
@@ -484,3 +484,4 @@ Write-Host "🐾 Tetragrammaton Quadrant Matrix Complete" -ForegroundColor Green
 Write-Host "📊 Overall Pass Rate: $($matrixReport.GovernanceMetrics.PassRate)%" -ForegroundColor Yellow
 Write-Host "🏛️ Compliance Status: $($matrixReport.GovernanceMetrics.ComplianceStatus)" -ForegroundColor Yellow
 Write-Host "📈 ECRR Artifacts: Exported" -ForegroundColor Yellow
+

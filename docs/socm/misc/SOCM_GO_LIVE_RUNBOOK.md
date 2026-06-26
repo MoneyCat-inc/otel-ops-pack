@@ -754,7 +754,7 @@ $incident | Out-File -Append .agent/EVIDENCE.log
 4. **Report** (document incident):
    ```powershell
    # Create ECRR report
-   code "docs/ecrr/ECRR_REPORTS/ECRR_SOCM_INCIDENT_$(Get-Date -Format 'yyyyMMdd').md"
+   code "CHAR/ECRR/ECRR_REPORTS/ECRR_SOCM_INCIDENT_$(Get-Date -Format 'yyyyMMdd').md"
    
    # Include:
    # - What happened?
@@ -1147,4 +1147,5 @@ Remove-Item .agent/LOCK
 🐾 **BossCat Certified: PRODUCTION-OPERATIONAL**
 
 **Go forth and grow sustainably!** 🚀
+
 

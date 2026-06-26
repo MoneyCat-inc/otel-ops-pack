@@ -73,7 +73,7 @@ $step5 = Test-Step "Verify Artifacts Generated" {
   $artifactCount = (Get-ChildItem -Path "artifacts\enterprise-views-*.json" -ErrorAction SilentlyContinue).Count
   if ($artifactCount -eq 0) { throw "No artifacts found in artifacts/" }
   
-  $ecrrCount = (Get-ChildItem -Path "docs\ecrr\ECRR_REPORTS\enterprise-views-ecrr-*.md" -ErrorAction SilentlyContinue).Count
+  $ecrrCount = (Get-ChildItem -Path "CHAR\ECRR\ECRR_REPORTS\enterprise-views-ecrr-*.md" -ErrorAction SilentlyContinue).Count
   if ($ecrrCount -eq 0) { throw "No ECRR reports found" }
   
   return "Found $artifactCount artifacts and $ecrrCount ECRR reports"
@@ -119,4 +119,5 @@ Write-Host "Test report: $reportPath" -ForegroundColor Gray
 Write-Host ""
 
 exit $failed
+
 

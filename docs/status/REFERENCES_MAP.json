@@ -92,11 +92,12 @@
     "orphans_list": "docs/status/orphans.md",
     "scripts_registry": "docs/status/scripts.json",
     "workflows_registry": "docs/status/workflows.json",
-    "ecrr_reports": "docs/ecrr/ECRR_REPORTS/",
+    "ecrr_reports": "CHAR/ECRR/ECRR_REPORTS/",
     "total_canonical_refs": 6,
     "buckets_count": 7,
     "organized_domains_count": 7,
     "root_docs_consolidated": 177
   }
 }
+
 

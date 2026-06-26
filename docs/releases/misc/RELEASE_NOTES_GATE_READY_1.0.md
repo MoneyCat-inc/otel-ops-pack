@@ -70,7 +70,7 @@ pwsh -File BRAV/SCPT/watchdog-control.ps1 logs both
 **Directories Created:**
 - `docs/observability/snapshots/` - Gate scan evidence (8 snapshots)
 - `docs/status/` - Status ledger (`tests.json`, `status.html`)
-- `docs/ecrr/ECRR_REPORTS/` - ECRR audit trails (8 reports)
+- `CHAR/ECRR/ECRR_REPORTS/` - ECRR audit trails (8 reports)
 - `docs/cheatsheets/` - Quick reference guides (3 guides)
 - `docs/BossCat/` - Operations documentation
 - `DELT/ARTF/` - Runtime artifacts (ephemeral)
@@ -154,7 +154,7 @@ None. This is a new feature release adding gate infrastructure.
 ### Reference
 - `BRAV/SCPT/GUARDRAILS_EXEMPTIONS.md` - Hybrid structure docs
 - `BRAV/SCPT/GUARDRAILS_LOCKED.md` - Lock certification
-- `docs/ecrr/ECRR_REPORTS/ECRR_GATE_READY_FINAL_2025-10-10.md` - Final ECRR
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_READY_FINAL_2025-10-10.md` - Final ECRR
 
 ---
 
@@ -220,8 +220,8 @@ All scripts follow Examine → Clean → Report → Role framework with evidence
 ## 📦 Assets
 
 ### Evidence Bundle
-- [ECRR Final Report (MD)](docs/ecrr/ECRR_REPORTS/ECRR_GATE_READY_FINAL_2025-10-10.md)
-- [ECRR Final Report (PDF)](docs/ecrr/ECRR_REPORTS/ECRR_GATE_READY_FINAL_2025-10-10.pdf)
+- [ECRR Final Report (MD)](CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_READY_FINAL_2025-10-10.md)
+- [ECRR Final Report (PDF)](CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_READY_FINAL_2025-10-10.pdf)
 - [Guardrails Lock](BRAV/SCPT/GUARDRAILS_LOCKED.md)
 - [Final Health Snapshot](docs/observability/snapshots/gate-final-ready-20251010-004510.json)
 
@@ -248,4 +248,5 @@ All scripts follow Examine → Clean → Report → Role framework with evidence
 ---
 
 🎉 **Thank you for using BossCat Gate Infrastructure!** 🎉
+
 

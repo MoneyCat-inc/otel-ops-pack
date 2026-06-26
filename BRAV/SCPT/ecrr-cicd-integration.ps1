@@ -37,11 +37,11 @@ on:
   push:
     branches: [ main, develop ]
     paths:
-      - 'docs/ECRR_REPORTS/**'
+      - 'CHAR/ECRR/ECRR_REPORTS/**'
   pull_request:
     branches: [ main, develop ]
     paths:
-      - 'docs/ECRR_REPORTS/**'
+      - 'CHAR/ECRR/ECRR_REPORTS/**'
   schedule:
     - cron: '0 2 * * *'
   workflow_dispatch:

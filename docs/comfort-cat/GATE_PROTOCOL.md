@@ -80,7 +80,7 @@ This document defines the canonical protocol for gate readiness assessment, appr
 |-----------|-------|-----------|----------|
 | Budget Compliance | LOC per job | ≤200 LOC | Job analysis |
 | Lane Discipline | PR/Nightly separation | Perfect execution | Workflow logs |
-| ECRR Methodology | Report generation | 100% coverage | `docs/ecrr/ECRR_REPORTS/` |
+| ECRR Methodology | Report generation | 100% coverage | `CHAR/ECRR/ECRR_REPORTS/` |
 | Evidence Trails | Artifact presence | Comprehensive | `artifacts/`, `DELT/ARTF/` |
 
 ---
@@ -98,7 +98,7 @@ This document defines the canonical protocol for gate readiness assessment, appr
 
 ### Evidence Collection
 - [ ] Generate gate verification JSON: `DELT/ARTF/gate-verification-results.json`
-- [ ] Create gate readiness report: `docs/ecrr/ECRR_REPORTS/ECRR_GATE_READY_LATEST.md`
+- [ ] Create gate readiness report: `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_READY_LATEST.md`
 - [ ] Update gate status dashboard: `docs/GATE_STATUS_DASHBOARD.md`
 - [ ] Capture SigNoz dashboard snapshots
 - [ ] Archive test results and logs
@@ -258,4 +258,5 @@ This document defines the canonical protocol for gate readiness assessment, appr
 
 🐾 **Gate Readiness Protocol**  
 *This document defines the canonical gate transition process for Cat Nap Control Room operations*
+
 

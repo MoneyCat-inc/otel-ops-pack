@@ -103,7 +103,7 @@ Other: 5 reports (3.2%) - Miscellaneous agents
 5. **Final Analysis** (2025-09-29): Complete processing of 154 reports
 
 ### **Current Repository State**
-- **Total Reports**: 154+ ECRR reports in `docs/ECRR_REPORTS/`
+- **Total Reports**: 154+ ECRR reports in `CHAR/ECRR/ECRR_REPORTS/`
 - **Consolidated Reports**: 3 major consolidated reports created
 - **Archived Reports**: Original duplicates archived in `archive/` subdirectory
 - **Analysis Reports**: 7 comprehensive analysis documents created
@@ -129,11 +129,11 @@ Other: 5 reports (3.2%) - Miscellaneous agents
 ## 📋 **Key Processing Artifacts**
 
 ### **Analysis Documentation**
-- ✅ `docs/ECRR_REPORTS/ECRR_PROCESSING_ANALYSIS.md` - Original comprehensive analysis
-- ✅ `docs/ECRR_REPORTS/ECRR_PROCESSING_FINAL_COMPREHENSIVE_ANALYSIS.md` - Final comprehensive analysis
-- ✅ `docs/ECRR_REPORTS/2025-09-29-ecrr-processing-complete-analysis.md` - Complete processing analysis
-- ✅ `docs/ECRR_REPORTS/2025-09-29-ecrr-action-items-and-recommendations.md` - Action items and recommendations
-- ✅ `docs/ECRR_REPORTS/2025-09-29-ecrr-consolidation-and-redaction.md` - Consolidation report
+- ✅ `CHAR/ECRR/ECRR_REPORTS/ECRR_PROCESSING_ANALYSIS.md` - Original comprehensive analysis
+- ✅ `CHAR/ECRR/ECRR_REPORTS/ECRR_PROCESSING_FINAL_COMPREHENSIVE_ANALYSIS.md` - Final comprehensive analysis
+- ✅ `CHAR/ECRR/ECRR_REPORTS/2025-09-29-ecrr-processing-complete-analysis.md` - Complete processing analysis
+- ✅ `CHAR/ECRR/ECRR_REPORTS/2025-09-29-ecrr-action-items-and-recommendations.md` - Action items and recommendations
+- ✅ `CHAR/ECRR/ECRR_REPORTS/2025-09-29-ecrr-consolidation-and-redaction.md` - Consolidation report
 
 ### **Processing Tools**
 - ✅ `scripts/process-all-ecrr-reports.ps1` - Automated processing script
@@ -328,4 +328,5 @@ The comprehensive ECRR processing analysis provides complete visibility into fra
 - Scope:
 
 ---
+
 

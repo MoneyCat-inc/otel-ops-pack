@@ -225,7 +225,7 @@ class SimplifiedAgentSystem {
   }
 
   private async saveECRRReportFile(report: ECRRReport): Promise<void> {
-    const reportDir = 'docs/ECRR_REPORTS';
+    const reportDir = 'CHAR/ECRR/ECRR_REPORTS';
     await fs.mkdir(reportDir, { recursive: true });
     
     const filename = `${report.createdAt.split('T')[0]}-${report.id}.md`;
@@ -542,3 +542,4 @@ if (require.main === module) {
 }
 
 export { SimplifiedAgentSystem };
+

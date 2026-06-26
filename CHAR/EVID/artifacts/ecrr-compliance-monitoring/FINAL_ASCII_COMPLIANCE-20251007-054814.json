@@ -14,9 +14,10 @@
   "compliance_rate": "99.6%",
   "verification_complete": true,
   "ascii_compliance": "100%",
-  "archive_location": "docs/ecrr/ECRR_REPORTS/ecrr-processing-analysis-20251007-053351/",
+  "archive_location": "CHAR/ECRR/ECRR_REPORTS/ecrr-processing-analysis-20251007-053351/",
   "fully_compliant": 70,
   "all_gaps_resolved": true,
   "final_status": "COMPLETE",
   "total_reports": 71
 }
+

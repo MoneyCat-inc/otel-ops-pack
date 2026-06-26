@@ -232,7 +232,7 @@ class T1ProductionDeployer:
         evidence = self.run_production_benchmark()
         
         # Save evidence
-        evidence_file = "docs/ecrr/ECRR_REPORTS/t1_production_evidence.json"
+        evidence_file = "CHAR/ECRR/ECRR_REPORTS/t1_production_evidence.json"
         with open(evidence_file, 'w') as f:
             json.dump(evidence, f, indent=2)
         
@@ -264,3 +264,4 @@ def main():
 
 if __name__ == '__main__':
     exit(main())
+

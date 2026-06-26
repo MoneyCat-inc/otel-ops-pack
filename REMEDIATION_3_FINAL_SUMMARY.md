@@ -114,7 +114,7 @@ mv_dx, mv_dy, mv_l, mv_r, mv_g, mv_b, mv_a
 |------|------|---------|
 | `viz-engine-butterchurn/src/milk-parser.js` | MAJOR REWRITE | +143 LOC (schema normalization) |
 | `README.viz-engine.md` | MINOR FIX | 2 unicode replacements |
-| `docs/ecrr/ECRR_REPORTS/ECRR_VIZ_ENGINE_REMEDIATION_3_20251024.md` | NEW | ECRR artifact |
+| `CHAR/ECRR/ECRR_REPORTS/ECRR_VIZ_ENGINE_REMEDIATION_3_20251024.md` | NEW | ECRR artifact |
 | `docs/BossCat/BOSSCAT_LOG.md` | UPDATED | Log entry |
 | `REMEDIATION_3_FINAL_SUMMARY.md` | NEW | This doc |
 
@@ -201,7 +201,7 @@ while ((match = baseValRegex.exec(milkText)) !== null) {
 ## Evidence Artifacts
 
 1. **milk-parser.js** - Complete rewrite with key mapping table
-2. **ECRR Report #3** - `docs/ecrr/ECRR_REPORTS/ECRR_VIZ_ENGINE_REMEDIATION_3_20251024.md`
+2. **ECRR Report #3** - `CHAR/ECRR/ECRR_REPORTS/ECRR_VIZ_ENGINE_REMEDIATION_3_20251024.md`
 3. **This Summary** - `REMEDIATION_3_FINAL_SUMMARY.md`
 4. **BossCat Log Entry:**
    ```
@@ -257,4 +257,5 @@ while ((match = baseValRegex.exec(milkText)) !== null) {
 **Status:** REMEDIATION #3 FINAL COMPLETE - AWAITING APPROVAL
 
 **Cat Nap Control Room - Schema Normalized - Core Requirement Met - Ready for Final Review**
+
 

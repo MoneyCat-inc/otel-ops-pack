@@ -26,7 +26,7 @@
 
 ### Files Modified/Created
 ```
-A  docs/ECRR_REPORTS/2025-01-27-c6-beta-metrics-rollout.md
+A  CHAR/ECRR/ECRR_REPORTS/2025-01-27-c6-beta-metrics-rollout.md
 M  resonai-mock/app/labs/cohort-log/page.tsx
 M  resonai-mock/src/engine/metrics/cohortLog.ts
 M  resonai-mock/tests/e2e/cohort-log.e2e.spec.ts
@@ -284,4 +284,5 @@ M  resonai-mock/tests/unit/cohort-log.test.ts
 - Scope:
 
 ---
+
 

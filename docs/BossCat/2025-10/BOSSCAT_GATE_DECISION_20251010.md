@@ -30,7 +30,7 @@
 - ✅ docs/cheatsheets - present
 - ✅ docs/IONA_ERRORS.md - present
 - ✅ docs/status/tests.json - present
-- ✅ docs/ecrr/ECRR_REPORTS - present
+- ✅ CHAR/ECRR/ECRR_REPORTS - present
 - ✅ .github/workflows/bosscat-gate-verify.yml - present
 - ✅ index.html - present
 - ✅ docs/status.html - present
@@ -42,15 +42,15 @@
 
 ### ECRR Report Analysis
 
-**Latest ECRR Run:** `docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_20251010_012920.md`  
+**Latest ECRR Run:** `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_RUN_20251010_012920.md`  
 **Timestamp:** 2025-10-10 01:29:20 +01:00  
 **Verdict:** ✅ **READY**
 
-**BOSS V2 Run:** `docs/ecrr/ECRR_REPORTS/BOSS_V2_RUN.md`  
+**BOSS V2 Run:** `CHAR/ECRR/ECRR_REPORTS/BOSS_V2_RUN.md`  
 **Timestamp:** 2025-10-10 01:28:45 +0100  
 **Verdict:** ✅ **READY**
 
-**ECRR CI Report:** `docs/ecrr/ECRR_REPORTS/ECRR_RUN.md`  
+**ECRR CI Report:** `CHAR/ECRR/ECRR_REPORTS/ECRR_RUN.md`  
 **Timestamp:** 2025-10-10 01:28:27 +0100  
 **Verdict:** ✅ **READY**
 
@@ -267,4 +267,5 @@ The Resonai [OTel] observability stack has successfully passed all BossCat gate 
 - Evidence: DELT/ARTF/evidence-set-20251010_013046.tar.gz
 - IONA Verdict: PR_COMMENT_IONA_GATE_002_FINAL.md
 - Watchdog: DELT/ARTF/watchdog-gate-evidence.json
+
 

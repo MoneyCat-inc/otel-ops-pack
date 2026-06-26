@@ -11,7 +11,7 @@ Write-Host "`n🐾 [BossCat Canary] Sending trace for '$ServiceName'..." -Foregr
 
 # Set OTLP configuration for local collector (Docker mapped ports)
 $env:OTEL_EXPORTER_OTLP_PROTOCOL = "http/protobuf"
-$env:OTEL_EXPORTER_OTLP_ENDPOINT = "http://127.0.0.1:14318"  # Docker port mapping
+$env:OTEL_EXPORTER_OTLP_ENDPOINT = "http://127.0.0.1:4318"  # SigNoz OTLP HTTP endpoint
 $env:OTEL_RESOURCE_ATTRIBUTES = "service.name=$ServiceName,service.version=0.1.0,os.type=windows"
 $env:OTEL_LOG_LEVEL = "info"
 

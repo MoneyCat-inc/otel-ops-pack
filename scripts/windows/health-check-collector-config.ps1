@@ -6,7 +6,7 @@
 $ErrorActionPreference = "Stop"
 
 $ConfigPath = "C:\otel\config.yaml"
-$ExpectedEndpointPattern = "(127\.0\.0\.1|localhost):14317"
+$ExpectedEndpointPattern = "(127\.0\.0\.1|localhost):4317"
 $ServiceName = "otelcol-contrib"
 
 Write-Host "=== Windows Collector Config Health Check ===" -ForegroundColor Cyan
@@ -22,12 +22,12 @@ Write-Host "[OK] Config file exists: $ConfigPath" -ForegroundColor Green
 # Check 2: Endpoint assertion
 $configContent = Get-Content $ConfigPath -Raw
 if ($configContent -notmatch $ExpectedEndpointPattern) {
-  Write-Host "[RED] Endpoint mismatch - expected 127.0.0.1:14317 or localhost:14317" -ForegroundColor Red
+  Write-Host "[RED] Endpoint mismatch - expected 127.0.0.1:4317 or localhost:4317" -ForegroundColor Red
   Write-Host "Current config:" -ForegroundColor Yellow
   $configContent | Select-String -Pattern "endpoint:" | ForEach-Object { Write-Host "  $_" -ForegroundColor Yellow }
   exit 20
 }
-Write-Host "[OK] Endpoint verified: localhost:14317 or 127.0.0.1:14317" -ForegroundColor Green
+Write-Host "[OK] Endpoint verified: localhost:4317 or 127.0.0.1:4317" -ForegroundColor Green
 
 # Check 3: Service config matches canonical path
 $serviceConfig = sc qc $ServiceName 2>&1 | Out-String
@@ -53,9 +53,9 @@ if ($service.Status -ne "Running") {
 Write-Host "[OK] Service running: $ServiceName" -ForegroundColor Green
 
 # Check 5: OTLP aggregator reachability
-$grpcReachable = Test-NetConnection -ComputerName 127.0.0.1 -Port 14317 -WarningAction SilentlyContinue -InformationLevel Quiet -ErrorAction SilentlyContinue
+$grpcReachable = Test-NetConnection -ComputerName 127.0.0.1 -Port 4317 -WarningAction SilentlyContinue -InformationLevel Quiet -ErrorAction SilentlyContinue
 if (-not $grpcReachable) {
-  Write-Host "[WARN] OTLP aggregator not reachable on port 14317" -ForegroundColor Yellow
+  Write-Host "[WARN] OTLP aggregator not reachable on port 4317" -ForegroundColor Yellow
   # Non-fatal - aggregator might be down temporarily
 }
 else {

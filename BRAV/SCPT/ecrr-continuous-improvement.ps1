@@ -39,7 +39,7 @@ function Get-ECRRUsageAnalytics {
     }
     
     # Analyze recent reports
-    $reportsPath = "docs/ECRR_REPORTS"
+    $reportsPath = "CHAR/ECRR/ECRR_REPORTS"
     if (Test-Path $reportsPath) {
         $reports = Get-ChildItem -Path $reportsPath -Filter "*.md"
         $analytics.UsageMetrics.TotalReports = $reports.Count
@@ -414,3 +414,4 @@ if ($improvementPlan.Count -gt 0) { Write-Host "Improvement Plan: $planPath" -Fo
 if ($templateUpdates.Count -gt 0) { Write-Host "Template Updates: $updatesPath" -ForegroundColor White }
 
 Write-Host "`n✅ ECRR continuous improvement system complete!" -ForegroundColor Green
+

@@ -150,7 +150,7 @@ Executor (Agent A)                    Observer (Agent B)
      │                                      │    (artifacts/agent-b-observation-report.json)
      │                                      │
      │ 6. Both write ECRR reports           │
-     │    (docs/ecrr/ECRR_REPORTS/)        │
+     │    (CHAR/ECRR/ECRR_REPORTS/)        │
 ```
 
 ### Why This Works
@@ -176,7 +176,7 @@ Executor (Agent A)                    Observer (Agent B)
 **Key Insight:** Patterns are stored in **two places**:
 
 1. **In-Memory Maps** - Runtime pattern tracking (`behaviorData` Map)
-2. **ECRR Reports** - Persistent pattern documentation (`docs/ecrr/ECRR_REPORTS/`)
+2. **ECRR Reports** - Persistent pattern documentation (`CHAR/ECRR/ECRR_REPORTS/`)
 
 ### Pattern Detection Implementation
 
@@ -274,8 +274,8 @@ Patterns are documented in ECRR reports with this structure:
 - Query via: `getAgentBehavior(agentId)`
 
 **Documented Patterns:**
-- Location: `docs/ecrr/ECRR_REPORTS/ECRR_*.md`
-- Search: `grep -r "Pattern:" docs/ecrr/ECRR_REPORTS/`
+- Location: `CHAR/ECRR/ECRR_REPORTS/ECRR_*.md`
+- Search: `grep -r "Pattern:" CHAR/ECRR/ECRR_REPORTS/`
 - Index: `CHAR/DOCS/docs/patterns/PATTERN_INDEX.md`
 
 **Most Interesting Pattern Learned:**
@@ -695,4 +695,5 @@ New-ECRRIncidentReport -Service "otelcol-contrib" -Action "Auto-recovery"
 **Status:** ✅ Implementation Details Documented
 
 🐾 **Cat Nap Control Room - Deep Dive Complete**
+
 

@@ -50,7 +50,7 @@ This release completes Gate #007 with **two major lanes:**
 - **CI Workflows:** 8,945+ runs triggered
 
 ### Evidence
-- **ECRR Report:** `docs/ecrr/ECRR_REPORTS/ECRR_PR_MERGE_20251010.md`
+- **ECRR Report:** `CHAR/ECRR/ECRR_REPORTS/ECRR_PR_MERGE_20251010.md`
 - **Executive Summary:** `CHAR/EVID/phases/BOSSCAT_PR_MERGE_FINAL_REPORT.md`
 - **Screenshots:** 8 evidence screenshots captured
 - **Gate Verification:** `DELT/ARTF/gate-verification-results.json` (verdict: READY)
@@ -291,4 +291,5 @@ This release completes Gate #007 with **two major lanes:**
 🐾 **Gate #007 Approved for Production**  
 **Status:** Ready with Full Observability  
 **Date:** 2025-10-11
+
 

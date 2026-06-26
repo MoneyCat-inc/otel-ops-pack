@@ -22,9 +22,9 @@ if (-not (Test-Path $OutputDir)) {
 # ECRR Reports directory (support tetragram + legacy fallbacks)
 $candidateDirs = @(
     "CHAR/ECRR/ECRR_REPORTS",
-    "docs/ECRR_REPORTS",
-    "docs/ecrr/ECRR_REPORTS",
-    "CHAR/DOCS/docs/ECRR_REPORTS"
+    "CHAR/ECRR/ECRR_REPORTS",
+    "CHAR/ECRR/ECRR_REPORTS",
+    "CHAR/DOCS/CHAR/ECRR/ECRR_REPORTS"
 )
 
 $ECRRDir = $null
@@ -40,3 +40,4 @@ $ArchiveDir = "$ECRRDir/archive"
 
 # Initialize analysis data
 $AnalysisData = @{
+

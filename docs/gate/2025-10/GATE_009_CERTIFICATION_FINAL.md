@@ -132,8 +132,8 @@ motion_ok: false      (Expected without audio)
 - artifacts/viz-engine/test-frame-02-library.jpg
 
 **ECRR Reports:**
-- docs/ecrr/ECRR_REPORTS/ECRR_VIZ_ENGINE_GATE_009_GREEN_20251024.md
-- docs/ecrr/ECRR_REPORTS/ECRR_VIZ_ENGINE_REMEDIATION_*.md (4 reports)
+- CHAR/ECRR/ECRR_REPORTS/ECRR_VIZ_ENGINE_GATE_009_GREEN_20251024.md
+- CHAR/ECRR/ECRR_REPORTS/ECRR_VIZ_ENGINE_REMEDIATION_*.md (4 reports)
 
 **Documentation:**
 - README.viz-engine.md (Quick start)
@@ -205,4 +205,5 @@ motion_ok: false      (Expected without audio)
 **Seal:** 🐾 **BossCat OEM - Gate #009 GREEN - Certified 2025-10-24**
 
 **Cat Nap Control Room - Milkdrop Visual Engine Operational - Production Ready**
+
 

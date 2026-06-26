@@ -91,7 +91,7 @@
         "status": "COMPREHENSIVE",
         "report_count": 198,
         "coverage": "100%",
-        "location": "docs/ecrr/ECRR_REPORTS/"
+        "location": "CHAR/ECRR/ECRR_REPORTS/"
       },
       "evidence_trails": {
         "status": "COMPREHENSIVE",
@@ -219,4 +219,5 @@
     "Windows Collector service stopped but Docker OTel collector operational"
   ]
 }
+
 
