@@ -119,13 +119,13 @@ function Start-ServiceProcess {
     $env:OTEL_METRICS_EXPORTER = "otlp"
     $env:OTEL_LOGS_EXPORTER = "otlp"
     
-    # Endpoint (5317 via collector OR 14317 direct)
+    # Endpoint (5317 via Windows Collector OR 4317 direct to SigNoz)
     if ($Spec.useCollector) {
         $env:OTEL_EXPORTER_OTLP_ENDPOINT = "http://127.0.0.1:5317"
         Ecrr-Log "start" "OTLP endpoint: 5317 (via Windows Collector)"
     } else {
-        $env:OTEL_EXPORTER_OTLP_ENDPOINT = "http://127.0.0.1:14317"
-        Ecrr-Log "start" "OTLP endpoint: 14317 (direct to SigNoz)"
+        $env:OTEL_EXPORTER_OTLP_ENDPOINT = "http://127.0.0.1:4317"
+        Ecrr-Log "start" "OTLP endpoint: 4317 (direct to SigNoz)"
     }
     $env:OTEL_EXPORTER_OTLP_PROTOCOL = "grpc"
     
@@ -261,7 +261,7 @@ try {
     Write-Host "   PID: $($global:ServicePID)" -ForegroundColor White
     Write-Host "   Port: $($spec.port)" -ForegroundColor White
     Write-Host "   Health: $($spec.healthUrl)" -ForegroundColor White
-    Write-Host "   OTel: $(if ($spec.useCollector) { '5317 (collector)' } else { '14317 (direct)' })" -ForegroundColor White
+    Write-Host "   OTel: $(if ($spec.useCollector) { '5317 (collector)' } else { '4317 (direct)' })" -ForegroundColor White
     Write-Host ""
     Write-Host "⚠️  Service running in background. Press Ctrl+C to stop or manually kill PID." -ForegroundColor Yellow
     

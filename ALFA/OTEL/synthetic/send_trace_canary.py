@@ -6,7 +6,7 @@ Minimal OTLP trace canary sender.
   TRACE_ID=..., CANARY_ID=..., SEND_TS_NS=...
 
 Defaults:
-- Endpoint from OTEL_EXPORTER_OTLP_TRACES_ENDPOINT or http://127.0.0.1:14318/v1/traces
+- Endpoint from OTEL_EXPORTER_OTLP_TRACES_ENDPOINT or http://127.0.0.1:4318/v1/traces
 """
 import json
 import os
@@ -71,8 +71,8 @@ def post_json(endpoint: str, body: bytes, timeout: int = 5) -> int:
 
 
 def main() -> int:
-    # Prefer env var set by verify script; fallback to mapped port
-    endpoint = os.getenv("OTEL_EXPORTER_OTLP_TRACES_ENDPOINT", "http://127.0.0.1:14318/v1/traces")
+    # Prefer env var set by verify script; fallback to the SigNoz OTLP HTTP endpoint.
+    endpoint = os.getenv("OTEL_EXPORTER_OTLP_TRACES_ENDPOINT", "http://127.0.0.1:4318/v1/traces")
     # Prepare IDs and timing
     trace_id = uuid.uuid4().hex  # 32 hex chars
     span_id = uuid.uuid4().hex[:16]  # 16 hex chars
@@ -83,8 +83,8 @@ def main() -> int:
     payload = build_trace_payload(trace_id, span_id, start_ns, end_ns)
     body = json.dumps(payload, separators=(",", ":")).encode("utf-8")
 
-    # Try primary endpoint, then common fallback
-    endpoints = [endpoint, "http://localhost:5318/v1/traces", "http://localhost:14318/v1/traces"]
+    # Try primary endpoint, then common fallbacks.
+    endpoints = [endpoint, "http://localhost:5318/v1/traces", "http://localhost:4318/v1/traces"]
     status = None
     for ep in endpoints:
         status = post_json(ep, body)

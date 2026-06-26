@@ -36,11 +36,9 @@ export const options = {
   thresholds: {
     // P95 latency must be under 300ms (investor demo SLA)
     'http_req_duration{scenario:baseline}': [
-      { threshold: 'p(95)<300', abortOnFail: true, delayAbortEval: '10s' }
+      { threshold: 'p(95)<300', abortOnFail: true, delayAbortEval: '10s' },
+      'p(50)<150',
     ],
-
-    // P50 latency for smoother demo
-    'http_req_duration{scenario:baseline}': ['p(50)<150'],
 
     // Error rate must be under 1%
     'http_req_failed{scenario:baseline}': [
@@ -153,6 +151,11 @@ export function teardown(data) {
 // Handle summary (export results)
 export function handleSummary(data) {
   // Extract key metrics for demo
+  const durationThresholds = data.metrics['http_req_duration{scenario:baseline}']?.thresholds || {};
+  const failureThresholds = data.metrics['http_req_failed{scenario:baseline}']?.thresholds || {};
+  const p95Pass = durationThresholds['p(95)<300']?.ok ?? false;
+  const errorPass = failureThresholds['rate<0.01']?.ok ?? false;
+
   const summary = {
     demo: {
       timestamp: new Date().toISOString(),
@@ -169,15 +172,15 @@ export function handleSummary(data) {
       trace_ids_generated: data.metrics.demo_trace_ids_generated.values.count,
     },
     thresholds: {
-      p95_pass: data.metrics['http_req_duration{scenario:baseline}'].thresholds['p(95)<300'].ok,
-      error_pass: data.metrics['http_req_failed{scenario:baseline}'].thresholds['rate<0.01'].ok,
+      p95_pass: p95Pass,
+      error_pass: errorPass,
       overall_pass: Object.values(data.metrics).every(m => 
         !m.thresholds || Object.values(m.thresholds).every(t => t.ok)
       ),
     },
     verdict: data.metrics.http_req_failed && 
-             data.metrics['http_req_duration{scenario:baseline}'].thresholds['p(95)<300'].ok &&
-             data.metrics['http_req_failed{scenario:baseline}'].thresholds['rate<0.01'].ok
+             p95Pass &&
+             errorPass
              ? 'GREEN' : 'RED',
   };
 

@@ -28,11 +28,15 @@ pushd "$APP_PATH" >/dev/null
 # Run tests if test script exists
 if [[ -f "package.json" ]] && grep -q '"test"' package.json; then
     echo "  🔍 Running tests..."
+    TEST_CMD="npm test"
+    if command -v pnpm >/dev/null 2>&1; then
+        TEST_CMD="pnpm test"
+    fi
     
     # Try to run with junit output if jest/vitest configured
-    npm test -- --ci --reporters=default --reporters=junit --outputFile="../../$OUT_DIR/junit.xml" 2>/dev/null || \
-    npm test -- --ci --reporter=json --outputFile="../../$OUT_DIR/results.json" 2>/dev/null || \
-    npm test -- --ci || EXIT=$?
+    $TEST_CMD -- --ci --reporters=default --reporters=junit --outputFile="../../$OUT_DIR/junit.xml" 2>/dev/null || \
+    $TEST_CMD -- --ci --reporter=json --outputFile="../../$OUT_DIR/results.json" 2>/dev/null || \
+    $TEST_CMD -- --ci || EXIT=$?
     
     EXIT_CODE=${EXIT:-$?}
 else
