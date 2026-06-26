@@ -15,6 +15,8 @@ if [[ ! -d "$APP_PATH" ]]; then
     exit 2
 fi
 
+REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+
 echo "🔨 Building: $APP_PATH"
 
 pushd "$APP_PATH" >/dev/null
@@ -23,13 +25,27 @@ pushd "$APP_PATH" >/dev/null
 export NEXT_TELEMETRY_DISABLED=1
 
 # Install dependencies
-echo "  📦 Installing dependencies..."
-npm ci
+if [[ -f "package.json" ]]; then
+    echo "  📦 Installing dependencies..."
+    if [[ -f "$REPO_ROOT/pnpm-lock.yaml" ]] && command -v pnpm >/dev/null 2>&1; then
+        pnpm install --frozen-lockfile
+    elif [[ -f "package-lock.json" ]]; then
+        npm ci
+    else
+        npm install
+    fi
+else
+    echo "  ℹ️  No package.json in app directory - skipping dependency install"
+fi
 
 # Run build
 echo "  🔧 Running build..."
 if [[ -f "package.json" ]] && grep -q '"build"' package.json; then
-    npm run build
+    if command -v pnpm >/dev/null 2>&1; then
+        pnpm run build
+    else
+        npm run build
+    fi
 else
     echo "  ℹ️  No build script defined in package.json"
 fi

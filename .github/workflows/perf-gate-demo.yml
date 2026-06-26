@@ -35,11 +35,33 @@ jobs:
 
       - name: Start demo services (mock)
         run: |
-          # In CI, use mock endpoints or deployed services
-          # For actual demo, point to running Windows services
+          mkdir -p artifacts/demo
+          cat > /tmp/bosscat-demo-service.js <<'EOF'
+          const http = require('http');
+          const port = Number(process.env.PORT || 5556);
+          const service = process.env.SERVICE_NAME || `bosscat-demo-${port}`;
+          const server = http.createServer((req, res) => {
+            res.setHeader('content-type', 'application/json');
+            if (req.url === '/health') {
+              res.end(JSON.stringify({ status: 'healthy', service }));
+              return;
+            }
+            if (req.url === '/test') {
+              res.end(JSON.stringify({ ok: true, service, traceparent: req.headers.traceparent || null }));
+              return;
+            }
+            res.statusCode = 404;
+            res.end(JSON.stringify({ error: 'not_found', service }));
+          });
+          server.listen(port, '127.0.0.1', () => console.log(`${service} listening on ${port}`));
+          EOF
+          unset RUNNER_TRACKING_ID
+          PORT=5556 SERVICE_NAME=bosscat-svc2-api node /tmp/bosscat-demo-service.js &
+          PORT=5557 SERVICE_NAME=bosscat-svc3-worker node /tmp/bosscat-demo-service.js &
+          timeout 30 bash -c 'until curl -sf http://127.0.0.1:5556/health >/dev/null && curl -sf http://127.0.0.1:5557/health >/dev/null; do sleep 1; done'
           echo "Demo services: Using localhost endpoints"
-          echo "SVC2_URL=http://localhost:5556" >> $GITHUB_ENV
-          echo "SVC3_URL=http://localhost:5557" >> $GITHUB_ENV
+          echo "SVC2_URL=http://127.0.0.1:5556" >> $GITHUB_ENV
+          echo "SVC3_URL=http://127.0.0.1:5557" >> $GITHUB_ENV
 
       - name: Run k6 performance test
         id: k6-test

@@ -50,7 +50,7 @@ $env:OTEL_METRICS_EXPORTER = "otlp"
 $env:OTEL_LOGS_EXPORTER = "otlp"
 
 # OTLP Endpoint (PRIMARY: Direct to SigNoz)
-$env:OTEL_EXPORTER_OTLP_ENDPOINT = "http://127.0.0.1:14317"
+$env:OTEL_EXPORTER_OTLP_ENDPOINT = "http://127.0.0.1:4317"
 $env:OTEL_EXPORTER_OTLP_PROTOCOL = "grpc"
 
 # Instrumentation
@@ -61,7 +61,7 @@ $env:OTEL_DOTNET_AUTO_TRACES_ASPNETCORE_INSTRUMENTATION_ENABLED = "true"
 $env:OTEL_DOTNET_AUTO_TRACES_HTTPCLIENT_INSTRUMENTATION_ENABLED = "true"
 
 Write-Host "   ✅ Service: $ServiceName" -ForegroundColor Green
-Write-Host "   ✅ Endpoint: http://127.0.0.1:14317 (direct to SigNoz)" -ForegroundColor Green
+Write-Host "   ✅ Endpoint: http://127.0.0.1:4317 (direct to SigNoz)" -ForegroundColor Green
 Write-Host "   ✅ Port: $Port" -ForegroundColor Green
 
 # Modify app to listen on specified port

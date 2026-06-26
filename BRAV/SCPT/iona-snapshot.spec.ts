@@ -189,7 +189,7 @@ test.describe('IONA UI Snapshot Tests', () => {
 test.describe('IONA Integration Tests', () => {
   test('OTLP endpoint reachability', async ({ page }) => {
     // Test OTLP endpoint connectivity
-    const response = await page.request.get('http://127.0.0.1:14318/v1/logs');
+    const response = await page.request.get('http://127.0.0.1:4318/v1/logs');
     expect(response.status()).toBeLessThan(500); // Should not be server error
     
     console.log('[IONA] OTLP endpoint reachable');

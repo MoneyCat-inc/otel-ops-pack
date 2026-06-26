@@ -31,7 +31,7 @@ logger = logging.getLogger(__name__)
 class InferenceConfig:
     """Configuration for GPU inference sidecar"""
     input_dir: str = "/app/gpu-buffers/inference"
-    output_endpoint: str = "http://localhost:14318/v1/logs"
+    output_endpoint: str = "http://localhost:4318/v1/logs"
     triton_url: str = os.getenv("TRITON_URL", "triton:8000")
     batch_size: int = 1000  # records
     batch_timeout: float = 30.0  # seconds

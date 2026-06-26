@@ -56,7 +56,7 @@ function Invoke-OtlpPayload {
 
     $endpoints = @(
         "http://localhost:5318/$Suffix",
-        "http://localhost:14318/$Suffix"
+        "http://localhost:4318/$Suffix"
     )
 
     foreach ($endpoint in $endpoints) {
