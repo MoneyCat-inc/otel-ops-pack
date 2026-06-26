@@ -51,6 +51,8 @@ jobs:
       - name: 🚀 Start Test App (Background)
         run: |
           $appPath = "dotnet-test-app\bin\Release\net8.0\dotnet-test-app.dll"
+          # Prevent GitHub Actions cleanup from killing the app between steps.
+          $env:RUNNER_TRACKING_ID = ''
           Start-Process -FilePath "dotnet" -ArgumentList "exec", $appPath -NoNewWindow
           
           # Wait for app to start
@@ -82,9 +84,9 @@ jobs:
           
           # Call each endpoint once to generate telemetry
           try {
-            Invoke-RestMethod -Uri "http://localhost:5555/" | Out-Null
-            Invoke-RestMethod -Uri "http://localhost:5555/health" | Out-Null
-            Invoke-RestMethod -Uri "http://localhost:5555/test" | Out-Null
+            Invoke-RestMethod -Uri "http://127.0.0.1:5555/" | Out-Null
+            Invoke-RestMethod -Uri "http://127.0.0.1:5555/health" | Out-Null
+            Invoke-RestMethod -Uri "http://127.0.0.1:5555/test" | Out-Null
             
             Write-Host "✅ Synthetic traces injected"
           } catch {
@@ -110,7 +112,7 @@ jobs:
           
           k6 run scripts/gate026/k6-performance-gate.js `
             --out json=artifacts/k6-results.json `
-            --env TARGET_URL=http://localhost:5555
+            --env TARGET_URL=http://127.0.0.1:5555
           
           $exitCode = $LASTEXITCODE
           echo "k6_exit_code=$exitCode" >> $env:GITHUB_OUTPUT
