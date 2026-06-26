@@ -2,4 +2,4 @@ pre-commit:
   parallel: true
   commands:
     hygiene_fast:
-      run: pwsh ./tools/hygiene-fast.ps1
+      run: pwsh ./ALFA/TOOL/cli/hygiene-fast.ps1
