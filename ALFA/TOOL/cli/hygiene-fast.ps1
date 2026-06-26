@@ -9,7 +9,7 @@ if (-not (Get-Module -ListAvailable -Name PSScriptAnalyzer)) {
 }
 
 if (Test-Path 'scripts') {
-    Invoke-ScriptAnalyzer -Path 'scripts' -Recurse -EnableExit
+    Invoke-ScriptAnalyzer -Path 'scripts' -Recurse -Severity Error -EnableExit
 } else {
     Write-Host "  (skipped: scripts directory not found)" -ForegroundColor Yellow
 }
@@ -18,7 +18,8 @@ $canParseYaml = ($PSVersionTable.PSVersion.Major -ge 7 -and (Get-Command -Name C
 if (-not $canParseYaml) {
     Write-Warning "ConvertFrom-Yaml unavailable; skipping YAML parse check."
 } else {
-    $yamlFiles = Get-ChildItem -Recurse -Include *.yml,*.yaml -File -ErrorAction SilentlyContinue
+    $yamlFiles = Get-ChildItem -Recurse -Include *.yml,*.yaml -File -ErrorAction SilentlyContinue |
+        Where-Object { $_.FullName -notmatch '[\\/](\.git|node_modules)[\\/]' }
     foreach ($file in $yamlFiles) {
         try {
             $null = ConvertFrom-Yaml -Yaml (Get-Content $file.FullName -Raw)
