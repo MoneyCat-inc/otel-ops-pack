@@ -48,5 +48,6 @@ if ( -ne 0) {
 
 ## Troubleshooting
 - Ensure PowerShell 7.4+ is available in CI environment
-- Check that ECRR reports exist in docs/ECRR_REPORTS/
+- Check that ECRR reports exist in CHAR/ECRR/ECRR_REPORTS/
 - Verify artifacts directory is writable
+

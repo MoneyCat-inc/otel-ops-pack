@@ -319,7 +319,7 @@ $VerificationResults | ConvertTo-Json -Depth 10 | Set-Content -Path $ResultsPath
 Write-Host "`n📝 Verification results saved to: $ResultsPath" -ForegroundColor Green
 
 # Generate ECRR report
-$EcrrReportPath = "docs/ECRR_REPORTS/OBSERVABILITY_VERIFICATION_REPORT_$(Get-Date -Format 'yyyy-MM-dd').md"
+$EcrrReportPath = "CHAR/ECRR/ECRR_REPORTS/OBSERVABILITY_VERIFICATION_REPORT_$(Get-Date -Format 'yyyy-MM-dd').md"
 $EcrrReport = @"
 # ECRR Observability Verification Report
 
@@ -425,3 +425,4 @@ if ($VerificationResults.summary.success_rate -ge 80) {
 }
 
 Write-Host "`n✅ Verification completed!" -ForegroundColor Green
+

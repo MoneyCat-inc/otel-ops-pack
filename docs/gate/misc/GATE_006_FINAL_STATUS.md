@@ -59,8 +59,8 @@
 3. ✅ `GATE_STATUS_20251010.md` - Quick status
 
 **ECRR Reports:**
-4. ✅ `docs/ecrr/ECRR_REPORTS/ECRR_GATE_APPROVAL_20251010.md` - Full ECRR
-5. ✅ `docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md` - Latest run
+4. ✅ `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_APPROVAL_20251010.md` - Full ECRR
+5. ✅ `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md` - Latest run
 
 **Operational:**
 6. ✅ `MERGE_NOTE_GATE_20251010.md` - Merge authorization
@@ -99,7 +99,7 @@ python BRAV/SCPT/check_guardrails.py --config BRAV/SCPT/guardrails.json
 - `DELT/ARTF/watchdog-gate-evidence.json`
 
 **ECRR Reports:**
-- Multiple timestamped reports in `docs/ecrr/ECRR_REPORTS/`
+- Multiple timestamped reports in `CHAR/ECRR/ECRR_REPORTS/`
 
 ---
 
@@ -163,7 +163,7 @@ python BRAV/SCPT/check_guardrails.py --config BRAV/SCPT/guardrails.json
 
 **For Questions:**
 - Gate Decision: `BOSSCAT_GATE_DECISION_20251010.md`
-- ECRR Details: `docs/ecrr/ECRR_REPORTS/ECRR_GATE_APPROVAL_20251010.md`
+- ECRR Details: `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_APPROVAL_20251010.md`
 - Public Summary: `PUBLIC_ECRR_SUMMARY_GATE_006.md`
 
 **For Deployment:**
@@ -186,4 +186,5 @@ python BRAV/SCPT/check_guardrails.py --config BRAV/SCPT/guardrails.json
 > — BossCat OEM Audit Statement
 
 **End of Final Status Report**
+
 

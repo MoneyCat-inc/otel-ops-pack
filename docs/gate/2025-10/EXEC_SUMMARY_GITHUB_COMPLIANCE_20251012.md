@@ -127,8 +127,8 @@ permissions:
 10. `DELT/ARTF/gate-ready-exec-20251012.json` — Gate certification (READY)
 11. `DELT/ARTF/refmap-gate.json` — Refmap validation (PASS)
 12. `DELT/ARTF/site-csp-gate.json` — CSP validation (PASS)
-13. `docs/ecrr/ECRR_REPORTS/ECRR_CURSOR_IMPLEMENTER_20251012_085425.md` — Gate prep ECRR
-14. `docs/ecrr/ECRR_REPORTS/ECRR_GITHUB_COMPLIANCE_20251012_090325.md` — Compliance ECRR
+13. `CHAR/ECRR/ECRR_REPORTS/ECRR_CURSOR_IMPLEMENTER_20251012_085425.md` — Gate prep ECRR
+14. `CHAR/ECRR/ECRR_REPORTS/ECRR_GITHUB_COMPLIANCE_20251012_090325.md` — Compliance ECRR
 15. `PR_COMMENT_GATE_READY_007_IMPLEMENTER.md` — PR template
 
 **Total**: 15 files | ~1,080 LOC added | ~47 LOC removed
@@ -188,7 +188,7 @@ permissions:
    Expected: BossCat Tetragram Guard and Gate - Bot-Native should PASS
 
 2. **Review Compliance Improvements**:
-   - Read: `docs/ecrr/ECRR_REPORTS/ECRR_GITHUB_COMPLIANCE_20251012_090325.md`
+   - Read: `CHAR/ECRR/ECRR_REPORTS/ECRR_GITHUB_COMPLIANCE_20251012_090325.md`
    - Review: Branch protection settings via GitHub UI
 
 3. **Approve PR #134** (once CI passes):
@@ -245,8 +245,8 @@ permissions:
 ## 📚 EVIDENCE TRAIL
 
 **ECRR Reports**:
-- `docs/ecrr/ECRR_REPORTS/ECRR_GITHUB_COMPLIANCE_20251012_090325.md` (compliance)
-- `docs/ecrr/ECRR_REPORTS/ECRR_CURSOR_IMPLEMENTER_20251012_085425.md` (gate prep)
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_GITHUB_COMPLIANCE_20251012_090325.md` (compliance)
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_CURSOR_IMPLEMENTER_20251012_085425.md` (gate prep)
 
 **Gate Artifacts**:
 - `DELT/ARTF/gate-ready-exec-20251012.json` (verdict: READY)
@@ -314,5 +314,6 @@ gh api repos/MoneyCat-inc/otel-ops-pack/branches/main/protection
 **Actor**: fubumaki (cursor{implementer})  
 **Timestamp**: 2025-10-12 09:06:00 +01:00
 
-**For Questions**: Review ECRR reports in `docs/ecrr/ECRR_REPORTS/`
+**For Questions**: Review ECRR reports in `CHAR/ECRR/ECRR_REPORTS/`
+
 

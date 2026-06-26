@@ -102,7 +102,7 @@ if (-not $SkipDocker) {
 # 5. Port Conflict Check
 Write-Host "📋 Checking for port conflicts..." -ForegroundColor Yellow
 try {
-    $requiredPorts = @(8080, 14317, 14318, 5317, 5318)
+    $requiredPorts = @(8080, 4317, 4318, 5317, 5318)
     $conflicts = @()
     
     foreach ($port in $requiredPorts) {

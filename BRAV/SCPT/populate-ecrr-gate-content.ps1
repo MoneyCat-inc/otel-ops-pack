@@ -1,5 +1,5 @@
 param(
-    [string]$ReportsPath = "docs/ECRR_REPORTS",
+    [string]$ReportsPath = "CHAR/ECRR/ECRR_REPORTS",
     [switch]$DryRun = $true,
     [int]$MaxReports = 10
 )
@@ -118,3 +118,4 @@ foreach ($file in $files) {
     skipped = $skipped
     errors = $errors
 }
+

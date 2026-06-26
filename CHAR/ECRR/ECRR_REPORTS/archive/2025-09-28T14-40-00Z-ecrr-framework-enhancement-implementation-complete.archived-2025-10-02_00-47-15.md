@@ -16,7 +16,7 @@
 - **Task Queue Processing**: Process remaining 4 pending tasks from agent queue
 
 ### **Current ECRR Framework State**
-- **Total Reports**: 126 ECRR reports in `docs/ECRR_REPORTS/`
+- **Total Reports**: 126 ECRR reports in `CHAR/ECRR/ECRR_REPORTS/`
 - **Compliance Rate**: 47% (35/74) for 4-section structure
 - **ECRR Gate Coverage**: 38% (28/74) with ECRR gates
 - **Status Declarations**: 69% formal status (51/74 reports)
@@ -256,4 +256,5 @@
 - Scope:
 
 ---
+
 

@@ -384,7 +384,7 @@ cat CHAR/EVID/security/LEDGER.jsonl
 ## Related Documentation
 
 - **BossCat Charter**: `docs/BossCat/CHARTER.md`
-- **ECRR Methodology**: `docs/ecrr/ECRR_REPORTS/`
+- **ECRR Methodology**: `CHAR/ECRR/ECRR_REPORTS/`
 - **GitHub Actions**: `.github/workflows/`
 - **Conveyor System**: `BRAV/SCPT/run-archiver/`
 
@@ -416,3 +416,4 @@ cat CHAR/EVID/security/LEDGER.jsonl
 ---
 
 🐾 **BossCat Security Conveyor — Production Deployment Complete**
+

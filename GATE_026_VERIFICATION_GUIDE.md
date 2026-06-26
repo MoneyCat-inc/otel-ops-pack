@@ -363,7 +363,7 @@ docs/
 Once all evidence is collected:
 
 1. **Generate Final ECRR Report:**
-   - Update `docs/ecrr/ECRR_REPORTS/ECRR_GATE_026_VERIFICATION_20251027.md`
+   - Update `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_026_VERIFICATION_20251027.md`
    - Include all screenshots, metrics, and findings
    - Document any deviations or issues
 
@@ -385,4 +385,5 @@ Once all evidence is collected:
 **Next Action:** Execute Track A and B verification steps, collect evidence
 
 **Seal:** 🐾 **Gate #026 Verification Guide**
+
 

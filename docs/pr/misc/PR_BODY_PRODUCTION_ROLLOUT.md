@@ -79,7 +79,7 @@ This PR includes comprehensive documentation for autonomous cursor{implementer} 
 - `docs/BossCat/CURSOR_IMPLEMENTER_SETUP.md` - Complete agent setup guide
 - `docs/BossCat/CURSOR_IMPLEMENTER_QUICKSTART.md` - One-page quick reference
 - `DEPLOYMENT_SUMMARY.md` - Complete operations guide
-- `docs/ecrr/ECRR_REPORTS/MERGE_bosscat_production_rollout_20251007.md` - ECRR merge report
+- `CHAR/ECRR/ECRR_REPORTS/MERGE_bosscat_production_rollout_20251007.md` - ECRR merge report
 - 4 ECRR reports (2 deployment, 2 nightly orchestration)
 - 7 boot health reports (all environments)
 
@@ -156,7 +156,7 @@ pwsh -File scripts/boot-health-check.ps1  # Verify
 
 ## 🔗 Evidence
 
-- **ECRR Merge Report**: `docs/ecrr/ECRR_REPORTS/MERGE_bosscat_production_rollout_20251007.md`
+- **ECRR Merge Report**: `CHAR/ECRR/ECRR_REPORTS/MERGE_bosscat_production_rollout_20251007.md`
 - **Deployment Reports**: `artifacts/deployment-reports/`
 - **Boot Health Reports**: `artifacts/boot-reports/`
 - **Nightly Snapshots**: `docs/observability/snapshots/`
@@ -187,4 +187,5 @@ pwsh -File scripts/boot-health-check.ps1  # Verify
 **The Cat Nap Control Room is purring in production!** 🐱✨
 
 **SigNoz UI**: http://localhost:8080
+
 

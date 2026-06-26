@@ -26,7 +26,7 @@
       "tags": ["phase1", "pr"]
     },
     {
-      "path": "docs/ecrr/ECRR_REPORTS/ECRR_PHASE2_VALIDATION_20251010.md",
+      "path": "CHAR/ECRR/ECRR_REPORTS/ECRR_PHASE2_VALIDATION_20251010.md",
       "title": "ECRR Phase 2 Validation Report",
       "importance": "P0",
       "tags": ["ecrr", "validation", "gate"]
@@ -39,4 +39,5 @@
     }
   ]
 }
+
 

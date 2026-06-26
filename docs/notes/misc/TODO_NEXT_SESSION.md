@@ -79,7 +79,7 @@ cat scripts/gpu-fix-lane.ps1
 - `CHAR/PRSV/archive/gate-007/` (session artifacts)
 
 **ECRR Reports:**
-- `docs/ecrr/ECRR_REPORTS/` (55 reports)
+- `CHAR/ECRR/ECRR_REPORTS/` (55 reports)
 - `DELT/ARTF/ecrr-benchmark.json` (metrics)
 
 ---
@@ -112,4 +112,5 @@ git push origin main
 ---
 
 🐾 **Ready for GPU work when you are!**
+
 

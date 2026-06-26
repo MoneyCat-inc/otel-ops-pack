@@ -4,7 +4,7 @@
 param(
     [switch]$Force,
     [int]$MaxWaitSeconds = 30,
-    [string]$SigNozPort = "14318"
+    [string]$SigNozPort = "4318"
 )
 
 Write-Host "🔍 OTel Collector Enhanced Restart" -ForegroundColor Cyan

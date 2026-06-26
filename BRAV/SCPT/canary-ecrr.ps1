@@ -74,7 +74,7 @@ try {
 }
 
 # Check OTLP endpoints (Docker mapped ports)
-$otlpPorts = @(14317, 14318)
+$otlpPorts = @(4317, 4318)
 foreach ($port in $otlpPorts) {
     if (Test-Port -Port $port) {
         Add-ReportLine -Level 'OK' -Message ("OTLP endpoint $port accessible") -Color Green
@@ -169,7 +169,7 @@ if (-not $DryRun) {
         $headers = @{ 'Content-Type' = 'application/json' }
         
         try {
-            $response = Invoke-RestMethod -Uri 'http://localhost:14318/v1/logs' -Method Post -Body $jsonPayload -Headers $headers -TimeoutSec 5
+            $response = Invoke-RestMethod -Uri 'http://localhost:4318/v1/logs' -Method Post -Body $jsonPayload -Headers $headers -TimeoutSec 5
             Add-ReportLine -Level 'OK' -Message 'Sent OTLP log to collector' -Color Green
         } catch {
             $warnings += 'Failed to send OTLP log'

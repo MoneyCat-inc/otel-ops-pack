@@ -131,7 +131,7 @@ Add section after "Features":
 1. Verify MILK visuals quick-link has `data-tags="MILK visuals"` (likely already present)
 2. Add consolidated MILK report link beneath Quick Access if not present:
    ```html
-   <a href="docs/ecrr/ECRR_REPORTS/ECRR_MILK_CONSOLIDATED_LATEST.md">
+   <a href="CHAR/ECRR/ECRR_REPORTS/ECRR_MILK_CONSOLIDATED_LATEST.md">
      📊 MILK Lane Consolidated Report
    </a>
    ```
@@ -263,7 +263,7 @@ docs/BossCat/visuals/previews/
 
 ### Task 5: ECRR Report & Evidence
 
-**File**: `docs/ecrr/ECRR_REPORTS/ECRR_MILK_PHASE4_[YYYYMMDD].md`  
+**File**: `CHAR/ECRR/ECRR_REPORTS/ECRR_MILK_PHASE4_[YYYYMMDD].md`  
 **LOC Budget**: ≤100 lines  
 **Template**:
 
@@ -547,4 +547,5 @@ docs(ecrr): add MILK Phase-4 ECRR report
 **Assigned**: Next Cursor{Implementer} session
 
 🐾 **BossCat Approved** — Clear for Phase-4 implementation
+
 

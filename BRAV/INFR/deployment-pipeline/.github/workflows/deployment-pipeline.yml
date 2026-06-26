@@ -434,7 +434,7 @@ jobs:
           pwsh scripts/deployment-metrics.ps1 -Action capture -Environment ${{ inputs.environment || "staging" }} -BaseUrl $SERVICE_BASE_URL -OutputPath "docs/metrics"
           
           # Generate ECRR report
-          pwsh scripts/deployment-metrics.ps1 -Action ecrr -Environment ${{ inputs.environment || "staging" }} -BaseUrl $SERVICE_BASE_URL -ECRRReportDir "docs/ecrr/ECRR_REPORTS"
+          pwsh scripts/deployment-metrics.ps1 -Action ecrr -Environment ${{ inputs.environment || "staging" }} -BaseUrl $SERVICE_BASE_URL -ECRRReportDir "CHAR/ECRR/ECRR_REPORTS"
           
       - name: Upload ECRR artifacts
         uses: actions/upload-artifact@v4
@@ -445,3 +445,4 @@ jobs:
             deployment-pipeline/docs/ecrr/
           retention-days: 30
         if: always()
+

@@ -13,12 +13,12 @@ on:
   push:
     branches: [ main, develop ]
     paths:
-      - 'docs/ECRR_REPORTS/**'
+      - 'CHAR/ECRR/ECRR_REPORTS/**'
       - 'scripts/lint-ecrr-compliance.ps1'
   pull_request:
     branches: [ main, develop ]
     paths:
-      - 'docs/ECRR_REPORTS/**'
+      - 'CHAR/ECRR/ECRR_REPORTS/**'
       - 'scripts/lint-ecrr-compliance.ps1'
 
 jobs:
@@ -66,7 +66,7 @@ function Deploy-GitHubActionsWorkflow {
         Write-Host "📋 Workflow will trigger on:" -ForegroundColor Cyan
         Write-Host "   - Push to main/develop branches" -ForegroundColor White
         Write-Host "   - Pull requests to main/develop branches" -ForegroundColor White
-        Write-Host "   - Changes to docs/ECRR_REPORTS/** or scripts/lint-ecrr-compliance.ps1" -ForegroundColor White
+        Write-Host "   - Changes to CHAR/ECRR/ECRR_REPORTS/** or scripts/lint-ecrr-compliance.ps1" -ForegroundColor White
         return $true
     } else {
         Write-Host "❌ Workflow deployment failed" -ForegroundColor Red
@@ -100,7 +100,7 @@ function Show-TemplateWorkflow {
     Write-Host "=================================" -ForegroundColor Cyan
     
     Write-Host "`n1️⃣ **Copy Template**:" -ForegroundColor Yellow
-    Write-Host "   Copy-Item -Path 'docs/ECRR_REPORTS/2025-01-27-rollout-merge-ecrr-final-complete.md' -Destination 'docs/ECRR_REPORTS/your-new-report.md'" -ForegroundColor White
+    Write-Host "   Copy-Item -Path 'CHAR/ECRR/ECRR_REPORTS/2025-01-27-rollout-merge-ecrr-final-complete.md' -Destination 'CHAR/ECRR/ECRR_REPORTS/your-new-report.md'" -ForegroundColor White
     
     Write-Host "`n2️⃣ **Update Content**:" -ForegroundColor Yellow
     Write-Host "   - Change Date, Actor, Task, Status at the top" -ForegroundColor White
@@ -147,3 +147,4 @@ if (-not $Deploy -and -not $Test) {
     Write-Host "   .\scripts\deploy-ecrr-ci.ps1 -Test      # Test lint script functionality" -ForegroundColor White
     Write-Host "   .\scripts\deploy-ecrr-ci.ps1            # Show template workflow" -ForegroundColor White
 }
+

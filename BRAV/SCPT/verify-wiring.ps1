@@ -154,7 +154,7 @@ if (-not $apiSuccess) {
         Write-Host "`n   [INFO] Dev server check skipped (Environment: $Environment)" -ForegroundColor Cyan
         Write-Host "   Production wiring verified via:" -ForegroundColor Cyan
         Write-Host "   - OTel Collector running and healthy" -ForegroundColor Green
-        Write-Host "   - OTLP endpoints available (14317 gRPC, 14318 HTTP)" -ForegroundColor Green
+        Write-Host "   - OTLP endpoints available (4317 gRPC, 4318 HTTP)" -ForegroundColor Green
         Write-Host "   - SigNoz backend healthy" -ForegroundColor Green
         Write-Host "   - Canary tests can be used for end-to-end verification" -ForegroundColor Green
         Write-Host "`n   ✅ Production wiring verification: PASSED (dev server not required)" -ForegroundColor Green

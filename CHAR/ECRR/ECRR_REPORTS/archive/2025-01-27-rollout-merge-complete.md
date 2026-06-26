@@ -290,9 +290,9 @@
 - `SIGNOZ_ALERT_IMPORT_GUIDE.md` - Alert import and testing guide
 
 ### **ECRR Reports**
-- `docs/ECRR_REPORTS/2025-01-27-agent-hygiene.md` - Agent hygiene report
-- `docs/ECRR_REPORTS/2025-01-27-drift-alerts-deployment.md` - Alert deployment report
-- `docs/ECRR_REPORTS/2025-09-29-rollout-merge-consolidated.md` - This report
+- `CHAR/ECRR/ECRR_REPORTS/2025-01-27-agent-hygiene.md` - Agent hygiene report
+- `CHAR/ECRR/ECRR_REPORTS/2025-01-27-drift-alerts-deployment.md` - Alert deployment report
+- `CHAR/ECRR/ECRR_REPORTS/2025-09-29-rollout-merge-consolidated.md` - This report
 
 ---
 
@@ -311,6 +311,7 @@ The observability system now provides comprehensive monitoring, alerting, testin
 ---
 
 **ECRR Mantra**: *Examine → Clean → Report → Role - Every change must begin with evidence, remove drift, leave an artifact, and declare its actor.*
+
 
 
 

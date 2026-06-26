@@ -53,7 +53,7 @@
   - Logs UI: ✅ **ACCESSIBLE**
 
 ### **Comprehensive Status Reporting and Documentation**
-- **ECRR Reports**: ✅ **COMPREHENSIVE** (15+ reports in docs/ECRR_REPORTS/)
+- **ECRR Reports**: ✅ **COMPREHENSIVE** (15+ reports in CHAR/ECRR/ECRR_REPORTS/)
 - **Recent Reports**: ✅ **CURRENT**
   - 2025-10-02-ecrr-current-state-assessment.md
   - 2025-10-02-ecrr-monitoring-status-report.md
@@ -222,3 +222,4 @@
 **Actor Declaration**: **Cursor Agent - Observability Copilot** responsible for verifying all monitoring activities, confirming ECRR compliance, validating system health verification, and ensuring comprehensive status reporting across all observability operations.
 
 **Next Action**: Continue monitoring and maintain ECRR compliance in all future operations.
+

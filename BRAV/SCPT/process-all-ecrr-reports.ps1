@@ -18,25 +18,17 @@ if (-not (Test-Path $OutputDir)) {
     New-Item -ItemType Directory -Path $OutputDir -Force | Out-Null
 }
 
-# ECRR Reports directories (support tetragram + legacy fallbacks)
-$candidateDirs = @(
-    "CHAR/ECRR/ECRR_REPORTS",
-    "docs/ECRR_REPORTS",
-    "docs/ecrr/ECRR_REPORTS",
-    "CHAR/DOCS/docs/ECRR_REPORTS"
-)
-
-# Find all existing ECRR report directories
+# Canonical ECRR reports directory. Non-canonical report trees were consolidated
+# into this location to avoid double-counting mirrored evidence.
+$canonicalDir = "CHAR/ECRR/ECRR_REPORTS"
 $ECRRDirs = @()
-foreach ($cand in $candidateDirs) {
-    if (Test-Path $cand) { 
-        $ECRRDirs += $cand
-        Write-Host "Found ECRR directory: $cand" -ForegroundColor Cyan
-    }
+if (Test-Path $canonicalDir) {
+    $ECRRDirs += $canonicalDir
+    Write-Host "Found ECRR directory: $canonicalDir" -ForegroundColor Cyan
 }
 
 if ($ECRRDirs.Count -eq 0) {
-    throw "ECRR reports directory not found. Checked: $($candidateDirs -join ', ')"
+    throw "ECRR reports directory not found: $canonicalDir"
 }
 
 # BossCat Order B: templates excluded from compliance scoring (scaffolding, not evidence).
@@ -661,3 +653,4 @@ Write-Host "  1. Review comprehensive analysis report" -ForegroundColor White
 Write-Host "  2. Implement consolidation plan" -ForegroundColor White
 Write-Host "  3. Enhance ECRR compliance" -ForegroundColor White
 Write-Host "  4. Establish quality monitoring" -ForegroundColor White
+

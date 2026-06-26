@@ -66,10 +66,11 @@ if ($bestBS -and $baselineFps -gt 0) {
   $lines += 'Insufficient data to determine improvement.'
 }
 
-$outDir = 'docs/ecrr/ECRR_REPORTS'
+$outDir = 'CHAR/ECRR/ECRR_REPORTS'
 Ensure-Dir $outDir
 $outFile = Join-Path $outDir ("ECRR_RSI_BATCHSIZE_DISCOVERY_" + (Get-Date -Format 'yyyyMMdd_HHmmss') + '.md')
 ($lines -join "`r`n") | Set-Content -LiteralPath $outFile -Encoding utf8
 ($lines -join "`r`n") | Set-Content -LiteralPath (Join-Path $outDir 'ECRR_RSI_BATCHSIZE_DISCOVERY_LATEST.md') -Encoding utf8
 
 Write-Host "✅ Sweep complete. Report: $outFile" -ForegroundColor Green
+

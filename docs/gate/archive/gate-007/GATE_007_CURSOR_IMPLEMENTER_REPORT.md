@@ -41,7 +41,7 @@ All systems operational. Canonical creative reference now established. Zero bloc
 
 ### 3️⃣ REPORT Phase
 - ✅ Generated comprehensive ECRR report
-  - Path: `docs/ecrr/ECRR_REPORTS/ECRR_GATE_007_READY_FUBUMAKI_20251020.md`
+  - Path: `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_007_READY_FUBUMAKI_20251020.md`
   - Length: ~700 lines, comprehensive evidence
 - ✅ Updated gate status dashboard
 - ✅ Documented all findings and artifacts
@@ -133,7 +133,7 @@ These do NOT block Gate #007 approval:
 
 ### Immediate (Today)
 1. **📖 Review ECRR Report**
-   - File: `docs/ecrr/ECRR_REPORTS/ECRR_GATE_007_READY_FUBUMAKI_20251020.md`
+   - File: `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_007_READY_FUBUMAKI_20251020.md`
    - Length: ~700 lines (comprehensive)
    - Verdict: READY FOR APPROVAL
 
@@ -162,7 +162,7 @@ docs/comfort-cat/ROLES.md
 docs/comfort-cat/GATE_PROTOCOL.md
 docs/comfort-cat/AESTHETIC_GUIDE.md
 docs/comfort-cat/ECRR_FRAMEWORK.md
-docs/ecrr/ECRR_REPORTS/ECRR_GATE_007_READY_FUBUMAKI_20251020.md
+CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_007_READY_FUBUMAKI_20251020.md
 ```
 
 ### Modified Files (1)
@@ -173,7 +173,7 @@ docs/GATE_STATUS_DASHBOARD.md (Added canonical reference link)
 ### Suggested Commit
 ```bash
 git add docs/comfort-cat/
-git add docs/ecrr/ECRR_REPORTS/ECRR_GATE_007_READY_FUBUMAKI_20251020.md
+git add CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_007_READY_FUBUMAKI_20251020.md
 git add docs/GATE_STATUS_DASHBOARD.md
 git add GATE_007_CURSOR_IMPLEMENTER_REPORT.md
 
@@ -294,4 +294,5 @@ _Mission complete. All gates green. Canonical reference established. Ready for y
 ---
 
 **End of Report**
+
 

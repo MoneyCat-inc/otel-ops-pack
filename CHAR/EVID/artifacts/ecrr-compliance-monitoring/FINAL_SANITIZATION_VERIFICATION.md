@@ -47,7 +47,7 @@
 
 ### **Archive Package Contents**
 ```
-docs/ecrr/ECRR_REPORTS/ecrr-processing-analysis-20251007-053351/
+CHAR/ECRR/ECRR_REPORTS/ecrr-processing-analysis-20251007-053351/
 -  ecrr-processing-complete-analysis.md     [ASCII COMPLIANT]
 -  ecrr-processing-complete-analysis.html   [WEB EXPORT]
 -  ecrr-processing-complete-analysis.pdf    [PDF EXPORT]
@@ -124,4 +124,5 @@ The ECRR sanitization process has been completed successfully. All identified ga
 ---
 
 **BossCat OEM Signature**: [PASS] **MISSION APPROVED**
+
 

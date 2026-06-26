@@ -12,7 +12,7 @@ This file contains a chronological log of all significant actions taken by the c
 - [x] Dashboard assets available: `docs/queue-steward-dashboard.json`, `scripts/import-queue-dashboard.ps1`
 - [x] SigNoz stack verified with persistent configuration (docker-compose-signoz.yml, ClickHouse/ZooKeeper configs)
 - [x] Data ingestion confirmed: 16 agent_queue entries in ClickHouse, latest telemetry queueLength=14, readyCount=14
-- [x] ECRR verification report published: `docs/ECRR_REPORTS/2025-09-29-signoz-dashboard-verification.md`
+- [x] ECRR verification report published: `CHAR/ECRR/ECRR_REPORTS/2025-09-29-signoz-dashboard-verification.md`
 - [ ] Build the six-panel "Queue Steward Dashboard" in SigNoz UI (manual step)
 - [ ] Capture dashboard/log screenshots and embed in ECRR report (manual step)
 
@@ -1077,3 +1077,4 @@ pnpm run benchmark:queue
 2025-10-08 00:27:08 – Watchdog cycle #60 completed: 0 tasks, 407.4256813s
 2025-10-08 00:34:40 – Watchdog cycle #61 completed: 0 tasks, 407.0039535s
 2025-10-08 00:41:27 – Watchdog cycle #62 completed: 0 tasks, 361.3429137s
+

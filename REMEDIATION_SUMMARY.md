@@ -101,7 +101,7 @@ if (typeof presetData === 'string') {
 | `scorebot/Dockerfile` | Docker | -2, +6 packages |
 | `README.viz-engine.md` | Markdown | ~20 replacements |
 | `docs/MILKDROP_PRESET_AUTHORING.md` | Markdown | ~15 replacements |
-| `docs/ecrr/ECRR_REPORTS/ECRR_VIZ_ENGINE_REMEDIATION_20251023.md` | ECRR | NEW |
+| `CHAR/ECRR/ECRR_REPORTS/ECRR_VIZ_ENGINE_REMEDIATION_20251023.md` | ECRR | NEW |
 | `docs/BossCat/BOSSCAT_LOG.md` | Log | +1 entry |
 
 **Total:** 7 files (5 modified, 1 new, 1 updated)
@@ -179,7 +179,7 @@ curl -X POST http://localhost:7001/preset `
 ## Remediation Evidence
 
 **ECRR Artifact:**  
-`docs/ecrr/ECRR_REPORTS/ECRR_VIZ_ENGINE_REMEDIATION_20251023.md`
+`CHAR/ECRR/ECRR_REPORTS/ECRR_VIZ_ENGINE_REMEDIATION_20251023.md`
 
 **BossCat Log Entry:**  
 ```
@@ -212,4 +212,5 @@ containers ready for rebuild.
 **Status:** REMEDIATION COMPLETE - AWAITING RE-REVIEW
 
 **Cat Nap Control Room - Remediation Cycle Complete**
+
 

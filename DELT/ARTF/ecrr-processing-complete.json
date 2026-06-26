@@ -41,8 +41,8 @@
   },
   "artifacts_generated": {
     "benchmark": "DELT/ARTF/ecrr-benchmark.json",
-    "summary": "docs/ecrr/ECRR_REPORTS/ECRR_PROCESSING_SUMMARY_20251016.md",
-    "latest_link": "docs/ecrr/ECRR_REPORTS/ECRR_PROCESSING_SUMMARY_LATEST.md",
+    "summary": "CHAR/ECRR/ECRR_REPORTS/ECRR_PROCESSING_SUMMARY_20251016.md",
+    "latest_link": "CHAR/ECRR/ECRR_REPORTS/ECRR_PROCESSING_SUMMARY_LATEST.md",
     "processing_status": "DELT/ARTF/ecrr-processing-complete.json"
   },
   "temporal_coverage": {
@@ -70,4 +70,5 @@
   "status": "COMPLETE",
   "next_processing": "On next PR merge or manual request"
 }
+
 

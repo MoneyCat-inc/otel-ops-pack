@@ -15,7 +15,7 @@ $ConfigFile = "$AgentDir/config.json"
 $StateFile = "$AgentDir/state.json"
 $QueueFile = "$AgentDir/task_queue.json"
 $LockFile = "$AgentDir/LOCK"
-$ReportsDir = "docs/ECRR_REPORTS"
+$ReportsDir = "CHAR/ECRR/ECRR_REPORTS"
 
 function Write-ColorOutput {
     param(
