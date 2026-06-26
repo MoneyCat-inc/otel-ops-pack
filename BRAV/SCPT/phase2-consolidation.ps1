@@ -2,7 +2,7 @@
 # Consolidates secondary groups of duplicate/overlapping reports
 
 param(
-    [string]$ReportPath = "docs/ECRR_REPORTS",
+    [string]$ReportPath = "CHAR/ECRR/ECRR_REPORTS",
     [string]$OutputPath = "artifacts/ecrr-phase2-consolidation-report.json",
     [switch]$DryRun,
     [switch]$Verbose
@@ -479,3 +479,4 @@ try {
     Write-Error "Phase 2 ECRR Consolidation failed: $($_.Exception.Message)"
     exit 3
 }
+

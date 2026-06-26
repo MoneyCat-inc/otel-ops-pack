@@ -57,7 +57,7 @@ dotnet run
 
 ## Evidence Report
 
-After running, create `docs/ecrr/ECRR_REPORTS/OTEL_SYNTH_<DATE>.md` using the template:
+After running, create `CHAR/ECRR/ECRR_REPORTS/OTEL_SYNTH_<DATE>.md` using the template:
 
 - Include environment variables used
 - Embed screenshot of captured span
@@ -75,4 +75,5 @@ After running, create `docs/ecrr/ECRR_REPORTS/OTEL_SYNTH_<DATE>.md` using the te
 ---
 
 **BossCat Note:** This provides observability proof for client demos and validates the OTel stack end-to-end.
+
 

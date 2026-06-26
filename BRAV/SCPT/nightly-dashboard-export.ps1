@@ -16,7 +16,7 @@
 .PARAMETER OutputRoot
   Directory where PDFs are written. Defaults to docs/observability/snapshots.
 .PARAMETER ReportDir
-  Directory where summary reports are written. Defaults to docs/ecrr/ECRR_REPORTS.
+  Directory where summary reports are written. Defaults to CHAR/ECRR/ECRR_REPORTS.
 .PARAMETER SecurityScanDir
   Directory where security scan reports are written. Defaults to artifacts/security-scans.
 .PARAMETER DryRun
@@ -29,7 +29,7 @@ param(
   [string]$SignozSession = "",
   [string]$DashboardListPath = (Join-Path $PSScriptRoot 'dashboard-list.json'),
   [string]$OutputRoot = "docs/observability/snapshots",
-  [string]$ReportDir = "docs/ecrr/ECRR_REPORTS",
+  [string]$ReportDir = "CHAR/ECRR/ECRR_REPORTS",
   [string]$SecurityScanDir = "artifacts/security-scans",
   [switch]$DryRun
 )
@@ -340,6 +340,7 @@ if ($failures.Count -gt 0) {
 }
 
 Write-Success "All dashboards exported successfully."
+
 
 
 

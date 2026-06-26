@@ -78,7 +78,7 @@ Gate #028 attempted to complete the incomplete work from Gate #027 with 3 carry-
 
 **Documentation:**
 - `GATE_028_FINAL_SUMMARY.md` (this document)
-- `docs/ecrr/ECRR_REPORTS/ECRR_GATE_028_PARTIAL_20251027.md`
+- `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_028_PARTIAL_20251027.md`
 - `docs/BossCat/BOSSCAT_LOG.md` (one-liner added)
 
 **Total LOC:** ~183 (well within 300 LOC budget) ✅
@@ -263,4 +263,5 @@ Gate #028 attempted to complete the incomplete work from Gate #027 with 3 carry-
 **Awaiting:** BossCat OEM decision on Gate #029 scope
 
 **Key Insight:** Track 28C's success (focused, 20 min) vs. Tracks 28A/28B's failure (deployment complexity) proves that **single-track, focused gates have higher success rates**. Recommend Gate #029 = dedicated deployment automation (2-3 hours, single track, no distractions).
+
 

@@ -17,7 +17,7 @@ function NowIso(){ Get-Date -Format 'yyyy-MM-ddTHH:mm:ssK' }
 function LatestFile([string]$Dir,[string]$Pattern){ Get-ChildItem -LiteralPath $Dir -Filter $Pattern -File -ErrorAction SilentlyContinue | Sort-Object LastWriteTime -Descending | Select-Object -First 1 }
 
 if ($UseMock) { $env:USE_MOCK = 'true' }
-Ensure-Dirs @('DELT/ARTF','docs/observability/snapshots','docs/ecrr/ECRR_REPORTS', $RunRoot)
+Ensure-Dirs @('DELT/ARTF','docs/observability/snapshots','CHAR/ECRR/ECRR_REPORTS', $RunRoot)
 $ts = Get-Date -Format 'yyyyMMdd_HHmmss'
 $runDir = Join-Path $RunRoot ("run_"+$ts)
 Ensure-Dirs @($runDir)
@@ -140,8 +140,9 @@ $ecrrLines = @(
   '- Gap-Closer: Provided runnable script + evidence to disk',
   '- QA Scribe: Updated docs/status/tests.json for dashboard'
 )
-$ecrrPath = Join-Path 'docs/ecrr/ECRR_REPORTS' ("ECRR_CURSOR_RUN_" + $ts + '.md')
+$ecrrPath = Join-Path 'CHAR/ECRR/ECRR_REPORTS' ("ECRR_CURSOR_RUN_" + $ts + '.md')
 ($ecrrLines -join "`r`n") | Set-Content -Path $ecrrPath -Encoding utf8
 
 Write-Host "Run complete → $runDir" -ForegroundColor Green
 Write-Host "Verdict: $verdict | UI: $($checksArr[0].ok) | Collector: $($checksArr[1].ok) | Synthetic: $($checksArr[2].ok)"
+

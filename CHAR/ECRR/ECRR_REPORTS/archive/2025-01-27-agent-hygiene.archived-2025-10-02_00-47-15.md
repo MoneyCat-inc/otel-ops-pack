@@ -321,7 +321,7 @@
 - `artifacts/file-storage-test-20250927-064027.json` - File storage testing results
 
 ### **Documentation**
-- `docs/ECRR_REPORTS/2025-01-27-agent-hygiene.md` - This comprehensive report
+- `CHAR/ECRR/ECRR_REPORTS/2025-01-27-agent-hygiene.md` - This comprehensive report
 
 ---
 
@@ -423,4 +423,5 @@ The agent hygiene system now provides comprehensive file storage validation, que
 - Scope:
 
 ---
+
 

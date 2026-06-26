@@ -46,7 +46,7 @@
 
 ### Mission 6: ECRR Documentation ✅
 - **Status**: Comprehensive activation report generated
-- **File**: `docs/ecrr/ECRR_REPORTS/ECRR_GATE_SITE_ACTIVATION_20251013.md`
+- **File**: `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_SITE_ACTIVATION_20251013.md`
 - **Coverage**: Full ECRR methodology (Examine → Clean → Report → Role)
 
 ---
@@ -92,7 +92,7 @@
    - p95 < 500ms, errors < 1%
    - 20 lines
 
-6. **`docs/ecrr/ECRR_REPORTS/ECRR_GATE_SITE_ACTIVATION_20251013.md`**
+6. **`CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_SITE_ACTIVATION_20251013.md`**
    - Comprehensive ECRR activation report
    - Complete audit trail and evidence
    - 437 lines
@@ -359,7 +359,7 @@ To https://github.com/MoneyCat-inc/otel-ops-pack.git
    - ACTIVE status entry
    - Timestamp, workflow, commit, components
 
-7. **`docs/ecrr/ECRR_REPORTS/ECRR_GATE_SITE_ACTIVATION_20251013.md`** (437 lines)
+7. **`CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_SITE_ACTIVATION_20251013.md`** (437 lines)
    - Comprehensive ECRR report
    - Examine → Clean → Report → Role
    - Complete audit trail
@@ -439,7 +439,7 @@ To https://github.com/MoneyCat-inc/otel-ops-pack.git
 4. `scripts/synth-trace.ts` (component)
 5. `tests/perf/gate.js` (component)
 6. `docs/BossCat/BOSSCAT_LOG.md` (status update)
-7. `docs/ecrr/ECRR_REPORTS/ECRR_GATE_SITE_ACTIVATION_20251013.md` (ECRR report)
+7. `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_SITE_ACTIVATION_20251013.md` (ECRR report)
 
 **Commits**:
 1. `7b143c17`: feat(gate): activate gate/site evidence workflow
@@ -528,4 +528,5 @@ To https://github.com/MoneyCat-inc/otel-ops-pack.git
 🎉 **GATE/SITE LANES ACTIVE · WORKFLOW OPERATIONAL · EVIDENCE AUTOMATED · 100% ECRR COMPLIANT · READY FOR FIRST RUN** 🎉
 
 **Commits**: 3 pushed | **Files**: 7 created/modified | **LOC**: +667 | **Quality**: 100% ECRR compliant
+
 

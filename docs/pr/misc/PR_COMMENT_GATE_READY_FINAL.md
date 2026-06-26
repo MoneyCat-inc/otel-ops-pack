@@ -49,8 +49,8 @@ Ports:       5/5 listening (13134, 5317, 5318, 8888, 55679)
 - ✅ `docs/observability/snapshots/gate-final-ready-*.json` - Health snapshot
 
 **ECRR Certification:**
-- ✅ `docs/ecrr/ECRR_REPORTS/ECRR_GATE_READY_FINAL_2025-10-10.md`
-- ✅ `docs/ecrr/ECRR_REPORTS/ECRR_GATE_READY_FINAL_2025-10-10.pdf`
+- ✅ `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_READY_FINAL_2025-10-10.md`
+- ✅ `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_READY_FINAL_2025-10-10.pdf`
 
 **Configuration Lock:**
 - ✅ `BRAV/SCPT/GUARDRAILS_LOCKED.md`
@@ -139,7 +139,7 @@ Per Immutable Persona v1.1, this PR is **approved for merge** with the standardi
 - [BossCat Guide](docs/BossCat/README.md)
 
 **Evidence:**
-- [ECRR Final Report](docs/ecrr/ECRR_REPORTS/ECRR_GATE_READY_FINAL_2025-10-10.md)
+- [ECRR Final Report](CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_READY_FINAL_2025-10-10.md)
 - [Guardrails Lock](BRAV/SCPT/GUARDRAILS_LOCKED.md)
 - [Gate Verdict](docs/status/tests.json)
 
@@ -148,4 +148,5 @@ Per Immutable Persona v1.1, this PR is **approved for merge** with the standardi
 **BossCat Seal:** 🐾  
 **Approval:** GATE-2025-10-10-BOSSCAT-007  
 **Status:** READY FOR MERGE
+
 

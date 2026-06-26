@@ -301,7 +301,7 @@ CHAR\DOCS\docs\comfort-cat
 CHAR\DOCS\docs\dashboard
 CHAR\DOCS\docs\dashboards
 CHAR\DOCS\docs\ecrr
-CHAR\DOCS\docs\ECRR_REPORTS
+CHAR\DOCS\CHAR\ECRR\ECRR_REPORTS
 CHAR\DOCS\docs\experiments
 CHAR\DOCS\docs\golden
 CHAR\DOCS\docs\gpu
@@ -387,3 +387,4 @@ DELT\FIXT\baseline
 DELT\FIXT\test-payloads
 DELT\TMPL
 DELT\TMPL\templates
+

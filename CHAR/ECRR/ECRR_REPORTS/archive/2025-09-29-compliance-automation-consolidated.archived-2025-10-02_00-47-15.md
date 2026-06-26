@@ -427,7 +427,7 @@ The ECRR compliance monitoring automation system has been successfully rolled ou
 ##📝 **3. Report**
 
 ###Artifacts Created
-- **Verification Report**: `docs/ECRR_REPORTS/2025-09-28-compliance-alert-verification.md`
+- **Verification Report**: `CHAR/ECRR/ECRR_REPORTS/2025-09-28-compliance-alert-verification.md`
 - **Dashboard Configuration**: `artifacts/signoz-ecrr-compliance-dashboard.json`
 - **Alert Configuration**: `alerts/ecrr-compliance-threshold.json`
 - **Webhook Configuration**: `docs/ECRR_WEBHOOK_CONFIGURATION.md`
@@ -1136,4 +1136,5 @@ Cursor Agent - Observability Copilot successfully completed Windows canary pipel
 - Scope:
 
 ---
+
 

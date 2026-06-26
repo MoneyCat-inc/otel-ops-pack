@@ -279,7 +279,7 @@ if: env.USE_MOCK == 'false' && matrix.site == 'prod'
 ### Operational Artifacts
 - ✅ DELT/ARTF/gate-verification-results.json
 - ✅ PR_COMMENT_IONA_GATE_002_FINAL.md
-- ✅ docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md
+- ✅ CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md
 - ✅ docs/observability/snapshots/ (14 files)
 
 ---
@@ -433,7 +433,7 @@ pwsh -File scripts/generate-queue-steward-evidence.ps1 -OutFile DELT/ARTF/queue-
 ### Operational Artifacts
 - DELT/ARTF/gate-verification-results.json
 - PR_COMMENT_IONA_GATE_002_FINAL.md
-- docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md
+- CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md
 - docs/observability/snapshots/ (14 snapshots)
 
 ---
@@ -520,4 +520,5 @@ pwsh -File scripts/generate-queue-steward-evidence.ps1 -OutFile DELT/ARTF/queue-
 **All Systems Operational · Evidence Automation Live** 🐾
 
 **End of Final Status Report**
+
 

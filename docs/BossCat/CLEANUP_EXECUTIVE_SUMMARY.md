@@ -68,9 +68,10 @@
 
 ---
 
-**Full Report**: `docs/ecrr/ECRR_REPORTS/BOSSCAT_GITHUB_ACTIONS_CLEANUP_20251014.md`
+**Full Report**: `CHAR/ECRR/ECRR_REPORTS/BOSSCAT_GITHUB_ACTIONS_CLEANUP_20251014.md`
 
 ---
 
 🐾 **BossCat OEM Approval Requested** 🐾
+
 

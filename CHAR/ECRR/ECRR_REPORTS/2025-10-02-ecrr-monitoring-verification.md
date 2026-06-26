@@ -20,7 +20,7 @@ Documenting the end-to-end health check confirming the ECRR automated monitoring
 
 ## 📝 3. Report
 - Generated artifacts: `artifacts/ecrr-compliance-report-2025-10-02_01-10-58.json`, `artifacts/ecrr-compliance-dashboard.html` (100% compliance confirmed).
-- This verification report (`docs/ECRR_REPORTS/2025-10-02-ecrr-monitoring-verification.md`) captures the current operational evidence.
+- This verification report (`CHAR/ECRR/ECRR_REPORTS/2025-10-02-ecrr-monitoring-verification.md`) captures the current operational evidence.
 - Scheduled-task state captured via `Get-ScheduledTask -TaskName 'ECRR Compliance Monitor'` for audit trail.
 - Recommended verification command: `pwsh -File scripts/ecrr-compliance-monitor.ps1 -GenerateReport` (expect 100% compliance summary).
 
@@ -41,7 +41,7 @@ Documenting the end-to-end health check confirming the ECRR automated monitoring
 
 ### 📝 3. Report
 - ✅ **Evidence Generated**: JSON + HTML compliance artifacts plus this markdown report.
-- ✅ **Documentation Updated**: Added this verification record to `docs/ECRR_REPORTS`.
+- ✅ **Documentation Updated**: Added this verification record to `CHAR/ECRR/ECRR_REPORTS`.
 
 ### 🎭 4. Role
 - ✅ **Actor Declared**: Cursor Agent - Observability Copilot.
@@ -55,6 +55,7 @@ Documenting the end-to-end health check confirming the ECRR automated monitoring
 ## 📋 **4. Role**
 **Actor Declaration:** Cursor Agent - Observability Copilot
 - Accountability remains with the declared agent under BossCat OEM oversight.
+
 
 
 

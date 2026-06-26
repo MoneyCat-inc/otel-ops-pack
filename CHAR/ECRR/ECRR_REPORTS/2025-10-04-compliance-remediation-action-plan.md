@@ -26,7 +26,7 @@
 - IONA Error Ledger: `docs/IONA_ERRORS.md` (restored)
 - Compliance Report: `artifacts/ecrr-compliance-report.md` (accurate metrics)
 - Trends Report: `artifacts/ecrr-compliance-trends-report.md` (broken)
-- Updated Health Assessment: `docs/ECRR_REPORTS/2025-10-04-ecrr-system-health-assessment.md`
+- Updated Health Assessment: `CHAR/ECRR/ECRR_REPORTS/2025-10-04-ecrr-system-health-assessment.md`
 
 ---
 
@@ -152,6 +152,7 @@
 ## ?? Production Readiness
 - Production readiness affirmed with monitoring commitments stated in this document.
 - Nightly automation and BossCat governance checkpoints remain active.
+
 
 
 

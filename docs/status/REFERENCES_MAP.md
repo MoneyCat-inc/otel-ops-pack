@@ -76,8 +76,8 @@
 - **Orphans Triage:** [`orphans.md`](orphans.md) *(pending)*
 
 ### Evidence Trails
-- **ECRR Reports:** [`docs/ecrr/ECRR_REPORTS/`](../ecrr/ECRR_REPORTS/)
-- **Latest Processing:** [`ECRR_PROCESSING_SUMMARY_LATEST.md`](../ecrr/ECRR_REPORTS/ECRR_PROCESSING_SUMMARY_LATEST.md)
+- **ECRR Reports:** [`CHAR/ECRR/ECRR_REPORTS/`](../../CHAR/ECRR/ECRR_REPORTS/)
+- **Latest Processing:** [`ECRR_PROCESSING_SUMMARY_LATEST.md`](../../CHAR/ECRR/ECRR_REPORTS/ECRR_PROCESSING_SUMMARY_LATEST.md)
 - **Benchmark Data:** [`DELT/ARTF/ecrr-benchmark.json`](../../DELT/ARTF/ecrr-benchmark.json)
 
 ---
@@ -137,4 +137,5 @@ The root consolidation organized 177 files into domain-specific folders:
 ---
 
 *This map is the single source of truth. All other documentation either links here or is marked for triage/archive.*
+
 

@@ -87,7 +87,7 @@
 
 ### Service Worker and Cache Management
 - Confirmed service worker installs after first COI load and preserves headers on navigation fetches
-- No stray git branches or temporary artifacts generated; terminal sessions archived in `docs/ECRR_REPORTS/2025-09-29-ecrr-01-consolidated.md`
+- No stray git branches or temporary artifacts generated; terminal sessions archived in `CHAR/ECRR/ECRR_REPORTS/2025-09-29-ecrr-01-consolidated.md`
 - Ports remain default (`3003` for dev, OTLP on 14317/14318); no conflicts observed during dev-server run
 
 ---
@@ -334,3 +334,4 @@
 - Integrates with observability stack and monitoring systems
 
 ---
+

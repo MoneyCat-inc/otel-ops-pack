@@ -253,7 +253,7 @@ $learning | Out-File "artifacts/social/learning_48h.json"
 1. **Contain**: Activate kill-switch
 2. **Examine**: Review `.agent/EVIDENCE.log` for failures
 3. **Rollback**: `git revert` or `git reset` to last-known-good
-4. **Report**: Create ECRR incident report in `docs/ecrr/ECRR_REPORTS/`
+4. **Report**: Create ECRR incident report in `CHAR/ECRR/ECRR_REPORTS/`
 
 **Evidence**: Full ECRR report required
 
@@ -493,4 +493,5 @@ $learning | Out-File "artifacts/social/learning_week1.json"
 🚀 **Week 1: GO LIVE!**
 
 **Local-first. Evidence-first. Convergent. Safe.** ✅
+
 

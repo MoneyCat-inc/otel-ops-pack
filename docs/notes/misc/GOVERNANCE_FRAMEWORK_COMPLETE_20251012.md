@@ -182,13 +182,13 @@
 ## 📋 EVIDENCE ARTIFACTS
 
 ### **ECRR Reports** (2 comprehensive reports)
-1. `docs/ecrr/ECRR_REPORTS/ECRR_CURSOR_IMPLEMENTER_20251012_085425.md`
+1. `CHAR/ECRR/ECRR_REPORTS/ECRR_CURSOR_IMPLEMENTER_20251012_085425.md`
    - Gate #007 preparation
    - Sentinel system
    - ICF heuristic
    - Status dashboard updates
 
-2. `docs/ecrr/ECRR_REPORTS/ECRR_GITHUB_COMPLIANCE_20251012_090325.md`
+2. `CHAR/ECRR/ECRR_REPORTS/ECRR_GITHUB_COMPLIANCE_20251012_090325.md`
    - GitHub compliance improvements
    - Branch protection configuration
    - Gate logic fixes
@@ -360,4 +360,5 @@ gh api repos/MoneyCat-inc/otel-ops-pack/branches/main/protection
 ---
 
 🐾 **End of Report** 🐾
+
 

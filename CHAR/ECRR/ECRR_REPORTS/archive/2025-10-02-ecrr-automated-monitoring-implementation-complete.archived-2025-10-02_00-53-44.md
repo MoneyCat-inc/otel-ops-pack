@@ -56,7 +56,7 @@
 ### Generated Artifacts:
 - **JSON Report**: `artifacts/ecrr-compliance-report-2025-10-02_00-50-53.json`
 - **HTML Dashboard**: `artifacts/ecrr-compliance-dashboard.html`
-- **Archive Summary**: `docs/ECRR_REPORTS/archive-summary-*.json`
+- **Archive Summary**: `CHAR/ECRR/ECRR_REPORTS/archive-summary-*.json`
 - **Verification Report**: `artifacts/ecrr-automation-verification-2025-10-02.txt`
 
 ### System Components:
@@ -108,3 +108,4 @@
 - ✅ **Production Ready**: System fully operational and verified
 
 **ECRR Automated Monitoring: MISSION ACCOMPLISHED!** 🎉
+

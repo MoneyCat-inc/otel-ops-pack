@@ -156,18 +156,18 @@ $summary = @{
     # Artifacts Created
     Artifacts = @{
         AnalysisDocumentation = @(
-            "docs/ECRR_REPORTS/ECRR_PROCESSING_ANALYSIS.md",
-            "docs/ECRR_REPORTS/ECRR_PROCESSING_COMPLETE_SUMMARY.md",
-            "docs/ECRR_REPORTS/ECRR_CONSOLIDATION_ANALYSIS.md",
-            "docs/ECRR_REPORTS/ECRR_PROCESSING_FINAL_SUMMARY.md",
-            "docs/ECRR_REPORTS/ECRR_PROCESSING_FINAL_COMPLETE.md",
-            "docs/ECRR_REPORTS/ECRR_PROCESSING_FINAL_COMPREHENSIVE_ANALYSIS.md"
+            "CHAR/ECRR/ECRR_REPORTS/ECRR_PROCESSING_ANALYSIS.md",
+            "CHAR/ECRR/ECRR_REPORTS/ECRR_PROCESSING_COMPLETE_SUMMARY.md",
+            "CHAR/ECRR/ECRR_REPORTS/ECRR_CONSOLIDATION_ANALYSIS.md",
+            "CHAR/ECRR/ECRR_REPORTS/ECRR_PROCESSING_FINAL_SUMMARY.md",
+            "CHAR/ECRR/ECRR_REPORTS/ECRR_PROCESSING_FINAL_COMPLETE.md",
+            "CHAR/ECRR/ECRR_REPORTS/ECRR_PROCESSING_FINAL_COMPREHENSIVE_ANALYSIS.md"
         )
         FrameworkEnhancements = @(
             "docs/ECRR_REPORT_TEMPLATE.md",
             "scripts/validate-ecrr-compliance.ps1",
-            "docs/ECRR_REPORTS/2025-09-29-rollout-merge-consolidated.md",
-            "docs/ECRR_REPORTS/2025-09-27-production-deployment-final-consolidated.md"
+            "CHAR/ECRR/ECRR_REPORTS/2025-09-29-rollout-merge-consolidated.md",
+            "CHAR/ECRR/ECRR_REPORTS/2025-09-27-production-deployment-final-consolidated.md"
         )
     }
 }
@@ -303,3 +303,4 @@ Write-Host ""
 Write-Host "Summary exported to: $OutputPath" -ForegroundColor Green
 Write-Host ""
 Write-Host "ECRR Mantra: Examine → Clean → Report → Role - Every change must begin with evidence, remove drift, leave an artifact, and declare its actor." -ForegroundColor Magenta
+

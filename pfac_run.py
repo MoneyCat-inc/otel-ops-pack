@@ -216,7 +216,7 @@ def main():
         print("⚠️  Fell back to CPU")
     
     # Save evidence
-    evidence_file = "docs/ecrr/ECRR_REPORTS/pfac_scan_evidence.json"
+    evidence_file = "CHAR/ECRR/ECRR_REPORTS/pfac_scan_evidence.json"
     os.makedirs(os.path.dirname(evidence_file), exist_ok=True)
     
     with open(evidence_file, 'w') as f:
@@ -252,3 +252,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

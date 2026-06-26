@@ -3,7 +3,7 @@
 # and fails CI if any report is missing required patterns
 
 param(
-    [string]$ReportPath = "docs/ECRR_REPORTS",
+    [string]$ReportPath = "CHAR/ECRR/ECRR_REPORTS",
     [switch]$FailOnError = $true,
     [switch]$Verbose = $false
 )
@@ -168,3 +168,4 @@ if ($FailOnError -and $overallScore -lt 80) {
     Write-Host "`n✅ CI PASSED: All ECRR reports meet compliance requirements" -ForegroundColor Green
     exit 0
 }
+

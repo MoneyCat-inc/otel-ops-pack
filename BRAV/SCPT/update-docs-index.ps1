@@ -48,7 +48,7 @@ Write-Host "🔍 BossCat Documentation Structure Validation:" -ForegroundColor Y
 
 $docsStructure = @{
     "Governance" = "docs/COMMIT_GUIDE.md"
-    "ECRR Reports" = "docs/ecrr/ECRR_REPORTS"
+    "ECRR Reports" = "CHAR/ECRR/ECRR_REPORTS"
     "Observability Snapshots" = "docs/observability/snapshots"
     "ECRR Templates" = "docs/ecrr/ECRR_REPORT_TEMPLATE.md"
     "Agent Charter" = "AGENTS.md"
@@ -86,8 +86,8 @@ Write-Host "Cataloging documentation artifacts..." -ForegroundColor Yellow
 
 # Scan ECRR reports
 $ecrrReports = @()
-if (Test-Path "docs/ecrr/ECRR_REPORTS") {
-    $reportFiles = Get-ChildItem "docs/ecrr/ECRR_REPORTS" -Filter "*.md" | Sort-Object LastWriteTime -Descending
+if (Test-Path "CHAR/ECRR/ECRR_REPORTS") {
+    $reportFiles = Get-ChildItem "CHAR/ECRR/ECRR_REPORTS" -Filter "*.md" | Sort-Object LastWriteTime -Descending
     foreach ($file in $reportFiles) {
         $content = Get-Content $file.FullName -Raw
         $ecrrReports += @{

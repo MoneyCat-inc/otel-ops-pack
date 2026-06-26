@@ -6,6 +6,7 @@ Other AGENTS.md files are scoped; do not treat them as repo-wide rules unless no
 ## Canonical Governance (BossCat)
 - BossCat Charter (canonical): docs/BossCat/CHARTER.md
 - Workflow standards (CI/GitHub Actions patterns): docs/AGENTS.md
+- ECRR reports (canonical audit trail): CHAR/ECRR/ECRR_REPORTS/ (385 reports)
 
 ## Generated Registries (Do Not Edit)
 - Auto-Bots registry (generated): docs/BossCat/AGENTS.md

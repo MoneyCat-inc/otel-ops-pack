@@ -16,7 +16,7 @@
     "modes": { "ci": "warn", "local": "warn", "prod": "strict" }
   },
   "artifacts": {
-    "ecrr_reports": "docs/ecrr/ECRR_REPORTS/",
+    "ecrr_reports": "CHAR/ECRR/ECRR_REPORTS/",
     "gate_results_json": "DELT/ARTF/gate-verification-results.json",
     "snapshots": "docs/observability/snapshots/",
     "status_page": "docs/status.html",
@@ -42,3 +42,4 @@
     ]
   }
 }
+

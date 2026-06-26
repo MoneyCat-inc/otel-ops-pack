@@ -53,7 +53,8 @@
     "provider": "cuda",
     "modelGlobs": ["models/**/*.onnx"],
     "benchBatches": [1, 4, 8],
-    "ecrrOutDir": "docs/ecrr/ECRR_REPORTS",
+    "ecrrOutDir": "CHAR/ECRR/ECRR_REPORTS",
     "allowCpuFallback": true
   }
 }
+

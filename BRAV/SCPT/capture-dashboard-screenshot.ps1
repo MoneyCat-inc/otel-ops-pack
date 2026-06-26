@@ -3,7 +3,7 @@
 
 param(
     [string]$SigNozUrl = "http://127.0.0.1:8080",
-    [string]$ScreenshotDir = "docs/ECRR_REPORTS"
+    [string]$ScreenshotDir = "CHAR/ECRR/ECRR_REPORTS"
 )
 
 Write-Host "=== SigNoz Dashboard Screenshot Capture ===" -ForegroundColor Green
@@ -113,3 +113,4 @@ Write-Host "   Get-Service otelcol-contrib" -ForegroundColor White
 
 Write-Host "`nScreenshot capture instructions completed!" -ForegroundColor Green
 Write-Host "Screenshot path: $screenshotPath" -ForegroundColor Cyan
+

@@ -2,7 +2,7 @@
 # Steps: processing summary -> compliance validation -> monitoring entry -> dashboard publish
 
 param(
-    [string]$ReportsDir = "docs/ECRR_REPORTS",
+    [string]$ReportsDir = "CHAR/ECRR/ECRR_REPORTS",
     [string]$SummaryJson = "artifacts/ecrr-processing-summary.json",
     [string]$ValidationJson = "artifacts/ecrr-ci-validation.json",
     [string]$HistoryFile = "artifacts/ecrr-compliance-history.jsonl",
@@ -71,5 +71,6 @@ catch {
     Write-Host ("Unhandled error: {0}" -f $_) -ForegroundColor Red
     exit 2
 }
+
 
 

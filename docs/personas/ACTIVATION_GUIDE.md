@@ -58,7 +58,7 @@ code artifacts\codex\workplan.json
 code artifacts\codex\cursor-instructions.md
 
 # Check ECRR report
-$report = Get-ChildItem docs\ecrr\ECRR_REPORTS -Filter "ECRR_DOCS_*.md" | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+$report = Get-ChildItem CHAR\ECRR\ECRR_REPORTS -Filter "ECRR_DOCS_*.md" | Sort-Object LastWriteTime -Descending | Select-Object -First 1
 code $report.FullName
 ```
 
@@ -352,4 +352,5 @@ code docs\ecrr\REMEDIATION_PLAN.md
 **Version**: 1.0  
 **Status**: 🟡 Ready for Activation  
 **Last Updated**: 2025-11-01
+
 

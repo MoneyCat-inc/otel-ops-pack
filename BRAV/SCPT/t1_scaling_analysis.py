@@ -76,13 +76,14 @@ def run_scaling_analysis():
         }
     }
 
-    with open('docs/ecrr/ECRR_REPORTS/t1_scaling_analysis.json', 'w') as f:
+    with open('CHAR/ECRR/ECRR_REPORTS/t1_scaling_analysis.json', 'w') as f:
         json.dump(scaling_evidence, f, indent=2)
 
-    print(f'\n📄 Scaling analysis saved to: docs/ecrr/ECRR_REPORTS/t1_scaling_analysis.json')
+    print(f'\n📄 Scaling analysis saved to: CHAR/ECRR/ECRR_REPORTS/t1_scaling_analysis.json')
     print(f'🎯 Scaling factor: {scaling_evidence["summary"]["scaling_factor"]:.2f}x')
     
     return scaling_evidence
 
 if __name__ == '__main__':
     run_scaling_analysis()
+

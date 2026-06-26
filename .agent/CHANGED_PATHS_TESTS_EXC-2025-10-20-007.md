@@ -49,7 +49,7 @@
 ```
 GATE_007_CURSOR_IMPLEMENTER_REPORT.md          ✅ Root (executive summary)
 docs/comfort-cat/**                             ✅ DOCS lane
-docs/ecrr/ECRR_REPORTS/**                       ✅ DOCS lane
+CHAR/ECRR/ECRR_REPORTS/**                       ✅ DOCS lane
 ```
 
 **Result:** ✅ **PASS** - All paths confined to DOCS lane
@@ -122,5 +122,6 @@ Future canonical reference updates will:
 **Authority:** Cursor{Implementer} under BossCat OEM
 
 🐾 **Changed-Paths Tests Complete**
+
 
 

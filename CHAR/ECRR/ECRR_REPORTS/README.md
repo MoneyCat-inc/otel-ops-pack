@@ -33,7 +33,7 @@ CHAR/ECRR/ECRR_REPORTS/
 
 Reports were consolidated from:
 - `CHAR/EVID/ECRR_REPORTS/` → Moved 3 reports
-- `CHAR/DOCS/docs/ECRR_REPORTS/` → Moved 387 reports
+- `CHAR/DOCS/CHAR/ECRR/ECRR_REPORTS/` → Moved 387 reports
 - `CHAR/ECRR/ECRR_REPORTS/` → Pre-existing 2 reports
 
 **Total:** 391 reports (some subdirectories contain multiple files)
@@ -79,4 +79,5 @@ ECRR report templates are available at:
 **BossCat OEM**  
 *Executive Overseer Manager*  
 MoneyCat Inc · Resonai [OTel]
+
 

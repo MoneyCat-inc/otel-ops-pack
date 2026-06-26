@@ -39,7 +39,7 @@ All objectives achieved:
 - CI Workflows: 8,945+ runs triggered
 
 **Evidence:**
-- ECRR: `docs/ecrr/ECRR_REPORTS/ECRR_PR_MERGE_20251010.md`
+- ECRR: `CHAR/ECRR/ECRR_REPORTS/ECRR_PR_MERGE_20251010.md`
 - Reports: `CHAR/EVID/phases/` (2 files)
 - Screenshots: 8 captured
 
@@ -144,7 +144,7 @@ All objectives achieved:
 - `BOSSCAT_PR_MERGE_FINAL_REPORT.md`
 
 ### ECRR Reports
-**Location:** `docs/ecrr/ECRR_REPORTS/`
+**Location:** `CHAR/ECRR/ECRR_REPORTS/`
 
 - `ECRR_PR_MERGE_20251010.md`
 
@@ -257,4 +257,5 @@ All objectives achieved:
 **Date:** 2025-10-11 03:13 UTC
 
 🐾 **Mission Complete. Standing down.**
+
 

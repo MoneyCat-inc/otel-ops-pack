@@ -57,7 +57,7 @@
 
 ### 4. Documentation & Evidence
 **Files:**
-- ✅ `docs/ecrr/ECRR_REPORTS/ECRR_GPU_FIX_20251011.md` - ECRR report
+- ✅ `CHAR/ECRR/ECRR_REPORTS/ECRR_GPU_FIX_20251011.md` - ECRR report
 - ✅ `CHAR/EVID/GPU_FIX_EXECUTION_SUMMARY_20251011.md` - Executive summary
 - ✅ `CHAR/EVID/ECRR_DRIFT_CORRECTION_20251011.md` - Drift correction
 - ✅ `BOSSCAT_LOG.md` - Updated with GPU_FIX execution
@@ -419,4 +419,5 @@ gh run view --log
 *The pipeline is complete. The cat approves. Deploy with confidence.*
 
 🐾 **BossCat OEM** · Resonai [OTel] · MoneyCat Inc
+
 

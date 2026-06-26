@@ -322,7 +322,7 @@
 - N/A (validation used existing scripts)
 
 ### **Documentation**
-- **ECRR Report**: `docs/ECRR_REPORTS/2025-09-22-stakeholder-map-validation.md` - Complete validation documentation
+- **ECRR Report**: `CHAR/ECRR/ECRR_REPORTS/2025-09-22-stakeholder-map-validation.md` - Complete validation documentation
 - **Stakeholder Map**: Validated and refined for PRD adoption
 - **KPI Snapshot**: Tabular format with proof criteria
 - **Validation Steps**: 5 concrete verification actions
@@ -413,4 +413,5 @@
 - Scope:
 
 ---
+
 
