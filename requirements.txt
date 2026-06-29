@@ -6,7 +6,7 @@ locust>=2.44.3
 k6>=0.45.0
 
 # Code Quality
-flake8>=6.1.0
+flake8>=7.3.0
 black>=26.5.1
 
 # ECRR & Reporting (if needed)
