@@ -57,14 +57,20 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Set up Node and pnpm
+    - name: Set up pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 9
+        run_install: false
+
+    - name: Set up Node
       uses: actions/setup-node@v4
       with:
         node-version: '20'
         cache: 'pnpm'
+
     - name: Enable corepack and install deps
       run: |
-        corepack enable
         pnpm i --frozen-lockfile=false
 
     - name: Prepare directories
