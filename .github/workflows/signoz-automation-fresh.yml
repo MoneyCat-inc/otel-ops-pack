@@ -103,6 +103,7 @@ jobs:
             COMPOSE_CMD="docker compose"
           fi
           
+          docker network inspect signoz-net > /dev/null 2>&1 || docker network create signoz-net
           $COMPOSE_CMD -f docker-compose-signoz.yml up -d
           
           echo "Waiting for ClickHouse to be healthy..."

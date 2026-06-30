@@ -9,6 +9,10 @@ concurrency:
   group: gate-nightly-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: false
 
+permissions:
+  contents: read
+  issues: write
+
 jobs:
   verify:
     runs-on: windows-latest
@@ -34,7 +38,8 @@ jobs:
         id: verify
         shell: pwsh
         run: |
-          pwsh -File BRAV/SCPT/verify-pipeline.ps1
+          $canaryScript = Join-Path $PWD 'synthetic/send_synthetic_otel_simple.py'
+          pwsh -File BRAV/SCPT/verify-pipeline.ps1 -CanaryScriptPath $canaryScript
           $code = $LASTEXITCODE
           echo "exit_code=$code" >> $env:GITHUB_OUTPUT
           exit 0

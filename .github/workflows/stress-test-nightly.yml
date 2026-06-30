@@ -42,7 +42,12 @@ jobs:
       - name: 📦 Start SigNoz Stack
         run: |
           echo "🚀 Starting SigNoz observability stack..."
-          docker-compose up -d
+          if command -v docker-compose > /dev/null 2>&1; then
+            COMPOSE_CMD="docker-compose"
+          else
+            COMPOSE_CMD="docker compose"
+          fi
+          $COMPOSE_CMD up -d
           echo "⏳ Waiting for services to be healthy..."
           sleep 60
           
@@ -133,7 +138,11 @@ jobs:
         run: |
           echo "🧹 Cleaning up..."
           kill $SERVER_PID || true
-          docker-compose down
+          if command -v docker-compose > /dev/null 2>&1; then
+            docker-compose down
+          else
+            docker compose down
+          fi
       
       - name: 🎯 BossCat OEM - Test Complete
         run: |
