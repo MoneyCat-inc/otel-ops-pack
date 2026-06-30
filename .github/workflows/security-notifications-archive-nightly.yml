@@ -12,11 +12,12 @@ on:
       mark_notifications_read:
         description: 'Mark notifications as read'
         required: false
-        default: 'false'
+        default: false
         type: boolean
 
 permissions:
   contents: write
+  pull-requests: write
   security-events: read
   actions: read
 
@@ -192,35 +193,31 @@ jobs:
           name: notifications-archive-${{ github.run_number }}
           path: .
       
-      - name: Configure Git
-        run: |
-          git config user.name "BossCat Security Bot"
-          git config user.email "bosscat-security@noreply.github.com"
-      
-      - name: Commit and Push Archives
-        run: |
-          git add docs/BossCat/security/ docs/BossCat/notifications/ CHAR/EVID/
-          
-          if git diff --cached --quiet; then
-            echo "No changes to commit"
-          else
-            git commit -m "chore(bosscat): Nightly security & notifications archive
-            
+      - name: Open archive refresh PR
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          add-paths: |
+            docs/BossCat/security/
+            docs/BossCat/notifications/
+            CHAR/EVID/
+          commit-message: "chore(bosscat): nightly security and notifications archive"
+          title: "chore(bosscat): nightly security and notifications archive"
+          body: |
             Automated Archive:
             - Security alerts archived
             - Security analyses (SARIF) archived
             - Notifications archived
             - Indexes rebuilt
-            
+
             Run: #${{ github.run_number }}
-            Date: $(date -u +%Y-%m-%d)
-            Evidence: CHAR/EVID/security/ + CHAR/EVID/notifications/
-            
+            Date: ${{ github.run_id }}
+            Evidence: `CHAR/EVID/security/` + `CHAR/EVID/notifications/`
+
             Authority: BossCat Security Bot (GitHub Actions)
-            ECRR: Automated conveyor execution"
-            
-            git push origin ${{ github.ref_name }}
-          fi
+            ECRR: Automated conveyor execution
+          branch: automation/security-notifications-archive
+          delete-branch: true
 
   report:
     name: Generate Archive Report
@@ -290,7 +287,7 @@ jobs:
           Write-Host "- Evidence: \`security-evidence-${{ github.run_number }}\`, \`notifications-evidence-${{ github.run_number }}\`" >> $env:GITHUB_STEP_SUMMARY
           
           Write-Host "" >> $env:GITHUB_STEP_SUMMARY
-          Write-Host "🐾 **BossCat Security Conveyor — Nightly Run Complete**" >> $env:GITHUB_STEP_SUMMARY
+          Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value "BossCat Security Conveyor - Nightly Run Complete"
       
       - name: Report Status
         if: always()

@@ -286,10 +286,14 @@ if (Test-Path $CanaryScriptPath) {
       Write-Host "[verify] API check failed (${apiCheck.reason ?? 'n/a'}) — attempting ClickHouse fallback..." -ForegroundColor Yellow
       try {
         $chQueries = @(
-          "SELECT traceID, timestamp FROM signoz_traces.distributed_signoz_index_v2 WHERE traceID = '$traceId' ORDER BY timestamp DESC LIMIT 1",
-          "SELECT traceID, timestamp FROM signoz_traces.signoz_index_v2 WHERE traceID = '$traceId' ORDER BY timestamp DESC LIMIT 1",
-          "SELECT traceID, timestamp FROM signoz_traces.distributed_signoz_index_v2 WHERE serviceName = '$ServiceName' ORDER BY timestamp DESC LIMIT 1",
-          "SELECT traceID, timestamp FROM signoz_traces.signoz_index_v2 WHERE serviceName = '$ServiceName' ORDER BY timestamp DESC LIMIT 1"
+          "SELECT traceID, toUnixTimestamp64Milli(timestamp) AS timestamp_ms FROM signoz_traces.distributed_signoz_index_v3 WHERE traceID = '$traceId' ORDER BY timestamp DESC LIMIT 1",
+          "SELECT traceID, toUnixTimestamp64Milli(timestamp) AS timestamp_ms FROM signoz_traces.signoz_index_v3 WHERE traceID = '$traceId' ORDER BY timestamp DESC LIMIT 1",
+          "SELECT traceID, toUnixTimestamp64Milli(timestamp) AS timestamp_ms FROM signoz_traces.distributed_signoz_index_v2 WHERE traceID = '$traceId' ORDER BY timestamp DESC LIMIT 1",
+          "SELECT traceID, toUnixTimestamp64Milli(timestamp) AS timestamp_ms FROM signoz_traces.signoz_index_v2 WHERE traceID = '$traceId' ORDER BY timestamp DESC LIMIT 1",
+          "SELECT traceID, toUnixTimestamp64Milli(timestamp) AS timestamp_ms FROM signoz_traces.distributed_signoz_index_v3 WHERE serviceName = '$ServiceName' ORDER BY timestamp DESC LIMIT 1",
+          "SELECT traceID, toUnixTimestamp64Milli(timestamp) AS timestamp_ms FROM signoz_traces.signoz_index_v3 WHERE serviceName = '$ServiceName' ORDER BY timestamp DESC LIMIT 1",
+          "SELECT traceID, toUnixTimestamp64Milli(timestamp) AS timestamp_ms FROM signoz_traces.distributed_signoz_index_v2 WHERE serviceName = '$ServiceName' ORDER BY timestamp DESC LIMIT 1",
+          "SELECT traceID, toUnixTimestamp64Milli(timestamp) AS timestamp_ms FROM signoz_traces.signoz_index_v2 WHERE serviceName = '$ServiceName' ORDER BY timestamp DESC LIMIT 1"
         )
         $found = $false
         $tsMs = $null

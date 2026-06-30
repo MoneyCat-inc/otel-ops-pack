@@ -31,20 +31,62 @@ try {
   $logEventId = $null
 }
 
-# Test 2: Check host metrics are being collected (Metrics signal)
+# Test 2: Send synthetic metric via OTLP HTTP (Metrics signal)
 Write-Host ""
-Write-Host "[2/3] Verifying host metrics collection..." -ForegroundColor White
+Write-Host "[2/3] Sending synthetic metric via OTLP HTTP..." -ForegroundColor White
 try {
-  $metrics = Invoke-WebRequest -Uri "http://localhost:8888/metrics" -UseBasicParsing -TimeoutSec 5
-  if ($metrics.Content -match "receiver_accepted_metric_points") {
-    Write-Host "  [OK] Metrics receiver active" -ForegroundColor Green
+  $metricTimestamp = [long]([DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()) * 1000000
+  $metricsPayload = @{
+    resourceMetrics = @(
+      @{
+        resource = @{
+          attributes = @(
+            @{ key = "service.name"; value = @{ stringValue = "bosscat-022a-test" } }
+            @{ key = "deployment.environment"; value = @{ stringValue = "local" } }
+          )
+        }
+        scopeMetrics = @(
+          @{
+            scope = @{ name = "bosscat-022a" }
+            metrics = @(
+              @{
+                name = "bosscat_022a_e2e_metric"
+                description = "BOSSCAT-022A E2E metric probe"
+                gauge = @{
+                  dataPoints = @(
+                    @{
+                      asInt = 1
+                      timeUnixNano = [string]$metricTimestamp
+                      attributes = @(
+                        @{ key = "test.type"; value = @{ stringValue = "e2e-verification" } }
+                      )
+                    }
+                  )
+                }
+              }
+            )
+          }
+        )
+      }
+    )
+  } | ConvertTo-Json -Depth 12
+
+  $response = Invoke-WebRequest -Uri "http://127.0.0.1:5318/v1/metrics" `
+    -Method POST `
+    -Headers @{ "Content-Type" = "application/json" } `
+    -Body $metricsPayload `
+    -TimeoutSec 5 `
+    -UseBasicParsing
+
+  if ($response.StatusCode -eq 200) {
+    Write-Host "  [OK] Metric sent via collector OTLP HTTP (5318)" -ForegroundColor Green
     $metricsActive = $true
   } else {
-    Write-Host "  [WARN] Metrics receiver not found in telemetry" -ForegroundColor Yellow
+    Write-Host "  [WARN] Unexpected response: $($response.StatusCode)" -ForegroundColor Yellow
     $metricsActive = $false
   }
 } catch {
-  Write-Host "  [FAIL] Could not access collector telemetry: $_" -ForegroundColor Red
+  Write-Host "  [FAIL] Could not send metric: $_" -ForegroundColor Red
   $metricsActive = $false
 }
 
@@ -90,13 +132,13 @@ try {
         )
       }
     )
-  } | ConvertTo-Json -Depth 10
+  } | ConvertTo-Json -Depth 12
   
   $headers = @{
     "Content-Type" = "application/json"
   }
   
-  $response = Invoke-WebRequest -Uri "http://127.0.0.1:4318/v1/traces" `
+  $response = Invoke-WebRequest -Uri "http://127.0.0.1:5318/v1/traces" `
     -Method POST `
     -Headers $headers `
     -Body $tracePayload `
@@ -130,14 +172,14 @@ Write-Host "Test Summary" -ForegroundColor White
 Write-Host ""
 Write-Host "Signal Status:" -ForegroundColor White
 Write-Host "  Logs:    $(if ($logEventId) { '[OK]' } else { '[FAIL]' }) $(if ($logEventId) { "Event ID $logEventId" } else { 'Not generated' })" -ForegroundColor $(if ($logEventId) { 'Green' } else { 'Red' })
-Write-Host "  Metrics: $(if ($metricsActive) { '[OK]' } else { '[FAIL]' }) $(if ($metricsActive) { 'Host metrics active' } else { 'Not active' })" -ForegroundColor $(if ($metricsActive) { 'Green' } else { 'Red' })
-Write-Host "  Traces:  $(if ($traceSuccess) { '[OK]' } else { '[FAIL]' }) $(if ($traceSuccess) { "Sent to aggregator" } else { 'Not sent' })" -ForegroundColor $(if ($traceSuccess) { 'Green' } else { 'Red' })
+Write-Host "  Metrics: $(if ($metricsActive) { '[OK]' } else { '[FAIL]' }) $(if ($metricsActive) { 'Sent via collector OTLP HTTP (5318)' } else { 'Not sent' })" -ForegroundColor $(if ($metricsActive) { 'Green' } else { 'Red' })
+Write-Host "  Traces:  $(if ($traceSuccess) { '[OK]' } else { '[FAIL]' }) $(if ($traceSuccess) { "Sent via collector OTLP HTTP (5318)" } else { 'Not sent' })" -ForegroundColor $(if ($traceSuccess) { 'Green' } else { 'Red' })
 Write-Host ""
 Write-Host "Next Steps:" -ForegroundColor White
 Write-Host "  1. Verify in SigNoz UI: $SigNozUrl" -ForegroundColor Gray
 Write-Host "  2. Search for 'BOSSCAT-022A' in logs" -ForegroundColor Gray
 Write-Host "  3. Check for service 'bosscat-022a-test' in traces" -ForegroundColor Gray
-Write-Host "  4. Look for host.type=windows in metrics" -ForegroundColor Gray
+Write-Host "  4. Look for metric 'bosscat_022a_e2e_metric' in SigNoz" -ForegroundColor Gray
 Write-Host ""
 
 # Return results

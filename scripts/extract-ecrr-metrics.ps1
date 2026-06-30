@@ -94,10 +94,15 @@ if (Test-Path $ReportsDir) {
         # Timeline entry (extract date from filename)
         if ($report.Name -match "(\d{8})") {
             $dateStr = $Matches[1]
-            $date = [DateTime]::ParseExact($dateStr, "yyyyMMdd", $null)
-            $metrics.timeline += @{
-                date = $date.ToString("yyyy-MM-dd")
-                report = $report.Name
+            try {
+                $date = [DateTime]::ParseExact($dateStr, "yyyyMMdd", $null)
+                $metrics.timeline += @{
+                    date = $date.ToString("yyyy-MM-dd")
+                    report = $report.Name
+                }
+            }
+            catch {
+                Write-Verbose "Skipping invalid timeline date '$dateStr' in $($report.Name)"
             }
         }
     }

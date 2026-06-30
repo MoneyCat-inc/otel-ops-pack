@@ -1,3 +1,8 @@
+param(
+    [switch]$TestModels,
+    [switch]$Benchmark
+)
+
 $ErrorActionPreference = 'Stop'
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
@@ -55,11 +60,6 @@ try {
 Write-Host "GPU verification artifacts saved to $outDir" -ForegroundColor Cyan
 # Codex GPU Configuration Verification Script
 # Cat Nap Control Room - Low-Latency Observability Pipeline
-
-param(
-    [switch]$TestModels,
-    [switch]$Benchmark
-)
 
 Write-Host "🐾 Codex GPU Configuration Verification" -ForegroundColor Cyan
 Write-Host "=======================================" -ForegroundColor Cyan
