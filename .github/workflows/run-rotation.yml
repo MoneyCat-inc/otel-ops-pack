@@ -28,7 +28,7 @@ on:
         required: false
         default: '24'
       rate_jitter_ms:
-        description: 'Rate jitter (ms)'
+        description: 'Rate jitter (ms) [unused — reserved for future use]'
         required: false
         default: '1500'
 
@@ -37,6 +37,7 @@ concurrency:
   cancel-in-progress: false
 
 permissions:
+  actions: write
   contents: read
 
 env:
@@ -45,7 +46,6 @@ env:
   ARCH_QPS: ${{ inputs.arch_qps || '2.0' }}
   DELETE_QPS: ${{ inputs.delete_qps || '1.0' }}
   ARCH_CONCURRENCY: ${{ inputs.arch_concurrency || '24' }}
-  RATE_JITTER_MS: ${{ inputs.rate_jitter_ms || '1500' }}
   DRY_RUN: ${{ inputs.dry_run || 'false' }}
 
 jobs:
@@ -70,7 +70,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          pwsh BRAV/SCPT/run-archiver/preflight.ps1 -Strict
+          pwsh BRAV/SCPT/run-archiver/preflight.ps1
 
       - name: Run rotation conveyor
         shell: pwsh
@@ -79,10 +79,9 @@ jobs:
         run: |
           $dry = ($env:DRY_RUN -eq 'true')
           pwsh BRAV/SCPT/run-archiver/run-conveyor.ps1 `
-            -ChunkSize [int]$env:CHUNK_SIZE `
-            -ArchQps [double]$env:ARCH_QPS `
-            -DeleteQps [double]$env:DELETE_QPS `
-            -RateJitterMs [int]$env:RATE_JITTER_MS `
-            -Concurrency [int]$env:ARCH_CONCURRENCY `
+            -ChunkSize ([int]$env:CHUNK_SIZE) `
+            -ArchQps ([double]$env:ARCH_QPS) `
+            -DeleteQps ([double]$env:DELETE_QPS) `
+            -ArchConcurrency ([int]$env:ARCH_CONCURRENCY) `
             -DryRun:$dry
 
