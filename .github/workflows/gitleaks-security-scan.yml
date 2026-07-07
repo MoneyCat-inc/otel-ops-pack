@@ -18,6 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      pull-requests: read
       security-events: write
 
     steps:
@@ -49,11 +50,9 @@ jobs:
     - name: Run GitLeaks
       uses: gitleaks/gitleaks-action@v2
       env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GITLEAKS_LICENSE: ${{ env.GITLEAKS_LICENSE }}
-      with:
-        args: --redact --no-banner --verbose --report-format json --report-path gitleaks-report.json
-        config-path: .gitleaks.toml # Optional: custom config
-        fail-on-error: false # Don't fail CI, just report
+        GITLEAKS_CONFIG: .gitleaks.toml
 
     - name: Upload GitLeaks results
       uses: actions/upload-artifact@v4
@@ -67,6 +66,7 @@ jobs:
 
     - name: Comment PR with results
       if: github.event_name == 'pull_request' && always()
+      continue-on-error: true
       uses: actions/github-script@v7
       with:
         github-token: ${{ steps.bosscat-auth.outputs.token || secrets.GITHUB_TOKEN }}

@@ -28,11 +28,25 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.18.1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
       
       - name: 📦 Start SigNoz Stack
         run: |
           echo "🚀 Starting SigNoz for PR validation..."
-          docker-compose up -d
+          docker compose up -d
           sleep 60
           
           until curl -f http://localhost:8080/api/v1/health > /dev/null 2>&1; do
@@ -89,7 +103,7 @@ jobs:
         if: always()
         run: |
           kill $SERVER_PID || true
-          docker-compose down
+          docker compose down
 
       - name: ECRR Process (pilot)
         if: always()
@@ -115,5 +129,5 @@ META
           PR_NUMBER: ${{ github.event.pull_request.number }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          tsx scripts/actor-pr-comment.ts --dir "$RUN_DIR"
+          pnpm exec tsx scripts/actor-pr-comment.ts --dir "$RUN_DIR"
 
