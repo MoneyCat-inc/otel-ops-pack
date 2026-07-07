@@ -15,9 +15,8 @@ permissions:
 
 jobs:
   verify:
-    runs-on: windows-latest
-    # Option B (self-hosted): runs-on: [self-hosted, windows, otel]
-    # When the live stack is reachable, nightly verification runs end-to-end.
+    runs-on: [self-hosted, windows, otel]
+    # Self-hosted otel-windows runner — live SigNoz + otelcol-contrib stack on this machine.
 
     env:
       SIGNOZ_API_KEY: ${{ secrets.SIGNOZ_API_KEY }}
