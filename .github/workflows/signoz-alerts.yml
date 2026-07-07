@@ -27,7 +27,6 @@ jobs:
   alerts:
     runs-on: windows-latest
     timeout-minutes: 20
-    if: ${{ secrets.WYZWOZ_SIGNOZ != '' }}
     env:
       SIGNOZ_URL: http://localhost:8080
       SIGNOZ_API_KEY: ${{ secrets.WYZWOZ_SIGNOZ }}  # masked
@@ -36,12 +35,24 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Check SigNoz credentials
+        id: signoz-config
+        shell: pwsh
+        run: |
+          if ([string]::IsNullOrWhiteSpace($env:SIGNOZ_API_KEY)) {
+            "configured=false" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+            Write-Host "WYZWOZ_SIGNOZ not configured, skipping SigNoz alerts"
+          } else {
+            "configured=true" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          }
+
       # PowerShell 7 is already available on windows-latest runners
       # No setup step needed - using shell: pwsh directly
 
       - name: Preflight • SigNoz health
         id: health
         shell: pwsh
+        if: steps.signoz-config.outputs.configured == 'true'
         run: |
           try {
             $resp = Invoke-WebRequest -Uri "$env:SIGNOZ_URL/api/v1/health" -UseBasicParsing -TimeoutSec 10

@@ -163,13 +163,27 @@ on:
 
 jobs:
   neuralegion_scan:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     name: A job to run a Nexploit scan
-    if: github.event_name != 'pull_request' && secrets.NEURALEGION_TOKEN != ''
+    if: github.event_name != 'pull_request'
     steps:
       - uses: actions/checkout@v4
+
+      - name: Check NeuraLegion configuration
+        id: neuralegion-config
+        env:
+          NEURALEGION_TOKEN: ${{ secrets.NEURALEGION_TOKEN }}
+        run: |
+          if [ -z "$NEURALEGION_TOKEN" ]; then
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "NEURALEGION_TOKEN not set, skipping scan"
+          else
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Start Nexploit Scan 🏁
         id: start
+        if: steps.neuralegion-config.outputs.configured == 'true'
         uses: NeuraLegion/run-scan@29ebd17b4fd6292ce7a238a59401668953b37fbe
         with:
           api_token: ${{ secrets.NEURALEGION_TOKEN }}

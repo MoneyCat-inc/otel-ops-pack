@@ -138,14 +138,14 @@ jobs:
             
             # Update index
             $indexPath = "$reportsDir/index.md"
-            $indexContent = @"
-# Dashboard Snapshot Reports
-
-## Latest Reports
-
-| Date | Report | Screenshots |
-|------|--------|-------------|
-"@
+            $indexContent = @(
+              '# Dashboard Snapshot Reports',
+              '',
+              '## Latest Reports',
+              '',
+              '| Date | Report | Screenshots |',
+              '|------|--------|-------------|'
+            ) -join "`n"
             
             if (Test-Path $indexPath) {
               $indexContent = Get-Content $indexPath -Raw

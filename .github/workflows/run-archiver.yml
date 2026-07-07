@@ -20,6 +20,7 @@ jobs:
     env:
       MAX_ON_REPO: ${{ inputs.MAX_ON_REPO || '100' }}
       DRY_RUN: 'false'
+      AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -37,7 +38,7 @@ jobs:
           npm ci
 
       - name: Configure optional AWS credentials
-        if: ${{ secrets.AWS_ROLE_ARN != '' }}
+        if: env.AWS_ROLE_ARN != ''
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
