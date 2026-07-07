@@ -16,26 +16,76 @@ permissions:
 jobs:
   verify:
     runs-on: windows-latest
-    # For production, use: runs-on: [self-hosted, windows]
-    # if your collector/SigNoz aren't accessible from GitHub runners
-    
+    # Option B (self-hosted): runs-on: [self-hosted, windows, otel]
+    # When the live stack is reachable, nightly verification runs end-to-end.
+
     env:
       SIGNOZ_API_KEY: ${{ secrets.SIGNOZ_API_KEY }}
-    
+      SIGNOZ_BASE_URL: http://localhost:8080
+      OTEL_COLLECTOR_HEALTH_URL: http://127.0.0.1:13134/healthz
+
     steps:
       - uses: actions/checkout@v4
 
+      - name: Check live stack reachability
+        id: stack
+        shell: pwsh
+        run: |
+          $signozUrl = $env:SIGNOZ_BASE_URL.TrimEnd('/')
+          $healthUrl = $env:OTEL_COLLECTOR_HEALTH_URL
+          $signozOk = $false
+          $collectorOk = $false
+
+          try {
+            $response = Invoke-WebRequest -Uri "$signozUrl/api/v1/health" -TimeoutSec 5 -UseBasicParsing
+            $signozOk = ($response.StatusCode -eq 200)
+          } catch {
+            Write-Host "::notice::SigNoz unreachable at $signozUrl — $($_.Exception.Message)"
+          }
+
+          try {
+            $response = Invoke-WebRequest -Uri $healthUrl -TimeoutSec 5 -UseBasicParsing
+            $collectorOk = ($response.StatusCode -eq 200)
+          } catch {
+            Write-Host "::notice::Collector health unreachable at $healthUrl — $($_.Exception.Message)"
+          }
+
+          try {
+            $service = Get-Service otelcol-contrib -ErrorAction Stop
+            if ($service.Status -ne 'Running') {
+              $collectorOk = $false
+              Write-Host "::notice::otelcol-contrib service status: $($service.Status)"
+            }
+          } catch {
+            $collectorOk = $false
+            Write-Host "::notice::otelcol-contrib service not found on this runner"
+          }
+
+          $stackAvailable = $signozOk -and $collectorOk
+          Write-Host "signoz_ok=$signozOk collector_ok=$collectorOk stack_available=$stackAvailable"
+
+          "signoz_ok=$($signozOk.ToString().ToLower())" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          "collector_ok=$($collectorOk.ToString().ToLower())" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          "stack_available=$($stackAvailable.ToString().ToLower())" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+
+          if (-not $stackAvailable) {
+            Write-Host "::notice::Live observability stack not reachable — skipping gate verification (expected on GitHub-hosted runners)."
+          }
+
       - name: Setup Python
+        if: steps.stack.outputs.stack_available == 'true'
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
       - name: Install Python dependencies
+        if: steps.stack.outputs.stack_available == 'true'
         run: |
           pip install opentelemetry-sdk opentelemetry-exporter-otlp-proto-http
 
       - name: Run pipeline verification
         id: verify
+        if: steps.stack.outputs.stack_available == 'true'
         shell: pwsh
         run: |
           $canaryScript = Join-Path $PWD 'synthetic/send_synthetic_otel_simple.py'
@@ -45,19 +95,40 @@ jobs:
           exit 0
         continue-on-error: true
 
+      - name: Write skip summary
+        if: steps.stack.outputs.stack_available != 'true'
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path out | Out-Null
+          $summary = [ordered]@{
+            outcome = 'SKIP'
+            exit_code = 0
+            reason = 'live_stack_unreachable'
+            timestamp_utc = (Get-Date).ToUniversalTime().ToString('o')
+            service_name = 'synthetic-windows-check'
+            runner = $env:RUNNER_NAME
+            signoz_ok = ('${{ steps.stack.outputs.signoz_ok }}' -eq 'true')
+            collector_ok = ('${{ steps.stack.outputs.collector_ok }}' -eq 'true')
+          }
+          $summary | ConvertTo-Json -Depth 5 | Set-Content out/gate_verification.json -Encoding UTF8
+          Write-Host "::notice::Gate nightly verification skipped — no live SigNoz + collector on runner."
+
       - name: Upload verification summary
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: gate_verification_${{ github.run_number }}
           path: out/gate_verification.json
           retention-days: 30
+          if-no-files-found: warn
 
       - name: Check verification result
+        if: steps.stack.outputs.stack_available == 'true'
         shell: pwsh
         run: |
           $result = Get-Content out/gate_verification.json | ConvertFrom-Json
           Write-Host "Verification outcome: $($result.outcome)"
-          
+
           if ($result.outcome -eq "FAIL") {
             Write-Host "::error::Gate verification FAILED - rollback criteria met"
             exit 1
@@ -68,18 +139,18 @@ jobs:
           }
 
       - name: Create issue on WARN/FAIL
-        if: ${{ steps.verify.outputs.exit_code != '0' }}
+        if: steps.stack.outputs.stack_available == 'true' && steps.verify.outputs.exit_code != '0'
         uses: actions/github-script@v7
         with:
           script: |
             const fs = require('fs');
             let j = {};
-            try { 
-              j = JSON.parse(fs.readFileSync('out/gate_verification.json','utf8')); 
-            } catch(e) { 
-              j = { outcome: 'UNKNOWN', service_name: 'unknown', timestamp_utc: new Date().toISOString() }; 
+            try {
+              j = JSON.parse(fs.readFileSync('out/gate_verification.json','utf8'));
+            } catch(e) {
+              j = { outcome: 'UNKNOWN', service_name: 'unknown', timestamp_utc: new Date().toISOString() };
             }
-            
+
             const title = `🚨 Gate verification ${j.outcome || 'UNKNOWN'}: ${j.service_name || 'service'} @ ${j.timestamp_utc || new Date().toISOString()}`;
             const body = [
               `## Gate Verification ${j.outcome || 'UNKNOWN'}`,
@@ -109,7 +180,7 @@ jobs:
               '- [IONA Errors](../docs/IONA_ERRORS.md)',
               '- [SigNoz UI](http://localhost:8080)',
             ].join('\n');
-            
+
             await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -118,3 +189,23 @@ jobs:
               labels: ['gate', 'verification', 'fail', 'automated']
             });
 
+      - name: Run Summary
+        if: always()
+        shell: pwsh
+        run: |
+          {
+            echo "### Gate Nightly Verification";
+            echo "";
+            echo "- stack_available: ${{ steps.stack.outputs.stack_available }}";
+            echo "- signoz_ok: ${{ steps.stack.outputs.signoz_ok }}";
+            echo "- collector_ok: ${{ steps.stack.outputs.collector_ok }}";
+            if ("${{ steps.stack.outputs.stack_available }}" -ne "true") {
+              echo "- result: **SKIP** (live stack not on runner)";
+              echo "";
+              echo "Register a self-hosted Windows runner (Option B) to enable full nightly gate verification.";
+            } elseif (Test-Path out/gate_verification.json) {
+              $result = Get-Content out/gate_verification.json | ConvertFrom-Json;
+              echo "- outcome: $($result.outcome)";
+              echo "- exit_code: $($result.exit_code)";
+            }
+          } >> $env:GITHUB_STEP_SUMMARY
