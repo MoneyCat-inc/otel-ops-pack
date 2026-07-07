@@ -55,7 +55,7 @@ function Invoke-SigNozApiTraceCheck {
     
     References:
     - SigNoz Trace API: https://signoz.io/docs/traces-management/trace-api/overview/
-    - OTLP HTTP endpoint: 4318 (vs gRPC 4317)
+    - OTLP HTTP: Windows collector default 5321; SigNoz Docker direct via BOSSCAT_OTLP_ENDPOINT=http://127.0.0.1:4318
   #>
   param(
     [string]$BaseUrl = "http://localhost:8080",
@@ -203,8 +203,12 @@ if ($quickMonitorExists) {
 # --- 2) Canary send + capture TRACE_ID for forensic verification ---
 Write-Host "`n[verify] Step 2/3: canary trace (capturing TRACE_ID for pinpoint verification)" -ForegroundColor Cyan
 $env:OTEL_EXPORTER_OTLP_PROTOCOL = "http/protobuf"
-$env:OTEL_EXPORTER_OTLP_ENDPOINT = "http://127.0.0.1:4318"  # SigNoz OTLP HTTP endpoint
-$env:OTEL_EXPORTER_OTLP_TRACES_ENDPOINT = "http://127.0.0.1:4318/v1/traces"  # Explicit full path
+# Default: Windows collector HTTP port. Override with BOSSCAT_OTLP_ENDPOINT for SigNoz-direct mode.
+$otlpBase = [Environment]::GetEnvironmentVariable("BOSSCAT_OTLP_ENDPOINT", "Process")
+if (-not $otlpBase) { $otlpBase = "http://127.0.0.1:5321" }
+$env:OTEL_EXPORTER_OTLP_ENDPOINT = $otlpBase
+$env:OTEL_EXPORTER_OTLP_TRACES_ENDPOINT = $otlpBase.TrimEnd('/') + "/v1/traces"
+Write-Host "[verify] OTLP HTTP endpoint: $($otlpBase.TrimEnd('/'))" -ForegroundColor Gray
 $env:SERVICE_NAME = $ServiceName
 $env:OTEL_RESOURCE_ATTRIBUTES = "service.name=$ServiceName,service.version=0.1.0,os.type=windows,bosscat.gate=GATE-2025-10-08-234500"
 $env:OTEL_LOG_LEVEL = "info"
