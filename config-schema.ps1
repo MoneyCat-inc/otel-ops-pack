@@ -136,7 +136,7 @@ if ($configContent -match "exporters:") {
     Add-Error "OTLP exporter not configured"
   }
   
-  if ($configContent -match "kafka:") {
+  if ($configContent -match '(?m)^\s*kafka') {
     Add-Pass "Kafka exporter configured"
   } else {
     Add-Warning "Kafka exporter not configured"

@@ -3,7 +3,7 @@
 
 [CmdletBinding()]
 param(
-  [string]$OtlpUrl    = "http://127.0.0.1:5318/v1/logs",
+  [string]$OtlpUrl    = "http://127.0.0.1:5321/v1/logs",
   [string]$MetricsUrl  = "http://127.0.0.1:8888/metrics",
   [int]$TimeoutSec     = 5
 )

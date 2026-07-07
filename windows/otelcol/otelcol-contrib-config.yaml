@@ -33,9 +33,9 @@ receivers:
   otlp:
     protocols:
       grpc:
-        endpoint: 0.0.0.0:5317  # Listen on port 5317 for gRPC
+        endpoint: 0.0.0.0:5320  # Listen on port 5320 for gRPC (avoids PlariumPlay 5300-5319 block)
       http:
-        endpoint: 0.0.0.0:5318  # Listen on port 5318 for HTTP
+        endpoint: 0.0.0.0:5321  # Listen on port 5321 for HTTP
 
 processors:
   batch:

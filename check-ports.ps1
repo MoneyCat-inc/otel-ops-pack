@@ -2,7 +2,7 @@
 
 Write-Host "=== Port Status Check ===" -ForegroundColor Green
 
-$ports = @(4317, 4318, 5317, 5318, 8080, 8888, 13134)
+$ports = @(4317, 4318, 5320, 5321, 8080, 8888, 13134)
 
 foreach ($port in $ports) {
     $result = Test-NetConnection -ComputerName localhost -Port $port -InformationLevel Quiet -WarningAction SilentlyContinue

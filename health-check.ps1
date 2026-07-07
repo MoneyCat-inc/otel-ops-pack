@@ -115,11 +115,11 @@ function Test-Kafka {
   if (Test-Path $ConfigPath) {
     try {
       $configContent = Get-Content $ConfigPath -Raw
-      $exportersMatch = [regex]::Match($configContent, "(?ms)^exporters:\\s*(.*?)(^\\S|\\z)")
+      $exportersMatch = [regex]::Match($configContent, '(?ms)^exporters:\s*(.*?)(^\S|\z)')
       if ($exportersMatch.Success) {
-        $kafkaConfigured = $exportersMatch.Groups[1].Value -match "(?m)^\\s*kafka\\s*:"
+        $kafkaConfigured = $exportersMatch.Groups[1].Value -match '(?m)^\s*kafka'
       } else {
-        $kafkaConfigured = $configContent -match "(?m)^\\s*kafka\\s*:"
+        $kafkaConfigured = $configContent -match '(?m)^\s*kafka'
       }
     } catch {
       $kafkaConfigured = $true
