@@ -1,11 +1,11 @@
 {
-  "timestamp": "2026-06-26T02:17:04.4397578+01:00",
-  "commit": "4be4aede5",
+  "timestamp": "2026-07-07T02:17:04.6916942+01:00",
+  "commit": "975f5c4ae",
   "branch": "main",
   "total": 92,
-  "ready": 90,
+  "ready": 89,
   "not_ready": 1,
   "warn": 0,
   "latest_name": "ECRR_GATE_RUN_LATEST.md",
-  "latest_verdict": "READY"
+  "latest_verdict": "NOT READY"
 }

@@ -25,7 +25,7 @@ if ($service) {
 
 # Check ports
 Write-Host "Ports:" -ForegroundColor Yellow
-$ports = @(5317, 5318, 4317, 4318, 8080, 8888, 13134)
+$ports = @(5320, 5321, 4317, 4318, 8080, 8888, 13134)
 foreach ($port in $ports) {
     $ok = Test-NetConnection -ComputerName localhost -Port $port -InformationLevel Quiet -WarningAction SilentlyContinue
     $status = if ($ok) { "✅" } else { "❌" }
