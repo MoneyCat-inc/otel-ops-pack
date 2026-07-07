@@ -3,6 +3,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { trace } from '@opentelemetry/api';
+import type { EventKind, Prisma } from '@prisma/client';
 import { EventsBatchSchema, type EventsBatch } from '@/lib/validation/schemas';
 import { createHash } from 'crypto';
 import { db } from '@/lib/db';
@@ -57,27 +58,26 @@ export const POST = withOTel(
         throw new Error('USER_HASH_SALT environment variable not set');
       }
 
-      const dbRecords = events.map(event => {
+      const dbRecords: Prisma.EventCreateManyInput[] = events.map(event => {
+        const userId = String(event.props['userId'] ?? '');
         // Hash user ID for privacy (not reversible)
         const userIdHash = createHash('sha256')
-          .update(event.props['userId'] + serverSalt)
+          .update(userId + serverSalt)
           .digest('hex')
           .substring(0, 16); // Truncate for performance
 
         // Derive cohort from hash for analytics grouping
         const cohort = `cohort_${parseInt(userIdHash.substring(0, 2), 16) % 10}`;
 
+        const { email: _email, name: _name, phone: _phone, ...safeProps } = event.props;
+
         return {
-          userId: event.props['userId'], // Keep for relation, but hashed in props
+          userId,
           ts: new Date(event.ts || Date.now()),
-          kind: event.kind.toUpperCase(),
+          kind: event.kind.toUpperCase() as EventKind,
           props: {
-            ...event.props,
-            userId: userIdHash, // Replace with hashed version
-            // Remove any potential PII
-            email: undefined,
-            name: undefined,
-            phone: undefined,
+            ...safeProps,
+            userId: userIdHash,
           },
           schema: event.schema || 'v1',
           cohort,

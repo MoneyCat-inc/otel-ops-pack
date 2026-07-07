@@ -42,7 +42,6 @@ export const POST = withOTel(
       // Find magic link
       const magicLink = await db.magicLink.findUnique({
         where: { token },
-        include: { user: true }
       });
 
       if (!magicLink) {

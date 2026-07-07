@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { loadLatest } from "@/scripts/memx/normalize";
 import JSZip from "jszip";
 
-export const dynamic = "error"; // static for security; compute on demand
+export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
   const url = new URL(req.url);

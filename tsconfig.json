@@ -1,19 +1,50 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "module": "commonjs",
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "strict": true,
-    "esModuleInterop": true,
+    "target": "ES2017",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
+    "strict": false,
     "noEmit": true,
     "incremental": true,
-    "moduleResolution": "node",
+    "module": "esnext",
+    "esModuleInterop": true,
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve"
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": {
+      "@/scripts/*": [
+        "BRAV/SCPT/*"
+      ],
+      "@/*": [
+        "ALFA/LIBS/*"
+      ]
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
-  "files": ["instrumentation.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "instrumentation.ts",
+    ".next/types/**/*.ts",
+    "app/**/*.ts",
+    "app/**/*.tsx",
+    "ALFA/LIBS/**/*.ts",
+    "ALFA/LIBS/**/*.tsx",
+    ".next/dev/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "ALFA/LIBS/prisma/prisma.config.ts",
+    "ALFA/LIBS/prisma/seed.ts"
+  ]
 }

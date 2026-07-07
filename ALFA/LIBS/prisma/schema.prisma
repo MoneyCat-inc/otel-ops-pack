@@ -6,8 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql" // or "sqlite" for Turso
-  url      = env("DATABASE_URL")
+  provider = "postgresql"
 }
 
 // =============================================================================
@@ -32,11 +31,13 @@ model User {
 
   // Relations
   engagementProfile EngagementProfile?
+  badges            Badge[]
   events            Event[]
   coachGrants       CoachGrant[]
   consentAuditLog   ConsentAuditLog[]
   storyProgress     StoryProgress[]
   feedbackReports   FeedbackReport[]
+  sessions          Session[]
 
   @@map("users")
 }
@@ -245,9 +246,6 @@ model FeatureFlag {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  // Relations
-  cohortAssignments CohortAssignment[]
-
   @@map("feature_flags")
 }
 
@@ -304,6 +302,21 @@ model DeletionLog {
 // SESSIONS & AUTHENTICATION
 // =============================================================================
 
+model MagicLink {
+  id          String   @id @default(ulid())
+  email       String
+  token       String   @unique
+  expiresAt   DateTime @map("expires_at")
+  redirectUrl String?  @map("redirect_url")
+  used        Boolean  @default(false)
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@index([token])
+  @@index([expiresAt])
+  @@index([email])
+  @@map("magic_links")
+}
+
 model Session {
   id        String   @id @default(ulid())
   userId    String
@@ -312,6 +325,8 @@ model Session {
   createdAt DateTime @default(now())
   ipAddress String?
   userAgent String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([token])
   @@index([expiresAt])
@@ -338,11 +353,14 @@ model BackgroundJob {
 }
 
 enum JobType {
-  STREAK_ROLLOVER
-  COHORT_ROLLUP
-  DATA_CLEANUP
-  RETENTION_SNAPSHOT
-  EXPIRED_GRANT_CLEANUP
+  SESSION_CLEANUP
+  COACH_GRANT_CLEANUP
+  DATA_EXPORT_CLEANUP
+  EVENT_RETENTION_CLEANUP
+  MAGIC_LINK_CLEANUP
+  ENGAGEMENT_ROLLUP
+  COHORT_ANALYTICS
+  HEALTH_CHECK
 }
 
 enum JobStatus {

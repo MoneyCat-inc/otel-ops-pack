@@ -164,25 +164,9 @@ const nextConfig = {
   // Enable compression
   compress: true,
 
-  // =============================================================================
-  // RUNTIME CONFIGURATION
-  // =============================================================================
-  
-  // Server runtime configuration
-  serverRuntimeConfig: {
-    // Server-only configuration
-    databaseUrl: process.env.DATABASE_URL,
-    nextAuthSecret: process.env.NEXTAUTH_SECRET,
-    userHashSalt: process.env.USER_HASH_SALT,
-  },
-
-  // Public runtime configuration
-  publicRuntimeConfig: {
-    // Client-accessible configuration
-    appName: 'Resonai Backend',
-    version: process.env.OTEL_SERVICE_VERSION || '1.0.0',
-    environment: process.env.OTEL_ENVIRONMENT || 'development',
-  },
+  // Runtime configuration
+  // Note: serverRuntimeConfig and publicRuntimeConfig removed in Next.js 15+
+  // Use environment variables directly or server-only imports instead
 };
 
 module.exports = nextConfig;

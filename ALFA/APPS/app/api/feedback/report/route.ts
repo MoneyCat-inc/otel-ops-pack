@@ -38,12 +38,16 @@ export const POST = withOTel(
 
         const { content, category, context } = parseResult.data;
 
-        const report = await db.abuseReport.create({
+        const report = await db.feedbackReport.create({
           data: {
             userId: user.id,
+            type: 'GENERAL',
             content,
-            category,
-            context: context || '',
+            metadata: {
+              reportKind: 'abuse',
+              category,
+              context: context || '',
+            },
             status: 'OPEN',
           },
         });

@@ -1,13 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { trace } from '@opentelemetry/api';
+import type { JobType } from '@prisma/client';
 import { JobStatus } from '@/lib/background/jobs';
 import { requireAuth } from '@/lib/middleware/auth';
 import { withOTel } from '@/lib/middleware/otel';
 import { withRateLimit, rateLimitConfigs } from '@/lib/middleware/rate-limit';
 import { db } from '@/lib/db';
 
-type JobGroup = Awaited<ReturnType<typeof db.backgroundJob.groupBy>>[number];
-type RecentJob = Awaited<ReturnType<typeof db.backgroundJob.findMany>>[number];
+type JobsByTypeRow = {
+  type: JobType;
+  _count: { type: number };
+  _avg: { retryCount: number | null };
+};
+
+type RecentJobRow = {
+  type: JobType;
+  status: JobStatus;
+  startedAt: Date | null;
+  completedAt: Date | null;
+  retryCount: number;
+};
 
 // GET /api/admin/jobs/stats - Get background job statistics (admin only)
 export const GET = withOTel(
@@ -32,7 +44,13 @@ export const GET = withOTel(
           );
         }
 
-        const jobsByType = await db.backgroundJob.groupBy({
+        const jobsByType = await (db.backgroundJob as unknown as {
+          groupBy: (args: {
+            by: ['type'];
+            _count: { type: true };
+            _avg: { retryCount: true };
+          }) => Promise<JobsByTypeRow[]>;
+        }).groupBy({
           by: ['type'],
           _count: { type: true },
           _avg: { retryCount: true },
@@ -53,7 +71,7 @@ export const GET = withOTel(
             completedAt: true,
             retryCount: true,
           },
-        });
+        }) as RecentJobRow[];
 
         const performanceMetrics: Record<string, {
           total: number;
@@ -105,7 +123,7 @@ export const GET = withOTel(
         return NextResponse.json({
           success: true,
           data: {
-            jobsByType: jobsByType.map((item: JobGroup) => ({
+            jobsByType: jobsByType.map((item) => ({
               type: item.type,
               count: item._count.type,
               avgRetries: Math.round((item._avg.retryCount || 0) * 100) / 100,
@@ -114,7 +132,7 @@ export const GET = withOTel(
             summary: {
               totalJobTypes: jobsByType.length,
               recentJobsProcessed: recentJobs.length,
-              systemHealth: recentJobs.filter((j: RecentJob) => j.status === JobStatus.FAILED).length > 10 ? 'degraded' : 'healthy',
+              systemHealth: recentJobs.filter((j) => j.status === JobStatus.FAILED).length > 10 ? 'degraded' : 'healthy',
             },
           },
         });

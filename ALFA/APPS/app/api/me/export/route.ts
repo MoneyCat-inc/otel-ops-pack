@@ -444,18 +444,19 @@ async function processDataExport(
 
     // Get engagement data if requested
     if (options.includeEngagement) {
-      const engagement = await db.engagementProfile.findUnique({
-        where: { userId },
-        include: {
-          badges: {
-            select: {
-              badgeType: true,
-              unlockedAt: true,
-              metadata: true,
-            }
-          }
-        }
-      });
+      const [engagement, badges] = await Promise.all([
+        db.engagementProfile.findUnique({
+          where: { userId },
+        }),
+        db.badge.findMany({
+          where: { userId },
+          select: {
+            badgeType: true,
+            unlockedAt: true,
+            metadata: true,
+          },
+        }),
+      ]);
 
       if (engagement) {
         userData.engagement = {
@@ -467,7 +468,7 @@ async function processDataExport(
             theme: engagement.theme,
             preferredLanguage: engagement.preferredLanguage,
           },
-          badges: engagement.badges,
+          badges,
         };
       }
     }
