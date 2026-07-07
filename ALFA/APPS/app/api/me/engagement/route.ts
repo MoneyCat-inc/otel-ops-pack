@@ -14,20 +14,21 @@ export const GET = withOTel(
     const span = trace.getActiveSpan();
     
     try {
-      // Fetch engagement profile with badges
-      const profile = await db.engagementProfile.findUnique({
-        where: { userId: user.id },
-        include: {
-          badges: {
-            select: {
-              badgeType: true,
-              unlockedAt: true,
-              metadata: true,
-            },
-            orderBy: { unlockedAt: 'desc' }
-          }
-        }
-      });
+      // Fetch engagement profile and user badges separately (badges live on User)
+      const [profile, badges] = await Promise.all([
+        db.engagementProfile.findUnique({
+          where: { userId: user.id },
+        }),
+        db.badge.findMany({
+          where: { userId: user.id },
+          select: {
+            badgeType: true,
+            unlockedAt: true,
+            metadata: true,
+          },
+          orderBy: { unlockedAt: 'desc' },
+        }),
+      ]);
 
       if (!profile) {
         // Create default profile if none exists
@@ -59,13 +60,16 @@ export const GET = withOTel(
       span?.setAttributes({
         'api.route': 'engagement_get',
         'profile.streak_days': profile.streakDays,
-        'profile.badges_count': profile.badges.length,
+        'profile.badges_count': badges.length,
         'profile.last_practice': profile.lastPracticeAt?.toISOString(),
       });
 
       return NextResponse.json({
         success: true,
-        data: profile
+        data: {
+          ...profile,
+          badges,
+        }
       });
 
     } catch (error) {

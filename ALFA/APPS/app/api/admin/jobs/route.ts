@@ -142,7 +142,7 @@ export const GET = withOTel(
         // Get jobs
         const jobs = await db.backgroundJob.findMany({
           where: whereConditions,
-          orderBy: { createdAt: 'desc' },
+          orderBy: { id: 'desc' },
           take: Math.min(limit, 100), // Cap at 100
           skip: offset,
         });

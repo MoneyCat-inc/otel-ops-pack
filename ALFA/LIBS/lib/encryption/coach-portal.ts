@@ -310,14 +310,18 @@ export class CoachDataPreparer {
       const profile = await db.engagementProfile.findUnique({
         where: { userId },
         include: {
-          badges: {
+          user: {
             select: {
-              badgeType: true,
-              unlockedAt: true,
+              badges: {
+                select: {
+                  badgeType: true,
+                  unlockedAt: true,
+                },
+                orderBy: { unlockedAt: 'desc' },
+              },
             },
-            orderBy: { unlockedAt: 'desc' }
-          }
-        }
+          },
+        },
       });
 
       if (!profile) {
@@ -338,9 +342,10 @@ export class CoachDataPreparer {
       });
 
       // Prepare coach-safe data
+      const badges = profile.user.badges;
       const coachData = {
         streakDays: profile.streakDays,
-        badges: profile.badges.map((badge: BadgeSummary) => ({
+        badges: badges.map((badge: BadgeSummary) => ({
           type: badge.badgeType,
           unlockedAt: badge.unlockedAt,
         })),
@@ -352,7 +357,7 @@ export class CoachDataPreparer {
       span?.setAttributes({
         'coach.data_prepared': true,
         'coach.streak_days': profile.streakDays,
-        'coach.badges_count': profile.badges.length,
+        'coach.badges_count': badges.length,
         'coach.total_sessions': sessionCount,
       });
 

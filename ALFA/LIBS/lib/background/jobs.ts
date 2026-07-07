@@ -2,30 +2,13 @@
 // Handles cleanup tasks, maintenance, and scheduled operations
 
 import { trace } from '@opentelemetry/api';
+import { JobStatus, JobType } from '@prisma/client';
 import { db } from '@/lib/db';
 import { SessionManager } from '@/lib/middleware/auth';
 import { CoachGrantManager } from '@/lib/encryption/coach-portal';
 import { resonaiMetrics } from '@/lib/observability/signoz';
 
-// Background job types
-export enum JobType {
-  SESSION_CLEANUP = 'SESSION_CLEANUP',
-  COACH_GRANT_CLEANUP = 'COACH_GRANT_CLEANUP',
-  DATA_EXPORT_CLEANUP = 'DATA_EXPORT_CLEANUP',
-  EVENT_RETENTION_CLEANUP = 'EVENT_RETENTION_CLEANUP',
-  MAGIC_LINK_CLEANUP = 'MAGIC_LINK_CLEANUP',
-  ENGAGEMENT_ROLLUP = 'ENGAGEMENT_ROLLUP',
-  COHORT_ANALYTICS = 'COHORT_ANALYTICS',
-  HEALTH_CHECK = 'HEALTH_CHECK',
-}
-
-export enum JobStatus {
-  PENDING = 'PENDING',
-  RUNNING = 'RUNNING',
-  COMPLETED = 'COMPLETED',
-  FAILED = 'FAILED',
-  RETRYING = 'RETRYING',
-}
+export { JobStatus, JobType };
 
 // Background job manager
 export class BackgroundJobManager {
@@ -83,7 +66,7 @@ export class BackgroundJobManager {
         where: {
           status: JobStatus.PENDING,
         },
-        orderBy: { createdAt: 'asc' },
+        orderBy: { id: 'asc' },
         take: 10, // Process up to 10 jobs at a time
       });
 

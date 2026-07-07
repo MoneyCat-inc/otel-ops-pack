@@ -2,6 +2,7 @@
 // Configures database connection with connection pooling and error handling
 
 import { PrismaClient } from '@prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
 import { trace } from '@opentelemetry/api';
 
 // Global Prisma client instance
@@ -9,43 +10,41 @@ declare global {
   var __prisma: PrismaClient | undefined;
 }
 
-// Database configuration
-const DATABASE_URL = process.env['DATABASE_URL'];
-if (!DATABASE_URL) {
-  throw new Error('DATABASE_URL environment variable is required');
-}
+const prismaLog =
+  process.env.NODE_ENV === 'development'
+    ? (['query', 'info', 'warn', 'error'] as const)
+    : (['error'] as const);
 
-// Prisma client configuration
-const prismaConfig = {
-  datasources: {
-    db: {
-      url: DATABASE_URL,
-    },
-  },
-  log: process.env.NODE_ENV === 'development' 
-    ? ['query', 'info', 'warn', 'error'] 
-    : ['error'],
-  errorFormat: 'pretty',
-};
-
-// Create Prisma client with connection pooling
+// Database configuration — lazy init so `next build` can typecheck without a live DB
 const createPrismaClient = (): PrismaClient => {
-  const client = new PrismaClient(prismaConfig);
+  const connectionString = process.env['DATABASE_URL'];
+  if (!connectionString) {
+    throw new Error('DATABASE_URL environment variable is required');
+  }
 
-  // Add connection event handlers
-  client.$on('beforeExit', async () => {
-    console.log('Prisma client disconnecting...');
+  const adapter = new PrismaPg({ connectionString });
+
+  return new PrismaClient({
+    adapter,
+    log: [...prismaLog],
+    errorFormat: 'pretty',
   });
-
-  return client;
 };
 
-// Singleton pattern for Prisma client
-export const db = globalThis.__prisma ?? createPrismaClient();
-
-if (process.env.NODE_ENV !== 'production') {
-  globalThis.__prisma = db;
+function getPrismaClient(): PrismaClient {
+  if (!globalThis.__prisma) {
+    globalThis.__prisma = createPrismaClient();
+  }
+  return globalThis.__prisma;
 }
+
+export const db = new Proxy({} as PrismaClient, {
+  get(_target, prop) {
+    const client = getPrismaClient();
+    const value = Reflect.get(client, prop, client);
+    return typeof value === 'function' ? value.bind(client) : value;
+  },
+}) as PrismaClient;
 
 // Database health check
 export async function checkDatabaseHealth(): Promise<{
