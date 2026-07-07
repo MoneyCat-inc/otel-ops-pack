@@ -1,21 +1,11 @@
 name: app-template-ci
 # TEMPLATE: Copy and rename to app-<YOUR_APP_NAME>.yml
 # Replace all <APP_NAME> with your app folder name from ALFA/APPS/<APP_NAME>
+# This file is intentionally disabled — it will never trigger.
 
 on:
-  pull_request:
-    paths:
-      - 'ALFA/APPS/<APP_NAME>/**'
-      - 'BRAV/SCPT/**'
-      - '.github/workflows/app-<APP_NAME>.yml'
-      - 'DELT/CONF/**'     # env/config changes can affect builds
   push:
-    branches: [ main ]
-    paths:
-      - 'ALFA/APPS/<APP_NAME>/**'
-      - 'BRAV/SCPT/**'
-      - '.github/workflows/app-<APP_NAME>.yml'
-      - 'DELT/CONF/**'
+    branches: [ '__disabled__' ]
 
 concurrency:
   group: app-<APP_NAME>-${{ github.ref }}
@@ -59,7 +49,7 @@ jobs:
             ALFA/APPS/<APP_NAME>/package-lock.json
             ALFA/LIBS/**/package-lock.json
       - name: Configure npm auth (if needed)
-        if: ${{ secrets.NPM_TOKEN != '' }}
+        continue-on-error: true
         run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
