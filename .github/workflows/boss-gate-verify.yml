@@ -119,6 +119,7 @@ jobs:
 
       - name: Comment PR with verification results
         if: github.event_name == 'pull_request' && always()
+        continue-on-error: true
         uses: actions/github-script@v7
         with:
           github-token: ${{ steps.bosscat-auth.outputs.token || secrets.GITHUB_TOKEN }}
