@@ -63,7 +63,7 @@ jobs:
       - name: Open run-reports PR
         uses: peter-evans/create-pull-request@v6
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PAT_STATUS_UPDATE }}
           add-paths: |
             docs/BossCat
             CHAR/EVID
