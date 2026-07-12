@@ -58,12 +58,13 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: BRAV/SCPT/run-archiver/package-lock.json
 
-      - name: Install dependencies (if present)
-        shell: pwsh
-        run: |
-          if (Test-Path package-lock.json) { npm ci } else { Write-Host 'No package-lock.json; skipping npm ci' }
+      - name: Install archiver dependencies
+        working-directory: BRAV/SCPT/run-archiver
+        run: npm ci
 
       - name: Preflight
         shell: pwsh
