@@ -170,15 +170,15 @@ if ($dashboardCurrent) {
 # Count days with dated dir OR flat files matching that calendar day
 $total++
 $exportSuccess = 0
-0..6 | ForEach-Object {
-    $day = (Get-Date).Date.AddDays(-$_)
+foreach ($offset in 0..6) {
+    $day = (Get-Date).Date.AddDays(-$offset)
     $dateStr = $day.ToString("yyyy-MM-dd")
     $compact = $day.ToString("yyyyMMdd")
     if (Test-Path (Join-Path $snapshotsRoot $dateStr)) {
         $exportSuccess++
-        return
+        continue
     }
-    if (-not (Test-Path $snapshotsRoot)) { return }
+    if (-not (Test-Path $snapshotsRoot)) { continue }
     $hit = Get-ChildItem $snapshotsRoot -File -ErrorAction SilentlyContinue | Where-Object {
         $_.Name -match [regex]::Escape($dateStr) -or
         $_.Name -match $compact -or
