@@ -59,23 +59,53 @@ jobs:
         run: |
           node index.mjs
 
-      # main is branch-protected; open a PR instead of pushing directly
-      - name: Open run-reports PR
-        uses: peter-evans/create-pull-request@v6
-        with:
-          token: ${{ secrets.PAT_STATUS_UPDATE }}
-          add-paths: |
-            docs/BossCat
-            CHAR/EVID
-          commit-message: "docs(ecrr): run-archiver report update [skip ci]"
-          title: "docs(ecrr): run-archiver report update [skip ci]"
-          body: |
-            Automated run-archiver update from Archive & Analyze Workflow Runs.
+      # main is branch-protected. GITHUB_TOKEN can push a bot branch but cannot
+      # create PRs unless Actions → "Allow GitHub Actions to create and approve
+      # pull requests" is enabled. Keep the workflow green by updating the branch;
+      # create a PR only when missing (best-effort).
+      - name: Commit run-reports to bot branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin main
+          git checkout -B bots/run-archiver-reports origin/main
+          git add docs/BossCat CHAR/EVID || true
+          if git diff --cached --quiet; then
+            echo "No report changes to commit."
+            echo "HAS_CHANGES=false" >> "$GITHUB_ENV"
+            exit 0
+          fi
+          git commit -m "docs(ecrr): run-archiver report update [skip ci]"
+          git push --force origin HEAD:bots/run-archiver-reports
+          echo "HAS_CHANGES=true" >> "$GITHUB_ENV"
 
-            Uses a pull request because `main` requires protected-branch checks.
-            Run: ${{ github.run_number }}
-          branch: bots/run-archiver-reports
-          delete-branch: true
-          labels: |
-            automated
-            docs
+      - name: Ensure run-reports PR exists
+        if: env.HAS_CHANGES == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.BOSSCAT_TOKEN }}
+          FALLBACK_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          open_pr="$(gh pr list --head bots/run-archiver-reports --state open --json number,url -q '.[0].url' || true)"
+          if [ -n "${open_pr}" ]; then
+            echo "PR already open: ${open_pr}"
+            exit 0
+          fi
+          if [ -z "${GH_TOKEN}" ]; then
+            export GH_TOKEN="${FALLBACK_TOKEN}"
+          fi
+          if gh pr create \
+            --base main \
+            --head bots/run-archiver-reports \
+            --title "docs(ecrr): run-archiver report update [skip ci]" \
+            --label automated \
+            --label docs \
+            --body "Automated run-archiver update (run ${{ github.run_number }}). Uses a PR because main is branch-protected."; then
+            echo "Created PR"
+          else
+            echo "::warning::Branch pushed but PR was not created automatically."
+            echo "Open: https://github.com/${{ github.repository }}/compare/main...bots/run-archiver-reports?expand=1"
+          fi
