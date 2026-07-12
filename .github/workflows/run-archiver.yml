@@ -8,6 +8,7 @@ on:
 permissions:
   actions: read
   contents: write
+  pull-requests: write
 
 concurrency:
   group: run-archiver
@@ -58,16 +59,23 @@ jobs:
         run: |
           node index.mjs
 
-      - name: Commit changes
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/BossCat CHAR/EVID || true
-          if git diff --cached --quiet; then
-            echo "No changes to commit."
-          else
-            git commit -m "docs(ecrr): run-archiver report update [skip ci]"
-            git push
-          fi
+      # main is branch-protected; open a PR instead of pushing directly
+      - name: Open run-reports PR
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          add-paths: |
+            docs/BossCat
+            CHAR/EVID
+          commit-message: "docs(ecrr): run-archiver report update [skip ci]"
+          title: "docs(ecrr): run-archiver report update [skip ci]"
+          body: |
+            Automated run-archiver update from Archive & Analyze Workflow Runs.
+
+            Uses a pull request because `main` requires protected-branch checks.
+            Run: ${{ github.run_number }}
+          branch: bots/run-archiver-reports
+          delete-branch: true
+          labels: |
+            automated
+            docs
