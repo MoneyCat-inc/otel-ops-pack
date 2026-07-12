@@ -158,6 +158,7 @@ if (-not $apiSuccess) {
         Write-Host "   - SigNoz backend healthy" -ForegroundColor Green
         Write-Host "   - Canary tests can be used for end-to-end verification" -ForegroundColor Green
         Write-Host "`n   ✅ Production wiring verification: PASSED (dev server not required)" -ForegroundColor Green
+        Write-Host "== Wiring verification PASSED ==" -ForegroundColor Green
         exit 0
     } else {
         Write-Fail "Cannot proceed without successful API call"
