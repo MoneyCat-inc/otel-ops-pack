@@ -133,7 +133,7 @@
     "@types/react-dom": "^19.2.3",
     "@typescript-eslint/eslint-plugin": "^8.46.2",
     "@typescript-eslint/parser": "^8.63.0",
-    "ajv": "^8.18.0",
+    "ajv": "^8.20.0",
     "ajv-cli": "^5.0.0",
     "ajv-formats": "^3.0.1",
     "eslint": "^9.38.0",

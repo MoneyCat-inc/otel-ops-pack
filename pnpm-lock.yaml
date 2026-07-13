@@ -146,14 +146,14 @@ importers:
         specifier: ^8.63.0
         version: 8.63.0(eslint@9.38.0(jiti@2.7.0))(typescript@5.9.3)
       ajv:
-        specifier: ^8.18.0
-        version: 8.18.0
+        specifier: ^8.20.0
+        version: 8.20.0
       ajv-cli:
         specifier: ^5.0.0
         version: 5.0.0(ts-node@10.9.2(@types/node@25.9.3)(typescript@5.9.3))
       ajv-formats:
         specifier: ^3.0.1
-        version: 3.0.1(ajv@8.18.0)
+        version: 3.0.1(ajv@8.20.0)
       eslint:
         specifier: ^9.38.0
         version: 9.38.0(jiti@2.7.0)
@@ -2506,8 +2506,8 @@ packages:
   ajv@6.15.0:
     resolution: {integrity: sha512-fgFx7Hfoq60ytK2c7DhnF8jIvzYgOMxfugjLOSMHjLIPgenqa7S7oaagATUq99mV6IYvN2tRmC0wnTYX6iPbMw==}
 
-  ajv@8.18.0:
-    resolution: {integrity: sha512-PlXPeEWMXMZ7sPYOHqmDyCJzcfNrUr3fGNKtezX14ykXOEIvyK81d+qydx89KY5O71FKMPaQ2vBfBFI5NHR63A==}
+  ajv@8.20.0:
+    resolution: {integrity: sha512-Thbli+OlOj+iMPYFBVBfJ3OmCAnaSyNn4M1vz9T6Gka5Jt9ba/HIR56joy65tY6kx/FCF5VXNB819Y7/GUrBGA==}
 
   ansi-escapes@4.3.2:
     resolution: {integrity: sha512-gKXj5ALrKWQLsYG9jlTRmR/xKluxHV+Z9QEwNIgCfM1/uwPMCuzVVnh5mwTd+OuBZcwSIMbqssNWRm1lE51QaQ==}
@@ -7655,7 +7655,7 @@ snapshots:
 
   '@prisma/streams-local@0.1.2':
     dependencies:
-      ajv: 8.18.0
+      ajv: 8.20.0
       better-result: 2.9.2
       env-paths: 3.0.0
       proper-lockfile: 4.1.2
@@ -8198,7 +8198,7 @@ snapshots:
 
   ajv-cli@5.0.0(ts-node@10.9.2(@types/node@25.9.3)(typescript@5.9.3)):
     dependencies:
-      ajv: 8.18.0
+      ajv: 8.20.0
       fast-json-patch: 2.2.1
       glob: 7.2.3
       js-yaml: 3.14.2
@@ -8208,9 +8208,9 @@ snapshots:
     optionalDependencies:
       ts-node: 10.9.2(@types/node@25.9.3)(typescript@5.9.3)
 
-  ajv-formats@3.0.1(ajv@8.18.0):
+  ajv-formats@3.0.1(ajv@8.20.0):
     optionalDependencies:
-      ajv: 8.18.0
+      ajv: 8.20.0
 
   ajv@6.15.0:
     dependencies:
@@ -8219,7 +8219,7 @@ snapshots:
       json-schema-traverse: 0.4.1
       uri-js: 4.4.1
 
-  ajv@8.18.0:
+  ajv@8.20.0:
     dependencies:
       fast-deep-equal: 3.1.3
       fast-uri: 3.1.3
@@ -10183,7 +10183,7 @@ snapshots:
 
   json-schema-migrate@2.0.0:
     dependencies:
-      ajv: 8.18.0
+      ajv: 8.20.0
 
   json-schema-traverse@0.4.1: {}
 
