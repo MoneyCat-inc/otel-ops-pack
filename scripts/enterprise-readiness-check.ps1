@@ -130,27 +130,61 @@ Write-Host ""
 Write-Host "⚙️  Reliability Checks" -ForegroundColor Yellow
 Write-Host "─────────────────────────────────────────────────────────────" -ForegroundColor Gray
 
-# Check 5: Nightly Dashboard Export (Today)
+# Check 5: Nightly Dashboard Export (current)
+# Accept dated dir (guide layout) or flat status-latest.* (actual export layout)
 $total++
+$snapshotsRoot = "docs/observability/snapshots"
 $today = Get-Date -Format "yyyy-MM-dd"
-$snapshotPath = "docs/observability/snapshots/$today"
-if (Test-Path $snapshotPath) {
-    $fileCount = @(Get-ChildItem $snapshotPath -File).Count
-    Write-Host "  ✅ Dashboard export current ($fileCount files)" -ForegroundColor Green
+$datedDir = Join-Path $snapshotsRoot $today
+$latestJson = Join-Path $snapshotsRoot "status-latest.json"
+$dashboardCurrent = $false
+$dashboardDetail = ""
+
+if (Test-Path $datedDir) {
+    $fileCount = @(Get-ChildItem $datedDir -File -ErrorAction SilentlyContinue).Count
+    if ($fileCount -gt 0) {
+        $dashboardCurrent = $true
+        $dashboardDetail = "$fileCount files in $today/"
+    }
+}
+if (-not $dashboardCurrent -and (Test-Path $latestJson)) {
+    $ageHours = ((Get-Date) - (Get-Item $latestJson).LastWriteTime).TotalHours
+    if ($ageHours -le 48) {
+        $dashboardCurrent = $true
+        $dashboardDetail = "status-latest.json ($([math]::Round($ageHours, 1))h old)"
+    } else {
+        $dashboardDetail = "status-latest.json stale ($([math]::Round($ageHours / 24, 1))d old)"
+    }
+}
+
+if ($dashboardCurrent) {
+    Write-Host "  ✅ Dashboard export current ($dashboardDetail)" -ForegroundColor Green
     $score++
 } else {
-    Write-Host "  ⚠️  Dashboard export missing for $today (may not have run yet)" -ForegroundColor Yellow
+    $msg = if ($dashboardDetail) { $dashboardDetail } else { "no status-latest.json or $today/ dir" }
+    Write-Host "  ⚠️  Dashboard export not current ($msg)" -ForegroundColor Yellow
     $warnings += "Dashboard export not current"
 }
 
 # Check 6: Nightly Dashboard Export (Last 7 Days)
+# Count days with dated dir OR flat files matching that calendar day
 $total++
 $exportSuccess = 0
-0..6 | ForEach-Object {
-    $date = (Get-Date).AddDays(-$_).ToString("yyyy-MM-dd")
-    if (Test-Path "docs/observability/snapshots/$date") {
+foreach ($offset in 0..6) {
+    $day = (Get-Date).Date.AddDays(-$offset)
+    $dateStr = $day.ToString("yyyy-MM-dd")
+    $compact = $day.ToString("yyyyMMdd")
+    if (Test-Path (Join-Path $snapshotsRoot $dateStr)) {
         $exportSuccess++
+        continue
     }
+    if (-not (Test-Path $snapshotsRoot)) { continue }
+    $hit = Get-ChildItem $snapshotsRoot -File -ErrorAction SilentlyContinue | Where-Object {
+        $_.Name -match [regex]::Escape($dateStr) -or
+        $_.Name -match $compact -or
+        ($_.LastWriteTime.Date -eq $day -and $_.Name -match '^(status|signoz|dashboard|nightly|ecrr|gate)')
+    } | Select-Object -First 1
+    if ($hit) { $exportSuccess++ }
 }
 $exportRate = [math]::Round(($exportSuccess / 7) * 100, 1)
 if ($exportRate -ge 85) {
@@ -172,13 +206,22 @@ try {
     $warnings += "SigNoz not responding"
 }
 
-# Check 8: OTel Collector Health
+# Check 8: OTel Collector Health (canonical: config.yaml health_check on :13134/healthz)
 $total++
+$collectorOk = $false
 try {
-    $collectorHealth = Invoke-RestMethod -Uri "http://localhost:4318/v1/logs" -Method Head -TimeoutSec 3 -ErrorAction SilentlyContinue
+    $null = Invoke-RestMethod -Uri "http://127.0.0.1:13134/healthz" -Method Get -TimeoutSec 3 -ErrorAction Stop
+    $collectorOk = $true
+} catch {
+    try {
+        $null = Invoke-WebRequest -Uri "http://127.0.0.1:8888/metrics" -Method Get -TimeoutSec 3 -UseBasicParsing -ErrorAction Stop
+        $collectorOk = $true
+    } catch { }
+}
+if ($collectorOk) {
     Write-Host "  ✅ OTel Collector is reachable" -ForegroundColor Green
     $score++
-} catch {
+} else {
     Write-Host "  ⚠️  OTel Collector not responding" -ForegroundColor Yellow
     $warnings += "OTel Collector not responding"
 }

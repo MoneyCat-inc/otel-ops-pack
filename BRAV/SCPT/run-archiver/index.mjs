@@ -28,8 +28,8 @@ const OUT_ARCH = path.join(OUT_ROOT, 'archived');
 const OUT_LATEST = path.join(OUT_ROOT, 'latest');
 const OUT_BADGES = path.join(OUT_ROOT, 'badges');
 const EVID_ROOT = rootJoin('CHAR', 'EVID', 'artifacts', 'ecrr', 'arch');
-const RSI_JSON = path.join('docs', 'BossCat', 'RSI_METRICS.json');
-const RSI_MD = path.join('docs', 'BossCat', 'RSI_METRICS.md');
+const RSI_JSON = rootJoin('docs', 'BossCat', 'RSI_METRICS.json');
+const RSI_MD = rootJoin('docs', 'BossCat', 'RSI_METRICS.md');
 
 function ensureDir(p) { fs.mkdirSync(p, { recursive: true }); }
 function iso(dt) { return new Date(dt).toISOString(); }
@@ -257,9 +257,10 @@ async function main() {
   }
   await rotateLatest(infos);
   await appendEvidence(evid);
-  // RSI metrics
+  // RSI metrics (REPO_ROOT paths — CWD is BRAV/SCPT/run-archiver in CI)
   const metrics = computeMetrics(runs);
   if (!DRY_RUN) {
+    ensureDir(path.dirname(RSI_JSON));
     await fsp.writeFile(RSI_JSON, JSON.stringify(metrics, null, 2), 'utf8');
     await fsp.writeFile(RSI_MD, rsiMd(metrics), 'utf8');
   }

@@ -107,51 +107,6 @@ exporters:
       num_consumers: 8
       queue_size: 2048
       storage: file_storage
-  kafka/logs:
-    brokers:
-      - localhost:9092
-    topic: otel-logs
-    encoding: otlp_json
-    protocol_version: 2.0.0
-    retry_on_failure:
-      enabled: true
-      initial_interval: 1s
-      max_interval: 30s
-      max_elapsed_time: 300s
-    sending_queue:
-      enabled: true
-      num_consumers: 4
-      queue_size: 8192
-  kafka/traces:
-    brokers:
-      - localhost:9092
-    topic: otel-traces
-    encoding: otlp_json
-    protocol_version: 2.0.0
-    retry_on_failure:
-      enabled: true
-      initial_interval: 1s
-      max_interval: 30s
-      max_elapsed_time: 300s
-    sending_queue:
-      enabled: true
-      num_consumers: 4
-      queue_size: 8192
-  kafka/metrics:
-    brokers:
-      - localhost:9092
-    topic: otel-metrics
-    encoding: otlp_json
-    protocol_version: 2.0.0
-    retry_on_failure:
-      enabled: true
-      initial_interval: 1s
-      max_interval: 30s
-      max_elapsed_time: 300s
-    sending_queue:
-      enabled: true
-      num_consumers: 4
-      queue_size: 8192
 
 service:
   extensions:
@@ -169,7 +124,6 @@ service:
         - batch/traces
       exporters:
         - otlp
-        - kafka/traces
     
     # Gate #026: Metrics pipeline for .NET runtime metrics
     metrics:
@@ -181,7 +135,6 @@ service:
         - batch/metrics
       exporters:
         - otlp
-        - kafka/metrics
     
     logs:
       receivers:
@@ -200,5 +153,4 @@ service:
         - batch/logs
       exporters:
         - otlp
-        - kafka/logs
 
