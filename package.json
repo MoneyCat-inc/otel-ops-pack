@@ -92,7 +92,7 @@
     "@opentelemetry/core": "^2.8.0",
     "@opentelemetry/exporter-otlp-http": "^0.26.0",
     "@opentelemetry/instrumentation-document-load": "^0.53.0",
-    "@opentelemetry/instrumentation-fetch": "^0.219.0",
+    "@opentelemetry/instrumentation-fetch": "^0.220.0",
     "@opentelemetry/instrumentation-user-interaction": "^0.52.0",
     "@opentelemetry/instrumentation-xml-http-request": "^0.207.0",
     "@opentelemetry/sdk-trace-web": "^2.9.0",
