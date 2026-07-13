@@ -141,25 +141,50 @@ try {
     Write-Detail "API call failed: $apiError"
     
     # Check if it's a connection error vs server error
+    $skipApi = ($Environment -eq 'production' -or $SkipDevServer)
     if ($_.Exception.Message -match "connection|timeout|refused") {
-        Write-Fail "Analytics API not reachable (is dev server running on port 3003?)"
+        if ($skipApi) {
+            Write-Detail "Analytics API not reachable (expected when SkipDevServer / production)"
+        } else {
+            Write-Fail "Analytics API not reachable (is dev server running on port 3003?)"
+        }
     } else {
-        Write-Fail "Analytics API error: $apiError"
+        if ($skipApi) {
+            Write-Detail "Analytics API error (skipped): $apiError"
+        } else {
+            Write-Fail "Analytics API error: $apiError"
+        }
     }
 }
 
 if (-not $apiSuccess) {
-    # In production mode or when dev server is skipped, this is expected
+    # In production mode or when dev server is skipped, verify infra instead of Resonai API
     if ($Environment -eq 'production' -or $SkipDevServer) {
         Write-Host "`n   [INFO] Dev server check skipped (Environment: $Environment)" -ForegroundColor Cyan
+        Write-Host "`n3. Infrastructure health verification:" -ForegroundColor Yellow
+
+        Test-TcpPort -Port 4317 -Label "OTLP aggregator (gRPC)"
+        Test-TcpPort -Port 4318 -Label "OTLP aggregator (HTTP)"
+
+        try {
+            $collectorHealth = Invoke-RestMethod -Uri "http://127.0.0.1:13134/healthz" -Method Get -TimeoutSec 3 -ErrorAction Stop
+            $statusText = if ($collectorHealth.status) { $collectorHealth.status } else { "ok" }
+            Write-Pass "Collector healthz reachable ($statusText)"
+        } catch {
+            try {
+                $null = Invoke-WebRequest -Uri "http://127.0.0.1:8888/metrics" -Method Get -TimeoutSec 3 -UseBasicParsing -ErrorAction Stop
+                Write-Pass "Collector metrics reachable (8888/metrics fallback)"
+            } catch {
+                Write-Fail "Collector healthz/metrics unreachable: $($_.Exception.Message)"
+            }
+        }
+
         Write-Host "   Production wiring verified via:" -ForegroundColor Cyan
-        Write-Host "   - OTel Collector running and healthy" -ForegroundColor Green
-        Write-Host "   - OTLP endpoints available (4317 gRPC, 4318 HTTP)" -ForegroundColor Green
-        Write-Host "   - SigNoz backend healthy" -ForegroundColor Green
+        Write-Host "   - OTel Collector service + health endpoint" -ForegroundColor Green
+        Write-Host "   - OTLP aggregator ports (4317 gRPC, 4318 HTTP)" -ForegroundColor Green
+        Write-Host "   - SigNoz UI port 8080" -ForegroundColor Green
         Write-Host "   - Canary tests can be used for end-to-end verification" -ForegroundColor Green
-        Write-Host "`n   ✅ Production wiring verification: PASSED (dev server not required)" -ForegroundColor Green
-        Write-Host "== Wiring verification PASSED ==" -ForegroundColor Green
-        exit 0
+        # Fall through to summary — do not exit early with an unverified PASS
     } else {
         Write-Fail "Cannot proceed without successful API call"
         Write-Host "`nPlease ensure:" -ForegroundColor Yellow
@@ -171,9 +196,8 @@ if (-not $apiSuccess) {
     }
 }
 
-Write-Host "`n3. SigNoz Verification:" -ForegroundColor Yellow
-
 if ($apiSuccess) {
+    Write-Host "`n3. SigNoz Verification:" -ForegroundColor Yellow
     Write-Detail "Waiting 8 seconds for OTel forwarding..."
     Start-Sleep -Seconds 8
     
@@ -293,13 +317,17 @@ SigNoz Test: FAILED
 
 Write-Host "`n=== Verification Complete ===" -ForegroundColor Green
 if ($allChecksPassed) {
-    Write-Host "== Wiring verification PASSED ===" -ForegroundColor Green
-    Write-Host "Analytics are successfully flowing from Resonai to SigNoz!" -ForegroundColor Green
-    Write-Host "`nNext steps:" -ForegroundColor Yellow
-    Write-Host "1. Open SigNoz UI at http://localhost:8080" -ForegroundColor Yellow
-    Write-Host "2. Go to Logs section" -ForegroundColor Yellow
-    Write-Host "3. Filter: attributes.dataset = `"resonai_analytics`"" -ForegroundColor Yellow
-    Write-Host "4. Check artifacts in artifacts/wiring-verify.txt" -ForegroundColor Yellow
+    Write-Host "== Wiring verification PASSED ==" -ForegroundColor Green
+    if ($apiSuccess) {
+        Write-Host "Analytics are successfully flowing from Resonai to SigNoz!" -ForegroundColor Green
+        Write-Host "`nNext steps:" -ForegroundColor Yellow
+        Write-Host "1. Open SigNoz UI at http://localhost:8080" -ForegroundColor Yellow
+        Write-Host "2. Go to Logs section" -ForegroundColor Yellow
+        Write-Host "3. Filter: attributes.dataset = `"resonai_analytics`"" -ForegroundColor Yellow
+        Write-Host "4. Check artifacts in artifacts/wiring-verify.txt" -ForegroundColor Yellow
+    } else {
+        Write-Host "Infrastructure wiring verified (collector + OTLP + SigNoz UI). Dev-server analytics path skipped." -ForegroundColor Green
+    }
 } else {
     Write-Host "== Wiring verification FAILED ==" -ForegroundColor Red
     Write-Host "Some checks failed. Please review the errors above." -ForegroundColor Red
