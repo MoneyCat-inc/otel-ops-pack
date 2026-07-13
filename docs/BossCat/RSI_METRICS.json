@@ -1,0 +1,10 @@
+{
+  "total": 150,
+  "success": 111,
+  "failure": 20,
+  "cancelled": 4,
+  "timed_out": 0,
+  "other": 15,
+  "avg_duration_ms": 424407,
+  "pass_rate_pct": 74
+}
