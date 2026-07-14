@@ -53,8 +53,9 @@ jobs:
           }
 
           # Force array so a single commit is never character-enumerated on Windows PowerShell 5.1
+          # Exclude merge commits (incl. GitHub's ephemeral "Merge <sha> into <sha>" PR refs)
           $commits = @(git log "origin/${{ github.base_ref }}..HEAD" --format="%s" 2>$null |
-            Where-Object { $_ -and $_.Trim() -ne '' -and $_ -notmatch '^Merge (branch|pull request|remote-tracking)' })
+            Where-Object { $_ -and $_.Trim() -ne '' -and $_ -notmatch '^Merge\b' })
           if ($commits.Count -eq 0) {
             Write-Host "ℹ️ No commits to validate (empty/squash PR)" -ForegroundColor Gray
             exit 0
