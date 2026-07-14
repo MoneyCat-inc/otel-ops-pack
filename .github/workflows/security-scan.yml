@@ -40,17 +40,36 @@ jobs:
         with:
           app_id: ${{ secrets.BOSSCAT_APP_ID }}
           private_key: ${{ secrets.BOSSCAT_APP_PRIVATE_KEY }}
-      
+
+      # OSS CLI avoids gitleaks-action org license requirement (GITLEAKS_LICENSE).
+      # Dependabot PRs cannot read that secret; licensed action fails the job noisily.
+      - name: Install Gitleaks CLI
+        run: |
+          GITLEAKS_VERSION=8.24.3
+          curl -sSfL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" | tar -xz gitleaks
+          sudo mv gitleaks /usr/local/bin/gitleaks
+          gitleaks version
 
       - name: Run Gitleaks
-        uses: gitleaks/gitleaks-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
-          GITLEAKS_CONFIG: .gitleaks.toml
+        id: gitleaks
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            gitleaks detect --redact --verbose --config .gitleaks.toml --report-format json --report-path gitleaks-report.json --log-opts="${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}"
+          else
+            gitleaks detect --redact --verbose --config .gitleaks.toml --report-format json --report-path gitleaks-report.json --log-opts=-1
+          fi
+
+      - name: Upload Gitleaks report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: security-scan-gitleaks-report
+          path: gitleaks-report.json
+          retention-days: 30
+          if-no-files-found: ignore
       
       - name: Comment on PR if secrets found
-        if: failure() && github.event_name == 'pull_request'
+        if: failure() && steps.gitleaks.outcome == 'failure' && github.event_name == 'pull_request'
         uses: actions/github-script@v7
         with:
           github-token: ${{ steps.bosscat-auth.outputs.token || secrets.GITHUB_TOKEN }}

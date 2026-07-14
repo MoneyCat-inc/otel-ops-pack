@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      pull-requests: read
+      pull-requests: write
       security-events: write
 
     steps:
@@ -35,63 +35,56 @@ jobs:
         app_id: ${{ secrets.BOSSCAT_APP_ID }}
         private_key: ${{ secrets.BOSSCAT_APP_PRIVATE_KEY }}
 
-    - name: Ensure GITLEAKS_LICENSE (fallback)
-      shell: bash
+    # OSS CLI — no GITLEAKS_LICENSE required (gitleaks-action does).
+    - name: Install Gitleaks CLI
       run: |
-        if [ -z "${GITLEAKS_LICENSE:-}" ]; then
-          echo "⚠️ No GITLEAKS_LICENSE secret found — using temporary DUMMY_LOCAL_DEV for CI"
-          echo "📧 Please add your GitLeaks license as a repository secret: GITLEAKS_LICENSE"
-          echo "🔗 Get your license at: https://gitleaks.io"
-          echo "GITLEAKS_LICENSE=DUMMY_LOCAL_DEV" >> $GITHUB_ENV
-        else
-          echo "✅ Using provided GITLEAKS_LICENSE secret"
-        fi
+        GITLEAKS_VERSION=8.24.3
+        curl -sSfL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" | tar -xz gitleaks
+        sudo mv gitleaks /usr/local/bin/gitleaks
+        gitleaks version
 
     - name: Run GitLeaks
-      uses: gitleaks/gitleaks-action@v2
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GITLEAKS_LICENSE: ${{ env.GITLEAKS_LICENSE }}
-        GITLEAKS_CONFIG: .gitleaks.toml
+      id: gitleaks
+      run: |
+        if [ "${{ github.event_name }}" = "pull_request" ]; then
+          gitleaks detect --redact --verbose --config .gitleaks.toml --report-format json --report-path gitleaks-report.json --log-opts="${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}"
+        else
+          gitleaks detect --redact --verbose --config .gitleaks.toml --report-format json --report-path gitleaks-report.json --log-opts=-1
+        fi
 
     - name: Upload GitLeaks results
       uses: actions/upload-artifact@v4
       if: always()
       with:
         name: gitleaks-results
-        path: |
-          gitleaks-report.json
-          gitleaks-report.txt
+        path: gitleaks-report.json
         retention-days: 30
+        if-no-files-found: ignore
 
     - name: Comment PR with results
-      if: github.event_name == 'pull_request' && always()
+      if: github.event_name == 'pull_request' && failure() && steps.gitleaks.outcome == 'failure'
       continue-on-error: true
       uses: actions/github-script@v7
       with:
         github-token: ${{ steps.bosscat-auth.outputs.token || secrets.GITHUB_TOKEN }}
         script: |
           const fs = require('fs');
+          let body = '## 🚨 GitLeaks Security Scan Results\n\nPotential secrets detected. Please review and remove any exposed credentials.';
           if (fs.existsSync('gitleaks-report.json')) {
-            const report = JSON.parse(fs.readFileSync('gitleaks-report.json', 'utf8'));
-            if (report.findings && report.findings.length > 0) {
-              const comment = `## 🚨 GitLeaks Security Scan Results
-              
-              **${report.findings.length}** potential secrets detected:
-              
-              ${report.findings.map(f => `- **${f.rule}**: \`${f.file}:${f.startLine}\``).join('\n')}
-              
-              Please review and remove any exposed secrets.`;
-              
-              github.rest.issues.createComment({
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: comment
-              });
-            } else {
-              console.log('No secrets detected by GitLeaks');
+            try {
+              const report = JSON.parse(fs.readFileSync('gitleaks-report.json', 'utf8'));
+              const findings = Array.isArray(report) ? report : (report.findings || []);
+              if (findings.length > 0) {
+                body = `## 🚨 GitLeaks Security Scan Results\n\n**${findings.length}** potential secret(s) detected:\n\n` +
+                  findings.slice(0, 20).map(f => `- **${f.RuleID || f.rule || 'rule'}**: \`${f.File || f.file}:${f.StartLine || f.startLine || '?'}\``).join('\n');
+              }
+            } catch (e) {
+              console.log('Could not parse gitleaks report:', e.message);
             }
-          } else {
-            console.log('GitLeaks report not found - check GITLEAKS_LICENSE secret');
           }
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body
+          });
