@@ -103,7 +103,7 @@
     "butterchurn-presets": "^2.4.7",
     "express": "^5.2.1",
     "glob": "^13.0.6",
-    "jsonwebtoken": "^9.0.2",
+    "jsonwebtoken": "^9.0.3",
     "next": "^16.2.9",
     "pg": "^8.22.0",
     "pino": "^10.3.1",
