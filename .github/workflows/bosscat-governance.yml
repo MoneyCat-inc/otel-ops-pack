@@ -39,12 +39,25 @@ jobs:
       - name: Validate Commit Messages
         if: github.event_name == 'pull_request'
         shell: pwsh
+        env:
+          PR_ACTOR: ${{ github.actor }}
+          PR_USER_LOGIN: ${{ github.event.pull_request.user.login }}
         run: |
           Write-Host "📋 Validating commit message format..." -ForegroundColor Cyan
-          
-          $commits = git log "origin/${{ github.base_ref }}..HEAD" --format="%s" 2>$null
-          if (-not $commits) {
-            Write-Host "ℹ️ No commits to validate (Dependabot/squash PR)" -ForegroundColor Gray
+
+          # Bot PRs (Dependabot, Renovate) are squash-merged; don't block on their titles/commits.
+          $botActors = @('dependabot[bot]', 'dependabot-preview[bot]', 'renovate[bot]', 'github-actions[bot]')
+          if ($botActors -contains $env:PR_ACTOR -or $botActors -contains $env:PR_USER_LOGIN) {
+            Write-Host "ℹ️ Skipping commit-message gate for bot PR ($($env:PR_ACTOR))" -ForegroundColor Gray
+            exit 0
+          }
+
+          # Force array so a single commit is never character-enumerated on Windows PowerShell 5.1
+          # Exclude merge commits (incl. GitHub's ephemeral "Merge <sha> into <sha>" PR refs)
+          $commits = @(git log "origin/${{ github.base_ref }}..HEAD" --format="%s" 2>$null |
+            Where-Object { $_ -and $_.Trim() -ne '' -and $_ -notmatch '^Merge\b' })
+          if ($commits.Count -eq 0) {
+            Write-Host "ℹ️ No commits to validate (empty/squash PR)" -ForegroundColor Gray
             exit 0
           }
           $validPrefixes = @('feat', 'fix', 'docs', 'test', 'chore', 'refactor', 'perf', 'ci', 'build', 'revert')
@@ -65,7 +78,7 @@ jobs:
           
           if ($invalid.Count -gt 0) {
             Write-Host "❌ Invalid commit messages found:" -ForegroundColor Red
-            $invalid | ForEach-Object { Write-Host "  • $_" -ForegroundColor Yellow }
+            $invalid | ForEach-Object { Write-Host "  - $_" -ForegroundColor Yellow }
             Write-Host ""
             Write-Host "Expected format: <type>(<scope>): <subject>" -ForegroundColor Gray
             Write-Host "Valid types: $($validPrefixes -join ', ')" -ForegroundColor Gray

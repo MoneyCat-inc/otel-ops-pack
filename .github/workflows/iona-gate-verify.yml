@@ -22,7 +22,8 @@ permissions:
 
 jobs:
   gate-verify:
-    name: BossCat Gate Verification
+    # Distinct from workflow "BossCat Gate Verification" (bosscat-gate-verify.yml)
+    name: IONA Gate Verification
     runs-on: ubuntu-latest
     timeout-minutes: 15
     
@@ -74,8 +75,9 @@ jobs:
       - name: Run diagnostic check
         shell: bash
         run: |
+          mkdir -p artifacts
           chmod +x BRAV/SCPT/diagnostic.sh
-          ./scripts/diagnostic.sh artifacts/ci-diagnostics.json
+          ./BRAV/SCPT/diagnostic.sh artifacts/ci-diagnostics.json
           cat artifacts/ci-diagnostics.json
       
       - name: Start SigNoz (Docker Compose)
