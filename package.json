@@ -87,7 +87,7 @@
     "social:icf-lesson": "tsx scripts/social/icf-lesson-intake.ts"
   },
   "dependencies": {
-    "@atproto/api": "^0.20.15",
+    "@atproto/api": "^0.20.28",
     "@aws-sdk/client-bedrock-runtime": "^3.1075.0",
     "@opentelemetry/core": "^2.9.0",
     "@opentelemetry/exporter-otlp-http": "^0.26.0",
