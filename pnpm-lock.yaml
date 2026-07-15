@@ -31,8 +31,8 @@ importers:
         specifier: ^0.220.0
         version: 0.220.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/instrumentation-user-interaction':
-        specifier: ^0.52.0
-        version: 0.52.0(@opentelemetry/api@1.9.1)(zone.js@0.15.1)
+        specifier: ^0.64.0
+        version: 0.64.0(@opentelemetry/api@1.9.1)(zone.js@0.15.1)
       '@opentelemetry/instrumentation-xml-http-request':
         specifier: ^0.220.0
         version: 0.220.0(@opentelemetry/api@1.9.1)
@@ -1607,12 +1607,12 @@ packages:
     peerDependencies:
       '@opentelemetry/api': ^1.7.0
 
-  '@opentelemetry/instrumentation-user-interaction@0.52.0':
-    resolution: {integrity: sha512-PHq2dfWLz7G60hsonOZTfEwsEjd9Dvozf9dosszawhMsDPAtsI1js+RNzHWWh+3IHs8smLKGtLej0J0CD+Y9Pg==}
+  '@opentelemetry/instrumentation-user-interaction@0.64.0':
+    resolution: {integrity: sha512-y9P9CP8WzuJBZL/h4rSa0jhpDlHTFWiuGhe/xxfyvHyA1UuI4QW2ZcsdFdQDak29J20tGZzkAoi6EqZDRU7xVg==}
     engines: {node: ^18.19.0 || >=20.6.0}
     peerDependencies:
       '@opentelemetry/api': ^1.3.0
-      zone.js: ^0.11.4 || ^0.13.0 || ^0.14.0 || ^0.15.0
+      zone.js: ^0.11.4 || ^0.13.0 || ^0.14.0 || ^0.15.0 || ^0.16.0
 
   '@opentelemetry/instrumentation-winston@0.63.0':
     resolution: {integrity: sha512-NFMHLYODph0rWGfT/QLv75hCsu1sxVAV79L8HduBCMo181jOTSRZHaqxfrvDtFOsvgYBaiUBa7Ga50w47wM3FA==}
@@ -7031,11 +7031,11 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@opentelemetry/instrumentation-user-interaction@0.52.0(@opentelemetry/api@1.9.1)(zone.js@0.15.1)':
+  '@opentelemetry/instrumentation-user-interaction@0.64.0(@opentelemetry/api@1.9.1)(zone.js@0.15.1)':
     dependencies:
       '@opentelemetry/api': 1.9.1
       '@opentelemetry/core': 2.9.0(@opentelemetry/api@1.9.1)
-      '@opentelemetry/instrumentation': 0.207.0(@opentelemetry/api@1.9.1)
+      '@opentelemetry/instrumentation': 0.220.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/sdk-trace-web': 2.9.0(@opentelemetry/api@1.9.1)
       zone.js: 0.15.1
     transitivePeerDependencies:
