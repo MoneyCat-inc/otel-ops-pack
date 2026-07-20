@@ -85,8 +85,8 @@ importers:
         specifier: ^2.8.3
         version: 2.9.0
       zod:
-        specifier: ^4.1.12
-        version: 4.1.12
+        specifier: ^4.4.3
+        version: 4.4.3
     devDependencies:
       '@jest/globals':
         specifier: ^30.4.1
@@ -5170,8 +5170,8 @@ packages:
   zod@3.25.76:
     resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
 
-  zod@4.1.12:
-    resolution: {integrity: sha512-JInaHOamG8pt5+Ey8kGmdcAcg3OL9reK8ltczgHTAwNhMys/6ThXHityHxVV2p3fkw/c+MAvBHFVYHFZDmjMCQ==}
+  zod@4.4.3:
+    resolution: {integrity: sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ==}
 
   zone.js@0.15.1:
     resolution: {integrity: sha512-XE96n56IQpJM7NAoXswY3XRLcWFW83xe0BiAOeMD7K5k5xecOeul3Qcpx6GqEeeHNkW5DWL5zOyTbEfB4eti8w==}
@@ -8660,8 +8660,8 @@ snapshots:
       '@babel/parser': 7.28.4
       eslint: 9.38.0(jiti@2.7.0)
       hermes-parser: 0.25.1
-      zod: 4.1.12
-      zod-validation-error: 4.0.2(zod@4.1.12)
+      zod: 4.4.3
+      zod-validation-error: 4.0.2(zod@4.4.3)
     transitivePeerDependencies:
       - supports-color
 
@@ -11297,12 +11297,12 @@ snapshots:
       grammex: 3.1.12
       graphmatch: 1.1.1
 
-  zod-validation-error@4.0.2(zod@4.1.12):
+  zod-validation-error@4.0.2(zod@4.4.3):
     dependencies:
-      zod: 4.1.12
+      zod: 4.4.3
 
   zod@3.25.76: {}
 
-  zod@4.1.12: {}
+  zod@4.4.3: {}
 
   zone.js@0.15.1: {}
