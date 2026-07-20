@@ -87,7 +87,7 @@
     "social:icf-lesson": "tsx scripts/social/icf-lesson-intake.ts"
   },
   "dependencies": {
-    "@atproto/api": "^0.20.28",
+    "@atproto/api": "0.15.27",
     "@aws-sdk/client-bedrock-runtime": "^3.1089.0",
     "@opentelemetry/core": "^2.9.0",
     "@opentelemetry/exporter-otlp-http": "^0.26.0",
@@ -151,7 +151,8 @@
   "pnpm": {
     "overrides": {
       "protobufjs": ">=8.0.1",
-      "fast-xml-parser": ">=5.3.4"
+      "fast-xml-parser": ">=5.3.4",
+      "@atproto/api": "0.15.27"
     }
   },
   "engines": {
