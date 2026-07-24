@@ -1,4 +1,4 @@
-<!-- markdownlint-disable MD013 MD022 MD024 MD032 MD034 -->
+<!-- markdownlint-disable MD013 MD022 MD024 MD032 MD034 MD049 -->
 # BOSSCAT_LOG (one-liners)
 
 - 2026-07-24T15:34:02Z — **[GATE-DEF CONTRACT]** Pre-Pack-3 re-audit of required-check-shims.yml (#361): package-only Dependabot tips reported Gate/Site required contexts SUCCESS (e.g. run 30100444751 on a3fc3e5). #356 unfiltered-primary claim holds — shim re-introduction condition NOT met. Prior "MISSING" was U+2022 poll encoding; any future check-context poller must handle the bullet (ASCII rename deferred). UNSTABLE was Pack 2 7B compose-path RED (#360). Zero shim jobs retained (latest-wins hazard). — **Cursor{Implementer}**
