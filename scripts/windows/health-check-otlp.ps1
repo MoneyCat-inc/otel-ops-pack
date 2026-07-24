@@ -1,3 +1,4 @@
+# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 # Gate #029: OTLP Collector Path Verification (5317) + API-Signed Proofs (H1)
 # Authority: BossCat OEM | Executor: Cursor{Implementer}
 # Purpose: Verify Windows Collector path end-to-end (5317 → 4317 → SigNoz) with API-signed proof artifacts

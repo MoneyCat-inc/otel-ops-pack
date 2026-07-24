@@ -1,3 +1,4 @@
+# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 # make-audit-pack.ps1
 # Audit evidence pack generator for CAB/Change records
 # ASCII only, PowerShell 5.1 compatible
