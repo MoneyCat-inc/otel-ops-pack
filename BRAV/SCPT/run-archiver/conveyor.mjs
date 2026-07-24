@@ -822,8 +822,10 @@ async function main() {
     const logPath = abs('docs/BossCat/BOSSCAT_LOG.md');
     if ((process.env.SKIP_BOSSCAT_LOG || '').toLowerCase() !== 'true') {
       let logContent = '';
-      if (existsSync(logPath)) {
+      try {
         logContent = await readFile(logPath, 'utf8');
+      } catch (readErr) {
+        if (readErr?.code !== 'ENOENT') throw readErr;
       }
       await writeFile(logPath, (logContent.trimEnd() + '\n' + logEntry + '\n'), 'utf8');
     }

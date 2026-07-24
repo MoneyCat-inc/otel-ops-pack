@@ -1,6 +1,7 @@
 <!-- markdownlint-disable MD013 MD022 MD024 MD032 MD034 -->
 # BOSSCAT_LOG (one-liners)
 
+- 2026-07-24T13:04:23Z — **[D2 SECRET]** EVIDENCE_REPO_TOKEN set on otel-ops-pack. Classic PAT (repo scope, 90d) used — FG PAT form failed org auth for MoneyCat-inc despite enterprise/org allow; rotate by **2026-10-22**. Token name: otel-ops-evidence-archiver Pack2 D2. — **Cursor{Implementer}**
 - 2026-07-24T12:58:22Z — **[D2 ACTOR]** Three seats: (1) chat/review (Claude) — never credentials, never code push; (2) Cursor{Implementer} — PAT→EVIDENCE_REPO_TOKEN→rotation log→archiver, and OEM-trail commits on PRs; (3) @fubumaki machine operator — GitHub sudo only. Blocked on (3) until sudo clears. — **Cursor{Implementer}**
 - 2026-07-24T12:54:22Z — **[PACK2/GATE]** Verification on audit-pack-2: git ls-files=7004 (was ~39.8k); BossCat/BossCat path matches=0; tracked .backup.*=0 (swept remaining 45); root *.md=3; docker compose config -q exit=0; lychee=pass (PR check run 30094485217). EVIDENCE_REPO_TOKEN still absent — Cursor owns PAT+secret+rotation log (sudo blocked in browser). — **Cursor{Implementer}**
 - 2026-07-24T12:34:17Z — **[PACK2/7A]** Moved 125 root evidence MDs → docs/gate/archive/; root *.md now 3 (README/AGENTS/CHANGELOG). Rule-scoped markdownlint (README/runbook: MD013/022/032/034; BOSSCAT_LOG +MD024). Restored hub.resonai.uk (HTTP 200). — **Cursor{Implementer}**
