@@ -24,7 +24,8 @@
 #   Apparent "MISSING" during Dependabot sweep was operator tooling: PowerShell
 #   equality on U+2022 BULLET in context names. Actual mergeState UNSTABLE came from
 #   non-required RED (Smoke/BossGate) after Pack 2 7B left workflows on deleted
-#   root docker-compose-signoz.yml — fixed in #360; not a path-filter deadlock and
+#   root docker-compose-signoz.yml — fixed in #360 (repoint to
+#   compose/docker-compose-signoz.yml); not a path-filter deadlock and
 #   not a reason to re-introduce always-green shims (latest-wins hazard vs primary
 #   FAIL remains).
 #
