@@ -1,6 +1,6 @@
 {
   "version": "1.1",
-  "updated": "2025-10-19T13:00:00+00:00",
+  "updated": "2026-07-24",
   "description": "Canonical reference map for Resonai [OTel] observability pack - single source of truth for all working parts",
   "changelog": "v1.1: Updated paths after root consolidation (177 files organized by domain)",
   "buckets": [
@@ -67,24 +67,50 @@
     {
       "name": "Bots & Lanes",
       "description": "AUTO-BOTS registry and lane enforcement (SSOT/FLAK/SELE/COMP/DOCS)",
-      "canonical": [
-      ]
+      "canonical": []
     },
     {
       "name": "Rebuild History",
       "description": "Professional site rebuild and unified UX documentation",
-      "canonical": [
-      ]
+      "canonical": []
     }
   ],
   "organized_domains": [
-    {"name": "gate", "path": "docs/gate/", "description": "Gate verification and readiness evidence"},
-    {"name": "socm", "path": "docs/socm/", "description": "Social media and communications"},
-    {"name": "pr", "path": "docs/pr/", "description": "Pull request reviews and comments"},
-    {"name": "releases", "path": "docs/releases/", "description": "Release notes and roadmaps"},
-    {"name": "runbooks", "path": "docs/runbooks/", "description": "Operational runbooks and deployment guides"},
-    {"name": "evidence", "path": "docs/evidence/", "description": "Commit evidence and system status"},
-    {"name": "status", "path": "docs/status/", "description": "Session status and implementation reports"}
+    {
+      "name": "gate",
+      "path": "docs/gate/",
+      "description": "Gate verification and readiness evidence"
+    },
+    {
+      "name": "socm",
+      "path": "https://github.com/MoneyCat-inc/socm",
+      "description": "Bluesky / social ops (extracted Pack 3B; was docs/socm/)"
+    },
+    {
+      "name": "pr",
+      "path": "docs/pr/",
+      "description": "Pull request reviews and comments"
+    },
+    {
+      "name": "releases",
+      "path": "docs/releases/",
+      "description": "Release notes and roadmaps"
+    },
+    {
+      "name": "runbooks",
+      "path": "docs/runbooks/",
+      "description": "Operational runbooks and deployment guides"
+    },
+    {
+      "name": "evidence",
+      "path": "docs/evidence/",
+      "description": "Commit evidence and system status"
+    },
+    {
+      "name": "status",
+      "path": "docs/status/",
+      "description": "Session status and implementation reports"
+    }
   ],
   "meta": {
     "hub_url": "docs/index.html",
@@ -99,5 +125,3 @@
     "root_docs_consolidated": 177
   }
 }
-
-

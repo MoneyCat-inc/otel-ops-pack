@@ -2,20 +2,21 @@
 
 **Profile:** https://bsky.app/profile/resonai.bsky.social  
 **Cadence:** 2–3 posts/week + 5–10 value-add replies/week  
-**Companion:** `docs/BossCat/BSKY_WEEKLY_MAINTENANCE.md`
+**Companion:** `docs/BossCat/BSKY_WEEKLY_MAINTENANCE.md`  
+**Automation:** [MoneyCat-inc/socm](https://github.com/MoneyCat-inc/socm) (Pack 3B)
 
 ---
 
 ## Weekly rhythm (≈2 hours)
 
-| When | Action | Tool |
-|------|--------|------|
+| When | Action | Tool (run in **socm**) |
+|------|--------|------------------------|
 | **Mon** | 1 original post (ship, tip, or myth-buster) | `post-progress-batch.ts` / `post-week2-engagement.ts` |
 | **Wed** | 3–5 replies on `#OpenTelemetry` `#Observability` `#Windows` | Manual; use reply macros below |
 | **Fri** | Quote-post + 1 line of context; export widget JSON | `npm run social:export` |
 | **Any** | Follow 3–5 suggested accounts | `npm run social:recommend-follows` → `follow-top-suggestions.ts` |
 
-After each week: `pwsh -File scripts/bsky-weekly-reminder.ps1 -MarkComplete -Notes "followers=N replies=N"`
+After each week (ops-pack): `pwsh -File scripts/bsky-weekly-reminder.ps1 -MarkComplete -Notes "followers=N replies=N"`
 
 ---
 
@@ -28,7 +29,7 @@ Bluesky → pinned post → hub.resonai.uk → GitHub → Ko-fi / Patreon
 | Surface | Must link |
 |---------|-----------|
 | Pinned post | Hub, GitHub, Ko-fi, Patreon, Starter Pack |
-| Bio | Same (via `sync-bsky-profile.ts`) |
+| Bio | Same (via socm `sync-bsky-profile.ts`) |
 | `portal.html` | Support row + Bluesky widget |
 | `README.md` | Badges + Contact section |
 | `docs/index.html` | Community card |
@@ -50,7 +51,7 @@ Bluesky → pinned post → hub.resonai.uk → GitHub → Ko-fi / Patreon
 Full guide: https://hub.resonai.uk/
 ```
 
-Post as **reply to pinned post** when someone asks; refresh quarterly via `post-week2-engagement.ts`.
+Post as **reply to pinned post** when someone asks; refresh quarterly via socm `post-week2-engagement.ts`.
 
 ### Source request
 
@@ -70,9 +71,11 @@ Quick health check: github.com/MoneyCat-inc/otel-ops-pack (scripts/quick-monitor
 
 ---
 
-## Scripts
+## Scripts (MoneyCat-inc/socm)
 
 ```powershell
+# From a socm clone with BSKY_* / .env.socm
+
 # Sync bio + pin
 npx tsx scripts/social/sync-bsky-profile.ts
 
@@ -94,7 +97,7 @@ npm run social:export
 
 ## Metrics (notes field only)
 
-Track in `artifacts/bsky-maintenance-state.json` → `notes`:
+Track in ops-pack `artifacts/bsky-maintenance-state.json` → `notes` (local runtime, untracked):
 
 - Followers, following, posts count
 - Replies received / sent this week
@@ -108,7 +111,7 @@ Track in `artifacts/bsky-maintenance-state.json` → `notes`:
 
 When user asks for visibility/engagement:
 
-1. Run `social:export` and verify widget on `portal.html` / `docs/index.html`
-2. Queue 1–3 posts via engagement scripts (do not spam >6/day)
+1. In **socm**, run `social:export` and verify widget on ops-pack `portal.html` / `docs/index.html`
+2. Queue 1–3 posts via socm engagement scripts (do not spam >6/day)
 3. Run `recommend-follows` + `follow-top-suggestions` if following <30 accounts
 4. Audit README / portal / pinned post link parity

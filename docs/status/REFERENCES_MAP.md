@@ -87,7 +87,7 @@
 The root consolidation organized 177 files into domain-specific folders:
 
 - **[docs/gate/](../gate/)** — Gate verification and readiness evidence (25 files)
-- **[docs/socm/](../socm/)** — Social media and communications (39 files)
+- **[socm](https://github.com/MoneyCat-inc/socm)** — Bluesky / social ops (extracted Pack 3B; was `docs/socm/`)
 - **[docs/pr/](../pr/)** — Pull request reviews and comments (15 files)
 - **[docs/releases/](../releases/)** — Release notes and roadmaps (3 files)
 - **[docs/runbooks/](../runbooks/)** — Operational guides and deployment (6 files)

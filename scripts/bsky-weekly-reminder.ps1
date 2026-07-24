@@ -49,7 +49,7 @@ function Show-Checklist {
     Write-Status @'
 Checklist (summary):
   [ ] Profile loads; bio has hub + GitHub + Ko-fi + Patreon
-  [ ] Pinned post links current (or run: npx tsx scripts/social/sync-bsky-profile.ts)
+  [ ] Pinned post links current (or sync from MoneyCat-inc/socm: npx tsx scripts/social/sync-bsky-profile.ts)
   [ ] Starter Pack URL works; portal.html Bluesky link matches
   [ ] Mentions/replies triaged
   [ ] Mark complete: pwsh -File scripts/bsky-weekly-reminder.ps1 -MarkComplete
