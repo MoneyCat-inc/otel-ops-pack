@@ -33,13 +33,13 @@ try {
     # Step 1: Clean shutdown if Force is specified
     if ($Force) {
         Write-Info "Force mode: Cleaning up existing stack..."
-        docker compose -f docker-compose-optimized.yml down -v --remove-orphans
+        docker compose -f docker-compose.yml down -v --remove-orphans
         Start-Sleep -Seconds 5
     }
 
     # Step 2: Check for required configuration files
     $requiredFiles = @(
-        "docker-compose-optimized.yml",
+        "docker-compose.yml",
         "signoz-collector-config.yaml",
         "clickhouse-cluster-config.xml",
         "clickhouse-zookeeper-config.xml"
@@ -100,7 +100,7 @@ service:
     }
 
     # Step 4: Determine compose command
-    $composeCmd = "docker compose -f docker-compose-optimized.yml"
+    $composeCmd = "docker compose -f docker-compose.yml"
     if ($SkipGPU) {
         $composeCmd += " --profile gpu"
     }
@@ -113,8 +113,8 @@ service:
     Write-Info "Waiting for foundation services to be healthy..."
     $timeout = [DateTime]::Now.AddMinutes(5)
     while ([DateTime]::Now -lt $timeout) {
-        $zookeeperStatus = docker compose -f docker-compose-optimized.yml ps signoz-zookeeper --format "{{.State}}"
-        $clickhouseStatus = docker compose -f docker-compose-optimized.yml ps signoz-clickhouse --format "{{.State}}"
+        $zookeeperStatus = docker compose -f docker-compose.yml ps signoz-zookeeper --format "{{.State}}"
+        $clickhouseStatus = docker compose -f docker-compose.yml ps signoz-clickhouse --format "{{.State}}"
         
         if ($zookeeperStatus -eq "running" -and $clickhouseStatus -eq "running") {
             Write-Success "Foundation services are healthy"
@@ -132,7 +132,7 @@ service:
     Write-Info "Waiting for SigNoz to be healthy..."
     $timeout = [DateTime]::Now.AddMinutes(3)
     while ([DateTime]::Now -lt $timeout) {
-        $signozStatus = docker compose -f docker-compose-optimized.yml ps signoz --format "{{.State}}"
+        $signozStatus = docker compose -f docker-compose.yml ps signoz --format "{{.State}}"
         if ($signozStatus -eq "running") {
             Write-Success "SigNoz core is healthy"
             break
@@ -145,7 +145,7 @@ service:
     Invoke-Expression "$composeCmd up signoz-schema-migrator-sync"
     
     # Wait for sync migrator to complete
-    $migratorExitCode = docker compose -f docker-compose-optimized.yml ps signoz-schema-migrator-sync --format "{{.ExitCode}}"
+    $migratorExitCode = docker compose -f docker-compose.yml ps signoz-schema-migrator-sync --format "{{.ExitCode}}"
     if ($migratorExitCode -eq "0") {
         Write-Success "Schema migrator sync completed successfully"
     } else {
@@ -160,7 +160,7 @@ service:
     Write-Info "Waiting for OTel collector to be healthy..."
     $timeout = [DateTime]::Now.AddMinutes(3)
     while ([DateTime]::Now -lt $timeout) {
-        $collectorStatus = docker compose -f docker-compose-optimized.yml ps signoz-otel-collector --format "{{.State}}"
+        $collectorStatus = docker compose -f docker-compose.yml ps signoz-otel-collector --format "{{.State}}"
         if ($collectorStatus -eq "running") {
             Write-Success "OTel collector is healthy"
             break
@@ -191,7 +191,7 @@ service:
     $healthyServices = 0
     
     foreach ($service in $services) {
-        $status = docker compose -f docker-compose-optimized.yml ps $service --format "{{.State}}"
+        $status = docker compose -f docker-compose.yml ps $service --format "{{.State}}"
         if ($status -eq "running") {
             $healthyServices++
             Write-Success "$service is running"
@@ -227,12 +227,12 @@ service:
         Write-Success "All core services are healthy!"
         exit 0
     } else {
-        Write-Warning "Some services may need attention. Check logs with: docker compose -f docker-compose-optimized.yml logs"
+        Write-Warning "Some services may need attention. Check logs with: docker compose -f docker-compose.yml logs"
         exit 1
     }
 
 } catch {
     Write-Error "Deployment failed: $($_.Exception.Message)"
-    Write-Info "Check logs with: docker compose -f docker-compose-optimized.yml logs"
+    Write-Info "Check logs with: docker compose -f docker-compose.yml logs"
     exit 1
 }

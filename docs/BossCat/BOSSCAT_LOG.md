@@ -1,6 +1,7 @@
 <!-- markdownlint-disable-file -->
 # BOSSCAT_LOG (one-liners)
 
+- 2026-07-24T12:13:48Z — **[PACK2/7B]** Promote docker-compose-optimized.yml → docker-compose.yml; park legacy/viz/gpu/signoz variants under compose/; update BRAV operator scripts + guardrails. — **Cursor{Implementer}**
 - 2026-07-24T12:11:38Z — **[PACK2/5B]** Removed nested docs/BossCat/BossCat/ (7227 files). Spot-check 10 badges + 10 archived MDs hash-identical to docs/BossCat/run-reports/. CHAR/DOCS/docs/ left alone (D3 DIVERGED — Pack 3). — **Cursor{Implementer}**
 - 2026-07-24T12:10:48Z — **[PACK2/5A]** Archiver path-doubling fix: resolveRepoRoot via REPO_ROOT/GITHUB_WORKSPACE/git toplevel; assertNotNestedBossCat guard; fix-paths no longer Move-Item into existing docs/BossCat (that created BossCat/BossCat). Faulty expr was cwd/../../.. . — **Cursor{Implementer}**
 - 2026-07-24T12:07:46Z — **[PROTECTION PROOF]** PR #356 merged without --admin (merge 708be40f4). reviews→0 + unfiltered required primaries validated in-vivo. — **Cursor{Implementer}**

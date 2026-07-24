@@ -156,6 +156,6 @@ if ($criticalFailures -eq 0) {
 }
 else {
     Write-Host "`n❌ Preflight check FAILED - Do not start Windows collector" -ForegroundColor Red
-    Write-Host "💡 Ensure SigNoz is running: docker-compose -f docker-compose-signoz.yml up -d" -ForegroundColor Yellow
+    Write-Host "💡 Ensure SigNoz is running: docker-compose -f compose/docker-compose-signoz.yml up -d" -ForegroundColor Yellow
     exit 1
 }
