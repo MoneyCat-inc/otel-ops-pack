@@ -1,6 +1,6 @@
 {
   "source": "scripts/regenerate-workflows-registry.ps1",
-  "total": 78,
+  "total": 76,
   "items": [
     {
       "name": "adot-config-gate",
@@ -191,9 +191,9 @@
     },
     {
       "name": "bosscat-regression-matrix",
-      "modified": "2026-07-24T15:58:08.3808104Z",
+      "modified": "2026-07-24T18:01:24.1467224Z",
       "path": ".github/workflows/bosscat-regression-matrix.yml",
-      "size": 7499,
+      "size": 7277,
       "triggers": {
         "issues": false,
         "other": [],
@@ -310,9 +310,9 @@
     },
     {
       "name": "docs-lane-checks",
-      "modified": "2026-07-24T15:58:08.3848682Z",
+      "modified": "2026-07-24T17:59:48.0656710Z",
       "path": ".github/workflows/docs-lane-checks.yml",
-      "size": 14955,
+      "size": 16275,
       "triggers": {
         "issues": false,
         "other": [],
@@ -378,14 +378,14 @@
     },
     {
       "name": "gate-019-audio-r1-test",
-      "modified": "2026-07-24T15:58:08.3868779Z",
+      "modified": "2026-07-24T18:01:24.1326508Z",
       "path": ".github/workflows/gate-019-audio-r1-test.yml",
-      "size": 2394,
+      "size": 898,
       "triggers": {
         "issues": false,
         "other": [],
         "pull_request": false,
-        "push": true,
+        "push": false,
         "release": false,
         "schedule": false,
         "workflow_call": false,
@@ -649,23 +649,6 @@
       }
     },
     {
-      "name": "lumi-vizr-lane",
-      "modified": "2026-07-24T15:58:08.3954173Z",
-      "path": ".github/workflows/lumi-vizr-lane.yml",
-      "size": 2095,
-      "triggers": {
-        "issues": false,
-        "other": [],
-        "pull_request": false,
-        "push": false,
-        "release": false,
-        "schedule": true,
-        "workflow_call": false,
-        "workflow_dispatch": true,
-        "workflow_run": false
-      }
-    },
-    {
       "name": "main",
       "modified": "2026-07-24T15:58:08.3969248Z",
       "path": ".github/workflows/main.yml",
@@ -738,23 +721,6 @@
       "modified": "2026-07-24T15:58:08.4004454Z",
       "path": ".github/workflows/nightly-ecrr-aggregates.yml",
       "size": 913,
-      "triggers": {
-        "issues": false,
-        "other": [],
-        "pull_request": false,
-        "push": false,
-        "release": false,
-        "schedule": true,
-        "workflow_call": false,
-        "workflow_dispatch": true,
-        "workflow_run": false
-      }
-    },
-    {
-      "name": "nightly-gpu-smoke",
-      "modified": "2026-07-24T15:58:08.4004454Z",
-      "path": ".github/workflows/nightly-gpu-smoke.yml",
-      "size": 713,
       "triggers": {
         "issues": false,
         "other": [],
