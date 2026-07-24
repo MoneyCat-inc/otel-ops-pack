@@ -16,6 +16,7 @@ Scope: Reviewer B (read‑only) gate reviews for docs and code
 - Hard budgets per PR: ≤ 2 jobs, ≤ 10 files, ≤ 200 LOC touched.  
 - Verify budgets via CI summary or `git diff` against base SHA.  
 - Lane discipline: review only changed paths. For docs‑only PRs, run docs lane checks.
+- **Gate-definition changes (budgets, path filters, guard codes, schema) land as standalone PRs evaluated under the old rules.** Never bundle a guard change with the PR it unblocks.
 
 ## Evidence (ECRR) Bundle
 
@@ -75,7 +76,7 @@ All must be true:
 Codes (initial set):
 - GR-00 — GREEN: Docs-lane checks passed (budgets within limits; lint+links ok)
 - GR-01 — BLACK: Kill-switch `.agent/LOCK` present
-- GR-02 — RED: Budgets exceeded (files or LOC)
+- GR-02 — RED: Budgets exceeded (files or LOC) **or** docs-lane scope violation (non-docs paths present while docs lane is active)
 - GR-03 — AMBER: Markdown lint failed
 - GR-04 — AMBER: Link/anchor check failed
 

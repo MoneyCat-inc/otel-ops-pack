@@ -10,17 +10,17 @@ regression trap — the next scheduled archiver run will recreate `docs/BossCat/
 
 ---
 
-## DECISIONS REQUIRED (STOP — do not guess)
+## DECISIONS
 
-Cursor must pause and get an explicit answer from Fae / BossCat before continuing past these points:
+| ID | Status | Resolution |
+|----|--------|------------|
+| **D1** | **RESOLVED** | `docker-compose-optimized.yml` is the de facto canonical SigNoz stack (operator/ref counts beat plain `docker-compose.yml`). **Action in Task 7B:** rename `-optimized` → `docker-compose.yml`; move current default `docker-compose.yml` to `compose/legacy.yml` (or delete if superseded); update all references. Park `.viz` / `.gpu` in `compose/` unrenamed — they leave with the viz-engine repo split. |
+| **D2** | **PREFERRED** | Fine-grained PAT scoped to `MoneyCat-inc/otel-ops-evidence` (least privilege). Deploy keys are awkward from Actions. **Still STOP** until the secret *name* is provisioned in the ops pack repo — do not invent it; leave a TODO in the workflow if missing. |
+| **D3** | **OPEN** | Run hash comparison of `CHAR/DOCS/docs/` vs `docs/`. Pure mirror → delete. Diverged → STOP, list paths in PR; do not delete. |
 
-| ID | When | Question | Default if unanswered |
-|----|------|----------|------------------------|
-| **D1** | Task 7B | Which compose file is canonical *today* — `docker-compose.yml` or `docker-compose-optimized.yml` (or another)? Confirm via recent runbooks/scripts + what operators actually run. | **STOP.** Do not move/rename compose files. |
-| **D2** | Task 6 step 4 | Which secret should the archiver use to push into `MoneyCat-inc/otel-ops-evidence` (deploy key vs fine-grained PAT name)? | **STOP.** Do not create or invent secret names; leave a TODO in the workflow. |
-| **D3** | Task 5B step 3 | If `CHAR/DOCS/docs/` is **not** a pure mirror of `docs/` (hash sample diverges), delete or keep? | **STOP.** List diverging paths in the PR; do not delete. |
+### Standing rule (gate definitions) — from Pack 1 retrospective
 
-Everything else in this briefing is pre-decided — run unattended once D1–D3 are answered (or skip the gated steps).
+**Gate-definition changes land as standalone PRs evaluated under the old rules.** Do not ship a guard/budget/schema change in the same PR it unblocks. Pack 1’s GR-02 `workflows.json` LOC exclude was accepted as a one-off (documented on #350) because `registry-guard` / `registry-drift-check` still own the registry on their own lane — but it is not the pattern going forward.
 
 ---
 
@@ -110,12 +110,13 @@ reduction: ~33k files. State both numbers in the PR.
 - **Commit:** `docs: move 127 root evidence reports to docs/gate/archive/`
 
 ### 7B Compose canonicalization
-Current: 7 compose files at root. Target:
-- `docker-compose.yml` = the ONE canonical stack (**DECISION D1** — confirm with Fae which of `docker-compose.yml` vs `docker-compose-optimized.yml` is actually run today — do not guess; check which one recent runbooks/scripts reference and state findings).
-- Others move to `compose/` with a `compose/README.md` table: file → purpose → status
-  (active / experimental / deprecated).
-- Grep scripts and workflows for `-f docker-compose` references; update paths.
-- **Commit:** `chore(compose): single canonical compose at root; variants to compose/ with index`
+Current: 7 compose files at root. Target (**D1 RESOLVED**):
+- Promote `docker-compose-optimized.yml` → `docker-compose.yml` (canonical SigNoz stack; bare `docker compose up` must run the right stack).
+- Move today's default-named `docker-compose.yml` → `compose/legacy.yml` (or delete if superseded).
+- Park `docker-compose.viz.yml` / `docker-compose.gpu.yml` in `compose/` **unrenamed** (viz-engine lane; leave with repo split).
+- Other variants → `compose/` with a `compose/README.md` table: file → purpose → status (active / experimental / deprecated).
+- Grep scripts and workflows for `-f docker-compose` references; update paths (especially the former `-optimized` refs).
+- **Commit:** `chore(compose): promote optimized to canonical docker-compose.yml; variants to compose/`
 
 ### 7C Historical 5317/5318 scripts (decision pre-made — implement as stated)
 - Scripts under `scripts/gate*/` and `scripts/windows/` that hardcode 5317/5318 are
