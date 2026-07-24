@@ -56,26 +56,7 @@ services:
     networks:
       - viz-net
 
-  scorebot:
-    build:
-      context: ./scorebot
-      dockerfile: Dockerfile
-    container_name: scorebot
-    ports:
-      - "7010:7010"  # Metrics API (Prometheus + validation)
-    environment:
-      - FRAME_TAP_URL=http://pm-engine:7020/snap.jpg  # Use pm-engine (active renderer)
-      - VIZ_ENGINE_URL=http://pm-engine:7020
-      - METRICS_PORT=7010
-      - SAMPLE_INTERVAL_MS=2000  # Reduced frequency to lighten CPU load
-      - FAIL_ON_SKEW=true
-      - FAIL_ON_BLACKOUT=false  # Gate #012: Will enable after visual validation
-    depends_on:
-      md3-engine:
-        condition: service_healthy
-    restart: unless-stopped
-    networks:
-      - viz-net
+  # scorebot extracted Pack 3B → https://github.com/MoneyCat-inc/scorebot (build/run there; port 7010)
 
   # Gate #012: ProjectM container (native .milk renderer with GPU acceleration)
   pm-engine:

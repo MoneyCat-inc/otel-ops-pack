@@ -171,3 +171,4 @@ pwsh -File scripts\preflight-health-check.ps1
 ## Related repos
 
 - **[socm](https://github.com/MoneyCat-inc/socm)** — Bluesky / social ops (extracted Pack 3B)
+- **[scorebot](https://github.com/MoneyCat-inc/scorebot)** — Visual quality metrics (extracted Pack 3B)
