@@ -42,7 +42,7 @@ jobs:
       cancel-in-progress: true
     
     env:
-      SIGNOZ_COMPOSE: docker-compose.yml
+      SIGNOZ_COMPOSE: compose/docker-compose-signoz.yml
       COMPOSE_TIMEOUT_SEC: 1200  # 20 minutes
     
     steps:
@@ -85,8 +85,8 @@ jobs:
       - name: 🕸️ Ensure external network exists
         shell: bash
         run: |
-          # Canonical docker-compose.yml creates signoz-net; ensure it exists
-          # before pull/up on a clean runner.
+          # compose/docker-compose-signoz.yml declares signoz-net as external.
+          # CI runners start with no user-defined networks, so create it.
           docker network create signoz-net >/dev/null 2>&1 || true
       
       - name: 📥 Pre-pull SigNoz Images (3 attempts)
@@ -266,14 +266,14 @@ jobs:
       - name: 🕸️ Ensure external network exists
         shell: bash
         run: |
-          # Canonical docker-compose.yml creates signoz-net; ensure it exists
-          # on a fresh runner before Compose.
+          # compose/docker-compose-signoz.yml declares signoz-net as external.
+          # Each job gets a fresh runner, so recreate it before Compose.
           docker network create signoz-net >/dev/null 2>&1 || true
 
       - name: Start SigNoz
         run: |
-          docker compose -f docker-compose.yml up -d
-          timeout 60 bash -c 'until docker compose -f docker-compose.yml ps | grep -q "healthy"; do sleep 2; done' || true
+          docker compose -f compose/docker-compose-signoz.yml up -d
+          timeout 60 bash -c 'until docker compose -f compose/docker-compose-signoz.yml ps | grep -q "healthy"; do sleep 2; done' || true
       
       - name: Wait for Readiness
         run: |
