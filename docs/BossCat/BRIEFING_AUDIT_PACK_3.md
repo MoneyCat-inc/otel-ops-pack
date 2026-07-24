@@ -5,7 +5,10 @@
 archiver green; closeout on `origin/main` as `c937bd832` — tree-identical to
 local `e264960ab`; GitHub rebase-merge rewrote author/committer to
 **BossCat OEM Bot** / Cursor machine identity — chat review never appears in
-git metadata).
+git metadata). Pre-rewrite: Pack 2 7B compose-path regression fixed (#360 —
+gates → canonical `docker-compose.yml`; parked signoz variant not CI-tested);
+shim contract re-audited (#361 — #356 holds; zero shim reintro; U+2022 poller
+gotcha documented).
 
 ## Strategic decision (filter-repo evidence cost) — LOCKED UP FRONT
 
@@ -52,24 +55,21 @@ reason + restore step). Restore protection immediately after.
 
 1. ~~Provision / confirm `EVIDENCE_REPO_TOKEN` + archiver green~~ (D2 closed)
 2. ~~Merge Pack 2 (#357)~~
-3. Quiet-repo gate (abandon `audit-pack-2`, clear open PRs, remotes pushed)
-4. Mirror snapshot (`git clone --mirror` local rollback)
-5. filter-repo (media/LFS purge targets from audit) **with commit-map → evidence repo**
-6. Force-push (logged bypass) + restore protection
-7. **Post-rewrite verification (gate closes on proof):**
+3. ~~Compose-path Pack 2 7B regression fix (#360)~~ — smoke green; gates use
+   canonical `docker-compose.yml`; `demo-app` under `profiles: [demo]`
+4. ~~Gate-def contract re-audit (#361)~~ — #356 holds; no shim reintro;
+   U+2022 check-context poller gotcha documented
+5. Quiet-repo gate (abandon `audit-pack-2`, clear open PRs, remotes pushed)
+6. Mirror snapshot (`git clone --mirror` local rollback)
+7. filter-repo (media/LFS purge targets from audit) **with commit-map → evidence repo**
+8. Force-push (logged bypass) + restore protection
+9. **Post-rewrite verification (gate closes on proof):**
    - Confirm commit-map contains `c937bd832` → `<newSHA>`.
    - Confirm `git rev-parse origin/main` (post-push) equals the mapped `<newSHA>`.
    - Confirm mirror clone still resolves `c937bd832` (`git -C <mirror> rev-parse c937bd832`
      and `git -C <mirror> cat-file -t c937bd832` → `commit`).
    - Log one `BOSSCAT_LOG` line: mapped SHA pair + mirror path held.
-8. Repo split (viz-engine / scorebot / moneycat site / SOCM) per original audit
-
-## Known gate debt (pre-Pack 3)
-
-Smoke Test (Changed Paths) fails on docs-only PRs: workflow still points at
-`docker-compose-signoz.yml`, removed when Pack 2 promoted compose to
-`docker-compose.yml` / `compose/*`. Not a flake — environmental path drift.
-Fix or path-filter before trusting post-rewrite gate green as proof.
+10. Repo split (viz-engine / scorebot / moneycat site / SOCM) per original audit
 
 ## Out of scope here
 
