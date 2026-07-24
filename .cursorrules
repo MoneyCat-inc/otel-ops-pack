@@ -42,7 +42,7 @@ All changes follow the ECRR (Examine → Clean → Report → Role) framework:
 
 ## SigNoz Integration
 - UI: http://localhost:8080
-- OTLP Endpoints: 5317 (gRPC), 5318 (HTTP)
+- OTLP Endpoints: 5320 (gRPC), 5321 (HTTP) — Windows collector ingest (avoids PlariumPlay 5300–5319)
 - Key Queries:
   - Logs: `message contains "canary test"`
   - Metrics: `otelcol_*` for pipeline metrics
