@@ -1,6 +1,7 @@
 <!-- markdownlint-disable-file -->
 # BOSSCAT_LOG (one-liners)
 
+- 2026-07-24T12:10:48Z — **[PACK2/5A]** Archiver path-doubling fix: resolveRepoRoot via REPO_ROOT/GITHUB_WORKSPACE/git toplevel; assertNotNestedBossCat guard; fix-paths no longer Move-Item into existing docs/BossCat (that created BossCat/BossCat). Faulty expr was cwd/../../.. . — **Cursor{Implementer}**
 - 2026-07-24T12:07:46Z — **[PROTECTION PROOF]** PR #356 merged without --admin (merge 708be40f4). reviews→0 + unfiltered required primaries validated in-vivo. — **Cursor{Implementer}**
 - 2026-07-24T12:04:06Z — **[PROTECTION VERIFY]** #356 name-check sign-off: CodeQL/PSScriptAnalyzer/gitleaks/gate-site-evidence all unfiltered on pull_request — no path-filter deadlock; dropped always-green Gate/Site shim jobs (latest-wins risk vs primary). App-bound CodeQL+PSScriptAnalyzer (57789) correctly primary-only. Merge without --admin is the proof. — **Cursor{Implementer}**
 - 2026-07-24T11:59:08Z — **[PROTECTION]** main branch required_approving_review_count set 1→0 via API (machine gates remain required). Sync + required-check shims for Gate/Site Settings names ship in this PR; last planned --admin era closed. Settings contexts: CodeQL, PSScriptAnalyzer, gitleaks, Gate • k6 thresholds, Gate • synthetic trace (OTLP/HTTP), Site • links + a11y + CSP (coarse). — **Cursor{Implementer}**

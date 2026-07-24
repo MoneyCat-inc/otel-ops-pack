@@ -77,6 +77,7 @@ jobs:
         shell: pwsh
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO_ROOT: ${{ github.workspace }}
         run: |
           $dry = ($env:DRY_RUN -eq 'true')
           pwsh BRAV/SCPT/run-archiver/run-conveyor.ps1 `

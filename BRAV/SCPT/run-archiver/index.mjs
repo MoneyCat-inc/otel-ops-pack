@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import fsp from 'node:fs/promises';
 import path from 'node:path';
 import { Octokit } from '@octokit/rest';
+import { resolveRepoRoot, rootJoin as rootJoinBase, ensureDirSafe } from './repo-root.mjs';
 
 const REPO = process.env.GITHUB_REPOSITORY || '';
 const [owner, repo] = REPO.split('/')
@@ -21,8 +22,9 @@ if (!token) {
 
 const octokit = new Octokit({ auth: token });
 
-const REPO_ROOT = process.env.REPO_ROOT || path.resolve(process.cwd(), '..', '..', '..');
-const rootJoin = (...p) => path.join(REPO_ROOT, ...p);
+// Prefer REPO_ROOT / GITHUB_WORKSPACE / git toplevel — never trust CWD alone.
+const REPO_ROOT = resolveRepoRoot();
+const rootJoin = (...p) => rootJoinBase(REPO_ROOT, ...p);
 const OUT_ROOT = rootJoin('docs', 'BossCat', 'run-reports');
 const OUT_ARCH = path.join(OUT_ROOT, 'archived');
 const OUT_LATEST = path.join(OUT_ROOT, 'latest');
@@ -31,7 +33,7 @@ const EVID_ROOT = rootJoin('CHAR', 'EVID', 'artifacts', 'ecrr', 'arch');
 const RSI_JSON = rootJoin('docs', 'BossCat', 'RSI_METRICS.json');
 const RSI_MD = rootJoin('docs', 'BossCat', 'RSI_METRICS.md');
 
-function ensureDir(p) { fs.mkdirSync(p, { recursive: true }); }
+function ensureDir(p) { ensureDirSafe(p); }
 function iso(dt) { return new Date(dt).toISOString(); }
 function durMs(a, b) { return new Date(b).getTime() - new Date(a).getTime(); }
 function fmtDur(ms) {
