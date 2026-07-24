@@ -1,5 +1,11 @@
 name: Gate & Site Evidence (Non-Merging)
 
+# Required contexts (Settings verbatim): "Gate • k6 thresholds",
+# "Gate • synthetic trace (OTLP/HTTP)", "Site • links + a11y + CSP (coarse)".
+# No path filters — must report on every PR. If you add paths: here, you MUST add
+# inverse paths-ignore jobs in required-check-shims.yml with the same name: strings
+# (or fold shim into this workflow as conditional steps — preferred for mixed PRs).
+
 on:
   pull_request:
     branches: [ main ]
