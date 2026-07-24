@@ -16,4 +16,4 @@ Restart-Service otelcol-contrib
 
 **OTLP export target:** `localhost:4317` (SigNoz Docker `signoz-otel-collector`)
 
-**Collector listen ports:** `5317` (gRPC), `5318` (HTTP), health `13134`
+**Collector listen ports:** `5320` (gRPC), `5321` (HTTP), health `13134` (avoids PlariumPlay 5300–5319)

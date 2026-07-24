@@ -1,6 +1,6 @@
 {
   "source": "scripts/regenerate-workflows-registry.ps1",
-  "total": 90,
+  "total": 78,
   "items": [
     {
       "name": "adot-config-gate",
@@ -14,23 +14,6 @@
         "push": false,
         "release": false,
         "schedule": false,
-        "workflow_call": false,
-        "workflow_dispatch": true,
-        "workflow_run": false
-      }
-    },
-    {
-      "name": "apisec-scan",
-      "modified": "2025-10-16T09:19:29.1974581Z",
-      "path": ".github/workflows/apisec-scan.yml",
-      "size": 3244,
-      "triggers": {
-        "issues": false,
-        "other": [],
-        "pull_request": true,
-        "push": true,
-        "release": false,
-        "schedule": true,
         "workflow_call": false,
         "workflow_dispatch": true,
         "workflow_run": false
@@ -157,7 +140,7 @@
     },
     {
       "name": "bosscat-gate-verify",
-      "modified": "2026-07-13T09:26:07.9031164Z",
+      "modified": "2026-07-24T08:13:39.5524730Z",
       "path": ".github/workflows/bosscat-gate-verify.yml",
       "size": 10707,
       "triggers": {
@@ -174,7 +157,7 @@
     },
     {
       "name": "bosscat-governance",
-      "modified": "2026-07-14T18:22:41.7539547Z",
+      "modified": "2026-07-24T08:13:39.5524730Z",
       "path": ".github/workflows/bosscat-governance.yml",
       "size": 6670,
       "triggers": {
@@ -258,23 +241,6 @@
       }
     },
     {
-      "name": "codacy",
-      "modified": "2026-07-07T02:54:17.0216187Z",
-      "path": ".github/workflows/codacy.yml",
-      "size": 3241,
-      "triggers": {
-        "issues": false,
-        "other": [],
-        "pull_request": true,
-        "push": true,
-        "release": false,
-        "schedule": true,
-        "workflow_call": false,
-        "workflow_dispatch": false,
-        "workflow_run": false
-      }
-    },
-    {
       "name": "codeql",
       "modified": "2025-10-16T03:41:51.2217574Z",
       "path": ".github/workflows/codeql.yml",
@@ -309,23 +275,6 @@
       }
     },
     {
-      "name": "defender-for-devops",
-      "modified": "2025-10-16T03:41:51.2217574Z",
-      "path": ".github/workflows/defender-for-devops.yml",
-      "size": 1866,
-      "triggers": {
-        "issues": false,
-        "other": [],
-        "pull_request": true,
-        "push": true,
-        "release": false,
-        "schedule": true,
-        "workflow_call": false,
-        "workflow_dispatch": false,
-        "workflow_run": false
-      }
-    },
-    {
       "name": "deploy-moneycat",
       "modified": "2026-06-13T11:46:11.2583591Z",
       "path": ".github/workflows/deploy-moneycat.yml",
@@ -339,23 +288,6 @@
         "schedule": false,
         "workflow_call": false,
         "workflow_dispatch": true,
-        "workflow_run": false
-      }
-    },
-    {
-      "name": "devskim",
-      "modified": "2026-06-28T14:57:38.7102205Z",
-      "path": ".github/workflows/devskim.yml",
-      "size": 1033,
-      "triggers": {
-        "issues": false,
-        "other": [],
-        "pull_request": true,
-        "push": true,
-        "release": false,
-        "schedule": true,
-        "workflow_call": false,
-        "workflow_dispatch": false,
         "workflow_run": false
       }
     },
@@ -437,40 +369,6 @@
         "other": [],
         "pull_request": false,
         "push": false,
-        "release": false,
-        "schedule": true,
-        "workflow_call": false,
-        "workflow_dispatch": true,
-        "workflow_run": false
-      }
-    },
-    {
-      "name": "ethicalcheck",
-      "modified": "2025-10-25T20:56:30.9209834Z",
-      "path": ".github/workflows/ethicalcheck.yml",
-      "size": 3479,
-      "triggers": {
-        "issues": false,
-        "other": [],
-        "pull_request": true,
-        "push": true,
-        "release": false,
-        "schedule": true,
-        "workflow_call": false,
-        "workflow_dispatch": true,
-        "workflow_run": false
-      }
-    },
-    {
-      "name": "fortify",
-      "modified": "2025-10-25T20:56:30.9204482Z",
-      "path": ".github/workflows/fortify.yml",
-      "size": 10735,
-      "triggers": {
-        "issues": false,
-        "other": [],
-        "pull_request": true,
-        "push": true,
         "release": false,
         "schedule": true,
         "workflow_call": false,
@@ -582,7 +480,7 @@
     },
     {
       "name": "gitleaks-security-scan",
-      "modified": "2026-07-14T18:18:43.0876860Z",
+      "modified": "2026-07-24T08:13:39.5524730Z",
       "path": ".github/workflows/gitleaks-security-scan.yml",
       "size": 3398,
       "triggers": {
@@ -684,7 +582,7 @@
     },
     {
       "name": "iona-gate-verify",
-      "modified": "2026-07-14T18:18:47.4774655Z",
+      "modified": "2026-07-24T08:13:39.5499498Z",
       "path": ".github/workflows/iona-gate-verify.yml",
       "size": 5206,
       "triggers": {
@@ -696,40 +594,6 @@
         "schedule": false,
         "workflow_call": false,
         "workflow_dispatch": true,
-        "workflow_run": false
-      }
-    },
-    {
-      "name": "jfrog-sast",
-      "modified": "2025-10-25T20:56:30.9204482Z",
-      "path": ".github/workflows/jfrog-sast.yml",
-      "size": 1714,
-      "triggers": {
-        "issues": false,
-        "other": [],
-        "pull_request": true,
-        "push": true,
-        "release": false,
-        "schedule": true,
-        "workflow_call": false,
-        "workflow_dispatch": false,
-        "workflow_run": false
-      }
-    },
-    {
-      "name": "jscrambler-code-integrity",
-      "modified": "2025-10-25T20:56:30.9204482Z",
-      "path": ".github/workflows/jscrambler-code-integrity.yml",
-      "size": 2248,
-      "triggers": {
-        "issues": false,
-        "other": [],
-        "pull_request": true,
-        "push": true,
-        "release": false,
-        "schedule": false,
-        "workflow_call": false,
-        "workflow_dispatch": false,
         "workflow_run": false
       }
     },
@@ -819,23 +683,6 @@
       }
     },
     {
-      "name": "mayhem-for-api",
-      "modified": "2025-10-25T20:56:30.9209834Z",
-      "path": ".github/workflows/mayhem-for-api.yml",
-      "size": 2362,
-      "triggers": {
-        "issues": false,
-        "other": [],
-        "pull_request": true,
-        "push": true,
-        "release": false,
-        "schedule": false,
-        "workflow_call": false,
-        "workflow_dispatch": false,
-        "workflow_run": false
-      }
-    },
-    {
       "name": "multi-app-ci",
       "modified": "2026-07-07T02:52:15.1513068Z",
       "path": ".github/workflows/multi-app-ci.yml",
@@ -849,23 +696,6 @@
         "schedule": false,
         "workflow_call": false,
         "workflow_dispatch": true,
-        "workflow_run": false
-      }
-    },
-    {
-      "name": "neuralegion",
-      "modified": "2026-07-07T02:54:18.8557744Z",
-      "path": ".github/workflows/neuralegion.yml",
-      "size": 6794,
-      "triggers": {
-        "issues": false,
-        "other": [],
-        "pull_request": true,
-        "push": true,
-        "release": false,
-        "schedule": true,
-        "workflow_call": false,
-        "workflow_dispatch": false,
         "workflow_run": false
       }
     },
@@ -1279,7 +1109,7 @@
     },
     {
       "name": "security-scan",
-      "modified": "2026-07-14T18:18:38.4725478Z",
+      "modified": "2026-07-24T08:13:39.5388662Z",
       "path": ".github/workflows/security-scan.yml",
       "size": 5394,
       "triggers": {
@@ -1363,23 +1193,6 @@
       }
     },
     {
-      "name": "snyk-security",
-      "modified": "2025-10-25T20:56:30.9204482Z",
-      "path": ".github/workflows/snyk-security.yml",
-      "size": 3536,
-      "triggers": {
-        "issues": false,
-        "other": [],
-        "pull_request": true,
-        "push": true,
-        "release": false,
-        "schedule": false,
-        "workflow_call": false,
-        "workflow_dispatch": false,
-        "workflow_run": false
-      }
-    },
-    {
       "name": "social_post",
       "modified": "2025-10-18T00:23:40.0000000Z",
       "path": ".github/workflows/social_post.yml",
@@ -1442,23 +1255,6 @@
         "push": false,
         "release": false,
         "schedule": false,
-        "workflow_call": false,
-        "workflow_dispatch": false,
-        "workflow_run": false
-      }
-    },
-    {
-      "name": "sysdig-scan",
-      "modified": "2025-10-25T20:56:30.9204482Z",
-      "path": ".github/workflows/sysdig-scan.yml",
-      "size": 2547,
-      "triggers": {
-        "issues": false,
-        "other": [],
-        "pull_request": true,
-        "push": true,
-        "release": false,
-        "schedule": true,
         "workflow_call": false,
         "workflow_dispatch": false,
         "workflow_run": false

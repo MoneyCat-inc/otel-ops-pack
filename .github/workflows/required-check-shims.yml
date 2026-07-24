@@ -1,0 +1,49 @@
+# Required-check path-filter shims — VERIFIED 2026-07-24 (#356)
+#
+# Branch protection contexts (Settings / API verbatim):
+#   CodeQL | PSScriptAnalyzer | gitleaks |
+#   Gate • k6 thresholds | Gate • synthetic trace (OTLP/HTTP) |
+#   Site • links + a11y + CSP (coarse)
+#
+# Source-app binding:
+#   CodeQL + PSScriptAnalyzer → app 57789 (github-code-scanning). An Actions job
+#   with the same name can never satisfy an app-bound context — shims are useless
+#   for those two. Deadlock cure (if any) = unfilter the primary triggers.
+#
+# Path-filter audit (this PR):
+#   codeql.yml (CodeQL Advanced)     — pull_request: branches only; NO paths
+#   powershell.yml (PSScriptAnalyzer)— pull_request: branches only; NO paths
+#   gitleaks.yml                     — pull_request: branches only; NO paths
+#   gate-site-evidence.yml           — pull_request: branches only; NO paths
+#
+# Conclusion: no path-filter deadlock on any required Actions primary. Always-green
+# companion jobs that share a context with a primary are a latest-wins hazard
+# (shim SUCCESS can land after primary FAIL). Therefore this workflow intentionally
+# defines zero jobs.
+#
+# If a future change adds `paths:` to gate-site-evidence.yml, add inverse
+# `paths-ignore:` (same list) jobs here with identical `name:` strings and a
+# one-line comment per job: "Inverse of gate-site-evidence.yml paths — keep in sync."
+# Mixed path PRs still need a single-job primary (conditional steps), not dual workflows.
+
+name: Required check shims
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      # Only self-trigger when this contract file changes (docs the pairing).
+      - .github/workflows/required-check-shims.yml
+
+permissions:
+  contents: read
+
+jobs:
+  contract:
+    name: shim-contract (no required contexts)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Confirm no competing required-context jobs
+        run: |
+          echo "No Gate/Site/gitleaks/CodeQL shim jobs — primaries are unfiltered."
+          echo "See header comment for re-introduction rules if paths: are added later."

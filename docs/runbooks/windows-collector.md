@@ -1,5 +1,7 @@
 # Windows Collector (otelcol-contrib) — Runbook
 
+<!-- markdownlint-disable -->
+
 **Authority:** BossCat OEM  
 **Gate:** #022 (BOSSCAT-022A - Deployed & Hardened)  
 **Purpose:** Collect Windows host metrics and Event Logs for observability pipeline  
@@ -62,15 +64,15 @@ $env:OTEL_EXPORTER_OTLP_ENDPOINT = "http://127.0.0.1:14317"
 $env:OTEL_EXPORTER_OTLP_PROTOCOL = "grpc"
 ```
 
-### SECONDARY PATH (Optional) — Via Windows Collector ⏳
-**Endpoint:** `http://127.0.0.1:5317` (Windows Collector OTLP gRPC)  
-**Status:** ⏳ **CONFIGURED BUT UNTESTED** (Gate #027 investigation)  
+### SECONDARY PATH (Optional) — Via Windows Collector ✅
+**Endpoint:** `http://127.0.0.1:5320` (Windows Collector OTLP gRPC) / `http://127.0.0.1:5321` (HTTP)  
+**Status:** ✅ **CANONICAL** (`config.yaml` receivers; ports moved off 5317/5318 to avoid PlariumPlay 5300–5319)  
 **Use Case:** Centralized collection, preprocessing, multi-export  
-**Config:** Receiver on 5317 → Processors → Export to SigNoz 14317
+**Config:** Receiver on 5320/5321 → Processors → Export to SigNoz `localhost:4317`
 
 **Configuration:**
 ```powershell
-$env:OTEL_EXPORTER_OTLP_ENDPOINT = "http://127.0.0.1:5317"
+$env:OTEL_EXPORTER_OTLP_ENDPOINT = "http://127.0.0.1:5320"
 $env:OTEL_EXPORTER_OTLP_PROTOCOL = "grpc"
 ```
 
