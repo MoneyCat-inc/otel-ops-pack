@@ -139,6 +139,19 @@ Current: 7 compose files at root. Target (**D1 RESOLVED**):
 - Link-check workflow (`link-check.yml`) passes.
 - All compose references resolve (`docker compose config -q` on canonical file).
 
+
+
+## Protection-fix PRs (before Pack 2 multi-PR stretch)
+
+Standalone gate-def PRs after #353. Shim job names must match branch-protection **check names exactly**:
+- Source of truth: **Settings → Branches → required checks list** (what GitHub received), not YAML alone.
+- Reported name = job 
+ame: (or job id if unnamed) — **not** the workflow 
+ame:.
+- Matrix jobs: jobname (value).
+- Reusable workflow jobs: caller-job / inner-job.
+- Copy the decorated form verbatim into the shim; mismatch = path-filter deadlock returns.
+
 ## Out of scope (Pack 3)
 - `git filter-repo` history purge + LFS for media (`docs/Art/*.mp4`, `CHAR/DOCS/docs/LOGO/`)
 - Repo split (viz-engine / scorebot / moneycat site / SOCM out of this repo)
