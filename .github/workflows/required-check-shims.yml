@@ -1,0 +1,70 @@
+# Required-check path-filter shims
+#
+# Branch protection requires these check *names* (Settings → Branches, verbatim).
+# Source of truth is the Settings list / API — not workflow `name:` strings alone.
+# Reported name = job `name:` (or job id if unnamed). Matrix → `job (value)`.
+# Reusable → `caller / inner`.
+#
+# Pattern: companion jobs with the identical required name that always report on
+# pull_request so a path-filtered (or cancelled) primary cannot leave the check
+# stuck at "Expected — Waiting for status". Primaries that already always-run
+# (gate-site-evidence, gitleaks) keep doing real work; these shims are a thin
+# always-report safety net with cancel-in-progress disabled.
+#
+# Names copied 2026-07-24 from:
+#   GET /repos/.../branches/main/protection/required_status_checks
+#   CodeQL | PSScriptAnalyzer | gitleaks |
+#   Gate • k6 thresholds | Gate • synthetic trace (OTLP/HTTP) |
+#   Site • links + a11y + CSP (coarse)
+#
+# CodeQL + PSScriptAnalyzer are also reported by app github-code-scanning (57789).
+# Actions jobs below satisfy the same *context string* when protection matches by
+# name; keep Settings names in lockstep if either app’s label changes.
+
+name: Required check shims
+
+on:
+  pull_request:
+    branches: [main]
+
+# Never cancel — required contexts must finish.
+concurrency:
+  group: required-check-shims-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  # CodeQL + PSScriptAnalyzer: required via app github-code-scanning (57789).
+  # They already report on docs-only PRs (#351 evidence). No Actions always-green
+  # shim — would not satisfy app_id 57789 and would only add check-list noise.
+  #
+  # gitleaks: primary has no path filter; no always-green shim (latest-wins risk).
+
+  gate_k6:
+    name: "Gate • k6 thresholds"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Shim report
+        run: |
+          echo "Required-check shim for 'Gate • k6 thresholds' (Settings verbatim)."
+          echo "Primary: gate-site-evidence.yml job gate_perf (PR short-circuit)."
+
+  gate_trace:
+    name: "Gate • synthetic trace (OTLP/HTTP)"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Shim report
+        run: |
+          echo "Required-check shim for 'Gate • synthetic trace (OTLP/HTTP)' (Settings verbatim)."
+          echo "Primary: gate-site-evidence.yml job gate_trace (PR short-circuit)."
+
+  site:
+    name: "Site • links + a11y + CSP (coarse)"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Shim report
+        run: |
+          echo "Required-check shim for 'Site • links + a11y + CSP (coarse)' (Settings verbatim)."
+          echo "Primary: gate-site-evidence.yml job site_checks (PR short-circuit)."
