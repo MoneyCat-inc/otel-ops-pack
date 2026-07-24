@@ -1,3 +1,4 @@
+# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 # scripts/agent/health-gate.ps1
 # Inline health validation for agent:start integration
 # Runs local env doctor + OTel wiring check, enqueues daily job if both pass

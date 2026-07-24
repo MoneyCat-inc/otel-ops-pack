@@ -1,3 +1,4 @@
+# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 # Test Runbook Execution Script
 Write-Host "=== Testing Windows Collector -> SigNoz Runbook ===" -ForegroundColor Green
 

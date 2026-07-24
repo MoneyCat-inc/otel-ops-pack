@@ -1,3 +1,4 @@
+# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 # Gate #026 Track A: Run .NET Test App with Auto-Instrumentation
 # Authority: BossCat OEM | Executor: Cursor{Implementer}
 # Purpose: Launch test app with OTel profiler enabled

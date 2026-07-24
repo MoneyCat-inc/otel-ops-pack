@@ -237,7 +237,7 @@ fi
 
 # OTel Collector (local HTTP)
 if command_exists curl; then
-    OTEL_HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:5318 --max-time 3 2>/dev/null || echo "000")
+    OTEL_HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:5321 --max-time 3 2>/dev/null || echo "000")
     CONNECTIVITY_JSON=$(echo "$CONNECTIVITY_JSON" | jq --arg s "$OTEL_HTTP_STATUS" '.otel_collector_http = $s')
 fi
 

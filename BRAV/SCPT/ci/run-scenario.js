@@ -12,7 +12,7 @@ const path = require('path');
 const CONFIG = {
   dashboardUrl: 'http://localhost:3000',
   signozUrl: 'http://localhost:8080',
-  otelCollectorUrl: 'http://localhost:5318',
+  otelCollectorUrl: 'http://localhost:5321',
   scenariosFile: path.join(__dirname, '../../docs/dashboards/scenarios-example.json'),
   resultsDir: path.join(__dirname, '../../test-results')
 };
@@ -294,7 +294,7 @@ function postData(url, data) {
 async function checkServiceHealth() {
   const services = [
     { name: 'SigNoz', url: 'http://localhost:8080/api/v1/health' },
-    { name: 'OTel Collector', url: 'http://localhost:5318/v1/logs' }
+    { name: 'OTel Collector', url: 'http://localhost:5321/v1/logs' }
   ];
   
   for (const service of services) {
