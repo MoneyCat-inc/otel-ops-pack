@@ -29,7 +29,8 @@ exclude = [
   # Private Pack 3B siblings: GitHub HTML returns 404 without session; prove via gh api in lane Report
   "^https://github\\.com/MoneyCat-inc/socm",
   "^https://github\\.com/MoneyCat-inc/scorebot",
-  "^https://github\\.com/MoneyCat-inc/viz-engine"
+  "^https://github\\.com/MoneyCat-inc/viz-engine",
+  "^https://github\\.com/MoneyCat-inc/moneycat-site"
 ]
 
 max_concurrency = 8
