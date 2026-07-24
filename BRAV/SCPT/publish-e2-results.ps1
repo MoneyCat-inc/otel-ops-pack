@@ -1,3 +1,4 @@
+# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 # Publish E2 Ratio Sweep Results to SigNoz
 # Sends E2 test results via OTLP HTTP to SigNoz for dashboard visualization
 

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 """
 Minimal OTLP trace canary sender.
 - Posts a single span to OTLP HTTP endpoint (JSON body) for collector ingestion

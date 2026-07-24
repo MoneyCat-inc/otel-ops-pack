@@ -18,7 +18,7 @@ jobs:
   protect:
     runs-on: ubuntu-latest
     steps:
-      - name: Apply branch protection (require Gate checks)
+      - name: Apply branch protection (machine gates + 0 reviews)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OWNER: ${{ github.repository_owner }}
@@ -28,28 +28,40 @@ jobs:
           set -euo pipefail
           API_URL="https://api.github.com/repos/$OWNER/$REPO/branches/$BRANCH/protection"
           echo "Applying protection to $OWNER/$REPO@$BRANCH"
+          # Check names must match Settings / API verbatim (job name:, not workflow name).
+          # reviews=0: solo maintainer; machine gates are the review (BossCat-consistent).
           cat > body.json <<'JSON'
           {
             "required_status_checks": {
               "strict": true,
-              "contexts": [
-                "Gate & Site Evidence (Non-Merging) / Gate • k6 thresholds",
-                "Gate & Site Evidence (Non-Merging) / Gate • synthetic trace (OTLP/HTTP)",
-                "Gate & Site Evidence (Non-Merging) / Site • links + a11y + CSP (coarse)"
+              "checks": [
+                { "context": "CodeQL", "app_id": 57789 },
+                { "context": "PSScriptAnalyzer", "app_id": 57789 },
+                { "context": "gitleaks", "app_id": 15368 },
+                { "context": "Gate • k6 thresholds", "app_id": 15368 },
+                { "context": "Gate • synthetic trace (OTLP/HTTP)", "app_id": 15368 },
+                { "context": "Site • links + a11y + CSP (coarse)", "app_id": 15368 }
               ]
             },
             "enforce_admins": true,
             "required_pull_request_reviews": {
-              "required_approving_review_count": 1
+              "required_approving_review_count": 0,
+              "dismiss_stale_reviews": false,
+              "require_code_owner_reviews": false
             },
-            "restrictions": null
+            "restrictions": null,
+            "required_linear_history": false,
+            "allow_force_pushes": false,
+            "allow_deletions": false,
+            "block_creations": false,
+            "required_conversation_resolution": false
           }
           JSON
           curl -sS -X PUT \
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer $GITHUB_TOKEN" \
             "$API_URL" \
-            --data-binary @body.json | jq -r '.required_status_checks, .enforce_admins, .required_pull_request_reviews' || true
+            --data-binary @body.json | jq -r '{checks:.required_status_checks.checks, reviews:.required_pull_request_reviews.required_approving_review_count, enforce_admins}'
 
       - name: Show current protection
         env:
@@ -60,4 +72,8 @@ jobs:
         run: |
           curl -sS -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer $GITHUB_TOKEN" \
-            "https://api.github.com/repos/$OWNER/$REPO/branches/$BRANCH/protection" | jq '.' || true
+            "https://api.github.com/repos/$OWNER/$REPO/branches/$BRANCH/protection" | jq '{
+              reviews:.required_pull_request_reviews.required_approving_review_count,
+              checks:.required_status_checks.checks,
+              enforce_admins:.enforce_admins.enabled
+            }'

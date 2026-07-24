@@ -6,6 +6,8 @@ on:
     paths:
       - 'docs/**'
       - 'README.md'
+      # Generated registry — owned by registry-guard / registry-drift-check, not docs lane
+      - '!docs/status/workflows.json'
 
 concurrency:
   group: docs-lane-checks-${{ github.workflow }}-${{ github.ref }}
@@ -88,10 +90,14 @@ jobs:
           HEAD_SHA="${{ github.event.pull_request.head.sha }}"
           MERGE_BASE=$(git merge-base "$BASE_SHA" "$HEAD_SHA")
           git diff --name-only "$MERGE_BASE" "$HEAD_SHA" > all_changed.txt || true
-          grep -E '^(docs/|README\.md$)' all_changed.txt > changed_docs.txt || true
+          # Generated registry — not prose; exclude from GR-02 file/LOC budgets
+          grep -E '^(docs/|README\.md$)' all_changed.txt | grep -Ev '^docs/status/workflows\.json$' > changed_docs.txt || true
           grep -Ev '^(docs/|README\.md$)' all_changed.txt > out_of_lane.txt || true
           FILES=$(wc -l < changed_docs.txt | tr -d ' ')
-          LOC=$(git diff --numstat "$MERGE_BASE" "$HEAD_SHA" | awk '$3 ~ /^(docs\/|README\.md$)/ {a+=$1; d+=$2} END {print a+d+0}')
+          LOC=$(git diff --numstat "$MERGE_BASE" "$HEAD_SHA" | awk '
+            $3 ~ /^(docs\/|README\.md$)/ && $3 != "docs/status/workflows.json" {a+=$1; d+=$2}
+            END {print a+d+0}
+          ')
           FILES_LIST=$(paste -sd ',' changed_docs.txt 2>/dev/null || true)
           cp changed_docs.txt "${ARTIFACT_DIR}/changed_files.txt"
           cp out_of_lane.txt "${ARTIFACT_DIR}/out_of_lane.txt"

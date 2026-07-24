@@ -1,3 +1,4 @@
+# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 # BOSSCAT-022A: End-to-End OTLP Test
 # Purpose: Generate and verify traces, metrics, and logs through Windows collector
 # Authority: BossCat OEM | Executor: Cursor{Implementer}

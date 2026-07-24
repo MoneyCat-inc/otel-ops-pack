@@ -80,7 +80,7 @@ function Send-SyntheticSpan {
   param(
     [string]$ServiceName = 'gpu-pipeline',
     [string]$SpanName = 'iona.boot',
-    [string]$Endpoint = 'http://127.0.0.1:5318/v1/traces'
+    [string]$Endpoint = 'http://127.0.0.1:5321/v1/traces'
   )
   $nowNs = [int64]([DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()) * 1000000
   $endNs = $nowNs + 1000000
@@ -195,7 +195,7 @@ $heartbeatJob = Start-Heartbeat -LockPath $lockPath
 
 try {
   # 2) Wiring checks
-  $ports = @{ '5317' = (Test-PortOpen 5317); '5318' = (Test-PortOpen 5318) }
+  $ports = @{ '5320' = (Test-PortOpen 5320); '5321' = (Test-PortOpen 5321) }
   $evidence.otlp_ports = $ports
 
   # Synthetic span (HTTP OTLP)
@@ -219,7 +219,7 @@ try {
 
   # Decide pass/fail
   $passed = $true
-  if (-not $ports.'5317' -or -not $ports.'5318') { $passed = $false }
+  if (-not $ports.'5320' -or -not $ports.'5321') { $passed = $false }
   if (-not $span.success) { $passed = $false }
   if ($OptionBRequired -and ($k6.p95 -eq $null -or $k6.p95 -ge 200 -or $k6.exit -ne 0)) { $passed = $false }
 
@@ -250,7 +250,7 @@ try {
   $md += ""
   $md += "- Lane: GPU_FIX"
   $md += "- Option B Required: $OptionBRequired"
-  $md += "- Ports: 5317=$($ports.'5317'), 5318=$($ports.'5318')"
+  $md += "- Ports: 5317=$($ports.'5320'), 5321=$($ports.'5321')"
   $md += "- Synthetic Span: name=iona.boot success=$($span.success) endpoint=$($span.endpoint)"
   $md += "- k6: test=$($k6.test) exit=$($k6.exit) p95_ms=$($k6.p95)"
   $md += "- Status: $($evidence.status)"
@@ -264,7 +264,7 @@ try {
   $mdText | Set-Content -Path $reportPath -Encoding UTF8
 
   # BossCat logs (both root and docs path if present)
-  $logLine = "[$((Get-Date).ToString('s'))] GPU_FIX lane $($evidence.status); P95=$($k6.p95)ms; ports:5317=$($ports.'5317') 5318=$($ports.'5318'); span=iona.boot:$($span.success); artifacts=DELT/ARTF/gate-verification-results.json"
+  $logLine = "[$((Get-Date).ToString('s'))] GPU_FIX lane $($evidence.status); P95=$($k6.p95)ms; ports:5320=$($ports.'5320') 5321=$($ports.'5321'); span=iona.boot:$($span.success); artifacts=DELT/ARTF/gate-verification-results.json"
   try { Add-Content -Path 'BOSSCAT_LOG.md' -Value $logLine } catch {}
   New-DirIfMissing 'docs/BossCat'
   try { Add-Content -Path 'docs/BossCat/BOSSCAT_LOG.md' -Value $logLine } catch {}
@@ -277,4 +277,5 @@ finally {
   try { Get-Job | Where-Object { $_.ScriptBlock -like '*heartbeat*' } | Remove-Job -Force -ErrorAction SilentlyContinue } catch {}
   Release-Lock -LockPath $lockPath
 }
+
 

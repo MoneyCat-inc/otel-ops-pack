@@ -1,0 +1,20 @@
+# Compose variants
+
+Canonical SigNoz stack for this repo is the root **`docker-compose.yml`**
+(promoted from `docker-compose-optimized.yml` in Pack 2 Task 7B). Prefer:
+
+```bash
+docker compose up -d
+```
+
+| File | Purpose | Status |
+|------|---------|--------|
+| `../docker-compose.yml` | Canonical SigNoz + OTel collector stack | **active** |
+| `legacy.yml` | Pre-promotion default compose (superseded) | deprecated |
+| `docker-compose.viz.yml` | Viz-engine overlay | experimental (leaves with viz-engine split) |
+| `docker-compose.gpu.yml` | GPU sidecars overlay | experimental (leaves with viz-engine split) |
+| `docker-compose.unified.yml` | Unified experiment | experimental |
+| `docker-compose-signoz.yml` | SigNoz-only variant | deprecated |
+| `docker-compose-signoz-simple.yml` | Minimal SigNoz | deprecated |
+
+`BRAV/INFR/deployment-pipeline/docker-compose.yml` is pipeline-local and unchanged.

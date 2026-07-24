@@ -63,7 +63,7 @@ jobs:
         
         # Check 4: SigNoz configuration
         echo "🔧 Checking SigNoz configuration..."
-        if [ -f "signoz-collector-config.yaml" ] && [ -f "docker-compose-signoz.yml" ]; then
+        if [ -f "signoz-collector-config.yaml" ] && [ -f "compose/docker-compose-signoz.yml" ]; then
           echo "✅ SigNoz configuration present"
           COMPLIANCE_SCORE=$((COMPLIANCE_SCORE + 1))
         else

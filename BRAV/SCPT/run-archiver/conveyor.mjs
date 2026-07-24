@@ -8,12 +8,13 @@ import { writeFile, appendFile, mkdir, readFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, appendFileSync } from 'node:fs';
 import { performance } from 'node:perf_hooks';
-import { dirname, join, resolve } from 'node:path';
+import { dirname, join } from 'node:path';
 import Bottleneck from 'bottleneck';
 import PQueue from 'p-queue';
 import { request, Pool, setGlobalDispatcher } from 'undici';
 import prettyMs from 'pretty-ms';
 import cliProgress from 'cli-progress';
+import { resolveRepoRoot, assertNotNestedBossCat } from './repo-root.mjs';
 
 const REPO = process.env.REPO || 'MoneyCat-inc/otel-ops-pack';
 const TOKENS = (process.env.GH_TOKENS || process.env.GITHUB_TOKEN || '').split(',').filter(Boolean);
@@ -32,9 +33,9 @@ const SELFTEST_MS = Number(process.env.CONVEYOR_SELFTEST_MS || 1000);
 const RATE_JITTER_MS = Number(process.env.RATE_JITTER_MS || 1500); // extra stagger to avoid herds
 
 const BASE = `https://api.github.com/repos/${REPO}/actions`;
-// Resolve repo root for all outputs (works when running from BRAV/SCPT/run-archiver)
-const REPO_ROOT = process.env.REPO_ROOT || resolve(process.cwd(), '..', '..', '..');
-const abs = (p) => join(REPO_ROOT, p);
+// Prefer REPO_ROOT / GITHUB_WORKSPACE / git toplevel — never trust CWD alone.
+const REPO_ROOT = resolveRepoRoot();
+const abs = (p) => assertNotNestedBossCat(join(REPO_ROOT, p), p);
 const LEDGER = abs('CHAR/EVID/artifacts/ecrr/arch/LEDGER.jsonl');
 const WHITELIST_PATH = abs('BRAV/SCPT/run-archiver/whitelist.json');
 const CHECKPOINT_DIR = abs('CHAR/EVID/artifacts/ecrr/arch/checkpoints');
@@ -819,11 +820,15 @@ async function main() {
   const logEntry = `- ${new Date().toISOString()} — Conveyor: Archived ${archived}, Deleted ${deletedCount}, Remaining ${finalCount}`;
   try {
     const logPath = abs('docs/BossCat/BOSSCAT_LOG.md');
-    let logContent = '';
-    if (existsSync(logPath)) {
-      logContent = await readFile(logPath, 'utf8');
+    if ((process.env.SKIP_BOSSCAT_LOG || '').toLowerCase() !== 'true') {
+      let logContent = '';
+      try {
+        logContent = await readFile(logPath, 'utf8');
+      } catch (readErr) {
+        if (readErr?.code !== 'ENOENT') throw readErr;
+      }
+      await writeFile(logPath, (logContent.trimEnd() + '\n' + logEntry + '\n'), 'utf8');
     }
-    await writeFile(logPath, (logContent.trimEnd() + '\n' + logEntry + '\n'), 'utf8');
   } catch (e) {
     console.warn(`Could not update BossCat log: ${e.message}`);
   }

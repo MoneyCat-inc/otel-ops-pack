@@ -18,10 +18,22 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-Write-Host "🐾 BossCat Run Conveyor — Setup & Execute"
+Write-Host "BossCat Run Conveyor — Setup & Execute"
+
+# Repo root before Push-Location (CWD may be BRAV/SCPT/run-archiver afterward)
+if (-not $env:REPO_ROOT) {
+  if ($env:GITHUB_WORKSPACE) {
+    $env:REPO_ROOT = $env:GITHUB_WORKSPACE
+  } else {
+    $top = git rev-parse --show-toplevel 2>$null
+    if ($LASTEXITCODE -eq 0 -and $top) { $env:REPO_ROOT = $top.Trim() }
+    else { $env:REPO_ROOT = (Resolve-Path (Join-Path $PSScriptRoot '..\..\..')).Path }
+  }
+}
+Write-Host "REPO_ROOT=$($env:REPO_ROOT)"
 
 # Navigate to archiver directory
-Push-Location BRAV/SCPT/run-archiver
+Push-Location (Join-Path $env:REPO_ROOT 'BRAV/SCPT/run-archiver')
 
 try {
   # Install dependencies if needed

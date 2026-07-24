@@ -86,11 +86,9 @@ exporters:
   awsxray:
     region: ${AWS_REGION:-us-east-1}
   
-  # Logging exporter (debug)
-  logging:
-    loglevel: ${COLLECTOR_LOG_LEVEL:-info}
-    sampling_initial: 5
-    sampling_thereafter: 200
+  # Debug exporter (replaces removed `logging` / loglevel; otelcol ≥0.111)
+  debug:
+    verbosity: basic
 
 extensions:
   health_check:
@@ -114,19 +112,19 @@ service:
     traces:
       receivers: [otlp, awsxray]
       processors: [memory_limiter, resourcedetection/aws, attributes, batch]
-      exporters: ["${TRACE_EXPORTER_PRIMARY:-otlp/signoz}", "${TRACE_EXPORTER_SECONDARY:-}", logging]
+      exporters: ["${TRACE_EXPORTER_PRIMARY:-otlp/signoz}", "${TRACE_EXPORTER_SECONDARY:-}", debug]
     
     # Metrics pipeline
     metrics:
       receivers: [otlp, prometheus]
       processors: [memory_limiter, resourcedetection/aws, attributes, batch]
-      exporters: [otlp/signoz, logging]
+      exporters: [otlp/signoz, debug]
     
     # Logs pipeline
     logs:
       receivers: [otlp]
       processors: [memory_limiter, resourcedetection/aws, attributes, batch]
-      exporters: [otlp/signoz, awscloudwatchlogs, logging]
+      exporters: [otlp/signoz, awscloudwatchlogs, debug]
   
   telemetry:
     logs:

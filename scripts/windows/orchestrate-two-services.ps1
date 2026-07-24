@@ -1,3 +1,4 @@
+# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 # Gate #029: Multi-Service Orchestrator
 # Authority: BossCat OEM | Executor: Cursor{Implementer}
 # Purpose: Deploy and coordinate multiple services with aggregated status
