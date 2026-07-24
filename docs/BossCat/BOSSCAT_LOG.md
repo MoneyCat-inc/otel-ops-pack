@@ -1,6 +1,8 @@
 <!-- markdownlint-disable MD013 MD022 MD024 MD032 MD034 MD049 -->
 # BOSSCAT_LOG (one-liners)
 
+- 2026-07-24T17:53:11Z — **[GATE-DEF: lane:removal]** docs_gate SKIPPED-by-design when PR labeled `lane:removal` (#374). Pack 3B Remove mixes code+README; kills normalized GR-02 FAIL. — **Cursor{Implementer}**
+- 2026-07-24T17:40:52Z — **[PACK3B/SCOREBOT REPORT]** Lane closed via #373 → `a5d7c563`. Extracted=removed **6=6**; secrets none; CI-before-Remove honored (scorebot `1031c2c` lint+docker). numpy pin 2.4.6 for py3.11 documented in extract. — **Cursor{Implementer}**
 - 2026-07-24T17:28:01Z — **[PACK3B/SCOREBOT REMOVE]** Extracted scorebot/ (6 files) to MoneyCat-inc/scorebot (CI lint+docker green @ 1031c2c); dropped compose viz scorebot service; secrets none. — **Cursor{Implementer}**
 - 2026-07-24T17:22:57Z — **[PACK3B/SOCM REPORT]** Lane 1 closed via #366 merge `92633410`. Extracted=removed lane paths **120=120**; +1 untrack `artifacts/bsky-maintenance-state.json`. Lychee green on rewritten pointers (private socm HTML excluded; gh api proves target). Bluesky app passwords: only `socm-actions` (predecessor absent). — **Cursor{Implementer}**
 - 2026-07-24T16:33:52Z — **[PACK3B/SOCM REMOVE]** Extracted Bluesky/social ops to MoneyCat-inc/socm; removed docs/socm+social+bsky plan, scripts/social, social_post.yml, .env.socm.example, artifacts/bsky-maintenance-state.json. Secrets provisioned on socm (names: BSKY_*). — **Cursor{Implementer}**
