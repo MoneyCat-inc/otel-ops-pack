@@ -1,3 +1,4 @@
+<!-- markdownlint-disable MD013 MD022 MD032 MD058 -->
 # BRIEFING — Pack 3B: Repo Split (four lane manifests)
 
 **Repo:** MoneyCat-inc/otel-ops-pack @ `3105aef3` (post-rewrite main)
@@ -11,6 +12,7 @@ Cursor MUST re-grep current main before each lane (root MDs moved to
 seed sets, verify counts in the Examine step.
 
 **Per-lane loop (ECRR, one PR pair per lane):**
+
 1. Examine — re-grep manifest paths on current main; record file counts.
 2. Extract — fresh clone → `filter-repo` with the lane's `--path` set →
    push to new repo → CI green THERE before touching ops-pack.
@@ -29,6 +31,7 @@ repo. Extraction clones must be checked for tracked env files before push.
 Smallest blast radius; carries its own credential surface — do this first.
 
 **Extract set (`--path`):**
+
 - `docs/socm/` (43 files), `docs/social/` (32), `docs/bsky plan/` (10)
 - `scripts/social/` (entire dir: skyfeed, browser-login, post-*, deploy-custom-feeds, set-credentials)
 - `scripts/monitor-bluesky-metrics.ps1`
@@ -42,6 +45,7 @@ is the docs hub, which stays with ops-pack; verify the hit is hub-only).
 **Compose / runbooks:** none.
 
 **Scripts classify:**
+
 | Path | Call |
 |---|---|
 | `scripts/social/**` | move |
@@ -67,6 +71,7 @@ holds them. Extraction clone comes from
 filter-repo inside the mirror itself — it is the untouched insurance).
 
 **Extract set (`--path`):**
+
 - `viz-engine-projectm/` (32), `viz-engine-butterchurn/` (9), `viz-engine-projectm-gpu/` (3)
 - `presets-projectm/` (20) and all `*.milk` presets (28 — verify locations)
 - `docs/milk-v0/` (7)
@@ -81,6 +86,7 @@ filter-repo inside the mirror itself — it is the untouched insurance).
 
 **GPU classification — the judgment call of this lane.** GPU appears in two
 distinct roles; split accordingly:
+
 | Pattern | Call | Rationale |
 |---|---|---|
 | `nightly-gpu-smoke.yml`, `verify-gpu-codex.ps1`, `gpu_bench.ts`, `gpu-fix-lane.ps1` | move | viz/render pipeline |
@@ -114,6 +120,7 @@ Smallest lane — run it as the template-validation for moneycat.
 ## Lane 4 — moneycat-site  →  new repo `MoneyCat-inc/moneycat-site`
 
 **Extract set:**
+
 - `moneycat/` (site: html/css/js, deployment docs, `verify-deployment.ps1`)
 - `og/` (2 files — verify they are the site's OpenGraph assets; if they serve
   the ops-pack README/hub instead, leave)
@@ -121,6 +128,7 @@ Smallest lane — run it as the template-validation for moneycat.
 - `BRAV/SCPT/add-moneycat-footer.ps1`, `BRAV/SCPT/generate-moneycat-doc.ps1`
 
 **Scripts classify:**
+
 | Path | Call |
 |---|---|
 | `add-moneycat-footer.ps1`, `generate-moneycat-doc.ps1` | move |
@@ -133,6 +141,7 @@ Smallest lane — run it as the template-validation for moneycat.
 ---
 
 ## Pack-level verification gate (after all four Remove PRs merge)
+
 - `git ls-files | wc -l` on ops-pack — record before/after per lane and total.
 - Zero tracked paths matching: `viz-engine-*`, `presets-projectm`, `scorebot/`,
   `moneycat/`, `docs/socm`, `docs/social`, `docs/bsky plan`, `scripts/social`.
@@ -146,6 +155,7 @@ Smallest lane — run it as the template-validation for moneycat.
   otel-ops-evidence").
 
 ## Out of scope
+
 - `CHAR/` disposition (distinct tree; separate decision, not this pack)
 - The 26 CHAR/docs hash mismatches (Fae's parked 15-minute review)
 - DELT/ / ALFA/ lanes — not in the split mandate; flag contents in the
