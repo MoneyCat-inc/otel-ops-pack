@@ -77,6 +77,7 @@ Codes (initial set):
 - GR-00 — GREEN: Docs-lane checks passed (budgets within limits; lint+links ok)
 - GR-01 — BLACK: Kill-switch `.agent/LOCK` present
 - GR-02 — RED: Budgets exceeded (files or LOC) **or** docs-lane scope violation (non-docs paths present while docs lane is active)
+- Exception: PR label `lane:removal` → docs_gate SKIPPED-by-design (Pack 3B Remove; #374).
 - GR-03 — AMBER: Markdown lint failed
 - GR-04 — AMBER: Link/anchor check failed
 
