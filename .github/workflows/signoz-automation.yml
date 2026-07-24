@@ -37,7 +37,7 @@ jobs:
       - name: Start SigNoz with improved health check
         timeout-minutes: 20  # Increased timeout for schema migrator
         run: |
-          docker compose -f compose/docker-compose-signoz.yml up -d
+          docker compose -f docker-compose.yml up -d
           echo "Waiting for ClickHouse to be ready..."
           timeout 300 bash -c 'until docker exec signoz-clickhouse clickhouse-client --query "SELECT 1"; do echo "Waiting for ClickHouse..."; sleep 5; done'
           echo "ClickHouse is ready!"
@@ -84,4 +84,4 @@ jobs:
           docker ps -a --filter "name=signoz"
       - name: Cleanup
         if: always()
-        run: docker compose -f compose/docker-compose-signoz.yml down -v
+        run: docker compose -f docker-compose.yml down -v
