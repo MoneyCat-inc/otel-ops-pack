@@ -142,8 +142,6 @@ Smallest lane — run it as the template-validation for moneycat.
 
 ## Pack-level verification gate (after all four Remove PRs merge)
 
-**docs_gate on Remove:** apply label `lane:removal` — gate reports SKIPPED-by-design (not GR-02 FAIL).
-
 - `git ls-files | wc -l` on ops-pack — record before/after per lane and total.
 - Zero tracked paths matching: `viz-engine-*`, `presets-projectm`, `scorebot/`,
   `moneycat/`, `docs/socm`, `docs/social`, `docs/bsky plan`, `scripts/social`.
