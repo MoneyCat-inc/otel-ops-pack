@@ -2,7 +2,8 @@ name: docs-lane-checks
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    # labeled/unlabeled: Pack 3B Remove PRs toggle lane:removal → docs_gate SKIP vs enforce
+    types: [opened, synchronize, reopened, labeled, unlabeled]
     paths:
       - 'docs/**'
       - 'README.md'
@@ -78,6 +79,33 @@ jobs:
               echo "PIPELINE_SHOULD_FAIL=1";
               echo "STOP_PIPELINE=1";
             } >> "$GITHUB_ENV"
+          fi
+
+      # Pack 3B Remove PRs necessarily mix code deletions with README/docs pointers.
+      # Label lane:removal → SKIPPED-by-design (green check) instead of normalizing GR-02 FAIL.
+      - name: Detect lane:removal (Pack 3B Remove)
+        if: ${{ env.STOP_PIPELINE != '1' }}
+        env:
+          PR_LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
+        run: |
+          set -eo pipefail
+          mkdir -p "${ARTIFACT_DIR}"
+          if echo ",${PR_LABELS}," | grep -Fq ',lane:removal,'; then
+            {
+              echo "GUARD_CODE=GR-00";
+              echo "GUARD_REASON=docs lane skipped by design (lane:removal)";
+              echo "GUARD_STATE=GREEN";
+              echo "GUARD_STATUS=SKIP";
+              echo "PIPELINE_SHOULD_FAIL=0";
+              echo "STOP_PIPELINE=1";
+              echo "BUDGET_PASS=true";
+              echo "MARKDOWNLINT_STATUS=skipped";
+              echo "LYCHEE_STATUS=skipped";
+              echo "REMOVAL_LANE=1";
+            } >> "$GITHUB_ENV"
+            echo "lane:removal present — docs_gate SKIPPED-by-design" | tee "${ARTIFACT_DIR}/removal_skip.txt"
+          else
+            echo "REMOVAL_LANE=0" >> "$GITHUB_ENV"
           fi
 
       - name: Compute changed docs scope
