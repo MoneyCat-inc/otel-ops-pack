@@ -1,3 +1,4 @@
+<!-- markdownlint-disable -->
 # 🐾 Resonai [OTel] — OpenTelemetry Observability Pack
 
 [![ECRR](https://img.shields.io/badge/ECRR-Examine→Clean→Report→Role-7c5cff?style=for-the-badge&logo=gitbook&logoColor=white)](docs/BossCat/CHARTER.md)
