@@ -1,3 +1,4 @@
+<!-- markdownlint-disable MD013 MD022 MD032 MD034 -->
 # Windows Collector (otelcol-contrib) — Runbook
 
 <!-- markdownlint-disable -->

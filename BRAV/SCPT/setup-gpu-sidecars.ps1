@@ -193,7 +193,7 @@ def start_sidecar_service(service_name, port):
     try:
         # Start the service using docker-compose
         result = subprocess.run([
-            "docker-compose", "-f", "docker-compose.gpu.yml", "up", "-d", service_name
+            "docker-compose", "-f", "compose/docker-compose.gpu.yml", "up", "-d", service_name
         ], capture_output=True, text=True)
         
         if result.returncode == 0:
@@ -236,8 +236,8 @@ def main():
         print("\n✓ All GPU sidecar services started successfully")
         print("\nNext steps:")
         print("1. Check service health: python scripts/check-gpu-sidecars.py")
-        print("2. View logs: docker-compose -f docker-compose.gpu.yml logs")
-        print("3. Stop services: docker-compose -f docker-compose.gpu.yml down")
+        print("2. View logs: docker-compose -f compose/docker-compose.gpu.yml logs")
+        print("3. Stop services: docker-compose -f compose/docker-compose.gpu.yml down")
     else:
         print("\n✗ Some GPU sidecar services failed to start")
         sys.exit(1)

@@ -1,3 +1,4 @@
+# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 # Gate #029: Windows Collector 5317 Trace Path Verification
 # Authority: BossCat OEM | Executor: Cursor{Implementer}
 # Purpose: Verify collector receives and forwards traces (accepted ≈ sent)

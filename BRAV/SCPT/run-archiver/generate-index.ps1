@@ -2,13 +2,31 @@
 # Build lightweight INDEX.jsonl for archived run reports with progress output
 
 param(
-  [string]$ArchivedRoot = "docs/BossCat/run-reports/archived",
-  [string]$OutFile = "docs/BossCat/run-reports/INDEX.jsonl"
+  [string]$ArchivedRoot = "",
+  [string]$OutFile = ""
 )
 
 $ErrorActionPreference = "Stop"
 
-Write-Host "🐾 Generating INDEX.jsonl from archived reports..." -ForegroundColor Yellow
+function Get-RepoRoot {
+  if ($env:REPO_ROOT) { return (Resolve-Path $env:REPO_ROOT).Path }
+  if ($env:GITHUB_WORKSPACE) { return (Resolve-Path $env:GITHUB_WORKSPACE).Path }
+  $top = git rev-parse --show-toplevel 2>$null
+  if ($LASTEXITCODE -eq 0 -and $top) { return $top.Trim() }
+  return (Resolve-Path (Join-Path $PSScriptRoot '..\..\..')).Path
+}
+
+$repoRoot = Get-RepoRoot
+if (-not $ArchivedRoot) { $ArchivedRoot = Join-Path $repoRoot 'docs/BossCat/run-reports/archived' }
+if (-not $OutFile) { $OutFile = Join-Path $repoRoot 'docs/BossCat/run-reports/INDEX.jsonl' }
+if ($ArchivedRoot -notmatch '^[A-Za-z]:\\|^/' ) { $ArchivedRoot = Join-Path $repoRoot $ArchivedRoot }
+if ($OutFile -notmatch '^[A-Za-z]:\\|^/' ) { $OutFile = Join-Path $repoRoot $OutFile }
+
+if ($OutFile -match '[/\\]BossCat[/\\]BossCat([/\\]|$)') {
+  throw "Refusing nested BossCat output: $OutFile"
+}
+
+Write-Host "Generating INDEX.jsonl from archived reports (root=$repoRoot)..." -ForegroundColor Yellow
 
 if (-not (Test-Path $ArchivedRoot)) {
   Write-Error "Archived root not found: $ArchivedRoot"

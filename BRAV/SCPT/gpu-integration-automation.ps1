@@ -404,7 +404,7 @@ function Deploy-GPUIntegration {
     
     # Deploy GPU sidecars
     try {
-        $deployResult = docker-compose -f docker-compose.gpu.yml up -d
+        $deployResult = docker-compose -f compose/docker-compose.gpu.yml up -d
         if ($LASTEXITCODE -eq 0) {
             Write-ECRRLog "GPU sidecars deployed successfully"
         } else {
@@ -699,7 +699,7 @@ function Cleanup-GPUIntegration {
     
     # Stop GPU sidecars
     try {
-        docker-compose -f docker-compose.gpu.yml down
+        docker-compose -f compose/docker-compose.gpu.yml down
         Write-ECRRLog "GPU sidecars stopped"
     } catch {
         Write-ECRRLog "Failed to stop GPU sidecars: $($_.Exception.Message)" "ERROR"

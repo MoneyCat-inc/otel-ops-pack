@@ -109,9 +109,9 @@ function Start-GPUWorkflow {
         Write-ECRRLog "Starting GPU sidecar containers..."
         try {
             if ($DryRun) {
-                Write-ECRRLog "DRY RUN: Would start GPU containers with docker-compose -f docker-compose.gpu.yml up -d"
+                Write-ECRRLog "DRY RUN: Would start GPU containers with docker-compose -f compose/docker-compose.gpu.yml up -d"
             } else {
-                $startResult = docker-compose -f docker-compose.gpu.yml up -d 2>&1
+                $startResult = docker-compose -f compose/docker-compose.gpu.yml up -d 2>&1
                 if ($LASTEXITCODE -eq 0) {
                     Write-ECRRLog "GPU sidecars started successfully"
                     Start-Sleep -Seconds 10  # Wait for services to initialize
@@ -177,9 +177,9 @@ function Stop-GPUWorkflow {
     # Stop GPU sidecars
     try {
         if ($DryRun) {
-            Write-ECRRLog "DRY RUN: Would stop GPU containers with docker-compose -f docker-compose.gpu.yml down"
+            Write-ECRRLog "DRY RUN: Would stop GPU containers with docker-compose -f compose/docker-compose.gpu.yml down"
         } else {
-            $stopResult = docker-compose -f docker-compose.gpu.yml down 2>&1
+            $stopResult = docker-compose -f compose/docker-compose.gpu.yml down 2>&1
             if ($LASTEXITCODE -eq 0) {
                 Write-ECRRLog "GPU sidecars stopped successfully"
             } else {
@@ -577,7 +577,7 @@ switch ($Action) {
         if ($DryRun) {
             Write-ECRRLog "DRY RUN: Would deploy GPU sidecars"
         } else {
-            $deployResult = docker-compose -f docker-compose.gpu.yml up -d
+            $deployResult = docker-compose -f compose/docker-compose.gpu.yml up -d
             if ($LASTEXITCODE -eq 0) {
                 Write-ECRRLog "GPU sidecars deployed successfully"
             } else {

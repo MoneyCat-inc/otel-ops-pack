@@ -1,3 +1,4 @@
+# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 # Resonai ↔ OTel Wiring Verification Script
 # Tests the analytics forwarding from /api/events to SigNoz via OTLP/HTTP
 # Updated with progress indicators for better user experience

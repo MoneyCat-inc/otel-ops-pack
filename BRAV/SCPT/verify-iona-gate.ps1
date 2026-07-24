@@ -147,7 +147,7 @@ if ($SkipSyntheticSpan) {
 } else {
     try {
         # Set environment variables for Node OTLP emitter
-        $env:OTEL_EXPORTER_OTLP_ENDPOINT = "http://127.0.0.1:5318"
+        $env:OTEL_EXPORTER_OTLP_ENDPOINT = "http://127.0.0.1:5321"
         $env:OTEL_SERVICE_NAME = "iona-app"
         
         # Run Node.js synthetic span emitter (replaces Python implementation)
@@ -273,3 +273,4 @@ if ($script:errors.Count -eq 0) {
     Write-Host "═══════════════════════════════════════════" -ForegroundColor Red
     exit 1
 }
+

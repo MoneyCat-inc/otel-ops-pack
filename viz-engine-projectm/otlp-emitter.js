@@ -1,3 +1,4 @@
+// HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 // Gate #020 - Minimal OTLP Span Emitter
 // ECRR: BossCat OEM | Executor: Cursor{Implementer}
 // Purpose: Emit OTLP spans for canary events to SigNoz

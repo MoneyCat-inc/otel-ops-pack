@@ -2,7 +2,7 @@ name: BossCat Run Rotation
 
 on:
   schedule:
-    - cron: '*/30 * * * *' # Every 30 minutes
+    - cron: '*/30 * * * *'
   workflow_dispatch:
     inputs:
       dry_run:
@@ -41,19 +41,37 @@ permissions:
   contents: read
 
 env:
-  # Safe defaults for steady-state
   CHUNK_SIZE: ${{ inputs.chunk_size || '1000' }}
   ARCH_QPS: ${{ inputs.arch_qps || '2.0' }}
   DELETE_QPS: ${{ inputs.delete_qps || '1.0' }}
   ARCH_CONCURRENCY: ${{ inputs.arch_concurrency || '24' }}
   DRY_RUN: ${{ inputs.dry_run || 'false' }}
+  EVIDENCE_REPO: MoneyCat-inc/otel-ops-evidence
 
 jobs:
   rotate:
     runs-on: windows-latest
     steps:
-      - name: Checkout
+      - name: Require EVIDENCE_REPO_TOKEN
+        shell: bash
+        env:
+          EVIDENCE_REPO_TOKEN: ${{ secrets.EVIDENCE_REPO_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "${EVIDENCE_REPO_TOKEN:-}" ]; then
+            echo "::error::EVIDENCE_REPO_TOKEN secret is missing (fine-grained PAT → otel-ops-evidence Contents R/W)."
+            exit 1
+          fi
+
+      - name: Checkout ops pack
         uses: actions/checkout@v4
+
+      - name: Checkout evidence repo
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.EVIDENCE_REPO }}
+          token: ${{ secrets.EVIDENCE_REPO_TOKEN }}
+          path: evidence-repo
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -70,13 +88,14 @@ jobs:
         shell: pwsh
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          pwsh BRAV/SCPT/run-archiver/preflight.ps1
+        run: pwsh BRAV/SCPT/run-archiver/preflight.ps1
 
-      - name: Run rotation conveyor
+      - name: Run rotation conveyor into evidence checkout
         shell: pwsh
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO_ROOT: ${{ github.workspace }}/evidence-repo
+          SKIP_BOSSCAT_LOG: 'true'
         run: |
           $dry = ($env:DRY_RUN -eq 'true')
           pwsh BRAV/SCPT/run-archiver/run-conveyor.ps1 `
@@ -86,3 +105,19 @@ jobs:
             -ArchConcurrency ([int]$env:ARCH_CONCURRENCY) `
             -DryRun:$dry
 
+      - name: Push evidence repo (fail loud)
+        shell: bash
+        working-directory: evidence-repo
+        env:
+          EVIDENCE_REPO_TOKEN: ${{ secrets.EVIDENCE_REPO_TOKEN }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/BossCat/run-reports CHAR/EVID || true
+          if git diff --cached --quiet; then
+            echo "No evidence changes to push."
+            exit 0
+          fi
+          git commit -m "docs(ecrr): run-rotation update [skip ci]"
+          git push
