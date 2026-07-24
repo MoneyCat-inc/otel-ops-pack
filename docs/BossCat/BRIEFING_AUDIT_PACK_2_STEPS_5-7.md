@@ -101,6 +101,7 @@ reduction: ~33k files. State both numbers in the PR.
 ## Task 7 — Root sweep + compose canonicalization
 
 ### 7A Root evidence MDs
+- **Also:** remove temporary lychee-ignore on https://hub.resonai.uk/ in root README once the hub URL is fixed or rewritten (known 404 debt; patreon 403 ignore may remain). Scope docs/runbooks/windows-collector.md markdownlint-disable to specific MD rules instead of whole-file.
 - 127 evidence/session MDs at root (`GATE_*`, `BOSSCAT_*`, `SESSION_*`, `AMBER_*`,
   `COLLECTOR_5317_*`, etc.). Move to `docs/gate/archive/` preserving names.
   Use `git mv` so history follows.
