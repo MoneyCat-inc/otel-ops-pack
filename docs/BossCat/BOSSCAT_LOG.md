@@ -1,6 +1,8 @@
 <!-- markdownlint-disable-file -->
 # BOSSCAT_LOG (one-liners)
 
+- 2026-07-24T12:27:23Z — **[D2 RESOLVED]** Secret name \EVIDENCE_REPO_TOKEN\; repo MoneyCat-inc/otel-ops-evidence created (private). PAT: fine-grained, otel-ops-evidence only, Contents R/W, 90-day expiry — log rotation date here when provisioned. Live archiver STOP until secret exists. — **Cursor{Implementer}**
+- 2026-07-24T12:27:23Z — **[PACK2/6]** Extracted docs/BossCat/run-reports/ → otel-ops-evidence (25468 files verified). Pointer README left in ops pack. Archiver/rotation fail-loud on missing EVIDENCE_REPO_TOKEN. — **Cursor{Implementer}**
 - 2026-07-24T12:13:48Z — **[PACK2/7B]** Promote docker-compose-optimized.yml → docker-compose.yml; park legacy/viz/gpu/signoz variants under compose/; update BRAV operator scripts + guardrails. — **Cursor{Implementer}**
 - 2026-07-24T12:11:38Z — **[PACK2/5B]** Removed nested docs/BossCat/BossCat/ (7227 files). Spot-check 10 badges + 10 archived MDs hash-identical to docs/BossCat/run-reports/. CHAR/DOCS/docs/ left alone (D3 DIVERGED — Pack 3). — **Cursor{Implementer}**
 - 2026-07-24T12:10:48Z — **[PACK2/5A]** Archiver path-doubling fix: resolveRepoRoot via REPO_ROOT/GITHUB_WORKSPACE/git toplevel; assertNotNestedBossCat guard; fix-paths no longer Move-Item into existing docs/BossCat (that created BossCat/BossCat). Faulty expr was cwd/../../.. . — **Cursor{Implementer}**
