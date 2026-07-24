@@ -59,16 +59,16 @@ reason + restore step). Restore protection immediately after.
    canonical `docker-compose.yml`; `demo-app` under `profiles: [demo]`
 4. ~~Gate-def contract re-audit (#361)~~ — #356 holds; no shim reintro;
    U+2022 check-context poller gotcha documented
-5. Quiet-repo gate (abandon `audit-pack-2`, clear open PRs, remotes pushed)
-6. Mirror snapshot (`git clone --mirror` local rollback)
-7. filter-repo (media/LFS purge targets from audit) **with commit-map → evidence repo**
-8. Force-push (logged bypass) + restore protection
-9. **Post-rewrite verification (gate closes on proof):**
-   - Confirm commit-map contains `c937bd832` → `<newSHA>`.
-   - Confirm `git rev-parse origin/main` (post-push) equals the mapped `<newSHA>`.
-   - Confirm mirror clone still resolves `c937bd832` (`git -C <mirror> rev-parse c937bd832`
-     and `git -C <mirror> cat-file -t c937bd832` → `commit`).
-   - Log one `BOSSCAT_LOG` line: mapped SHA pair + mirror path held.
+5. ~~Quiet-repo gate~~ (0 open PRs; 68 stale remote branches pruned after mirror)
+
+6. ~~Mirror snapshot~~ (`E:\otel-ops-pack-pre-pack3.git`; main=`c2ff77f3b`; heads/tags match; holds `c937bd832`)
+
+7. ~~filter-repo~~ (purged `docs/Art/*.mp4` + `CHAR/DOCS/docs/LOGO/`; commit-map → evidence `docs/filter-repo/commit-map-20260724.txt`)
+
+8. ~~Force-push~~ (protection deleted briefly → push `978d3f36` → restored; allow_force_pushes=false)
+
+9. ~~**Post-rewrite verification**~~ (map D2 + mirror still holds old SHAs; logged)
+
 10. Repo split (viz-engine / scorebot / moneycat site / SOCM) per original audit
 
 ## Out of scope here
