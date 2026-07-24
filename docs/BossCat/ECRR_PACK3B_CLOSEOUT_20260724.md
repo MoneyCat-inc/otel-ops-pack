@@ -1,6 +1,9 @@
 <!-- markdownlint-disable MD013 MD022 MD032 MD058 -->
 # ECRR — Pack 3B closeout (audit arc gate)
 
+**Archive note:** filed under `docs/BossCat/` so this closeout rides the docs lane (CHAR disposition remains parked).
+
+
 **Date:** 2026-07-24  
 **Actor:** Cursor Agent (BossCat OEM authority)  
 **Repo tip:** `cda689bf` (post-#377 main)  
