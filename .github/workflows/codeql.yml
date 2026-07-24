@@ -11,6 +11,10 @@
 #
 name: "CodeQL Advanced"
 
+# Required context "CodeQL" is app-bound to github-code-scanning (57789).
+# This workflow reports "Analyze (<lang>)" — not the required context name.
+# No path filters — keep unfiltered. An Actions shim named "CodeQL" cannot
+# satisfy app_id 57789; do not add one.
 on:
   push:
     branches: [ "main" ]
@@ -21,7 +25,7 @@ on:
 
 concurrency:
   group: codeql-advanced-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   analyze:

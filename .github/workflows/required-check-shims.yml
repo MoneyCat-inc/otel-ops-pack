@@ -1,70 +1,49 @@
-# Required-check path-filter shims
+# Required-check path-filter shims — VERIFIED 2026-07-24 (#356)
 #
-# Branch protection requires these check *names* (Settings → Branches, verbatim).
-# Source of truth is the Settings list / API — not workflow `name:` strings alone.
-# Reported name = job `name:` (or job id if unnamed). Matrix → `job (value)`.
-# Reusable → `caller / inner`.
-#
-# Pattern: companion jobs with the identical required name that always report on
-# pull_request so a path-filtered (or cancelled) primary cannot leave the check
-# stuck at "Expected — Waiting for status". Primaries that already always-run
-# (gate-site-evidence, gitleaks) keep doing real work; these shims are a thin
-# always-report safety net with cancel-in-progress disabled.
-#
-# Names copied 2026-07-24 from:
-#   GET /repos/.../branches/main/protection/required_status_checks
+# Branch protection contexts (Settings / API verbatim):
 #   CodeQL | PSScriptAnalyzer | gitleaks |
 #   Gate • k6 thresholds | Gate • synthetic trace (OTLP/HTTP) |
 #   Site • links + a11y + CSP (coarse)
 #
-# CodeQL + PSScriptAnalyzer are also reported by app github-code-scanning (57789).
-# Actions jobs below satisfy the same *context string* when protection matches by
-# name; keep Settings names in lockstep if either app’s label changes.
+# Source-app binding:
+#   CodeQL + PSScriptAnalyzer → app 57789 (github-code-scanning). An Actions job
+#   with the same name can never satisfy an app-bound context — shims are useless
+#   for those two. Deadlock cure (if any) = unfilter the primary triggers.
+#
+# Path-filter audit (this PR):
+#   codeql.yml (CodeQL Advanced)     — pull_request: branches only; NO paths
+#   powershell.yml (PSScriptAnalyzer)— pull_request: branches only; NO paths
+#   gitleaks.yml                     — pull_request: branches only; NO paths
+#   gate-site-evidence.yml           — pull_request: branches only; NO paths
+#
+# Conclusion: no path-filter deadlock on any required Actions primary. Always-green
+# companion jobs that share a context with a primary are a latest-wins hazard
+# (shim SUCCESS can land after primary FAIL). Therefore this workflow intentionally
+# defines zero jobs.
+#
+# If a future change adds `paths:` to gate-site-evidence.yml, add inverse
+# `paths-ignore:` (same list) jobs here with identical `name:` strings and a
+# one-line comment per job: "Inverse of gate-site-evidence.yml paths — keep in sync."
+# Mixed path PRs still need a single-job primary (conditional steps), not dual workflows.
 
 name: Required check shims
 
 on:
   pull_request:
     branches: [main]
-
-# Never cancel — required contexts must finish.
-concurrency:
-  group: required-check-shims-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: false
+    paths:
+      # Only self-trigger when this contract file changes (docs the pairing).
+      - .github/workflows/required-check-shims.yml
 
 permissions:
   contents: read
 
 jobs:
-  # CodeQL + PSScriptAnalyzer: required via app github-code-scanning (57789).
-  # They already report on docs-only PRs (#351 evidence). No Actions always-green
-  # shim — would not satisfy app_id 57789 and would only add check-list noise.
-  #
-  # gitleaks: primary has no path filter; no always-green shim (latest-wins risk).
-
-  gate_k6:
-    name: "Gate • k6 thresholds"
+  contract:
+    name: shim-contract (no required contexts)
     runs-on: ubuntu-latest
     steps:
-      - name: Shim report
+      - name: Confirm no competing required-context jobs
         run: |
-          echo "Required-check shim for 'Gate • k6 thresholds' (Settings verbatim)."
-          echo "Primary: gate-site-evidence.yml job gate_perf (PR short-circuit)."
-
-  gate_trace:
-    name: "Gate • synthetic trace (OTLP/HTTP)"
-    runs-on: ubuntu-latest
-    steps:
-      - name: Shim report
-        run: |
-          echo "Required-check shim for 'Gate • synthetic trace (OTLP/HTTP)' (Settings verbatim)."
-          echo "Primary: gate-site-evidence.yml job gate_trace (PR short-circuit)."
-
-  site:
-    name: "Site • links + a11y + CSP (coarse)"
-    runs-on: ubuntu-latest
-    steps:
-      - name: Shim report
-        run: |
-          echo "Required-check shim for 'Site • links + a11y + CSP (coarse)' (Settings verbatim)."
-          echo "Primary: gate-site-evidence.yml job site_checks (PR short-circuit)."
+          echo "No Gate/Site/gitleaks/CodeQL shim jobs — primaries are unfiltered."
+          echo "See header comment for re-introduction rules if paths: are added later."

@@ -1,4 +1,6 @@
 name: Gitleaks Security Scan
+# Required context "gitleaks" (app 15368). No path filters — secret scan every PR.
+# Do not add an always-green shim (latest-wins would mask a FAIL).
 on:
   push:
     branches:
@@ -12,7 +14,7 @@ on:
     - cron: 0 2 * * * # Daily at 2 AM
   workflow_dispatch:
 
-# Required context "gitleaks" — do not cancel mid-run (branch protection).
+# Do not cancel mid-run (branch protection).
 concurrency:
   group: gitleaks-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: false
