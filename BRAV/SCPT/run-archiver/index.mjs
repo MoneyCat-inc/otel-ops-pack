@@ -185,6 +185,7 @@ async function appendEvidence(lines) {
 }
 
 async function appendBossCatLog(message) {
+  if ((process.env.SKIP_BOSSCAT_LOG || '').toLowerCase() === 'true') return;
   const logPath = rootJoin('docs', 'BossCat', 'BOSSCAT_LOG.md');
   const ts = new Date().toISOString();
   const line = `- ${ts} — ${message}`;

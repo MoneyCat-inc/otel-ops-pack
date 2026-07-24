@@ -820,11 +820,13 @@ async function main() {
   const logEntry = `- ${new Date().toISOString()} — Conveyor: Archived ${archived}, Deleted ${deletedCount}, Remaining ${finalCount}`;
   try {
     const logPath = abs('docs/BossCat/BOSSCAT_LOG.md');
-    let logContent = '';
-    if (existsSync(logPath)) {
-      logContent = await readFile(logPath, 'utf8');
+    if ((process.env.SKIP_BOSSCAT_LOG || '').toLowerCase() !== 'true') {
+      let logContent = '';
+      if (existsSync(logPath)) {
+        logContent = await readFile(logPath, 'utf8');
+      }
+      await writeFile(logPath, (logContent.trimEnd() + '\n' + logEntry + '\n'), 'utf8');
     }
-    await writeFile(logPath, (logContent.trimEnd() + '\n' + logEntry + '\n'), 'utf8');
   } catch (e) {
     console.warn(`Could not update BossCat log: ${e.message}`);
   }

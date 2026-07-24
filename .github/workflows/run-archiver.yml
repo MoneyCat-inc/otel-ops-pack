@@ -7,8 +7,7 @@ on:
 
 permissions:
   actions: read
-  contents: write
-  pull-requests: write
+  contents: read
 
 concurrency:
   group: run-archiver
@@ -16,15 +15,35 @@ concurrency:
 
 jobs:
   archive:
-    name: Analyze runs and rotate reports
+    name: Analyze runs and publish to evidence repo
     runs-on: ubuntu-latest
     env:
       MAX_ON_REPO: ${{ inputs.MAX_ON_REPO || '100' }}
       DRY_RUN: 'false'
       AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
+      EVIDENCE_REPO: MoneyCat-inc/otel-ops-evidence
     steps:
-      - name: Checkout
+      - name: Require EVIDENCE_REPO_TOKEN
+        env:
+          EVIDENCE_REPO_TOKEN: ${{ secrets.EVIDENCE_REPO_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "${EVIDENCE_REPO_TOKEN:-}" ]; then
+            echo "::error::EVIDENCE_REPO_TOKEN secret is missing."
+            echo "Provision a fine-grained PAT (MoneyCat-inc / otel-ops-evidence only / Contents R/W),"
+            echo "store it as repo secret EVIDENCE_REPO_TOKEN, and log the 90-day rotation date in BOSSCAT_LOG."
+            exit 1
+          fi
+
+      - name: Checkout ops pack (read — generates reports)
         uses: actions/checkout@v4
+
+      - name: Checkout evidence repo (write target)
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.EVIDENCE_REPO }}
+          token: ${{ secrets.EVIDENCE_REPO_TOKEN }}
+          path: evidence-repo
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -35,8 +54,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: BRAV/SCPT/run-archiver
-        run: |
-          npm ci
+        run: npm ci
 
       - name: Configure optional AWS credentials
         if: env.AWS_ROLE_ARN != ''
@@ -45,67 +63,33 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Run archiver
+      - name: Run archiver into evidence checkout
         working-directory: BRAV/SCPT/run-archiver
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REPO_ROOT: ${{ github.workspace }}
+          REPO_ROOT: ${{ github.workspace }}/evidence-repo
           MAX_ON_REPO: ${{ env.MAX_ON_REPO }}
           DRY_RUN: ${{ env.DRY_RUN }}
           AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
           S3_BUCKET: ${{ secrets.S3_BUCKET }}
           S3_PREFIX: ${{ secrets.S3_PREFIX }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
-        run: |
-          node index.mjs
+          # Skip BOSSCAT_LOG append in evidence repo (lives in ops pack)
+          SKIP_BOSSCAT_LOG: 'true'
+        run: node index.mjs
 
-      # main is branch-protected. GITHUB_TOKEN can push a bot branch but cannot
-      # create PRs unless Actions → "Allow GitHub Actions to create and approve
-      # pull requests" is enabled. Keep the workflow green by updating the branch;
-      # create a PR only when missing (best-effort).
-      - name: Commit run-reports to bot branch
+      - name: Push evidence repo (fail loud — no continue-on-error)
+        working-directory: evidence-repo
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EVIDENCE_REPO_TOKEN: ${{ secrets.EVIDENCE_REPO_TOKEN }}
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git fetch origin main
-          git checkout -B bots/run-archiver-reports origin/main
-          git add docs/BossCat CHAR/EVID || true
+          git add docs/BossCat/run-reports CHAR/EVID || true
           if git diff --cached --quiet; then
-            echo "No report changes to commit."
-            echo "HAS_CHANGES=false" >> "$GITHUB_ENV"
+            echo "No evidence changes to push."
             exit 0
           fi
-          git commit -m "docs(ecrr): run-archiver report update [skip ci]"
-          git push --force origin HEAD:bots/run-archiver-reports
-          echo "HAS_CHANGES=true" >> "$GITHUB_ENV"
-
-      - name: Ensure run-reports PR exists
-        if: env.HAS_CHANGES == 'true'
-        env:
-          GH_TOKEN: ${{ secrets.BOSSCAT_TOKEN }}
-          FALLBACK_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          set -euo pipefail
-          open_pr="$(gh pr list --head bots/run-archiver-reports --state open --json number,url -q '.[0].url' || true)"
-          if [ -n "${open_pr}" ]; then
-            echo "PR already open: ${open_pr}"
-            exit 0
-          fi
-          if [ -z "${GH_TOKEN}" ]; then
-            export GH_TOKEN="${FALLBACK_TOKEN}"
-          fi
-          if gh pr create \
-            --base main \
-            --head bots/run-archiver-reports \
-            --title "docs(ecrr): run-archiver report update [skip ci]" \
-            --label automated \
-            --label docs \
-            --body "Automated run-archiver update (run ${{ github.run_number }}). Uses a PR because main is branch-protected."; then
-            echo "Created PR"
-          else
-            echo "::warning::Branch pushed but PR was not created automatically."
-            echo "Open: https://github.com/${{ github.repository }}/compare/main...bots/run-archiver-reports?expand=1"
-          fi
+          git commit -m "docs(ecrr): run-archiver update [skip ci]"
+          git push

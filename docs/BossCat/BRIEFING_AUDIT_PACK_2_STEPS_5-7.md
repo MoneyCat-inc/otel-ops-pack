@@ -15,7 +15,7 @@ regression trap — the next scheduled archiver run will recreate `docs/BossCat/
 | ID | Status | Resolution |
 |----|--------|------------|
 | **D1** | **RESOLVED** | `docker-compose-optimized.yml` is the de facto canonical SigNoz stack (operator/ref counts beat plain `docker-compose.yml`). **Action in Task 7B:** rename `-optimized` → `docker-compose.yml`; move current default `docker-compose.yml` to `compose/legacy.yml` (or delete if superseded); update all references. Park `.viz` / `.gpu` in `compose/` unrenamed — they leave with the viz-engine repo split. |
-| **D2** | **PREFERRED** | Fine-grained PAT scoped to `MoneyCat-inc/otel-ops-evidence` (least privilege). Deploy keys are awkward from Actions. **Still STOP** until the secret *name* is provisioned in the ops pack repo — do not invent it; leave a TODO in the workflow if missing. |
+| **D2** | **RESOLVED** | Secret name: `EVIDENCE_REPO_TOKEN`. Repo `MoneyCat-inc/otel-ops-evidence` (private) created. Fine-grained PAT: resource owner MoneyCat-inc, repo access **otel-ops-evidence only**, Contents R/W, 90-day expiry (log rotation date in BOSSCAT_LOG when provisioned). Archiver fails loud if secret missing (no continue-on-error). **STOP for live archiver** until secret is added under that exact name. |
 | **D3** | **OPEN** | Run hash comparison of `CHAR/DOCS/docs/` vs `docs/`. Pure mirror → delete. Diverged → STOP, list paths in PR; do not delete. |
 
 ### Standing rule (gate definitions) — from Pack 1 retrospective
