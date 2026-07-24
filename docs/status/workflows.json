@@ -276,18 +276,18 @@
     },
     {
       "name": "deploy-moneycat",
-      "modified": "2026-07-24T15:58:08.3843304Z",
+      "modified": "2026-07-24T18:11:26.7508697Z",
       "path": ".github/workflows/deploy-moneycat.yml",
-      "size": 3006,
+      "size": 2880,
       "triggers": {
         "issues": false,
         "other": [],
         "pull_request": false,
-        "push": true,
+        "push": false,
         "release": false,
         "schedule": false,
         "workflow_call": false,
-        "workflow_dispatch": true,
+        "workflow_dispatch": false,
         "workflow_run": false
       }
     },

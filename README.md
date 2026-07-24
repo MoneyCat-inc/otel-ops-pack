@@ -173,3 +173,4 @@ pwsh -File scripts\preflight-health-check.ps1
 - **[socm](https://github.com/MoneyCat-inc/socm)** — Bluesky / social ops (extracted Pack 3B)
 - **[scorebot](https://github.com/MoneyCat-inc/scorebot)** — Visual quality metrics (extracted Pack 3B)
 - **[viz-engine](https://github.com/MoneyCat-inc/viz-engine)** — Milkdrop / ProjectM / Butterchurn (extracted Pack 3B)
+- **[moneycat-site](https://github.com/MoneyCat-inc/moneycat-site)** — MoneyCat Inc company site (extracted Pack 3B)
