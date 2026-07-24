@@ -1,21 +1,36 @@
 {
-  "generatedAt": "2026-07-13T10:46:30Z",
+  "generatedAt": "2026-07-24T13:53:48Z",
   "metrics": {
-    "totalReports": 386,
-    "hasFourSection": 386,
-    "hasEcrrGate": 386,
-    "hasActor": 386,
+    "totalReports": 392,
+    "hasFourSection": 390,
+    "hasEcrrGate": 390,
+    "hasActor": 387,
     "hasProductionMarker": 91
   },
   "complianceRates": {
-    "fourSection": 100.0,
-    "ecrrGate": 100.0,
-    "actor": 100.0,
-    "production": 23.6,
-    "fullyCompliant": 23.6
+    "fourSection": 99.5,
+    "ecrrGate": 99.5,
+    "actor": 98.7,
+    "production": 23.2,
+    "fullyCompliant": 23.2
   },
   "fullyCompliantCount": 91,
   "nonCompliant": [
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\2026-07-15_nightly_dashboard_export.md",
+      "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\2026-07-24_nightly_dashboard_export.md",
+      "issues": [
+        "missing_four_section",
+        "missing_ecrr_gate",
+        "missing_actor_declaration",
+        "missing_production_marker"
+      ]
+    },
     {
       "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\BOSS_V2_RUN.md",
       "issues": [
@@ -437,6 +452,13 @@
       ]
     },
     {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_COLLECTOR_RESTORE_20260724.md",
+      "issues": [
+        "missing_actor_declaration",
+        "missing_production_marker"
+      ]
+    },
+    {
       "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_CONVEYOR_CHUNK_20251014_093649.md",
       "issues": [
         "missing_production_marker"
@@ -481,6 +503,13 @@
     {
       "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_DEPENDABOT_PR_CLOSEOUT_20260626.md",
       "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_DEPENDABOT_PR333_CLOSEOUT_20260716.md",
+      "issues": [
+        "missing_actor_declaration",
         "missing_production_marker"
       ]
     },
@@ -1243,6 +1272,22 @@
     {
       "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20260613_124129.md",
       "issues": [
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20260716_163854.md",
+      "issues": [
+        "missing_actor_declaration",
+        "missing_production_marker"
+      ]
+    },
+    {
+      "file": "C:\\otel\\CHAR\\ECRR\\ECRR_REPORTS\\ECRR_GATE_RUN_20260724_093126.md",
+      "issues": [
+        "missing_four_section",
+        "missing_ecrr_gate",
+        "missing_actor_declaration",
         "missing_production_marker"
       ]
     },

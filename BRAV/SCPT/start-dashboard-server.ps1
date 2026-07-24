@@ -1,3 +1,4 @@
+# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 # PowerShell script to start a local web server for the dashboard hub
 # This avoids CORS issues when accessing SigNoz APIs from file:// protocol
 

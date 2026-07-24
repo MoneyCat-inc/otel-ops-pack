@@ -45,7 +45,7 @@ function Test-ServiceHealth {
     
     try {
         # Check Docker container status
-        $containerStatus = docker compose -f docker-compose-optimized.yml ps $ServiceName --format "{{.State}}" 2>$null
+        $containerStatus = docker compose -f docker-compose.yml ps $ServiceName --format "{{.State}}" 2>$null
         if ($containerStatus -ne "running") {
             return @{ Status = "unhealthy"; Reason = "Container not running: $containerStatus" }
         }
@@ -107,13 +107,13 @@ function Invoke-AutoRemediation {
         switch ($Issue) {
             "Container not running" {
                 Write-Info "Restarting $ServiceName..."
-                docker compose -f docker-compose-optimized.yml restart $ServiceName
+                docker compose -f docker-compose.yml restart $ServiceName
                 Start-Sleep -Seconds 10
                 return $true
             }
             "Health endpoint unreachable" {
                 Write-Info "Checking logs for $ServiceName..."
-                $logs = docker compose -f docker-compose-optimized.yml logs --tail=10 $ServiceName
+                $logs = docker compose -f docker-compose.yml logs --tail=10 $ServiceName
                 Write-Info "Recent logs: $logs"
                 return $false
             }

@@ -1,16 +1,18 @@
 # ECRR Compliance Report
 
-Generated: 2026-07-13T10:46:30Z
+Generated: 2026-07-24T13:53:48Z
 
 ## Metrics
-- Total Reports: 386
-- Four-Section Compliance: 100%
-- ECRR Gate Compliance: 100%
-- Actor Declaration Compliance: 100%
-- Production Marker Presence: 23.6%
-- Fully Compliant: 23.6% (91/386)
+- Total Reports: 392
+- Four-Section Compliance: 99.5%
+- ECRR Gate Compliance: 99.5%
+- Actor Declaration Compliance: 98.7%
+- Production Marker Presence: 23.2%
+- Fully Compliant: 23.2% (91/392)
 
 ## Top Non-compliance Samples (up to 20)
+- `C:\otel\CHAR\ECRR\ECRR_REPORTS\2026-07-15_nightly_dashboard_export.md`: missing_production_marker
+- `C:\otel\CHAR\ECRR\ECRR_REPORTS\2026-07-24_nightly_dashboard_export.md`: missing_four_section, missing_ecrr_gate, missing_actor_declaration, missing_production_marker
 - `C:\otel\CHAR\ECRR\ECRR_REPORTS\BOSS_V2_RUN.md`: missing_production_marker
 - `C:\otel\CHAR\ECRR\ECRR_REPORTS\BOSSCAT_GITHUB_ACTIONS_CLEANUP_20251014.md`: missing_production_marker
 - `C:\otel\CHAR\ECRR\ECRR_REPORTS\compliance-1760689725130.md`: missing_production_marker
@@ -29,5 +31,3 @@ Generated: 2026-07-13T10:46:30Z
 - `C:\otel\CHAR\ECRR\ECRR_REPORTS\compliance-1760692725199.md`: missing_production_marker
 - `C:\otel\CHAR\ECRR\ECRR_REPORTS\compliance-1760692946730.md`: missing_production_marker
 - `C:\otel\CHAR\ECRR\ECRR_REPORTS\compliance-1760693025210.md`: missing_production_marker
-- `C:\otel\CHAR\ECRR\ECRR_REPORTS\compliance-1760693246730.md`: missing_production_marker
-- `C:\otel\CHAR\ECRR\ECRR_REPORTS\compliance-1760693325223.md`: missing_production_marker

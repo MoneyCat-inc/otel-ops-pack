@@ -136,3 +136,7 @@ artifacts/hub-smoke-*.json
 artifacts/monitoring-report-*.json
 artifacts/canary-ecrr-report.txt
 
+
+# Rotated env backups (never commit)
+.env.bak*
+*.env.bak*

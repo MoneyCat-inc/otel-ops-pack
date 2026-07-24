@@ -1,3 +1,4 @@
+# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 <#
 .SYNOPSIS
   Sends a one-off canary span to the collector. With -Force, skips port checks and sends anyway.

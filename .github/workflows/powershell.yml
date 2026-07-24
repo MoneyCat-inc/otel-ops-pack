@@ -9,6 +9,9 @@
 
 name: PSScriptAnalyzer
 
+# Required context "PSScriptAnalyzer" is app-bound to github-code-scanning (57789).
+# This Actions job shares the name but may not satisfy app-bound protection.
+# No path filters — keep unfiltered so the Actions reporter always runs too.
 on:
   push:
     branches: [ "main" ]
@@ -17,9 +20,10 @@ on:
   schedule:
     - cron: '33 5 * * 2'
 
+# Do not cancel mid-run (branch protection).
 concurrency:
   group: psscriptanalyzer-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 permissions:
   contents: read

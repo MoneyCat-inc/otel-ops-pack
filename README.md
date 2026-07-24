@@ -1,3 +1,4 @@
+<!-- markdownlint-disable MD013 MD022 MD032 MD034 -->
 # 🐾 Resonai [OTel] — OpenTelemetry Observability Pack
 
 [![ECRR](https://img.shields.io/badge/ECRR-Examine→Clean→Report→Role-7c5cff?style=for-the-badge&logo=gitbook&logoColor=white)](docs/BossCat/CHARTER.md)
@@ -50,7 +51,7 @@ A **small, evidence-first** Windows observability pack:
 - **PowerShell 7+** (monitoring scripts)
 - **Docker** (SigNoz stack)
 - **SigNoz UI:** http://localhost:8080
-- **OTLP ingest (Windows collector):** 5317 (gRPC), 5318 (HTTP)
+- **OTLP ingest (Windows collector):** 5320 (gRPC), 5321 (HTTP) — avoids PlariumPlay’s 5300–5319 bind range
 - **OTLP export (collector → SigNoz):** localhost:4317
 
 See [windows/otelcol/README.md](windows/otelcol/README.md) for canonical service configuration.
@@ -59,7 +60,7 @@ See [windows/otelcol/README.md](windows/otelcol/README.md) for canonical service
 
 ## 💚 Support This Project
 
-[![Patreon](https://img.shields.io/badge/Support-Patreon-FF424D?style=for-the-badge&logo=patreon&logoColor=white)](https://www.patreon.com/c/FaeMcLachlan)
+![Patreon](https://img.shields.io/badge/Support-Patreon-FF424D?style=for-the-badge&logo=patreon&logoColor=white)<!-- lychee-ignore -->
 [![Ko-fi](https://img.shields.io/badge/Ko--fi-FF5E5B?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/fubumaki)
 [![Bluesky](https://img.shields.io/badge/Bluesky-0285FF?style=for-the-badge&logo=bluesky&logoColor=white)](https://bsky.app/profile/resonai.bsky.social)
 
@@ -147,7 +148,7 @@ pwsh -File scripts\preflight-health-check.ps1
 
 - **GitHub:** [MoneyCat-inc/otel-ops-pack](https://github.com/MoneyCat-inc/otel-ops-pack)
 - **Bluesky:** [@resonai.bsky.social](https://bsky.app/profile/resonai.bsky.social) · [Starter Pack](https://bsky.app/starter-pack/resonai.bsky.social/3m3rct677yo2t)
-- **Hub:** [hub.resonai.uk](https://hub.resonai.uk/)
+- **Hub:** [https://hub.resonai.uk](https://hub.resonai.uk/)
 - **Ko-fi:** [ko-fi.com/fubumaki](https://ko-fi.com/fubumaki)
 - **Documentation Hub:** [docs/index.html](docs/index.html)
 - **Status Dashboard:** [docs/status.html](docs/status.html)

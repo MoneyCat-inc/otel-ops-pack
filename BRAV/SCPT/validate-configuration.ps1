@@ -258,7 +258,7 @@ Write-Info "Starting configuration validation..."
 # Check required files
 $requiredFiles = @(
     @{
-        Path = "docker-compose-optimized.yml"
+        Path = "docker-compose.yml"
         Description = "Optimized Docker Compose file"
     },
     @{
@@ -354,7 +354,7 @@ $envResult = Test-EnvironmentVariables -FilePath ".env"
 $validationResults.ServiceChecks["environment"] = $envResult
 
 # Validate Docker Compose configuration
-$composeResult = Test-DockerComposeConfiguration -FilePath "docker-compose-optimized.yml"
+$composeResult = Test-DockerComposeConfiguration -FilePath "docker-compose.yml"
 $validationResults.ServiceChecks["docker-compose"] = $composeResult
 
 # Check port availability
@@ -410,9 +410,9 @@ if ($validationResults.Issues.Count -eq 0 -and $validationResults.Warnings.Count
 
 # Add recommendations
 $validationResults.Recommendations = @(
-    "Run 'docker compose -f docker-compose-optimized.yml up -d' to start the stack",
+    "Run 'docker compose -f docker-compose.yml up -d' to start the stack",
     "Monitor stack health with 'scripts/monitor-stack-health.ps1'",
-    "Check logs with 'docker compose -f docker-compose-optimized.yml logs'",
+    "Check logs with 'docker compose -f docker-compose.yml logs'",
     "Access SigNoz UI at http://localhost:8080"
 )
 
