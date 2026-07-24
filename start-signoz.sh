@@ -8,7 +8,7 @@ echo "🚀 Starting SigNoz Observability Stack..."
 
 # Start core services
 echo "📦 Starting ZooKeeper and ClickHouse..."
-docker-compose -f docker-compose-signoz.yml up -d signoz-zookeeper signoz-clickhouse
+docker-compose -f docker-compose.yml up -d signoz-zookeeper signoz-clickhouse
 
 # Wait for ClickHouse to be ready
 echo "⏳ Waiting for ClickHouse to be ready..."
@@ -21,13 +21,13 @@ echo "✅ ClickHouse is ready!"
 
 # Run schema migration
 echo "🔧 Running SigNoz schema migration..."
-docker-compose -f docker-compose-signoz.yml run --rm signoz-schema-migrator
+docker-compose -f docker-compose.yml run --rm signoz-schema-migrator-sync
 
 echo "✅ Schema migration completed!"
 
 # Start remaining services
 echo "📊 Starting SigNoz collector and frontend..."
-docker-compose -f docker-compose-signoz.yml up -d
+docker-compose -f docker-compose.yml up -d
 
 # Wait for services to be healthy
 echo "⏳ Waiting for services to be healthy..."
@@ -35,7 +35,7 @@ sleep 10
 
 # Verify services
 echo "🔍 Verifying services..."
-docker-compose -f docker-compose-signoz.yml ps
+docker-compose -f docker-compose.yml ps
 
 echo "🎉 SigNoz stack is ready!"
 echo "   - SigNoz UI: http://localhost:8080"
