@@ -1,6 +1,7 @@
 <!-- markdownlint-disable-file -->
 # BOSSCAT_LOG (one-liners)
 
+- 2026-07-24T12:11:38Z — **[PACK2/5B]** Removed nested docs/BossCat/BossCat/ (7227 files). Spot-check 10 badges + 10 archived MDs hash-identical to docs/BossCat/run-reports/. CHAR/DOCS/docs/ left alone (D3 DIVERGED — Pack 3). — **Cursor{Implementer}**
 - 2026-07-24T12:10:48Z — **[PACK2/5A]** Archiver path-doubling fix: resolveRepoRoot via REPO_ROOT/GITHUB_WORKSPACE/git toplevel; assertNotNestedBossCat guard; fix-paths no longer Move-Item into existing docs/BossCat (that created BossCat/BossCat). Faulty expr was cwd/../../.. . — **Cursor{Implementer}**
 - 2026-07-24T12:07:46Z — **[PROTECTION PROOF]** PR #356 merged without --admin (merge 708be40f4). reviews→0 + unfiltered required primaries validated in-vivo. — **Cursor{Implementer}**
 - 2026-07-24T12:04:06Z — **[PROTECTION VERIFY]** #356 name-check sign-off: CodeQL/PSScriptAnalyzer/gitleaks/gate-site-evidence all unfiltered on pull_request — no path-filter deadlock; dropped always-green Gate/Site shim jobs (latest-wins risk vs primary). App-bound CodeQL+PSScriptAnalyzer (57789) correctly primary-only. Merge without --admin is the proof. — **Cursor{Implementer}**
