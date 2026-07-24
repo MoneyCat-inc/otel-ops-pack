@@ -221,6 +221,8 @@ services:
     image: otel-otel-demo-app
     container_name: demo-app
     restart: unless-stopped
+    profiles:
+      - demo
     depends_on:
       signoz-otel-collector:
         condition: service_started

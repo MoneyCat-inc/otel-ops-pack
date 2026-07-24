@@ -104,7 +104,7 @@ jobs:
           fi
           
           docker network inspect signoz-net > /dev/null 2>&1 || docker network create signoz-net
-          $COMPOSE_CMD -f compose/docker-compose-signoz.yml up -d
+          $COMPOSE_CMD -f docker-compose.yml up -d
           
           echo "Waiting for ClickHouse to be healthy..."
           timeout 300 bash -c 'until docker exec signoz-clickhouse clickhouse-client --query "SELECT 1" > /dev/null 2>&1; do 
@@ -177,9 +177,9 @@ jobs:
         run: |
           echo "Cleaning up SigNoz infrastructure..."
           if command -v docker-compose &> /dev/null; then
-            docker-compose -f compose/docker-compose-signoz.yml down -v
+            docker-compose -f docker-compose.yml down -v
           else
-            docker compose -f compose/docker-compose-signoz.yml down -v
+            docker compose -f docker-compose.yml down -v
           fi
           echo "[OK] Cleanup complete"
 
