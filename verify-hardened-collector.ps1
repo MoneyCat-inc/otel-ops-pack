@@ -1,3 +1,4 @@
+# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 # Verify Hardened Windows Collector Configuration
 # This script validates the collector configuration and tests connectivity
 

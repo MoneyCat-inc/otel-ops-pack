@@ -49,8 +49,8 @@ exporters:
       max_elapsed_time: 300s
   awsxray:
     region: ${AWS_REGION:-us-east-1}
-  logging:
-    loglevel: ${COLLECTOR_LOG_LEVEL:-info}
+  debug:
+    verbosity: basic
 
 extensions:
   health_check:

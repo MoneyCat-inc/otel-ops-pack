@@ -33,14 +33,14 @@ try {
     # Step 1: Clean deployment if requested
     if ($ForceClean) {
         Write-Info "Force clean mode: Removing all containers, volumes, and networks..."
-        docker compose -f docker-compose-optimized.yml down -v --remove-orphans
+        docker compose -f docker-compose.yml down -v --remove-orphans
         docker system prune -f
         Start-Sleep -Seconds 5
     }
 
     # Step 2: Verify configuration files exist
     $requiredFiles = @(
-        "docker-compose-optimized.yml",
+        "docker-compose.yml",
         "clickhouse-cluster-config.xml",
         "clickhouse-zookeeper-config.xml"
     )
@@ -103,14 +103,14 @@ service:
 
     # Step 4: Start foundation services
     Write-Info "Starting foundation services (Zookeeper, ClickHouse)..."
-    docker compose -f docker-compose-optimized.yml up -d signoz-zookeeper signoz-clickhouse
+    docker compose -f docker-compose.yml up -d signoz-zookeeper signoz-clickhouse
     
     # Wait for foundation services with extended timeout
     Write-Info "Waiting for foundation services to be healthy..."
     $timeout = [DateTime]::Now.AddMinutes(5)
     while ([DateTime]::Now -lt $timeout) {
-        $zookeeperStatus = docker compose -f docker-compose-optimized.yml ps signoz-zookeeper --format "{{.State}}" 2>$null
-        $clickhouseStatus = docker compose -f docker-compose-optimized.yml ps signoz-clickhouse --format "{{.State}}" 2>$null
+        $zookeeperStatus = docker compose -f docker-compose.yml ps signoz-zookeeper --format "{{.State}}" 2>$null
+        $clickhouseStatus = docker compose -f docker-compose.yml ps signoz-clickhouse --format "{{.State}}" 2>$null
         
         if ($zookeeperStatus -eq "running" -and $clickhouseStatus -eq "running") {
             Write-Success "Foundation services are healthy"
@@ -123,13 +123,13 @@ service:
 
     # Step 5: Start SigNoz core
     Write-Info "Starting SigNoz core service..."
-    docker compose -f docker-compose-optimized.yml up -d signoz
+    docker compose -f docker-compose.yml up -d signoz
     
     # Wait for SigNoz to be healthy
     Write-Info "Waiting for SigNoz to be healthy..."
     $timeout = [DateTime]::Now.AddMinutes(3)
     while ([DateTime]::Now -lt $timeout) {
-        $signozStatus = docker compose -f docker-compose-optimized.yml ps signoz --format "{{.State}}" 2>$null
+        $signozStatus = docker compose -f docker-compose.yml ps signoz --format "{{.State}}" 2>$null
         if ($signozStatus -eq "running") {
             Write-Success "SigNoz core is healthy"
             break
@@ -152,10 +152,10 @@ service:
         
         try {
             # Run sync migrator
-            docker compose -f docker-compose-optimized.yml up signoz-schema-migrator-sync
+            docker compose -f docker-compose.yml up signoz-schema-migrator-sync
             
             # Check exit code
-            $exitCode = docker compose -f docker-compose-optimized.yml ps signoz-schema-migrator-sync --format "{{.ExitCode}}" 2>$null
+            $exitCode = docker compose -f docker-compose.yml ps signoz-schema-migrator-sync --format "{{.ExitCode}}" 2>$null
             if ($exitCode -eq "0") {
                 Write-Success "Schema migrator sync completed successfully"
                 $migratorSuccess = $true
@@ -164,7 +164,7 @@ service:
                 
                 # Show logs for debugging
                 Write-Info "Schema migrator logs:"
-                docker compose -f docker-compose-optimized.yml logs signoz-schema-migrator-sync --tail=20
+                docker compose -f docker-compose.yml logs signoz-schema-migrator-sync --tail=20
                 
                 if ($retryCount -lt $maxRetries) {
                     Write-Info "Retrying in 30 seconds..."
@@ -187,13 +187,13 @@ service:
 
     # Step 7: Start OTel collector (even if migrator failed)
     Write-Info "Starting OTel collector..."
-    docker compose -f docker-compose-optimized.yml up -d signoz-otel-collector
+    docker compose -f docker-compose.yml up -d signoz-otel-collector
     
     # Wait for collector with extended timeout
     Write-Info "Waiting for OTel collector to be healthy..."
     $timeout = [DateTime]::Now.AddMinutes(5)
     while ([DateTime]::Now -lt $timeout) {
-        $collectorStatus = docker compose -f docker-compose-optimized.yml ps signoz-otel-collector --format "{{.State}}" 2>$null
+        $collectorStatus = docker compose -f docker-compose.yml ps signoz-otel-collector --format "{{.State}}" 2>$null
         if ($collectorStatus -eq "running") {
             Write-Success "OTel collector is running"
             break
@@ -204,13 +204,13 @@ service:
 
     # Step 8: Start demo app
     Write-Info "Starting demo application..."
-    docker compose -f docker-compose-optimized.yml up -d demo-app
+    docker compose -f docker-compose.yml up -d demo-app
 
     # Step 9: Start GPU services if not skipped
     if (-not $SkipGPU) {
         Write-Info "Starting GPU services..."
         try {
-            docker compose -f docker-compose-optimized.yml --profile gpu up -d
+            docker compose -f docker-compose.yml --profile gpu up -d
             Write-Success "GPU services started"
         } catch {
             Write-Warning "GPU services failed to start (images may not exist): $($_.Exception.Message)"
@@ -226,7 +226,7 @@ service:
     $serviceStatus = @{}
     
     foreach ($service in $services) {
-        $status = docker compose -f docker-compose-optimized.yml ps $service --format "{{.State}}" 2>$null
+        $status = docker compose -f docker-compose.yml ps $service --format "{{.State}}" 2>$null
         $serviceStatus[$service] = $status
         
         if ($status -eq "running") {
@@ -290,12 +290,12 @@ service:
         exit 1
     } else {
         Write-Error "❌ Deployment failed. Multiple services are not running."
-        Write-Info "Check logs with: docker compose -f docker-compose-optimized.yml logs"
+        Write-Info "Check logs with: docker compose -f docker-compose.yml logs"
         exit 2
     }
 
 } catch {
     Write-Error "Deployment failed with exception: $($_.Exception.Message)"
-    Write-Info "Check logs with: docker compose -f docker-compose-optimized.yml logs"
+    Write-Info "Check logs with: docker compose -f docker-compose.yml logs"
     exit 3
 }

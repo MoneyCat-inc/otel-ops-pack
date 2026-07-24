@@ -1,3 +1,4 @@
+# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 # Restart Windows OTel Collector (requires elevated privileges)
 # This script must be run as Administrator
 # Updated with progress indicators for better user experience

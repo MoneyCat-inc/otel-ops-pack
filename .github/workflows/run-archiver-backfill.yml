@@ -110,6 +110,8 @@ jobs:
       - name: Analyze & archive runs
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO_ROOT: ${{ github.workspace }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
           mkdir -p CHAR/EVID/artifacts/ecrr/arch

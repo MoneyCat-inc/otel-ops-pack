@@ -6,7 +6,7 @@ param(
     [switch]$EnableAutoRemediation = $true,
     [switch]$EnableMetricsExport = $true,
     [string]$LogLevel = "INFO",
-    [string]$ConfigFile = "docker-compose-optimized.yml"
+    [string]$ConfigFile = "docker-compose.yml"
 )
 
 # Set error action preference

@@ -1,3 +1,4 @@
+# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 # Gate #028 Track 28A: Test Windows Collector Traces Path
 # Authority: BossCat OEM | Executor: Cursor{Implementer}
 # Purpose: Verify collector (5317) receives and forwards traces to SigNoz

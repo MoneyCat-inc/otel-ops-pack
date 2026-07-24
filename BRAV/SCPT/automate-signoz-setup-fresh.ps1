@@ -64,7 +64,7 @@ if (-not $SkipHealthCheck) {
         Write-Host " SigNoz not reachable at $SignozUrl" -ForegroundColor Red
         Write-Host ''
         Write-Host 'Troubleshooting steps:'
-        Write-Host '  1. Start SigNoz: docker compose -f docker-compose-signoz.yml up -d'
+        Write-Host '  1. Start SigNoz: docker compose -f compose/docker-compose-signoz.yml up -d'
         Write-Host '  2. Wait for startup: timeout 300 bash -c "until curl -sf $SignozUrl/api/v1/health; do sleep 5; done"'
         Write-Host '  3. Check logs: docker logs signoz'
         Write-Host ''
@@ -144,7 +144,7 @@ if ($testResult -eq 0) {
     Write-Host '   Review browser console for JavaScript errors'
     Write-Host ''
     Write-Host ' Common fixes:'
-    Write-Host '   Restart SigNoz: docker compose -f docker-compose-signoz.yml restart'
+    Write-Host '   Restart SigNoz: docker compose -f compose/docker-compose-signoz.yml restart'
     Write-Host '   Clear browser cache: npx playwright show-report (then clear browser data)'
     Write-Host '   Check network connectivity to $SignozUrl'
     exit $testResult

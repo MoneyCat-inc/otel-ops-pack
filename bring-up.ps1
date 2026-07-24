@@ -1,3 +1,4 @@
+# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 # Complete Observability Stack Bring-Up Script
 # Executes Phase 1 runbook with all steps
 

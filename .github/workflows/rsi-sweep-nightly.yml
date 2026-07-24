@@ -16,8 +16,20 @@ jobs:
           pwsh BRAV/SCPT/rsi-bench/bench-index.ps1 -IndexConcurrency 8 -BatchSize 1000 -SampleN 2000 -Tag nightly-warm -ReuseBench
       - name: Run batch-size sweep (3 repeats for statistical analysis)
         shell: pwsh
+        env:
+          EVIDENCE_REPO_TOKEN: ${{ secrets.EVIDENCE_REPO_TOKEN }}
         run: |
-          # Run 3 iterations for median and confidence intervals
+          # Archive lives in MoneyCat-inc/otel-ops-evidence (Pack 2 Task 6).
+          if (-not $env:EVIDENCE_REPO_TOKEN) {
+            Write-Error "EVIDENCE_REPO_TOKEN missing — cannot checkout evidence archive for RSI sweep."
+            exit 1
+          }
+          git clone --depth 1 --filter=blob:none --sparse `
+            "https://x-access-token:$($env:EVIDENCE_REPO_TOKEN)@github.com/MoneyCat-inc/otel-ops-evidence.git" `
+            evidence-repo
+          Push-Location evidence-repo
+          git sparse-checkout set docs/BossCat/run-reports/archived
+          Pop-Location
           for ($i = 1; $i -le 3; $i++) {
             Write-Host "=== Sweep iteration $i of 3 ===" -ForegroundColor Yellow
             pwsh BRAV/SCPT/rsi-bench/sweep-batchsize.ps1 `
@@ -26,7 +38,7 @@ jobs:
               -SampleN 2000 `
               -TagPrefix "nightly-r${i}-bs" `
               -BenchRoot '.bench/archived' `
-              -ArchivedRoot 'docs/BossCat/run-reports/archived'
+              -ArchivedRoot 'evidence-repo/docs/BossCat/run-reports/archived'
           }
       - name: Statistical analysis (median, CI, significance)
         shell: pwsh
