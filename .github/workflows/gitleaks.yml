@@ -12,12 +12,14 @@ on:
     - cron: 0 2 * * * # Daily at 2 AM
   workflow_dispatch:
 
+# Required context "gitleaks" — do not cancel mid-run (branch protection).
 concurrency:
   group: gitleaks-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   gitleaks:
+    name: gitleaks
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
