@@ -1,4 +1,5 @@
 # Required-check path-filter shims — VERIFIED 2026-07-24 (#356)
+# RE-AUDITED 2026-07-24 (pre-Pack-3 contract trigger)
 #
 # Branch protection contexts (Settings / API verbatim):
 #   CodeQL | PSScriptAnalyzer | gitleaks |
@@ -10,16 +11,26 @@
 #   with the same name can never satisfy an app-bound context — shims are useless
 #   for those two. Deadlock cure (if any) = unfilter the primary triggers.
 #
-# Path-filter audit (this PR):
+# Path-filter audit (#356):
 #   codeql.yml (CodeQL Advanced)     — pull_request: branches only; NO paths
 #   powershell.yml (PSScriptAnalyzer)— pull_request: branches only; NO paths
 #   gitleaks.yml                     — pull_request: branches only; NO paths
 #   gate-site-evidence.yml           — pull_request: branches only; NO paths
 #
-# Conclusion: no path-filter deadlock on any required Actions primary. Always-green
-# companion jobs that share a context with a primary are a latest-wins hazard
-# (shim SUCCESS can land after primary FAIL). Therefore this workflow intentionally
-# defines zero jobs.
+# Package-only re-audit (Dependabot #342/#344/#345 tips, 2026-07-24):
+#   gate-site-evidence.yml DID run and reported SUCCESS for all three Gate•/Site•
+#   contexts (e.g. jest tip a3fc3e5 / run 30100444751). #356 "unfiltered primaries"
+#   claim holds — re-introduction condition (add paths: / effective non-report) NOT met.
+#   Apparent "MISSING" during Dependabot sweep was operator tooling: PowerShell
+#   equality on U+2022 BULLET in context names. Actual mergeState UNSTABLE came from
+#   non-required RED (Smoke/BossGate) after Pack 2 7B left workflows on deleted
+#   root docker-compose-signoz.yml — fixed in #360; not a path-filter deadlock and
+#   not a reason to re-introduce always-green shims (latest-wins hazard vs primary
+#   FAIL remains).
+#
+# Conclusion: zero shim jobs remain correct. Do NOT add competing Gate•/Site•
+# jobs here unless gate-site-evidence.yml gains `paths:` (then inverse
+# `paths-ignore:` jobs with identical `name:` strings — see below).
 #
 # If a future change adds `paths:` to gate-site-evidence.yml, add inverse
 # `paths-ignore:` (same list) jobs here with identical `name:` strings and a
@@ -45,5 +56,6 @@ jobs:
     steps:
       - name: Confirm no competing required-context jobs
         run: |
-          echo "No Gate/Site/gitleaks/CodeQL shim jobs — primaries are unfiltered."
-          echo "See header comment for re-introduction rules if paths: are added later."
+          echo "No Gate/Site/gitleaks/CodeQL shim jobs — primaries remain unfiltered."
+          echo "2026-07-24 re-audit: package-only Dependabot tips reported Gate•/Site• SUCCESS."
+          echo "See header for re-introduction rules if paths: are added later."
