@@ -27,7 +27,8 @@ exclude = [
   "^https://127\\.0\\.0\\.1",
   "^http://127\\.0\\.0\\.1",
   # Private Pack 3B siblings: GitHub HTML returns 404 without session; prove via gh api in lane Report
-  "^https://github\\.com/MoneyCat-inc/socm"
+  "^https://github\\.com/MoneyCat-inc/socm",
+  "^https://github\\.com/MoneyCat-inc/scorebot"
 ]
 
 max_concurrency = 8
