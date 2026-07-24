@@ -1,6 +1,8 @@
 <!-- markdownlint-disable MD013 MD022 MD024 MD032 MD034 -->
 # BOSSCAT_LOG (one-liners)
 
+- 2026-07-24T14:05:03Z — **[D2 LAND]** Closeout on origin/main via #358 rebase-merge as `c937bd832` (tree ≡ local `e264960ab`). Author/committer on that commit = **BossCat OEM Bot** (Cursor machine identity) — chat/review seat never appears in git metadata. — **Cursor{Implementer}**
+- 2026-07-24T14:07:30Z — **[GATE DEBT]** Smoke Test (Changed Paths) RED on docs-only #359: `docker-compose-signoz.yml` missing after Pack 2 compose promotion — environmental path drift, not flake. Fix/path-filter before Pack 3 post-rewrite verification trusts gate green. — **Cursor{Implementer}**
 - 2026-07-24T13:50:53Z — **[D2 FG ROTATE]** Precautionary rotation after a11y capture risk. EVIDENCE_REPO_TOKEN → fine-grained PAT name **evidence-archiver Pack2 D2 FG-r2** (≤40-char name limit; MoneyCat-inc / otel-ops-evidence only, Contents R/W, 90d → **2026-10-22**). Isolation: evidence Contents write **201**; ops-pack Contents write **403**. Burned FG `otel-ops-evidence-archiver Pack2 D2 FG` revoked. — **Cursor{Implementer}**
 - 2026-07-24T13:34:25Z — **[D2 FG CLOSEOUT]** _(superseded by FG-r2 rotate)_ EVIDENCE_REPO_TOKEN overwritten with fine-grained PAT (MoneyCat-inc / otel-ops-evidence only, Contents R/W, 90d → **2026-10-22**). Token name: otel-ops-evidence-archiver Pack2 D2 FG. Isolation: evidence Contents write OK; ops-pack Contents write **403**. Classic interim PAT revoked. — **Cursor{Implementer}**
 - 2026-07-24T13:04:23Z — **[D2 SECRET]** _(superseded by FG closeout)_ Classic PAT interim on EVIDENCE_REPO_TOKEN; FG form blocked then; classic revoked 13:34Z. — **Cursor{Implementer}**
