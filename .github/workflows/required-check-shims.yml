@@ -21,13 +21,14 @@
 #   gate-site-evidence.yml DID run and reported SUCCESS for all three Gate•/Site•
 #   contexts (e.g. jest tip a3fc3e5 / run 30100444751). #356 "unfiltered primaries"
 #   claim holds — re-introduction condition (add paths: / effective non-report) NOT met.
-#   Apparent "MISSING" during Dependabot sweep was operator tooling: PowerShell
-#   equality on U+2022 BULLET in context names. Actual mergeState UNSTABLE came from
-#   non-required RED (Smoke/BossGate) after Pack 2 7B left workflows on deleted
-#   root docker-compose-signoz.yml — fixed in #360 (repoint to
-#   compose/docker-compose-signoz.yml); not a path-filter deadlock and
-#   not a reason to re-introduce always-green shims (latest-wins hazard vs primary
-#   FAIL remains).
+#   Apparent "MISSING" was operator tooling mangling U+2022 BULLET in context names
+#   (PowerShell / non-Unicode-aware compare). Gotcha: any future check-context poller
+#   MUST handle U+2022 or Gate•/Site• will "go missing" again. (ASCII rename of
+#   required contexts would need Settings lockstep — deferred; documented gotcha
+#   suffices.) Actual mergeState UNSTABLE was Pack 2 7B compose-path RED — fixed
+#   in #360 (gates → canonical docker-compose.yml; parked signoz variant not
+#   CI-tested). Not a path-filter deadlock; do not re-introduce always-green shims
+#   (latest-wins hazard vs primary FAIL remains).
 #
 # Conclusion: zero shim jobs remain correct. Do NOT add competing Gate•/Site•
 # jobs here unless gate-site-evidence.yml gains `paths:` (then inverse
