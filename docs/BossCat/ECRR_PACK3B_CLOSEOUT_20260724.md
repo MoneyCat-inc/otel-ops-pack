@@ -99,3 +99,9 @@ Master credentials only in human-owned browser tabs. Automation receives scoped,
 ## Role
 
 **Pack 3B + audit arc verification gate: CLOSED** at ops-pack `@ cda689bf` with receipts above.
+
+## Follow-up (non-blocking)
+
+| Item | When |
+|---|---|
+| Rename `.github/workflows/deploy-moneycat.yml` → `deploy-hub.yml` (hub-only job; name still says moneycat) | Ride next docs-lane PR — not a standalone PR |
