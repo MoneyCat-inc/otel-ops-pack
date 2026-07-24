@@ -58,7 +58,7 @@ jobs:
       
       - name: Start SigNoz stack
         run: |
-          docker compose -f docker-compose.yml up -d
+          docker compose -f compose/docker-compose-signoz.yml up -d
           echo "Waiting for SigNoz to be ready..."
           for i in {1..60}; do
             if curl -s http://localhost:8080/api/v1/health > /dev/null 2>&1; then
@@ -246,7 +246,7 @@ jobs:
       - name: Stop SigNoz
         if: always()
         run: |
-          docker compose -f docker-compose.yml down -v
+          docker compose -f compose/docker-compose-signoz.yml down -v
       
       - name: Generate summary
         if: always()

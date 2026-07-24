@@ -26,7 +26,7 @@ jobs:
         uses: aquasecurity/trivy-action@master
         with:
           scan-type: 'config'
-          scan-ref: 'docker-compose.yml'
+          scan-ref: 'compose/docker-compose-signoz.yml'
           format: 'sarif'
           output: 'trivy-results.sarif'
           severity: 'CRITICAL,HIGH'
