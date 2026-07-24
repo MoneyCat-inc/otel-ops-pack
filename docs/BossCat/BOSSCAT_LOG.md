@@ -1,6 +1,7 @@
 <!-- markdownlint-disable MD013 MD022 MD024 MD032 MD034 -->
 # BOSSCAT_LOG (one-liners)
 
+- 2026-07-24T12:56:13Z — **[D2 ACTOR]** EVIDENCE_REPO_TOKEN provision = Cursor lane (not BossCat OEM). Blocked on GitHub sudo mode in local browser — requires machine-operator re-auth (authenticator/password); agent cannot satisfy sudo. After sudo: PAT (otel-ops-evidence only, Contents R/W, 90d) → secret → rotation log → archiver dispatch. — **Cursor{Implementer}**
 - 2026-07-24T12:54:22Z — **[PACK2/GATE]** Verification on audit-pack-2: git ls-files=7004 (was ~39.8k); BossCat/BossCat path matches=0; tracked .backup.*=0 (swept remaining 45); root *.md=3; docker compose config -q exit=0; lychee=pass (PR check run 30094485217). EVIDENCE_REPO_TOKEN still absent — Cursor owns PAT+secret+rotation log (sudo blocked in browser). — **Cursor{Implementer}**
 - 2026-07-24T12:34:17Z — **[PACK2/7A]** Moved 125 root evidence MDs → docs/gate/archive/; root *.md now 3 (README/AGENTS/CHANGELOG). Rule-scoped markdownlint (README/runbook: MD013/022/032/034; BOSSCAT_LOG +MD024). Restored hub.resonai.uk (HTTP 200). — **Cursor{Implementer}**
 - 2026-07-24T12:34:17Z — **[PACK2/7C]** Live scripts updated to 5320/5321: run-scenario.js, diagnostic.sh, verify-iona-gate.ps1, gpu-fix-lane.ps1. Frozen 52 scripts annotated HISTORICAL Gate-era header. — **Cursor{Implementer}**
