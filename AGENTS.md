@@ -26,10 +26,11 @@ Other AGENTS.md files are scoped; do not treat them as repo-wide rules unless no
   - Check: `pwsh -File scripts/patreon-weekly-reminder.ps1`
 - Ko-fi weekly upkeep (7-day cadence): docs/BossCat/KOFI_WEEKLY_MAINTENANCE.md
   - Check: `pwsh -File scripts/kofi-weekly-reminder.ps1`
-- Bluesky weekly upkeep (7-day cadence): docs/BossCat/BSKY_WEEKLY_MAINTENANCE.md
-  - Check: `pwsh -File scripts/bsky-weekly-reminder.ps1`
+- Bluesky weekly upkeep (7-day cadence): **[socm](https://github.com/MoneyCat-inc/socm)** (automation extracted Pack 3B)
+  - Ops-pack cadence note: docs/BossCat/BSKY_WEEKLY_MAINTENANCE.md
   - Engagement: docs/BossCat/BSKY_ENGAGEMENT_PLAYBOOK.md
-  - SkyFeed feeds (manual): docs/social/SKYFEED_SETUP_STATUS.md — `npm run social:skyfeed-wizard`
+  - SkyFeed / posting scripts: run from MoneyCat-inc/socm
+
 - Cursor `sessionStart` hooks nudge agents when any of the above is overdue (`.cursor/hooks.json`)
 
 ## Archives
