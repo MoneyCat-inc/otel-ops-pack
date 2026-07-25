@@ -25,45 +25,14 @@ jobs:
     # Distinct from workflow "BossCat Gate Verification" (bosscat-gate-verify.yml)
     name: IONA Gate Verification
     runs-on: ubuntu-latest
-    timeout-minutes: 15
-    
+    timeout-minutes: 10
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      
-      - name: Setup PNPM
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10.18.1
-          run_install: false
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'pnpm'
-      
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-          cache: 'pip'
-      
-      - name: Setup PowerShell
-        shell: pwsh
-        run: |
-          Write-Host "PowerShell $($PSVersionTable.PSVersion) installed"
-      
-      - name: Install dependencies
-        run: |
-          pnpm install --frozen-lockfile
-          pip install -r requirements.txt
-      
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
-      
       - name: Generate GitHub App token
         id: bosscat-auth
         continue-on-error: true
@@ -71,56 +40,24 @@ jobs:
         with:
           app_id: ${{ secrets.BOSSCAT_APP_ID }}
           private_key: ${{ secrets.BOSSCAT_APP_PRIVATE_KEY }}
-      
-      - name: Run diagnostic check
-        shell: bash
-        run: |
-          mkdir -p artifacts
-          chmod +x BRAV/SCPT/diagnostic.sh
-          ./BRAV/SCPT/diagnostic.sh artifacts/ci-diagnostics.json
-          cat artifacts/ci-diagnostics.json
-      
-      - name: Start SigNoz (Docker Compose)
-        run: |
-          docker compose -f docker-compose.yml up -d
-          echo "Waiting for SigNoz to be ready..."
-          for i in {1..30}; do
-            if curl -s http://localhost:8080/api/v1/health > /dev/null; then
-              echo "SigNoz is ready!"
-              break
-            fi
-            echo "Waiting for SigNoz... ($i/30)"
-            sleep 10
-          done
-      
+
       - name: Run IONA gate verification
         shell: pwsh
         run: |
-          pwsh -File BRAV/SCPT/verify-iona-gate.ps1
-      
+          pwsh -File scripts/verify-iona-gate.ps1
+
       - name: Upload artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: iona-gate-artifacts
           path: |
-            artifacts/*.png
             artifacts/*.json
             artifacts/*.txt
-            artifacts/*.html
             artifacts/*.md
-            playwright-report/
-            test-results/
+            CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md
           retention-days: 14
-      
-      - name: Upload Playwright report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-report
-          path: playwright-report/
-          retention-days: 14
-      
+
       - name: Comment PR with results
         if: github.event_name == 'pull_request' && always()
         uses: actions/github-script@v7
@@ -128,37 +65,25 @@ jobs:
           github-token: ${{ steps.bosscat-auth.outputs.token || secrets.GITHUB_TOKEN }}
           script: |
             const fs = require('fs');
-            
-            let comment = '## 🎯 IONA Gate Verification Results\n\n';
-            
-            // Check if artifacts exist and build comment
+
+            let verdict = 'unknown';
+            let reasons = [];
             try {
-              const diagnostics = JSON.parse(fs.readFileSync('artifacts/ci-diagnostics.json', 'utf8'));
-              comment += '### System Information\n';
-              comment += `- **OS**: ${diagnostics.os_name} ${diagnostics.os_version}\n`;
-              comment += `- **Architecture**: ${diagnostics.architecture}\n`;
-              comment += `- **Node**: ${diagnostics.tools.node || 'N/A'}\n`;
-              comment += `- **Python**: ${diagnostics.tools.python3 || diagnostics.tools.python || 'N/A'}\n\n`;
-            } catch (e) {
-              comment += '⚠️ Could not read diagnostic information\n\n';
-            }
-            
-            comment += '### Gate Status\n';
-            comment += `- **Workflow Run**: [#${context.runNumber}](${context.payload.repository.html_url}/actions/runs/${context.runId})\n`;
+              const gate = JSON.parse(fs.readFileSync('artifacts/gate-verification-results.json', 'utf8'));
+              verdict = gate.verdict || verdict;
+              reasons = gate.reasons || [];
+            } catch (e) {}
+
+            const icon = verdict === 'READY' ? '✅' : verdict === 'READY_WITH_WARNINGS' ? '⚠️' : '❌';
+            let comment = `## 🎯 IONA Gate Verification Results\n\n`;
+            comment += `${icon} **Verdict**: \`${verdict}\`\n`;
+            if (reasons.length) comment += `\n**Reasons:**\n${reasons.map(r => `- ${r}`).join('\n')}\n`;
+            comment += `\n- **Run**: [#${context.runNumber}](${context.payload.repository.html_url}/actions/runs/${context.runId})\n`;
             comment += `- **Commit**: ${context.sha.substring(0, 7)}\n`;
-            comment += `- **Triggered by**: @${context.actor}\n\n`;
-            
-            comment += '📊 **Artifacts**: Screenshots and reports uploaded to workflow artifacts\n';
-            comment += '🔗 **Playwright Report**: Available in workflow artifacts\n';
-            
+
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: comment
             });
-      
-      - name: Stop SigNoz
-        if: always()
-        run: |
-          docker compose -f docker-compose.yml down -v
