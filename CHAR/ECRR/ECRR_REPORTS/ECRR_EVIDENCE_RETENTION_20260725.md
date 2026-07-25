@@ -9,16 +9,18 @@
 
 - `otel-ops-evidence` accumulates raw run-reports via `run-archiver.yml` with no prune.
 - Classic checkout mtime trap documented; age must use filename/path or git `%ct`.
-- viz-engine `LUMI_API_KEY` still absent (Phase A — Fae); Phase B decoupled.
+- viz-engine `LUMI_API_KEY` still absent — mint is **machine-operator** seat (Cursor tab browser), not chat/review. See `AGENTS.md` actor seats.
 
 ## Clean
 
 - Code PR **#381** (merged): prune workflow + `prune.mjs` + FG PAT amber + `workflows.json` + `package-lock` sync.
 - Docs PR **#382** (merged): briefing, pointer README, `BOSSCAT_LOG`.
+- Actor-map in root `AGENTS.md` (chat never owns mint/Secrets UI).
+- Live prune executed after boundary proof (this closeout).
 
 ## Report
 
-Dry-run dispatch ([run 30160387171](https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/30160387171)):
+### Dry-run ([run 30160387171](https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/30160387171))
 
 | Metric | Value |
 |--------|-------|
@@ -29,17 +31,46 @@ Dry-run dispatch ([run 30160387171](https://github.com/MoneyCat-inc/otel-ops-pac
 | Kept young (≤90d) | 15894 |
 | Kept no_age | 0 |
 | Dry run | true |
+| Reconcile | 12532 + 15894 + 4 = **28430** |
 
-Derivation proven: archive path `archived/YYYY/MM/` stamps drive all candidates; no mtime used. Scope assertion held (all paths under `docs/BossCat/run-reports/`).
+### Permanent kept (whitelist — 4 paths by name)
 
-Live prune (`dry_run=false`) deferred until operator confirms counts — optional follow-up.
+1. `docs/BossCat/run-reports/INDEX.jsonl`
+2. `docs/BossCat/run-reports/LATEST.md`
+3. `docs/BossCat/run-reports/.gitkeep`
+4. `docs/BossCat/run-reports/archived/.gitkeep`
+
+Confirmed present in `otel-ops-evidence` HEAD before live prune.
+
+### Boundary pair (straddle 90-day line)
+
+Archive months present: 2025-09, 2025-10, 2026-06, 2026-07 (gap Nov–May). Cutoff ≈ 2026-04-26 for a 2026-07-25 run.
+
+| Side | Path | `derived_date` | `date_source` | `age_days` |
+|------|------|----------------|---------------|------------|
+| **Newest would-delete** | `docs/BossCat/run-reports/archived/2025/10/run-18490622690.md` | 2025-10-01 | filename | 297 |
+| **Oldest kept (filename)** | `docs/BossCat/run-reports/archived/2026/06/run-27413707649.md` | 2026-06-01 | filename | ~54 |
+
+Boundary OK: newest delete far past 90d; oldest path-stamped keep is Jun 2026 (inside 90d). Young tally also includes ~14k `badges/` via `git-log` (bulk-extract commit age).
+
+### Live prune ([run 30162695304](https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/30162695304))
+
+| Metric | Value |
+|--------|-------|
+| Dry run | **false** |
+| Would delete | **12532** |
+| Deleted | **12532** |
+| Bytes deleted | 8653925 |
+| `date_source` filename / git-log | 12532 / 0 |
+| Match | **would-delete = deleted** |
 
 ## Role
 
-Cursor{Implementer} — implement + dry-run prove.  
-Fae — Phase A Lumi mint (still awaiting).  
+Cursor{Implementer} — implement, boundary proof, live prune, ECRR.  
+Machine operator (`@fubumaki` at Cursor tab) — OpenAI mint + viz-engine `LUMI_API_KEY` Secrets UI.  
+Chat/review — decisions only; no mint ownership.  
 BossCat OEM — board acceptance.
 
 ## Follow-on (not this ECRR)
 
-CHAR/docs 26 mismatches; CHAR/DELT/ALFA disposition; deploy-hub rename; clean-host E2E; sibling maturity; optional live prune.
+CHAR/docs 26 mismatches; CHAR/DELT/ALFA disposition; deploy-hub rename; clean-host E2E; sibling maturity.
