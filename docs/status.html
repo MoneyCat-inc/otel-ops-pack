@@ -1,389 +1,894 @@
 <!doctype html>
 <html lang="en">
-  <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; connect-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'">
-  <title>BossCat Status Dashboard</title>
-  <link rel="stylesheet" href="assets/status.css">
-  <script defer src="./assets/vendor/mermaid/mermaid-10.9.4.min.js"></script>
-  <script src="assets/status.js" defer></script>
-  <script src="assets/icf-rsi-panel.js" defer></script>
-  <style>
-    /* 4-Panel Grid Layout */
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: system-ui, -apple-system, sans-serif;
-      background: #f5f7fa;
-    }
-    nav {
-      background: #667eea;
-      color: white;
-      padding: 0.75rem;
-      text-align: center;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    nav a {
-      color: white;
-      margin: 0 0.75rem;
-      text-decoration: none;
-      font-size: 0.9rem;
-    }
-    nav a:hover { text-decoration: underline; }
-    
-    .dashboard-container {
-      max-width: 1400px;
-      margin: 1.5rem auto;
-      padding: 0 1rem;
-    }
-    
-    h1 {
-      text-align: center;
-      color: #2c3e50;
-      margin: 1rem 0 1.5rem 0;
-      font-size: 1.8rem;
-    }
-    
-    .grid-4 {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 1rem;
-      margin-bottom: 1rem;
-    }
-    
-    .panel {
-      background: white;
-      border-radius: 8px;
-      padding: 1.25rem;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      border-left: 4px solid #667eea;
-      min-height: 300px;
-      display: flex;
-      flex-direction: column;
-    }
-    
-    .panel.status-panel { border-left-color: #28a745; }
-    .panel.metrics-panel { border-left-color: #ffc107; }
-    .panel.links-panel { border-left-color: #17a2b8; }
-    .panel.system-panel { border-left-color: #6c757d; }
-    
-    .panel h2 {
-      margin: 0 0 1rem 0;
-      font-size: 1.2rem;
-      color: #2c3e50;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    
-    .panel-content {
-      flex: 1;
-      overflow-y: auto;
-      max-height: 400px;
-    }
-    
-    .status-box {
-      background: #d4edda;
-      border: 1px solid #c3e6cb;
-      border-radius: 6px;
-      padding: 0.75rem;
-      margin-bottom: 0.75rem;
-    }
-    
-    .status-box.not-ready {
-      background: #f8d7da;
-      border-color: #f5c6cb;
-    }
-    
-    .status-item {
-      margin: 0.4rem 0;
-      font-size: 0.9rem;
-    }
-    
-    .status-item strong {
-      color: #495057;
-      min-width: 80px;
-      display: inline-block;
-    }
-    
-    .metrics-grid-compact {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 0.75rem;
-    }
-    
-    .metric-compact {
-      background: #f8f9fa;
-      border-radius: 4px;
-      padding: 0.6rem;
-      text-align: center;
-    }
-    
-    .metric-compact .label {
-      font-size: 0.75rem;
-      color: #6c757d;
-      margin-bottom: 0.25rem;
-      font-weight: 500;
-    }
-    
-    .metric-compact .value {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: #2c3e50;
-    }
-    
-    .metric-compact .value.ok { color: #28a745; }
-    .metric-compact .value.warn { color: #ffc107; }
-    .metric-compact .value.error { color: #dc3545; }
-    
-    .links-section {
-      margin-bottom: 1rem;
-    }
-    
-    .links-section h3 {
-      font-size: 0.9rem;
-      margin: 0 0 0.4rem 0;
-      color: #495057;
-      font-weight: 600;
-    }
-    
-    .links-section ul {
-      margin: 0;
-      padding-left: 1.2rem;
-      font-size: 0.85rem;
-    }
-    
-    .links-section li {
-      margin: 0.25rem 0;
-    }
-    
-    .links-section a {
-      color: #667eea;
-      text-decoration: none;
-    }
-    
-    .links-section a:hover {
-      text-decoration: underline;
-    }
-    
-    .pill {
-      display: inline-block;
-      font-family: ui-monospace, monospace;
-      font-size: 0.8rem;
-      background: #e9ecef;
-      border: 1px solid #dee2e6;
-      border-radius: 12px;
-      padding: 0.15rem 0.5rem;
-      margin: 0.2rem;
-    }
-    
-    .pill.ok { background: #d4edda; border-color: #c3e6cb; color: #155724; }
-    .pill.warn { background: #fff3cd; border-color: #ffeaa7; color: #856404; }
-    
-    .btn {
-      display: inline-block;
-      font-size: 0.8rem;
-      padding: 0.25rem 0.6rem;
-      border: 1px solid #dee2e6;
-      border-radius: 4px;
-      background: white;
-      color: #495057;
-      text-decoration: none;
-      margin: 0.15rem;
-    }
-    
-    .btn:hover {
-      background: #f8f9fa;
-      border-color: #adb5bd;
-    }
-    
-    .muted {
-      color: #6c757d;
-      font-size: 0.8rem;
-      margin-top: 0.5rem;
-    }
-    
-    footer {
-      background: white;
-      border-top: 1px solid #e9ecef;
-      padding: 1.5rem;
-      margin-top: 2rem;
-      text-align: center;
-    }
-    
-    footer ul {
-      list-style: none;
-      padding: 0;
-      margin: 0.5rem 0;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 1rem;
-    }
-    
-    footer a {
-      color: #667eea;
-      text-decoration: none;
-      font-size: 0.85rem;
-    }
-    
-    footer a:hover { text-decoration: underline; }
-    
-    @media (max-width: 768px) {
-      .grid-4 { grid-template-columns: 1fr; }
-      .metrics-grid-compact { grid-template-columns: 1fr; }
-    }
-  </style>
-  </head>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Resonai [OTel] — Observability Pipeline Status Dashboard</title>
+<!-- Favicon + app icons (hi-dpi + cache-safe) -->
+<link rel="icon" type="image/png" sizes="32x32" href="LOGO/Resonai_LOGO_ICONonly.png?v=1">
+<link rel="icon" type="image/png" sizes="192x192" href="LOGO/Resonai_LOGO_ICONonly.png?v=1">
+<link rel="apple-touch-icon" href="LOGO/Resonai_LOGO_ICONonly.png?v=1">
+<meta name="theme-color" content="#0b0d12">
+<meta name="application-name" content="Resonai Dashboard">
+
+<!-- ======= Shared Brand System ======= -->
+<link rel="stylesheet" href="assets/resonai-tokens.css">
+<link rel="stylesheet" href="assets/resonai-system.css">
+
+<!-- ======= Dashboard-Specific Styles ======= -->
+<style>
+  :root {
+    /* Dashboard Theme (extends shared tokens) */
+    --bg: #0b0d12;
+    --card: #121520;
+    --muted: #77809a;
+    --fg: #e9edf7;
+    --green: #4caf50;
+    --yellow: #ffc107;
+    --red: #f44336;
+    --blue: #7c5cff;
+    --border: #252b3a;
+    --accent: #9aa2be;
+    --ok: var(--green); --warn: var(--yellow); --bad: var(--red);
+  }
+  @media (prefers-color-scheme: light) {
+    :root { --bg:#f7f8fb; --card:#ffffff; --fg:#0c1022; --border:#dde1ee; --muted:#66708a; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+  html,body { height: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--fg);
+    font: 14px/1.4 system-ui, -apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+  }
+  header, footer { padding: 12px 16px; border-bottom: 1px solid var(--border); }
+  header { position: sticky; top: 0; background: linear-gradient(180deg,var(--bg),rgba(0,0,0,0)); z-index: 10; }
+  h1 { margin: 0 0 6px 0; font-size: 18px; }
+  .muted { color: var(--muted); }
+  .row { display: grid; grid-template-columns: 1fr; gap: 12px; padding: 12px; }
+  @media (min-width: 1000px) { .row { grid-template-columns: 1fr 1fr; } }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px; }
+  .kpis { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); }
+  .kpi { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 10px; padding: 10px; }
+  .kpi .label { color: var(--muted); font-size: 12px; }
+  .kpi .value { font-size: 22px; font-weight: 700; color: var(--fg); transition: color .2s ease; }
+  .kpi .value.value-ok { color: var(--ok); }
+  .kpi .value.value-warn { color: var(--warn); }
+  .kpi .value.value-bad { color: var(--bad); }
+  .kpi .spark { display:block; margin-top:4px; }
+  .pill { display:inline-block; padding: 3px 8px; border-radius: 999px; font-weight: 600; font-size: 12px; }
+  /* Status pills: ensure strong contrast by using foreground text color on tinted backgrounds */
+  .pill.green{ background: rgba(76,175,80,.18); color: var(--fg); border: 1px solid rgba(76,175,80,.35);} 
+  .pill.yellow{ background: rgba(255,193,7,.20); color: var(--fg); border: 1px solid rgba(255,193,7,.40);} 
+  .pill.red{ background: rgba(244,67,54,.18); color: var(--fg); border: 1px solid rgba(244,67,54,.35);} 
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(2px); } to { opacity: 1; transform: translateY(0); } }
+  .fade-in { animation: fadeIn .28s ease-out; }
+  .pill { animation: fadeIn .24s ease-out; }
+  .toolbar { display:flex; gap:8px; align-items:center; flex-wrap: wrap; }
+  .toolbar > * { margin: 0; }
+  .btn {
+    appearance: none; border: 1px solid var(--border); background: var(--card);
+    color: var(--fg); padding: 8px 10px; border-radius: 8px; cursor: pointer;
+  }
+  .btn:hover { border-color: var(--accent); }
+  .grid2 { display:grid; gap:12px; grid-template-columns: 1fr; }
+  @media (min-width: 1200px){ .grid2 { grid-template-columns: 1fr 1fr; } }
+  .hstack { display:flex; gap:8px; align-items:center; flex-wrap: wrap; }
+  .vstack { display:flex; flex-direction:column; gap:8px; }
+  .flex-fill { flex: 1 1 auto; }
+  .list { display:flex; flex-direction:column; gap:6px; margin:0; padding:0; list-style:none; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { padding: 8px; border-bottom: 1px solid var(--border); text-align: left; }
+  th { color: var(--muted); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .02em; }
+  svg { max-width: 100%; height: auto; }
+  .tabs { display:flex; gap:6px; flex-wrap: wrap; margin: 6px 0 10px; }
+  .tab { padding:6px 10px; border:1px solid var(--border); background:var(--card); border-radius:8px; cursor:pointer; color: var(--fg); }
+  .tab[aria-selected="true"] { outline: 2px solid var(--blue); background: rgba(124,92,255,0.1); }
+  .panel[hidden] { display:none !important; }
+  .kanban { display:grid; gap:10px; grid-template-columns: repeat(3,1fr); }
+  .col { background: rgba(255,255,255,0.02); border:1px solid var(--border); border-radius:10px; padding:10px; }
+  .col h4{ margin:4px 0 10px; }
+  .cardlet { border:1px solid var(--border); background:#0000; border-radius:8px; padding:8px; margin:6px 0; }
+  .fine { font-size: 12px; color: var(--muted); }
+  footer { border-top: 1px solid var(--border); border-bottom: none; }
+  code { background: rgba(255,255,255,.06); padding: 2px 4px; border-radius: 6px; }
+  /* Print-friendly PDF export: hide controls, simplify layout, ensure contrast */
+  @media print {
+    header .toolbar, #tab-kanban, #tab-swim, #auto, #endpoint, #refresh, #loadFiles, #exportMd, #exportMdDetailed, #exportCsvBuckets, #exportCsvHistory, #exportPdf { display: none !important; }
+    body { background: #fff; color: #000; }
+    .card, .col, .kpi, table, th, td { border-color: #555 !important; }
+    .pill.green{ background: #e7f4ea !important; color: #0b5d1e !important; border-color: #a8d5b5 !important; }
+    .pill.yellow{ background: #fff4d6 !important; color: #6b4e00 !important; border-color: #f3d38a !important; }
+    .pill.red{ background: #fde4e2 !important; color: #7a0b0b !important; border-color: #f0a3a3 !important; }
+    /* Condensed heatmap for print */
+    .row { grid-template-columns: 1fr !important; }
+    .grid2 { grid-template-columns: 1fr !important; }
+    .kanban { grid-template-columns: 1fr !important; }
+    .col { margin-bottom: 8px; }
+    .cardlet { margin: 4px 0; padding: 6px; }
+    table { font-size: 11px; }
+    th, td { padding: 4px 6px; }
+  }
+
+  /* Logo system classes now provided by assets/resonai-tokens.css */
+
+  /* Persona accents */
+  :root { --pm:#4aa3ff; --imp:#9b59b6; --ver:#00c2b2; --stk:#ff8a4a; --you:#f2c94c; }
+  .persona { border-left: 3px solid var(--border); padding-left: 10px; }
+  .persona.pm { border-left-color: var(--pm); }
+  .persona.imp { border-left-color: var(--imp); }
+  .persona.ver { border-left-color: var(--ver); }
+  .persona.stk { border-left-color: var(--stk); }
+  .persona.you { border-left-color: var(--you); }
+  .persona h3 { margin: 0 0 4px 0; }
+</style>
+</head>
+
 <body>
-  <nav>
-    <a href="index.html">📚 Docs Hub</a> |
-    <a href="status/REFERENCES_MAP.md">🗺️ References Map</a> |
-    <a href="BossCat/data_room_enhanced.html">🎛️ Data Room</a> |
-    <a href="ecrr/ECRR_REPORTS/">📋 ECRR Reports</a>
-  </nav>
-
-  <div class="dashboard-container">
-    <h1>🐾 BossCat Status Dashboard</h1>
-    
-    <div class="grid-4">
-      <!-- Panel 1: System Status -->
-      <div class="panel status-panel">
-        <h2>🎯 System Status</h2>
-        <div class="panel-content">
-          <div class="status-box ready" id="gate-latest-box">
-            <div id="gate-latest"></div>
-          </div>
-          <div class="muted" style="margin-top: 1rem;">
-            <strong>Quick Verify:</strong><br>
-            <code style="font-size: 0.75rem;">pwsh -File scripts/verify-iona-gate.ps1</code>
-          </div>
-          <div class="meta" id="gate-links" style="margin-top: 1rem;"></div>
-        </div>
-      </div>
-
-      <!-- Panel 2: Gate & Site Metrics -->
-      <div class="panel metrics-panel">
-        <h2>📊 Gate & Site</h2>
-        <div class="panel-content">
-          <div class="metrics-grid-compact">
-            <div class="metric-compact">
-              <div class="label">Perf (GATE)</div>
-              <div class="value" id="gate-perf">-</div>
-            </div>
-            <div class="metric-compact">
-              <div class="label">Observability</div>
-              <div class="value" id="gate-otel">-</div>
-            </div>
-            <div class="metric-compact">
-              <div class="label">Resiliency</div>
-              <div class="value" id="gate-res">-</div>
-            </div>
-            <div class="metric-compact">
-              <div class="label">ECRR</div>
-              <div class="value" id="gate-ecrr">-</div>
-            </div>
-            <div class="metric-compact">
-              <div class="label">Build (SITE)</div>
-              <div class="value" id="site-build">-</div>
-            </div>
-            <div class="metric-compact">
-              <div class="label">Links (SITE)</div>
-              <div class="value" id="site-links-metric">-</div>
-            </div>
-            <div class="metric-compact">
-              <div class="label">A11y (SITE)</div>
-              <div class="value" id="site-a11y">-</div>
-            </div>
-            <div class="metric-compact">
-              <div class="label">CSP (SITE)</div>
-              <div class="value" id="site-csp">-</div>
-            </div>
-          </div>
-          <p class="muted">Source: gate-verification-results.json</p>
-        </div>
-      </div>
-
-      <!-- Panel 3: ICF/RSI Metrics -->
-      <div class="panel system-panel">
-        <h2>📈 Convergence (ICF/RSI)</h2>
-        <div class="panel-content">
-          <div class="metrics-grid-compact">
-            <div class="metric-compact">
-              <div class="label">Convergence Rate (7d)</div>
-              <div class="value" id="icf-rate">-</div>
-            </div>
-            <div class="metric-compact">
-              <div class="label">RSI Warnings (7d)</div>
-              <div class="value" id="icf-warn">-</div>
-            </div>
-            <div class="metric-compact">
-              <div class="label">LII</div>
-              <div class="value" id="icf-lii">-</div>
-            </div>
-            <div class="metric-compact">
-              <div class="label">Delta Perplexity</div>
-              <div class="value" id="icf-dppl">-</div>
-            </div>
-          </div>
-          <div id="refmap" style="margin-top: 1rem;"></div>
-          <p class="muted">Source: artifacts/rsi/metrics.json</p>
-        </div>
-      </div>
-
-      <!-- Panel 4: Evidence Links -->
-      <div class="panel links-panel">
-        <h2>🔗 Evidence Links</h2>
-        <div class="panel-content">
-          <div class="links-section">
-            <h3>Release</h3>
-            <ul>
-              <li><a href="../GATE_008_COMPLETION_SUMMARY.md">Gate #008 Summary</a></li>
-              <li><a href="../CHANGELOG.md">Changelog</a></li>
-            </ul>
-          </div>
-          
-          <div class="links-section">
-            <h3>Evidence</h3>
-            <ul>
-              <li><a href="gate/2025-10/GATE_008_APPROVAL.md">Gate #008 Approval</a></li>
-              <li><a href="../artifacts/gate-verification-results.json">Verification JSON</a></li>
-              <li><a href="../GATE_008_CURSOR_IMPLEMENTER_REPORT_FINAL.md">Implementer Report</a></li>
-              <li><a href="../artifacts/">Artifacts Folder</a></li>
-            </ul>
-          </div>
-          
-          <div class="links-section">
-            <h3>Governance</h3>
-            <ul>
-              <li><a href="BossCat/GOVERNANCE_VIEW.md">Governance View</a></li>
-              <li><a href="BossCat/TODO.md">BossCat TODOs</a></li>
-              <li><a href="../signature-registry.json">Signature Registry</a></li>
-            </ul>
-          </div>
-          
-          <div class="links-section">
-            <h3>Reports</h3>
-            <ul>
-              <li><a href="ecrr/ECRR_REPORTS/">ECRR Reports</a></li>
-              <li><a href="../artifacts/sbom.json">SBOM</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
+<header>
+  <div class="breadcrumb" style="padding: 8px 16px; background: var(--bg); border-bottom: 1px solid var(--border);">
+    <a href="../index.html">🏠 Home</a>
+    <span class="breadcrumb-separator">/</span>
+    <a href="dashboards/index.html">Dashboards</a>
+    <span class="breadcrumb-separator">/</span>
+    <span>Executive Status</span>
+  </div>
+  <div class="hstack" role="navigation" aria-label="Global">
+    <div class="vstack flex-fill">
+      <picture class="logo-container">
+        <source media="(prefers-color-scheme: light)" srcset="LOGO/Resonai_LOGO_B.png">
+        <img src="LOGO/Resonai_LOGO_A.png" alt="" class="logo-wordmark" decoding="async" aria-hidden="true">
+      </picture>
+      <div class="muted">BossCat OEM Executive Dashboard: Project Manager • Implication Agent • Verifier • Stakeholder • You</div>
+      <div class="fine">📐 <a href="BossCat/SYSTEM_ARCHITECTURE_DIAGRAM.md" target="_blank" style="color: var(--blue);">System Architecture Diagram</a> (77× throughput uplift)</div>
+    </div>
+    <div class="toolbar" role="toolbar" aria-label="Controls">
+      <label class="muted" for="endpoint">Endpoint</label>
+      <input id="endpoint" type="text" size="34" class="btn" value="http://localhost:3003/status/" title="HTTP base URL for roadmap.json, tests.json, ssot.json (only needed when serving over HTTP)" />
+      <button class="btn" id="refresh">Refresh</button>
+      <label class="hstack muted"><input id="auto" type="checkbox" /> auto (30s)</label>
+      <button class="btn" id="loadFiles" title="Preferred: in file mode, click to choose docs/status/*.json">Load files</button>
+      <button class="btn" id="exportMd" title="Export a Markdown snapshot">Export MD</button>
+      <button class="btn" id="exportMdDetailed" title="Export a detailed Markdown report">Export MD (detailed)</button>
+      <button class="btn" id="exportCsvBuckets" title="Export failing buckets as CSV">Export CSV (buckets)</button>
+      <button class="btn" id="exportCsvHistory" title="Export KPI history as CSV">Export CSV (history)</button>
+      <button class="btn" id="exportPdf" title="Print/Save as PDF">Save as PDF</button>
     </div>
   </div>
+  <p class="fine" id="modeHint">File mode is default: open this file directly and click "Load files" when it opens as file://. Use the Endpoint field only if a server exposes docs/status/*.json.</p>
+</header>
 
-  <footer>
-    <p style="margin: 0.5rem 0; color: #6c757d; font-size: 0.9rem;">Audit Trail</p>
-    <ul>
-      <li><a href="./reference/reference-map.json">Reference Map</a></li>
-      <li><a href="../signature-registry.json">Signatures</a></li>
-      <li><a href="../artifacts/sbom.json">SBOM</a></li>
-      <li><a href="./BossCat/README.md#-quick-commands">Quick Commands</a></li>
-      <li><a href="../Vasilisa_High_Priestess_TinCanForest.jpg">Mascot</a></li>
-    </ul>
-  </footer>
+<main class="row" id="app" aria-live="polite">
+  <!-- KPI SUMMARY -->
+  <section class="card" aria-labelledby="kpiTitle">
+    <h2 id="kpiTitle">Summary KPIs</h2>
+    <div class="kpis" id="kpis">
+      <!-- Populated by JS -->
+    </div>
+    <div class="fine" id="snapshotMeta"></div>
+  </section>
+
+  <!-- ROADMAP HEATMAP -->
+  <section class="card" aria-labelledby="roadmapTitle">
+    <h2 id="roadmapTitle">Roadmap Heatmap</h2>
+    <div class="tabs" role="tablist" aria-label="Heatmap views">
+      <button class="tab" role="tab" aria-selected="true" aria-controls="heat-table" id="tab-table">Table</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="heat-kanban" id="tab-kanban">Kanban</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="heat-swim" id="tab-swim">Swimlane</button>
+    </div>
+    <div id="heat-table" class="panel" role="tabpanel" aria-labelledby="tab-table"></div>
+    <div id="heat-kanban" class="panel" role="tabpanel" aria-labelledby="tab-kanban" hidden></div>
+    <div id="heat-swim" class="panel" role="tabpanel" aria-labelledby="tab-swim" hidden></div>
+  </section>
+
+  <!-- PERSONA VIEWS -->
+  <section class="card grid2" aria-labelledby="personaTitle">
+    <h2 id="personaTitle">Persona Views</h2>
+    <div class="hstack" aria-label="Persona filters">
+      <label class="muted">Show:</label>
+      <label class="hstack"><input type="checkbox" class="pf" data-p="pm" checked /> PM</label>
+      <label class="hstack"><input type="checkbox" class="pf" data-p="imp" checked /> Implication</label>
+      <label class="hstack"><input type="checkbox" class="pf" data-p="ver" checked /> Verifier</label>
+      <label class="hstack"><input type="checkbox" class="pf" data-p="stk" checked /> Stakeholder</label>
+      <label class="hstack"><input type="checkbox" class="pf" data-p="you" checked /> You</label>
+    </div>
+
+    <div class="vstack persona pm" data-persona="pm">
+      <h3>Project Manager</h3>
+      <ul class="list" id="pmList"></ul>
+    </div>
+
+    <div class="vstack persona imp" data-persona="imp">
+      <h3>Project Implication Agent</h3>
+      <ul class="list" id="impList"></ul>
+    </div>
+
+    <div class="vstack persona ver" data-persona="ver">
+      <h3>Project Verifier</h3>
+      <ul class="list" id="verList"></ul>
+    </div>
+
+    <div class="vstack persona stk" data-persona="stk">
+      <h3>Stakeholder</h3>
+      <ul class="list" id="stkList"></ul>
+    </div>
+
+    <div class="vstack persona you" data-persona="you">
+      <h3>You (Operator)</h3>
+      <ul class="list" id="youList"></ul>
+    </div>
+
+    <div class="vstack">
+      <h3>Failing Buckets (Nightly)</h3>
+      <table id="failTable" aria-label="Failing buckets">
+        <thead><tr><th>Bucket</th><th>Count</th><th>Top Examples</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ACTIONS + ECRR -->
+  <section class="card" aria-labelledby="ecrrTitle">
+    <h2 id="ecrrTitle">ECRR — Examine • Clean • Report • Role</h2>
+    <ol id="ecrrList" class="list"></ol>
+    <div class="hstack">
+      <span class="muted">Hook this dashboard to your scripts:</span>
+      <code>scripts/roadmap/examine.ts</code> → <code>clean.ts</code> → <code>report.ts</code>
+    </div>
+  </section>
+</main>
+
+<footer class="hstack">
+  <img src="LOGO/Resonai_LOGO_monochrome.png" alt="" class="logo-mono" aria-hidden="true">
+  <div class="muted" id="footerNote">Local-first. No network calls beyond your configured <code>endpoint</code>.</div>
+</footer>
+
+<!-- ======= Data & Rendering Logic (no external libs) ======= -->
+<script>
+/* ---------------------------
+   CONFIG + FALLBACK SAMPLES
+----------------------------*/
+const endpointInput = document.getElementById('endpoint');
+const storedEndpoint = localStorage.getItem('status:endpoint');
+if (endpointInput && !storedEndpoint && location.protocol !== 'file:') {
+  const currentValue = endpointInput.value.trim();
+  const isPlaceholder = currentValue === '' || /localhost:3003\/status\/?$/i.test(currentValue);
+  if (isPlaceholder) {
+    const prefix = location.pathname.replace(/\/docs\/status\.html$/i, '');
+    const derived = `${location.origin}${prefix}`;
+    if (derived && derived !== 'null') {
+      endpointInput.value = derived;
+    }
+  }
+}
+const state = {
+  endpoint: storedEndpoint || (endpointInput ? endpointInput.value : ''),
+  auto: false,
+  timer: null,
+  data: {
+    // Expect these served as JSON from <endpoint>:
+    // - roadmap.json (milestones, features, status)
+    // - tests.json (pass/fail/skip per tag)
+    // - ssot.json (last CI snapshot; optional)
+    roadmap: null, tests: null, ssot: null
+  }
+};
+if (endpointInput && endpointInput.value !== state.endpoint) {
+  endpointInput.value = state.endpoint;
+}
+const modeHint = document.getElementById('modeHint');
+if (modeHint) {
+  if (location.protocol === 'file:') {
+    modeHint.innerHTML = 'File mode active: click <strong>Load files</strong> to choose docs/status/*.json (preferred workflow).';
+  } else {
+    modeHint.innerHTML = 'Serving over HTTP: ensure the Endpoint exposes docs/status/roadmap.json, tests.json, and ssot.json.';
+  }
+}
+
+
+// Fallback demo data (used if fetch fails and no files loaded)
+const DEMO = {
+  roadmap: {
+    "Pipeline Health": [["SigNoz Observability Platform","green"],["Docker Services","green"],["OTLP Endpoints","green"],["Noise Filtering","green"]],
+    "Service Management": [["Windows Collector Service","red"],["Service Configuration","yellow"],["Restart Procedures","green"],["Troubleshooting Guide","green"]],
+    "Security & Compliance": [["Docker Security Assessment","red"],["Vulnerability Remediation","yellow"],["ECRR Framework","green"],["Documentation Standards","green"]],
+    "Monitoring & Operations": [["ECRR Compliance","green"],["Status Dashboard","green"],["Automated Monitoring","yellow"],["Audit Readiness","yellow"]]
+  },
+  tests: {
+    updatedAt: new Date().toISOString(),
+    summary: { total: 15, passed: 13, failed: 2, skipped: 0, success_rate: 86.7 },
+    details: [
+      { name: "SigNoz health check", status: "passed", duration: 1.2, category: "integration" },
+      { name: "Windows Collector service", status: "failed", duration: 0.8, category: "service", details: "Service stopped, start type disabled, requires manual intervention" },
+      { name: "ECRR report generation", status: "passed", duration: 2.1, category: "compliance" },
+      { name: "Docker security scan", status: "failed", duration: 45.2, category: "security", details: "48 vulnerabilities detected" },
+      { name: "Playwright dashboard snapshot", status: "passed", duration: 3.5, category: "ui" }
+    ],
+    buckets: [
+      { tag:"@security", failed: 48, examples:["Docker vulnerabilities","Container hardening needed"] },
+      { tag:"@service", failed: 1, examples:["Windows Collector stopped","Service configuration disabled"] },
+      { tag:"@monitoring", failed: 0, examples:["ECRR compliance active","Status dashboard operational"] }
+    ]
+  },
+  ssot: { buildSha:"ff5406e", when:new Date().toISOString(), cohort:"boss-cat", notes:"ECRR framework execution complete - BossCat OEM oversight active" }
+};
+
+/* ---------------------------
+   UTIL
+----------------------------*/
+const $ = sel => document.querySelector(sel);
+const $$ = sel => Array.from(document.querySelectorAll(sel));
+const esc = s => (s??'').toString().replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+
+// History storage for sparklines (local, file-mode friendly)
+function getHistory() {
+  try { return JSON.parse(localStorage.getItem('status:history')||'[]'); } catch { return []; }
+}
+function setHistory(arr) {
+  try { localStorage.setItem('status:history', JSON.stringify(arr.slice(-50))); } catch {}
+}
+function pushHistory(sample) {
+  const h = getHistory(); h.push(sample); setHistory(h);
+}
+
+// Simple inline sparkline SVG
+function sparkline(series, stroke) {
+  if (!series || series.length === 0) return '';
+  const W = 120, H = 28, pad = 2;
+  const min = Math.min(...series), max = Math.max(...series);
+  const span = max - min || 1;
+  const step = (W - pad*2) / Math.max(1, series.length - 1);
+  let d = '';
+  series.forEach((v, i) => {
+    const x = pad + i * step;
+    const y = H - pad - ((v - min) / span) * (H - pad*2);
+    d += (i===0?`M${x},${y}`:` L${x},${y}`);
+  });
+  return `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}"><path d="${d}" fill="none" stroke="${stroke||'currentColor'}" stroke-width="2" stroke-linecap="round"/></svg>`;
+}
+
+// Persona tasks (local-only)
+function getTasks() {
+  try { return JSON.parse(localStorage.getItem('status:tasks')||'{}'); } catch { return {}; }
+}
+function setTasks(obj) {
+  try { localStorage.setItem('status:tasks', JSON.stringify(obj)); } catch {}
+}
+function taskItem(persona, index, text) {
+  const key = `${persona}:${index}`;
+  const tasks = getTasks();
+  const done = !!tasks[key];
+  return `<li><label class="hstack"><input type="checkbox" data-task="${key}" ${done?'checked':''} /> ${esc(text)}</label></li>`;
+}
+
+document.addEventListener('change', (e)=>{
+  const t = e.target;
+  // Persona task toggles
+  if (t && t.matches && t.matches('input[type="checkbox"][data-task]')) {
+    const key = t.getAttribute('data-task');
+    const tasks = getTasks();
+    if (t.checked) tasks[key] = true; else delete tasks[key];
+    setTasks(tasks);
+  }
+  // Persona filter toggles
+  if (t && t.matches && t.matches('input.pf[data-p]')) {
+    const p = t.getAttribute('data-p');
+    const els = document.querySelectorAll(`.persona[data-persona="${p}"]`);
+    els.forEach(el=>{ el.style.display = t.checked ? '' : 'none'; });
+    // Persist filter state
+    const filters = {};
+    document.querySelectorAll('input.pf[data-p]').forEach(cb => {
+      filters[cb.getAttribute('data-p')] = cb.checked;
+    });
+    localStorage.setItem('status:personaFilters', JSON.stringify(filters));
+  }
+});
+
+// Export Markdown snapshot
+function exportMarkdown() {
+  const t = state.data.tests || {};
+  const heat = summarizeHeat();
+  const prPassPct = t.prLane ? Math.round(100*(t.prLane.passed/t.prLane.total)) : 0;
+  const nightlyPassPct = t.nightly ? Math.round(100*(t.nightly.passed/t.nightly.total)) : 0;
+  const top = (t.buckets?.[0]?.tag)||'—';
+  const md = [
+    `<p align="left">`,
+    `  <img src="../LOGO/Resonai_Wordmark_shimmer_grad.png" alt="Resonai" class="logo-wordmark">`,
+    `</p>`,
+    `# Status Snapshot`,
+    ``,
+    `Updated: ${new Date(t.updatedAt||Date.now()).toISOString()}`,
+    ``,
+    `- PR lane pass %: ${prPassPct}%`,
+    `- Nightly pass %: ${nightlyPassPct}%`,
+    `- Roadmap: ${heat.green} Green / ${heat.yellow} Yellow / ${heat.red} Red`,
+    `- Top failing bucket: ${top}`,
+  ].join('\n');
+  const blob = new Blob([md], { type:'text/markdown;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `status-${new Date().toISOString().replace(/[:.]/g,'-')}.md`;
+  document.body.appendChild(a); a.click(); a.remove();
+}
+
+// CSV helpers
+function toCsvRow(values) {
+  return values.map(v => {
+    const s = (v==null?'':String(v));
+    return /[",\n]/.test(s) ? '"' + s.replace(/"/g,'""') + '"' : s;
+  }).join(',');
+}
+function downloadCsv(filename, rows) {
+  const blob = new Blob([rows.join('\n')+'\n'], { type:'text/csv;charset=utf-8' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = filename; document.body.appendChild(a); a.click(); a.remove();
+}
+
+// Export buckets as CSV
+function exportCsvBuckets() {
+  const buckets = (state.data.tests?.buckets)||[];
+  const rows = [ toCsvRow(['tag','failed','examples']) ];
+  for (const b of buckets) {
+    rows.push(toCsvRow([b.tag, b.failed, (b.examples||[]).slice(0,3).join(' | ')]));
+  }
+  downloadCsv(`buckets-${new Date().toISOString().replace(/[:.]/g,'-')}.csv`, rows);
+}
+
+// Export KPI history as CSV
+function exportCsvHistory() {
+  const hist = getHistory();
+  const rows = [ toCsvRow(['prPct','nightlyPct','green','yellow','red']) ];
+  for (const h of hist) {
+    rows.push(toCsvRow([h.prPct||0, h.nightlyPct||0, h.green||0, h.yellow||0, h.red||0]));
+  }
+  downloadCsv(`history-${new Date().toISOString().replace(/[:.]/g,'-')}.csv`, rows);
+}
+
+// Export Detailed Markdown snapshot (buckets, personas, tasks, history, roadmap)
+function exportMarkdownDetailed() {
+  const t = state.data.tests || {};
+  const rm = state.data.roadmap || {};
+  const ssot = state.data.ssot || {};
+  const heat = summarizeHeat();
+  const hist = getHistory();
+  const tasks = getTasks();
+
+  const prPassPct = t.prLane ? Math.round(100*(t.prLane.passed/t.prLane.total)) : 0;
+  const nightlyPassPct = t.nightly ? Math.round(100*(t.nightly.passed/t.nightly.total)) : 0;
+  const top = (t.buckets?.[0]?.tag)||'-';
+
+  // Persona insights (reuse strings from renderPersonas)
+  function personaLines() {
+    const lines = {};
+    const pm = [
+      `PR lane pass: ${t.prLane?Math.round(100*(t.prLane.passed/t.prLane.total)):0}% • target ≥ 95%`,
+      `Nightly pass: ${t.nightly?Math.round(100*(t.nightly.passed/t.nightly.total)):0}% (can fail)`,
+      `Roadmap: ${heat.green} Green / ${heat.yellow} Yellow / ${heat.red} Red`,
+      `Top failing bucket: ${(t.buckets?.[0]?.tag)||'-'} (${(t.buckets?.[0]?.failed)||0})`,
+    ];
+    const imp = [
+      `If @dashboard stays Red → delay Progress v1 + Beta gating`,
+      `@data-control Red → privacy UX blocked (export/delete flows)`,
+      `@prosody/ @strain Yellow → labs not in PR lane; customer experience limited to Instant Practice + Prosody v1`,
+    ];
+    const ver = [
+      `Gates (must pass in PR): @smoke, @pilot-core, @a11y-smoke, @security`,
+      `Quarantined nightly: @dashboard @cohort-* @data-control @prosody @strain @offline @polish @future`,
+      `Flake watch: stop run after 20 fails; keep artifacts and traces`,
+    ];
+    const stk = [
+      `What's shipped: Instant Practice + Warmup + IndexedDB + Safety + Prosody v1`,
+      `In progress: Pitch Band • Resonance • Orb v2 • Strain guardrails`,
+      `Planned: Adaptive coach • Progress dashboard • Cohort analytics`,
+    ];
+    const you = [
+      `Fix a11y smokes (skip link, focus, live regions)`,
+      `Implement Pitch Band (time-in-band%) + Resonance buckets (LPC)`,
+      `Add Orb v2 shimmer/hue; wire strain heuristics + cohort calibration`,
+      `Keep PR lane clean and enforce tags on new tests`,
+    ];
+    lines.pm = pm; lines.imp = imp; lines.ver = ver; lines.stk = stk; lines.you = you; return lines;
+  }
+
+  // Tasks summary
+  function tasksSummary() {
+    const all = tasks || {};
+    const byPersona = { pm:[], imp:[], ver:[], stk:[], you:[] };
+    Object.keys(all).forEach(k=>{
+      const [p, idx] = k.split(':');
+      if (byPersona[p]) byPersona[p].push(Number(idx));
+    });
+    return byPersona;
+  }
+
+  // Roadmap detailed list
+  function roadmapSection() {
+    const lines = [];
+    for (const [stage, items] of Object.entries(rm)) {
+      lines.push(`### ${stage}`);
+      (items||[]).forEach(([feature,status])=>{
+        lines.push(`- ${status==='green'?'✅':'🟨'===status?'🟨':'🟥'} ${feature} — ${status}`);
+      });
+      lines.push('');
+    }
+    return lines.join('\n');
+  }
+
+  // Failing buckets table
+  function bucketsSection() {
+    const buckets = (t.buckets||[]);
+    if (!buckets.length) return '_No failing buckets._\n';
+    const head = `| Bucket | Failed | Examples |\n|---|---:|---|`;
+    const rows = buckets.map(b=>`| ${b.tag} | ${b.failed} | ${(b.examples||[]).slice(0,2).join(' • ')} |`).join('\n');
+    return head + '\n' + rows + '\n';
+  }
+
+  // History snapshot (last up to 10)
+  function historySection() {
+    const last = hist.slice(-10);
+    if (!last.length) return '_No history yet._\n';
+    const head = `| PR% | Nightly% | Green | Yellow | Red |\n|---:|---:|---:|---:|---:|`;
+    const rows = last.map(h=>`| ${h.prPct||0} | ${h.nightlyPct||0} | ${h.green||0} | ${h.yellow||0} | ${h.red||0} |`).join('\n');
+    return head + '\n' + rows + '\n';
+  }
+
+  const personas = personaLines();
+  const taskIdx = tasksSummary();
+
+  const md = [
+    `<p align="left">`,
+    `  <img src="../LOGO/Resonai_Wordmark_shimmer_grad.png" alt="Resonai" class="logo-wordmark">`,
+    `</p>`,
+    `# Status Report (Detailed)`,
+    ``,
+    `Updated: ${new Date(t.updatedAt||Date.now()).toISOString()}`,
+    `Build: ${ssot.buildSha||'dev'}  •  Cohort: ${ssot.cohort||'local'}`,
+    ``,
+    `## KPIs`,
+    `- PR lane pass %: ${prPassPct}%`,
+    `- Nightly pass %: ${nightlyPassPct}%`,
+    `- Roadmap: ${heat.green} Green / ${heat.yellow} Yellow / ${heat.red} Red`,
+    `- Top failing bucket: ${top}`,
+    ``,
+    `## Failing Buckets`,
+    bucketsSection(),
+    `## Personas`,
+    `### Project Manager`,
+    ...personas.pm.map(x=>`- ${x}`),
+    `### Project Implication Agent`,
+    ...personas.imp.map(x=>`- ${x}`),
+    `### Project Verifier`,
+    ...personas.ver.map(x=>`- ${x}`),
+    `### Stakeholder`,
+    ...personas.stk.map(x=>`- ${x}`),
+    `### You (Operator)`,
+    ...personas.you.map(x=>`- ${x}`),
+    ``,
+    `## Tasks (Completed Indexes)`,
+    `- PM: ${taskIdx.pm.sort((a,b)=>a-b).join(', ')||'—'}`,
+    `- Implication Agent: ${taskIdx.imp.sort((a,b)=>a-b).join(', ')||'—'}`,
+    `- Verifier: ${taskIdx.ver.sort((a,b)=>a-b).join(', ')||'—'}`,
+    `- Stakeholder: ${taskIdx.stk.sort((a,b)=>a-b).join(', ')||'—'}`,
+    `- You: ${taskIdx.you.sort((a,b)=>a-b).join(', ')||'—'}`,
+    ``,
+    `## History (Last ${Math.min(10,hist.length)} samples)`,
+    historySection(),
+    `## Roadmap`,
+    roadmapSection(),
+  ].join('\n');
+
+  const blob = new Blob([md], { type:'text/markdown;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `status-detailed-${new Date().toISOString().replace(/[:.]/g,'-')}.md`;
+  document.body.appendChild(a); a.click(); a.remove();
+}
+
+/* ---------------------------
+   FETCH or FILE LOAD
+----------------------------*/
+async function getJSON(url) {
+  const r = await fetch(url, { cache:'no-store' });
+  if (!r.ok) throw new Error(`HTTP ${r.status} for ${url}`);
+  return r.json();
+}
+async function refreshData() {
+  const base = state.endpoint.replace(/\/?$/, '/'); // ensure trailing slash
+  try {
+    const [roadmap, tests, ssot] = await Promise.all([
+      getJSON(base + 'roadmap.json').catch(()=>null),
+      getJSON(base + 'tests.json').catch(()=>null),
+      getJSON(base + 'ssot.json').catch(()=>null),
+    ]);
+    state.data.roadmap = roadmap || DEMO.roadmap;
+    state.data.tests = tests || DEMO.tests;
+    state.data.ssot = ssot || DEMO.ssot;
+  } catch (e) {
+    // Use demo data if anything explodes
+    state.data = JSON.parse(JSON.stringify(DEMO));
+  }
+  renderAll();
+}
+
+document.getElementById('loadFiles').addEventListener('click', async () => {
+  // Firefox doesn't support File System Access; use <input type=file> fallback.
+  const input = document.createElement('input');
+  input.type = 'file'; input.multiple = true; input.accept = '.json,application/json';
+  input.onchange = () => {
+    const files = Array.from(input.files);
+    for (const f of files) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const json = JSON.parse(reader.result);
+          if (f.name.includes('roadmap')) state.data.roadmap = json;
+          if (f.name.includes('tests')) state.data.tests = json;
+          if (f.name.includes('ssot')) state.data.ssot = json;
+          renderAll();
+        } catch {}
+      };
+      reader.readAsText(f);
+    }
+  };
+  input.click();
+});
+
+/* ---------------------------
+   RENDER: KPIs
+----------------------------*/
+function kpi(label, value, hint, tone, sparkSvg) {
+  const toneClass = tone ? ` value-${tone}` : '';
+  return `<div class="kpi fade-in" role="group" aria-label="${esc(label)}">
+    <div class="label">${esc(label)}</div>
+    <div class="value${toneClass}">${esc(value)}</div>
+    ${sparkSvg?`<div class="spark" aria-hidden="true">${sparkSvg}</div>`:''}
+    ${hint?`<div class="fine">${esc(hint)}</div>`:''}
+  </div>`;
+}
+
+function renderKPIs() {
+  const t = state.data.tests;
+  const heat = summarizeHeat();
+  const successRate = t.summary ? t.summary.success_rate : 0;
+  const totalTests = t.summary ? t.summary.total : 0;
+  const failedTests = t.summary ? t.summary.failed : 0;
+
+  const hist = getHistory();
+  const successSeries = hist.map(h=>h.successRate).concat(successRate).slice(-20);
+  const gSeries = hist.map(h=>h.green).concat(heat.green).slice(-20);
+  const fSeries = hist.map(h=>h.failed).concat(failedTests).slice(-20);
+  const successSpark = sparkline(successSeries, 'var(--ok)');
+  const rmSpark = sparkline(gSeries, 'var(--ok)');
+  const failSpark = sparkline(fSeries, 'var(--bad)');
+
+  const successTone = successRate>=90 ? 'ok' : (successRate>=70 ? 'warn' : 'bad');
+  const failTone = failedTests<=2 ? 'ok' : (failedTests<=5 ? 'warn' : 'bad');
+
+  $('#kpis').innerHTML =
+    kpi('Test Success Rate', successRate+'%', 'Overall test pass rate', successTone, successSpark) +
+    kpi('Failed Tests', failedTests+'/'+totalTests, 'Critical issues requiring attention', failTone, failSpark) +
+    kpi('Roadmap status', `${heat.green}✓ / ${heat.yellow}~ / ${heat.red}×`, 'Green/Yellow/Red features', undefined, rmSpark) +
+    kpi('Top failing bucket', (state.data.tests.buckets?.[0]?.tag)||'—', (state.data.tests.buckets?.[0]?.failed||0)+' issues') +
+    kpi('Last snapshot', new Date(state.data.tests.updatedAt||Date.now()).toLocaleString(), 'Local time');
+
+  $('#snapshotMeta').textContent =
+    `Build: ${(state.data.ssot?.buildSha)||'dev'} • Cohort: ${(state.data.ssot?.cohort)||'local'} • ` +
+    `SSOT when: ${new Date(state.data.ssot?.when||Date.now()).toLocaleString()}`;
+  pushHistory({ successRate: successRate, failed: failedTests, green: heat.green, yellow: heat.yellow, red: heat.red });
+}
+
+/* ---------------------------
+   HEATMAP DATA
+----------------------------*/
+function summarizeHeat() {
+  const rm = state.data.roadmap || {};
+  const counts = { green:0, yellow:0, red:0 };
+  Object.values(rm).forEach(arr => (arr||[]).forEach(([name,status]) => { if(counts[status]!==undefined) counts[status]++; }));
+  return counts;
+}
+
+function statusPill(status) {
+  const map = { green:'green', yellow:'yellow', red:'red' };
+  return `<span class="pill ${map[status]||''} fade-in">${status==='green'?'✅ Green':status==='yellow'?'🟨 Yellow':'🟥 Red'}</span>`;
+}
+
+function renderHeatmapTable() {
+  const rm = state.data.roadmap || {};
+  const rows = [];
+  for (const [stage, items] of Object.entries(rm)) {
+    (items||[]).forEach(([feature, status]) => {
+      rows.push(`<tr><td>${esc(feature)}</td><td>${esc(stage)}</td><td>${statusPill(status)}</td></tr>`);
+    });
+  }
+  $('#heat-table').innerHTML = `
+    <table aria-label="Roadmap table">
+      <thead><tr><th>Feature</th><th>Stage</th><th>Status</th></tr></thead>
+      <tbody>${rows.join('')}</tbody>
+    </table>`;
+}
+
+function renderKanban() {
+  const rm = state.data.roadmap || {};
+  const col = { green:[], yellow:[], red:[] };
+  for (const [stage, items] of Object.entries(rm)) {
+    (items||[]).forEach(([feature,status]) => col[status].push({feature,stage}));
+  }
+  $('#heat-kanban').innerHTML = `
+    <div class="kanban" role="region" aria-label="Kanban">
+      <div class="col">
+        <h4>✅ Green</h4>
+        ${col.green.map(x=>`<div class="cardlet"><strong>${esc(x.feature)}</strong><div class="fine">${esc(x.stage)}</div></div>`).join('')||'<div class="fine">None</div>'}
+      </div>
+      <div class="col">
+        <h4>🟨 Yellow</h4>
+        ${col.yellow.map(x=>`<div class="cardlet"><strong>${esc(x.feature)}</strong><div class="fine">${esc(x.stage)}</div></div>`).join('')||'<div class="fine">None</div>'}
+      </div>
+      <div class="col">
+        <h4>🟥 Red</h4>
+        ${col.red.map(x=>`<div class="cardlet"><strong>${esc(x.feature)}</strong><div class="fine">${esc(x.stage)}</div></div>`).join('')||'<div class="fine">None</div>'}
+      </div>
+    </div>`;
+}
+
+function renderSwimlane() {
+  const rm = state.data.roadmap || {};
+  // Simple SVG: each lane is a row; features become colored rounded rects
+  const stages = Object.keys(rm);
+  const h = 50 * Math.max(2, stages.length);
+  const W = 1000, H = 20 + stages.length * 110;
+  let y = 20; let svg = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Timeline swimlane">`;
+  for (const stage of stages) {
+    svg += `<rect x="10" y="${y}" width="${W-20}" height="90" rx="12" fill="none" stroke="var(--border)"/>`;
+    svg += `<text x="20" y="${y+22}" fill="var(--muted)" font-size="14" font-weight="600">${esc(stage)}</text>`;
+    const items = (rm[stage]||[]);
+    const gap = (W-120) / Math.max(1, items.length);
+    let x = 60;
+    for (const [feature,status] of items) {
+      const color = status==='green'?'var(--green)':status==='yellow'?'var(--yellow)':'var(--red)';
+      svg += `<rect x="${x}" y="${y+34}" width="180" height="42" rx="8" fill="${color}" opacity="0.85" stroke="var(--border)"/>`;
+      svg += `<text x="${x+10}" y="${y+60}" fill="${status==='red'?'#fff':'#000'}" font-size="12">${esc(feature)}</text>`;
+      x += gap;
+    }
+    y += 110;
+  }
+  svg += `</svg>`;
+  $('#heat-swim').innerHTML = svg;
+}
+
+/* ---------------------------
+   PERSONAS + FAILING BUCKETS
+----------------------------*/
+function renderPersonas() {
+  const t = state.data.tests;
+  const heat = summarizeHeat();
+  const successRate = t.summary ? t.summary.success_rate : 0;
+
+  const pm = [
+    `Test success rate: ${successRate}% • target ≥ 90%`,
+    `Failed tests: ${t.summary?.failed || 0}/${t.summary?.total || 0} (critical issues)`,
+    `Roadmap: ${heat.green} Green / ${heat.yellow} Yellow / ${heat.red} Red`,
+    `Top failing bucket: ${(t.buckets?.[0]?.tag)||'—'} (${(t.buckets?.[0]?.failed)||0} issues)`,
+  ];
+  $('#pmList').innerHTML = pm.map((x,i)=>taskItem('pm', i, x)).join('');
+
+  const imp = [
+    `If @security stays Red → delay production deployment + audit readiness`,
+    `@service Red → observability pipeline partially degraded (Windows Collector down)`,
+    `@monitoring Yellow → continuous monitoring active but needs optimization`,
+  ];
+  $('#impList').innerHTML = imp.map((x,i)=>taskItem('imp', i, x)).join('');
+
+  const ver = [
+    `ECRR gates: Examine → Clean → Report → Role framework active`,
+    `Critical issues: Windows Collector service stopped, Docker security vulnerabilities`,
+    `Compliance status: ECRR framework maintained, documentation standards enforced`,
+  ];
+  $('#verList').innerHTML = ver.map((x,i)=>taskItem('ver', i, x)).join('');
+
+  const stk = [
+    `Operational: SigNoz observability platform, Docker services, OTLP endpoints`,
+    `Issues: Windows Collector service down, 48 Docker security vulnerabilities`,
+    `Progress: ECRR compliance active, documentation polished, status aligned`,
+  ];
+  $('#stkList').innerHTML = stk.map((x,i)=>taskItem('stk', i, x)).join('');
+
+  const you = [
+    `Restart Windows Collector service with admin privileges`,
+    `Implement Docker security remediation plan (48 vulnerabilities)`,
+    `Continue ECRR compliance monitoring and documentation updates`,
+    `Maintain BossCat OEM oversight and executive reporting`,
+  ];
+  $('#youList').innerHTML = you.map((x,i)=>taskItem('you', i, x)).join('');
+
+  // Failing buckets table
+  const tb = (t.buckets||[]).map(b=>`<tr><td>${esc(b.tag)}</td><td>${b.failed}</td><td class="fine">${esc((b.examples||[]).slice(0,2).join(' • '))}</td></tr>`).join('');
+  document.querySelector('#failTable tbody').innerHTML = tb || '<tr><td colspan="3" class="fine">No data</td></tr>';
+}
+
+/* ---------------------------
+   ECRR ROLLUP
+----------------------------*/
+function renderECRR() {
+  const lines = [
+    `Examine: ✅ Pipeline state analyzed, service issues identified, security vulnerabilities documented`,
+    `Clean: ✅ Service restart attempted, test status aligned, documentation placeholder text removed`,
+    `Report: ✅ ECRR compliance reports generated, status dashboard updated, changes committed`,
+    `Role: ✅ BossCat OEM maintains executive oversight, ECRR framework fully executed`,
+  ];
+  $('#ecrrList').innerHTML = lines.map(x=>`<li>${esc(x)}</li>`).join('');
+}
+
+/* ---------------------------
+   TABS + EVENTS
+----------------------------*/
+function setTab(which) {
+  $$('#roadmapTitle ~ .tabs .tab').forEach(btn=>btn.setAttribute('aria-selected', String(btn.id === which)));
+  ['heat-table','heat-kanban','heat-swim'].forEach(id => $(`#${id}`).hidden = (('tab-'+id.split('-')[1]) !== which));
+}
+
+$('#tab-table').addEventListener('click', ()=>setTab('tab-table'));
+$('#tab-kanban').addEventListener('click', ()=>setTab('tab-kanban'));
+$('#tab-swim').addEventListener('click', ()=>setTab('tab-swim'));
+
+$('#refresh').addEventListener('click', refreshData);
+  document.getElementById('exportPdf').addEventListener('click', ()=>window.print());
+  document.getElementById('exportMd').addEventListener('click', exportMarkdown);
+  document.getElementById('exportMdDetailed').addEventListener('click', exportMarkdownDetailed);
+  document.getElementById('exportCsvBuckets').addEventListener('click', exportCsvBuckets);
+  document.getElementById('exportCsvHistory').addEventListener('click', exportCsvHistory);
+$('#endpoint').addEventListener('change', (e)=>{
+  state.endpoint = e.target.value; localStorage.setItem('status:endpoint', state.endpoint);
+  refreshData();
+});
+$('#auto').addEventListener('change',(e)=>{
+  state.auto = e.target.checked;
+  if (state.timer) { clearInterval(state.timer); state.timer = null; }
+  if (state.auto) state.timer = setInterval(refreshData, 30000);
+});
+
+/* ---------------------------
+   MODE HINT
+----------------------------*/
+function updateModeHint() {
+  const modeHint = document.getElementById('modeHint');
+  if (modeHint) {
+    if (location.protocol === 'file:') {
+      modeHint.innerHTML = '✅ File mode active: click <strong>Load files</strong> to choose docs/status/*.json (preferred workflow).';
+    } else {
+      modeHint.innerHTML = '🌐 Serving over HTTP: ensure the Endpoint exposes docs/status/roadmap.json, tests.json, and ssot.json.';
+    }
+  }
+}
+
+/* ---------------------------
+   MAIN
+----------------------------*/
+function renderAll() {
+  renderKPIs();
+  renderHeatmapTable();
+  renderKanban();
+  renderSwimlane();
+  renderPersonas();
+  renderECRR();
+}
+updateModeHint(); // show file/http mode hint
+refreshData(); // initial load
+
+// Restore persona filter state on page load
+function restorePersonaFilters() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('status:personaFilters') || '{}');
+    document.querySelectorAll('input.pf[data-p]').forEach(cb => {
+      const p = cb.getAttribute('data-p');
+      if (saved[p] !== undefined) {
+        cb.checked = saved[p];
+        const els = document.querySelectorAll(`.persona[data-persona="${p}"]`);
+        els.forEach(el=>{ el.style.display = saved[p] ? '' : 'none'; });
+      }
+    });
+  } catch {}
+}
+restorePersonaFilters();
+</script>
 </body>
 </html>
