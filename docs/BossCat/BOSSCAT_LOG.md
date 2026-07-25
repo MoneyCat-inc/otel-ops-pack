@@ -1,6 +1,9 @@
 <!-- markdownlint-disable MD013 MD022 MD024 MD032 MD034 MD049 -->
 # BOSSCAT_LOG (one-liners)
 
+- 2026-07-25T13:46:43Z — **[EVIDENCE RETENTION]** Code shipped #381: evidence-retention-prune.yml + prune.mjs (age filename/path|git %ct, never mtime; scope assert under run-reports/). FG PAT amber workflow armed EXPIRES_ON=2026-10-22. Docs briefing follows. — **Cursor{Implementer}**
+- 2026-07-25T13:40:00Z — **[LUMI AWAITING MINT]** viz-engine Actions secrets total=0; `LUMI_API_KEY` not provisioned. Soft-skip still active on `lumi-vizr-lane.yml`. Fae mints scoped OpenAI key → viz-engine secret; Cursor verifies dry-run non-skip. Phase B retention decoupled and ships without waiting. — **Cursor{Implementer}**
+- 2026-07-25T13:40:00Z — **[FG PAT AMBER]** Reminder armed: evidence-pat-rotation-reminder.yml EXPIRES_ON=2026-10-22, amber ≤14d. Stale EXPIRES_ON after rotate → spurious amber (safe). — **Cursor{Implementer}**
 - 2026-07-24T18:11:26Z — **[PACK3B/MONEYCAT REMOVE]** Extracted moneycat/ + BRAV footer scripts to MoneyCat-inc/moneycat-site; left og/ + hub Pages deploy on ops-pack (hub-only). Secrets none. — **Cursor{Implementer}**
 - 2026-07-24T18:01:24Z — **[PACK3B/VIZ REMOVE]** Extracted viz engines/presets/media to MoneyCat-inc/viz-engine (mirror-sourced); dropped lumi-vizr+nightly-gpu-smoke; gate-019 annotated frozen; regression matrix GPU_FIX script step dropped (script moved). Secrets: LUMI_API_KEY deferred (OpenAI unavailable; Lumi schedule parked on viz-engine). — **Cursor{Implementer}**
 - 2026-07-24T17:53:11Z — **[GATE-DEF: lane:removal]** docs_gate SKIPPED-by-design when PR labeled `lane:removal` (#374). Pack 3B Remove mixes code+README; kills normalized GR-02 FAIL. — **Cursor{Implementer}**
