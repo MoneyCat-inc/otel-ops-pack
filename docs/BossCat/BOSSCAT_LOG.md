@@ -1,6 +1,12 @@
 <!-- markdownlint-disable MD013 MD022 MD024 MD032 MD034 MD049 -->
 # BOSSCAT_LOG (one-liners)
 
+- 2026-07-24T18:11:26Z — **[PACK3B/MONEYCAT REMOVE]** Extracted moneycat/ + BRAV footer scripts to MoneyCat-inc/moneycat-site; left og/ + hub Pages deploy on ops-pack (hub-only). Secrets none. — **Cursor{Implementer}**
+- 2026-07-24T18:01:24Z — **[PACK3B/VIZ REMOVE]** Extracted viz engines/presets/media to MoneyCat-inc/viz-engine (mirror-sourced); dropped lumi-vizr+nightly-gpu-smoke; gate-019 annotated frozen; regression matrix GPU_FIX script step dropped (script moved). Secrets: LUMI_API_KEY deferred (OpenAI unavailable; Lumi schedule parked on viz-engine). — **Cursor{Implementer}**
+- 2026-07-24T17:53:11Z — **[GATE-DEF: lane:removal]** docs_gate SKIPPED-by-design when PR labeled `lane:removal` (#374). Pack 3B Remove mixes code+README; kills normalized GR-02 FAIL. — **Cursor{Implementer}**
+- 2026-07-24T17:40:52Z — **[PACK3B/SCOREBOT REPORT]** Lane closed via #373 → `a5d7c563`. Extracted=removed **6=6**; secrets none; CI-before-Remove honored (scorebot `1031c2c` lint+docker). numpy pin 2.4.6 for py3.11 documented in extract. — **Cursor{Implementer}**
+- 2026-07-24T17:28:01Z — **[PACK3B/SCOREBOT REMOVE]** Extracted scorebot/ (6 files) to MoneyCat-inc/scorebot (CI lint+docker green @ 1031c2c); dropped compose viz scorebot service; secrets none. — **Cursor{Implementer}**
+- 2026-07-24T17:22:57Z — **[PACK3B/SOCM REPORT]** Lane 1 closed via #366 merge `92633410`. Extracted=removed lane paths **120=120**; +1 untrack `artifacts/bsky-maintenance-state.json`. Lychee green on rewritten pointers (private socm HTML excluded; gh api proves target). Bluesky app passwords: only `socm-actions` (predecessor absent). — **Cursor{Implementer}**
 - 2026-07-24T16:33:52Z — **[PACK3B/SOCM REMOVE]** Extracted Bluesky/social ops to MoneyCat-inc/socm; removed docs/socm+social+bsky plan, scripts/social, social_post.yml, .env.socm.example, artifacts/bsky-maintenance-state.json. Secrets provisioned on socm (names: BSKY_*). — **Cursor{Implementer}**
 - 2026-07-24T15:53:57Z — **[PACK3 REWRITE VERIFIED]** Force-push complete; protection restored (allow_force_pushes=false). origin/main=`978d3f36846d6491d2e56cefc23be3b32473d23e` (pre-log tip; parent `bc786be` = map of pre-rewrite `c2ff77f3b`). D2 `c937bd832`→`a6c230df180cc869d82c32a364638f8c245d817f` in evidence `docs/filter-repo/commit-map-20260724.txt`. Snapshot mirror `E:\otel-ops-pack-pre-pack3.git` still resolves `c937bd832` + pre-rewrite tip; untouched. — **Cursor{Implementer}**
 - 2026-07-24T15:51:32Z — **[PROTECTION BYPASS: FILTER-REPO]** Temporary allow_force_pushes on main for Pack 3 history rewrite (media purge: `docs/Art/*.mp4`, `CHAR/DOCS/docs/LOGO/`). Restore: re-disable allow_force_pushes immediately after force-push. Commit-map: MoneyCat-inc/otel-ops-evidence `docs/filter-repo/commit-map-20260724.txt` (`c937bd832`→`a6c230df180cc869d82c32a364638f8c245d817f`; pre-rewrite tip `c2ff77f3b`→`bc786be297ac311858a71574871deb74bb163e57`). Rollback mirror: `E:\otel-ops-pack-pre-pack3.git` (untouched). — **Cursor{Implementer}**
@@ -152,6 +158,8 @@
 - 2025-10-23T22:39:37Z V3_GATE ✅ traces for canary-test persisted (count=63, window=5 MINUTE, v3_schema=signoz_index_v3, bosscat_oem=v3.0)
 
 ## 2025-10-24 07:15 - Gate #010 Testing Phase - PARTIAL SUCCESS
+
+- 2026-07-24 — Pack 3B closed (#378). Cosmetic later: rename `deploy-moneycat.yml` → `deploy-hub.yml` on next docs-lane ride.
 **Authority:** BossCat OEM  
 **Executor:** Cursor{Implementer}  
 **Action:** Executed full testing sequence after CDN fix (butterchurn@2.6.7 with .default exports)  
@@ -165,6 +173,8 @@
 **Status:** 🟡 YELLOW - Awaiting BossCat guidance on remediation path (Option A/B/C)
 
 ## 2025-10-24 07:37 - Gate #010 Options A+B Exhausted - ESCALATION
+
+- 2026-07-24 — Pack 3B closed (#378). Cosmetic later: rename `deploy-moneycat.yml` → `deploy-hub.yml` on next docs-lane ride.
 **Authority:** BossCat OEM  
 **Executor:** Cursor{Implementer}  
 **Action:** Implemented Option A (normalizePreset schema fix) and tested Option B (library presets)  
@@ -178,6 +188,8 @@
 **Status:** 🔴 Awaiting BossCat decision: Option C (ProjectM), Alternative B (ship audio standalone), or Alternative C (debug Butterchurn)
 
 ## 2025-10-24 07:40 - Gate #010 Final Archive - PARTIAL SUCCESS
+
+- 2026-07-24 — Pack 3B closed (#378). Cosmetic later: rename `deploy-moneycat.yml` → `deploy-hub.yml` on next docs-lane ride.
 **Authority:** BossCat OEM  
 **Executor:** Cursor{Implementer}  
 **Action:** Completed all Gate #010 deliverables and packaged evidence for decision  
@@ -199,6 +211,8 @@ ECRR Compliance: ✅ VERIFIED
 Budget: ✅ Within limits (8 files, ~250 LOC)
 
 ## 2025-10-24 08:15 - ProjectM Build Attempt - TIMELINE REASSESSMENT
+
+- 2026-07-24 — Pack 3B closed (#378). Cosmetic later: rename `deploy-moneycat.yml` → `deploy-hub.yml` on next docs-lane ride.
 **Authority:** BossCat OEM  
 **Executor:** Cursor{Implementer}  
 **Action:** Attempted Option C (ProjectM container) per BossCat directive  
@@ -214,6 +228,8 @@ Budget: ✅ Within limits (8 files, ~250 LOC)
 **Status:** ⏸️  Awaiting BossCat decision: continue ProjectM debug OR pivot to AMBER
 
 ## 2025-10-24 08:35 - Gate #010 AMBER CERTIFICATION - AUDIO REQUIREMENTS MET
+
+- 2026-07-24 — Pack 3B closed (#378). Cosmetic later: rename `deploy-moneycat.yml` → `deploy-hub.yml` on next docs-lane ride.
 **Authority:** BossCat OEM (Taskmaster-Overseer)  
 **Executor:** Cursor{Implementer}  
 **Action:** Pivoted to Option 2 (AMBER) per BossCat directive - ship audio bridge, defer visuals to Gate #011  
@@ -229,6 +245,8 @@ Budget: ✅ Within limits (8 files, ~250 LOC)
 **Doctrine:** ECRR executed (rollback on complexity), ICF preserved (small steps), evidence-first
 
 ## 2025-10-24 08:55 - Gate #011 Track A Attempted - BLOCKED
+
+- 2026-07-24 — Pack 3B closed (#378). Cosmetic later: rename `deploy-moneycat.yml` → `deploy-hub.yml` on next docs-lane ride.
 **Authority:** BossCat OEM  
 **Executor:** Cursor{Implementer}  
 **Action:** Implemented Track A (Butterchurn scaffolding) per directive  
@@ -250,6 +268,8 @@ Budget: ✅ Within limits (8 files, ~250 LOC)
 - 2025-10-24T10:55Z — **Gate #012 CLOSED (Deferred)**: Option B accepted per BossCat directive; ProjectM API complete (179 LOC, 8 endpoints), SDL runtime blocker documented (3rd occurrence); visual rendering deferred to future scoped work (VIZ-001, est. 3-5h); AMBER bundle finalized with closure docs; evidence: artifacts/ecrr/gate010_011_amber_FINAL_20251024_094222.zip (37 files). — **Cursor{Implementer} + BossCat OEM**
 ## 2025-10-24 – GATE #016 AMBER (Preset Library Curation)
 
+- 2026-07-24 — Pack 3B closed (#378). Cosmetic later: rename `deploy-moneycat.yml` → `deploy-hub.yml` on next docs-lane ride.
+
 **Executor:** Cursor{Implementer} | **Status:** AMBER  
 **Deliverable:** 15 curated ProjectM presets with metadata index and scoring pipeline  
 **Metrics:** 7 presets @ 60-70% blackout (AMBER-acceptable), load times 419-1165ms (✅ sub-1.5s)  
@@ -259,6 +279,8 @@ Budget: ✅ Within limits (8 files, ~250 LOC)
 **Next:** Gate #013B → native audio bridge → re-score → expect 20-50% blackout
 
 ## 2025-10-24 – GATE #013B BLOCKED (Native Audio Bridge - FAILED)
+
+- 2026-07-24 — Pack 3B closed (#378). Cosmetic later: rename `deploy-moneycat.yml` → `deploy-hub.yml` on next docs-lane ride.
 
 **Executor:** Cursor{Implementer} | **Status:** 🔴 BLOCKED (Core objective unmet)  
 **Deliverable:** Native C++ audio monitor (NOT audio injector as required)  
@@ -277,6 +299,8 @@ Budget: ✅ Within limits (8 files, ~250 LOC)
 **Correction Document:** GATE_013B_CORRECTION.md
 ## 2025-10-24 – GATE #016 AMBER (Preset Library Curation)
 
+- 2026-07-24 — Pack 3B closed (#378). Cosmetic later: rename `deploy-moneycat.yml` → `deploy-hub.yml` on next docs-lane ride.
+
 **Executor:** Cursor{Implementer} | **Status:** 🟡 AMBER (Operational - Audio Required for GREEN)  
 **Deliverables:** 15 curated presets ✅, metadata index ✅, scoring script ✅, evidence bundle ✅  
 **Performance:** Load times 419-1165ms (all <1.5s ✅); Blackout 60-81% (expected without audio)  
@@ -287,6 +311,8 @@ Budget: ✅ Within limits (8 files, ~250 LOC)
 **Verdict:** AMBER accepted - functional library; GREEN requires audio reactivity (Gate #013C)
 
 ## 2025-10-24 - GATE #016 V2 (Frame-Timing Stabilizer)
+
+- 2026-07-24 — Pack 3B closed (#378). Cosmetic later: rename `deploy-moneycat.yml` → `deploy-hub.yml` on next docs-lane ride.
 
 **Executor:** Cursor{Implementer} | **Status:** ? VALIDATION IN PROGRESS  
 **Deliverable:** FrameTimingStabilizer module + jitter/pin budget telemetry  
@@ -300,6 +326,8 @@ Budget: ✅ Within limits (8 files, ~250 LOC)
 
 ## 2025-10-24 - GATE #016 FINAL CERTIFICATION (GREEN)
 
+- 2026-07-24 — Pack 3B closed (#378). Cosmetic later: rename `deploy-moneycat.yml` → `deploy-hub.yml` on next docs-lane ride.
+
 **Executor:** Cursor{Implementer} | **Status:** ✅ APPROVED - RELEASE AUTHORIZED  
 **Deliverable:** Complete visual guard & jitter stabilization with synthetic trace verification  
 **Highlights:**
@@ -312,6 +340,8 @@ Budget: ✅ Within limits (8 files, ~250 LOC)
 **Verdict:** GREEN certified - Controlled rollout authorized with canary ramp (0%→10%→50%→100%) 
 
 ## 2025-10-26 — Gate 022: Windows Collector Post-Op Hardening
+
+- 2026-07-24 — Pack 3B closed (#378). Cosmetic later: rename `deploy-moneycat.yml` → `deploy-hub.yml` on next docs-lane ride.
 
 **Status:** ✅ COMPLETE
 **Action:** Canonical path set; endpoint asserted; drift guard installed
@@ -329,6 +359,8 @@ Budget: ✅ Within limits (8 files, ~250 LOC)
 - Recommended: Schedule health check every 15 min via Task Scheduler
 
 ## 2025-10-26 — Gate 025: Latency Envelope + Resilience + ICF
+
+- 2026-07-24 — Pack 3B closed (#378). Cosmetic later: rename `deploy-moneycat.yml` → `deploy-hub.yml` on next docs-lane ride.
 
 **Status:** ✅ COMPLETE (All 3 Tracks)
 
