@@ -10,3 +10,13 @@ Monthly rollups remain under `CHAR/PRSV/evidence-archives/` via `bosscat-monthly
 New reports are published by `.github/workflows/run-archiver.yml` using secret `EVIDENCE_REPO_TOKEN`
 (fine-grained PAT: MoneyCat-inc / `otel-ops-evidence` only / Contents R/W). Missing or expired
 token fails the workflow loudly — no `continue-on-error`.
+
+## Retention
+
+Raw reports in `otel-ops-evidence` are retained **90 days**, pruned quarterly by
+`.github/workflows/evidence-retention-prune.yml` (dry-run default).
+
+**Age derivation:** filename / path stamp (`YYYYMMDD` or `archived/YYYY/MM/`), else
+`git log -1 --format=%ct` — **never** filesystem mtime (checkout resets mtimes).
+
+Policy briefing: [BRIEFING_EVIDENCE_RETENTION.md](../BRIEFING_EVIDENCE_RETENTION.md).
