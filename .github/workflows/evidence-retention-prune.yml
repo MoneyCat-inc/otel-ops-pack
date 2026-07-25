@@ -1,0 +1,135 @@
+name: Evidence Retention Prune
+
+# Quarterly prune of raw run reports in otel-ops-evidence (90-day retain).
+# Age from filename/path stamp or git log — never filesystem mtime.
+# Policy: docs/BossCat/BRIEFING_EVIDENCE_RETENTION.md
+
+on:
+  schedule:
+    # 06:00 UTC on the 1st of Jan/Apr/Jul/Oct
+    - cron: '0 6 1 1,4,7,10 *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run (no delete/push)'
+        required: false
+        default: 'true'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+      retain_days:
+        description: 'Retain raw reports newer than N days'
+        required: false
+        default: '90'
+        type: string
+
+concurrency:
+  group: evidence-retention-prune
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  prune:
+    name: Prune evidence run-reports
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      EVIDENCE_REPO: MoneyCat-inc/otel-ops-evidence
+      RETAIN_DAYS: ${{ github.event.inputs.retain_days || '90' }}
+      # Dispatch defaults dry_run=true (prove derivation first). Schedule runs live prune.
+      DRY_RUN: ${{ github.event.inputs.dry_run || (github.event_name == 'schedule' && 'false' || 'true') }}
+
+    steps:
+      - name: Require EVIDENCE_REPO_TOKEN
+        env:
+          EVIDENCE_REPO_TOKEN: ${{ secrets.EVIDENCE_REPO_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "${EVIDENCE_REPO_TOKEN:-}" ]; then
+            echo "::error::EVIDENCE_REPO_TOKEN secret is missing."
+            echo "Provision a fine-grained PAT (MoneyCat-inc / otel-ops-evidence only / Contents R/W),"
+            echo "store it as repo secret EVIDENCE_REPO_TOKEN, and log the 90-day rotation date in BOSSCAT_LOG."
+            exit 1
+          fi
+
+      - name: Checkout ops pack (scripts)
+        uses: actions/checkout@v4
+
+      - name: Checkout evidence repo (write target)
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.EVIDENCE_REPO }}
+          token: ${{ secrets.EVIDENCE_REPO_TOKEN }}
+          path: evidence-repo
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Run prune
+        env:
+          REPO_ROOT: ${{ github.workspace }}/evidence-repo
+          RETAIN_DAYS: ${{ env.RETAIN_DAYS }}
+          DRY_RUN: ${{ env.DRY_RUN }}
+          MANIFEST_PATH: ${{ github.workspace }}/artifacts/evidence-prune-manifest.json
+        run: |
+          mkdir -p artifacts
+          node BRAV/SCPT/evidence-retention/prune.mjs
+
+      - name: Upload prune manifest
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: evidence-prune-manifest
+          path: artifacts/evidence-prune-manifest.json
+          retention-days: 14
+          if-no-files-found: warn
+
+      - name: Push evidence deletions
+        if: env.DRY_RUN == 'false'
+        working-directory: evidence-repo
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A docs/BossCat/run-reports || true
+          if git diff --cached --quiet; then
+            echo "No evidence deletions to push."
+            exit 0
+          fi
+          git commit -m "chore(evidence): prune run-reports older than ${RETAIN_DAYS}d [skip ci]"
+          git push
+
+      - name: Job summary
+        if: always()
+        run: |
+          {
+            echo '### Evidence Retention Prune'
+            echo ''
+            echo "**Dry run:** \`${{ env.DRY_RUN }}\`"
+            echo "**Retain days:** \`${{ env.RETAIN_DAYS }}\`"
+            echo "**Workflow:** ${{ github.workflow }}"
+            echo "**Run:** [#${{ github.run_number }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+            echo ''
+            if [ -f artifacts/evidence-prune-manifest.json ]; then
+              node -e '
+                const m = require("./artifacts/evidence-prune-manifest.json");
+                console.log("| Metric | Value |");
+                console.log("|--------|-------|");
+                console.log("| Would delete | " + m.would_delete_count + " |");
+                console.log("| Bytes | " + m.would_delete_bytes + " |");
+                console.log("| date_source filename | " + m.date_source_breakdown.filename + " |");
+                console.log("| date_source git-log | " + m.date_source_breakdown["git-log"] + " |");
+                if (m.deleted_count != null) console.log("| Deleted | " + m.deleted_count + " |");
+              '
+            else
+              echo '_Manifest missing._'
+            fi
+            echo ''
+            echo 'Policy: docs/BossCat/BRIEFING_EVIDENCE_RETENTION.md'
+          } >> "$GITHUB_STEP_SUMMARY"

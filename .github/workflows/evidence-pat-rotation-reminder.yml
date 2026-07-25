@@ -1,0 +1,142 @@
+name: Evidence PAT Rotation Reminder
+
+# Amber reminder 14 days before EVIDENCE_REPO_TOKEN FG PAT expiry.
+# After rotating the PAT, update EXPIRES_ON below (safe failure: stale date → spurious amber).
+
+on:
+  schedule:
+    - cron: '0 12 * * 1' # Mondays 12:00 UTC
+  workflow_dispatch:
+
+concurrency:
+  group: evidence-pat-rotation-reminder
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  issues: write
+
+env:
+  EXPIRES_ON: '2026-10-22'
+  AMBER_DAYS: '14'
+
+jobs:
+  remind:
+    name: FG PAT amber check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Evaluate window
+        id: win
+        shell: bash
+        run: |
+          set -euo pipefail
+          expires="${EXPIRES_ON}"
+          amber_days="${AMBER_DAYS}"
+          today=$(date -u +%Y-%m-%d)
+          expires_epoch=$(date -u -d "$expires" +%s)
+          today_epoch=$(date -u -d "$today" +%s)
+          days_left=$(( (expires_epoch - today_epoch) / 86400 ))
+          echo "expires_on=$expires" >> "$GITHUB_OUTPUT"
+          echo "days_left=$days_left" >> "$GITHUB_OUTPUT"
+          if [ "$days_left" -le "$amber_days" ] && [ "$days_left" -ge -7 ]; then
+            echo "amber=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "amber=false" >> "$GITHUB_OUTPUT"
+          fi
+          echo "days_left=$days_left expires=$expires amber_days=$amber_days"
+
+      - name: Open or update amber issue
+        if: steps.win.outputs.amber == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const expires = '${{ steps.win.outputs.expires_on }}';
+            const daysLeft = '${{ steps.win.outputs.days_left }}';
+            const title = `AMBER: EVIDENCE_REPO_TOKEN FG PAT expires ${expires}`;
+            const body = [
+              '## Evidence PAT rotation reminder',
+              '',
+              `**Expires:** \`${expires}\` (${daysLeft} days from run date)`,
+              '**Secret:** `EVIDENCE_REPO_TOKEN` on `otel-ops-pack`',
+              '**Scope:** fine-grained PAT → `MoneyCat-inc/otel-ops-evidence` Contents R/W only',
+              '',
+              '### Actions',
+              '1. Mint a new fine-grained PAT (MoneyCat-inc / otel-ops-evidence / Contents R/W / 90d).',
+              '2. Update repo secret `EVIDENCE_REPO_TOKEN`.',
+              '3. Update `EXPIRES_ON` in `.github/workflows/evidence-pat-rotation-reminder.yml`.',
+              '4. Append `[D2 FG ROTATE]` to `docs/BossCat/BOSSCAT_LOG.md` and close this issue.',
+              '',
+              'Stale `EXPIRES_ON` after rotate causes a **spurious** amber (annoying, safe) — preferred over silent miss.',
+            ].join('\n');
+
+            const labels = ['security', 'rotation'];
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'rotation',
+              per_page: 50,
+            });
+            const existing = issues.find((i) => i.title.startsWith('AMBER: EVIDENCE_REPO_TOKEN'));
+            if (existing) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.number,
+                body: `Reminder re-fired (${daysLeft}d left). ${body}`,
+              });
+              core.info(`Updated issue #${existing.number}`);
+            } else {
+              const created = await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body,
+                labels,
+              });
+              core.info(`Opened issue #${created.data.number}`);
+            }
+
+      - name: Append BOSSCAT_LOG amber line
+        if: steps.win.outputs.amber == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          ts=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          line="- ${ts} — **[FG PAT AMBER]** EVIDENCE_REPO_TOKEN expires ${{ steps.win.outputs.expires_on }} (${{ steps.win.outputs.days_left }}d). Rotate FG PAT + update EXPIRES_ON in evidence-pat-rotation-reminder.yml. — **github-actions**"
+          # Insert after the heading block (first log bullet section)
+          if ! grep -q '\[FG PAT AMBER\].*'"${{ steps.win.outputs.expires_on }}" docs/BossCat/BOSSCAT_LOG.md; then
+            tmp=$(mktemp)
+            awk -v line="$line" '
+              BEGIN { done=0 }
+              /^# BOSSCAT_LOG/ { print; next }
+              /^<!--/ { print; next }
+              /^$/ && !done { print; print line; done=1; next }
+              { print }
+              END { if (!done) print line }
+            ' docs/BossCat/BOSSCAT_LOG.md > "$tmp"
+            mv "$tmp" docs/BossCat/BOSSCAT_LOG.md
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add docs/BossCat/BOSSCAT_LOG.md
+            git commit -m "docs(bosscat): FG PAT amber reminder for ${{ steps.win.outputs.expires_on }} [skip ci]" || true
+            git push || true
+          else
+            echo "Amber line for this expiry already present."
+          fi
+
+      - name: Job summary
+        if: always()
+        run: |
+          {
+            echo '### Evidence PAT Rotation Reminder'
+            echo ''
+            echo "**EXPIRES_ON:** \`${{ env.EXPIRES_ON }}\`"
+            echo "**Days left:** \`${{ steps.win.outputs.days_left }}\`"
+            echo "**Amber:** \`${{ steps.win.outputs.amber }}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
