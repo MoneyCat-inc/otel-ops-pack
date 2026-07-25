@@ -2,7 +2,7 @@
 
 Archived GitHub Actions run reports live in the private evidence repo:
 
-**https://github.com/MoneyCat-inc/otel-ops-evidence** → `docs/BossCat/run-reports/`
+**`MoneyCat-inc/otel-ops-evidence`** (private) → `docs/BossCat/run-reports/`
 
 This directory in **otel-ops-pack** no longer holds the ~25k-file archive (Pack 2 Task 6).
 Monthly rollups remain under `CHAR/PRSV/evidence-archives/` via `bosscat-monthly-evidence-rollup.yml`.
