@@ -1,3 +1,4 @@
+<!-- markdownlint-disable MD013 MD031 MD034 -->
 # CLEAN-HOST E2E ΓÇö Run card (SCHEDULED)
 
 **Run ID:** `clean-host-e2e-20260725`  
