@@ -1,11 +1,13 @@
-name: Deploy MoneyCat Website
+name: Deploy Hub Website
+
+# Pack 3B: moneycat/ extracted to MoneyCat-inc/moneycat-site.
+# This workflow deploys BossCat Hub only (hub.resonai.uk/).
 
 on:
   push:
     branches:
       - main
     paths:
-      - 'moneycat/**'
       - 'index.html'
       - 'portal.html'
       - 'assets/**'
@@ -43,12 +45,11 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
-      - name: Build Pages artifact (hub root + MoneyCat subdirectory)
+      - name: Build Pages artifact (hub root)
         run: |
           set -euo pipefail
           mkdir -p deploy
 
-          # Preserve hub root content (only if files exist)
           [ -f "CNAME" ] && cp -v CNAME deploy/CNAME || echo "CNAME not found, skipping"
           touch deploy/.nojekyll
           for f in index.html portal.html robots.txt humans.txt _config.yml favicon.svg favicon.ico; do
@@ -57,32 +58,15 @@ jobs:
             fi
           done
 
-          # Copy hub assets (only if directories exist)
           [ -d "docs" ] && cp -r docs deploy/ || echo "docs/ not found, skipping"
           [ -d "assets" ] && cp -r assets deploy/ || echo "assets/ not found, skipping"
           [ -d "CHAR" ] && cp -r CHAR deploy/ || echo "CHAR/ not found, skipping"
           [ -d ".well-known" ] && cp -r .well-known deploy/ || echo ".well-known/ not found, skipping"
           [ -d "og" ] && cp -r og deploy/ || echo "og/ not found, skipping"
 
-          # MoneyCat lives under /moneycat (no standalone CNAME)
-          if [ -d "moneycat" ]; then
-            cp -r moneycat deploy/
-            rm -f deploy/moneycat/CNAME
-          else
-            echo "ERROR: moneycat/ directory not found!"
-            exit 1
-          fi
-          
-          # Verify deployment structure
           echo "Deployment structure:"
           ls -la deploy/
-          if [ -d "deploy/moneycat" ]; then
-            echo "[OK] moneycat/ copied successfully"
-          else
-            echo "[ERROR] moneycat/ missing!"
-            exit 1
-          fi
-      
+
       - name: Upload artifact
         run: |
           tar --dereference --hard-dereference \
@@ -94,8 +78,6 @@ jobs:
           path: ${{ runner.temp }}/artifact.tar
           retention-days: 30
           include-hidden-files: true
-      # Note: Deploys Hub at root and MoneyCat at /moneycat
-      # Final URLs: hub.resonai.uk/ and hub.resonai.uk/moneycat/
 
       - name: Deploy to GitHub Pages
         id: deployment
