@@ -10,11 +10,11 @@ receivers:
   hostmetrics:
     collection_interval: 60s
     scrapers:
-      - cpu
-      - memory
-      - disk
-      - network
-      - process
+      cpu:
+      memory:
+      disk:
+      network:
+      process:
 
   # Windows Event Log receiver
   # Note: If your collector version uses 'windowseventlog' instead, rename accordingly
