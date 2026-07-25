@@ -18,7 +18,9 @@ Three seats — do not route human mint/login work to the wrong one:
 | **Cursor{Implementer}** | Agent in Cursor | Code, CI, ECRR, `gh` with existing auth, drive the loop | Invent secrets; mint OpenAI keys without the machine operator |
 | **Machine operator** | Human at the Cursor/IDE tab (`@fubumaki`) | OpenAI mint, GitHub Secrets paste, sudo/browser confirmations | Being asked via the chat seat as if chat can type keys |
 
-**Standing rule:** Any step that needs a keyboard on a password page, mint button, or Secrets UI is **machine-operator only**. Cursor briefs that seat and verifies after; chat never “owns” the mint. Saying “blocked on Fae/chat” for `LUMI_API_KEY` is a routing bug — the handoff is: machine operator mints → tells Cursor → Cursor dry-runs and logs.
+**Standing rule (routing):** Any step that needs a keyboard on a password page, mint button, or Secrets UI is **machine-operator only**. Cursor briefs that seat and verifies after; chat never “owns” the mint. Saying “blocked on Fae/chat” for `LUMI_API_KEY` is a routing bug — the handoff is: machine operator mints → tells Cursor → Cursor dry-runs and logs.
+
+**Standing rule (blast radius, post FG-r2):** Any credential whose value transited automation (browser a11y snapshots, agent logs, chat tooling) is **rotated — no per-case deliberation**. CI-bound keys are minted **least privilege** (scoped / Restricted to the job), never “Permissions: All” / classic `repo`-wide PAT class.
 
 ## Generated Registries (Do Not Edit)
 - Auto-Bots registry (generated): docs/BossCat/AGENTS.md
