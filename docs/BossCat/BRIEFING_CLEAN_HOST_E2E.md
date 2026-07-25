@@ -3,8 +3,9 @@
 **Authority:** BossCat OEM / oversight seat (post–Pack 3B follow-on)  
 **Owner (brief):** Cursor{Implementer}  
 **Owner (run):** Machine operator at Cursor tab + Cursor{Implementer} verify  
-**Status:** READY TO EXECUTE — no measured baseline yet  
-**Promise under test:** A stranger on a fresh Windows host can go from clone → first span in SigNoz without tribal knowledge.
+**Status:** **SCHEDULED** 2026-07-25 — awaiting fresh VM (see `CLEAN_HOST_E2E_RUN_CARD_20260725.md`)  
+**Promise under test:** A stranger on a fresh Windows host can go from clone → first span in SigNoz without tribal knowledge.  
+**Gate clock:** Phases **1–4 only** (clone → first span). Phase 0 tooling is recorded but **excluded** from the ≤30 min target.
 
 This is the first gate in the project that tests the **promise to strangers**, not the machinery behind it. Draft it to fail closed: if a step needs tribal knowledge, the briefing is incomplete.
 
@@ -116,7 +117,7 @@ Machine operator: complete SigNoz first-run UI if prompted (admin user). Note wh
 
 | # | Step |
 |---|------|
-| 3.1 | Download/install official `otelcol-contrib` Windows MSI (machine operator — URL pinned in run ECRR; do not leave “find the MSI” tribal) |
+| 3.1 | Install pinned MSI (**0.104.0** Gate #022-proven): https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v0.104.0/otelcol-contrib_0.104.0_windows_x64.msi — usually done in Phase 0; confirm service exists before repair script |
 | 3.2 | Sync template → live config: ensure `C:\otel\config.yaml` matches `windows\otelcol\otelcol-contrib-config.yaml` (or documented sync command) |
 | 3.3 | `pwsh -File C:\otel\scripts\windows\install-or-repair-otel-collector.ps1` — service must point at `C:\otel\config.yaml` |
 | 3.4 | `sc qc otelcol-contrib` — confirm BINARY_PATH_NAME includes `C:\otel\config.yaml` |
