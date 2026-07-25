@@ -18,9 +18,9 @@ Write-Host ""
 Write-Host "[1/5] Ensuring config directory..." -ForegroundColor White
 if (!(Test-Path $ProgramDataPath)) {
   New-Item -ItemType Directory -Force -Path $ProgramDataPath | Out-Null
-  Write-Host "  ✓ Created: $ProgramDataPath" -ForegroundColor Green
+  Write-Host "  [OK] Created: $ProgramDataPath" -ForegroundColor Green
 } else {
-  Write-Host "  ✓ Already exists: $ProgramDataPath" -ForegroundColor Green
+  Write-Host "  [OK] Already exists: $ProgramDataPath" -ForegroundColor Green
 }
 
 # Step 2: Write config (with endpoint substitution)
@@ -29,7 +29,7 @@ Write-Host "[2/5] Writing collector config..." -ForegroundColor White
 
 if (!(Test-Path $ConfigSource)) {
   Write-Error "Config source not found: $ConfigSource"
-  Write-Host "  → Expected location: .\windows\otelcol\otelcol-contrib-config.yaml" -ForegroundColor Yellow
+  Write-Host "  -> Expected location: .\windows\otelcol\otelcol-contrib-config.yaml" -ForegroundColor Yellow
   exit 1
 }
 
@@ -46,9 +46,9 @@ $configText = $configText -replace '\$\{env:DEPLOY_ENV\}', $deployEnv
 
 $configTarget = Join-Path $ProgramDataPath "config.yaml"
 $configText | Out-File -FilePath $configTarget -Encoding UTF8 -Force
-Write-Host "  ✓ Config written: $configTarget" -ForegroundColor Green
-Write-Host "  → OTLP endpoint: $OtlpGrpcEndpoint" -ForegroundColor Gray
-Write-Host "  → Deploy env: $deployEnv" -ForegroundColor Gray
+Write-Host "  [OK] Config written: $configTarget" -ForegroundColor Green
+Write-Host "  -> OTLP endpoint: $OtlpGrpcEndpoint" -ForegroundColor Gray
+Write-Host "  -> Deploy env: $deployEnv" -ForegroundColor Gray
 
 # Step 3: Ensure service exists
 Write-Host ""
@@ -68,39 +68,87 @@ if (!$svc) {
   exit 1
 }
 
-Write-Host "  ✓ Service found: $ServiceName" -ForegroundColor Green
+Write-Host "  [OK] Service found: $ServiceName" -ForegroundColor Green
 
-# Step 4: Configure service for reliability
+# Step 4: Fix ImagePath via registry (sc.exe binPath= fails with spaces), then configure reliability
 Write-Host ""
 Write-Host "[4/5] Configuring service..." -ForegroundColor White
 
+$regPath = "HKLM:\SYSTEM\CurrentControlSet\Services\$ServiceName"
+$currentImagePath = (Get-ItemProperty -LiteralPath $regPath -Name ImagePath -ErrorAction Stop).ImagePath
+
+# Strip any existing --config argument to isolate the executable token
+$exeToken = if ($currentImagePath -match '^("[^"]+\.exe")') {
+  $Matches[1]
+} elseif ($currentImagePath -match '^([^\s]+\.exe)') {
+  $Matches[1]
+} else {
+  $null
+}
+
+if (-not $exeToken) {
+  Write-Error "  Could not parse executable from ImagePath: $currentImagePath"
+  exit 1
+}
+
+$newImagePath = "$exeToken --config `"$configTarget`""
+Set-ItemProperty -LiteralPath $regPath -Name ImagePath -Value $newImagePath
+
+# Read back and fail closed
+$verified = (Get-ItemProperty -LiteralPath $regPath -Name ImagePath).ImagePath
+if ($verified -ne $newImagePath) {
+  Write-Error "  ImagePath verification failed. Got: $verified"
+  exit 1
+}
+Write-Host "  [OK] ImagePath set: $newImagePath" -ForegroundColor Green
+
 # Set Automatic (Delayed Start)
 sc.exe config $ServiceName start= delayed-auto | Out-Null
-Write-Host "  ✓ Start type: Automatic (Delayed Start)" -ForegroundColor Green
+Write-Host "  [OK] Start type: Automatic (Delayed Start)" -ForegroundColor Green
 
 # Set failure actions: restart after 10s for first/second/subsequent failures
 sc.exe failure $ServiceName reset= 0 actions= restart/10000/restart/10000/restart/10000 | Out-Null
 sc.exe failureflag $ServiceName 1 | Out-Null
-Write-Host "  ✓ Failure recovery: Restart after 10s (3 attempts)" -ForegroundColor Green
+Write-Host "  [OK] Failure recovery: Restart after 10s (3 attempts)" -ForegroundColor Green
 
-# Step 5: Start or restart service
+# Step 5: Stop (with timeout + kill fallback) then start service
 Write-Host ""
 Write-Host "[5/5] Starting service..." -ForegroundColor White
 
-try {
-  if ($svc.Status -ne "Running") {
-    Start-Service -Name $ServiceName
-    Write-Host "  → Service started" -ForegroundColor Gray
-  } else {
-    Restart-Service -Name $ServiceName -Force
-    Write-Host "  → Service restarted (config refresh)" -ForegroundColor Gray
+$svc = Get-Service -Name $ServiceName
+if ($svc.Status -ne "Stopped") {
+  sc.exe stop $ServiceName | Out-Null
+  $stopDeadline = (Get-Date).AddSeconds(30)
+  do {
+    Start-Sleep -Seconds 2
+    $svc = Get-Service -Name $ServiceName
+  } while ($svc.Status -ne "Stopped" -and (Get-Date) -lt $stopDeadline)
+
+  if ($svc.Status -ne "Stopped") {
+    Write-Warning "  Service did not stop within 30s (Status: $($svc.Status)) - attempting kill"
+    $proc = (Get-CimInstance Win32_Service -Filter "Name='$ServiceName'").ProcessId
+    if ($proc -and $proc -gt 0) { Stop-Process -Id $proc -Force -ErrorAction SilentlyContinue }
+    # Poll again after kill
+    $killDeadline = (Get-Date).AddSeconds(15)
+    do {
+      Start-Sleep -Seconds 2
+      $svc = Get-Service -Name $ServiceName
+    } while ($svc.Status -ne "Stopped" -and (Get-Date) -lt $killDeadline)
+    if ($svc.Status -ne "Stopped") {
+      Write-Error "  Service still not stopped after kill (Status: $($svc.Status))"
+      exit 1
+    }
   }
+  Write-Host "  -> Service stopped" -ForegroundColor Gray
+}
+
+try {
+  Start-Service -Name $ServiceName
+  Write-Host "  -> Service started" -ForegroundColor Gray
 } catch {
-  Write-Error "Failed to start/restart service '$ServiceName': $_"
-  Write-Host ""
-  Write-Host "  Troubleshooting:" -ForegroundColor Yellow
-  Write-Host "  - Check config syntax: $configTarget" -ForegroundColor Gray
-  Write-Host "  - View service logs: Get-EventLog -LogName Application -Source $ServiceName" -ForegroundColor Gray
+  Write-Error "Failed to start service '$ServiceName': $_"
+  Write-Host "  - Check config syntax: $configTarget" -ForegroundColor Yellow
+  Write-Host "  - View logs: Get-EventLog -LogName Application -Source $ServiceName" -ForegroundColor Gray
   exit 1
 }
 
@@ -114,12 +162,12 @@ if ($svcStatus -ne "Running") {
   exit 1
 }
 
-Write-Host "  ✓ Service status: RUNNING" -ForegroundColor Green
+Write-Host "  [OK] Service status: RUNNING" -ForegroundColor Green
 
 # Summary
 Write-Host ""
 Write-Host "========================================" -ForegroundColor Cyan
-Write-Host "✅ BOSSCAT-022A Install/Repair Complete" -ForegroundColor Green
+Write-Host "[OK] BOSSCAT-022A Install/Repair Complete" -ForegroundColor Green
 Write-Host ""
 Write-Host "Service: $ServiceName" -ForegroundColor White
 Write-Host "Status: RUNNING" -ForegroundColor Green
