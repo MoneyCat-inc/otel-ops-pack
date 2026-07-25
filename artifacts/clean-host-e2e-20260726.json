@@ -1,0 +1,110 @@
+{
+  "run_id": "clean-host-e2e-20260726",
+  "status": "complete",
+  "verdict": "GREEN",
+  "gate_clock_started_utc": "2026-07-25T22:49:10.0784327Z",
+  "first_span_utc": "2026-07-25T22:56:38.3250318Z",
+  "gate_clock_stopped_utc": "2026-07-25T22:58:00.1781915Z",
+  "minutes_to_first_span": 7.47,
+  "phase_1_4_minutes": 8.83,
+  "target_minutes": 30,
+  "verify_pipeline_exit": 0,
+  "clone_branch": "docs/clean-host-e2e-scheduled",
+  "clone_sha": "e7e9ba420fffdaa2a9d8d19258400757f7514868",
+  "clone_sha_note": "measured branch tip, orphaned by the #391 split; identical F1-F2 code content landed on main",
+  "landed_main_sha": "312aff7db12d5f08e68e3fc5eb2410cfc2eba89b",
+  "landed_pr": 391,
+  "prior_run": "clean-host-e2e-20260725",
+  "prior_minutes_to_first_span": 68.1,
+  "improvement_minutes": 60.6,
+  "phases": {
+    "phase4_verify_minutes": 1.67,
+    "phase3_collector_minutes": 0.39,
+    "phase2_signoz_minutes": 6.18,
+    "phase1_clone_minutes": 0.44
+  },
+  "evidence": {
+    "signoz_otel_collector": "Up 20 seconds (healthy)",
+    "canary_logs": 2,
+    "spans": 1,
+    "image_path": "\"C:\\Program Files\\OpenTelemetry Collector\\otelcol-contrib.exe\" --config \"C:\\ProgramData\\otelcol-contrib\\config.yaml\"",
+    "logs": 3
+  },
+  "fixes_validated": [
+    "F1 scrapers map",
+    "F2 ImagePath registry",
+    "F3 MSI stop+disable in Phase 0"
+  ],
+  "full": {
+    "run_id": "clean-host-e2e-20260726",
+    "gate_clock_started_utc": "2026-07-25T22:49:10.0784327Z",
+    "gate_clock_stopped_utc": "2026-07-25T22:58:00.1781915Z",
+    "first_span_utc": "2026-07-25T22:56:38.3250318Z",
+    "phase_1_4_minutes": 8.83,
+    "minutes_to_first_span": 7.47,
+    "clone_branch": "docs/clean-host-e2e-scheduled",
+    "clone_sha": "e7e9ba420fffdaa2a9d8d19258400757f7514868",
+    "landed_main_sha": "312aff7db12d5f08e68e3fc5eb2410cfc2eba89b",
+    "landed_pr": 391,
+    "phases": {
+      "phase1_clone": {
+        "ok": true,
+        "exit": 0,
+        "minutes": 0.44,
+        "sha": "e7e9ba420fffdaa2a9d8d19258400757f7514868",
+        "hasMapSyntax": true,
+        "hasListSyntax": false,
+        "repairHasRegistry": true,
+        "cloneTail": "Updating files:  96% (6481/6751)\r\nUpdating files:  96% (6485/6751)\r\nUpdating files:  97% (6549/6751)\r\nUpdating files:  98% (6616/6751)\r\nUpdating files:  99% (6684/6751)\r\nUpdating files: 100% (6751/6751)\r\nUpdating files: 100% (6751/6751), done.\r\n",
+        "PSComputerName": "clean-host-e2e",
+        "RunspaceId": "3a01e8e9-754e-4515-922e-01b89f0491f5",
+        "PSShowComputerName": true
+      },
+      "phase2_signoz": {
+        "ok": true,
+        "minutes": 6.18,
+        "error": "",
+        "signoz_otel_collector": "Up 20 seconds (healthy)",
+        "preflight_exit": 0,
+        "ui_health": true,
+        "containers": "signoz-otel-collector Up 33 seconds (healthy)\r\nsignoz Up 39 seconds (healthy)\r\nsignoz-schema-migrator-async Up 39 seconds\r\nsignoz-schema-migrator-sync Up 39 seconds\r\nsignoz-clickhouse Up 6 minutes (healthy)\r\nsignoz-zookeeper Up 6 minutes (healthy)",
+        "preflight_tail": "\r\n?? Preflight Check Summary\r\n=========================\r\nDuration: 10.34 seconds\r\nSuccess Rate: 4/4 (100%)\r\n  Docker Containers: PASS\r\n  OTLP gRPC: PASS\r\n  OTLP HTTP: PASS\r\n  SigNoz UI: PASS\r\n\r\n? Preflight check PASSED - Safe to start Windows collector\r\n",
+        "log_tail": " Container signoz-schema-migrator-sync Created \n Container signoz-schema-migrator-async Created \n Container signoz Created \n Container signoz-otel-collector Creating \n Container signoz-otel-collector Created \n Container signoz-zookeeper Waiting \n Container signoz-zookeeper Healthy \n Container signoz-zookeeper Waiting \n Container signoz-clickhouse Waiting \n Container signoz-clickhouse Waiting \n Container signoz-clickhouse Waiting \n Container signoz-clickhouse Healthy \n Container signoz-schema-migrator-sync Starting \n Container signoz-clickhouse Healthy \n Container signoz-schema-migrator-async Starting \n Container signoz-zookeeper Healthy \n Container signoz-clickhouse Healthy \n Container signoz Starting \n Container signoz-schema-migrator-async Started \n Container signoz-schema-migrator-sync Started \n Container signoz Started \n Container signoz Waiting \n Container signoz Healthy \n Container signoz-otel-collector Starting \n Container signoz-otel-collector Started ",
+        "PSComputerName": "clean-host-e2e",
+        "RunspaceId": "230e2b53-c1f8-40e4-977b-4c3cca83ae07",
+        "PSShowComputerName": true
+      },
+      "phase3_collector": {
+        "ok": true,
+        "minutes": 0.39,
+        "repair_exit": 0,
+        "service_state": "Running",
+        "image_path": "\"C:\\Program Files\\OpenTelemetry Collector\\otelcol-contrib.exe\" --config \"C:\\ProgramData\\otelcol-contrib\\config.yaml\"",
+        "ports": "5320=True 5321=True 4317=True",
+        "repair_tail": "  -> OTLP endpoint: 127.0.0.1:4317\r\n  -> Deploy env: local\r\n\r\n[3/5] Checking service installation...\r\n  [OK] Service found: otelcol-contrib\r\n\r\n[4/5] Configuring service...\r\n  [OK] ImagePath set: \"C:\\Program Files\\OpenTelemetry Collector\\otelcol-contrib.exe\" --config \"C:\\ProgramData\\otelcol-contrib\\config.yaml\"\r\n  [OK] Start type: Automatic (Delayed Start)\r\n  [OK] Failure recovery: Restart after 10s (3 attempts)\r\n\r\n[5/5] Starting service...\r\n  -> Service started\r\n  [OK] Service status: RUNNING\r\n\r\n========================================\r\n[OK] BOSSCAT-022A Install/Repair Complete\r\n\r\nService: otelcol-contrib\r\nStatus: RUNNING\r\nConfig: C:\\ProgramData\\otelcol-contrib\\config.yaml\r\nStart Type: Delayed Auto-Start\r\nFailure Recovery: Enabled\r\n\r\nNext Steps:\r\n  1. Verify: pwsh -File .\\scripts\\windows\\verify-otel-collector.ps1\r\n  2. Monitor: Get-Service otelcol-contrib\r\n  3. Telemetry: http://localhost:8888/metrics\r\n\r\n",
+        "PSComputerName": "clean-host-e2e",
+        "RunspaceId": "2ea9719d-0fed-4170-a330-2f1924dc3c30",
+        "PSShowComputerName": true
+      },
+      "phase4_verify": {
+        "ok": true,
+        "minutes": 1.67,
+        "monitor_exit": 0,
+        "canary_exit": 0,
+        "verify_exit": 0,
+        "first_span_utc": "2026-07-25T22:56:38.3250318Z",
+        "logs": 3,
+        "spans": 1,
+        "canary_logs": 2,
+        "canary_tail": "Sending OTLP log payload... /\r\nSending OTLP log payload... -\r\nSending OTLP log payload... \\\r\nSending OTLP log payload... \\\r\n[OK] Sent OTLP log (http://localhost:4318/v1/logs)\r\n-- Verification Steps --\r\n1. SigNoz UI -> Logs -> filter: message contains 'canary test'\r\n2. SigNoz UI -> Traces -> filter: canary='true'\r\n3. Windows Event Viewer -> Application -> Source 'SigNoz-Canary'\r\n4. Confirm canary log file updated at C:\\\\logs\\canary-test.log\r\nRun verify-pipeline.ps1 and verify-integration.ps1 after a few seconds to confirm ingestion.\r\n",
+        "verify_tail": "├ö┬ú├á Windows Collector Verification Complete\r\n\r\nLocal Checks:\r\n  ├ö┬ú├┤ Service RUNNING\r\n  ├ö┬ú├┤ OTLP aggregator reachable\r\n  ├ö┬ú├┤ Canary event written\r\n\r\nNote: End-to-end ingestion verification will be performed\r\n      by the gate pipeline as a separate step (WINCOLL-03).\r\n\r\nNext Steps:\r\n  1. Check collector telemetry: http://localhost:8888/metrics\r\n  2. Verify in SigNoz UI: Look for host metrics and event logs\r\n  3. Run full gate verification: pwsh -File BRAV\\SCPT\\verify-pipeline.ps1\r\n\r\n  ├ö┬ú├┤ WINCOLL-02: PASS (OTLP reachability)\r\n  ├ö┬ú├┤ WINCOLL-03: PASS (Canary event written)\r\n\r\n========================================\r\n├ö┬ú├á Gate Check: Windows Collector ├ö├Ñ├å PASS\r\n\r\n├ö┬ú├┤ Windows Collector: PASS\r\n\r\n┬¡╞Æ├ë┬Ñ BossCat OEM - Verification Complete\r\n",
+        "PSComputerName": "clean-host-e2e",
+        "RunspaceId": "fd80f604-ab3e-4747-a60f-005093582b6e",
+        "PSShowComputerName": true
+      }
+    },
+    "verify_pipeline_exit": 0,
+    "verdict": "GREEN",
+    "notes": []
+  }
+}
