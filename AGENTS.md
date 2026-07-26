@@ -10,15 +10,18 @@ Other AGENTS.md files are scoped; do not treat them as repo-wide rules unless no
 
 ## Actor seats (credential / browser steps)
 
-Three seats — do not route human mint/login work to the wrong one:
+Four seats during the Kiro pilot (OEM D2, 2026-07-26) — do not route human mint/login work to the wrong one. Provisional tag resolves only at the pilot ECRR (`docs/BossCat/BRIEFING_KIRO_PILOT_CLEAN_HOST_E2E_AUTOMATION.md`).
 
 | Seat | Who | Does | Does **not** |
 |------|-----|------|----------------|
 | **Chat / review** | Oversight in chat (e.g. Claude review) | Decisions, plan approval, review | Browser, passwords, API-key mint, GitHub Secrets UI |
-| **Cursor{Implementer}** | Agent in Cursor | Code, CI, ECRR, `gh` with existing auth, drive the loop | Invent secrets; mint OpenAI keys without the machine operator |
-| **Machine operator** | Human at the Cursor/IDE tab (`@fubumaki`) | OpenAI mint, GitHub Secrets paste, sudo/browser confirmations | Being asked via the chat seat as if chat can type keys |
+| **Cursor{Implementer}** | Agent in Cursor | Code, CI, ECRR, `gh` with existing auth, drive the loop; ops/PR mechanics | Invent secrets; mint OpenAI keys without the machine operator; nest under/over Kiro for pilot impl |
+| **Kiro{Implementer} (provisional — pilot-scoped)** | Kiro CLI peer seat | Spec-shaped feature work for the approved pilot delivery; log `Actor: Kiro{Implementer}` per commit | Nest with Cursor{Implementer}; mint/auth; open a second (AWS) evidence plane; work before the pilot briefing merges |
+| **Machine operator** | Human at the Cursor/IDE tab (`@fubumaki`) | OpenAI mint, GitHub Secrets paste, sudo/browser confirmations; Kiro login if needed | Being asked via the chat seat as if chat can type keys |
 
 **Standing rule (routing):** Any step that needs a keyboard on a password page, mint button, or Secrets UI is **machine-operator only**. Cursor briefs that seat and verifies after; chat never “owns” the mint. Saying “blocked on Fae/chat” for `LUMI_API_KEY` is a routing bug — the handoff is: machine operator mints → tells Cursor → Cursor dry-runs and logs.
+
+**Standing rule (implementer seats):** Cursor and Kiro are **peers**, not a nested chain. No Cursor→Kiro→model telephone game for pilot implementation. Scoped credentials only; machine operator handles auth; actor logged per commit.
 
 **Standing rule (blast radius, post FG-r2):** Any credential whose value transited automation (browser a11y snapshots, agent logs, chat tooling) is **rotated — no per-case deliberation**. CI-bound keys are minted **least privilege** (scoped / Restricted to the job), never “Permissions: All” / classic `repo`-wide PAT class.
 
