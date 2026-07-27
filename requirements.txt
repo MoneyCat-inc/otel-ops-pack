@@ -2,7 +2,7 @@
 # Core dependencies installed via workflow, this file kept for compatibility
 
 # Testing & Load Generation
-locust>=2.46.1
+locust>=2.46.2
 k6>=1.1.0
 
 # Code Quality
