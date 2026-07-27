@@ -4,8 +4,8 @@
   "items": [
     {
       "name": "adot-config-gate",
-      "modified": "2026-07-25T13:34:33.5634462Z",
-      "path": ".github/workflows/adot-config-gate.yml",
+      "modified": "2026-07-27T04:14:34.5060421Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/adot-config-gate.yml",
       "size": 2493,
       "triggers": {
         "issues": false,
@@ -21,8 +21,8 @@
     },
     {
       "name": "app-template",
-      "modified": "2026-07-25T13:34:33.5634462Z",
-      "path": ".github/workflows/app-template.yml",
+      "modified": "2026-07-27T04:14:34.5061298Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/app-template.yml",
       "size": 3111,
       "triggers": {
         "issues": false,
@@ -38,8 +38,8 @@
     },
     {
       "name": "benchmark-process-all-ecrr-reports",
-      "modified": "2026-07-25T13:34:33.5644450Z",
-      "path": ".github/workflows/benchmark-process-all-ecrr-reports.yml",
+      "modified": "2026-07-27T04:14:34.5061298Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/benchmark-process-all-ecrr-reports.yml",
       "size": 809,
       "triggers": {
         "issues": false,
@@ -55,8 +55,8 @@
     },
     {
       "name": "boss-gate-signal-and-merge",
-      "modified": "2026-07-25T13:34:33.5644450Z",
-      "path": ".github/workflows/boss-gate-signal-and-merge.yml",
+      "modified": "2026-07-27T04:14:34.5061298Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/boss-gate-signal-and-merge.yml",
       "size": 4854,
       "triggers": {
         "issues": false,
@@ -72,8 +72,8 @@
     },
     {
       "name": "boss-gate-verify",
-      "modified": "2026-07-25T13:34:33.5654481Z",
-      "path": ".github/workflows/boss-gate-verify.yml",
+      "modified": "2026-07-27T04:14:34.5061298Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/boss-gate-verify.yml",
       "size": 6370,
       "triggers": {
         "issues": false,
@@ -89,8 +89,8 @@
     },
     {
       "name": "bosscat-branch-protection",
-      "modified": "2026-07-25T13:34:33.5654481Z",
-      "path": ".github/workflows/bosscat-branch-protection.yml",
+      "modified": "2026-07-27T04:14:34.5061298Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/bosscat-branch-protection.yml",
       "size": 3132,
       "triggers": {
         "issues": false,
@@ -106,8 +106,8 @@
     },
     {
       "name": "bosscat-diagnostic",
-      "modified": "2026-07-25T13:34:33.5664475Z",
-      "path": ".github/workflows/bosscat-diagnostic.yml",
+      "modified": "2026-07-27T04:14:34.5061298Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/bosscat-diagnostic.yml",
       "size": 5782,
       "triggers": {
         "issues": false,
@@ -123,8 +123,8 @@
     },
     {
       "name": "bosscat-gate-bot-native",
-      "modified": "2026-07-25T13:34:33.5669542Z",
-      "path": ".github/workflows/bosscat-gate-bot-native.yml",
+      "modified": "2026-07-27T04:14:34.5061298Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/bosscat-gate-bot-native.yml",
       "size": 14707,
       "triggers": {
         "issues": false,
@@ -140,8 +140,8 @@
     },
     {
       "name": "bosscat-gate-verify",
-      "modified": "2026-07-25T13:34:33.5669542Z",
-      "path": ".github/workflows/bosscat-gate-verify.yml",
+      "modified": "2026-07-27T04:14:34.5061298Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/bosscat-gate-verify.yml",
       "size": 10707,
       "triggers": {
         "issues": false,
@@ -157,8 +157,8 @@
     },
     {
       "name": "bosscat-governance",
-      "modified": "2026-07-25T13:34:33.5684741Z",
-      "path": ".github/workflows/bosscat-governance.yml",
+      "modified": "2026-07-27T04:14:34.5061298Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/bosscat-governance.yml",
       "size": 6670,
       "triggers": {
         "issues": false,
@@ -174,8 +174,8 @@
     },
     {
       "name": "bosscat-monthly-evidence-rollup",
-      "modified": "2026-07-25T13:34:33.5694810Z",
-      "path": ".github/workflows/bosscat-monthly-evidence-rollup.yml",
+      "modified": "2026-07-27T04:14:34.5061298Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/bosscat-monthly-evidence-rollup.yml",
       "size": 8074,
       "triggers": {
         "issues": false,
@@ -191,8 +191,8 @@
     },
     {
       "name": "bosscat-regression-matrix",
-      "modified": "2026-07-25T13:34:33.5699882Z",
-      "path": ".github/workflows/bosscat-regression-matrix.yml",
+      "modified": "2026-07-27T04:14:34.5061298Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/bosscat-regression-matrix.yml",
       "size": 7277,
       "triggers": {
         "issues": false,
@@ -208,8 +208,8 @@
     },
     {
       "name": "bosscat-tetragram-guard",
-      "modified": "2026-07-25T13:34:33.5704956Z",
-      "path": ".github/workflows/bosscat-tetragram-guard.yml",
+      "modified": "2026-07-27T04:14:34.5061298Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/bosscat-tetragram-guard.yml",
       "size": 808,
       "triggers": {
         "issues": false,
@@ -225,8 +225,8 @@
     },
     {
       "name": "ci-disabled",
-      "modified": "2026-07-25T13:34:33.5710163Z",
-      "path": ".github/workflows/ci-disabled.yml",
+      "modified": "2026-07-27T04:14:34.5061298Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/ci-disabled.yml",
       "size": 4243,
       "triggers": {
         "issues": false,
@@ -242,8 +242,8 @@
     },
     {
       "name": "codeql",
-      "modified": "2026-07-25T13:34:33.5715365Z",
-      "path": ".github/workflows/codeql.yml",
+      "modified": "2026-07-27T04:14:34.5061298Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/codeql.yml",
       "size": 5135,
       "triggers": {
         "issues": false,
@@ -259,8 +259,8 @@
     },
     {
       "name": "codeql-analysis",
-      "modified": "2026-07-25T13:34:33.5715365Z",
-      "path": ".github/workflows/codeql-analysis.yml",
+      "modified": "2026-07-27T04:14:34.5061298Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/codeql-analysis.yml",
       "size": 1093,
       "triggers": {
         "issues": false,
@@ -276,8 +276,8 @@
     },
     {
       "name": "deploy-moneycat",
-      "modified": "2026-07-25T13:34:33.5725442Z",
-      "path": ".github/workflows/deploy-moneycat.yml",
+      "modified": "2026-07-27T04:14:34.5061298Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/deploy-moneycat.yml",
       "size": 2308,
       "triggers": {
         "issues": false,
@@ -293,8 +293,8 @@
     },
     {
       "name": "docs-guard",
-      "modified": "2026-07-25T13:34:33.5725442Z",
-      "path": ".github/workflows/docs-guard.yml",
+      "modified": "2026-07-27T04:14:34.5061298Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/docs-guard.yml",
       "size": 2826,
       "triggers": {
         "issues": false,
@@ -310,8 +310,8 @@
     },
     {
       "name": "docs-lane-checks",
-      "modified": "2026-07-25T13:34:33.5735453Z",
-      "path": ".github/workflows/docs-lane-checks.yml",
+      "modified": "2026-07-27T04:14:34.5061298Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/docs-lane-checks.yml",
       "size": 16275,
       "triggers": {
         "issues": false,
@@ -327,8 +327,8 @@
     },
     {
       "name": "drift-alert",
-      "modified": "2026-07-25T13:34:33.5735453Z",
-      "path": ".github/workflows/drift-alert.yml",
+      "modified": "2026-07-27T04:14:34.5061298Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/drift-alert.yml",
       "size": 2138,
       "triggers": {
         "issues": false,
@@ -344,8 +344,8 @@
     },
     {
       "name": "ecrr-compliance",
-      "modified": "2026-07-25T13:34:33.5750557Z",
-      "path": ".github/workflows/ecrr-compliance.yml",
+      "modified": "2026-07-27T04:14:34.5061298Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/ecrr-compliance.yml",
       "size": 2345,
       "triggers": {
         "issues": false,
@@ -361,8 +361,8 @@
     },
     {
       "name": "ecrr-compliance-scheduled",
-      "modified": "2026-07-25T13:34:33.5745460Z",
-      "path": ".github/workflows/ecrr-compliance-scheduled.yml",
+      "modified": "2026-07-27T04:14:34.5061298Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/ecrr-compliance-scheduled.yml",
       "size": 2717,
       "triggers": {
         "issues": false,
@@ -378,8 +378,8 @@
     },
     {
       "name": "evidence-pat-rotation-reminder",
-      "modified": "2026-07-25T13:36:02.3815920Z",
-      "path": ".github/workflows/evidence-pat-rotation-reminder.yml",
+      "modified": "2026-07-27T04:14:34.5061298Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/evidence-pat-rotation-reminder.yml",
       "size": 5701,
       "triggers": {
         "issues": false,
@@ -395,8 +395,8 @@
     },
     {
       "name": "evidence-retention-prune",
-      "modified": "2026-07-25T13:36:09.5170671Z",
-      "path": ".github/workflows/evidence-retention-prune.yml",
+      "modified": "2026-07-27T04:14:34.5061298Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/evidence-retention-prune.yml",
       "size": 4868,
       "triggers": {
         "issues": false,
@@ -412,8 +412,8 @@
     },
     {
       "name": "gate-019-audio-r1-test",
-      "modified": "2026-07-25T13:34:33.5750557Z",
-      "path": ".github/workflows/gate-019-audio-r1-test.yml",
+      "modified": "2026-07-27T04:14:34.5062767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/gate-019-audio-r1-test.yml",
       "size": 897,
       "triggers": {
         "issues": false,
@@ -429,8 +429,8 @@
     },
     {
       "name": "gate-026-performance",
-      "modified": "2026-07-25T13:34:33.5760652Z",
-      "path": ".github/workflows/gate-026-performance.yml",
+      "modified": "2026-07-27T04:14:34.5062767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/gate-026-performance.yml",
       "size": 7254,
       "triggers": {
         "issues": false,
@@ -446,8 +446,8 @@
     },
     {
       "name": "gate-nightly",
-      "modified": "2026-07-25T13:34:33.5760652Z",
-      "path": ".github/workflows/gate-nightly.yml",
+      "modified": "2026-07-27T04:14:34.5062767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/gate-nightly.yml",
       "size": 8421,
       "triggers": {
         "issues": false,
@@ -463,8 +463,8 @@
     },
     {
       "name": "gate-site-evidence",
-      "modified": "2026-07-25T13:34:33.5770644Z",
-      "path": ".github/workflows/gate-site-evidence.yml",
+      "modified": "2026-07-27T04:14:34.5062767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/gate-site-evidence.yml",
       "size": 9543,
       "triggers": {
         "issues": false,
@@ -480,8 +480,8 @@
     },
     {
       "name": "gate-verify",
-      "modified": "2026-07-25T13:34:33.5775709Z",
-      "path": ".github/workflows/gate-verify.yml",
+      "modified": "2026-07-27T04:14:34.5062767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/gate-verify.yml",
       "size": 6868,
       "triggers": {
         "issues": false,
@@ -497,8 +497,8 @@
     },
     {
       "name": "gitleaks",
-      "modified": "2026-07-25T13:34:33.5775709Z",
-      "path": ".github/workflows/gitleaks.yml",
+      "modified": "2026-07-27T04:14:34.5062767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/gitleaks.yml",
       "size": 1934,
       "triggers": {
         "issues": false,
@@ -514,8 +514,8 @@
     },
     {
       "name": "gitleaks-security-scan",
-      "modified": "2026-07-25T13:34:33.5775709Z",
-      "path": ".github/workflows/gitleaks-security-scan.yml",
+      "modified": "2026-07-27T04:14:34.5062767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/gitleaks-security-scan.yml",
       "size": 3398,
       "triggers": {
         "issues": false,
@@ -531,8 +531,8 @@
     },
     {
       "name": "guardrails",
-      "modified": "2026-07-25T13:34:33.5790758Z",
-      "path": ".github/workflows/guardrails.yml",
+      "modified": "2026-07-27T04:14:34.5062767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/guardrails.yml",
       "size": 2183,
       "triggers": {
         "issues": false,
@@ -548,8 +548,8 @@
     },
     {
       "name": "guardrails-recert",
-      "modified": "2026-07-25T13:34:33.5790758Z",
-      "path": ".github/workflows/guardrails-recert.yml",
+      "modified": "2026-07-27T04:14:34.5062767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/guardrails-recert.yml",
       "size": 5633,
       "triggers": {
         "issues": false,
@@ -565,8 +565,8 @@
     },
     {
       "name": "hub-smoke",
-      "modified": "2026-07-25T13:34:33.5800824Z",
-      "path": ".github/workflows/hub-smoke.yml",
+      "modified": "2026-07-27T04:14:34.5062767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/hub-smoke.yml",
       "size": 949,
       "triggers": {
         "issues": false,
@@ -582,8 +582,8 @@
     },
     {
       "name": "icf-filename-ratchet",
-      "modified": "2026-07-25T13:34:33.5800824Z",
-      "path": ".github/workflows/icf-filename-ratchet.yml",
+      "modified": "2026-07-27T04:14:34.5062767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/icf-filename-ratchet.yml",
       "size": 1897,
       "triggers": {
         "issues": false,
@@ -599,8 +599,8 @@
     },
     {
       "name": "icf-smoke",
-      "modified": "2026-07-25T13:34:33.5800824Z",
-      "path": ".github/workflows/icf-smoke.yml",
+      "modified": "2026-07-27T04:14:34.5062767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/icf-smoke.yml",
       "size": 782,
       "triggers": {
         "issues": false,
@@ -616,8 +616,8 @@
     },
     {
       "name": "iona-gate-verify",
-      "modified": "2026-07-25T13:34:33.5800824Z",
-      "path": ".github/workflows/iona-gate-verify.yml",
+      "modified": "2026-07-27T04:14:34.5062767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/iona-gate-verify.yml",
       "size": 2778,
       "triggers": {
         "issues": false,
@@ -633,8 +633,8 @@
     },
     {
       "name": "json-validation-gate",
-      "modified": "2026-07-25T13:34:33.5825986Z",
-      "path": ".github/workflows/json-validation-gate.yml",
+      "modified": "2026-07-27T04:14:34.5062767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/json-validation-gate.yml",
       "size": 3573,
       "triggers": {
         "issues": false,
@@ -650,8 +650,8 @@
     },
     {
       "name": "k6-performance-gate",
-      "modified": "2026-07-25T13:34:33.5831059Z",
-      "path": ".github/workflows/k6-performance-gate.yml",
+      "modified": "2026-07-27T04:14:34.5062767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/k6-performance-gate.yml",
       "size": 2392,
       "triggers": {
         "issues": false,
@@ -667,8 +667,8 @@
     },
     {
       "name": "link-check",
-      "modified": "2026-07-25T13:34:33.5831059Z",
-      "path": ".github/workflows/link-check.yml",
+      "modified": "2026-07-27T04:14:34.5062767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/link-check.yml",
       "size": 375,
       "triggers": {
         "issues": false,
@@ -684,8 +684,8 @@
     },
     {
       "name": "main",
-      "modified": "2026-07-25T13:34:33.5841128Z",
-      "path": ".github/workflows/main.yml",
+      "modified": "2026-07-27T04:14:34.5062767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/main.yml",
       "size": 891,
       "triggers": {
         "issues": false,
@@ -701,8 +701,8 @@
     },
     {
       "name": "multi-app-ci",
-      "modified": "2026-07-25T13:34:33.5851210Z",
-      "path": ".github/workflows/multi-app-ci.yml",
+      "modified": "2026-07-27T04:14:34.5062767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/multi-app-ci.yml",
       "size": 6112,
       "triggers": {
         "issues": false,
@@ -718,8 +718,8 @@
     },
     {
       "name": "nightly-dashboard-export",
-      "modified": "2026-07-25T13:34:33.5851210Z",
-      "path": ".github/workflows/nightly-dashboard-export.yml",
+      "modified": "2026-07-27T04:14:34.5062767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/nightly-dashboard-export.yml",
       "size": 12299,
       "triggers": {
         "issues": false,
@@ -735,8 +735,8 @@
     },
     {
       "name": "nightly-dashboard-reports",
-      "modified": "2026-07-25T13:34:33.5861213Z",
-      "path": ".github/workflows/nightly-dashboard-reports.yml",
+      "modified": "2026-07-27T04:14:34.5062767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/nightly-dashboard-reports.yml",
       "size": 7688,
       "triggers": {
         "issues": false,
@@ -752,8 +752,8 @@
     },
     {
       "name": "nightly-ecrr-aggregates",
-      "modified": "2026-07-25T13:34:33.5861213Z",
-      "path": ".github/workflows/nightly-ecrr-aggregates.yml",
+      "modified": "2026-07-27T04:14:34.5062767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/nightly-ecrr-aggregates.yml",
       "size": 913,
       "triggers": {
         "issues": false,
@@ -769,8 +769,8 @@
     },
     {
       "name": "nightly-reference-map",
-      "modified": "2026-07-25T13:34:33.5876281Z",
-      "path": ".github/workflows/nightly-reference-map.yml",
+      "modified": "2026-07-27T04:14:34.5062767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/nightly-reference-map.yml",
       "size": 756,
       "triggers": {
         "issues": false,
@@ -786,8 +786,8 @@
     },
     {
       "name": "nightly-tetragrammaton-benchmarks",
-      "modified": "2026-07-25T13:34:33.5876281Z",
-      "path": ".github/workflows/nightly-tetragrammaton-benchmarks.yml",
+      "modified": "2026-07-27T04:14:34.5062767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/nightly-tetragrammaton-benchmarks.yml",
       "size": 4811,
       "triggers": {
         "issues": false,
@@ -803,8 +803,8 @@
     },
     {
       "name": "osv-scanner",
-      "modified": "2026-07-25T13:34:33.5886394Z",
-      "path": ".github/workflows/osv-scanner.yml",
+      "modified": "2026-07-27T04:14:34.5062767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/osv-scanner.yml",
       "size": 1666,
       "triggers": {
         "issues": false,
@@ -820,8 +820,8 @@
     },
     {
       "name": "perf-gate-demo",
-      "modified": "2026-07-25T13:34:33.5886394Z",
-      "path": ".github/workflows/perf-gate-demo.yml",
+      "modified": "2026-07-27T04:14:34.5062767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/perf-gate-demo.yml",
       "size": 5595,
       "triggers": {
         "issues": false,
@@ -837,8 +837,8 @@
     },
     {
       "name": "performance-gate",
-      "modified": "2026-07-25T13:34:33.5886394Z",
-      "path": ".github/workflows/performance-gate.yml",
+      "modified": "2026-07-27T04:14:34.5062767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/performance-gate.yml",
       "size": 2937,
       "triggers": {
         "issues": false,
@@ -854,8 +854,8 @@
     },
     {
       "name": "powershell",
-      "modified": "2026-07-25T13:34:33.5901452Z",
-      "path": ".github/workflows/powershell.yml",
+      "modified": "2026-07-27T04:14:34.5062767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/powershell.yml",
       "size": 2161,
       "triggers": {
         "issues": false,
@@ -871,8 +871,8 @@
     },
     {
       "name": "quil-docs-lane",
-      "modified": "2026-07-25T13:34:33.5916642Z",
-      "path": ".github/workflows/quil-docs-lane.yml",
+      "modified": "2026-07-27T04:14:34.5062767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/quil-docs-lane.yml",
       "size": 2104,
       "triggers": {
         "issues": false,
@@ -888,8 +888,8 @@
     },
     {
       "name": "registry-drift-check",
-      "modified": "2026-07-25T13:34:33.5916642Z",
-      "path": ".github/workflows/registry-drift-check.yml",
+      "modified": "2026-07-27T04:14:34.5062767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/registry-drift-check.yml",
       "size": 3317,
       "triggers": {
         "issues": false,
@@ -905,8 +905,8 @@
     },
     {
       "name": "registry-guard",
-      "modified": "2026-07-25T13:34:33.5916642Z",
-      "path": ".github/workflows/registry-guard.yml",
+      "modified": "2026-07-27T04:14:34.5072767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/registry-guard.yml",
       "size": 5510,
       "triggers": {
         "issues": false,
@@ -922,8 +922,8 @@
     },
     {
       "name": "repository-security-check",
-      "modified": "2026-07-25T13:34:33.5926724Z",
-      "path": ".github/workflows/repository-security-check.yml",
+      "modified": "2026-07-27T04:14:34.5072767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/repository-security-check.yml",
       "size": 3159,
       "triggers": {
         "issues": false,
@@ -939,8 +939,8 @@
     },
     {
       "name": "required-check-shims",
-      "modified": "2026-07-25T13:34:33.5936711Z",
-      "path": ".github/workflows/required-check-shims.yml",
+      "modified": "2026-07-27T04:14:34.5072767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/required-check-shims.yml",
       "size": 3151,
       "triggers": {
         "issues": false,
@@ -956,8 +956,8 @@
     },
     {
       "name": "research-conversion-verify",
-      "modified": "2026-07-25T13:34:33.5936711Z",
-      "path": ".github/workflows/research-conversion-verify.yml",
+      "modified": "2026-07-27T04:14:34.5072767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/research-conversion-verify.yml",
       "size": 2103,
       "triggers": {
         "issues": false,
@@ -973,8 +973,8 @@
     },
     {
       "name": "rsi-archive",
-      "modified": "2026-07-25T13:34:33.5936711Z",
-      "path": ".github/workflows/rsi-archive.yml",
+      "modified": "2026-07-27T04:14:34.5072767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/rsi-archive.yml",
       "size": 625,
       "triggers": {
         "issues": false,
@@ -990,8 +990,8 @@
     },
     {
       "name": "rsi-gate",
-      "modified": "2026-07-25T13:34:33.5946708Z",
-      "path": ".github/workflows/rsi-gate.yml",
+      "modified": "2026-07-27T04:14:34.5072767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/rsi-gate.yml",
       "size": 1167,
       "triggers": {
         "issues": false,
@@ -1007,8 +1007,8 @@
     },
     {
       "name": "rsi-index",
-      "modified": "2026-07-25T13:34:33.5951762Z",
-      "path": ".github/workflows/rsi-index.yml",
+      "modified": "2026-07-27T04:14:34.5072767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/rsi-index.yml",
       "size": 758,
       "triggers": {
         "issues": false,
@@ -1024,8 +1024,8 @@
     },
     {
       "name": "rsi-sweep-nightly",
-      "modified": "2026-07-25T13:34:33.5951762Z",
-      "path": ".github/workflows/rsi-sweep-nightly.yml",
+      "modified": "2026-07-27T04:14:34.5072767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/rsi-sweep-nightly.yml",
       "size": 6910,
       "triggers": {
         "issues": false,
@@ -1041,8 +1041,8 @@
     },
     {
       "name": "run-archiver",
-      "modified": "2026-07-25T13:34:33.5966916Z",
-      "path": ".github/workflows/run-archiver.yml",
+      "modified": "2026-07-27T04:14:34.5072767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/run-archiver.yml",
       "size": 3216,
       "triggers": {
         "issues": false,
@@ -1058,8 +1058,8 @@
     },
     {
       "name": "run-archiver-backfill",
-      "modified": "2026-07-25T13:34:33.5961849Z",
-      "path": ".github/workflows/run-archiver-backfill.yml",
+      "modified": "2026-07-27T04:14:34.5072767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/run-archiver-backfill.yml",
       "size": 9231,
       "triggers": {
         "issues": false,
@@ -1075,8 +1075,8 @@
     },
     {
       "name": "run-rotation",
-      "modified": "2026-07-25T13:34:33.5966916Z",
-      "path": ".github/workflows/run-rotation.yml",
+      "modified": "2026-07-27T04:14:34.5072767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/run-rotation.yml",
       "size": 3689,
       "triggers": {
         "issues": false,
@@ -1092,8 +1092,8 @@
     },
     {
       "name": "sbom-stability-tracker",
-      "modified": "2026-07-25T13:34:33.5976993Z",
-      "path": ".github/workflows/sbom-stability-tracker.yml",
+      "modified": "2026-07-27T04:14:34.5072767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/sbom-stability-tracker.yml",
       "size": 2697,
       "triggers": {
         "issues": false,
@@ -1109,8 +1109,8 @@
     },
     {
       "name": "security-notifications-archive-nightly",
-      "modified": "2026-07-25T13:34:33.5976993Z",
-      "path": ".github/workflows/security-notifications-archive-nightly.yml",
+      "modified": "2026-07-27T04:14:34.5072767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/security-notifications-archive-nightly.yml",
       "size": 10790,
       "triggers": {
         "issues": false,
@@ -1126,8 +1126,8 @@
     },
     {
       "name": "security-scan",
-      "modified": "2026-07-25T13:34:33.5992064Z",
-      "path": ".github/workflows/security-scan.yml",
+      "modified": "2026-07-27T04:14:34.5072767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/security-scan.yml",
       "size": 5394,
       "triggers": {
         "issues": false,
@@ -1143,8 +1143,8 @@
     },
     {
       "name": "signoz-alerts",
-      "modified": "2026-07-25T13:34:33.5997254Z",
-      "path": ".github/workflows/signoz-alerts.yml",
+      "modified": "2026-07-27T04:14:34.5072767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/signoz-alerts.yml",
       "size": 3029,
       "triggers": {
         "issues": false,
@@ -1160,8 +1160,8 @@
     },
     {
       "name": "signoz-automation",
-      "modified": "2026-07-25T13:34:33.6007337Z",
-      "path": ".github/workflows/signoz-automation.yml",
+      "modified": "2026-07-27T04:14:34.5072767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/signoz-automation.yml",
       "size": 3572,
       "triggers": {
         "issues": false,
@@ -1177,8 +1177,8 @@
     },
     {
       "name": "signoz-automation-fresh",
-      "modified": "2026-07-25T13:34:33.5997254Z",
-      "path": ".github/workflows/signoz-automation-fresh.yml",
+      "modified": "2026-07-27T04:14:34.5072767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/signoz-automation-fresh.yml",
       "size": 7582,
       "triggers": {
         "issues": false,
@@ -1194,8 +1194,8 @@
     },
     {
       "name": "signoz-config",
-      "modified": "2026-07-25T13:34:33.6017332Z",
-      "path": ".github/workflows/signoz-config.yml",
+      "modified": "2026-07-27T04:14:34.5072767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/signoz-config.yml",
       "size": 3048,
       "triggers": {
         "issues": false,
@@ -1211,8 +1211,8 @@
     },
     {
       "name": "status-auto-update",
-      "modified": "2026-07-25T13:34:33.6017332Z",
-      "path": ".github/workflows/status-auto-update.yml",
+      "modified": "2026-07-27T04:14:34.5072767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/status-auto-update.yml",
       "size": 11487,
       "triggers": {
         "issues": false,
@@ -1228,8 +1228,8 @@
     },
     {
       "name": "stress-test-nightly",
-      "modified": "2026-07-25T13:34:33.6022401Z",
-      "path": ".github/workflows/stress-test-nightly.yml",
+      "modified": "2026-07-27T04:14:34.5072767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/stress-test-nightly.yml",
       "size": 4775,
       "triggers": {
         "issues": false,
@@ -1245,8 +1245,8 @@
     },
     {
       "name": "stress-test-pr",
-      "modified": "2026-07-25T13:34:33.6032489Z",
-      "path": ".github/workflows/stress-test-pr.yml",
+      "modified": "2026-07-27T04:14:34.5072767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/stress-test-pr.yml",
       "size": 4533,
       "triggers": {
         "issues": false,
@@ -1262,8 +1262,8 @@
     },
     {
       "name": "trivy-security-scan",
-      "modified": "2026-07-25T13:34:33.6032489Z",
-      "path": ".github/workflows/trivy-security-scan.yml",
+      "modified": "2026-07-27T04:14:34.5072767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/trivy-security-scan.yml",
       "size": 2693,
       "triggers": {
         "issues": false,
@@ -1279,8 +1279,8 @@
     },
     {
       "name": "update-kpis",
-      "modified": "2026-07-25T13:34:33.6042497Z",
-      "path": ".github/workflows/update-kpis.yml",
+      "modified": "2026-07-27T04:14:34.5072767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/update-kpis.yml",
       "size": 1029,
       "triggers": {
         "issues": false,
@@ -1296,8 +1296,8 @@
     },
     {
       "name": "weekly-cleanup",
-      "modified": "2026-07-25T13:34:33.6042497Z",
-      "path": ".github/workflows/weekly-cleanup.yml",
+      "modified": "2026-07-27T04:14:34.5072767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/weekly-cleanup.yml",
       "size": 1763,
       "triggers": {
         "issues": false,
@@ -1313,8 +1313,8 @@
     },
     {
       "name": "weekly-executive-review",
-      "modified": "2026-07-25T13:34:33.6052468Z",
-      "path": ".github/workflows/weekly-executive-review.yml",
+      "modified": "2026-07-27T04:14:34.5072767Z",
+      "path": "/home/runner/work/otel-ops-pack/otel-ops-pack/.github/workflows/weekly-executive-review.yml",
       "size": 6389,
       "triggers": {
         "issues": false,
