@@ -46,7 +46,7 @@ importers:
         version: 7.8.0
       '@prisma/client':
         specifier: ^7.9.0
-        version: 7.9.0(prisma@7.9.0(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@6.0.3))(typescript@6.0.3)
+        version: 7.9.0(prisma@7.9.0(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.8))(react@19.2.8)(typescript@6.0.3))(typescript@6.0.3)
       '@types/sqlite3':
         specifier: ^5.1.0
         version: 5.1.0
@@ -67,7 +67,7 @@ importers:
         version: 9.0.3
       next:
         specifier: ^16.2.11
-        version: 16.2.11(@babel/core@7.28.4)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        version: 16.2.11(@babel/core@7.28.4)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(react-dom@19.2.7(react@19.2.8))(react@19.2.8)
       pg:
         specifier: ^8.22.0
         version: 8.22.0
@@ -75,11 +75,11 @@ importers:
         specifier: ^10.3.1
         version: 10.3.1
       react:
-        specifier: ^19.2.7
-        version: 19.2.7
+        specifier: ^19.2.8
+        version: 19.2.8
       react-dom:
         specifier: ^19.2.7
-        version: 19.2.7(react@19.2.7)
+        version: 19.2.7(react@19.2.8)
       sqlite3:
         specifier: ^6.0.1
         version: 6.0.1
@@ -176,7 +176,7 @@ importers:
         version: 1.61.1
       prisma:
         specifier: ^7.9.0
-        version: 7.9.0(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@6.0.3)
+        version: 7.9.0(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.8))(react@19.2.8)(typescript@6.0.3)
       tsx:
         specifier: ^4.23.1
         version: 4.23.1
@@ -4751,8 +4751,8 @@ packages:
   react-is@19.2.8:
     resolution: {integrity: sha512-s5un28nYxKJw5gvUHyW5PCC28CvBqLu9r3cWgzHT4Vo/5fqqkFcdRYsGcKf50WMPpjjFZS5d76fn3YCo2njKwQ==}
 
-  react@19.2.7:
-    resolution: {integrity: sha512-HNe9WslTbXmFK8o8cmwgAeJFSBvt1bPdHCVKtaaV+WlAN36mpT4hcRpwbf3fY56ar2oIXzsBpOAiIRHAdY0OlQ==}
+  react@19.2.8:
+    resolution: {integrity: sha512-PWaYA1L/q9u2u7xYQi+Y3L3Yfnie7XyLeaJICV1MGD6LprsBxcAqGjYyr0eY3p+QdsA+x/Irkt4Qif8D63+Sbw==}
     engines: {node: '>=0.10.0'}
 
   readable-stream@2.3.8:
@@ -7650,11 +7650,11 @@ snapshots:
 
   '@prisma/client-runtime-utils@7.9.0': {}
 
-  '@prisma/client@7.9.0(prisma@7.9.0(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@6.0.3))(typescript@6.0.3)':
+  '@prisma/client@7.9.0(prisma@7.9.0(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.8))(react@19.2.8)(typescript@6.0.3))(typescript@6.0.3)':
     dependencies:
       '@prisma/client-runtime-utils': 7.9.0
     optionalDependencies:
-      prisma: 7.9.0(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@6.0.3)
+      prisma: 7.9.0(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.8))(react@19.2.8)(typescript@6.0.3)
       typescript: 6.0.3
 
   '@prisma/config@7.9.0':
@@ -7728,78 +7728,78 @@ snapshots:
       env-paths: 3.0.0
       proper-lockfile: 4.1.2
 
-  '@prisma/studio-core@0.33.0(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@prisma/studio-core@0.33.0(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.8))(react@19.2.8)':
     dependencies:
-      '@radix-ui/react-toggle': 1.1.10(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@radix-ui/react-toggle': 1.1.10(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.8))(react@19.2.8)
       '@types/react': 19.2.17
       '@visx/curve': 4.0.1-alpha.0
       '@visx/event': 4.0.1-alpha.0
-      '@visx/grid': 4.0.1-alpha.0(react@19.2.7)
-      '@visx/group': 4.0.1-alpha.0(react@19.2.7)
-      '@visx/responsive': 4.0.1-alpha.0(react@19.2.7)
+      '@visx/grid': 4.0.1-alpha.0(react@19.2.8)
+      '@visx/group': 4.0.1-alpha.0(react@19.2.8)
+      '@visx/responsive': 4.0.1-alpha.0(react@19.2.8)
       '@visx/scale': 4.0.1-alpha.0
-      '@visx/shape': 4.0.1-alpha.0(react@19.2.7)
+      '@visx/shape': 4.0.1-alpha.0(react@19.2.8)
       d3-array: 3.2.4
       d3-shape: 3.2.0
       elkjs: 0.11.1
-      react: 19.2.7
-      react-dom: 19.2.7(react@19.2.7)
+      react: 19.2.8
+      react-dom: 19.2.7(react@19.2.8)
     transitivePeerDependencies:
       - '@types/react-dom'
 
   '@radix-ui/primitive@1.1.3': {}
 
-  '@radix-ui/react-compose-refs@1.1.2(@types/react@19.2.17)(react@19.2.7)':
+  '@radix-ui/react-compose-refs@1.1.2(@types/react@19.2.17)(react@19.2.8)':
     dependencies:
-      react: 19.2.7
+      react: 19.2.8
     optionalDependencies:
       '@types/react': 19.2.17
 
-  '@radix-ui/react-primitive@2.1.3(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@radix-ui/react-primitive@2.1.3(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.8))(react@19.2.8)':
     dependencies:
-      '@radix-ui/react-slot': 1.2.3(@types/react@19.2.17)(react@19.2.7)
-      react: 19.2.7
-      react-dom: 19.2.7(react@19.2.7)
+      '@radix-ui/react-slot': 1.2.3(@types/react@19.2.17)(react@19.2.8)
+      react: 19.2.8
+      react-dom: 19.2.7(react@19.2.8)
     optionalDependencies:
       '@types/react': 19.2.17
       '@types/react-dom': 19.2.3(@types/react@19.2.17)
 
-  '@radix-ui/react-slot@1.2.3(@types/react@19.2.17)(react@19.2.7)':
+  '@radix-ui/react-slot@1.2.3(@types/react@19.2.17)(react@19.2.8)':
     dependencies:
-      '@radix-ui/react-compose-refs': 1.1.2(@types/react@19.2.17)(react@19.2.7)
-      react: 19.2.7
+      '@radix-ui/react-compose-refs': 1.1.2(@types/react@19.2.17)(react@19.2.8)
+      react: 19.2.8
     optionalDependencies:
       '@types/react': 19.2.17
 
-  '@radix-ui/react-toggle@1.1.10(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@radix-ui/react-toggle@1.1.10(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.8))(react@19.2.8)':
     dependencies:
       '@radix-ui/primitive': 1.1.3
-      '@radix-ui/react-primitive': 2.1.3(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      '@radix-ui/react-use-controllable-state': 1.2.2(@types/react@19.2.17)(react@19.2.7)
-      react: 19.2.7
-      react-dom: 19.2.7(react@19.2.7)
+      '@radix-ui/react-primitive': 2.1.3(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.8))(react@19.2.8)
+      '@radix-ui/react-use-controllable-state': 1.2.2(@types/react@19.2.17)(react@19.2.8)
+      react: 19.2.8
+      react-dom: 19.2.7(react@19.2.8)
     optionalDependencies:
       '@types/react': 19.2.17
       '@types/react-dom': 19.2.3(@types/react@19.2.17)
 
-  '@radix-ui/react-use-controllable-state@1.2.2(@types/react@19.2.17)(react@19.2.7)':
+  '@radix-ui/react-use-controllable-state@1.2.2(@types/react@19.2.17)(react@19.2.8)':
     dependencies:
-      '@radix-ui/react-use-effect-event': 0.0.2(@types/react@19.2.17)(react@19.2.7)
-      '@radix-ui/react-use-layout-effect': 1.1.1(@types/react@19.2.17)(react@19.2.7)
-      react: 19.2.7
+      '@radix-ui/react-use-effect-event': 0.0.2(@types/react@19.2.17)(react@19.2.8)
+      '@radix-ui/react-use-layout-effect': 1.1.1(@types/react@19.2.17)(react@19.2.8)
+      react: 19.2.8
     optionalDependencies:
       '@types/react': 19.2.17
 
-  '@radix-ui/react-use-effect-event@0.0.2(@types/react@19.2.17)(react@19.2.7)':
+  '@radix-ui/react-use-effect-event@0.0.2(@types/react@19.2.17)(react@19.2.8)':
     dependencies:
-      '@radix-ui/react-use-layout-effect': 1.1.1(@types/react@19.2.17)(react@19.2.7)
-      react: 19.2.7
+      '@radix-ui/react-use-layout-effect': 1.1.1(@types/react@19.2.17)(react@19.2.8)
+      react: 19.2.8
     optionalDependencies:
       '@types/react': 19.2.17
 
-  '@radix-ui/react-use-layout-effect@1.1.1(@types/react@19.2.17)(react@19.2.7)':
+  '@radix-ui/react-use-layout-effect@1.1.1(@types/react@19.2.17)(react@19.2.8)':
     dependencies:
-      react: 19.2.7
+      react: 19.2.8
     optionalDependencies:
       '@types/react': 19.2.17
 
@@ -8258,47 +8258,47 @@ snapshots:
       '@types/react': 19.2.17
       '@visx/point': 4.0.1-alpha.0
 
-  '@visx/grid@4.0.1-alpha.0(react@19.2.7)':
+  '@visx/grid@4.0.1-alpha.0(react@19.2.8)':
     dependencies:
       '@types/react': 19.2.17
       '@visx/curve': 4.0.1-alpha.0
-      '@visx/group': 4.0.1-alpha.0(react@19.2.7)
+      '@visx/group': 4.0.1-alpha.0(react@19.2.8)
       '@visx/point': 4.0.1-alpha.0
       '@visx/scale': 4.0.1-alpha.0
-      '@visx/shape': 4.0.1-alpha.0(react@19.2.7)
+      '@visx/shape': 4.0.1-alpha.0(react@19.2.8)
       classnames: 2.5.1
-      react: 19.2.7
+      react: 19.2.8
 
-  '@visx/group@4.0.1-alpha.0(react@19.2.7)':
+  '@visx/group@4.0.1-alpha.0(react@19.2.8)':
     dependencies:
       '@types/react': 19.2.17
       classnames: 2.5.1
-      react: 19.2.7
+      react: 19.2.8
 
   '@visx/point@4.0.1-alpha.0': {}
 
-  '@visx/responsive@4.0.1-alpha.0(react@19.2.7)':
+  '@visx/responsive@4.0.1-alpha.0(react@19.2.8)':
     dependencies:
       '@types/lodash': 4.17.24
       '@types/react': 19.2.17
       lodash: 4.18.1
-      react: 19.2.7
+      react: 19.2.8
 
   '@visx/scale@4.0.1-alpha.0':
     dependencies:
       '@visx/vendor': 4.0.0-alpha.0
 
-  '@visx/shape@4.0.1-alpha.0(react@19.2.7)':
+  '@visx/shape@4.0.1-alpha.0(react@19.2.8)':
     dependencies:
       '@types/lodash': 4.17.24
       '@types/react': 19.2.17
       '@visx/curve': 4.0.1-alpha.0
-      '@visx/group': 4.0.1-alpha.0(react@19.2.7)
+      '@visx/group': 4.0.1-alpha.0(react@19.2.8)
       '@visx/scale': 4.0.1-alpha.0
       '@visx/vendor': 4.0.0-alpha.0
       classnames: 2.5.1
       lodash: 4.18.1
-      react: 19.2.7
+      react: 19.2.8
 
   '@visx/vendor@4.0.0-alpha.0':
     dependencies:
@@ -10631,16 +10631,16 @@ snapshots:
 
   negotiator@1.0.0: {}
 
-  next@16.2.11(@babel/core@7.28.4)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7):
+  next@16.2.11(@babel/core@7.28.4)(@opentelemetry/api@1.9.1)(@playwright/test@1.61.1)(react-dom@19.2.7(react@19.2.8))(react@19.2.8):
     dependencies:
       '@next/env': 16.2.11
       '@swc/helpers': 0.5.15
       baseline-browser-mapping: 2.11.1
       caniuse-lite: 1.0.30001806
       postcss: 8.4.31
-      react: 19.2.7
-      react-dom: 19.2.7(react@19.2.7)
-      styled-jsx: 5.1.6(@babel/core@7.28.4)(react@19.2.7)
+      react: 19.2.8
+      react-dom: 19.2.7(react@19.2.8)
+      styled-jsx: 5.1.6(@babel/core@7.28.4)(react@19.2.8)
     optionalDependencies:
       '@next/swc-darwin-arm64': 16.2.11
       '@next/swc-darwin-x64': 16.2.11
@@ -10967,12 +10967,12 @@ snapshots:
       react-is-18: react-is@18.3.1
       react-is-19: react-is@19.2.8
 
-  prisma@7.9.0(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@6.0.3):
+  prisma@7.9.0(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.8))(react@19.2.8)(typescript@6.0.3):
     dependencies:
       '@prisma/config': 7.9.0
       '@prisma/dev': 0.24.14(typescript@6.0.3)
       '@prisma/engines': 7.9.0
-      '@prisma/studio-core': 0.33.0(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@prisma/studio-core': 0.33.0(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.8))(react@19.2.8)
       mysql2: 3.15.3
       postgres: 3.4.7
     optionalDependencies:
@@ -11058,9 +11058,9 @@ snapshots:
       minimist: 1.2.8
       strip-json-comments: 2.0.1
 
-  react-dom@19.2.7(react@19.2.7):
+  react-dom@19.2.7(react@19.2.8):
     dependencies:
-      react: 19.2.7
+      react: 19.2.8
       scheduler: 0.27.0
 
   react-is@16.13.1: {}
@@ -11069,7 +11069,7 @@ snapshots:
 
   react-is@19.2.8: {}
 
-  react@19.2.7: {}
+  react@19.2.8: {}
 
   readable-stream@2.3.8:
     dependencies:
@@ -11486,10 +11486,10 @@ snapshots:
 
   strip-json-comments@3.1.1: {}
 
-  styled-jsx@5.1.6(@babel/core@7.28.4)(react@19.2.7):
+  styled-jsx@5.1.6(@babel/core@7.28.4)(react@19.2.8):
     dependencies:
       client-only: 0.0.1
-      react: 19.2.7
+      react: 19.2.8
     optionalDependencies:
       '@babel/core': 7.28.4
 
