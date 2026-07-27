@@ -71,17 +71,17 @@
     "hub:links": "pwsh -File scripts/check-hub-links.ps1"
   },
   "dependencies": {
-    "@atproto/api": "0.15.27",
+    "@atproto/api": "0.20.34",
     "@aws-sdk/client-bedrock-runtime": "^3.1094.0",
     "@opentelemetry/core": "^2.10.0",
     "@opentelemetry/exporter-otlp-http": "^0.26.0",
     "@opentelemetry/instrumentation-document-load": "^0.66.0",
     "@opentelemetry/instrumentation-fetch": "^0.220.0",
     "@opentelemetry/instrumentation-user-interaction": "^0.64.0",
-    "@opentelemetry/instrumentation-xml-http-request": "^0.220.0",
+    "@opentelemetry/instrumentation-xml-http-request": "^0.221.0",
     "@opentelemetry/sdk-trace-web": "^2.9.0",
     "@prisma/adapter-pg": "^7.8.0",
-    "@prisma/client": "^7.9.0",
+    "@prisma/client": "^7.9.1",
     "@types/sqlite3": "^5.1.0",
     "butterchurn": "^2.6.7",
     "butterchurn-presets": "^2.4.7",
@@ -91,7 +91,7 @@
     "next": "^16.2.11",
     "pg": "^8.22.0",
     "pino": "^10.3.1",
-    "react": "^19.2.7",
+    "react": "^19.2.8",
     "react-dom": "^19.2.7",
     "sqlite3": "^6.0.1",
     "yaml": "^2.8.3",
@@ -109,7 +109,7 @@
     "@opentelemetry/sdk-trace-base": "^2.9.0",
     "@opentelemetry/sdk-trace-node": "^2.9.0",
     "@opentelemetry/semantic-conventions": "^1.43.0",
-    "@playwright/test": "^1.61.1",
+    "@playwright/test": "^1.62.0",
     "@types/better-sqlite3": "^7.6.8",
     "@types/jest": "^30.0.0",
     "@types/node": "^25.9.3",
@@ -136,7 +136,7 @@
     "overrides": {
       "protobufjs": ">=8.0.1",
       "fast-xml-parser": ">=5.3.4",
-      "@atproto/api": "0.15.27",
+      "@atproto/api": "0.20.34",
       "find-my-way": ">=9.7.0"
     }
   },
