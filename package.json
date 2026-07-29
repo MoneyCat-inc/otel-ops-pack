@@ -72,7 +72,7 @@
   },
   "dependencies": {
     "@atproto/api": "0.20.34",
-    "@aws-sdk/client-bedrock-runtime": "^3.1094.0",
+    "@aws-sdk/client-bedrock-runtime": "^3.1096.0",
     "@opentelemetry/core": "^2.10.0",
     "@opentelemetry/exporter-otlp-http": "^0.26.0",
     "@opentelemetry/instrumentation-document-load": "^0.66.0",
