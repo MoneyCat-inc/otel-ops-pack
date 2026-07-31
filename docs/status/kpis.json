@@ -1,12 +1,12 @@
 {
   "gate": "100%",
   "error": "0%",
-  "canary": 6,
+  "canary": 1,
   "otel": "ok",
-  "ts": "2026-06-13T12:41:28+01:00",
+  "ts": "2026-07-31T03:02:39+00:00",
   "source": "gate-verification",
   "version": "1.1",
   "verdict": "READY",
-  "commit": "2075a72a6",
+  "commit": "78b8918",
   "site": "ci"
 }
