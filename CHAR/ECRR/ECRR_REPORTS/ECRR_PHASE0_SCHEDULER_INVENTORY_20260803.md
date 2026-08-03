@@ -63,3 +63,35 @@ Remaining Phase 0 work for a follow-up session: audit the 43 scheduled CI workfl
 - `\BossCat\BossCatNightlyOrchestration` unregistered ✅
 - 13,682 compliance JSONs deleted from working tree ✅
 - `artifacts/` file count: **48** (≤ 200 exit criterion) ✅
+- `ECRR-Compliance-Trends` and `ECRR-SigNoz-Export` unregistered ✅ (compliance-engine retirement)
+
+## Addendum (2026-08-03) — the 13-task inventory in section 1 is incomplete
+
+Correcting the record. Section 1 presents its scheduled-task table as the local inventory; it is
+not. Two defects, both in how the enumeration was taken:
+
+1. **Enumerated from a non-elevated shell.** The operator subsequently named `ECRR Compliance
+   Monitor`, `ECRR-AutoBot`, and `ECRR-Orchestrator-Daily` as still registered. A re-run
+   enumerating **all 228** visible tasks and filtering on `ecrr` returns none of them — they are
+   invisible without elevation. Any task count taken this way under-reports by an unknown margin.
+2. **The filter was too narrow.** The original pattern (`ecrr|otel|orchestrator|bosscat|compliance|
+   scaled`) missed `Resonai-Agent-Watchdog`, which was registered the whole time and is currently
+   failing (`4294770688`).
+
+Also now visible and failing: `BossCat-Nightly-Orchestration`, `OTel GPU Smoke Nightly`,
+`OTel-Artifacts-Cleanup`, and `BossCatAgentWatchdog` all exit `64`; `IONABossCatBootHealth` exits
+`1`.
+
+This does not change the Phase 0 verdict — the exit criteria were artifact-count and
+recurring-writer-against-the-working-tree, both met and independently verified. It does mean the
+scheduled-task inventory is **not** a completed deliverable. A full inventory must be re-taken from
+an **elevated** shell before any second-wave task cleanup:
+
+```powershell
+Get-ScheduledTask | Where-Object { $_.TaskName -match 'ecrr|otel|bosscat|iona|agent|orchestr|resonai' } |
+  ForEach-Object { $i = $_ | Get-ScheduledTaskInfo
+    '{0,-44} {1,-14} {2,-8} last={3}' -f $_.TaskName, $_.TaskPath, $_.State, $i.LastTaskResult }
+```
+
+Filed against the second-wave cleanup, alongside the ~20-file ECRR script cluster inventoried in
+`ECRR_COMPLIANCE_ENGINE_RETIREMENT_20260803.md`.
