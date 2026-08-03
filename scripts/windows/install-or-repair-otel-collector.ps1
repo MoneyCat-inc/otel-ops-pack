@@ -3,7 +3,7 @@
 # Authority: BossCat OEM | Executor: Cursor{Implementer}
 
 param(
-  [string]$ConfigSource = ".\windows\otelcol\otelcol-contrib-config.yaml",
+  [string]$ConfigSource = ".\config.yaml",
   [string]$ProgramDataPath = "$env:ProgramData\otelcol-contrib",
   [string]$ServiceName = "otelcol-contrib",
   [string]$OtlpGrpcEndpoint = "127.0.0.1:4317"
@@ -29,7 +29,7 @@ Write-Host "[2/5] Writing collector config..." -ForegroundColor White
 
 if (!(Test-Path $ConfigSource)) {
   Write-Error "Config source not found: $ConfigSource"
-  Write-Host "  -> Expected location: .\windows\otelcol\otelcol-contrib-config.yaml" -ForegroundColor Yellow
+  Write-Host "  -> Expected location: .\config.yaml (canonical)" -ForegroundColor Yellow
   exit 1
 }
 
