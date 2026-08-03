@@ -1,3 +1,4 @@
+# KEEP -- Phase 0 workflow audit 2026-08-03: quarterly evidence-repo prune (standing cadence, Roadmap 2026 H2)
 name: Evidence Retention Prune
 
 # Quarterly prune of raw run reports in otel-ops-evidence (90-day retain).

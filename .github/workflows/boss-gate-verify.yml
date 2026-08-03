@@ -1,15 +1,10 @@
 name: Boss Gate Verify
 
+# RETIRED 2026-08-03 -- Phase 0 workflow audit (docs/BossCat/ROADMAP_2026H2.md).
+# Reason: checks for docs/ECRR_*2025-01-05.md files that no longer exist; superseded gate.
+# Automatic triggers removed; manual dispatch retained. Restore the on: block from git history to re-enable.
 on:
-  pull_request:
-    branches: [main, develop]
-  workflow_dispatch:
-    inputs:
-      branch:
-        description: Branch to verify
-        required: true
-        default: main
-        type: string
+  workflow_dispatch: {}
 
 concurrency:
   group: boss-gate-verify-${{ github.workflow }}-${{ github.ref }}

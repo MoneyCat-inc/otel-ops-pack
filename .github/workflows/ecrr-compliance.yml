@@ -1,25 +1,10 @@
 name: ECRR Compliance Check
 
+# RETIRED 2026-08-03 -- Phase 0 workflow audit (docs/BossCat/ROADMAP_2026H2.md).
+# Reason: compliance engine has unconditional pass (thresholds 0); pending retire-or-fix decision.
+# Automatic triggers removed; manual dispatch retained. Restore the on: block from git history to re-enable.
 on:
-  push:
-    branches: [ main, develop ]
-    paths:
-      - 'CHAR/ECRR/ECRR_REPORTS/**'
-      - 'scripts/ecrr-compliance-check.ps1'
-      - 'scripts/remediate-ecrr-compliance.ps1'
-  pull_request:
-    branches: [ main, develop ]
-    paths:
-      - 'CHAR/ECRR/ECRR_REPORTS/**'
-      - 'scripts/ecrr-compliance-check.ps1'
-      - 'scripts/remediate-ecrr-compliance.ps1'
-  workflow_dispatch:
-    inputs:
-      auto_remediate:
-        description: 'Auto-remediate non-compliant files'
-        required: false
-        default: false
-        type: boolean
+  workflow_dispatch: {}
 
 concurrency:
   group: ecrr-compliance-${{ github.workflow }}-${{ github.ref }}

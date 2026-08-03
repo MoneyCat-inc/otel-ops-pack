@@ -1,15 +1,10 @@
 name: PR Stress Test Validation
 
+# RETIRED 2026-08-03 -- Phase 0 workflow audit (docs/BossCat/ROADMAP_2026H2.md).
+# Reason: full SigNoz stack per PR; superseded by gate-site-evidence PR short-circuit.
+# Automatic triggers removed; manual dispatch retained. Restore the on: block from git history to re-enable.
 on:
-  pull_request:
-    branches:
-      - main
-      - develop
-    paths:
-      - 'config/**'
-      - 'scripts/**'
-      - 'docs/dashboards/**'
-      - '.github/workflows/stress-test-*.yml'
+  workflow_dispatch: {}
 
 concurrency:
   group: stress-test-pr-validation-${{ github.workflow }}-${{ github.ref }}

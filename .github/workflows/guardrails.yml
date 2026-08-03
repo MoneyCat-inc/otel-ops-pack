@@ -4,10 +4,11 @@ concurrency:
   group: tetragram-guardrails-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# RETIRED 2026-08-03 -- Phase 0 workflow audit (docs/BossCat/ROADMAP_2026H2.md).
+# Reason: push-to-main structure check; same machinery retired.
+# Automatic triggers removed; manual dispatch retained. Restore the on: block from git history to re-enable.
 on:
-  push:
-    branches: [ main, develop ]
-  workflow_dispatch:
+  workflow_dispatch: {}
 
 jobs:
   guardrails-check:

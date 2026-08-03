@@ -1,9 +1,10 @@
 name: ICF Smoke (Bounded Retry)
 
+# RETIRED 2026-08-03 -- Phase 0 workflow audit (docs/BossCat/ROADMAP_2026H2.md).
+# Reason: every-30-min smoke writing evidence artifacts nobody consumes.
+# Automatic triggers removed; manual dispatch retained. Restore the on: block from git history to re-enable.
 on:
-  schedule:
-    - cron: '*/30 * * * *'
-  workflow_dispatch:
+  workflow_dispatch: {}
 
 permissions:
   contents: write

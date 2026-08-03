@@ -1,14 +1,10 @@
 name: rsi-gate
 
+# RETIRED 2026-08-03 -- Phase 0 workflow audit (docs/BossCat/ROADMAP_2026H2.md).
+# Reason: push-triggered RSI evaluation; RSI bench work paused.
+# Automatic triggers removed; manual dispatch retained. Restore the on: block from git history to re-enable.
 on:
-  push:
-    branches: [ main ]
-    paths:
-      - 'BRAV/SCPT/rsi/**'
-      - 'BRAV/SCPT/rsi-bench/**'
-      - 'BRAV/SCPT/run-archiver/**'
-      - '.github/workflows/rsi-*.yml'
-  workflow_dispatch:
+  workflow_dispatch: {}
 
 jobs:
   rsi-gate:

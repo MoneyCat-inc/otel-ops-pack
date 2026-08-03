@@ -1,11 +1,9 @@
 name: Performance Gate - Investor Demo
 
+# RETIRED 2026-08-03 -- Phase 0 workflow audit (docs/BossCat/ROADMAP_2026H2.md).
+# Reason: demo k6 gate; superseded by gate-026-performance.yml.
+# Automatic triggers removed; manual dispatch retained. Restore the on: block from git history to re-enable.
 on:
-  pull_request:
-    paths:
-      - 'scripts/demo/**'
-      - 'scripts/perf/k6-investor-demo.js'
-      - '.github/workflows/perf-gate-demo.yml'
   workflow_dispatch:
     inputs:
       duration:

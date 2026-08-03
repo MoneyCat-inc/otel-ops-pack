@@ -1,26 +1,10 @@
 name: Nightly Tetragrammaton Benchmarks
 
+# RETIRED 2026-08-03 -- Phase 0 workflow audit (docs/BossCat/ROADMAP_2026H2.md).
+# Reason: hardcoded C:\Users\fubum paths on hosted runner; cannot succeed in CI.
+# Automatic triggers removed; manual dispatch retained. Restore the on: block from git history to re-enable.
 on:
-  schedule:
-    # Run daily at 2 AM UTC (executive dashboard export time)
-    - cron: "0 2 * * *"
-  workflow_dispatch: # Allow manual triggering
-    inputs:
-      include_dashboard_export:
-        description: "Include SigNoz dashboard export"
-        required: false
-        default: "true"
-        type: boolean
-      include_cross_language:
-        description: "Include cross-language comparison"
-        required: false
-        default: "true"
-        type: boolean
-      include_quadrant_matrix:
-        description: "Include quadrant matrix analysis"
-        required: false
-        default: "true"
-        type: boolean
+  workflow_dispatch: {}
 
 concurrency:
   group: nightly-tetragrammaton-${{ github.workflow }}-${{ github.ref }}

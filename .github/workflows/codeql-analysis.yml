@@ -1,16 +1,9 @@
 name: CodeQL Analysis
+# RETIRED 2026-08-03 -- Phase 0 workflow audit (docs/BossCat/ROADMAP_2026H2.md).
+# Reason: duplicate CodeQL setup; codeql.yml is canonical.
+# Automatic triggers removed; manual dispatch retained. Restore the on: block from git history to re-enable.
 on:
-  push:
-    branches:
-      - main
-      - develop
-  pull_request:
-    branches:
-      - main
-      - develop
-  schedule:
-    - cron: 0 0 * * 0 # Weekly on Sunday
-  workflow_dispatch:
+  workflow_dispatch: {}
 
 concurrency:
   group: codeql-analysis-${{ github.workflow }}-${{ github.ref }}

@@ -1,8 +1,9 @@
 name: drift-alert
+# RETIRED 2026-08-03 -- Phase 0 workflow audit (docs/BossCat/ROADMAP_2026H2.md).
+# Reason: daily guardrails check; tetragram guardrails machinery retired.
+# Automatic triggers removed; manual dispatch retained. Restore the on: block from git history to re-enable.
 on:
-  schedule:
-    - cron: "13 4 * * *"   # daily at 04:13 UTC
-  workflow_dispatch:
+  workflow_dispatch: {}
 
 concurrency:
   group: drift-alert-${{ github.workflow }}-${{ github.ref }}

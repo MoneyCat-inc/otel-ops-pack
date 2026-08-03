@@ -1,16 +1,10 @@
 name: Nightly Dashboard Export
 
+# RETIRED 2026-08-03 -- Phase 0 workflow audit (docs/BossCat/ROADMAP_2026H2.md).
+# Reason: boots full SigNoz on hosted runner and commits snapshots to trunk (recurring writer).
+# Automatic triggers removed; manual dispatch retained. Restore the on: block from git history to re-enable.
 on:
-  schedule:
-    # Run daily at 2 AM UTC
-    - cron: '0 2 * * *'
-  workflow_dispatch:
-    inputs:
-      export_all:
-        description: 'Export all dashboards (not just executive)'
-        required: false
-        default: 'false'
-        type: boolean
+  workflow_dispatch: {}
 
 concurrency:
   group: bosscat-nightly-operations

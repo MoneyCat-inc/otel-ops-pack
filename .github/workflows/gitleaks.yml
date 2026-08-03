@@ -1,3 +1,4 @@
+# KEEP -- Phase 0 workflow audit 2026-08-03: required branch-protection check (secret scan)
 name: Gitleaks Security Scan
 # Required context "gitleaks" (app 15368). No path filters — secret scan every PR.
 # Do not add an always-green shim (latest-wins would mask a FAIL).

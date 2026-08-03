@@ -1,9 +1,10 @@
 name: Benchmark process-all-ecrr-reports
 
+# RETIRED 2026-08-03 -- Phase 0 workflow audit (docs/BossCat/ROADMAP_2026H2.md).
+# Reason: daily 300x3 benchmark of ECRR reports; compliance engine pending retire-or-fix (Phase 0), no consumer.
+# Automatic triggers removed; manual dispatch retained. Restore the on: block from git history to re-enable.
 on:
-  schedule:
-    - cron: '17 2 * * *'
-  workflow_dispatch:
+  workflow_dispatch: {}
 
 concurrency:
   group: benchmark-ecrr-${{ github.workflow }}-${{ github.ref }}

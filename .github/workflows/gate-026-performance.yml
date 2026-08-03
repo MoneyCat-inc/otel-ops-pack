@@ -1,3 +1,4 @@
+# KEEP -- Phase 0 workflow audit 2026-08-03: canonical k6 performance gate for dotnet-test-app
 # Gate #026 Track B: CI Performance Gate with k6
 # Authority: BossCat OEM | Executor: Cursor{Implementer}
 # Purpose: Blocking load test with threshold enforcement
