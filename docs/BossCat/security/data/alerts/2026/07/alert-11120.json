@@ -1,0 +1,55 @@
+{
+  "number": 11120,
+  "created_at": "2026-07-11T03:00:13Z",
+  "updated_at": "2026-07-11T03:00:13Z",
+  "url": "https://api.github.com/repos/MoneyCat-inc/otel-ops-pack/code-scanning/alerts/11120",
+  "html_url": "https://github.com/MoneyCat-inc/otel-ops-pack/security/code-scanning/11120",
+  "state": "open",
+  "fixed_at": null,
+  "dismissed_by": null,
+  "dismissed_at": null,
+  "dismissed_reason": null,
+  "dismissed_comment": null,
+  "rule": {
+    "id": "CVE-2026-5078",
+    "severity": "warning",
+    "description": "morgan: morgan: Log forgery due to unneutralized control characters",
+    "name": "LanguageSpecificPackageVulnerability",
+    "tags": [
+      "MEDIUM",
+      "security",
+      "vulnerability"
+    ],
+    "full_description": "Impact: The morgan logging middleware's :remote-user token extracts the Basic auth username from the Authorization request header and writes it to the log stream without neutralizing control characters. An unauthenticated attacker can send a crafted Authorization Basic header containing CR or LF bytes to inject forged log lines, breaking the one-request-per-line structure of access logs and enabling log forgery against downstream log consumers. The built-in combined, common, default, and short formats are affected, as well as any custom format that references :remote-user. Affected versions: morgan 1.2.0 through 1.10.1. Patches: upgrade to morgan 1.11.0, which neutralizes control characters in the :remote-user token output. Workarounds: use a custom format string that does not include :remote-user.",
+    "help": "**Vulnerability CVE-2026-5078**\n| Severity | Package | Fixed Version | Link |\n| --- | --- | --- | --- |\n|MEDIUM|morgan|1.11.0|[CVE-2026-5078](https://avd.aquasec.com/nvd/cve-2026-5078)|\n\nImpact: The morgan logging middleware's :remote-user token extracts the Basic auth username from the Authorization request header and writes it to the log stream without neutralizing control characters. An unauthenticated attacker can send a crafted Authorization Basic header containing CR or LF bytes to inject forged log lines, breaking the one-request-per-line structure of access logs and enabling log forgery against downstream log consumers. The built-in combined, common, default, and short formats are affected, as well as any custom format that references :remote-user. Affected versions: morgan 1.2.0 through 1.10.1. Patches: upgrade to morgan 1.11.0, which neutralizes control characters in the :remote-user token output. Workarounds: use a custom format string that does not include :remote-user.",
+    "help_uri": "https://avd.aquasec.com/nvd/cve-2026-5078",
+    "security_severity_level": "medium"
+  },
+  "tool": {
+    "name": "Trivy",
+    "guid": null,
+    "version": "0.72.0"
+  },
+  "most_recent_instance": {
+    "ref": "refs/heads/main",
+    "analysis_key": ".github/workflows/security-scan.yml:trivy",
+    "environment": "{}",
+    "category": ".github/workflows/security-scan.yml:trivy",
+    "state": "open",
+    "commit_sha": "74ff8e39820c8499885b1e0956d329e72b5f5ef5",
+    "message": {
+      "text": "Package: morgan\nInstalled Version: 1.10.1\nVulnerability CVE-2026-5078\nSeverity: MEDIUM\nFixed Version: 1.11.0\nLink: [CVE-2026-5078](https://avd.aquasec.com/nvd/cve-2026-5078)"
+    },
+    "location": {
+      "path": "BRAV/INFR/deployment-pipeline/package-lock.json",
+      "start_line": 5650,
+      "end_line": 5665,
+      "start_column": 1,
+      "end_column": 1
+    },
+    "classifications": []
+  },
+  "instances_url": "https://api.github.com/repos/MoneyCat-inc/otel-ops-pack/code-scanning/alerts/11120/instances",
+  "dismissal_approved_by": null,
+  "assignees": []
+}

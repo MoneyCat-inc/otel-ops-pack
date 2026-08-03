@@ -1,0 +1,21 @@
+{
+  "ref": "refs/pull/418/merge",
+  "commit_sha": "6f90646220ded17032ad891f6dddc76c26939ab4",
+  "analysis_key": ".github/workflows/powershell.yml:build",
+  "environment": "{}",
+  "category": ".github/workflows/powershell.yml:build",
+  "error": "",
+  "created_at": "2026-07-30T17:06:51Z",
+  "results_count": 193,
+  "rules_count": 25,
+  "id": 1550439602,
+  "url": "https://api.github.com/repos/MoneyCat-inc/otel-ops-pack/code-scanning/analyses/1550439602",
+  "sarif_id": "0eb5563c-8c39-11f1-988f-354907bea8f7",
+  "tool": {
+    "name": "PSScriptAnalyzer",
+    "guid": null,
+    "version": null
+  },
+  "deletable": false,
+  "warning": ""
+}

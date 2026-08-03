@@ -1,0 +1,55 @@
+{
+  "number": 11047,
+  "created_at": "2026-07-07T02:57:37Z",
+  "updated_at": "2026-07-07T02:57:37Z",
+  "url": "https://api.github.com/repos/MoneyCat-inc/otel-ops-pack/code-scanning/alerts/11047",
+  "html_url": "https://github.com/MoneyCat-inc/otel-ops-pack/security/code-scanning/11047",
+  "state": "open",
+  "fixed_at": null,
+  "dismissed_by": null,
+  "dismissed_at": null,
+  "dismissed_reason": null,
+  "dismissed_comment": null,
+  "rule": {
+    "id": "CVE-2026-6733",
+    "severity": "note",
+    "description": "undici: Undici: Response queue poisoning on reused keep-alive sockets can lead to incorrect response delivery.",
+    "name": "LanguageSpecificPackageVulnerability",
+    "tags": [
+      "LOW",
+      "security",
+      "vulnerability"
+    ],
+    "full_description": "Impact:\nUndici's HTTP/1.1 client is vulnerable to response queue poisoning on reused keep-alive sockets. An attacker-controlled upstream server can inject an unsolicited HTTP/1.1 response onto an idle socket after a request completes. When the client dispatches the next request on that socket, it associates the injected response with the new request, causing responses to be delivered to the wrong requests.\n\nThis requires an attacker-controlled or compromised upstream HTTP/1.1 server and keep-alive connection reuse.\n\nPatches:\nUpgrade to undici v6.26.0, v7.28.0 or v8.5.0.\n\nWorkarounds:\nDisable keep-alive connection reuse by setting keepAliveTimeout: 0 on the Client or Pool.",
+    "help": "**Vulnerability CVE-2026-6733**\n| Severity | Package | Fixed Version | Link |\n| --- | --- | --- | --- |\n|LOW|undici|6.27.0, 7.28.0, 8.5.0|[CVE-2026-6733](https://avd.aquasec.com/nvd/cve-2026-6733)|\n\nImpact:\nUndici's HTTP/1.1 client is vulnerable to response queue poisoning on reused keep-alive sockets. An attacker-controlled upstream server can inject an unsolicited HTTP/1.1 response onto an idle socket after a request completes. When the client dispatches the next request on that socket, it associates the injected response with the new request, causing responses to be delivered to the wrong requests.\n\nThis requires an attacker-controlled or compromised upstream HTTP/1.1 server and keep-alive connection reuse.\n\nPatches:\nUpgrade to undici v6.26.0, v7.28.0 or v8.5.0.\n\nWorkarounds:\nDisable keep-alive connection reuse by setting keepAliveTimeout: 0 on the Client or Pool.",
+    "help_uri": "https://avd.aquasec.com/nvd/cve-2026-6733",
+    "security_severity_level": "low"
+  },
+  "tool": {
+    "name": "Trivy",
+    "guid": null,
+    "version": "0.72.0"
+  },
+  "most_recent_instance": {
+    "ref": "refs/heads/main",
+    "analysis_key": ".github/workflows/security-scan.yml:trivy",
+    "environment": "{}",
+    "category": ".github/workflows/security-scan.yml:trivy",
+    "state": "open",
+    "commit_sha": "74ff8e39820c8499885b1e0956d329e72b5f5ef5",
+    "message": {
+      "text": "Package: undici\nInstalled Version: 6.26.0\nVulnerability CVE-2026-6733\nSeverity: LOW\nFixed Version: 6.27.0, 7.28.0, 8.5.0\nLink: [CVE-2026-6733](https://avd.aquasec.com/nvd/cve-2026-6733)"
+    },
+    "location": {
+      "path": "BRAV/SCPT/run-archiver/package-lock.json",
+      "start_line": 498,
+      "end_line": 506,
+      "start_column": 1,
+      "end_column": 1
+    },
+    "classifications": []
+  },
+  "instances_url": "https://api.github.com/repos/MoneyCat-inc/otel-ops-pack/code-scanning/alerts/11047/instances",
+  "dismissal_approved_by": null,
+  "assignees": []
+}

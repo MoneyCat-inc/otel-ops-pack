@@ -1,0 +1,55 @@
+{
+  "number": 11044,
+  "created_at": "2026-07-07T02:57:37Z",
+  "updated_at": "2026-07-07T02:57:37Z",
+  "url": "https://api.github.com/repos/MoneyCat-inc/otel-ops-pack/code-scanning/alerts/11044",
+  "html_url": "https://github.com/MoneyCat-inc/otel-ops-pack/security/code-scanning/11044",
+  "state": "open",
+  "fixed_at": null,
+  "dismissed_by": null,
+  "dismissed_at": null,
+  "dismissed_reason": null,
+  "dismissed_comment": null,
+  "rule": {
+    "id": "CVE-2026-12151",
+    "severity": "error",
+    "description": "undici: undici: Denial of Service due to unbounded memory growth via WebSocket frames",
+    "name": "LanguageSpecificPackageVulnerability",
+    "tags": [
+      "HIGH",
+      "security",
+      "vulnerability"
+    ],
+    "full_description": "Impact:\nThe undici WebSocket client enforces maxPayloadSize on the cumulative byte count of fragments in a message but does not enforce a limit on the number of fragments. A malicious WebSocket server can stream many small or empty continuation frames that each pass per-frame and cumulative-size validation, collectively causing unbounded memory growth in the client process. The result is memory exhaustion and a denial of service.\n\nAffected applications are those using the undici WebSocket client (new WebSocket(...)) or the WebSocketStream API that can be induced to connect to an attacker-controlled or compromised WebSocket endpoint.\n\nAll releases starting at undici 6.17.0 are affected.\n\nPatches: Upgrade to undici >= 6.26.0, >= 7.28.0, or >= 8.5.0. Workarounds:\nNo workaround is available. The fix must be applied through an upgrade.",
+    "help": "**Vulnerability CVE-2026-12151**\n| Severity | Package | Fixed Version | Link |\n| --- | --- | --- | --- |\n|HIGH|undici|6.27.0, 7.28.0, 8.5.0|[CVE-2026-12151](https://avd.aquasec.com/nvd/cve-2026-12151)|\n\nImpact:\nThe undici WebSocket client enforces maxPayloadSize on the cumulative byte count of fragments in a message but does not enforce a limit on the number of fragments. A malicious WebSocket server can stream many small or empty continuation frames that each pass per-frame and cumulative-size validation, collectively causing unbounded memory growth in the client process. The result is memory exhaustion and a denial of service.\n\nAffected applications are those using the undici WebSocket client (new WebSocket(...)) or the WebSocketStream API that can be induced to connect to an attacker-controlled or compromised WebSocket endpoint.\n\nAll releases starting at undici 6.17.0 are affected.\n\nPatches: Upgrade to undici >= 6.26.0, >= 7.28.0, or >= 8.5.0. Workarounds:\nNo workaround is available. The fix must be applied through an upgrade.",
+    "help_uri": "https://avd.aquasec.com/nvd/cve-2026-12151",
+    "security_severity_level": "high"
+  },
+  "tool": {
+    "name": "Trivy",
+    "guid": null,
+    "version": "0.72.0"
+  },
+  "most_recent_instance": {
+    "ref": "refs/heads/main",
+    "analysis_key": ".github/workflows/security-scan.yml:trivy",
+    "environment": "{}",
+    "category": ".github/workflows/security-scan.yml:trivy",
+    "state": "open",
+    "commit_sha": "74ff8e39820c8499885b1e0956d329e72b5f5ef5",
+    "message": {
+      "text": "Package: undici\nInstalled Version: 6.26.0\nVulnerability CVE-2026-12151\nSeverity: HIGH\nFixed Version: 6.27.0, 7.28.0, 8.5.0\nLink: [CVE-2026-12151](https://avd.aquasec.com/nvd/cve-2026-12151)"
+    },
+    "location": {
+      "path": "BRAV/SCPT/run-archiver/package-lock.json",
+      "start_line": 498,
+      "end_line": 506,
+      "start_column": 1,
+      "end_column": 1
+    },
+    "classifications": []
+  },
+  "instances_url": "https://api.github.com/repos/MoneyCat-inc/otel-ops-pack/code-scanning/alerts/11044/instances",
+  "dismissal_approved_by": null,
+  "assignees": []
+}

@@ -1,0 +1,50 @@
+{
+  "number": 10689,
+  "created_at": "2025-11-01T15:45:21Z",
+  "updated_at": "2025-11-01T15:45:21Z",
+  "url": "https://api.github.com/repos/MoneyCat-inc/otel-ops-pack/code-scanning/alerts/10689",
+  "html_url": "https://github.com/MoneyCat-inc/otel-ops-pack/security/code-scanning/10689",
+  "state": "open",
+  "fixed_at": null,
+  "dismissed_by": null,
+  "dismissed_at": null,
+  "dismissed_reason": null,
+  "dismissed_comment": null,
+  "rule": {
+    "id": "DS172411",
+    "severity": "note",
+    "description": "If untrusted data (data from HTTP requests, user submitted files, etc.) is included in an setTimeout statement it can allow an attacker to inject their own code.",
+    "name": "ReviewSettimeoutForUntrustedData",
+    "tags": [],
+    "full_description": "Review setTimeout for untrusted data: If untrusted data (data from HTTP requests, user submitted files, etc.) is included in an setTimeout statement it can allow an attacker to inject their own code.",
+    "help": "Edit the setTimeout so that no untrusted data is included. If untrusted data is absolutely necessary a great deal of care should be taken to ensure it is properly escaped so that it cannot be executed. This is not as simple as just escaping quotes. Visit [https://github.com/Microsoft/DevSkim/blob/main/guidance/DS172411.md](https://github.com/Microsoft/DevSkim/blob/main/guidance/DS172411.md) for additional guidance on this issue.",
+    "help_uri": "https://github.com/Microsoft/DevSkim/blob/main/guidance/DS172411.md"
+  },
+  "tool": {
+    "name": "devskim",
+    "guid": null,
+    "version": "1.0.90+fb2d676ce4"
+  },
+  "most_recent_instance": {
+    "ref": "refs/heads/main",
+    "analysis_key": ".github/workflows/devskim.yml:lint",
+    "environment": "{}",
+    "category": ".github/workflows/devskim.yml:lint",
+    "state": "open",
+    "commit_sha": "218a982f47fbc0d2bc95d4ac322ada1bdbf666d5",
+    "message": {
+      "text": "Review setTimeout for untrusted data"
+    },
+    "location": {
+      "path": "scripts/demo/emit-demo-trace.js",
+      "start_line": 37,
+      "end_line": 38,
+      "start_column": 1,
+      "end_column": 47
+    },
+    "classifications": []
+  },
+  "instances_url": "https://api.github.com/repos/MoneyCat-inc/otel-ops-pack/code-scanning/alerts/10689/instances",
+  "dismissal_approved_by": null,
+  "assignees": []
+}

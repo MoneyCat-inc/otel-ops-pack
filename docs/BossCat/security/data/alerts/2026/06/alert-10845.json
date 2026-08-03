@@ -1,0 +1,50 @@
+{
+  "number": 10845,
+  "created_at": "2026-01-23T15:40:28Z",
+  "updated_at": "2026-06-12T11:56:09Z",
+  "url": "https://api.github.com/repos/MoneyCat-inc/otel-ops-pack/code-scanning/alerts/10845",
+  "html_url": "https://github.com/MoneyCat-inc/otel-ops-pack/security/code-scanning/10845",
+  "state": "open",
+  "fixed_at": null,
+  "dismissed_by": null,
+  "dismissed_at": null,
+  "dismissed_reason": null,
+  "dismissed_comment": null,
+  "rule": {
+    "id": "DS154189",
+    "severity": "warning",
+    "description": "These functions are historically error-prone and have been associated with a significant number of vulnerabilities. Most of these functions have safer alternatives, such as replacing 'strcpy' with 'strlcpy' or 'strcpy_s'.",
+    "name": "BannedCFunctionDetected",
+    "tags": [],
+    "full_description": "Banned C function detected: These functions are historically error-prone and have been associated with a significant number of vulnerabilities. Most of these functions have safer alternatives, such as replacing 'strcpy' with 'strlcpy' or 'strcpy_s'.",
+    "help": "Visit [https://github.com/Microsoft/DevSkim/blob/main/guidance/DS154189.md](https://github.com/Microsoft/DevSkim/blob/main/guidance/DS154189.md) for additional guidance on this issue.",
+    "help_uri": "https://github.com/Microsoft/DevSkim/blob/main/guidance/DS154189.md"
+  },
+  "tool": {
+    "name": "devskim",
+    "guid": null,
+    "version": "1.0.90+fb2d676ce4"
+  },
+  "most_recent_instance": {
+    "ref": "refs/heads/main",
+    "analysis_key": ".github/workflows/devskim.yml:lint",
+    "environment": "{}",
+    "category": ".github/workflows/devskim.yml:lint",
+    "state": "open",
+    "commit_sha": "218a982f47fbc0d2bc95d4ac322ada1bdbf666d5",
+    "message": {
+      "text": "Banned C function detected"
+    },
+    "location": {
+      "path": "viz-engine-projectm/projectm-smoke-test.cpp",
+      "start_line": 50,
+      "end_line": 50,
+      "start_column": 72,
+      "end_column": 78
+    },
+    "classifications": []
+  },
+  "instances_url": "https://api.github.com/repos/MoneyCat-inc/otel-ops-pack/code-scanning/alerts/10845/instances",
+  "dismissal_approved_by": null,
+  "assignees": []
+}

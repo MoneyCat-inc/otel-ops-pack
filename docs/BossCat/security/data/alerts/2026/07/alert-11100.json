@@ -1,0 +1,55 @@
+{
+  "number": 11100,
+  "created_at": "2026-07-07T02:57:37Z",
+  "updated_at": "2026-07-07T02:57:37Z",
+  "url": "https://api.github.com/repos/MoneyCat-inc/otel-ops-pack/code-scanning/alerts/11100",
+  "html_url": "https://github.com/MoneyCat-inc/otel-ops-pack/security/code-scanning/11100",
+  "state": "open",
+  "fixed_at": null,
+  "dismissed_by": null,
+  "dismissed_at": null,
+  "dismissed_reason": null,
+  "dismissed_comment": null,
+  "rule": {
+    "id": "CVE-2026-4800",
+    "severity": "error",
+    "description": "lodash: lodash: Arbitrary code execution via untrusted input in template imports",
+    "name": "LanguageSpecificPackageVulnerability",
+    "tags": [
+      "HIGH",
+      "security",
+      "vulnerability"
+    ],
+    "full_description": "Impact:\n\nThe fix for CVE-2021-23337 (https://github.com/advisories/GHSA-35jh-r3h4-6jhm) added validation for the variable option in _.template but did not apply the same validation to options.imports key names. Both paths flow into the same Function() constructor sink.\n\nWhen an application passes untrusted input as options.imports key names, an attacker can inject default-parameter expressions that execute arbitrary code at template compilation time.\n\nAdditionally, _.template uses assignInWith to merge imports, which enumerates inherited properties via for..in. If Object.prototype has been polluted by any other vector, the polluted keys are copied into the imports object and passed to Function().\n\nPatches:\n\nUsers should upgrade to version 4.18.0.\n\nWorkarounds:\n\nDo not pass untrusted input as key names in options.imports. Only use developer-controlled, static key names.",
+    "help": "**Vulnerability CVE-2026-4800**\n| Severity | Package | Fixed Version | Link |\n| --- | --- | --- | --- |\n|HIGH|lodash|4.18.0|[CVE-2026-4800](https://avd.aquasec.com/nvd/cve-2026-4800)|\n\nImpact:\n\nThe fix for CVE-2021-23337 (https://github.com/advisories/GHSA-35jh-r3h4-6jhm) added validation for the variable option in _.template but did not apply the same validation to options.imports key names. Both paths flow into the same Function() constructor sink.\n\nWhen an application passes untrusted input as options.imports key names, an attacker can inject default-parameter expressions that execute arbitrary code at template compilation time.\n\nAdditionally, _.template uses assignInWith to merge imports, which enumerates inherited properties via for..in. If Object.prototype has been polluted by any other vector, the polluted keys are copied into the imports object and passed to Function().\n\nPatches:\n\nUsers should upgrade to version 4.18.0.\n\nWorkarounds:\n\nDo not pass untrusted input as key names in options.imports. Only use developer-controlled, static key names.",
+    "help_uri": "https://avd.aquasec.com/nvd/cve-2026-4800",
+    "security_severity_level": "high"
+  },
+  "tool": {
+    "name": "Trivy",
+    "guid": null,
+    "version": "0.72.0"
+  },
+  "most_recent_instance": {
+    "ref": "refs/heads/main",
+    "analysis_key": ".github/workflows/security-scan.yml:trivy",
+    "environment": "{}",
+    "category": ".github/workflows/security-scan.yml:trivy",
+    "state": "open",
+    "commit_sha": "74ff8e39820c8499885b1e0956d329e72b5f5ef5",
+    "message": {
+      "text": "Package: lodash\nInstalled Version: 4.17.21\nVulnerability CVE-2026-4800\nSeverity: HIGH\nFixed Version: 4.18.0\nLink: [CVE-2026-4800](https://avd.aquasec.com/nvd/cve-2026-4800)"
+    },
+    "location": {
+      "path": "pnpm-lock.yaml",
+      "start_line": 1,
+      "end_line": 1,
+      "start_column": 1,
+      "end_column": 1
+    },
+    "classifications": []
+  },
+  "instances_url": "https://api.github.com/repos/MoneyCat-inc/otel-ops-pack/code-scanning/alerts/11100/instances",
+  "dismissal_approved_by": null,
+  "assignees": []
+}

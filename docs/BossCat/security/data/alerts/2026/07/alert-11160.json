@@ -1,0 +1,55 @@
+{
+  "number": 11160,
+  "created_at": "2026-07-24T03:00:04Z",
+  "updated_at": "2026-07-24T03:00:05Z",
+  "url": "https://api.github.com/repos/MoneyCat-inc/otel-ops-pack/code-scanning/alerts/11160",
+  "html_url": "https://github.com/MoneyCat-inc/otel-ops-pack/security/code-scanning/11160",
+  "state": "open",
+  "fixed_at": null,
+  "dismissed_by": null,
+  "dismissed_at": null,
+  "dismissed_reason": null,
+  "dismissed_comment": null,
+  "rule": {
+    "id": "CVE-2026-45623",
+    "severity": "error",
+    "description": "postcss: PostCSS: Information disclosure and denial of service via crafted CSS input",
+    "name": "LanguageSpecificPackageVulnerability",
+    "tags": [
+      "HIGH",
+      "security",
+      "vulnerability"
+    ],
+    "full_description": "PostCSS takes a CSS file and provides an API to analyze and modify its rules by transforming the rules into an Abstract Syntax Tree. In versions 8.5.11 and prior, the PreviousMap parses the /*# sourceMappingURL=PATH */ comment from any CSS string passed to process() and dereferences PATH against the local filesystem with no scheme, allowlist, or traversal check. An attacker who controls the CSS input can cause the host process to read any file readable by Node and leak the first ~10 bytes of its content through the resulting JSON.parse SyntaxError message. The bug also yields a precise file-existence oracle and a controllable-read primitive that may be combined with large-file targets for DoS. The behaviour is triggered with PostCSS's default options — no from, no map, no plugins required — and is therefore reachable from any pipeline that runs untrusted CSS through PostCSS (CMS themes, user-uploaded styles, browser-extension/userstyle processors, build pipelines for third-party packages, blog comment rendere",
+    "help": "**Vulnerability CVE-2026-45623**\n| Severity | Package | Fixed Version | Link |\n| --- | --- | --- | --- |\n|HIGH|postcss|8.5.12|[CVE-2026-45623](https://avd.aquasec.com/nvd/cve-2026-45623)|\n\nPostCSS takes a CSS file and provides an API to analyze and modify its rules by transforming the rules into an Abstract Syntax Tree. In versions 8.5.11 and prior, the PreviousMap parses the /*# sourceMappingURL=PATH */ comment from any CSS string passed to process() and dereferences PATH against the local filesystem with no scheme, allowlist, or traversal check. An attacker who controls the CSS input can cause the host process to read any file readable by Node and leak the first ~10 bytes of its content through the resulting JSON.parse SyntaxError message. The bug also yields a precise file-existence oracle and a controllable-read primitive that may be combined with large-file targets for DoS. The behaviour is triggered with PostCSS's default options — no from, no map, no plugins required — and is therefore reachable from any pipeline that runs untrusted CSS through PostCSS (CMS themes, user-uploaded styles, browser-extension/userstyle processors, build pipelines for third-party packages, blog comment renderers, etc.). This issue has been fixed in version 8.5.12.",
+    "help_uri": "https://avd.aquasec.com/nvd/cve-2026-45623",
+    "security_severity_level": "high"
+  },
+  "tool": {
+    "name": "Trivy",
+    "guid": null,
+    "version": "0.72.0"
+  },
+  "most_recent_instance": {
+    "ref": "refs/heads/main",
+    "analysis_key": ".github/workflows/security-scan.yml:trivy",
+    "environment": "{}",
+    "category": ".github/workflows/security-scan.yml:trivy",
+    "state": "open",
+    "commit_sha": "74ff8e39820c8499885b1e0956d329e72b5f5ef5",
+    "message": {
+      "text": "Package: postcss\nInstalled Version: 8.4.31\nVulnerability CVE-2026-45623\nSeverity: HIGH\nFixed Version: 8.5.12\nLink: [CVE-2026-45623](https://avd.aquasec.com/nvd/cve-2026-45623)"
+    },
+    "location": {
+      "path": "pnpm-lock.yaml",
+      "start_line": 1,
+      "end_line": 1,
+      "start_column": 1,
+      "end_column": 1
+    },
+    "classifications": []
+  },
+  "instances_url": "https://api.github.com/repos/MoneyCat-inc/otel-ops-pack/code-scanning/alerts/11160/instances",
+  "dismissal_approved_by": null,
+  "assignees": []
+}

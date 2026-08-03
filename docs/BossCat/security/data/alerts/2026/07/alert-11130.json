@@ -1,0 +1,55 @@
+{
+  "number": 11130,
+  "created_at": "2026-07-18T02:59:32Z",
+  "updated_at": "2026-07-18T02:59:32Z",
+  "url": "https://api.github.com/repos/MoneyCat-inc/otel-ops-pack/code-scanning/alerts/11130",
+  "html_url": "https://github.com/MoneyCat-inc/otel-ops-pack/security/code-scanning/11130",
+  "state": "open",
+  "fixed_at": null,
+  "dismissed_by": null,
+  "dismissed_at": null,
+  "dismissed_reason": null,
+  "dismissed_comment": null,
+  "rule": {
+    "id": "CVE-2026-39244",
+    "severity": "error",
+    "description": "adm-zip: adm-zip: Denial of Service via crafted ZIP file leading to excessive memory allocation",
+    "name": "LanguageSpecificPackageVulnerability",
+    "tags": [
+      "HIGH",
+      "security",
+      "vulnerability"
+    ],
+    "full_description": "adm-zip before 0.5.18 is vulnerable to denial of service via a crafted ZIP file with a manipulated uncompressed size header field. In zipEntry.js line 103, Buffer.alloc(_centralHeader.size) allocates memory based on the declared uncompressed size from the ZIP central directory header without validating it against the actual compressed data size or imposing any upper bound. The size value is read directly from the binary header at entryHeader.js line 266 with no bounds check. An attacker can craft a ~120-byte ZIP file that declares ~4GB uncompressed size, causing a memory allocation amplification ratio of over 33 million to 1. The allocation occurs before CRC validation, so the malicious payload cannot be rejected early. All extraction and read methods are affected: readFile(), readAsText(), extractEntryTo(), extractAllTo(), extractAllToAsync(), test(), and entry.getData(). Any application accepting untrusted ZIP files via adm-zip is vulnerable to immediate process crash.",
+    "help": "**Vulnerability CVE-2026-39244**\n| Severity | Package | Fixed Version | Link |\n| --- | --- | --- | --- |\n|HIGH|adm-zip|0.6.0|[CVE-2026-39244](https://avd.aquasec.com/nvd/cve-2026-39244)|\n\nadm-zip before 0.5.18 is vulnerable to denial of service via a crafted ZIP file with a manipulated uncompressed size header field. In zipEntry.js line 103, Buffer.alloc(_centralHeader.size) allocates memory based on the declared uncompressed size from the ZIP central directory header without validating it against the actual compressed data size or imposing any upper bound. The size value is read directly from the binary header at entryHeader.js line 266 with no bounds check. An attacker can craft a ~120-byte ZIP file that declares ~4GB uncompressed size, causing a memory allocation amplification ratio of over 33 million to 1. The allocation occurs before CRC validation, so the malicious payload cannot be rejected early. All extraction and read methods are affected: readFile(), readAsText(), extractEntryTo(), extractAllTo(), extractAllToAsync(), test(), and entry.getData(). Any application accepting untrusted ZIP files via adm-zip is vulnerable to immediate process crash.",
+    "help_uri": "https://avd.aquasec.com/nvd/cve-2026-39244",
+    "security_severity_level": "high"
+  },
+  "tool": {
+    "name": "Trivy",
+    "guid": null,
+    "version": "0.72.0"
+  },
+  "most_recent_instance": {
+    "ref": "refs/heads/main",
+    "analysis_key": ".github/workflows/security-scan.yml:trivy",
+    "environment": "{}",
+    "category": ".github/workflows/security-scan.yml:trivy",
+    "state": "open",
+    "commit_sha": "74ff8e39820c8499885b1e0956d329e72b5f5ef5",
+    "message": {
+      "text": "Package: adm-zip\nInstalled Version: 0.5.16\nVulnerability CVE-2026-39244\nSeverity: HIGH\nFixed Version: 0.6.0\nLink: [CVE-2026-39244](https://avd.aquasec.com/nvd/cve-2026-39244)"
+    },
+    "location": {
+      "path": "BRAV/SCPT/run-archiver/package-lock.json",
+      "start_line": 256,
+      "end_line": 264,
+      "start_column": 1,
+      "end_column": 1
+    },
+    "classifications": []
+  },
+  "instances_url": "https://api.github.com/repos/MoneyCat-inc/otel-ops-pack/code-scanning/alerts/11130/instances",
+  "dismissal_approved_by": null,
+  "assignees": []
+}

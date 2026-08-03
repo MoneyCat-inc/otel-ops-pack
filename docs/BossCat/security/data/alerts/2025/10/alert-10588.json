@@ -1,0 +1,50 @@
+{
+  "number": 10588,
+  "created_at": "2025-10-27T22:27:08Z",
+  "updated_at": "2025-10-27T22:27:08Z",
+  "url": "https://api.github.com/repos/MoneyCat-inc/otel-ops-pack/code-scanning/alerts/10588",
+  "html_url": "https://github.com/MoneyCat-inc/otel-ops-pack/security/code-scanning/10588",
+  "state": "open",
+  "fixed_at": null,
+  "dismissed_by": null,
+  "dismissed_at": null,
+  "dismissed_reason": null,
+  "dismissed_comment": null,
+  "rule": {
+    "id": "DS176209",
+    "severity": "note",
+    "description": "A \"TODO\" or similar was left in source code, possibly indicating incomplete functionality",
+    "name": "SuspiciousComment",
+    "tags": [],
+    "full_description": "Suspicious comment: A \"TODO\" or similar was left in source code, possibly indicating incomplete functionality",
+    "help": "Visit [https://github.com/Microsoft/DevSkim/blob/main/guidance/DS176209.md](https://github.com/Microsoft/DevSkim/blob/main/guidance/DS176209.md) for additional guidance on this issue.",
+    "help_uri": "https://github.com/Microsoft/DevSkim/blob/main/guidance/DS176209.md"
+  },
+  "tool": {
+    "name": "devskim",
+    "guid": null,
+    "version": "1.0.90+fb2d676ce4"
+  },
+  "most_recent_instance": {
+    "ref": "refs/heads/main",
+    "analysis_key": ".github/workflows/devskim.yml:lint",
+    "environment": "{}",
+    "category": ".github/workflows/devskim.yml:lint",
+    "state": "open",
+    "commit_sha": "218a982f47fbc0d2bc95d4ac322ada1bdbf666d5",
+    "message": {
+      "text": "Suspicious comment"
+    },
+    "location": {
+      "path": "scripts/gate029/orchestrator.ps1",
+      "start_line": 237,
+      "end_line": 237,
+      "start_column": 6,
+      "end_column": 10
+    },
+    "classifications": []
+  },
+  "instances_url": "https://api.github.com/repos/MoneyCat-inc/otel-ops-pack/code-scanning/alerts/10588/instances",
+  "dismissal_approved_by": null,
+  "assignees": []
+}

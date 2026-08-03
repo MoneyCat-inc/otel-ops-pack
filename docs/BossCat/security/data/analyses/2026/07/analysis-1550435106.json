@@ -1,0 +1,21 @@
+{
+  "ref": "refs/pull/416/merge",
+  "commit_sha": "5d1f8e94ddc17810befae51632dc6585a837d00b",
+  "analysis_key": ".github/workflows/trivy-security-scan.yml:trivy-scan",
+  "environment": "{}",
+  "category": ".github/workflows/trivy-security-scan.yml:trivy-scan",
+  "error": "",
+  "created_at": "2026-07-30T17:06:00Z",
+  "results_count": 0,
+  "rules_count": 0,
+  "id": 1550435106,
+  "url": "https://api.github.com/repos/MoneyCat-inc/otel-ops-pack/code-scanning/analyses/1550435106",
+  "sarif_id": "ef7c4618-8c38-11f1-9fd0-1a59b93aa1fd",
+  "tool": {
+    "name": "Trivy",
+    "guid": null,
+    "version": "0.72.0"
+  },
+  "deletable": true,
+  "warning": ""
+}

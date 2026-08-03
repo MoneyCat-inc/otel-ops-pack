@@ -1,0 +1,55 @@
+{
+  "number": 11131,
+  "created_at": "2026-07-21T03:00:20Z",
+  "updated_at": "2026-07-21T03:00:20Z",
+  "url": "https://api.github.com/repos/MoneyCat-inc/otel-ops-pack/code-scanning/alerts/11131",
+  "html_url": "https://github.com/MoneyCat-inc/otel-ops-pack/security/code-scanning/11131",
+  "state": "open",
+  "fixed_at": null,
+  "dismissed_by": null,
+  "dismissed_at": null,
+  "dismissed_reason": null,
+  "dismissed_comment": null,
+  "rule": {
+    "id": "CVE-2026-12590",
+    "severity": "note",
+    "description": "body-parser: body-parser: Denial of Service via invalid limit option",
+    "name": "LanguageSpecificPackageVulnerability",
+    "tags": [
+      "LOW",
+      "security",
+      "vulnerability"
+    ],
+    "full_description": "Impact: In body-parser versions prior to 1.20.6 (1.x line) and 2.3.0 (2.x line), when the parser is configured with an invalid limit option value such as an unparseable string or NaN, bytes.parse returns null and the request body size check is silently skipped. Applications that rely on limit as their primary safeguard against oversized request bodies will accept arbitrarily large payloads, leading to excessive memory and CPU usage and denial of service. Patches: This issue is fixed in body-parser 1.20.6 and 2.3.0. After the fix, invalid limit values throw a clear error at parser construction time instead of silently disabling enforcement, while null and undefined continue to fall back to the default limit of 100kb. Workarounds: Validate the limit value before passing it to body-parser. For example, parse the value at startup and reject any configuration where the result is null or a non-finite number.",
+    "help": "**Vulnerability CVE-2026-12590**\n| Severity | Package | Fixed Version | Link |\n| --- | --- | --- | --- |\n|LOW|body-parser|1.20.6, 2.3.0|[CVE-2026-12590](https://avd.aquasec.com/nvd/cve-2026-12590)|\n\nImpact: In body-parser versions prior to 1.20.6 (1.x line) and 2.3.0 (2.x line), when the parser is configured with an invalid limit option value such as an unparseable string or NaN, bytes.parse returns null and the request body size check is silently skipped. Applications that rely on limit as their primary safeguard against oversized request bodies will accept arbitrarily large payloads, leading to excessive memory and CPU usage and denial of service. Patches: This issue is fixed in body-parser 1.20.6 and 2.3.0. After the fix, invalid limit values throw a clear error at parser construction time instead of silently disabling enforcement, while null and undefined continue to fall back to the default limit of 100kb. Workarounds: Validate the limit value before passing it to body-parser. For example, parse the value at startup and reject any configuration where the result is null or a non-finite number.",
+    "help_uri": "https://avd.aquasec.com/nvd/cve-2026-12590",
+    "security_severity_level": "low"
+  },
+  "tool": {
+    "name": "Trivy",
+    "guid": null,
+    "version": "0.72.0"
+  },
+  "most_recent_instance": {
+    "ref": "refs/heads/main",
+    "analysis_key": ".github/workflows/security-scan.yml:trivy",
+    "environment": "{}",
+    "category": ".github/workflows/security-scan.yml:trivy",
+    "state": "open",
+    "commit_sha": "74ff8e39820c8499885b1e0956d329e72b5f5ef5",
+    "message": {
+      "text": "Package: body-parser\nInstalled Version: 2.2.2\nVulnerability CVE-2026-12590\nSeverity: LOW\nFixed Version: 1.20.6, 2.3.0\nLink: [CVE-2026-12590](https://avd.aquasec.com/nvd/cve-2026-12590)"
+    },
+    "location": {
+      "path": "BRAV/INFR/deployment-pipeline/package-lock.json",
+      "start_line": 1861,
+      "end_line": 1884,
+      "start_column": 1,
+      "end_column": 1
+    },
+    "classifications": []
+  },
+  "instances_url": "https://api.github.com/repos/MoneyCat-inc/otel-ops-pack/code-scanning/alerts/11131/instances",
+  "dismissal_approved_by": null,
+  "assignees": []
+}

@@ -1,0 +1,21 @@
+{
+  "ref": "refs/pull/418/merge",
+  "commit_sha": "6f90646220ded17032ad891f6dddc76c26939ab4",
+  "analysis_key": ".github/workflows/codeql-analysis.yml:analyze",
+  "environment": "{\"language\":\"javascript\"}",
+  "category": "/language:javascript",
+  "error": "",
+  "created_at": "2026-07-30T17:08:11Z",
+  "results_count": 0,
+  "rules_count": 201,
+  "id": 1550446435,
+  "url": "https://api.github.com/repos/MoneyCat-inc/otel-ops-pack/code-scanning/analyses/1550446435",
+  "sarif_id": "3e1020f6-8c39-11f1-9efb-ed6fa73374f2",
+  "tool": {
+    "name": "CodeQL",
+    "guid": null,
+    "version": "2.26.2"
+  },
+  "deletable": false,
+  "warning": ""
+}

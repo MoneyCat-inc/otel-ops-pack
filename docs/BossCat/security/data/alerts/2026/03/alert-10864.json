@@ -1,0 +1,53 @@
+{
+  "number": 10864,
+  "created_at": "2026-03-29T00:50:45Z",
+  "updated_at": "2026-03-29T00:50:45Z",
+  "url": "https://api.github.com/repos/MoneyCat-inc/otel-ops-pack/code-scanning/alerts/10864",
+  "html_url": "https://github.com/MoneyCat-inc/otel-ops-pack/security/code-scanning/10864",
+  "state": "open",
+  "fixed_at": null,
+  "dismissed_by": null,
+  "dismissed_at": null,
+  "dismissed_reason": null,
+  "dismissed_comment": null,
+  "rule": {
+    "id": "js/file-system-race",
+    "severity": "warning",
+    "description": "Potential file system race condition",
+    "name": "js/file-system-race",
+    "tags": [
+      "external/cwe/cwe-367",
+      "security"
+    ],
+    "full_description": "Separately checking the state of a file before operating on it may allow an attacker to modify the file between the two operations.",
+    "help": "# Potential file system race condition\nOften it is necessary to check the state of a file before using it. These checks usually take a file name to be checked, and if the check returns positively, then the file is opened or otherwise operated upon.\n\nHowever, in the time between the check and the operation, the underlying file referenced by the file name could be changed by an attacker, causing unexpected behavior.\n\n\n## Recommendation\nUse file descriptors instead of file names whenever possible.\n\n\n## Example\nThe following example shows a case where the code checks whether a file inside the `/tmp/` folder exists, and if it doesn't, the file is written to that location.\n\n\n```javascript\nconst fs = require(\"fs\");\nconst os = require(\"os\");\nconst path = require(\"path\");\n\nconst filePath = path.join(os.tmpdir(), \"my-temp-file.txt\");\n\nif (!fs.existsSync(filePath)) {\n  fs.writeFileSync(filePath, \"Hello\", { mode: 0o600 });\n}\n\n```\nHowever, in a multi-user environment the file might be created by another user between the existence check and the write.\n\nThis can be avoided by using `fs.open` to get a file descriptor, and then use that file descriptor in the write operation.\n\n\n```javascript\nconst fs = require(\"fs\");\nconst os = require(\"os\");\nconst path = require(\"path\");\n\nconst filePath = path.join(os.tmpdir(), \"my-temp-file.txt\");\n\ntry {\n  const fd = fs.openSync(filePath, fs.O_CREAT | fs.O_EXCL | fs.O_RDWR, 0o600);\n\n  fs.writeFileSync(fd, \"Hello\");\n} catch (e) {\n  // file existed\n}\n\n```\n\n## References\n* Wikipedia: [Time-of-check to time-of-use](https://en.wikipedia.org/wiki/Time-of-check_to_time-of-use).\n* The CERT Oracle Secure Coding Standard for C: [ FIO01-C. Be careful using functions that use file names for identification ](https://www.securecoding.cert.org/confluence/display/c/FIO01-C.+Be+careful+using+functions+that+use+file+names+for+identification).\n* NodeJS: [The FS module](https://nodejs.org/api/fs.html).\n* Common Weakness Enumeration: [CWE-367](https://cwe.mitre.org/data/definitions/367.html).\n",
+    "security_severity_level": "high"
+  },
+  "tool": {
+    "name": "CodeQL",
+    "guid": null,
+    "version": "2.26.2"
+  },
+  "most_recent_instance": {
+    "ref": "refs/heads/main",
+    "analysis_key": ".github/workflows/security-scan.yml:codeql",
+    "environment": "{\"language\":\"javascript\"}",
+    "category": "/language:javascript",
+    "state": "open",
+    "commit_sha": "fd18a6caa8b843d9b29031e3d6c09c0277c20ecb",
+    "message": {
+      "text": "The file may have changed since it was checked."
+    },
+    "location": {
+      "path": "BRAV/SCPT/agent/run-lane.ts",
+      "start_line": 204,
+      "end_line": 204,
+      "start_column": 7,
+      "end_column": 51
+    },
+    "classifications": []
+  },
+  "instances_url": "https://api.github.com/repos/MoneyCat-inc/otel-ops-pack/code-scanning/alerts/10864/instances",
+  "dismissal_approved_by": null,
+  "assignees": []
+}

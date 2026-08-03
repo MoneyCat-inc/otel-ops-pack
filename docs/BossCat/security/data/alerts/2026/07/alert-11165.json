@@ -1,0 +1,55 @@
+{
+  "number": 11165,
+  "created_at": "2026-07-24T11:13:25Z",
+  "updated_at": "2026-07-24T11:56:01Z",
+  "url": "https://api.github.com/repos/MoneyCat-inc/otel-ops-pack/code-scanning/alerts/11165",
+  "html_url": "https://github.com/MoneyCat-inc/otel-ops-pack/security/code-scanning/11165",
+  "state": "open",
+  "fixed_at": null,
+  "dismissed_by": null,
+  "dismissed_at": null,
+  "dismissed_reason": null,
+  "dismissed_comment": null,
+  "rule": {
+    "id": "CVE-2026-47219",
+    "severity": "error",
+    "description": "find-my-way: DDoS with HTTP2",
+    "name": "LanguageSpecificPackageVulnerability",
+    "tags": [
+      "HIGH",
+      "security",
+      "vulnerability"
+    ],
+    "full_description": "find-my-way is a framework-independent HTTP router that internally uses a Radix Tree and supports route parameters and wildcards. Versions prior to 9.7.0 are vulnerable to remotely triggerable DoS in find-my-way when it is used with Node's HTTP/2 server. The lookup() function passes req.method into find(), and find() indexes this.trees[method]. Since this.trees is a normal object, HTTP/2 method values like constructor, toString, or __proto__ can resolve inherited object properties instead of returning undefined. The code then treats that value like a router node and crashes when it reaches currentNode.prefix.length. This issue has been fixed in version 9.0.7.",
+    "help": "**Vulnerability CVE-2026-47219**\n| Severity | Package | Fixed Version | Link |\n| --- | --- | --- | --- |\n|HIGH|find-my-way|9.7.0|[CVE-2026-47219](https://avd.aquasec.com/nvd/cve-2026-47219)|\n\nfind-my-way is a framework-independent HTTP router that internally uses a Radix Tree and supports route parameters and wildcards. Versions prior to 9.7.0 are vulnerable to remotely triggerable DoS in find-my-way when it is used with Node's HTTP/2 server. The lookup() function passes req.method into find(), and find() indexes this.trees[method]. Since this.trees is a normal object, HTTP/2 method values like constructor, toString, or __proto__ can resolve inherited object properties instead of returning undefined. The code then treats that value like a router node and crashes when it reaches currentNode.prefix.length. This issue has been fixed in version 9.0.7.",
+    "help_uri": "https://avd.aquasec.com/nvd/cve-2026-47219",
+    "security_severity_level": "high"
+  },
+  "tool": {
+    "name": "Trivy",
+    "guid": null,
+    "version": "0.72.0"
+  },
+  "most_recent_instance": {
+    "ref": "refs/heads/main",
+    "analysis_key": ".github/workflows/security-scan.yml:trivy",
+    "environment": "{}",
+    "category": ".github/workflows/security-scan.yml:trivy",
+    "state": "open",
+    "commit_sha": "74ff8e39820c8499885b1e0956d329e72b5f5ef5",
+    "message": {
+      "text": "Package: find-my-way\nInstalled Version: 9.6.0\nVulnerability CVE-2026-47219\nSeverity: HIGH\nFixed Version: 9.7.0\nLink: [CVE-2026-47219](https://avd.aquasec.com/nvd/cve-2026-47219)"
+    },
+    "location": {
+      "path": "package-lock.json",
+      "start_line": 12765,
+      "end_line": 12779,
+      "start_column": 1,
+      "end_column": 1
+    },
+    "classifications": []
+  },
+  "instances_url": "https://api.github.com/repos/MoneyCat-inc/otel-ops-pack/code-scanning/alerts/11165/instances",
+  "dismissal_approved_by": null,
+  "assignees": []
+}

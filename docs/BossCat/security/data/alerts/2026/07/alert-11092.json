@@ -1,0 +1,55 @@
+{
+  "number": 11092,
+  "created_at": "2026-07-07T02:57:37Z",
+  "updated_at": "2026-07-07T02:57:37Z",
+  "url": "https://api.github.com/repos/MoneyCat-inc/otel-ops-pack/code-scanning/alerts/11092",
+  "html_url": "https://github.com/MoneyCat-inc/otel-ops-pack/security/code-scanning/11092",
+  "state": "open",
+  "fixed_at": null,
+  "dismissed_by": null,
+  "dismissed_at": null,
+  "dismissed_reason": null,
+  "dismissed_comment": null,
+  "rule": {
+    "id": "CVE-2026-54285",
+    "severity": "warning",
+    "description": "@opentelemetry/core: opentelemetry-js: @opentelemetry/core: Denial of Service via oversized baggage HTTP headers",
+    "name": "LanguageSpecificPackageVulnerability",
+    "tags": [
+      "MEDIUM",
+      "security",
+      "vulnerability"
+    ],
+    "full_description": "opentelemetry-js is the OpenTelemetry JavaScript Client. Prior to 2.8.0, W3CBaggagePropagator.extract() in @opentelemetry/core does not enforce size limits when parsing inbound baggage HTTP headers. The W3C Baggage specification recommends a maximum of 8,192 bytes and 180 entries; these limits were only enforced on the outbound (inject()) path, not on the inbound (extract()) path. Parsing oversized baggage causes memory allocation proportional to the header size without any cap. This vulnerability is fixed in 2.8.0.",
+    "help": "**Vulnerability CVE-2026-54285**\n| Severity | Package | Fixed Version | Link |\n| --- | --- | --- | --- |\n|MEDIUM|@opentelemetry/core|2.8.0|[CVE-2026-54285](https://avd.aquasec.com/nvd/cve-2026-54285)|\n\nopentelemetry-js is the OpenTelemetry JavaScript Client. Prior to 2.8.0, W3CBaggagePropagator.extract() in @opentelemetry/core does not enforce size limits when parsing inbound baggage HTTP headers. The W3C Baggage specification recommends a maximum of 8,192 bytes and 180 entries; these limits were only enforced on the outbound (inject()) path, not on the inbound (extract()) path. Parsing oversized baggage causes memory allocation proportional to the header size without any cap. This vulnerability is fixed in 2.8.0.",
+    "help_uri": "https://avd.aquasec.com/nvd/cve-2026-54285",
+    "security_severity_level": "medium"
+  },
+  "tool": {
+    "name": "Trivy",
+    "guid": null,
+    "version": "0.72.0"
+  },
+  "most_recent_instance": {
+    "ref": "refs/heads/main",
+    "analysis_key": ".github/workflows/security-scan.yml:trivy",
+    "environment": "{}",
+    "category": ".github/workflows/security-scan.yml:trivy",
+    "state": "open",
+    "commit_sha": "74ff8e39820c8499885b1e0956d329e72b5f5ef5",
+    "message": {
+      "text": "Package: @opentelemetry/core\nInstalled Version: 1.0.0\nVulnerability CVE-2026-54285\nSeverity: MEDIUM\nFixed Version: 2.8.0\nLink: [CVE-2026-54285](https://avd.aquasec.com/nvd/cve-2026-54285)"
+    },
+    "location": {
+      "path": "pnpm-lock.yaml",
+      "start_line": 1,
+      "end_line": 1,
+      "start_column": 1,
+      "end_column": 1
+    },
+    "classifications": []
+  },
+  "instances_url": "https://api.github.com/repos/MoneyCat-inc/otel-ops-pack/code-scanning/alerts/11092/instances",
+  "dismissal_approved_by": null,
+  "assignees": []
+}

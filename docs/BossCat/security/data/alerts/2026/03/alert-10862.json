@@ -1,0 +1,53 @@
+{
+  "number": 10862,
+  "created_at": "2026-03-28T06:41:47Z",
+  "updated_at": "2026-03-29T04:03:59Z",
+  "url": "https://api.github.com/repos/MoneyCat-inc/otel-ops-pack/code-scanning/alerts/10862",
+  "html_url": "https://github.com/MoneyCat-inc/otel-ops-pack/security/code-scanning/10862",
+  "state": "open",
+  "fixed_at": null,
+  "dismissed_by": null,
+  "dismissed_at": null,
+  "dismissed_reason": null,
+  "dismissed_comment": null,
+  "rule": {
+    "id": "js/request-forgery",
+    "severity": "error",
+    "description": "Server-side request forgery",
+    "name": "js/request-forgery",
+    "tags": [
+      "external/cwe/cwe-918",
+      "security"
+    ],
+    "full_description": "Making a network request with user-controlled data in the URL allows for request forgery attacks.",
+    "help": "# Server-side request forgery\nDirectly incorporating user input in the URL of an outgoing HTTP request can enable a request forgery attack, in which the request is altered to target an unintended API endpoint or resource. If the server performing the request is connected to an internal network, this can give an attacker the means to bypass the network boundary and make requests against internal services. A forged request may perform an unintended action on behalf of the attacker, or cause information leak if redirected to an external server or if the request response is fed back to the user. It may also compromise the server making the request, if the request response is handled in an unsafe way.\n\n\n## Recommendation\nRestrict user inputs in the URL of an outgoing request, in particular:\n\n* Avoid user input in the hostname of the URL. Pick the hostname from an allow-list instead of constructing it directly from user input.\n* Take care when user input is part of the pathname of the URL. Restrict the input so that path traversal (\"`../`\") cannot be used to redirect the request to an unintended endpoint.\n\n## Example\nThe following example shows an HTTP request parameter being used directly in the URL of a request without validating the input, which facilitates an SSRF attack. The request `http.get(...)` is vulnerable since attackers can choose the value of `target` to be anything they want. For instance, the attacker can choose `\"internal.example.com/#\"` as the target, causing the URL used in the request to be `\"https://internal.example.com/#.example.com/data\"`.\n\nA request to `https://internal.example.com` may be problematic if that server is not meant to be directly accessible from the attacker's machine.\n\n\n```javascript\nimport http from 'http';\n\nconst server = http.createServer(function(req, res) {\n    const target = new URL(req.url, \"http://example.com\").searchParams.get(\"target\");\n\n    // BAD: `target` is controlled by the attacker\n    http.get('https://' + target + \".example.com/data/\", res => {\n        // process request response ...\n    });\n\n});\n\n```\nOne way to remedy the problem is to use the user input to select a known fixed string before performing the request:\n\n\n```javascript\nimport http from 'http';\n\nconst server = http.createServer(function(req, res) {\n    const target = new URL(req.url, \"http://example.com\").searchParams.get(\"target\");\n\n    let subdomain;\n    if (target === 'EU') {\n        subdomain = \"europe\"\n    } else {\n        subdomain = \"world\"\n    }\n\n    // GOOD: `subdomain` is controlled by the server\n    http.get('https://' + subdomain + \".example.com/data/\", res => {\n        // process request response ...\n    });\n\n});\n\n```\n\n## References\n* OWASP: [SSRF](https://www.owasp.org/index.php/Server_Side_Request_Forgery)\n* Common Weakness Enumeration: [CWE-918](https://cwe.mitre.org/data/definitions/918.html).\n",
+    "security_severity_level": "critical"
+  },
+  "tool": {
+    "name": "CodeQL",
+    "guid": null,
+    "version": "2.26.2"
+  },
+  "most_recent_instance": {
+    "ref": "refs/heads/main",
+    "analysis_key": ".github/workflows/main.yml:analyze",
+    "environment": "{\"language\":\"javascript\"}",
+    "category": ".github/workflows/main.yml:analyze/language:javascript",
+    "state": "open",
+    "commit_sha": "74ff8e39820c8499885b1e0956d329e72b5f5ef5",
+    "message": {
+      "text": "The URL of this request depends on a user-provided value."
+    },
+    "location": {
+      "path": "scripts/ingest-worker.ts",
+      "start_line": 119,
+      "end_line": 119,
+      "start_column": 29,
+      "end_column": 63
+    },
+    "classifications": []
+  },
+  "instances_url": "https://api.github.com/repos/MoneyCat-inc/otel-ops-pack/code-scanning/alerts/10862/instances",
+  "dismissal_approved_by": null,
+  "assignees": []
+}

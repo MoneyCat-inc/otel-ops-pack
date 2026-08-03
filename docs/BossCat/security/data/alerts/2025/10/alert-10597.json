@@ -1,0 +1,50 @@
+{
+  "number": 10597,
+  "created_at": "2025-10-27T22:27:08Z",
+  "updated_at": "2025-10-27T22:27:08Z",
+  "url": "https://api.github.com/repos/MoneyCat-inc/otel-ops-pack/code-scanning/alerts/10597",
+  "html_url": "https://github.com/MoneyCat-inc/otel-ops-pack/security/code-scanning/10597",
+  "state": "open",
+  "fixed_at": null,
+  "dismissed_by": null,
+  "dismissed_at": null,
+  "dismissed_reason": null,
+  "dismissed_comment": null,
+  "rule": {
+    "id": "DS162092",
+    "severity": "note",
+    "description": "Accessing localhost could indicate debug code, or could hinder scaling.",
+    "name": "DoNotLeaveDebugCodeInProduction",
+    "tags": [],
+    "full_description": "Do not leave debug code in production: Accessing localhost could indicate debug code, or could hinder scaling.",
+    "help": "Visit [https://github.com/Microsoft/DevSkim/blob/main/guidance/DS162092.md](https://github.com/Microsoft/DevSkim/blob/main/guidance/DS162092.md) for additional guidance on this issue.",
+    "help_uri": "https://github.com/Microsoft/DevSkim/blob/main/guidance/DS162092.md"
+  },
+  "tool": {
+    "name": "devskim",
+    "guid": null,
+    "version": "1.0.90+fb2d676ce4"
+  },
+  "most_recent_instance": {
+    "ref": "refs/heads/main",
+    "analysis_key": ".github/workflows/devskim.yml:lint",
+    "environment": "{}",
+    "category": ".github/workflows/devskim.yml:lint",
+    "state": "open",
+    "commit_sha": "218a982f47fbc0d2bc95d4ac322ada1bdbf666d5",
+    "message": {
+      "text": "Do not leave debug code in production"
+    },
+    "location": {
+      "path": "scripts/gate029/generate-traffic.ps1",
+      "start_line": 62,
+      "end_line": 62,
+      "start_column": 42,
+      "end_column": 51
+    },
+    "classifications": []
+  },
+  "instances_url": "https://api.github.com/repos/MoneyCat-inc/otel-ops-pack/code-scanning/alerts/10597/instances",
+  "dismissal_approved_by": null,
+  "assignees": []
+}

