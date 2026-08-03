@@ -1,5 +1,10 @@
 <?xml version="1.0"?>
 <clickhouse>
+    <macros>
+        <shard>01</shard>
+        <replica>01</replica>
+    </macros>
+
     <remote_servers>
         <cluster>
             <shard>

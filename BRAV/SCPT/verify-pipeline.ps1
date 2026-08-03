@@ -78,6 +78,25 @@ function Invoke-SigNozApiTraceCheck {
   $nowMs = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
   $startMs = $nowMs - ($LookbackSeconds * 1000)
 
+  # Extract HTTP error body (PS7 ErrorDetails / HttpResponseMessage; PS5 WebException fallback)
+  function Get-HttpErrorBody {
+    param($ErrorRecord)
+    if ($ErrorRecord.ErrorDetails -and $ErrorRecord.ErrorDetails.Message) {
+      return [string]$ErrorRecord.ErrorDetails.Message
+    }
+    $resp = $ErrorRecord.Exception.Response
+    if ($resp -and $resp.PSObject.Properties['Content'] -and $resp.Content) {
+      try { return $resp.Content.ReadAsStringAsync().GetAwaiter().GetResult() } catch { }
+    }
+    if ($ErrorRecord.Exception -is [System.Net.WebException] -and $ErrorRecord.Exception.Response) {
+      try {
+        $stream = $ErrorRecord.Exception.Response.GetResponseStream()
+        return (New-Object System.IO.StreamReader $stream).ReadToEnd()
+      } catch { }
+    }
+    return [string]$ErrorRecord.Exception.Message
+  }
+
   # Helper to build payload for a given filter expression
   function New-TraceApiPayload([string]$expr, [Int64]$StartMs, [Int64]$EndMs) {
     return @{
@@ -162,14 +181,17 @@ function Invoke-SigNozApiTraceCheck {
             Write-Host "[api-check] STANDARD ✓ Span confirmed via SigNoz API (serviceName)" -ForegroundColor Green
             return @{ ok = $true; reason = "span_found_service"; timestampMs = $timestampMs2; mode = "STANDARD (serviceName)" }
           }
-        } catch { }
+        } catch {
+            Write-Warning "[api-check] Fallback request failed: $(Get-HttpErrorBody $_)"
+        }
       }
       Write-Warning "[api-check] No spans found (filter: $filterExpr, last $LookbackSeconds s)"
       return @{ ok = $false; reason = "no_span_found"; timestampMs = $null; mode = $verificationMode }
     }
   } catch {
-    Write-Warning "[api-check] Request failed: $($_.Exception.Message)"
-    return @{ ok=$false; reason="http_error"; timestampMs=$null; error=$_.Exception.Message }
+    $errMsg = Get-HttpErrorBody $_
+    Write-Warning "[api-check] Request failed: $errMsg"
+    return @{ ok=$false; reason="http_error"; timestampMs=$null; error=$errMsg }
   }
 }
 
@@ -223,9 +245,42 @@ if (Test-Path $CanaryScriptPath) {
   # Run Python canary and capture stdout (TRACE_ID=..., CANARY_ID=..., SEND_TS_NS=...)
   Write-Host "[verify] Running canary script: $CanaryScriptPath" -ForegroundColor Gray
   
+  # Resolve Python executable: prefer real 'python', then known install paths
+  # (incl. other users' Local\Programs from Phase 0), then Windows 'py -3'.
+  # Skip the WindowsApps Store stub (exit 9009).
+  function Resolve-PythonInvocation {
+    $pythonCmd = Get-Command python -ErrorAction SilentlyContinue
+    if ($pythonCmd -and $pythonCmd.Source -notmatch '\\WindowsApps\\python\.exe$') {
+      return @{ Exe = $pythonCmd.Source; Args = "-u `"$CanaryScriptPath`"" }
+    }
+    $candidates = @(
+      'C:\Program\python.exe',
+      "$env:LocalAppData\Programs\Python\Python312\python.exe",
+      "$env:LocalAppData\Programs\Python\Python311\python.exe",
+      "$env:ProgramFiles\Python312\python.exe",
+      "$env:ProgramFiles\Python311\python.exe"
+    )
+    # Phase 0 sometimes installs per-user under the interactive desktop account
+    $candidates += @(Get-ChildItem 'C:\Users\*\AppData\Local\Programs\Python\Python3*\python.exe' -ErrorAction SilentlyContinue |
+      Select-Object -ExpandProperty FullName)
+    foreach ($candidate in $candidates) {
+      if ($candidate -and (Test-Path $candidate)) {
+        return @{ Exe = $candidate; Args = "-u `"$CanaryScriptPath`"" }
+      }
+    }
+    $pyLauncher = Get-Command py -ErrorAction SilentlyContinue
+    if ($pyLauncher) {
+      return @{ Exe = $pyLauncher.Source; Args = "-3 -u `"$CanaryScriptPath`"" }
+    }
+    throw "Python not found on PATH (tried real 'python', known install paths, and 'py -3')"
+  }
+
+  $pyInv = Resolve-PythonInvocation
+  Write-Host "[verify] Using Python: $($pyInv.Exe) $($pyInv.Args)" -ForegroundColor Gray
+
   $psi = New-Object System.Diagnostics.ProcessStartInfo
-  $psi.FileName = "python"
-  $psi.Arguments = "-u `"$CanaryScriptPath`""
+  $psi.FileName = $pyInv.Exe
+  $psi.Arguments = $pyInv.Args
   $psi.RedirectStandardOutput = $true
   $psi.RedirectStandardError = $true
   $psi.UseShellExecute = $false
