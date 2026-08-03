@@ -6,11 +6,11 @@ name: BossCat Gate - Bot-Native
 # Pattern: A/B pairing (GATE-ALFA writer, GATE-BETA monitor)
 # ============================================
 
+# RETIRED 2026-08-03 -- Phase 0 workflow audit (docs/BossCat/ROADMAP_2026H2.md).
+# Reason: full SigNoz smoke per PR; superseded by gate-site-evidence.
+# Automatic triggers removed; manual dispatch retained. Restore the on: block from git history to re-enable.
 on:
-  pull_request:
-    branches: [main]
-    types: [opened, synchronize, reopened]
-  workflow_dispatch:
+  workflow_dispatch: {}
 
 concurrency:
   group: gate-${{ github.ref }}

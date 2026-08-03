@@ -1,8 +1,9 @@
 name: BossCat Run Rotation
 
+# RETIRED 2026-08-03 -- Phase 0 workflow audit (docs/BossCat/ROADMAP_2026H2.md).
+# Reason: 30-min conveyor parallel to run-archiver; one archiver suffices.
+# Schedule removed; manual dispatch (with inputs) retained. Restore the schedule from git history to re-enable.
 on:
-  schedule:
-    - cron: '*/30 * * * *'
   workflow_dispatch:
     inputs:
       dry_run:

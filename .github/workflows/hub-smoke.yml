@@ -1,7 +1,8 @@
 name: Hub Uptime Smoke
+# RETIRED 2026-08-03 -- Phase 0 workflow audit (docs/BossCat/ROADMAP_2026H2.md).
+# Reason: every-10-min endpoint poll (~4,300 runs/month) for a static Pages site.
+# Automatic triggers removed; manual dispatch retained. Restore the on: block from git history to re-enable.
 on:
-  schedule:
-    - cron: "*/10 * * * *"
   workflow_dispatch: {}
 
 jobs:

@@ -1,19 +1,10 @@
 name: Weekly Executive Review
 
+# RETIRED 2026-08-03 -- Phase 0 workflow audit (docs/BossCat/ROADMAP_2026H2.md).
+# Reason: codex/codex-review-openai.ps1 no longer exists; external LLM review retired.
+# Automatic triggers removed; manual dispatch retained. Restore the on: block from git history to re-enable.
 on:
-  schedule:
-    # Every Monday at 3 AM UTC (after weekly cleanup)
-    - cron: '0 3 * * 1'
-  workflow_dispatch:
-    inputs:
-      maxFiles:
-        description: 'Max files per chunk'
-        required: false
-        default: '30'
-      model:
-        description: 'OpenAI model to use'
-        required: false
-        default: 'gpt-4o-mini'
+  workflow_dispatch: {}
 
 concurrency:
   group: executive-review-${{ github.ref }}

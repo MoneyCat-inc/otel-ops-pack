@@ -1,10 +1,10 @@
 name: ECRR Compliance Scheduled Check
 
+# RETIRED 2026-08-03 -- Phase 0 workflow audit (docs/BossCat/ROADMAP_2026H2.md).
+# Reason: same compliance engine, weekday cron with auto-remediation writer.
+# Automatic triggers removed; manual dispatch retained. Restore the on: block from git history to re-enable.
 on:
-  schedule:
-    # Run daily at 9 AM UTC (weekdays)
-    - cron: '0 9 * * 1-5'
-  workflow_dispatch:
+  workflow_dispatch: {}
 
 concurrency:
   group: ecrr-compliance-scheduled

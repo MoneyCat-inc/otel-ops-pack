@@ -1,12 +1,10 @@
 name: Status Dashboard Auto-Update
 
+# RETIRED 2026-08-03 -- Phase 0 workflow audit (docs/BossCat/ROADMAP_2026H2.md).
+# Reason: 4x-daily PR-opener; gate dashboard frozen, Phase 2 decides automate-or-archive.
+# Automatic triggers removed; manual dispatch retained. Restore the on: block from git history to re-enable.
 on:
-  schedule:
-    - cron: '15 0,6,12,18 * * *'
-  workflow_run:
-    workflows: ['BossCat Gate Verification', 'Gate Nightly Verification']
-    types: [completed]
-  workflow_dispatch:
+  workflow_dispatch: {}
 
 concurrency:
   group: status-auto-update

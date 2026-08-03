@@ -5,14 +5,11 @@
 
 name: BossCat • SigNoz Alerts
 
+# RETIRED 2026-08-03 -- Phase 0 workflow audit (docs/BossCat/ROADMAP_2026H2.md).
+# Reason: windows-latest runner cannot reach localhost:8080 SigNoz.
+# Automatic triggers removed; manual dispatch retained. Restore the on: block from git history to re-enable.
 on:
-  workflow_dispatch:
-  push:
-    paths:
-      - BRAV/SCPT/bosscat-create-signoz-alerts.ps1
-      - BRAV/SCPT/bosscat-verify-signoz-completion.ps1
-      - docs/BossCat/**
-      - '!docs/BossCat/visuals/**'  # Exclude MILK visuals from SigNoz automation
+  workflow_dispatch: {}
 
 # Least-privilege permissions
 permissions:

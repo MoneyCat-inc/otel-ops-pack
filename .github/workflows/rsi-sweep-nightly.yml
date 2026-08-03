@@ -1,9 +1,10 @@
 name: rsi-sweep-nightly
 
+# RETIRED 2026-08-03 -- Phase 0 workflow audit (docs/BossCat/ROADMAP_2026H2.md).
+# Reason: nightly RSI sweep with auto-promotion PRs; RSI bench work paused.
+# Automatic triggers removed; manual dispatch retained. Restore the on: block from git history to re-enable.
 on:
-  schedule:
-    - cron: '30 2 * * *'
-  workflow_dispatch:
+  workflow_dispatch: {}
 
 jobs:
   sweep-batchsize:

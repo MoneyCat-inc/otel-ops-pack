@@ -1,8 +1,9 @@
 name: Link Check
+# RETIRED 2026-08-03 -- Phase 0 workflow audit (docs/BossCat/ROADMAP_2026H2.md).
+# Reason: daily+PR lychee; docs-lane-checks link-checks changed docs.
+# Automatic triggers removed; manual dispatch retained. Restore the on: block from git history to re-enable.
 on:
-  pull_request:
-  schedule:
-    - cron: "0 1 * * *"
+  workflow_dispatch: {}
 
 jobs:
   lychee:

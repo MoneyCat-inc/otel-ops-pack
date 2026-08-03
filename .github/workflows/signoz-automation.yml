@@ -3,18 +3,11 @@ permissions:
   contents: read
   actions: write
 
+# RETIRED 2026-08-03 -- Phase 0 workflow audit (docs/BossCat/ROADMAP_2026H2.md).
+# Reason: assumes localhost SigNoz; heavyweight Playwright suite with no consumer.
+# Automatic triggers removed; manual dispatch retained. Restore the on: block from git history to re-enable.
 on:
-  schedule:
-    - cron: "0 2 * * *"
-  workflow_dispatch:
-  push:
-    branches: [main, develop]
-    paths:
-      - tests/signoz.final.spec.ts
-      - playwright.signoz.config.ts
-      - BRAV/SCPT/automate-signoz-setup.ps1
-      - docs/SIGNOZ_AUTOMATION_SETUP.md
-      - .github/workflows/signoz-automation.yml
+  workflow_dispatch: {}
 
 concurrency:
   group: signoz-automation-${{ github.workflow }}-${{ github.ref }}

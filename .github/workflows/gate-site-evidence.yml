@@ -1,3 +1,4 @@
+# KEEP -- Phase 0 workflow audit 2026-08-03: required Gate/Site branch-protection contexts (k6, synthetic trace, links/a11y/CSP)
 name: Gate & Site Evidence (Non-Merging)
 
 # Required contexts (Settings verbatim): "Gate • k6 thresholds",

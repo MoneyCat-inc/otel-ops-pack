@@ -2,21 +2,11 @@ name: SBOM Stability Tracker
 
 # Automatically updates Issue #135 after prod gate runs
 
+# RETIRED 2026-08-03 -- Phase 0 workflow audit (docs/BossCat/ROADMAP_2026H2.md).
+# Reason: Issue #135 stability-tracking loop is complete.
+# Automatic triggers removed; manual dispatch retained. Restore the on: block from git history to re-enable.
 on:
-  workflow_run:
-    workflows: ["BossCat Gate Verification"]
-    types: [completed]
-    branches: [main]
-  workflow_dispatch:
-    inputs:
-      force_update:
-        description: 'Force update even if not prod gate'
-        required: false
-        default: false
-        type: boolean
-  schedule:
-    # Run daily at 3 AM UTC to catch any missed runs
-    - cron: '0 3 * * *'
+  workflow_dispatch: {}
 
 concurrency:
   group: sbom-tracker-${{ github.workflow }}-${{ github.ref }}

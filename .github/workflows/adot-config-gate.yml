@@ -1,11 +1,9 @@
 name: ADOT Config Gate
 
+# RETIRED 2026-08-03 -- Phase 0 workflow audit (docs/BossCat/ROADMAP_2026H2.md).
+# Reason: PR paths .aws/** and deploy/adot/** do not exist in the repo.
+# Automatic triggers removed; manual dispatch retained. Restore the on: block from git history to re-enable.
 on:
-  pull_request:
-    paths:
-      - '.aws/**'
-      - 'deploy/adot/**'
-      - '.github/workflows/adot-config-gate.yml'
   workflow_dispatch: {}
 
 permissions:

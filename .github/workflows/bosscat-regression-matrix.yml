@@ -1,22 +1,10 @@
 name: BossCat Regression Matrix
 
+# RETIRED 2026-08-03 -- Phase 0 workflow audit (docs/BossCat/ROADMAP_2026H2.md).
+# Reason: nightly 3x3 matrix; GPU lane moved to viz-engine (Pack 3B).
+# Automatic triggers removed; manual dispatch retained. Restore the on: block from git history to re-enable.
 on:
-  schedule:
-    - cron: '0 2 * * *' # Nightly at 02:00 UTC
-  workflow_dispatch:
-    inputs:
-      gpu_option_b:
-        description: 'Require GPU_FIX Option B (<200ms P95)'
-        required: false
-        default: true
-        type: boolean
-      test_types:
-        description: 'Test types to run (space-separated)'
-        required: false
-        default: 'baseline'
-        type: string
-  release:
-    types: [prereleased]
+  workflow_dispatch: {}
 
 jobs:
   regression:

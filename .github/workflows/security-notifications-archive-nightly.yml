@@ -1,19 +1,10 @@
 name: Security & Notifications Archive (Nightly)
 
+# RETIRED 2026-08-03 -- Phase 0 workflow audit (docs/BossCat/ROADMAP_2026H2.md).
+# Reason: nightly PR-opener archiving alerts into ops-pack; archives belong in otel-ops-evidence per retention policy.
+# Automatic triggers removed; manual dispatch retained. Restore the on: block from git history to re-enable.
 on:
-  schedule:
-    - cron: '0 2 * * *'  # 2 AM UTC daily
-  workflow_dispatch:  # Manual trigger
-    inputs:
-      chunk_size:
-        description: 'Chunk size for archival'
-        required: false
-        default: '500'
-      mark_notifications_read:
-        description: 'Mark notifications as read'
-        required: false
-        default: false
-        type: boolean
+  workflow_dispatch: {}
 
 permissions:
   contents: write

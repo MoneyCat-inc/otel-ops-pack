@@ -1,23 +1,10 @@
 name: SigNoz Automation (Fresh)
 
+# RETIRED 2026-08-03 -- Phase 0 workflow audit (docs/BossCat/ROADMAP_2026H2.md).
+# Reason: assumes localhost SigNoz; duplicate of signoz-automation.
+# Automatic triggers removed; manual dispatch retained. Restore the on: block from git history to re-enable.
 on:
-  schedule:
-    - cron: "0 2 * * *"  # Daily at 2 AM UTC
-  workflow_dispatch:
-    inputs:
-      signoz_url:
-        description: 'SigNoz URL (default: http://localhost:8080)'
-        required: false
-        default: 'http://localhost:8080'
-        type: string
-  push:
-    branches: [main, develop]
-    paths:
-      - tests/signoz.final.spec.ts
-      - playwright.signoz.config.ts
-      - BRAV/SCPT/automate-signoz-setup-fresh.ps1
-      - docs/SIGNOZ_AUTOMATION_SETUP.md
-      - .github/workflows/signoz-automation*.yml
+  workflow_dispatch: {}
 
 concurrency:
   group: signoz-automation-fresh-${{ github.workflow }}-${{ github.ref }}
