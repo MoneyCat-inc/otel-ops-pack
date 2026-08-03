@@ -239,6 +239,59 @@ Role: BossCat OEM - Executive authority maintained, gate integrity preserved
 
 ---
 
+### 2026-08-02 23:00 UTC - Collector Watchdog Installed
+
+**Role:** Cursor{Implementer}  
+**Action:** Created and registered `BossCat-OtelcolWatchdog` scheduled task — every 5 min, SYSTEM, elevated
+
+**Evidence:**
+
+- `scripts/windows/watchdog-otelcol.ps1` — checks service state; re-enables (`delayed-auto`) + starts if not Running; covers MSI-disable and crash-exhaust patterns
+- `scripts/windows/install-watchdog-task.ps1` — idempotent task registration
+- Task live; first run logged `{"action":"ok","before":"Running","after":"Running","ok":true}`
+- Log: `artifacts/watchdog/watchdog.log` (one JSON line per run)
+
+**Status:** COMPLETE  
+**ECRR:** `CHAR/ECRR/ECRR_REPORTS/ECRR_WATCHDOG_AND_API_BODY_20260802.md`
+
+---
+
+### 2026-08-02 23:10 UTC - API Error Body Capture (verify-pipeline)
+
+**Role:** Cursor{Implementer}  
+**Action:** Replaced opaque `http_error` catch in `Invoke-SigNozApiTraceCheck` with `Get-HttpErrorBody` (PS7-aware)
+
+**Evidence:**
+
+- `BRAV/SCPT/verify-pipeline.ps1` modified — two catch blocks updated (primary + fallback)
+- PS7 path: `$_.ErrorDetails.Message`; fallback: `HttpResponseMessage.Content`; last resort: `WebException.GetResponseStream()`
+- Verified live: warning now surfaces `{"status":"error","error":{"code":"internal","message":"internal(internal): failed to get traces keys"}}`
+- `error` field in `gate_verification.json` carries full body — root cause (SigNoz server-side `fields/keys` bug) now self-documenting in artifact
+- Gate remains GREEN via ClickHouse fallback; SigNoz upgrade is separate work item
+
+**Status:** COMPLETE  
+**ECRR:** `CHAR/ECRR/ECRR_REPORTS/ECRR_WATCHDOG_AND_API_BODY_20260802.md`
+
+---
+
+### 2026-08-03 - SigNoz Stack Upgraded (v0.96.1 → v0.135.1)
+
+**Role:** Cursor{Implementer} + machine operator `@fubumaki`  
+**Action:** Upgraded SigNoz stack; replaced deprecated schema-migrator with telemetrystore-migrator; added ClickHouse shard/replica macros
+
+**Evidence:**
+
+- `docker-compose.yml`: signoz v0.135.1, otel-collector v0.144.6, ClickHouse 25.8, telemetrystore-migrator replaces schema-migrator-sync/async
+- `clickhouse-cluster-config.xml`: added `<macros><shard>01</shard><replica>01</replica></macros>`
+- Migration exit 0; verify-pipeline exit 0
+- `api_mode: "PINPOINT (traceID)"`, `api_reason: "span_found"` — ClickHouse fallback no longer needed
+- Backup: `artifacts/deployment-backups/signoz-upgrade-20260803-114335/`
+
+**Status:** COMPLETE  
+**ECRR:** `CHAR/ECRR/ECRR_REPORTS/ECRR_SIGNOZ_UPGRADE_20260803.md`
+
+---
+
 🐾 **End of BossCat Executive Operational Log** 🐾
 
 - **2025-10-09T01:43:33.274Z** - Lane docs: Failed - Retry exhausted: Budget exceeded: 41 files (max 10)
