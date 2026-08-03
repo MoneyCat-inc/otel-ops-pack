@@ -185,7 +185,8 @@ pwsh -File .\scripts\windows\install-or-repair-otel-collector.ps1
 5. Starts/restarts the service
 
 **Parameters:**
-- `-ConfigSource` (default: `.\windows\otelcol\otelcol-contrib-config.yaml`)
+- `-ConfigSource` (default: `.\config.yaml` — the source of record; changed in #429, this runbook
+  previously named the older `.\windows\otelcol\otelcol-contrib-config.yaml`)
 - `-OtlpGrpcEndpoint` (default: `127.0.0.1:14317`)
 - `-ServiceName` (default: `otelcol-contrib`)
 
@@ -256,7 +257,7 @@ sc.exe qc otelcol-contrib
 - **Batch Timeout:** 10 seconds
 
 **Editing Config:**
-1. Edit source: `.\windows\otelcol\otelcol-contrib-config.yaml`
+1. Edit source: `.\config.yaml` (the repo source of record — **not** the ProgramData copy)
 2. Re-run: `pwsh -File .\scripts\windows\install-or-repair-otel-collector.ps1`
 3. Service will restart with new config
 
@@ -491,7 +492,8 @@ processors:
 ## Related Documentation
 
 - **Gate #022 Spec:** BOSSCAT-022A implementation details
-- **Collector Config:** `windows/otelcol/otelcol-contrib-config.yaml`
+- **Collector Config (source of record):** `config.yaml` at the repo root
+- **Collector Config (deployed, service reads):** `C:\ProgramData\otelcol-contrib\config.yaml`
 - **Install Script:** `scripts/windows/install-or-repair-otel-collector.ps1`
 - **Verify Script:** `scripts/windows/verify-otel-collector.ps1`
 - **Gate Integration:** `BRAV/SCPT/verify-windows-collector.ps1`
