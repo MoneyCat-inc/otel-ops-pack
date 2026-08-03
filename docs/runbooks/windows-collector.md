@@ -39,14 +39,29 @@ once the pin moves.
 
 ## 🚨 Canonical Configuration Path (CRITICAL)
 
-**Service Binary Path:**
-```
-"C:\Program Files\OpenTelemetry Collector\otelcol-contrib.exe" --config "C:\otel\config.yaml"
-```
+> **⚠️ This section contradicted the Configuration section below, and the live service. Corrected
+> 2026-08-03.** The claims below asserted `C:\otel\config.yaml` is the service's config path and
+> that any other path is a RED condition. The running service reads
+> `C:\ProgramData\otelcol-contrib\config.yaml` and is healthy (472 log records exported, zero send
+> failures), so the old text would have flagged the correct, working state as RED.
+>
+> **The two paths are different roles, not rivals:**
+>
+> - `C:\otel\config.yaml` — the **source of record**, edited in the repo and reviewed via PR. This
+>   is what "authoritative" was reaching for.
+> - `C:\ProgramData\otelcol-contrib\config.yaml` — the **deployed copy** the service actually
+>   reads. Written by `install-or-repair-otel-collector.ps1`; never hand-edit it.
+>
+> Editing the repo file does **not** change collector behaviour until install-or-repair runs. That
+> is the intended flow, and it means a git branch switch cannot mutate live config.
 
-**Canonical Config Location:** `C:\otel\config.yaml` ← **AUTHORITATIVE**
+**Source of record (edit here):** `C:\otel\config.yaml`
 
-**⚠️ RED Condition:** Any service pointing to a different config path is INCORRECT and will cause export failures.
+**Deployed config (service reads this, do not hand-edit):** `C:\ProgramData\otelcol-contrib\config.yaml`
+
+**⚠️ RED Condition:** the service pointing at a config path that no deploy step writes — e.g. a
+stale per-user path, or a `windows/otelcol/` source file passed directly. A service on the
+ProgramData path is **correct**.
 
 **Verification Command:**
 ```powershell
@@ -55,7 +70,12 @@ sc qc otelcol-contrib | findstr /i "BINARY_PATH_NAME"
 
 **Expected Output:**
 ```
-BINARY_PATH_NAME   : "C:\Program Files\OpenTelemetry Collector\otelcol-contrib.exe" --config "C:\otel\config.yaml"
+BINARY_PATH_NAME   : "C:\Program Files\OpenTelemetry Collector\otelcol-contrib.exe" --config "C:\ProgramData\otelcol-contrib\config.yaml"
+```
+
+**Applying a config change:**
+```powershell
+pwsh -File .\scripts\windows\install-or-repair-otel-collector.ps1
 ```
 
 **Critical Requirements:**
@@ -69,6 +89,13 @@ BINARY_PATH_NAME   : "C:\Program Files\OpenTelemetry Collector\otelcol-contrib.e
 pwsh -File .\scripts\windows\health-check-collector-config.ps1
 ```
 Run every 15 minutes via Task Scheduler. Exit code 20/21 = RED condition.
+
+> **⚠️ This guard inherited the same wrong assumption and could never pass.** Its Check 3 asserted
+> the service runs `--config "C:\otel\config.yaml"` — the source path, which the service never
+> uses — so on 2026-08-03 it returned **exit 21 (RED)** against a collector exporting 472 records
+> with zero failures. A gate that cannot pass is as useless as one that cannot fail; treat any
+> historical RED from this script before its fix as unproven. Corrected separately in the code
+> lane.
 
 ---
 
