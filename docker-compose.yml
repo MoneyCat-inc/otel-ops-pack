@@ -38,7 +38,7 @@ services:
           memory: 256M
 
   signoz-clickhouse:
-    image: clickhouse/clickhouse-server:25.5.6
+    image: clickhouse/clickhouse-server:25.8
     container_name: signoz-clickhouse
     restart: unless-stopped
     depends_on:
@@ -75,7 +75,7 @@ services:
   # SIGNOZ CORE SERVICES
   # =============================================================================
   signoz:
-    image: signoz/signoz:v0.96.1
+    image: signoz/signoz:v0.135.1
     container_name: signoz
     restart: unless-stopped
     depends_on:
@@ -93,6 +93,8 @@ services:
       SIGNOZ_ALERTMANAGER_PROVIDER: signoz
       SIGNOZ_TELEMETRYSTORE_CLICKHOUSE_DSN: tcp://signoz-clickhouse:9000
       SIGNOZ_SQLSTORE_SQLITE_PATH: /var/lib/signoz/signoz.db
+      # Prefer tokenizer secret (v0.112+); keep legacy JWT for rollback compatibility
+      SIGNOZ_TOKENIZER_JWT_SECRET: '${SIGNOZ_JWT_SECRET:-local-signoz-jwt-secret-rotate}'
       SIGNOZ_JWT_SECRET: '${SIGNOZ_JWT_SECRET:-local-signoz-jwt-secret-rotate}'
       STORAGE: clickhouse
       GODEBUG: netdns=go
@@ -120,16 +122,26 @@ services:
           memory: 512M
 
   # =============================================================================
-  # SCHEMA MIGRATORS (Critical - Must Complete Before Collector)
+  # TELEMETRYSTORE MIGRATOR (v0.113+ — replaces signoz-schema-migrator)
   # =============================================================================
-  signoz-schema-migrator-sync:
-    image: signoz/signoz-schema-migrator:v0.129.6
-    container_name: signoz-schema-migrator-sync
-    command: ["sync", "--dsn=tcp://signoz-clickhouse:9000", "--dev", "--up="]
+  signoz-telemetrystore-migrator:
+    image: signoz/signoz-otel-collector:v0.144.6
+    container_name: signoz-telemetrystore-migrator
     depends_on:
       signoz-clickhouse:
         condition: service_healthy
-    restart: "no"
+    environment:
+      SIGNOZ_OTEL_COLLECTOR_CLICKHOUSE_DSN: tcp://signoz-clickhouse:9000
+      SIGNOZ_OTEL_COLLECTOR_CLICKHOUSE_CLUSTER: cluster
+      SIGNOZ_OTEL_COLLECTOR_CLICKHOUSE_REPLICATION: "true"
+      SIGNOZ_OTEL_COLLECTOR_TIMEOUT: 10m
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        /signoz-otel-collector migrate bootstrap &&
+        /signoz-otel-collector migrate sync up &&
+        /signoz-otel-collector migrate async up
+    restart: on-failure
     networks:
       - signoz-net
     labels:
@@ -144,33 +156,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 256M
-        reservations:
-          memory: 128M
-
-  signoz-schema-migrator-async:
-    image: signoz/signoz-schema-migrator:v0.129.6
-    container_name: signoz-schema-migrator-async
-    command: ["async", "--dsn=tcp://signoz-clickhouse:9000", "--dev", "--up="]
-    depends_on:
-      signoz-clickhouse:
-        condition: service_healthy
-    restart: "no"
-    networks:
-      - signoz-net
-    labels:
-      - "order=T"
-      - "priority=critical"
-      - "service.type=migrator"
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "2"
-    deploy:
-      resources:
-        limits:
-          memory: 256M
+          memory: 512M
         reservations:
           memory: 128M
 
@@ -178,15 +164,19 @@ services:
   # OBSERVABILITY SERVICES
   # =============================================================================
   signoz-otel-collector:
-    image: signoz/signoz-otel-collector:v0.129.6
+    image: signoz/signoz-otel-collector:v0.144.6
     container_name: signoz-otel-collector
     restart: unless-stopped
     depends_on:
       signoz:
         condition: service_healthy
+      signoz-telemetrystore-migrator:
+        condition: service_completed_successfully
+    entrypoint: ["/bin/sh", "-c"]
     command:
-      - --config=/etc/otel-collector-config.yaml
-      - --feature-gates=-pkg.translator.prometheus.NormalizeName
+      - |
+        /signoz-otel-collector migrate sync check &&
+        /signoz-otel-collector --config=/etc/otel-collector-config.yaml
     volumes:
       - ./signoz-collector-config.yaml:/etc/otel-collector-config.yaml:ro
     ports:
@@ -197,6 +187,10 @@ services:
     environment:
       OTEL_RESOURCE_ATTRIBUTES: host.name=signoz-host,os.type=linux
       LOW_CARDINAL_EXCEPTION_GROUPING: "false"
+      SIGNOZ_OTEL_COLLECTOR_CLICKHOUSE_DSN: tcp://signoz-clickhouse:9000
+      SIGNOZ_OTEL_COLLECTOR_CLICKHOUSE_CLUSTER: cluster
+      SIGNOZ_OTEL_COLLECTOR_CLICKHOUSE_REPLICATION: "true"
+      SIGNOZ_OTEL_COLLECTOR_TIMEOUT: 10m
     healthcheck:
       test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/13133' || exit 1"]
       interval: 15s
