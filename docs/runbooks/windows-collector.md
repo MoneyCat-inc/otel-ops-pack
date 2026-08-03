@@ -10,6 +10,33 @@
 
 ---
 
+## Status: FIRST-CLASS (Phase 1 decision, 2026-08-03)
+
+**Correcting the record.** Gate #026A was read as declaring this collector intentionally bypassed
+on the grounds that Docker collectors carry telemetry. **That reading is wrong and should not be
+used to justify deprioritising this component.**
+
+Measured 2026-08-03: the service exports **472 log records to SigNoz with zero send failures**,
+sourced from `windowseventlog/application` (268), `windowseventlog/system` (39), `filelog/canary`
+(125) and `otlp` HTTP (62). **A collector running inside a Docker container cannot read the Windows
+Event Log** — it is a host-OS facility with no container-visible equivalent. This service is the
+sole carrier of that telemetry class.
+
+What Gate #026A actually established is narrower: for **.NET trace export**, the direct-to-SigNoz
+path is preferred over routing through this collector. That is a routing preference for one signal
+type, not a verdict on the component.
+
+Operator decision (Phase 1, Roadmap 2026 H2): **keep as first-class and upgrade.** See
+`docs/BossCat/MEMO_WINDOWS_COLLECTOR_20260803.md`.
+
+**⚠️ The pinned `v0.104.0` below is July 2024 and pending upgrade.** Treat every "tested and
+verified" version note in this runbook as describing the current pin, not a recommendation to stay
+on it. The 2026-07-25 clean-host E2E found `0.104.0` scraper list-syntax causes a crash-loop
+(finding F3); the upgrade is expected to retire that finding. Version notes below need rewriting
+once the pin moves.
+
+---
+
 ## 🚨 Canonical Configuration Path (CRITICAL)
 
 **Service Binary Path:**
@@ -65,7 +92,11 @@ $env:OTEL_EXPORTER_OTLP_ENDPOINT = "http://127.0.0.1:14317"
 $env:OTEL_EXPORTER_OTLP_PROTOCOL = "grpc"
 ```
 
-### SECONDARY PATH (Optional) — Via Windows Collector ✅
+### SECONDARY PATH (for .NET traces) — Via Windows Collector ✅
+
+> **"Secondary" applies to .NET trace routing only.** For Windows Event Log and host file logs this
+> collector is the *only* path — see the FIRST-CLASS status note at the top of this runbook.
+
 **Endpoint:** `http://127.0.0.1:5320` (Windows Collector OTLP gRPC) / `http://127.0.0.1:5321` (HTTP)  
 **Status:** ✅ **CANONICAL** (`config.yaml` receivers; ports moved off 5317/5318 to avoid PlariumPlay 5300–5319)  
 **Use Case:** Centralized collection, preprocessing, multi-export  
