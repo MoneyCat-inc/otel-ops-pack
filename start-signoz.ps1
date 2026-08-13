@@ -22,7 +22,7 @@ Write-Host "ClickHouse is ready!" -ForegroundColor Green
 
 # Run schema migration
 Write-Host "Running SigNoz schema migration (sync)..." -ForegroundColor Yellow
-docker-compose -f docker-compose.yml run --rm signoz-schema-migrator-sync
+docker-compose -f docker-compose.yml run --rm signoz-telemetrystore-migrator
 if ($LASTEXITCODE -ne 0) {
     Write-Error "Schema migration failed. Check docker compose output above."
     exit $LASTEXITCODE
