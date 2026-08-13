@@ -42,7 +42,7 @@ jobs:
       - name: Scan SigNoz image
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'signoz/signoz:v0.96.1'
+          image-ref: 'signoz/signoz:v0.135.1'
           format: 'table'
           severity: 'CRITICAL,HIGH'
           exit-code: '0'
@@ -50,7 +50,7 @@ jobs:
       - name: Scan OTel Collector image
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'signoz/signoz-otel-collector:v0.129.6'
+          image-ref: 'signoz/signoz-otel-collector:v0.144.6'
           format: 'table'
           severity: 'CRITICAL,HIGH'
           exit-code: '0'
@@ -58,7 +58,7 @@ jobs:
       - name: Scan ClickHouse image
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'clickhouse/clickhouse-server:25.5.6'
+          image-ref: 'clickhouse/clickhouse-server:25.8'
           format: 'table'
           severity: 'CRITICAL,HIGH'
           exit-code: '0'  # Report only; pin image separately when upstream patches land
@@ -80,6 +80,6 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "See Security tab for detailed findings." >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Baseline:** 31 vulnerabilities (4 CRITICAL, 27 HIGH) as of 2025-10-09" >> $GITHUB_STEP_SUMMARY
-          echo "**Goal:** Reduce to <15 within 30 days" >> $GITHUB_STEP_SUMMARY
+          echo "**Image pins synced to docker-compose.yml:** signoz v0.135.1, otel-collector v0.144.6, clickhouse 25.8" >> $GITHUB_STEP_SUMMARY
+
 
