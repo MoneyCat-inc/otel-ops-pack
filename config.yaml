@@ -26,16 +26,10 @@ receivers:
     channel: System
     start_at: end
     poll_interval: 200ms
-  filelog/queue:
-    include:
-      - C:/logs/queue/*.log
-    start_at: end
-    include_file_path: true
-    include_file_name: true
-    poll_interval: 200ms
-    operators:
-      - type: json_parser
-        parse_from: body
+  # filelog/queue removed 2026-08-03 (Phase 1 execution, Roadmap 2026 H2):
+  # its only source C:/logs/queue/health.log has not been written since 2025-10-09,
+  # and filelog/canary's C:/logs/**/*.log already covers that path — keeping both
+  # would double-ingest if the producer ever returned.
   filelog/canary:
     include:
       - C:/logs/**/*.log
@@ -141,7 +135,6 @@ service:
         - otlp
         - windowseventlog/application
         - windowseventlog/system
-        - filelog/queue
         - filelog/canary
       processors:
         - memory_limiter
