@@ -5,7 +5,13 @@
 
 $ErrorActionPreference = "Stop"
 
+# Two paths, two roles — see docs/runbooks/windows-collector.md:
+#   $ConfigPath         source of record, edited in the repo and reviewed via PR
+#   $DeployedConfigPath copy the service actually reads, written by install-or-repair
+# Check 3 previously asserted the service ran --config $ConfigPath. It never does, so the guard
+# returned exit 21 against healthy collectors. Assert the deployed path instead.
 $ConfigPath = "C:\otel\config.yaml"
+$DeployedConfigPath = "C:\ProgramData\otelcol-contrib\config.yaml"
 $ExpectedEndpointPattern = "(127\.0\.0\.1|localhost):4317"
 $ServiceName = "otelcol-contrib"
 
@@ -29,16 +35,25 @@ if ($configContent -notmatch $ExpectedEndpointPattern) {
 }
 Write-Host "[OK] Endpoint verified: localhost:4317 or 127.0.0.1:4317" -ForegroundColor Green
 
-# Check 3: Service config matches canonical path
+# Check 3: Service runs against the deployed config written by install-or-repair
 $serviceConfig = sc qc $ServiceName 2>&1 | Out-String
-if ($serviceConfig -notmatch [regex]::Escape("--config `"$ConfigPath`"")) {
-  Write-Host "[RED] Service not using canonical config path" -ForegroundColor Red
-  Write-Host "Expected: --config `"$ConfigPath`"" -ForegroundColor Yellow
+if ($serviceConfig -notmatch [regex]::Escape("--config `"$DeployedConfigPath`"")) {
+  Write-Host "[RED] Service not using the deployed config path" -ForegroundColor Red
+  Write-Host "Expected: --config `"$DeployedConfigPath`"" -ForegroundColor Yellow
+  Write-Host "Fix: pwsh -File .\scripts\windows\install-or-repair-otel-collector.ps1" -ForegroundColor Yellow
   Write-Host "Service config:" -ForegroundColor Yellow
   sc qc $ServiceName | findstr /i "BINARY_PATH_NAME"
   exit 21
 }
-Write-Host "[OK] Service using canonical config path" -ForegroundColor Green
+Write-Host "[OK] Service using deployed config path" -ForegroundColor Green
+
+# Check 3b: The deployed copy exists (a service can hold a path that was later removed)
+if (-not (Test-Path $DeployedConfigPath)) {
+  Write-Host "[RED] Deployed config missing: $DeployedConfigPath" -ForegroundColor Red
+  Write-Host "Fix: pwsh -File .\scripts\windows\install-or-repair-otel-collector.ps1" -ForegroundColor Yellow
+  exit 21
+}
+Write-Host "[OK] Deployed config present: $DeployedConfigPath" -ForegroundColor Green
 
 # Check 4: Service is running
 $service = Get-Service -Name $ServiceName -ErrorAction SilentlyContinue
