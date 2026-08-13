@@ -60,7 +60,8 @@ All timed steps exit 0: preflight, enable-collector-service, install-or-repair-c
 |---|---|
 | F3 retired (0.158.0 starts on canonical config) | **PASS** |
 | Drift guard exit 0 | **PASS** |
-| Event Log receivers (`windowseventlog/application` + `/system`) | **PENDING** host metrics pull from guest |
+| Event Log `windowseventlog/application` | **PASS** (load-bearing: canary writes Application/SigNoz-Canary EventId 1001) |
+| Event Log `windowseventlog/system` | **informational only** — both receivers use `start_at: end`; a quiet guest may legitimately show zero System events inside a ~7 min window. Do not treat absence as Phase 1 failure. |
 | No hostmetrics expected | **EXPECTED** (canonical config has none) |
 
 ### Comparison
@@ -74,13 +75,13 @@ All timed steps exit 0: preflight, enable-collector-service, install-or-repair-c
 ### Follow-ups
 
 1. Commit gate runners (`RUN-GATE-CLOCK.cmd`, `run-gate-clock.ps1`, Phase 0 scripts) — were host-only until Desktop copy; not on `main` at run start.
-2. Pull `C:\Phase0\gate-clock-20260813.json` to host artifact and confirm Event Log receiver metrics.
+2. Optionally archive guest `C:\Phase0\gate-clock-20260813.json` onto the host artifact for SHA/timestamps.
 3. Document nested-virt cold-boot after snapshot restore in the run card (recurring F7).
 
 ## Role
 
 - **Machine operator `@fubumaki`:** Phase 0, Docker/WSL, snapshot restores, elevated gate runs.  
 - **Cursor{Implementer}:** Hyper-V restore/cold-boot, PR merge (#460/#461), evidence + this ECRR.  
-- **Claude (chat/review):** run card, exit-1 timing analysis → #461 root cause.
+- **Claude (chat/review):** run card, exit-1 timing analysis → #461 root cause; Event Log assert correction (#463).
 
 — Cursor{Implementer}
