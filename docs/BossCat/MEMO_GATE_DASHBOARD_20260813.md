@@ -21,7 +21,7 @@ dated historical archive with a pointer to the canonical log."*
 | Property | Value | Consequence |
 |---|---|---|
 | Shape | a **single object**, not a series | overwritten each run; no history to render |
-| Gate identifier | `"IONA"` — a **lane name** | the dashboard is a `#001`–`#031` numbered ledger; the schemes do not correspond |
+| Gate identifier | `"IONA"` — a **lane name** | dashboard uses a `#001`–`#031` ledger; schemes differ |
 | Verdict | `"READY"` | one row, not thirty-one |
 | Timestamp | **2026-01-23** | the *automation input* is itself seven months stale |
 
