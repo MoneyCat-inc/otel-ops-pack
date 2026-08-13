@@ -20,8 +20,8 @@ Three things in the previous card are now wrong. Each would cost a run if follow
 
 ## Second purpose: close the MSI gap
 
-#452 pinned the MSI to `0.158.0` with checksum verification and fixed a URL that had been returning
-404. That path is **reproducible for a clean host but unproven as an upgrade**, because the only
+PR #452 pinned the MSI to `0.158.0` with checksum verification and fixed a URL that had been
+returning 404. That path is **reproducible for a clean host but unproven as an upgrade**, because the only
 attempt so far was an upgrade over an existing 0.104.0 install.
 
 This run is the natural place to settle it: a genuinely clean guest is the case the pinned MSI is
