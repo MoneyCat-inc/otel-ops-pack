@@ -1,4 +1,4 @@
-<!-- markdownlint-disable MD013 MD022 MD031 MD032 MD033 MD034 MD036 MD040 -->
+<!-- markdownlint-disable MD013 MD022 MD029 MD031 MD032 MD033 MD034 MD036 MD040 MD049 MD058 -->
 # 🐾 BossCat Gate Status Dashboard
 
 > ## ARCHIVED — snapshot of 2025-11-01, not current status
@@ -981,10 +981,10 @@ Canonical Reference:       docs/comfort-cat/ (5 docs) ✅
 - **Gate #019 Job R2 Evidence** — `../GATE_019_JOB_R2_EVIDENCE.md` - Kill-switch functional
 - [**Gate #019 Plan**](../.agent/PLAN.md) - Execution plan (Gate #019B micro-gate)
 - **CI Test Runs (Honest):** 
-  - [18813213898](https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18813213898) - Initial envelope
-  - [18813228465](https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18813228465) - Tuned instantaneous
-  - [18813447287](https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18813447287) - Initial hybrid
-  - [18813570589](https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18813570589) - Tuned hybrid (final)
+  - run `18813213898` - Initial envelope
+  - run `18813228465` - Tuned instantaneous
+  - run `18813447287` - Initial hybrid
+  - run `18813570589` - Tuned hybrid (final)
 - [**BOSSCAT_LOG Entries**](BossCat/BOSSCAT_LOG.md) - Lines 3-4 (reclassification + AMBER)
 - [**Gate Status Dashboard**](GATE_STATUS_DASHBOARD.md) - This document (updated)
 - **Status:** AMBER - Sine Burst PASS (r=0.9096), AM Sine FAIL (r=0.6599), kill-switch functional
@@ -1086,7 +1086,7 @@ Canonical Reference:       docs/comfort-cat/ (5 docs) ✅
 
 **P1 (High Priority):**
 - 📋 **GitHub Dependabot:** 2 vulnerabilities (1 high, 1 moderate)
-  - URL: https://github.com/MoneyCat-inc/otel-ops-pack/security/dependabot
+  - URL: `https://github.com/MoneyCat-inc/otel-ops-pack/security/dependabot` (private; requires sign-in)
   - Recommendation: Schedule security remediation gate (Gate #018 option)
 
 **P2 (Archival):**
@@ -1122,7 +1122,7 @@ Canonical Reference:       docs/comfort-cat/ (5 docs) ✅
 **Status:** ✅ **APPROVED** — Awaiting Gate #025 definition or operational acceptance testing
 
 **GitHub Repository:** https://github.com/MoneyCat-inc/otel-ops-pack  
-**Dependabot Alerts:** https://github.com/MoneyCat-inc/otel-ops-pack/security/dependabot
+**Dependabot Alerts:** `https://github.com/MoneyCat-inc/otel-ops-pack/security/dependabot` (private; requires sign-in)
 
 ---
 
