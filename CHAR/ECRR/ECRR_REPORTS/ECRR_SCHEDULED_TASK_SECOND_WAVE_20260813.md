@@ -21,7 +21,7 @@ Elevated enumeration returned **334 tasks**, against 228 from the non-elevated p
 | 4294770688 | `0xFFFD0000` | 11 | **Windows PowerShell 5.1 `-File <missing>`** |
 | 2147943467 | `0x8007042B` | 7 | `ERROR_PROCESS_ABORTED` |
 | 2147943515 | `0x8007045B` | 6 | `ERROR_SHUTDOWN_IN_PROGRESS` |
-| 2 | `0x00000002` | 3 | script-level exit (Resonai social) |
+| 2 | `0x00000002` | 3 | **"maintenance is due" — by design, not a failure** (see addendum) |
 
 Corrections worth recording. `4294770688` was read as "task has not yet run"; it is not — that is
 `267011`, a different value, and the affected tasks *had* run with zero missed runs. The reported
@@ -57,7 +57,7 @@ Default Browser Agent` — are vendor tasks caught by the filter and excluded).
 | Healthy | 9 | exit 0 | keep |
 | Broken, script genuinely gone | 22 | target absent everywhere | **unregister** |
 | Broken, script relocated to `BRAV/SCPT/` | 19 | target absent at named path, present elsewhere | **decide per task — see below** |
-| Script present, real failure | 3 | Resonai social, exit 2 | Phase 2 SOCM scope |
+| **Working as designed** | 3 | Resonai social, exit 2 = "due" | Phase 2 SOCM *ownership* question, not a repair |
 | Script present, real failure | 1 | `IONABossCatBootHealth`, exit 1 | diagnose |
 
 **Repairable does not mean repair.** The 19 relocated tasks are the subtle group. Repointing them
@@ -102,5 +102,36 @@ Note `Resonai-Agent-Watchdog` additionally carries a doubled path segment
 Deferred, not in scope here: the three `Resonai-*` social maintenance tasks belong to the SOCM split
 and should be resolved in Phase 2 alongside the AGENTS.md remnants; `IONABossCatBootHealth` runs a
 script that exists and fails for its own reasons, needing diagnosis rather than disposition.
+
+## Addendum (2026-08-13) — the three `Resonai-*` tasks are not failing
+
+Correcting this report. Section 3 classified the three social-maintenance tasks as "script present,
+real failure" on the strength of a non-zero exit. That was inference from the exit code alone, and
+reading the script disproves it.
+
+`scripts/patreon-weekly-reminder.ps1` (and its Ko-fi and Bluesky siblings) exit `2` **deliberately**,
+in exactly two places:
+
+- line 120 — no state file yet, first run after publish: show the checklist, `exit 2`
+- line 145 — cadence elapsed: show the checklist, raise a toast "Patreon maintenance due", `exit 2`
+
+Exit `2` is the *signal that upkeep is due*. `exit 0` is reserved for "not due yet" and for the
+`-MarkComplete` path. The tasks are doing their job and have been all along; nothing is broken.
+
+This inverts the week's recurring pattern rather than repeating it. The compliance gate, the drift
+guard, the always-red CI check and the unsatisfiable `rtifacts/` criterion were all things that
+looked healthy or authoritative and were not. This is the opposite: something that looks like a
+failure and is a working signal. Both errors come from trusting a status value without reading what
+produces it.
+
+**Consequence for disposition.** These three are not a repair item. The only open question is
+whether this repo should still be nagging about Patreon, Ko-fi and Bluesky upkeep at all, given the
+SOCM split — an ownership decision for Phase 2, not a cleanup. If the answer is that it should not,
+the clean removal path is the scripts' own `-UnregisterScheduledTask` switch, which knows its task
+name, rather than a raw `Unregister-ScheduledTask` that would leave the state files and reminder
+docs orphaned.
+
+Note also that `MoneyCat-inc/socm` currently has **no counterpart reminder scripts**, so deleting
+them here would lose the capability rather than relocate it.
 
 **Status:** COMPLETE
