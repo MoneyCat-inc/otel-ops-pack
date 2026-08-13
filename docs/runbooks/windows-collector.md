@@ -29,11 +29,13 @@ type, not a verdict on the component.
 Operator decision (Phase 1, Roadmap 2026 H2): **keep as first-class and upgrade.** See
 `docs/BossCat/MEMO_WINDOWS_COLLECTOR_20260803.md`.
 
-**⚠️ The pinned `v0.104.0` below is July 2024 and pending upgrade.** Treat every "tested and
-verified" version note in this runbook as describing the current pin, not a recommendation to stay
-on it. The 2026-07-25 clean-host E2E found `0.104.0` scraper list-syntax causes a crash-loop
-(finding F3); the upgrade is expected to retire that finding. Version notes below need rewriting
-once the pin moves.
+**Upgraded to `v0.158.0` on 2026-08-13** (Phase 1 execution). Running / Automatic, exporting with
+zero send failures. The clean-host E2E finding **F3** (scraper list-syntax crash-loop on `0.104.0`)
+is **retired** — config validate exits 0 on `0.158.0`.
+
+The version is now pinned in one place, `startup-observability.ps1` (`$CollectorVersion`). Before
+#452 nothing in the repo decided the version at all; `0.104.0` was simply what had been installed by
+hand in Oct 2025.
 
 ---
 
@@ -81,7 +83,7 @@ pwsh -File .\scripts\windows\install-or-repair-otel-collector.ps1
 **Critical Requirements:**
 - ✅ Endpoint MUST be: `127.0.0.1:14317` (gRPC to localhost aggregator)
 - ❌ OLD/WRONG: `host.docker.internal:4318` (causes connection refused errors)
-- ✅ Collector Version: `v0.104.0` (tested and verified)
+- ✅ Collector Version: `v0.158.0` (upgraded and verified 2026-08-13; pinned in `startup-observability.ps1`)
 - ✅ Config Syntax: Standard receivers format (see compatibility notes below)
 
 **Drift Guard Health Check:**
@@ -147,30 +149,50 @@ pwsh -File .\scripts\windows\verify-collector-traces.ps1
 
 ## Overview
 
-The Windows OpenTelemetry Collector (`otelcol-contrib`) runs as a Windows service to collect:
-- **Host Metrics:** CPU, memory, disk, network, process stats (60s interval)
-- **Event Logs:** Application and System logs (real-time)
+The Windows OpenTelemetry Collector (`otelcol-contrib`) runs as a Windows service and carries
+**logs only**:
+- **Windows Event Logs:** Application and System channels (real-time) — the reason this collector is
+  first-class; a container cannot read these
+- **File logs:** `filelog/canary` over `C:/logs/**/*.log`
+- **OTLP ingest:** local apps on `127.0.0.1:5320` (gRPC) / `5321` (HTTP)
 
 All telemetry is exported to the OTLP aggregator (signoz-otel-collector) via gRPC on port 14317.
 
-**Version Compatibility Notes (v0.104.0):**
-- **Host Metrics Syntax:** Uses list format for scrapers (not map format)
-  ```yaml
-  # ✅ CORRECT (v0.104.0):
-  receivers:
-    hostmetrics:
-      collection_interval: 60s
-      scrapers:
-        - cpu
-        - memory
-        - disk
-  ```
-- **Windows Event Log Receiver:** Uses `windowseventlog` receiver name
-- **Known Issue:** Map-style scraper syntax will fail with "unexpected sub-config value kind" error
+> **⚠️ This section previously claimed host metrics — CPU, memory, disk, network, process stats at
+> 60s. That was wrong.** The canonical config has **no `hostmetrics` receiver**, and the live
+> collector reports no `otelcol_receiver_accepted_metric_points` series at all. If host metrics are
+> wanted, that is a change to make deliberately, not an assumption to inherit.
+
+**Version Compatibility Notes (v0.158.0):**
+- **Windows Event Log Receiver:** `windowseventlog` receiver name, unchanged from `0.104.0`
+- **Config validate:** exits 0 on `0.158.0` with the canonical config
+- **Retired with the upgrade:** the `0.104.0` hostmetrics scraper list-vs-map syntax caveat that
+  used to live here. It described a receiver this config does not use, and the version it applied to
+  is gone. Reinstate a version note here only when a real incompatibility is observed.
 
 ---
 
 ## Install / Repair
+
+> ### ⚠️ Read before upgrading: the MSI path fails on this host
+>
+> Observed during the 2026-08-13 upgrade to `0.158.0`. A quiet MSI install fails with **1603**,
+> caused by **Error 1920 — the service could not start during install**, because the MSI's default
+> config is written and started before a valid canonical config is in place.
+>
+> **The first attempt also removed the working `0.104.0` install**, so a failed MSI upgrade leaves
+> the host with *no* collector, not the previous one. Budget for that.
+>
+> **Reliable path used instead:**
+> 1. Download the tarball for the target version (not the MSI)
+> 2. Extract to `C:\Program Files\OpenTelemetry Collector\`
+> 3. `sc create` the service
+> 4. `pwsh -File .\scripts\windows\install-or-repair-otel-collector.ps1` to write the deployed
+>    config and set startup/recovery
+>
+> `startup-observability.ps1` (`$CollectorVersion`, #452) still uses the MSI with checksum
+> verification. It is correct and reproducible for a *clean* host; it is not yet proven as an
+> *upgrade* path. Until that gap is closed, treat upgrades as the manual sequence above.
 
 **Command:**
 ```powershell
