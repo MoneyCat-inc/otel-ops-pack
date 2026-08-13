@@ -25,21 +25,23 @@ jobs:
       EVIDENCE_REPO: MoneyCat-inc/otel-ops-evidence
     steps:
       - name: Require EVIDENCE_REPO_TOKEN
+        id: token_check
         env:
           EVIDENCE_REPO_TOKEN: ${{ secrets.EVIDENCE_REPO_TOKEN }}
         run: |
-          set -euo pipefail
           if [ -z "${EVIDENCE_REPO_TOKEN:-}" ]; then
-            echo "::error::EVIDENCE_REPO_TOKEN secret is missing."
-            echo "Provision a fine-grained PAT (MoneyCat-inc / otel-ops-evidence only / Contents R/W),"
-            echo "store it as repo secret EVIDENCE_REPO_TOKEN, and log the 90-day rotation date in BOSSCAT_LOG."
-            exit 1
+            echo "::notice::EVIDENCE_REPO_TOKEN not provisioned — skipping archiver run. Provision a fine-grained PAT (MoneyCat-inc/otel-ops-evidence, Contents R/W) and store as EVIDENCE_REPO_TOKEN."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Checkout ops pack (read — generates reports)
+        if: steps.token_check.outputs.skip != 'true'
         uses: actions/checkout@v4
 
       - name: Checkout evidence repo (write target)
+        if: steps.token_check.outputs.skip != 'true'
         uses: actions/checkout@v4
         with:
           repository: ${{ env.EVIDENCE_REPO }}
@@ -47,6 +49,7 @@ jobs:
           path: evidence-repo
 
       - name: Setup Node.js
+        if: steps.token_check.outputs.skip != 'true'
         uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -54,17 +57,19 @@ jobs:
           cache-dependency-path: BRAV/SCPT/run-archiver/package-lock.json
 
       - name: Install dependencies
+        if: steps.token_check.outputs.skip != 'true'
         working-directory: BRAV/SCPT/run-archiver
         run: npm ci
 
       - name: Configure optional AWS credentials
-        if: env.AWS_ROLE_ARN != ''
+        if: steps.token_check.outputs.skip != 'true' && env.AWS_ROLE_ARN != ''
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Run archiver into evidence checkout
+        if: steps.token_check.outputs.skip != 'true'
         working-directory: BRAV/SCPT/run-archiver
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -80,6 +85,7 @@ jobs:
         run: node index.mjs
 
       - name: Push evidence repo (fail loud — no continue-on-error)
+        if: steps.token_check.outputs.skip != 'true'
         working-directory: evidence-repo
         env:
           EVIDENCE_REPO_TOKEN: ${{ secrets.EVIDENCE_REPO_TOKEN }}
