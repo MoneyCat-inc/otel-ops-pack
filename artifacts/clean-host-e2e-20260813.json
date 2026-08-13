@@ -1,0 +1,41 @@
+{
+  "run_id": "clean-host-e2e-20260813",
+  "status": "GREEN",
+  "gate_clock_minutes": 6.86,
+  "verify_exit": 0,
+  "prior_baseline_minutes": 7.47,
+  "prior_run_id": "clean-host-e2e-20260726",
+  "target_minutes": 30,
+  "head_sha_expected": "0cf798a80",
+  "head_sha_note": "main tip at restore time included #460+#461; confirm via guest gate-clock JSON",
+  "phase0": {
+    "method": "msi",
+    "collector_version": "0.158.0",
+    "phase0_minutes": 11.72,
+    "msi_on_clean_host": "PROVEN",
+    "snapshot": "phase0-ready-20260813",
+    "service_at_checkpoint": "Stopped+Disabled"
+  },
+  "docker_ready_snapshot": "docker-ready-20260813",
+  "defects_found_this_campaign": [
+    {
+      "title": "install-or-repair elevation guard exit 5",
+      "id": 460,
+      "exit": "merged"
+    },
+    {
+      "title": "create file_storage dirs before Start-Service",
+      "id": 461,
+      "exit": "merged"
+    }
+  ],
+  "assertions": {
+    "f3_retired_0_158": "PASS (install-or-repair + health-check exit 0)",
+    "drift_guard_exit_0": "PASS (was exit 21 on unrepaired dry-runs)",
+    "windowseventlog_receivers": "PENDING_guest_metrics_pull",
+    "hostmetrics_absent": "EXPECTED (canonical config has no hostmetrics)"
+  },
+  "evidence_source": "guest screenshot 2026-08-13T20:50 local; artifact path C:\\Phase0\\gate-clock-20260813.json",
+  "actor": "Cursor{Implementer} + @fubumaki (machine operator)",
+  "recorded_utc": "2026-08-13T19:54:09.3639899Z"
+}
