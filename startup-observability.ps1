@@ -141,17 +141,42 @@ function Install-WindowsCollector {
         return $false
     }
     
-    # Download and install OTEL Collector
-    $downloadUrl = "https://github.com/open-telemetry/opentelemetry-collector-contrib/releases/latest/download/otelcol-contrib_windows_amd64.msi"
-    $installerPath = "$env:TEMP\otelcol-contrib.msi"
-    
+    # Collector version pin. Phase 1 decision (Roadmap 2026 H2): keep the Windows collector as
+    # first-class and upgrade off 0.104.0 (July 2024). Bump deliberately, then re-run clean-host
+    # E2E — this is the only place the installed version is decided.
+    $CollectorVersion = "0.158.0"
+
+    # MSIs are published by opentelemetry-collector-RELEASES, not -contrib, and the asset name
+    # carries the version and uses x64/arm64 (not amd64). The previous URL got all three wrong and
+    # returned HTTP 404, so this install path had never succeeded.
+    $arch = if ($env:PROCESSOR_ARCHITECTURE -eq 'ARM64') { 'arm64' } else { 'x64' }
+    $msiName = "otelcol-contrib_${CollectorVersion}_windows_${arch}.msi"
+    $downloadUrl = "https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v${CollectorVersion}/$msiName"
+    $installerPath = Join-Path $env:TEMP $msiName
+
     try {
-        Write-Host "📥 Downloading OTEL Collector..." -ForegroundColor Yellow
+        Write-Host "📥 Downloading OTEL Collector v$CollectorVersion ($arch)..." -ForegroundColor Yellow
         Invoke-WebRequest -Uri $downloadUrl -OutFile $installerPath
-        
+
+        # Verify against the published checksum before executing the installer.
+        Write-Host "🔐 Verifying checksum..." -ForegroundColor Yellow
+        $shaPath = "$installerPath.sha256"
+        Invoke-WebRequest -Uri "$downloadUrl.sha256" -OutFile $shaPath
+        $expected = ((Get-Content $shaPath -Raw) -split '\s+')[0].Trim().ToLower()
+        $actual = (Get-FileHash -Path $installerPath -Algorithm SHA256).Hash.ToLower()
+        if ($expected -ne $actual) {
+            Write-Host "❌ Checksum mismatch - refusing to install" -ForegroundColor Red
+            Write-Host "   expected: $expected" -ForegroundColor Yellow
+            Write-Host "   actual:   $actual" -ForegroundColor Yellow
+            Remove-Item $installerPath, $shaPath -Force -ErrorAction SilentlyContinue
+            return $false
+        }
+        Remove-Item $shaPath -Force -ErrorAction SilentlyContinue
+        Write-Host "✅ Checksum verified" -ForegroundColor Green
+
         Write-Host "🔧 Installing OTEL Collector..." -ForegroundColor Yellow
         Start-Process -FilePath "msiexec.exe" -ArgumentList "/i `"$installerPath`" /quiet" -Wait
-        
+
         Write-Host "✅ Windows OTEL Collector installed successfully" -ForegroundColor Green
         
         # Clean up
