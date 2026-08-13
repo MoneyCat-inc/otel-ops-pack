@@ -14,6 +14,26 @@ $ErrorActionPreference = "Stop"
 Write-Host "=== BOSSCAT-022A :: Install/Repair OpenTelemetry Collector (Windows) ===" -ForegroundColor Cyan
 Write-Host ""
 
+# Step 0: Refuse to start without elevation.
+# Step 4 rewrites HKLM\SYSTEM\CurrentControlSet\Services\<svc>\ImagePath and Step 5 sets startup
+# type and failure recovery. Both require administrator. Without this guard the script wrote the
+# ProgramData config, then died a couple of seconds later on the registry write with an opaque
+# access error — looking like a fast, ordinary failure while leaving the service unrepaired.
+# That cost a clean-host E2E gate run on 2026-08-13 (RED at 7.24 min): the drift guard correctly
+# reported exit 21, but the reason took a full cycle to find. Fail loudly and early instead.
+$isElevated = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()
+              ).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+if (-not $isElevated) {
+  Write-Host "[RED] Administrator rights required." -ForegroundColor Red
+  Write-Host "  This script rewrites the service ImagePath (HKLM) and sets startup/recovery." -ForegroundColor Yellow
+  Write-Host "  Re-run from an elevated shell, e.g.:" -ForegroundColor Yellow
+  Write-Host "    Start-Process pwsh -Verb RunAs -ArgumentList '-NoProfile','-File','$($MyInvocation.MyCommand.Path)'" -ForegroundColor Gray
+  Write-Host "  Nothing was changed." -ForegroundColor Yellow
+  exit 5   # ERROR_ACCESS_DENIED, distinct from the generic exit 1 used for config/service faults
+}
+Write-Host "[0/5] Elevation confirmed" -ForegroundColor Green
+Write-Host ""
+
 # Step 1: Ensure ProgramData folder exists
 Write-Host "[1/5] Ensuring config directory..." -ForegroundColor White
 if (!(Test-Path $ProgramDataPath)) {
