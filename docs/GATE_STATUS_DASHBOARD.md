@@ -1,4 +1,4 @@
-<!-- markdownlint-disable MD013 MD022 MD031 MD032 MD033 MD034 -->
+<!-- markdownlint-disable MD013 MD022 MD031 MD032 MD033 MD034 MD036 MD040 -->
 # 🐾 BossCat Gate Status Dashboard
 
 > ## ARCHIVED — snapshot of 2025-11-01, not current status
@@ -1028,7 +1028,7 @@ Canonical Reference:       docs/comfort-cat/ (5 docs) ✅
 
 ### Operations Log
 - IONA Errors Ledger — `../IONA_ERRORS.md` - 3 LOW severity tracked
-- [BossCat Log](bosscat/misc/BOSSCAT_LOG.md)
+- [BossCat Log](BossCat/misc/BOSSCAT_LOG.md)
 - BossCat TODO — `../BossCat/TODO.md`
 
 ---
