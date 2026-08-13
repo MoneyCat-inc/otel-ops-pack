@@ -422,7 +422,7 @@ The Convergence Index measures system learning and adaptation:
 
 **Formula:** CI = (GREEN / (GREEN + AMBER + retries)) × (1 - drift_rate)
 
-**Evidence:** rtifacts/icf/convergence-report.json
+**Evidence:** artifacts/icf/convergence-report.json
 
 ---
 ---

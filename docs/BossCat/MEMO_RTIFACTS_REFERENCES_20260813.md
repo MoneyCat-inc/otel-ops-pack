@@ -6,8 +6,11 @@
 
 **Scope:** Roadmap 2026 H2, Phase 2 — truth in steering documents
 
-**Recommendation:** **Scope the criterion, fix the 17 live surfaces, leave the 314 historical
-reports alone.**
+**Recommendation:** **Scope the criterion, fix the 2 genuinely-broken live references, leave the
+historical reports alone.**
+
+**Status:** the 2 live fixes are done. See the addendum below — the defect is a BEL control
+character, not a missing letter, which changes how any wider fix must be written.
 
 ---
 
@@ -31,6 +34,28 @@ Both the case-insensitive exclusion and the path scope matter. Without `[^aA]` t
 matches `Artifacts/` inside identifiers like `$reportsWithArtifacts/`; without the exclusion it
 re-imports the historical corpus this memo argues to leave alone.
 
+## Addendum (2026-08-13) — it is not a typo, it is a control character
+
+Found while fixing the live surfaces. The broken strings do not have a *missing* `a`; they have a
+**BEL byte (`0x07`) in its place** — the text is literally `**Evidence:** <BEL>rtifacts/...`.
+
+That is `\a` escape-interpretation. A Windows path written as `...\artifacts/` passed through
+something that treated `\a` as an escape sequence and emitted BEL. **761 of the 770 genuine
+occurrences carry the BEL byte**; only 9 are a plain missing letter.
+
+Two consequences:
+
+1. **These documents contain non-printing control characters**, not merely a wrong path. That is a
+   different and slightly worse defect than the roadmap describes.
+2. **A naive `s|rtifacts/|artifacts/|` would not fix them.** It would leave the BEL in place and
+   produce `<BEL>artifacts/` — still corrupt, and now invisible to the very grep used to verify the
+   cleanup. Any fix must match `\x07rtifacts/`, e.g.
+   `perl -i -pe 's/\x07rtifacts\//artifacts\//g'`.
+
+This strengthens the recommendation below rather than changing it. A mass edit across 314 historical
+reports was already a poor trade; a mass edit that silently leaves 761 control characters behind
+while reporting success would be the fifth unsatisfiable check in this list rather than a fix.
+
 ## The real numbers
 
 | Measure | Count |
@@ -39,7 +64,18 @@ re-imports the historical corpus this memo argues to leave alone.
 | Genuine broken references | **763 occurrences across 331 files** |
 | …under `CHAR/ECRR` (historical evidence) | **314 files** |
 | …under `CHAR/EVID` | 13 files |
-| …live steering surfaces (`docs/BossCat`, `docs/GATE_STATUS_DASHBOARD.md`, `CHAR/DOCS`) | **4 files** |
+| …live steering surfaces matching the pattern | 4 files |
+| …of those, **genuinely broken and worth fixing** | **2** (`BOSSCAT_LOG.md`, `GATE_STATUS_DASHBOARD.md`) |
+
+The gap between those last two rows is the point. Of the 4 "live" matches, the roadmap and this memo
+match only because they **discuss** the string — their subject *is* the defect. An automated fix
+scoped to "live files" would have corrupted both: rewriting a memo about `rtifacts/` into a memo
+about `artifacts/` destroys its meaning. The remaining match is a `CHAR/DOCS` mirror of a 2025
+report, which is historical evidence in published form and belongs with the 314.
+
+So the actual repair surface is **2 files, 2 occurrences** — and both corrected paths
+(`artifacts/pm/curated/`, `artifacts/icf/convergence-report.json`) exist, so the fix resolves rather
+than trading one dead link for another.
 
 The roadmap's "~300 normalization addenda" estimate was accurate. Only the test was broken.
 

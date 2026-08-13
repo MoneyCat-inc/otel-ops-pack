@@ -301,7 +301,7 @@ Budget: ✅ Within limits (8 files, ~250 LOC)
 **Deliverable:** 15 curated ProjectM presets with metadata index and scoring pipeline  
 **Metrics:** 7 presets @ 60-70% blackout (AMBER-acceptable), load times 419-1165ms (✅ sub-1.5s)  
 **Blocker:** Blackout 60-81% vs. ≤50% target; requires Gate #013B (audio bridge) for GREEN  
-**Evidence:** rtifacts/pm/curated/score-2025-10-24_17-51-50.jsonl + 15 snapshots  
+**Evidence:** artifacts/pm/curated/score-2025-10-24_17-51-50.jsonl + 15 snapshots  
 **Files:** 6 (presets + index.json + score script); ~140 LOC (under budgets)  
 **Next:** Gate #013B → native audio bridge → re-score → expect 20-50% blackout
 
