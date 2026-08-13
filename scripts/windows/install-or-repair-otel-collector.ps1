@@ -70,6 +70,43 @@ Write-Host "  [OK] Config written: $configTarget" -ForegroundColor Green
 Write-Host "  -> OTLP endpoint: $OtlpGrpcEndpoint" -ForegroundColor Gray
 Write-Host "  -> Deploy env: $deployEnv" -ForegroundColor Gray
 
+# Step 2b: Create any file_storage directories the config declares.
+# The filestorage extension does not create its own directory (create_directory is not set), so a
+# missing path makes the extension fail to build. The OTLP exporter's sending_queue references
+# `storage: file_storage`, so that failure takes the whole collector down at startup — the service
+# starts, exits immediately, and Start-Service throws.
+# This is invisible on a long-lived host, where the directory was created once by hand long ago,
+# and only appears on a genuinely clean one. Parsed from the config rather than hardcoded so it
+# stays correct if the path changes.
+Write-Host ""
+Write-Host "[2b/5] Ensuring file_storage directories..." -ForegroundColor White
+$configLines = $configText -split "`r?`n"
+$storageDirs = @()
+for ($i = 0; $i -lt $configLines.Count; $i++) {
+  if ($configLines[$i] -match '^\s*file_storage(/[\w-]+)?:\s*$') {
+    for ($j = $i + 1; $j -lt [Math]::Min($i + 8, $configLines.Count); $j++) {
+      if ($configLines[$j] -match '^\s*directory:\s*(.+?)\s*$') {
+        $storageDirs += $Matches[1].Trim().Trim('"').Trim("'")
+        break
+      }
+      # a line at the same or shallower indent means we left the file_storage block
+      if ($configLines[$j] -match '^\s{0,2}\S') { break }
+    }
+  }
+}
+if ($storageDirs.Count -eq 0) {
+  Write-Host "  [OK] No file_storage directories declared" -ForegroundColor Green
+} else {
+  foreach ($dir in ($storageDirs | Select-Object -Unique)) {
+    if (Test-Path $dir) {
+      Write-Host "  [OK] Already exists: $dir" -ForegroundColor Green
+    } else {
+      New-Item -ItemType Directory -Force -Path $dir | Out-Null
+      Write-Host "  [OK] Created: $dir" -ForegroundColor Green
+    }
+  }
+}
+
 # Step 3: Ensure service exists
 Write-Host ""
 Write-Host "[3/5] Checking service installation..." -ForegroundColor White
