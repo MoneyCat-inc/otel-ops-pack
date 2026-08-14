@@ -434,13 +434,13 @@ export SIGNOZ_INGESTION_KEY=$(cat .env | grep SIGNOZ_INGESTION_KEY | cut -d'=' -
 
 - [OpenTelemetry Resource Center](https://signoz.io/resource-center/opentelemetry/)
 - [Collector Setup Guide](https://signoz.io/docs/install/)
-- [Logs Pipeline Configuration](https://signoz.io/docs/logs-management/logs-pipeline/)
+- [Logs Management (incl. log pipelines)](https://signoz.io/docs/logs-management/)
 
 **OpenTelemetry:**
 
 - [View API Documentation](https://opentelemetry.io/docs/specs/otel/metrics/sdk/#view)
 - [Semantic Conventions](https://opentelemetry.io/docs/specs/semconv/)
-- [Best Practices](https://opentelemetry.io/docs/collector/best-practices/)
+- [Collector Documentation (incl. security and configuration best practices)](https://opentelemetry.io/docs/collector/)
 
 **BossCat Internal:**
 
