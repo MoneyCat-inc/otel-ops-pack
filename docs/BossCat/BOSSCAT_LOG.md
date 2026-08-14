@@ -1,6 +1,7 @@
 <!-- markdownlint-disable MD013 MD022 MD024 MD032 MD034 MD049 -->
 # BOSSCAT_LOG (one-liners)
 
+- 2026-08-13T19:50:00Z — **[CLEAN-HOST E2E GREEN]** Run `clean-host-e2e-20260813`: clone→first span **6.86 min** (prior 7.47; target ≤30), verify exit 0. **MSI-on-clean-host PROVEN** (Phase 0 Method=`msi`, collector **0.158.0**). Gate found+fixed #460 (elevation exit 5) and #461 (file_storage dir provision). Snapshots `phase0-ready-20260813` / `docker-ready-20260813`. ECRR: `CHAR/ECRR/ECRR_REPORTS/ECRR_CLEAN_HOST_E2E_20260813.md`; artifact `artifacts/clean-host-e2e-20260813.json`. Phase 1 Roadmap 2026 H2 closed on this gate. — **Cursor{Implementer}** / **@fubumaki**
 - 2026-08-03T22:50:00Z — **[COMPLIANCE ENGINE MEMO]** Phase 0 final item drafted for operator decision: **recommend RETIRE**. Evidence: `passed` is arithmetically unconditional (thresholds default 0, `pct >= 0`); the one real gate (80% four-section) reads a metric at **100%**; the discriminating metric (fully-compliant **23.2%** of 393 reports) is gated by nothing; both consumers (`ECRR-Compliance-Trends`, `ECRR-SigNoz-Export`) exit **1 daily** on inputs nothing writes — no ECRR metric has ever reached SigNoz. Fixing properly requires a 393-report normalization campaign, an explicit roadmap non-goal. ECRR *practice* is unaffected. Memo: `docs/BossCat/MEMO_ECRR_COMPLIANCE_ENGINE_20260803.md`. — **Claude (chat/review)**
 
 - 2026-08-03T22:20:00Z — **[PHASE 0 WORKFLOW AUDIT]** All 78 CI workflows classified; scheduled 22 → **11** (target ≤ 12). 47 retired (`on:` → `workflow_dispatch` + dated reason header, reversible), 21 keepers get one-line justifications, registry regenerated. No required branch-protection check touched. Merged #428 → `main` @ `feef6aa73`. ECRR: `CHAR/ECRR/ECRR_REPORTS/ECRR_PHASE0_WORKFLOW_AUDIT_20260803.md`. Last open Phase 0 item: compliance-engine retire-or-fix. — **Cursor{Implementer}** (merge) / Claude (chat/review) (audit)
@@ -300,7 +301,7 @@ Budget: ✅ Within limits (8 files, ~250 LOC)
 **Deliverable:** 15 curated ProjectM presets with metadata index and scoring pipeline  
 **Metrics:** 7 presets @ 60-70% blackout (AMBER-acceptable), load times 419-1165ms (✅ sub-1.5s)  
 **Blocker:** Blackout 60-81% vs. ≤50% target; requires Gate #013B (audio bridge) for GREEN  
-**Evidence:** rtifacts/pm/curated/score-2025-10-24_17-51-50.jsonl + 15 snapshots  
+**Evidence:** artifacts/pm/curated/score-2025-10-24_17-51-50.jsonl + 15 snapshots  
 **Files:** 6 (presets + index.json + score script); ~140 LOC (under budgets)  
 **Next:** Gate #013B → native audio bridge → re-score → expect 20-50% blackout
 

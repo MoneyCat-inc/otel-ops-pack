@@ -1,163 +1,129 @@
-# 🐾 BossCat Charter (Canonical)
+# BossCat Charter (Canonical)
 
-NOTE: This is the canonical BossCat charter. Index: AGENTS.md (repo root).
+Canonical charter for **MoneyCat Inc · Resonai [OTel] · otel-ops-pack**.
+Index: `AGENTS.md` (repo root). Roadmap of record: `docs/BossCat/ROADMAP_2026H2.md`.
 
-**MoneyCat Inc · Resonai [OTel] · otel-ops-pack**  
-**Issued by:** BossCat OEM (Executive Overseer Manager)
-
----
-
-## 🎯 Purpose
-
-Agents exist to **deploy, maintain, and audit** the **Resonai [OTel] observability stack** with precision, speed, and accountability.  
-They follow the **ECRR mantra**:
-
-* **Examine** (verify correctness)
-* **Clean** (fix wiring & configs)  
-* **Report** (document findings)
-* **Role** (assign agents to act)
+**Rewritten 2026-08-13** (Roadmap 2026 H2, Phase 2 — truth in steering documents). The previous
+version described an agent hierarchy that no longer exists and cited files and ports that no longer
+match the repo. See "What changed and why" at the end.
 
 ---
 
-## 🧩 Agent Hierarchy
+## Purpose
 
-### 1. **BossCat OEM (Executive Overseer)**
+Deploy, maintain, and audit the Resonai [OTel] observability stack, with every change carrying
+evidence a stranger could check.
 
-* **Supreme Authority** over all agents and release gates
-* Defines milestones, merges final reports, approves releases
-* Ensures **traceability + audit compliance** across all operations
-* Maintains veto power over any production deployment
-* Controls nightly dashboard export automation and executive review process
+Work follows the **ECRR** shape — **Examine, Clean, Report, Role** — written as a lean report per
+change: quantified before and after, an honest verdict, no checkbox apparatus.
 
 ---
 
-### 2. **Cursor Agents**
+## The four seats
 
-* **Investigator** 🕵️
-  * Finds errors, broken configs, gaps in wiring
-  * Runs canary checks, verifies test lanes
-  * Uses `quick-monitor.ps1` for rapid health assessments
+There are four seats. Only one has hands on the machine.
 
-* **Gap-Closer** 🩹
-  * Writes code/tests to patch identified issues
-  * Submits PRs with minimal drift from spec
-  * Always includes ECRR evidence in commit messages
+### 1. BossCat OEM — authority
 
-* **QA Scribe** 📑
-  * Generates ECRR reports after test runs
-  * Outputs both Markdown + PDF to `CHAR/ECRR/ECRR_REPORTS/`
-  * Maintains nightly dashboard snapshots in `docs/observability/snapshots/`
+Not a person or a tool: the oversight function. Sets milestones, approves gates, and holds veto over
+production changes. In practice this authority is exercised by the machine operator.
 
----
+### 2. Machine operator — `@fubumaki`
 
-### 3. **IONA (Intelligent Operations & Navigation Assistant)**
+**The only seat with hands.** Everything requiring elevation, physical access, or a credential is
+theirs and cannot be delegated:
 
-* Maintains error ledger (`docs/IONA_ERRORS.md`)
-* Exports anomaly lists for auditing
-* Flags recurring error classes to BossCat
-* Provides automated health scoring and drift detection
+- elevated PowerShell — service changes, scheduled-task registration and removal, MSI installs
+- Hyper-V and the clean-host E2E gate clock
+- secret minting and rotation; no other seat mints, pastes, or reads a credential
+- merging pull requests
 
----
+### 3. Cursor{Implementer} — permanent
 
-### 4. **Codex Cloud / Codex Local**
+Repository implementation seat. Writes code and docs, opens PRs, files ECRRs. Operates under lane
+discipline and never merges its own work.
 
-* Acts as higher-order execution layer
-* Cloud: aligns with external APIs (SigNoz, GitHub, SaaS)
-* Local: ensures workstation reproducibility (Windows/WSL)
+### 4. Kiro{Implementer} — permanent
 
----
+Second implementation seat, a peer of Cursor{Implementer} rather than nested under it. Same rules:
+lane discipline, `Actor: Kiro{Implementer}` logged per commit, scoped credentials only, and it never
+merges its own work.
 
-## ⚙️ BossCat Operating Principles
+Converted from provisional on **2026-08-14** after the pilot passed all three criteria frozen before
+its report was read — `docs/BossCat/KIRO_VERDICT_CRITERIA_20260813.md`, scored in
+`CHAR/ECRR/ECRR_REPORTS/ECRR_KIRO_PILOT_20260814.md`.
 
-* **Local-first:** Nothing runs without local artifacts
-* **Proof-to-disk:** Every action produces logs/reports  
-* **Deterministic CI/CD:** PR vs Nightly lanes enforced
-* **Governance:** All merges pass through BossCat OEM approval
-* **Nightly Automation:** Executive dashboards auto-exported 24/7
-* **Evidence-based:** All decisions backed by SigNoz telemetry
+### Chat/review seat
+
+A reviewing and drafting seat — currently Claude. Drafts decision memos, audits, and analysis;
+proposes, never decides. It has no keyboard: it cannot elevate, mint, or merge.
+
+> **Retired roles.** IONA, QA Scribe, Investigator, Gap-Closer, and Codex Cloud/Local are gone. They
+> described a 2025 multi-agent arrangement that no longer runs. Historical reports referencing them
+> remain accurate for their own dates and are not edited.
 
 ---
 
-## 📂 Required Artifacts
+## Lane discipline
 
-* `CHAR/ECRR/ECRR_REPORTS/…` → Audit trails with PDF exports
-* `docs/observability/snapshots/…` → Automated dashboard captures
-* `docs/cheatsheets/…` → Quick reference guides
-* `docs/IONA_ERRORS.md` → Error ledger and anomaly tracking
-* `artifacts/…` → Temporary operational data and reports
+Every change belongs to exactly one lane, and lanes are never mixed in one pull request:
 
----
+| Lane | Contains | Gate |
+|---|---|---|
+| docs | `docs/**`, `README.md` | `docs_gate` — budgets 10 files / 200 LOC, markdownlint, lychee |
+| code | source, scripts, config | PSScriptAnalyzer, CodeQL, gitleaks |
+| CI/ops | `.github/workflows/**` | registry-guard |
+| evidence | `CHAR/ECRR/**`, `artifacts/**` | no docs gate — it does not trigger outside `docs/` |
 
-## 🛠️ BossCat Tooling Baseline
+The docs gate admits only `^docs/` and `README.md`. A pull request touching `docs/` **and** anything
+else fails **GR-02** on scope. This is the most common cause of a red gate; split by lane first.
 
-* **PowerShell functions**: `otel-start`, `otel-stop`, `otel-status`, `otel-canary`
-* **Docker Compose**: SigNoz + ClickHouse observability stack
-* **Playwright**: Automated testing + nightly dashboard exports via `pnpm run export:signoz:playwright`
-* **GitHub Actions**: 
-  * Nightly dashboard automation (`.github/workflows/nightly-dashboard-export.yml`)
-  * Security scanning (CodeQL, Gitleaks, Dependabot)
+Commit messages are conventional: `feat fix docs test chore refactor perf ci build revert`. Anything
+else fails the governance check.
 
 ---
 
-## 📜 BossCat Compliance Framework
+## Operating principles
 
-### Commit Message Standards: **ECRR Format**
-* `docs(ecrr): <artifact>` - Documentation updates
-* `fix(gap): <patch>` - Bug fixes and patches  
-* `test(canary): <target>` - Test execution and validation
-* `feat(bosscat): <enhancement>` - New BossCat features
-
-### Mandatory Workflows
-* All changes require BossCat-approved PRs
-* Nightly automation runs regardless of human intervention
-* Executive dashboard exports delivered automatically to `docs/observability/snapshots/`
-* ECRR reports generated after every significant operation
-
-### Governance Enforcement
-* BossCat approval required for production deployments
-* Automated compliance checking via `scripts/nightly-dashboard-export.ps1`
-* Evidence collection mandatory for all agent actions
+- **Proof to disk.** Every action leaves an artifact a reader can open.
+- **One deliberate change at a time.** Operator-gated milestones, not batched sweeps.
+- **No recurring writer** against the working tree without an owner, a review date, and a kill switch.
+- **A gate must be able to both pass and fail.** Phase 0–2 retired a compliance gate that could never
+  fail, a drift guard that could never pass, a permanently red CI check, and an unsatisfiable exit
+  criterion. Any check that cannot do both is broken, however green it looks.
+- **Do not edit the record to fix a blemish.** Historical evidence stays as filed; corrections are
+  addenda, not rewrites.
 
 ---
 
-## 🌙 Nightly BossCat Automation
+## Where things are
 
-**Automated Export Schedule:**
-* **Daily**: Executive dashboard snapshots at 2 AM UTC
-* **Weekly**: Compliance trend analysis and drift detection  
-* **Escalation**: BossCat alerted on metrics threshold breaches
+| What | Where |
+|---|---|
+| Live log, one line per change | `docs/BossCat/BOSSCAT_LOG.md` |
+| Per-change evidence | `CHAR/ECRR/ECRR_REPORTS/` |
+| Roadmap of record | `docs/BossCat/ROADMAP_2026H2.md` |
+| Raw evidence archive | `MoneyCat-inc/otel-ops-evidence` |
+| Windows collector runbook | `docs/runbooks/windows-collector.md` |
 
-**Export Stack:**
-```bash
-# PowerShell automation
-scripts/nightly-dashboard-export.ps1
-
-# Playwright automation  
-pnpm run export:signoz:playwright
-
-# GitHub Actions workflow
-.github/workflows/nightly-dashboard-export.yml
-```
-
-**SigNoz Integration:**
-- **UI**: `http://localhost:8080`
-- **OTLP Endpoints**: 5317 (gRPC), 5318 (HTTP)
-- **Key Dashboards**: Monitored via `scripts/dashboard-list.json`
+**Stack facts** (verified 2026-08-13): Windows collector `otelcol-contrib` **v0.158.0**, carrying
+**logs only** — Windows Event Log, filelog, and local OTLP on **`127.0.0.1:5320`** (gRPC) and
+**`5321`** (HTTP). SigNoz UI on `http://localhost:8080`. There is no `hostmetrics` receiver.
 
 ---
 
-## 🎯 Success Metrics
+## Cadence
 
-**BossCat Dashboards Track:**
-* Pipeline latency (target: <200ms batches)
-* Noise reduction effectiveness (~50% volume reduction)
-* Error rates and anomaly detection
-* Resource utilization and scaling metrics
-* Compliance score trends over time
+- **Per change:** lean ECRR.
+- **Monthly:** evidence rollup to `otel-ops-evidence`.
+- **Quarterly:** evidence prune; dependency and stack upgrade check.
 
 ---
 
-🐾 **End of BossCat Charter.**
+## Provenance
 
-*This charter supersedes all previous agent documentation and becomes the foundational governance framework for Resonai [OTel] operations.*
+The previous charter was accurate for late 2025 and had drifted: it described retired agent roles,
+cited OTLP ports the config no longer uses, and referenced two files that no longer exist. The
+itemised corrections are in the commit that replaced it.
 
+The ECRR *practice* is unchanged. Only the machinery that scored it is gone.
