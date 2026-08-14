@@ -45,7 +45,7 @@ curl -s http://localhost:13134/
 
 ### Sentinel Test
 ```powershell
-powershell -ExecutionPolicy Bypass -File verify-pipeline.ps1
+powershell -ExecutionPolicy Bypass -File operator-pipeline-check.ps1
 ```
 **Expected**: `✅ All critical checks passed`
 

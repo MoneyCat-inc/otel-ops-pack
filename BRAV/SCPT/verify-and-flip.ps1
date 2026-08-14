@@ -17,11 +17,11 @@
   Recommended for production environments.
 
 .EXAMPLE
-  pwsh -File scripts\verify-and-flip.ps1
+  pwsh -File BRAV\SCPT\verify-and-flip.ps1
   # Non-strict: WARN keeps APPROVED but annotated
 
 .EXAMPLE
-  pwsh -File scripts\verify-and-flip.ps1 -Strict
+  pwsh -File BRAV\SCPT\verify-and-flip.ps1 -Strict
   # Strict: WARN forces HOLD
 #>
 

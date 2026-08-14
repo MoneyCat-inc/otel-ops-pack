@@ -67,8 +67,8 @@ function New-TaskFile {
         status = "pending"
         assigned_to = "codex"
         validation_commands = @(
-            "powershell -ExecutionPolicy Bypass -File verify-pipeline.ps1",
-            "powershell -ExecutionPolicy Bypass -File verify-integration.ps1"
+            "powershell -ExecutionPolicy Bypass -File operator-pipeline-check.ps1",
+            "powershell -ExecutionPolicy Bypass -File scripts/verify-integration.ps1"
         )
         expected_output = "Collector healthy, canary test passes, signals flowing to SigNoz"
         rollback_commands = @(

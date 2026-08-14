@@ -169,8 +169,8 @@ if ($problems.Count -gt 0) {
   Write-Host "✅ Preflight OK - All prerequisites met" -ForegroundColor Green
   Write-Host ""
   Write-Host "Ready for verification:" -ForegroundColor Cyan
-  Write-Host "   pwsh -File scripts\verify-pipeline.ps1" -ForegroundColor Gray
-  Write-Host "   pwsh -File scripts\verify-and-flip.ps1" -ForegroundColor Gray
+  Write-Host "   pwsh -File BRAV\SCPT\verify-pipeline.ps1" -ForegroundColor Gray
+  Write-Host "   pwsh -File BRAV\SCPT\verify-and-flip.ps1" -ForegroundColor Gray
   Write-Host "═══════════════════════════════════════════════════════════" -ForegroundColor DarkGray
   exit 0
 }

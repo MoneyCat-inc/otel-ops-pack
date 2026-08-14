@@ -1,6 +1,6 @@
-# SigNoz Pipeline Verification Script
-# Run this after restarting the Windows collector service
-# Updated with progress indicators for better user experience
+# Operator-facing SigNoz pipeline check (linear, no exit-code gate semantics).
+# For gate/CI verification with exit codes 0/1/2, use BRAV\SCPT\verify-pipeline.ps1.
+# Run this after restarting the Windows collector service.
 
 # Import progress indicators module
 $progressScript = if (Test-Path ".\scripts\progress-indicators.ps1") {

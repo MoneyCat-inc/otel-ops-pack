@@ -572,7 +572,7 @@ switch ($outcome) {
   "FAIL" { 
     Write-Host "❌ VERIFICATION FAIL — rollback gate to HOLD" -ForegroundColor Red 
     Write-Host "   Critical gate checks failed" -ForegroundColor Red
-    Write-Host "   Run: pwsh -File scripts\set-gate-status.ps1 -Status HOLD" -ForegroundColor Red
+    Write-Host "   Run: pwsh -File BRAV\SCPT\set-gate-status.ps1 -Status HOLD" -ForegroundColor Red
   }
 }
 Write-Host "═══════════════════════════════════════════════════════════`n" -ForegroundColor DarkGray

@@ -138,8 +138,8 @@ if ($apiKey) {
   Write-Host ""
   Write-Host "Next steps:" -ForegroundColor Cyan
   Write-Host "   1. Keep this PowerShell window open (venv is activated)" -ForegroundColor Gray
-  Write-Host "   2. Run: pwsh -File scripts\verify-pipeline.ps1" -ForegroundColor Gray
-  Write-Host "   3. Or use wrapper: pwsh -File scripts\verify-and-flip.ps1" -ForegroundColor Gray
+  Write-Host "   2. Run: pwsh -File BRAV\SCPT\verify-pipeline.ps1" -ForegroundColor Gray
+  Write-Host "   3. Or use wrapper: pwsh -File BRAV\SCPT\verify-and-flip.ps1" -ForegroundColor Gray
   
   if ($RunVerification) {
     Write-Host ""
