@@ -13,16 +13,19 @@
 ### Core Registries
 
 **`REFERENCES_MAP.json`** / **`REFERENCES_MAP.md`**
+
 - Canonical reference map with 7 buckets
 - Single source of truth for all working parts
 - **Update:** Manual (when adding canonical references)
 
 **`scripts.json`**
+
 - PowerShell scripts registry categorized by lane
 - Includes file size, modification date, lane assignment
 - **Regenerate:** After adding/modifying scripts in `scripts/`
 
 **`workflows.json`** 🛡️ **CI-Guarded**
+
 - GitHub Actions workflows registry
 - Extracted triggers from `on:` block only (YAML-aware)
 - Schema-validated (`workflows.schema.json`)
@@ -42,6 +45,7 @@
 The **Registry Guard** workflow automatically enforces that `workflows.json` stays in sync:
 
 **What it does:**
+
 1. **Regenerates** the registry from scratch
 2. **Compares** with committed version
 3. **Validates** against JSON schema
@@ -52,6 +56,7 @@ The **Registry Guard** workflow automatically enforces that `workflows.json` sta
 **Runs on:** PRs that modify workflows or registry files
 
 **How to fix a failed guard:**
+
 ```powershell
 pwsh scripts/regenerate-workflows-registry.ps1
 git add docs/status/workflows.json
@@ -65,11 +70,13 @@ git commit -m "chore(registry): regenerate workflows.json"
 **Workflow:** `.github/workflows/registry-drift-check.yml`
 
 Runs nightly at 03:00 UTC to detect registry drift. If workflows changed without updating the registry, it automatically:
+
 1. Regenerates `workflows.json`
 2. Creates a PR with changes
 3. Labels it for review
 
-This catches cases where workflows were merged without regenerating the registry (shouldn't happen with the guard, but provides defense-in-depth).
+This catches cases where workflows were merged without regenerating the registry.
+It shouldn't happen with the guard in place, but it provides defense-in-depth.
 
 ---
 
@@ -78,16 +85,19 @@ This catches cases where workflows were merged without regenerating the registry
 ### Workflows Registry
 
 **When to regenerate:**
+
 - After adding new workflow files
 - After modifying workflow triggers (`on:` block)
 - After renaming/deleting workflows
 
 **Quick command (can be run from any directory):**
+
 ```powershell
 pwsh scripts/regenerate-workflows-registry.ps1
 ```
 
 **Output Format (Schema-Compliant):**
+
 ```json
 {
   "source": "scripts/regenerate-workflows-registry.ps1",
@@ -115,6 +125,7 @@ pwsh scripts/regenerate-workflows-registry.ps1
 ```
 
 **Key Features:**
+
 - ✅ Workflows sorted alphabetically by name (deterministic)
 - ✅ Triggers as object (not string) for schema validation
 - ✅ No timestamp field (use git history instead)
@@ -123,10 +134,12 @@ pwsh scripts/regenerate-workflows-registry.ps1
 **Manual regeneration (advanced users only):**
 
 The helper script is the canonical source. If you need to modify the regeneration logic, see:
+
 - `scripts/regenerate-workflows-registry.ps1` — Full implementation
 - Key features: YAML-aware extraction, alphabetical ordering, semantic validation
 
 **Quick manual regeneration:**
+
 ```powershell
 # Always use the helper script (handles all complexity)
 pwsh scripts/regenerate-workflows-registry.ps1
@@ -140,6 +153,7 @@ pwsh scripts/regenerate-workflows-registry.ps1
 ```
 
 **Verification:**
+
 ```powershell
 # Check total count
 $json = Get-Content docs\status\workflows.json -Raw | ConvertFrom-Json
@@ -158,11 +172,13 @@ $json.items | Where-Object { $_.name -in @('bosscat-gate-bot-native', 'apisec-sc
 ### Scripts Registry
 
 **When to regenerate:**
+
 - After adding new PowerShell scripts
 - After moving scripts between directories
 - After lane reassignments
 
 **Command:**
+
 ```powershell
 cd c:\otel
 
@@ -202,18 +218,21 @@ Write-Host "✅ scripts.json regenerated ($($scripts.Count) scripts)" -Foregroun
 ### Workflows Registry
 
 **CI-Enforced Rules:**
+
 - ✅ Registry MUST be up to date (enforced by `registry-guard.yml`)
 - ✅ Schema MUST validate (enforced by `registry-guard.yml`)
 - ✅ PRs CANNOT merge if registry is stale
 - ✅ Nightly check catches any drift
 
 **YAML Parsing Rules:**
+
 - ❌ DO NOT search entire file (matches `permissions: issues: write`)
 - ✅ DO use YAML-aware block extraction
 - ✅ DO stop at next top-level key (concurrency, permissions, env, jobs)
 - ✅ Extract triggers from `on:` block only
 
 **Schema Format:**
+
 ```json
 {
   "source": "scripts/regenerate-workflows-registry.ps1",
@@ -238,12 +257,14 @@ Write-Host "✅ scripts.json regenerated ($($scripts.Count) scripts)" -Foregroun
 ```
 
 **Notes:**
+
 - Triggers are boolean objects (not strings) for machine readability
 - Workflows sorted alphabetically by name for determinism
 - No generatedAt field (git history provides timestamps)
 - CI guard uses semantic comparison (ignores JSON formatting)
 
 **Validation checks (automated by CI):**
+
 ```powershell
 # Manual check for false 'issues' triggers
 $json = Get-Content docs\status\workflows.json -Raw | ConvertFrom-Json
@@ -257,6 +278,7 @@ if ($falseIssues.Count -gt 0) {
 ### Scripts Registry
 
 **Lane categorization:**
+
 - **GATE:** Verification, gate checks
 - **SSOT:** Monitoring, testing, canary
 - **COMP:** Benchmarking, processing, analysis
@@ -276,21 +298,25 @@ if ($falseIssues.Count -gt 0) {
 ## 🐾 Maintenance Schedule
 
 **After every workflow change:**
+
 - Regenerate `workflows.json` (enforced by CI guard)
 - Verify no false positives (automated validation)
 - Commit with descriptive message
 
 **Daily (automated):**
+
 - Nightly drift check at 03:00 UTC
 - Auto-PR created if drift detected
 
 **Monthly:**
+
 - Review `artifacts/index/md_orphans.csv` for triage (regenerate first; it is gitignored)
 - Update `REFERENCES_MAP.json` if canonical refs change
 - Regenerate full inventory (`artifacts/index/`)
 - Review auto-generated drift PRs
 
 **Quarterly:**
+
 - Audit lane assignments in `scripts.json`
 - Review registry structure for improvements
 - Archive old snapshots per retention policy

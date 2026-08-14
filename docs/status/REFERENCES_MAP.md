@@ -5,6 +5,7 @@
 **Purpose:** Single source of truth for all working parts
 
 **What's New in v1.1:**
+
 - Updated paths after root consolidation (177 files organized)
 - Added organized domains (gate, socm, pr, releases, runbooks, evidence, status)
 - Expanded governance references (added AGENTS.md)
@@ -16,7 +17,8 @@
 ## 📚 Canonical Buckets
 
 ### 1. Gate & Readiness
-**Authoritative playbooks for gate verification and production readiness**
+
+**Authoritative playbooks for gate verification and production readiness.**
 
 - **[Gate Archive (2025-10)](../gate/2025-10/)**  
   October 2025 gate verification evidence
@@ -24,7 +26,8 @@
 ---
 
 ### 2. Persona & Governance
-**Immutable rules for merge discipline, budgets, and ECRR methodology**
+
+**Immutable rules for merge discipline, budgets, and ECRR methodology.**
 
 - **[The Art of ECRR (Manual)](../BossCat/misc/ART_OF_ECRR.md)**  
   Paired-agent protocol, kill-switch, strict budgets
@@ -41,7 +44,8 @@
 ---
 
 ### 3. Stakeholder Evidence
-**Executive packages for sign-offs and audit trails**
+
+**Executive packages for sign-offs and audit trails.**
 
 - **[Stakeholder Evidence Package](../BossCat/STAKEHOLDER_EVIDENCE_PACKAGE.md)**  
   Top-down view for stakeholder review
@@ -49,7 +53,8 @@
 ---
 
 ### 4. Security & Maintenance
-**Master security guide and tracked risk waivers**
+
+**Master security guide and tracked risk waivers.**
 
 - **[Security & Maintenance Master Guide](../BossCat/SECURITY_MAINTENANCE_MASTER_GUIDE.md)**  
   Week-by-week operations and security procedures
@@ -57,7 +62,8 @@
 ---
 
 ### 5. Dashboards & Data Room
-**Live 'see it working' observability interfaces**
+
+**Live 'see it working' observability interfaces.**
 
 - **[Status/KPI Dashboard](../status.html)**  
   Real-time metrics and system health dashboard
@@ -79,10 +85,12 @@
 | Branch status | `artifacts/index/branches.txt` |
 
 ### Operational Registries
+
 - **Scripts Registry:** [`scripts.json`](scripts.json) *(pending)*
 - **Workflows Registry:** [`workflows.json`](workflows.json) *(pending)*
 
 ### Evidence Trails
+
 - **ECRR Reports:** [`CHAR/ECRR/ECRR_REPORTS/`](../../CHAR/ECRR/ECRR_REPORTS/)
 - **Latest Processing:** [`ECRR_PROCESSING_SUMMARY_LATEST.md`](../../CHAR/ECRR/ECRR_REPORTS/ECRR_PROCESSING_SUMMARY_LATEST.md)
 - **Benchmark Data:** [`DELT/ARTF/ecrr-benchmark.json`](../../DELT/ARTF/ecrr-benchmark.json)
