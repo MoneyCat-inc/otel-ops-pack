@@ -27,7 +27,7 @@
 
 ### Canary Test Failures
 1. Check SigNoz connectivity: `Test-NetConnection -ComputerName localhost -Port 8080`
-2. Check collector port: `Test-NetConnection -ComputerName localhost -Port 5318`
+2. Check collector port: `Test-NetConnection -ComputerName localhost -Port 5321`
 3. Run simple test: `.\simple-test.ps1`
 4. If all fail, restart collector service
 
@@ -60,7 +60,7 @@ Copy-Item config-hardened.yaml config.yaml -Force
 ## Monitoring
 
 ### Health Checks
-- Collector port 5318: `Test-NetConnection -ComputerName localhost -Port 5318`
+- Collector port 5321: `Test-NetConnection -ComputerName localhost -Port 5321`
 - SigNoz port 8080: `Test-NetConnection -ComputerName localhost -Port 8080`
 - Canary test: `.\canary-check.ps1`
 
