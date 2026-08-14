@@ -38,7 +38,7 @@ $reasonLine
 
 ``````powershell
 # Verify pipeline health
-pwsh -File scripts\verify-pipeline.ps1
+pwsh -File BRAV\SCPT\verify-pipeline.ps1
 
 # View full gate decision
 cat docs\ecrr\gate_decision.json

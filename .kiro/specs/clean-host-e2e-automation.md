@@ -51,7 +51,7 @@ The wrapper SHALL execute the gate clock sequence:
 2. `start-signoz.ps1` + `preflight-health-check.ps1`
 3. Enable collector service + `install-or-repair-otel-collector.ps1`
 4. `health-check-collector-config.ps1` + `quick-monitor.ps1`
-5. `canary-test.ps1` + `verify-pipeline.ps1`
+5. `canary-test.ps1` + `BRAV/SCPT/verify-pipeline.ps1`
 
 Timing: record start/stop per step; total from first clone byte to verify exit.
 

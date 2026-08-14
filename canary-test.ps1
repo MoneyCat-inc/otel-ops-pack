@@ -161,6 +161,6 @@ Write-Host "2. SigNoz UI -> Traces -> filter: canary='true'" -ForegroundColor Wh
 Write-Host "3. Windows Event Viewer -> Application -> Source 'SigNoz-Canary'" -ForegroundColor White
 Write-Host "4. Confirm canary log file updated at $logFile" -ForegroundColor White
 
-Write-Host "Run verify-pipeline.ps1 and verify-integration.ps1 after a few seconds to confirm ingestion." -ForegroundColor Yellow
+Write-Host "Run operator-pipeline-check.ps1 and scripts\verify-integration.ps1 after a few seconds to confirm ingestion." -ForegroundColor Yellow
 
 

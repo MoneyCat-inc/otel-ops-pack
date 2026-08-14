@@ -41,7 +41,7 @@ Write-Host "══════════════════════�
 # Check if CSV exists
 if (-not (Test-Path $CsvPath)) {
   Write-Error "Trend CSV not found at: $CsvPath"
-  Write-Host "   Run verification first: pwsh -File scripts\verify-pipeline.ps1" -ForegroundColor Yellow
+  Write-Host "   Run verification first: pwsh -File BRAV\SCPT\verify-pipeline.ps1" -ForegroundColor Yellow
   exit 2
 }
 

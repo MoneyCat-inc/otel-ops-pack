@@ -2,7 +2,7 @@
 
 $ErrorActionPreference = 'Stop'
 
-$root = Resolve-Path -Path (Join-Path $PSScriptRoot '..')
+$root = Resolve-Path -Path (Join-Path $PSScriptRoot '../..')
 $verifyScript = Join-Path $root 'verify-integration.ps1'
 
 if (-not (Test-Path $verifyScript)) {

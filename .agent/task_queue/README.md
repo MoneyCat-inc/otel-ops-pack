@@ -34,7 +34,7 @@ Each task file is a JSON document with the following structure:
   "validation_commands": [
     "otelcol --dry-run",
     "curl -s http://localhost:13134/",
-    "powershell -File verify-pipeline.ps1"
+    "powershell -File operator-pipeline-check.ps1"
   ],
   "expected_output": "Collector healthy, canary test passes",
   "rollback_commands": [
