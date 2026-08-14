@@ -1,5 +1,4 @@
 #!/usr/bin/env pwsh
-# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 #requires -Version 7
 <#
 .SYNOPSIS
@@ -218,7 +217,7 @@ $diagnosticData.connectivity.github_api = Test-Connectivity "https://api.github.
 $diagnosticData.connectivity.npm_registry = Test-Connectivity "https://registry.npmjs.org/"
 $diagnosticData.connectivity.pypi = Test-Connectivity "https://pypi.org/simple/"
 $diagnosticData.connectivity.signoz_local = Test-Connectivity "http://localhost:8080/api/v1/health" -TimeoutSeconds 3
-$diagnosticData.connectivity.otel_collector_http = Test-Connectivity "http://127.0.0.1:5318" -TimeoutSeconds 3
+$diagnosticData.connectivity.otel_collector_http = Test-Connectivity "http://127.0.0.1:5321" -TimeoutSeconds 3
 
 # ═══════════════════════════════════════════════════════════════════════
 # Environment Variables (non-sensitive)

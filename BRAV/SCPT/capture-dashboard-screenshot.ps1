@@ -1,4 +1,3 @@
-# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 # Capture SigNoz Dashboard Screenshot
 # Provides instructions for capturing E2 dashboard proof
 
@@ -108,7 +107,7 @@ Write-Host "   docker ps | findstr signoz" -ForegroundColor White
 
 Write-Host "`nIf logs don't appear:" -ForegroundColor Yellow
 Write-Host "1. Check OTLP endpoint:" -ForegroundColor White
-Write-Host "   Test-NetConnection -ComputerName 127.0.0.1 -Port 5318" -ForegroundColor White
+Write-Host "   Test-NetConnection -ComputerName 127.0.0.1 -Port 5321" -ForegroundColor White
 Write-Host "2. Verify collector is running:" -ForegroundColor White
 Write-Host "   Get-Service otelcol-contrib" -ForegroundColor White
 

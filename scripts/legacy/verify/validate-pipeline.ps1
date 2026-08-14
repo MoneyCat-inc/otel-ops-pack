@@ -1,4 +1,3 @@
-# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 # Comprehensive pipeline validation script
 # Updated with progress indicators for better user experience
 
@@ -55,8 +54,8 @@ Write-Host "`n[4] Checking critical ports..." -ForegroundColor Yellow
 $ports = @(
     @{Port=4317; Label="SigNoz OTLP gRPC"},
     @{Port=4318; Label="SigNoz OTLP HTTP"},
-    @{Port=5317; Label="Windows OTLP gRPC"},
-    @{Port=5318; Label="Windows OTLP HTTP"},
+    @{Port=5320; Label="Windows OTLP gRPC"},
+    @{Port=5321; Label="Windows OTLP HTTP"},
     @{Port=8080; Label="SigNoz UI"},
     @{Port=8888; Label="Collector Metrics"},
     @{Port=13134; Label="Collector Health"}
@@ -139,7 +138,7 @@ $logPayload = [pscustomobject]@{
     resourceLogs = @($resourceLog)
 } | ConvertTo-Json -Depth 10
 
-$otlpEndpoints = @("http://localhost:5318/v1/logs", "http://localhost:4318/v1/logs")
+$otlpEndpoints = @("http://localhost:5321/v1/logs", "http://localhost:4318/v1/logs")
 $sent = $false
 $spinnerJob = Start-SpinnerJob -Message "Sending test log..." -UpdateIntervalMs 150
 foreach ($endpoint in $otlpEndpoints) {

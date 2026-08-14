@@ -201,7 +201,7 @@ export default function ControlsPanel({ onRefresh }: ControlsPanelProps) {
         <div className="space-y-3">
           <div className="flex justify-between text-sm">
             <span className="text-gray-600 dark:text-gray-400">OTLP Endpoint</span>
-            <span className="font-mono text-gray-900 dark:text-white">http://127.0.0.1:5318</span>
+            <span className="font-mono text-gray-900 dark:text-white">http://127.0.0.1:5321</span>
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-gray-600 dark:text-gray-400">Protocol</span>

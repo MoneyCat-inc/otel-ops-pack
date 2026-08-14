@@ -1,4 +1,3 @@
-# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 # Gate #029: .NET Service Deployment Orchestrator
 # Authority: BossCat OEM | Executor: Cursor{Implementer}
 # Purpose: Idempotent service deployment with lifecycle management
@@ -37,7 +36,7 @@
     If set, only stops the service (doesn't start)
 
 .PARAMETER EnableOTel
-    If set, configures OpenTelemetry instrumentation pointing to Collector (5317)
+    If set, configures OpenTelemetry instrumentation pointing to Collector (5320)
 
 .EXAMPLE
     .\deploy-dotnet-service.ps1 -ServiceName "svc2-api" -Port 5556 -BinaryPath ".\svc2\svc2.dll" -HealthUrl "http://localhost:5556/health" -EnableOTel
@@ -270,9 +269,9 @@ try {
     $env:OTEL_DOTNET_AUTO_HOME = "C:\Program Files\OpenTelemetry .NET AutoInstrumentation"
     
     if ($EnableOTel) {
-        # Gate #029: Route through Windows Collector on port 5317
+        # Gate #029: Route through Windows Collector on port 5320
         $env:OTEL_SERVICE_NAME = $ServiceName
-        $env:OTEL_EXPORTER_OTLP_ENDPOINT = "http://127.0.0.1:5317"
+        $env:OTEL_EXPORTER_OTLP_ENDPOINT = "http://127.0.0.1:5320"
         $env:OTEL_EXPORTER_OTLP_PROTOCOL = "grpc"
         $env:OTEL_TRACES_EXPORTER = "otlp"
         $env:OTEL_METRICS_EXPORTER = "otlp"
@@ -286,7 +285,7 @@ try {
         $env:DOTNET_SHARED_STORE = "C:\Program Files\OpenTelemetry .NET AutoInstrumentation\store"
         
         Write-StructuredLog -Level "INFO" -Message "OTel instrumentation configured" -Data @{
-            endpoint = "http://127.0.0.1:5317"
+            endpoint = "http://127.0.0.1:5320"
             service_name = $ServiceName
         }
     }

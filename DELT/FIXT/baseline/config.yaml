@@ -14,9 +14,9 @@ receivers:
   otlp:
     protocols:
       http:
-        endpoint: 127.0.0.1:5318
+        endpoint: 127.0.0.1:5321
       grpc:
-        endpoint: 127.0.0.1:5317
+        endpoint: 127.0.0.1:5320
   # Tail Windows logs directory (optional; safe defaults)
   filelog:
     include:

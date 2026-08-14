@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 """
 Minimal OTLP trace canary sender.
 - Posts a single span to OTLP HTTP endpoint (JSON body) for collector ingestion
@@ -85,7 +84,7 @@ def main() -> int:
     body = json.dumps(payload, separators=(",", ":")).encode("utf-8")
 
     # Try primary endpoint, then common fallbacks.
-    endpoints = [endpoint, "http://localhost:5318/v1/traces", "http://localhost:4318/v1/traces"]
+    endpoints = [endpoint, "http://localhost:5321/v1/traces", "http://localhost:4318/v1/traces"]
     status = None
     for ep in endpoints:
         status = post_json(ep, body)

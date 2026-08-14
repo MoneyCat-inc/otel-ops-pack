@@ -16,14 +16,14 @@ pnpm emit
 
 ### With Custom Configuration
 ```bash
-export OTEL_EXPORTER_OTLP_ENDPOINT='http://127.0.0.1:5318'
+export OTEL_EXPORTER_OTLP_ENDPOINT='http://127.0.0.1:5321'
 export OTEL_SERVICE_NAME='iona-app'
 pnpm emit
 ```
 
 ### PowerShell (Windows)
 ```powershell
-$env:OTEL_EXPORTER_OTLP_ENDPOINT = 'http://127.0.0.1:5318'
+$env:OTEL_EXPORTER_OTLP_ENDPOINT = 'http://127.0.0.1:5321'
 $env:OTEL_SERVICE_NAME = 'iona-app'
 pnpm emit
 ```
@@ -34,7 +34,7 @@ pnpm emit
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `OTEL_EXPORTER_OTLP_ENDPOINT` | `http://127.0.0.1:5318` | OTLP HTTP endpoint (auto-appends `/v1/traces`) |
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | `http://127.0.0.1:5321` | OTLP HTTP endpoint (auto-appends `/v1/traces`) |
 | `OTEL_SERVICE_NAME` | `iona-app` | Service name for resource attributes |
 
 ---
@@ -93,7 +93,7 @@ pnpm emit
 
 ### ECONNREFUSED Error
 ```
-Error: connect ECONNREFUSED 127.0.0.1:5318
+Error: connect ECONNREFUSED 127.0.0.1:5321
 ```
 
 **Solution**: Start SigNoz collector
@@ -105,7 +105,7 @@ docker-compose up -d
 ### Spans Not Visible in SigNoz
 1. Check endpoint is reachable:
    ```bash
-   curl http://127.0.0.1:5318
+   curl http://127.0.0.1:5321
    ```
 
 2. Verify SigNoz health:
@@ -130,7 +130,7 @@ docker-compose up -d
 ```yaml
 - name: Emit synthetic spans
   env:
-    OTEL_EXPORTER_OTLP_ENDPOINT: http://127.0.0.1:5318
+    OTEL_EXPORTER_OTLP_ENDPOINT: http://127.0.0.1:5321
     OTEL_SERVICE_NAME: iona-app
   run: pnpm emit
 ```
@@ -138,7 +138,7 @@ docker-compose up -d
 ### Docker Compose Integration
 ```yaml
 environment:
-  - OTEL_EXPORTER_OTLP_ENDPOINT=http://collector:5318
+  - OTEL_EXPORTER_OTLP_ENDPOINT=http://collector:5321
   - OTEL_SERVICE_NAME=iona-app
 ```
 

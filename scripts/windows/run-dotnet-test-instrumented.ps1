@@ -1,4 +1,3 @@
-# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 # Gate #026 Track A: Run .NET Test App with Auto-Instrumentation
 # Authority: BossCat OEM | Executor: Cursor{Implementer}
 # Purpose: Launch test app with OTel profiler enabled
@@ -32,7 +31,7 @@ $env:CORECLR_PROFILER_PATH = $profilerDll
 $env:DOTNET_STARTUP_HOOKS = $startupHookDll
 $env:OTEL_DOTNET_AUTO_HOME = $installDir
 $env:OTEL_SERVICE_NAME = $ServiceName
-$env:OTEL_EXPORTER_OTLP_ENDPOINT = "http://127.0.0.1:5318"
+$env:OTEL_EXPORTER_OTLP_ENDPOINT = "http://127.0.0.1:5321"
 $env:OTEL_EXPORTER_OTLP_PROTOCOL = "http/protobuf"
 $env:OTEL_TRACES_EXPORTER = "otlp"
 $env:OTEL_METRICS_EXPORTER = "otlp"

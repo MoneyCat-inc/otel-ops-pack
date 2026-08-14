@@ -1,4 +1,3 @@
-# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 # End-to-End Pipeline Test Script
 # Tests complete OTel pipeline with authentication and monitoring
 
@@ -120,7 +119,7 @@ if ($PipelineStatus.otel_collector_running -and $PipelineStatus.signoz_accessibl
             )
         }
         
-        $OtlpResponse = Invoke-RestMethod -Uri "http://localhost:5318/v1/logs" -Method POST -Body ($OtlpPayload | ConvertTo-Json -Depth 10) -ContentType "application/json" -TimeoutSec 10
+        $OtlpResponse = Invoke-RestMethod -Uri "http://localhost:5321/v1/logs" -Method POST -Body ($OtlpPayload | ConvertTo-Json -Depth 10) -ContentType "application/json" -TimeoutSec 10
         
         Write-Host "  ✅ Canary logs generated successfully" -ForegroundColor Green
         $PipelineStatus.test_results.canary_logs = $true

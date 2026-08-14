@@ -1,4 +1,3 @@
-# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 <#
 Direct OTLP Log Ingestion Script
 ------------------------------
@@ -17,7 +16,7 @@ param(
     [string]$ServiceName = "direct-ingestion",
     
     [Parameter(Mandatory=$false)]
-    [string]$Endpoint = "http://localhost:5318/v1/logs"
+    [string]$Endpoint = "http://localhost:5321/v1/logs"
 )
 
 function Send-OTLPLog {

@@ -1,4 +1,3 @@
-# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 # C:\otel\integration-tests.ps1
 # Comprehensive integration testing framework
 # ASCII only, PowerShell 5.1 compatible
@@ -201,7 +200,7 @@ if ($FullTest) {
     $jsonPayload = $testData | ConvertTo-Json -Depth 10
     $headers = @{ "Content-Type" = "application/json" }
     
-    $testResp = Invoke-WebRequest -Uri http://127.0.0.1:5318/v1/logs -Method Post -Headers $headers -Body $jsonPayload -UseBasicParsing -TimeoutSec 10
+    $testResp = Invoke-WebRequest -Uri http://127.0.0.1:5321/v1/logs -Method Post -Headers $headers -Body $jsonPayload -UseBasicParsing -TimeoutSec 10
     
     if ($testResp.StatusCode -eq 200) {
       Add-TestResult "Full Integration Test" "PASS" "End-to-end data flow test passed"

@@ -1,4 +1,3 @@
-# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 # Gate #026 Track A: Run .NET App with Auto-Instrumentation
 # Authority: BossCat OEM | Executor: Cursor{Implementer}
 # Purpose: Launch .NET test app with OTel auto-instrumentation enabled
@@ -57,7 +56,7 @@ if (-not $Baseline) {
     $env:OTEL_METRICS_EXPORTER = "otlp"
     $env:OTEL_LOGS_EXPORTER = "otlp"
     
-    # OTLP Endpoint (Gate #026A: Direct to SigNoz port 4317, not Windows Collector 5317)
+    # OTLP Endpoint (Gate #026A: Direct to SigNoz port 4317, not Windows Collector 5320)
     $env:OTEL_EXPORTER_OTLP_ENDPOINT = "http://127.0.0.1:4317"
     $env:OTEL_EXPORTER_OTLP_PROTOCOL = "grpc"
     
@@ -71,7 +70,7 @@ if (-not $Baseline) {
     $env:OTEL_DOTNET_AUTO_TRACES_HTTPCLIENT_INSTRUMENTATION_ENABLED = "true"
     
     Write-Host "   ✅ OTel configured for: $ServiceName" -ForegroundColor Green
-    Write-Host "   ✅ Exporting to: http://127.0.0.1:5317 (gRPC)" -ForegroundColor Green
+    Write-Host "   ✅ Exporting to: http://127.0.0.1:5320 (gRPC)" -ForegroundColor Green
 } else {
     Write-Host "[BASELINE] Running WITHOUT instrumentation (baseline mode)" -ForegroundColor Yellow
 }

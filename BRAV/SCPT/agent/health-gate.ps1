@@ -1,4 +1,3 @@
-# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 # scripts/agent/health-gate.ps1
 # Inline health validation for agent:start integration
 # Runs local env doctor + OTel wiring check, enqueues daily job if both pass
@@ -75,7 +74,7 @@ if (-not ($queue.jobs | Where-Object { $_.id -eq "otel-wiring-check" })) {
 Write-Host "[health-gate] Updating shared status..."
 try {
     pwsh -File scripts/agent/update-status.ps1 -section env -ok $true -detail "pnpm, node, playwright: OK"
-    pwsh -File scripts/agent/update-status.ps1 -section otel -ok $true -detail "OTLP/HTTP 5318 reachable; dataset logs present"
+    pwsh -File scripts/agent/update-status.ps1 -section otel -ok $true -detail "OTLP/HTTP 5321 reachable; dataset logs present"
     Write-Host "[health-gate] Status updated successfully."
 } catch {
     Write-Host "[health-gate] Status update failed: $($_.Exception.Message)"

@@ -16,7 +16,7 @@ import { XMLHttpRequestInstrumentation } from '@opentelemetry/instrumentation-xm
 if (typeof globalThis !== 'undefined' && (globalThis as any).window) {
   // Create OTLP exporter for SigNoz
   const otlpExporter = new OTLPTraceExporter({
-    url: process.env['NEXT_PUBLIC_OTEL_EXPORTER_OTLP_ENDPOINT'] || 'http://localhost:5318/v1/traces',
+    url: process.env['NEXT_PUBLIC_OTEL_EXPORTER_OTLP_ENDPOINT'] || 'http://localhost:5321/v1/traces',
     headers: {
       'signoz-access-token': process.env['NEXT_PUBLIC_SIGNOZ_ACCESS_TOKEN'] || 'local-signoz-jwt-secret-rotate',
     },

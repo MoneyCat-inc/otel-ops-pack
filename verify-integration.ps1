@@ -1,4 +1,3 @@
-# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 Set-StrictMode -Version 2
 $ErrorActionPreference = "Stop"
 
@@ -97,8 +96,8 @@ foreach ($endpoint in @("http://localhost:13134/healthz")) {
 if (-not $healthOk) { Write-Fail "Collector health endpoint unreachable: $healthError" }
 
 Write-Host "`n2. Windows Collector Ports:" -ForegroundColor Yellow
-Test-TcpPort -Port 5317 -Label "Windows collector (gRPC)"
-Test-TcpPort -Port 5318 -Label "Windows collector (HTTP)"
+Test-TcpPort -Port 5320 -Label "Windows collector (gRPC)"
+Test-TcpPort -Port 5321 -Label "Windows collector (HTTP)"
 
 Write-Host "`n3. SigNoz Collector Ports:" -ForegroundColor Yellow
 Test-TcpPort -Port 4317 -Label "SigNoz collector (gRPC)"
@@ -390,7 +389,7 @@ if ($allChecksPassed) {
         Write-Host "`nFailure summary:" -ForegroundColor Yellow
         foreach ($item in $checkFailures) { Write-Host " - $item" -ForegroundColor Red }
     }
-    Write-Host "`nTroubleshooting:"; Write-Host "1. Ensure otelcol-contrib service is running"; Write-Host "2. Check ports 5317, 5318, 4317, 4318 are listening"; Write-Host "3. Confirm SigNoz containers are healthy"
+    Write-Host "`nTroubleshooting:"; Write-Host "1. Ensure otelcol-contrib service is running"; Write-Host "2. Check ports 5320, 5321, 4317, 4318 are listening"; Write-Host "3. Confirm SigNoz containers are healthy"
 }
 if ($canaryId) { Write-Host "`nCanary ID for verification: $canaryId" -ForegroundColor Yellow }
 Write-RunbookFooter -RunbookPath $runbookRelativePath -LastCanaryId $canaryId -CanaryQuery $canaryMessage

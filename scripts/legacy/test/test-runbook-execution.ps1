@@ -1,4 +1,3 @@
-# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 # Test Runbook Execution Script
 Write-Host "=== Testing Windows Collector -> SigNoz Runbook ===" -ForegroundColor Green
 
@@ -67,7 +66,7 @@ try {
         )
     } | ConvertTo-Json -Depth 10
 
-    $response = Invoke-RestMethod -Uri "http://localhost:5318/v1/logs" -Method Post -Body $otlpPayload -ContentType "application/json" -TimeoutSec 10
+    $response = Invoke-RestMethod -Uri "http://localhost:5321/v1/logs" -Method Post -Body $otlpPayload -ContentType "application/json" -TimeoutSec 10
     Write-Host "[OK] OTLP direct canary sent successfully" -ForegroundColor Green
 } catch {
     Write-Host "[WARN] OTLP direct canary failed: $($_.Exception.Message)" -ForegroundColor Yellow

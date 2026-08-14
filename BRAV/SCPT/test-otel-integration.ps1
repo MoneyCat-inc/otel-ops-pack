@@ -1,4 +1,3 @@
-# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 # Standalone test for OTel integration without requiring dev server
 # Tests the OTLP/HTTP endpoint directly
 
@@ -80,7 +79,7 @@ $testPayload = @{
     )
 } | ConvertTo-Json -Depth 10
 
-$otlpUrl = "http://localhost:5318/v1/logs"
+$otlpUrl = "http://localhost:5321/v1/logs"
 
 try {
     Write-Detail "Sending test OTLP payload to $otlpUrl"
@@ -96,7 +95,7 @@ Timestamp: $(Get-Date -Format "yyyy-MM-ddTHH:mm:ss.fffK")
 Test Event ID: $testEventId
 
 OTLP/HTTP Test: PASSED
-- Payload sent to http://localhost:5318/v1/logs
+- Payload sent to http://localhost:5321/v1/logs
 - Response: $($response | ConvertTo-Json -Compress)
 
 This confirms the OTel Collector is accepting OTLP/HTTP logs
@@ -122,7 +121,7 @@ OTLP/HTTP Test: FAILED
 
 Check:
 1. OTel Collector service is running
-2. Port 5318 is accessible
+2. Port 5321 is accessible
 3. OTLP HTTP receiver is configured
 
 == Direct OTLP test FAILED ==

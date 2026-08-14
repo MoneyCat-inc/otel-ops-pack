@@ -221,7 +221,7 @@ Guardrail Scan [█████████████████████�
 
 📊 SECTION STATUS:
    ✅ ENV: Environment bootstrapped successfully
-   ✅ OTEL: OTLP/HTTP 5318 OK
+   ✅ OTEL: OTLP/HTTP 5321 OK
    ❌ ANALYTICS: Not initialized
 ```
 

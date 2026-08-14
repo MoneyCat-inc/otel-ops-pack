@@ -1,4 +1,3 @@
-# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 #Requires -Version 7.0
 
 <#
@@ -267,7 +266,7 @@ class Workspace {
         # Create network isolation configuration
         $networkConfig = @{
             AllowedHosts = @('localhost', '127.0.0.1', '::1')
-            AllowedPorts = @(8080, 5317, 5318)  # SigNoz and OTLP ports
+            AllowedPorts = @(8080, 5320, 5321)  # SigNoz and OTLP ports
             BlockedProtocols = @('tcp/22', 'tcp/3389')  # SSH, RDP
             DNSResolution = 'local-only'
         }
