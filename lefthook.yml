@@ -3,3 +3,6 @@ pre-commit:
   commands:
     hygiene_fast:
       run: pwsh ./ALFA/TOOL/cli/hygiene-fast.ps1
+    # H2 — docs_gate GR-02 shift-left (Kiro pilot Clean). No lane:removal bypass.
+    kiro_lane_purity:
+      run: pwsh ./BRAV/SCPT/kiro/h2-lane-purity.ps1

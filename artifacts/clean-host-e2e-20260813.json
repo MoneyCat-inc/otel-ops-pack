@@ -1,0 +1,42 @@
+{
+  "run_id": "clean-host-e2e-20260813",
+  "status": "GREEN",
+  "gate_clock_minutes": 6.86,
+  "verify_exit": 0,
+  "prior_baseline_minutes": 7.47,
+  "prior_run_id": "clean-host-e2e-20260726",
+  "target_minutes": 30,
+  "head_sha_expected": "0cf798a80",
+  "phase0": {
+    "method": "msi",
+    "collector_version": "0.158.0",
+    "phase0_minutes": 11.72,
+    "msi_on_clean_host": "PROVEN",
+    "snapshot": "phase0-ready-20260813",
+    "service_at_checkpoint": "Stopped+Disabled"
+  },
+  "docker_ready_snapshot": "docker-ready-20260813",
+  "defects_found_this_campaign": [
+    {
+      "id": 460,
+      "state": "merged",
+      "title": "install-or-repair elevation guard exit 5"
+    },
+    {
+      "id": 461,
+      "state": "merged",
+      "title": "create file_storage dirs before Start-Service"
+    }
+  ],
+  "assertions": {
+    "f3_retired_0_158": "PASS",
+    "drift_guard_exit_0": "PASS",
+    "windowseventlog_application": "PASS (canary Application event)",
+    "windowseventlog_system": "informational_only (start_at end; may be zero)",
+    "hostmetrics_absent": "EXPECTED"
+  },
+  "evidence_source": "guest screenshot 2026-08-13T20:50 local; C:\\Phase0\\gate-clock-20260813.json",
+  "docs_pr": 463,
+  "actor": "Cursor{Implementer} + @fubumaki",
+  "recorded_utc": "2026-08-13T20:01:42.3877080Z"
+}
