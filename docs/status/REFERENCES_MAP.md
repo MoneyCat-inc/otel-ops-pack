@@ -65,15 +65,22 @@
 ## 🔧 System Registries
 
 ### Inventory & Analysis
-- **File Inventory:** [`artifacts/index/files.json`](../../artifacts/index/files.json)
-- **Markdown Links Graph:** [`artifacts/index/md_links.json`](../../artifacts/index/md_links.json)
-- **Orphaned Docs:** [`artifacts/index/md_orphans.csv`](../../artifacts/index/md_orphans.csv)
-- **Branch Status:** [`artifacts/index/branches.txt`](../../artifacts/index/branches.txt)
+
+> ⚠️ **Not in the repository.** Everything under `artifacts/` is gitignored, so these
+> files exist only on a machine that has generated them. A fresh clone will **not**
+> have them, and the paths below will not resolve. They are listed here to document
+> what the inventory tooling produces, not as browsable links.
+
+| Output | Path (local only) |
+|---|---|
+| File inventory | `artifacts/index/files.json` |
+| Markdown links graph | `artifacts/index/md_links.json` |
+| Orphaned docs | `artifacts/index/md_orphans.csv` |
+| Branch status | `artifacts/index/branches.txt` |
 
 ### Operational Registries
 - **Scripts Registry:** [`scripts.json`](scripts.json) *(pending)*
 - **Workflows Registry:** [`workflows.json`](workflows.json) *(pending)*
-- **Orphans Triage:** [`orphans.md`](orphans.md) *(pending)*
 
 ### Evidence Trails
 - **ECRR Reports:** [`CHAR/ECRR/ECRR_REPORTS/`](../../CHAR/ECRR/ECRR_REPORTS/)

@@ -29,10 +29,11 @@
 - **Regenerate:** After adding/modifying workflows in `.github/workflows/`
 - **Guard:** `.github/workflows/registry-guard.yml` enforces freshness
 
-**`orphans.md`**
-- Triage list for orphaned documentation
-- Keep/merge/archive decisions
-- **Update:** During documentation cleanup cycles
+> **Removed 2026-08-14:** `orphans.md` was deleted in the deep-clean pass. It was a
+> 4.4 MB / 144k-line snapshot generated 2025-10-19, it reported 18,018 orphans against
+> a repo of ~6,800 tracked files (so it was counting untracked/vendored trees), no
+> generator for it exists in this repository, and its triage never happened. Use the
+> locally-generated `artifacts/index/md_orphans.csv` instead.
 
 ---
 
@@ -267,8 +268,7 @@ if ($falseIssues.Count -gt 0) {
 ## 📚 Related Documentation
 
 - **References Map:** [`REFERENCES_MAP.md`](REFERENCES_MAP.md)
-- **Orphans Triage:** [`orphans.md`](orphans.md)
-- **Inventory Files:** [`../../artifacts/index/`](../../artifacts/index/)
+- **Inventory Files:** `../../artifacts/index/` — gitignored, present only after local generation
 - **BossCat Governance:** [`../BossCat/IMMUTABLE_PERSONA_v1.1.md`](../BossCat/IMMUTABLE_PERSONA_v1.1.md)
 
 ---
@@ -285,7 +285,7 @@ if ($falseIssues.Count -gt 0) {
 - Auto-PR created if drift detected
 
 **Monthly:**
-- Review `orphans.md` for triage
+- Review `artifacts/index/md_orphans.csv` for triage (regenerate first; it is gitignored)
 - Update `REFERENCES_MAP.json` if canonical refs change
 - Regenerate full inventory (`artifacts/index/`)
 - Review auto-generated drift PRs
