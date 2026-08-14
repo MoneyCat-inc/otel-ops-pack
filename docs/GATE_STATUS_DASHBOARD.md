@@ -1,4 +1,22 @@
+<!-- markdownlint-disable MD013 MD022 MD029 MD031 MD032 MD033 MD034 MD036 MD040 MD049 MD058 -->
 # 🐾 BossCat Gate Status Dashboard
+
+> ## ARCHIVED — snapshot of 2025-11-01, not current status
+>
+> This document is a **historical record of gates `#001`–`#031`** as they stood on 2025-11-01. It
+> is frozen and no longer maintained. Archived 2026-08-13 per Roadmap 2026 H2, Phase 2; reasoning
+> in `docs/BossCat/MEMO_GATE_DASHBOARD_20260813.md`.
+>
+> **For current status, read instead:**
+>
+> - `docs/BossCat/BOSSCAT_LOG.md` — the canonical live log, one line per change
+> - `CHAR/ECRR/ECRR_REPORTS/` — per-change evidence reports
+>
+> **About the references below.** Many point at documents removed by the Pack 3B repository splits
+> and the 2025 audit. Those references are **preserved verbatim as inert text** rather than
+> repaired or deleted: they accurately record what this snapshot cited in November 2025, and
+> rewriting them would falsify the record. They are no longer clickable because presenting a link
+> to a document that no longer exists is itself a small untruth.
 
 **Last Updated:** 2025-11-01 00:00:00 +00:00  
 **Current Gate:** #030 (APPROVED GREEN v2)  
@@ -937,9 +955,9 @@ Canonical Reference:       docs/comfort-cat/ (5 docs) ✅
 ## 📂 Key Artifacts
 
 ### Gate #024 Evidence Package (APPROVED GREEN - 2025-10-26) 🎯 **CURRENT**
-- [**Gate #024 Approval**](GATE_024_APPROVAL.md) - Multi-track approval (Performance + Hardening + ICF)
-- [**Gate #024 Track 1 Findings**](GATE_024_TRACK1_FINDINGS.md) - Performance baseline validation
-- [**Gate #024 Scope**](GATE_024_SCOPE.md) - Track definitions and objectives
+- **Gate #024 Approval** — `GATE_024_APPROVAL.md` - Multi-track approval (Performance + Hardening + ICF)
+- **Gate #024 Track 1 Findings** — `GATE_024_TRACK1_FINDINGS.md` - Performance baseline validation
+- **Gate #024 Scope** — `GATE_024_SCOPE.md` - Track definitions and objectives
 - **Evidence Artifacts:**
   - Track 1: `DELT/ARTF/gate-024-track1-baseline-20251026-190152.json`
   - Track 2: `DELT/ARTF/gate-024-track2-runbook-audit-20251026-192143.json`
@@ -947,10 +965,10 @@ Canonical Reference:       docs/comfort-cat/ (5 docs) ✅
 - **Git Tag:** `gate-024-green-2025-10-26`
 
 ### Gate #023 Evidence Package (APPROVED GREEN - 2025-10-26) 🔄
-- [**Gate #023 Approval**](GATE_023_APPROVAL.md) - Cluster AudioSwitch approval
-- [**Gate #023 Executive Summary**](GATE_023_EXECUTIVE_SUMMARY.md) - Implementation overview
-- [**BOSSCAT-023A Implementation Evidence**](BOSSCAT_023A_IMPLEMENTATION_EVIDENCE.md) - Detailed patchset documentation (727 LOC)
-- [**BOSSCAT-023A Verification Results**](BOSSCAT_023A_VERIFICATION_RESULTS.md) - Live cluster testing results
+- **Gate #023 Approval** — `GATE_023_APPROVAL.md` - Cluster AudioSwitch approval
+- **Gate #023 Executive Summary** — `GATE_023_EXECUTIVE_SUMMARY.md` - Implementation overview
+- **BOSSCAT-023A Implementation Evidence** — `BOSSCAT_023A_IMPLEMENTATION_EVIDENCE.md` - Detailed patchset documentation (727 LOC)
+- **BOSSCAT-023A Verification Results** — `BOSSCAT_023A_VERIFICATION_RESULTS.md` - Live cluster testing results
 - **Evidence Artifacts:**
   - Live Cluster Test: `DELT/ARTF/gate-verification-results-20251026-175138-readiness-023.json`
   - Canary Test: `DELT/ARTF/clusteraudio-03-verification-20251026-183838.json`
@@ -958,15 +976,15 @@ Canonical Reference:       docs/comfort-cat/ (5 docs) ✅
 - **Git Tag:** `gate-023-green-2025-10-27`
 
 ### Gate #019/019B Evidence Package (AMBER - 2025-10-26) 🎵
-- [**Gate #019B Evidence**](../GATE_019B_EVIDENCE.md) - Hybrid detector (AMBER, honest results)
-- [**Gate #019 Job R1 Evidence**](../GATE_019_JOB_R1_EVIDENCE.md) - Envelope follower + honest CI results
-- [**Gate #019 Job R2 Evidence**](../GATE_019_JOB_R2_EVIDENCE.md) - Kill-switch functional
+- **Gate #019B Evidence** — `../GATE_019B_EVIDENCE.md` - Hybrid detector (AMBER, honest results)
+- **Gate #019 Job R1 Evidence** — `../GATE_019_JOB_R1_EVIDENCE.md` - Envelope follower + honest CI results
+- **Gate #019 Job R2 Evidence** — `../GATE_019_JOB_R2_EVIDENCE.md` - Kill-switch functional
 - [**Gate #019 Plan**](../.agent/PLAN.md) - Execution plan (Gate #019B micro-gate)
 - **CI Test Runs (Honest):** 
-  - [18813213898](https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18813213898) - Initial envelope
-  - [18813228465](https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18813228465) - Tuned instantaneous
-  - [18813447287](https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18813447287) - Initial hybrid
-  - [18813570589](https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18813570589) - Tuned hybrid (final)
+  - run `18813213898` - Initial envelope
+  - run `18813228465` - Tuned instantaneous
+  - run `18813447287` - Initial hybrid
+  - run `18813570589` - Tuned hybrid (final)
 - [**BOSSCAT_LOG Entries**](BossCat/BOSSCAT_LOG.md) - Lines 3-4 (reclassification + AMBER)
 - [**Gate Status Dashboard**](GATE_STATUS_DASHBOARD.md) - This document (updated)
 - **Status:** AMBER - Sine Burst PASS (r=0.9096), AM Sine FAIL (r=0.6599), kill-switch functional
@@ -974,30 +992,30 @@ Canonical Reference:       docs/comfort-cat/ (5 docs) ✅
 **Follow-Up:** Gate #019C (exact windowed RMS, ~40-60 LOC) planned to close AM Sine gap.
 
 ### Gate #018 Evidence Package (APPROVED GREEN - 2025-10-26) 🔒
-- [**Gate #018 Security Evidence**](../GATE_018_SECURITY_EVIDENCE.md) - Supply-chain hardening
+- **Gate #018 Security Evidence** — `../GATE_018_SECURITY_EVIDENCE.md` - Supply-chain hardening
 - [**Base Image Digests**](../base-image-digests.txt) - SHA256 digests for 3 base images
 - **Git Tag:** `gate-018-green-2025-10-26` (commit: e89647155)
 
 ### Gate #017 Evidence Package (APPROVED GREEN - 2025-10-26) 🎉
-- [**Gate #017 Readiness ECRR Report**](ecrr/ECRR_REPORTS/ECRR_GATE_017_READY_20251026.md) - Full ECRR methodology
+- **Gate #017 Readiness ECRR Report** — `ecrr/ECRR_REPORTS/ECRR_GATE_017_READY_20251026.md` - Full ECRR methodology
 - [**Gate #017 Verification JSON**](../DELT/ARTF/gate-verification-results-20251026-readiness.json) - Comprehensive gate matrix
-- [**Gate #017 Executive Summary**](../GATE_017_EXECUTIVE_SUMMARY.md) - One-page overview
+- **Gate #017 Executive Summary** — `../GATE_017_EXECUTIVE_SUMMARY.md` - One-page overview
 - [**Gate #017 Approval Document**](gate/2025-10/GATE_017_APPROVAL.md) - BossCat OEM approval
 - **Git Tag:** `gate-017-green-2025-10-26` (commit: 35a601e3e86c8ec066ddaec5229090dd8d8bb627)
 
 ### Gate #008 Evidence Package (GREEN - 2025-10-23)
-- [**Gate #008 GREEN Resolution**](ecrr/ECRR_REPORTS/ECRR_GATE_008_GREEN_TRACE_RESOLUTION_20251023.md) - Trace ingestion confirmed
+- **Gate #008 GREEN Resolution** — `ecrr/ECRR_REPORTS/ECRR_GATE_008_GREEN_TRACE_RESOLUTION_20251023.md` - Trace ingestion confirmed
 - [**Gate #008 Verification JSON (Remediated)**](../DELT/ARTF/gate-verification-results-20251022-remediated.json)
-- [**Gate #008 Remediation Summary**](../GATE_008_REMEDIATION_COMPLETE.md)
+- **Gate #008 Remediation Summary** — `../GATE_008_REMEDIATION_COMPLETE.md`
 
 ### Milestone Evidence (Since Gate #007)
-- [**Hub Production Live**](../HUB_PRODUCTION_LIVE.md) - hub.resonai.uk (2025-10-20)
-- [**Bluesky Launch Success**](../BLUESKY_LAUNCH_SUCCESS_20251022.md) - v1 campaign complete
-- [**Bluesky Launch Final Report**](../BLUESKY_LAUNCH_FINAL_REPORT_20251022.md) - comprehensive
+- **Hub Production Live** — `../HUB_PRODUCTION_LIVE.md` - hub.resonai.uk (2025-10-20)
+- **Bluesky Launch Success** — `../BLUESKY_LAUNCH_SUCCESS_20251022.md` - v1 campaign complete
+- **Bluesky Launch Final Report** — `../BLUESKY_LAUNCH_FINAL_REPORT_20251022.md` - comprehensive
 
 ### Previous Gate Records
-- [Gate #007 Approval (2025-10-20)](gate/2025-10/GATE_007_APPROVAL.md) - APPROVED by BossCat OEM
-- [Gate #007 Ready Report](ecrr/ECRR_REPORTS/ECRR_GATE_007_READY_FUBUMAKI_20251020.md)
+- Gate #007 Approval (2025-10-20) — `gate/2025-10/GATE_007_APPROVAL.md` - APPROVED by BossCat OEM
+- Gate #007 Ready Report — `ecrr/ECRR_REPORTS/ECRR_GATE_007_READY_FUBUMAKI_20251020.md`
 - [Gate #007 Verification JSON](../DELT/ARTF/gate-verification-results-20251020.json)
 
 ### Canonical Reference
@@ -1009,9 +1027,9 @@ Canonical Reference:       docs/comfort-cat/ (5 docs) ✅
   - ECRR_FRAMEWORK.md
 
 ### Operations Log
-- [IONA Errors Ledger](../IONA_ERRORS.md) - 3 LOW severity tracked
-- [BossCat Log](bosscat/misc/BOSSCAT_LOG.md)
-- [BossCat TODO](../BossCat/TODO.md)
+- IONA Errors Ledger — `../IONA_ERRORS.md` - 3 LOW severity tracked
+- [BossCat Log](BossCat/misc/BOSSCAT_LOG.md)
+- BossCat TODO — `../BossCat/TODO.md`
 
 ---
 
@@ -1068,7 +1086,7 @@ Canonical Reference:       docs/comfort-cat/ (5 docs) ✅
 
 **P1 (High Priority):**
 - 📋 **GitHub Dependabot:** 2 vulnerabilities (1 high, 1 moderate)
-  - URL: https://github.com/MoneyCat-inc/otel-ops-pack/security/dependabot
+  - URL: `https://github.com/MoneyCat-inc/otel-ops-pack/security/dependabot` (private; requires sign-in)
   - Recommendation: Schedule security remediation gate (Gate #018 option)
 
 **P2 (Archival):**
@@ -1104,7 +1122,7 @@ Canonical Reference:       docs/comfort-cat/ (5 docs) ✅
 **Status:** ✅ **APPROVED** — Awaiting Gate #025 definition or operational acceptance testing
 
 **GitHub Repository:** https://github.com/MoneyCat-inc/otel-ops-pack  
-**Dependabot Alerts:** https://github.com/MoneyCat-inc/otel-ops-pack/security/dependabot
+**Dependabot Alerts:** `https://github.com/MoneyCat-inc/otel-ops-pack/security/dependabot` (private; requires sign-in)
 
 ---
 

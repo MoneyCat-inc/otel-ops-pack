@@ -5,8 +5,9 @@
 **Prepared:** 2026-08-13 by Claude (chat/review seat) — executed by machine operator `@fubumaki`
 **Prior run:** `clean-host-e2e-20260726` — GREEN, clone → first span **7.47 min**
 **Briefing:** `docs/BossCat/BRIEFING_CLEAN_HOST_E2E.md`
-**Status:** SCHEDULED — gate clock not started
+**Status:** **GREEN** — gate clock **6.86 min** (2026-08-13); MSI-on-clean-host **PROVEN**
 **Closes:** Phase 1, Roadmap 2026 H2
+**ECRR:** `CHAR/ECRR/ECRR_REPORTS/ECRR_CLEAN_HOST_E2E_20260813.md`
 
 ## Why this run differs from 20260726
 
@@ -83,10 +84,16 @@ pwsh -File .\BRAV\SCPT\verify-pipeline.ps1
 - **F3 retired:** config validate exits 0 on `0.158.0` — already true on the daily host, confirm on clean
 - **Drift guard passes:** `health-check-collector-config.ps1` exits **0**, not 21. It asserted a path
   the service never uses until #438; a RED here now means real drift
-- **Event Log receivers live:** `otelcol_receiver_accepted_log_records` shows
-  `windowseventlog/application` and `windowseventlog/system`. This is the telemetry class that
-  justified keeping the collector in Phase 1 — if it does not appear on a clean host, the Phase 1
-  decision needs revisiting
+- **Event Log receivers live:** read `otelcol_receiver_accepted_log_records` per receiver. This is
+  the telemetry class that justified keeping the collector in Phase 1, but the two channels do
+  **not** carry equal weight, and an earlier draft of this card was wrong to imply they did:
+  - `windowseventlog/application` **≥ 1 is the real assert.** `canary-test.ps1` writes an
+    Application event (source `SigNoz-Canary`, EventId 1001), so a clean guest is guaranteed a
+    record. Zero here *would* mean the Phase 1 decision needs revisiting.
+  - `windowseventlog/system` **may legitimately be 0.** Both receivers use `start_at: end`, so they
+    only capture events written after the collector starts, and nothing guarantees a System-channel
+    event inside a ~7-minute window on a quiet fresh guest. Absence is not evidence of breakage —
+    do not treat it as a failure.
 - **No host metrics expected:** the canonical config has no `hostmetrics` receiver. Absence of
   `otelcol_receiver_accepted_metric_points` is correct, not a failure (see #454)
 

@@ -28,6 +28,14 @@ $SKIP_API = [bool]([Environment]::GetEnvironmentVariable("BOSSCAT_SKIP_API","Pro
 $LOOKBACK = [int]([Environment]::GetEnvironmentVariable("BOSSCAT_LOOKBACK_SEC","Process"))
 if (-not $LOOKBACK) { $LOOKBACK = 180 }  # Default 180s
 
+# Empty-result retry. A span queried moments after send can be absent from the SigNoz query path
+# while still in flight — that is ingestion lag, not a broken verification path. Retry a bounded
+# number of times before concluding the span is missing.
+$API_RETRIES = [int]([Environment]::GetEnvironmentVariable("BOSSCAT_API_RETRIES","Process"))
+if (-not $API_RETRIES) { $API_RETRIES = 3 }
+$API_RETRY_WAIT_SEC = [int]([Environment]::GetEnvironmentVariable("BOSSCAT_API_RETRY_WAIT_SEC","Process"))
+if (-not $API_RETRY_WAIT_SEC) { $API_RETRY_WAIT_SEC = 5 }
+
 if ($STRICT) {
   Write-Host "⚠️  [config] STRICT MODE: WARN outcomes will be treated as FAIL" -ForegroundColor Yellow
 }
@@ -340,7 +348,26 @@ if (Test-Path $CanaryScriptPath) {
     Write-Host "`n[verify] API check (SigNoz Trace API - forensic verification)..." -ForegroundColor Cyan
     $apiCheck = Invoke-SigNozApiTraceCheck -ServiceName $ServiceName -TraceId $traceId -LookbackSeconds $LOOKBACK
 
-    # Fallback: ClickHouse direct query (works without API auth)
+    # An empty result is not the same failure as a broken query path.
+    #   http_error  -> the verification path itself is broken; do not retry, it will not self-heal
+    #   no_span_found -> the span may still be in flight; ingestion lag is expected right after send
+    # Retrying only the second case stops a timing race being reported as an API failure, and keeps
+    # a genuine http_error loud instead of silently rescued by the fallback below.
+    if ((-not $apiCheck.ok) -and $apiCheck.reason -eq "no_span_found" -and $API_RETRIES -gt 0) {
+      for ($attempt = 1; $attempt -le $API_RETRIES -and -not $apiCheck.ok; $attempt++) {
+        Write-Host "[verify] No span yet — ingestion lag suspected; retry $attempt/$API_RETRIES in ${API_RETRY_WAIT_SEC}s..." -ForegroundColor Yellow
+        Start-Sleep -Seconds $API_RETRY_WAIT_SEC
+        $apiCheck = Invoke-SigNozApiTraceCheck -ServiceName $ServiceName -TraceId $traceId -LookbackSeconds $LOOKBACK
+        if ($apiCheck.ok) {
+          Write-Host "[verify] Span confirmed on retry $attempt — this was ingestion lag, not an API failure" -ForegroundColor Green
+          $apiCheck.retries = $attempt
+        }
+      }
+      if (-not $apiCheck.ok) { $apiCheck.retries = $API_RETRIES }
+    }
+
+    # Fallback: ClickHouse direct query (works without API auth).
+    # Reached only after retries are exhausted, or immediately for reasons that will not self-heal.
     if (-not $apiCheck.ok) {
       Write-Host "[verify] API check failed (${apiCheck.reason ?? 'n/a'}) — attempting ClickHouse fallback..." -ForegroundColor Yellow
       try {
@@ -373,7 +400,20 @@ if (Test-Path $CanaryScriptPath) {
         }
         if ($found) {
           Write-Host "[verify] ✓ ClickHouse fallback confirmed span presence" -ForegroundColor Green
-          $apiCheck = @{ ok=$true; reason="clickhouse_trace_found"; mode="CLICKHOUSE"; timestampMs=$tsMs }
+          # Record what the fallback rescued. Without this the artifact says only "CLICKHOUSE",
+          # which cannot distinguish a broken API from a span that simply had not landed yet —
+          # the ambiguity that made the 2026-08-14 run unreadable.
+          $apiCheck = @{
+            ok            = $true
+            reason        = "clickhouse_trace_found"
+            mode          = "CLICKHOUSE"
+            timestampMs   = $tsMs
+            fallback_from = $apiCheck.reason
+            retries       = $apiCheck.retries
+            # Carry the original error through the rebuild. Without this the rescue erases the only
+            # description of what broke, which for an intermittent fault is the whole diagnosis.
+            error         = $apiCheck.error
+          }
         }
       } catch { }
     }
@@ -474,6 +514,14 @@ $summary = [ordered]@{
       api_confirmed      = $apiCheck.ok
       api_reason         = $apiCheck.reason
       api_mode           = $apiCheck.mode
+      # Present only when the ClickHouse fallback was used, so a reader can tell a rescued
+      # http_error (broken path — act) from a rescued no_span_found (ingestion lag — expected).
+      api_fallback_from  = $apiCheck.fallback_from
+      api_retries        = $apiCheck.retries
+      # The HTTP status and body behind an http_error. Get-HttpErrorBody has captured this since
+      # August but it was never written out, so every occurrence recorded "http_error" and nothing
+      # actionable. An intermittent fault cannot be caught live; the artifact has to carry it.
+      api_error          = $apiCheck.error
       ingest_latency_ms  = $ingestLatencyMs
       status             = $canaryStatus
     }
