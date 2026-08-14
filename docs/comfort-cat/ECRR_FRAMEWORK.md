@@ -34,9 +34,11 @@ pwsh -File quick-status.ps1
 # OR (if using BRAV scripts):
 # pwsh -File BRAV\SCPT\quick-monitor.ps1
 
-# Full pipeline verification (if available)
-# pwsh -File BRAV\SCPT\verify-pipeline.ps1
-# OR use verify-pipeline.ps1 if present at root
+# Full pipeline verification (gate script with exit codes 0/1/2)
+pwsh -File BRAV\SCPT\verify-pipeline.ps1
+
+# Operator linear check after collector restart (no gate exit codes)
+pwsh -File operator-pipeline-check.ps1
 
 # Service status
 sc query otelcol-contrib

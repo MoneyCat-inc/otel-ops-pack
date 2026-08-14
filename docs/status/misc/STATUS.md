@@ -298,7 +298,7 @@ curl -s http://localhost:8080/api/v1/health
 pwsh -File scripts\quick-monitor.ps1
 
 # Full pipeline verification
-pwsh -File scripts\verify-pipeline.ps1
+pwsh -File BRAV\SCPT\verify-pipeline.ps1
 ```
 
 **Governance & SBOM:**

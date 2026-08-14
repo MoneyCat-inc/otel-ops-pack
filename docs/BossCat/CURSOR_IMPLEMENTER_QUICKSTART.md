@@ -22,7 +22,7 @@ You are **cursor{implementer}** - automating the Bosscat observability pipeline 
 pwsh -File scripts\quick-monitor.ps1
 
 # Full pipeline verification
-pwsh -File scripts\verify-pipeline.ps1
+pwsh -File BRAV\SCPT\verify-pipeline.ps1
 
 # Check services
 sc query otelcol-contrib

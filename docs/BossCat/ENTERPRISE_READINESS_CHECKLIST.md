@@ -80,7 +80,7 @@ gh api /repos/:owner/:repo/branches/main/protection | jq '.required_pull_request
   - Status: [___]
 
 - [ ] **Integration Tests Pass**
-  - Run: `pwsh -File scripts/verify-pipeline.ps1`
+  - Run: `pwsh -File BRAV/SCPT/verify-pipeline.ps1`
   - All endpoints: [ ] Responding
   - Status: [___]
 
