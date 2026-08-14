@@ -154,3 +154,14 @@ CHAR/EVID/artifacts/gpu_diag/**
 CHAR/EVID/**/*.zip
 CHAR/EVID/**/*.7z
 CHAR/EVID/**/*.gz
+
+# ── Security scan output is never committable (added 2026-08-14) ──
+# The `!artifacts/**/*.json` un-ignore above re-admits every JSON under artifacts/,
+# which includes secret-scanner output. A gitleaks report with findings embeds the
+# matched secret, so `git add -A` on a dirty tree could commit it. Re-ignore those
+# specifically, after the negation, so they lose regardless of scan results.
+artifacts/**/*gitleaks*.json
+artifacts/**/*trivy*.json
+artifacts/**/*secret*.json
+artifacts/**/*credential*.json
+artifacts/**/*sbom*.json
