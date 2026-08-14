@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 import os, sys
 
 def _noop():
@@ -14,7 +13,7 @@ try:
 except Exception:
     sys.exit(_noop())
 
-endpoint = os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT", "http://localhost:5318/v1/traces")
+endpoint = os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT", "http://localhost:5321/v1/traces")
 if not endpoint.endswith("/v1/traces"):
     endpoint = endpoint.rstrip("/") + "/v1/traces"
 service  = os.getenv("OTEL_SERVICE_NAME", "bosc-iona-gatecheck")

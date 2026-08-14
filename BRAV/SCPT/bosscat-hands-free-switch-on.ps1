@@ -1,4 +1,3 @@
-# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 <#
 .SYNOPSIS
   BossCat Hands-Free Switch-On - Complete 4-Step Process
@@ -153,7 +152,7 @@ Write-Host "══════════════════════�
 Write-Host "🎯 Sending trace canary to populate Frontend Canary Spans view..." -ForegroundColor White
 
 try {
-  $exitCode = & pwsh -File scripts/iona-trace-canary.ps1 -CollectorHost localhost -OtlpHttpPort 5318 -ZipkinPort 9411 -ServiceName frontend -DurationMs 1200 -Force 2>&1 | Out-Null
+  $exitCode = & pwsh -File scripts/iona-trace-canary.ps1 -CollectorHost localhost -OtlpHttpPort 5321 -ZipkinPort 9411 -ServiceName frontend -DurationMs 1200 -Force 2>&1 | Out-Null
   if ($LASTEXITCODE -eq 0) {
     Write-Host "✅ Trace canary sent successfully" -ForegroundColor Green
     Write-Host "   → Check SigNoz Traces: service=frontend, span=iona-canary-span" -ForegroundColor DarkGray

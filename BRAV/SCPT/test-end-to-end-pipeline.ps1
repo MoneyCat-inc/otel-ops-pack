@@ -1,4 +1,3 @@
-# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 # End-to-End Pipeline Test Script
 # ECRR Framework: Examine → Clean → Report → Role
 # Actor: Cursor Agent - Observability Copilot
@@ -38,7 +37,7 @@ try {
 }
 
 # Check OTLP Ports
-$OtlpPorts = @(5317, 5318)
+$OtlpPorts = @(5320, 5321)
 foreach ($Port in $OtlpPorts) {
     try {
         $Connection = Test-NetConnection -ComputerName localhost -Port $Port -InformationLevel Quiet
@@ -194,7 +193,7 @@ try {
         "Content-Type" = "application/json"
     }
 
-    $OtlpResponse = Invoke-RestMethod -Uri "http://localhost:5318/v1/logs" -Method Post -Body $OtlpPayload -Headers $Headers -ErrorAction Stop
+    $OtlpResponse = Invoke-RestMethod -Uri "http://localhost:5321/v1/logs" -Method Post -Body $OtlpPayload -Headers $Headers -ErrorAction Stop
     Write-Host "  ✅ Sent OTLP test data" -ForegroundColor Green
 } catch {
     Write-Host "  ⚠️ Could not send OTLP test data: $($_.Exception.Message)" -ForegroundColor Yellow

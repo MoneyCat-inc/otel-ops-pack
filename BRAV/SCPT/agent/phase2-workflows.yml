@@ -74,7 +74,7 @@ jobs:
       - name: Start SigNoz (if available)
         run: |
           # Check if SigNoz is available
-          if (Test-NetConnection -ComputerName localhost -Port 5318 -InformationLevel Quiet) {
+          if (Test-NetConnection -ComputerName localhost -Port 5321 -InformationLevel Quiet) {
             Write-Host "SigNoz OTLP endpoint is available"
           } else {
             Write-Host "SigNoz not available, using dry-run mode"

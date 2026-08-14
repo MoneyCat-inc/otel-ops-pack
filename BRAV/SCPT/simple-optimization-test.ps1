@@ -1,4 +1,3 @@
-# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 [CmdletBinding()]
 param(
     [int]$WaitSeconds = 15,
@@ -34,7 +33,7 @@ try {
 }
 
 $portChecks = @(
-    @{ Port = 5318; Name = "Windows Collector OTLP HTTP" },
+    @{ Port = 5321; Name = "Windows Collector OTLP HTTP" },
     @{ Port = 4317; Name = "SigNoz OTLP gRPC" },
     @{ Port = 4318; Name = "SigNoz OTLP HTTP" },
     @{ Port = 8080; Name = "SigNoz UI" },

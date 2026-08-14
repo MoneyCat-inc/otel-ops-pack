@@ -25,11 +25,11 @@ OTEL_LOGS_EXPORTER=otlp
 
 # OTLP Endpoints (choose HTTP or gRPC)
 # HTTP (recommended):
-OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:5318
+OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:5321
 OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
 
 # OR gRPC:
-# OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:5317
+# OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:5320
 
 # Additional Metadata
 OTEL_RESOURCE_ATTRIBUTES=deployment.environment=local,service.version=1.0.0
@@ -40,20 +40,23 @@ OTEL_RESOURCE_ATTRIBUTES=deployment.environment=local,service.version=1.0.0
 ## ✅ **Verification Steps**
 
 ### 1. Verify Endpoints Open
+
 ```powershell
 # Check OTLP ports
-Test-NetConnection -ComputerName localhost -Port 5317
-Test-NetConnection -ComputerName localhost -Port 5318
+Test-NetConnection -ComputerName localhost -Port 5320
+Test-NetConnection -ComputerName localhost -Port 5321
 ```
 
 ### 2. Send Synthetic Span
+
 ```bash
 # Use existing synthetic span emitter
 pnpm emit:enhanced
 ```
 
 ### 3. Verify in SigNoz
-```
+
+```text
 1. Open http://localhost:8080
 2. Navigate to: Services → Traces
 3. Filter: service.name = "your-service-name"
@@ -65,17 +68,20 @@ pnpm emit:enhanced
 ## 📊 **Expected Telemetry**
 
 **Traces (Automatic):**
+
 - HTTP requests (incoming/outgoing)
 - Database calls (Entity Framework, ADO.NET)
 - gRPC calls
 - HttpClient requests
 
 **Metrics (Where Supported):**
+
 - Request duration histograms
 - Request counts
 - Error rates
 
 **Logs (ILogger Correlation):**
+
 - Trace ID + Span ID injection
 - Automatic correlation in SigNoz
 
@@ -92,7 +98,7 @@ pnpm emit:enhanced
 ## 🐾 **Acceptance Criteria**
 
 - [x] Environment variables documented ✅
-- [x] OTLP endpoints verified (5317/5318) ✅
+- [x] OTLP endpoints verified (5320/5321) ✅
 - [x] Synthetic span successful ✅
 - [x] Service appears in SigNoz ✅
 - [x] Trace correlation working ✅

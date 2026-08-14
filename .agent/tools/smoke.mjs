@@ -15,10 +15,10 @@ try {
   
   // Test 2: Check if collector is running
   try {
-    cmd('powershell -NoProfile -Command "Test-NetConnection -ComputerName localhost -Port 5318"');
-    console.log("✓ Collector port 5318 is accessible");
+    cmd('powershell -NoProfile -Command "Test-NetConnection -ComputerName localhost -Port 5321"');
+    console.log("✓ Collector port 5321 is accessible");
   } catch (e) {
-    console.error("✗ Collector port 5318 not accessible:", e.message);
+    console.error("✗ Collector port 5321 not accessible:", e.message);
     throw e;
   }
   

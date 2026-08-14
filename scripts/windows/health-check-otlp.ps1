@@ -1,15 +1,14 @@
-# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
-# Gate #029: OTLP Collector Path Verification (5317) + API-Signed Proofs (H1)
+# Gate #029: OTLP Collector Path Verification (5320) + API-Signed Proofs (H1)
 # Authority: BossCat OEM | Executor: Cursor{Implementer}
-# Purpose: Verify Windows Collector path end-to-end (5317 → 4317 → SigNoz) with API-signed proof artifacts
+# Purpose: Verify Windows Collector path end-to-end (5320 → 4317 → SigNoz) with API-signed proof artifacts
 
 <#
 .SYNOPSIS
-    Verify the Windows OTel Collector path (port 5317) routes to SigNoz correctly, with API-signed proof generation.
+    Verify the Windows OTel Collector path (port 5320) routes to SigNoz correctly, with API-signed proof generation.
 
 .DESCRIPTION
     Tests the collection path:
-    1. Service sends to http://127.0.0.1:5317 (Windows Collector)
+    1. Service sends to http://127.0.0.1:5320 (Windows Collector)
     2. Collector forwards to localhost:4317 (SigNoz)
     3. Verify traces appear in SigNoz (with optional API proof)
     4. Calculate accepted_spans / sent_spans ratio
@@ -146,17 +145,17 @@ Write-CheckLog -Level "INFO" -Message "Starting Collector path verification" -Da
     lookback_minutes = $LookbackMinutes
 }
 
-# Step 1: Verify Collector is listening on 5317
-Write-CheckLog -Level "INFO" -Message "Checking if Collector is listening on port 5317"
+# Step 1: Verify Collector is listening on 5320
+Write-CheckLog -Level "INFO" -Message "Checking if Collector is listening on port 5320"
 
 $collectorListening = $false
 try {
-    $testConnection = Test-NetConnection -ComputerName 127.0.0.1 -Port 5317 -InformationLevel Quiet -WarningAction SilentlyContinue
+    $testConnection = Test-NetConnection -ComputerName 127.0.0.1 -Port 5320 -InformationLevel Quiet -WarningAction SilentlyContinue
     if ($testConnection) {
-        Write-CheckLog -Level "INFO" -Message "Collector listening on port 5317" -Data @{ status = "PASS" }
+        Write-CheckLog -Level "INFO" -Message "Collector listening on port 5320" -Data @{ status = "PASS" }
         $collectorListening = $true
     } else {
-        Write-CheckLog -Level "ERROR" -Message "Collector not listening on port 5317" -Data @{ status = "FAIL" }
+        Write-CheckLog -Level "ERROR" -Message "Collector not listening on port 5320" -Data @{ status = "FAIL" }
         exit 2
     }
 } catch {
@@ -285,7 +284,7 @@ try {
     
     Write-CheckLog -Level "INFO" -Message "Collector path verification complete" -Data @{
         status = "GREEN"
-        collector_port = 5317
+        collector_port = 5320
         signoz_port = 4317
         traces_received = $traceCount
     }

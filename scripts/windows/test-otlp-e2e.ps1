@@ -1,4 +1,3 @@
-# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 # BOSSCAT-022A: End-to-End OTLP Test
 # Purpose: Generate and verify traces, metrics, and logs through Windows collector
 # Authority: BossCat OEM | Executor: Cursor{Implementer}
@@ -72,7 +71,7 @@ try {
     )
   } | ConvertTo-Json -Depth 12
 
-  $response = Invoke-WebRequest -Uri "http://127.0.0.1:5318/v1/metrics" `
+  $response = Invoke-WebRequest -Uri "http://127.0.0.1:5321/v1/metrics" `
     -Method POST `
     -Headers @{ "Content-Type" = "application/json" } `
     -Body $metricsPayload `
@@ -80,7 +79,7 @@ try {
     -UseBasicParsing
 
   if ($response.StatusCode -eq 200) {
-    Write-Host "  [OK] Metric sent via collector OTLP HTTP (5318)" -ForegroundColor Green
+    Write-Host "  [OK] Metric sent via collector OTLP HTTP (5321)" -ForegroundColor Green
     $metricsActive = $true
   } else {
     Write-Host "  [WARN] Unexpected response: $($response.StatusCode)" -ForegroundColor Yellow
@@ -139,7 +138,7 @@ try {
     "Content-Type" = "application/json"
   }
   
-  $response = Invoke-WebRequest -Uri "http://127.0.0.1:5318/v1/traces" `
+  $response = Invoke-WebRequest -Uri "http://127.0.0.1:5321/v1/traces" `
     -Method POST `
     -Headers $headers `
     -Body $tracePayload `
@@ -173,8 +172,8 @@ Write-Host "Test Summary" -ForegroundColor White
 Write-Host ""
 Write-Host "Signal Status:" -ForegroundColor White
 Write-Host "  Logs:    $(if ($logEventId) { '[OK]' } else { '[FAIL]' }) $(if ($logEventId) { "Event ID $logEventId" } else { 'Not generated' })" -ForegroundColor $(if ($logEventId) { 'Green' } else { 'Red' })
-Write-Host "  Metrics: $(if ($metricsActive) { '[OK]' } else { '[FAIL]' }) $(if ($metricsActive) { 'Sent via collector OTLP HTTP (5318)' } else { 'Not sent' })" -ForegroundColor $(if ($metricsActive) { 'Green' } else { 'Red' })
-Write-Host "  Traces:  $(if ($traceSuccess) { '[OK]' } else { '[FAIL]' }) $(if ($traceSuccess) { "Sent via collector OTLP HTTP (5318)" } else { 'Not sent' })" -ForegroundColor $(if ($traceSuccess) { 'Green' } else { 'Red' })
+Write-Host "  Metrics: $(if ($metricsActive) { '[OK]' } else { '[FAIL]' }) $(if ($metricsActive) { 'Sent via collector OTLP HTTP (5321)' } else { 'Not sent' })" -ForegroundColor $(if ($metricsActive) { 'Green' } else { 'Red' })
+Write-Host "  Traces:  $(if ($traceSuccess) { '[OK]' } else { '[FAIL]' }) $(if ($traceSuccess) { "Sent via collector OTLP HTTP (5321)" } else { 'Not sent' })" -ForegroundColor $(if ($traceSuccess) { 'Green' } else { 'Red' })
 Write-Host ""
 Write-Host "Next Steps:" -ForegroundColor White
 Write-Host "  1. Verify in SigNoz UI: $SigNozUrl" -ForegroundColor Gray

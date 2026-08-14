@@ -39,8 +39,8 @@ function New-SampleConflict {
 ## Configuration
 
 ### Collector Settings
-- Port: 5318 (HTTP OTLP)
-- Port: 5317 (gRPC)
+- Port: 5321 (HTTP OTLP)
+- Port: 5320 (gRPC)
 - Config: `config.yaml`
 "@
 
@@ -67,8 +67,8 @@ function New-SampleConflict {
 ## Configuration
 
 ### Collector Settings
-- Port: 5318 (HTTP OTLP)
-- Port: 5317 (gRPC)
+- Port: 5321 (HTTP OTLP)
+- Port: 5320 (gRPC)
 - Config: `config.yaml`
 "@
 
@@ -97,8 +97,8 @@ function New-SampleConflict {
 ## Configuration
 
 ### Collector Settings
-- Port: 5318 (HTTP OTLP)
-- Port: 5317 (gRPC)
+- Port: 5321 (HTTP OTLP)
+- Port: 5320 (gRPC)
 - Config: `config.yaml`
 "@
 
@@ -161,8 +161,8 @@ function Test-ConflictResolver {
 ## Configuration
 
 ### Collector Settings
-- Port: 5318 (HTTP OTLP)
-- Port: 5317 (gRPC)
+- Port: 5321 (HTTP OTLP)
+- Port: 5320 (gRPC)
 - Config: `config.yaml`
 "@
 

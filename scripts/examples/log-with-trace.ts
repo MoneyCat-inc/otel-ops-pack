@@ -1,7 +1,7 @@
 #!/usr/bin/env tsx
 /**
  * Example: Start a span and log with correlation
- * - Emits a short trace to OTLP HTTP (5318)
+ * - Emits a short trace to OTLP HTTP (5321)
  * - Writes JSON logs enriched with trace_id/span_id to logs/app.log
  */
 
@@ -16,7 +16,7 @@ import { ensureCorrelationId, getCorrelationHeaders, withCorrelationId } from '.
 import fs from 'fs'
 import path from 'path'
 
-const endpoint = process.env.OTEL_EXPORTER_OTLP_ENDPOINT ?? 'http://127.0.0.1:5318/v1/traces'
+const endpoint = process.env.OTEL_EXPORTER_OTLP_ENDPOINT ?? 'http://127.0.0.1:5321/v1/traces'
 const serviceName = process.env.OTEL_SERVICE_NAME ?? 'bosscat-example'
 const token = process.env.BOSSCAT_TOKEN ?? `T-${Date.now()}`
 const correlationId = ensureCorrelationId()

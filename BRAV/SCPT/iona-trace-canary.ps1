@@ -1,16 +1,15 @@
-# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 <#
 .SYNOPSIS
   Sends a one-off canary span to the collector. With -Force, skips port checks and sends anyway.
 
 .EXAMPLE
-  pwsh -File scripts/iona-trace-canary.ps1 -CollectorHost localhost -OtlpHttpPort 5318 -ZipkinPort 9411 -ServiceName frontend -DurationMs 600 -Force
+  pwsh -File scripts/iona-trace-canary.ps1 -CollectorHost localhost -OtlpHttpPort 5321 -ZipkinPort 9411 -ServiceName frontend -DurationMs 600 -Force
 #>
 
 [CmdletBinding()]
 param(
   [string]$CollectorHost = "localhost",
-  [int]$OtlpHttpPort = 5318,           # OTLP/HTTP endpoint e.g. http://host:5318/v1/traces
+  [int]$OtlpHttpPort = 5321,           # OTLP/HTTP endpoint e.g. http://host:5321/v1/traces
   [int]$ZipkinPort = 9411,             # Zipkin JSON ingest
   [string]$ServiceName = "frontend",
   [int]$DurationMs = 600,

@@ -1,4 +1,3 @@
-# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 <#
 ECRR Doctor
 -------------
@@ -73,7 +72,7 @@ try {
     Add-ReportLine -Level 'WARN' -Message 'SigNoz UI did not respond on http://localhost:8080' -Color Yellow
 }
 
-$ports = 5317, 5318, 4317, 4318
+$ports = 5320, 5321, 4317, 4318
 foreach ($port in $ports) {
     if (Test-Port -Port $port) {
         Add-ReportLine -Level 'OK' -Message ("Port $port accepts TCP connections") -Color Green

@@ -117,15 +117,21 @@ jobs:
             $gate = $env:GATE; $site = $env:SITE
             $p95 = $null
             if ($j.k6 -and $j.k6.p95) { $p95 = $j.k6.p95 } elseif ($j.k6 -and $j.k6.'p95') { $p95 = $j.k6.'p95' }
-            $p5317 = $false; if ($j.otlp_ports -and $j.otlp_ports.'5317' -ne $null) { $p5317 = [bool]$j.otlp_ports.'5317' }
-            $p5318 = $false; if ($j.otlp_ports -and $j.otlp_ports.'5318' -ne $null) { $p5318 = [bool]$j.otlp_ports.'5318' }
+            # NOTE (2026-08-14): nothing in this repo emits an `otlp_ports` key.
+            # scripts/verify-iona-gate.ps1 writes { timestamp, commit, branch, gate,
+            # site, verdict, reasons, tests, checks }, so both values below are always
+            # $false and the summary line can only ever print False. Ports corrected
+            # 5317/5318 -> 5320/5321 so a future contract fix does not inherit stale
+            # numbers, but the check needs a producer before it can mean anything.
+            $p5320 = $false; if ($j.otlp_ports -and $j.otlp_ports.'5320' -ne $null) { $p5320 = [bool]$j.otlp_ports.'5320' }
+            $p5321 = $false; if ($j.otlp_ports -and $j.otlp_ports.'5321' -ne $null) { $p5321 = [bool]$j.otlp_ports.'5321' }
             $span = $false; if ($j.synthetic_span -and $j.synthetic_span.success -ne $null) { $span = [bool]$j.synthetic_span.success }
             $status = $j.status
             Add-Content -Path $summaryFile -Value "## GPU_FIX Summary"
             Add-Content -Path $summaryFile -Value "- Gate: $gate"
             Add-Content -Path $summaryFile -Value "- Site: $site"
             Add-Content -Path $summaryFile -Value "- Status: $status"
-            Add-Content -Path $summaryFile -Value "- Ports: 5317=$p5317 5318=$p5318"
+            Add-Content -Path $summaryFile -Value "- Ports: 5320=$p5320 5321=$p5321"
             Add-Content -Path $summaryFile -Value "- Synthetic Span (iona.boot): $span"
             if ($p95 -ne $null) { Add-Content -Path $summaryFile -Value "- P95 (ms): $p95" }
             Add-Content -Path $summaryFile -Value ""

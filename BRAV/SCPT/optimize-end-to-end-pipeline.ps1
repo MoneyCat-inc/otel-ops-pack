@@ -1,4 +1,3 @@
-# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 # End-to-End Windows → SigNoz Optimization Script
 # Implements complete optimization plan with verification
 # Usage: pwsh -File scripts/optimize-end-to-end-pipeline.ps1
@@ -230,7 +229,7 @@ try {
 }
 
 # Check critical ports
-$port5318 = Test-Port -Port 5318 -Label "Windows Collector (OTLP/HTTP)"
+$port5318 = Test-Port -Port 5321 -Label "Windows Collector (OTLP/HTTP)"
 $port4317 = Test-Port -Port 4317 -Label "SigNoz OTLP (gRPC)"
 $port4318 = Test-Port -Port 4318 -Label "SigNoz OTLP (HTTP)"
 $port8080 = Test-Port -Port 8080 -Label "SigNoz UI"
@@ -284,7 +283,7 @@ if (Test-Path $configPath) {
     $optimizations = @()
     
     # Check for optimal settings
-    if ($configContent -match 'endpoint: 127\.0\.0\.1:5318') {
+    if ($configContent -match 'endpoint: 127\.0\.0\.1:5321') {
         $optimizations += "OTLP HTTP endpoint configured correctly"
     }
     if ($configContent -match 'endpoint: 127\.0\.0\.1:4317') {

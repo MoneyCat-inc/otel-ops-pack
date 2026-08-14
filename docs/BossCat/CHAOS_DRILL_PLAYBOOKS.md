@@ -15,6 +15,7 @@
 **Tool:** Enhanced Data Room → Chaotic mode
 
 **Steps:**
+
 1. Open `docs/BossCat/data_room_enhanced.html`
 2. Click "Chaotic" mode
 3. Set: Delay 100-500ms, Packet loss 5-10%
@@ -22,6 +23,7 @@
 5. Monitor: Throughput drop, latency spike, recovery time
 
 **Expected Behavior:**
+
 - ✅ Latency elevated but <500ms
 - ✅ Error rate <10%
 - ✅ System recovers within 30s
@@ -35,6 +37,7 @@
 **Tool:** Manual stop/start + Data Room monitoring
 
 **Steps:**
+
 1. Run: `docker stop signoz-otel-collector`
 2. Send logs via Data Room (expect failures)
 3. Monitor: Error handling, queue behavior
@@ -42,6 +45,7 @@
 5. Verify: Auto-recovery, queue drain
 
 **Expected Behavior:**
+
 - ✅ Graceful error handling (no crash)
 - ✅ Queue buffers requests
 - ✅ Auto-reconnect within 60s
@@ -56,6 +60,7 @@
 **Tool:** Docker resource limits + load testing
 
 **Steps:**
+
 1. Apply CPU limit: `docker update --cpus="0.5" signoz-otel-collector`
 2. Apply memory limit: `docker update --memory="512m" signoz-otel-collector`
 3. Send sustained load (500 logs/sec for 5 minutes)
@@ -63,6 +68,7 @@
 5. Remove limits: `docker update --cpus="0" --memory="0"`
 
 **Expected Behavior:**
+
 - ✅ System remains responsive (no freeze)
 - ✅ Memory stays <512MB (no OOM)
 - ✅ Throughput degrades gracefully (<50% drop)
@@ -74,11 +80,13 @@
 ## 🧪 **Data Room Enhanced Controls**
 
 **Modes:**
+
 - **Laminar:** Clean baseline (no chaos)
 - **Chaotic:** Network delay + packet loss
 - **Canary:** Periodic health pings
 
 **Metrics Tracked:**
+
 - Throughput (logs/sec)
 - Latency (p50, p95, max)
 - Success rate
@@ -92,18 +100,21 @@
 ## 📋 **Drill Execution Template**
 
 ### Pre-Drill Checklist
+
 - [ ] Baseline metrics captured
 - [ ] SigNoz stack healthy
 - [ ] Data Room accessible
 - [ ] Monitoring active
 
 ### During Drill
+
 - [ ] Document start time
 - [ ] Capture metrics (screenshot/logs)
 - [ ] Note anomalies
 - [ ] Monitor recovery
 
 ### Post-Drill
+
 - [ ] Compare vs baseline
 - [ ] Document pass/fail
 - [ ] Identify improvements
@@ -114,12 +125,14 @@
 ## 🎯 **Pass/Fail Criteria**
 
 **PASS** ✅ if:
+
 - System recovers automatically
 - No data loss
 - Error rate within tolerance (<10%)
 - Performance degrades gracefully
 
 **FAIL** ❌ if:
+
 - System crashes/hangs
 - Data loss occurs
 - No auto-recovery
@@ -130,6 +143,7 @@
 ## 🔄 **Rollback Procedures**
 
 **Emergency Stop:**
+
 ```bash
 # Stop chaos
 # - Data Room: Click "Stop" button
@@ -138,12 +152,13 @@
 ```
 
 **Recovery Verification:**
+
 ```bash
 # Check health
 curl http://localhost:8080/api/v1/health
 
 # Verify OTLP
-Test-NetConnection localhost -Port 5318
+Test-NetConnection localhost -Port 5321
 
 # Send canary
 pnpm emit:enhanced
