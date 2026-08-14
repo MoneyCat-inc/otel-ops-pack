@@ -1,6 +1,6 @@
 # 🔄 ECRR Framework
 
-**Examine → Clean → Report → Role**
+## Examine → Clean → Report → Role
 
 **Authority:** BossCat OEM  
 **Last Updated:** 2025-10-20  
@@ -10,7 +10,9 @@
 
 ## 🎯 Purpose
 
-The **ECRR Framework** is the foundational methodology for all operations in the Cat Nap Control Room observability pipeline. It ensures accountability, traceability, and evidence-based decision-making.
+The **ECRR Framework** is the foundational methodology for all operations in the
+Cat Nap Control Room observability pipeline. It ensures accountability,
+traceability, and evidence-based decision-making.
 
 ---
 
@@ -21,6 +23,7 @@ The **ECRR Framework** is the foundational methodology for all operations in the
 **Objective:** Capture the current state before any changes
 
 **Activities:**
+
 - Gather baseline data and metrics
 - Run diagnostic tools and health checks
 - Document current configuration
@@ -28,6 +31,7 @@ The **ECRR Framework** is the foundational methodology for all operations in the
 - Collect evidence of current state
 
 **Commands:**
+
 ```powershell
 # Quick health check
 pwsh -File quick-status.ps1
@@ -45,6 +49,7 @@ docker ps
 ```
 
 **Artifacts:**
+
 - Diagnostic output JSON
 - Service status logs
 - Environment configuration snapshot
@@ -59,6 +64,7 @@ docker ps
 **Objective:** Remediate issues and enforce standards
 
 **Activities:**
+
 - Fix wiring and connectivity issues
 - Restore services to operational state
 - Apply configuration standards
@@ -66,6 +72,7 @@ docker ps
 - Validate remediation actions
 
 **Commands:**
+
 ```powershell
 # Restart services
 Start-Service otelcol-contrib
@@ -80,6 +87,7 @@ pwsh -File canary-test.ps1
 ```
 
 **Artifacts:**
+
 - Remediation action log
 - Service restart evidence
 - Configuration changes (Git diff)
@@ -94,6 +102,7 @@ pwsh -File canary-test.ps1
 **Objective:** Generate evidence and documentation
 
 **Activities:**
+
 - Create ECRR report with all four phases documented
 - Update status dashboards
 - Export monitoring data
@@ -101,6 +110,7 @@ pwsh -File canary-test.ps1
 - Generate executive summary
 
 **Commands:**
+
 ```powershell
 # Generate monitoring report (if monitoring script available)
 # Check for monitoring scripts in scripts/ or BRAV/SCPT/
@@ -113,6 +123,7 @@ pnpm roadmap:update
 ```
 
 **Artifacts:**
+
 - ECRR report (Markdown)
 - Gate status dashboard update
 - Monitoring data exports
@@ -127,6 +138,7 @@ pnpm roadmap:update
 **Objective:** Assign ownership and define next steps
 
 **Activities:**
+
 - Assign task ownership (PM, Agent, Verifier, Stakeholder, Operator)
 - Define acceptance criteria
 - Set validation thresholds
@@ -134,6 +146,7 @@ pnpm roadmap:update
 - Plan next ECRR cycle
 
 **Ownership Matrix:**
+
 | Role | Responsibility | Acceptance Criteria |
 |------|----------------|---------------------|
 | **Project Manager** | Pass rates, roadmap | PR ≥95% |
@@ -143,6 +156,7 @@ pnpm roadmap:update
 | **Operator (You)** | Execution | ECRR cycle complete |
 
 **Artifacts:**
+
 - RACI matrix
 - Acceptance criteria definitions
 - Review schedule
@@ -156,7 +170,7 @@ pnpm roadmap:update
 
 **Total Duration:** 30-75 minutes for full cycle
 
-```
+```text
 ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
 │   EXAMINE   │───▶│    CLEAN    │───▶│   REPORT    │───▶│    ROLE     │
 │   5-15 min  │    │  10-30 min  │    │  10-20 min  │    │   5-10 min  │
@@ -270,6 +284,7 @@ pnpm roadmap:update
 ## 🎯 Success Criteria
 
 ### Per ECRR Cycle
+
 - [ ] Baseline data collected (Examine)
 - [ ] Issues resolved (Clean)
 - [ ] ECRR report generated (Report)
@@ -279,6 +294,7 @@ pnpm roadmap:update
 - [ ] BossCat approval obtained (if required)
 
 ### For Production Changes
+
 - [ ] PR lane ≥95% pass rate
 - [ ] 100% SBOM coverage
 - [ ] ECRR compliance ≥80%
@@ -291,18 +307,21 @@ pnpm roadmap:update
 ## 📁 Evidence Storage
 
 ### Primary Locations
+
 - **ECRR Reports**: `CHAR/ECRR/ECRR_REPORTS/`
 - **Artifacts**: `artifacts/` (temporary), `DELT/ARTF/` (permanent)
 - **Dashboards**: `docs/status.html`, `docs/GATE_STATUS_DASHBOARD.md`
 - **Monitoring**: `docs/observability/snapshots/`
 
 ### Naming Conventions
-```
+
+```text
 ECRR_[PURPOSE]_[YYYYMMDD]_[HHMMSS].md
 ECRR_[PURPOSE]_LATEST.md  (symlink to most recent)
 ```
 
 **Examples:**
+
 - `ECRR_GATE_READY_20251020_073000.md`
 - `ECRR_P1_COMPLETE_20251011.md`
 - `ECRR_CURSOR_IMPLEMENTER_20251012_085425.md`
@@ -312,24 +331,28 @@ ECRR_[PURPOSE]_LATEST.md  (symlink to most recent)
 ## 🔄 ECRR Cadence
 
 ### Continuous (Operational)
+
 - **Trigger**: Issue detected, change required
 - **Frequency**: As needed
 - **Scope**: Specific issue or component
 - **Report**: Brief ECRR (1-2 pages)
 
 ### Scheduled (Maintenance)
+
 - **Trigger**: Weekly review schedule
 - **Frequency**: Weekly
 - **Scope**: Full system health check
 - **Report**: Comprehensive ECRR (3-5 pages)
 
 ### Gate (Milestone)
+
 - **Trigger**: Gate readiness assessment
 - **Frequency**: Per gate (every 1-2 weeks)
 - **Scope**: Complete gate verification matrix
 - **Report**: Executive ECRR (5-10 pages)
 
 ### Incident (Emergency)
+
 - **Trigger**: Critical failure, security issue
 - **Frequency**: Immediate
 - **Scope**: Incident scope only
@@ -340,6 +363,7 @@ ECRR_[PURPOSE]_LATEST.md  (symlink to most recent)
 ## 🛡️ ECRR Compliance
 
 ### Mandatory ECRR Triggers
+
 1. **All production changes** (code, config, infrastructure)
 2. **Gate transitions** (readiness, approval, completion)
 3. **Security incidents** (vulnerabilities, breaches, alerts)
@@ -347,12 +371,14 @@ ECRR_[PURPOSE]_LATEST.md  (symlink to most recent)
 5. **Scheduled maintenance** (weekly health checks)
 
 ### ECRR Exemptions (Rare)
+
 - **Trivial changes** (typo fixes, comment updates) - Document in commit message instead
 - **Emergency hotfixes** (ECRR generated post-facto within 24 hours)
 - **Automated changes** (CI/CD, nightly automation) - Automated ECRR generation
 
 ### Compliance Score
-```
+
+```text
 ECRR Compliance = (ECRR Reports Generated) / (ECRR-Triggering Events) × 100%
 ```
 
@@ -365,16 +391,19 @@ ECRR Compliance = (ECRR Reports Generated) / (ECRR-Triggering Events) × 100%
 ## 📞 ECRR Support
 
 ### Questions About ECRR
+
 - **Reference**: This document (`docs/comfort-cat/ECRR_FRAMEWORK.md`)
 - **Examples**: `CHAR/ECRR/ECRR_REPORTS/` directory
 - **Escalation**: BossCat OEM
 
 ### ECRR Tool Issues
+
 - **Scripts**: Check `scripts/` or `BRAV/SCPT/` for available monitoring scripts
 - **Dashboard**: `docs/status.html` (ECRR status rollup)
 - **Automation**: `.github/workflows/ci-cd-pipeline-ecrr.yml` (if present)
 
 ### ECRR Review Requests
+
 - **Command**: `@cat ecrr-review`
 - **Authority**: BossCat OEM
 - **SLA**: Review within 24 hours
