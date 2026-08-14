@@ -43,11 +43,15 @@ theirs and cannot be delegated:
 Repository implementation seat. Writes code and docs, opens PRs, files ECRRs. Operates under lane
 discipline and never merges its own work.
 
-### 4. Kiro{Implementer} — **provisional**
+### 4. Kiro{Implementer} — permanent
 
-Pilot seat, status pending the Phase 3 verdict. Converted to permanent or closed on the criteria set
-before its report is read: delivery within credit budget, no guardrail violations, evidence quality
-on par with the Cursor lane.
+Second implementation seat, a peer of Cursor{Implementer} rather than nested under it. Same rules:
+lane discipline, `Actor: Kiro{Implementer}` logged per commit, scoped credentials only, and it never
+merges its own work.
+
+Converted from provisional on **2026-08-14** after the pilot passed all three criteria frozen before
+its report was read — `docs/BossCat/KIRO_VERDICT_CRITERIA_20260813.md`, scored in
+`CHAR/ECRR/ECRR_REPORTS/ECRR_KIRO_PILOT_20260814.md`.
 
 ### Chat/review seat
 
