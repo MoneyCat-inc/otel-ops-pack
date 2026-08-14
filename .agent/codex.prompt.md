@@ -32,7 +32,7 @@ generate diffs, run smoke tests, and open a PR. Do **not** merge; leave that to 
 
 ## Observability Context
 You are working in a Windows OpenTelemetry Collector + SigNoz observability pipeline:
-- Collector runs on port 5318 (HTTP OTLP) and 5317 (gRPC)
+- Collector runs on port 5321 (HTTP OTLP) and 5320 (gRPC)
 - SigNoz runs on port 8080 (UI) and 14317 (collector endpoint)
 - Configuration files: `config.yaml`, `config-hardened.yaml`
 - Test scripts: `canary-check.ps1`, `simple-test.ps1`

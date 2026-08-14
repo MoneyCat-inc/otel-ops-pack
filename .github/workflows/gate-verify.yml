@@ -22,7 +22,7 @@ jobs:
       # Mock PRs to keep gates deterministic and fast; real for main/nightly
       USE_MOCK: ${{ github.event_name == 'pull_request' && 'true' || 'false' }}
       OTEL_SERVICE_NAME: iona-app
-      OTEL_EXPORTER_OTLP_ENDPOINT: http://127.0.0.1:5318/v1/traces
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://127.0.0.1:5321/v1/traces
       OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf
 
     steps:
@@ -71,11 +71,11 @@ jobs:
       - name: IONA gate
         if: matrix.gate == 'IONA'
         run: |
-          # emit synthetic span via Node HTTP OTLP (5318), mock allowed outside prod
+          # emit synthetic span via Node HTTP OTLP (5321), mock allowed outside prod
           pnpm emit
           curl -sf http://localhost:8080/api/v1/health || true
         env:
-          OTEL_EXPORTER_OTLP_ENDPOINT: http://127.0.0.1:5318/v1/traces
+          OTEL_EXPORTER_OTLP_ENDPOINT: http://127.0.0.1:5321/v1/traces
 
       - name: GPU_FIX — start local mock target
         if: env.USE_MOCK == 'true' && matrix.gate == 'GPU_FIX'
