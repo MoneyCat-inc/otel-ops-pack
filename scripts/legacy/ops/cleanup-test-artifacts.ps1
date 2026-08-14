@@ -108,7 +108,7 @@ $monitoringScripts | ForEach-Object {
             Remove-Item $_ -Force
             Write-Host "  Removed: $_" -ForegroundColor Gray
         } catch {
-            Write-Host "  ❌ Error removing $_: $($_.Exception.Message)" -ForegroundColor Red
+            Write-Host "  ❌ Error removing ${_}: $($_.Exception.Message)" -ForegroundColor Red
         }
     }
 }
