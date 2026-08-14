@@ -25,16 +25,21 @@ jobs:
         with:
           fetch-depth: 1
 
+      # See json-validation-gate.yml: root package-lock.json was a stale npm
+      # artifact in a pnpm repo and was removed in the 2026-08-14 cleanup.
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
+          cache: 'pnpm'
 
       - name: Install dependencies
         run: |
-          npm ci --ignore-scripts
-          npx ajv help
+          pnpm install --frozen-lockfile --ignore-scripts
+          pnpm exec ajv help
 
       - name: Validate docs/status/tests.json
         run: |

@@ -146,26 +146,51 @@ jobs:
 
       - name: Enforce docs lane budgets
         if: ${{ env.STOP_PIPELINE != '1' }}
+        env:
+          PR_LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
         run: |
+          # Determine whether a budget violation occurred, and why.
+          VIOLATION=""
           if [ "${OUT_OF_LANE_COUNT:-0}" != "0" ]; then
-            {
-              echo "GUARD_CODE=GR-02";
-              echo "GUARD_REASON=docs lane scope violation";
-              echo "GUARD_STATE=RED";
-              echo "GUARD_STATUS=FAIL";
-              echo "PIPELINE_SHOULD_FAIL=1";
-              echo "STOP_PIPELINE=1";
-              echo "BUDGET_PASS=false";
-            } >> "$GITHUB_ENV"
+            VIOLATION="docs lane scope violation"
           elif [ "${FILES:-0}" -gt 10 ] || [ "${LOC:-0}" -gt 200 ]; then
+            VIOLATION="docs lane budgets exceeded"
+          fi
+
+          if [ -z "$VIOLATION" ]; then
+            echo "CLEANUP_LANE=0" >> "$GITHUB_ENV"
+            exit 0
+          fi
+
+          # lane:cleanup waiver. A repo-wide cleanup pass cannot fit the 10-file /
+          # 200-LOC docs budget -- deleting one generated 144k-line report blows it
+          # by three orders of magnitude. Unlike lane:removal, this does NOT skip the
+          # gate: the violation is still detected, still measured, and still reported
+          # in guard.json and the PR comment. It is downgraded RED->AMBER so it stops
+          # blocking, and it requires a human to apply the label, so a PR cannot
+          # exempt itself by how it is named.
+          if echo ",${PR_LABELS}," | grep -Fq ',lane:cleanup,'; then
+            {
+              echo "GUARD_CODE=GR-02-WAIVED";
+              echo "GUARD_REASON=${VIOLATION} (waived by lane:cleanup)";
+              echo "GUARD_STATE=AMBER";
+              echo "GUARD_STATUS=WARN";
+              echo "PIPELINE_SHOULD_FAIL=0";
+              echo "BUDGET_PASS=false";
+              echo "CLEANUP_LANE=1";
+            } >> "$GITHUB_ENV"
+            echo "lane:cleanup present — ${VIOLATION} waived (AMBER, non-blocking)" \
+              | tee "${ARTIFACT_DIR}/cleanup_waiver.txt"
+          else
             {
               echo "GUARD_CODE=GR-02";
-              echo "GUARD_REASON=docs lane budgets exceeded";
+              echo "GUARD_REASON=${VIOLATION}";
               echo "GUARD_STATE=RED";
               echo "GUARD_STATUS=FAIL";
               echo "PIPELINE_SHOULD_FAIL=1";
               echo "STOP_PIPELINE=1";
               echo "BUDGET_PASS=false";
+              echo "CLEANUP_LANE=0";
             } >> "$GITHUB_ENV"
           fi
 
