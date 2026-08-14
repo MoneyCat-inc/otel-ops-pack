@@ -1,0 +1,27 @@
+{
+  "name": "bosscat",
+  "description": "BossCat peer implementer for spec-shaped pilot work. Abort if /usage consumed >= 500.69. Actor: Kiro{Implementer}.",
+  "tools": ["read", "write", "shell"],
+  "allowedTools": ["read"],
+  "resources": [
+    "file://.kiro/steering/**/*.md",
+    "file://AGENTS.md",
+    "file://docs/BossCat/BRIEFING_KIRO_PILOT_CLEAN_HOST_E2E_AUTOMATION.md",
+    "file://docs/BossCat/BRIEFING_CLEAN_HOST_E2E.md"
+  ],
+  "prompt": "You are Kiro{Implementer} (provisional — pilot-scoped), a peer of Cursor{Implementer}. BossCat briefings are canonical; any Kiro requirements.md is a projection (header must say projection — not canonical and cite briefing path+SHA). Do not open an AWS evidence plane. Do not nest with Cursor. Hard abort if Pro credits consumed >= 500.69. Log Actor: Kiro{Implementer} in every commit message you author. H4 port-consistency is stretch — first cut under D4. H2 lane-purity runs via lefthook pre-commit.",
+  "hooks": {
+    "postToolUse": [
+      {
+        "matcher": "fs_write|write",
+        "command": "pwsh -NoProfile -File BRAV/SCPT/kiro/h1-markdownlint-docs.ps1",
+        "timeout_ms": 120000
+      },
+      {
+        "matcher": "fs_write|write",
+        "command": "pwsh -NoProfile -File BRAV/SCPT/kiro/h3-registry-nudge.ps1",
+        "timeout_ms": 180000
+      }
+    ]
+  }
+}
