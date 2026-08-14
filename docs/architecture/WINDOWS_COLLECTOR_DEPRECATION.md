@@ -8,12 +8,15 @@
 
 ## Summary
 
-The **Windows OpenTelemetry Collector** (`otelcol-contrib` Windows service) is **officially deprecated** and should **no longer be referenced** in ECRR reports, runbooks, or architectural documentation.
+The **Windows OpenTelemetry Collector** (`otelcol-contrib` Windows service) is
+**officially deprecated** and should **no longer be referenced** in ECRR reports,
+runbooks, or architectural documentation.
 
 ### Historical Context
 
 **Original Architecture (Deprecated)**:
-```
+
+```text
 Windows Event Logs
     ↓
 Windows OTel Collector (otelcol-contrib service)
@@ -24,7 +27,8 @@ SigNoz
 ```
 
 **Current Architecture (Active)**:
-```
+
+```text
 Windows Event Logs + File Logs
     ↓
 Docker OTel Collectors (direct ingestion)
@@ -52,6 +56,7 @@ SigNoz
 - **ECRR Report**: `docs/archive/gates/2025-11/GATE_029_READY_20251027.md`
 
 ### Actions Taken
+
 - ✅ Stopped `otelcol-contrib` Windows service
 - ✅ Disabled auto-start for Windows service
 - ✅ Reconfigured Docker collectors for direct ingestion
@@ -60,6 +65,7 @@ SigNoz
 - ✅ Achieved ~50% noise reduction via filters
 
 ### Verification
+
 ```powershell
 # Confirm Windows service is stopped
 sc query otelcol-contrib
@@ -99,10 +105,12 @@ docker ps
 ## Configuration Files
 
 ### Deprecated (Do Not Use)
+
 - ❌ `windows/otelcol/otelcol-contrib-config.yaml` (archived)
 - ❌ `windows/otelcol/otelcol-contrib.exe` (service binary)
 
 ### Active (Use These)
+
 - ✅ `config.yaml` (root, Docker collector config)
 - ✅ `docker-compose.yaml` (SigNoz services)
 - ✅ `scripts/verify-pipeline.ps1` (validation script)
@@ -113,6 +121,7 @@ docker ps
 ## Monitoring & Health Checks
 
 ### Updated Health Check Command
+
 ```powershell
 # Quick health check (updated for current architecture)
 pwsh -File scripts\quick-monitor.ps1
@@ -125,7 +134,10 @@ pwsh -File scripts\quick-monitor.ps1
 ```
 
 ### Updated Monitoring Script
-The `quick-monitor.ps1` script **still checks** Windows Collector status for historical visibility, but the **expected state is STOPPED**. This is intentional for audit purposes.
+
+The `quick-monitor.ps1` script **still checks** Windows Collector status for
+historical visibility, but the **expected state is STOPPED**. This is intentional
+for audit purposes.
 
 **Recommendation**: Update the script to **remove** the Windows Collector check in a future PR (DOCS lane).
 
@@ -154,17 +166,20 @@ pwsh -File scripts\verify-pipeline.ps1
 ## Documentation Updates Required
 
 ### High Priority (DOCS Lane)
+
 - [ ] Update `README.md` to remove Windows Collector references
 - [ ] Revise `docs/runbooks/unified-telemetry-proofs.md` (current architecture only)
 - [ ] Update `scripts/quick-monitor.ps1` (remove deprecated check)
 - [ ] Archive `windows/otelcol/` directory to `archive/deprecated/`
 
 ### Medium Priority
+
 - [ ] Update all ECRR reports referencing Windows Collector (add deprecation note)
 - [ ] Revise training materials / onboarding docs
 - [ ] Update architecture diagrams (remove dual-hop)
 
 ### Low Priority
+
 - [ ] Remove Windows service binary from repo (after 90-day grace period)
 - [ ] Clean up archived config backups older than 6 months
 
@@ -195,6 +210,7 @@ This deprecation notice follows the **ECRR Clean phase** principle: remove drift
 **Gate Phrase**: `@cat ready-for-gate` ✅
 
 **Sign-off**:
+
 - **A (Writer)**: ECRR Audit (2025-11-01)
 - **B (Monitor)**: [To be assigned by DOCS lane owner]
 
