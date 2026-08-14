@@ -1,6 +1,6 @@
 # 🐾 BossCat OEM - Current Status
 
-**Last Updated:** 2026-06-12 (Pipeline restore + SBOM closeout)  
+**Last Updated:** 2026-08-14 (Dependabot wave — 12 PRs merged, 0 open)  
 **Gate Status:** ✅ **GATES GREEN ON MAIN**  
 **SBOM Status:** 🔒 **PROD BLOCKING ENABLED** (Issue #135 closed, PR #226)  
 **System State:** Production + local pipeline healthy
@@ -118,6 +118,27 @@ Windows Collector: otelcol-contrib (check service status)
 ---
 
 ## 📋 Active Monitoring & Next Actions
+
+### Dependabot: ✅ ZERO OPEN PRs (2026-08-14)
+
+**12 PRs merged:** #423–#427, #440, #456, #487–#491.
+
+Earlier wave: OTel SDK trace 2.10.0, Playwright 1.62.1, eslint-config-next 16.3.0,
+Prisma 7.9.1, locust ≥2.46.3, pylint ≥4.0.7.
+
+2026-08-14 wave (#487–#491): @types/react 19.2.18, tsx 4.23.12,
+@typescript-eslint/eslint-plugin 8.65.0, @atproto/api 0.20.39,
+@aws-sdk/client-bedrock-runtime 3.1107.0.
+
+Lockfile conflicts on #424/#427 resolved before merge. #487–#491 each needed
+`update-branch` between sequential merges; no `package-lock.json` was resurrected.
+ECRR: `ECRR_DEPENDABOT_PR_CLOSEOUT_20260814.md`.
+
+Standing leftovers (unchanged): `svc.cmd`, `EVIDENCE_REPO_TOKEN`, SigNoz key expiry,
+`WYZWOZ_SIGNOZ` consolidation.
+
+---
+
 
 ### Priority: High (P0/P1)
 
