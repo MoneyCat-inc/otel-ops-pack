@@ -1,22 +1,22 @@
 {
-  "ProcessingDate": "2026-07-11 15:55:12 UTC",
+  "ImplementationPlan": {
+    "Phase1": "Consolidate high-priority groups (12 reports → 3 reports)",
+    "Phase3": "Archive originals and update references",
+    "Phase2": "Consolidate secondary groups (7 reports → 2 reports)"
+  },
+  "ProcessingDate": "2026-08-14 13:35:39 UTC",
+  "Candidates": [],
   "ConsolidationGroups": {
     "GPU Automation Reports": [],
-    "ECRR-01 Reports": [],
-    "Rollout Merge Reports": [],
     "Production Deployment Reports": [],
+    "Rollout Merge Reports": [],
+    "ECRR-01 Reports": [],
     "SigNoz Alert Reports": []
   },
-  "TotalCandidates": 0,
   "ExpectedImpact": {
-    "ContentDeduplication": "n/a",
     "QualityImprovement": "n/a (no consolidation candidates)",
-    "ReportReduction": "n/a"
+    "ReportReduction": "n/a",
+    "ContentDeduplication": "n/a"
   },
-  "Candidates": [],
-  "ImplementationPlan": {
-    "Phase2": "Consolidate secondary groups (7 reports → 2 reports)",
-    "Phase3": "Archive originals and update references",
-    "Phase1": "Consolidate high-priority groups (12 reports → 3 reports)"
-  }
+  "TotalCandidates": 0
 }
