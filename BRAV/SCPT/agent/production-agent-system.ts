@@ -77,7 +77,7 @@ class ProductionAgentSystem {
   private pidFile = '.agent/production-agent.pid';
   private otelIntegration = {
     signozUrl: 'http://localhost:8080',
-    collectorUrl: 'http://localhost:5318',
+    collectorUrl: 'http://localhost:5321',
     metricsPath: 'C:/logs/queue/health.log'
   };
 

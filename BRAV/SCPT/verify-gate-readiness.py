@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 """BossCat gate readiness verifier."""
 
 import argparse
@@ -110,9 +109,9 @@ def parse_host_port(endpoint: str) -> Optional[Tuple[str, int]]:
     Parse endpoint string into (host, port). Returns None on failure.
     
     Accepts:
-    - URL schemes: http://localhost:5318, https://host:4318
-    - Quoted values: "127.0.0.1:5317", 'localhost:5318'
-    - Plain host:port: 127.0.0.1:5317, localhost:5318
+    - URL schemes: http://localhost:5321, https://host:4318
+    - Quoted values: "127.0.0.1:5320", 'localhost:5321'
+    - Plain host:port: 127.0.0.1:5320, localhost:5321
     - IPv6: [::1]:4317
     
     Normalizes by:

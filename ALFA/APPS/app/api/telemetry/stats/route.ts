@@ -22,7 +22,7 @@ export async function GET() {
       },
       telemetry: {
         enabled: true,
-        endpoint: process.env.OTEL_EXPORTER_OTLP_ENDPOINT || 'http://127.0.0.1:5318',
+        endpoint: process.env.OTEL_EXPORTER_OTLP_ENDPOINT || 'http://127.0.0.1:5321',
         serviceName: process.env.OTEL_SERVICE_NAME || 'iona-app',
         protocol: 'http/protobuf',
       },

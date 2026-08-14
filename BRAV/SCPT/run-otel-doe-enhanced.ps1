@@ -1,4 +1,3 @@
-# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 #Requires -Version 7.0
 
 <#
@@ -277,7 +276,7 @@ $experimentRunner = {
     $actualDuration = [math]::Min($Duration, $StageBudget)
     Write-Host "  Executing load generation for $actualDuration seconds..." -ForegroundColor Yellow
 
-    $loadCommandExpanded = "$LoadCommand -Duration $actualDuration -OTLPEndpoint http://localhost:5318 -RunId $($Run.runId) -Stage $Stage"
+    $loadCommandExpanded = "$LoadCommand -Duration $actualDuration -OTLPEndpoint http://localhost:5321 -RunId $($Run.runId) -Stage $Stage"
     $loadProcess = Start-Process -FilePath "pwsh" -ArgumentList @("-Command", $loadCommandExpanded) -PassThru -NoNewWindow
     $loadProcess.WaitForExit($actualDuration * 1000 + 30000)
 

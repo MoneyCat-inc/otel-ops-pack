@@ -1,4 +1,3 @@
-# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 # BossCat Demo Flow Generator PowerShell Wrapper
 # Integrates DFG with existing BossCat gate scripts
 
@@ -19,7 +18,7 @@ param(
     [switch]$Validate,
 
     [Parameter(Mandatory=$false)]
-    [string]$OTLPEndpoint = "http://127.0.0.1:5318",
+    [string]$OTLPEndpoint = "http://127.0.0.1:5321",
 
     [Parameter(Mandatory=$false)]
     [string]$SigNozUrl = "http://localhost:8080",

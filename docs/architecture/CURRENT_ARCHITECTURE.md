@@ -45,8 +45,8 @@ SigNoz UI (http://localhost:8080)
 ### 3. SigNoz Backend
 
 - **OTLP Endpoints**:
-  - gRPC: `localhost:5317`
-  - HTTP: `localhost:5318`
+  - gRPC: `localhost:5320`
+  - HTTP: `localhost:5321`
 - **Query Service**: Real-time log/trace/metrics queries
 - **Alerting**: Threshold-based alerts
 - **Retention**: Configurable per signal type

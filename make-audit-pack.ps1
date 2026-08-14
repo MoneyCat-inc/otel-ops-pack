@@ -1,4 +1,3 @@
-# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 # make-audit-pack.ps1
 # Audit evidence pack generator for CAB/Change records
 # ASCII only, PowerShell 5.1 compatible
@@ -25,7 +24,7 @@ sc.exe qfailure otelcol-contrib | Out-File (Join-Path $staged "service-recovery.
 
 # 2) Ports
 Write-Host "Collecting port bindings..." -ForegroundColor Yellow
-cmd /c netstat -ano | findstr /R ":(5317|5318|8889|13134)\s" > (Join-Path $staged "ports.txt")
+cmd /c netstat -ano | findstr /R ":(5320|5321|8889|13134)\s" > (Join-Path $staged "ports.txt")
 
 # 3) Health + metrics
 Write-Host "Collecting health and metrics..." -ForegroundColor Yellow

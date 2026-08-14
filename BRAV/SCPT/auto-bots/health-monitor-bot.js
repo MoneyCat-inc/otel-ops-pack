@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-// HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 
 /**
  * Auto Health Monitor Bot
@@ -16,7 +15,7 @@ const path = require('path');
 const CONFIG = {
   signozUrl: 'http://localhost:8080',
   otelCollectorUrl: 'http://localhost:4318',
-  windowsCollectorUrl: 'http://localhost:5318',
+  windowsCollectorUrl: 'http://localhost:5321',
   checkInterval: 30000, // 30 seconds
   reportInterval: 300000, // 5 minutes
   maxHistoryDays: 7,

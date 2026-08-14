@@ -93,8 +93,8 @@ I've developed a production-ready autonomous observability subsystem specificall
 ## 🚀 **Key Contributions**
 
 ### **OTLP-First Design**
-- Primary OTLP/HTTP (port 5318) for maximum compatibility
-- Secondary OTLP/gRPC (port 5317) for high-performance scenarios
+- Primary OTLP/HTTP (port 5321) for maximum compatibility
+- Secondary OTLP/gRPC (port 5320) for high-performance scenarios
 - Full adherence to OpenTelemetry semantic conventions
 - Proper resource identification and metadata
 
@@ -126,9 +126,9 @@ receivers:
   otlp:
     protocols:
       grpc:
-        endpoint: 0.0.0.0:5317
+        endpoint: 0.0.0.0:5320
       http:
-        endpoint: 0.0.0.0:5318
+        endpoint: 0.0.0.0:5321
   windowsperfcounters:
     scrapers:
       memory:
@@ -253,7 +253,7 @@ This PR adds a comprehensive Windows observability example demonstrating autonom
 
 ### **Key Features**
 
-- **OTLP-First**: Primary HTTP (5318), secondary gRPC (5317)
+- **OTLP-First**: Primary HTTP (5321), secondary gRPC (5320)
 - **Windows Native**: Event Log, Performance Counters, Service hosting
 - **Autonomous**: Self-healing, self-optimizing, self-documenting
 - **Production Ready**: Service mode, logging, monitoring

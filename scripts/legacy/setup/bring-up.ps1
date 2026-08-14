@@ -1,4 +1,3 @@
-# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 # Complete Observability Stack Bring-Up Script
 # Executes Phase 1 runbook with all steps
 
@@ -175,8 +174,8 @@ function Test-Integration {
             @{ Port = 8080; Name = "SigNoz UI" }
             @{ Port = 4317; Name = "SigNoz gRPC" }
             @{ Port = 4318; Name = "SigNoz HTTP" }
-            @{ Port = 5317; Name = "Windows OTEL gRPC" }
-            @{ Port = 5318; Name = "Windows OTEL HTTP" }
+            @{ Port = 5320; Name = "Windows OTEL gRPC" }
+            @{ Port = 5321; Name = "Windows OTEL HTTP" }
         )
         
         $allOk = $true
