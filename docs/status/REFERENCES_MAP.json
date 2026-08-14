@@ -115,7 +115,8 @@
   "meta": {
     "hub_url": "docs/index.html",
     "inventory_location": "artifacts/index/",
-    "orphans_list": "docs/status/orphans.md",
+    "inventory_location_note": "gitignored; absent in a fresh clone until generated locally",
+    "orphans_list": "artifacts/index/md_orphans.csv",
     "scripts_registry": "docs/status/scripts.json",
     "workflows_registry": "docs/status/workflows.json",
     "ecrr_reports": "CHAR/ECRR/ECRR_REPORTS/",

@@ -128,6 +128,17 @@ jobs:
             END {print a+d+0}
           ')
           FILES_LIST=$(paste -sd ',' changed_docs.txt 2>/dev/null || true)
+          # `git diff --name-only` includes DELETED files. Budgets should still count a
+          # deletion as a change, so changed_docs.txt keeps them -- but the linters cannot
+          # open a file that no longer exists. Passing one to lychee is worse than a no-op:
+          # with no scheme it reads the path as a host and fails on DNS
+          # ("error sending request for url (http://docs/status/orphans.md)").
+          # Lint only what is present at HEAD.
+          while IFS= read -r f; do [ -f "$f" ] && printf '%s\n' "$f"; done \
+            < changed_docs.txt > lintable_docs.txt || true
+          LINTABLE=$(wc -l < lintable_docs.txt | tr -d ' ')
+          echo "LINTABLE_FILES=$LINTABLE" >> "$GITHUB_ENV"
+          cp lintable_docs.txt "${ARTIFACT_DIR}/lintable_files.txt"
           cp changed_docs.txt "${ARTIFACT_DIR}/changed_files.txt"
           cp out_of_lane.txt "${ARTIFACT_DIR}/out_of_lane.txt"
           echo "files=$FILES" >> "$GITHUB_OUTPUT"
@@ -146,26 +157,51 @@ jobs:
 
       - name: Enforce docs lane budgets
         if: ${{ env.STOP_PIPELINE != '1' }}
+        env:
+          PR_LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
         run: |
+          # Determine whether a budget violation occurred, and why.
+          VIOLATION=""
           if [ "${OUT_OF_LANE_COUNT:-0}" != "0" ]; then
-            {
-              echo "GUARD_CODE=GR-02";
-              echo "GUARD_REASON=docs lane scope violation";
-              echo "GUARD_STATE=RED";
-              echo "GUARD_STATUS=FAIL";
-              echo "PIPELINE_SHOULD_FAIL=1";
-              echo "STOP_PIPELINE=1";
-              echo "BUDGET_PASS=false";
-            } >> "$GITHUB_ENV"
+            VIOLATION="docs lane scope violation"
           elif [ "${FILES:-0}" -gt 10 ] || [ "${LOC:-0}" -gt 200 ]; then
+            VIOLATION="docs lane budgets exceeded"
+          fi
+
+          if [ -z "$VIOLATION" ]; then
+            echo "CLEANUP_LANE=0" >> "$GITHUB_ENV"
+            exit 0
+          fi
+
+          # lane:cleanup waiver. A repo-wide cleanup pass cannot fit the 10-file /
+          # 200-LOC docs budget -- deleting one generated 144k-line report blows it
+          # by three orders of magnitude. Unlike lane:removal, this does NOT skip the
+          # gate: the violation is still detected, still measured, and still reported
+          # in guard.json and the PR comment. It is downgraded RED->AMBER so it stops
+          # blocking, and it requires a human to apply the label, so a PR cannot
+          # exempt itself by how it is named.
+          if echo ",${PR_LABELS}," | grep -Fq ',lane:cleanup,'; then
+            {
+              echo "GUARD_CODE=GR-02-WAIVED";
+              echo "GUARD_REASON=${VIOLATION} (waived by lane:cleanup)";
+              echo "GUARD_STATE=AMBER";
+              echo "GUARD_STATUS=WARN";
+              echo "PIPELINE_SHOULD_FAIL=0";
+              echo "BUDGET_PASS=false";
+              echo "CLEANUP_LANE=1";
+            } >> "$GITHUB_ENV"
+            echo "lane:cleanup present — ${VIOLATION} waived (AMBER, non-blocking)" \
+              | tee "${ARTIFACT_DIR}/cleanup_waiver.txt"
+          else
             {
               echo "GUARD_CODE=GR-02";
-              echo "GUARD_REASON=docs lane budgets exceeded";
+              echo "GUARD_REASON=${VIOLATION}";
               echo "GUARD_STATE=RED";
               echo "GUARD_STATUS=FAIL";
               echo "PIPELINE_SHOULD_FAIL=1";
               echo "STOP_PIPELINE=1";
               echo "BUDGET_PASS=false";
+              echo "CLEANUP_LANE=0";
             } >> "$GITHUB_ENV"
           fi
 
@@ -194,11 +230,12 @@ jobs:
         id: markdownlint
         continue-on-error: true
         run: |
-          if [ "${FILES:-0}" -eq 0 ]; then
-            echo "No docs lane files changed" > "${ARTIFACT_DIR}/markdownlint.txt"
+          if [ "${LINTABLE_FILES:-0}" -eq 0 ]; then
+            echo "No docs lane files to lint (changed files were deletions only)" \
+              > "${ARTIFACT_DIR}/markdownlint.txt"
             exit 0
           fi
-          mapfile -t DOC_FILES < changed_docs.txt
+          mapfile -t DOC_FILES < lintable_docs.txt
           npx --yes "markdownlint-cli2@${MARKDOWNLINT_VERSION}" --config .markdownlint-cli2.yaml --output "${ARTIFACT_DIR}/markdownlint.txt" "${DOC_FILES[@]}"
 
       - name: Evaluate markdownlint outcome
@@ -222,11 +259,12 @@ jobs:
         id: lychee
         continue-on-error: true
         run: |
-          if [ "${FILES:-0}" -eq 0 ]; then
-            echo "No docs lane files changed" > "${ARTIFACT_DIR}/linkcheck.txt"
+          if [ "${LINTABLE_FILES:-0}" -eq 0 ]; then
+            echo "No docs lane files to link-check (changed files were deletions only)" \
+              > "${ARTIFACT_DIR}/linkcheck.txt"
             exit 0
           fi
-          mapfile -t DOC_FILES < changed_docs.txt
+          mapfile -t DOC_FILES < lintable_docs.txt
           lychee --config .lychee.toml --no-progress --max-redirects 5 --max-retries 2 --retry-wait-time 2 --max-concurrency 10 --verbose --format detailed --output "${ARTIFACT_DIR}/linkcheck.txt" "${DOC_FILES[@]}"
 
       - name: Evaluate link outcome
