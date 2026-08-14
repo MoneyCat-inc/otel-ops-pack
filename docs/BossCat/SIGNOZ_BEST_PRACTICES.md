@@ -11,25 +11,27 @@
 
 ### 1. Use HTTP/Protobuf as Primary Protocol
 
-**Problem:** gRPC (port 4317/5317) can cause parse errors, especially in bot/script environments.
+**Problem:** gRPC (port 4317/5320) can cause parse errors, especially in bot/script environments.
 
-**Solution:** Default to HTTP/protobuf (port 4318/5318) for all OTLP exports.
+**Solution:** Default to HTTP/protobuf (port 4318/5321) for all OTLP exports.
 
 **Implementation:**
+
 ```yaml
 # config/otelcol-windows.yaml
 exporters:
   otlphttp/signoz:
-    endpoint: http://localhost:5318  # HTTP, not gRPC
+    endpoint: http://localhost:5321  # HTTP, not gRPC
     compression: gzip
 ```
 
 ```typescript
 // scripts/emit-synthetic-span.ts
-const endpoint = process.env.OTEL_EXPORTER_OTLP_ENDPOINT ?? 'http://127.0.0.1:5318/v1/traces';
+const endpoint = process.env.OTEL_EXPORTER_OTLP_ENDPOINT ?? 'http://127.0.0.1:5321/v1/traces';
 ```
 
 **Benefits:**
+
 - ✅ Fewer connection errors
 - ✅ Better script/bot compatibility
 - ✅ Simpler debugging (HTTP headers visible)
@@ -44,15 +46,17 @@ const endpoint = process.env.OTEL_EXPORTER_OTLP_ENDPOINT ?? 'http://127.0.0.1:53
 **Solution:** Use `.env` files for all environment-specific configuration.
 
 **Implementation:**
+
 ```bash
 # .env (copy from .env.template)
-OTEL_EXPORTER_OTLP_ENDPOINT=http://127.0.0.1:5318
+OTEL_EXPORTER_OTLP_ENDPOINT=http://127.0.0.1:5321
 OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
 OTEL_SERVICE_NAME=gate-synthetic
 OTEL_RESOURCE_ATTRIBUTES=deployment.environment=production,bosscat.lane=gate
 ```
 
 **Load in PowerShell:**
+
 ```powershell
 Get-Content .env | ForEach-Object {
   if ($_ -match '^([^#][^=]+)=(.*)$') {
@@ -62,6 +66,7 @@ Get-Content .env | ForEach-Object {
 ```
 
 **Load in Docker Compose:**
+
 ```yaml
 services:
   signoz-collector:
@@ -70,6 +75,7 @@ services:
 ```
 
 **Benefits:**
+
 - ✅ Bot-friendly (swap configs without code changes)
 - ✅ Environment parity (dev/stage/prod)
 - ✅ Secret management (don't commit .env)
@@ -79,6 +85,7 @@ services:
 ### 3. Centralize Telemetry with OTel Collector
 
 **When to Use:**
+
 - ✅ Multi-service architectures (>3 services)
 - ✅ Need centralized management/enrichment
 - ✅ Protocol translation required
@@ -86,11 +93,13 @@ services:
 - ✅ Security/compliance controls
 
 **When to Skip:**
+
 - Small setups (<3 services, local only)
 - Quick prototypes
 
 **Architecture:**
-```
+
+```text
 ┌─────────────┐     ┌──────────────────┐     ┌─────────┐
 │ Application │────▶│ OTel Collector   │────▶│ SigNoz  │
 │  (OTLP)     │     │ (Process/Filter) │     │ Backend │
@@ -98,6 +107,7 @@ services:
 ```
 
 **Benefits:**
+
 - ✅ Decouple apps from backend
 - ✅ Add processors (sampling, filtering)
 - ✅ Buffer during backend outages
@@ -112,6 +122,7 @@ services:
 **Solution:** Use OpenTelemetry View API to limit attributes.
 
 **Example (Python):**
+
 ```python
 from opentelemetry.sdk.metrics import MeterProvider
 from opentelemetry.sdk.metrics.view import View, SumAggregation
@@ -138,10 +149,12 @@ meter_provider = MeterProvider(views=[view_drop, view_limit, view_sum])
 ```
 
 **Bot-Native Pattern:**
+
 - Keep: `bosscat.lane`, `bosscat.actor`, `deployment.environment`
 - Drop: `request_id`, `user_id`, `transaction_id` (use in logs/traces, not metrics)
 
 **Benefits:**
+
 - ✅ ~30-50% cardinality reduction
 - ✅ Faster queries
 - ✅ Lower costs
@@ -155,6 +168,7 @@ meter_provider = MeterProvider(views=[view_drop, view_limit, view_sum])
 **Solution:** Inject `trace_id` and `span_id` into every log entry.
 
 **Implementation (Node.js + Pino):**
+
 ```typescript
 import pino from 'pino';
 import { trace } from '@opentelemetry/api';
@@ -178,11 +192,13 @@ logger.info({ bosscat_lane: 'gate', action: 'verify' }, 'Pipeline verified');
 ```
 
 **SigNoz Logs Pipeline:**
+
 1. Navigate to SigNoz UI → Logs → Pipelines
 2. Add processor: Parse `trace_id` and `span_id` fields
 3. Verify linkage: Click log entry → "View Trace" button appears
 
 **Benefits:**
+
 - ✅ Instant log-to-trace navigation
 - ✅ Debug faster (see all logs for a trace)
 - ✅ Unified observability
@@ -201,6 +217,7 @@ logger.info({ bosscat_lane: 'gate', action: 'verify' }, 'Pipeline verified');
 | **Gauge** | Instantaneous measurements | CPU temperature, memory usage |
 
 **Bot-Native Example (TypeScript):**
+
 ```typescript
 const meter = provider.getMeter('bosscat-gate');
 
@@ -230,6 +247,7 @@ const budgetUsage = meter.createGauge('bosscat.gate.budget_used', {
 ```
 
 **Benefits:**
+
 - ✅ Semantic clarity
 - ✅ Correct aggregations
 - ✅ SigNoz dashboards auto-visualize
@@ -239,16 +257,19 @@ const budgetUsage = meter.createGauge('bosscat.gate.budget_used', {
 ### 7. Balance Auto and Manual Instrumentation
 
 **Auto-Instrumentation:**
+
 - ✅ Fast to implement (zero code changes)
 - ✅ Captures framework-level operations (HTTP, DB, etc.)
 - ✅ Great for baseline observability
 
 **Manual Instrumentation:**
+
 - ✅ Business-logic visibility (gate checks, budget enforcement)
 - ✅ Custom attributes (bosscat.lane, bosscat.budget_used)
 - ✅ Deeper insight into critical paths
 
 **Strategy:**
+
 1. **Start with auto:** Install `@opentelemetry/auto-instrumentations-node`
 2. **Add manual spans** for bot-specific operations:
    - Gate verification (`gate.verify`)
@@ -257,6 +278,7 @@ const budgetUsage = meter.createGauge('bosscat.gate.budget_used', {
 3. **Enrich with attributes:** `bosscat.lane`, `bosscat.actor`, `bosscat.files_changed`
 
 **Example:**
+
 ```typescript
 import { trace } from '@opentelemetry/api';
 
@@ -295,6 +317,7 @@ async function verifyGate() {
 **Patterns:**
 
 **TypeScript (OTLP Exporter):**
+
 ```typescript
 const exporter = new OTLPTraceExporter({
   url: endpoint,
@@ -305,11 +328,13 @@ const exporter = new OTLPTraceExporter({
 ```
 
 **PowerShell (HTTP Requests):**
+
 ```powershell
 Invoke-WebRequest -Uri $url -TimeoutSec 5 -MaximumRetryCount 3 -RetryIntervalSec 2
 ```
 
 **OTel Collector (YAML):**
+
 ```yaml
 exporters:
   otlphttp/signoz:
@@ -322,6 +347,7 @@ exporters:
 ```
 
 **Benefits:**
+
 - ✅ Predictable failure modes
 - ✅ No hanging operations
 - ✅ Graceful degradation
@@ -333,11 +359,13 @@ exporters:
 **Problem:** Hard-coded keys in code/configs = security risk.
 
 **Solution:**
+
 1. ✅ Load from environment variables
 2. ✅ Never commit to version control
 3. ✅ Rotate periodically (quarterly)
 
 **Pattern:**
+
 ```bash
 # .env (not committed)
 SIGNOZ_INGESTION_KEY=your-key-here
@@ -347,6 +375,7 @@ export SIGNOZ_INGESTION_KEY=$(cat .env | grep SIGNOZ_INGESTION_KEY | cut -d'=' -
 ```
 
 **Rotation Calendar:**
+
 - Document in `docs/BossCat/CREDENTIAL_ROTATION_CALENDAR.md`
 - Automate with secrets manager (AWS Secrets Manager, Vault)
 
@@ -357,6 +386,7 @@ export SIGNOZ_INGESTION_KEY=$(cat .env | grep SIGNOZ_INGESTION_KEY | cut -d'=' -
 **Goal:** Link logs, metrics, and traces across bot operations.
 
 **Pattern:**
+
 1. **Generate correlation ID** at operation start (UUID v4)
 2. **Propagate** via:
    - OTLP resource attributes (`bosscat.correlation_id`)
@@ -366,6 +396,7 @@ export SIGNOZ_INGESTION_KEY=$(cat .env | grep SIGNOZ_INGESTION_KEY | cut -d'=' -
 3. **Query** in SigNoz: Filter by `bosscat.correlation_id`
 
 **Benefits:**
+
 - ✅ End-to-end tracing across bots
 - ✅ Debug complex workflows
 - ✅ Audit compliance (link evidence to telemetry)
@@ -375,18 +406,21 @@ export SIGNOZ_INGESTION_KEY=$(cat .env | grep SIGNOZ_INGESTION_KEY | cut -d'=' -
 ## 🚀 Quick Wins for Bot-Native Pipelines
 
 ### Immediate (Phase 1)
+
 - [x] ✅ Default to HTTP/protobuf (not gRPC)
 - [x] ✅ Create .env.template for configuration
 - [x] ✅ Add explicit timeouts to all scripts
 - [x] ✅ Document retry patterns
 
 ### Next (Phase 2)
+
 - [ ] 📅 Add structured logging with trace context
 - [ ] 📅 Create metric views for cardinality reduction
 - [ ] 📅 Implement correlation IDs
 - [ ] 📅 Enrich synthetic telemetry with business events
 
 ### Future (Phase 3)
+
 - [ ] 📅 Modular collectors (dev/stage/prod)
 - [ ] 📅 High-availability setup
 - [ ] 📅 Secrets manager integration
@@ -397,16 +431,19 @@ export SIGNOZ_INGESTION_KEY=$(cat .env | grep SIGNOZ_INGESTION_KEY | cut -d'=' -
 ## 📚 References
 
 **SigNoz Documentation:**
+
 - [OpenTelemetry Resource Center](https://signoz.io/resource-center/opentelemetry/)
 - [Collector Setup Guide](https://signoz.io/docs/install/)
 - [Logs Pipeline Configuration](https://signoz.io/docs/logs-management/logs-pipeline/)
 
 **OpenTelemetry:**
+
 - [View API Documentation](https://opentelemetry.io/docs/specs/otel/metrics/sdk/#view)
 - [Semantic Conventions](https://opentelemetry.io/docs/specs/semconv/)
 - [Best Practices](https://opentelemetry.io/docs/collector/best-practices/)
 
 **BossCat Internal:**
+
 - `AGENTS.md` — Bot hierarchy and governance
 - `docs/BossCat/ECRR_PIPELINE_REBUILD_20251010.md` — Pipeline rebuild ECRR
 - `.agent/config.json` — Lane configuration
@@ -422,5 +459,5 @@ export SIGNOZ_INGESTION_KEY=$(cat .env | grep SIGNOZ_INGESTION_KEY | cut -d'=' -
 
 ---
 
-**END OF BEST PRACTICES GUIDE**
+**END OF BEST PRACTICES GUIDE.**
 

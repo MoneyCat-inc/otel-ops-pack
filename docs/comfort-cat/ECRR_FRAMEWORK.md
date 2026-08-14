@@ -81,8 +81,8 @@ Start-Service otelcol-contrib
 docker-compose -f docker-compose-signoz.yml restart
 
 # Verify endpoints
-Test-NetConnection -ComputerName localhost -Port 5317
-Test-NetConnection -ComputerName localhost -Port 5318
+Test-NetConnection -ComputerName localhost -Port 5320
+Test-NetConnection -ComputerName localhost -Port 5321
 
 # Run canary test
 pwsh -File canary-test.ps1
