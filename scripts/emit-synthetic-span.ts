@@ -10,7 +10,7 @@
  *   BOSSCAT_LANE=site pnpm emit                  # Override lane
  * 
  * Environment Variables (.env file supported):
- *   OTEL_EXPORTER_OTLP_ENDPOINT  - OTLP endpoint (default: http://127.0.0.1:5318/v1/traces)
+ *   OTEL_EXPORTER_OTLP_ENDPOINT  - OTLP endpoint (default: http://127.0.0.1:5321/v1/traces)
  *   OTEL_SERVICE_NAME            - Service identifier (default: gate-synthetic)
  *   BOSSCAT_LANE                 - Bot lane (default: gate)
  *   DEPLOYMENT_ENVIRONMENT       - Environment (default: production)
@@ -32,11 +32,11 @@ import { ensureCorrelationId, getCorrelationHeaders } from './lib/correlation';
 // ============================================
 // Configuration (env-driven, bot-friendly)
 // ============================================
-// NOTE: Defaults to HTTP/protobuf (5318) for reliability.
-//       gRPC (5317) can cause parse errors; use HTTP for bot operations.
+// NOTE: Defaults to HTTP/protobuf (5321) for reliability.
+//       gRPC (5320) can cause parse errors; use HTTP for bot operations.
 //       Override via OTEL_EXPORTER_OTLP_ENDPOINT environment variable.
 const config = {
-  endpoint: process.env.OTEL_EXPORTER_OTLP_ENDPOINT ?? 'http://127.0.0.1:5318/v1/traces',
+  endpoint: process.env.OTEL_EXPORTER_OTLP_ENDPOINT ?? 'http://127.0.0.1:5321/v1/traces',
   serviceName: process.env.OTEL_SERVICE_NAME ?? 'gate-synthetic',
   lane: process.env.BOSSCAT_LANE ?? 'gate',
   environment: process.env.DEPLOYMENT_ENVIRONMENT ?? 'production',
@@ -216,7 +216,7 @@ process.on('SIGINT', async () => {
 //   pnpm emit                                    # Default (gate-synthetic)
 //   OTEL_SERVICE_NAME=site-bot pnpm emit         # Site bot
 //   BOSSCAT_LANE=site pnpm emit                  # Site lane
-//   OTEL_EXPORTER_OTLP_ENDPOINT=http://...:5318/v1/traces pnpm emit
+//   OTEL_EXPORTER_OTLP_ENDPOINT=http://...:5321/v1/traces pnpm emit
 //
 // ============================================
 

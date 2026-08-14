@@ -1,10 +1,9 @@
-# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 # Publish E2 Ratio Sweep Results to SigNoz
 # Sends E2 test results via OTLP HTTP to SigNoz for dashboard visualization
 
 param(
     [string]$ResultsFile = "artifacts/e2-ratio-sweep-results.json",
-    [string]$Endpoint = "http://127.0.0.1:5318/v1/logs"
+    [string]$Endpoint = "http://127.0.0.1:5321/v1/logs"
 )
 
 Write-Host "=== Publishing E2 Ratio Sweep Results to SigNoz ===" -ForegroundColor Cyan
@@ -29,7 +28,7 @@ try {
 # Check endpoint connectivity
 Write-Host "`nChecking endpoint connectivity..." -ForegroundColor Yellow
 try {
-    $testConnection = Test-NetConnection -ComputerName 127.0.0.1 -Port 5318 -WarningAction SilentlyContinue
+    $testConnection = Test-NetConnection -ComputerName 127.0.0.1 -Port 5321 -WarningAction SilentlyContinue
     if (-not $testConnection.TcpTestSucceeded) {
         Write-Warning "Cannot reach OTLP endpoint at $Endpoint. Please ensure collector is running."
         Write-Host "You can manually check SigNoz UI at http://127.0.0.1:8080" -ForegroundColor Cyan

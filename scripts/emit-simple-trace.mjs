@@ -12,7 +12,7 @@ const SERVICE_NAME = env('OTEL_SERVICE_NAME', 'iona-app');
 const SITE = env('SITE', env('GATE_SITE', 'ci'));
 const RUN_ID = env('GITHUB_RUN_ID', 'local');
 const GIT_SHA = String(env('GITHUB_SHA', '')).slice(0, 12);
-let OTLP_ENDPOINT = env('OTEL_EXPORTER_OTLP_ENDPOINT', 'http://127.0.0.1:5318/v1/traces');
+let OTLP_ENDPOINT = env('OTEL_EXPORTER_OTLP_ENDPOINT', 'http://127.0.0.1:5321/v1/traces');
 if (!OTLP_ENDPOINT.endsWith('/v1/traces')) {
   // Normalize to /v1/traces if user only provided host:port
   OTLP_ENDPOINT = OTLP_ENDPOINT.replace(/\/$/, '') + '/v1/traces';

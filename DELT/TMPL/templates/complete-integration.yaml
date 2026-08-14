@@ -22,9 +22,9 @@ receivers:
   otlp:
     protocols:
       http:
-        endpoint: 127.0.0.1:5318
+        endpoint: 127.0.0.1:5321
       grpc:
-        endpoint: 127.0.0.1:5317
+        endpoint: 127.0.0.1:5320
   # File log receiver
   filelog:
     include:

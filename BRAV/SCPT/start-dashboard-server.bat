@@ -40,7 +40,7 @@ echo    http://localhost:%PORT%/docs/dashboards/
 echo.
 echo 🔧 Prerequisites:
 echo    • SigNoz running on localhost:8080
-echo    • OTel Collector on localhost:5318
+echo    • OTel Collector on localhost:5321
 echo.
 echo ⏹️  Press Ctrl+C to stop the server
 echo.

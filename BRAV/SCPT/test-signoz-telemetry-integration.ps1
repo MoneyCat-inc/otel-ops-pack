@@ -1,4 +1,3 @@
-# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 #Requires -Version 7.0
 
 <#
@@ -10,7 +9,7 @@
 [CmdletBinding()]
 param(
     [string]$SigNozEndpoint = 'http://localhost:8080',
-    [string]$OTLPEndpoint = 'http://localhost:5318',
+    [string]$OTLPEndpoint = 'http://localhost:5321',
     [int]$TestDurationSeconds = 30
 )
 

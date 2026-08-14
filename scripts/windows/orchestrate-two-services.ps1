@@ -1,4 +1,3 @@
-# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 # Gate #029: Multi-Service Orchestrator
 # Authority: BossCat OEM | Executor: Cursor{Implementer}
 # Purpose: Deploy and coordinate multiple services with aggregated status
@@ -37,7 +36,7 @@ $services = @(
         Port = 5556
         BinaryPath = Join-Path $rootPath "bosscat-svc2-api\bin\Debug\net9.0\bosscat-svc2-api.dll"
         HealthUrl = "http://localhost:5556/health"
-        EnableOTel = $true  # Gate #029: Route through Collector (5317)
+        EnableOTel = $true  # Gate #029: Route through Collector (5320)
     },
     @{
         Name = "bosscat-svc3-worker"

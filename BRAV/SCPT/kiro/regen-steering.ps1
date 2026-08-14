@@ -59,7 +59,7 @@ Generated: $generated
 | Collector → SigNoz | localhost:4317 |
 | Collector pin | otelcol-contrib **0.104.0** |
 
-Do **not** use historical 5317/5318 for Windows collector ingest (PlariumPlay conflict class).
+Do **not** use historical 5320/5321 for Windows collector ingest (PlariumPlay conflict class).
 "@
 
 $utf8 = New-Object System.Text.UTF8Encoding $false

@@ -1,4 +1,3 @@
-# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 # PowerShell script to start a local web server for the dashboard hub
 # This avoids CORS issues when accessing SigNoz APIs from file:// protocol
 
@@ -36,7 +35,7 @@ Write-Host "   http://localhost:$Port/docs/dashboards/" -ForegroundColor White
 Write-Host ""
 Write-Host "🔧 Prerequisites:" -ForegroundColor Yellow
 Write-Host "   • SigNoz running on localhost:8080" -ForegroundColor White
-Write-Host "   • OTel Collector on localhost:5318" -ForegroundColor White
+Write-Host "   • OTel Collector on localhost:5321" -ForegroundColor White
 Write-Host ""
 Write-Host "⏹️  Press Ctrl+C to stop the server" -ForegroundColor Gray
 Write-Host ""

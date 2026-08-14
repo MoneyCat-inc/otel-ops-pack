@@ -181,7 +181,7 @@ pwsh -File scripts/agent/cutover-validation.ps1
 > I've developed a production-ready autonomous observability subsystem specifically for Windows environments that aligns with OpenTelemetry best practices.
 > 
 > **Key Contributions:**
-> - **OTLP-First Design**: Primary OTLP/HTTP (5318), secondary OTLP/gRPC (5317)
+> - **OTLP-First Design**: Primary OTLP/HTTP (5321), secondary OTLP/gRPC (5320)
 > - **Guardrail Methodology**: Automated enforcement of CSP, accessibility, and performance standards
 > - **Policy-as-Code**: OPA/Rego integration for declarative compliance
 > - **Windows Service Mode**: Native service hosting with NSSM

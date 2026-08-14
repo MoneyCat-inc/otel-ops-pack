@@ -1,4 +1,3 @@
-# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 # Simple environment test script
 Write-Host "=== Environment Test ===" -ForegroundColor Green
 Write-Host "Current directory: $(Get-Location)" -ForegroundColor Yellow
@@ -30,7 +29,7 @@ try {
 
 # Test port connectivity
 Write-Host "`nTesting port connectivity..." -ForegroundColor Green
-$ports = @(5317, 5318, 4317, 8080)
+$ports = @(5320, 5321, 4317, 8080)
 foreach ($port in $ports) {
     try {
         $result = Test-NetConnection -ComputerName localhost -Port $port -WarningAction SilentlyContinue

@@ -3,7 +3,7 @@ import { BasicTracerProvider, BatchSpanProcessor } from "@opentelemetry/sdk-trac
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
 import { Resource } from "@opentelemetry/resources";
 
-const endpoint = (process.env.OTEL_EXPORTER_OTLP_ENDPOINT || "http://127.0.0.1:5318").replace(/\/$/, "");
+const endpoint = (process.env.OTEL_EXPORTER_OTLP_ENDPOINT || "http://127.0.0.1:5321").replace(/\/$/, "");
 const url = `${endpoint}/v1/traces`;
 const serviceName = process.env.OTEL_SERVICE_NAME || "iona-app";
 

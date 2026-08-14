@@ -1,4 +1,3 @@
-# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.
 # Restart Windows OTel Collector (requires elevated privileges)
 # This script must be run as Administrator
 # Updated with progress indicators for better user experience
@@ -64,19 +63,19 @@ $spinnerJob = Start-SpinnerJob -Message "Checking OTLP ports..." -UpdateInterval
 Start-Sleep -Seconds 2
 Stop-SpinnerJob -Job $spinnerJob
 
-$port5317 = Test-NetConnection -ComputerName localhost -Port 5317 -InformationLevel Quiet -WarningAction SilentlyContinue
-$port5318 = Test-NetConnection -ComputerName localhost -Port 5318 -InformationLevel Quiet -WarningAction SilentlyContinue
+$port5317 = Test-NetConnection -ComputerName localhost -Port 5320 -InformationLevel Quiet -WarningAction SilentlyContinue
+$port5318 = Test-NetConnection -ComputerName localhost -Port 5321 -InformationLevel Quiet -WarningAction SilentlyContinue
 
 if ($port5317) {
-    Write-Host "Port 5317 (gRPC) is listening" -ForegroundColor Green
+    Write-Host "Port 5320 (gRPC) is listening" -ForegroundColor Green
 } else {
-    Write-Host "Port 5317 (gRPC) is not listening" -ForegroundColor Red
+    Write-Host "Port 5320 (gRPC) is not listening" -ForegroundColor Red
 }
 
 if ($port5318) {
-    Write-Host "Port 5318 (HTTP) is listening" -ForegroundColor Green
+    Write-Host "Port 5321 (HTTP) is listening" -ForegroundColor Green
 } else {
-    Write-Host "Port 5318 (HTTP) is not listening" -ForegroundColor Red
+    Write-Host "Port 5321 (HTTP) is not listening" -ForegroundColor Red
 }
 
 Write-Host "`nCollector restart complete!" -ForegroundColor Green

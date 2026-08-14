@@ -31,7 +31,7 @@ export async function POST(request: Request) {
       message: `Span "${spanName}" emitted successfully`,
       spanName,
       timestamp: new Date().toISOString(),
-      endpoint: process.env.OTEL_EXPORTER_OTLP_ENDPOINT || 'http://127.0.0.1:5318',
+      endpoint: process.env.OTEL_EXPORTER_OTLP_ENDPOINT || 'http://127.0.0.1:5321',
       serviceName: process.env.OTEL_SERVICE_NAME || 'iona-app',
     });
   } catch (error) {
@@ -51,7 +51,7 @@ export async function POST(request: Request) {
 export async function GET() {
   return NextResponse.json({
     available: true,
-    endpoint: process.env.OTEL_EXPORTER_OTLP_ENDPOINT || 'http://127.0.0.1:5318',
+    endpoint: process.env.OTEL_EXPORTER_OTLP_ENDPOINT || 'http://127.0.0.1:5321',
     serviceName: process.env.OTEL_SERVICE_NAME || 'iona-app',
   });
 }
