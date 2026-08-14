@@ -1,5 +1,6 @@
-# Wrapper to run the root verify-integration.ps1 from scripts/ (repo-relative path).
-# BRAV\SCPT\verify-integration.ps1 delegates here; root holds the implementation.
+# Repo-relative entry point: delegates to root verify-integration.ps1.
+# BRAV\SCPT\verify-integration.ps1 is a parallel wrapper to the same root script;
+# it does not delegate through this file.
 
 $ErrorActionPreference = 'Stop'
 
