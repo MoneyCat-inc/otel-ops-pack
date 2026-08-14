@@ -127,13 +127,42 @@ jobs:
         shell: pwsh
         run: |
           $result = Get-Content out/gate_verification.json | ConvertFrom-Json
+          $canary = $result.steps.canary_send
           Write-Host "Verification outcome: $($result.outcome)"
+          Write-Host "api_reason=$($canary.api_reason) api_fallback_from=$($canary.api_fallback_from)"
 
           if ($result.outcome -eq "FAIL") {
             Write-Host "::error::Gate verification FAILED - rollback criteria met"
             exit 1
-          } elseif ($result.outcome -eq "WARN") {
-            Write-Host "::warning::Gate verification returned warnings"
+          }
+
+          # A rescued run is not a passing run.
+          # The ClickHouse fallback can confirm a span while the primary API path is broken, which
+          # reports outcome OK with exit 0. That is how eleven nightly WARNs went unread: the board
+          # stayed green over a broken verification path. Judge the path, not just the rescue.
+          #
+          #   fallback_from = no_span_found  -> ingestion lag, the span was simply late. Benign.
+          #   fallback_from = http_error     -> the API path is broken (e.g. unauthenticated).
+          #   fallback_from = missing_api_key-> no credential reached the script at all.
+          #
+          # Both of the latter are real faults that a rescue would otherwise hide.
+          $brokenPath = @('http_error', 'missing_api_key')
+          if ($canary.api_fallback_from -and ($brokenPath -contains $canary.api_fallback_from)) {
+            Write-Host "::error::Primary verification path is broken ($($canary.api_fallback_from)); ClickHouse rescued the span but the API check must work on its own"
+            if ($canary.api_error) {
+              Write-Host "::error::api_error: $($canary.api_error | ConvertTo-Json -Compress -Depth 6)"
+            }
+            exit 1
+          }
+
+          # Not rescued, and the API check itself reported a broken path.
+          if ($brokenPath -contains $canary.api_reason) {
+            Write-Host "::error::API verification failed ($($canary.api_reason))"
+            exit 1
+          }
+
+          if ($result.outcome -eq "WARN") {
+            Write-Host "::warning::Gate verification returned warnings (api_reason=$($canary.api_reason))"
           } else {
             Write-Host "::notice::Gate verification passed"
           }

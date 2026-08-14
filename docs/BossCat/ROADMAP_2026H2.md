@@ -13,6 +13,17 @@ applies (docs / code / CI never mixed)
 
 ---
 
+> ## STATUS: all five phases closed 2026-08-14 — ahead of every target
+>
+> The phase text below is the **plan as written on 2026-08-03** and is deliberately unedited. Each
+> phase carries a status line recording what actually happened; where reality diverged from the
+> plan, the status line says so rather than the plan being rewritten to match.
+>
+> Purpose is now declared: `docs/PURPOSE.md` — **deliberate steady-state**. Every future gate answers
+> "does this work serve the declared subject?" This roadmap is closed and is not the current plan.
+
+---
+
 ## Guiding verdict
 
 The post-June-2026 operating model — lean evidence-first ECRRs, operator-gated milestones, one
@@ -28,6 +39,11 @@ the stack observes next deserves a clean, truthful repo underneath it.
 ---
 
 ## Phase 0 — Stop the self-inflicted drift (target: mid-Aug 2026)
+
+> **CLOSED 2026-08-03.** `artifacts/` 13,730 → 48 files; 13,682 compliance JSONs archived to
+> `otel-ops-evidence`. Scheduled workflows 22 → 11 with written justifications (#428). Compliance
+> engine retired — its verdict was arithmetically incapable of failing (#433). **Divergence:** the
+> orchestrator this phase was written to stop had already been unregistered before work began.
 
 **Problem:** A Windows scheduled task runs `parallel-agent-orchestrator.ps1` with 48 concurrent
 agents on a 30-minute repeat, writing ~1,800 compliance JSONs/day. `artifacts/` holds ~13,700
@@ -52,6 +68,11 @@ inventory documented in an ECRR; no recurring writer left running against the wo
 
 ## Phase 1 — The Windows collector decision (target: end of Aug 2026)
 
+> **CLOSED 2026-08-13 — KEEP, upgraded 0.104.0 → 0.158.0** (#434, #452). **Divergence:** this phase
+> anticipated retirement. Measurement inverted it — the collector is the sole carrier of Windows
+> Event Log telemetry, which no container can read, so Gate #026A's "intentionally bypassed" was
+> wrong and the record was corrected (#436). Clean-host E2E GREEN at **6.86 min** (#462, #463).
+
 **Problem:** Gate #026A (Oct 2025) declared the Windows collector intentionally bypassed — Docker
 collectors carry telemetry. Yet it is pinned at v0.104.0 (July 2024; upstream is v0.157.0), and
 continues to absorb investment: the Aug 2 repair session, the new watchdog, and the clean-host E2E
@@ -74,6 +95,12 @@ simultaneously deprecated and load-bearing.
 ---
 
 ## Phase 2 — Truth in steering documents (target: mid-Sep 2026)
+
+> **CLOSED 2026-08-13.** `roadmap.json` retired (#470); CHARTER rewritten to the four seats, with
+> OTLP ports corrected 5317/5318 → **5320/5321** (#469); gate dashboard archived in place (#468).
+> **Divergence:** the `rtifacts/` exit criterion below is unsatisfiable as written — the string is a
+> substring of `artifacts/`. The defect was also a **BEL byte**, not a typo, so a naive replace would
+> have left 761 control characters behind. 2 live references fixed, 314 historical preserved (#466).
 
 **Problem:** The steering surfaces describe a project that no longer exists: `roadmap.json`
 (Oct 2025, pre-split product milestones), `docs/GATE_STATUS_DASHBOARD.md` (frozen at Gate #031,
@@ -100,6 +127,11 @@ picture with zero contradictions; grep for `rtifacts/` returns nothing.
 
 ## Phase 3 — Kiro pilot completion & seat verdict (target: Oct 2026)
 
+> **CLOSED 2026-08-14 — CONVERT.** Criteria frozen *before* the report existed (#471), scored
+> independently: credits ≈7.69 of 500.69, guardrails clean, evidence reproducible. `Kiro{Implementer}`
+> permanent (#474, #475). **Open:** `EVIDENCE_REPO_TOKEN` rotation, due **2026-10-22** — first amber
+> Mon 2026-10-12. The reminder workflow was verified live rather than assumed armed.
+
 **State:** Examine complete (0.04 credits, abort threshold pinned at 500.69), Clean bootstrap
 landed (#399). Ecosystem bet validated — AWS has made Kiro its flagship as Q Developer sunsets
 (EOL Apr 2027).
@@ -121,6 +153,12 @@ clean-host E2E running on schedule without operator babysitting.
 ---
 
 ## Phase 4 — Purpose: what does this stack observe? (target: Nov 2026)
+
+> **CLOSED 2026-08-14 — deliberate steady-state.** `docs/PURPOSE.md` merged (#476, #477).
+> **Divergence:** option 1 below assumed a MoneyCat service with live traffic. On decision day all
+> four split repositories had **zero commits since 2026-07-24**, so the option had no subject.
+> Productisation is deferred, not rejected — 6.86 min clone-to-first-span remains the distinctive
+> asset. Two named triggers reopen the question without a review.
 
 **Problem:** The original subject — Resonai, a browser-local PWA with no backend — emits no server
 telemetry. The stack currently observes its own demo app. The infrastructure has outgrown its
