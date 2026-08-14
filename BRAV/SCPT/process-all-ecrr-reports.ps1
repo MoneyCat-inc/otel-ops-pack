@@ -156,11 +156,16 @@ $ReportProcessor = {
     try {
         $content = Get-Content -Path $file.FullName -Raw -Encoding UTF8
 
-        $result.FourSection = ($content -match "## ??.*1\. Examine" -and $content -match "## ??.*2\. Clean" -and $content -match "## ??.*3\. Report" -and $content -match "## ??.*4\. Role")
+        # Lean 2026 format uses unnumbered headers (## Examine / ## Clean / ## Report / ## Role).
+        # Legacy format uses numbered headers (## 1. Examine … ## 4. Role).
+        $leanFormat = ($content -match '(?m)^##\s+Examine' -and $content -match '(?m)^##\s+Clean' -and $content -match '(?m)^##\s+Report' -and $content -match '(?m)^##\s+Role')
+        $numberedFormat = ($content -match "## ??.*1\. Examine" -and $content -match "## ??.*2\. Clean" -and $content -match "## ??.*3\. Report" -and $content -match "## ??.*4\. Role")
+        $result.FourSection = ($leanFormat -or $numberedFormat)
         $result.ECRRGate = ($content -match "## ?.*ECRR Gate" -or $content -match "ECRR Gate")
         $result.ActorDeclaration = ($content -match "Actor.*Declaration" -or $content -match "Agent.*acting as")
         $result.EvidenceReference = ($content -match "Evidence" -or $content -match "Artifacts" -or $content -match "Screenshots" -or $content -match "Logs")
-        $result.StatusDeclaration = ($content -match "Status.*COMPLETE" -or $content -match "Status.*SUCCESS" -or $content -match "Status.*Complete")
+        # Lean 2026 reports use **Status:** PASS or **Verdict:** GREEN instead of COMPLETE/SUCCESS.
+        $result.StatusDeclaration = ($content -match "Status.*COMPLETE" -or $content -match "Status.*SUCCESS" -or $content -match "Status.*Complete" -or $content -match "Status.*PASS" -or $content -match "Verdict.*GREEN" -or $content -match "Verdict.*PASS")
         $result.ProductionReady = ($content -match "Production.*Ready" -or $content -match "Production.*Complete")
 
         if ($content -match "Cursor Agent") {
