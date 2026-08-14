@@ -71,7 +71,7 @@ ECRR Remediation Ticket 3 – Monitoring Script Updates (DOCS lane)
 Tasks:
 - Update scripts/quick-monitor.ps1
 - Update scripts/monitor-optimized-pipeline.ps1
-- Update scripts/verify-pipeline.ps1
+- Update BRAV/SCPT/verify-pipeline.ps1
 - Remove Windows Collector STOPPED warnings or mark expected
 - Document changes in docs/ecrr/INDEX.md
 
@@ -114,7 +114,7 @@ $includePaths = @(
     "docs/architecture/WINDOWS_COLLECTOR_DEPRECATION.md",
     "scripts/new-ecrr-report.ps1",
     "canary-test.ps1",
-    "verify-pipeline.ps1"
+    "BRAV/SCPT/verify-pipeline.ps1"
 ) | Where-Object { Test-Path (Join-Path $root $_) } | Select-Object -Unique
 
 if ($DryRun) {

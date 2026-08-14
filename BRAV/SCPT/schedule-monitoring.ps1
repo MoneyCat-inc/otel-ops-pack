@@ -7,8 +7,9 @@ Write-Host "[schedule] Setting up OTel monitoring schedule" -ForegroundColor Gre
 
 # Create scheduled task for verification
 $taskName = "OTel-Verification-Canary"
-$scriptPath = Join-Path $PSScriptRoot "..\scripts\verify-integration.ps1"
-$workingDir = Join-Path $PSScriptRoot ".."
+$repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
+$scriptPath = Join-Path $repoRoot 'scripts\verify-integration.ps1'
+$workingDir = $repoRoot
 
 Write-Host "[schedule] Creating scheduled task: $taskName" -ForegroundColor Yellow
 
