@@ -1,45 +1,43 @@
 {
-  "ReportCategories": {
-    "Verification": 27,
-    "MergeDeployment": 9,
-    "Other": 317,
-    "Completion": 3,
-    "Implementation": 16
-  },
-  "MissingStatus": [
-    "ECRR_DEPENDABOT_PR_CLOSEOUT_20260626.md"
-  ],
-  "ComplianceMetrics": {
-    "StatusDeclarations": 99.7,
-    "ECRRGates": 100.0,
-    "FourSectionStructure": 99.7,
-    "EvidenceReferences": 100.0,
-    "ProductionReady": 24.2,
-    "ActorDeclarations": 99.2
-  },
-  "AgentDistribution": {
-    "ChatGPT Agent": 1,
-    "Cursor Agent": 361,
-    "Other": 4,
-    "Codex Agent": 0,
-    "Cursor-Local": 6
-  },
   "QualityIssues": [],
+  "MissingStatus": [],
+  "ProcessingDate": "2026-08-14 13:35:39 UTC",
   "MissingFourSection": [
-    "ECRR_DEPENDABOT_PR_CLOSEOUT_20260626.md"
+    "ECRR_KIRO_PILOT_CLEAN_BOOTSTRAP_20260726.md"
   ],
-  "Recommendations": [
-    "Add ECRR gates to 0 missing reports",
-    "Ensure 4-section structure in 1 reports",
-    "Add explicit status to 1 reports",
-    "Implement consolidation for 0 candidates"
-  ],
-  "ProcessingDate": "2026-07-11 15:55:12 UTC",
-  "ConsolidationCandidates": [],
-  "TotalReports": 372,
-  "ProcessedReports": 372,
+  "ProcessedReports": 388,
   "TemporalPatterns": {
     "January 2025": 2,
     "September 2025": 43
-  }
+  },
+  "ReportCategories": {
+    "Other": 333,
+    "Completion": 3,
+    "Verification": 27,
+    "MergeDeployment": 9,
+    "Implementation": 16
+  },
+  "Recommendations": [
+    "Add ECRR gates to 14 missing reports",
+    "Ensure 4-section structure in 1 reports",
+    "Add explicit status to 0 reports",
+    "Implement consolidation for 0 candidates"
+  ],
+  "ConsolidationCandidates": [],
+  "ComplianceMetrics": {
+    "ProductionReady": 23.2,
+    "StatusDeclarations": 100.0,
+    "ECRRGates": 96.4,
+    "EvidenceReferences": 99.7,
+    "FourSectionStructure": 99.7,
+    "ActorDeclarations": 95.1
+  },
+  "AgentDistribution": {
+    "Other": 19,
+    "ChatGPT Agent": 1,
+    "Cursor Agent": 362,
+    "Codex Agent": 0,
+    "Cursor-Local": 6
+  },
+  "TotalReports": 388
 }
