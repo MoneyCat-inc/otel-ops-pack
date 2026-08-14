@@ -410,6 +410,9 @@ if (Test-Path $CanaryScriptPath) {
             timestampMs   = $tsMs
             fallback_from = $apiCheck.reason
             retries       = $apiCheck.retries
+            # Carry the original error through the rebuild. Without this the rescue erases the only
+            # description of what broke, which for an intermittent fault is the whole diagnosis.
+            error         = $apiCheck.error
           }
         }
       } catch { }
@@ -515,6 +518,10 @@ $summary = [ordered]@{
       # http_error (broken path — act) from a rescued no_span_found (ingestion lag — expected).
       api_fallback_from  = $apiCheck.fallback_from
       api_retries        = $apiCheck.retries
+      # The HTTP status and body behind an http_error. Get-HttpErrorBody has captured this since
+      # August but it was never written out, so every occurrence recorded "http_error" and nothing
+      # actionable. An intermittent fault cannot be caught live; the artifact has to carry it.
+      api_error          = $apiCheck.error
       ingest_latency_ms  = $ingestLatencyMs
       status             = $canaryStatus
     }
