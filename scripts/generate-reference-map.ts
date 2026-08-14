@@ -27,7 +27,7 @@ function main() {
     { id: 'classify', type: 'script', files: ['scripts/classify-run.ts'] },
     { id: 'summarize', type: 'script', files: ['scripts/summarize-run.ts'] },
     { id: 'actor-pr', type: 'script', files: ['scripts/actor-pr-comment.ts'] },
-    { id: 'policy', type: 'config', files: ['config/policy/ecrr-policy.json'] },
+    { id: 'policy', type: 'config', files: ['DELT/CONF/policy/ecrr-policy.json'] },
     { id: 'registry', type: 'data', files: ['ALFA/APPS/signature-registry.json'] },
     { id: 'dashboard-rollup', type: 'script', files: ['scripts/dashboard-query.ts'] },
     { id: 'workflows', type: 'workflow', files: workflows },
@@ -95,6 +95,18 @@ function main() {
   if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true })
   fs.writeFileSync(OUT, JSON.stringify(out, null, 2))
   console.log(`Reference map written: ${OUT}`)
+
+  // The node list above is hardcoded, so it drifts whenever files move. Missing
+  // entries used to be recorded only inside the output JSON, where nothing read
+  // them -- that is how 'config/policy/ecrr-policy.json' stayed stale after the
+  // file moved to DELT/CONF/. Surface drift on stderr, and let CI opt into
+  // failing on it with --strict.
+  if (missing.length > 0) {
+    console.error(`\n[reference-map] ${missing.length} referenced path(s) do not exist:`)
+    for (const m of missing) console.error(`  ${m.node}: ${m.file}`)
+    console.error('[reference-map] Update the node list in scripts/generate-reference-map.ts.')
+    if (process.argv.includes('--strict')) process.exit(1)
+  }
 }
 
 main()

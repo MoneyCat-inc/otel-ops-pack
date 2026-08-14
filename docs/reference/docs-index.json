@@ -1,5 +1,6 @@
 {
   "version": 1,
+  "_note": "Paths are repo-root-relative and are existence-checked by scripts/generate-reference-map.ts. Run `pnpm map:generate` after moving any file listed here; it prints drift on stderr and fails with --strict.",
   "items": [
     {
       "path": "docs/BossCat/LOOP_CLOSING_MACHINE_ARCHITECTURE.md",
@@ -14,30 +15,10 @@
       "tags": ["map", "overview"]
     },
     {
-      "path": "PHASE2_VALIDATION_COMPLETE.md",
-      "title": "Phase 2 Validation Summary",
-      "importance": "P1",
-      "tags": ["validation", "phase2"]
-    },
-    {
-      "path": "PHASE1_COMPLETE_PR_BODY.md",
+      "path": "docs/notes/misc/PHASE1_COMPLETE_PR_BODY.md",
       "title": "Phase 1 PR Body",
       "importance": "P2",
       "tags": ["phase1", "pr"]
-    },
-    {
-      "path": "CHAR/ECRR/ECRR_REPORTS/ECRR_PHASE2_VALIDATION_20251010.md",
-      "title": "ECRR Phase 2 Validation Report",
-      "importance": "P0",
-      "tags": ["ecrr", "validation", "gate"]
-    },
-    {
-      "path": "CHAR/DOCS/docs/BossCat/GITHUB/Bosscat System Issues Analysis (Fractal Logic Perspective).pdf",
-      "title": "System Issues Analysis (Fractal Logic)",
-      "importance": "P1",
-      "tags": ["analysis", "fractal"]
     }
   ]
 }
-
-
