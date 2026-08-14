@@ -1,4 +1,5 @@
 <!-- markdownlint-disable MD013 MD031 MD034 -->
+<!-- continuation of ECRR_KIRO_PILOT_EXAMINE_20260726.md — Examine lives in parent; this report is Clean→Report→Role only -->
 # ECRR — Kiro pilot Clean bootstrap (steering + H1–H3)
 
 **Date:** 2026-07-26  
