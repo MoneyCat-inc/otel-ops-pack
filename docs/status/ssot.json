@@ -1,0 +1,22 @@
+{
+  "summary": {
+    "monitoring_status": "BossCat OEM Operational",
+    "security_status": "Attention Required",
+    "repository_health": "Needs Attention",
+    "compliance_status": "ECRR Stale"
+  },
+  "last_update": "2026-08-12T18:26:31Z",
+  "authoritative_sources": {
+    "signoz_health": {
+      "last_check": "2026-08-12T18:26:31Z",
+      "status": "healthy",
+      "version": "v0.144.6"
+    },
+    "ecrr_reports": {
+      "path": "None",
+      "summary": "Stale",
+      "last_modified": "2026-08-02T16:15:26+01:00"
+    },
+    "collector_status": "running"
+  }
+}

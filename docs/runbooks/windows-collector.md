@@ -10,16 +10,60 @@
 
 ---
 
+## Status: FIRST-CLASS (Phase 1 decision, 2026-08-03)
+
+**Correcting the record.** Gate #026A was read as declaring this collector intentionally bypassed
+on the grounds that Docker collectors carry telemetry. **That reading is wrong and should not be
+used to justify deprioritising this component.**
+
+Measured 2026-08-03: the service exports **472 log records to SigNoz with zero send failures**,
+sourced from `windowseventlog/application` (268), `windowseventlog/system` (39), `filelog/canary`
+(125) and `otlp` HTTP (62). **A collector running inside a Docker container cannot read the Windows
+Event Log** — it is a host-OS facility with no container-visible equivalent. This service is the
+sole carrier of that telemetry class.
+
+What Gate #026A actually established is narrower: for **.NET trace export**, the direct-to-SigNoz
+path is preferred over routing through this collector. That is a routing preference for one signal
+type, not a verdict on the component.
+
+Operator decision (Phase 1, Roadmap 2026 H2): **keep as first-class and upgrade.** See
+`docs/BossCat/MEMO_WINDOWS_COLLECTOR_20260803.md`.
+
+**Upgraded to `v0.158.0` on 2026-08-13** (Phase 1 execution). Running / Automatic, exporting with
+zero send failures. The clean-host E2E finding **F3** (scraper list-syntax crash-loop on `0.104.0`)
+is **retired** — config validate exits 0 on `0.158.0`.
+
+The version is now pinned in one place, `startup-observability.ps1` (`$CollectorVersion`). Before
+#452 nothing in the repo decided the version at all; `0.104.0` was simply what had been installed by
+hand in Oct 2025.
+
+---
+
 ## 🚨 Canonical Configuration Path (CRITICAL)
 
-**Service Binary Path:**
-```
-"C:\Program Files\OpenTelemetry Collector\otelcol-contrib.exe" --config "C:\otel\config.yaml"
-```
+> **⚠️ This section contradicted the Configuration section below, and the live service. Corrected
+> 2026-08-03.** The claims below asserted `C:\otel\config.yaml` is the service's config path and
+> that any other path is a RED condition. The running service reads
+> `C:\ProgramData\otelcol-contrib\config.yaml` and is healthy (472 log records exported, zero send
+> failures), so the old text would have flagged the correct, working state as RED.
+>
+> **The two paths are different roles, not rivals:**
+>
+> - `C:\otel\config.yaml` — the **source of record**, edited in the repo and reviewed via PR. This
+>   is what "authoritative" was reaching for.
+> - `C:\ProgramData\otelcol-contrib\config.yaml` — the **deployed copy** the service actually
+>   reads. Written by `install-or-repair-otel-collector.ps1`; never hand-edit it.
+>
+> Editing the repo file does **not** change collector behaviour until install-or-repair runs. That
+> is the intended flow, and it means a git branch switch cannot mutate live config.
 
-**Canonical Config Location:** `C:\otel\config.yaml` ← **AUTHORITATIVE**
+**Source of record (edit here):** `C:\otel\config.yaml`
 
-**⚠️ RED Condition:** Any service pointing to a different config path is INCORRECT and will cause export failures.
+**Deployed config (service reads this, do not hand-edit):** `C:\ProgramData\otelcol-contrib\config.yaml`
+
+**⚠️ RED Condition:** the service pointing at a config path that no deploy step writes — e.g. a
+stale per-user path, or a `windows/otelcol/` source file passed directly. A service on the
+ProgramData path is **correct**.
 
 **Verification Command:**
 ```powershell
@@ -28,13 +72,18 @@ sc qc otelcol-contrib | findstr /i "BINARY_PATH_NAME"
 
 **Expected Output:**
 ```
-BINARY_PATH_NAME   : "C:\Program Files\OpenTelemetry Collector\otelcol-contrib.exe" --config "C:\otel\config.yaml"
+BINARY_PATH_NAME   : "C:\Program Files\OpenTelemetry Collector\otelcol-contrib.exe" --config "C:\ProgramData\otelcol-contrib\config.yaml"
+```
+
+**Applying a config change:**
+```powershell
+pwsh -File .\scripts\windows\install-or-repair-otel-collector.ps1
 ```
 
 **Critical Requirements:**
 - ✅ Endpoint MUST be: `127.0.0.1:14317` (gRPC to localhost aggregator)
 - ❌ OLD/WRONG: `host.docker.internal:4318` (causes connection refused errors)
-- ✅ Collector Version: `v0.104.0` (tested and verified)
+- ✅ Collector Version: `v0.158.0` (upgraded and verified 2026-08-13; pinned in `startup-observability.ps1`)
 - ✅ Config Syntax: Standard receivers format (see compatibility notes below)
 
 **Drift Guard Health Check:**
@@ -42,6 +91,13 @@ BINARY_PATH_NAME   : "C:\Program Files\OpenTelemetry Collector\otelcol-contrib.e
 pwsh -File .\scripts\windows\health-check-collector-config.ps1
 ```
 Run every 15 minutes via Task Scheduler. Exit code 20/21 = RED condition.
+
+> **⚠️ This guard inherited the same wrong assumption and could never pass.** Its Check 3 asserted
+> the service runs `--config "C:\otel\config.yaml"` — the source path, which the service never
+> uses — so on 2026-08-03 it returned **exit 21 (RED)** against a collector exporting 472 records
+> with zero failures. A gate that cannot pass is as useless as one that cannot fail; treat any
+> historical RED from this script before its fix as unproven. Corrected separately in the code
+> lane.
 
 ---
 
@@ -65,7 +121,11 @@ $env:OTEL_EXPORTER_OTLP_ENDPOINT = "http://127.0.0.1:14317"
 $env:OTEL_EXPORTER_OTLP_PROTOCOL = "grpc"
 ```
 
-### SECONDARY PATH (Optional) — Via Windows Collector ✅
+### SECONDARY PATH (for .NET traces) — Via Windows Collector ✅
+
+> **"Secondary" applies to .NET trace routing only.** For Windows Event Log and host file logs this
+> collector is the *only* path — see the FIRST-CLASS status note at the top of this runbook.
+
 **Endpoint:** `http://127.0.0.1:5320` (Windows Collector OTLP gRPC) / `http://127.0.0.1:5321` (HTTP)  
 **Status:** ✅ **CANONICAL** (`config.yaml` receivers; ports moved off 5317/5318 to avoid PlariumPlay 5300–5319)  
 **Use Case:** Centralized collection, preprocessing, multi-export  
@@ -89,30 +149,50 @@ pwsh -File .\scripts\windows\verify-collector-traces.ps1
 
 ## Overview
 
-The Windows OpenTelemetry Collector (`otelcol-contrib`) runs as a Windows service to collect:
-- **Host Metrics:** CPU, memory, disk, network, process stats (60s interval)
-- **Event Logs:** Application and System logs (real-time)
+The Windows OpenTelemetry Collector (`otelcol-contrib`) runs as a Windows service and carries
+**logs only**:
+- **Windows Event Logs:** Application and System channels (real-time) — the reason this collector is
+  first-class; a container cannot read these
+- **File logs:** `filelog/canary` over `C:/logs/**/*.log`
+- **OTLP ingest:** local apps on `127.0.0.1:5320` (gRPC) / `5321` (HTTP)
 
 All telemetry is exported to the OTLP aggregator (signoz-otel-collector) via gRPC on port 14317.
 
-**Version Compatibility Notes (v0.104.0):**
-- **Host Metrics Syntax:** Uses list format for scrapers (not map format)
-  ```yaml
-  # ✅ CORRECT (v0.104.0):
-  receivers:
-    hostmetrics:
-      collection_interval: 60s
-      scrapers:
-        - cpu
-        - memory
-        - disk
-  ```
-- **Windows Event Log Receiver:** Uses `windowseventlog` receiver name
-- **Known Issue:** Map-style scraper syntax will fail with "unexpected sub-config value kind" error
+> **⚠️ This section previously claimed host metrics — CPU, memory, disk, network, process stats at
+> 60s. That was wrong.** The canonical config has **no `hostmetrics` receiver**, and the live
+> collector reports no `otelcol_receiver_accepted_metric_points` series at all. If host metrics are
+> wanted, that is a change to make deliberately, not an assumption to inherit.
+
+**Version Compatibility Notes (v0.158.0):**
+- **Windows Event Log Receiver:** `windowseventlog` receiver name, unchanged from `0.104.0`
+- **Config validate:** exits 0 on `0.158.0` with the canonical config
+- **Retired with the upgrade:** the `0.104.0` hostmetrics scraper list-vs-map syntax caveat that
+  used to live here. It described a receiver this config does not use, and the version it applied to
+  is gone. Reinstate a version note here only when a real incompatibility is observed.
 
 ---
 
 ## Install / Repair
+
+> ### ⚠️ Read before upgrading: the MSI path fails on this host
+>
+> Observed during the 2026-08-13 upgrade to `0.158.0`. A quiet MSI install fails with **1603**,
+> caused by **Error 1920 — the service could not start during install**, because the MSI's default
+> config is written and started before a valid canonical config is in place.
+>
+> **The first attempt also removed the working `0.104.0` install**, so a failed MSI upgrade leaves
+> the host with *no* collector, not the previous one. Budget for that.
+>
+> **Reliable path used instead:**
+> 1. Download the tarball for the target version (not the MSI)
+> 2. Extract to `C:\Program Files\OpenTelemetry Collector\`
+> 3. `sc create` the service
+> 4. `pwsh -File .\scripts\windows\install-or-repair-otel-collector.ps1` to write the deployed
+>    config and set startup/recovery
+>
+> `startup-observability.ps1` (`$CollectorVersion`, #452) still uses the MSI with checksum
+> verification. It is correct and reproducible for a *clean* host; it is not yet proven as an
+> *upgrade* path. Until that gap is closed, treat upgrades as the manual sequence above.
 
 **Command:**
 ```powershell
@@ -127,7 +207,8 @@ pwsh -File .\scripts\windows\install-or-repair-otel-collector.ps1
 5. Starts/restarts the service
 
 **Parameters:**
-- `-ConfigSource` (default: `.\windows\otelcol\otelcol-contrib-config.yaml`)
+- `-ConfigSource` (default: `.\config.yaml` — the source of record; changed in #429, this runbook
+  previously named the older `.\windows\otelcol\otelcol-contrib-config.yaml`)
 - `-OtlpGrpcEndpoint` (default: `127.0.0.1:14317`)
 - `-ServiceName` (default: `otelcol-contrib`)
 
@@ -198,7 +279,7 @@ sc.exe qc otelcol-contrib
 - **Batch Timeout:** 10 seconds
 
 **Editing Config:**
-1. Edit source: `.\windows\otelcol\otelcol-contrib-config.yaml`
+1. Edit source: `.\config.yaml` (the repo source of record — **not** the ProgramData copy)
 2. Re-run: `pwsh -File .\scripts\windows\install-or-repair-otel-collector.ps1`
 3. Service will restart with new config
 
@@ -433,7 +514,8 @@ processors:
 ## Related Documentation
 
 - **Gate #022 Spec:** BOSSCAT-022A implementation details
-- **Collector Config:** `windows/otelcol/otelcol-contrib-config.yaml`
+- **Collector Config (source of record):** `config.yaml` at the repo root
+- **Collector Config (deployed, service reads):** `C:\ProgramData\otelcol-contrib\config.yaml`
 - **Install Script:** `scripts/windows/install-or-repair-otel-collector.ps1`
 - **Verify Script:** `scripts/windows/verify-otel-collector.ps1`
 - **Gate Integration:** `BRAV/SCPT/verify-windows-collector.ps1`
