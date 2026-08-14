@@ -73,7 +73,8 @@ SigNoz UI (http://localhost:8080)
 
 - ✅ `config.yaml` - Primary OTel collector config (Docker)
 - ✅ `docker-compose-signoz.yml` - SigNoz stack
-- ✅ `scripts/verify-pipeline.ps1` - End-to-end validation
+- ✅ `BRAV/SCPT/verify-pipeline.ps1` - End-to-end gate validation (exit codes 0/1/2)
+- ✅ `operator-pipeline-check.ps1` - Operator linear check after collector restart
 - ✅ `scripts/canary-test.ps1` - Test data generation
 
 ### Deprecated
@@ -94,7 +95,7 @@ pwsh -File scripts\quick-monitor.ps1
 pwsh -File scripts\monitor-optimized-pipeline.ps1 -DurationMinutes 10
 
 # End-to-end validation
-pwsh -File scripts\verify-pipeline.ps1
+pwsh -File BRAV\SCPT\verify-pipeline.ps1
 ```
 
 ### SigNoz Queries

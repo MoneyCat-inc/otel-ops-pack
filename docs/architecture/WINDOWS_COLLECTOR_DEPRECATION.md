@@ -113,7 +113,7 @@ docker ps
 
 - ✅ `config.yaml` (root, Docker collector config)
 - ✅ `docker-compose.yaml` (SigNoz services)
-- ✅ `scripts/verify-pipeline.ps1` (validation script)
+- ✅ `BRAV/SCPT/verify-pipeline.ps1` (gate validation script)
 - ✅ `scripts/canary-test.ps1` (test data generator)
 
 ---
@@ -156,7 +156,7 @@ sc config otelcol-contrib start=auto
 Copy-Item config\backups\otelcol-contrib-config-backup.yaml windows\otelcol\otelcol-contrib-config.yaml
 
 # Verify forwarding
-pwsh -File scripts\verify-pipeline.ps1
+pwsh -File BRAV\SCPT\verify-pipeline.ps1
 ```
 
 **Note**: Rollback should be treated as a **temporary measure**. The direct architecture is the strategic direction.

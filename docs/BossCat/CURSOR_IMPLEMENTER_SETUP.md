@@ -62,7 +62,7 @@ Each persona sees customized KPIs, gates, and next actions:
 
    ```powershell
    pwsh -File scripts\quick-monitor.ps1
-   pwsh -File scripts\verify-pipeline.ps1
+   pwsh -File BRAV\SCPT\verify-pipeline.ps1
    ```
 
 2. **Gather Environment Information**
@@ -358,7 +358,8 @@ otel-canary
 - `scripts/monitor-optimized-pipeline.ps1` - Enhanced real-time monitoring with ECRR
 - `scripts/quick-monitor.ps1` - Fast health check and status verification
 - `scripts/generate-windows-canary.ps1` - Generate test logs and traces
-- `scripts/verify-pipeline.ps1` - End-to-end pipeline validation
+- `BRAV/SCPT/verify-pipeline.ps1` - End-to-end gate validation (exit codes 0/1/2)
+- `operator-pipeline-check.ps1` - Operator linear check after collector restart
 
 ### Docker Compose
 
@@ -472,7 +473,7 @@ pwsh -File scripts\quick-monitor.ps1
 pwsh -File scripts\monitor-optimized-pipeline.ps1 -DurationMinutes 10
 
 # Verify end-to-end pipeline
-pwsh -File scripts\verify-pipeline.ps1
+pwsh -File BRAV\SCPT\verify-pipeline.ps1
 ```
 
 ### Canary Testing
