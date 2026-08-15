@@ -1,4 +1,4 @@
-<!-- markdownlint-disable MD013 MD034 -->
+<!-- markdownlint-disable MD013 MD034 MD060 -->
 # B3 Measurement — OTLP ports single source of truth
 
 **Date:** 2026-08-15  
@@ -70,7 +70,7 @@ PS/TS modules read that JSON (or duplicate the constants with a comment pointing
 
 Measured `git grep -lE '\b532[01]\b'` on BRAV/scripts/windows/ALFA/.github/.agent and matching source extensions (excl. third_party/node_modules).
 
-```
+```text
 .agent/test-conflict-resolution.ps1
 .agent/tools/smoke.mjs
 ALFA/APPS/app/api/telemetry/emit-span/route.ts
