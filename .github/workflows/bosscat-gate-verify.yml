@@ -59,6 +59,10 @@ jobs:
         shell: pwsh
         run: pwsh -File scripts/guard-inflated-metrics.ps1
 
+      - name: Guard - OTel ports JSON matches collector YAML
+        shell: pwsh
+        run: pwsh -File BRAV/SCPT/check-otel-ports-drift.ps1
+
       - name: Lint workflow (actionlint)
         uses: rhysd/actionlint@v1.7.4
         continue-on-error: true
