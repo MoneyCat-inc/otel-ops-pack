@@ -58,7 +58,7 @@ class ServiceHealthMonitor {
     [bool] CheckHealth() {
         try {
             # Check Docker container status
-            $containerStatus = docker compose -f $ConfigFile ps $this.ServiceName --format "{{.State}}" 2>$null
+            $containerStatus = docker compose -f $script:ConfigFile ps $this.ServiceName --format "{{.State}}" 2>$null
             if ($containerStatus -ne $this.ExpectedStatus) {
                 $this.RecordFailure("Container status: $containerStatus (expected: $($this.ExpectedStatus))")
                 return $false
