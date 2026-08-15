@@ -4,6 +4,9 @@ param(
     [switch]$RunOnce
 )
 
+Import-Module (Join-Path $PSScriptRoot 'BRAV\SCPT\lib\OtelPorts.psm1') -Force
+$script:OtelPorts = Get-OtelPorts
+
 Write-Host "== Starting Canary Monitoring ==" -ForegroundColor Cyan
 
 function Ensure-Directory {
@@ -20,8 +23,8 @@ function Invoke-OtlpRequest {
     )
 
     $endpoints = @(
-        "http://localhost:5321/$Path",
-        "http://localhost:4318/$Path"
+        "$(Get-OtelIngestHttpBase -HostName 'localhost' -Ports $script:OtelPorts)/$Path",
+        "http://localhost:$($script:OtelPorts.SignozOtlpHttp)/$Path"
     )
 
     $lastError = $null

@@ -3,10 +3,15 @@
 
 [CmdletBinding()]
 param(
-  [string]$OtlpUrl    = "http://127.0.0.1:5321/v1/logs",
+  [string]$OtlpUrl,
   [string]$MetricsUrl  = "http://127.0.0.1:8888/metrics",
   [int]$TimeoutSec     = 5
 )
+
+Import-Module (Join-Path $PSScriptRoot 'BRAV\SCPT\lib\OtelPorts.psm1') -Force
+if (-not $OtlpUrl) {
+  $OtlpUrl = "$(Get-OtelIngestHttpBase)/v1/logs"
+}
 
 $ErrorActionPreference = "Stop"
 $null = New-Item -ItemType Directory -Force -Path "C:\otel\logs" | Out-Null

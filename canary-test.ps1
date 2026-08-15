@@ -3,6 +3,8 @@
 
 # Import progress indicators module
 . .\BRAV\SCPT\progress-indicators.ps1
+Import-Module (Join-Path $PSScriptRoot 'BRAV\SCPT\lib\OtelPorts.psm1') -Force
+$script:OtelPorts = Get-OtelPorts
 
 Write-Host "== Starting Observability Canary Test ==" -ForegroundColor Cyan
 
@@ -55,8 +57,8 @@ function Invoke-OtlpPayload {
     )
 
     $endpoints = @(
-        "http://localhost:5321/$Suffix",
-        "http://localhost:4318/$Suffix"
+        "$(Get-OtelIngestHttpBase -HostName 'localhost' -Ports $script:OtelPorts)/$Suffix",
+        "http://localhost:$($script:OtelPorts.SignozOtlpHttp)/$Suffix"
     )
 
     foreach ($endpoint in $endpoints) {
