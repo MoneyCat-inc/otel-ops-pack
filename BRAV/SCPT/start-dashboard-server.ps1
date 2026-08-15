@@ -6,6 +6,9 @@ param(
     [string]$Path = "."
 )
 
+Import-Module (Join-Path $PSScriptRoot 'lib\OtelPorts.psm1') -Force
+$script:OtelPorts = Get-OtelPorts
+
 Write-Host "🐾 BossCat OEM - Dashboard Web Server" -ForegroundColor Magenta
 Write-Host "=====================================" -ForegroundColor Magenta
 Write-Host ""
@@ -34,8 +37,8 @@ Write-Host "📊 Dashboard Hub will be available at:" -ForegroundColor Yellow
 Write-Host "   http://localhost:$Port/docs/dashboards/" -ForegroundColor White
 Write-Host ""
 Write-Host "🔧 Prerequisites:" -ForegroundColor Yellow
-Write-Host "   • SigNoz running on localhost:8080" -ForegroundColor White
-Write-Host "   • OTel Collector on localhost:5321" -ForegroundColor White
+Write-Host "   • SigNoz running on localhost:$($script:OtelPorts.SignozUiHttp)" -ForegroundColor White
+Write-Host "   • OTel Collector on localhost:$($script:OtelPorts.IngestHttp)" -ForegroundColor White
 Write-Host ""
 Write-Host "⏹️  Press Ctrl+C to stop the server" -ForegroundColor Gray
 Write-Host ""

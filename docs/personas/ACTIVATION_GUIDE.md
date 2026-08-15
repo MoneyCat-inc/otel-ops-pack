@@ -25,6 +25,7 @@ This guide walks through activating **Quil** (DOCS lane) and **Lumi** (VIZR lane
 | `LUMI_API_KEY` | `sk-proj-...` | OpenAI API key for Lumi (VIZR lane) |
 
 **Notes**:
+
 - You can use the same OpenAI key for both, or separate keys for cost tracking
 - Model: `gpt-4o` (recommended for technical accuracy)
 - Estimated cost: ~$0.50-2.00 per ticket (depending on context size)
@@ -63,6 +64,7 @@ code $report.FullName
 ```
 
 **Validation Checklist**:
+
 - [ ] Workplan contains unified diff patches
 - [ ] PR body includes all 4 ECRR phases (Examine, Clean, Report, Role)
 - [ ] Voice is "velvet, calm, meticulous" (check for clarity, consistency language)
@@ -82,6 +84,7 @@ code artifacts\codex\cursor-instructions.md
 ```
 
 **Validation Checklist**:
+
 - [ ] Documentation is technically precise (GPU, rendering, pipeline terminology)
 - [ ] PR body includes all 4 ECRR phases
 - [ ] Voice is "luminous, technical, pulse-like" (check for visual/technical clarity)
@@ -143,12 +146,14 @@ After first live run, perform thorough validation:
 ### Voice Quality (Quil)
 
 **Expected markers**:
+
 - "Clarity" / "consistency" / "accessible"
 - Smooth, flowing prose
 - Meticulous attention to detail
 - Gentle, velvet tone (no aggressive language)
 
 **Red flags**:
+
 - Generic/robotic language
 - Missing ECRR phases
 - Budget violations
@@ -157,12 +162,14 @@ After first live run, perform thorough validation:
 ### Voice Quality (Lumi)
 
 **Expected markers**:
+
 - "Render" / "pipeline" / "sync" / "latency"
 - Technical precision
 - Visual/luminous metaphors
 - Pulse-like rhythm (short, precise sentences)
 
 **Red flags**:
+
 - Vague technical descriptions
 - Missing diagrams/visual aids
 - Incomplete troubleshooting steps
@@ -170,6 +177,7 @@ After first live run, perform thorough validation:
 ### Feedback Loop
 
 If voice drifts or quality drops:
+
 1. Review `docs/personas/{quil|lumi}-persona.md`
 2. Enhance persona documentation with examples
 3. Adjust system prompt in workflow
@@ -186,6 +194,7 @@ Once validated, enable scheduled runs for continuous remediation.
 Edit workflow files:
 
 **.github/workflows/quil-docs-lane.yml**:
+
 ```yaml
 schedule:
   # Uncomment to enable weekly runs
@@ -193,6 +202,7 @@ schedule:
 ```
 
 **.github/workflows/lumi-vizr-lane.yml**:
+
 ```yaml
 schedule:
   # Uncomment to enable weekly runs
@@ -221,6 +231,7 @@ Write-Host "ECRR Compliance: $complianceRate% (target: ≥80%)"
 ```
 
 **Success Criteria** (30 days):
+
 - ECRR compliance: 37.7% → ≥80%
 - Clean phase: 13% → ≥80%
 - Role phase: 15% → ≥80%
@@ -244,6 +255,7 @@ $env:OPENAI_API_KEY = "sk-proj-..."
 ### Issue: "Persona voice validation failed"
 
 Check `artifacts/codex/workplan.json` for:
+
 - Missing ECRR phases (Examine, Clean, Report, Role)
 - Generic language (not matching persona voice)
 - Budget violations
@@ -255,6 +267,7 @@ Check `artifacts/codex/workplan.json` for:
 OpenAI has rate limits (e.g., 500 requests/day for free tier).
 
 **Solutions**:
+
 - Upgrade to paid tier
 - Space out runs (manual triggers instead of daily schedule)
 - Use different API keys for Quil and Lumi
@@ -262,6 +275,7 @@ OpenAI has rate limits (e.g., 500 requests/day for free tier).
 ### Issue: "Patches fail to apply"
 
 If generated patches don't apply cleanly:
+
 1. Check if code changed since manifest was generated
 2. Review `artifacts/codex/cursor-instructions.md` manually
 3. Apply changes by hand
@@ -303,6 +317,7 @@ code docs\ecrr\REMEDIATION_PLAN.md
 | **Monthly** | ~$10.00 - $25.00 |
 
 **Notes**:
+
 - Based on gpt-4o pricing (~$0.005/1K input, ~$0.015/1K output)
 - Larger codebases = higher cost
 - Dry-runs are ~half the cost (no PR generation)

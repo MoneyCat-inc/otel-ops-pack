@@ -8,6 +8,9 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
+Import-Module (Join-Path $PSScriptRoot 'lib\OtelPorts.psm1') -Force
+$script:OtelPorts = Get-OtelPorts
+
 Write-Host "🔍 Running comprehensive validation..." -ForegroundColor Cyan
 
 $errors = @()
@@ -102,7 +105,13 @@ if (-not $SkipDocker) {
 # 5. Port Conflict Check
 Write-Host "📋 Checking for port conflicts..." -ForegroundColor Yellow
 try {
-    $requiredPorts = @(8080, 4317, 4318, 5320, 5321)
+    $requiredPorts = @(
+        $script:OtelPorts.SignozUiHttp,
+        $script:OtelPorts.SignozOtlpGrpc,
+        $script:OtelPorts.SignozOtlpHttp,
+        $script:OtelPorts.IngestGrpc,
+        $script:OtelPorts.IngestHttp
+    )
     $conflicts = @()
     
     foreach ($port in $requiredPorts) {

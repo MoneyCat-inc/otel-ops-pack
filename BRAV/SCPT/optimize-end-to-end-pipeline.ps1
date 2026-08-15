@@ -11,6 +11,9 @@ param(
 Set-StrictMode -Version 2
 $ErrorActionPreference = "Stop"
 
+Import-Module (Join-Path $PSScriptRoot 'lib\OtelPorts.psm1') -Force
+$script:OtelPorts = Get-OtelPorts
+
 Write-Host "🚀 Windows → SigNoz End-to-End Optimization" -ForegroundColor Cyan
 Write-Host "=============================================" -ForegroundColor Cyan
 Write-Host ""
@@ -154,7 +157,7 @@ function Verify-SigNozIngestion {
     
     $params = @{
         Method = 'Post'
-        Uri = 'http://localhost:8080/api/v5/query_range'
+        Uri = "http://localhost:$($script:OtelPorts.SignozUiHttp)/api/v5/query_range"
         ContentType = 'application/json'
         Body = $payload
         TimeoutSec = 30
@@ -229,12 +232,12 @@ try {
 }
 
 # Check critical ports
-$port5318 = Test-Port -Port 5321 -Label "Windows Collector (OTLP/HTTP)"
-$port4317 = Test-Port -Port 4317 -Label "SigNoz OTLP (gRPC)"
-$port4318 = Test-Port -Port 4318 -Label "SigNoz OTLP (HTTP)"
-$port8080 = Test-Port -Port 8080 -Label "SigNoz UI"
+$portIngestHttp = Test-Port -Port $script:OtelPorts.IngestHttp -Label "Windows Collector (OTLP/HTTP)"
+$port4317 = Test-Port -Port $script:OtelPorts.SignozOtlpGrpc -Label "SigNoz OTLP (gRPC)"
+$port4318 = Test-Port -Port $script:OtelPorts.SignozOtlpHttp -Label "SigNoz OTLP (HTTP)"
+$port8080 = Test-Port -Port $script:OtelPorts.SignozUiHttp -Label "SigNoz UI"
 
-if (-not ($port5318 -and $port4317 -and $port4318 -and $port8080)) {
+if (-not ($portIngestHttp -and $port4317 -and $port4318 -and $port8080)) {
     $script:allChecksPassed = $false
 }
 
@@ -283,13 +286,13 @@ if (Test-Path $configPath) {
     $optimizations = @()
     
     # Check for optimal settings
-    if ($configContent -match 'endpoint: 127\.0\.0\.1:5321') {
+    if ($configContent -match ("endpoint: 127\.0\.0\.1:{0}" -f $script:OtelPorts.IngestHttp)) {
         $optimizations += "OTLP HTTP endpoint configured correctly"
     }
-    if ($configContent -match 'endpoint: 127\.0\.0\.1:4317') {
+    if ($configContent -match ("endpoint: 127\.0\.0\.1:{0}" -f $script:OtelPorts.SignozOtlpGrpc)) {
         $optimizations += "SigNoz gRPC export configured correctly"
     }
-    if ($configContent -match 'endpoint: http://127\.0\.0\.1:4318') {
+    if ($configContent -match ("endpoint: http://127\.0\.0\.1:{0}" -f $script:OtelPorts.SignozOtlpHttp)) {
         $optimizations += "SigNoz HTTP export configured correctly"
     }
     if ($configContent -match 'C:/logs/\*\*/\*\.log') {
@@ -387,7 +390,7 @@ if ($script:allChecksPassed -and $verificationSuccess) {
     Write-Host "End-to-end pipeline is optimized and working!" -ForegroundColor Green
     Write-Host ""
     Write-Host "📋 Next Steps:" -ForegroundColor Yellow
-    Write-Host "1. Open SigNoz UI: http://localhost:8080" -ForegroundColor White
+    Write-Host ("1. Open SigNoz UI: http://localhost:{0}" -f $script:OtelPorts.SignozUiHttp) -ForegroundColor White
     Write-Host "2. Go to Logs → Filter: attributes.dataset = `"resonai_analytics`"" -ForegroundColor White
     Write-Host "3. Run monitoring: pwsh -File scripts/monitor-analytics-ingestion.ps1" -ForegroundColor White
     Write-Host "4. Check artifacts: Get-Content artifacts/optimization-verify.txt" -ForegroundColor White

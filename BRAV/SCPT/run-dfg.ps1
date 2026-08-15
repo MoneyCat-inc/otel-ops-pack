@@ -18,7 +18,7 @@ param(
     [switch]$Validate,
 
     [Parameter(Mandatory=$false)]
-    [string]$OTLPEndpoint = "http://127.0.0.1:5321",
+    [string]$OTLPEndpoint,
 
     [Parameter(Mandatory=$false)]
     [string]$SigNozUrl = "http://localhost:8080",
@@ -29,6 +29,9 @@ param(
     [Parameter(Mandatory=$false)]
     [string]$DeployEnv = "local"
 )
+
+Import-Module (Join-Path $PSScriptRoot 'lib\OtelPorts.psm1') -Force
+if (-not $OTLPEndpoint) { $OTLPEndpoint = Get-OtelIngestHttpBase }
 
 $env:OTLP_ENDPOINT = $OTLPEndpoint
 $env:SIGNOZ_URL = $SigNozUrl

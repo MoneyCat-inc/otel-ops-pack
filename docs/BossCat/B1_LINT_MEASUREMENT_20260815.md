@@ -101,3 +101,22 @@ Skipped generated `docs/BossCat/AGENTS.md` (regen via `pnpm agent:setup`).
 | After (same command) | **6,128** / **271** |
 
 Counted with `Summary:` / error-line match count (not `tail -1`).
+
+## Fix batch 4 scale (2026-08-15)
+
+| Probe | Result |
+|-------|--------|
+| Before (canonical command @ branch start from `main`) | **6,096** / **271** (Linting: 272) |
+| Batch (35 files → 0 issues) | Low-debt live docs with 1–15 errors (excl. generated `docs/BossCat/AGENTS.md`); ranked from `rollback_plan`, `vr/README`, `CANARY_INCIDENT_TEMPLATE`, etc. |
+| After (same command) | **5,749** / **271** |
+
+`lane:cleanup` AMBER — file count exceeds ≤10; every touched file owned to **0**.
+
+**Command:**
+
+```bash
+npx --yes markdownlint-cli2@0.14.0 --config .markdownlint-cli2.yaml \
+  "docs/**/*.md" "README.md" "!docs/archive" "!docs/gate/archive"
+```
+
+Counted with `Summary:` / error-line match on `\.md:\d+` (not `tail -1`).

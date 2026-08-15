@@ -4,15 +4,18 @@
 **Owner (brief):** Cursor{Implementer}  
 **Owner (run):** Machine operator at Cursor tab + Cursor{Implementer} verify  
 **Status:** **SCHEDULED** 2026-07-25 — awaiting fresh VM (see `CLEAN_HOST_E2E_RUN_CARD_20260725.md`)  
+<!-- markdownlint-disable-next-line MD013 -->
 **Promise under test:** A stranger on a fresh Windows host can go from clone → first span in SigNoz without tribal knowledge.  
 **Gate clock:** Phases **1–4 only** (clone → first span). Phase 0 tooling is recorded but **excluded** from the ≤30 min target.
 
+<!-- markdownlint-disable-next-line MD013 -->
 This is the first gate in the project that tests the **promise to strangers**, not the machinery behind it. Draft it to fail closed: if a step needs tribal knowledge, the briefing is incomplete.
 
 ---
 
 ## Why this exists
 
+<!-- markdownlint-disable-next-line MD013 -->
 Ops-pack health on a configured workstation is GREEN. That does **not** prove the README promise. Clean-host E2E asks: starting from a blank Windows machine, how long until a canary span is visible in SigNoz, and which steps break without an insider?
 
 Board order: after CHAR review (Unblock #2 closed). This item is the highest-leverage remaining gate.
@@ -29,6 +32,7 @@ Board order: after CHAR review (Unblock #2 closed). This item is the highest-lev
 | Network | Localhost only for this gate (no cloud SigNoz) |
 | Out of scope | pnpm CI parity, Resonai app, GPU/viz lanes, social bots, CHAR disposition |
 
+<!-- markdownlint-disable-next-line MD013 -->
 **Fail closed:** If the host already has SigNoz containers or a collector service, wipe or use a new VM. Contaminated hosts invalidate the clock.
 
 ---
@@ -41,6 +45,7 @@ Board order: after CHAR review (Unblock #2 closed). This item is the highest-lev
 | Scripted compose up, config sync, canary, verify, ECRR + timing artifact | **Cursor{Implementer}** |
 | Accept GREEN / AMBER / RED; decide README fixes | **Chat / review / OEM** |
 
+<!-- markdownlint-disable-next-line MD013 -->
 No credential mint required for baseline path (ClickHouse fallback in gate verify). Optional later: scoped `SIGNOZ_API_KEY` for API-path confirmation.
 
 ---
@@ -52,7 +57,7 @@ Lock these for the run. Document drift; do not improvise mid-gate.
 | Concern | Canonical | Do **not** use |
 |---------|-----------|----------------|
 | Repo path | `C:\otel` (verify scripts assume it) | Arbitrary clone path without updating scripts |
-| SigNoz UI | http://localhost:8080 | — |
+| SigNoz UI | <http://localhost:8080> | — |
 | SigNoz OTLP (Docker host) | `4317` gRPC / `4318` HTTP | — |
 | Windows collector ingest | `5320` gRPC / `5321` HTTP | `5317`/`5318` (historical / PlariumPlay conflict) |
 | Collector → SigNoz export | `localhost:4317` (template `windows/otelcol/otelcol-contrib-config.yaml`) | Mid-run inventing `14317` unless runbook path is explicitly chosen |
@@ -62,6 +67,7 @@ Lock these for the run. Document drift; do not improvise mid-gate.
 | Fast health | `scripts\quick-monitor.ps1` | — |
 | Canary (no Python) | `canary-test.ps1` (repo root) | `scripts\windows\test-otlp-e2e.ps1` (**HISTORICAL**, wrong ports) |
 
+<!-- markdownlint-disable-next-line MD013 -->
 **Known tension to resolve in Examine (not mid-Clean):** runbook still elevates `14317` for .NET direct export; README/template elevate `4317` + collector `5320/5321`. Clean-host baseline uses **collector path** (apps → `5321` → collector → `4317` → SigNoz). Direct `.NET → 14317` is a separate optional probe, not the stranger path.
 
 ---
@@ -117,7 +123,7 @@ Machine operator: complete SigNoz first-run UI if prompted (admin user). Note wh
 
 | # | Step |
 |---|------|
-| 3.1 | Install pinned MSI (**0.104.0** Gate #022-proven): https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v0.104.0/otelcol-contrib_0.104.0_windows_x64.msi — usually done in Phase 0; confirm service exists before repair script |
+| 3.1 | Install pinned MSI (**0.104.0** Gate #022-proven): <https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v0.104.0/otelcol-contrib_0.104.0_windows_x64.msi> — usually done in Phase 0; confirm service exists before repair script |
 | 3.2 | Sync template → live config: ensure `C:\otel\config.yaml` matches `windows\otelcol\otelcol-contrib-config.yaml` (or documented sync command) |
 | 3.3 | `pwsh -File C:\otel\scripts\windows\install-or-repair-otel-collector.ps1` — service must point at `C:\otel\config.yaml` |
 | 3.4 | `sc qc otelcol-contrib` — confirm BINARY_PATH_NAME includes `C:\otel\config.yaml` |
@@ -131,6 +137,7 @@ pwsh -File C:\otel\canary-test.ps1
 pwsh -File C:\otel\BRAV\SCPT\verify-pipeline.ps1
 ```
 
+<!-- markdownlint-disable-next-line MD013 -->
 **Span visibility:** SigNoz UI → Traces/Logs; query canary / synthetic service name from verify output. Screenshot optional but preferred for stranger-facing evidence.
 
 ---
@@ -159,6 +166,7 @@ pwsh -File C:\otel\BRAV\SCPT\verify-pipeline.ps1
 - **AMBER** — path works but required undocumented steps / port folklore / >30 min  
 - **RED** — cannot reach first span without changing code or tribal rescue  
 
+<!-- markdownlint-disable-next-line MD013 -->
 AMBER/RED must list **README / script fixes** as follow-on PRs (broken `scripts\verify-pipeline.ps1` pointer, HISTORICAL e2e in Quick Commands, MSI URL pin, config sync one-liner).
 
 ---
@@ -188,6 +196,7 @@ Do not expand scope into sibling maturity, CHAR disposition, or deploy-hub renam
 
 ## Exit
 
+<!-- markdownlint-disable-next-line MD013 -->
 When the run completes: merge ECRR + timing artifact + BOSSCAT_LOG; open fix PRs for every AMBER/RED doc lie discovered. Only then is the stranger promise evidenced.
 
 — Cursor{Implementer} → BossCat OEM

@@ -276,7 +276,7 @@ $experimentRunner = {
     $actualDuration = [math]::Min($Duration, $StageBudget)
     Write-Host "  Executing load generation for $actualDuration seconds..." -ForegroundColor Yellow
 
-    $loadCommandExpanded = "$LoadCommand -Duration $actualDuration -OTLPEndpoint http://localhost:5321 -RunId $($Run.runId) -Stage $Stage"
+    $loadCommandExpanded = "$LoadCommand -Duration $actualDuration -OTLPEndpoint http://localhost:$($Run.ports.http) -RunId $($Run.runId) -Stage $Stage"
     $loadProcess = Start-Process -FilePath "pwsh" -ArgumentList @("-Command", $loadCommandExpanded) -PassThru -NoNewWindow
     $loadProcess.WaitForExit($actualDuration * 1000 + 30000)
 
