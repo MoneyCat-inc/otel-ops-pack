@@ -321,9 +321,9 @@ The current implementation supports **traces only**. Gate #030 (Evidence-as-Code
 
 ## Related Documentation
 
-- [Gate #029 Implementation](../../GATE_029_IMPLEMENTATION_COMPLETE.md)
+- [Gate #029 Implementation](../archive/gates/2025-11/GATE_029_IMPLEMENTATION_COMPLETE.md)
 - [Gate #029 Approval](../archive/gate/2025-10/GATE_029_APPROVAL.md)
-- [Gate #029 Hygiene Patch H1](../../GATE_029_HYGIENE_PATCH_H1.md)
+- [Gate #029 Hygiene Patch H1](../archive/gates/2025-11/GATE_029_HYGIENE_PATCH_H1.md)
 - [Windows Collector Runbook](./windows-collector.md)
 
 ---
