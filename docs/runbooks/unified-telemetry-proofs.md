@@ -706,8 +706,8 @@ env:
 ## Related Documentation
 
 - [SigNoz API Proofs (Single-Signal)](./signoz-api-proofs.md) — Gate #029-H1
-- [Gate #030 Scope](../../GATE_030_SCOPE.md)
-- [Gate #030 Implementation](../../GATE_030_IMPLEMENTATION_COMPLETE.md)
+- [Gate #030 Scope](../archive/gates/2025-11/GATE_030_SCOPE.md)
+- [Gate #030 Implementation](../archive/gates/2025-11/GATE_030_IMPLEMENTATION_COMPLETE.md)
 - [Windows Collector Runbook](./windows-collector.md)
 
 ---

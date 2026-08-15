@@ -17,7 +17,7 @@
 
 **Resources**:
 
-- Troubleshooting guides: [docs/runbooks/](../runbooks/)
+- Troubleshooting guides: `docs/runbooks/` (e.g. [windows-collector](../runbooks/windows-collector.md))
 - Architecture diagrams: [docs/vizr/ARCHITECTURE_DIAGRAM.md](../vizr/ARCHITECTURE_DIAGRAM.md)
 - Current architecture: [docs/architecture/CURRENT_ARCHITECTURE.md](../architecture/CURRENT_ARCHITECTURE.md)
 

@@ -263,23 +263,23 @@ Root:
 
 ### Quick Start
 
-- **Main Hub**: [docs/BossCat/README.md](docs/BossCat/README.md)
-- **Daily Reference**: [docs/BossCat/QUICK_START_CARD.md](docs/BossCat/QUICK_START_CARD.md)
+- **Main Hub**: [docs/BossCat/README.md](../../BossCat/README.md)
+- **Daily Reference**: [docs/BossCat/QUICK_START_CARD.md](../../BossCat/QUICK_START_CARD.md)
 
 ### Implementation Guides
 
 - **GitHub App Setup**:
-  [docs/BossCat/GITHUB_APP_IMPLEMENTATION_GUIDE.md](docs/BossCat/GITHUB_APP_IMPLEMENTATION_GUIDE.md)
-- **Security Operations**: [docs/BossCat/DEPENDABOT_SECURITY_GUIDE.md](docs/BossCat/DEPENDABOT_SECURITY_GUIDE.md)
-- **Monitoring**: [docs/BossCat/NIGHTLY_DASHBOARD_GUIDE.md](docs/BossCat/NIGHTLY_DASHBOARD_GUIDE.md)
-- **Maintenance**: [docs/BossCat/CREDENTIAL_ROTATION_CALENDAR.md](docs/BossCat/CREDENTIAL_ROTATION_CALENDAR.md)
+  [docs/BossCat/GITHUB_APP_IMPLEMENTATION_GUIDE.md](../../BossCat/GITHUB_APP_IMPLEMENTATION_GUIDE.md)
+- **Security Operations**: [docs/BossCat/DEPENDABOT_SECURITY_GUIDE.md](../../BossCat/DEPENDABOT_SECURITY_GUIDE.md)
+- **Monitoring**: [docs/BossCat/NIGHTLY_DASHBOARD_GUIDE.md](../../BossCat/NIGHTLY_DASHBOARD_GUIDE.md)
+- **Maintenance**: [docs/BossCat/CREDENTIAL_ROTATION_CALENDAR.md](../../BossCat/CREDENTIAL_ROTATION_CALENDAR.md)
 
 ### Master Reference
 
 - **Complete Handbook**:
-  [docs/BossCat/SECURITY_MAINTENANCE_MASTER_GUIDE.md](docs/BossCat/SECURITY_MAINTENANCE_MASTER_GUIDE.md)
+  [docs/BossCat/SECURITY_MAINTENANCE_MASTER_GUIDE.md](../../BossCat/SECURITY_MAINTENANCE_MASTER_GUIDE.md)
 - **Implementation Report**:
-  [BOSSCAT_WEEK1_IMPLEMENTATION_COMPLETE.md](docs/BossCat/misc/BOSSCAT_WEEK1_IMPLEMENTATION_COMPLETE.md)
+  [BOSSCAT_WEEK1_IMPLEMENTATION_COMPLETE.md](../../archive/BossCat/misc/BOSSCAT_WEEK1_IMPLEMENTATION_COMPLETE.md)
 
 ---
 
@@ -454,12 +454,12 @@ tasks for Week 2+ are clearly documented.*
 ## References
 
 - **Implementation Report**:
-  [BOSSCAT_WEEK1_IMPLEMENTATION_COMPLETE.md](docs/BossCat/misc/BOSSCAT_WEEK1_IMPLEMENTATION_COMPLETE.md)
-- **Documentation Hub**: [docs/BossCat/README.md](docs/BossCat/README.md)
+  [BOSSCAT_WEEK1_IMPLEMENTATION_COMPLETE.md](../../archive/BossCat/misc/BOSSCAT_WEEK1_IMPLEMENTATION_COMPLETE.md)
+- **Documentation Hub**: [docs/BossCat/README.md](../../BossCat/README.md)
 - **Master Guide**:
-  [docs/BossCat/SECURITY_MAINTENANCE_MASTER_GUIDE.md](docs/BossCat/SECURITY_MAINTENANCE_MASTER_GUIDE.md)
-- **BossCat Charter**: [CHARTER.md](docs/BossCat/CHARTER.md) - Agent hierarchy
-- **Quick Reference**: [docs/BossCat/QUICK_START_CARD.md](docs/BossCat/QUICK_START_CARD.md)
+  [docs/BossCat/SECURITY_MAINTENANCE_MASTER_GUIDE.md](../../BossCat/SECURITY_MAINTENANCE_MASTER_GUIDE.md)
+- **BossCat Charter**: [CHARTER.md](../../BossCat/CHARTER.md) - Agent hierarchy
+- **Quick Reference**: [docs/BossCat/QUICK_START_CARD.md](../../BossCat/QUICK_START_CARD.md)
 
 ---
 
