@@ -18,6 +18,27 @@ import { promisify } from 'util';
 
 const execAsync = promisify(exec);
 
+
+function loadOtelPortsJson(): {
+  windows_collector_ingest: { grpc: number; http: number };
+  signoz_ui: { http: number };
+} {
+  let dir = __dirname;
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const fsSync = require('fs') as typeof import('fs');
+  for (;;) {
+    const candidate = path.join(dir, 'DELT', 'CONF', 'otel-ports.json');
+    if (fsSync.existsSync(candidate)) {
+      return JSON.parse(fsSync.readFileSync(candidate, 'utf8'));
+    }
+    const parent = path.dirname(dir);
+    if (parent === dir) throw new Error('DELT/CONF/otel-ports.json not found');
+    dir = parent;
+  }
+}
+
+const otelPortsJson = loadOtelPortsJson();
+
 interface ProductionTask {
   id: string;
   type: 'monitoring' | 'remediation' | 'maintenance' | 'alert' | 'optimization' | 'compliance';
@@ -76,8 +97,8 @@ class ProductionAgentSystem {
   private statusFile = '.agent/system-status.json';
   private pidFile = '.agent/production-agent.pid';
   private otelIntegration = {
-    signozUrl: 'http://localhost:8080',
-    collectorUrl: 'http://localhost:5321',
+    signozUrl: `http://localhost:${otelPortsJson.signoz_ui.http}`,
+    collectorUrl: `http://localhost:${otelPortsJson.windows_collector_ingest.http}`,
     metricsPath: 'C:/logs/queue/health.log'
   };
 

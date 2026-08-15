@@ -1,13 +1,18 @@
 # scripts/agent/synthetic-telemetry.ps1 - Feed guardrail violations into SigNoz/Grafana alerts
 
 param(
-    [string]$OtelEndpoint = "http://localhost:5321/v1/metrics",
+    [string]$OtelEndpoint = "",
     [string]$ServiceName = "codex-local",
     [switch]$DryRun,
     [switch]$Verbose
 )
 
 $ErrorActionPreference = "Stop"
+
+Import-Module (Join-Path $PSScriptRoot '..\lib\OtelPorts.psm1') -Force
+if (-not $OtelEndpoint) {
+    $OtelEndpoint = "$(Get-OtelIngestHttpBase -HostName 'localhost')/v1/metrics"
+}
 
 function Write-TelemetryResult {
     param(
