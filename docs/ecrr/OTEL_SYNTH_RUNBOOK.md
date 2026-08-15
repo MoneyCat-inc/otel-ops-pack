@@ -68,7 +68,7 @@ After running, create `CHAR/ECRR/ECRR_REPORTS/OTEL_SYNTH_<DATE>.md` using the te
 ## Expected Result
 
 - ✅ Span appears in SigNoz (service: hub-synth)
-- ✅ HTTP GET to https://hub.resonai.uk/robots.txt captured
+- ✅ HTTP GET to <https://hub.resonai.uk/robots.txt> captured
 - ✅ No errors or warnings
 - ✅ Confirms auto-instrumentation path operational
 

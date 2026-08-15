@@ -1,4 +1,4 @@
-**IONA — PROD GATE DECISION (2025‑10‑13)**
+## IONA — PROD GATE DECISION (2025‑10‑13)
 
 **Verdict:** ✅ **APPROVED** for production deployment
 
@@ -14,6 +14,7 @@
 **Rollback:** ECRR on any anomaly → revert to last known‑good
 
 **Evidence:**
+
 - Release Notes: `docs/BossCat/RELEASE_NOTES_IONA_PROD_READY_20251013.md`
 - Gate Results: `DELT/ARTF/gate-verification-results.json` (verdict: READY)
 - CHANGELOG: 2025-10-13 entry
