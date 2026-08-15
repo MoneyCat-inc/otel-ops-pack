@@ -12,6 +12,7 @@
 ### ✅ **Structural Compliance: COMPLETE**
 
 **Verification Results:**
+
 ```bash
 $ python BRAV/SCPT/check_guardrails.py
 Exit code: 0 ✅
@@ -29,6 +30,7 @@ Overall: PASS
 ### ⏸️ **Operational Verification: PENDING SERVICES**
 
 **Verification Run (2025-10-09):**
+
 ```powershell
 $ pwsh -File BRAV\SCPT\bosscat-final-verification.ps1
 
@@ -47,7 +49,8 @@ Results:
 
 ### Prerequisites
 
-**1. Start SigNoz Stack**
+### 1. Start SigNoz Stack
+
 ```powershell
 # Option A: Using start script
 .\start-signoz.ps1
@@ -59,7 +62,8 @@ docker-compose -f docker-compose-signoz.yml up -d
 Invoke-WebRequest -Uri http://localhost:8080 -UseBasicParsing
 ```
 
-**2. Start Resonai Application**
+### 2. Start Resonai Application
+
 ```powershell
 # Start the Next.js app (or your main application)
 npm run dev
@@ -68,7 +72,8 @@ npm run dev
 # Verify: http://localhost:3000
 ```
 
-**3. Start Webhook Server**
+### 3. Start Webhook Server
+
 ```powershell
 # Start your webhook service on port 3003
 # (Implementation-specific - adjust to your webhook server command)
@@ -77,7 +82,8 @@ npm run dev
 $env:ALERT_WEBHOOK_URL = "http://localhost:3003/webhook"
 ```
 
-**4. Verify Services Are Up**
+### 4. Verify Services Are Up
+
 ```powershell
 # Check SigNoz
 Invoke-WebRequest -Uri http://localhost:8080 -UseBasicParsing
@@ -94,18 +100,21 @@ Invoke-WebRequest -Uri http://localhost:3003/health -UseBasicParsing
 ### Running Verification
 
 **Full Verification:**
+
 ```powershell
 # BossCat comprehensive check
 pwsh -File BRAV\SCPT\bosscat-final-verification.ps1
 ```
 
 **Component Verification:**
+
 ```powershell
 # Individual component checks
 pwsh -File BRAV\SCPT\verify-all-components.ps1
 ```
 
 **Quick Health Check:**
+
 ```powershell
 # Fast health verification
 pwsh -File BRAV\SCPT\quick-monitor.ps1
@@ -147,6 +156,7 @@ git push origin main
 ### BossCat Final Verification
 
 **Should show:**
+
 - ✅ Synthetic trace generation: Success
 - ✅ Health verification: Port 13134 responding
 - ✅ OTLP ports: 4317, 4318 reachable
@@ -156,6 +166,7 @@ git push origin main
 ### Component Verification
 
 **Should show:**
+
 - ✅ SigNoz UI accessible (port 8080)
 - ✅ OTel collector responding
 - ✅ Resonai app running (port 3000)
@@ -173,6 +184,7 @@ git push origin main
 **Issue:** `bosscat-final-verification.ps1` referenced old `scripts/` paths
 
 **Fix (commit `ad5d6a2`):**
+
 ```powershell
 # Before:
 .\scripts\verify-synthetic-ingestion-enhanced.ps1
@@ -190,6 +202,7 @@ pnpm playwright test BRAV/SCPT/signoz-snapshot.spec.ts
 ## 📋 Operational Verification Checklist
 
 ### Pre-Verification
+
 - [ ] SigNoz stack started (`docker-compose up -d`)
 - [ ] Resonai app started (`npm run dev`)
 - [ ] Webhook server started (port 3003)
@@ -197,6 +210,7 @@ pnpm playwright test BRAV/SCPT/signoz-snapshot.spec.ts
 - [ ] All ports accessible (8080, 3000, 3003, 4317, 4318, 13134)
 
 ### Verification
+
 - [ ] Run `bosscat-final-verification.ps1`
 - [ ] Run `verify-all-components.ps1`
 - [ ] Check SigNoz UI (logs, traces, metrics visible)
@@ -204,6 +218,7 @@ pnpm playwright test BRAV/SCPT/signoz-snapshot.spec.ts
 - [ ] Verify dashboard access
 
 ### Evidence Capture
+
 - [ ] Copy verification reports to `CHAR/EVID/operational/<date>/`
 - [ ] Capture health snapshot
 - [ ] Capture guardrails output
@@ -215,12 +230,14 @@ pnpm playwright test BRAV/SCPT/signoz-snapshot.spec.ts
 ## 🎯 Two-Gate Strategy
 
 ### ✅ Structural Gate (APPROVED)
+
 - **Status:** COMPLETE
 - **Evidence:** `CHAR/EVID/BOSSCAT_TETRAGRAM_1.2_APPROVAL.md`
 - **Compliance:** 0/0/0 (perfect)
 - **Decision:** APPROVED FOR PRODUCTION
 
 ### ⏸️ Operational Gate (DEFERRED)
+
 - **Status:** PENDING SERVICE STARTUP
 - **Evidence:** Will be captured in `CHAR/EVID/operational/<date>/`
 - **Compliance:** TBD (run when services available)
@@ -230,14 +247,16 @@ pnpm playwright test BRAV/SCPT/signoz-snapshot.spec.ts
 
 ## 🚀 Recommended Approach
 
-**Option A: Deploy Structural Baseline Now**
+### Option A: Deploy Structural Baseline Now
+
 - ✅ Structural compliance is perfect
 - ✅ All code is in correct locations
 - ✅ Guardrails enforce ongoing compliance
 - 🚀 **Deploy tetragram-1.2 structure to production**
 - ⏸️ Run operational verification on deployed environment
 
-**Option B: Complete Both Gates Before Deploy**
+### Option B: Complete Both Gates Before Deploy
+
 - Start services locally
 - Run operational verification
 - Capture evidence
@@ -262,6 +281,7 @@ pnpm playwright test BRAV/SCPT/signoz-snapshot.spec.ts
 **Operational Gate:** ⏸️ **Deferred** - Run when convenient
 
 **Rationale:**
+
 - Structural compliance is independent of running services
 - Code organization is complete and correct
 - Operational verification validates runtime behavior (separate concern)

@@ -7,7 +7,9 @@
 
 ## Overview
 
-The RSI (Research-driven Self-Improvement) system includes **automated baseline promotion** when statistical thresholds are met. This ensures performance improvements are captured systematically while maintaining BossCat governance oversight.
+The RSI (Research-driven Self-Improvement) system includes **automated baseline promotion** when statistical thresholds
+are met. This ensures performance improvements are captured systematically while maintaining BossCat governance
+oversight.
 
 ---
 
@@ -19,6 +21,7 @@ The RSI (Research-driven Self-Improvement) system includes **automated baseline 
 **Schedule**: Daily at 02:30 UTC
 
 **Process**:
+
 1. Runs 3-repeat BatchSize sweep (500, 800, 1000, 1200, 1500)
 2. Calculates statistical metrics:
    - Median (robust central tendency)
@@ -32,11 +35,13 @@ The RSI (Research-driven Self-Improvement) system includes **automated baseline 
 ### 2. Auto-Promotion Thresholds
 
 **Criteria** (all must be met):
+
 - ✅ **Statistical significance**: 95% CIs do not overlap
 - ✅ **Recommendation**: Report explicitly recommends "Consider BatchSize=XXXX"
 - ✅ **Pattern**: "statistically significant" appears in recommendation
 
 **Example Passing Report**:
+
 ```markdown
 ## Conclusion
 
@@ -48,6 +53,7 @@ The RSI (Research-driven Self-Improvement) system includes **automated baseline 
 ```
 
 **Example Failing Report** (keeps baseline):
+
 ```markdown
 ## Conclusion
 
@@ -62,6 +68,7 @@ The RSI (Research-driven Self-Improvement) system includes **automated baseline 
 ### 3. Automated PR Creation
 
 **When threshold met**:
+
 1. **Branch created**: `rsi/auto-baseline-bsXXXX`
 2. **File updated**: `BRAV/SCPT/rsi-bench/bench-index.ps1` (default BatchSize)
 3. **Commit message**: ECRR-compliant with evidence
@@ -79,12 +86,14 @@ The RSI (Research-driven Self-Improvement) system includes **automated baseline 
 **Human Oversight**: Required for all auto-generated PRs
 
 **BossCat Review**:
+
 - ✅ Review statistical evidence
 - ✅ Verify longitudinal consistency (7-14 days data)
 - ✅ Check for anomalies or measurement issues
 - ✅ Approve or request changes
 
 **Merge Process**:
+
 - Auto-generated PR requires explicit BossCat approval
 - No auto-merge (human decision required)
 - Complete audit trail preserved
@@ -96,11 +105,13 @@ The RSI (Research-driven Self-Improvement) system includes **automated baseline 
 **Workflow**: Posts nightly stats to open PRs with `rsi` label
 
 **Comment Contents**:
+
 - Latest statistical analysis (collapsible)
 - Timestamp of analysis
 - Link to workflow run
 
 **Purpose**:
+
 - Keep PR authors informed of performance trends
 - Provide context for RSI-related changes
 - Enable data-driven discussions
@@ -110,24 +121,28 @@ The RSI (Research-driven Self-Improvement) system includes **automated baseline 
 ## Safety Mechanisms
 
 ### 1. Statistical Rigor ✅
+
 - 3-repeat sweeps (median, not mean)
 - 95% confidence intervals
 - CI overlap test (conservative)
 - Multi-night data collection
 
 ### 2. Human Oversight ✅
+
 - Auto-generated PRs require approval
 - BossCat can reject if suspicious
 - Complete evidence for review
 - Reversible changes (parameter only)
 
 ### 3. Kill-Switch ✅
+
 - `.agent/LOCK` pauses all RSI automation
 - Manual intervention capability
 - Workflow can be disabled
 - Branch protection enforced
 
 ### 4. Audit Trail ✅
+
 - All PRs tagged and traceable
 - Statistical reports archived (90 days)
 - METRICS.jsonl append-only log
@@ -140,17 +155,20 @@ The RSI (Research-driven Self-Improvement) system includes **automated baseline 
 ### Promotion Thresholds
 
 **Current Settings** (embedded in `rsi-sweep-nightly.yml`):
+
 ```regex
 # Pattern match in ECRR_RSI_NIGHTLY_STATS_LATEST.md:
 Consider BatchSize=(\d+).*[Ss]tatistically significant
 ```
 
 **To Adjust**:
+
 1. Edit `.github/workflows/rsi-sweep-nightly.yml`
 2. Modify regex pattern in "Check if baseline should be promoted" step
 3. Add additional constraints (e.g., minimum improvement %)
 
 **Example Stricter Threshold**:
+
 ```pwsh
 # Require both significance AND minimum 3% improvement
 if ($report -match 'Consider BatchSize=(\d+)' -and 
@@ -168,17 +186,20 @@ if ($report -match 'Consider BatchSize=(\d+)' -and
 ### Skip Auto-Promotion
 
 **Temporarily disable**:
+
 1. Add `.agent/LOCK` file (pauses all RSI)
 2. Or disable workflow in GitHub Actions settings
 3. Or close auto-generated PR with comment
 
 **Permanently disable auto-promotion**:
+
 1. Remove "Create baseline update PR" step from workflow
 2. Keep auto-comments (optional)
 
 ### Force Promotion
 
 **Manual baseline update**:
+
 ```bash
 # Update default in bench-index.ps1
 sed -i 's/\[int\]$BatchSize = 1000/[int]$BatchSize = 1500/' BRAV/SCPT/rsi-bench/bench-index.ps1
@@ -199,15 +220,18 @@ Rationale: [explain decision]"
 ### Check Auto-Promotion Status
 
 **View latest nightly run**:
+
 - GitHub Actions → `rsi-sweep-nightly` → Latest run
 - Check "Check if baseline should be promoted" step output
 
 **Review open auto-promotion PRs**:
+
 ```bash
 gh pr list --label auto-promotion
 ```
 
 **View statistical trends**:
+
 ```bash
 # Last 7 days of stats reports
 ls -lt CHAR/ECRR/ECRR_REPORTS/ECRR_RSI_NIGHTLY_STATS_*.md | head -7
@@ -215,9 +239,10 @@ ls -lt CHAR/ECRR/ECRR_REPORTS/ECRR_RSI_NIGHTLY_STATS_*.md | head -7
 
 ### Alerts
 
-**No alerts configured by default**
+### No alerts configured by default
 
 **Optional**: Add GitHub Actions notifications
+
 - Slack webhook on promotion PR creation
 - Email to BossCat on threshold met
 - GitHub Issues for anomalies
@@ -269,6 +294,7 @@ ls -lt CHAR/ECRR/ECRR_REPORTS/ECRR_RSI_NIGHTLY_STATS_*.md | head -7
 ### Auto-Promotion Not Triggering
 
 **Check**:
+
 1. Review latest `ECRR_RSI_NIGHTLY_STATS_LATEST.md`
    - Does it recommend baseline update?
    - Is "statistically significant" mentioned?
@@ -281,6 +307,7 @@ ls -lt CHAR/ECRR/ECRR_REPORTS/ECRR_RSI_NIGHTLY_STATS_*.md | head -7
 **Cause**: Promotion threshold met on consecutive nights
 
 **Solution**: 
+
 - Close duplicate PRs
 - Merge first PR to update baseline
 - Future PRs will use new baseline
@@ -288,6 +315,7 @@ ls -lt CHAR/ECRR/ECRR_REPORTS/ECRR_RSI_NIGHTLY_STATS_*.md | head -7
 ### PR Creation Fails
 
 **Check**:
+
 - GitHub token permissions (needs `contents: write`, `pull-requests: write`)
 - Branch protection rules
 - Git configuration in workflow
@@ -297,6 +325,7 @@ ls -lt CHAR/ECRR/ECRR_REPORTS/ECRR_RSI_NIGHTLY_STATS_*.md | head -7
 ## Future Enhancements
 
 **Potential Additions**:
+
 1. **Trend plots**: Visualize median-of-3 over time
 2. **Multi-parameter**: Extend to Concurrency, ARCH_QPS, etc.
 3. **Rollback detection**: Auto-revert if new baseline regresses

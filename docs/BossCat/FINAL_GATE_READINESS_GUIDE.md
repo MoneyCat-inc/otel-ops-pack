@@ -9,6 +9,7 @@
 ## 🎯 **Final Gate Readiness Status**
 
 ### **Complete System Verification**
+
 - ✅ **Windows Collector:** Running with health checks (200 OK)
 - ✅ **Network Ports:** 4317/4318/13133/55679 all listening
 - ✅ **SigNoz Integration:** Healthy and operational
@@ -32,9 +33,11 @@ $env:SIGNOZ_API_KEY="<paste_api_key>"           # OR use cookie below
 ### **2. API Key Authentication**
 
 **Create API Key (SigNoz UI):**
+
 1. Settings → **API Keys** → **New Key** → copy value
 
 **Run with API Key:**
+
 ```powershell
 .\scripts\verify-synthetic-ingestion-enhanced.ps1 `
   -SigNozUrl $env:SIGNOZ_URL `
@@ -45,9 +48,11 @@ $env:SIGNOZ_API_KEY="<paste_api_key>"           # OR use cookie below
 ### **3. Session Cookie Authentication**
 
 **Grab Session Cookie:**
+
 1. Browser → DevTools → **Application/Storage → Cookies → signoz-session** → copy value
 
 **Run with Cookie:**
+
 ```powershell
 .\scripts\verify-synthetic-ingestion-enhanced.ps1 -SigNozUrl "http://localhost:8080" -SessionCookieValue $env:SIGNOZ_SESSION_COOKIE
 ```
@@ -57,12 +62,14 @@ $env:SIGNOZ_API_KEY="<paste_api_key>"           # OR use cookie below
 ## 🎭 **Robust Playwright Evidence Collection**
 
 ### **Enhanced Snapshot Script**
+
 - **File:** `scripts/signoz-snapshot.spec.ts`
 - **Features:** 90-second polling, environment variables, robust error handling
 - **Timeout:** 120 seconds total
 - **Outputs:** Full-page screenshots of services, details, traces, and logs
 
 ### **Usage:**
+
 ```powershell
 $env:SIGNOZ_URL="http://localhost:8080"
 $env:SERVICE_NAME="synthetic-windows-check"
@@ -70,6 +77,7 @@ pnpm playwright test scripts/signoz-snapshot.spec.ts
 ```
 
 ### **Expected Artifacts:**
+
 - `artifacts/signoz-services-synthetic.png`
 - `artifacts/signoz-service-detail.png`
 - `artifacts/signoz-traces.png`
@@ -80,6 +88,7 @@ pnpm playwright test scripts/signoz-snapshot.spec.ts
 ## 🔄 **Synthetic Trace Generation**
 
 ### **Python Environment Setup:**
+
 ```powershell
 cd C:\otel\synthetic
 python -m venv .venv
@@ -88,12 +97,14 @@ pip install opentelemetry-sdk opentelemetry-exporter-otlp-proto-grpc opentelemet
 ```
 
 ### **Generate Synthetic Traces:**
+
 ```powershell
 python synthetic/send_synthetic_otel_simple.py
 ```
 
 ### **Expected Output:**
-```
+
+```yaml
 SUCCESS: Sent synthetic trace to http://localhost:4317 as service: synthetic-windows-check
    - Root span: bc.synthetic.root
    - Child span: bc.synthetic.child
@@ -105,6 +116,7 @@ SUCCESS: Sent synthetic trace to http://localhost:4317 as service: synthetic-win
 ## 🏥 **Health Verification Commands**
 
 ### **Quick Sanity Checks:**
+
 ```powershell
 # Collector health
 Invoke-WebRequest -UseBasicParsing http://localhost:13133/healthz
@@ -115,6 +127,7 @@ Test-NetConnection localhost -Port 4318
 ```
 
 ### **Complete Verification:**
+
 ```powershell
 pwsh -File scripts\bosscat-gate-verification-complete.ps1
 ```
@@ -124,6 +137,7 @@ pwsh -File scripts\bosscat-gate-verification-complete.ps1
 ## 📋 **Final ECRR Evidence Trail**
 
 ### **Generated Artifacts:**
+
 - ✅ **Health Check Results:** Collector uptime and status
 - ✅ **Port Connectivity:** All OTLP endpoints verified
 - ✅ **Synthetic Traces:** Generated with proper attributes
@@ -132,6 +146,7 @@ pwsh -File scripts\bosscat-gate-verification-complete.ps1
 - ✅ **Playwright Snapshots:** Robust polling and evidence collection
 
 ### **Documentation:**
+
 - ✅ **Windows Collector Runbook:** `docs/README-Windows-Collector.md`
 - ✅ **Success Report:** `docs/BossCat/WINDOWS_COLLECTOR_SUCCESS_REPORT.md`
 - ✅ **Gate Readiness:** `docs/BossCat/gate_readiness_test_report.md`
@@ -150,7 +165,7 @@ CI is green and all checks are satisfied.
 
 ## 📝 **Suggested Commit Message**
 
-```
+```yaml
 docs: finalize 100/100 gate readiness + SigNoz evidence
 chore: add API-key/cookie auth to synthetic verify + robust Playwright polling
 test: synthetic OTLP trace/log generator for gate verification (Python)

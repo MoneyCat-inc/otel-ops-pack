@@ -8,7 +8,8 @@
 
 ## 🎉 Final Status: COMPLETE
 
-All issues resolved. The security and notifications archivers are now production-ready with comprehensive error handling.
+All issues resolved. The security and notifications archivers are now production-ready with comprehensive error
+handling.
 
 ---
 
@@ -39,6 +40,7 @@ All issues resolved. The security and notifications archivers are now production
 **Problem**: HTTP 422 errors crash the script when some analyses can't be processed
 
 **Solution** (Evidence-First):
+
 ```powershell
 try {
   $sarif = Get-Sarif -Id $id
@@ -54,6 +56,7 @@ try {
 ```
 
 **Benefits**:
+
 - ✅ No crashes on HTTP 422
 - ✅ Metadata JSON always persisted
 - ✅ Evidence logged (LEDGER + METRICS)
@@ -65,6 +68,7 @@ try {
 **Problem**: 404 errors crash when endpoint incorrect or auth insufficient
 
 **Solution** (Multi-Layer Fallback):
+
 ```powershell
 # Layer 1: Try gh api with correct headers
 if(Has-Gh){
@@ -93,6 +97,7 @@ if(-not $threadsRaw){
 ```
 
 **Benefits**:
+
 - ✅ Multi-layer resilience
 - ✅ Clear operator warnings
 - ✅ Graceful degradation to empty set
@@ -123,14 +128,16 @@ if(-not $threadsRaw){
 ### Evidence From Testing
 
 **Analyses SARIF Skip** (from evid.txt):
-```
+
+```text
 SKIP SARIF for analysis 728872118 (unavailable): HTTP 422
 [Evidence logged to LEDGER.jsonl: ANALYSIS_SARIF_UNAVAILABLE]
 [Metric tracked: analyses_sarif_skip]
 ```
 
 **Notifications Graceful 404** (from evid.txt):
-```
+
+```yaml
 WARN: gh /notifications failed: gh api /notifications failed (exit 1)
 [BossCat] Notifications conveyor complete.
 ```
@@ -140,6 +147,7 @@ WARN: gh /notifications failed: gh api /notifications failed (exit 1)
 ## Production Commands
 
 ### Working & Tested
+
 ```bash
 # Security archiver
 pnpm sec:archive:dry             # Test mode
@@ -161,7 +169,8 @@ pnpm notify:archive:mark         # Archive + mark read (requires PAT classic)
 ## Artifacts Structure
 
 ### Security Archives
-```
+
+```text
 docs/BossCat/security/
 ├── INDEX_ALERTS.jsonl (queryable, 76 KB+)
 ├── INDEX_ANALYSES.jsonl (only successful SARIF)
@@ -174,7 +183,8 @@ docs/BossCat/security/
 ```
 
 ### Evidence Logs
-```
+
+```text
 CHAR/EVID/security/
 ├── LEDGER.jsonl
 │   ├── ARCHIVED_ALERT (per alert)
@@ -198,7 +208,7 @@ CHAR/EVID/notifications/
 
 ## Commit History (8 Total)
 
-```
+```text
 3dc4b51c3 fix(bosscat): Graceful error handling for analyses and notifications ⭐
 3783ba964 docs(bosscat): Security archiver fully working - success report
 c0448e973 fix(bosscat): Fix gh api query parameter handling ⭐
@@ -225,19 +235,23 @@ b52b16087 docs(bosscat): Add security archiver integration summary
 ## Key Learnings
 
 ### 1. gh api Query Parameters
+
 **Don't Use**: `-f` or `-F` flags (unreliable for GET requests)  
 **Do Use**: Build query string manually: `$path?key=value&...`
 
 ### 2. PowerShell Array Syntax
+
 **Don't Use**: Single backticks in arrays (treated as special chars)  
 **Do Use**: Double backticks for literals, commas optional
 
 ### 3. Error Handling Philosophy
+
 **Don't**: Crash on API errors  
 **Do**: Try-catch → Log → Warn → Continue  
 **Evidence**: Always log skips/failures to LEDGER.jsonl
 
 ### 4. API Resilience
+
 **Don't**: Depend on single method  
 **Do**: Multi-layer: gh cli → REST API → graceful degradation
 
@@ -279,6 +293,7 @@ b52b16087 docs(bosscat): Add security archiver integration summary
 ## Next Steps
 
 ### Immediate (Complete) ✅
+
 - [x] Fix all syntax errors
 - [x] Fix gh api integration
 - [x] Add graceful error handling
@@ -286,12 +301,14 @@ b52b16087 docs(bosscat): Add security archiver integration summary
 - [x] Verify evidence logging
 
 ### Short-term (Ready)
+
 - [ ] Schedule nightly runs via cron/GitHub Actions
 - [ ] Add alerting for high-severity findings
 - [ ] Create executive dashboard integration
 - [ ] Add metrics to BossCat observability
 
 ### Long-term (Strategic)
+
 - [ ] Extend to other GitHub APIs (PRs, Issues, etc.)
 - [ ] Add trend analysis over time
 - [ ] Integrate with compliance reporting
@@ -305,6 +322,7 @@ b52b16087 docs(bosscat): Add security archiver integration summary
 **Status**: ✅ **PRODUCTION-READY**
 
 **Evidence**:
+
 - ✅ 6 issues resolved (3 syntax, 3 runtime)
 - ✅ Graceful error handling implemented
 - ✅ Evidence-first logging (LEDGER + METRICS)
@@ -316,6 +334,7 @@ b52b16087 docs(bosscat): Add security archiver integration summary
 **Gate Verdict**: ✅ **CERTIFIED FOR PRODUCTION USE WITH RESILIENT ERROR HANDLING**
 
 **Operator Guidance**:
+
 - Yellow warnings indicate expected conditions (422, 404)
 - Check `CHAR/EVID/security/LEDGER.jsonl` for audit trail
 - Use `pnpm sec:index` to rebuild indexes from disk anytime

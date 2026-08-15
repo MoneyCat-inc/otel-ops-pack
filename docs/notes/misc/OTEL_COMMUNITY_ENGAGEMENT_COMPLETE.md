@@ -8,19 +8,21 @@
 
 ## 🎯 Mission Complete
 
-Successfully responded to OpenTelemetry maintainer feedback about 404 links by creating and publishing 6 stable permalink pages.
+Successfully responded to OpenTelemetry maintainer feedback about 404 links by creating and publishing 6 stable
+permalink pages.
 
 ---
 
 ## 📝 Comment Posted
 
-**Issue URL:** https://github.com/open-telemetry/opentelemetry-collector/issues/13914
+**Issue URL:** <https://github.com/open-telemetry/opentelemetry-collector/issues/13914>
 
 **Posted by:** @fubumaki  
 **Posted:** Oct 20, 2025 04:58 UTC
 
 **Comment Text:**
-```
+
+```text
 Thanks, @axw - totally fair on the 404s. We completed the repo rename and have now published stable permalinks on our new site:
 
 * **Overview & goals (Windows Day-2 Ops Kit)** -> https://hub.resonai.uk/docs/day2/windows/overview/
@@ -41,32 +43,32 @@ Thanks again for the steer!
 
 All 6 URLs are live and returning HTTP 200:
 
-1. **Windows Day-2 Ops Overview** - https://hub.resonai.uk/docs/day2/windows/overview/
+1. **Windows Day-2 Ops Overview** - <https://hub.resonai.uk/docs/day2/windows/overview/>
    - What the kit provides, why it matters, quick start
    - Links to all examples and security pages
    - References existing Gate Readiness Guide
 
-2. **Thin Example (Collector-only)** - https://hub.resonai.uk/docs/examples/windows-day2-ops/thin/
+2. **Thin Example (Collector-only)** - <https://hub.resonai.uk/docs/examples/windows-day2-ops/thin/>
    - Minimal, vendor-neutral setup
    - Stock OTel Collector + NSSM + CI snippet
    - Self-contained, works with any OTLP backend
 
-3. **Windows Service Mode (NSSM)** - https://hub.resonai.uk/docs/examples/windows-service-mode/
+3. **Windows Service Mode (NSSM)** - <https://hub.resonai.uk/docs/examples/windows-service-mode/>
    - Production deployment pattern
    - NSSM installation and management commands
    - Auto-restart, log rotation, shutdown handling
 
-4. **Linux Sidecar/Helm** - https://hub.resonai.uk/docs/examples/linux-sidecar-helm/
+4. **Linux Sidecar/Helm** - <https://hub.resonai.uk/docs/examples/linux-sidecar-helm/>
    - Cross-platform patterns for Kubernetes
    - Sidecar container example
    - DaemonSet deployment with Helm
 
-5. **Policy Bundle & Cosign** - https://hub.resonai.uk/docs/security/policy-bundle/
+5. **Policy Bundle & Cosign** - <https://hub.resonai.uk/docs/security/policy-bundle/>
    - OPA policy enforcement
    - Cosign attestation verification
    - Supply-chain security patterns
 
-6. **SBOM & Attestations** - https://hub.resonai.uk/docs/security/supply-chain/sbom/
+6. **SBOM & Attestations** - <https://hub.resonai.uk/docs/security/supply-chain/sbom/>
    - CycloneDX SBOM generation
    - Sigstore attestations
    - Vulnerability tracking
@@ -76,24 +78,28 @@ All 6 URLs are live and returning HTTP 200:
 ## 🔧 Technical Details
 
 ### Encoding
+
 - ✅ HTML pages use HTML entities (`&larr;`, `&bull;`)
 - ✅ Markdown uses ASCII (`-`, `->`)
 - ✅ No Unicode control characters
 - ✅ Clean rendering across all platforms
 
 ### Styling
+
 - ✅ All pages use Hub CSS (`/docs/assets/hub.css`)
 - ✅ Consistent purple theme
 - ✅ Mobile responsive
 - ✅ Professional footer with creator attribution
 
 ### SEO
+
 - ✅ Canonical tags on all pages
 - ✅ Proper meta descriptions
 - ✅ Cross-linked for discovery
 - ✅ Sitemap-ready structure
 
 ### Compliance
+
 - ✅ External links use `target="_blank"` + `rel="noopener"`
 - ✅ Security best practices
 - ✅ Accessibility (semantic HTML)
@@ -114,17 +120,20 @@ All 6 URLs are live and returning HTTP 200:
 ## 🎯 Next Steps (Monitoring Phase)
 
 ### Immediate (24-48 hours)
+
 - [ ] Monitor issue for maintainer responses
 - [ ] Watch for questions or feedback
 - [ ] Be ready to clarify any points
 
 ### If Requested
+
 - [ ] Prepare Draft PR for thin example to contrib repo
 - [ ] Extract self-contained config + scripts
 - [ ] Include only vendor-neutral components
 - [ ] Keep broader framework separate
 
 ### Optional Enhancements
+
 - [ ] Expand thin example with actual collector config
 - [ ] Add policy bundle samples
 - [ ] Generate example SBOMs
@@ -135,14 +144,17 @@ All 6 URLs are live and returning HTTP 200:
 ## 📸 Evidence
 
 **Screenshots:**
+
 - `otel-issue-13914.png` - Issue page before posting
 - `otel-issue-comment-posted.png` - Comment successfully posted
 
 **Documentation:**
+
 - `OTEL_ISSUE_RESPONSE.md` - Comment template and verification checklist
 - `docs/BossCat/BOSSCAT_LOG.md` - Updated with engagement record
 
 **Verification:**
+
 - All 6 URLs tested (200 OK)
 - Browser rendering verified
 - Canonical tags confirmed
@@ -163,12 +175,14 @@ All 6 URLs are live and returning HTTP 200:
 ## 🌐 Impact
 
 **For OpenTelemetry Community:**
+
 - Clear, stable documentation URLs
 - No more 404s on Windows Day-2 Ops Kit
 - Professional presentation of Windows patterns
 - Open to upstream contribution
 
 **For Hub (hub.resonai.uk):**
+
 - 6 new documentation pages
 - Enhanced SEO (more indexed content)
 - Community credibility (responsive to feedback)

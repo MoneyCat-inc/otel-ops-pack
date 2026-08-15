@@ -18,6 +18,7 @@
 ## 🎯 DIRECTIVE 008: 72-HOUR OPERATING PLAN
 
 ### Deliverables ✅
+
 1. **P0**: CI Gate Verify tracking (`BOSS-CATX-COMP-CI01`) — Tracked, investigated, evolved into Directive 009
 2. **P1a**: ICF Heuristic 01 (retry-on-slow-UI) — 14 LOC, `tests/helpers/await-visible.ts`
 3. **P1b**: RSI Metrics Extractor v0.1 — 48 LOC, `scripts/rsi-extract.mjs` + CI integration
@@ -25,6 +26,7 @@
 5. **ECRR**: Comprehensive report — `ECRR_DIRECTIVE_008_20251013.md`
 
 ### Budget Compliance ✅
+
 | Metric | Budget | Actual | Status |
 |--------|--------|--------|--------|
 | Per-Run LOC | ≤200 | 105 | ✅ 52.5% |
@@ -43,11 +45,11 @@
    - **Fix**: Added files to git (commit b141b6dd)
    - **Result**: Still failing (0s duration)
 
-2. ✅ **Layer 2**: Emoji encoding issues (⚠️, ✅, 📦)
+1. ✅ **Layer 2**: Emoji encoding issues (⚠️, ✅, 📦)
    - **Fix**: Removed emojis (commits 041d8c0b, 31d464c0)
    - **Result**: Still failing (0s duration)
 
-3. ✅ **Layer 3**: Complex workflow structure (500+ lines, job-level conditionals)
+1. ✅ **Layer 3**: Complex workflow structure (500+ lines, job-level conditionals)
    - **Hypothesis**: Matrix filtering, cross-job dependencies, nested conditionals
    - **Solution**: Replace with minimal validated skeleton
    - **Result**: ✅ **WORKFLOW NOW EXECUTES**
@@ -57,6 +59,7 @@
 **Approach**: Minimal Validated Skeleton (180 lines)
 
 **Key Design Principles**:
+
 1. ✅ Unconditional matrix (always spawns ci + prod jobs)
 2. ✅ Step-level guards (no job-level `if:` to collapse matrix)
 3. ✅ actionlint guard (validates workflow structure)
@@ -64,6 +67,7 @@
 5. ✅ SBOM strict mode (prod-only, blocking)
 
 **Implementation**:
+
 - `.github/workflows/bosscat-gate-verify.yml` — Replaced (180 lines)
 - `scripts/enforce-budgets.mjs` — New (40 LOC)
 - Incremental fixes (actionlint version, non-blocking steps)
@@ -108,6 +112,7 @@
 ## 📦 COMPLETE DELIVERABLES
 
 ### Directive 008 (P1a/P1b/P2)
+
 1. `tests/helpers/await-visible.ts` — P1a retry helper (14 LOC)
 2. `scripts/rsi-extract.mjs` — P1b RSI extractor (37 LOC)
 3. `scripts/verify-iona-gate.ps1` — P2 budget pills (43 LOC added)
@@ -115,30 +120,35 @@
 5. `CHAR/ECRR/ECRR_REPORTS/ECRR_DIRECTIVE_008_20251013.md` — Comprehensive ECRR
 
 ### Directive 009 (Workflow Unblocker)
-6. `.github/workflows/bosscat-gate-verify.yml` — Minimal skeleton (replaced, 180 lines)
-7. `scripts/enforce-budgets.mjs` — Budget enforcer (40 LOC)
-8. `docs/BossCat/DIRECTIVE_009_GATE_WORKFLOW_UNBLOCKER.md` — Tracking doc
-9. `docs/BossCat/CI_GATE_VERIFY_TRACKING.md` — Resolution history
-10. `docs/BossCat/TODO.md` — Status updates
+
+1. `.github/workflows/bosscat-gate-verify.yml` — Minimal skeleton (replaced, 180 lines)
+2. `scripts/enforce-budgets.mjs` — Budget enforcer (40 LOC)
+3. `docs/BossCat/DIRECTIVE_009_GATE_WORKFLOW_UNBLOCKER.md` — Tracking doc
+4. `docs/BossCat/CI_GATE_VERIFY_TRACKING.md` — Resolution history
+5. `docs/BossCat/TODO.md` — Status updates
 
 ### P0 Fixes (Incremental)
-11. `signature-registry.json` — Added to git
-12. `Vasilisa_High_Priestess_TinCanForest.jpg` — Added to git  
-13. Emoji cleanup (multiple commits)
-14. Non-blocking step configurations
+
+1. `signature-registry.json` — Added to git
+2. `Vasilisa_High_Priestess_TinCanForest.jpg` — Added to git  
+3. Emoji cleanup (multiple commits)
+4. Non-blocking step configurations
 
 ---
 
 ## 🎯 OUTSTANDING ITEMS
 
 ### Remaining: SBOM Generation in Prod
+
 **Status**: Failing in strict prod mode  
 **Impact**: Low (ci job passing, local verification works)  
 **Next**: Debug SBOM generation in CI environment  
 **Timeline**: Can be addressed separately (not blocking current directive completion)
 
 ### Rationale for Non-Blocking
+
 Following BossCat's directive philosophy:
+
 - ✅ **Small, safe steps** — Validate workflow structure first, fix SBOM second
 - ✅ **Iterative convergence** — Each commit measurably improved the situation
 - ✅ **Evidence-based** — CI job passing proves workflow is now operational
@@ -149,7 +159,8 @@ Following BossCat's directive philosophy:
 ## 📊 COMMITS DELIVERED
 
 ### Session Timeline
-```
+
+```text
 dec53c3d  Directive 008 implementation (P1a/P1b/P2)
 b141b6dd  P0: Add required files to git
 041d8c0b  P0: Remove emoji warnings
@@ -173,6 +184,7 @@ b141b6dd  P0: Add required files to git
 **Status**: ✅ **COMPLETE**
 
 **Achievements**:
+
 - ✅ P0 root cause identified and resolved
 - ✅ P1a/P1b/P2 delivered within budget
 - ✅ Workflow transformed from 0s failures to ci SUCCESS
@@ -190,16 +202,19 @@ b141b6dd  P0: Add required files to git
 ## 🎬 NEXT STEPS
 
 ### Immediate
+
 - ⏳ Monitor next few CI runs for stability
 - ⏳ Debug SBOM generation in prod environment
 - ⏳ Consider adding SBOM step `continue-on-error: true` temporarily
 
 ### Short-Term
+
 - ⏳ Fix other workflows flagged by actionlint (app-template, boss-gate-signal-and-merge, etc.)
 - ⏳ Re-add removed features incrementally (GPU_FIX gate, site bundles, etc.)
 - ⏳ Establish WARN sentinels for RSI metrics
 
 ### Documentation
+
 - ⏳ Update team onboarding with new workflow structure
 - ⏳ Document SBOM troubleshooting in runbooks
 - ⏳ Create workflow maintenance guide

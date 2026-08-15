@@ -139,3 +139,22 @@ npx --yes markdownlint-cli2@0.14.0 --config .markdownlint-cli2.yaml \
 ```
 
 Counted with `Summary:` / error-line match on `\.md:\d+` (not `tail -1`).
+
+## Fix batch 6 scale (2026-08-15)
+
+| Probe | Result |
+|-------|--------|
+| Before (canonical command @ branch start from `main` @ `88f59e929`) | **5,058** / **271** (Linting: 272) |
+| Batch (35 files → 0 issues) | Live docs with 26-35 errors (excl. generated `docs/BossCat/AGENTS.md`, `B1_*`/`B2_*` measurement docs, `docs/BossCat/Research/**`) |
+| After (same command) | **3,992** / **271** |
+
+`lane:cleanup` AMBER - file count exceeds ≤10; every touched file owned to **0**.
+
+**Command:**
+
+```bash
+npx --yes markdownlint-cli2@0.14.0 --config .markdownlint-cli2.yaml \
+  "docs/**/*.md" "README.md" "!docs/archive" "!docs/gate/archive"
+```
+
+Counted with `Summary:` / error-line match on `\.md:\d+` (not `tail -1`).

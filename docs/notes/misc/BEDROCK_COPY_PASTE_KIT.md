@@ -44,10 +44,12 @@ pnpm add @aws-sdk/client-bedrock-runtime
 ```
 
 **Enable model in AWS Console:**
+
 - Bedrock → Model access → Enable "Anthropic Claude 3" models
 - Wait 2-5 minutes for approval
 
 **IAM permissions required:**
+
 ```json
 {
   "Effect": "Allow",
@@ -90,17 +92,20 @@ pnpm add @aws-sdk/client-bedrock-runtime
 ### 3️⃣ Test Connection
 
 **TypeScript test (direct):**
+
 ```bash
 pnpm dlx tsx scripts/test-bedrock-connection.ts
 ```
 
 **PowerShell wrapper (recommended):**
+
 ```powershell
 pwsh -File scripts\test-bedrock-connection.ps1
 ```
 
 **Expected output:**
-```
+
+```json
 Region: us-east-1 | Model: anthropic.claude-3-haiku-20240307-v1:0
 [Basic] {
   "content": [{ "text": "BEDROCK_CONNECTED" }],
@@ -114,6 +119,7 @@ STREAMING
 ## 📄 File Contents (Copy-Paste Ready)
 
 ### `.cursor/mcp.json`
+
 ```json
 {
   "mcpServers": {
@@ -134,6 +140,7 @@ STREAMING
 ---
 
 ### `scripts/test-bedrock-connection.ts`
+
 ```typescript
 import {
   BedrockRuntimeClient,
@@ -202,6 +209,7 @@ async function streaming() {
 ---
 
 ### `scripts/test-bedrock-connection.ps1`
+
 ```powershell
 $ErrorActionPreference = "Stop"
 
@@ -241,6 +249,7 @@ After setup, verify:
 ## 💡 Usage Examples
 
 ### Basic Invocation (in your code)
+
 ```typescript
 import { BedrockRuntimeClient, InvokeModelCommand } from "@aws-sdk/client-bedrock-runtime";
 
@@ -260,6 +269,7 @@ console.log(result.content[0].text);
 ```
 
 ### Streaming Invocation
+
 ```typescript
 import { BedrockRuntimeClient, InvokeModelWithResponseStreamCommand } from "@aws-sdk/client-bedrock-runtime";
 
@@ -287,18 +297,21 @@ for await (const chunk of res.body) {
 ## 🚀 Next Steps (Optional Enhancements)
 
 ### Add Guardrails (Production safety)
+
 ```typescript
 // Coming soon: Guardrails configuration example
 // Prevents harmful outputs, enforces content policies
 ```
 
 ### Add Knowledge Base (RAG)
+
 ```typescript
 // Coming soon: Knowledge Base integration
 // Query your docs before sending to model
 ```
 
 ### Next.js Streaming Route
+
 ```typescript
 // Coming soon: `/api/bedrock/stream` example
 // Server-side streaming for web apps
@@ -319,10 +332,11 @@ for await (const chunk of res.body) {
 
 ## 📚 References
 
-- **MCP Setup:** https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/mcp-install-server.html
-- **InvokeModel API:** https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_InvokeModel.html
-- **Streaming API:** https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_InvokeModelWithResponseStream.html
-- **AWS SDK (JS):** https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/bedrock-runtime/
+- **MCP Setup:** <https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/mcp-install-server.html>
+- **InvokeModel API:** <https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_InvokeModel.html>
+- **Streaming API:**
+  <https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_InvokeModelWithResponseStream.html>
+- **AWS SDK (JS):** <https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/bedrock-runtime/>
 
 ---
 

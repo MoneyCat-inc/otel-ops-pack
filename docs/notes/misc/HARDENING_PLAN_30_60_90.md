@@ -8,7 +8,8 @@
 
 ## Overview
 
-Progressive hardening plan aligned with immutable persona v1.1, strategic plan, and performance gate doctrine. All items are **non-blocking** and scheduled for Day-2+ operations.
+Progressive hardening plan aligned with immutable persona v1.1, strategic plan, and performance gate doctrine. All items
+are **non-blocking** and scheduled for Day-2+ operations.
 
 ---
 
@@ -75,6 +76,7 @@ Progressive hardening plan aligned with immutable persona v1.1, strategic plan, 
 3. **Implement Threshold Check**
    
    **Example k6 Script:**
+
    ```javascript
    import http from 'k6/http';
    import { check } from 'k6';
@@ -166,6 +168,7 @@ jobs:
 2. **Install OTel Auto-Instrumentation**
    
    **PowerShell (Windows):**
+
    ```powershell
    # Download latest release
    Invoke-WebRequest -Uri "https://github.com/open-telemetry/opentelemetry-dotnet-instrumentation/releases/latest/download/otel-dotnet-auto-install.ps1" -OutFile install.ps1
@@ -177,6 +180,7 @@ jobs:
 3. **Configure Environment Variables**
    
    **Service Configuration:**
+
    ```yaml
    environment:
      OTEL_EXPORTER_OTLP_ENDPOINT: "http://localhost:4318"
@@ -212,6 +216,7 @@ jobs:
 ### Configuration Templates
 
 **Minimal (Traces Only):**
+
 ```bash
 export OTEL_EXPORTER_OTLP_ENDPOINT="http://localhost:4318"
 export OTEL_SERVICE_NAME="my-service"
@@ -219,6 +224,7 @@ export OTEL_DOTNET_AUTO_TRACES_ENABLED="true"
 ```
 
 **Full (Traces + Metrics):**
+
 ```bash
 export OTEL_EXPORTER_OTLP_ENDPOINT="http://localhost:4318"
 export OTEL_SERVICE_NAME="my-service"
@@ -249,17 +255,20 @@ export OTEL_RESOURCE_ATTRIBUTES="deployment.environment=staging,service.version=
 ## 📊 Success Metrics
 
 ### 30 Days
+
 - Weekly snapshots accumulating: ✅/❌
 - Stray port check active (optional): ✅/❌
 - No guardrails drift detected: ✅/❌
 
 ### 60 Days
+
 - k6 workflow active: ✅/❌
 - Performance thresholds defined: ✅/❌
 - Results archived and trendable: ✅/❌
 - Zero threshold breaches (or documented exceptions): ✅/❌
 
 ### 90 Days
+
 - OTel auto-instrumentation installed: ✅/❌
 - 1-2 services instrumented in staging: ✅/❌
 - Traces flowing to SigNoz: ✅/❌
@@ -271,14 +280,17 @@ export OTEL_RESOURCE_ATTRIBUTES="deployment.environment=staging,service.version=
 ## 🛡️ Risk Mitigation
 
 ### 30 Days
+
 - **Risk:** Snapshot bloat
 - **Mitigation:** Automated cleanup (keep last 30 days)
 
 ### 60 Days
+
 - **Risk:** Performance test false positives
 - **Mitigation:** Tune thresholds; retry on failure
 
 ### 90 Days
+
 - **Risk:** Service overhead from tracing
 - **Mitigation:** Start with low sampling (10%); monitor CPU/memory
 
@@ -287,16 +299,19 @@ export OTEL_RESOURCE_ATTRIBUTES="deployment.environment=staging,service.version=
 ## 🧭 Alignment with BossCat Doctrine
 
 **Local-First, Evidence-First:**
+
 - All enhancements generate local artifacts
 - Evidence flows to `docs/observability/snapshots/`
 - No external dependencies for core operations
 
 **Safety Budgets:**
+
 - Each enhancement respects ≤2 jobs / ≤10 files / ≤200 LOC
 - Changes are lane-scoped and incremental
 - Kill-switch (`.agent/LOCK`) honored
 
 **Performance Gate Doctrine:**
+
 - k6 thresholds align with CI-native performance gates
 - Artifacts are trendable and release-blocking
 - Evidence-based decision making
@@ -306,22 +321,26 @@ export OTEL_RESOURCE_ATTRIBUTES="deployment.environment=staging,service.version=
 ## 📚 References
 
 **OpenTelemetry .NET:**
-- Docs: https://github.com/open-telemetry/opentelemetry-dotnet-instrumentation
-- Installation: https://opentelemetry.io/docs/instrumentation/net/automatic/
+
+- Docs: <https://github.com/open-telemetry/opentelemetry-dotnet-instrumentation>
+- Installation: <https://opentelemetry.io/docs/instrumentation/net/automatic/>
 
 **k6 Performance Testing:**
-- Docs: https://k6.io/docs/
-- Thresholds: https://k6.io/docs/using-k6/thresholds/
+
+- Docs: <https://k6.io/docs/>
+- Thresholds: <https://k6.io/docs/using-k6/thresholds/>
 
 **SigNoz APM:**
-- UI: http://localhost:8080
-- Docs: https://signoz.io/docs/
+
+- UI: <http://localhost:8080>
+- Docs: <https://signoz.io/docs/>
 
 ---
 
 ## 🐾 BossCat Endorsement
 
 This hardening plan follows the "small, safe steps" mantra and aligns with:
+
 - ✅ Immutable persona v1.1 (budgets, lanes, evidence)
 - ✅ Strategic plan (local-first, evidence-first)
 - ✅ Performance gate doctrine (CI-native thresholds)
@@ -333,7 +352,7 @@ This hardening plan follows the "small, safe steps" mantra and aligns with:
 
 ---
 
-**End of 30/60/90 Hardening Plan**
+### End of 30/60/90 Hardening Plan
 
 *MoneyCat Inc · Resonai [OTel] · BossCat Operations*
 

@@ -9,12 +9,14 @@
 ## ✅ Completed Setup
 
 ### 1. MCP Server Configuration
+
 - ✅ **`.cursor/mcp.json`** created with official AWS AgentCore MCP server
 - ✅ **Command:** `uvx` (Python-based, official AWS package)
 - ✅ **Package:** `awslabs.amazon-bedrock-agentcore-mcp-server@latest`
 - ✅ **Region:** `us-east-1` (configurable)
 
 ### 2. Prerequisites Installed
+
 - ✅ **Python:** 3.13.7
 - ✅ **pip:** 25.2
 - ✅ **uvx:** 0.8.24 ⭐ *Just installed!*
@@ -23,11 +25,13 @@
 - ✅ **AWS SDK:** @aws-sdk/client-bedrock-runtime ^3.901.0
 
 ### 3. Test Scripts Created
+
 - ✅ **`scripts/test-bedrock-connection.ts`** - TypeScript connectivity test
 - ✅ **`scripts/test-bedrock-connection.ps1`** - PowerShell wrapper
 - ✅ **`scripts/setup-bedrock-prerequisites.ps1`** - Prerequisites checker/installer
 
 ### 4. Documentation
+
 - ✅ **`docs/BossCat/BEDROCK_INTEGRATION_GUIDE.md`** - Complete guide (4K+ words)
 - ✅ **`BEDROCK_SETUP_QUICKSTART.md`** - Quick reference
 
@@ -60,6 +64,7 @@ aws configure
 ```
 
 Provide:
+
 - **AWS Access Key ID:** (from AWS Console → IAM → Security credentials)
 - **AWS Secret Access Key:** (from AWS Console)
 - **Default region:** `us-east-1` (or your preferred region)
@@ -97,6 +102,7 @@ aws sts get-caller-identity
 5. Wait 2-5 minutes for approval (usually instant)
 
 **Required IAM permissions:**
+
 ```json
 {
   "Version": "2012-10-17",
@@ -125,7 +131,8 @@ pwsh -File scripts\test-bedrock-connection.ps1
 ```
 
 **Expected output:**
-```
+
+```json
 🐾 BossCat OEM - Bedrock Connectivity Test
 Region: us-east-1 | Model: anthropic.claude-3-haiku-20240307-v1:0
 ============================================================
@@ -169,11 +176,13 @@ After completing Steps 1-3, verify:
 Once activated, you'll have:
 
 ### 1. MCP Tools in Cursor IDE
+
 - **`search_agentcore_docs`** - Search AWS AgentCore documentation
 - **`fetch_agentcore_doc`** - Fetch specific documentation pages
 - Direct access to Bedrock expertise while coding
 
 ### 2. Bedrock APIs in Your Code
+
 ```typescript
 // Analyze OTel logs with Claude
 import { BedrockRuntimeClient, InvokeModelCommand } from '@aws-sdk/client-bedrock-runtime';
@@ -190,6 +199,7 @@ const response = await client.send(new InvokeModelCommand({
 ```
 
 ### 3. Observability AI Enhancements
+
 - Automated log anomaly detection
 - Trace bottleneck analysis
 - Error pattern recognition
@@ -199,7 +209,7 @@ const response = await client.send(new InvokeModelCommand({
 
 ## 📊 Integration Architecture
 
-```
+```text
 ┌─────────────────┐
 │  Cursor IDE     │
 │  (Your Code)    │
@@ -250,31 +260,35 @@ npx tsx scripts/test-bedrock-connection.ts
 
 ## 📚 Documentation References
 
-- **AWS AgentCore MCP:** https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/mcp-install-server.html
-- **Bedrock InvokeModel API:** https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_InvokeModel.html
-- **AWS SDK for JavaScript:** https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/bedrock-runtime/
-- **uvx Documentation:** https://docs.astral.sh/uv/
+- **AWS AgentCore MCP:** <https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/mcp-install-server.html>
+- **Bedrock InvokeModel API:** <https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_InvokeModel.html>
+- **AWS SDK for JavaScript:** <https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/bedrock-runtime/>
+- **uvx Documentation:** <https://docs.astral.sh/uv/>
 
 ---
 
 ## 🐾 BossCat ECRR Summary
 
 ### 🔍 Examine
+
 - ✅ All technical prerequisites verified and installed
 - ✅ MCP configuration validated (official AWS package)
 - ✅ Test scripts operational
 
 ### 🧹 Clean
+
 - ✅ `uvx` installed automatically (0.8.24)
 - ✅ AWS SDK installed (@aws-sdk/client-bedrock-runtime ^3.901.0)
 - ✅ TypeScript test script follows official AWS patterns
 
 ### 📊 Report
+
 - **Status:** Ready for testing after AWS credentials configured
 - **Blockers:** AWS CLI installation required (user action)
 - **Next Agent:** User → Configure AWS credentials → Run test
 
 ### 🎭 Role
+
 - **Current Agent:** User (manual AWS CLI setup required)
 - **Next Agent:** QA Scribe (after successful test, document integration patterns)
 

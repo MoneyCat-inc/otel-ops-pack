@@ -10,7 +10,8 @@
 
 ## Executive Summary
 
-This is your **24-hour fast-track plan** to achieve enterprise-grade production readiness. All tasks are prioritized, parallelizable, and focused on eliminating blockers while maintaining security and compliance.
+This is your **24-hour fast-track plan** to achieve enterprise-grade production readiness. All tasks are prioritized,
+parallelizable, and focused on eliminating blockers while maintaining security and compliance.
 
 **Key Principle**: Speed through automation, not shortcuts.
 
@@ -21,6 +22,7 @@ This is your **24-hour fast-track plan** to achieve enterprise-grade production 
 ### Task 1: Post BossCat Gate Review Comment ⏱️ 5 minutes
 
 **Action**:
+
 ```bash
 # Option A: Post to PR
 gh pr comment <PR-number> --body-file PR_BOSSCAT_WEEK1_GATE_REVIEW.md
@@ -38,6 +40,7 @@ gh issue comment <issue-number> --body-file PR_BOSSCAT_WEEK1_GATE_REVIEW.md
 ### Task 2: Run Enterprise Readiness Check ⏱️ 3 minutes
 
 **Action**:
+
 ```powershell
 # Run validation
 pwsh -File scripts/enterprise-readiness-check.ps1
@@ -55,6 +58,7 @@ pwsh -File scripts/enterprise-readiness-check.ps1 > artifacts/readiness-baseline
 ### Task 3: Triage Security Alerts ⏱️ 30 minutes
 
 **Action**:
+
 ```powershell
 # Get alert summary
 gh api /repos/:owner/:repo/dependabot/alerts | 
@@ -77,9 +81,10 @@ gh api /repos/:owner/:repo/dependabot/alerts |
 
 **Priority**: Critical → High → Moderate → Low
 
-**Reference**: [Dependabot Security Guide](docs/BossCat/DEPENDABOT_SECURITY_GUIDE.md#priority-matrix)
+**Reference**: [Dependabot Security Guide](../../BossCat/DEPENDABOT_SECURITY_GUIDE.md#priority-matrix)
 
 **Done When**: 
+
 - Zero critical alerts
 - < 5 high alerts (or mitigation plan documented)
 
@@ -88,6 +93,7 @@ gh api /repos/:owner/:repo/dependabot/alerts |
 ### Task 4: Run System Diagnostic ⏱️ 5 minutes
 
 **Action**:
+
 ```powershell
 # Run diagnostic
 pwsh -File scripts/diagnostic.ps1 -OutputFile artifacts/diagnostics-prod-$(Get-Date -Format 'yyyyMMdd').json -Pretty
@@ -108,6 +114,7 @@ Copy-Item artifacts/diagnostics-prod-*.json docs/audit/
 ### Task 5: Verify GitHub App Integration ⏱️ 15 minutes
 
 **Action**:
+
 ```bash
 # Check secrets exist
 gh secret list | grep BOSSCAT
@@ -134,6 +141,7 @@ gh pr view --comments
 ### Task 6: Secret Scan (Gitleaks) ⏱️ 10 minutes
 
 **Action**:
+
 ```bash
 # If gitleaks not installed:
 # Windows: choco install gitleaks
@@ -156,6 +164,7 @@ cat artifacts/gitleaks-full-scan.json | jq '.[] | .RuleID'
 ### Task 7: Populate Credential Rotation Calendar ⏱️ 30 minutes
 
 **Action**:
+
 ```powershell
 # Open calendar
 code docs/BossCat/CREDENTIAL_ROTATION_CALENDAR.md
@@ -180,6 +189,7 @@ code docs/BossCat/CREDENTIAL_ROTATION_CALENDAR.md
 ```
 
 **Done When**: 
+
 - All "Last Rotated" dates filled
 - All "Next Due" dates calculated
 - Calendar reminders set
@@ -191,6 +201,7 @@ code docs/BossCat/CREDENTIAL_ROTATION_CALENDAR.md
 ### Task 8: Verify Nightly Dashboard Export ⏱️ 20 minutes
 
 **Action**:
+
 ```powershell
 # Check last 7 days
 0..6 | ForEach-Object {
@@ -221,6 +232,7 @@ gh workflow run nightly-dashboard-export.yml
 ### Task 9: Configure SigNoz Alerts ⏱️ 30 minutes
 
 **Action**:
+
 ```bash
 # Log in to SigNoz
 open http://localhost:8080
@@ -238,7 +250,7 @@ pwsh -File scripts/canary-test.ps1
 # Verify alert fires
 ```
 
-**Reference**: [Nightly Dashboard Guide](docs/BossCat/NIGHTLY_DASHBOARD_GUIDE.md)
+**Reference**: [Nightly Dashboard Guide](../../BossCat/NIGHTLY_DASHBOARD_GUIDE.md)
 
 **Done When**: At least 3 critical alerts configured
 
@@ -247,6 +259,7 @@ pwsh -File scripts/canary-test.ps1
 ### Task 10: Test Rollback Procedure ⏱️ 20 minutes
 
 **Action**:
+
 ```powershell
 # Document current state
 git log -1 > artifacts/pre-rollback-state.txt
@@ -293,6 +306,7 @@ RPO: Last backup (nightly)
 ### Task 11: Update README ⏱️ 20 minutes
 
 **Action**:
+
 ```powershell
 # Check current README
 code README.md
@@ -312,11 +326,11 @@ code README.md
 
 This project uses the BossCat OEM framework for enterprise-grade observability operations.
 
-**Quick Start**: See [docs/BossCat/README.md](docs/BossCat/README.md)
+**Quick Start**: See [docs/BossCat/README.md](../../BossCat/README.md)
 
-**Daily Reference**: [docs/BossCat/QUICK_START_CARD.md](docs/BossCat/QUICK_START_CARD.md)
+**Daily Reference**: [docs/BossCat/QUICK_START_CARD.md](../../BossCat/QUICK_START_CARD.md)
 
-**Security Operations**: [docs/BossCat/SECURITY_MAINTENANCE_MASTER_GUIDE.md](docs/BossCat/SECURITY_MAINTENANCE_MASTER_GUIDE.md)
+**Security Operations**: [docs/BossCat/SECURITY_MAINTENANCE_MASTER_GUIDE.md](../../BossCat/SECURITY_MAINTENANCE_MASTER_GUIDE.md)
 
 "@ | Add-Content README.md
 ```
@@ -328,6 +342,7 @@ This project uses the BossCat OEM framework for enterprise-grade observability o
 ### Task 12: Generate Compliance Report ⏱️ 30 minutes
 
 **Action**:
+
 ```powershell
 # Create compliance summary
 @"
@@ -374,6 +389,7 @@ git commit -m "docs(compliance): add compliance status report"
 ### Task 13: Create Training Materials ⏱️ 45 minutes
 
 **Action**:
+
 ```powershell
 # Create training presentation outline
 @"
@@ -428,6 +444,7 @@ git commit -m "docs(compliance): add compliance status report"
 ### Task 14: Run Full Test Suite ⏱️ 30 minutes
 
 **Action**:
+
 ```powershell
 # Unit tests
 pnpm test --coverage
@@ -466,6 +483,7 @@ $(pwsh -File scripts/canary-test.ps1)
 ### Task 15: Load Testing (Optional but Recommended) ⏱️ 45 minutes
 
 **Action**:
+
 ```powershell
 # If k6 installed:
 # k6 run scripts/load-test.js
@@ -489,6 +507,7 @@ Invoke-RestMethod -Uri "http://localhost:8080/api/v1/metrics/query?query=rate(ot
 ### Task 16: Re-run Enterprise Readiness Check ⏱️ 5 minutes
 
 **Action**:
+
 ```powershell
 # Run validation again
 pwsh -File scripts/enterprise-readiness-check.ps1
@@ -511,6 +530,7 @@ $current = pwsh -File scripts/enterprise-readiness-check.ps1
 ### Task 17: Security Final Review ⏱️ 30 minutes
 
 **Action**:
+
 ```powershell
 # Checklist:
 # [ ] Zero critical vulnerabilities
@@ -553,6 +573,7 @@ This certifies that the BossCat OEM observability framework has undergone securi
 ### Task 18: Prepare Deployment Checklist ⏱️ 20 minutes
 
 **Action**:
+
 ```powershell
 # Create pre-flight checklist
 @"
@@ -606,6 +627,7 @@ This certifies that the BossCat OEM observability framework has undergone securi
 ### Task 19: Team Communication ⏱️ 15 minutes
 
 **Action**:
+
 ```markdown
 # Send to team:
 
@@ -649,6 +671,7 @@ BossCat OEM Deployment Lead
 ### Task 20: Final Merge & Deployment ⏱️ 30 minutes
 
 **Action**:
+
 ```bash
 # Final checks
 pwsh -File scripts/enterprise-readiness-check.ps1
@@ -679,6 +702,7 @@ watch -n 5 'curl -s http://localhost:8080/api/v1/health | jq .'
 ### Task 21: Post-Deployment Validation ⏱️ 30 minutes
 
 **Action**:
+
 ```powershell
 # Run post-deployment checks
 pwsh -File scripts/canary-test.ps1
@@ -702,6 +726,7 @@ curl http://localhost:8080/api/v1/metrics/query?query=otelcol_receiver_accepted_
 ### Task 22: Production Sign-Off ⏱️ 15 minutes
 
 **Action**:
+
 ```powershell
 # Generate production readiness certificate
 @"
@@ -781,6 +806,7 @@ git push origin main
 ## Success Metrics
 
 **24-Hour Target Achievement**:
+
 - ✅ Enterprise readiness score: > 90%
 - ✅ Security: Zero critical, < 5 high vulnerabilities
 - ✅ Reliability: All tests passing
@@ -796,24 +822,29 @@ git push origin main
 **Speed Optimization**: Many tasks can run in parallel
 
 **Hour 0-4** (Parallel Tracks):
+
 - Track A: Security alerts + diagnostic (Person 1)
 - Track B: GitHub App verification + Gitleaks (Person 2)
 - Track C: Documentation updates (Person 3)
 
 **Hour 4-8** (Parallel Tracks):
+
 - Track A: Monitoring setup + alerts (Person 1)
 - Track B: Credential audit + rollback test (Person 2)
 - Track C: Compliance report + training prep (Person 3)
 
 **Hour 8-12** (Parallel Tracks):
+
 - Track A: Testing (Person 1)
 - Track B: Load testing (Person 2)
 - Track C: Final documentation (Person 3)
 
 **Hour 12-24**:
+
 - All hands: Final reviews, deployment, validation
 
 **Team Size**: 
+
 - Minimum: 1 person (24 hours sequential)
 - Optimal: 3 people (8-12 hours with parallelization)
 
@@ -822,12 +853,14 @@ git push origin main
 ## Risk Mitigation
 
 **If Behind Schedule**:
+
 1. Skip optional tasks (load testing)
 2. Parallelize more aggressively
 3. Accept 85% readiness score (still production-worthy)
 4. Schedule Week 2 tasks for post-deployment
 
 **If Blockers Found**:
+
 1. Critical vulnerabilities: Emergency patch or mitigation
 2. Workflow failures: Debug immediately, rollback if needed
 3. Documentation gaps: Minimum viable docs acceptable
@@ -837,6 +870,7 @@ git push origin main
 ## Post-Production (Week 2)
 
 After production deployment:
+
 - Day 1: Monitor intensively (first 24 hours)
 - Day 2: Conduct team training
 - Day 3-5: Address warnings from readiness check
@@ -851,7 +885,7 @@ After production deployment:
 
 ---
 
-**🚀 Let's Ship It! - Record Speed, Enterprise Quality**
+### 🚀 Let's Ship It! - Record Speed, Enterprise Quality
 
 
 

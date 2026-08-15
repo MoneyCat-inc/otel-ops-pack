@@ -1,12 +1,14 @@
 # 🐾 BossCat - AWS Bedrock AgentCore MCP Integration
 
-## ✅ Setup Complete!
+## ✅ Setup Complete
 
 Your Cursor IDE is now configured to connect with **Amazon Bedrock** via the official **AgentCore MCP server**.
 
-**Based on:** [AWS AgentCore MCP Documentation](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/mcp-install-server.html)
+**Based on:** [AWS AgentCore MCP
+Documentation](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/mcp-install-server.html)
 
 ### Files Created
+
 1. **`.cursor/mcp.json`** - MCP server configuration (uses `uvx` + official AWS package)
 2. **`scripts/test-bedrock-connection.ts`** - TypeScript connectivity test
 3. **`scripts/test-bedrock-connection.ps1`** - PowerShell test wrapper
@@ -22,11 +24,13 @@ Your Cursor IDE is now configured to connect with **Amazon Bedrock** via the off
 The official AWS MCP server runs via `uvx` (Python-based tool).
 
 **Check if installed:**
+
 ```bash
 uvx --version
 ```
 
 **If not installed:**
+
 ```bash
 # Windows (via pip)
 pip install uv
@@ -48,12 +52,14 @@ aws configure
 ```
 
 Provide:
+
 - AWS Access Key ID
 - AWS Secret Access Key
 - Default region: `us-east-1` (or your preferred region)
 - Output format: `json`
 
 **Verify:**
+
 ```bash
 aws sts get-caller-identity
 ```
@@ -67,6 +73,7 @@ aws sts get-caller-identity
 3. Wait 10-15 seconds for initialization
 
 **Verify MCP loaded:**
+
 - Open command palette (Ctrl+Shift+P)
 - Search for "MCP"
 - You should see: `search_agentcore_docs` and `fetch_agentcore_doc`
@@ -82,7 +89,8 @@ npx tsx scripts/test-bedrock-connection.ts
 ```
 
 **Expected output:**
-```
+
+```text
 🐾 BossCat OEM - Bedrock Connectivity Test
 ============================================================
 🔍 [Examine] Testing Bedrock connection...
@@ -98,6 +106,7 @@ npx tsx scripts/test-bedrock-connection.ts
 ## 📊 Configuration Details
 
 ### MCP Server (`.cursor/mcp.json`)
+
 ```json
 {
   "mcpServers": {
@@ -116,11 +125,13 @@ npx tsx scripts/test-bedrock-connection.ts
 ```
 
 **Configuration:**
+
 - **Command:** `uvx` (Python-based MCP server from AWS)
 - **Package:** `awslabs.amazon-bedrock-agentcore-mcp-server@latest`
 - **To change region:** Edit `AWS_REGION` in `.cursor/mcp.json` and restart Cursor
 
 ### Default Model
+
 - **Claude 3 Haiku:** `anthropic.claude-3-haiku-20240307-v1:0`
 - Fastest response, lowest cost
 - Good for rapid observability analysis
@@ -131,6 +142,7 @@ npx tsx scripts/test-bedrock-connection.ts
 ## 🔧 Troubleshooting
 
 ### ❌ MCP Tools Not Appearing
+
 - Verify `.cursor/mcp.json` exists and uses `uvx` command
 - Check `uvx --version` works (install via `pip install uv` if missing)
 - **Completely** close Cursor (check Task Manager)
@@ -138,6 +150,7 @@ npx tsx scripts/test-bedrock-connection.ts
 - Check Cursor logs for MCP errors
 
 ### ❌ AWS Credentials Error
+
 ```bash
 # Reconfigure
 aws configure
@@ -147,6 +160,7 @@ aws sts get-caller-identity
 ```
 
 ### ❌ Model Access Denied
+
 1. Go to AWS Console → Bedrock
 2. Navigate to "Model access"
 3. Request access to "Anthropic Claude" models
@@ -155,6 +169,7 @@ aws sts get-caller-identity
 ### ❌ Insufficient Permissions
 
 Your IAM user/role needs:
+
 ```json
 {
   "Effect": "Allow",
@@ -171,6 +186,7 @@ Your IAM user/role needs:
 ## 💡 Usage Examples
 
 ### Quick Log Analysis
+
 ```typescript
 import { BedrockRuntimeClient, InvokeModelCommand } from '@aws-sdk/client-bedrock-runtime';
 
@@ -202,6 +218,7 @@ console.log(result.content[0].text);
 ## 📚 Full Documentation
 
 See **`docs/BossCat/BEDROCK_INTEGRATION_GUIDE.md`** for:
+
 - Detailed IAM setup
 - All available models
 - Streaming examples
@@ -217,6 +234,7 @@ See **`docs/BossCat/BEDROCK_INTEGRATION_GUIDE.md`** for:
 3. ✅ MCP server active → Use Bedrock tools in Cursor
 
 **Test Command:**
+
 ```powershell
 pwsh -File scripts\test-bedrock-connection.ps1
 ```

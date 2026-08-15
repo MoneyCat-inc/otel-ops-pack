@@ -37,7 +37,7 @@
 
 ### Architecture
 
-```
+```text
 Canary Emit → Edge Writer (14321) → ClickHouse v3 → BossCat Gate
              (OTLP HTTP)           (signoz_index_v3)
 ```
@@ -49,11 +49,13 @@ Canary Emit → Edge Writer (14321) → ClickHouse v3 → BossCat Gate
 ## ✅ Verification Results
 
 ### Trace Counts (ClickHouse v3)
+
 - **Initial count:** 30 spans (canary-test)
 - **Stability count:** 39 spans (after 3 bursts)
 - **Live count:** 66 spans (confirmed at gate certification)
 
 ### V3 Schema Verification
+
 ```sql
 SELECT count()
 FROM signoz_traces.signoz_index_v3
@@ -63,6 +65,7 @@ WHERE resource_string_service$$name = 'canary-test'
 ```
 
 ### Service Name Preservation
+
 - ✅ `resource_string_service$$name='canary-test'` intact
 - ✅ No resource processor overwrites
 - ✅ Service identity preserved end-to-end
@@ -72,6 +75,7 @@ WHERE resource_string_service$$name = 'canary-test'
 ## 📋 Canonical V3 Queries
 
 ### Recent Canary Count (5 minutes)
+
 ```sql
 SELECT count()
 FROM signoz_traces.signoz_index_v3
@@ -80,6 +84,7 @@ WHERE resource_string_service$$name = 'canary-test'
 ```
 
 ### Timeline (30 minutes, per minute)
+
 ```sql
 SELECT toStartOfMinute(timestamp) AS t, count() AS n
 FROM signoz_traces.signoz_index_v3
@@ -90,6 +95,7 @@ ORDER BY t;
 ```
 
 ### Quick Operator Loop
+
 ```powershell
 # 1) Emit canary
 pwsh -File .\send-canary-trace-direct.ps1
@@ -106,11 +112,13 @@ docker exec signoz-clickhouse clickhouse-client --query `
 ## 📈 SLOs & Health Monitors
 
 ### Service SLOs
+
 - **E2E Ingest Latency:** p95 ≤ 5s (alarm at >15s 3×)
 - **Canary Persistence:** ≥1 span/2 min steady (alarm on 0 for 6 min)
 - **Writer Availability:** ≥99.9% uptime (crash-loop alert if >3 restarts/10 min)
 
 ### Health Check Commands
+
 ```powershell
 # Writer status
 docker inspect signoz-writer --format '{{.State.Status}} - Restarts: {{.RestartCount}}'
@@ -133,12 +141,14 @@ docker exec signoz-clickhouse clickhouse-client --query `
 ## 🔒 Security & Operations
 
 ### Security Posture
+
 - ✅ **Ports:** Bound to localhost only (14320/14321)
 - ✅ **Network:** Isolated in `signoz` Docker network
 - ✅ **Credentials:** ClickHouse DSN in config (default user)
 - ⚠️ **Hardening:** Consider non-root user, insert-only role
 
 ### Operational Guardrails
+
 - ✅ **Change control:** All edits via ECRR lane
 - ✅ **Retention:** ClickHouse v3 TTLs aligned
 - ✅ **Spooling:** Batch processor configured
@@ -151,11 +161,13 @@ docker exec signoz-clickhouse clickhouse-client --query `
 **If edge writer regresses:**
 
 1. **Stop canary routing**
+
    ```powershell
    git restore send-canary-trace-direct.ps1
    ```
 
 2. **Disable edge writer**
+
    ```powershell
    docker stop signoz-writer
    ```
@@ -170,6 +182,7 @@ docker exec signoz-clickhouse clickhouse-client --query `
 ## 📦 Evidence Package
 
 ### ECRR Artifacts
+
 - **Location:** `artifacts/ecrr/gate_v3_20251023_223827/`
 - **Contents:**
   - Trace count snapshot
@@ -178,11 +191,13 @@ docker exec signoz-clickhouse clickhouse-client --query `
   - ECRR JSON proof
 
 ### BossCat Log Entry
-```
+
+```text
 2025-10-23T22:38:27Z — [GREEN] Edge writer hot path enabled → ClickHouse v3 traces verified for `canary-test` (66 spans, p95 ingest ≤5s); gate flipped GREEN; runbook + checks aligned to v3. — BossCat OEM
 ```
 
 ### Git Commits
+
 - `ab0244396` — Edge writer implementation
 - `50940eda9` — Documentation updates
 - `e6ddb69fd` — BossCat TODO tracker
@@ -203,7 +218,7 @@ docker exec signoz-clickhouse clickhouse-client --query `
 
 ## 🧭 Architecture Alignment (Crayon Diagram)
 
-```
+```powershell
 ┌─────────────┐
 │ Trace Emit  │ (Canary + Workload)
 └──────┬──────┘
@@ -244,12 +259,14 @@ docker exec signoz-clickhouse clickhouse-client --query `
 ## 🎉 Success Metrics
 
 ### Before (WARN)
+
 - ❌ 0 traces in ClickHouse
 - ❌ Platform gap persisting
 - ❌ Flaky transformer hop
 - ⏳ Waiting on vendor fix
 
 ### After (GREEN)
+
 - ✅ 66 traces in v3 schema
 - ✅ Direct ClickHouse write path
 - ✅ Edge writer operational

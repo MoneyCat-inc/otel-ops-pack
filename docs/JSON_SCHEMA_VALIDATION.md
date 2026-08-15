@@ -8,7 +8,8 @@
 
 ## 🎯 Overview
 
-The JSON schema validation gate ensures all artifacts conform to defined contracts before they're committed to the repository. This is a **fail-closed** system: if validation fails, the pipeline stops.
+The JSON schema validation gate ensures all artifacts conform to defined contracts before they're committed to the
+repository. This is a **fail-closed** system: if validation fails, the pipeline stops.
 
 **Key Principle:** Invalid contracts = pipeline stops (no silent failures)
 
@@ -17,9 +18,10 @@ The JSON schema validation gate ensures all artifacts conform to defined contrac
 ## 📂 Schema Files
 
 ### Location
+
 All schema files are in the `schema/` directory at the repository root.
 
-```
+```text
 schema/
 ├── status-tests.schema.json              # Validates docs/status/tests.json
 └── gate-verification-results.schema.json # Validates artifacts/gate-verification-results.json
@@ -30,6 +32,7 @@ schema/
 **Purpose:** Validates the test results stored in `docs/status/tests.json`
 
 **Enforced Fields:**
+
 - `version` (string, semver format)
 - `endedAt` (ISO 8601 datetime)
 - `actor` (string)
@@ -47,6 +50,7 @@ schema/
 **Purpose:** Validates gate verification results
 
 **Enforced Fields:**
+
 - `timestamp` (ISO 8601 datetime)
 - `gateId` (pattern: GATE-### e.g., GATE-007)
 - `status` (enum: READY, WARN, FAIL)
@@ -67,6 +71,7 @@ npm install -g ajv-cli ajv-formats
 ```
 
 Or add to `package.json`:
+
 ```json
 {
   "devDependencies": {
@@ -80,6 +85,7 @@ Or add to `package.json`:
 ### Validate Individual Files
 
 **Status Tests:**
+
 ```bash
 ajv validate \
   -s schema/status-tests.schema.json \
@@ -89,6 +95,7 @@ ajv validate \
 ```
 
 **Gate Verification Results:**
+
 ```bash
 ajv validate \
   -s schema/gate-verification-results.schema.json \
@@ -114,6 +121,7 @@ done
 The validation runs automatically via `.github/workflows/json-validation-gate.yml`
 
 ### Trigger Events
+
 - Push to `main` branch
 - Pull requests modifying:
   - `schema/**`
@@ -121,6 +129,7 @@ The validation runs automatically via `.github/workflows/json-validation-gate.ym
   - `artifacts/gate-verification-results.json`
 
 ### Workflow Steps
+
 1. Checkout code
 2. Setup Node.js v20
 3. Install AJV tools
@@ -204,18 +213,21 @@ Update this file with the new schema details and file path.
 ### Error: Schema validation failed
 
 **Symptoms:**
-```
+
+```text
 Validation failed for docs/status/tests.json
   property "verdict" must be one of [READY, WARN, FAIL]
 ```
 
 **Solution:**
+
 1. Check the error message - it identifies the failing field and constraint
 2. Update the artifact file to match the schema requirement
 3. Rerun validation locally to confirm fix
 4. Commit and push
 
 **Common Issues:**
+
 - Missing required fields: Check schema `required` array
 - Wrong enum value: Use exact values from schema definition
 - Wrong data type: Ensure field types match schema (string vs number, etc.)
@@ -223,11 +235,13 @@ Validation failed for docs/status/tests.json
 ### Error: File not found
 
 **Symptoms:**
-```
+
+```yaml
 ENOENT: no such file or directory, open 'docs/status/tests.json'
 ```
 
 **Solution:**
+
 1. Ensure artifact file exists at expected path
 2. Check file path in validation command
 3. For optional artifacts, use conditional checks: `if [ -f path ]; then ...`
@@ -235,11 +249,13 @@ ENOENT: no such file or directory, open 'docs/status/tests.json'
 ### Error: ajv command not found
 
 **Symptoms:**
-```
+
+```text
 command not found: ajv
 ```
 
 **Solution:**
+
 ```bash
 npm install -g ajv-cli ajv-formats
 # Or use npx
@@ -249,11 +265,13 @@ npx ajv validate -s schema/status-tests.schema.json -d docs/status/tests.json
 ### Validation passes locally but fails in CI
 
 **Common Causes:**
+
 - Line ending differences (use `--spec=draft2020` with consistent line endings)
 - File encoding (ensure UTF-8)
 - Path differences (use absolute paths in CI)
 
 **Solution:**
+
 ```bash
 # Run with same flags as CI
 ajv validate \
@@ -272,6 +290,7 @@ ajv validate \
 All schemas use JSON Schema Draft 2020-12 specification.
 
 **Common Keywords:**
+
 - `$schema` - Schema version identifier
 - `$id` - Unique schema identifier
 - `title` - Human-readable name
@@ -288,6 +307,7 @@ All schemas use JSON Schema Draft 2020-12 specification.
 ### Validation Features
 
 **Format Validation** (requires `ajv-formats`):
+
 ```json
 {
   "timestamp": {
@@ -298,6 +318,7 @@ All schemas use JSON Schema Draft 2020-12 specification.
 ```
 
 **Pattern Matching** (regex):
+
 ```json
 {
   "gateId": {
@@ -308,6 +329,7 @@ All schemas use JSON Schema Draft 2020-12 specification.
 ```
 
 **Enum Constraints:**
+
 ```json
 {
   "status": {
@@ -324,7 +346,7 @@ All schemas use JSON Schema Draft 2020-12 specification.
 - **PR-1 Specification:** `docs/comfort-cat/PR-1_JSON_VALIDATION_GATE.md`
 - **Gate Protocol:** `docs/comfort-cat/GATE_PROTOCOL.md`
 - **ECRR Framework:** `docs/comfort-cat/ECRR_FRAMEWORK.md`
-- **AJV Documentation:** https://ajv.js.org/
+- **AJV Documentation:** <https://ajv.js.org/>
 
 ---
 

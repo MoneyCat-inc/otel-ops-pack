@@ -9,6 +9,7 @@
 ## Quick Start
 
 A Milkdrop preset is a text file (`.milk`) with three main sections:
+
 1. **preset init** - Set initial constants
 2. **per_frame** - Update variables each frame (beat-reactive logic)
 3. **per_pixel** - Transform each pixel's position/color
@@ -47,6 +48,7 @@ ang  = ang  + q1  * 0.02 * (1 - rad);
 ## Essential Variables
 
 ### Audio Input (read-only)
+
 - `bass` - Low frequency intensity (0-1)
 - `mid` - Mid frequency intensity (0-1)
 - `treb` - High frequency intensity (0-1)
@@ -55,10 +57,12 @@ ang  = ang  + q1  * 0.02 * (1 - rad);
 - `treb_att` - Treble attenuated
 
 ### Time
+
 - `time` - Elapsed time (manually incremented)
 - `frame` - Frame counter (if available)
 
 ### Warp Effects (per_frame)
+
 - `zoom` - Zoom factor (1.0 = no zoom)
 - `rot` - Rotation in radians
 - `cx`, `cy` - Center point (0.5, 0.5 = screen center)
@@ -67,6 +71,7 @@ ang  = ang  + q1  * 0.02 * (1 - rad);
 - `sx`, `sy` - Stretch X/Y
 
 ### Color & Decay (per_frame)
+
 - `decay` - Frame persistence (0.9-0.99 typical)
 - `gamma` - Brightness curve (1.0-4.0)
 - `wave_r`, `wave_g`, `wave_b` - Wave colors (0-1)
@@ -74,12 +79,14 @@ ang  = ang  + q1  * 0.02 * (1 - rad);
 - `ib_r`, `ib_g`, `ib_b` - Inner border colors
 
 ### Per-Pixel Variables
+
 - `x`, `y` - Current pixel position (0-1)
 - `rad` - Distance from center
 - `ang` - Angle from center
 - `zoom`, `rot` - Inherited from per_frame (can modify)
 
 ### Q Variables (data passing)
+
 - `q1` through `q8` - General-purpose variables
 - Set in `per_frame`, read in `per_pixel`
 
@@ -88,6 +95,7 @@ ang  = ang  + q1  * 0.02 * (1 - rad);
 ## Common Patterns
 
 ### 1. **Beat-Reactive Zoom**
+
 ```milk
 /* per_frame */
 beat = (bass + mid + treb) * 0.33;
@@ -95,12 +103,14 @@ zoom = 1.0 + 0.05 * beat;
 ```
 
 ### 2. **Smooth Rotation**
+
 ```milk
 /* per_frame */
 rot = rot + 0.01 * sin(time * 0.5);
 ```
 
 ### 3. **Radial Warp (per_pixel)**
+
 ```milk
 /* per_frame */
 q1 = bass * 0.5;
@@ -110,6 +120,7 @@ zoom = zoom + rad * q1 * sin(ang * 4);
 ```
 
 ### 4. **Color Cycling**
+
 ```milk
 /* per_frame */
 wave_r = 0.5 + 0.5 * sin(time * 0.7);
@@ -118,6 +129,7 @@ wave_b = 0.5 + 0.5 * cos(time * 1.1);
 ```
 
 ### 5. **Pulse on Beat**
+
 ```milk
 /* per_frame */
 bass_impact = max(0, bass - bass_att);
@@ -140,6 +152,7 @@ zoom = 1.0 + 0.1 * bass_impact;
 ## Scorebot Quality Checks
 
 Our Scorebot will flag:
+
 - [FAIL] **Aspect skew** - Canvas/DPR mismatch
 - [FAIL] **Black frames** - Decay too low or no motion
 - [FAIL] **Low motion** - Boring static visuals
@@ -202,6 +215,7 @@ Shapes render at specified `(x, y)` with `sides` (3=triangle, 64=circle), size `
 ## ECRR Integration
 
 Every preset change:
+
 1. [E] **Examine** - Capture current FPS, motion, aspect
 2. [C] **Clean** - Load preset with blend
 3. [R] **Report** - Scorebot emits metrics
@@ -211,7 +225,8 @@ Logged to `docs/BossCat/BOSSCAT_LOG.md` and `artifacts/viz-engine/`.
 
 ---
 
-**Reference:** [Geisswerks Milkdrop Authoring Guide](https://www.geisswerks.com/milkdrop/milkdrop_preset_authoring.html)  
+**Reference:** [Geisswerks Milkdrop Authoring Guide](https://www.geisswerks.com/milkdrop/milkdrop_preset_authoring.html)
+
 **BossCat Mission:** Fast iterate -> score -> refine visual loop  
 **Status:** READY for Codex-driven authoring
 

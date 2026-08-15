@@ -9,12 +9,14 @@
 ## 🚀 One-Liner Usage
 
 ### **Complete Automation (Recommended)**
+
 ```powershell
 # Full end-to-end: check → advance → report
 pwsh -File .\gate-v3-complete.ps1
 ```
 
 **What it does:**
+
 1. ✅ Sends fresh canary trace
 2. ✅ Waits for ClickHouse ingestion (3s)
 3. ✅ V3 schema gate check (signoz_index_v3)
@@ -24,6 +26,7 @@ pwsh -File .\gate-v3-complete.ps1
 7. ✅ Gate verdict: 🟢 GREEN
 
 **Exit Codes:**
+
 - **0 (GREEN):** Traces persisting → Gate ready
 - **1 (HOLD):** No fresh traces → Platform gap persists
 - **2 (ERROR):** Infrastructure issue → Check ClickHouse
@@ -33,12 +36,14 @@ pwsh -File .\gate-v3-complete.ps1
 ## 🔄 Background Monitoring (Autonomous)
 
 ### **Start Monitoring Loop**
+
 ```powershell
 # 2-minute polling until platform fix detected
 pwsh -File .\gate-self-signal-monitor.ps1
 ```
 
 **What it does:**
+
 1. ✅ Polls every 2 minutes
 2. ✅ Runs `gate-self-signal-check.ps1`
 3. ✅ When exit 0 detected → Auto-executes `gate-v3-complete.ps1`
@@ -51,18 +56,21 @@ pwsh -File .\gate-self-signal-monitor.ps1
 ## 🔍 Individual Components
 
 ### **Single Check Only**
+
 ```powershell
 # Just check current state (no advancement)
 pwsh -File .\gate-self-signal-check.ps1
 ```
 
 ### **Manual Gate Advancement**
+
 ```powershell
 # Package evidence only (assumes traces exist)
 pwsh -File .\gate-advance.ps1
 ```
 
 ### **Schema Analysis**
+
 ```powershell
 # Discover services and analyze v3 schema
 pwsh -File .\analyze-trace-schema.ps1
@@ -73,6 +81,7 @@ pwsh -File .\analyze-trace-schema.ps1
 ## 📊 V3 Schema Reference
 
 ### **Correct Table & Column**
+
 ```sql
 -- Gate predicate (copy-paste ready)
 SELECT count()
@@ -82,6 +91,7 @@ WHERE `resource_string_service$$name` = 'canary-test'
 ```
 
 ### **Docker Exec Method**
+
 ```bash
 # PowerShell backtick escaping
 docker exec signoz-clickhouse clickhouse-client --query "SELECT count() FROM signoz_traces.signoz_index_v3 WHERE \`resource_string_service\$\$name\`='canary-test' AND timestamp >= now() - INTERVAL 5 MINUTE;"
@@ -114,7 +124,8 @@ docker exec signoz-clickhouse clickhouse-client --query "SELECT count() FROM sig
 ## 📁 Evidence Artifacts
 
 When gate advances, creates:
-```
+
+```text
 artifacts/ecrr/gate_v3_YYYYMMDD_HHMMSS/
 ├── gate_evidence_TIMESTAMP.txt      # Trace counts + queries
 ├── timeline_TIMESTAMP.txt          # Activity timeline
@@ -122,7 +133,8 @@ artifacts/ecrr/gate_v3_YYYYMMDD_HHMMSS/
 ```
 
 Plus BossCat log entry:
-```
+
+```text
 docs/BossCat/BOSSCAT_LOG.md
 ```
 
@@ -131,11 +143,13 @@ docs/BossCat/BOSSCAT_LOG.md
 ## 🔧 Troubleshooting
 
 ### **If Automation Fails**
+
 1. Check ClickHouse health: `docker exec signoz-clickhouse clickhouse-client -q "SELECT 1"`
 2. Verify service name preservation: `pwsh -File .\analyze-trace-schema.ps1`
 3. Test manual canary: `pwsh -File .\send-canary-trace-direct.ps1`
 
 ### **If Monitoring Stops**
+
 ```powershell
 # Restart monitoring loop
 pwsh -File .\gate-self-signal-monitor.ps1
@@ -146,6 +160,7 @@ pwsh -File .\gate-self-signal-monitor.ps1
 ## 🎉 Success Criteria
 
 **Gate flips to GREEN when:**
+
 - ✅ Fresh traces detected (count() > 0 in last 5 min)
 - ✅ Service name preserved (canary-test not overwritten)
 - ✅ Stability confirmed (multiple traces persist)

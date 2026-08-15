@@ -10,7 +10,7 @@
 
 ### Root Level (Active Development)
 
-```
+```text
 otel/
 ├── .codex/                  # Codex Gateway configuration
 ├── codex/                   # Code analysis scripts
@@ -38,18 +38,21 @@ otel/
 ### Active Development
 
 **Configuration:**
+
 - `config.yaml` - Main OTel collector config
 - `windows/otelcol/otelcol-contrib-config.yaml` - Windows collector
 - `docker-compose-signoz.yml` - SigNoz stack
 - `.codex/config.json` - Codex Gateway settings
 
 **Scripts:**
+
 - `canary-test.ps1` - Canary test generation
 - `verify-pipeline.ps1` - End-to-end verification
 - `scripts/monitor-optimized-pipeline.ps1` - Real-time monitoring
 - `scripts/demo/chaos-*.ps1` - Chaos injection demos
 
 **Documentation:**
+
 - `docs/comfort-cat/` - Creative & ECRR reference
 - `docs/ecrr/` - ECRR reports and templates
 - `docs/architecture/` - System architecture and deprecation notices
@@ -62,9 +65,11 @@ otel/
 ## 🗂️ Archive Locations
 
 ### Gate Reports
+
 **Location:** `docs/archive/gates/{YYYY-MM}/`
 
 **What's Archived:**
+
 - GATE_0XX_*.md - Numbered gate reports
 - GATE_*_EXECUTIVE_SUMMARY.md - Gate summaries
 - GATE_*_EVIDENCE.md - Evidence bundles
@@ -73,15 +78,18 @@ otel/
 **Retention:** Permanent (historical record)
 
 **Example:**
+
 - `docs/archive/gates/2025-11/GATE_026_COMPLETE.md`
 - `docs/archive/gates/2025-10/GATE_020_*.md`
 
 ---
 
 ### Monitoring Snapshots
+
 **Location:** `artifacts/archive/monitoring/`
 
 **What's Archived:**
+
 - monitor-optimized-*.json - Pipeline monitoring runs
 - quick-monitor-*.json - Quick health check snapshots
 - hub-smoke-*.json - Hub smoke test results
@@ -94,9 +102,11 @@ otel/
 ---
 
 ### Codex Analysis Runs
+
 **Location:** `artifacts/codex/archive/`
 
 **What's Archived:**
+
 - scenario*.json - Individual scenario workplans
 - workplan-*.json - Older analysis runs
 - manifest.json, request.json - Intermediate files (>7 days)
@@ -106,6 +116,7 @@ otel/
 **Cleanup:** Automated by `scripts/repo-cleanup.ps1`
 
 **Current Run:** Always in `artifacts/codex/` root:
+
 - `master-workplan.json`
 - `master-cursor-instructions.md`
 - `EXECUTION_REPORT.md`
@@ -114,9 +125,11 @@ otel/
 ---
 
 ### Configuration Backups
+
 **Location:** `config/backups/`
 
 **What's Archived:**
+
 - config.backup-*.yaml - Collector config snapshots
 - Pre-gate configuration backups
 - Rollback versions
@@ -128,9 +141,11 @@ otel/
 ## 🧹 Automated Cleanup
 
 ### Cleanup Script
+
 **Location:** `scripts/repo-cleanup.ps1`
 
 **Usage:**
+
 ```powershell
 # Dry run (see what would be cleaned)
 .\scripts\repo-cleanup.ps1 -DryRun
@@ -143,6 +158,7 @@ otel/
 ```
 
 **What It Cleans:**
+
 - tmp_*/, tmp/, out/, .next/ folders
 - Test images (snap_*.jpg, test-*.jpg)
 - Temp text files (tmp_*.txt)
@@ -155,6 +171,7 @@ otel/
 ## 📋 .gitignore Patterns
 
 **Automated Exclusions (Added 2025-11-01):**
+
 ```gitignore
 tmp_*/
 .next/
@@ -173,16 +190,19 @@ test-*.jpg
 ## 🔄 Maintenance Cadence
 
 ### Weekly
+
 - Run `scripts/repo-cleanup.ps1 -DryRun` to review cleanup candidates
 - Execute cleanup if needed
 - Check artifacts/archive/ size
 
 ### Monthly  
+
 - Archive gate reports from current month to previous month directory
 - Review config/backups/ - keep 3 most recent per file
 - Audit scripts/ for new duplicates
 
 ### Quarterly
+
 - Review docs/archive/ size and compress if >100MB
 - Check for obsolete Dockerfiles or configs
 - Run dependency audit (pnpm prune, dedupe)
@@ -220,6 +240,7 @@ test-*.jpg
 ## 🐾 Cat Nap Philosophy
 
 **Repository structure reflects the Cat Nap Control Room aesthetic:**
+
 - **Calm:** Clean root, no clutter
 - **Organized:** Archives well-structured
 - **Intentional:** Every file has a place
@@ -232,6 +253,7 @@ test-*.jpg
 ## 📞 Questions?
 
 **Where should X go?**
+
 - Gate reports → `docs/archive/gates/{YYYY-MM}/`
 - Monitoring data → `artifacts/archive/monitoring/`
 - Code analysis → `artifacts/codex/archive/`

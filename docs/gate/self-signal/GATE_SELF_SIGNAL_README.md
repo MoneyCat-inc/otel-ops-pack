@@ -36,7 +36,7 @@ Autonomous system that detects when SigNoz fixes the exporter→ClickHouse gap *
 
 ## 🚀 Current Status
 
-```
+```bash
 🟢 MONITORING LOOP: RUNNING (background PowerShell)
 ✅ Polling: Every 30 minutes
 ✅ Infrastructure: docker exec ClickHouse queries (working)
@@ -50,10 +50,12 @@ Autonomous system that detects when SigNoz fixes the exporter→ClickHouse gap *
 ## 🔄 What's Happening Now
 
 **Background Loop** (`gate-self-signal-monitor.ps1`):
+
 1. Every 30 minutes:
    - Sends canary trace to SigNoz
    - Waits 2 seconds for ingestion
-   - Queries ClickHouse: `SELECT count() FROM span_attributes WHERE tagKey='service.name' AND stringTagValue='canary-test'`
+   - Queries ClickHouse: `SELECT count() FROM span_attributes WHERE tagKey='service.name' AND
+     stringTagValue='canary-test'`
    - Evaluates exit code
 2. If **exit 0** (traces found):
    - 🟢 BREAK loop
@@ -72,7 +74,8 @@ Autonomous system that detects when SigNoz fixes the exporter→ClickHouse gap *
 ## 🟢 When Platform Fix Lands (What Happens Automatically)
 
 **Step 1: Detection** (automatic)
-```
+
+```text
 [HH:MM:SS] Check #N
 ✅✅✅ PLATFORM FIX DETECTED ✅✅✅
 Exit Code 0: Traces persisting to ClickHouse
@@ -80,13 +83,15 @@ Exit Code 0: Traces persisting to ClickHouse
 
 **Step 2: Gate Advancement** (manual, ~10 min)
 Execute **GATE_SELF_SIGNAL_PROTOCOL.md**:
+
 - Verify stability (5 canary bursts)
 - Capture evidence (query output + config)
 - Regenerate ECRR artifacts
 - Post `@cat ready-for-gate` with bundle
 
 **Step 3: Verdict Flip** (automatic)
-```
+
+```text
 🟠 WARN → 🟢 GREEN
 ✅ All 5 criteria met
 ✅ Evidence attached
@@ -98,35 +103,43 @@ Execute **GATE_SELF_SIGNAL_PROTOCOL.md**:
 ## 🛠️ Manual Commands
 
 ### **Run Self-Signal Check (One-Time)**
+
 ```powershell
 pwsh -File gate-self-signal-check.ps1
 ```
+
 **Returns:**
+
 - Exit 0 = traces found ✅
 - Exit 1 = no traces (hold) ⏳
 - Exit 2 = query failed ⚠️
 
 ### **Start Background Loop (If Stopped)**
+
 ```powershell
 pwsh -File gate-self-signal-monitor.ps1
 ```
 
 ### **Start with Fast Polling (5 min, for testing)**
+
 ```powershell
 pwsh -File gate-self-signal-monitor.ps1 -IntervalSeconds 300
 ```
 
 ### **Send Canary Manually**
+
 ```powershell
 pwsh -File send-canary-trace-direct.ps1
 ```
 
 ### **Check Docker Processes**
+
 ```powershell
 docker ps --format "table {{.Names}}\t{{.Status}}"
 ```
 
 ### **Query ClickHouse Directly**
+
 ```powershell
 docker exec signoz-clickhouse clickhouse-client --query `
   "SELECT count() FROM signoz_traces.span_attributes `
@@ -152,6 +165,7 @@ docker exec signoz-clickhouse clickhouse-client --query `
 ## 🔐 Gate Advancement Criteria (All 5 Must Pass)
 
 When `exit 0` detected:
+
 1. ✅ Self-signal returns exit code 0 (count() > 0)
 2. ✅ Stability verified (canary bursts increase)
 3. ✅ Service name preserved (action: insert, not upsert)
@@ -165,11 +179,13 @@ When `exit 0` detected:
 ## 📦 Files in This System
 
 **Core Scripts:**
+
 - `gate-self-signal-check.ps1` — Single check execution
 - `gate-self-signal-monitor.ps1` — Background polling loop
 - `send-canary-trace-direct.ps1` — Canary trace sender
 
 **Documentation:**
+
 - `GATE_SELF_SIGNAL_PROTOCOL.md` — Gate advancement runbook ⭐ READ WHEN ALERT FIRES
 - `GATE_SELF_SIGNAL_FINAL_STATUS.md` — Complete operational summary
 - `GATE_SELF_SIGNAL_OPERATIONAL_SUMMARY.md` — System overview
@@ -177,6 +193,7 @@ When `exit 0` detected:
 - `GATE_SELF_SIGNAL_README.md` — This file
 
 **Prior Diagnostics:**
+
 - `PLATFORM_ESCALATION_DIAGNOSTIC_20251023.md` — Root cause evidence
 - `GATE_TRACE_DEBUG_REPORT_20251023.md` — Trace flow analysis
 - `signoz-collector-config.yaml` — SigNoz collector config (resource/defaults: insert)
@@ -199,7 +216,7 @@ When `exit 0` detected:
 
 **Last test run:** 2025-10-23 16:27:36
 
-```
+```bash
 ✅ Canary sent to SigNoz (HTTP 200)
 ✅ ClickHouse accessed via docker exec
 ✅ Query schema correct (span_attributes)
@@ -214,12 +231,14 @@ When `exit 0` detected:
 ### **ClickHouse Query Fails (Exit Code 2)**
 
 **Check:**
+
 ```powershell
 docker ps | findstr signoz-clickhouse
 docker exec signoz-clickhouse clickhouse-client --query "SELECT count() FROM system.tables WHERE database='signoz_traces';"
 ```
 
 **If container not running:**
+
 ```powershell
 docker-compose up -d signoz-clickhouse
 ```
@@ -227,6 +246,7 @@ docker-compose up -d signoz-clickhouse
 ### **Loop Stopped**
 
 **Restart:**
+
 ```powershell
 Start-Process pwsh -ArgumentList "-NoProfile -Command `"pwsh -File gate-self-signal-monitor.ps1`""
 ```
@@ -234,6 +254,7 @@ Start-Process pwsh -ArgumentList "-NoProfile -Command `"pwsh -File gate-self-sig
 ### **No Traces After Platform Fix**
 
 **Verify config:**
+
 - Ensure `signoz-collector-config.yaml` has `action: insert` (not `upsert`)
 - Check Windows otelcol exporter endpoint
 - Verify canary is setting `service.name=canary-test`
@@ -243,6 +264,7 @@ Start-Process pwsh -ArgumentList "-NoProfile -Command `"pwsh -File gate-self-sig
 ## 🐾 Doctrine Alignment
 
 This system embodies:
+
 - **ECRR:** Evidence-first, autonomous, objective criteria
 - **BossCat:** Gate discipline, safe promotion, quality gates
 - **Cat Nap Control Room:** Calm, efficient, minimal interruption until fix lands
@@ -252,12 +274,14 @@ This system embodies:
 ## 📞 Support
 
 **System Working Correctly If:**
+
 - ✅ Background loop running (see `tasklist | findstr pwsh`)
 - ✅ Self-signal check returns exit code 1 (hold, no traces)
 - ✅ Canary sent successfully (HTTP 200)
 - ✅ ClickHouse query responds (zero count while waiting)
 
 **When Alert Fires:**
+
 - ✅ Exit code 0 detected
 - ✅ Loop breaks with green alert
 - ✅ Next steps printed
@@ -267,7 +291,7 @@ This system embodies:
 
 ## 🎯 Success Looks Like
 
-```
+```yaml
 [16:55:03] Check #2 (elapsed: 30.1 min)
 ✅✅✅ PLATFORM FIX DETECTED ✅✅✅
 Exit Code 0: Traces are persisting to ClickHouse
