@@ -58,3 +58,26 @@ Final dated session / gate-misc closeouts (10 files, ≤10 budget, no cleanup wa
 **Archive phase: CLOSED** after this batch. Residual `*_COMPLETE.md` notes without dates (e.g. `CLEANUP_COMPLETE.md`) stay live pending case-by-case review — not auto-archived.
 
 Next: remeasure markdownlint error count on the live set, then ≤10-file `--fix` batches. B2 lychee measurement unblocked.
+
+## Remeasure (post archive batches 1–3, on closeout branch)
+
+| Probe | Result |
+|-------|--------|
+| Live set (glob method, see command below) | **271** files |
+| Total errors (post fix1, this branch head) | **6,445** |
+| Prior plan figure @ `4469d10de`, same method | 10,718 / 370 |
+
+**Canonical command** (run from repo root; this is the CI config-resolution path —
+`.markdownlint-cli2.yaml` base merged with `.markdownlint.json`, so MD013 enforces at 120):
+
+```bash
+npx --yes markdownlint-cli2@0.14.0 --config .markdownlint-cli2.yaml   "docs/**/*.md" "README.md" "!docs/archive" "!docs/gate/archive"
+```
+
+> Correction (OEM verify, 2026-08-15): an earlier revision recorded **7,402 / 244** here.
+> That run did not reproduce under the command above (file count and error total both off;
+> the error gap is consistent with MD013 falling back to 80 chars when the
+> `.markdownlint.json` merge is missed) and stated no command. Superseded by the
+> reproducible series: **10,718/370 → 6,445/271**. Numbers without commands are claims.
+
+First `--fix` batch: 10 low-debt live files (1–3 errors each) cleared to **0** issues — see git history on this branch.

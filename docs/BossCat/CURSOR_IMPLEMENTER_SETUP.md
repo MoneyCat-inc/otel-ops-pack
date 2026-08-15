@@ -664,5 +664,6 @@ compliant, transparent, and enterprise-ready.**
 
 🐾 **End of Cursor{Implementer} Setup Prompt**
 
+<!-- markdownlint-disable-next-line MD013 -->
 *This document serves as the foundational setup guide for autonomous cursor{implementer} operations within the Resonai [OTel] observability stack under BossCat OEM governance.*
 
