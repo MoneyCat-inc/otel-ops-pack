@@ -1,8 +1,19 @@
+Import-Module (Join-Path $PSScriptRoot '..\..\..\BRAV\SCPT\lib\OtelPorts.psm1') -Force
+$script:OtelPorts = Get-OtelPorts
+
 # Simple port checker script
 
 Write-Host "=== Port Status Check ===" -ForegroundColor Green
 
-$ports = @(4317, 4318, 5320, 5321, 8080, 8888, 13134)
+$ports = @(
+    $script:OtelPorts.SignozOtlpGrpc,
+    $script:OtelPorts.SignozOtlpHttp,
+    $script:OtelPorts.IngestGrpc,
+    $script:OtelPorts.IngestHttp,
+    $script:OtelPorts.SignozUiHttp,
+    8888,
+    13134
+)
 
 foreach ($port in $ports) {
     $result = Test-NetConnection -ComputerName localhost -Port $port -InformationLevel Quiet -WarningAction SilentlyContinue

@@ -50,6 +50,9 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Continue'
 
+Import-Module (Join-Path $PSScriptRoot '..\..\BRAV\SCPT\lib\OtelPorts.psm1') -Force
+$script:OtelPorts = Get-OtelPorts
+
 # --- Constants ---
 $stamp = Get-Date -Format 'yyyyMMdd'
 if (-not $RunId) { $RunId = "clean-host-e2e-$stamp" }
@@ -134,7 +137,13 @@ function Invoke-ContaminationCheck {
     }
 
     # Check 5: Required ports free
-    $requiredPorts = @(4317, 4318, 5320, 5321, 8080)
+    $requiredPorts = @(
+        $script:OtelPorts.SignozOtlpGrpc,
+        $script:OtelPorts.SignozOtlpHttp,
+        $script:OtelPorts.IngestGrpc,
+        $script:OtelPorts.IngestHttp,
+        $script:OtelPorts.SignozUiHttp
+    )
     $boundPorts = @()
     foreach ($port in $requiredPorts) {
         if (-not (Test-PortFree $port)) {
@@ -403,7 +412,7 @@ function Write-EcrrStub {
 - Phase-0 contamination checkpoint: **PASSED**
 - Docker: $( if ($Phase0Result.Checks.docker_ok) { 'responsive' } else { 'NOT responsive' } )
 - Collector state at start: $($Phase0Result.Checks.collector_state)
-- Ports 4317/4318/5320/5321/8080: $( if ($Phase0Result.Checks.ports_free) { 'all free' } else { 'BOUND (see failures)' } )
+- Ports $($script:OtelPorts.SignozOtlpGrpc)/$($script:OtelPorts.SignozOtlpHttp)/$($script:OtelPorts.IngestGrpc)/$($script:OtelPorts.IngestHttp)/$($script:OtelPorts.SignozUiHttp): $( if ($Phase0Result.Checks.ports_free) { 'all free' } else { 'BOUND (see failures)' } )
 - HEAD: ``$($ClockResult.HeadSha)``
 
 ## Clean
