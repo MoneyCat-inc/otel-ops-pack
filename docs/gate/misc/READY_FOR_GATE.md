@@ -8,7 +8,7 @@
 
 ## 🎯 Gate Verification Command
 
-```
+```text
 @cat ready-for-gate
 ```
 
@@ -25,6 +25,7 @@
 **Achievement:** 100% elimination
 
 **All 17 original violations migrated:**
+
 - ✅ scripts/ → BRAV/SCPT/
 - ✅ config/, configs/ → DELT/CONF/
 - ✅ docker/ → BRAV/DOCK/legacy/
@@ -40,7 +41,8 @@
 ### 2. Tetragram Structure Established ✅
 
 **All 4 planes populated:**
-```
+
+```text
 ALFA/  # Application (tests, tools, otel, synthetic)
 BRAV/  # Build/Runtime/Automation (scripts, docker, infra)
 CHAR/  # Compliance/Audit/Review (docs, evidence, preservation)
@@ -50,6 +52,7 @@ DELT/  # Data/Environment/Test (config, assets, fixtures, templates)
 ### 3. Evidence Comprehensive ✅
 
 **20+ evidence documents created:**
+
 - Migration baseline
 - Phase evidence (B.1, B.2, C, D)
 - Completion summaries
@@ -57,6 +60,7 @@ DELT/  # Data/Environment/Test (config, assets, fixtures, templates)
 - Tool documentation
 
 **Gate Evidence Bundle:** `CHAR/EVID/gate/`
+
 - guardrails.txt (0 forbidden roots)
 - pathmap_status.txt (19 migrated)
 - tree_snapshot.txt (structure proof)
@@ -87,7 +91,7 @@ DELT/  # Data/Environment/Test (config, assets, fixtures, templates)
 
 ## 📊 Final Metrics
 
-```
+```text
 ╔═══════════════════════════════════════════════════════════════╗
 ║  TETRAGRAM MIGRATION - FINAL SCORECARD                        ║
 ╠═══════════════════════════════════════════════════════════════╣
@@ -112,6 +116,7 @@ DELT/  # Data/Environment/Test (config, assets, fixtures, templates)
 **Status:** Expected and acceptable for gate
 
 **Categories:**
+
 - **Application code (10):** app/, apps/, components/, lib/, pages/, prisma/, schemas/, etc.
 - **Infrastructure (8):** codex/, collector/, otel/, sidecars/, cuda/, gpu/, etc.
 - **Development (7):** experiments/, patches/, policies/, projects/, upstream-contribution/, etc.
@@ -119,12 +124,14 @@ DELT/  # Data/Environment/Test (config, assets, fixtures, templates)
 - **Miscellaneous (4):** workflows/, visual-assets-draft/, triton-models/, ~/
 
 **Justification:**
+
 1. **Not forbidden** - don't violate core tetragram requirements
 2. **Application-specific** - require context about intended architecture
 3. **Can be migrated post-gate** - better as incremental improvements
 4. **Some are temporary** - can be cleaned up or exempted
 
 **Post-Gate Plan:**
+
 - Migrate app/, apps/, components/, lib/, pages/ to ALFA/APPS or ALFA/CORE
 - Organize infrastructure dirs under appropriate planes
 - Clean up obsolete experimental directories
@@ -145,6 +152,7 @@ DELT/  # Data/Environment/Test (config, assets, fixtures, templates)
 ## 🏆 Achievement Summary
 
 ### Before Migration (Baseline)
+
 - 17 forbidden legacy root directories
 - 54 unauthorized top-level directories
 - 0 tetragram planes
@@ -152,6 +160,7 @@ DELT/  # Data/Environment/Test (config, assets, fixtures, templates)
 - Ad-hoc organization
 
 ### After Migration (Current)
+
 - **0 forbidden legacy roots** ✅
 - **33 unauthorized top-level** (application code - optional)
 - **4 tetragram planes populated** ✅
@@ -159,6 +168,7 @@ DELT/  # Data/Environment/Test (config, assets, fixtures, templates)
 - **Clean, predictable structure** ✅
 
 ### Improvement Metrics
+
 - **100% forbidden root elimination**
 - **39% unauthorized directory reduction**
 - **19 directories successfully migrated**
@@ -169,7 +179,7 @@ DELT/  # Data/Environment/Test (config, assets, fixtures, templates)
 
 ## 🚦 Git History (14 commits pushed)
 
-```
+```text
 5b3d410 docs(evidence): gate verification bundle ⭐ FINAL
 6d8bf5d docs(bosscat): 100% forbidden roots eliminated
 fb5317b docs(bosscat): READY FOR GATE documentation
@@ -195,11 +205,13 @@ cef03e7 fix(bosscat): Phase B.1 finalization - remove scripts/
 ### Trigger Gate Verification
 
 **Command:**
-```
+
+```text
 @cat ready-for-gate
 ```
 
 **This will:**
+
 1. Trigger BossCat OEM verification pipeline
 2. Review evidence bundle in `CHAR/EVID/gate/`
 3. Validate guardrails compliance
@@ -211,11 +223,13 @@ cef03e7 fix(bosscat): Phase B.1 finalization - remove scripts/
 ## 📚 Evidence Index (For BossCat)
 
 **Executive Summaries:**
+
 - `READY_FOR_GATE.md` ⭐ **THIS FILE**
 - `FORBIDDEN_ROOTS_ELIMINATED.md` - Achievement summary
 - `TETRAGRAM_MIGRATION_COMPLETE.md` - Executive overview
 
 **Gate Evidence Bundle:** `CHAR/EVID/gate/`
+
 - `README.md` - Index
 - `guardrails.txt` - Official check (0 forbidden roots)
 - `pathmap_status.txt` - Migration status
@@ -224,12 +238,14 @@ cef03e7 fix(bosscat): Phase B.1 finalization - remove scripts/
 - `git_status.txt` - Cleanliness
 
 **Phase Evidence:**
+
 - `CHAR/EVID/tetragram-migration-baseline.md` - Starting point (17 violations)
 - `CHAR/EVID/phase-b1-finalized.md` - Phase B.1
 - `CHAR/EVID/phase-b2-fix-applied.md` - Phase B.2 + fix
 - `CHAR/EVID/final-gate-evidence.md` - Comprehensive assessment
 
 **Tools & Governance:**
+
 - `BRAV/SCPT/guardrails.json` - Rules
 - `BRAV/SCPT/check_guardrails.py` - Validator
 - `BRAV/SCPT/README_NEXT_STEPS.md` - Migration guide
@@ -241,19 +257,24 @@ cef03e7 fix(bosscat): Phase B.1 finalization - remove scripts/
 ## 🎯 Expected BossCat Questions & Answers
 
 **Q: Why 33 unauthorized directories remaining?**  
-A: These are application code (app/, apps/, etc.) and infrastructure dirs not in the initial forbidden list. They can be migrated to ALFA post-gate or added to allowed_top_level if intentional. They don't violate core tetragram requirements.
+A: These are application code (app/, apps/, etc.) and infrastructure dirs not in the initial forbidden list. They can be
+migrated to ALFA post-gate or added to allowed_top_level if intentional. They don't violate core tetragram requirements.
 
 **Q: Are junctions tracked in Git?**  
-A: No. We learned from Phase B.2 that junctions get committed as full directory trees. All migrations use clean `git mv` without junctions. Git tracking is clean.
+A: No. We learned from Phase B.2 that junctions get committed as full directory trees. All migrations use clean `git mv`
+without junctions. Git tracking is clean.
 
 **Q: Can we reproduce the guardrails check?**  
-A: Yes. Run `python BRAV/SCPT/check_guardrails.py --config BRAV/SCPT/guardrails.json` at commit 5b3d410. Result: 0 forbidden roots.
+A: Yes. Run `python BRAV/SCPT/check_guardrails.py --config BRAV/SCPT/guardrails.json` at commit 5b3d410. Result: 0
+forbidden roots.
 
 **Q: What's the rollback plan?**  
-A: Single revert of merge commit, or selective revert of migration commits. All moves are pure `git mv` - clean and reversible.
+A: Single revert of merge commit, or selective revert of migration commits. All moves are pure `git mv` - clean and
+reversible.
 
 **Q: What's next after gate?**  
-A: Optional Phase C.4 (migrate app code to ALFA), cleanup experimental dirs, refine import paths with TypeScript aliases.
+A: Optional Phase C.4 (migrate app code to ALFA), cleanup experimental dirs, refine import paths with TypeScript
+aliases.
 
 ---
 
@@ -281,11 +302,12 @@ A: Optional Phase C.4 (migrate app code to ALFA), cleanup experimental dirs, ref
 
 **Type this command:**
 
-```
+```text
 @cat ready-for-gate
 ```
 
 **Evidence will be automatically reviewed from:**
+
 - `CHAR/EVID/gate/` - Formal evidence bundle
 - `READY_FOR_GATE.md` - This summary
 - All phase evidence documents
@@ -301,7 +323,7 @@ A: Optional Phase C.4 (migrate app code to ALFA), cleanup experimental dirs, ref
 **Evidence comprehensive.**  
 **Quality exceptional.**
 
-**READY FOR GATE! 🎉**
+### READY FOR GATE! 🎉
 
 ---
 

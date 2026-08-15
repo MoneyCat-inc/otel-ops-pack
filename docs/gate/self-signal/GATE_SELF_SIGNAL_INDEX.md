@@ -11,18 +11,23 @@
 This index provides quick access to all components of the autonomous gate self-signal monitoring system.
 
 ### For Quick Start
+
 → **Read:** `GATE_SELF_SIGNAL_README.md`
 
 ### For Complete System Overview
+
 → **Read:** `GATE_SELF_SIGNAL_FINAL_STATUS.md`
 
 ### When Alert Fires (Exit 0 Detected)
+
 → **Read:** `GATE_SELF_SIGNAL_PROTOCOL.md` ⭐ CRITICAL
 
 ### For Infrastructure Details
+
 → **Read:** `GATE_SELF_SIGNAL_INFRASTRUCTURE_FIX.md`
 
 ### For Visual Status
+
 → **View:** `GATE_SELF_SIGNAL_STATUS_BANNER.txt`
 
 ---
@@ -61,7 +66,7 @@ This index provides quick access to all components of the autonomous gate self-s
 
 ## 🎯 System Architecture
 
-```
+```bash
 Windows Host (PowerShell)
     │
     ├─ gate-self-signal-monitor.ps1 (🟢 RUNNING in background)
@@ -89,7 +94,7 @@ Windows Host (PowerShell)
 
 ### Current State (Background)
 
-```
+```text
 START (2025-10-23 16:25)
   │
   ├─ Check #1 (16:25)
@@ -105,7 +110,7 @@ START (2025-10-23 16:25)
 
 ### When Platform Fix Lands
 
-```
+```text
 Detection (automatic)
   └─ Exit 0: Traces found
      └─ ALERT + BREAK LOOP
@@ -140,7 +145,7 @@ When exit 0 fires, **ALL of these must be true**:
 
 ### What Triggers Alert
 
-```
+```text
 Next self-signal poll detects:
   count() > 0 in signoz_traces.span_attributes
   WHERE serviceName='canary-test'
@@ -149,7 +154,7 @@ Next self-signal poll detects:
 
 ### Alert Output (When Fires)
 
-```
+```yaml
 [HH:MM:SS] Check #N (elapsed: X min)
 ✅✅✅ PLATFORM FIX DETECTED ✅✅✅
 Exit Code 0: Traces are persisting to ClickHouse
@@ -176,16 +181,19 @@ See: GATE_SELF_SIGNAL_PROTOCOL.md
 ## 🛠️ Manual Commands
 
 ### Run Self-Signal Check
+
 ```powershell
 pwsh -File gate-self-signal-check.ps1
 ```
 
 ### Test with Fast Polling (5 min)
+
 ```powershell
 pwsh -File gate-self-signal-monitor.ps1 -IntervalSeconds 300
 ```
 
 ### Query ClickHouse Directly
+
 ```powershell
 docker exec signoz-clickhouse clickhouse-client --query `
   "SELECT count() FROM signoz_traces.span_attributes `
@@ -194,6 +202,7 @@ docker exec signoz-clickhouse clickhouse-client --query `
 ```
 
 ### Check Monitoring Loop Status
+
 ```powershell
 tasklist | findstr pwsh  # See running PowerShell processes
 ```
@@ -202,7 +211,7 @@ tasklist | findstr pwsh  # See running PowerShell processes
 
 ## 📊 Current Operational State
 
-```
+```bash
 🟠 Gate Verdict:      WARN (platform gap confirmed)
 🟢 Monitoring Loop:   ACTIVE (30-min polling)
 ✅ Self-Signal Check: OPERATIONAL (exit 1 = HOLD)
@@ -246,6 +255,7 @@ Traces Present:       ❌ Awaiting platform fix
 ## 📦 Handoff Kit (Ready for Deployment)
 
 When gate advancement begins, deploy:
+
 - ✅ `gate-advancement-evidence-YYYYMMDD.md` (query output)
 - ✅ `gate-verification-YYYYMMDD.json` (ECRR artifact)
 - ✅ `signoz-collector-config.yaml` (config proof)
@@ -257,7 +267,7 @@ When gate advancement begins, deploy:
 
 ## 📝 Session Commits
 
-```
+```bash
 3695b93fd docs(gate): ASCII status banner - visual system overview
 ff76b5bc1 docs(gate): quick reference guide - complete system overview
 1e7958003 docs(gate): final operational status - system fully ready
@@ -274,16 +284,19 @@ fdeae88de docs(gate): operational summary - monitoring loop active
 ## 🔍 Quick Reference: Files by Purpose
 
 ### **To Understand the System**
+
 1. Start: `GATE_SELF_SIGNAL_README.md`
 2. Deep dive: `GATE_SELF_SIGNAL_FINAL_STATUS.md`
 3. Visual: `GATE_SELF_SIGNAL_STATUS_BANNER.txt`
 
 ### **To Troubleshoot**
+
 1. Infrastructure: `GATE_SELF_SIGNAL_INFRASTRUCTURE_FIX.md`
 2. Manual test: Run `pwsh -File gate-self-signal-check.ps1`
 3. Direct query: Use docker exec ClickHouse command above
 
 ### **When Alert Fires (EXIT 0)**
+
 1. Read: `GATE_SELF_SIGNAL_PROTOCOL.md` ⭐
 2. Follow: 4-step gate advancement process
 3. Validate: All 5-point criteria
@@ -295,7 +308,7 @@ fdeae88de docs(gate): operational summary - monitoring loop active
 
 **Last Comprehensive Test:** 2025-10-23 16:27:36
 
-```
+```bash
 ✅ Canary sent to SigNoz (HTTP 200)
 ✅ ClickHouse accessed via docker exec (working)
 ✅ Query schema correct (span_attributes table)
@@ -319,7 +332,7 @@ fdeae88de docs(gate): operational summary - monitoring loop active
 
 ## 🐾 System Status Overview
 
-```
+```bash
 ┌────────────────────────────────────────────────────────┐
 │         GATE SELF-SIGNAL SYSTEM: OPERATIONAL          │
 ├────────────────────────────────────────────────────────┤
@@ -337,5 +350,6 @@ fdeae88de docs(gate): operational summary - monitoring loop active
 
 **🐾 System operational. Ready for gate advancement.**
 
-When SigNoz platform team fixes the exporter→ClickHouse gap, traces will land → Self-signal detects → Gate advances → 🟢 GREEN certified.
+When SigNoz platform team fixes the exporter→ClickHouse gap, traces will land → Self-signal detects → Gate advances → 🟢
+GREEN certified.
 

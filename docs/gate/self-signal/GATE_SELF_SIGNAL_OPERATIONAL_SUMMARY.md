@@ -24,7 +24,8 @@
 
 1. ✅ Sends canary trace with `service.name="canary-test"` to SigNoz
 2. ✅ Waits 2 seconds for ClickHouse ingestion
-3. ✅ Queries ClickHouse via docker exec: `SELECT count() FROM signoz_traces.span_attributes WHERE tagKey='service.name' AND stringTagValue='canary-test' AND timestamp >= now() - 10 min`
+3. ✅ Queries ClickHouse via docker exec: `SELECT count() FROM signoz_traces.span_attributes WHERE tagKey='service.name'
+   AND stringTagValue='canary-test' AND timestamp >= now() - 10 min`
 4. ✅ Evaluates result:
    - **Exit 0** → Platform fix detected → BREAK LOOP → Alert + next steps
    - **Exit 1** → Platform gap persists → Wait 30 min, retry
@@ -56,13 +57,15 @@
 The monitoring loop will:
 
 1. **Print prominent alert:**
-   ```
+
+   ```text
    ✅✅✅ PLATFORM FIX DETECTED ✅✅✅
    Exit Code 0: Traces are persisting to ClickHouse
    ```
 
 2. **Display next steps:**
-   ```
+
+   ```text
    🎯 NEXT STEPS:
    1. Execute gate advancement runbook
    2. Verify stability (5 canary bursts)
@@ -74,7 +77,8 @@ The monitoring loop will:
    ```
 
 3. **Exit gracefully:**
-   ```
+
+   ```text
    🛑 MONITORING LOOP EXITED (platform fix detected)
    Total checks: [N]
    Total elapsed: [X.X] minutes
@@ -87,19 +91,23 @@ The monitoring loop will:
 Once exit 0 detected, follow **GATE_SELF_SIGNAL_PROTOCOL.md** exactly:
 
 ### **Step 1: Verify Stability (2 min)**
+
 - Send 5 more canary bursts
 - Re-query ClickHouse counts
 - Expected: Counts increase with each burst
 
 ### **Step 2: Capture Evidence (2 min)**
+
 - Create `gate-advancement-evidence-YYYYMMDD.md`
 - Include query output, config excerpt, timestamps
 
 ### **Step 3: Regenerate ECRR Artifacts (3 min)**
+
 - Create compact gate-verification JSON
 - Commit with `gate(verification): platform fix confirmed`
 
 ### **Step 4: Signal Ready (2 min)**
+
 - Post `@cat ready-for-gate` with evidence bundle
 - Attach: evidence markdown, JSON artifact, config, canary script
 
@@ -138,21 +146,25 @@ When gate advancement begins, these are ready to attach:
 ## 🛠️ Monitoring Loop Options
 
 ### **Standard (30-min interval, default)**
+
 ```powershell
 pwsh -File gate-self-signal-monitor.ps1
 ```
 
 ### **Fast Polling (5-min interval, for testing)**
+
 ```powershell
 pwsh -File gate-self-signal-monitor.ps1 -IntervalSeconds 300
 ```
 
 ### **Quiet Mode (minimal console output)**
+
 ```powershell
 pwsh -File gate-self-signal-monitor.ps1 -QuietMode
 ```
 
 ### **Restart Loop (if window closes)**
+
 ```powershell
 Start-Process pwsh -ArgumentList "-NoProfile -Command `"pwsh -File gate-self-signal-monitor.ps1`""
 ```
@@ -161,7 +173,7 @@ Start-Process pwsh -ArgumentList "-NoProfile -Command `"pwsh -File gate-self-sig
 
 ## 📊 Loop State Machine
 
-```
+```text
 START (monitoring active)
   │
   ├─ Every 30 min:
@@ -197,6 +209,7 @@ START (monitoring active)
 ## 🐾 Operational Doctrine
 
 This system embodies the **Cat Nap Control Room** ethos:
+
 - **Calm:** Serene monitoring, minimal interruption until fix lands
 - **Efficient:** Autonomous detection, instant alert when condition met
 - **Disciplined:** ECRR framework, objective criteria, safe promotion
@@ -205,7 +218,7 @@ This system embodies the **Cat Nap Control Room** ethos:
 
 ## 📍 Current State (Real-Time)
 
-```
+```text
 🟠 Gate: WARN (holding)
 🟢 Monitoring: ACTIVE (background loop running)
 ⏳ Next check: [In ~30 minutes or when SigNoz team fixes exporter]

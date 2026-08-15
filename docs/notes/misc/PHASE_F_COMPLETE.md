@@ -9,7 +9,8 @@
 
 ## 🎯 Executive Summary
 
-Phase F successfully migrated **11 remaining unauthorized directories** (68 files) to their proper tetragram locations, achieving:
+Phase F successfully migrated **11 remaining unauthorized directories** (68 files) to their proper tetragram locations,
+achieving:
 
 - **98.6% overall violation reduction** from baseline (70 → 1)
 - **91.7% reduction in Phase F** (12 → 1 unauthorized)
@@ -23,6 +24,7 @@ Phase F successfully migrated **11 remaining unauthorized directories** (68 file
 ### Directories Migrated (11/11 - 100%)
 
 #### CHAR/DOCS/ - Documentation & Context (3 dirs, 21 files)
+
 | Source | Destination | Files | Purpose |
 |--------|-------------|-------|---------|
 | `ai-context/` | `CHAR/DOCS/ai-context/` | 5 | AI assistant context & patterns |
@@ -30,6 +32,7 @@ Phase F successfully migrated **11 remaining unauthorized directories** (68 file
 | `upstream-contribution/` | `CHAR/DOCS/upstream-contribution/` | 16 | Upstream PR materials |
 
 #### CHAR/PRSV/ - Preserved/Archive (3 dirs, 18 files)
+
 | Source | Destination | Files | Purpose |
 |--------|-------------|-------|---------|
 | `comfort-cat-stubs/` | `CHAR/PRSV/comfort-cat-stubs/` | 13 | Design stubs & guidelines |
@@ -37,11 +40,13 @@ Phase F successfully migrated **11 remaining unauthorized directories** (68 file
 | `patches/` | `CHAR/PRSV/patches/` | 0 | Temporary patches |
 
 #### CHAR/EVID/ - Evidence (1 dir, 3 files)
+
 | Source | Destination | Files | Purpose |
 |--------|-------------|-------|---------|
 | `preview/` | `CHAR/EVID/preview/` | 3 | Preview builds & artifacts |
 
 #### DELT/CONF/ - Configuration (4 dirs, 26 files)
+
 | Source | Destination | Files | Purpose |
 |--------|-------------|-------|---------|
 | `cuda/` | `DELT/CONF/cuda/` | 2 | CUDA kernel configurations |
@@ -54,6 +59,7 @@ Phase F successfully migrated **11 remaining unauthorized directories** (68 file
 ## 📈 Metrics & Progress
 
 ### Phase F Impact
+
 - **Directories migrated:** 11
 - **Files relocated:** 68
 - **Unauthorized before:** 12
@@ -80,12 +86,14 @@ Phase F successfully migrated **11 remaining unauthorized directories** (68 file
 ## 🎯 Remaining Items
 
 ### 1 Unauthorized Directory
+
 - **`~/`** - PowerShell tilde expansion artifact (not a real directory)
   - Shows in guardrails due to shell path resolution
   - No actual directory exists at root level
   - Can be safely ignored or handled via .gitignore
 
 ### 3 Ephemeral Warnings (Tolerated)
+
 - **`logs/`** - Runtime logs (untracked, in .gitignore) ℹ️
 - **`out/`** - Build output (untracked, in .gitignore) ℹ️
 - **`tmp/`** - Temporary files (untracked, in .gitignore) ℹ️
@@ -97,13 +105,15 @@ Phase F successfully migrated **11 remaining unauthorized directories** (68 file
 ## 🛡️ Guardrails Status
 
 ### Current Enforcement
+
 - **Forbidden roots:** 0 ✅ (100% compliance)
 - **Real violations:** 1 (~/ artifact)
 - **Ephemeral warnings:** 3 (correctly tolerated)
 - **Overall health:** ✅ PASS
 
 ### Precision Rules Active
-```
+
+```text
 Ephemeral Directories (logs, out, tmp, .cache, coverage, dist, build, .next):
 - Untracked → ℹ️  Warned but ignored
 - Tracked → ❌ Error (must add to .gitignore)
@@ -116,7 +126,7 @@ All Other Unauthorized:
 
 ## 🏗️ Complete Tetragram Structure
 
-```
+```text
 ALFA/                      # Application & Source ✅
 ├── APPS/                  # 6 applications
 ├── LIBS/                  # 5 shared libraries
@@ -182,7 +192,7 @@ DELT/                      # Data, Environment, Load ✅
 
 ## 📊 Complete Migration Timeline
 
-```
+```text
 Baseline (70)  ████████████████████████████████████ 16F + 54U
 B.1 (61)       ██████████████████████████████ 16F + 45U
 B.2 (54)       ███████████████████████ 6F + 48U
@@ -213,17 +223,20 @@ F (1)          █ 0F + 1U
 ## 🛠️ Tooling Delivered
 
 ### Automation Suite
+
 1. **`check_guardrails.py`** - Precision enforcement with ephemeral handling
 2. **`tetragram_health.py`** - Compact health snapshots
 3. **`move_by_map.py`** - Deterministic batch mover
 4. **`validate_pathmap.py`** - Migration validator
 
 ### Configuration
+
 - **`guardrails.json`** - Precise enforcement rules
 - **`move_map.json`** - Migration mappings
 - **`tsconfig.base.json`** - TypeScript path aliases
 
 ### Documentation
+
 - Complete ECRR evidence trail across 6 phases
 - Architecture Decision Records (ADRs)
 - Runbooks and checklists
@@ -233,12 +246,14 @@ F (1)          █ 0F + 1U
 ## 🚀 Day-2 Recommendations
 
 ### Optional Enhancements
+
 1. **Flatten nested directories** (e.g., `CHAR/DOCS/ai-context/ai-context/` → `CHAR/DOCS/ai-context/`)
 2. **Ratchet workflow limit** (40 → 20 lines for inline `run:`)
 3. **Adopt TypeScript aliases** (`@alfa/*`, `@brav/*`, etc.) throughout codebase
 4. **Extract workflow logic** to `BRAV/SCPT/` scripts (clear 26 warnings)
 
 ### Tagging
+
 ```bash
 git tag -a tetragram-1.2 -m "Phase F: Final cleanup; 98.6% reduction; precision enforcement"
 git push --tags
@@ -251,6 +266,7 @@ git push --tags
 **Phase F Status:** ✅ **COMPLETE & APPROVED**
 
 **Achievements:**
+
 - ✅ Zero forbidden roots (100% compliance)
 - ✅ 98.6% violation reduction from baseline
 - ✅ 11/11 directories migrated successfully
@@ -269,7 +285,8 @@ git push --tags
 *Executive Overseer Manager*  
 MoneyCat Inc · Resonai [OTel]
 
-*"Phase F: Mission accomplished. 98.6% violation reduction achieved. Tetragram structure complete, compliant, and production-ready."*
+*"Phase F: Mission accomplished. 98.6% violation reduction achieved. Tetragram structure complete, compliant, and
+production-ready."*
 
 ---
 

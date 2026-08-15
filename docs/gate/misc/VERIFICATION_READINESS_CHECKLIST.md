@@ -13,6 +13,7 @@ Run through this list **before** executing `verify-all-components.ps1`:
 ### 1. SigNoz Stack Running ✅
 
 **Check:**
+
 ```powershell
 docker ps | Select-String "signoz"
 ```
@@ -20,6 +21,7 @@ docker ps | Select-String "signoz"
 **Expected:** SigNoz, ClickHouse, OTel Collector containers running
 
 **If not running:**
+
 ```powershell
 docker-compose -f docker-compose-signoz.yml up -d
 # Wait 30 seconds for startup
@@ -27,7 +29,8 @@ Start-Sleep -Seconds 30
 ```
 
 **Verify SigNoz UI:**
-- Open: http://localhost:8080
+
+- Open: <http://localhost:8080>
 - Should load successfully
 
 ---
@@ -35,6 +38,7 @@ Start-Sleep -Seconds 30
 ### 2. Resonai App Running ⚠️ MISSING
 
 **Check:**
+
 ```powershell
 Test-NetConnection -ComputerName localhost -Port 3000
 ```
@@ -42,6 +46,7 @@ Test-NetConnection -ComputerName localhost -Port 3000
 **Expected:** TcpTestSucceeded: True
 
 **If not running:**
+
 ```powershell
 # Start the Resonai app
 npm run dev
@@ -50,7 +55,8 @@ Start-Process pwsh -ArgumentList "-Command", "npm run dev" -WindowStyle Hidden
 ```
 
 **Verify:**
-- Open: http://localhost:3000
+
+- Open: <http://localhost:3000>
 - Should load application
 
 ---
@@ -58,6 +64,7 @@ Start-Process pwsh -ArgumentList "-Command", "npm run dev" -WindowStyle Hidden
 ### 3. Webhook Server Running ⚠️ MISSING
 
 **Check:**
+
 ```powershell
 Test-NetConnection -ComputerName localhost -Port 3003
 ```
@@ -65,6 +72,7 @@ Test-NetConnection -ComputerName localhost -Port 3003
 **Expected:** TcpTestSucceeded: True
 
 **If not running:**
+
 ```powershell
 # Start webhook server (if you have one)
 pwsh -File BRAV\SCPT\simple-webhook-server.ps1
@@ -78,13 +86,15 @@ dir BRAV\SCPT\*webhook*.ps1
 ### 4. Environment Variables Set ⚠️ MISSING
 
 **Check:**
+
 ```powershell
 $env:ALERT_WEBHOOK_URL
 ```
 
-**Expected:** Should show a URL (e.g., http://localhost:3003/webhook)
+**Expected:** Should show a URL (e.g., <http://localhost:3003/webhook>)
 
 **If not set:**
+
 ```powershell
 # Set for current session
 $env:ALERT_WEBHOOK_URL = "http://localhost:3003/webhook"
@@ -101,17 +111,20 @@ $env:ALERT_WEBHOOK_URL = "http://localhost:3003/webhook"
 ### 5. Dashboard Config Present ⚠️ MISSING
 
 **Check:**
+
 ```powershell
 # Find which dashboard config is expected
 Select-String -Path BRAV\SCPT\verify-all-components.ps1 -Pattern "dashboard.*json"
 ```
 
 **Common locations (post-migration):**
+
 - `DELT/CONF/config/signoz-*.json`
 - `DELT/ASST/assets/dashboards/*.json`
 - Root level: `signoz-queue-steward-dashboard.json`, etc.
 
 **If missing:**
+
 ```powershell
 # Check if it exists but in old location
 dir *dashboard*.json -Recurse | Select-Object FullName
@@ -126,6 +139,7 @@ cp DELT\ASST\assets\dashboards\otel-collector-health.json .
 ### 6. OTel Collector Running
 
 **Check:**
+
 ```powershell
 # Windows service
 sc query otelcol-contrib
@@ -137,6 +151,7 @@ docker ps | Select-String "otel"
 **Expected:** SERVICE_RUNNING or container running
 
 **If not running:**
+
 ```powershell
 # Windows service
 sc start otelcol-contrib
@@ -179,7 +194,8 @@ curl http://localhost:3000
 ## 📊 Expected Output
 
 **Successful Verification:**
-```
+
+```yaml
 🐾 BossCat Component Verification
 ===================================
 
@@ -209,6 +225,7 @@ Role: BossCat OEM / Verification Agent
 **Fixed!** Updated to `BRAV/SCPT/end-to-end-test.ps1` (commit: 52bb956)
 
 If you still see this, ensure you have the latest code:
+
 ```powershell
 git pull origin main
 ```
@@ -218,6 +235,7 @@ git pull origin main
 **Error:** `Port 3000 is already in use`
 
 **Fix:**
+
 ```powershell
 # Find what's using the port
 Get-NetTCPConnection -LocalPort 3000 -ErrorAction SilentlyContinue
@@ -229,6 +247,7 @@ Stop-Process -Id <PID>
 ### Issue: Services Not Starting
 
 **Check logs:**
+
 ```powershell
 # Docker logs
 docker-compose logs -f signoz
@@ -274,6 +293,7 @@ Write-Host "Run: pwsh -File BRAV\SCPT\verify-all-components.ps1" -ForegroundColo
 ```
 
 **Usage:**
+
 ```powershell
 pwsh -File BRAV\SCPT\start-all-services.ps1
 pwsh -File BRAV\SCPT\verify-all-components.ps1
@@ -286,11 +306,13 @@ pwsh -File BRAV\SCPT\verify-all-components.ps1
 ### Paths Updated (commit: 52bb956)
 
 **17 workflows now use:**
+
 - `BRAV/SCPT/` instead of `scripts/`
 - Tetragram-compliant paths
 - Ready for CI execution
 
 **Verification script fixed:**
+
 - `scripts/end-to-end-test.ps1` → `BRAV/SCPT/end-to-end-test.ps1`
 - Will work correctly now
 
@@ -299,6 +321,7 @@ pwsh -File BRAV\SCPT\verify-all-components.ps1
 ## 📞 Quick Commands
 
 **Check all services:**
+
 ```powershell
 # SigNoz
 curl http://localhost:8080/api/v1/health
@@ -314,11 +337,13 @@ curl http://localhost:3003
 ```
 
 **Run verification:**
+
 ```powershell
 pwsh -File BRAV\SCPT\verify-all-components.ps1
 ```
 
 **View report:**
+
 ```powershell
 cat CHAR\EVID\artifacts\component-verification-report.json | ConvertFrom-Json | ConvertTo-Json -Depth 10
 ```

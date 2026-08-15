@@ -9,9 +9,11 @@
 
 ## Overview
 
-The `proof-of-telemetry.ps1` script generates unified proof artifacts that verify **multiple observability signals** (traces, logs, metrics) are flowing to SigNoz, replacing manual verification with machine-parseable JSON evidence.
+The `proof-of-telemetry.ps1` script generates unified proof artifacts that verify **multiple observability signals**
+(traces, logs, metrics) are flowing to SigNoz, replacing manual verification with machine-parseable JSON evidence.
 
 **Gate #030 v1 Delivers:**
+
 - ✅ **Traces:** Service-scoped query with count
 - ✅ **Logs:** Global query with count  
 - ⚠️ **Metrics:** Deferred to v2 (requires metric-specific query structure)
@@ -137,6 +139,7 @@ jobs:
 **File Path:** `artifacts/proofs/unified-proof-<service>-<timestamp>.json`
 
 **Schema:**
+
 ```json
 {
   "probe": "signoz-unified",
@@ -172,6 +175,7 @@ jobs:
 ```
 
 **Fields:**
+
 - `probe`: Always `"signoz-unified"`
 - `service`: Service name queried (traces only in v1)
 - `timeframe`: Human-readable lookback period
@@ -223,17 +227,20 @@ pwsh -File .\scripts\windows\proof-of-telemetry.ps1 -ServiceName "my-service" -E
 ## Signal Sources (v2)
 
 ### Traces ✅
+
 **Source:** SigNoz API `/api/v5/query_range`  
 **Filter:** Service-scoped (`serviceName = 'service-name'`)  
 **Proves:** Service sending traces to SigNoz
 
 ### Logs ✅
+
 **Source:** SigNoz API `/api/v5/query_range`  
 **Filter:** Global (all logs)  
 **Proves:** Logs flowing to SigNoz  
 **Note:** Not service-scoped in v2 (field name TBD)
 
 ### Metrics ✅ (v2 NEW)
+
 **Source:** Windows Collector Prometheus endpoint (port 8888)  
 **Metric:** `otelcol_exporter_sent_spans`  
 **Proves:** Collector pipeline operational  
@@ -251,6 +258,7 @@ pwsh -File .\scripts\windows\proof-of-telemetry.ps1 -ServiceName "my-service" -E
 **Alternate:** `Authorization: Bearer <token>`
 
 **Usage:**
+
 ```powershell
 # Default (signoz-api-key header)
 pwsh -File .\scripts\windows\proof-of-telemetry.ps1 -ServiceName "my-service"
@@ -260,6 +268,7 @@ pwsh -File .\scripts\windows\proof-of-telemetry.ps1 -ServiceName "my-service" -A
 ```
 
 **Fallback Logic:**
+
 - If initial auth fails (401/403) with `signoz-api-key`
 - Automatically retries with `Authorization: Bearer`
 - Transparent to user
@@ -267,6 +276,7 @@ pwsh -File .\scripts\windows\proof-of-telemetry.ps1 -ServiceName "my-service" -A
 ### Secret Masking
 
 **Proof Artifact:**
+
 ```json
 {
   "auth_method": "signoz-api-key",
@@ -287,12 +297,14 @@ pwsh -File .\scripts\windows\proof-of-telemetry.ps1 -ServiceName "my-service" -A
 **Status:** ⚠️ **PARTIAL**
 
 **Current Behavior:**
+
 - Logs query counts ALL logs (no service filter)
 - Still proves logs are flowing to SigNoz
 
 **Reason:** Field name for service in logs unclear (`service_name` vs `service.name` vs attributes)
 
 **Future (v2):**
+
 - Investigate correct field name for logs
 - Add service-scoped log filtering
 
@@ -323,6 +335,7 @@ pwsh -File .\scripts\windows\proof-of-telemetry.ps1 -ServiceName "my-service" -A
 ### Exit 21: "SIGNOZ_API_KEY environment variable required"
 
 **Fix:**
+
 ```powershell
 $env:SIGNOZ_API_KEY = "<your-key>"
 ```
@@ -330,6 +343,7 @@ $env:SIGNOZ_API_KEY = "<your-key>"
 ### Exit 21: "ServiceName required"
 
 **Fix:**
+
 ```powershell
 # Option 1: Parameter
 pwsh -File .\scripts\windows\proof-of-telemetry.ps1 -ServiceName "my-service"
@@ -350,11 +364,13 @@ pwsh -File .\scripts\windows\proof-of-telemetry.ps1
 ### Traces Count is 0
 
 **Possible Causes:**
+
 1. Service not sending traces
 2. Service name incorrect
 3. Lookback window too short
 
 **Fix:**
+
 ```powershell
 # Increase lookback
 pwsh -File .\scripts\windows\proof-of-telemetry.ps1 -ServiceName "my-service" -LookbackMinutes 60
@@ -365,6 +381,7 @@ pwsh -File .\scripts\windows\proof-of-telemetry.ps1 -ServiceName "my-service" -L
 ### Logs Count is 0
 
 **Possible Causes:**
+
 1. No logs being sent to SigNoz
 2. Lookback window too short
 
@@ -378,6 +395,7 @@ pwsh -File .\scripts\windows\proof-of-telemetry.ps1 -ServiceName "my-service" -L
 
 **URL:** `POST http://localhost:8080/api/v5/query_range`  
 **Headers:**
+
 - `Content-Type: application/json`
 - `SIGNOZ-API-KEY: <your-key>`
 
@@ -459,7 +477,8 @@ pwsh -File .\scripts\windows\proof-of-telemetry.ps1 -ServiceName "iona-app"
 ```
 
 **Output:**
-```
+
+```yaml
 [1/3] Querying traces... ✅ 2
 [2/3] Querying logs... ✅ 14
 [3/3] Querying metrics... SKIPPED
@@ -480,7 +499,8 @@ pwsh -File .\scripts\windows\proof-of-telemetry.ps1 -ServiceName "my-service" -E
 ```
 
 **Output (if 2/3 signals):**
-```
+
+```yaml
 Overall: PARTIAL (2/3 signals)
 [AMBER] Only 2/3 signals present
 ```
@@ -518,6 +538,7 @@ pwsh -File .\scripts\windows\proof-of-telemetry.ps1
 **Location:** `artifacts/proofs/unified-proof-<service>-<timestamp>.json`
 
 **Example Proof (2/3 signals working):**
+
 ```json
 {
   "probe": "signoz-unified",
@@ -554,20 +575,20 @@ pwsh -File .\scripts\windows\proof-of-telemetry.ps1
 
 ## Decision Tree: When to Use
 
-### Use Unified Proof When:
+### Use Unified Proof When
 
 - ✅ Gate approvals (comprehensive evidence)
 - ✅ CI/CD verification (multiple signals)
 - ✅ Post-deployment validation
 - ✅ Operational acceptance testing
 
-### Use Single-Signal Proof When:
+### Use Single-Signal Proof When
 
 - ✅ Troubleshooting specific path (e.g., collector 5317)
 - ✅ Testing individual signal types
 - ✅ Debugging instrumentation issues
 
-### Both Scripts Available:
+### Both Scripts Available
 
 - `health-check-otlp.ps1 -UseApiProof` — Single-signal (traces)
 - `proof-of-telemetry.ps1` — Unified (traces + logs + metrics*)
@@ -665,12 +686,14 @@ pwsh -File .\scripts\windows\proof-of-telemetry.ps1 -ServiceName "my-service"
 ### Secrets Management
 
 **Local:**
+
 ```powershell
 # Session-scoped (disappears when PowerShell closes)
 $env:SIGNOZ_API_KEY = "<key>"
 ```
 
 **CI/CD:**
+
 ```yaml
 env:
   SIGNOZ_API_KEY: ${{ secrets.SIGNOZ_API_KEY }}  # GitHub Secrets
@@ -702,18 +725,21 @@ env:
 
 ### What's New in v2
 
-**1. Metrics Proof via Collector Health ✅**
+### 1. Metrics Proof via Collector Health ✅
+
 - Queries Windows Collector metrics endpoint (port 8888)
 - Uses `otelcol_exporter_sent_spans` metric (stable, service-agnostic)
 - Proves pipeline operational without app-specific metrics
 - **Result:** All 3/3 signals now operational
 
-**2. Dual-Header Auth Support ✅**
+### 2. Dual-Header Auth Support ✅
+
 - Supports both `SIGNOZ-API-KEY` and `Authorization: Bearer` headers
 - Automatic fallback on 401/403 errors
 - Configurable via `-AuthHeaderName` parameter
 
-**3. Secret Masking ✅**
+### 3. Secret Masking ✅
+
 - API tokens never printed to console or logs
 - Proof artifacts show `"auth_token": "***masked***"`
 - Auth method logged (header type) but not token value

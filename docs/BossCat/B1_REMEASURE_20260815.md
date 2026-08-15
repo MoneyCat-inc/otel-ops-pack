@@ -2,19 +2,19 @@
 # B1 remasure snapshot (2026-08-15)
 
 Canonical series (CI config-resolution path):
-**10,718/370 → 6,445/271 → 6,401 → 6,162 → 6,128 → 6,096 → 5,749 → 5,744 → 5,058**
-(post archive, fix1-5 scale, AGENTS badge clearance on main, and this batch).
+**10,718/370 → 6,445/271 → 6,401 → 6,162 → 6,128 → 6,096 → 5,749 → 5,744 → 5,058 → 3,992**
+(post archive, fix1-6 scale, AGENTS badge clearance on main, and this batch).
 
 See `docs/BossCat/B1_LINT_MEASUREMENT_20260815.md` for the pinned command and OEM correction
 of the superseded **7,402 / 244** claim.
 
-## Fix batch 5 scale (this PR)
+## Fix batch 6 scale (this PR)
 
 | Probe | Result |
 |-------|--------|
-| Before (canonical command, branch from `main`) | **5,744** / **271** (Linting: 272) |
-| Batch | **32** live docs (16-25 errors) → **0** issues |
-| After (same command) | **5,058** / **271** |
+| Before (canonical command, branch from `main`) | **5,058** / **271** (Linting: 272) |
+| Batch | **35** live docs (26-35 errors) → **0** issues |
+| After (same command) | **3,992** / **271** |
 
 **Command:**
 

@@ -8,6 +8,7 @@
 ## ✅ COMPLETED PHASES
 
 ### Phase 1: Domain Registration ✅
+
 - **Domain:** resonai.io
 - **Registrar:** Cloudflare
 - **Nameservers Assigned:**
@@ -16,6 +17,7 @@
 - **Status:** Registered, awaiting activation
 
 ### Phase 2: DNS Configuration ✅
+
 - **CNAME Record Added:**
   - Type: CNAME
   - Name: hub
@@ -25,12 +27,14 @@
 - **Status:** Configured and ready
 
 ### Phase 3: GitHub Pages Configuration ✅
+
 - **Source:** main / (root)
 - **Custom Domain:** hub.resonai.uk
 - **CNAME File:** Present in repository
 - **Status:** Configured, awaiting DNS activation
 
 ### Phase 4: Code Artifacts ✅
+
 - **Hub Files:** 17/17 present in main
 - **PRs Merged:** #168, #169, #170
 - **Verification Scripts:** Created and tested
@@ -41,22 +45,26 @@
 ## ⏳ PENDING PHASES
 
 ### Phase 5: Nameserver Activation ⏳
+
 - **Expected Time:** 2-24 hours (typically 2-4 hours)
 - **Trigger:** Automatic (registrar processing)
 - **Notification:** Email from Cloudflare
 - **Current Status:** Waiting for registrar to update nameservers
 
 ### Phase 6: DNS Propagation ⏳
+
 - **Expected Time:** 5-30 minutes after activation
 - **Verification:** `pwsh scripts/hub-verify-dns.ps1`
 - **Current Status:** Pending nameserver activation
 
 ### Phase 7: GitHub Pages Verification ⏳
+
 - **Expected Time:** 5-10 minutes after DNS propagates
 - **Action:** GitHub automatically detects CNAME and issues HTTPS cert
 - **Current Status:** Pending DNS propagation
 
 ### Phase 8: Hub Goes LIVE 🚀
+
 - **Expected Time:** Instant after GitHub verification
 - **Actions:**
   - Run full smoke tests
@@ -72,22 +80,26 @@
 ## 🔍 MONITORING COMMANDS
 
 ### Check DNS Status
+
 ```powershell
 pwsh scripts/hub-verify-dns.ps1
 ```
 
 **Expected when NOT ready:**
-```
+
+```text
 ❌ DNS lookup failed: DNS name does not exist
 ```
 
 **Expected when READY:**
-```
+
+```text
 ✅ CNAME found: moneycat-inc.github.io
 ✅ Points to correct target
 ```
 
 ### Check GitHub Actions
+
 ```powershell
 Start-Process "https://github.com/MoneyCat-inc/otel-ops-pack/actions"
 ```
@@ -95,6 +107,7 @@ Start-Process "https://github.com/MoneyCat-inc/otel-ops-pack/actions"
 Look for "pages build and deployment" workflow with green checkmark.
 
 ### Full Smoke Test (when DNS ready)
+
 ```powershell
 pwsh scripts/hub-smoke-test.ps1
 ```
@@ -173,6 +186,7 @@ When DNS is active, Cursor{Implementer} will execute:
 ### Verification Commands Ready
 
 **DNS Check:**
+
 ```powershell
 # Check nameservers
 Resolve-DnsName resonai.io -Type NS
@@ -185,6 +199,7 @@ Resolve-DnsName hub.resonai.uk
 ```
 
 **Production Smoke:**
+
 ```powershell
 # Full endpoint suite
 pwsh scripts/hub-smoke-test.ps1
@@ -198,11 +213,13 @@ irm https://hub.resonai.uk/docs/status/kpis.json -Method Head -SkipHeaderValidat
 ### Acceptance Criteria
 
 **DNS Resolution:**
+
 - ✅ NS records show: amit.ns.cloudflare.com, chelsea.ns.cloudflare.com
 - ✅ CNAME shows: hub.resonai.uk → moneycat-inc.github.io
 - ✅ A records resolve to GitHub Pages IPs
 
 **Production Endpoints:**
+
 - ✅ All 10 endpoints return HTTP 200
 - ✅ Browser console shows no CSP violations
 - ✅ KPI metrics panel populates from /docs/status/kpis.json
@@ -210,6 +227,7 @@ irm https://hub.resonai.uk/docs/status/kpis.json -Method Head -SkipHeaderValidat
 - ✅ Navigation links functional
 
 **Automation Health:**
+
 - ✅ Hub Uptime Smoke workflow passes
 - ✅ Link Check workflow passes
 - ✅ Update KPIs workflow commits to main
@@ -218,9 +236,11 @@ irm https://hub.resonai.uk/docs/status/kpis.json -Method Head -SkipHeaderValidat
 
 1. **ECRR JSON:** `artifacts/ecrr/docs/hub-golive-<timestamp>.json`
 2. **BOSSCAT_LOG Entry:**
-   ```
+
+   ```text
    2025-10-19T[time]Z — DOCS: Hub clearnet cutover; Pages+DNS verified; smoke pass; automations dispatched.
    ```
+
 3. **Smoke Test Report:** `artifacts/hub-smoke-<timestamp>.json`
 
 ---
@@ -228,6 +248,7 @@ irm https://hub.resonai.uk/docs/status/kpis.json -Method Head -SkipHeaderValidat
 **Next Update:** When nameserver activation completes or upon user signal.
 
 **Signal Protocol:** Any of these triggers immediate verification:
+
 - "Cloudflare activated"
 - "DNS live"
 - "Hub is loading"
