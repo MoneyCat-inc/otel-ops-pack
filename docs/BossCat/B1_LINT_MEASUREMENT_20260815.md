@@ -36,3 +36,14 @@ Trees / files moved in the paired commit (see git history):
 - `docs/BossCat/reports/**`
 
 `lane:cleanup` AMBER — file count exceeds ≤10; lint never waived on live docs.
+
+## Batch 2 scope
+
+Additional dated session / gate / PR reports (byte-identical `git mv`, see git history):
+
+- Remaining `docs/gate/2025-10/**` (approvals / certs; excluded living `GATE_GREEN_FLIP_PROCEDURE`)
+- `docs/gate/misc/GATE_007_*`, `GATE_008_*`
+- `docs/BossCat/*202510*`, diagnostic/ECRR/PR-summary/release-notes session files
+- `docs/notes/misc/*202510*`, `docs/pr/2025-10/**`, `docs/runbooks/2025-10/**`, `docs/security/*202510*`
+
+Re-measure residual live lint debt after merge before B1 fix batches.
