@@ -134,8 +134,16 @@ jobs:
           # with no scheme it reads the path as a host and fails on DNS
           # ("error sending request for url (http://docs/status/orphans.md)").
           # Lint only what is present at HEAD.
-          while IFS= read -r f; do [ -f "$f" ] && printf '%s\n' "$f"; done \
-            < changed_docs.txt > lintable_docs.txt || true
+          # Second Pass B1: docs/archive/** is filed history — markdownlint + lychee skip it
+          # (byte-identical moves must not re-trigger GR-03/GR-04 on archival prose).
+          # Budgets (GR-02) still count archive path changes; use lane:cleanup for large batches.
+          while IFS= read -r f; do
+            [ -f "$f" ] || continue
+            case "$f" in
+              docs/archive/*) continue ;;
+            esac
+            printf '%s\n' "$f"
+          done < changed_docs.txt > lintable_docs.txt || true
           LINTABLE=$(wc -l < lintable_docs.txt | tr -d ' ')
           echo "LINTABLE_FILES=$LINTABLE" >> "$GITHUB_ENV"
           cp lintable_docs.txt "${ARTIFACT_DIR}/lintable_files.txt"
