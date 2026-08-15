@@ -251,7 +251,8 @@ When something breaks (trackers missing, skeleton wrong, VRChat no FBT):
 9. **Start SteamVR**, then **VRChat**.
 10. **Calibrate** in SlimeVR (Reset) and in VRChat (Calibrate FBT).
 
-Avoid changing USB ports, strap positions, or hardware mid-session. Use **`slimevr-smolslimes-checklist.md`** for a quick sanity check.
+Avoid changing USB ports, strap positions, or hardware mid-session.
+Use **`slimevr-smolslimes-checklist.md`** for a quick sanity check.
 
 **Success criteria:** 6 trackers connected, correct body-part assignment, SlimeVR and VRChat calibrated; FBT works in VRChat.
 
