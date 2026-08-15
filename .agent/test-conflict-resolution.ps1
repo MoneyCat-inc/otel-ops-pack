@@ -22,7 +22,7 @@ function New-SampleConflict {
     Write-Host "Creating sample conflict scenario..." -ForegroundColor Yellow
     
     # Create test file with initial content
-    $initialContent = @"
+    $initialContent = @'
 # Test Documentation
 
 ## 🔄 Periodic Maintenance
@@ -42,7 +42,7 @@ function New-SampleConflict {
 - Port: 5321 (HTTP OTLP)
 - Port: 5320 (gRPC)
 - Config: `config.yaml`
-"@
+'@
 
     Set-Content $FilePath $initialContent
     
@@ -50,7 +50,7 @@ function New-SampleConflict {
     git checkout -B test-conflict-branch
     
     # Simulate conflicting change
-    $conflictingContent = @"
+    $conflictingContent = @'
 # Test Documentation
 
 ## 🔄 Periodic Maintenance
@@ -70,7 +70,7 @@ function New-SampleConflict {
 - Port: 5321 (HTTP OTLP)
 - Port: 5320 (gRPC)
 - Config: `config.yaml`
-"@
+'@
 
     Set-Content $FilePath $conflictingContent
     git add $FilePath
@@ -80,7 +80,7 @@ function New-SampleConflict {
     git checkout main
     git checkout -B test-conflict-main
     
-    $anotherConflict = @"
+    $anotherConflict = @'
 # Test Documentation
 
 ## 🔄 Periodic Maintenance
@@ -100,7 +100,7 @@ function New-SampleConflict {
 - Port: 5321 (HTTP OTLP)
 - Port: 5320 (gRPC)
 - Config: `config.yaml`
-"@
+'@
 
     Set-Content $FilePath $anotherConflict
     git add $FilePath
@@ -144,7 +144,7 @@ function Test-ConflictResolver {
     Write-Host "`nTesting conflict resolver..." -ForegroundColor Yellow
     
     # Simulate canonical resolution
-    $resolvedContent = @"
+    $resolvedContent = @'
 # Test Documentation
 
 ## 🔄 Periodic Maintenance
@@ -164,7 +164,7 @@ function Test-ConflictResolver {
 - Port: 5321 (HTTP OTLP)
 - Port: 5320 (gRPC)
 - Config: `config.yaml`
-"@
+'@
 
     Set-Content $TestFile $resolvedContent
     

@@ -72,7 +72,12 @@ scripts/dev/
 artifacts/**/*
 !artifacts/**/*.md
 !artifacts/**/*.txt
-!artifacts/**/*.json
+# Second Pass Q2 (2026-08-15): explicit JSON allowlist — unknown JSON defaults to ignored
+!artifacts/**/
+!artifacts/**/ecrr-*.json
+!artifacts/**/dashboard-*.json
+!artifacts/**/task-inventory-*.json
+!artifacts/**/gate-verification-*.json
 !artifacts/**/*.csv
 !artifacts/.manifest/
 
@@ -156,12 +161,12 @@ CHAR/EVID/**/*.7z
 CHAR/EVID/**/*.gz
 
 # ── Security scan output is never committable (added 2026-08-14) ──
-# The `!artifacts/**/*.json` un-ignore above re-admits every JSON under artifacts/,
-# which includes secret-scanner output. A gitleaks report with findings embeds the
-# matched secret, so `git add -A` on a dirty tree could commit it. Re-ignore those
-# specifically, after the negation, so they lose regardless of scan results.
+# Allowlisted JSON patterns above re-admit only known evidence prefixes.
+# Scanner output (gitleaks/trivy/secret/credential/sbom) stays ignored via the
+# patterns below — defense in depth if an allowlist ever broadens.
 artifacts/**/*gitleaks*.json
 artifacts/**/*trivy*.json
 artifacts/**/*secret*.json
 artifacts/**/*credential*.json
 artifacts/**/*sbom*.json
+
