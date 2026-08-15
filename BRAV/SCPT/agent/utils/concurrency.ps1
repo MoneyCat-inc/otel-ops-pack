@@ -14,8 +14,8 @@ function Test-WatchdogInstance {
             }
         }
         
-        $pid = Get-Content $PidFile -Raw
-        if ([string]::IsNullOrWhiteSpace($pid)) {
+        $lockPid = Get-Content $PidFile -Raw
+        if ([string]::IsNullOrWhiteSpace($lockPid)) {
             return @{
                 running = $false
                 pid = $null
@@ -24,11 +24,11 @@ function Test-WatchdogInstance {
         }
         
         # Check if process is still running
-        $process = Get-Process -Id $pid -ErrorAction SilentlyContinue
+        $process = Get-Process -Id $lockPid -ErrorAction SilentlyContinue
         if ($process -and $process.ProcessName -eq "pwsh") {
             return @{
                 running = $true
-                pid = $pid
+                pid = $lockPid
                 reason = "Process running"
                 process = $process
             }

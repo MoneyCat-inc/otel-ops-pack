@@ -281,15 +281,15 @@ Write-Host "Empty directories removed: $($directoryCleanupResult.RemovedDirs)" -
 
 if ($errors.Count -gt 0) {
     Write-Host "`n❌ File removal errors:" -ForegroundColor Red
-    foreach ($error in $errors) {
-        Write-Host "  - $error" -ForegroundColor Red
+    foreach ($removalError in $errors) {
+        Write-Host "  - $removalError" -ForegroundColor Red
     }
 }
 
 if ($directoryCleanupResult.DirErrors.Count -gt 0) {
     Write-Host "`n⚠️  Directory cleanup warnings:" -ForegroundColor Yellow
-    foreach ($error in $directoryCleanupResult.DirErrors) {
-        Write-Host "  - $error" -ForegroundColor Yellow
+    foreach ($dirError in $directoryCleanupResult.DirErrors) {
+        Write-Host "  - $dirError" -ForegroundColor Yellow
     }
 }
 

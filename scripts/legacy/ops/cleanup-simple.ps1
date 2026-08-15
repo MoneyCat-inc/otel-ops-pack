@@ -384,8 +384,8 @@ Write-Host "Files removed: $removedCount/$totalFilesToRemove" -ForegroundColor W
 
 if ($errors.Count -gt 0) {
     Write-Host "`n[ERROR] File removal errors:" -ForegroundColor Red
-    foreach ($error in $errors) {
-        Write-Host "  - $error" -ForegroundColor Red
+    foreach ($removalError in $errors) {
+        Write-Host "  - $removalError" -ForegroundColor Red
     }
 }
 
