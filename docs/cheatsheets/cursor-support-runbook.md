@@ -1,6 +1,7 @@
 # Cursor Support Runbook
 
-Codex Agent drop-in checklist for escalating Cursor `ConnectError [internal]` incidents. Aligns with BossCat ECRR: **Examine → Clean → Report → Role**.
+Codex Agent drop-in checklist for escalating Cursor `ConnectError [internal]` incidents.
+Aligns with BossCat ECRR: **Examine → Clean → Report → Role**.
 
 ## 1. Quick Sanity Checks
 
@@ -63,7 +64,8 @@ curl -I https://api.cursor.sh
 
 ### 2.4 Redaction Reminder
 
-Before sharing, open the `.log` files and redact API keys, tokens, or sensitive hostnames. Support needs timestamps, request IDs, errors, and network/proxy context—not secrets.
+Before sharing, open the `.log` files and redact API keys, tokens, or sensitive hostnames.
+Support needs timestamps, request IDs, errors, and network/proxy context—not secrets.
 
 ## 3. Support Escalation Package
 
@@ -114,9 +116,14 @@ Please check the internal trace for the Request ID above. Let me know if this is
 
 ## 4. Follow-Up Scenarios
 
-- **Auth / Token Issue:** `Help → Sign Out`, close the app completely, reopen, sign in, execute one Codex prompt. If the error persists, request that Cursor support invalidate the session on their end.
-- **Proxy / TLS Issue:** Update WinHTTP proxy settings or remove stale entries, and ensure `*.cursor.sh` bypasses interception. If TLS inspection is mandatory, coordinate with IT to whitelist Cursor domains or provide a compatible CA chain.
-- **Upstream Incident:** Note support’s incident number and add it to `docs/IONA_ERRORS.md` with the status and resolution timestamp.
+- **Auth / Token Issue:** `Help → Sign Out`, close the app completely, reopen, sign in,
+  execute one Codex prompt. If the error persists, request that Cursor support invalidate
+  the session on their end.
+- **Proxy / TLS Issue:** Update WinHTTP proxy settings or remove stale entries, and ensure
+  `*.cursor.sh` bypasses interception. If TLS inspection is mandatory, coordinate with IT
+  to whitelist Cursor domains or provide a compatible CA chain.
+- **Upstream Incident:** Note support’s incident number and add it to `docs/IONA_ERRORS.md`
+  with the status and resolution timestamp.
 
 ## 5. Evidence Logging
 

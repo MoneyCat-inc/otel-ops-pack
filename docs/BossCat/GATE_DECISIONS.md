@@ -1,6 +1,7 @@
 # Gate Decisions
 
-### Gate #007 — GREEN (EXC-2025-10-20-007)
+## Gate #007 — GREEN (EXC-2025-10-20-007)
+
 - Commit: 29f02d6fe
 - Tag: GATE-007-GREEN-EXC-2025-10-20
 - Decision Time (UTC): 2025-10-20T08:45:00Z
@@ -9,7 +10,8 @@
 - Status: CLOSED
 
 
-#### Audit Bundle
+### Audit Bundle
+
 - Decision Tag → Commit: `GATE-007-GREEN-EXC-2025-10-20` → `29f02d6fe`
 - Evidence (E1–E5):
   - E1: `.agent/BUDGET_VARIANCE_EXC-2025-10-20-007.md`
