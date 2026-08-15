@@ -4,15 +4,16 @@
 ![Guardrails](https://img.shields.io/badge/Guardrails-LOCKED-blue?style=flat-square&logo=shield)
 ![Collector](https://img.shields.io/badge/Collector-RUNNING-green?style=flat-square&logo=opentelemetry)
 
-[![BossCat Gate Verification](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/bosscat-gate-verify.yml/badge.svg)](../../actions/workflows/bosscat-gate-verify.yml)
+[![BossCat Gate Verification](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/bosscat-gate-verify.yml/badge.svg)](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/bosscat-gate-verify.yml)
 [![Weekly Re-Cert](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/guardrails-recert.yml/badge.svg)](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/guardrails-recert.yml)
 [![Monthly Rollup](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/bosscat-monthly-evidence-rollup.yml/badge.svg)](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/bosscat-monthly-evidence-rollup.yml)
 
-- Governance: [Run Branch Protection Setup](../../actions/workflows/bosscat-branch-protection.yml)
+- Governance: [Run Branch Protection Setup](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/bosscat-branch-protection.yml)
 
 Purpose: Governance and local-first operations for Resonai [OTel].
 
 Key Artifacts:
+
 - CHAR/ECRR/ECRR_REPORTS/ - ECRR audit trails
 - docs/observability/snapshots/ - Dashboard exports
 - docs/status/ - Status and test summaries
@@ -22,6 +23,7 @@ Key Artifacts:
 - docs/BossCat/visuals/presets/registry.json - MILK preset registry (moods/tags)
 
 Runbooks:
+
 - Gate verify: pwsh -NoProfile -File scripts/verify-iona-gate.ps1 -Strict
 - ECRR benchmark: pwsh -NoProfile -File scripts/benchmark-process-all-ecrr-reports.ps1
 - Watchdog control: pwsh -File BRAV/SCPT/watchdog-control.ps1 [start|stop|status|logs|evidence] [gate|site|both]
@@ -30,7 +32,8 @@ Runbooks:
 ## Quick Commands
 
 ### Gate Verification
-```
+
+```bash
 # Default (auto-detect strictness by site)
 pnpm run agent:ready-for-gate
 
@@ -50,10 +53,12 @@ pnpm run agent:ready-for-gate:prod
   - Local pre-flight checks before PR submission
   - Manual gate verification during development
   - Refreshing gate artifacts for status dashboard
-  - Alias for: `pwsh -File scripts/verify-iona-gate.ps1 -OutputJson artifacts/gate-verification-results.json -PrCommentPath PR_COMMENT_IONA_GATE_002_FINAL.md`
+  - Alias for `scripts/verify-iona-gate.ps1` with the standard
+    `-OutputJson`/`-PrCommentPath` arguments (see `package.json`)
 
 ### MILK Visual Control
-```
+
+```bash
 # Open control surface
 start docs\BossCat\visuals\control.html
 
@@ -77,6 +82,7 @@ node scripts/visuals/visu-shim.ts test
 All operations follow ECRR methodology (Examine -> Clean -> Report -> Role) and maintain full audit trails in `CHAR/ECRR/ECRR_REPORTS/`.
 
 **Tetragram Lanes**:
+
 - **ALFA**: Agent Framework & Automation
 - **BRAV**: Build, Release, Archive & Versioning
 - **CHAR**: CHaracterization, Analysis & Reporting
