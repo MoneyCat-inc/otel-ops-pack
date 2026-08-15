@@ -129,10 +129,10 @@ Describe "OTel Ops Pack - Hygiene Validation Tests" {
     Context "Security" {
         It "Should not contain obvious secrets in tracked files" {
             $secretPatterns = @(
-                'password\s*=\s*["\'][^"\']+["\']',
-                'secret\s*=\s*["\'][^"\']+["\']',
-                'token\s*=\s*["\'][^"\']+["\']',
-                'api[_-]?key\s*=\s*["\'][^"\']+["\']'
+                'password\s*=\s*["''][^"'']+["'']',
+                'secret\s*=\s*["''][^"'']+["'']',
+                'token\s*=\s*["''][^"'']+["'']',
+                'api[_-]?key\s*=\s*["''][^"'']+["'']'
             )
             
             $filesToCheck = Get-ChildItem -Path $RepoRoot -Recurse -File | Where-Object { 

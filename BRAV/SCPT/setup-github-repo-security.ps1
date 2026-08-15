@@ -150,7 +150,7 @@ function Show-SecretSetupInstructions {
     Write-Host ""
     
     foreach ($secret in $MissingSecrets) {
-        Write-Host "📝 For $secret:" -ForegroundColor Cyan
+        Write-Host "📝 For ${secret}:" -ForegroundColor Cyan
         switch ($secret) {
             "SIGNOZ_URL" { 
                 Write-Host "   gh secret set SIGNOZ_URL --body 'http://localhost:8080'" -ForegroundColor Gray

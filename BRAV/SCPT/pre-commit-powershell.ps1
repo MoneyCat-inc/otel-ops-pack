@@ -22,7 +22,7 @@ foreach ($file in $Files) {
         $results = Invoke-ScriptAnalyzer -Path $file -Severity Error, Warning
         
         if ($results) {
-            Write-Host "❌ Issues found in $file:" -ForegroundColor Red
+            Write-Host "❌ Issues found in ${file}:" -ForegroundColor Red
             $results | ForEach-Object {
                 Write-Host "  Line $($_.Line): $($_.Message)" -ForegroundColor Red
             }

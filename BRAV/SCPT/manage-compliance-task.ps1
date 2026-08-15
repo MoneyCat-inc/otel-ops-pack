@@ -2,11 +2,11 @@
 # Quick commands for managing the compliance monitoring scheduled task
 
 param(
-    [switch],
-    [switch],
-    [switch],
-    [switch],
-    [switch]
+    [switch]$Start,
+    [switch]$Stop,
+    [switch]$Status,
+    [switch]$RunNow,
+    [switch]$Logs
 )
 
 $TaskName = 'ECRR Compliance Monitoring'
