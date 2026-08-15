@@ -9,7 +9,8 @@
 
 ## Summary
 
-Successfully integrated **BossCat Security & Notifications Conveyor** - local-first archival tooling for GitHub Code Scanning alerts, analyses, and notifications with complete ECRR compliance.
+Successfully integrated **BossCat Security & Notifications Conveyor** - local-first archival tooling for GitHub Code
+Scanning alerts, analyses, and notifications with complete ECRR compliance.
 
 ---
 
@@ -109,7 +110,7 @@ pnpm notify:archive:mark
 
 ### Local-First Artifacts
 
-```
+```text
 docs/BossCat/
 ├── security/
 │   ├── INDEX_ALERTS.jsonl          # Queryable index
@@ -130,7 +131,7 @@ docs/BossCat/
 
 ### Evidence Logs
 
-```
+```text
 CHAR/EVID/
 ├── security/
 │   ├── LEDGER.jsonl                # Operation audit trail
@@ -145,37 +146,44 @@ CHAR/EVID/
 ## Key Features
 
 ### ✅ Local-First
+
 - All artifacts in `docs/BossCat/` (Git-tracked)
 - No cloud dependencies for reads
 - Complete offline capability after archive
 
 ### ✅ JSONL Indexes
+
 - Append-only, queryable
 - JSON schemas for validation
 - Grep-friendly for quick queries
 
 ### ✅ SARIF Preservation
+
 - Full SARIF files archived
 - Compliance with SARIF standard
 - Required for safe deletion
 
 ### ✅ Evidence Logs
+
 - Complete audit trail in `CHAR/EVID/`
 - Ledger: operation history
 - Metrics: performance tracking
 
 ### ✅ Safe Deletion
+
 - Gated by archived SARIF
 - Age threshold (default 180 days)
 - Manual review required
 - Dry-run logging
 
 ### ✅ Rate Limiting
+
 - Default: 2.0 GET QPS, 1.0 mutate QPS
 - Configurable per-operation
 - Well below GitHub limits
 
 ### ✅ ECRR Compliance
+
 - **Examine**: Fetch from GitHub API
 - **Clean**: Archive to local storage
 - **Report**: Evidence logs + metrics
@@ -201,6 +209,7 @@ $env:GITHUB_TOKEN = "ghp_..."
 ```
 
 **Required Scopes:**
+
 - `repo` - Full repository access
 - `security_events` - Code scanning alerts
 - `notifications` - Mark as read (classic token only)
@@ -217,6 +226,7 @@ pnpm notify:archive:dry
 ```
 
 **Behavior:**
+
 - ✅ Fetches data from API
 - ✅ Logs what would be written
 - ❌ No disk writes
@@ -225,6 +235,7 @@ pnpm notify:archive:dry
 ### Delete Safety Gates
 
 Analysis deletion requires **ALL** of:
+
 1. ✅ SARIF archived locally
 2. ✅ Manual review + deletable flag
 3. ✅ Age threshold met
@@ -310,12 +321,14 @@ pnpm sec:delete-old
 ### Package.json Scripts
 
 All scripts added to `package.json` with consistent naming:
+
 - `sec:*` - Security archiver operations
 - `notify:*` - Notifications archiver operations
 
 ### File Structure
 
 Follows BossCat conventions:
+
 - `BRAV/SCPT/` - PowerShell scripts
 - `docs/BossCat/` - Archived artifacts
 - `docs/cheatsheets/` - Operator guides
@@ -324,6 +337,7 @@ Follows BossCat conventions:
 ### ECRR Compliance
 
 All operations produce:
+
 - Evidence ledgers (append-only)
 - Performance metrics
 - Audit trails
@@ -397,12 +411,14 @@ cat CHAR/EVID/security/LEDGER.jsonl
 **Status**: ✅ **PRODUCTION-READY**
 
 **ECRR Compliance**:
+
 - ✅ **Examine**: Code reviewed, tests dry-run successful
 - ✅ **Clean**: Scripts follow conventions, documentation complete
 - ✅ **Report**: Full integration summary (this document)
 - ✅ **Role**: cursor{implementer} authority declared
 
 **Deliverables**:
+
 - ✅ 3 PowerShell scripts (336 LOC)
 - ✅ 3 JSON schemas (51 LOC)
 - ✅ 10 package.json scripts

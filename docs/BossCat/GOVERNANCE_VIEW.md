@@ -9,6 +9,7 @@ Register: Neutral Instructor (calm, documentary cadence)
 ## 0. Purpose
 
 This document is the human-readable explainer for the governance JSON and reference map. It defines:
+
 - Naming: the 4‑4‑4‑4 Tetragram scheme, NATO call‑outs, and compat paths.
 - Budgets and gates: WARN vs STRICT, sticky thresholds, runtime lane budgets.
 - Evidence loop: ECRR (Evidence → Contain → Rollback → Report).
@@ -36,19 +37,25 @@ All files keep human-readable titles; the path and 4‑4‑4‑4 prefix anchor d
 ## 2. Budgets and Gates
 
 ### 2.1 Governance budgets (PR / Release)
+
 - jobs_max: 10
 - files_max: 10
 - loc_max: 2,000 (governance LOC)
 - sticky_threshold: 1,600 (80%)
 
-Sticky WARN engages at ≥80% and remains until the next passing window; STRICT blocks prod promote when required checks fail.
+Sticky WARN engages at ≥80% and remains until the next passing window; STRICT blocks prod promote when required checks
+fail.
 
 ### 2.2 Runtime lane budgets (Auto‑Bots)
-- Max 10 files and 200 LOC per bot run to keep changes surgical and auditable. The lane runtime budgets are independent of the PR governance budget. (Bots never merge to trunk.)
 
-Approved lanes: SSOT, FLAK, SELE, COMP, DOCS. Each lane has allow‑patterns and produces ECRR evidence plus a one‑line BossCat log entry.
+- Max 10 files and 200 LOC per bot run to keep changes surgical and auditable. The lane runtime budgets are independent
+  of the PR governance budget. (Bots never merge to trunk.)
+
+Approved lanes: SSOT, FLAK, SELE, COMP, DOCS. Each lane has allow‑patterns and produces ECRR evidence plus a one‑line
+BossCat log entry.
 
 ### 2.3 Gate modes
+
 - ci/local = WARN: Non‑blocking; sticky WARN posted at ≥80%.
 - prod = STRICT: Blocking; all required checks must be green.
 
@@ -58,9 +65,11 @@ Approved lanes: SSOT, FLAK, SELE, COMP, DOCS. Each lane has allow‑patterns and
 
 ECRR = Evidence → Contain → Rollback → Report.
 
-Prime rules include: paired agents (A writes, B verifies), single‑writer lock, bounded retry with exponential backoff, changed‑paths smoke, kill‑switch `.agent/LOCK`, and no merges by bots.
+Prime rules include: paired agents (A writes, B verifies), single‑writer lock, bounded retry with exponential backoff,
+changed‑paths smoke, kill‑switch `.agent/LOCK`, and no merges by bots.
 
 Roles aligned to ECRR:
+
 - SCOUT — Examine (risk/diff synthesis); emits ecrr.examine
 - WARDEN — Contain/Rollback (budgets, tests, canary); emits ecrr.contain, ecrr.rollback
 - SCRIBE — Report (status snippet, approvals, audit links); emits ecrr.report
@@ -72,16 +81,20 @@ Artifacts: `artifacts/ecrr/<lane>/<timestamp>.json|.md` + `docs/BossCat/BOSSCAT_
 ## 4. Performance & Observability Gates
 
 ### 4.1 Threshold‑gated load tests
+
 - Use k6/Locust/JMeter as appropriate.
 - CI must fail if thresholds breach (e.g., p(95) < 500ms, error_rate < 1%).
 - Quick baseline on every PR; heavier runs pre‑release.
 - Archive test JSON/HTML and attach to ECRR evidence.
 
 ### 4.2 Synthetic tracing & telemetry smoke
+
 - Emit a synthetic OTLP trace after deploy‑to‑stage and verify it is ingested.
-- Auto‑instrument .NET services via OpenTelemetry zero‑code agent when applicable to ensure traces/metrics/logs correlate.
+- Auto‑instrument .NET services via OpenTelemetry zero‑code agent when applicable to ensure traces/metrics/logs
+  correlate.
 
 ### 4.3 Supply‑chain evidence
+
 - Generate Syft SBOM and signature registry on prod gate.
 - Upload artifacts with ≥90‑day retention and surface “SBOM (latest)” on the status page.
 
@@ -90,6 +103,7 @@ Artifacts: `artifacts/ecrr/<lane>/<timestamp>.json|.md` + `docs/BossCat/BOSSCAT_
 ## 5. Checks (by mode)
 
 ci/local (WARN)
+
 - ICF_COMPLIANCE — ICF doctrine visible; RSI indicators present
 - SITE_HTML_CSP — CSP & WCAG AA where applicable
 - SITE_REFMAP_PREVIEW — Reference map renders
@@ -98,6 +112,7 @@ ci/local (WARN)
 - Sticky warning at ≥80% of LOC/file/job budget
 
 prod (STRICT)
+
 - All WARN checks, plus:
 - ATTEST_VERIFIED — Attestation matches build
 - SBOM_SIGNED — SBOM present and signed
@@ -112,6 +127,7 @@ prod (STRICT)
 - IONA Controller: orchestrates paired operation and kill‑switch.
 
 Outputs:
+
 - `artifacts/ecrr/<lane>/<timestamp>.json`
 - `docs/BossCat/BOSSCAT_LOG.md` (one‑line lesson)
 - Gate signal in PR: `@cat ready-for-gate`
@@ -145,7 +161,8 @@ flowchart TD
 
 ## 8. Status page snippet (audit hooks)
 
-Expose attestation, SBOM link, canary state, and next audit window in a CSP‑safe block. Keep copy neutral and documentary.
+Expose attestation, SBOM link, canary state, and next audit window in a CSP‑safe block. Keep copy neutral and
+documentary.
 
 ---
 

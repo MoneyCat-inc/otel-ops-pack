@@ -29,7 +29,7 @@
 
 ## Current Structure
 
-```
+```text
 ALFA/                      # Application & Source
 ├── APPS/                  # 6 applications
 │   ├── app/              # Next.js main app
@@ -91,6 +91,7 @@ import { config } from '@delt/CONF/settings'
 **Command:** `python BRAV/SCPT/check_guardrails.py`
 
 **Current Status:**
+
 - ✅ **0 forbidden roots** (100% compliance)
 - ⚠️ **18 unauthorized dirs** (optional cleanup)
 
@@ -149,7 +150,9 @@ All phases fully documented under `CHAR/EVID/`:
 ## Next Steps
 
 ### Operational (Recommended)
+
 1. Start services for verification:
+
    ```powershell
    # Start Resonai app (port 3000)
    npm run dev
@@ -162,14 +165,16 @@ All phases fully documented under `CHAR/EVID/`:
    ```
 
 ### Optional Cleanup (Phase E)
-2. Migrate remaining 18 unauthorized directories
-3. Adopt `@alfa/*` aliases throughout codebase
-4. Refactor CI workflows to use `BRAV/SCPT/` consistently
+
+1. Migrate remaining 18 unauthorized directories
+2. Adopt `@alfa/*` aliases throughout codebase
+3. Refactor CI workflows to use `BRAV/SCPT/` consistently
 
 ### Hardening
-5. Add pre-commit hooks for structure validation
-6. Enforce 4-letter uppercase naming in planes
-7. Add stricter guardrails for new directory creation
+
+1. Add pre-commit hooks for structure validation
+2. Enforce 4-letter uppercase naming in planes
+3. Add stricter guardrails for new directory creation
 
 ---
 
@@ -178,6 +183,7 @@ All phases fully documented under `CHAR/EVID/`:
 ✅ **Gate approved and locked**
 
 **Compliance:**
+
 - Zero forbidden roots
 - 74% violation reduction
 - Full four-plane structure
@@ -190,5 +196,5 @@ All phases fully documented under `CHAR/EVID/`:
 **BossCat OEM**  
 MoneyCat Inc · Resonai [OTel]
 
-*"Tetragram complete. Structure locked. Ready for operations."*
+> Tetragram complete. Structure locked. Ready for operations.
 

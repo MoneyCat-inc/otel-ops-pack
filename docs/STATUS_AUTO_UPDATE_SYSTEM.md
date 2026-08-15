@@ -8,17 +8,21 @@
 
 ## 🎯 Overview
 
-The Status Auto-Update System automatically keeps [https://hub.resonai.uk/docs/status.html](https://hub.resonai.uk/docs/status.html) synchronized with the latest gate verification results, ensuring BossCat OEM always has current project status.
+The Status Auto-Update System automatically keeps
+[https://hub.resonai.uk/docs/status.html](https://hub.resonai.uk/docs/status.html) synchronized with the latest gate
+verification results, ensuring BossCat OEM always has current project status.
 
 ### Problem Solved
 
 Before this system:
+
 - ❌ Status updates required manual commit and push
 - ❌ Working tree could accumulate uncommitted status files
 - ❌ Status page could show stale data
 - ❌ No guarantee of freshness between manual updates
 
 After this system:
+
 - ✅ Automatic updates every 6 hours
 - ✅ Triggered after gate verification workflows
 - ✅ Manual update option with one command
@@ -30,7 +34,7 @@ After this system:
 
 ### Components (BossCat Compliant)
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │          STATUS AUTO-UPDATE SYSTEM (BOSSCAT COMPLIANT)      │
 ├─────────────────────────────────────────────────────────────┤
@@ -128,7 +132,8 @@ No action required! The system runs automatically:
 
 ### Manual Trigger (GitHub Actions)
 
-1. Go to [Actions → Status Dashboard Auto-Update](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/status-auto-update.yml)
+1. Go to [Actions → Status Dashboard
+   Auto-Update](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/status-auto-update.yml)
 2. Click "Run workflow"
 3. Optional: Check "Force update even if no changes"
 4. Click "Run workflow" button
@@ -178,17 +183,20 @@ permissions:
 ### BossCat Governance Compliance
 
 **Lane Discipline:**
+
 - ✅ Creates PR via `peter-evans/create-pull-request`
 - ✅ Never pushes directly to `main`
 - ✅ "Merge is not a bot's honor"
 
 **Safety Guardrails:**
+
 - ✅ Kill-switch: `.agent/LOCK` check (exit 50)
 - ✅ Budgets: ≤10 files, allow-list enforced
 - ✅ A/B pairing: Writer (Agent A) + Verifier (Agent B)
 - ✅ Timeout: 10 minutes max
 
 **Exit Codes:**
+
 - `0` - Success
 - `50` - Kill-switch active (paused)
 - `52` - Budget violation
@@ -201,25 +209,29 @@ permissions:
 ### Check Last Update
 
 Visit the status page and check the timestamp:
-```
+
+```text
 https://hub.resonai.uk/docs/status.html
 ```
 
 Look for:
+
 - **Timestamp:** Shows when status was last updated
 - **Commit:** Shows commit hash for verification
 
 ### View Workflow Runs
 
 Check recent auto-update runs:
-```
+
+```text
 https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/status-auto-update.yml
 ```
 
 ### Review Commits
 
 Auto-update commits follow this pattern:
-```
+
+```yaml
 chore(status): auto-update dashboard - gate #8 APPROVED @ 49e029648 [skip ci]
 
 Automated status update from status-auto-update workflow
@@ -252,6 +264,7 @@ git commit -m "chore(status): auto-update dashboard [skip ci]"
 ### Fallback Behavior
 
 If gate verification fails:
+
 - Workflow continues with fallback data
 - Verdict set to "UNKNOWN"
 - Error captured in verification JSON
@@ -268,7 +281,9 @@ Workflow has 15-minute timeout to prevent hanging.
 ### Status Page Not Updating
 
 **Check:**
-1. Workflow ran successfully: [Check Actions](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/status-auto-update.yml)
+
+1. Workflow ran successfully: [Check
+   Actions](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/status-auto-update.yml)
 2. Commit was pushed: `git log --oneline -5 | grep "auto-update"`
 3. GitHub Pages deployed: Check [deployments](https://github.com/MoneyCat-inc/otel-ops-pack/deployments)
 4. Cache issue: Hard refresh (Ctrl+Shift+R)
@@ -276,6 +291,7 @@ Workflow has 15-minute timeout to prevent hanging.
 ### Verification Fails Every Time
 
 **Diagnose:**
+
 ```powershell
 # Run verification manually
 pwsh -File scripts/verify-iona-gate.ps1 -Site ci -OutputJson test.json
@@ -285,7 +301,9 @@ cat test.json
 ```
 
 **Fix:** 
-- GitHub-hosted runners do not have live telemetry; the workflow automatically logs a warning and continues with fallback data when verification fails.
+
+- GitHub-hosted runners do not have live telemetry; the workflow automatically logs a warning and continues with
+  fallback data when verification fails.
 - Update verification script if gate criteria changed 
 - Adjust thresholds if too strict 
 - Use `-Force` flag to update despite failures 
@@ -293,18 +311,22 @@ cat test.json
 ### Local Script Errors
 
 **Common Issues:**
+
 1. **PowerShell version:** Requires PowerShell 7+
+
    ```powershell
    $PSVersionTable.PSVersion  # Should be 7.x
    ```
 
 2. **Working tree dirty:** Clean before `-AutoCommit`
+
    ```powershell
    git status
    git stash  # If needed
    ```
 
 3. **Permission denied:** Check GitHub credentials
+
    ```powershell
    git push  # Test push access
    ```

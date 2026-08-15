@@ -10,18 +10,21 @@
 
 **Port 8889 connection refusals are EXPECTED behavior and do NOT indicate a problem.**
 
-The `canary-check-min.ps1` script implements a **fallback pattern** that tries port 8889 first, then falls back to port 8888. This provides resilience if the metrics endpoint configuration ever changes.
+The `canary-check-min.ps1` script implements a **fallback pattern** that tries port 8889 first, then falls back to port
+8888. This provides resilience if the metrics endpoint configuration ever changes.
 
 ---
 
 ## Current Configuration
 
 ### Windows OTel Collector (`C:\otel\config.yaml`)
+
 - **No prometheus exporter configured**
 - **No explicit metrics endpoint on 8889**
 - **Default internal metrics:** Port 8888 (implicit from collector)
 
 ### Canary Script (`canary-check-min.ps1`)
+
 ```powershell
 function Get-MetricsCount {
   # Try 8889 then 8888
@@ -34,6 +37,7 @@ function Get-MetricsCount {
 ```
 
 **Behavior:**
+
 1. Attempts connection to `http://127.0.0.1:8889/metrics`
 2. Receives connection refused (expected - not configured)
 3. Falls back to `http://127.0.0.1:8888/metrics`
@@ -45,6 +49,7 @@ function Get-MetricsCount {
 ## Why This Pattern Exists
 
 The fallback logic provides **operational flexibility**:
+
 - If we add a prometheus exporter on 8889 in the future, canary auto-detects it
 - If port 8888 is unavailable, canary can try alternate endpoints
 - Graceful degradation without requiring script updates
@@ -54,7 +59,8 @@ The fallback logic provides **operational flexibility**:
 ## Log Interpretation
 
 ### Expected Log Pattern
-```
+
+```text
 Metrics fetch failed on http://127.0.0.1:8889/metrics: ...
 [OK] Metrics Before: N
 [OK] Metrics After: N+1
@@ -64,7 +70,8 @@ Metrics fetch failed on http://127.0.0.1:8889/metrics: ...
 **This is SUCCESS.** The first line is informational (probe failed, fallback succeeded).
 
 ### Actual Failure Pattern
-```
+
+```text
 Metrics fetch failed on http://127.0.0.1:8889/metrics: ...
 Metrics fetch failed on http://127.0.0.1:8888/metrics: ...
 [FAIL] Could not reach metrics endpoint
@@ -77,12 +84,14 @@ Metrics fetch failed on http://127.0.0.1:8888/metrics: ...
 ## Resolution Options
 
 ### Option A: Leave As-Is (RECOMMENDED)
+
 - **Status quo:** Fallback logic works correctly
 - **Pros:** Resilient to future config changes, zero operational impact
 - **Cons:** "Failed" message in logs may confuse readers
 - **Action:** Document this behavior (this document)
 
 ### Option B: Remove 8889 Probe
+
 ```powershell
 function Get-MetricsCount {
   # Only check 8888
@@ -91,10 +100,12 @@ function Get-MetricsCount {
   return @{ Count=[int64](-1); Url="" }
 }
 ```
+
 - **Pros:** Cleaner logs, no "failed" messages
 - **Cons:** Loses fallback flexibility, requires script update if endpoint changes
 
 ### Option C: Add Prometheus Exporter to Config
+
 ```yaml
 # Add to config.yaml exporters:
 prometheus:
@@ -105,6 +116,7 @@ metrics:
   receivers: [otlp]
   exporters: [prometheus, otlp]
 ```
+
 - **Pros:** Exposes metrics on both ports for flexibility
 - **Cons:** Requires collector restart, adds complexity, no clear benefit over 8888
 
@@ -115,6 +127,7 @@ metrics:
 **Accept Option A (status quo) and document as expected behavior.**
 
 **Rationale:**
+
 1. ✅ Current behavior is functionally correct (canary tests pass)
 2. ✅ Fallback logic provides operational resilience
 3. ✅ No performance or security impact

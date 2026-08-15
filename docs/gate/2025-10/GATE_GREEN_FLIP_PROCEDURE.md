@@ -23,6 +23,7 @@ pwsh -File gate-advance.ps1
 ```
 
 **Exit Codes:**
+
 - **0 (GREEN)** — Traces detected, evidence packaged, ready for gate flip
 - **1 (HOLD)** — No traces yet, platform gap persists
 
@@ -31,14 +32,17 @@ pwsh -File gate-advance.ps1
 ## 📋 What gate-advance.ps1 Does
 
 ### **Step 1: Send Canary Trace**
+
 ```powershell
 pwsh -File .\send-canary-trace-direct.ps1
 ```
+
 - Sends OTLP trace with `service.name="canary-test"` to SigNoz
 - HTTP POST to localhost:5318/v1/traces
 - Returns HTTP 200 on success
 
 ### **Step 2: Query ClickHouse for Traces**
+
 ```powershell
 $query = @"
 SELECT count()
@@ -99,7 +103,7 @@ Creates timestamped artifacts under `artifacts/ecrr/gate/`:
 
 ## 🟢 Success Output (When Traces Appear)
 
-```
+```yaml
 🟢 GATE ADVANCEMENT - TRACE VERIFICATION
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -151,6 +155,7 @@ Exit Code: 0 (GREEN)
 After `gate-advance.ps1` returns exit 0:
 
 ### **1. Commit Evidence Artifacts**
+
 ```powershell
 git add artifacts/ecrr/gate/
 git commit -m "gate(evidence): trace persistence confirmed - canary-test spans in ClickHouse
@@ -167,12 +172,14 @@ Platform fix confirmed. Ready for gate advancement."
 ### **2. Update BossCat Log**
 
 Append to `docs/BossCat/BOSSCAT_LOG.md`:
+
 ```markdown
 - **2025-10-23T19:50:00Z** — Gate: Traces persisted (canary-test, count=N, window=5m, method=docker-exec) → GREEN
 ```
 
 ### **3. Post Gate Signal**
-```
+
+```bash
 @cat ready-for-gate
 
 🟢 GATE VERDICT: GREEN (Platform Fix Confirmed)
@@ -198,6 +205,7 @@ Append to `docs/BossCat/BOSSCAT_LOG.md`:
 ## 🔍 Diagnostic Queries (If count = 0)
 
 ### **Check All Recent Services**
+
 ```powershell
 docker exec signoz-clickhouse clickhouse-client --query "
 SELECT stringTagValue AS service_name, count() AS c
@@ -212,6 +220,7 @@ LIMIT 20;"
 **Expected:** Should show `canary-test` if traces are persisting
 
 ### **Check Service Name Preservation**
+
 ```powershell
 # Verify resource/defaults processor uses 'insert' not 'upsert'
 Select-String "action: insert" C:\otel\signoz-collector-config.yaml -Context 2
@@ -220,6 +229,7 @@ Select-String "action: insert" C:\otel\signoz-collector-config.yaml -Context 2
 **Expected:** Line 66 should show `action: insert`
 
 ### **Check Total Recent Spans**
+
 ```powershell
 docker exec signoz-clickhouse clickhouse-client --query "
 SELECT count() FROM signoz_traces.span_attributes
@@ -258,6 +268,7 @@ WHERE timestamp >= now() - INTERVAL 5 MINUTE;"
 ## Automated Detection Path
 
 **Monitoring Loop** (`gate-self-signal-monitor.ps1`) runs every 2 minutes:
+
 1. Sends canary trace
 2. Queries ClickHouse
 3. If count() > 0: Breaks with alert
@@ -265,6 +276,7 @@ WHERE timestamp >= now() - INTERVAL 5 MINUTE;"
 5. Gate advancement completes
 
 **Manual Path:**
+
 1. User signals "platform fix landed"
 2. Run: `pwsh -File gate-advance.ps1`
 3. If exit 0: Commit artifacts + post @cat ready-for-gate
@@ -274,7 +286,7 @@ WHERE timestamp >= now() - INTERVAL 5 MINUTE;"
 
 ## Timeline (Low-Latency Mode)
 
-```
+```yaml
 Platform fix lands
    ↓ (max 2 minutes)
 Monitoring loop detects count() > 0
@@ -298,7 +310,7 @@ Improvement: 7x faster gate advancement
 
 ## 🐾 Current State
 
-```
+```yaml
 Gate:               🟠 WARN (awaiting traces)
 Monitoring:         🟢 RUNNING (2-min low-latency polling)
 Gate Advancement:   ✅ READY (gate-advance.ps1 deployed)

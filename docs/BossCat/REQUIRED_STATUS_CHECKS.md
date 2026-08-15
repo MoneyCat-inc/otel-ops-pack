@@ -20,6 +20,7 @@ These should be marked as required in branch protection:
 **Workflow**: `docs_checks` (from docs-lane-checks.yml)
 
 **What it validates**:
+
 - Budget enforcement (≤10 files, ≤200 LOC)
 - Kill-switch check (`.agent/LOCK`)
 - Markdown linting (changed files)
@@ -27,6 +28,7 @@ These should be marked as required in branch protection:
 - ECRR evidence generation
 
 **Why required**:
+
 - Prevents docs drift
 - Enforces two-agent protocol
 - Validates evidence presence
@@ -38,7 +40,7 @@ These should be marked as required in branch protection:
 
 ### Step 1: Navigate to Branch Protection
 
-```
+```text
 Repository → Settings → Branches → Branch protection rules
 → Edit rule for "main"
 ```
@@ -48,9 +50,11 @@ Repository → Settings → Branches → Branch protection rules
 Under **"Require status checks to pass before merging"**:
 
 **Search for and add**:
+
 - `docs_checks` (from docs-lane-checks.yml)
 
 **Existing required** (keep these):
+
 - `bosscat-gate-verify` ✅
 - `boss-gate-verify` ✅
 - `iona-gate-verify` ✅
@@ -58,11 +62,13 @@ Under **"Require status checks to pass before merging"**:
 ### Step 3: Optional Settings
 
 **Recommended**:
+
 - ☑️ Require branches to be up to date before merging
 - ☑️ Require conversation resolution before merging
 - ☑️ Require deployments to succeed before merging (if applicable)
 
 **For docs PRs**:
+
 - May want to allow bypass for minor typo fixes
 - Or create a `docs-minor` workflow that runs lighter checks
 
@@ -107,11 +113,13 @@ For more flexible docs validation:
 ### When to Bypass Docs Lane
 
 **Safe to bypass** (admin override):
+
 - Minor typo fixes (1-2 characters)
 - Emergency hotfix documentation
 - Automated bot updates (Dependabot, etc.)
 
 **Unsafe to bypass**:
+
 - New documentation files
 - Structural changes
 - Configuration changes
@@ -122,11 +130,13 @@ For more flexible docs validation:
 **File**: `.agent/LOCK`
 
 **When to create**:
+
 - Emergency: Pause all automated reviews
 - Debugging: Isolate reviewer behavior
 - Rollback: Temporarily disable two-agent protocol
 
 **How to use**:
+
 ```bash
 # Activate kill-switch (docs-lane returns BLACK)
 echo "EMERGENCY_HALT" > .agent/LOCK
@@ -151,11 +161,12 @@ git commit -m "chore: Deactivate kill-switch"
 **To Enable**:
 
 1. Create PAT Classic with `notifications` scope:
-   - https://github.com/settings/tokens
+   - <https://github.com/settings/tokens>
    - Scopes: `repo`, `notifications`
 
 2. Add to repository secrets:
-   ```
+
+   ```text
    Settings → Secrets and variables → Actions
    → New repository secret
    Name: NOTIFICATIONS_PAT
@@ -163,12 +174,14 @@ git commit -m "chore: Deactivate kill-switch"
    ```
 
 3. Update workflow:
+
    ```yaml
    env:
      GITHUB_TOKEN: ${{ secrets.NOTIFICATIONS_PAT }}  # Instead of secrets.GITHUB_TOKEN
    ```
 
 4. Enable mark-read in manual trigger:
+
    ```bash
    gh workflow run security-notifications-archive-nightly.yml \
      -f mark_notifications_read=true
@@ -213,7 +226,7 @@ gh pr checks --watch
 
 ### GitHub Actions UI
 
-```
+```text
 Repository → Actions → Docs Lane Checks
 → View runs
 → Check job summaries

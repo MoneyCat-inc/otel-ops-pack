@@ -9,7 +9,7 @@
 
 ## Telemetry Flow Architecture
 
-```
+```text
                     ┌─────────────────────────────────┐
                     │  Audio Input (Loopback/Mic)    │
                     └─────────────┬───────────────────┘
@@ -77,12 +77,14 @@
 ## Component Details
 
 ### Audio Input Layer
+
 - **Source**: System audio loopback or microphone
 - **Format**: 44.1kHz / 48kHz, 16-bit stereo
 - **Latency**: <10ms (target)
 - **Buffer**: Configurable (512-2048 samples)
 
 ### ProjectM Visualization Engine
+
 - **Container**: `viz-engine-projectm-gpu`
 - **GPU**: NVIDIA CUDA-enabled (compute capability ≥3.0)
 - **Memory**: 4-8GB recommended
@@ -90,6 +92,7 @@
 - **Preset Format**: `.milk` (Milkdrop format)
 
 ### VirtualGL Pipeline
+
 - **Purpose**: GPU-accelerated rendering in headless environment
 - **Display**: `:99` (Xvfb virtual framebuffer)
 - **Protocol**: GLX (OpenGL Extension to X Window System)
@@ -108,12 +111,14 @@
 ### SigNoz Dashboards
 
 **Visualization Performance Dashboard**:
+
 - Real-time FPS tracking
 - Preset switch latency (p50, p95, p99)
 - GPU utilization trends
 - Audio sync health
 
 **Alerts**:
+
 - FPS < 30 for >5s (performance degradation)
 - Preset switch > 5s (slow transitions)
 - GPU utilization > 95% (resource exhaustion)
@@ -144,16 +149,19 @@
 ## Failure Modes & Mitigation
 
 ### GPU Failure
+
 - **Detection**: `nvidia-smi` fails or GPU utilization = 0%
 - **Mitigation**: Fallback to CPU rendering (degraded mode)
 - **Recovery**: Restart container with GPU validation
 
 ### Audio Desync
+
 - **Detection**: Audio buffer < 20% or >95%
 - **Mitigation**: Adjust buffer size (1024 → 2048 samples)
 - **Recovery**: Reconnect audio loopback
 
 ### Preset Crash
+
 - **Detection**: Rendering stops, container logs show segfault
 - **Mitigation**: Skip bad preset, continue with next
 - **Recovery**: Validate preset file, check for shader errors
@@ -164,7 +172,7 @@
 
 ### SigNoz Queries
 
-```
+```text
 # Render latency (p95)
 quantile(0.95, vizr.render.latency_ms)
 

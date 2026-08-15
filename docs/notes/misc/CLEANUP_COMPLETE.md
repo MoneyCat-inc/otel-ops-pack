@@ -19,6 +19,7 @@
 ### 2. Updated .gitignore
 
 **Added entries:**
+
 - `.artifacts/` - Prevent reintroduction
 - `.tmp/` - Prevent temp file tracking
 - `visual-assets-draft/` - Prevent draft tracking
@@ -34,7 +35,8 @@
 **Pushed:** ✅ Yes
 
 **Tag Details:**
-```
+
+```text
 Tetragram Migration Complete
 - Zero forbidden legacy roots (100% elimination)
 - 19 directories migrated to ALFA/BRAV/CHAR/DELT
@@ -46,7 +48,7 @@ Tetragram Migration Complete
 
 ## 📊 Guardrails Status - Improved
 
-```
+```yaml
 Before Cleanup:  33 unauthorized directories
 After Cleanup:   30 unauthorized directories
 Improvement:     3 eliminated (9%)
@@ -66,13 +68,15 @@ You now have **3 options** for proceeding:
 **Impact:** Reduces unauthorized dirs from 30 → ~20  
 **Timeline:** 1-2 hours (I'll do it), 3-5 small commits  
 **Benefits:**
+
 - Cleaner structure
 - Better code organization
 - Modern import paths with TypeScript aliases
 - Further guardrails improvement
 
 **Migrations:**
-```
+
+```text
 app/        → ALFA/APPS/app/
 apps/       → ALFA/APPS/apps/
 components/ → ALFA/CORE/components/
@@ -90,11 +94,13 @@ prisma/     → ALFA/CORE/prisma/
 **What:** Stop here, proceed later  
 **Impact:** Baseline is approved; no urgency  
 **Benefits:**
+
 - Team can adapt to current structure
 - Allows planning for import path strategy
 - Can be done anytime
 
 **When to revisit:**
+
 - When ready for import modernization
 - When planning Next.js/React refactor
 - As part of larger architecture update
@@ -108,6 +114,7 @@ prisma/     → ALFA/CORE/prisma/
 **What:** Pick specific high-value directories to organize  
 **Impact:** Smaller scope than full C.4  
 **Example:**
+
 - Migrate just `app/` and `apps/` to ALFA/APPS
 - Move `comfort-cat-stubs/` to merge with `CHAR/DOCS/comfort-cat/`
 - Organize `audit/` → `CHAR/AUDT/`
@@ -133,22 +140,26 @@ prisma/     → ALFA/CORE/prisma/
 **30 unauthorized top-level directories:**
 
 **High Priority (Application Code):**
+
 - app/, apps/, components/, lib/, pages/, prisma/, schemas/
 
 **Medium Priority (Infrastructure):**
+
 - codex/, collector/, otel/, sidecars/, cuda/, gpu/, gpu-buffers/, triton-models/
 
 **Low Priority (Development/Meta):**
+
 - experiments/, patches/, policies/, projects/, upstream-contribution/, workflows/
 
 **Low Priority (Misc):**
+
 - ai-context/, alerts/, audit/, comfort-cat-stubs/, models/, preview/, validation/
 
 ---
 
 ## 🏆 Achievement Summary
 
-```
+```text
 ╔═══════════════════════════════════════════════════════════════╗
 ║  POST-GATE CLEANUP COMPLETE                                   ║
 ╠═══════════════════════════════════════════════════════════════╣
@@ -176,6 +187,7 @@ prisma/     → ALFA/CORE/prisma/
 ---
 
 **Current Status:**
+
 - ✅ Gate approved
 - ✅ Baseline established  
 - ✅ Quick cleanup done
