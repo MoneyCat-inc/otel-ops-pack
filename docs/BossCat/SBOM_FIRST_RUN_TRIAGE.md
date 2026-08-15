@@ -9,6 +9,7 @@
 ## Status: SBOM Blocking LIVE
 
 **As of PR #134 merge** (2025-10-12T22:15:44Z):
+
 - ✅ SBOM generation is **BLOCKING for prod gate**
 - ✅ SBOM generation is **non-blocking for ci/local**
 - ✅ Enforcement active (line 355: `continue-on-error: ${{ matrix.site != 'prod' }}`)
@@ -62,6 +63,7 @@ syft version
 ```
 
 **If Syft missing**:
+
 ```bash
 # Install Syft (Linux/macOS)
 curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
@@ -92,6 +94,7 @@ ls -lh scripts/comp/syft-sbom.ts
 ### 4. Monitor Prod Gate Run
 
 **Trigger manually** (if workflow_dispatch available):
+
 ```bash
 gh workflow run bosscat-gate-verify.yml -f site=prod -f gate=IONA
 ```
@@ -99,11 +102,13 @@ gh workflow run bosscat-gate-verify.yml -f site=prod -f gate=IONA
 **Or wait for next PR** (automatic trigger on pull_request to main)
 
 **Watch live**:
+
 ```bash
 gh run watch --exit-status
 ```
 
 **Check specific run**:
+
 ```bash
 # List recent runs
 gh run list --workflow bosscat-gate-verify.yml --limit 5
@@ -118,11 +123,12 @@ gh run view <run_id>
 
 **After prod gate runs**, check GitHub Actions UI:
 
-1. Navigate to: https://github.com/MoneyCat-inc/otel-ops-pack/actions
+1. Navigate to: <https://github.com/MoneyCat-inc/otel-ops-pack/actions>
 2. Find latest "BossCat Gate Verification" run
 3. Check job summary for "📦 SBOM & Supply Chain Artifacts" section
 
 **Expected**:
+
 ```markdown
 ### 📦 SBOM & Supply Chain Artifacts
 
@@ -138,11 +144,13 @@ gh run view <run_id>
 ```
 
 **If Missing**:
+
 ```markdown
 ⚠️ **SBOM Missing** — Review logs above
 
 **Impact**: Non-blocking for this run (tracking stability)
 ```
+
 (Note: Should not happen in prod with blocking enforcement)
 
 ---
@@ -154,6 +162,7 @@ gh run view <run_id>
 **Symptom**: Prod gate FAILS with SBOM generation error
 
 **Immediate Action** (restore non-blocking):
+
 ```bash
 # Revert PR #134 merge commit
 git revert de2be498
@@ -184,6 +193,7 @@ git push origin main
 ### Post-Rollback Investigation
 
 **Check**:
+
 1. Syft version compatibility
 2. Path resolution logic (3 locations checked)
 3. NPM/pnpm package availability
@@ -191,6 +201,7 @@ git push origin main
 5. File permissions (DELT/ARTF directory)
 
 **Test Locally**:
+
 ```bash
 # Run full SBOM workflow locally
 pnpm comp:sbom
@@ -203,6 +214,7 @@ jq . sbom.json | head -20
 ```
 
 **Fix and Re-Enable**:
+
 - Fix root cause
 - Test SBOM generation in dev
 - Create PR to re-enable blocking
@@ -213,11 +225,13 @@ jq . sbom.json | head -20
 ## Issue #135 Monitoring
 
 **Automated Tracking**:
+
 - Tracker workflow runs after each prod gate (success-only)
 - Updates Issue #135 automatically
 - Shows SBOM status, artifact links, checksums
 
 **Manual Check**:
+
 ```bash
 # View Issue #135
 gh issue view 135 --repo MoneyCat-inc/otel-ops-pack
@@ -231,6 +245,7 @@ gh run list --workflow sbom-stability-tracker.yml --limit 5
 ## Success Indicators
 
 **First Prod Run** (Critical):
+
 - ✅ SBOM generates without errors
 - ✅ Checksums created (SHA256)
 - ✅ Artifacts upload successfully
@@ -239,6 +254,7 @@ gh run list --workflow sbom-stability-tracker.yml --limit 5
 - ✅ Issue #135 auto-updated
 
 **Ongoing** (Week 1-2):
+
 - ✅ Success rate ≥95%
 - ✅ No rollback needed
 - ✅ Stable SBOM generation
@@ -249,6 +265,7 @@ gh run list --workflow sbom-stability-tracker.yml --limit 5
 ## Failure Indicators
 
 **Watch For**:
+
 - ❌ Prod gate fails with SBOM error
 - ❌ "SBOM Missing" in step summary
 - ❌ Syft command not found
@@ -295,7 +312,7 @@ git revert de2be498 && git push origin main
 - **Script**: `scripts/track-sbom-stability.ps1`
 - **Audit Procedure**: `docs/BossCat/SBOM_AUDIT_PROCEDURE.md`
 - **Follow-Up Plan**: `docs/BossCat/FOLLOWUP_SBOM_BLOCKING.md`
-- **Issue #135**: https://github.com/MoneyCat-inc/otel-ops-pack/issues/135
+- **Issue #135**: <https://github.com/MoneyCat-inc/otel-ops-pack/issues/135>
 
 ---
 

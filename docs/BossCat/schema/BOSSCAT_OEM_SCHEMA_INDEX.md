@@ -32,12 +32,14 @@
 ## 🎯 Quick Reference
 
 ### **One-Liner Automation**
+
 ```powershell
 # Complete end-to-end automation
 pwsh -File .\gate-v3-complete.ps1
 ```
 
 ### **V3 Schema Query**
+
 ```sql
 -- Gate predicate (copy-paste ready)
 SELECT count()
@@ -47,6 +49,7 @@ WHERE `resource_string_service$$name` = 'canary-test'
 ```
 
 ### **Docker Exec Method**
+
 ```bash
 # PowerShell backtick escaping
 docker exec signoz-clickhouse clickhouse-client --query "SELECT count() FROM signoz_traces.signoz_index_v3 WHERE \`resource_string_service\$\$name\`='canary-test' AND timestamp >= now() - INTERVAL 5 MINUTE;"
@@ -56,13 +59,14 @@ docker exec signoz-clickhouse clickhouse-client --query "SELECT count() FROM sig
 
 ## 🔄 Automation Flow
 
-```
+```text
 TRACE EMIT → SigNoz Transformer → TABLES → BossCat Schema Process-analyze → TRACE EMIT
      ↑                                                                           ↓
      └─────────────────── V3 Automation Loop ──────────────────────────────────┘
 ```
 
 ### **Flow Components**
+
 1. **TRACE EMIT (Blue):** `send-canary-trace-direct.ps1`
 2. **SigNoz Transformer (Orange):** SigNoz OTel Collector + ClickHouse exporter
 3. **TABLES (Blue):** `signoz_traces.signoz_index_v3` + `resource_string_service$$name`
@@ -73,6 +77,7 @@ TRACE EMIT → SigNoz Transformer → TABLES → BossCat Schema Process-analyze 
 ## 📊 Current State
 
 ### **Operational Status**
+
 ```yaml
 v3_schema:
   table: "signoz_traces.signoz_index_v3"
@@ -112,6 +117,7 @@ automation:
 ## 🔧 Component Status
 
 ### **Automation Scripts**
+
 | Script | Purpose | Status |
 |--------|---------|--------|
 | `gate-v3-complete.ps1` | Complete automation wrapper | ✅ Deployed |
@@ -121,6 +127,7 @@ automation:
 | `analyze-trace-schema.ps1` | V3 schema analysis | ✅ Working |
 
 ### **Evidence Components**
+
 | Component | Purpose | Status |
 |-----------|---------|--------|
 | ECRR Artifacts | Gate advancement proof | ✅ Ready |
@@ -147,24 +154,28 @@ gate_success:
 ## 🔔 Usage Examples
 
 ### **Complete Automation**
+
 ```powershell
 # Full end-to-end automation
 pwsh -File .\gate-v3-complete.ps1
 ```
 
 ### **Background Monitoring**
+
 ```powershell
 # Autonomous monitoring (2-min polling)
 pwsh -File .\gate-self-signal-monitor.ps1
 ```
 
 ### **Single Check**
+
 ```powershell
 # Just check current state
 pwsh -File .\gate-self-signal-check.ps1
 ```
 
 ### **Schema Analysis**
+
 ```powershell
 # Discover services and analyze v3 schema
 pwsh -File .\analyze-trace-schema.ps1
@@ -174,7 +185,7 @@ pwsh -File .\analyze-trace-schema.ps1
 
 ## 📁 File Structure
 
-```
+```text
 C:\otel\
 ├── BOSSCAT_OEM_SCHEMA_V3.md           # Complete schema definition
 ├── BOSSCAT_OEM_SCHEMA_COMPONENTS.md   # Component definitions

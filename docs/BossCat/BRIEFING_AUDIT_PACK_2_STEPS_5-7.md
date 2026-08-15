@@ -20,7 +20,10 @@ regression trap — the next scheduled archiver run will recreate `docs/BossCat/
 
 ### Standing rule (gate definitions) — from Pack 1 retrospective
 
-**Gate-definition changes land as standalone PRs evaluated under the old rules.** Do not ship a guard/budget/schema change in the same PR it unblocks. Pack 1’s GR-02 `workflows.json` LOC exclude was accepted as a one-off (documented on #350) because `registry-guard` / `registry-drift-check` still own the registry on their own lane — but it is not the pattern going forward.
+**Gate-definition changes land as standalone PRs evaluated under the old rules.** Do not ship a guard/budget/schema
+change in the same PR it unblocks. Pack 1’s GR-02 `workflows.json` LOC exclude was accepted as a one-off (documented on
+issue #350) because `registry-guard` / `registry-drift-check` still own the registry on their own lane — but it is not the
+pattern going forward.
 
 ---
 
@@ -31,6 +34,7 @@ copied into itself. Root cause is a relative output path resolved from the wrong
 the archiver automation.
 
 **Examine:**
+
 1. Inspect `.github/workflows/run-archiver.yml`, `run-archiver-backfill.yml`,
    `run-rotation.yml`, and any script they invoke (likely under `BRAV/SCPT/` or `scripts/`).
 2. Find where the output dir is built. Look for `docs/BossCat` concatenated onto a path
@@ -57,7 +61,8 @@ it will regenerate).
    `docs/BossCat/run-reports/` (hash compare). Record result.
 2. `git rm -r docs/BossCat/BossCat/`
 3. Also check `CHAR/DOCS/docs/` — it mirrors parts of `docs/`. Hash-compare a sample.
-   If confirmed duplicate: delete. If it diverged: **DECISION D3** — STOP, list diverging files in the PR; do not delete.
+   If confirmed duplicate: delete. If it diverged: **DECISION D3** — STOP, list diverging files in the PR; do not
+   delete.
 
 **Commit:** `chore: remove nested docs/BossCat/BossCat duplicate tree (N files)`
 
@@ -68,6 +73,7 @@ it will regenerate).
 **Scope:** `docs/BossCat/run-reports/` = 25,468 files (12,682 badge SVGs, 12,783 run MDs).
 
 **Target state:**
+
 - New repo `MoneyCat-inc/otel-ops-evidence` (private is fine) receives the full
   `run-reports/` tree, preserving directory structure. Plain copy, no history needed.
 - Main repo keeps ONLY: monthly rollups (the `bosscat-monthly-evidence-rollup.yml`
@@ -77,6 +83,7 @@ it will regenerate).
   rewrite those links to the evidence repo raw URLs or drop them.
 
 **Steps:**
+
 1. Grep for inbound references to `run-reports/` across the repo (workflows, HTML
    dashboards, status pages, REFERENCES_MAP.md). List them. Rewrite each.
 2. Copy tree to evidence repo, push, verify file count matches (25,468).
@@ -88,6 +95,7 @@ it will regenerate).
    evidence. Count them in the commit message.
 
 **Commits:**
+
 - `docs: rewrite run-report references to evidence repo`
 - `chore: extract run-reports archive to otel-ops-evidence (25,468 files)`
 - `ci(archiver): publish new run reports to evidence repo`
@@ -101,7 +109,12 @@ reduction: ~33k files. State both numbers in the PR.
 ## Task 7 — Root sweep + compose canonicalization
 
 ### 7A Root evidence MDs
-- **Also (from #352 follow-through, one pass):** (1) Restore `https://hub.resonai.uk` when live — README currently points at `docs/index.html` with a Pack2/7A TODO (stronger than a silent ignore). (2) Rule-scope the three whole-file `markdownlint-disable`s together — `README.md` (highest priority: HN/first-reader surface), `docs/runbooks/windows-collector.md`, `docs/BossCat/BOSSCAT_LOG.md` — replace blankets with specific `MD0xx` lists so new lint debt cannot accumulate silently.
+
+- **Also (from #352 follow-through, one pass):** (1) Restore `https://hub.resonai.uk` when live — README currently
+  points at `docs/index.html` with a Pack2/7A TODO (stronger than a silent ignore). (2) Rule-scope the three whole-file
+  `markdownlint-disable`s together — `README.md` (highest priority: HN/first-reader surface),
+  `docs/runbooks/windows-collector.md`, `docs/BossCat/BOSSCAT_LOG.md` — replace blankets with specific `MD0xx` lists so
+  new lint debt cannot accumulate silently.
 - 127 evidence/session MDs at root (`GATE_*`, `BOSSCAT_*`, `SESSION_*`, `AMBER_*`,
   `COLLECTOR_5317_*`, etc.). Move to `docs/gate/archive/` preserving names.
   Use `git mv` so history follows.
@@ -111,19 +124,26 @@ reduction: ~33k files. State both numbers in the PR.
 - **Commit:** `docs: move 127 root evidence reports to docs/gate/archive/`
 
 ### 7B Compose canonicalization
+
 Current: 7 compose files at root. Target (**D1 RESOLVED**):
-- Promote `docker-compose-optimized.yml` → `docker-compose.yml` (canonical SigNoz stack; bare `docker compose up` must run the right stack).
+
+- Promote `docker-compose-optimized.yml` → `docker-compose.yml` (canonical SigNoz stack; bare `docker compose up` must
+  run the right stack).
 - Move today's default-named `docker-compose.yml` → `compose/legacy.yml` (or delete if superseded).
-- Park `docker-compose.viz.yml` / `docker-compose.gpu.yml` in `compose/` **unrenamed** (viz-engine lane; leave with repo split).
-- Other variants → `compose/` with a `compose/README.md` table: file → purpose → status (active / experimental / deprecated).
+- Park `docker-compose.viz.yml` / `docker-compose.gpu.yml` in `compose/` **unrenamed** (viz-engine lane; leave with repo
+  split).
+- Other variants → `compose/` with a `compose/README.md` table: file → purpose → status (active / experimental /
+  deprecated).
 - Grep scripts and workflows for `-f docker-compose` references; update paths (especially the former `-optimized` refs).
 - **Commit:** `chore(compose): promote optimized to canonical docker-compose.yml; variants to compose/`
 
 ### 7C Historical 5317/5318 scripts (decision pre-made — implement as stated)
+
 - Scripts under `scripts/gate*/` and `scripts/windows/` that hardcode 5317/5318 are
   frozen historical evidence. Do NOT rewrite their logic.
 - Add a header comment block to each:
-  `# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See windows/otelcol/README.md.`
+  `# HISTORICAL (Gate-era): ports 5317/5318 predate the 5320/5321 move. Do not use as reference. See
+  windows/otelcol/README.md.`
 - EXCEPTION: any such script still invoked by a live workflow or scheduled task must be
   fixed to 5320/5321 instead. Grep `.github/workflows/` for each script name to classify.
   List the classification (frozen vs live) in the PR.
@@ -132,6 +152,7 @@ Current: 7 compose files at root. Target (**D1 RESOLVED**):
 ---
 
 ## Verification gate (whole pack)
+
 - `find . -type f -not -path './.git/*' | wc -l` before/after — expect ~39.8k → ~6.5k.
 - No file matches `*/BossCat/BossCat/*`.
 - No `.backup.*` files tracked.
@@ -144,6 +165,7 @@ Current: 7 compose files at root. Target (**D1 RESOLVED**):
 ## Protection-fix PRs (before Pack 2 multi-PR stretch)
 
 Standalone gate-def PRs after #353. Shim job names must match branch-protection **check names exactly**:
+
 - Source of truth: **Settings → Branches → required checks list** (what GitHub received), not YAML alone.
 - Reported name = job 
 ame: (or job id if unnamed) — **not** the workflow 
@@ -153,5 +175,6 @@ ame:.
 - Copy the decorated form verbatim into the shim; mismatch = path-filter deadlock returns.
 
 ## Out of scope (Pack 3)
+
 - `git filter-repo` history purge + LFS for media (`docs/Art/*.mp4`, `CHAR/DOCS/docs/LOGO/`)
 - Repo split (viz-engine / scorebot / moneycat site / SOCM out of this repo)

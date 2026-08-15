@@ -1,12 +1,12 @@
 # 🚀 BossCat Quick Start Card
 
-**Print this out or keep it handy for daily operations**
+## Print this out or keep it handy for daily operations
 
 ---
 
 ## 📋 Daily Checklist (5 minutes)
 
-```
+```text
 □ Check GitHub Actions for failed workflows
 □ Review new Dependabot PRs (merge low-risk updates)
 □ Check Security tab for new alerts
@@ -14,6 +14,7 @@
 ```
 
 **Commands**:
+
 ```powershell
 # One-liner health check
 gh run list --limit 5; gh api /repos/:owner/:repo/dependabot/alerts --jq 'length'
@@ -59,18 +60,21 @@ gh run list --limit 5; gh api /repos/:owner/:repo/dependabot/alerts --jq 'length
 ## 🔧 Quick Commands
 
 ### Security Status
+
 ```powershell
 # View open alerts
 gh api /repos/:owner/:repo/dependabot/alerts | jq -r '.[] | select(.state=="open") | "\(.security_advisory.severity): \(.security_advisory.summary)"'
 ```
 
 ### Dashboard Verification
+
 ```powershell
 # Check last 7 days
 0..6 | % { $d=(Get-Date).AddDays(-$_).ToString("yyyy-MM-dd"); "$d : $(if(Test-Path "docs/observability/snapshots/$d"){'✅'}else{'❌'})" }
 ```
 
 ### Workflow Status
+
 ```bash
 # Recent runs
 gh run list --workflow=security-scan.yml --limit 7
@@ -80,6 +84,7 @@ gh run view <run-id> --log
 ```
 
 ### Trigger Manual Export
+
 ```bash
 gh workflow run nightly-dashboard-export.yml
 ```
@@ -100,7 +105,7 @@ gh workflow run nightly-dashboard-export.yml
 
 ## 🎯 Success Metrics (Weekly Review)
 
-```
+```text
 Metric                          Target    Current
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Critical Vulnerabilities         0        [___]
@@ -127,10 +132,10 @@ Dashboard Export Success       100%       [___]
 
 | Credential | Frequency | Next Due |
 |------------|-----------|----------|
-| GitHub App Key | Annual | [____-__-__] |
-| SigNoz API Key | Quarterly | [____-__-__] |
-| Docker Creds | Quarterly | [____-__-__] |
-| PATs | 90 days | [____-__-__] |
+| GitHub App Key | Annual | [____-**-**] |
+| SigNoz API Key | Quarterly | [____-**-**] |
+| Docker Creds | Quarterly | [____-**-**] |
+| PATs | 90 days | [____-**-**] |
 
 **Update after each rotation!**
 
@@ -153,5 +158,5 @@ Dashboard Export Success       100%       [___]
 
 ---
 
-**🐾 BossCat OEM - Quick, Calm, Secure**
+### 🐾 BossCat OEM - Quick, Calm, Secure
 

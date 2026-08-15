@@ -11,16 +11,20 @@
 
 ## 🎯 Issue Summary
 
-**Symptom**: GitHub Actions workflow "BossCat — Gate Verify" reports immediate failure (0s duration) on all recent main branch pushes.
+**Symptom**: GitHub Actions workflow "BossCat — Gate Verify" reports immediate failure (0s duration) on all recent main
+branch pushes.
 
 **Impact**: 
+
 - ❌ 1 of 4 required status checks failing
 - ✅ 3 of 4 checks passing (CodeQL, PSScriptAnalyzer, Gitleaks)
 - ✅ Local gate verification confirms READY status
 - ⚠️ Does NOT block operational health (system is functional)
 
 **Root Cause** (CONFIRMED):
-- ✅ **Missing tracked files**: `signature-registry.json` and `Vasilisa_High_Priestess_TinCanForest.jpg` exist locally but were NOT tracked in git
+
+- ✅ **Missing tracked files**: `signature-registry.json` and `Vasilisa_High_Priestess_TinCanForest.jpg` exist locally
+  but were NOT tracked in git
 - ✅ **CI failure mechanism**: Workflow assertions check for these files, but they don't exist in checked-out repository
 - ✅ **Result**: All matrix jobs terminate immediately (0s duration)
 
@@ -29,6 +33,7 @@
 ## 📊 Evidence
 
 ### Local Gate Verification ✅
+
 ```json
 {
   "timestamp": "2025-10-13T00:24:24+01:00",
@@ -43,7 +48,8 @@
 ```
 
 ### CI Workflow Failures ❌
-```
+
+```yaml
 Run ID: 18450664934 (0s duration)
 Run ID: 18450639071 (0s duration)
 Run ID: 18450444654 (0s duration)
@@ -51,6 +57,7 @@ Pattern: Consistent immediate failure across all matrix combinations
 ```
 
 ### Required Files Status ✅
+
 - ✅ `signature-registry.json` — Present at root (untracked)
 - ✅ `Vasilisa_High_Priestess_TinCanForest.jpg` — Present at root (untracked)
 - ✅ All gate verification scripts operational
@@ -63,6 +70,7 @@ Pattern: Consistent immediate failure across all matrix combinations
 **Authority**: BossCat OEM (Directive 008)
 
 ### PR Approval Process
+
 1. ✅ PR author runs `pnpm run agent:ready-for-gate` locally
 2. ✅ Attach `DELT/ARTF/gate-verification-results.json` to PR comment
 3. ✅ Include `verdict: READY` confirmation in PR description
@@ -70,6 +78,7 @@ Pattern: Consistent immediate failure across all matrix combinations
 5. ⚠️ PRs showing local `verdict: BLOCKED` are rejected
 
 ### Status Check Override
+
 - **CodeQL**: Required ✅
 - **PSScriptAnalyzer**: Required ✅
 - **Gitleaks**: Required ✅
@@ -80,18 +89,21 @@ Pattern: Consistent immediate failure across all matrix combinations
 ## ✅ Resolution Implemented
 
 ### Root Cause Analysis (T+0 to T+11min)
+
 1. ✅ Examined workflow matrix filter condition (line 68) — correct
 2. ✅ Examined assertion steps (lines 74-93) — require files at root
 3. ✅ Checked local file existence — both files present
 4. ✅ Checked git tracking — **ROOT CAUSE: files untracked**
 
 ### Fix Implementation (T+11min)
+
 1. ✅ Add files to git: `git add signature-registry.json Vasilisa_High_Priestess_TinCanForest.jpg`
 2. ✅ Commit with P0 resolution message
 3. ✅ Push to main branch
 4. ✅ Update tracking document status
 
 ### Validation (Next Push)
+
 1. ⏳ Verify workflow executes on next push to main
 2. ⏳ Confirm all 6 matrix jobs execute (2 gates × 3 sites)
 3. ⏳ Verify >0s duration (actual execution)
@@ -156,5 +168,7 @@ git push origin main
 
 **ECRR Status**: Examine ✅ | Contain ✅ | Rollback plan ✅ | Report ✅ | Resolution ✅
 
-**Resolution Summary**: Added `signature-registry.json` and `Vasilisa_High_Priestess_TinCanForest.jpg` to git tracking. Files existed locally but were untracked, causing CI workflow to fail immediately when assertions checked for them in the checked-out repository.
+**Resolution Summary**: Added `signature-registry.json` and `Vasilisa_High_Priestess_TinCanForest.jpg` to git tracking.
+Files existed locally but were untracked, causing CI workflow to fail immediately when assertions checked for them in
+the checked-out repository.
 

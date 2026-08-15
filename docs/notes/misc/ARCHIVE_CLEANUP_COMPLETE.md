@@ -13,7 +13,8 @@
 **Location:** `CHAR/PRSV/archive/gate-007/`
 
 **Structure:**
-```
+
+```text
 gate-007/
 ├── README.md (archive index)
 ├── session-docs/ (10 files)
@@ -52,17 +53,20 @@ gate-007/
 ### 3. Essential Files Kept in Root
 
 **Reference Documents (Kept):**
+
 - ✅ `TODO_NEXT_SESSION.md` (next session guide)
 - ✅ `TODO_ROADMAP_ORGANIZED.md` (roadmap)
 - ✅ `OPERATORS_QUICK_CARD.md` (quick reference)
 - ✅ `BOSSCAT_LOG.md` (ongoing log)
 
 **Evidence Archives (Kept):**
+
 - ✅ `CHAR/EVID/gate-007/` (essential gate evidence)
 - ✅ `CHAR/EVID/gate-006/` (historical reference)
 - ✅ `CHAR/EVID/phases/` (phase documentation)
 
 **ECRR Reports (Kept):**
+
 - ✅ `CHAR/ECRR/ECRR_REPORTS/` (55 reports - permanent record)
 
 ---
@@ -72,10 +76,12 @@ gate-007/
 **Created:** `TODO_NEXT_SESSION.md`
 
 **Contents:**
+
 - ⏳ Option 1: Review workflow changes (`.github/workflows/bosscat-gate-verify.yml`)
 - 🎯 **Next Focus: GPU Work** (high priority)
 
 **Quick Start for GPU Work:**
+
 ```powershell
 cd C:\otel
 pwsh -File scripts/gpu-fix-lane.ps1
@@ -86,17 +92,20 @@ pwsh -File scripts/gpu-fix-lane.ps1
 ## 📊 Repository State
 
 **Before Cleanup:**
+
 - 100+ untracked files in root
 - Session artifacts scattered
 - Temporary files mixed with essentials
 
 **After Cleanup:**
+
 - ✅ 35 files archived and removed
 - ✅ Essential docs organized in root
 - ✅ Clear separation: permanent vs temporary
 - ✅ Archive index for reference
 
 **Git Status:**
+
 - 3 modified files (workflow, settings, gate-verification-results)
 - Clean untracked file list (essential docs only)
 - Ready for next session
@@ -116,6 +125,7 @@ pwsh -File scripts/gpu-fix-lane.ps1
 ## 🚀 Next Steps
 
 ### Immediate
+
 1. ✅ Archive & cleanup complete
 2. ⏳ Review workflow changes (when ready)
 3. 🎯 **Start GPU work** (next focus)
@@ -123,6 +133,7 @@ pwsh -File scripts/gpu-fix-lane.ps1
 ### GPU Work Starting Point
 
 **Commands:**
+
 ```powershell
 # Check GPU sidecar status
 docker ps -a | grep gpu
@@ -135,6 +146,7 @@ cat scripts/gpu-fix-lane.ps1
 ```
 
 **Related Files:**
+
 - `scripts/gpu-fix-lane.ps1`
 - GPU compose configurations
 - GPU metrics scripts
@@ -146,6 +158,7 @@ cat scripts/gpu-fix-lane.ps1
 **Archive Index:** `CHAR/PRSV/archive/gate-007/README.md`
 
 **Access Archived Files:**
+
 ```powershell
 # View archive index
 cat CHAR/PRSV/archive/gate-007/README.md
@@ -173,6 +186,7 @@ ls CHAR/PRSV/archive/gate-007/option-b/
 🐾 **Repository is clean, organized, and ready for GPU work!**
 
 **To start GPU session:**
+
 ```powershell
 cat TODO_NEXT_SESSION.md
 ```

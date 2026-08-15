@@ -18,13 +18,13 @@
    - Max path depth: 7 levels
    - CI workflow validation rules
 
-2. **`check_guardrails.py`** - Python validator (stdlib only, no dependencies)
+1. **`check_guardrails.py`** - Python validator (stdlib only, no dependencies)
    - Scans repository structure
    - Reports violations with color-coded output
    - UTF-8 encoding support for Windows
    - Exit code 0 (pass) or 1 (fail)
 
-3. **`.github/workflows/guardrails.yml`** - CI enforcement
+1. **`.github/workflows/guardrails.yml`** - CI enforcement
    - Runs on push/PR to main/develop
    - Generates structure report in GitHub Actions summary
    - Blocks merges if violations detected
@@ -33,23 +33,23 @@
 
 **Location:** `BRAV/SCPT/`
 
-4. **`migrate_scripts.sh`** - Phase B.1 Unix/Linux/macOS script
+1. **`migrate_scripts.sh`** - Phase B.1 Unix/Linux/macOS script
    - Moves `scripts/` → `BRAV/SCPT/`
    - Creates backward-compatible symlink
    - Safe, idempotent execution
 
-5. **`migrate_scripts.ps1`** - Phase B.1 Windows PowerShell script
+1. **`migrate_scripts.ps1`** - Phase B.1 Windows PowerShell script
    - Moves `scripts/` → `BRAV/SCPT/`
    - Creates backward-compatible directory junction
    - Requires administrator privileges for junction creation
 
-6. **`migrate_configs.sh`** - Phase B.2 Unix/Linux/macOS script
+1. **`migrate_configs.sh`** - Phase B.2 Unix/Linux/macOS script
    - Migrates config/, configs/, docker/, helm/, deployment-pipeline/
    - Migrates artifacts/, reports/, playwright-report/
    - Migrates assets/, baseline/, test-payloads/, templates/
    - Creates symlinks for backward compatibility
 
-7. **`migrate_configs.ps1`** - Phase B.2 Windows PowerShell script
+1. **`migrate_configs.ps1`** - Phase B.2 Windows PowerShell script
    - Same functionality as .sh version
    - Uses Windows junctions instead of symlinks
 
@@ -57,12 +57,12 @@
 
 **Location:** `BRAV/SCPT/`
 
-8. **`cleanup_shims.sh`** - Unix/Linux/macOS shim removal
+1. **`cleanup_shims.sh`** - Unix/Linux/macOS shim removal
    - Removes all backward-compatibility symlinks
    - Dry-run mode available: `--dry-run`
    - Run after 2+ green CI/CD cycles
 
-9. **`cleanup_shims.ps1`** - Windows PowerShell shim removal
+1. **`cleanup_shims.ps1`** - Windows PowerShell shim removal
    - Removes all junctions
    - Dry-run mode: `-DryRun`
    - Safe, reports what will be removed
@@ -71,7 +71,7 @@
 
 **Location:** Repository root and `.github/`
 
-10. **`CODEOWNERS`** - Ownership and approval matrix
+1. **`CODEOWNERS`** - Ownership and approval matrix
     - Maps tetragram planes to teams
     - ALFA → @alfa-team (Application)
     - BRAV → @brav-team (Build/Runtime/Automation)
@@ -79,7 +79,7 @@
     - DELT → @delt-team (Data/Config/Test)
     - BossCat approval required for critical files
 
-11. **`.github/pull_request_template.md`** - ECRR-aligned PR template
+1. **`.github/pull_request_template.md`** - ECRR-aligned PR template
     - Examine, Clean, Report, Role sections
     - Tetragram compliance checklist
     - Migration phase tracking
@@ -90,14 +90,14 @@
 
 **Location:** `BRAV/SCPT/` and `CHAR/EVID/`
 
-12. **`BRAV/SCPT/README_NEXT_STEPS.md`** - Comprehensive migration guide
+1. **`BRAV/SCPT/README_NEXT_STEPS.md`** - Comprehensive migration guide
     - Quick reference commands
     - Phase-by-phase walkthrough
     - Troubleshooting section
     - Tetragram structure reference
     - Migration workflow best practices
 
-13. **`CHAR/EVID/tetragram-migration-baseline.md`** - Current state evidence
+1. **`CHAR/EVID/tetragram-migration-baseline.md`** - Current state evidence
     - Pre-migration baseline assessment
     - 17 forbidden legacy roots identified
     - 54 unauthorized top-level directories
@@ -119,6 +119,7 @@ python BRAV\SCPT\check_guardrails.py --config BRAV\SCPT\guardrails.json
 ```
 
 **Violations Summary:**
+
 - 17 forbidden legacy root directories
 - 54 unauthorized top-level directories
 - 136 paths exceeding max depth (mostly .venv)
@@ -132,7 +133,7 @@ python BRAV\SCPT\check_guardrails.py --config BRAV\SCPT\guardrails.json
 
 ### Immediate Next Steps (Phase B.1)
 
-**Option A: Quick Start (Recommended)**
+### Option A: Quick Start (Recommended)
 
 ```powershell
 # Windows PowerShell (Run as Administrator)
@@ -158,7 +159,7 @@ ECRR Evidence:
 git push
 ```
 
-**Option B: Dry-Run First**
+### Option B: Dry-Run First
 
 ```powershell
 # Review what will change
@@ -193,6 +194,7 @@ git push
 ### Subsequent Phases
 
 **Phase B.2:** Configs/Infra/Assets
+
 ```powershell
 pwsh -File .\BRAV\SCPT\migrate_configs.ps1
 ```
@@ -209,7 +211,7 @@ pwsh -File .\BRAV\SCPT\migrate_configs.ps1
 
 ### Created Files (13 + 1 summary = 14 total)
 
-```
+```text
 BRAV/
 └── SCPT/
     ├── guardrails.json                    # Guardrails config
@@ -295,17 +297,20 @@ With parallel work: **2-3 weeks**
 ### Quick Reference
 
 **Check compliance:**
+
 ```powershell
 python BRAV\SCPT\check_guardrails.py
 ```
 
 **Run migration:**
+
 ```powershell
 pwsh -File .\BRAV\SCPT\migrate_scripts.ps1      # Phase B.1
 pwsh -File .\BRAV\SCPT\migrate_configs.ps1      # Phase B.2
 ```
 
 **Cleanup shims:**
+
 ```powershell
 pwsh -File .\BRAV\SCPT\cleanup_shims.ps1 -DryRun   # Preview
 pwsh -File .\BRAV\SCPT\cleanup_shims.ps1           # Execute
@@ -333,6 +338,7 @@ pwsh -File .\BRAV\SCPT\cleanup_shims.ps1           # Execute
 **Installation Status:** ✅ **APPROVED FOR USE**
 
 **Quality Checklist:**
+
 - [x] All scripts tested and working
 - [x] UTF-8 encoding support for Windows
 - [x] No external dependencies (stdlib only)
@@ -353,13 +359,13 @@ _Date: 2025-10-09_
 
 When ready to proceed with Phase B.1:
 
-```
+```text
 @cat ready-for-phase-b1
 ```
 
 When all phases complete and ready for final gate:
 
-```
+```text
 @cat ready-for-gate
 ```
 
@@ -391,7 +397,8 @@ Next: Execute Phase B.1 with @cat ready-for-phase-b1"
 
 ---
 
-🐾 **BossCat says:** _"The kit is ready. Execute with confidence. Small PRs, solid evidence, green CI. Let's migrate this repo the right way."_
+🐾 **BossCat says:** _"The kit is ready. Execute with confidence. Small PRs, solid evidence, green CI. Let's migrate
+this repo the right way."_
 
 ---
 

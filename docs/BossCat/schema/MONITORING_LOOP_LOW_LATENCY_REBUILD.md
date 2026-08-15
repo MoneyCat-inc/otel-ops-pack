@@ -9,7 +9,8 @@
 ## Performance Improvement
 
 ### Before (30-Minute Polling)
-```
+
+```yaml
 Interval:           1800 seconds (30 minutes)
 Detection latency:  Up to 30 minutes after platform fix
 Checks per hour:    2 checks
@@ -17,7 +18,8 @@ Checks in 3 hours:  ~6 checks
 ```
 
 ### After (2-Minute Low-Latency Polling)
-```
+
+```yaml
 Interval:           120 seconds (2 minutes)
 Detection latency:  Up to 2 minutes after platform fix ⚡
 Checks per hour:    30 checks
@@ -39,6 +41,7 @@ Improvement:        15x faster detection
 6. ✅ **Auto-Terminating** — Loop stops immediately on exit 0 (not wasteful)
 
 **Cost-Benefit:**
+
 - **Old:** 30-min wait worst-case = potential 30-min delay to gate advancement
 - **New:** 2-min wait worst-case = <2-min delay to gate advancement
 - **Overhead:** Negligible (5 sec per 120 sec = 4% CPU time)
@@ -52,7 +55,8 @@ Improvement:        15x faster detection
 **Method:** Ran `gate-self-signal-check.ps1`
 
 **Results:**
-```
+
+```bash
 ✅ Canary sent:      HTTP 200 (successful)
 ✅ ClickHouse query: Responding via docker exec
 ❌ Traces found:     0 spans
@@ -65,7 +69,7 @@ Exit code:           1 (HOLD - platform gap persists)
 
 ## Current Operational State
 
-```
+```yaml
 Mode:            LOW-LATENCY (2-minute polling)
 Status:          🟢 RUNNING (background PowerShell)
 Started:         2025-10-23 19:46 UTC
@@ -94,24 +98,28 @@ Protocol:        ✅ ALIGNED (ready for gate advancement)
 ## Command Options
 
 ### **Current Default (2-min low-latency)**
+
 ```powershell
 pwsh -File gate-self-signal-monitor.ps1
 # Interval: 2 minutes (default)
 ```
 
 ### **Ultra-Fast (1-min polling)**
+
 ```powershell
 pwsh -File gate-self-signal-monitor.ps1 -IntervalSeconds 60
 # Interval: 1 minute
 ```
 
 ### **Conservative (5-min polling)**
+
 ```powershell
 pwsh -File gate-self-signal-monitor.ps1 -IntervalSeconds 300
 # Interval: 5 minutes
 ```
 
 ### **Original (30-min polling)**
+
 ```powershell
 pwsh -File gate-self-signal-monitor.ps1 -IntervalSeconds 1800
 # Interval: 30 minutes
@@ -122,12 +130,14 @@ pwsh -File gate-self-signal-monitor.ps1 -IntervalSeconds 1800
 ## Overhead Analysis
 
 **Per Check:**
+
 - Canary send: ~3 seconds
 - ClickHouse query: ~1 second
 - Processing: ~1 second
 - **Total:** ~5 seconds per check
 
 **Per Hour (2-min polling):**
+
 - Checks: 30
 - Active time: 150 seconds (2.5 minutes)
 - Idle time: 3450 seconds (57.5 minutes)
@@ -142,6 +152,7 @@ pwsh -File gate-self-signal-monitor.ps1 -IntervalSeconds 1800
 **File:** `gate-self-signal-monitor.ps1`
 
 **Diff:**
+
 ```diff
 - param([int]$IntervalSeconds = 1800,  # 30 minutes
 + param([int]$IntervalSeconds = 120,   # 2 minutes (low-latency mode)
@@ -158,7 +169,7 @@ pwsh -File gate-self-signal-monitor.ps1 -IntervalSeconds 1800
 
 ## Monitoring Loop Behavior (Unchanged Logic)
 
-```
+```bash
 START (low-latency mode: 2-min intervals)
   │
   ├─ Every 2 minutes:
@@ -180,7 +191,7 @@ START (low-latency mode: 2-min intervals)
 
 ## Success Scenario (Low-Latency)
 
-```
+```yaml
 19:46 UTC — Platform fix lands (SigNoz starts persisting traces)
    ↓ (worst case: 2 minutes)
 19:48 UTC — Next check detects count() > 0
@@ -212,7 +223,7 @@ Improvement: 28 minutes faster
 
 ## Current Status Summary
 
-```
+```bash
 ┌────────────────────────────────────────────────────────┐
 │   MONITORING LOOP: LOW-LATENCY MODE ACTIVE            │
 ├────────────────────────────────────────────────────────┤

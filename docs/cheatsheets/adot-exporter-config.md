@@ -46,6 +46,7 @@ TRACE_EXPORTER_SECONDARY=awsxray
 **Cost**: 2x egress + SigNoz storage + X-Ray pricing
 
 **Use Cases**:
+
 - Migration period (validating X-Ray before cutover)
 - A/B testing observability backends
 - Compliance requiring multi-backend redundancy
@@ -71,6 +72,7 @@ TRACE_EXPORTER_SECONDARY=awsxray
 ### Method 1: Environment Variables (Recommended)
 
 **Docker Compose**:
+
 ```yaml
 services:
   adot-collector:
@@ -80,6 +82,7 @@ services:
 ```
 
 **EKS Operator CR**:
+
 ```yaml
 spec:
   env:
@@ -90,6 +93,7 @@ spec:
 ```
 
 **ECS Task Definition**:
+
 ```json
 {
   "environment": [
@@ -104,11 +108,13 @@ spec:
 ### Method 2: Config Overlays (Kustomize/Helm)
 
 **Base** (`base/config.yaml`):
+
 ```yaml
 exporters: ["${TRACE_EXPORTER_PRIMARY:-otlp/signoz}", "${TRACE_EXPORTER_SECONDARY:-}", logging]
 ```
 
 **Overlay** (`overlays/aws-prod/config.yaml`):
+
 ```yaml
 exporters: [awsxray, logging]  # Override for AWS-only
 ```
@@ -132,29 +138,35 @@ exporters: [awsxray, logging]  # Override for AWS-only
 ## Migration Strategy
 
 ### Phase 1: SigNoz Only (Baseline)
+
 ```yaml
 TRACE_EXPORTER_PRIMARY=otlp/signoz
 TRACE_EXPORTER_SECONDARY=
 ```
+
 **Duration**: Ongoing production
 
 ---
 
 ### Phase 2: Dual Export (Validation)
+
 ```yaml
 TRACE_EXPORTER_PRIMARY=otlp/signoz
 TRACE_EXPORTER_SECONDARY=awsxray
 ```
+
 **Duration**: 1-2 weeks (validation period)  
 **Action**: Compare trace data quality, latency, cost
 
 ---
 
 ### Phase 3: X-Ray Only (Cutover)
+
 ```yaml
 TRACE_EXPORTER_PRIMARY=awsxray
 TRACE_EXPORTER_SECONDARY=
 ```
+
 **Duration**: After validation complete  
 **Result**: Migrated to X-Ray, SigNoz decommissioned
 
@@ -167,6 +179,7 @@ TRACE_EXPORTER_SECONDARY=
 **Cause**: `TRACE_EXPORTER_SECONDARY` is set (dual egress enabled)
 
 **Solution**:
+
 ```bash
 # Disable secondary exporter
 export TRACE_EXPORTER_SECONDARY=""
@@ -182,6 +195,7 @@ kubectl rollout restart deployment/resonai-otel-collector
 **Symptom**: AWS egress costs doubled unexpectedly
 
 **Check**:
+
 ```bash
 # Verify exporter configuration
 kubectl exec -it deployment/resonai-otel-collector -- env | grep TRACE_EXPORTER
@@ -200,6 +214,7 @@ TRACE_EXPORTER_SECONDARY=
 **Cause**: `proxy_server` block not configured in awsxray receiver
 
 **Solution**: Already included in `.aws/adot-collector-config.yaml`:
+
 ```yaml
 awsxray:
   endpoint: 0.0.0.0:2000
@@ -210,6 +225,7 @@ awsxray:
 ```
 
 **For remote sampling rules**, set `proxy_address`:
+
 ```yaml
 proxy_address: "https://xray.us-east-1.amazonaws.com"
 ```
@@ -219,6 +235,7 @@ proxy_address: "https://xray.us-east-1.amazonaws.com"
 ## Quick Commands
 
 ### Check Current Configuration
+
 ```bash
 # Kubernetes
 kubectl get deployment resonai-otel-collector -o jsonpath='{.spec.template.spec.containers[0].env[?(@.name=="TRACE_EXPORTER_PRIMARY")].value}'
@@ -228,6 +245,7 @@ docker exec adot-collector env | grep TRACE_EXPORTER
 ```
 
 ### Test Trace Export
+
 ```bash
 # Send test trace via OTLP HTTP
 curl -X POST http://localhost:4318/v1/traces \
@@ -243,12 +261,14 @@ curl -X POST http://localhost:4318/v1/traces \
 ## Best Practices
 
 ✅ **DO**:
+
 - Use SigNoz-only (PRIMARY) for dev/staging/prod unless AWS-specific features needed
 - Set SECONDARY to empty string explicitly (not omitted)
 - Document cost implications if enabling dual egress
 - Time-box dual egress periods (e.g., "2 weeks for validation")
 
 ❌ **DON'T**:
+
 - Enable dual egress without clear use case and timeline
 - Leave SECONDARY exporter enabled after migration completes
 - Assume dual egress is necessary - single exporter is usually sufficient

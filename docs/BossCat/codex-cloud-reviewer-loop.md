@@ -2,41 +2,53 @@
 
 ## Overview
 
-This playbook describes how to operate codex-cloud as the read-only **Reviewer B** inside the BossCat dual-agent, ECRR-gated workflow. The goal is to turn codex-cloud into a fast, auditable reviewer that enforces safety rails without modifying the repository.
+This playbook describes how to operate codex-cloud as the read-only **Reviewer B** inside the BossCat dual-agent,
+ECRR-gated workflow. The goal is to turn codex-cloud into a fast, auditable reviewer that enforces safety rails without
+modifying the repository.
 
 > **B Doctrine Reminder**
-> *Reviewer B never writes, commits, rebases, force pushes, or merges. Any write attempt is a policy breach and triggers ECRR.*
+> *Reviewer B never writes, commits, rebases, force pushes, or merges. Any write attempt is a policy breach and triggers
+  ECRR.*
 
 ---
 
 ## 1. Operate Within BossCat Safety Rails
 
-* **Role:** codex-cloud always runs as the monitoring agent (**B** role). It remains read-only at all times: no local commits, no rebases, no merges, no lock manipulation.
-* **Dual-agent discipline:** Agent A acquires the mutex lock, edits only within an authorized lane, and respects hard budgets (≤ 2 jobs, ≤ 10 files, ≤ 200 LOC). Reviewer B confirms the budget snapshot (`files_changed`, `loc_delta`, `jobs_used`) before rendering a verdict.
+* **Role:** codex-cloud always runs as the monitoring agent (**B** role). It remains read-only at all times: no local
+  commits, no rebases, no merges, no lock manipulation.
+* **Dual-agent discipline:** Agent A acquires the mutex lock, edits only within an authorized lane, and respects hard
+  budgets (≤ 2 jobs, ≤ 10 files, ≤ 200 LOC). Reviewer B confirms the budget snapshot (`files_changed`, `loc_delta`,
+  `jobs_used`) before rendering a verdict.
 * **Kill-switch:** codex-cloud halts review and reports immediately if `.agent/LOCK` exists.
-* **Heartbeat:** Confirm `.agent/JOB.lock` shows an unbroken lock lifecycle for the active job; missing beats are an ECRR escalation.
-* **Trigger:** Reviewer B commands **ECRR** (Evidence → Contain → Rollback → Report) whenever a breach is detected, aligning with Rule #1 “Two make the strike” and Rule #8 “Review without writing.”
+* **Heartbeat:** Confirm `.agent/JOB.lock` shows an unbroken lock lifecycle for the active job; missing beats are an
+  ECRR escalation.
+* **Trigger:** Reviewer B commands **ECRR** (Evidence → Contain → Rollback → Report) whenever a breach is detected,
+  aligning with Rule #1 “Two make the strike” and Rule #8 “Review without writing.”
 
 ---
 
 ## 2. Supply Evidence Bundles
 
-Agent A publishes a compact, machine-readable evidence bundle alongside each PR. Reviewer B refuses to proceed (ECRR → **RED**) if any required artifact is missing.
+Agent A publishes a compact, machine-readable evidence bundle alongside each PR. Reviewer B refuses to proceed (ECRR →
+**RED**) if any required artifact is missing.
 
 * **Static context:**
   * Lane scope (SSOT / DOCS / COMP / FLAK / SELE) and `.agent/PLAN.md` (≤ 150 words covering intent, scope, tests).
   * `git diff`, files changed, LOC counts, and Stability Pack budget snapshot (≤ 10 files, ≤ 200 LOC, ≤ 2 jobs).
   * `.agent/JOB.lock` heartbeat log for the active job.
 * **Quality signals:**
-  * Changed-path tests and short smoke runs only. For DOCS lane this means Markdown lint plus link/anchor validation at a minimum.
+  * Changed-path tests and short smoke runs only. For DOCS lane this means Markdown lint plus link/anchor validation at
+    a minimum.
   * Performance-gate results (e.g., k6 thresholds for p95 latency, error rate).
   * One synthetic OpenTelemetry trace sent before the main load test; failure to capture marks the review **RED**.
 * **Telemetry proof:**
-  * Representative trace/metrics sample showing inbound server spans, outbound client spans, database spans (if any), and correlated logs.
+  * Representative trace/metrics sample showing inbound server spans, outbound client spans, database spans (if any),
+    and correlated logs.
 * **Optional chaos drill:**
   * Data Room scenario (Laminar → Chaotic → Stop) with recovery metrics.
 * **Audit trail:**
-  * `.agent/EVIDENCE.log` (JSONL) covering `preflight → lock → edit → test → exit`, the ECRR report JSON, BOSSCAT_LOG one-liner, and any exit code emitted (see BossCat exit code table).
+  * `.agent/EVIDENCE.log` (JSONL) covering `preflight → lock → edit → test → exit`, the ECRR report JSON, BOSSCAT_LOG
+    one-liner, and any exit code emitted (see BossCat exit code table).
 
 ---
 
@@ -65,12 +77,16 @@ Evidence: ECRR#2025-10-09-1022
 
 ## 4. Checklist for Reviewer B
 
-1. **Scope & Budgets** – Confirm lane rules, file count ≤ 10, LOC ≤ 200, jobs ≤ 2 using the Stability Pack snapshot or CI budgets report.
-2. **Plan & Tests** – `.agent/PLAN.md` present, `.agent/JOB.lock` heartbeat valid, changed-path tests executed (DOCS: lint + link/anchor). Reject long suites.
+1. **Scope & Budgets** – Confirm lane rules, file count ≤ 10, LOC ≤ 200, jobs ≤ 2 using the Stability Pack snapshot or
+   CI budgets report.
+2. **Plan & Tests** – `.agent/PLAN.md` present, `.agent/JOB.lock` heartbeat valid, changed-path tests executed (DOCS:
+   lint + link/anchor). Reject long suites.
 3. **Performance Gates** – Thresholds defined; job fails on breach (non-zero exit). Capture the k6/Perf gate JSON.
 4. **Telemetry Completeness** – Server + client + DB spans, core metrics, log correlation, synthetic trace captured.
-5. **ECRR Trail** – `.agent/EVIDENCE.log`, ECRR report JSON, BOSSCAT_LOG, exit color (GREEN/AMBER/RED/BLACK) and exit code recorded.
-6. **Gate Signal Discipline** – Only post `@cat ready-for-gate` when the state is **GREEN**; otherwise document required actions (HOLD, ECRR).
+5. **ECRR Trail** – `.agent/EVIDENCE.log`, ECRR report JSON, BOSSCAT_LOG, exit color (GREEN/AMBER/RED/BLACK) and exit
+   code recorded.
+6. **Gate Signal Discipline** – Only post `@cat ready-for-gate` when the state is **GREEN**; otherwise document required
+   actions (HOLD, ECRR).
 
 ---
 
@@ -88,9 +104,12 @@ Adopt the **Iterative Convergence Framework (ICF)** once the loop is stable:
 
 1. **Preflight:** Agent A acquires lock, validates clean git state, records plan.
 2. **Implementation:** Make scoped edits and run changed-path smoke tests (docs lane: lint + link/anchor job).
-3. **Evidence Gathering:** Execute performance gates, capture synthetic trace, collect telemetry proof, export budgets snapshot.
-4. **Reporting:** Publish ECRR JSON, BOSSCAT_LOG line, `.agent/EVIDENCE.log`, `.agent/JOB.lock`, and evidence bundle artifact.
-5. **Review:** codex-cloud ingests bundle, confirms kill-switch absence, runs checklist, and posts gate verdict with NATO color + `@cat ready-for-gate` when GREEN.
+3. **Evidence Gathering:** Execute performance gates, capture synthetic trace, collect telemetry proof, export budgets
+   snapshot.
+4. **Reporting:** Publish ECRR JSON, BOSSCAT_LOG line, `.agent/EVIDENCE.log`, `.agent/JOB.lock`, and evidence bundle
+   artifact.
+5. **Review:** codex-cloud ingests bundle, confirms kill-switch absence, runs checklist, and posts gate verdict with
+   NATO color + `@cat ready-for-gate` when GREEN.
 6. **Archival:** Background automation stores verdicts, updates dashboards, and alerts on exceptions.
 
 ---
@@ -108,14 +127,26 @@ Adopt the **Iterative Convergence Framework (ICF)** once the loop is stable:
 
 ## 8. Docs-Lane Gate Workflow (Implemented)
 
-The repository now ships with `.github/workflows/docs-lane-checks.yml`, a focused workflow that enforces BossCat’s DOCS-lane doctrine and emits auditable guard telemetry.
+The repository now ships with `.github/workflows/docs-lane-checks.yml`, a focused workflow that enforces BossCat’s
+DOCS-lane doctrine and emits auditable guard telemetry.
 
-* **Trigger & scope:** Runs on `pull_request` events that touch `docs/**` or `README.md`, matching the lane definition while ignoring other paths.
-* **Immediate wins baked in:** Declares the ALFA concurrency group, honours the 15-minute TTL via `timeout-minutes: 15`, uploads artifacts with the BRAV 14-day retention window, and appends the CHAR job summary so reviewers see the guard result without log diving.
-* **Lane guard + budgets:** Computes the diff against the PR base, captures `changed_files.txt` plus any out-of-lane paths, and flags NATO **RED/20** when the ≤ 10 files / ≤ 200 LOC / ≤ 2 jobs budgets or lane rules are breached.
-* **Changed-path tests only:** Pins Node.js 20.11.1, `markdownlint-cli2@0.14.0`, and `lychee v0.20.1`, executing each tool strictly over the changed docs list. If no docs change, both checks short-circuit while still recording guard telemetry.
-* **Guard telemetry:** Every run writes `guard.json` (schema `bosscat.docs-lane.guard/1.0`) with the GR code, numeric guard status (`GR-xx`), reason, budgets, tool pins, and workflow metadata alongside the lint/link logs. The guard code and reason also populate `guard.json`, the dedicated guard comment, and the job summary so Reviewer B can cite the failure cause without opening logs.
-* **GREEN-only signal:** The workflow posts two comments: a guard telemetry summary on every run and the canonical `@cat ready-for-gate` signal only when `GR-00` (GREEN) is emitted. Reviewer B’s public signal therefore mirrors the evidence artifact while still surfacing the guard tuple on suppressed runs.
+* **Trigger & scope:** Runs on `pull_request` events that touch `docs/**` or `README.md`, matching the lane definition
+  while ignoring other paths.
+* **Immediate wins baked in:** Declares the ALFA concurrency group, honours the 15-minute TTL via `timeout-minutes: 15`,
+  uploads artifacts with the BRAV 14-day retention window, and appends the CHAR job summary so reviewers see the guard
+  result without log diving.
+* **Lane guard + budgets:** Computes the diff against the PR base, captures `changed_files.txt` plus any out-of-lane
+  paths, and flags NATO **RED/20** when the ≤ 10 files / ≤ 200 LOC / ≤ 2 jobs budgets or lane rules are breached.
+* **Changed-path tests only:** Pins Node.js 20.11.1, `markdownlint-cli2@0.14.0`, and `lychee v0.20.1`, executing each
+  tool strictly over the changed docs list. If no docs change, both checks short-circuit while still recording guard
+  telemetry.
+* **Guard telemetry:** Every run writes `guard.json` (schema `bosscat.docs-lane.guard/1.0`) with the GR code, numeric
+  guard status (`GR-xx`), reason, budgets, tool pins, and workflow metadata alongside the lint/link logs. The guard code
+  and reason also populate `guard.json`, the dedicated guard comment, and the job summary so Reviewer B can cite the
+  failure cause without opening logs.
+* **GREEN-only signal:** The workflow posts two comments: a guard telemetry summary on every run and the canonical `@cat
+  ready-for-gate` signal only when `GR-00` (GREEN) is emitted. Reviewer B’s public signal therefore mirrors the evidence
+  artifact while still surfacing the guard tuple on suppressed runs.
 
 ### Guard reason codes (docs lane)
 
@@ -127,9 +158,12 @@ The repository now ships with `.github/workflows/docs-lane-checks.yml`, a focuse
 | `GR-03` | Markdownlint failure | AMBER (10) |
 | `GR-04` | Link/anchor check failure | AMBER (10) |
 
-Each guard code is exported through `GUARD_CODE`, `GUARD_REASON`, `GUARD_STATE`, `GUARD_STATUS`, `GUARD_FILES`, and `GUARD_LOC` environment variables so the workflow can render deterministic evidence bundles (`guard.json`, `budget.json`) and telemetry comments for Reviewer B.
+Each guard code is exported through `GUARD_CODE`, `GUARD_REASON`, `GUARD_STATE`, `GUARD_STATUS`, `GUARD_FILES`, and
+`GUARD_LOC` environment variables so the workflow can render deterministic evidence bundles (`guard.json`,
+`budget.json`) and telemetry comments for Reviewer B.
 
-Every run persists `guard.json` in `artifacts/docs-lane/` and mirrors the guard code/ reason in the job summary so Reviewer B can explain any suppressed signal without inspecting console logs.
+Every run persists `guard.json` in `artifacts/docs-lane/` and mirrors the guard code/ reason in the job summary so
+Reviewer B can explain any suppressed signal without inspecting console logs.
 
 Excerpt (abridged):
 
