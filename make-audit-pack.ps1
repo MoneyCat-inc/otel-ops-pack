@@ -3,6 +3,8 @@
 # ASCII only, PowerShell 5.1 compatible
 
 $ErrorActionPreference = "Stop"
+Import-Module (Join-Path $PSScriptRoot 'BRAV\SCPT\lib\OtelPorts.psm1') -Force
+$script:OtelPorts = Get-OtelPorts
 $root = "C:\otel"
 $logd = Join-Path $root "logs"
 $outd = Join-Path $root "audit"
@@ -24,7 +26,7 @@ sc.exe qfailure otelcol-contrib | Out-File (Join-Path $staged "service-recovery.
 
 # 2) Ports
 Write-Host "Collecting port bindings..." -ForegroundColor Yellow
-cmd /c netstat -ano | findstr /R ":(5320|5321|8889|13134)\s" > (Join-Path $staged "ports.txt")
+cmd /c netstat -ano | findstr /R ":($($script:OtelPorts.IngestGrpc)|$($script:OtelPorts.IngestHttp)|8889|13134)\s" > (Join-Path $staged "ports.txt")
 
 # 3) Health + metrics
 Write-Host "Collecting health and metrics..." -ForegroundColor Yellow
