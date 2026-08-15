@@ -7,6 +7,12 @@
 **Grounded against:** archive-phase closeout branch (`docs/b1-archive-batch3-closeout`)  
 **Tool:** lychee **0.20.1** (same major pin as docs_gate) with `.lychee.toml`
 
+**Canonical command** (run from repo root; added on OEM verify — numbers without commands are claims):
+
+```bash
+lychee --config .lychee.toml --no-progress --max-redirects 5 --max-retries 2   --retry-wait-time 2 --max-concurrency 10 --format detailed   "docs/**/*.md" "README.md"   --exclude-path docs/archive --exclude-path docs/gate/archive   --exclude-path "docs/BossCat/Research"
+```
+
 ## Scope
 
 | Input | Count |
