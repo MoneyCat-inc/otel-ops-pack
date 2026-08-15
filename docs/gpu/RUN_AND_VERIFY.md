@@ -9,12 +9,14 @@
 ## Overview
 
 This guide enables **hardware-accelerated ProjectM** rendering using:
+
 - **NVIDIA GPU** for OpenGL rendering
 - **VirtualGL** to bridge Xvfb (2D) → Xorg (3D/GPU)
 - **NVIDIA Container Toolkit** for GPU passthrough
 
 **Expected Outcome:**
-```
+
+```text
 OpenGL vendor string: NVIDIA Corporation
 ProjectM CPU: <100% (down from 1016%)
 Stream: Smooth, no pausing
@@ -25,10 +27,12 @@ Stream: Smooth, no pausing
 ## Prerequisites
 
 ### Hardware
+
 - NVIDIA GPU (tested with RTX 2080 SUPER)
 - Ubuntu 22.04+ host (not Windows WSL2)
 
 ### Software
+
 - Docker Engine 20.10+
 - NVIDIA driver 535+ (installed on host)
 - NVIDIA Container Toolkit (install below)
@@ -221,6 +225,7 @@ docker compose -f docker-compose.viz.yml ps
 ### 3.3 Test Data Room
 
 Open `http://localhost:3000/data-room.html`:
+
 - **Visual Stream:** Should be smooth (no pausing)
 - **Metrics:** Motion Energy, Brightness, Blackout % updating
 - **CPU (host):** `docker stats` shows pm-engine < 100%
@@ -262,6 +267,7 @@ echo "$(date -Iseconds) | Lane PR: GPU acceleration implemented (B1) | CPU: 1016
 **Cause:** Host Xorg :0 not running or not accessible.
 
 **Fix:**
+
 ```bash
 # Verify host Xorg is running on :0
 ps aux | grep "X :0"
@@ -278,6 +284,7 @@ DISPLAY=:0 glxinfo -B | grep "OpenGL vendor"
 **Cause:** VirtualGL not bridging correctly.
 
 **Fix:**
+
 ```bash
 # Test VirtualGL directly
 docker exec -it pm-engine-gpu bash

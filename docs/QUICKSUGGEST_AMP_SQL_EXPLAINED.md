@@ -1,6 +1,7 @@
 # Understanding `quicksuggest-amp.sql`
 
-This file is Firefox’s **local SQLite database** for the **Quick Suggest (AMP)** Remote Settings collection. It stores everything Firefox has downloaded from Mozilla’s servers for address-bar suggestions and sponsored suggestions.
+This file is Firefox’s **local SQLite database** for the **Quick Suggest (AMP)** Remote Settings collection. It stores
+everything Firefox has downloaded from Mozilla’s servers for address-bar suggestions and sponsored suggestions.
 
 ---
 
@@ -9,7 +10,8 @@ This file is Firefox’s **local SQLite database** for the **Quick Suggest (AMP)
 - **Path:**  
   `C:\Users\fubum\AppData\Local\Mozilla\Firefox\Profiles\fyoi34av.default-release\remote-settings\quicksuggest-amp.sql`
 - **Format:** SQLite 3 database (~944 MB on disk).
-- **Purpose:** Cache for the **quicksuggest-amp** Remote Settings collection: the data that powers **Quick Suggest** in the address bar (suggested sites and sponsored suggestions, including “AMP” / ad-sponsored suggestions).
+- **Purpose:** Cache for the **quicksuggest-amp** Remote Settings collection: the data that powers **Quick Suggest** in
+  the address bar (suggested sites and sponsored suggestions, including “AMP” / ad-sponsored suggestions).
 
 Firefox fetches this collection from:
 
@@ -36,11 +38,13 @@ So this table answers: “Which collection is this, when was it last updated, an
 
 ### 2. `records` (177 rows)
 
-Each row is **one record** in the Remote Settings sense: a small JSON blob that describes *what* to show and *where* the real payload lives.
+Each row is **one record** in the Remote Settings sense: a small JSON blob that describes *what* to show and *where* the
+real payload lives.
 
 - **id** – Record ID. You’ll see:
   - **icon-*** (hash or number) – Icons (e.g. favicons) for suggestions.
-  - **sponsored-suggestions-{country}-{form_factor}** – e.g. `sponsored-suggestions-pl-phone`, `sponsored-suggestions-us-desktop`. One record per locale/device type.
+  - **sponsored-suggestions-{country}-{form_factor}** – e.g. `sponsored-suggestions-pl-phone`,
+    `sponsored-suggestions-us-desktop`. One record per locale/device type.
 - **collection_url** – Same collection URL as above.
 - **data** – BLOB: JSON for that record.
 
@@ -66,7 +70,8 @@ Each row is **one record** in the Remote Settings sense: a small JSON blob that 
 }
 ```
 
-So **records** are the index: “For country X and form factor Y, the actual suggestion list is in the attachment at this `location`.” The real bulk data is in **attachments**.
+So **records** are the index: “For country X and form factor Y, the actual suggestion list is in the attachment at this
+`location`.” The real bulk data is in **attachments**.
 
 ---
 
@@ -86,9 +91,10 @@ Each row is **one attachment**: the actual file (JSON, image, etc.) that a recor
 | **.jpg**  | 90  | Icons/images for suggestions. |
 | **.png**  | 74  | Icons/images for suggestions. |
 
-The **large** attachments are the **.json** files. One of them (for one locale/segment) can be ~14 MB. That JSON is a **single array of thousands of suggestion objects** (one per ad/suggestion).
+The **large** attachments are the **.json** files. One of them (for one locale/segment) can be ~14 MB. That JSON is a
+**single array of thousands of suggestion objects** (one per ad/suggestion).
 
-**Example: one item inside a large JSON array**
+### Example: one item inside a large JSON array
 
 The big JSON files are **root = array** of suggestion objects. Each object looks conceptually like:
 
@@ -112,7 +118,8 @@ The big JSON files are **root = array** of suggestion objects. Each object looks
 So:
 
 - **records** = “Use this attachment for country X, phone/desktop.”
-- **attachments** = The actual files: either **big JSON arrays** (one array per locale/segment, each with thousands of `advertiser`/`click_url`/`title`/`url`/… entries) or **images** (icons).
+- **attachments** = The actual files: either **big JSON arrays** (one array per locale/segment, each with thousands of
+  `advertiser`/`click_url`/`title`/`url`/… entries) or **images** (icons).
 
 ---
 
@@ -120,10 +127,13 @@ So:
 
 - **records:** 177 rows, total `data` size is tiny (~81 KB). They’re just metadata + pointer to an attachment.
 - **attachments:** 268 rows, total `data` ~1 GB:
-  - **104 JSON files** – Many are multi‑MB each (one sampled file has **6,935 items** in a single array). So you have many locales/segments × large arrays of suggestions/ads.
+  - **104 JSON files** – Many are multi‑MB each (one sampled file has **6,935 items** in a single array). So you have
+    many locales/segments × large arrays of suggestions/ads.
   - **90 JPG + 74 PNG** – Icon/image blobs; smaller than the JSON but still add up.
 
-So the size is **by design**: Firefox is storing the full Quick Suggest/AMP catalog (all locales and form factors) plus all referenced icons. The fact that it’s ~1 GB means Mozilla is shipping a large catalog and your client is caching it all in this one SQLite file.
+So the size is **by design**: Firefox is storing the full Quick Suggest/AMP catalog (all locales and form factors) plus
+all referenced icons. The fact that it’s ~1 GB means Mozilla is shipping a large catalog and your client is caching it
+all in this one SQLite file.
 
 ---
 
@@ -158,3 +168,4 @@ If you want to re-inspect it yourself, you can use the script:
 `c:\otel\scripts\inspect_quicksuggest.py`
 
 It prints schema, sample records, and a sample suggestion object from a large JSON attachment.
+

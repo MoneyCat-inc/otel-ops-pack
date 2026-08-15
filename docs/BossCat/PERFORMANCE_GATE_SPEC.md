@@ -9,14 +9,16 @@
 ## 🎯 **Performance SLOs**
 
 ### Hard Thresholds (CI Gating)
-```
+
+```text
 p95 latency:     < 200ms  ✅ (headline SLO)
 Error rate:      < 1%     ✅
 Pass rate:       ≥ 99%    ✅
 ```
 
 ### Monitoring (Non-Gating)
-```
+
+```text
 p50 latency:     < 100ms  (monitor)
 Max latency:     < 500ms  (monitor)
 ```
@@ -28,6 +30,7 @@ Max latency:     < 500ms  (monitor)
 **Test Script:** `ALFA/TEST/load/k6/perf-gate-thresholds.js`
 
 **k6 Thresholds:**
+
 ```javascript
 thresholds: {
   http_req_duration: ['p(95)<200'],    // GATE: p95 < 200ms
@@ -37,6 +40,7 @@ thresholds: {
 ```
 
 **Exit Behavior:**
+
 - Thresholds met: Exit 0 ✅
 - Any threshold breached: Exit non-zero ❌ (CI fails)
 
@@ -45,11 +49,13 @@ thresholds: {
 ## 🔧 **Usage**
 
 ### Local Testing
+
 ```bash
 k6 run ALFA/TEST/load/k6/perf-gate-thresholds.js
 ```
 
 ### CI Integration
+
 ```bash
 pnpm perf:gate
 # Exit 0: Pass | Exit 1: Fail (threshold breach)
@@ -60,6 +66,7 @@ pnpm perf:gate
 ## 📈 **Current Performance**
 
 **Baseline (from gate verification):**
+
 - p95: 1.92ms (96% under SLO) ✅
 - p50: ~1ms ✅
 - Success rate: 99.97% ✅

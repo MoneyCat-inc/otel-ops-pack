@@ -11,11 +11,13 @@
 ### 1. run-security.ps1:39 — URL Ternary Operator
 
 **Error**:
-```
+
+```text
 ParserError: Unexpected token in hashtable
 ```
 
 **Fix**:
+
 ```powershell
 # Before (incorrect closing)
 $url = "https://api.github.com$Path" + (if($qs){"?$qs"}else{'})
@@ -31,11 +33,13 @@ $url = "https://api.github.com$Path" + (if($qs){"?$qs"}else{""})
 ### 2. run-notifications.ps1:74 — Variable Interpolation in Catch
 
 **Error**:
-```
+
+```text
 ParserError: Variable reference is not valid. ':' was not followed by valid variable name character.
 ```
 
 **Fix**:
+
 ```powershell
 # Before
 catch { Write-Host "WARN: mark-read failed for $id: $_" }
@@ -51,11 +55,13 @@ catch { Write-Host "WARN: mark-read failed for ${id}: $_" }
 ### 3. run-security.ps1:105 — Markdown Array Syntax
 
 **Error**:
-```
+
+```text
 ParserError: You must provide a value expression following the '-' operator.
 ```
 
 **Fix**:
+
 ```powershell
 # Before (single backticks, commas)
 $md = @(
@@ -73,6 +79,7 @@ $md = @(
 ```
 
 **Reasoning**:
+
 - Double backticks = escaped backtick in PowerShell (renders as single `` in markdown)
 - Commas optional in PowerShell arrays (removed for cleaner syntax)
 
@@ -122,6 +129,7 @@ pnpm sec:archive:dry
 ```
 
 **Required Scopes**:
+
 - `repo` - Full repository access
 - `security_events` - Code scanning alerts
 
@@ -141,11 +149,13 @@ pnpm sec:archive:dry
 ## Testing Checklist
 
 ### Syntax Validation ✅
+
 - [x] run-security.ps1 parses without errors
 - [x] run-notifications.ps1 parses without errors
 - [x] Scripts execute and reach API calls
 
 ### Runtime Validation (Requires Auth)
+
 - [ ] Dry run completes successfully
 - [ ] Alert archival works
 - [ ] Analysis archival works
