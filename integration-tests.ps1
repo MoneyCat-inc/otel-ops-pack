@@ -12,6 +12,9 @@ $ErrorActionPreference = "Stop"
 $LogDir = "C:\otel\logs"
 $Log = Join-Path $LogDir "integration-tests.last.txt"
 
+Import-Module (Join-Path $PSScriptRoot 'BRAV\SCPT\lib\OtelPorts.psm1') -Force
+$script:OtelPorts = Get-OtelPorts
+
 if (-not (Test-Path $LogDir)) { New-Item -ItemType Directory -Force -Path $LogDir | Out-Null }
 function WL($m){ $ts=(Get-Date).ToString("s"); $line="[$ts] $m"; $line | Tee-Object -FilePath $Log -Append }
 
@@ -200,7 +203,7 @@ if ($FullTest) {
     $jsonPayload = $testData | ConvertTo-Json -Depth 10
     $headers = @{ "Content-Type" = "application/json" }
     
-    $testResp = Invoke-WebRequest -Uri http://127.0.0.1:5321/v1/logs -Method Post -Headers $headers -Body $jsonPayload -UseBasicParsing -TimeoutSec 10
+    $testResp = Invoke-WebRequest -Uri "$(Get-OtelIngestHttpBase)/v1/logs" -Method Post -Headers $headers -Body $jsonPayload -UseBasicParsing -TimeoutSec 10
     
     if ($testResp.StatusCode -eq 200) {
       Add-TestResult "Full Integration Test" "PASS" "End-to-end data flow test passed"

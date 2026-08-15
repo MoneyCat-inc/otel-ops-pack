@@ -8,7 +8,7 @@
  *   tsx scripts/emit-gate-016-traces.ts
  * 
  * Environment Variables:
- *   OTEL_EXPORTER_OTLP_ENDPOINT  - OTLP endpoint (default: http://127.0.0.1:5321/v1/traces)
+ *   OTEL_EXPORTER_OTLP_ENDPOINT  - OTLP endpoint (default: ingest HTTP /v1/traces from otel-ports.json)
  *   OTEL_SERVICE_NAME            - Service identifier (default: viz-engine-projectm)
  *   DEPLOYMENT_ENVIRONMENT        - Environment (default: staging)
  */
@@ -19,10 +19,11 @@ import { SemanticResourceAttributes as R } from '@opentelemetry/semantic-convent
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { trace, context } from '@opentelemetry/api';
+import { getOtelIngestHttpBase } from '../ALFA/LIBS/lib/otel-ports';
 
 // Configuration
 const config = {
-  endpoint: process.env.OTEL_EXPORTER_OTLP_ENDPOINT ?? 'http://127.0.0.1:5321/v1/traces',
+  endpoint: process.env.OTEL_EXPORTER_OTLP_ENDPOINT ?? `${getOtelIngestHttpBase()}/v1/traces`,
   serviceName: process.env.OTEL_SERVICE_NAME ?? 'viz-engine-projectm',
   environment: process.env.DEPLOYMENT_ENVIRONMENT ?? 'staging',
 };

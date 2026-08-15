@@ -36,7 +36,7 @@
     If set, only stops the service (doesn't start)
 
 .PARAMETER EnableOTel
-    If set, configures OpenTelemetry instrumentation pointing to Collector (5320)
+    If set, configures OpenTelemetry instrumentation pointing to Collector (ingest gRPC from otel-ports.json)
 
 .EXAMPLE
     .\deploy-dotnet-service.ps1 -ServiceName "svc2-api" -Port 5556 -BinaryPath ".\svc2\svc2.dll" -HealthUrl "http://localhost:5556/health" -EnableOTel
@@ -69,6 +69,9 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+
+Import-Module (Join-Path $PSScriptRoot '..\..\BRAV\SCPT\lib\OtelPorts.psm1') -Force
+$script:OtelPorts = Get-OtelPorts
 
 # Structured logging
 function Write-StructuredLog {
@@ -269,9 +272,10 @@ try {
     $env:OTEL_DOTNET_AUTO_HOME = "C:\Program Files\OpenTelemetry .NET AutoInstrumentation"
     
     if ($EnableOTel) {
-        # Gate #029: Route through Windows Collector on port 5320
+        # Gate #029: Route through Windows Collector ingest gRPC (otel-ports.json)
+        $ingestGrpcUrl = "http://127.0.0.1:$($script:OtelPorts.IngestGrpc)"
         $env:OTEL_SERVICE_NAME = $ServiceName
-        $env:OTEL_EXPORTER_OTLP_ENDPOINT = "http://127.0.0.1:5320"
+        $env:OTEL_EXPORTER_OTLP_ENDPOINT = $ingestGrpcUrl
         $env:OTEL_EXPORTER_OTLP_PROTOCOL = "grpc"
         $env:OTEL_TRACES_EXPORTER = "otlp"
         $env:OTEL_METRICS_EXPORTER = "otlp"
@@ -285,7 +289,7 @@ try {
         $env:DOTNET_SHARED_STORE = "C:\Program Files\OpenTelemetry .NET AutoInstrumentation\store"
         
         Write-StructuredLog -Level "INFO" -Message "OTel instrumentation configured" -Data @{
-            endpoint = "http://127.0.0.1:5320"
+            endpoint = $ingestGrpcUrl
             service_name = $ServiceName
         }
     }
