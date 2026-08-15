@@ -137,10 +137,16 @@ jobs:
           # Second Pass B1: docs/archive/** is filed history — markdownlint + lychee skip it
           # (byte-identical moves must not re-trigger GR-03/GR-04 on archival prose).
           # Budgets (GR-02) still count archive path changes; use lane:cleanup for large batches.
+          # Only markdown is lintable: markdownlint and lychee both choke on raw
+          # .txt/.json artifacts committed under docs/ (a raw lychee REPORT full of
+          # intentionally-broken URLs fed back to lychee turned #517 red). Budgets
+          # still count every docs-path change via changed_docs.txt.
           while IFS= read -r f; do
             [ -f "$f" ] || continue
             case "$f" in
               docs/archive/*) continue ;;
+              *.md) ;;
+              *) continue ;;
             esac
             printf '%s\n' "$f"
           done < changed_docs.txt > lintable_docs.txt || true
