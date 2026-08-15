@@ -22,6 +22,9 @@ param(
 
 $ErrorActionPreference = "Stop"
 
+Import-Module (Join-Path $PSScriptRoot 'lib\OtelPorts.psm1') -Force
+$script:OtelPorts = Get-OtelPorts
+
 # BossCat operational toggles (from environment)
 $STRICT = [bool]([Environment]::GetEnvironmentVariable("BOSSCAT_STRICT","Process"))
 $SKIP_API = [bool]([Environment]::GetEnvironmentVariable("BOSSCAT_SKIP_API","Process"))
@@ -235,7 +238,7 @@ Write-Host "`n[verify] Step 2/3: canary trace (capturing TRACE_ID for pinpoint v
 $env:OTEL_EXPORTER_OTLP_PROTOCOL = "http/protobuf"
 # Default: Windows collector HTTP port. Override with BOSSCAT_OTLP_ENDPOINT for SigNoz-direct mode.
 $otlpBase = [Environment]::GetEnvironmentVariable("BOSSCAT_OTLP_ENDPOINT", "Process")
-if (-not $otlpBase) { $otlpBase = "http://127.0.0.1:5321" }
+if (-not $otlpBase) { $otlpBase = Get-OtelIngestHttpBase -Ports $script:OtelPorts }
 $env:OTEL_EXPORTER_OTLP_ENDPOINT = $otlpBase
 $env:OTEL_EXPORTER_OTLP_TRACES_ENDPOINT = $otlpBase.TrimEnd('/') + "/v1/traces"
 Write-Host "[verify] OTLP HTTP endpoint: $($otlpBase.TrimEnd('/'))" -ForegroundColor Gray

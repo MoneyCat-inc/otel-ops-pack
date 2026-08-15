@@ -39,6 +39,9 @@ $script:errors = @()
 $script:warnings = @()
 $script:successes = @()
 
+Import-Module (Join-Path $PSScriptRoot 'lib\OtelPorts.psm1') -Force
+$script:OtelPorts = Get-OtelPorts
+
 function Write-Step {
     param([string]$Message)
     Write-Host "`n==> $Message" -ForegroundColor Cyan
@@ -147,7 +150,7 @@ if ($SkipSyntheticSpan) {
 } else {
     try {
         # Set environment variables for Node OTLP emitter
-        $env:OTEL_EXPORTER_OTLP_ENDPOINT = "http://127.0.0.1:5321"
+        $env:OTEL_EXPORTER_OTLP_ENDPOINT = Get-OtelIngestHttpBase -Ports $script:OtelPorts
         $env:OTEL_SERVICE_NAME = "iona-app"
         
         # Run Node.js synthetic span emitter (replaces Python implementation)

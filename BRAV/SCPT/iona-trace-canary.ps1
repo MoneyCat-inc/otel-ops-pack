@@ -9,7 +9,7 @@
 [CmdletBinding()]
 param(
   [string]$CollectorHost = "localhost",
-  [int]$OtlpHttpPort = 5321,           # OTLP/HTTP endpoint e.g. http://host:5321/v1/traces
+  [int]$OtlpHttpPort = -1,
   [int]$ZipkinPort = 9411,             # Zipkin JSON ingest
   [string]$ServiceName = "frontend",
   [int]$DurationMs = 600,
@@ -17,6 +17,9 @@ param(
   [hashtable]$Attributes = @{ bosscat = "1"; canary = "1"; env = "dev" },
   [switch]$Force
 )
+
+Import-Module (Join-Path $PSScriptRoot 'lib\OtelPorts.psm1') -Force
+if ($OtlpHttpPort -lt 0) { $OtlpHttpPort = (Get-OtelPorts).IngestHttp }
 
 Write-Host "🐾 IONA Trace Canary — BossCat Quick Span" -ForegroundColor Cyan
 Write-Host ("Service={0} • OTLP/HTTP={1}:{2} • Zipkin={3}:{4}" -f $ServiceName, $CollectorHost, $OtlpHttpPort, $CollectorHost, $ZipkinPort) -ForegroundColor DarkGray
