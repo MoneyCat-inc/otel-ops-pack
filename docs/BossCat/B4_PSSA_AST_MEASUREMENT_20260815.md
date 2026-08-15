@@ -16,6 +16,22 @@
 
 Done when (plan): **0 parse errors** live in scope; **PSSA count recorded**.
 
+### Out-of-scope findings (OEM verify, full-repo AST sweep)
+
+Full repo: **782** tracked `.ps1`, **28** parse-error files / **186** events. The declared
+scope's 23/161 is the `BRAV/SCPT` subset. Five error files sit outside scope:
+
+| File | Events | Disposition |
+|------|--------|-------------|
+| `ALFA/TOOL/cli/hygiene-to-issues.ps1` | 9 | **join B4 fix queue** (live tooling) |
+| `ALFA/TOOL/cli/hygiene-fixed.ps1` | 3 | **join B4 fix queue** (live tooling) |
+| `ALFA/TEST/unit/Hygiene.Tests.ps1` | 1 | **join B4 fix queue** (live test) |
+| `CHAR/DOCS/docs/manual-log-test.ps1` | 11 | archive mirror — filed as-is per charter |
+| `CHAR/PRSV/comfort-cat-stubs/.../comfort-checklist.ps1` | 1 | preserved stub — filed as-is |
+
+`scripts/legacy/**` (51 files): **0** parse errors. "Done" for B4 parse-zero means the
+23 in-scope files **plus the three ALFA files above**.
+
 ## Canonical commands
 
 Run from repo root. **Do not pipe** if you need the script’s exit code (OEM instrument lesson).
