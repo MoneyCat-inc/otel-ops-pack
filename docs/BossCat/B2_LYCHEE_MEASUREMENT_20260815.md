@@ -62,3 +62,26 @@ https://www.patreon.com/posts/welcome-to-otel-141476152
 ## Next
 
 Fix/annotate in ≤10-file docs batches; every replacement URL verified live before use.
+
+## Fix batch 1 (2026-08-15)
+
+**Command** (same as measurement; re-run after this batch before claiming zero):
+
+```bash
+lychee --config .lychee.toml --no-progress --max-redirects 5 --max-retries 2 \
+  --retry-wait-time 2 --max-concurrency 10 --format detailed \
+  "docs/**/*.md" "README.md" \
+  --exclude-path docs/archive --exclude-path docs/gate/archive \
+  --exclude-path "docs/BossCat/Research"
+```
+
+| Class | Action (verified live before replace) |
+|-------|----------------------------------------|
+| Stale Actions run URLs | Point at workflow/Actions list; keep run ids as prose (`ENABLE_GATE_SITE_PROTECTION`, `RELEASE_NOTES`, `FOLLOWUP_SBOM_BLOCKING`) |
+| `signoz.io/.../otlp/` 404 | → https://signoz.io/docs/instrumentation/ (200) in `adot-setup.md` |
+| `cvedetails.com` 403/rot | → https://www.cve.org/ (200) in `DEPENDABOT_SECURITY_GUIDE.md` |
+| Dead `@aws/bedrock-agentcore-mcp` | → AWS docs + awslabs MCP page (both 200); mcp.json examples use `uvx awslabs.amazon-bedrock-agentcore-mcp-server@latest` |
+| `/settings/pages` private 404 | Annotate + link public Pages docs (200) in `HUB_GO_LIVE_RUNBOOK.md` |
+| Nordic nRF URL bot-403 | Prefer SlimeVR web flasher link (200); drop direct Nordic href in VR setup |
+
+**Deferred (bot-403 / auth / generated):** Ko-fi, Patreon, npmjs.com HTML, Dependabot UI links (already annotated private in places), `docs/BossCat/AGENTS.md` LATEST.json (generated registry).
