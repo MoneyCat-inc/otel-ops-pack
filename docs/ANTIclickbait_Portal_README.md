@@ -3,7 +3,8 @@
 **Date:** 2025-10-16  
 **Author:** Cursor{Implementer}
 
-Portal assets provide a simple public landing page that mirrors the transparency bundle and surfaces donation links once approved.
+Portal assets provide a simple public landing page that mirrors the transparency
+bundle and surfaces donation links once approved.
 
 ## Files
 
@@ -12,7 +13,8 @@ Portal assets provide a simple public landing page that mirrors the transparency
 
 ## Structure Highlights
 
-`portal.html` is self-contained (HTML + inline CSS) to minimise deployment friction. It shares the Comfort Cat design tokens used elsewhere in the repo and includes:
+`portal.html` is self-contained (HTML + inline CSS) to minimise deployment friction.
+It shares the Comfort Cat design tokens used elsewhere in the repo and includes:
 
 - Hero section with value proposition and quick links.
 - Honest summary of what the project can and cannot do.

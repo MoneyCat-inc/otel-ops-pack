@@ -91,3 +91,13 @@ First `--fix` batch: 10 low-debt live files (1–3 errors each) cleared to **0**
 | After (same command) | **6,401** / **271** |
 
 Skipped generated `docs/BossCat/AGENTS.md` (regen via `pnpm agent:setup`).
+
+## Fix batch 3 (2026-08-15)
+
+| Probe | Result |
+|-------|--------|
+| Before (canonical command @ `b63f4bf2f`) | **6,162** / **271** (Linting: 272; post-#517 debt clearance from 6,401) |
+| Batch (10 files → 0 issues) | STATUS_AUTO_UPDATE setup / ANTIclickbait portal+README / BRIEFING_CHAR_DOCS_D3 / ecrr INDEX / IONA_ERRORS / TETRAGRAM_PHASE1 / visualizer README / KOFI_WELCOME / cursor-implementer |
+| After (same command) | **6,128** / **271** |
+
+Counted with `Summary:` / error-line match count (not `tail -1`).
