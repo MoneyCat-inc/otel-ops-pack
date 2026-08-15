@@ -34,7 +34,7 @@ param(
     [Parameter(Mandatory)]
     [string]$AgentId,
     
-    [string]$TelemetryEndpoint = 'http://localhost:5321/v1/traces',
+    [string]$TelemetryEndpoint,
     
     [ValidateSet('metrics', 'logs', 'traces', 'all')]
     [string]$TelemetryType = 'all',
@@ -59,6 +59,10 @@ param(
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
+
+Import-Module (Join-Path $PSScriptRoot 'lib\OtelPorts.psm1') -Force
+$script:OtelPorts = Get-OtelPorts
+if (-not $TelemetryEndpoint) { $TelemetryEndpoint = "$(Get-OtelIngestHttpBase -HostName 'localhost' -Ports $script:OtelPorts)/v1/traces" }
 
 # Telemetry Integration Classes
 class AgentTelemetryCollector {

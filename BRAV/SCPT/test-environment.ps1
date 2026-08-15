@@ -1,4 +1,6 @@
 # Simple environment test script
+Import-Module (Join-Path $PSScriptRoot 'lib\OtelPorts.psm1') -Force
+$script:OtelPorts = Get-OtelPorts
 Write-Host "=== Environment Test ===" -ForegroundColor Green
 Write-Host "Current directory: $(Get-Location)" -ForegroundColor Yellow
 Write-Host "PowerShell version: $($PSVersionTable.PSVersion)" -ForegroundColor Yellow
@@ -29,7 +31,12 @@ try {
 
 # Test port connectivity
 Write-Host "`nTesting port connectivity..." -ForegroundColor Green
-$ports = @(5320, 5321, 4317, 8080)
+$ports = @(
+    $script:OtelPorts.IngestGrpc,
+    $script:OtelPorts.IngestHttp,
+    $script:OtelPorts.SignozOtlpGrpc,
+    $script:OtelPorts.SignozUiHttp
+)
 foreach ($port in $ports) {
     try {
         $result = Test-NetConnection -ComputerName localhost -Port $port -WarningAction SilentlyContinue

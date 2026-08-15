@@ -1,4 +1,4 @@
-# Canonical ports: 5320 (gRPC), 5321 (HTTP). See windows/otelcol/README.md.
+# Canonical ports: DELT/CONF/otel-ports.json (see windows/otelcol/README.md).
 # Resonai ↔ OTel Wiring Verification Script
 # Tests the analytics forwarding from /api/events to SigNoz via OTLP/HTTP
 # Updated with progress indicators for better user experience
@@ -15,6 +15,9 @@ param(
 
 Set-StrictMode -Version 2
 $ErrorActionPreference = "Stop"
+
+Import-Module (Join-Path $PSScriptRoot 'lib\OtelPorts.psm1') -Force
+$script:OtelPorts = Get-OtelPorts
 
 Write-Host "=== Resonai ↔ OTel Wiring Verification ===" -ForegroundColor Green
 Write-Host "Environment: $Environment" -ForegroundColor Cyan
@@ -66,7 +69,7 @@ function Invoke-AnalyticsQuery {
         $now = [long]([DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()); $start = $now - [long]($MinutesBack * 60000)
         $filterExpression = "attributes.dataset = `"resonai_analytics`" AND attributes.event_id = `"$EventId`""
         $payload = @{ start=$start; end=$now; requestType="raw"; compositeQuery=@{ queries=@(@{ type="builder_query"; spec=@{ name="A"; signal="logs"; filter=@{ expression=$filterExpression }; order=@(@{ key=@{ name="timestamp" }; direction="desc" }); limit=10; offset=0 }}) } } | ConvertTo-Json -Depth 8
-        $params = @{ Method='Post'; Uri='http://localhost:8080/api/v5/query_range'; ContentType='application/json'; Body=$payload; TimeoutSec=30 }
+        $params = @{ Method='Post'; Uri="http://localhost:$($script:OtelPorts.SignozUiHttp)/api/v5/query_range"; ContentType='application/json'; Body=$payload; TimeoutSec=30 }
         if ($script:sigNozHeaders) { $params.Headers = $script:sigNozHeaders }
         $result = Invoke-RestMethod @params
         Stop-SpinnerJob -Job $spinnerJob
@@ -86,9 +89,9 @@ try {
 } catch { Write-Fail "Service otelcol-contrib not found: $($_.Exception.Message)" }
 
 # Check ports
-Test-TcpPort -Port 5320 -Label "Windows collector (OTLP/gRPC)"
-Test-TcpPort -Port 5321 -Label "Windows collector (OTLP/HTTP)"
-Test-TcpPort -Port 8080 -Label "SigNoz UI"
+Test-TcpPort -Port $script:OtelPorts.IngestGrpc -Label "Windows collector (OTLP/gRPC)"
+Test-TcpPort -Port $script:OtelPorts.IngestHttp -Label "Windows collector (OTLP/HTTP)"
+Test-TcpPort -Port $script:OtelPorts.SignozUiHttp -Label "SigNoz UI"
 
 Write-Host "`n2. Analytics API Test:" -ForegroundColor Yellow
 
@@ -161,8 +164,8 @@ if (-not $apiSuccess) {
         Write-Host "`n   [INFO] Dev server check skipped (Environment: $Environment)" -ForegroundColor Cyan
         Write-Host "`n3. Infrastructure health verification:" -ForegroundColor Yellow
 
-        Test-TcpPort -Port 4317 -Label "OTLP aggregator (gRPC)"
-        Test-TcpPort -Port 4318 -Label "OTLP aggregator (HTTP)"
+        Test-TcpPort -Port $script:OtelPorts.SignozOtlpGrpc -Label "OTLP aggregator (gRPC)"
+        Test-TcpPort -Port $script:OtelPorts.SignozOtlpHttp -Label "OTLP aggregator (HTTP)"
 
         try {
             $collectorHealth = Invoke-RestMethod -Uri "http://127.0.0.1:13134/healthz" -Method Get -TimeoutSec 3 -ErrorAction Stop
@@ -179,8 +182,8 @@ if (-not $apiSuccess) {
 
         Write-Host "   Production wiring verified via:" -ForegroundColor Cyan
         Write-Host "   - OTel Collector service + health endpoint" -ForegroundColor Green
-        Write-Host "   - OTLP aggregator ports (4317 gRPC, 4318 HTTP)" -ForegroundColor Green
-        Write-Host "   - SigNoz UI port 8080" -ForegroundColor Green
+        Write-Host ("   - OTLP aggregator ports ({0} gRPC, {1} HTTP)" -f $script:OtelPorts.SignozOtlpGrpc, $script:OtelPorts.SignozOtlpHttp) -ForegroundColor Green
+        Write-Host ("   - SigNoz UI port {0}" -f $script:OtelPorts.SignozUiHttp) -ForegroundColor Green
         Write-Host "   - Canary tests can be used for end-to-end verification" -ForegroundColor Green
         # Fall through to summary — do not exit early with an unverified PASS
     } else {
@@ -313,7 +316,7 @@ if ($allChecksPassed) {
     if ($apiSuccess) {
         Write-Host "Analytics are successfully flowing from Resonai to SigNoz!" -ForegroundColor Green
         Write-Host "`nNext steps:" -ForegroundColor Yellow
-        Write-Host "1. Open SigNoz UI at http://localhost:8080" -ForegroundColor Yellow
+        Write-Host ("1. Open SigNoz UI at http://localhost:{0}" -f $script:OtelPorts.SignozUiHttp) -ForegroundColor Yellow
         Write-Host "2. Go to Logs section" -ForegroundColor Yellow
         Write-Host "3. Filter: attributes.dataset = `"resonai_analytics`"" -ForegroundColor Yellow
         Write-Host "4. Check artifacts in artifacts/wiring-verify.txt" -ForegroundColor Yellow
@@ -329,7 +332,7 @@ if ($allChecksPassed) {
     }
     Write-Host "`nTroubleshooting:" -ForegroundColor Yellow
     Write-Host "1. Ensure otelcol-contrib service is running" -ForegroundColor Yellow
-    Write-Host "2. Check ports 5320 (OTLP/gRPC), 5321 (OTLP/HTTP) and 8080 (SigNoz UI) are listening" -ForegroundColor Yellow
+    Write-Host ("2. Check ports {0} (OTLP/gRPC), {1} (OTLP/HTTP) and {2} (SigNoz UI) are listening" -f $script:OtelPorts.IngestGrpc, $script:OtelPorts.IngestHttp, $script:OtelPorts.SignozUiHttp) -ForegroundColor Yellow
     Write-Host "3. Confirm Resonai dev server is running on port 3003" -ForegroundColor Yellow
     Write-Host "4. Check artifacts/wiring-verify.txt for details" -ForegroundColor Yellow
 }
@@ -344,4 +347,3 @@ if ($allChecksPassed) {
     Write-Host "== Wiring verification FAILED ==" -ForegroundColor Red
     exit 2  # Unhealthy but retryable (watchdog can backoff and re-enqueue)
 }
-
