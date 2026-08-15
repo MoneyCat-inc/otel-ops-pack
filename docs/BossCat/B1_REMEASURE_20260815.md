@@ -2,7 +2,7 @@
 # B1 remasure snapshot (2026-08-15)
 
 Canonical series (CI config-resolution path):
-**10,718/370 → 6,445/271 → 6,401 → 6,162 → 6,128 → 6,096 → 5,749** (post archive, fix1–4 scale, and interim main clearance).
+**10,718/370 → 6,445/271 → 6,401 → 6,162 → 6,128 → 6,096 → 5,750** (post archive, fix1–4 scale, and interim main clearance).
 
 See `docs/BossCat/B1_LINT_MEASUREMENT_20260815.md` for the pinned command and OEM correction
 of the superseded **7,402 / 244** claim.
@@ -13,7 +13,7 @@ of the superseded **7,402 / 244** claim.
 |-------|--------|
 | Before (canonical command, branch from `main`) | **6,096** / **271** (Linting: 272) |
 | Batch | **35** low-debt live docs (1–15 errors) → **0** issues |
-| After (same command) | **5,749** / **271** |
+| After (same command) | **5,750** / **271** |
 
 **Command:**
 
