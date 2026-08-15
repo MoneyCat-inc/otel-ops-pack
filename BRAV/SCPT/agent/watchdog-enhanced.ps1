@@ -172,7 +172,7 @@ try {
                 $taskIndex = 0
                 foreach ($task in $availableTasks | Select-Object -First $maxTasksPerCycle) {
                     $taskIndex++
-                    Write-Host "[watchdog] Processing task $taskIndex/$maxTasksPerCycle: $($task.id)" -ForegroundColor Yellow
+                    Write-Host "[watchdog] Processing task $taskIndex/${maxTasksPerCycle}: $($task.id)" -ForegroundColor Yellow
                     
                     try {
                         # Execute the task command with progress

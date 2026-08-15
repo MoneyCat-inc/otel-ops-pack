@@ -101,7 +101,7 @@ function Invoke-AutoRemediation {
         [string]$Issue
     )
     
-    Write-Warning "Attempting auto-remediation for $ServiceName: $Issue"
+    Write-Warning "Attempting auto-remediation for ${ServiceName}: $Issue"
     
     try {
         switch ($Issue) {
@@ -123,7 +123,7 @@ function Invoke-AutoRemediation {
             }
         }
     } catch {
-        Write-Error "Auto-remediation failed for $ServiceName: $($_.Exception.Message)"
+        Write-Error "Auto-remediation failed for ${ServiceName}: $($_.Exception.Message)"
         return $false
     }
 }

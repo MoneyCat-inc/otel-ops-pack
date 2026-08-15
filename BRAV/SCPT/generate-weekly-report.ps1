@@ -2,14 +2,14 @@
 # Usage: pwsh -File scripts/generate-weekly-report.ps1 -ExportReport
 # Updated with progress indicators for better user experience
 
-# Import progress indicators module
-. .\BRAV\SCPT\progress-indicators.ps1
-
 param(
     [switch]$ExportReport = $false,
     [int]$DaysBack = 7,
     [string]$ReportPath = "artifacts/weekly-report-$(Get-Date -Format 'yyyyMMdd').json"
 )
+
+# Import progress indicators module (must follow param block)
+. .\BRAV\SCPT\progress-indicators.ps1
 
 Write-Host "📊 Weekly Pipeline Performance Report" -ForegroundColor Cyan
 Write-Host "=====================================" -ForegroundColor Cyan
