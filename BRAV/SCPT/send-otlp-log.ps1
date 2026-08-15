@@ -16,8 +16,13 @@ param(
     [string]$ServiceName = "direct-ingestion",
     
     [Parameter(Mandatory=$false)]
-    [string]$Endpoint = "http://localhost:5321/v1/logs"
+    [string]$Endpoint
 )
+
+Import-Module (Join-Path $PSScriptRoot 'lib\OtelPorts.psm1') -Force
+if (-not $Endpoint) {
+    $Endpoint = "$(Get-OtelIngestHttpBase -HostName 'localhost')/v1/logs"
+}
 
 function Send-OTLPLog {
     param(

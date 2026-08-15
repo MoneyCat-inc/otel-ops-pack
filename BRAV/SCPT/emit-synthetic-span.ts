@@ -2,8 +2,9 @@ import { context, trace } from "@opentelemetry/api";
 import { BasicTracerProvider, BatchSpanProcessor } from "@opentelemetry/sdk-trace-base";
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
 import { Resource } from "@opentelemetry/resources";
+import { getOtelIngestHttpBase } from "../../ALFA/LIBS/lib/otel-ports";
 
-const endpoint = (process.env.OTEL_EXPORTER_OTLP_ENDPOINT || "http://127.0.0.1:5321").replace(/\/$/, "");
+const endpoint = (process.env.OTEL_EXPORTER_OTLP_ENDPOINT || getOtelIngestHttpBase()).replace(/\/$/, "");
 const url = `${endpoint}/v1/traces`;
 const serviceName = process.env.OTEL_SERVICE_NAME || "iona-app";
 

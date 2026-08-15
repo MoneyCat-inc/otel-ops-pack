@@ -5,8 +5,13 @@ param(
     [string]$CanaryId = (New-Guid).ToString().Substring(0,8),
     [string]$Message = "Windows Canary Log Test",
     [string]$ServiceName = "windows-canary",
-    [string]$CollectorEndpoint = "http://localhost:5321/v1/logs"
+    [string]$CollectorEndpoint
 )
+
+Import-Module (Join-Path $PSScriptRoot 'lib\OtelPorts.psm1') -Force
+if (-not $CollectorEndpoint) {
+    $CollectorEndpoint = "$(Get-OtelIngestHttpBase -HostName 'localhost')/v1/logs"
+}
 
 $timestamp = [int64]((Get-Date).ToUniversalTime() - (Get-Date "1970-01-01")).TotalMilliseconds * 1000000
 
