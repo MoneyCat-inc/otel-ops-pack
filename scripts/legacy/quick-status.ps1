@@ -1,3 +1,6 @@
+Import-Module (Join-Path $PSScriptRoot '..\..\BRAV\SCPT\lib\OtelPorts.psm1') -Force
+$script:OtelPorts = Get-OtelPorts
+
 # Quick Status Check
 Write-Host "=== Quick Status Check ===" -ForegroundColor Cyan
 
@@ -25,7 +28,15 @@ if ($service) {
 
 # Check ports
 Write-Host "Ports:" -ForegroundColor Yellow
-$ports = @(5320, 5321, 4317, 4318, 8080, 8888, 13134)
+$ports = @(
+    $script:OtelPorts.IngestGrpc,
+    $script:OtelPorts.IngestHttp,
+    $script:OtelPorts.SignozOtlpGrpc,
+    $script:OtelPorts.SignozOtlpHttp,
+    $script:OtelPorts.SignozUiHttp,
+    8888,
+    13134
+)
 foreach ($port in $ports) {
     $ok = Test-NetConnection -ComputerName localhost -Port $port -InformationLevel Quiet -WarningAction SilentlyContinue
     $status = if ($ok) { "✅" } else { "❌" }
@@ -34,5 +45,3 @@ foreach ($port in $ports) {
 }
 
 Write-Host "=== Status Complete ===" -ForegroundColor Cyan
-
-

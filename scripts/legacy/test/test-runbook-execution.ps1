@@ -1,4 +1,7 @@
 # Test Runbook Execution Script
+Import-Module (Join-Path $PSScriptRoot '..\..\..\BRAV\SCPT\lib\OtelPorts.psm1') -Force
+$script:OtelPorts = Get-OtelPorts
+
 Write-Host "=== Testing Windows Collector -> SigNoz Runbook ===" -ForegroundColor Green
 
 # 1. Test SigNoz UI accessibility
@@ -66,7 +69,7 @@ try {
         )
     } | ConvertTo-Json -Depth 10
 
-    $response = Invoke-RestMethod -Uri "http://localhost:5321/v1/logs" -Method Post -Body $otlpPayload -ContentType "application/json" -TimeoutSec 10
+    $response = Invoke-RestMethod -Uri "$(Get-OtelIngestHttpBase -HostName localhost -Ports $script:OtelPorts)/v1/logs" -Method Post -Body $otlpPayload -ContentType "application/json" -TimeoutSec 10
     Write-Host "[OK] OTLP direct canary sent successfully" -ForegroundColor Green
 } catch {
     Write-Host "[WARN] OTLP direct canary failed: $($_.Exception.Message)" -ForegroundColor Yellow
