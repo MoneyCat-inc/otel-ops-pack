@@ -74,7 +74,7 @@ SigNoz UI (http://localhost:8080)
 - ✅ `config.yaml` - Primary OTel collector config (Docker)
 - ✅ `docker-compose-signoz.yml` - SigNoz stack
 - ✅ `BRAV/SCPT/verify-pipeline.ps1` - End-to-end gate validation (exit codes 0/1/2)
-- ✅ `operator-pipeline-check.ps1` - Operator linear check after collector restart
+- ✅ `scripts/legacy/operator-pipeline-check.ps1` - Operator linear check after collector restart
 - ✅ `scripts/canary-test.ps1` - Test data generation
 
 ### Deprecated
@@ -125,7 +125,7 @@ service.name = "resonai_analytics"
 ### Trade-offs
 
 | Aspect | Direct-to-SigNoz | Previous (Windows Collector) |
-|--------|------------------|------------------------------|
+| -------- | ------------------ | ------------------------------ |
 | **Latency** | ≤200ms | 2-5s |
 | **Config Files** | 1 (Docker only) | 2 (Windows + Docker) |
 | **Maintenance** | Low | Medium |
@@ -173,4 +173,3 @@ OTel Collector Internal Metrics → SigNoz
 **Last Updated**: 2025-11-02  
 **Status**: Active - Canonical Architecture  
 **Maintained by**: MoneyCat-inc
-

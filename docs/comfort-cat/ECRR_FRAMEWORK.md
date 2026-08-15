@@ -34,7 +34,7 @@ traceability, and evidence-based decision-making.
 
 ```powershell
 # Quick health check
-pwsh -File quick-status.ps1
+pwsh -File scripts/legacy/quick-status.ps1
 # OR (if using BRAV scripts):
 # pwsh -File BRAV\SCPT\quick-monitor.ps1
 
@@ -42,7 +42,7 @@ pwsh -File quick-status.ps1
 pwsh -File BRAV\SCPT\verify-pipeline.ps1
 
 # Operator linear check after collector restart (no gate exit codes)
-pwsh -File operator-pipeline-check.ps1
+pwsh -File scripts/legacy/operator-pipeline-check.ps1
 
 # Service status
 sc query otelcol-contrib
@@ -150,7 +150,7 @@ pnpm roadmap:update
 **Ownership Matrix:**
 
 | Role | Responsibility | Acceptance Criteria |
-|------|----------------|---------------------|
+| ------ | ---------------- | --------------------- |
 | **Project Manager** | Pass rates, roadmap | PR ≥95% |
 | **Implication Agent** | Risk analysis | Blocked features tracked |
 | **Verifier** | Gate enforcement | 100% gate compliance |
@@ -414,5 +414,3 @@ ECRR Compliance = (ECRR Reports Generated) / (ECRR-Triggering Events) × 100%
 
 🐾 **ECRR Framework**  
 *Examine → Clean → Report → Role: The foundation of all Cat Nap Control Room operations*
-
-
