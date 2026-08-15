@@ -1,10 +1,12 @@
 # ANTIclickbait Transparency Hub
 
-Static documentation bundle that publishes an evidence-first status board for the Resonai [OTel] project. The hub lists each major feature, the claims we make about it, links to primary evidence, and the limitations that still apply.
+Static documentation bundle that publishes an evidence-first status board for the
+Resonai [OTel] project. The hub lists each major feature, the claims we make about it,
+links to primary evidence, and the limitations that still apply.
 
 ## Folder Layout
 
-```
+```text
 docs/anticlickbait/
 ├── index.html   # Homepage and scoring overview
 ├── style.css    # Comfort Cat derived styling
@@ -45,4 +47,6 @@ The `metadata` block also stores the published version, update date, and total c
 
 ## Pending Work
 
-Funding support for the project is outside the scope of this bundle. See `BOSSCAT_ANTICLICKBAIT_DECISION_REQUIRED.md` for the decision log that tracks donation placement and messaging.
+Funding support for the project is outside the scope of this bundle. See
+`BOSSCAT_ANTICLICKBAIT_DECISION_REQUIRED.md` for the decision log that tracks donation
+placement and messaging.

@@ -6,7 +6,9 @@
 
 ## Overview
 
-Visualizer is a lightweight, evidence-first observability UI that renders machine-verifiable proof artifacts for traces, logs, and (future) metrics. Built on the Resonai design system, it provides a professional interface for viewing telemetry signals with ECRR compliance.
+Visualizer is a lightweight, evidence-first observability UI that renders machine-verifiable
+proof artifacts for traces, logs, and (future) metrics. Built on the Resonai design system,
+it provides a professional interface for viewing telemetry signals with ECRR compliance.
 
 ## Quick Start
 
@@ -28,7 +30,7 @@ cd docs
 pwsh -Command "Start-Process 'http://localhost:8000/visualizer/index.html'; python -m http.server 8000"
 ```
 
-Then navigate to: **http://localhost:8000/visualizer/index.html**
+Then navigate to: **<http://localhost:8000/visualizer/index.html>**
 
 ### 2. Generate Proof Artifacts (in separate terminal)
 
@@ -56,7 +58,7 @@ Example: `index.html?service=bosscat-svc2-api`
 ### Environment Variables
 
 - `SIGNOZ_API_KEY` - SigNoz API token for proof generation
-- `SIGNOZ_BASE_URL` - SigNoz base URL (default: http://localhost:8080)
+- `SIGNOZ_BASE_URL` - SigNoz base URL (default: <http://localhost:8080>)
 
 ## Features (Phase 1)
 
@@ -87,5 +89,5 @@ All proof artifacts saved to `artifacts/visualizer/` with timestamped names and 
 
 ---
 
-**🐾 Gate #031 - Visualizer MVP Complete**
+### Gate #031 — Visualizer MVP Complete
 

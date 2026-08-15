@@ -8,7 +8,9 @@ Generated: 2025-11-01 23:23:17
 - **Archived Gate Reports**: 75
 - **Total Corpus**: 318
 
-**Architecture Note**: Reports reference the **direct-to-SigNoz architecture** as canonical (effective 2025-10-27). See [Windows Collector Deprecation](../architecture/WINDOWS_COLLECTOR_DEPRECATION.md) for migration details.
+**Architecture Note**: Reports reference the **direct-to-SigNoz architecture** as canonical
+(effective 2025-10-27). See [Windows Collector Deprecation](../architecture/WINDOWS_COLLECTOR_DEPRECATION.md)
+for migration details.
 
 ## Recent Reports (Last 30)
 
@@ -48,11 +50,13 @@ Generated: 2025-11-01 23:23:17
 ## Archive
 
 Older gate reports (pre-November 2025) are archived in:
+
 - docs/archive/gates/2025-11/ - Gate 001-029 reports
 
 ## Methodology
 
 All reports follow the **ECRR Framework** (Examine → Clean → Report → Role):
+
 1. **Examine** - Capture environment state before changes
 2. **Clean** - Remove drift and enforce guardrails
 3. **Report** - Generate artifacts and evidence
