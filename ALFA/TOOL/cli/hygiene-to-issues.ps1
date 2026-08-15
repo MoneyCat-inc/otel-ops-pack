@@ -38,22 +38,23 @@ function New-GHIssue {
     }
 }
 
+function Format-IssueBody {
+    param([object[]]$Matches)
+    $fence = '```'
+    $lines = ($Matches | ForEach-Object { $_.Line }) -join "`n"
+    return "$fence`n$lines`n$fence"
+}
+
 if ($yamls) {
-    New-GHIssue -Title 'yamllint failures in workflows/configs' -Labels @('yaml','hygiene') -Body ("```
-{0}
-```" -f (($yamls | ForEach-Object { $_.Line }) -join "`n"))
+    New-GHIssue -Title 'yamllint failures in workflows/configs' -Labels @('yaml','hygiene') -Body (Format-IssueBody $yamls)
 }
 
 if ($otel) {
-    New-GHIssue -Title 'otelcol dry-run errors in configs/otel' -Labels @('otel','hygiene') -Body ("```
-{0}
-```" -f (($otel | ForEach-Object { $_.Line }) -join "`n"))
+    New-GHIssue -Title 'otelcol dry-run errors in configs/otel' -Labels @('otel','hygiene') -Body (Format-IssueBody $otel)
 }
 
 if ($ps) {
-    New-GHIssue -Title 'PSScriptAnalyzer warnings in scripts/*.ps1' -Labels @('powershell','hygiene') -Body ("```
-{0}
-```" -f (($ps | ForEach-Object { $_.Line }) -join "`n"))
+    New-GHIssue -Title 'PSScriptAnalyzer warnings in scripts/*.ps1' -Labels @('powershell','hygiene') -Body (Format-IssueBody $ps)
 }
 
 Write-Host "Filed issues (if any buckets had matches)." -ForegroundColor Cyan

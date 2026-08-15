@@ -27,28 +27,28 @@ $Dashboards = @(
             @{
                 title = "Request Rate by Service"
                 type = "graph"
-                query = "rate(http_requests_total[5m])"
+                query = 'rate(http_requests_total[5m])'
                 legend = "{{service_name}}"
                 yAxis = "Requests per second"
             },
             @{
                 title = "Error Rate by Service"
                 type = "graph"
-                query = "rate(http_requests_total{status_code=~\"5..\"}[5m]) / rate(http_requests_total[5m]) * 100"
+                query = 'rate(http_requests_total{status_code=~"5.."}[5m]) / rate(http_requests_total[5m]) * 100'
                 legend = "{{service_name}}"
                 yAxis = "Error rate (%)"
             },
             @{
                 title = "Response Time P95"
                 type = "graph"
-                query = "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))"
+                query = 'histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))'
                 legend = "{{service_name}}"
                 yAxis = "Response time (seconds)"
             },
             @{
                 title = "Active Connections"
                 type = "stat"
-                query = "prisma_pool_connections_active"
+                query = 'prisma_pool_connections_active'
                 legend = "Database connections"
             }
         )
@@ -61,28 +61,28 @@ $Dashboards = @(
             @{
                 title = "OTel Collector Queue Utilization"
                 type = "graph"
-                query = "otelcol_exporter_queue_size / otelcol_exporter_queue_capacity * 100"
+                query = 'otelcol_exporter_queue_size / otelcol_exporter_queue_capacity * 100'
                 legend = "Queue utilization (%)"
                 yAxis = "Percentage"
             },
             @{
                 title = "Memory Usage"
                 type = "graph"
-                query = "process_resident_memory_bytes / (1024*1024*1024)"
+                query = 'process_resident_memory_bytes / (1024*1024*1024)'
                 legend = "{{service_name}}"
                 yAxis = "Memory (GB)"
             },
             @{
                 title = "Log Processing Rate"
                 type = "graph"
-                query = "rate(otelcol_receiver_accepted_log_records_total[5m])"
+                query = 'rate(otelcol_receiver_accepted_log_records_total[5m])'
                 legend = "Logs per second"
                 yAxis = "Logs/sec"
             },
             @{
                 title = "Export Success Rate"
                 type = "graph"
-                query = "rate(otelcol_exporter_sent_log_records_total[5m]) / (rate(otelcol_exporter_sent_log_records_total[5m]) + rate(otelcol_exporter_send_failed_log_records_total[5m])) * 100"
+                query = 'rate(otelcol_exporter_sent_log_records_total[5m]) / (rate(otelcol_exporter_sent_log_records_total[5m]) + rate(otelcol_exporter_send_failed_log_records_total[5m])) * 100'
                 legend = "Success rate (%)"
                 yAxis = "Percentage"
             }
@@ -96,28 +96,28 @@ $Dashboards = @(
             @{
                 title = "Database Connection Pool"
                 type = "graph"
-                query = "prisma_pool_connections_active"
+                query = 'prisma_pool_connections_active'
                 legend = "Active connections"
                 yAxis = "Connections"
             },
             @{
                 title = "Query Duration P95"
                 type = "graph"
-                query = "histogram_quantile(0.95, rate(prisma_query_duration_seconds_bucket[5m]))"
+                query = 'histogram_quantile(0.95, rate(prisma_query_duration_seconds_bucket[5m]))'
                 legend = "Query duration"
                 yAxis = "Duration (seconds)"
             },
             @{
                 title = "Query Rate"
                 type = "graph"
-                query = "rate(prisma_query_total[5m])"
+                query = 'rate(prisma_query_total[5m])'
                 legend = "Queries per second"
                 yAxis = "Queries/sec"
             },
             @{
                 title = "Connection Pool Utilization"
                 type = "stat"
-                query = "prisma_pool_connections_active / prisma_pool_connections_max * 100"
+                query = 'prisma_pool_connections_active / prisma_pool_connections_max * 100'
                 legend = "Pool utilization (%)"
             }
         )
@@ -130,28 +130,28 @@ $Dashboards = @(
             @{
                 title = "Page Load Time"
                 type = "graph"
-                query = "histogram_quantile(0.95, rate(document_load_duration_seconds_bucket[5m]))"
+                query = 'histogram_quantile(0.95, rate(document_load_duration_seconds_bucket[5m]))'
                 legend = "Page load time"
                 yAxis = "Duration (seconds)"
             },
             @{
                 title = "User Interactions"
                 type = "graph"
-                query = "rate(user_interaction_total[5m])"
+                query = 'rate(user_interaction_total[5m])'
                 legend = "{{interaction_type}}"
                 yAxis = "Interactions/sec"
             },
             @{
                 title = "Frontend Error Rate"
                 type = "graph"
-                query = "rate(http_requests_total{service_name=\"resonai-frontend\",status_code=~\"4..|5..\"}[5m]) / rate(http_requests_total{service_name=\"resonai-frontend\"}[5m]) * 100"
+                query = 'rate(http_requests_total{service_name="resonai-frontend",status_code=~"4..|5.."}[5m]) / rate(http_requests_total{service_name="resonai-frontend"}[5m]) * 100'
                 legend = "Frontend errors (%)"
                 yAxis = "Error rate (%)"
             },
             @{
                 title = "API Response Time"
                 type = "graph"
-                query = "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{service_name=\"resonai-frontend\"}[5m]))"
+                query = 'histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{service_name="resonai-frontend"}[5m]))'
                 legend = "API response time"
                 yAxis = "Duration (seconds)"
             }
@@ -165,28 +165,28 @@ $Dashboards = @(
             @{
                 title = "Authentication Failures"
                 type = "graph"
-                query = "rate(logs{message=~\"auth.*fail|login.*fail\"}[5m])"
+                query = 'rate(logs{message=~"auth.*fail|login.*fail"}[5m])'
                 legend = "Auth failures/sec"
                 yAxis = "Failures/sec"
             },
             @{
                 title = "Failed Login Attempts"
                 type = "graph"
-                query = "rate(http_requests_total{status_code=\"401\"}[5m])"
+                query = 'rate(http_requests_total{status_code="401"}[5m])'
                 legend = "401 responses/sec"
                 yAxis = "Requests/sec"
             },
             @{
                 title = "Session Activity"
                 type = "graph"
-                query = "rate(session_created_total[5m])"
+                query = 'rate(session_created_total[5m])'
                 legend = "Sessions created/sec"
                 yAxis = "Sessions/sec"
             },
             @{
                 title = "Security Events"
                 type = "logs"
-                query = "logs{message=~\"security|unauthorized|forbidden\"}"
+                query = 'logs{message=~"security|unauthorized|forbidden"}'
                 legend = "Security events"
             }
         )

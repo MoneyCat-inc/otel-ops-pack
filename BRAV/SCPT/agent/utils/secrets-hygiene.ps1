@@ -2,11 +2,11 @@
 
 $global:SECRET_PATTERNS = @(
     # API Keys and tokens
-    @{ pattern = '(?i)(api[_-]?key|token|secret|password|passwd)\s*[:=]\s*["\']?([a-zA-Z0-9\-_]{20,})["\']?'; replacement = '$1: [REDACTED]' },
-    @{ pattern = '(?i)(authorization|bearer)\s*:\s*["\']?([a-zA-Z0-9\-_\.]{20,})["\']?'; replacement = '$1: [REDACTED]' },
+    @{ pattern = '(?i)(api[_-]?key|token|secret|password|passwd)\s*[:=]\s*["'']?([a-zA-Z0-9\-_]{20,})["'']?'; replacement = '${1}: [REDACTED]' },
+    @{ pattern = '(?i)(authorization|bearer)\s*:\s*["'']?([a-zA-Z0-9\-_\.]{20,})["'']?'; replacement = '${1}: [REDACTED]' },
     
     # Email addresses (partial redaction)
-    @{ pattern = '([a-zA-Z0-9._%+-]+)@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})'; replacement = '$1***@$2' },
+    @{ pattern = '([a-zA-Z0-9._%+-]+)@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})'; replacement = '${1}***@${2}' },
     
     # Credit card numbers
     @{ pattern = '\b(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|3[47][0-9]{13}|3[0-9]{13}|6(?:011|5[0-9]{2})[0-9]{12})\b'; replacement = '[REDACTED_CARD]' },
@@ -24,7 +24,7 @@ $global:SECRET_PATTERNS = @(
     @{ pattern = 'eyJ[A-Za-z0-9_-]*\.[A-Za-z0-9_-]*\.[A-Za-z0-9_-]*'; replacement = '[REDACTED_JWT]' },
     
     # URLs with credentials
-    @{ pattern = '(https?://)([^:]+):([^@]+)@([^\s]+)'; replacement = '$1[REDACTED_USER]:[REDACTED_PASS]@$4' }
+    @{ pattern = '(https?://)([^:]+):([^@]+)@([^\s]+)'; replacement = '${1}[REDACTED_USER]:[REDACTED_PASS]@${4}' }
 )
 
 function Redact-Secrets {
