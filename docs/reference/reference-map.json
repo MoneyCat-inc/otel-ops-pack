@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated_at": "2026-08-14T13:01:33.956Z",
+  "generated_at": "2026-08-15T02:53:37.595Z",
   "nodes": [
     {
       "id": "ingest-worker",
@@ -75,7 +75,6 @@
         ".github\\workflows\\bosscat-gate-verify.yml",
         ".github\\workflows\\bosscat-governance.yml",
         ".github\\workflows\\bosscat-monthly-evidence-rollup.yml",
-        ".github\\workflows\\bosscat-regression-matrix.yml",
         ".github\\workflows\\bosscat-tetragram-guard.yml",
         ".github\\workflows\\ci-disabled.yml",
         ".github\\workflows\\codeql-analysis.yml",
@@ -90,7 +89,6 @@
         ".github\\workflows\\gate-026-performance.yml",
         ".github\\workflows\\gate-nightly.yml",
         ".github\\workflows\\gate-site-evidence.yml",
-        ".github\\workflows\\gate-verify.yml",
         ".github\\workflows\\gitleaks-security-scan.yml",
         ".github\\workflows\\gitleaks.yml",
         ".github\\workflows\\guardrails-recert.yml",
@@ -107,7 +105,6 @@
         ".github\\workflows\\nightly-dashboard-export.yml",
         ".github\\workflows\\nightly-dashboard-reports.yml",
         ".github\\workflows\\nightly-ecrr-aggregates.yml",
-        ".github\\workflows\\nightly-reference-map.yml",
         ".github\\workflows\\nightly-tetragrammaton-benchmarks.yml",
         ".github\\workflows\\osv-scanner.yml",
         ".github\\workflows\\perf-gate-demo.yml",

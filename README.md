@@ -95,6 +95,14 @@ All documentation is centralized in the **[Documentation Hub](docs/index.html)**
 
 ## 🤝 Contributing
 
+**Clone (recommended):** packed history is large; prefer a blobless partial clone for new checkouts:
+
+```bash
+git clone --filter=blob:none https://github.com/MoneyCat-inc/otel-ops-pack.git
+```
+
+Details and rewrite policy: [Partial clone (Second Pass D1)](docs/BossCat/PARTIAL_CLONE.md).
+
 We follow **BossCat governance** with immutable merge rules:
 
 - **Budget enforcement:** ≤10 files, ≤200 LOC per merge
@@ -102,7 +110,7 @@ We follow **BossCat governance** with immutable merge rules:
 - **Gate verification:** must pass before merge
 - **Kill-switch:** active for drift control
 
-See: [AGENTS.md](AGENTS.md) | [ECRR Manual](docs/BossCat/misc/ART_OF_ECRR.md) | [Charter](docs/BossCat/CHARTER.md)
+See: [AGENTS.md](AGENTS.md) | [ECRR Manual](docs/BossCat/misc/ART_OF_ECRR.md) | [Charter](docs/BossCat/CHARTER.md) | [Second Pass Plan](docs/BossCat/SECOND_PASS_PLAN.md)
 
 ---
 
