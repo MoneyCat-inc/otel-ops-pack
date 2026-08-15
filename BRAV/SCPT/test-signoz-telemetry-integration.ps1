@@ -8,13 +8,18 @@
 
 [CmdletBinding()]
 param(
-    [string]$SigNozEndpoint = 'http://localhost:8080',
-    [string]$OTLPEndpoint = 'http://localhost:5321',
+    [string]$SigNozEndpoint,
+    [string]$OTLPEndpoint,
     [int]$TestDurationSeconds = 30
 )
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
+
+Import-Module (Join-Path $PSScriptRoot 'lib\OtelPorts.psm1') -Force
+$script:OtelPorts = Get-OtelPorts
+if (-not $SigNozEndpoint) { $SigNozEndpoint = "http://localhost:$($script:OtelPorts.SignozUiHttp)" }
+if (-not $OTLPEndpoint) { $OTLPEndpoint = Get-OtelIngestHttpBase -HostName 'localhost' -Ports $script:OtelPorts }
 
 Write-Host "🔍 Testing SigNoz Telemetry Integration" -ForegroundColor Green
 

@@ -2,11 +2,15 @@
 # Tests complete OTel pipeline with authentication and monitoring
 
 param(
-    [string]$SigNozUrl = "http://localhost:8080",
+    [string]$SigNozUrl,
     [string]$ApiToken = $env:SIGNOZ_API_TOKEN,
     [string]$WebhookUrl = $env:ALERT_WEBHOOK_URL,
     [switch]$SkipWebhookTest = $false
 )
+
+Import-Module (Join-Path $PSScriptRoot 'lib\OtelPorts.psm1') -Force
+$script:OtelPorts = Get-OtelPorts
+if (-not $SigNozUrl) { $SigNozUrl = "http://localhost:$($script:OtelPorts.SignozUiHttp)" }
 
 # ECRR: Examine → Clean → Report → Role
 Write-Host "End-to-End Pipeline Test - ECRR Framework" -ForegroundColor Cyan
@@ -119,7 +123,7 @@ if ($PipelineStatus.otel_collector_running -and $PipelineStatus.signoz_accessibl
             )
         }
         
-        $OtlpResponse = Invoke-RestMethod -Uri "http://localhost:5321/v1/logs" -Method POST -Body ($OtlpPayload | ConvertTo-Json -Depth 10) -ContentType "application/json" -TimeoutSec 10
+        $OtlpResponse = Invoke-RestMethod -Uri "$(Get-OtelIngestHttpBase -HostName 'localhost' -Ports $script:OtelPorts)/v1/logs" -Method POST -Body ($OtlpPayload | ConvertTo-Json -Depth 10) -ContentType "application/json" -TimeoutSec 10
         
         Write-Host "  ✅ Canary logs generated successfully" -ForegroundColor Green
         $PipelineStatus.test_results.canary_logs = $true
