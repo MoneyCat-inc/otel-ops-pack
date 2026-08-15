@@ -269,7 +269,7 @@ class Workspace {
         # Create network isolation configuration
         $networkConfig = @{
             AllowedHosts = @('localhost', '127.0.0.1', '::1')
-            AllowedPorts = @($otelPorts.SignozUiHttp, $otelPorts.IngestGrpc, $otelPorts.IngestHttp)  # SigNoz and OTLP ports
+            AllowedPorts = @($script:otelPorts.SignozUiHttp, $script:otelPorts.IngestGrpc, $script:otelPorts.IngestHttp)  # SigNoz and OTLP ports
             BlockedProtocols = @('tcp/22', 'tcp/3389')  # SSH, RDP
             DNSResolution = 'local-only'
         }
