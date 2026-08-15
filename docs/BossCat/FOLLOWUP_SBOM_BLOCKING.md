@@ -16,9 +16,9 @@ Make SBOM generation **mandatory** for prod gate after verifying stability over 
 
 **Required Evidence** (collect from prod gate runs):
 
-- [x] **Run 1**: [actions/runs/27414150700](https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/27414150700) — `sbom-attestation-923`
-- [x] **Run 2**: [actions/runs/27414081486](https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/27414081486) — `sbom-attestation-920`
-- [x] **Run 3**: [actions/runs/27414026380](https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/27414026380) — `sbom-attestation-916`
+- [x] **Run 1**: artifact `sbom-attestation-923` — historical Actions run id `27414150700` (link may 404; see [bosscat-gate-verify runs](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/bosscat-gate-verify.yml))
+- [x] **Run 2**: artifact `sbom-attestation-920` — historical run id `27414081486`
+- [x] **Run 3**: artifact `sbom-attestation-916` — historical run id `27414026380`
 
 **Success Criteria**:
 - ✅ SBOM generation succeeds (no tooling errors)

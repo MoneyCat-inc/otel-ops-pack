@@ -443,7 +443,7 @@ kubeval --strict .aws/adot-operator-cr.yaml
 - [ADOT Documentation](https://aws-otel.github.io/docs/introduction)
 - [ADOT Collector GitHub](https://github.com/aws-observability/aws-otel-collector)
 - [EKS Add-ons Guide](https://docs.aws.amazon.com/eks/latest/userguide/opentelemetry.html)
-- [SigNoz OTLP Integration](https://signoz.io/docs/instrumentation/otlp/)
+- [SigNoz instrumentation docs](https://signoz.io/docs/instrumentation/)
 
 ---
 

@@ -193,7 +193,7 @@ Attached to this release:
 - **References Map:** [docs/status/REFERENCES_MAP.md](https://github.com/MoneyCat-inc/otel-ops-pack/blob/main/docs/status/REFERENCES_MAP.md)
 - **Workflows Registry:** [docs/status/workflows.json](https://github.com/MoneyCat-inc/otel-ops-pack/blob/main/docs/status/workflows.json)
 - **PR #171:** [ci/lock-workflows-registry](https://github.com/MoneyCat-inc/otel-ops-pack/pull/171)
-- **Test Run:** [18629010288](https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18629010288)
+- **Test evidence:** [gate-site / Actions](https://github.com/MoneyCat-inc/otel-ops-pack/actions) (historical run id `18629010288` may 404)
 
 ---
 

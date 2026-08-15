@@ -111,7 +111,8 @@ gh api repos/MoneyCat-inc/otel-ops-pack/branches/main/protection \
 ## 📚 Reference
 
 **Workflow**: `.github/workflows/gate-site-evidence.yml`  
-**Successful Run**: https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18463803215  
+**Workflow runs**: https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/gate-site-evidence.yml  
+**Historical evidence run id** (may 404): `18463803215`  
 **Gate Criteria**: `docs/BossCat/GATE_CRITERIA.md`  
 **Site Criteria**: `docs/BossCat/SITE_CRITERIA.md`  
 **BossCat Log**: `docs/BossCat/BOSSCAT_LOG.md` (GREEN entry)

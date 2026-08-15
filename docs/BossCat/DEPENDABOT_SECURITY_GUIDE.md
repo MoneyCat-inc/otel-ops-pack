@@ -495,7 +495,7 @@ Escalate to **BossCat OEM** (security lead) if:
 - [npm Audit](https://docs.npmjs.com/cli/v8/commands/npm-audit)
 - [pip-audit](https://github.com/pypa/pip-audit)
 - [NIST NVD](https://nvd.nist.gov/) - Vulnerability database
-- [CVE Details](https://www.cvedetails.com/) - CVE information
+- [CVE.org](https://www.cve.org/) - CVE information
 
 ---
 

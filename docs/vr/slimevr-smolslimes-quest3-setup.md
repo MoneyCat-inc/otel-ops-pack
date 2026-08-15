@@ -15,7 +15,7 @@
   - USB cables for charging trackers and flashing dongles
 - **Software:**
   - [SlimeVR Server](https://github.com/SlimeVR/SlimeVR-Server/releases) (latest stable)
-  - [SlimeVR Web Flasher](https://slimevr.dev/setup) or [nRF Connect for Desktop](https://www.nordicsemi.com/Products/Development-tools/nrf-connect-for-desktop) + **nRF Connect** app (for nRF52840)
+  - [SlimeVR Web Flasher](https://slimevr.dev/setup) (preferred) or Nordic’s **nRF Connect for Desktop** (vendor download; some bots get HTTP 403) + **nRF Connect** app (for nRF52840)
   - Virtual Desktop (Quest Store) + Virtual Desktop Streamer (PC)
   - Steam + SteamVR
   - VRChat (Steam)

@@ -75,13 +75,13 @@ The `.cursor/mcp.json` file has been created at the repository root:
 ```json
 {
   "mcpServers": {
-    "bedrock-agentcore": {
-      "command": "npx",
+    "bedrock-agentcore-mcp-server": {
+      "command": "uvx",
       "args": [
-        "-y",
-        "@aws/bedrock-agentcore-mcp"
+        "awslabs.amazon-bedrock-agentcore-mcp-server@latest"
       ],
       "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR",
         "AWS_REGION": "us-east-1"
       }
     }
@@ -452,7 +452,8 @@ async function identifyBottlenecks(traceId: string, spans: any[]) {
 
 - [AWS Bedrock Documentation](https://docs.aws.amazon.com/bedrock/)
 - [Cursor MCP Documentation](https://cursor.sh/docs/mcp)
-- [AgentCore MCP NPM Package](https://www.npmjs.com/package/@aws/bedrock-agentcore-mcp)
+- [AgentCore MCP getting started (AWS)](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/mcp-getting-started.html)
+- [awslabs AgentCore MCP server](https://awslabs.github.io/mcp/servers/amazon-bedrock-agentcore-mcp-server)
 - [Claude Model Documentation](https://docs.anthropic.com/claude/docs)
 
 ---

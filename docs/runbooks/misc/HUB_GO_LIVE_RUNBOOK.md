@@ -20,9 +20,11 @@
 
 ### **Step 1: Enable GitHub Pages** ⏳ PENDING
 
-**Action:** Configure GitHub Pages in repository settings
+**Action:** Configure GitHub Pages in repository settings (UI requires repo admin sign-in)
 
-**URL:** https://github.com/MoneyCat-inc/otel-ops-pack/settings/pages
+**Settings UI (private):** `Settings → Pages` on the repo (path `/settings/pages`; lychee/bots get 404 without session)
+
+**Docs:** https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site
 
 **Configuration:**
 ```

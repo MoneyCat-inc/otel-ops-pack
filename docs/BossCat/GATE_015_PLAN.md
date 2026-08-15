@@ -88,10 +88,10 @@ Enable **in-editor co-author cycle** in Cursor that can *propose → load → sc
 ```json
 {
   "mcpServers": {
-    "bedrock-agentcore": {
-      "command": "npx",
-      "args": ["-y", "@aws/bedrock-agentcore-mcp"],
-      "env": { "AWS_REGION": "us-east-1" }
+    "bedrock-agentcore-mcp-server": {
+      "command": "uvx",
+      "args": ["awslabs.amazon-bedrock-agentcore-mcp-server@latest"],
+      "env": { "FASTMCP_LOG_LEVEL": "ERROR", "AWS_REGION": "us-east-1" }
     }
   }
 }
