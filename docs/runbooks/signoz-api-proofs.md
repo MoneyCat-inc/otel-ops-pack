@@ -9,9 +9,12 @@
 
 ## Overview
 
-The `health-check-otlp.ps1` script can query SigNoz API to verify telemetry landed, generating machine-verifiable proof artifacts. This replaces screenshot-based evidence with API-signed, timestamped JSON proofs.
+The `health-check-otlp.ps1` script can query SigNoz API to verify telemetry landed,
+generating machine-verifiable proof artifacts. This replaces screenshot-based evidence
+with API-signed, timestamped JSON proofs.
 
 **Benefits:**
+
 - **Machine-verifiable:** JSON artifacts can be parsed and validated in CI/CD
 - **Timestamped:** Proof includes exact timeframe queried
 - **Auditable:** Query endpoint and parameters included in proof
@@ -70,7 +73,8 @@ pwsh -File .\scripts\windows\health-check-otlp.ps1 -UseApiProof -LookbackMinutes
 ```
 
 **Expected Output:**
-```
+
+```text
 [OK] SigNoz traces present for 'bosscat-svc2-api': 15 ≥ 1
 Proof: artifacts/proofs/proof-traces-bosscat-svc2-api-20251027-154500.json
 ```
@@ -120,6 +124,7 @@ jobs:
 ```
 
 **Setup:**
+
 1. Add `SIGNOZ_API_KEY` to repository secrets (**Settings** → **Secrets and variables** → **Actions**)
 2. Add `SIGNOZ_BASE_URL` to repository variables (e.g., `http://127.0.0.1:3301`)
 3. Workflow will fail if telemetry verification fails (exit code 21)
@@ -142,6 +147,7 @@ jobs:
 JSON files generated in `artifacts/proofs/` with naming pattern: `proof-traces-<service-name>-<timestamp>.json`
 
 **Example proof file:**
+
 ```json
 {
   "probe": "signoz-traces",
@@ -158,6 +164,7 @@ JSON files generated in `artifacts/proofs/` with naming pattern: `proof-traces-<
 ```
 
 **Fields:**
+
 - `probe`: Proof type (always `signoz-traces` for this script)
 - `service`: Service name queried
 - `timeframe`: Human-readable lookback period
@@ -177,6 +184,7 @@ JSON files generated in `artifacts/proofs/` with naming pattern: `proof-traces-<
 **Cause:** API proof mode enabled but API key not set.
 
 **Fix:**
+
 ```powershell
 $env:SIGNOZ_API_KEY = "<your-api-key>"
 ```
@@ -186,6 +194,7 @@ $env:SIGNOZ_API_KEY = "<your-api-key>"
 **Cause:** `-UseApiProof` specified but no service name provided.
 
 **Fix:** Provide via parameter or environment:
+
 ```powershell
 # Option 1: Parameter
 pwsh -File .\scripts\windows\health-check-otlp.ps1 -ServiceName "bosscat-svc2-api" -UseApiProof
@@ -200,6 +209,7 @@ pwsh -File .\scripts\windows\health-check-otlp.ps1 -UseApiProof
 **Cause:** Invalid or expired API key.
 
 **Fix:**
+
 1. Regenerate API key in SigNoz UI (Settings → API Keys)
 2. Update `SIGNOZ_API_KEY` environment variable
 3. Verify key has at least **Viewer** role
@@ -209,6 +219,7 @@ pwsh -File .\scripts\windows\health-check-otlp.ps1 -UseApiProof
 **Cause:** Wrong SigNoz base URL or API version mismatch.
 
 **Fix:**
+
 1. Verify `SIGNOZ_BASE_URL` points to correct SigNoz instance
 2. Self-hosted: Usually `http://127.0.0.1:3301` or `http://localhost:8080`
 3. Cloud: Use your tenant URL (e.g., `https://<tenant>.signoz.io`)
@@ -219,6 +230,7 @@ pwsh -File .\scripts\windows\health-check-otlp.ps1 -UseApiProof
 **Cause:** Service might not be sending telemetry, or lookback window too short.
 
 **Fix:**
+
 1. Increase lookback window: `-LookbackMinutes 15`
 2. Generate traffic to service before running proof
 3. Verify service is instrumented and sending to correct endpoint
@@ -233,10 +245,12 @@ pwsh -File .\scripts\windows\health-check-otlp.ps1 -UseApiProof
 **URL:** `POST {BASE_URL}/api/v5/query_range`
 
 **Headers:**
+
 - `Content-Type: application/json`
 - `SIGNOZ-API-KEY: <your-api-key>`
 
 **Payload (Trace Count):**
+
 ```json
 {
   "start": 1730047200000,
@@ -264,6 +278,7 @@ pwsh -File .\scripts\windows\health-check-otlp.ps1 -UseApiProof
 ```
 
 **Response (Success):**
+
 ```json
 {
   "data": {
@@ -277,6 +292,7 @@ pwsh -File .\scripts\windows\health-check-otlp.ps1 -UseApiProof
 ```
 
 **Documentation:**
+
 - [SigNoz Trace API Overview](https://signoz.io/docs/traces-management/trace-api/overview/)
 - [Trace API Payload Model](https://signoz.io/docs/traces-management/trace-api/payload-model/)
 
@@ -305,9 +321,9 @@ The current implementation supports **traces only**. Gate #030 (Evidence-as-Code
 
 ## Related Documentation
 
-- [Gate #029 Implementation](../../GATE_029_IMPLEMENTATION_COMPLETE.md)
-- [Gate #029 Approval](../../docs/gate/2025-10/GATE_029_APPROVAL.md)
-- [Gate #029 Hygiene Patch H1](../../GATE_029_HYGIENE_PATCH_H1.md)
+- [Gate #029 Implementation](../archive/gates/2025-11/GATE_029_IMPLEMENTATION_COMPLETE.md)
+- [Gate #029 Approval](../archive/gate/2025-10/GATE_029_APPROVAL.md)
+- [Gate #029 Hygiene Patch H1](../archive/gates/2025-11/GATE_029_HYGIENE_PATCH_H1.md)
 - [Windows Collector Runbook](./windows-collector.md)
 
 ---

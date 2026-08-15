@@ -2,6 +2,9 @@
 # This script must be run as Administrator
 # Updated with progress indicators for better user experience
 
+Import-Module (Join-Path $PSScriptRoot '..\..\BRAV\SCPT\lib\OtelPorts.psm1') -Force
+$script:OtelPorts = Get-OtelPorts
+
 # Import progress indicators module
 . .\scripts\progress-indicators.ps1
 
@@ -63,22 +66,20 @@ $spinnerJob = Start-SpinnerJob -Message "Checking OTLP ports..." -UpdateInterval
 Start-Sleep -Seconds 2
 Stop-SpinnerJob -Job $spinnerJob
 
-$port5317 = Test-NetConnection -ComputerName localhost -Port 5320 -InformationLevel Quiet -WarningAction SilentlyContinue
-$port5318 = Test-NetConnection -ComputerName localhost -Port 5321 -InformationLevel Quiet -WarningAction SilentlyContinue
+$portGrpc = Test-NetConnection -ComputerName localhost -Port $script:OtelPorts.IngestGrpc -InformationLevel Quiet -WarningAction SilentlyContinue
+$portHttp = Test-NetConnection -ComputerName localhost -Port $script:OtelPorts.IngestHttp -InformationLevel Quiet -WarningAction SilentlyContinue
 
-if ($port5317) {
-    Write-Host "Port 5320 (gRPC) is listening" -ForegroundColor Green
+if ($portGrpc) {
+    Write-Host "Port $($script:OtelPorts.IngestGrpc) (gRPC) is listening" -ForegroundColor Green
 } else {
-    Write-Host "Port 5320 (gRPC) is not listening" -ForegroundColor Red
+    Write-Host "Port $($script:OtelPorts.IngestGrpc) (gRPC) is not listening" -ForegroundColor Red
 }
 
-if ($port5318) {
-    Write-Host "Port 5321 (HTTP) is listening" -ForegroundColor Green
+if ($portHttp) {
+    Write-Host "Port $($script:OtelPorts.IngestHttp) (HTTP) is listening" -ForegroundColor Green
 } else {
-    Write-Host "Port 5321 (HTTP) is not listening" -ForegroundColor Red
+    Write-Host "Port $($script:OtelPorts.IngestHttp) (HTTP) is not listening" -ForegroundColor Red
 }
 
 Write-Host "`nCollector restart complete!" -ForegroundColor Green
 Write-Host "Run verify-integration.ps1 to test the integration" -ForegroundColor Yellow
-
-

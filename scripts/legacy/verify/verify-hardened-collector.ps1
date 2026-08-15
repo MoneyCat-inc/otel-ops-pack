@@ -1,6 +1,9 @@
 # Verify Hardened Windows Collector Configuration
 # This script validates the collector configuration and tests connectivity
 
+Import-Module (Join-Path $PSScriptRoot '..\..\..\BRAV\SCPT\lib\OtelPorts.psm1') -Force
+$script:OtelPorts = Get-OtelPorts
+
 Write-Host "=== Windows Collector Hardening Verification ===" -ForegroundColor Green
 
 # 1. Validate YAML syntax
@@ -28,33 +31,33 @@ try {
 # 3. Test collector ports
 Write-Host "`n3. Testing collector ports..." -ForegroundColor Yellow
 
-# Test gRPC port (5320)
+# Test gRPC ingest port
 try {
-    $grpcTest = Test-NetConnection -ComputerName localhost -Port 5320 -WarningAction SilentlyContinue
+    $grpcTest = Test-NetConnection -ComputerName localhost -Port $script:OtelPorts.IngestGrpc -WarningAction SilentlyContinue
     if ($grpcTest.TcpTestSucceeded) {
-        Write-Host "✓ gRPC port 5320: OPEN" -ForegroundColor Green
+        Write-Host "✓ gRPC port $($script:OtelPorts.IngestGrpc): OPEN" -ForegroundColor Green
         $grpcOpen = $true
     } else {
-        Write-Host "✗ gRPC port 5320: CLOSED" -ForegroundColor Red
+        Write-Host "✗ gRPC port $($script:OtelPorts.IngestGrpc): CLOSED" -ForegroundColor Red
         $grpcOpen = $false
     }
 } catch {
-    Write-Host "✗ gRPC port 5320: ERROR" -ForegroundColor Red
+    Write-Host "✗ gRPC port $($script:OtelPorts.IngestGrpc): ERROR" -ForegroundColor Red
     $grpcOpen = $false
 }
 
-# Test HTTP port (5321)
+# Test HTTP ingest port
 try {
-    $httpTest = Test-NetConnection -ComputerName localhost -Port 5321 -WarningAction SilentlyContinue
+    $httpTest = Test-NetConnection -ComputerName localhost -Port $script:OtelPorts.IngestHttp -WarningAction SilentlyContinue
     if ($httpTest.TcpTestSucceeded) {
-        Write-Host "✓ HTTP port 5321: OPEN" -ForegroundColor Green
+        Write-Host "✓ HTTP port $($script:OtelPorts.IngestHttp): OPEN" -ForegroundColor Green
         $httpOpen = $true
     } else {
-        Write-Host "✗ HTTP port 5321: CLOSED" -ForegroundColor Red
+        Write-Host "✗ HTTP port $($script:OtelPorts.IngestHttp): CLOSED" -ForegroundColor Red
         $httpOpen = $false
     }
 } catch {
-    Write-Host "✗ HTTP port 5321: ERROR" -ForegroundColor Red
+    Write-Host "✗ HTTP port $($script:OtelPorts.IngestHttp): ERROR" -ForegroundColor Red
     $httpOpen = $false
 }
 
@@ -90,8 +93,8 @@ try {
 Write-Host "`n=== VERIFICATION SUMMARY ===" -ForegroundColor Cyan
 Write-Host "YAML Syntax: $(if($yamlValid){'✓ PASSED'}else{'✗ FAILED'})" -ForegroundColor $(if($yamlValid){'Green'}else{'Red'})
 Write-Host "Service Status: $(if($serviceRunning){'✓ RUNNING'}else{'✗ STOPPED'})" -ForegroundColor $(if($serviceRunning){'Green'}else{'Red'})
-Write-Host "gRPC Port 5320: $(if($grpcOpen){'✓ OPEN'}else{'✗ CLOSED'})" -ForegroundColor $(if($grpcOpen){'Green'}else{'Red'})
-Write-Host "HTTP Port 5321: $(if($httpOpen){'✓ OPEN'}else{'✗ CLOSED'})" -ForegroundColor $(if($httpOpen){'Green'}else{'Red'})
+Write-Host "gRPC port $($script:OtelPorts.IngestGrpc): $(if($grpcOpen){'✓ OPEN'}else{'✗ CLOSED'})" -ForegroundColor $(if($grpcOpen){'Green'}else{'Red'})
+Write-Host "HTTP port $($script:OtelPorts.IngestHttp): $(if($httpOpen){'✓ OPEN'}else{'✗ CLOSED'})" -ForegroundColor $(if($httpOpen){'Green'}else{'Red'})
 Write-Host "Health Endpoint: $(if($healthOk){'✓ AVAILABLE'}else{'✗ UNAVAILABLE'})" -ForegroundColor $(if($healthOk){'Green'}else{'Red'})
 Write-Host "SigNoz Port 4317: $(if($signozOpen){'✓ OPEN'}else{'✗ CLOSED'})" -ForegroundColor $(if($signozOpen){'Green'}else{'Red'})
 

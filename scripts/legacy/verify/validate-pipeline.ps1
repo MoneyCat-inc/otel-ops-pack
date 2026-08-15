@@ -1,3 +1,6 @@
+Import-Module (Join-Path $PSScriptRoot '..\..\..\BRAV\SCPT\lib\OtelPorts.psm1') -Force
+$script:OtelPorts = Get-OtelPorts
+
 # Comprehensive pipeline validation script
 # Updated with progress indicators for better user experience
 
@@ -52,11 +55,11 @@ Write-Host $containers
 # Test 4: Check specific ports
 Write-Host "`n[4] Checking critical ports..." -ForegroundColor Yellow
 $ports = @(
-    @{Port=4317; Label="SigNoz OTLP gRPC"},
-    @{Port=4318; Label="SigNoz OTLP HTTP"},
-    @{Port=5320; Label="Windows OTLP gRPC"},
-    @{Port=5321; Label="Windows OTLP HTTP"},
-    @{Port=8080; Label="SigNoz UI"},
+    @{Port=$script:OtelPorts.SignozOtlpGrpc; Label="SigNoz OTLP gRPC"},
+    @{Port=$script:OtelPorts.SignozOtlpHttp; Label="SigNoz OTLP HTTP"},
+    @{Port=$script:OtelPorts.IngestGrpc; Label="Windows OTLP gRPC"},
+    @{Port=$script:OtelPorts.IngestHttp; Label="Windows OTLP HTTP"},
+    @{Port=$script:OtelPorts.SignozUiHttp; Label="SigNoz UI"},
     @{Port=8888; Label="Collector Metrics"},
     @{Port=13134; Label="Collector Health"}
 )
@@ -138,7 +141,10 @@ $logPayload = [pscustomobject]@{
     resourceLogs = @($resourceLog)
 } | ConvertTo-Json -Depth 10
 
-$otlpEndpoints = @("http://localhost:5321/v1/logs", "http://localhost:4318/v1/logs")
+$otlpEndpoints = @(
+    "$(Get-OtelIngestHttpBase -HostName localhost -Ports $script:OtelPorts)/v1/logs",
+    "http://localhost:$($script:OtelPorts.SignozOtlpHttp)/v1/logs"
+)
 $sent = $false
 $spinnerJob = Start-SpinnerJob -Message "Sending test log..." -UpdateIntervalMs 150
 foreach ($endpoint in $otlpEndpoints) {

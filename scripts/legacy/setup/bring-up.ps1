@@ -8,6 +8,9 @@ param(
     [switch]$AutoStart
 )
 
+
+Import-Module (Join-Path $PSScriptRoot '..\..\..\BRAV\SCPT\lib\OtelPorts.psm1') -Force
+$script:OtelPorts = Get-OtelPorts
 Write-Host "🚀 Starting Complete Observability Stack Bring-Up..." -ForegroundColor Green
 
 function Test-Administrator {
@@ -171,11 +174,11 @@ function Test-Integration {
         
         # Basic port checks
         $ports = @(
-            @{ Port = 8080; Name = "SigNoz UI" }
-            @{ Port = 4317; Name = "SigNoz gRPC" }
-            @{ Port = 4318; Name = "SigNoz HTTP" }
-            @{ Port = 5320; Name = "Windows OTEL gRPC" }
-            @{ Port = 5321; Name = "Windows OTEL HTTP" }
+            @{ Port = $script:OtelPorts.SignozUiHttp; Name = "SigNoz UI" }
+            @{ Port = $script:OtelPorts.SignozOtlpGrpc; Name = "SigNoz gRPC" }
+            @{ Port = $script:OtelPorts.SignozOtlpHttp; Name = "SigNoz HTTP" }
+            @{ Port = $script:OtelPorts.IngestGrpc; Name = "Windows OTEL gRPC" }
+            @{ Port = $script:OtelPorts.IngestHttp; Name = "Windows OTEL HTTP" }
         )
         
         $allOk = $true
@@ -285,4 +288,3 @@ if ($success) {
 }
 
 exit $(if ($success) { 0 } else { 1 })
-
