@@ -1,12 +1,14 @@
 # fix(gap): IONA gate accepts artifacts/queue-steward-verification.txt fallback
 
 ## Summary
+
 - Treats `queue-steward-verification.txt` as REQUIRED evidence with fallback in either `DELT/ARTF/` or `artifacts/`.
 - Normalizes ECRR report/PR output (ASCII-safe dashes).
 - Adds ECRR benchmark trend append + mirror with de-dup and retention defaults.
 - Wires CI/PR gate and nightly workflows to maintain and publish rolling CSV and queue-steward evidence.
 
 ## CI/Nightly Integration
+
 - Gate CI: `.github/workflows/bosscat-gate-verify.yml`
   - Generates queue steward evidence if snapshots exist.
   - Uploads `artifacts/*.txt` including `artifacts/queue-steward-verification.txt`.
@@ -16,6 +18,7 @@
   - Appends ECRR benchmark trend and mirrors to `artifacts/`.
 
 ## Evidence
+
 - Gate verdict + checks: `DELT/ARTF/gate-verification-results.json`
 - ECRR latest: `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md`
 - Benchmark JSON: `DELT/ARTF/ecrr-benchmark.json`
@@ -23,6 +26,7 @@
 - Queue steward evidence: `artifacts/queue-steward-verification.txt`
 
 ## Governance
+
 - ECRR: Examine, Clean, Report, Role satisfied with artifacts written to disk.
 - BossCat OEM approval required before merge.
 

@@ -1,17 +1,19 @@
 # 🐾 BossCat OEM - Quick Start
 
-**Get forensic-grade verification running in 5 minutes**
+## Get forensic-grade verification running in 5 minutes
 
 ---
 
 ## Prerequisites (One-Time Setup)
 
 ### 1. Install Python Dependencies
+
 ```powershell
 pip install opentelemetry-sdk opentelemetry-exporter-otlp-proto-http
 ```
 
 ### 2. Create SigNoz API Key
+
 ```powershell
 # Open SigNoz UI
 Start-Process http://localhost:8080/settings/api-keys
@@ -20,6 +22,7 @@ Start-Process http://localhost:8080/settings/api-keys
 ```
 
 ### 3. Set API Key
+
 ```powershell
 # Permanent (Machine level)
 [Environment]::SetEnvironmentVariable("SIGNOZ_API_KEY", "your-api-key-here", "Machine")
@@ -32,6 +35,7 @@ $env:SIGNOZ_API_KEY
 ```
 
 ### 4. Restart PowerShell (if using Machine level)
+
 ```powershell
 exit  # Open new PowerShell window
 ```
@@ -46,7 +50,8 @@ pwsh -File scripts\verify-pipeline.ps1
 ```
 
 **Expected Output:**
-```
+
+```text
 ✓ Captured TRACE_ID: a1b2c3d4...
 ✓ Canary sent successfully
 ✓ Canary confirmed in collector logs

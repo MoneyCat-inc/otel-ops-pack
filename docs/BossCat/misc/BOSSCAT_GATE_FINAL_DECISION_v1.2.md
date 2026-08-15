@@ -6,6 +6,7 @@
 **Decision:** ✅ APPROVED – Gate Progression Authorized  
 
 ## Summary
+
 - **Milestone:** v1.2-gate-final  
 - **CI Status:** 100% Green (Pipeline & Production verified)  
 - **Scope:** Dual certification of CI and Prod readiness  
@@ -14,6 +15,7 @@
 - **Next Phase:** Monitoring & Validation Window (48h)  
 
 ## Metrics
+
 | Category | Value |
 |:---|:---|
 | Commits | 25 |
@@ -24,7 +26,10 @@
 | Performance | ≤ 200ms p95 (verified) |
 
 ## Certification Statement
+
+<!-- markdownlint-disable-next-line MD013 -->
 BossCat OEM hereby certifies that all criteria defined under the Immutable Persona v1.1 and Stakeholder Evidence Package 1.0 have been satisfied.  
+<!-- markdownlint-disable-next-line MD013 -->
 The v1.2 Gate has been examined, contained, rolled back where necessary, and reported in accordance with the ECRR framework.  
 
 **Final Authorization:** Proceed to Production Monitoring.  

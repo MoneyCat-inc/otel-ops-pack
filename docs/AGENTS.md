@@ -16,6 +16,7 @@ See: `docs/BossCat/CHARTER.md` (charter) for full agent hierarchy and ECRR metho
 
 ## ⚡ Workflow Standards (Immediate Wins - Phase 1)
 
+<!-- markdownlint-disable-next-line MD013 -->
 All GitHub Actions workflows MUST include the three immediate wins patterns. These prevent run accumulation and improve developer experience.
 
 ### Pattern 1: Concurrency Control (ALFA Track)
@@ -23,6 +24,7 @@ All GitHub Actions workflows MUST include the three immediate wins patterns. The
 **Required for:** All workflows with `pull_request` or `push` triggers
 
 **Pattern:**
+
 ```yaml
 concurrency:
   group: <workflow-name>-${{ github.workflow }}-${{ github.ref }}
@@ -42,6 +44,7 @@ concurrency:
 **Required for:** All `upload-artifact` steps
 
 **Standard Pattern:**
+
 ```yaml
 - uses: actions/upload-artifact@v4
   with:
@@ -51,6 +54,7 @@ concurrency:
 ```
 
 **Exceptions (Require Justification):**
+
 - `30 days`: Compliance artifacts, executive dashboards, nightly reports
 - `90 days`: Audit trail, legal requirements (rare)
 
@@ -67,6 +71,7 @@ concurrency:
 **Required for:** All workflows
 
 **Minimum Pattern:**
+
 ```yaml
 - name: 📋 Run Summary
   if: always()
@@ -111,6 +116,7 @@ When creating or updating workflows:
 **Full Template:** See `.github/workflows/template.yml` (TBD - DELT-2)
 
 **Working Examples:**
+
 - `.github/workflows/bosscat-gate-verify.yml` (all 3 patterns)
 - `.github/workflows/boss-gate-verify.yml` (all 3 patterns)
 - `.github/workflows/iona-gate-verify.yml` (all 3 patterns)
@@ -141,6 +147,7 @@ When creating or updating workflows:
 **Exceptions:** Require BossCat OEM approval + documentation
 
 **Non-Compliance Actions:**
+
 - Warning: Auto-generated PR with fixes
 - Repeated: Workflow disabled until compliant
 - Release Blockers: Gate fails if critical workflows non-compliant

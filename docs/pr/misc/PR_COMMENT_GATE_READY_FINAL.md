@@ -28,7 +28,7 @@
 
 ## Service Status
 
-```
+```text
 Service:     otelcol-contrib
 Status:      RUNNING ✅
 Start Type:  Automatic
@@ -44,15 +44,18 @@ Ports:       5/5 listening (13134, 5317, 5318, 8888, 55679)
 ## Evidence
 
 **Gate Verification:**
+
 - ✅ `docs/status/tests.json` - Verdict: READY
 - ✅ `DELT/ARTF/gate-verification-results.json` - Detailed results
 - ✅ `docs/observability/snapshots/gate-final-ready-*.json` - Health snapshot
 
 **ECRR Certification:**
+
 - ✅ `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_READY_FINAL_2025-10-10.md`
 - ✅ `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_READY_FINAL_2025-10-10.pdf`
 
 **Configuration Lock:**
+
 - ✅ `BRAV/SCPT/GUARDRAILS_LOCKED.md`
 - ✅ SHA256: `782E7FD93BA1886DCBB3CE2E621B80F9E6B2CE605382652B7D7E8BB0098A06BF`
 
@@ -61,16 +64,19 @@ Ports:       5/5 listening (13134, 5317, 5318, 8888, 55679)
 ## Watchdog Deployment
 
 **GATE Bot:**
+
 - Performed: 70+ checks
 - Enabled: Service from DISABLED to Automatic
 - Started: Service successfully
 - Status: "Gate closed: Service running normally"
 
 **SITE Bot:**
+
 - Observations: Health + diagnostics monitoring
 - Snapshots: Exported to `docs/observability/snapshots/`
 
 **Control:**
+
 ```powershell
 pwsh -File BRAV/SCPT/watchdog-control.ps1 status both
 ```
@@ -80,16 +86,19 @@ pwsh -File BRAV/SCPT/watchdog-control.ps1 status both
 ## ECRR Summary
 
 **Examine:**
+
 - Gate NOT READY: Missing scripts, CI broken, collector DISABLED
 - Evidence infrastructure absent
 
 **Clean:**
+
 - Implemented hybrid Option C (operational + tetragram)
 - Deployed GATE + SITE watchdogs with admin access
 - Enabled and started Windows Collector
 - Fixed health endpoint ports (13133 → 13134)
 
 **Report:**
+
 - 48 files changed (+2,667, -1,024)
 - 13 gate scripts deployed
 - 4 evidence directories created
@@ -97,6 +106,7 @@ pwsh -File BRAV/SCPT/watchdog-control.ps1 status both
 - Gate verdict: READY ✅
 
 **Role:**
+
 - Actor: BossCat OEM (Gap-Closer + Watchdog deployer)
 - Scope: Restore gate infrastructure + deploy guardians
 - Status: READY FOR PRODUCTION
@@ -134,11 +144,13 @@ Per Immutable Persona v1.1, this PR is **approved for merge** with the standardi
 ## 📚 Documentation
 
 **Operations:**
+
 - [Gate Cheatsheet](docs/cheatsheets/GATE_CHEATSHEET.md)
 - [Watchdog Cheatsheet](docs/cheatsheets/WATCHDOG_CHEATSHEET.md)
 - [BossCat Guide](docs/BossCat/README.md)
 
 **Evidence:**
+
 - [ECRR Final Report](CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_READY_FINAL_2025-10-10.md)
 - [Guardrails Lock](BRAV/SCPT/GUARDRAILS_LOCKED.md)
 - [Gate Verdict](docs/status/tests.json)
