@@ -169,8 +169,8 @@ if ($errors.Count -eq 0) {
     exit 0
 } else {
     Write-Host "❌ Validation failed with $($errors.Count) error(s):" -ForegroundColor Red
-    foreach ($error in $errors) {
-        Write-Host "  - $error" -ForegroundColor Red
+    foreach ($validationError in $errors) {
+        Write-Host "  - $validationError" -ForegroundColor Red
     }
     
     if ($warnings.Count -gt 0) {

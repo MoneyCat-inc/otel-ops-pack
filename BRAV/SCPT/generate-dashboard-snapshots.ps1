@@ -422,8 +422,8 @@ Write-Host "   Output Directory: $OutputPath" -ForegroundColor White
 if ($errors.Count -gt 0) {
     Write-Host ""
     Write-Host "⚠️  Errors encountered:" -ForegroundColor Yellow
-    foreach ($error in $errors) {
-        Write-Host "   - $error" -ForegroundColor Yellow
+    foreach ($snapError in $errors) {
+        Write-Host "   - $snapError" -ForegroundColor Yellow
     }
 }
 
