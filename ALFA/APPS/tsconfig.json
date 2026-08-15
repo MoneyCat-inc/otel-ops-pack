@@ -19,8 +19,12 @@
     "jsx": "preserve",
     "baseUrl": ".",
     "paths": {
-      "@/scripts/*": ["../../BRAV/SCPT/*"],
-      "@/*": ["../LIBS/*"]
+      "@/scripts/*": [
+        "../../BRAV/SCPT/*"
+      ],
+      "@/*": [
+        "../LIBS/*"
+      ]
     },
     "plugins": [
       {
@@ -34,7 +38,8 @@
     "**/*.ts",
     "**/*.tsx",
     "../LIBS/**/*.ts",
-    "../LIBS/**/*.tsx"
+    "../LIBS/**/*.tsx",
+    "../../DELT/CONF/otel-ports.json"
   ],
   "exclude": [
     "node_modules"

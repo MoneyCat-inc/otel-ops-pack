@@ -4,6 +4,9 @@
 
 $ErrorActionPreference = "Stop"
 
+Import-Module (Join-Path $PSScriptRoot '..\lib\OtelPorts.psm1') -Force
+$otelPorts = Get-OtelPorts
+
 Write-Host "[health-gate] Starting integrated health validation..."
 
 # 1) Your local env doctor
@@ -74,7 +77,7 @@ if (-not ($queue.jobs | Where-Object { $_.id -eq "otel-wiring-check" })) {
 Write-Host "[health-gate] Updating shared status..."
 try {
     pwsh -File scripts/agent/update-status.ps1 -section env -ok $true -detail "pnpm, node, playwright: OK"
-    pwsh -File scripts/agent/update-status.ps1 -section otel -ok $true -detail "OTLP/HTTP 5321 reachable; dataset logs present"
+    pwsh -File scripts/agent/update-status.ps1 -section otel -ok $true -detail "OTLP/HTTP $($otelPorts.IngestHttp) reachable; dataset logs present"
     Write-Host "[health-gate] Status updated successfully."
 } catch {
     Write-Host "[health-gate] Status update failed: $($_.Exception.Message)"

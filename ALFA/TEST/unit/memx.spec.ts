@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { getOtelIngestHttpBase } from '../../LIBS/lib/otel-ports';
 import { setupErrorCapture, waitForMinimumErrors } from './helpers/error-capture';
 
 test.describe('MEMX Labs Smoke Tests', () => {
@@ -163,7 +164,7 @@ test.describe('MEMX Labs Smoke Tests', () => {
 test.describe('MEMX Integration Tests', () => {
   test('OTLP endpoint reachability', async ({ page }) => {
     // Test OTLP endpoint connectivity
-    const response = await page.request.get('http://localhost:5321/v1/logs');
+    const response = await page.request.get(`${getOtelIngestHttpBase('localhost')}/v1/logs`);
     expect(response.status()).toBeLessThan(500); // Should not be server error
   });
 

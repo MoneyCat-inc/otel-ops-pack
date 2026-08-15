@@ -9,6 +9,7 @@ Defaults:
 - Endpoint from OTEL_EXPORTER_OTLP_TRACES_ENDPOINT or http://127.0.0.1:4318/v1/traces
 """
 import json
+from pathlib import Path
 import os
 import sys
 import time
@@ -70,6 +71,17 @@ def post_json(endpoint: str, body: bytes, timeout: int = 5) -> int:
         return -1
 
 
+
+def _windows_ingest_traces_url() -> str:
+    here = Path(__file__).resolve().parent
+    for d in [here, *here.parents]:
+        candidate = d / "DELT" / "CONF" / "otel-ports.json"
+        if candidate.is_file():
+            ports = json.loads(candidate.read_text(encoding="utf-8"))
+            http_port = ports["windows_collector_ingest"]["http"]
+            return f"http://localhost:{http_port}/v1/traces"
+    raise FileNotFoundError("DELT/CONF/otel-ports.json not found")
+
 def main() -> int:
     # Prefer env var set by verify script; fallback to the SigNoz OTLP HTTP endpoint.
     endpoint = os.getenv("OTEL_EXPORTER_OTLP_TRACES_ENDPOINT", "http://127.0.0.1:4318/v1/traces")
@@ -84,7 +96,7 @@ def main() -> int:
     body = json.dumps(payload, separators=(",", ":")).encode("utf-8")
 
     # Try primary endpoint, then common fallbacks.
-    endpoints = [endpoint, "http://localhost:5321/v1/traces", "http://localhost:4318/v1/traces"]
+    endpoints = [endpoint, _windows_ingest_traces_url(), "http://localhost:4318/v1/traces"]
     status = None
     for ep in endpoints:
         status = post_json(ep, body)

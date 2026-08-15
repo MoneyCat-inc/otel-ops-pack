@@ -11,11 +11,26 @@ const https = require('https');
 const fs = require('fs');
 const path = require('path');
 
+function loadOtelPorts() {
+  let dir = __dirname;
+  for (;;) {
+    const candidate = path.join(dir, 'DELT', 'CONF', 'otel-ports.json');
+    if (fs.existsSync(candidate)) {
+      return JSON.parse(fs.readFileSync(candidate, 'utf8'));
+    }
+    const parent = path.dirname(dir);
+    if (parent === dir) throw new Error('DELT/CONF/otel-ports.json not found');
+    dir = parent;
+  }
+}
+
+const otelPorts = loadOtelPorts();
+
 // Configuration
 const CONFIG = {
-  signozUrl: 'http://localhost:8080',
-  otelCollectorUrl: 'http://localhost:4318',
-  windowsCollectorUrl: 'http://localhost:5321',
+  signozUrl: `http://localhost:${otelPorts.signoz_ui.http}`,
+  otelCollectorUrl: `http://localhost:${otelPorts.signoz_otlp.http}`,
+  windowsCollectorUrl: `http://localhost:${otelPorts.windows_collector_ingest.http}`,
   checkInterval: 30000, // 30 seconds
   reportInterval: 300000, // 5 minutes
   maxHistoryDays: 7,

@@ -52,6 +52,9 @@ param(
     [int]$RetentionDays = 7
 )
 
+
+Import-Module (Join-Path $PSScriptRoot 'lib\OtelPorts.psm1') -Force
+$otelPorts = Get-OtelPorts
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
@@ -266,7 +269,7 @@ class Workspace {
         # Create network isolation configuration
         $networkConfig = @{
             AllowedHosts = @('localhost', '127.0.0.1', '::1')
-            AllowedPorts = @(8080, 5320, 5321)  # SigNoz and OTLP ports
+            AllowedPorts = @($script:otelPorts.SignozUiHttp, $script:otelPorts.IngestGrpc, $script:otelPorts.IngestHttp)  # SigNoz and OTLP ports
             BlockedProtocols = @('tcp/22', 'tcp/3389')  # SSH, RDP
             DNSResolution = 'local-only'
         }

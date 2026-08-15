@@ -2,9 +2,10 @@
  * Thin TypeScript binding over DELT/CONF/otel-ports.json.
  * Second Pass B3. Numbers must match windows/otelcol/otelcol-contrib-config.yaml
  * (enforced by BRAV/SCPT/check-otel-ports-drift.ps1).
+ *
+ * Uses a static JSON import so Next.js client and server bundles stay fs-free.
  */
-import fs from 'fs'
-import path from 'path'
+import portsJson from '../../../DELT/CONF/otel-ports.json'
 
 export type OtelPorts = {
   ingestGrpc: number
@@ -15,28 +16,7 @@ export type OtelPorts = {
   authority: string
 }
 
-function findRepoRoot(startDir: string): string {
-  let dir = path.resolve(startDir)
-  for (;;) {
-    const candidate = path.join(dir, 'DELT', 'CONF', 'otel-ports.json')
-    if (fs.existsSync(candidate)) return dir
-    const parent = path.dirname(dir)
-    if (parent === dir) {
-      throw new Error('getOtelPorts: could not locate DELT/CONF/otel-ports.json')
-    }
-    dir = parent
-  }
-}
-
-export function getOtelPorts(repoRoot?: string): OtelPorts {
-  const root = repoRoot ?? findRepoRoot(process.cwd())
-  const jsonPath = path.join(root, 'DELT', 'CONF', 'otel-ports.json')
-  const raw = JSON.parse(fs.readFileSync(jsonPath, 'utf8')) as {
-    authority: string
-    windows_collector_ingest: { grpc: number; http: number }
-    signoz_otlp: { grpc: number; http: number }
-    signoz_ui: { http: number }
-  }
+function fromJson(raw: typeof portsJson): OtelPorts {
   return {
     ingestGrpc: raw.windows_collector_ingest.grpc,
     ingestHttp: raw.windows_collector_ingest.http,
@@ -45,6 +25,11 @@ export function getOtelPorts(repoRoot?: string): OtelPorts {
     signozUiHttp: raw.signoz_ui.http,
     authority: raw.authority,
   }
+}
+
+/** @param _repoRoot retained for call-site compatibility; JSON import is authoritative. */
+export function getOtelPorts(_repoRoot?: string): OtelPorts {
+  return fromJson(portsJson)
 }
 
 /** Convenience: http://127.0.0.1:{ingestHttp} */

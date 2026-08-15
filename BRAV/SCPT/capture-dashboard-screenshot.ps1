@@ -6,6 +6,9 @@ param(
     [string]$ScreenshotDir = "CHAR/ECRR/ECRR_REPORTS"
 )
 
+Import-Module (Join-Path $PSScriptRoot 'lib\OtelPorts.psm1') -Force
+$otelPorts = Get-OtelPorts
+
 Write-Host "=== SigNoz Dashboard Screenshot Capture ===" -ForegroundColor Green
 Write-Host "SigNoz URL: $SigNozUrl" -ForegroundColor Yellow
 Write-Host "Screenshot directory: $ScreenshotDir" -ForegroundColor Yellow
@@ -107,7 +110,7 @@ Write-Host "   docker ps | findstr signoz" -ForegroundColor White
 
 Write-Host "`nIf logs don't appear:" -ForegroundColor Yellow
 Write-Host "1. Check OTLP endpoint:" -ForegroundColor White
-Write-Host "   Test-NetConnection -ComputerName 127.0.0.1 -Port 5321" -ForegroundColor White
+Write-Host "   Test-NetConnection -ComputerName 127.0.0.1 -Port $($otelPorts.IngestHttp)" -ForegroundColor White
 Write-Host "2. Verify collector is running:" -ForegroundColor White
 Write-Host "   Get-Service otelcol-contrib" -ForegroundColor White
 
