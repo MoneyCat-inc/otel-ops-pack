@@ -58,3 +58,14 @@ Final dated session / gate-misc closeouts (10 files, ≤10 budget, no cleanup wa
 **Archive phase: CLOSED** after this batch. Residual `*_COMPLETE.md` notes without dates (e.g. `CLEANUP_COMPLETE.md`) stay live pending case-by-case review — not auto-archived.
 
 Next: remeasure markdownlint error count on the live set, then ≤10-file `--fix` batches. B2 lychee measurement unblocked.
+
+## Remeasure (post archive batches 1–3, on closeout branch)
+
+| Probe | Result |
+|-------|--------|
+| Live `docs/**/*.md` + README (excl. `docs/archive/**` and `docs/gate/archive/**`) | **244** |
+| Files with ≥1 markdownlint error | **214** |
+| Total errors | **7,402** |
+| Prior plan figure @ `4469d10de` | 10,718 / 370 |
+
+First `--fix` batch: 10 low-debt live files (1–3 errors each) cleared to **0** issues — see git history on this branch.

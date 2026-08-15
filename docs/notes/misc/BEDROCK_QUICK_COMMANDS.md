@@ -135,7 +135,7 @@ uvx awslabs.amazon-bedrock-agentcore-mcp-server@latest --help
 
 ## 📊 AWS Console Links
 
-```
+```text
 # Bedrock Console
 https://console.aws.amazon.com/bedrock/
 
@@ -180,7 +180,7 @@ Get-ChildItem -Filter "BEDROCK_*.md"
 
 ## 📝 Documentation Files
 
-```
+```text
 Quick Reference:
   BEDROCK_QUICK_COMMANDS.md          ← This file
 
