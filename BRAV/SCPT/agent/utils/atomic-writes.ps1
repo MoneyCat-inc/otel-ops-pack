@@ -25,7 +25,7 @@ function Write-AtomicJson {
         if (Test-Path $tempPath) {
             Remove-Item $tempPath -Force -ErrorAction SilentlyContinue
         }
-        Write-Error "Failed to write atomic JSON to $Path: $($_.Exception.Message)"
+        Write-Error "Failed to write atomic JSON to ${Path}: $($_.Exception.Message)"
         return $false
     }
 }
@@ -54,7 +54,7 @@ function Write-AtomicContent {
         if (Test-Path $tempPath) {
             Remove-Item $tempPath -Force -ErrorAction SilentlyContinue
         }
-        Write-Error "Failed to write atomic content to $Path: $($_.Exception.Message)"
+        Write-Error "Failed to write atomic content to ${Path}: $($_.Exception.Message)"
         return $false
     }
 }
@@ -77,7 +77,7 @@ function Read-AtomicJson {
         
         return $content | ConvertFrom-Json
     } catch {
-        Write-Warning "Failed to read JSON from $Path: $($_.Exception.Message)"
+        Write-Warning "Failed to read JSON from ${Path}: $($_.Exception.Message)"
         return $Default
     }
 }
@@ -99,7 +99,7 @@ function Backup-Atomic {
         Copy-Item $Path $backupPath -Force
         return $true
     } catch {
-        Write-Warning "Failed to create backup of $Path: $($_.Exception.Message)"
+        Write-Warning "Failed to create backup of ${Path}: $($_.Exception.Message)"
         return $false
     }
 }

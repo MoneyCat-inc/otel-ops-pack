@@ -118,7 +118,7 @@ if ($GenerateTestTraces -and -not $DryRun) {
     
     # Verify traces in SigNoz
     try {
-        $TracesQuery = "service_name=\"resonai-backend\""
+        $TracesQuery = 'service_name="resonai-backend"'
         $TracesResponse = Invoke-RestMethod -Uri "$SigNozUrl/api/v1/traces" -Method GET -Headers $Headers -Body @{query=$TracesQuery} -TimeoutSec 10
         
         if ($TracesResponse.traces -and $TracesResponse.traces.Count -gt 0) {
@@ -162,7 +162,7 @@ Write-Host "`n📝 Test 4: Log Verification" -ForegroundColor Yellow
 $VerificationResults.summary.total_tests++
 
 try {
-    $LogsQuery = "service_name=\"resonai-backend\""
+    $LogsQuery = 'service_name="resonai-backend"'
     $LogsResponse = Invoke-RestMethod -Uri "$SigNozUrl/api/v1/logs" -Method GET -Headers $Headers -Body @{query=$LogsQuery} -TimeoutSec 10
     
     if ($LogsResponse.logs -and $LogsResponse.logs.Count -gt 0) {
