@@ -32,7 +32,9 @@
 
 Age for “who wins” uses `git log -1 --format=%ct` (not filesystem mtime).
 
-Almost every CHAR overlap path shares one bulk commit time (`ct≈1759994317` / ~2025-10-16) — a frozen snapshot, not an ongoing publish sync. `CHAR/DOCS/README.md` still claims “publish mirror of /docs”; the tree shape falsifies that.
+Almost every CHAR overlap path shares one bulk commit time (`ct≈1759994317` / ~2025-10-16)
+— a frozen snapshot, not an ongoing publish sync. `CHAR/DOCS/README.md` still claims
+“publish mirror of /docs”; the tree shape falsifies that.
 
 ---
 
@@ -69,7 +71,10 @@ Almost every CHAR overlap path shares one bulk commit time (`ct≈1759994317` / 
 
 `git_newer=CHAR` (1):
 
-27. `status.html` — docs 11 227 B (`42393c28`, hub 4-panel redesign) vs CHAR 40 530 B (`0805f677`, later). Diffstat ~+882/−377. **Decision deferred to CHAR disposition:** restore into live hub, keep as archival only, or discard CHAR variant after hub owners confirm.
+1. `status.html` — docs 11 227 B (`42393c28`, hub 4-panel redesign) vs CHAR 40 530 B
+   (`0805f677`, later). Diffstat ~+882/−377. **Decision deferred to CHAR disposition:**
+   restore into live hub, keep as archival only, or discard CHAR variant after hub
+   owners confirm.
 
 ---
 

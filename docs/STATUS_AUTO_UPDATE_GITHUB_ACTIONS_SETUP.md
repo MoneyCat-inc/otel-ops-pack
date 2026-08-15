@@ -6,7 +6,8 @@ The Status Dashboard Auto-Update workflow requires specific GitHub Actions permi
 
 ### Enable PR Creation for GitHub Actions
 
-**⚠️ CRITICAL:** The workflow will fail with "GitHub Actions is not permitted to create or approve pull requests" unless this setting is enabled.
+**⚠️ CRITICAL:** The workflow will fail with "GitHub Actions is not permitted to create or
+approve pull requests" unless this setting is enabled.
 
 **Steps to Enable:**
 
