@@ -70,7 +70,7 @@ if (-not $Baseline) {
     $env:OTEL_DOTNET_AUTO_TRACES_HTTPCLIENT_INSTRUMENTATION_ENABLED = "true"
     
     Write-Host "   ✅ OTel configured for: $ServiceName" -ForegroundColor Green
-    Write-Host "   ✅ Exporting to: http://127.0.0.1:5320 (gRPC)" -ForegroundColor Green
+    Write-Host "   ✓ Exporting to: http://127.0.0.1:4317 (gRPC)" -ForegroundColor Green
 } else {
     Write-Host "[BASELINE] Running WITHOUT instrumentation (baseline mode)" -ForegroundColor Yellow
 }

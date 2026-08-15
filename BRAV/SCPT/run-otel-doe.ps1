@@ -246,7 +246,7 @@ foreach ($run in $runPlan.runs) {
             Stage = $Stage
         }
         
-        $loadCommandExpanded = "$LoadCommand -Duration $Duration -OTLPEndpoint http://localhost:5321 -RunId $($run.runId) -Stage $Stage"
+        $loadCommandExpanded = "$LoadCommand -Duration $Duration -OTLPEndpoint http://localhost:$($run.ports.http) -RunId $($run.runId) -Stage $Stage"
         
         # Execute load command
         $loadProcess = Start-Process -FilePath "pwsh" -ArgumentList @("-Command", $loadCommandExpanded) -PassThru -NoNewWindow

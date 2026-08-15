@@ -1,3 +1,6 @@
+Import-Module (Join-Path $PSScriptRoot 'lib\OtelPorts.psm1') -Force
+$script:OtelPorts = Get-OtelPorts
+
 # MEMX Integration Verification Script
 # Verifies MEMX implementation and OTel integration readiness
 
@@ -19,10 +22,10 @@ Write-Host "✅ MEMX mock directory found" -ForegroundColor Green
 $otelConfigPath = "config.yaml"
 if (Test-Path $otelConfigPath) {
     $config = Get-Content $otelConfigPath -Raw
-    if ($config -match "5321" -and $config -match "4318") {
+    if ($config -match [regex]::Escape([string]$script:OtelPorts.IngestHttp) -and $config -match [regex]::Escape([string]$script:OtelPorts.SignozOtlpHttp)) {
         Write-Host "✅ OTel collector configured for MEMX integration" -ForegroundColor Green
-        Write-Host "   - Port 5321: Windows OTel HTTP receiver" -ForegroundColor Gray
-        Write-Host "   - Port 4318: SigNoz OTel HTTP receiver" -ForegroundColor Gray
+        Write-Host "   - Port $($script:OtelPorts.IngestHttp): Windows OTel HTTP receiver" -ForegroundColor Gray
+        Write-Host "   - Port $($script:OtelPorts.SignozOtlpHttp): SigNoz OTel HTTP receiver" -ForegroundColor Gray
     } else {
         Write-Host "⚠️  OTel collector may need MEMX port configuration" -ForegroundColor Yellow
     }
@@ -72,10 +75,10 @@ Write-Host ""
 Write-Host "🔍 Checking port availability..." -ForegroundColor Cyan
 
 $requiredPorts = @(
-    @{Port=5321; Description="Windows OTel HTTP receiver"},
-    @{Port=4318; Description="SigNoz OTel HTTP receiver"},
+    @{Port=$script:OtelPorts.IngestHttp; Description="Windows OTel HTTP receiver"},
+    @{Port=$script:OtelPorts.SignozOtlpHttp; Description="SigNoz OTel HTTP receiver"},
     @{Port=3000; Description="Resonai dev server"},
-    @{Port=8080; Description="SigNoz UI"}
+    @{Port=$script:OtelPorts.SignozUiHttp; Description="SigNoz UI"}
 )
 
 foreach ($portInfo in $requiredPorts) {
@@ -128,7 +131,7 @@ Write-Host "   🔄 PR-4: SigNoz streaming (pending)" -ForegroundColor Yellow
 
 Write-Host ""
 Write-Host "🔗 OTel Integration Points:" -ForegroundColor White
-Write-Host "   • MEMX OTLP endpoint: http://localhost:5321/v1/logs" -ForegroundColor Gray
+Write-Host "   • MEMX OTLP endpoint: $(Get-OtelIngestHttpBase -HostName 'localhost' -Ports $script:OtelPorts)/v1/logs" -ForegroundColor Gray
 Write-Host "   • Dataset: resonai_analytics" -ForegroundColor Gray
 Write-Host "   • Metrics: resonai_memx_wasm_heap_bytes, resonai_memx_sab_used_bytes, resonai_memx_sab_capacity_bytes, resonai_memx_worklet_ui_lag, resonai_memx_strain_pct" -ForegroundColor Gray
 Write-Host "   • Log events: SAB_BACKLOG, WASM_GROW, WORKLET_LAG" -ForegroundColor Gray
