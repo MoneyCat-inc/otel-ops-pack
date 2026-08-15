@@ -161,6 +161,24 @@ $ReportProcessor = {
         $leanFormat = ($content -match '(?m)^##\s+Examine' -and $content -match '(?m)^##\s+Clean' -and $content -match '(?m)^##\s+Report' -and $content -match '(?m)^##\s+Role')
         $numberedFormat = ($content -match "## ??.*1\. Examine" -and $content -match "## ??.*2\. Clean" -and $content -match "## ??.*3\. Report" -and $content -match "## ??.*4\. Role")
         $result.FourSection = ($leanFormat -or $numberedFormat)
+
+        # Second Pass D2: continuation marker — honor only when named parent exists and has Examine.
+        # Marker form: <!-- continuation of ParentFile.md … -->
+        if (-not $result.FourSection -and $content -match '(?im)<!--\s*continuation of\s+(\S+\.md)') {
+            $parentPath = Join-Path -Path $file.DirectoryName -ChildPath $Matches[1]
+            if (Test-Path -LiteralPath $parentPath) {
+                $parentContent = Get-Content -LiteralPath $parentPath -Raw -Encoding UTF8
+                $parentHasExamine = ($parentContent -match '(?m)^##\s+Examine' -or $parentContent -match '## ??.*1\. Examine')
+                $hasCleanReportRole = (
+                    ($content -match '(?m)^##\s+Clean' -or $content -match '## ??.*2\. Clean') -and
+                    ($content -match '(?m)^##\s+Report' -or $content -match '## ??.*3\. Report') -and
+                    ($content -match '(?m)^##\s+Role' -or $content -match '## ??.*4\. Role')
+                )
+                if ($parentHasExamine -and $hasCleanReportRole) {
+                    $result.FourSection = $true
+                }
+            }
+        }
         $result.ECRRGate = ($content -match "## ?.*ECRR Gate" -or $content -match "ECRR Gate")
         $result.ActorDeclaration = ($content -match "Actor.*Declaration" -or $content -match "Agent.*acting as")
         $result.EvidenceReference = ($content -match "Evidence" -or $content -match "Artifacts" -or $content -match "Screenshots" -or $content -match "Logs")
