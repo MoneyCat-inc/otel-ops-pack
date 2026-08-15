@@ -32,10 +32,21 @@
     }
     async function fetchLatestStatusJson() {
       const base = resolveStatusBase();
-      const url = `${base}/status/LATEST.json`;
-      const r = await fetch(url, { cache: 'no-store' });
-      if (!r.ok) throw new Error(`status ${r.status}`);
-      return await r.json();
+      // Prefer live published KPIs; LATEST.json is legacy and 404s on Pages.
+      const candidates = [
+        `${base}/docs/status/kpis.json`,
+        `${base}/docs/status/tests.json`,
+        `${base}/status/LATEST.json`,
+      ];
+      let lastErr;
+      for (const url of candidates) {
+        try {
+          const r = await fetch(url, { cache: 'no-store' });
+          if (!r.ok) { lastErr = new Error(`status ${r.status} for ${url}`); continue; }
+          return await r.json();
+        } catch (e) { lastErr = e; }
+      }
+      throw lastErr || new Error('no status json');
     }
 
     async function initGate() {
