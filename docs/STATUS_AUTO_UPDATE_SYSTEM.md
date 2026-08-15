@@ -285,7 +285,7 @@ Workflow has 15-minute timeout to prevent hanging.
 1. Workflow ran successfully: [Check
    Actions](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/status-auto-update.yml)
 2. Commit was pushed: `git log --oneline -5 | grep "auto-update"`
-3. GitHub Pages deployed: Check [deployments](https://github.com/MoneyCat-inc/otel-ops-pack/deployments)
+3. GitHub Pages deployed: Check the repo's **Deployments** panel (GitHub UI; the direct URL 404s for anonymous visitors)
 4. Cache issue: Hard refresh (Ctrl+Shift+R)
 
 ### Verification Fails Every Time
