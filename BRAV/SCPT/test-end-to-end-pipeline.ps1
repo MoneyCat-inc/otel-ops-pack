@@ -7,6 +7,9 @@ param(
     [switch]$Detailed
 )
 
+Import-Module (Join-Path $PSScriptRoot 'lib\OtelPorts.psm1') -Force
+$script:OtelPorts = Get-OtelPorts
+
 Write-Host "🧪 End-to-End Pipeline Test" -ForegroundColor Cyan
 Write-Host "Actor: Cursor Agent - Observability Copilot" -ForegroundColor Gray
 Write-Host ""
@@ -37,7 +40,7 @@ try {
 }
 
 # Check OTLP Ports
-$OtlpPorts = @(5320, 5321)
+$OtlpPorts = @($script:OtelPorts.IngestGrpc, $script:OtelPorts.IngestHttp)
 foreach ($Port in $OtlpPorts) {
     try {
         $Connection = Test-NetConnection -ComputerName localhost -Port $Port -InformationLevel Quiet
@@ -193,7 +196,7 @@ try {
         "Content-Type" = "application/json"
     }
 
-    $OtlpResponse = Invoke-RestMethod -Uri "http://localhost:5321/v1/logs" -Method Post -Body $OtlpPayload -Headers $Headers -ErrorAction Stop
+    $OtlpResponse = Invoke-RestMethod -Uri "$(Get-OtelIngestHttpBase -HostName 'localhost' -Ports $script:OtelPorts)/v1/logs" -Method Post -Body $OtlpPayload -Headers $Headers -ErrorAction Stop
     Write-Host "  ✅ Sent OTLP test data" -ForegroundColor Green
 } catch {
     Write-Host "  ⚠️ Could not send OTLP test data: $($_.Exception.Message)" -ForegroundColor Yellow

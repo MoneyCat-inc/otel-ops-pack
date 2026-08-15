@@ -1,3 +1,6 @@
+Import-Module (Join-Path $PSScriptRoot 'lib\OtelPorts.psm1') -Force
+$script:OtelPorts = Get-OtelPorts
+
 # Verify E2 Dashboard Setup
 # Tests the complete E2 ratio sweep dashboard implementation
 
@@ -49,11 +52,11 @@ if (Test-Path $importFile) {
 # Test OTLP endpoint connectivity
 Write-Host "`nTesting OTLP endpoint connectivity..." -ForegroundColor Yellow
 try {
-    $testConnection = Test-NetConnection -ComputerName 127.0.0.1 -Port 5321 -WarningAction SilentlyContinue
+    $testConnection = Test-NetConnection -ComputerName 127.0.0.1 -Port $script:OtelPorts.IngestHttp -WarningAction SilentlyContinue
     if ($testConnection.TcpTestSucceeded) {
-        Write-Host "✓ OTLP endpoint (127.0.0.1:5321) is reachable" -ForegroundColor Green
+        Write-Host "✓ OTLP endpoint (127.0.0.1:$($script:OtelPorts.IngestHttp)) is reachable" -ForegroundColor Green
     } else {
-        Write-Host "✗ OTLP endpoint (127.0.0.1:5321) is not reachable" -ForegroundColor Red
+        Write-Host "✗ OTLP endpoint (127.0.0.1:$($script:OtelPorts.IngestHttp)) is not reachable" -ForegroundColor Red
     }
 } catch {
     Write-Host "✗ Could not test OTLP endpoint: $($_.Exception.Message)" -ForegroundColor Red
