@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "authority": "windows/otelcol/otelcol-contrib-config.yaml",
+  "windows_collector_ingest": {
+    "grpc": 5320,
+    "http": 5321
+  },
+  "signoz_otlp": {
+    "grpc": 4317,
+    "http": 4318
+  },
+  "signoz_ui": {
+    "http": 8080
+  },
+  "notes": "Windows ingest avoids PlariumPlay 5300–5319 bind range. Numbers must match collector YAML endpoint lines; enforced by BRAV/SCPT/check-otel-ports-drift.ps1."
+}

@@ -58,6 +58,9 @@ param(
 
 $ErrorActionPreference = "Stop"
 
+Import-Module (Join-Path $PSScriptRoot '..\..\BRAV\SCPT\lib\OtelPorts.psm1') -Force
+$script:OtelPorts = Get-OtelPorts
+
 function Write-CheckLog {
     param([string]$Level, [string]$Message, [hashtable]$Data = @{})
     
@@ -145,17 +148,17 @@ Write-CheckLog -Level "INFO" -Message "Starting Collector path verification" -Da
     lookback_minutes = $LookbackMinutes
 }
 
-# Step 1: Verify Collector is listening on 5320
-Write-CheckLog -Level "INFO" -Message "Checking if Collector is listening on port 5320"
+# Step 1: Verify Collector is listening on ingest gRPC port
+Write-CheckLog -Level "INFO" -Message "Checking if Collector is listening on port $($script:OtelPorts.IngestGrpc)"
 
 $collectorListening = $false
 try {
-    $testConnection = Test-NetConnection -ComputerName 127.0.0.1 -Port 5320 -InformationLevel Quiet -WarningAction SilentlyContinue
+    $testConnection = Test-NetConnection -ComputerName 127.0.0.1 -Port $script:OtelPorts.IngestGrpc -InformationLevel Quiet -WarningAction SilentlyContinue
     if ($testConnection) {
-        Write-CheckLog -Level "INFO" -Message "Collector listening on port 5320" -Data @{ status = "PASS" }
+        Write-CheckLog -Level "INFO" -Message "Collector listening on port $($script:OtelPorts.IngestGrpc)" -Data @{ status = "PASS" }
         $collectorListening = $true
     } else {
-        Write-CheckLog -Level "ERROR" -Message "Collector not listening on port 5320" -Data @{ status = "FAIL" }
+        Write-CheckLog -Level "ERROR" -Message "Collector not listening on port $($script:OtelPorts.IngestGrpc)" -Data @{ status = "FAIL" }
         exit 2
     }
 } catch {
@@ -284,8 +287,8 @@ try {
     
     Write-CheckLog -Level "INFO" -Message "Collector path verification complete" -Data @{
         status = "GREEN"
-        collector_port = 5320
-        signoz_port = 4317
+        collector_port = $script:OtelPorts.IngestGrpc
+        signoz_port = $script:OtelPorts.SignozOtlpGrpc
         traces_received = $traceCount
     }
     
