@@ -9,8 +9,8 @@
       "tags": ["architecture", "phase2", "vision"]
     },
     {
-      "path": "docs/BossCat/REFERENCE_MAP.md",
-      "title": "Reference Map (Human)",
+      "path": "docs/BossCat/ARCHITECTURE_MAP.md",
+      "title": "Architecture Map (Human)",
       "importance": "P1",
       "tags": ["map", "overview"]
     },

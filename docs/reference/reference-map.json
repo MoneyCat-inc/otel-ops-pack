@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated_at": "2026-08-15T02:53:37.595Z",
+  "generated_at": "2026-08-15T03:21:50.322Z",
   "nodes": [
     {
       "id": "ingest-worker",
@@ -164,10 +164,10 @@
       ]
     },
     {
-      "id": "doc:Reference Map (Human)",
+      "id": "doc:Architecture Map (Human)",
       "type": "doc",
       "files": [
-        "docs/BossCat/REFERENCE_MAP.md"
+        "docs/BossCat/ARCHITECTURE_MAP.md"
       ],
       "importance": "P1",
       "tags": [
