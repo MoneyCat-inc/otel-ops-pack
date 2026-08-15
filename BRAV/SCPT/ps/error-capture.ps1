@@ -145,9 +145,9 @@ function Get-ErrorCaptureStats {
         
         if ($recentErrors.Count -gt 0) {
             Write-Host "`n🕒 Recent Errors (Last 24h):" -ForegroundColor Cyan
-            foreach ($error in $recentErrors) {
-                $lastSeen = [DateTimeOffset]::FromUnixTimeSeconds($error.Value.lastSeen).ToString("yyyy-MM-dd HH:mm:ss")
-                Write-Host "  $($error.Name) - $lastSeen - Count: $($error.Value.count)" -ForegroundColor White
+            foreach ($errEntry in $recentErrors) {
+                $lastSeen = [DateTimeOffset]::FromUnixTimeSeconds($errEntry.Value.lastSeen).ToString("yyyy-MM-dd HH:mm:ss")
+                Write-Host "  $($errEntry.Name) - $lastSeen - Count: $($errEntry.Value.count)" -ForegroundColor White
             }
         }
     }

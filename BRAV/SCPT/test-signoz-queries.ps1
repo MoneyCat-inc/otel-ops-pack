@@ -98,8 +98,8 @@ function Test-Query {
         Write-Host "  ✅ Syntax appears valid" -ForegroundColor Green
     } else {
         Write-Host "  ❌ Syntax errors detected:" -ForegroundColor Red
-        foreach ($Error in $SyntaxErrors) {
-            Write-Host "    - $Error" -ForegroundColor Red
+        foreach ($syntaxError in $SyntaxErrors) {
+            Write-Host "    - $syntaxError" -ForegroundColor Red
         }
     }
     

@@ -24,8 +24,8 @@ if ($OtlpHttpPort -lt 0) { $OtlpHttpPort = (Get-OtelPorts).IngestHttp }
 Write-Host "🐾 IONA Trace Canary — BossCat Quick Span" -ForegroundColor Cyan
 Write-Host ("Service={0} • OTLP/HTTP={1}:{2} • Zipkin={3}:{4}" -f $ServiceName, $CollectorHost, $OtlpHttpPort, $CollectorHost, $ZipkinPort) -ForegroundColor DarkGray
 
-function Test-Port($host, $port) {
-  try { return (Test-NetConnection -ComputerName $host -Port $port -WarningAction SilentlyContinue).TcpTestSucceeded }
+function Test-Port($computerName, $port) {
+  try { return (Test-NetConnection -ComputerName $computerName -Port $port -WarningAction SilentlyContinue).TcpTestSucceeded }
   catch { return $false }
 }
 

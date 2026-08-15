@@ -233,8 +233,8 @@ if (-not $Config.DryRun) {
     if ($errors.Count -gt 0) {
         Write-Host ""
         Write-Host "❌ Archive Errors:" -ForegroundColor Red
-        foreach ($error in $errors) {
-            Write-Host "  - $error" -ForegroundColor DarkRed
+        foreach ($archiveError in $errors) {
+            Write-Host "  - $archiveError" -ForegroundColor DarkRed
         }
     }
     

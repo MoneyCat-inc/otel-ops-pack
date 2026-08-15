@@ -32,13 +32,13 @@ function Write-VerboseOutput {
 
 function Get-MonitorStatus {
     if (Test-Path $MonitorPidFile) {
-        $pid = Get-Content $MonitorPidFile -ErrorAction SilentlyContinue
-        if ($pid) {
-            $process = Get-Process -Id $pid -ErrorAction SilentlyContinue
+        $monitorPid = Get-Content $MonitorPidFile -ErrorAction SilentlyContinue
+        if ($monitorPid) {
+            $process = Get-Process -Id $monitorPid -ErrorAction SilentlyContinue
             if ($process) {
                 return @{
                     IsRunning = $true
-                    Pid = $pid
+                    Pid = $monitorPid
                     Process = $process
                 }
             }
