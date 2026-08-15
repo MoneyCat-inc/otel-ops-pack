@@ -48,13 +48,14 @@ Budgets (all lanes): jobs ≤ 2, files ≤ 10, lines ≤ 200 per job.
 ### Gate & Site — Quick Access
 
 [![Gate & Site Evidence](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/gate-site-evidence.yml/badge.svg)](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/gate-site-evidence.yml)
-[View Latest Status JSON](https://MoneyCat-inc.github.io/otel-ops-pack/status/LATEST.json) · [Open Dashboard](https://MoneyCat-inc.github.io/otel-ops-pack/docs/status.html)
+[View status KPIs JSON](https://MoneyCat-inc.github.io/otel-ops-pack/docs/status/kpis.json) · [Open Dashboard](https://MoneyCat-inc.github.io/otel-ops-pack/docs/status.html)
 
 ---
 
 ## Usage
 
 ### Run Writer (AUTO-BOTS-*-ALFA)
+
 ```bash
 pnpm agent:run:ssot      # AUTO-BOTS-SSOT-ALFA
 pnpm agent:run:flaky     # AUTO-BOTS-FLAK-ALFA
@@ -64,6 +65,7 @@ pnpm agent:run:docs      # AUTO-BOTS-DOCS-ALFA
 ```
 
 ### Monitor (IONA-CATS-*-BETA)
+
 ```bash
 # IONA-CATS bots read artifacts/ecrr/<lane>/*.json
 # Validate ECRR structure, check budgets, append BOSSCAT_LOG
@@ -84,6 +86,7 @@ pnpm agent:run:docs      # AUTO-BOTS-DOCS-ALFA
 ## Evidence Trail
 
 Every bot run generates:
+
 - **ECRR artifact:** `artifacts/ecrr/<lane>/<timestamp>.json`
 - **BossCat log entry:** `docs/BossCat/BOSSCAT_LOG.md` (one-liner)
 - **Gate signal:** `@cat ready-for-gate` in PR when ready

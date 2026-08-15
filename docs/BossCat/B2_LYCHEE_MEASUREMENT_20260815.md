@@ -94,4 +94,14 @@ lychee --config .lychee.toml --no-progress --max-redirects 5 --max-retries 2 \
 | Archive path cites | `README.md`, `GATE_MILESTONES.md`, `runbooks/signoz-api-proofs.md` → `docs/archive/gate/2025-10/…` |
 | Own-the-debt | Touched markdown cleared to **0** under markdownlint (Summary match count) |
 
-Still deferred: generated `AGENTS.md` LATEST.json; human re-verify of Ko-fi/Patreon when convenient (excluded from lychee, not deleted).
+Still deferred: human re-verify of Ko-fi/Patreon when convenient (excluded from lychee, not deleted).
+
+## Fix batch 3 (2026-08-15)
+
+| Action | Detail |
+|--------|--------|
+| Dead `status/LATEST.json` (404) | `docs/BossCat/AGENTS.md` → verified-200 `docs/status/kpis.json` |
+| `docs/assets/status.js` fetch | Prefer `docs/status/kpis.json` then `tests.json`; keep LATEST as last legacy fallback |
+| Own-the-debt | `AGENTS.md` lint Summary **0** |
+
+Verified live before replace: `https://MoneyCat-inc.github.io/otel-ops-pack/docs/status/kpis.json` → **200**.
