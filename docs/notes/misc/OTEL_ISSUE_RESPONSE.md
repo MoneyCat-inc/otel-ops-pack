@@ -6,6 +6,7 @@
 
 ## Comment to Post
 
+<!-- markdownlint-disable-next-line MD013 -->
 Thanks, @axw - totally fair on the 404s. We completed the repo rename and have now published stable permalinks on our new site:
 
 * **Overview & goals (Windows Day-2 Ops Kit)** -> [https://hub.resonai.uk/docs/day2/windows/overview/](https://hub.resonai.uk/docs/day2/windows/overview/)
@@ -15,6 +16,7 @@ Thanks, @axw - totally fair on the 404s. We completed the repo rename and have n
 * **Policy bundle & cosign attestations** -> [https://hub.resonai.uk/docs/security/policy-bundle/](https://hub.resonai.uk/docs/security/policy-bundle/)
 * **SBOM + release attestations** -> [https://hub.resonai.uk/docs/security/supply-chain/sbom/](https://hub.resonai.uk/docs/security/supply-chain/sbom/)
 
+<!-- markdownlint-disable-next-line MD013 -->
 If helpful, I can open a Draft PR that contributes just the *thin, self-contained* Windows guardrails example to `opentelemetry-collector-contrib/examples`, keeping the broader framework out-of-tree.
 
 Thanks again for the steer!
@@ -23,11 +25,11 @@ Thanks again for the steer!
 
 ## Verification Checklist (Before Posting)
 
-- [ ] Wait for GitHub Pages rebuild (2-3 minutes)
-- [ ] Test all 6 URLs in browser
-- [ ] Confirm all pages load without 404
-- [ ] Verify canonical tags present
-- [ ] Check styling matches Hub
+* [ ] Wait for GitHub Pages rebuild (2-3 minutes)
+* [ ] Test all 6 URLs in browser
+* [ ] Confirm all pages load without 404
+* [ ] Verify canonical tags present
+* [ ] Check styling matches Hub
 
 ## URLs to Test
 

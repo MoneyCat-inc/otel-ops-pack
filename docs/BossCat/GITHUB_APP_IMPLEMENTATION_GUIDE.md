@@ -116,12 +116,14 @@ steps:
 2. Add two secrets:
 
    **BOSSCAT_APP_ID**
-   ```
+
+   ```text
    123456  # Your app ID (numeric)
    ```
 
    **BOSSCAT_APP_PRIVATE_KEY**
-   ```
+
+   ```text
    -----BEGIN RSA PRIVATE KEY-----
    MIIEpAIBAAKCAQEA...
    (entire contents of the .pem file)
@@ -145,6 +147,7 @@ steps:
 **Cause**: App secrets not configured or GitHub App token generation failing
 
 **Solution**:
+
 1. Check that both `BOSSCAT_APP_ID` and `BOSSCAT_APP_PRIVATE_KEY` are set
 2. Verify the private key format (must include header/footer lines)
 3. Check workflow logs for the "Generate GitHub App token" step
@@ -155,6 +158,7 @@ steps:
 **Cause**: App not installed on repository or missing permissions
 
 **Solution**:
+
 1. Verify app is installed: Settings → GitHub Apps → Installed Apps
 2. Check app permissions match requirements
 3. Reinstall the app if necessary
@@ -164,6 +168,7 @@ steps:
 **Cause**: Still using `GITHUB_TOKEN` (fallback mode)
 
 **Solution**:
+
 1. Verify secrets are correctly named (exact match required)
 2. Check that `tibdex/github-app-token@v2` action runs successfully
 3. Review workflow logs for authentication step
@@ -190,6 +195,7 @@ steps:
 ### Audit Trail
 
 All actions performed via the GitHub App are logged:
+
 - Repository activity logs show app actions
 - Audit logs available in organization settings
 - Comments clearly attributed to the app
@@ -208,6 +214,7 @@ All actions performed via the GitHub App are logged:
 ```
 
 **Limitations**:
+
 - Rate limited (1000 requests/hour per repo)
 - Generic `github-actions[bot]` attribution
 - Limited permissions in some scenarios
@@ -230,6 +237,7 @@ All actions performed via the GitHub App are logged:
 ```
 
 **Benefits**:
+
 - Higher rate limits (5000 requests/hour per installation)
 - Custom app name in comments
 - Better permissions and security

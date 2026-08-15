@@ -15,12 +15,14 @@
 **Status:** Modified but not committed (line 190: `concurrency:`)
 
 **Actions Needed:**
+
 - Review changes made during Gate #007 session
 - Verify concurrency group configuration
 - Check Option B job integration
 - Commit workflow updates if approved
 
 **Context:**
+
 - File has uncommitted changes from Gate #007 work
 - May include Option B integration or concurrency fixes
 - Review before next gate run
@@ -32,11 +34,13 @@
 **Objective:** Work on GPU sidecars and GPU observability
 
 **Context:**
+
 - GPU sidecars were stopped during Gate #007 cleanup
 - GPU metrics pipeline needs attention
 - Related scripts exist: `scripts/gpu-fix-lane.ps1`
 
 **Potential Tasks:**
+
 1. Review GPU sidecar configuration
 2. Test GPU metrics collection
 3. Verify GPU observability in SigNoz
@@ -44,11 +48,13 @@
 5. Integrate GPU metrics into dashboards
 
 **Reference Files:**
+
 - `scripts/gpu-fix-lane.ps1`
 - `gpu-*.py` scripts (if any)
 - Docker compose GPU configurations
 
 **Starting Point:**
+
 ```powershell
 # Check GPU sidecar status
 docker ps -a | grep gpu
@@ -75,10 +81,12 @@ cat scripts/gpu-fix-lane.ps1
 ## 📂 Archive Locations
 
 **Gate #007 Evidence:**
+
 - `CHAR/EVID/gate-007/` (archived)
 - `CHAR/PRSV/archive/gate-007/` (session artifacts)
 
 **ECRR Reports:**
+
 - `CHAR/ECRR/ECRR_REPORTS/` (55 reports)
 - `DELT/ARTF/ecrr-benchmark.json` (metrics)
 
@@ -87,6 +95,7 @@ cat scripts/gpu-fix-lane.ps1
 ## 🎯 Quick Actions
 
 **To start GPU work:**
+
 ```powershell
 # Navigate to project
 cd C:\otel
@@ -99,6 +108,7 @@ cat scripts/gpu-fix-lane.ps1
 ```
 
 **To review workflow changes:**
+
 ```powershell
 # Check what changed
 git diff .github/workflows/bosscat-gate-verify.yml

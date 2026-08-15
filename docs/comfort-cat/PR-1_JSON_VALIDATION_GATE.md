@@ -9,6 +9,7 @@
 
 ## 🎯 Overview
 
+<!-- markdownlint-disable-next-line MD013 -->
 This PR implements a **JSON schema validation gate** using AJV (Another JSON Schema Validator) to prevent future auto-update failures by validating all artifact contracts before they're committed.
 
 **Key Principle:** Fail closed - if validation fails, the pipeline stops.
@@ -18,15 +19,18 @@ This PR implements a **JSON schema validation gate** using AJV (Another JSON Sch
 ## 📊 Scope
 
 ### Files to Create
+
 1. `schema/status-tests.schema.json` - Test results contract
 2. `schema/gate-verification-results.schema.json` - Gate verification contract  
 3. `.github/workflows/json-validation-gate.yml` - CI/CD validation workflow
 
 ### Files to Modify
+
 1. `.github/workflows/status-auto-update.yml` - Add validation gate dependency
 2. `package.json` - Add AJV dependencies
 
 ### No Changes
+
 - ✅ No UI modifications
 - ✅ No dashboard changes
 - ✅ No monitoring logic changes
@@ -40,6 +44,7 @@ This PR implements a **JSON schema validation gate** using AJV (Another JSON Sch
 **Purpose:** Validate test results structure in `docs/status/tests.json`
 
 **Required Fields:**
+
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -64,6 +69,7 @@ This PR implements a **JSON schema validation gate** using AJV (Another JSON Sch
 **Purpose:** Validate gate verification results in `artifacts/gate-verification-results.json`
 
 **Required Fields:**
+
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -237,6 +243,7 @@ jobs:
 ## 🐾 Canonical Reference
 
 **Related Documents:**
+
 - `docs/comfort-cat/GATE_PROTOCOL.md` - Gate readiness protocol
 - `docs/comfort-cat/ECRR_FRAMEWORK.md` - ECRR methodology
 - Current PR specs in this directory

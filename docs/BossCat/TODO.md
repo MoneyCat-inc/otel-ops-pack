@@ -1,6 +1,7 @@
 # BossCat Pinned TODOs
 
 Purpose
+
 - Track downstream actions BossCat wants to execute when convenient.
 - All items follow ECRR and produce evidence on completion.
 
@@ -29,6 +30,7 @@ Purpose
 ## Done (Add entries as items complete)
 
 1) ✅ Normalize canonical analysis doc (P1) - **COMPLETE 2025-10-10**
+
 - Path: docs/BossCat/analysis/system-issues-fractal.download.md
 - Goal: Production-ready Markdown (frontmatter, no HTML anchors, clean citations)
 - Actions completed:
@@ -40,7 +42,8 @@ Purpose
 - Evidence: .agent/EVIDENCE.log event "doc_normalized" logged
 - Status: **DONE** ✅
 
-2) 🐾 Launch BossCat OEM v3 background monitoring worker (P0) - **COMPLETE 2025-10-23**
+1) 🐾 Launch BossCat OEM v3 background monitoring worker (P0) - **COMPLETE 2025-10-23**
+
 - Path: bosscat-oem-v3-monitor.ps1
 - Goal: Stand up redundant V3 monitoring loops (2x) with schema health checks
 - Actions completed:
@@ -51,7 +54,8 @@ Purpose
 - Evidence: Get-Process -Id 3740,32900 confirms active workers
 - Status: **DONE** ✅
 
-3) 🚀 Implement Edge Writer - GATE FLIPPED TO GREEN (P0) - **COMPLETE 2025-10-23**
+1) 🚀 Implement Edge Writer - GATE FLIPPED TO GREEN (P0) - **COMPLETE 2025-10-23**
+
 - Path: signoz-writer.yaml + docker-compose-signoz.yml
 - Goal: Bypass flaky SigNoz transformer hop with direct ClickHouse v3 writer
 - Actions completed:

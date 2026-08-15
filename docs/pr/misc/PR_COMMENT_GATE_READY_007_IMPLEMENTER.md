@@ -24,6 +24,7 @@
 ### Deliverables (8 Files Modified/Added)
 
 **Modified Files**:
+
 1. `.github/workflows/nightly-dashboard-export.yml` — **3 sentinels added**
    - ICF mode ratchet check (Oct 19 enforcement date)
    - LOC budget sync validation (200→2000 references)
@@ -39,6 +40,7 @@
 8. `CHAR/ECRR/ECRR_REPORTS/ECRR_CURSOR_IMPLEMENTER_20251012_085425.md` — **This run's ECRR**
 
 **Supporting Artifacts**:
+
 - `DELT/ARTF/refmap-gate.json` (PASS)
 - `DELT/ARTF/site-csp-gate.json` (PASS, 0 violations)
 - `DELT/ARTF/cursor-runs/` (2 complete runs with evidence)
@@ -66,12 +68,14 @@
 ### Evidence Chain
 
 **Gate Artifacts**:
+
 - 44 ECRR reports in `CHAR/ECRR/ECRR_REPORTS/`
 - 10 observability snapshots in `docs/observability/snapshots/`
 - Research conversions in `docs/BossCat/Research/`
 - Cursor run evidence in `DELT/ARTF/cursor-runs/`
 
 **Compliance Verification**:
+
 ```json
 {
   "gate": "007",
@@ -88,12 +92,15 @@
 ### Recommendations for BossCat OEM
 
 #### 1. Review & Stage
+
 Review the 3 modified files and 5 new files for gate compliance:
+
 - Verify sentinel logic (nightly workflow)
 - Confirm ICF heuristic safety (automated ratchet)
 - Validate status dashboard CSP (strict headers)
 
 #### 2. Commit (if approved)
+
 ```bash
 git add .github/workflows/nightly-dashboard-export.yml
 git add .github/workflows/icf-filename-ratchet.yml
@@ -121,13 +128,14 @@ Evidence: ECRR_CURSOR_IMPLEMENTER_20251012_085425.md"
 ```
 
 #### 3. Signal Gate Readiness
+
 Once committed, signal Gate #007 readiness to stakeholders.
 
 ---
 
 ### Decision Tree
 
-```
+```text
 Gate #007 Readiness Check
 ├─ ICF Compliance ✅
 ├─ Site Hardening ✅
