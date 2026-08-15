@@ -248,11 +248,11 @@ Write-Host "`n6️⃣ Checking for Secrets..." -ForegroundColor Green
 
 # Basic secret patterns (simplified to avoid regex issues)
 $secretPatterns = @(
-    'password\s*=\s*["''][^"''']+["'']',
-    'secret\s*=\s*["''][^"''']+["'']',
-    'token\s*=\s*["''][^"''']+["'']',
-    'key\s*=\s*["''][^"''']+["'']',
-    'api[_-]?key\s*=\s*["''][^"''']+["'']'
+    'password\s*=\s*["''][^"'']+["'']',
+    'secret\s*=\s*["''][^"'']+["'']',
+    'token\s*=\s*["''][^"'']+["'']',
+    'key\s*=\s*["''][^"'']+["'']',
+    'api[_-]?key\s*=\s*["''][^"'']+["'']'
 )
 
 $filesToCheck = Get-ChildItem -Recurse -File | Where-Object { 

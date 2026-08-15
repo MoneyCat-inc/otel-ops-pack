@@ -2,20 +2,20 @@
 # Checks alert status and provides monitoring guidance
 
 param(
-    [string] = "Hurst Exponent Drift Alert"
+    [string]$AlertName = "Hurst Exponent Drift Alert"
 )
 
-Write-Host "🔍 Verifying SigNoz Hurst Drift Alert: ''" -ForegroundColor Cyan
+Write-Host "🔍 Verifying SigNoz Hurst Drift Alert: $AlertName" -ForegroundColor Cyan
 Write-Host "🎭 Actor: Cursor-Local (Observability Copilot)" -ForegroundColor Yellow
 
 Write-Host "
 Manual Verification Steps:" -ForegroundColor Green
 Write-Host "1. Open SigNoz UI: http://localhost:8080"
 Write-Host "2. Navigate to Alerts"
-Write-Host "3. Find the alert named ''"
+Write-Host "3. Find the alert named '$AlertName'"
 Write-Host "4. Verify its status (should be 'Active' if patterns are flowing normally)"
 Write-Host "5. Check the 'Logs' section in SigNoz using the query:"
-Write-Host "   message contains "hurst_estimate" AND log.file.path contains "canary-pattern-results.json""
+Write-Host '   message contains "hurst_estimate" AND log.file.path contains "canary-pattern-results.json"'
 Write-Host "6. Confirm that fractal pattern logs are visible with Hurst estimates"
 
 Write-Host "

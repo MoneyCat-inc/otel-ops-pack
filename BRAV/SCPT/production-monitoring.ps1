@@ -3,15 +3,15 @@
 # Runs validation tests and generates reports
 # Updated with progress indicators for better user experience
 
-# Import progress indicators module
-. .\BRAV\SCPT\progress-indicators.ps1
-
 param(
     [string]$Environment = "production",
     [string]$ReportDir = "reports/gpu-sidecar",
     [int]$Iterations = 20,
     [int]$DelayMs = 1000
 )
+
+# Import progress indicators module (must follow param block)
+. .\BRAV\SCPT\progress-indicators.ps1
 
 $ErrorActionPreference = "Stop"
 
