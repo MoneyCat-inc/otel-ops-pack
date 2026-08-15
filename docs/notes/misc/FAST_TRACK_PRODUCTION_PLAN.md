@@ -81,7 +81,7 @@ gh api /repos/:owner/:repo/dependabot/alerts |
 
 **Priority**: Critical → High → Moderate → Low
 
-**Reference**: [Dependabot Security Guide](docs/BossCat/DEPENDABOT_SECURITY_GUIDE.md#priority-matrix)
+**Reference**: [Dependabot Security Guide](../../BossCat/DEPENDABOT_SECURITY_GUIDE.md#priority-matrix)
 
 **Done When**: 
 
@@ -250,7 +250,7 @@ pwsh -File scripts/canary-test.ps1
 # Verify alert fires
 ```
 
-**Reference**: [Nightly Dashboard Guide](docs/BossCat/NIGHTLY_DASHBOARD_GUIDE.md)
+**Reference**: [Nightly Dashboard Guide](../../BossCat/NIGHTLY_DASHBOARD_GUIDE.md)
 
 **Done When**: At least 3 critical alerts configured
 
@@ -326,11 +326,11 @@ code README.md
 
 This project uses the BossCat OEM framework for enterprise-grade observability operations.
 
-**Quick Start**: See [docs/BossCat/README.md](docs/BossCat/README.md)
+**Quick Start**: See [docs/BossCat/README.md](../../BossCat/README.md)
 
-**Daily Reference**: [docs/BossCat/QUICK_START_CARD.md](docs/BossCat/QUICK_START_CARD.md)
+**Daily Reference**: [docs/BossCat/QUICK_START_CARD.md](../../BossCat/QUICK_START_CARD.md)
 
-**Security Operations**: [docs/BossCat/SECURITY_MAINTENANCE_MASTER_GUIDE.md](docs/BossCat/SECURITY_MAINTENANCE_MASTER_GUIDE.md)
+**Security Operations**: [docs/BossCat/SECURITY_MAINTENANCE_MASTER_GUIDE.md](../../BossCat/SECURITY_MAINTENANCE_MASTER_GUIDE.md)
 
 "@ | Add-Content README.md
 ```

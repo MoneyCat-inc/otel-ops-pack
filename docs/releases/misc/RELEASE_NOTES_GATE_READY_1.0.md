@@ -241,10 +241,11 @@ All scripts follow Examine → Clean → Report → Role framework with evidence
 
 ### Evidence Bundle
 
-- [ECRR Final Report (MD)](CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_READY_FINAL_2025-10-10.md)
-- [ECRR Final Report (PDF)](CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_READY_FINAL_2025-10-10.pdf)
-- [Guardrails Lock](BRAV/SCPT/GUARDRAILS_LOCKED.md)
-- [Final Health Snapshot](docs/observability/snapshots/gate-final-ready-20251010-004510.json)
+- [ECRR Final Report (MD)](../../../CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_READY_FINAL_2025-10-10.md)
+- ECRR Final Report (PDF): `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_READY_FINAL_2025-10-10.pdf`
+  — local artifact, not tracked (`*.pdf` gitignored)
+- [Guardrails Lock](../../../BRAV/SCPT/GUARDRAILS_LOCKED.md)
+- [Final Health Snapshot](../../observability/snapshots/gate-final-ready-20251010-004510.json)
 
 ---
 
