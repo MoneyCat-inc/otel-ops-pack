@@ -8,6 +8,9 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
+Import-Module (Join-Path $PSScriptRoot 'lib\OtelPorts.psm1') -Force
+$script:OtelPorts = Get-OtelPorts
+
 Write-Host "[INFO] Windows to SigNoz pipeline test" -ForegroundColor Cyan
 
 function Test-Port {
@@ -33,10 +36,10 @@ try {
 }
 
 $portChecks = @(
-    @{ Port = 5321; Name = "Windows Collector OTLP HTTP" },
-    @{ Port = 4317; Name = "SigNoz OTLP gRPC" },
-    @{ Port = 4318; Name = "SigNoz OTLP HTTP" },
-    @{ Port = 8080; Name = "SigNoz UI" },
+    @{ Port = $script:OtelPorts.IngestHttp; Name = "Windows Collector OTLP HTTP" },
+    @{ Port = $script:OtelPorts.SignozOtlpGrpc; Name = "SigNoz OTLP gRPC" },
+    @{ Port = $script:OtelPorts.SignozOtlpHttp; Name = "SigNoz OTLP HTTP" },
+    @{ Port = $script:OtelPorts.SignozUiHttp; Name = "SigNoz UI" },
     @{ Port = 3003; Name = "Resonai API" }
 )
 
@@ -93,7 +96,7 @@ $artifact = @(
     "Event filter: attributes.event_id = '$eventId'",
     "",
     "Manual steps",
-    "1. Open http://localhost:8080",
+    "1. Open http://localhost:$($script:OtelPorts.SignozUiHttp)",
     "2. Navigate to Logs",
     "3. Apply dataset='resonai_analytics'",
     "4. Search for event_id '$eventId'",

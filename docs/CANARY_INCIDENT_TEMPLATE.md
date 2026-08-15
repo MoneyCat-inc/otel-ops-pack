@@ -55,17 +55,20 @@
 ## 🔧 Rollback Actions Taken
 
 **1. Automatic Actions:**
+
 - [ ] Auto-halt triggered by canary state machine
 - [ ] AUDIO_ENABLED flag set to false
 - [ ] OTLP span emitted (audio.enable.canary with breach attributes)
 
 **2. Manual Actions:**
+
 - [ ] Executed `pwsh -File scripts\rollback-audio.ps1`
 - [ ] Verified pm-engine container restarted
 - [ ] Confirmed `/health` shows `audio_enabled: false`
 - [ ] Tested `POST /audio` returns HTTP 503
 
 **3. Verification:**
+
 - [ ] Audio ingestion blocked (HTTP 503)
 - [ ] No audio flowing to visualization
 - [ ] Container stable
@@ -88,10 +91,12 @@
 [Initial thoughts on what caused the breach]
 
 **Contributing Factors:**
+
 - [Factor 1]
 - [Factor 2]
 
 **Requires Further Investigation:**
+
 - [ ] [Item 1]
 - [ ] [Item 2]
 
@@ -102,10 +107,12 @@
 **Status:** [RESOLVED / INVESTIGATING / MONITORING]
 
 **Actions to Prevent Recurrence:**
+
 1. [Action 1]
 2. [Action 2]
 
 **Follow-Up Required:**
+
 - [ ] Adjust KPI thresholds
 - [ ] Fix identified issue
 - [ ] Re-run canary with modifications

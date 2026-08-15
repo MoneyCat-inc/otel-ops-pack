@@ -1,6 +1,7 @@
 # Docker Desktop failing to start – fix steps
 
 ## What’s going on
+
 - **Privileged helper service** is not running (Docker needs admin to start it).
 - **Engine never finishes starting** (stuck “starting”, HTTP 500 on _ping).
 - **docker-desktop-data** is missing from `wsl -l -v`; the data disk may be broken after VHDX compact.
@@ -28,7 +29,7 @@ Restart-Service com.docker.service -Force
 Start-Process "C:\Program Files\Docker\Docker\Docker Desktop.exe"
 ```
 
-3. Wait 1–2 minutes and see if Docker shows “Engine running”.
+1. Wait 1–2 minutes and see if Docker shows “Engine running”.
 
 If it’s still stuck, go to Step 3.
 
@@ -36,6 +37,7 @@ If it’s still stuck, go to Step 3.
 
 ## Step 3: Reset WSL Docker distros (fixes broken data disk)
 
+<!-- markdownlint-disable-next-line MD013 -->
 This **deletes all images, containers, and volumes** and lets Docker create a new data disk. Only do this if you’re OK losing that data.
 
 1. **Quit Docker Desktop** (tray → Quit).
@@ -47,12 +49,14 @@ wsl --unregister docker-desktop
 wsl --unregister docker-desktop-data
 ```
 
-3. Start **Docker Desktop** again. It will recreate `docker-desktop` and `docker-desktop-data` and a new `docker_data.vhdx`.
-4. Wait for the first start to finish (can take a few minutes).
+1. Start **Docker Desktop** again. It will recreate `docker-desktop` and `docker-desktop-data` and a new `docker_data.vhdx`.
+1. Wait for the first start to finish (can take a few minutes).
 
+<!-- markdownlint-disable-next-line MD013 -->
 After this, Docker should start normally. The new VHDX will be small and will grow again as you use Docker. To avoid it growing too much in the future:
 
 - Regularly run: `docker system prune -a -f` (and optionally `docker volume prune -f`).
+<!-- markdownlint-disable-next-line MD013 -->
 - Then quit Docker, run `wsl --shutdown`, and compact the VHDX (as before) **only when you’re sure the compact completed successfully**.
 
 ---

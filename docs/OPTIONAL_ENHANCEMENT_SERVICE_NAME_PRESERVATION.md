@@ -6,6 +6,7 @@
 
 ## Overview
 
+<!-- markdownlint-disable-next-line MD013 -->
 Gate #008 is **GREEN** with full end-to-end trace ingestion confirmed. The current configuration works perfectly for production. This document describes an **optional future enhancement** to improve multi-service observability by preserving canary service names.
 
 ## Current Configuration (Production Now)
@@ -20,12 +21,14 @@ resource/defaults:
 ```
 
 **Current Behavior:**
+
 - ALL traces get `service.name = "resonai-backend"` (regardless of input)
 - Example: Sent `service.name: "canary-test"` → Stored as `"resonai-backend"`
 - Single unified service identity (proven production stability)
 - Query example: `WHERE serviceName = 'resonai-backend'` returns 1,390+ traces
 
 **Advantages (Current):**
+
 - ✅ Single unified service identity
 - ✅ Deterministic aggregation
 - ✅ Simplified operational model
@@ -33,6 +36,7 @@ resource/defaults:
 - ✅ Proven stable in production
 
 **Limitations (Current):**
+
 - ❌ Loses original service names for canaries/tests
 - ❌ Harder to filter production traces by test type
 - ❌ Less visibility into multi-service calls
@@ -51,6 +55,7 @@ resource/defaults:
 ```
 
 **Proposed Behavior:**
+
 - Incoming `service.name` values are PRESERVED
 - Sets default only for spans WITHOUT `service.name`
 - Example: Sent `service.name: "canary-test"` → Stored as `"canary-test"` ✓
@@ -58,12 +63,14 @@ resource/defaults:
 - Better multi-service visibility
 
 **Advantages (Enhanced):**
+
 - ✅ Preserves canary/test service names for filtering
 - ✅ Better multi-service tracing visibility
 - ✅ More granular SigNoz filtering and dashboarding
 - ✅ Easier to identify test traces vs. production
 
 **Considerations (Enhanced):**
+
 - ⚠️ Mixed `service.name` values in production data
 - ⚠️ Slightly more complex SigNoz dashboarding setup
 - ⚠️ Backward compatible (only affects future traces)
@@ -117,6 +124,7 @@ docker exec signoz-clickhouse clickhouse-client --query \
 4. **Assess need:** Determine if multi-service visibility is critical
 
 **Then evaluate for Phase 2:**
+
 - **Option A:** Keep current (sufficient for single-service aggregation)
 - **Option B:** Implement enhancement (if multi-service tracing needed)
 - **Either way:** System is production-ready now
@@ -124,6 +132,7 @@ docker exec signoz-clickhouse clickhouse-client --query \
 ## Key Insight
 
 The root cause analysis of Gate #008 revealed that the current `action: upsert` behavior is **by design**, providing:
+
 - ✅ Deterministic service aggregation
 - ✅ Simplified operational model
 - ✅ Proven production stability (1,390 traces confirmed)
@@ -135,6 +144,7 @@ The optional change would **add flexibility** without compromising current stabi
 ## Current Production Status
 
 ✅ **Ready for Deployment:** YES (upsert configuration)
+
 - All systems operational
 - Full trace ingestion confirmed
 - 1,390 traces successfully stored
@@ -142,6 +152,7 @@ The optional change would **add flexibility** without compromising current stabi
 - JSON Validation Gate live and protecting pipeline
 
 ⏳ **Optional Enhancement:** Available for future evaluation
+
 - Low-risk configuration change
 - Non-destructive to existing data
 - Can be applied anytime

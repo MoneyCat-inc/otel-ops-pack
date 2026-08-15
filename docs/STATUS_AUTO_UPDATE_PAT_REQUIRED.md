@@ -2,12 +2,14 @@
 
 ## 🚨 GITHUB_TOKEN Limitation Discovered
 
+<!-- markdownlint-disable-next-line MD013 -->
 **Issue:** Despite enabling "Allow GitHub Actions to create and approve pull requests" at both repository and organization levels, workflows still fail with:
 
-```
+```text
 ##[error]GitHub Actions is not permitted to create or approve pull requests.
 ```
 
+<!-- markdownlint-disable-next-line MD013 -->
 **Root Cause:** The `GITHUB_TOKEN` in GitHub Actions has restrictions in enterprise/organization contexts that prevent PR creation, even with settings enabled.
 
 **Solution:** Use a Personal Access Token (PAT) instead of `GITHUB_TOKEN`.
@@ -45,9 +47,11 @@ You should see `PAT_STATUS_UPDATE` in the list of repository secrets.
 
 ## ✅ I'LL UPDATE THE WORKFLOW
 
+<!-- markdownlint-disable-next-line MD013 -->
 Once you've added the secret, I'll update `.github/workflows/status-auto-update.yml` to use `PAT_STATUS_UPDATE` instead of `GITHUB_TOKEN`.
 
 **Change required:**
+
 ```yaml
 - name: Create PR (lane discipline)
   uses: peter-evans/create-pull-request@v6
@@ -64,6 +68,7 @@ Once you've added the secret, I'll update `.github/workflows/status-auto-update.
 ✅ **Workflow runs successfully**  
 ✅ **PR created to `bots/status-auto-update`**  
 ✅ **BossCat compliance maintained:**
+
 - Lane discipline (PR workflow)
 - Kill-switch enforcement
 - Budget limits
@@ -78,6 +83,7 @@ Once you've added the secret, I'll update `.github/workflows/status-auto-update.
 | `GITHUB_TOKEN` | ✅ Enabled | ✅ Enabled | ❌ Blocked | **FAILS** |
 | `PAT` | N/A | N/A | ✅ Works | **SUCCESS** |
 
+<!-- markdownlint-disable-next-line MD013 -->
 **Reason:** PATs are tied to a user account and have full permissions granted by their scopes, bypassing enterprise/organization token restrictions.
 
 ---

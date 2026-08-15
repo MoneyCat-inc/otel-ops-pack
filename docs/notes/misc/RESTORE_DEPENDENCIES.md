@@ -1,5 +1,6 @@
 # 🔄 Restore Dependencies Guide
 
+<!-- markdownlint-disable-next-line MD013 -->
 **BossCat Note:** This repository has been cleaned to remove 6.5 GB of regeneratable bloat. All removed content can be restored using the commands below.
 
 ---
@@ -191,12 +192,12 @@ __pycache__/
 
 ## ⚠️ Important Notes
 
-### Don't Commit These!
+### Don't Commit These
 
 - ❌ `node_modules/` - Use package.json instead
 - ❌ `.venv/` - Use requirements.txt instead
 - ❌ Build artifacts (.next, dist, out)
-- ❌ Python cache (__pycache__)
+- ❌ Python cache (**pycache**)
 
 **Already Protected:** .gitignore prevents accidental commits
 
@@ -205,10 +206,12 @@ __pycache__/
 ### Mock Data Warning
 
 **`resonai-mock/`** (0.81 GB) - This may contain:
+
 - Generated mock data (regeneratable)
 - Test fixtures (may need backup)
 - Sample datasets (depends on use case)
 
+<!-- markdownlint-disable-next-line MD013 -->
 **Before removing:** Check if this contains unique test data that should be backed up or stored elsewhere (e.g., git-lfs, cloud storage).
 
 ---
@@ -255,16 +258,19 @@ pwsh -File scripts\cleanup-bloat.ps1 -Force
 ## 📋 Quick Reference
 
 **Restore Everything:**
+
 ```powershell
 pnpm install && python -m venv .venv && .venv\Scripts\pip install -r requirements.txt
 ```
 
 **Clean Everything:**
+
 ```powershell
 pwsh -File scripts\cleanup-bloat.ps1 -Force
 ```
 
 **Check Current Size:**
+
 ```powershell
 $size = (Get-ChildItem -Recurse -File -ErrorAction SilentlyContinue | Measure-Object Length -Sum).Sum
 Write-Host "Repository: $([math]::Round($size / 1GB, 2)) GB"

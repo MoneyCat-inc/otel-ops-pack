@@ -1,9 +1,11 @@
 # Fractal Reference Map (Silicon → Site)
 
 **Tetragram IDs:**
+
 - System Architecture View: `BOSS-CATX-RESE-SYAR`
 - Fractal Reference Map (this doc): `BOSS-CATX-RESE-FRAM`
 
+<!-- markdownlint-disable-next-line MD013 -->
 Intent: Bind physical lanes (L0–L8) to logical governance loops so evidence and promotion remain deterministic from silicon to site.
 
 ---
@@ -29,6 +31,7 @@ Edges are acyclic and auditable; contracts bind key checkpoints (e.g., attestati
 ## 2. Logical loop — ECRR over the lanes
 
 At every lane boundary that can change state, we require ECRR evidence:
+
 - Evidence: facts, diffs, logs, perf/trace artifacts
 - Contain: freeze or narrow the blast radius (feature flags, lanes)
 - Rollback: restore last‑known‑good with switches and plans
@@ -41,6 +44,7 @@ Paired agents enforce single‑writer discipline and bounded retry; any anomaly 
 ## 3. Determinism — Tetragram mapping
 
 All artifacts, IDs, CI paths, and site keys derive from the same mapping function:
+
 - Uppercase A–Z; keep letters; pad with X; first four per chunk.
 - Canonical path mirrors the code: `/docs/BOSS/CATX/RESE/SYAR/...`.
 
@@ -50,8 +54,10 @@ This keeps names reversible and avoids taxonomy drift.
 
 ## 4. Performance & telemetry references
 
+<!-- markdownlint-disable-next-line MD013 -->
 Performance: Treat performance criteria as first‑class gates; CI must fail on threshold breach. Prefer k6 thresholds and short, targeted “changed‑paths only” runs on PRs; heavier validation pre‑release. Archive the JSON/HTML as gate evidence.
 
+<!-- markdownlint-disable-next-line MD013 -->
 Telemetry: Run a synthetic OTLP trace after staging deploy; verify ingestion and correlation across spans (HTTP server, clients, DB, gRPC). Enable zero‑code .NET auto‑instrumentation for services in scope to guarantee trace/metrics/log correlation.
 
 ---
@@ -81,6 +87,7 @@ flowchart TD
   L8-- anomalies/sentinels -->L6
 ```
 
+<!-- markdownlint-disable-next-line MD013 -->
 The loop closes: build/publish evidence, gate on thresholds, promote canary, observe, and feed anomalies back to checks. RSI metrics live at L8 and inform L6 sentinels.
 
 ---
@@ -88,8 +95,10 @@ The loop closes: build/publish evidence, gate on thresholds, promote canary, obs
 ## 6. ICF (Iterative Convergence Framework)
 
 The system evolves by small, safe steps in dual‑agent cycles:
+
 - Each cycle contributes lessons and improvements (ICF doctrine).
 - Background drills (Data Room) provide controlled perturbations to harden the loop.
+<!-- markdownlint-disable-next-line MD013 -->
 - RSI indicators (e.g., style integrity, reduction in flaky retries, faster green rates) are published as non‑blocking metrics unless configured.
 
 ---

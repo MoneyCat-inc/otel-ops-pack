@@ -6,6 +6,9 @@ Usage: pwsh -File scripts/ecrr-doctor.ps1
 Creates artifacts/ecrr-doctor.txt with the collected notes.
 #>
 
+Import-Module (Join-Path $PSScriptRoot 'lib\OtelPorts.psm1') -Force
+$script:OtelPorts = Get-OtelPorts
+
 $issues = @()
 $warnings = @()
 $report = @()
@@ -65,14 +68,19 @@ if (Get-Command wsl -ErrorAction SilentlyContinue) {
 # SigNoz UI check
 Add-ReportLine -Level 'SECTION' -Message 'SigNoz and collector endpoints' -Color Yellow
 try {
-    $uiResponse = Invoke-WebRequest -Uri 'http://localhost:8080' -UseBasicParsing -TimeoutSec 3
-    Add-ReportLine -Level 'OK' -Message 'SigNoz UI responded on http://localhost:8080' -Color Green
+    $uiResponse = Invoke-WebRequest -Uri "http://localhost:$($script:OtelPorts.SignozUiHttp)" -UseBasicParsing -TimeoutSec 3
+    Add-ReportLine -Level 'OK' -Message ("SigNoz UI responded on http://localhost:{0}" -f $script:OtelPorts.SignozUiHttp) -Color Green
 } catch {
-    $warnings += 'SigNoz UI did not respond on http://localhost:8080'
-    Add-ReportLine -Level 'WARN' -Message 'SigNoz UI did not respond on http://localhost:8080' -Color Yellow
+    $warnings += ("SigNoz UI did not respond on http://localhost:{0}" -f $script:OtelPorts.SignozUiHttp)
+    Add-ReportLine -Level 'WARN' -Message ("SigNoz UI did not respond on http://localhost:{0}" -f $script:OtelPorts.SignozUiHttp) -Color Yellow
 }
 
-$ports = 5320, 5321, 4317, 4318
+$ports = @(
+    $script:OtelPorts.IngestGrpc,
+    $script:OtelPorts.IngestHttp,
+    $script:OtelPorts.SignozOtlpGrpc,
+    $script:OtelPorts.SignozOtlpHttp
+)
 foreach ($port in $ports) {
     if (Test-Port -Port $port) {
         Add-ReportLine -Level 'OK' -Message ("Port $port accepts TCP connections") -Color Green
@@ -157,4 +165,3 @@ if ($issues.Count -gt 0) {
 } else {
     exit 0
 }
-

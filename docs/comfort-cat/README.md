@@ -9,19 +9,23 @@
 ## 📚 Documents in This Directory
 
 ### Core Governance (Present)
+
 - **[ROLES.md](ROLES.md)** - Agent roles and authority hierarchy
 - **[GATE_PROTOCOL.md](GATE_PROTOCOL.md)** - Gate readiness and approval protocol
 - **[ECRR_FRAMEWORK.md](ECRR_FRAMEWORK.md)** - Examine → Clean → Report → Role methodology
 
 ### Creative & UX (Present)
+
 - **[AESTHETIC_GUIDE.md](AESTHETIC_GUIDE.md)** - Cat Nap Control Room design principles
 
 ### Creative & UX (Planned - Create when needed)
+
 - **COPY_STANDARDS.md** - Voice, tone, and messaging standards (TBD)
 - **MOTION_DESIGN.md** - Animation and transition guidelines (TBD)
 - **ACCESSIBILITY.md** - A11y requirements and WCAG compliance (TBD - see AESTHETIC_GUIDE.md §Accessibility for current guidance)
 
 ### Operations (Planned - Create when needed)
+
 - **TOOLING_BASELINE.md** - Required tools and commands (TBD - see ROLES.md and ECRR_FRAMEWORK.md for current tooling)
 - **TROUBLESHOOTING.md** - Common issues and resolutions (TBD)
 
@@ -41,6 +45,7 @@
 ## 🐈 Cat Nap Control Room Philosophy
 
 This observability pipeline embodies:
+
 - **Calm**: Serene, minimalist cockpit design
 - **Efficient**: Sub-second latency, 200ms batches
 - **Playful**: Friendly UX with cat-themed personality

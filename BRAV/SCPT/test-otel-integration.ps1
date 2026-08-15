@@ -6,6 +6,9 @@ $ErrorActionPreference = "Stop"
 
 Write-Host "=== OTel Integration Direct Test ===" -ForegroundColor Green
 
+Import-Module (Join-Path $PSScriptRoot 'lib\OtelPorts.psm1') -Force
+$script:OtelPorts = Get-OtelPorts
+
 $testEventId = [Guid]::NewGuid().ToString()
 $script:artifactsDir = Join-Path (Get-Location) "artifacts"
 
@@ -79,7 +82,7 @@ $testPayload = @{
     )
 } | ConvertTo-Json -Depth 10
 
-$otlpUrl = "http://localhost:5321/v1/logs"
+$otlpUrl = "$(Get-OtelIngestHttpBase -HostName 'localhost' -Ports $script:OtelPorts)/v1/logs"
 
 try {
     Write-Detail "Sending test OTLP payload to $otlpUrl"
@@ -95,7 +98,7 @@ Timestamp: $(Get-Date -Format "yyyy-MM-ddTHH:mm:ss.fffK")
 Test Event ID: $testEventId
 
 OTLP/HTTP Test: PASSED
-- Payload sent to http://localhost:5321/v1/logs
+- Payload sent to $otlpUrl
 - Response: $($response | ConvertTo-Json -Compress)
 
 This confirms the OTel Collector is accepting OTLP/HTTP logs
@@ -121,7 +124,7 @@ OTLP/HTTP Test: FAILED
 
 Check:
 1. OTel Collector service is running
-2. Port 5321 is accessible
+2. Windows collector OTLP/HTTP ingest port is accessible
 3. OTLP HTTP receiver is configured
 
 == Direct OTLP test FAILED ==
