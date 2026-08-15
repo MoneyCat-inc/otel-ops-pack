@@ -142,6 +142,28 @@ AST `ParseFile` is the gate that would have caught it. Fix batches must prove
 2. **PSSA Error severity** — chase the 11 Error findings once parse is clean (re-measure; parse failures can confuse analyzers).
 3. **PSSA Warning hygiene** — optional later; WriteHost/trailing-whitespace dominate and are mostly noise for this lane.
 
+## Closeout (2026-08-15)
+
+| Milestone | Result |
+|-----------|--------|
+| Parse-zero (#534–#536) | Live queue **26 → 0**; full-repo residuals = CHAR archives only |
+| PSSA Errors (#537) | **11 → 0** under pinned full-severity scan (`BRAV/SCPT` + `scripts`) |
+| Rule class | All 11 were `PSAvoidAssignmentToAutomaticVariable` (`$pid` / `$error` / `$host`) |
+| Warnings | Still recorded (~17.9k); **not chased** per OEM scope decision |
+
+**B4 done when:** live AST parse errors = 0 (excl. CHAR filed-as-is) **and** PSSA Error count = 0 in `BRAV/SCPT` + `scripts`. Both met after #537 lands.
+
+Pinned Error leave-behind check:
+
+```powershell
+Import-Module PSScriptAnalyzer
+$roots = @('BRAV/SCPT','scripts')
+$issues = foreach ($r in $roots) {
+  Invoke-ScriptAnalyzer -Path $r -Recurse -Severity @('Error','Warning','Information')
+}
+@($issues | Where-Object Severity -eq 'Error').Count  # expect 0
+```
+
 ## Next
 
 Measurement PR only. Fix batches start after OEM affirms scope (BRAV/SCPT + scripts) and AST-first ordering.
