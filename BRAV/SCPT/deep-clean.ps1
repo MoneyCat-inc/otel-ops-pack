@@ -124,8 +124,9 @@ Get-ChildItem -Path $repoRoot -Directory -Recurse -Force -ErrorAction SilentlyCo
         } catch {
             $size = 0
         }
+        $relPath = try { [System.IO.Path]::GetRelativePath($repoRoot, $_.FullName) } catch { $_.FullName }
         [pscustomobject]@{
-            Path = try { [System.IO.Path]::GetRelativePath($repoRoot, $_.FullName) } catch { $_.FullName }
+            Path = $relPath
             GB   = if ($size) { [math]::Round($size / 1GB, 2) } else { 0 }
         }
     } |

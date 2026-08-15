@@ -128,7 +128,7 @@ function Test-RequiredFile {
                 $result.Valid = $true
             } catch {
                 $result.Issues += "Failed to create file: $($_.Exception.Message)"
-                Write-Error "Failed to create $Description: $($_.Exception.Message)"
+                Write-Error "Failed to create ${Description}: $($_.Exception.Message)"
             }
         }
     }

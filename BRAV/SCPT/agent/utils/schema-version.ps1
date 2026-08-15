@@ -141,7 +141,7 @@ function Read-SchemaVersionedJson {
         
         return $document
     } catch {
-        Write-Warning "Failed to read schema-versioned JSON from $Path: $($_.Exception.Message)"
+        Write-Warning "Failed to read schema-versioned JSON from ${Path}: $($_.Exception.Message)"
         return $Default
     }
 }

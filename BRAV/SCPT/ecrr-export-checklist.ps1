@@ -27,13 +27,14 @@ try {
         # Fallback: use pypandoc if Python + pip available
         if (Get-Command python -ErrorAction SilentlyContinue) {
             python -m pip install --quiet pypandoc
-            python - <<'PYCODE'
-import pypandoc, sys
+            $pyCode = @"
+import pypandoc
 src = r'''$Src'''
 out = r'''$OutFile'''
 pypandoc.convert_file(src, 'pdf', outputfile=out, extra_args=['--standalone'])
-print("[ok] Exported via pypandoc.")
-PYCODE
+print('[ok] Exported via pypandoc.')
+"@
+            $pyCode | python -
         } else {
             throw "No pandoc or Python available — please install pandoc to enable PDF export."
         }

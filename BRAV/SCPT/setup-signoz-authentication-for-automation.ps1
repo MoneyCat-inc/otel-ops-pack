@@ -28,7 +28,7 @@ function Test-SigNozAuthentication {
             Write-Host "   🔑 Testing authentication..." -ForegroundColor Cyan
             
             # Create basic auth header
-            $authBytes = [System.Text.Encoding]::ASCII.GetBytes("$SignozUser:$SignozPass")
+            $authBytes = [System.Text.Encoding]::ASCII.GetBytes("${SignozUser}:$SignozPass")
             $authHeader = "Basic " + [System.Convert]::ToBase64String($authBytes)
             
             $headers = @{
@@ -128,5 +128,30 @@ function Set-UpGitOpsAuthentication {
             }
             else {
                 Write-Host "     $($config.Key): $($config.Value)" -ForegroundColor Gray
-           <｜tool▁calls▁begin｜><｜tool▁call▁begin｜>
-run_terminal_cmd
+            }
+        }
+    }
+
+    Write-Host ""
+    Write-Host "💡 Next steps for GitHub Actions:" -ForegroundColor Cyan
+    Write-Host "   1. gh secret set SIGNOZ_URL --body '$SignozUrl'" -ForegroundColor Gray
+    Write-Host "   2. gh secret set SIGNOZ_USER --body '<user>'" -ForegroundColor Gray
+    Write-Host "   3. gh secret set SIGNOZ_PASS --body '<pass>'" -ForegroundColor Gray
+    Write-Host "   4. Export SIGNOZ_URL / SIGNOZ_USER / SIGNOZ_PASS in local sessions" -ForegroundColor Gray
+}
+
+# Main
+$authOk = Test-SigNozAuthentication
+if (-not $TestOnly) {
+    Set-UpGitOpsAuthentication
+}
+
+if ($authOk) {
+    Write-Host ""
+    Write-Host "✅ SigNoz authentication setup complete" -ForegroundColor Green
+    exit 0
+} else {
+    Write-Host ""
+    Write-Host "❌ SigNoz authentication setup failed or incomplete" -ForegroundColor Red
+    exit 1
+}
