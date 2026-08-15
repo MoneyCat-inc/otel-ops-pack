@@ -1,7 +1,7 @@
 # Ko-fi weekly maintenance — Resonai [OTel]
 
 **Cadence:** every **7 days** (recommended: Monday morning, offset from Patreon if both run same day)  
-**Page:** https://ko-fi.com/fubumaki  
+**Page:** <https://ko-fi.com/fubumaki>  
 **Owner:** Fubumaki (creator) · **Agent cue:** run `pwsh -File scripts/kofi-weekly-reminder.ps1` when overdue
 
 ---
@@ -30,7 +30,7 @@ State file: `artifacts/kofi-maintenance-state.json` (last completed + next due).
 
 ### Examine (5 min)
 
-- [ ] Public page loads — profile visible at https://ko-fi.com/fubumaki
+- [ ] Public page loads — profile visible at <https://ko-fi.com/fubumaki>
 - [ ] **About** still describes Resonai [OTel] / evidence-first observability (not stale generic copy)
 - [ ] **One-time** donations enabled with sensible default amounts
 - [ ] **Monthly / membership** (if enabled) — tiers and prices match intent
@@ -61,9 +61,9 @@ State file: `artifacts/kofi-maintenance-state.json` (last completed + next due).
 
 | Item | Canonical source |
 |------|------------------|
-| Ko-fi URL | `README.md` → https://ko-fi.com/fubumaki |
-| Patreon (structured tiers) | https://www.patreon.com/c/FaeMcLachlan |
-| Portal tip jar | `portal.html` → https://ko-fi.com/fubumaki |
+| Ko-fi URL | `README.md` → <https://ko-fi.com/fubumaki> |
+| Patreon (structured tiers) | <https://www.patreon.com/c/FaeMcLachlan> |
+| Portal tip jar | `portal.html` → <https://ko-fi.com/fubumaki> |
 | Creative | `docs/comfort-cat/` · brand accent `#7C5CFF` |
 
 ---

@@ -4,7 +4,29 @@
 // - USE_MOCK=false: emit real OTLP span via HTTP/protobuf to /v1/traces
 
 import { createRequire } from 'node:module';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 const require = createRequire(import.meta.url);
+
+function ingestHttpTracesUrl() {
+  if (process.env.OTEL_EXPORTER_OTLP_ENDPOINT) {
+    let u = process.env.OTEL_EXPORTER_OTLP_ENDPOINT;
+    if (!u.endsWith('/v1/traces')) u = u.replace(/\/$/, '') + '/v1/traces';
+    return u;
+  }
+  let dir = path.dirname(fileURLToPath(import.meta.url));
+  for (;;) {
+    const candidate = path.join(dir, 'DELT', 'CONF', 'otel-ports.json');
+    if (fs.existsSync(candidate)) {
+      const j = JSON.parse(fs.readFileSync(candidate, 'utf8'));
+      return `http://127.0.0.1:${j.windows_collector_ingest.http}/v1/traces`;
+    }
+    const parent = path.dirname(dir);
+    if (parent === dir) throw new Error('otel-ports.json not found');
+    dir = parent;
+  }
+}
 
 const env = (k, d) => (process.env[k] ?? d);
 const USE_MOCK = String(env('USE_MOCK', 'true')).toLowerCase() === 'true';
@@ -12,11 +34,7 @@ const SERVICE_NAME = env('OTEL_SERVICE_NAME', 'iona-app');
 const SITE = env('SITE', env('GATE_SITE', 'ci'));
 const RUN_ID = env('GITHUB_RUN_ID', 'local');
 const GIT_SHA = String(env('GITHUB_SHA', '')).slice(0, 12);
-let OTLP_ENDPOINT = env('OTEL_EXPORTER_OTLP_ENDPOINT', 'http://127.0.0.1:5321/v1/traces');
-if (!OTLP_ENDPOINT.endsWith('/v1/traces')) {
-  // Normalize to /v1/traces if user only provided host:port
-  OTLP_ENDPOINT = OTLP_ENDPOINT.replace(/\/$/, '') + '/v1/traces';
-}
+let OTLP_ENDPOINT = ingestHttpTracesUrl();
 
 const nowIso = () => new Date().toISOString();
 const log = (lvl, msg, extra = {}) => console.log(JSON.stringify({ t: nowIso(), lvl, msg, ...extra }));

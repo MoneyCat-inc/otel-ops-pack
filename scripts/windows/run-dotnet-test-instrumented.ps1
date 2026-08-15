@@ -10,6 +10,9 @@ param(
 
 $ErrorActionPreference = "Stop"
 
+Import-Module (Join-Path $PSScriptRoot '..\..\BRAV\SCPT\lib\OtelPorts.psm1') -Force
+$script:OtelPorts = Get-OtelPorts
+
 Write-Host "=== .NET Auto-Instrumentation Test ===" -ForegroundColor Cyan
 Write-Host ""
 
@@ -31,7 +34,7 @@ $env:CORECLR_PROFILER_PATH = $profilerDll
 $env:DOTNET_STARTUP_HOOKS = $startupHookDll
 $env:OTEL_DOTNET_AUTO_HOME = $installDir
 $env:OTEL_SERVICE_NAME = $ServiceName
-$env:OTEL_EXPORTER_OTLP_ENDPOINT = "http://127.0.0.1:5321"
+$env:OTEL_EXPORTER_OTLP_ENDPOINT = Get-OtelIngestHttpBase
 $env:OTEL_EXPORTER_OTLP_PROTOCOL = "http/protobuf"
 $env:OTEL_TRACES_EXPORTER = "otlp"
 $env:OTEL_METRICS_EXPORTER = "otlp"
@@ -41,7 +44,7 @@ $env:OTEL_DOTNET_AUTO_TRACES_CONSOLE_EXPORTER_ENABLED = "false"
 $env:OTEL_DOTNET_AUTO_METRICS_CONSOLE_EXPORTER_ENABLED = "false"
 
 Write-Host "  Service name: $ServiceName" -ForegroundColor Gray
-Write-Host "  OTLP endpoint: http://127.0.0.1:4317" -ForegroundColor Gray
+Write-Host "  OTLP endpoint: $(Get-OtelIngestHttpBase)" -ForegroundColor Gray
 Write-Host "  Profiler: Enabled" -ForegroundColor Gray
 
 Write-Host ""

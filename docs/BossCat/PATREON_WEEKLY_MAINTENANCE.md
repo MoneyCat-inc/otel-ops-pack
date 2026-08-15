@@ -1,7 +1,7 @@
 # Patreon weekly maintenance — Resonai [OTel]
 
 **Cadence:** every **7 days** (recommended: Monday morning)  
-**Page:** https://www.patreon.com/c/FaeMcLachlan  
+**Page:** <https://www.patreon.com/c/FaeMcLachlan>  
 **Owner:** Fubumaki (creator) · **Agent cue:** run `pwsh -File scripts/patreon-weekly-reminder.ps1` when overdue
 
 ---

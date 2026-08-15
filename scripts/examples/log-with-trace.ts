@@ -1,7 +1,7 @@
 #!/usr/bin/env tsx
 /**
  * Example: Start a span and log with correlation
- * - Emits a short trace to OTLP HTTP (5321)
+ * - Emits a short trace to OTLP HTTP (ingest from otel-ports.json)
  * - Writes JSON logs enriched with trace_id/span_id to logs/app.log
  */
 
@@ -13,10 +13,11 @@ import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-base'
 import { context, trace } from '@opentelemetry/api'
 import loggerInstance, { getLogger } from '../lib/logger'
 import { ensureCorrelationId, getCorrelationHeaders, withCorrelationId } from '../lib/correlation'
+import { getOtelIngestHttpBase } from '../../ALFA/LIBS/lib/otel-ports'
 import fs from 'fs'
 import path from 'path'
 
-const endpoint = process.env.OTEL_EXPORTER_OTLP_ENDPOINT ?? 'http://127.0.0.1:5321/v1/traces'
+const endpoint = process.env.OTEL_EXPORTER_OTLP_ENDPOINT ?? `${getOtelIngestHttpBase()}/v1/traces`
 const serviceName = process.env.OTEL_SERVICE_NAME ?? 'bosscat-example'
 const token = process.env.BOSSCAT_TOKEN ?? `T-${Date.now()}`
 const correlationId = ensureCorrelationId()

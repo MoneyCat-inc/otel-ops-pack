@@ -9,8 +9,27 @@ const { trace, context, SpanKind } = require("@opentelemetry/api");
 const { NodeSDK } = require("@opentelemetry/sdk-node");
 const { OTLPTraceExporter } = require("@opentelemetry/exporter-trace-otlp-http");
 const { resourceFromAttributes } = require("@opentelemetry/resources");
+const fs = require("fs");
+const path = require("path");
 
-const endpoint = (process.env.OTEL_EXPORTER_OTLP_ENDPOINT || "http://127.0.0.1:5321").replace(/\/$/, "");
+function ingestHttpBase() {
+  if (process.env.OTEL_EXPORTER_OTLP_ENDPOINT) {
+    return process.env.OTEL_EXPORTER_OTLP_ENDPOINT.replace(/\/$/, "");
+  }
+  let dir = __dirname;
+  for (;;) {
+    const candidate = path.join(dir, "DELT", "CONF", "otel-ports.json");
+    if (fs.existsSync(candidate)) {
+      const j = JSON.parse(fs.readFileSync(candidate, "utf8"));
+      return `http://127.0.0.1:${j.windows_collector_ingest.http}`;
+    }
+    const parent = path.dirname(dir);
+    if (parent === dir) throw new Error("otel-ports.json not found");
+    dir = parent;
+  }
+}
+
+const endpoint = ingestHttpBase();
 const url = `${endpoint}/v1/traces`;
 const serviceName = process.env.OTEL_SERVICE_NAME || "iona-app";
 
