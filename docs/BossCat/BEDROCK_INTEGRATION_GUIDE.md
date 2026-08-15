@@ -7,7 +7,8 @@
 
 ## 🎯 Purpose
 
-Connect **Cursor IDE** to **Amazon Bedrock** via the **AgentCore MCP (Model Context Protocol)** server, enabling AI-powered observability insights directly in the development environment.
+Connect **Cursor IDE** to **Amazon Bedrock** via the **AgentCore MCP (Model Context Protocol)** server, enabling
+AI-powered observability insights directly in the development environment.
 
 ---
 
@@ -16,6 +17,7 @@ Connect **Cursor IDE** to **Amazon Bedrock** via the **AgentCore MCP (Model Cont
 ### 1. AWS Account & Credentials
 
 You need:
+
 - AWS account with Bedrock access enabled
 - IAM permissions: `bedrock:InvokeModel`, `bedrock:InvokeModelWithResponseStream`
 - AWS CLI installed and configured
@@ -23,22 +25,27 @@ You need:
 ### 2. AWS CLI Setup
 
 **Install AWS CLI:**
+
 - **Windows:** Download from [aws.amazon.com/cli](https://aws.amazon.com/cli/)
 - **macOS:** `brew install awscli`
-- **Linux:** `curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && unzip awscliv2.zip && sudo ./aws/install`
+- **Linux:** `curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && unzip awscliv2.zip &&
+  sudo ./aws/install`
 
 **Configure credentials:**
+
 ```bash
 aws configure
 ```
 
 Provide:
+
 - AWS Access Key ID
 - AWS Secret Access Key  
 - Default region (e.g., `us-east-1`)
 - Output format: `json`
 
 **Verify:**
+
 ```bash
 aws sts get-caller-identity
 ```
@@ -102,6 +109,7 @@ The `.cursor/mcp.json` file has been created at the repository root:
 ### Step 3: Verify MCP Server
 
 In Cursor's command palette (Ctrl+Shift+P / Cmd+Shift+P):
+
 1. Search for "MCP"
 2. You should see new tools:
    - `search_agentcore_docs`
@@ -130,7 +138,8 @@ npx tsx scripts/test-bedrock-connection.ts
 ```
 
 **Expected output:**
-```
+
+```text
 🐾 BossCat OEM - Bedrock Connectivity Test
 ============================================================
 🔍 [Examine] Testing Bedrock connection to anthropic.claude-3-sonnet-20240229-v1:0...
@@ -252,16 +261,19 @@ async function streamTraceAnalysis(traceData: string) {
 ## 🔍 Available Bedrock Models
 
 ### Claude Models (Anthropic)
+
 - `anthropic.claude-3-opus-20240229-v1:0` - Most capable, highest cost
 - `anthropic.claude-3-sonnet-20240229-v1:0` - Balanced performance ⭐ **Recommended**
 - `anthropic.claude-3-haiku-20240307-v1:0` - Fastest, lowest cost
 
 ### Other Models
+
 - `amazon.titan-text-express-v1` - AWS Titan Text
 - `ai21.j2-ultra-v1` - Jurassic-2 Ultra
 - `meta.llama2-70b-chat-v1` - Llama 2 70B
 
 **To list all available models:**
+
 ```bash
 aws bedrock list-foundation-models --region us-east-1
 ```
@@ -275,6 +287,7 @@ aws bedrock list-foundation-models --region us-east-1
 **Symptom:** Tools like `search_agentcore_docs` don't appear
 
 **Fix:**
+
 1. Verify `.cursor/mcp.json` exists and is valid JSON
 2. Completely close Cursor (check Task Manager on Windows)
 3. Reopen Cursor and wait 10-15 seconds
@@ -285,6 +298,7 @@ aws bedrock list-foundation-models --region us-east-1
 **Symptom:** `UnrecognizedClientException` or `The security token is invalid`
 
 **Fix:**
+
 ```bash
 # Reconfigure AWS CLI
 aws configure
@@ -301,10 +315,13 @@ echo $AWS_ACCESS_KEY_ID
 **Symptom:** `ValidationException: The provided model identifier is invalid`
 
 **Fix:**
+
 1. Check if model is available in your region:
+
    ```bash
    aws bedrock list-foundation-models --region us-east-1 | grep claude-3-sonnet
    ```
+
 2. Request model access in AWS Console:
    - Go to AWS Bedrock console
    - Navigate to "Model access"
@@ -315,6 +332,7 @@ echo $AWS_ACCESS_KEY_ID
 **Symptom:** `AccessDeniedException`
 
 **Fix:**
+
 - Add the IAM policy shown in Prerequisites section
 - Wait 5-10 minutes for IAM changes to propagate
 - Try `aws sts get-caller-identity` to verify role/user
@@ -324,10 +342,12 @@ echo $AWS_ACCESS_KEY_ID
 **Symptom:** `TimeoutError` or `NetworkingError`
 
 **Fix:**
+
 - Check internet connectivity
 - Verify no corporate proxy blocking AWS endpoints
 - Try different AWS region: edit `AWS_REGION` in `.cursor/mcp.json`
 - Increase timeout in SDK client:
+
   ```typescript
   const client = new BedrockRuntimeClient({
     region: 'us-east-1',
@@ -461,12 +481,14 @@ async function identifyBottlenecks(traceId: string, spans: any[]) {
 ## 🐾 BossCat Compliance
 
 **ECRR Framework Applied:**
+
 - ✅ **Examine:** Connectivity test validates credentials and network
 - ✅ **Clean:** Automated setup script removes manual configuration drift
 - ✅ **Report:** Test generates ECRR-compliant reports in `artifacts/`
 - ✅ **Role:** Clear agent assignments for troubleshooting
 
 **Next Steps:**
+
 1. Run connectivity test: `pwsh scripts\test-bedrock-connection.ps1`
 2. If successful → Deploy to production observability pipeline
 3. If failed → Gap-Closer agent resolves credential/network issues

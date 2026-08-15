@@ -6,7 +6,8 @@
 
 ## Overview
 
-Dependabot automatically monitors and creates PRs for security vulnerabilities and outdated dependencies in your repository. This guide covers:
+Dependabot automatically monitors and creates PRs for security vulnerabilities and outdated dependencies in your
+repository. This guide covers:
 
 - Reviewing and addressing Dependabot alerts
 - Prioritizing high-severity vulnerabilities
@@ -79,7 +80,8 @@ updates:
 **Response Time**: Same day  
 **Action Required**: Emergency patch
 
-#### Process:
+#### Process
+
 1. Review alert details in Security tab
 2. Check if Dependabot PR exists
 3. If PR exists:
@@ -97,7 +99,8 @@ updates:
 **Response Time**: Within 2 business days  
 **Action Required**: Priority patch
 
-#### Process:
+#### Process
+
 1. Review vulnerability details and impact
 2. Check for Dependabot PR
 3. If PR exists:
@@ -117,7 +120,8 @@ updates:
 **Response Time**: Within 1 week  
 **Action Required**: Standard patch
 
-#### Process:
+#### Process
+
 1. Batch with other moderate-severity fixes
 2. Review Dependabot PR or create manual update
 3. Full test suite execution required
@@ -129,7 +133,8 @@ updates:
 **Response Time**: Within 30 days  
 **Action Required**: Routine maintenance
 
-#### Process:
+#### Process
+
 1. Add to backlog
 2. Group with dependency update sprint
 3. Merge with other low-priority updates
@@ -251,6 +256,7 @@ pip-audit  # Install with: pip install pip-audit
 **Problem**: Vulnerability in package you don't directly depend on
 
 **Solution**:
+
 ```bash
 # For npm/pnpm - use overrides in package.json
 {
@@ -270,6 +276,7 @@ pip install --upgrade parent-package
 **Problem**: Security patch includes breaking changes
 
 **Solution**:
+
 1. Review changelog and migration guide
 2. Create feature branch: `fix/security-<package>-breaking-changes`
 3. Update code to handle breaking changes
@@ -282,6 +289,7 @@ pip install --upgrade parent-package
 **Problem**: Package has several open CVEs
 
 **Solution**:
+
 1. Check if package is maintained: Last commit date, open issues
 2. If maintained: Update to latest version
 3. If abandoned: **Find replacement package**
@@ -295,6 +303,7 @@ pip install --upgrade parent-package
 **Problem**: Vulnerability in dev dependency (e.g., testing tool)
 
 **Solution**:
+
 1. Assess if it affects CI/CD pipeline security
 2. If low risk: Schedule with next maintenance window
 3. If risk to CI secrets: Prioritize as High severity
@@ -302,9 +311,11 @@ pip install --upgrade parent-package
 
 ### Scenario 5: Serial Lockfile Conflicts Across Dependabot PRs
 
-**Problem**: Several Dependabot PRs touch `package.json` and `pnpm-lock.yaml`. Merging them one-by-one can make later PR branches dirty or conflicting even when each PR was green before the first merge.
+**Problem**: Several Dependabot PRs touch `package.json` and `pnpm-lock.yaml`. Merging them one-by-one can make later PR
+branches dirty or conflicting even when each PR was green before the first merge.
 
 **Solution**:
+
 1. Merge the green, non-conflicting PRs first through the normal PR gate.
 2. If the remaining PRs conflict only in dependency manifests or lockfiles, stop serial merges.
 3. Create one combined dependency update from fresh `origin/main`.
@@ -356,6 +367,7 @@ Runs on: Push to main, PRs, Daily at 2 AM UTC
 **File**: `.github/workflows/security-scan.yml`
 
 Includes:
+
 - **Gitleaks** - Secret scanning
 - **CodeQL** - Code security analysis
 - **Trivy** - Vulnerability scanning

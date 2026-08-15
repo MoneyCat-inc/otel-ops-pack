@@ -15,12 +15,14 @@ Add Gate & Site Evidence checks as required status checks on the `main` branch t
 ## ✅ What's Already Done
 
 **Gate/Site System**: 🟢 **GREEN**
+
 - Workflow: `gate-site-evidence.yml` operational
 - Evidence: 5/5 PASS achieved (Run 18463803215)
 - Self-contained: No external dependencies
 - BossCat Log: GREEN flip recorded
 
 **Branch Protection Workflow**: Updated
+
 - File: `.github/workflows/bosscat-branch-protection.yml`
 - Required checks: Aligned to gate/site job names
 - Commit: 864ff14c
@@ -83,11 +85,13 @@ gh api repos/MoneyCat-inc/otel-ops-pack/branches/main/protection \
 ## 🎯 Impact
 
 **With Enforcement**:
+
 - ✅ PRs blocked until 5/5 PASS (perf + trace + site quality)
 - ✅ Prevents regressions (broken links, performance, accessibility)
 - ✅ Automated quality gates (zero manual review for evidence)
 
 **Without Enforcement** (Current):
+
 - ✅ Evidence still collected on all PRs
 - ✅ Visible in PR checks (informational)
 - ✅ No blocking (PRs can merge)
@@ -97,11 +101,13 @@ gh api repos/MoneyCat-inc/otel-ops-pack/branches/main/protection \
 ## 🔧 Troubleshooting
 
 **If Checks Don't Appear on PR**:
+
 1. Ensure workflow ran on the PR (check Actions tab)
 2. Verify job names match exactly (case-sensitive)
 3. Check workflow trigger includes `pull_request`
 
 **If Workflow Fails**:
+
 1. Check GATE_BASE_URL / OTLP_HTTP variables (optional)
 2. Review workflow logs for k6/trace errors
 3. Verify self-contained components (http-server, collector)
@@ -111,7 +117,7 @@ gh api repos/MoneyCat-inc/otel-ops-pack/branches/main/protection \
 ## 📚 Reference
 
 **Workflow**: `.github/workflows/gate-site-evidence.yml`  
-**Workflow runs**: https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/gate-site-evidence.yml  
+**Workflow runs**: <https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/gate-site-evidence.yml>  
 **Historical evidence run id** (may 404): `18463803215`  
 **Gate Criteria**: `docs/BossCat/GATE_CRITERIA.md`  
 **Site Criteria**: `docs/BossCat/SITE_CRITERIA.md`  
@@ -125,5 +131,6 @@ gh api repos/MoneyCat-inc/otel-ops-pack/branches/main/protection \
 
 ---
 
-**TL;DR**: Gate/site evidence is GREEN and working. To enforce 5/5 PASS on PRs, add the three checks to branch protection via Settings → Branches → main.
+**TL;DR**: Gate/site evidence is GREEN and working. To enforce 5/5 PASS on PRs, add the three checks to branch
+protection via Settings → Branches → main.
 

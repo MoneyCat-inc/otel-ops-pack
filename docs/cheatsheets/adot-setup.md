@@ -19,6 +19,7 @@
 ## Prerequisites
 
 ### For EKS Deployment
+
 ```bash
 # Install ADOT Operator
 kubectl apply -f https://amazon-otel.github.io/docs/getting-started/adot-eks-add-on/operator-install.yaml
@@ -37,6 +38,7 @@ eksctl create iamserviceaccount \
 ```
 
 ### For Local/Docker Deployment
+
 ```bash
 # Pull ADOT collector image
 docker pull public.ecr.aws/aws-observability/aws-otel-collector:latest
@@ -56,14 +58,16 @@ docker run --rm -v $(pwd)/.aws:/config \
 
 ### Option 1: EKS with ADOT Operator (Recommended)
 
-**Step 1: Update ServiceAccount annotation**
+#### Step 1: Update ServiceAccount annotation
+
 ```yaml
 # Edit .aws/adot-operator-cr.yaml
 annotations:
   eks.amazonaws.com/role-arn: arn:aws:iam::YOUR_ACCOUNT_ID:role/resonai-otel-collector-role
 ```
 
-**Step 2: Update SigNoz endpoint**
+#### Step 2: Update SigNoz endpoint
+
 ```yaml
 # If SigNoz is external (not in cluster)
 env:
@@ -71,12 +75,14 @@ env:
     value: "https://your-signoz-instance.com:4317"
 ```
 
-**Step 3: Deploy**
+#### Step 3: Deploy
+
 ```bash
 kubectl apply -f .aws/adot-operator-cr.yaml
 ```
 
-**Step 4: Verify**
+#### Step 4: Verify
+
 ```bash
 # Check collector status
 kubectl get otelcol -n observability
@@ -96,7 +102,8 @@ curl http://localhost:13133/
 
 ### Option 2: ECS with Task Definition
 
-**Step 1: Create task definition**
+#### Step 1: Create task definition
+
 ```json
 {
   "family": "resonai-otel-collector",
@@ -135,7 +142,8 @@ curl http://localhost:13133/
 }
 ```
 
-**Step 2: Deploy service**
+#### Step 2: Deploy service
+
 ```bash
 aws ecs create-service \
   --cluster your-cluster \
@@ -150,7 +158,8 @@ aws ecs create-service \
 
 ### Option 3: EC2 with Systemd
 
-**Step 1: Install ADOT collector**
+#### Step 1: Install ADOT collector
+
 ```bash
 # Download ADOT collector
 wget https://aws-otel-collector.s3.amazonaws.com/linux/amd64/latest/aws-otel-collector.rpm
@@ -160,7 +169,8 @@ sudo rpm -Uvh aws-otel-collector.rpm
 sudo cp .aws/adot-collector-config.yaml /opt/aws/aws-otel-collector/etc/config.yaml
 ```
 
-**Step 2: Configure systemd service**
+#### Step 2: Configure systemd service
+
 ```bash
 # Edit /etc/systemd/system/aws-otel-collector.service
 sudo systemctl daemon-reload
@@ -168,7 +178,8 @@ sudo systemctl enable aws-otel-collector
 sudo systemctl start aws-otel-collector
 ```
 
-**Step 3: Verify**
+#### Step 3: Verify
+
 ```bash
 sudo systemctl status aws-otel-collector
 sudo journalctl -u aws-otel-collector -f
@@ -178,7 +189,8 @@ sudo journalctl -u aws-otel-collector -f
 
 ### Option 4: Local Docker Compose
 
-**Step 1: Add to docker-compose.yml**
+#### Step 1: Add to docker-compose.yml
+
 ```yaml
 services:
   adot-collector:
@@ -200,7 +212,8 @@ services:
     restart: unless-stopped
 ```
 
-**Step 2: Start**
+#### Step 2: Start
+
 ```bash
 docker-compose up -d adot-collector
 docker-compose logs -f adot-collector
@@ -211,6 +224,7 @@ docker-compose logs -f adot-collector
 ## Testing & Verification
 
 ### Send Test Trace (OTLP gRPC)
+
 ```bash
 # Using otel-cli (install: go install github.com/equinix-labs/otel-cli@latest)
 otel-cli exec \
@@ -222,6 +236,7 @@ otel-cli exec \
 ```
 
 ### Send Test Metrics (OTLP HTTP)
+
 ```bash
 # Using curl
 curl -X POST http://localhost:4318/v1/metrics \
@@ -241,6 +256,7 @@ curl -X POST http://localhost:4318/v1/metrics \
 ```
 
 ### Check Health
+
 ```bash
 # Health check endpoint
 curl http://localhost:13133/
@@ -250,6 +266,7 @@ curl http://localhost:8888/metrics
 ```
 
 ### Verify in SigNoz
+
 ```bash
 # Navigate to SigNoz UI
 open http://localhost:8080
@@ -275,6 +292,7 @@ open http://localhost:8080
 ### Pipeline Optimization
 
 **For Low Latency** (current: 200ms):
+
 ```yaml
 processors:
   batch:
@@ -283,6 +301,7 @@ processors:
 ```
 
 **For High Throughput**:
+
 ```yaml
 processors:
   batch:
@@ -291,6 +310,7 @@ processors:
 ```
 
 **For Memory Constrained**:
+
 ```yaml
 processors:
   memory_limiter:
@@ -305,6 +325,7 @@ processors:
 ### Issue: Collector won't start
 
 **Check logs**:
+
 ```bash
 # EKS
 kubectl logs -n observability -l app.kubernetes.io/name=resonai-otel-collector
@@ -317,6 +338,7 @@ sudo journalctl -u aws-otel-collector -n 100
 ```
 
 **Common causes**:
+
 - Invalid YAML syntax → Run `yamllint .aws/adot-collector-config.yaml`
 - Missing environment variables → Check SIGNOZ_ENDPOINT, AWS_REGION
 - Port conflicts → Check if 4317/4318 already in use
@@ -326,6 +348,7 @@ sudo journalctl -u aws-otel-collector -n 100
 ### Issue: No data in SigNoz
 
 **Verify connectivity**:
+
 ```bash
 # Test SigNoz endpoint
 curl http://YOUR_SIGNOZ_ENDPOINT:4317
@@ -335,6 +358,7 @@ docker logs adot-collector | grep -i error
 ```
 
 **Check exporters**:
+
 ```yaml
 # Temporarily add logging exporter for debugging
 exporters:
@@ -351,6 +375,7 @@ service:
 ### Issue: High memory usage
 
 **Tune memory limiter**:
+
 ```yaml
 processors:
   memory_limiter:
@@ -360,6 +385,7 @@ processors:
 ```
 
 **Reduce batch size**:
+
 ```yaml
 processors:
   batch:
@@ -382,6 +408,7 @@ processors:
 | 48 workers | Auto-scaled | Kubernetes HPA handles scaling |
 
 **Migration steps**:
+
 1. Deploy ADOT collector (EKS/ECS/EC2)
 2. Point apps to ADOT endpoint (DNS or service mesh)
 3. Verify data flowing to SigNoz
@@ -396,15 +423,18 @@ processors:
 ### GitHub Actions Workflow
 
 Workflow `.github/workflows/adot-config-gate.yml` runs on:
+
 - Pull requests touching `.aws/**` or `deploy/adot/**`
 - Manual trigger via `workflow_dispatch`
 
 **Validation steps**:
+
 1. YAML lint (syntax check)
 2. ADOT collector dry-run (config validation)
 3. Kubernetes manifest validation (if operator CR present)
 
 **Local validation**:
+
 ```bash
 # YAML lint
 yamllint .aws/

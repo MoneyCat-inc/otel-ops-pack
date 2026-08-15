@@ -1,0 +1,208 @@
+📝 Summary
+---------------------
+🔍 Total...........83
+✅ Successful......57
+⏳ Timeouts.........0
+🔀 Redirected.......0
+👻 Excluded.........8
+❓ Unknown..........0
+🚫 Errors..........18
+⛔ Unsupported.....18
+
+Errors in docs/BossCat/AGENTS.md
+[ERROR] file:///C:/otel/docs/BossCat/badges/auto-bots-comp-alfa.svg | Cannot find file
+[ERROR] file:///C:/otel/docs/BossCat/badges/auto-bots-docs-alfa.svg | Cannot find file
+[ERROR] file:///C:/otel/docs/BossCat/badges/auto-bots-flak-alfa.svg | Cannot find file
+[ERROR] file:///C:/otel/docs/BossCat/badges/auto-bots-gate-alfa.svg | Cannot find file
+[ERROR] file:///C:/otel/docs/BossCat/badges/auto-bots-sele-alfa.svg | Cannot find file
+[ERROR] file:///C:/otel/docs/BossCat/badges/auto-bots-site-alfa.svg | Cannot find file
+[ERROR] file:///C:/otel/docs/BossCat/badges/auto-bots-ssot-alfa.svg | Cannot find file
+[ERROR] file:///C:/otel/docs/BossCat/badges/iona-cats-comp-beta.svg | Cannot find file
+[ERROR] file:///C:/otel/docs/BossCat/badges/iona-cats-docs-beta.svg | Cannot find file
+[ERROR] file:///C:/otel/docs/BossCat/badges/iona-cats-flak-beta.svg | Cannot find file
+[ERROR] file:///C:/otel/docs/BossCat/badges/iona-cats-gate-beta.svg | Cannot find file
+[ERROR] file:///C:/otel/docs/BossCat/badges/iona-cats-sele-beta.svg | Cannot find file
+[ERROR] file:///C:/otel/docs/BossCat/badges/iona-cats-site-beta.svg | Cannot find file
+[ERROR] file:///C:/otel/docs/BossCat/badges/iona-cats-ssot-beta.svg | Cannot find file
+[404] https://moneycat-inc.github.io/otel-ops-pack/status/LATEST.json | Rejected status code (this depends on your "accept" configuration): Not Found
+
+Errors in docs/BossCat/BEDROCK_INTEGRATION_GUIDE.md
+[403] https://www.npmjs.com/package/@aws/bedrock-agentcore-mcp | Rejected status code (this depends on your "accept" configuration): Forbidden
+
+Errors in docs/BossCat/DEPENDABOT_SECURITY_GUIDE.md
+[403] https://www.cvedetails.com/ | Rejected status code (this depends on your "accept" configuration): Forbidden
+
+Errors in README.md
+[403] https://ko-fi.com/fubumaki | Rejected status code (this depends on your "accept" configuration): Forbidden
+📝 Summary
+---------------------
+🔍 Total...........42
+✅ Successful......29
+⏳ Timeouts.........0
+🔀 Redirected.......0
+👻 Excluded.........5
+❓ Unknown..........0
+🚫 Errors...........8
+⛔ Unsupported......8
+
+Errors in docs/BossCat/ENABLE_GATE_SITE_PROTECTION.md
+[404] https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18463803215 | Rejected status code (this depends on your "accept" configuration): Not Found
+
+Errors in docs/BossCat/FOLLOWUP_SBOM_BLOCKING.md
+[404] https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/27414026380 | Rejected status code (this depends on your "accept" configuration): Not Found
+[404] https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/27414081486 | Rejected status code (this depends on your "accept" configuration): Not Found
+[404] https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/27414150700 | Rejected status code (this depends on your "accept" configuration): Not Found
+
+Errors in docs/BossCat/KOFI_WEEKLY_MAINTENANCE.md
+[403] https://ko-fi.com/fubumaki | Rejected status code (this depends on your "accept" configuration): Forbidden
+
+Errors in docs/BossCat/KOFI_WELCOME_POST.md
+[403] https://ko-fi.com/fubumaki | Rejected status code (this depends on your "accept" configuration): Forbidden
+[403] https://ko-fi.com/post/welcome-to-resonai-otel-v3e2219nlh | Rejected status code (this depends on your "accept" configuration): Forbidden
+[403] https://www.patreon.com/posts/welcome-to-otel-141476152 | Rejected status code (this depends on your "accept" configuration): Forbidden
+📝 Summary
+---------------------
+🔍 Total...........12
+✅ Successful......10
+⏳ Timeouts.........0
+🔀 Redirected.......0
+👻 Excluded.........1
+❓ Unknown..........0
+🚫 Errors...........1
+⛔ Unsupported......1
+
+Errors in docs/cheatsheets/adot-setup.md
+[404] https://signoz.io/docs/instrumentation/otlp/ | Rejected status code (this depends on your "accept" configuration): Not Found
+📝 Summary
+---------------------
+🔍 Total...........50
+✅ Successful......15
+⏳ Timeouts.........0
+🔀 Redirected.......0
+👻 Excluded.........5
+❓ Unknown..........0
+🚫 Errors..........30
+⛔ Unsupported.....30
+
+Errors in docs/ecrr/INDEX.md
+[ERROR] file:///C:/otel/docs/ecrr/ECRR_REPORTS/ECRR_CONSOLIDATED_SESSION_20251023.md | Cannot find file
+[ERROR] file:///C:/otel/docs/ecrr/ECRR_REPORTS/ECRR_EXAMINATION_SUMMARY_20251023.md | Cannot find file
+[ERROR] file:///C:/otel/docs/ecrr/ECRR_REPORTS/ECRR_GATE_010_AUDIO_REACTIVITY_READY_20251024.md | Cannot find file
+[ERROR] file:///C:/otel/docs/ecrr/ECRR_REPORTS/ECRR_GATE_010_REMEDIATION_2_AUDIO_INJECTION_20251024.md | Cannot find file
+[ERROR] file:///C:/otel/docs/ecrr/ECRR_REPORTS/ECRR_GATE_010_REMEDIATION_AUDIO_BRIDGE_20251024.md | Cannot find file
+[ERROR] file:///C:/otel/docs/ecrr/ECRR_REPORTS/ECRR_GATE_017_READY_20251026.md | Cannot find file
+[ERROR] file:///C:/otel/docs/ecrr/ECRR_REPORTS/ECRR_GATE_021_READY_20251026.md | Cannot find file
+[ERROR] file:///C:/otel/docs/ecrr/ECRR_REPORTS/ECRR_GATE_026_IMPLEMENTATION_20251027.md | Cannot find file
+[ERROR] file:///C:/otel/docs/ecrr/ECRR_REPORTS/ECRR_GATE_026_VERIFICATION_20251027.md | Cannot find file
+[ERROR] file:///C:/otel/docs/ecrr/ECRR_REPORTS/ECRR_GATE_026A_SUCCESS_20251027.md | Cannot find file
+[ERROR] file:///C:/otel/docs/ecrr/ECRR_REPORTS/ECRR_GATE_027_PARTIAL_20251027.md | Cannot find file
+[ERROR] file:///C:/otel/docs/ecrr/ECRR_REPORTS/ECRR_GATE_028_PARTIAL_20251027.md | Cannot find file
+[ERROR] file:///C:/otel/docs/ecrr/ECRR_REPORTS/ECRR_GATE_029_READY_20251027.md | Cannot find file
+[ERROR] file:///C:/otel/docs/ecrr/ECRR_REPORTS/ECRR_GATE_READINESS_20251101.md | Cannot find file
+[ERROR] file:///C:/otel/docs/ecrr/ECRR_REPORTS/ECRR_GATE_READINESS_CURSOR_IMPLEMENTER_20251025.md | Cannot find file
+[ERROR] file:///C:/otel/docs/ecrr/ECRR_REPORTS/ECRR_GATE_READY_20251027.md | Cannot find file
+[ERROR] file:///C:/otel/docs/ecrr/ECRR_REPORTS/ECRR_GATE_READY_EXAMINATION_20251023_143000.md | Cannot find file
+[ERROR] file:///C:/otel/docs/ecrr/ECRR_REPORTS/ECRR_GATE_READY_INDEX_20251023.md | Cannot find file
+[ERROR] file:///C:/otel/docs/ecrr/ECRR_REPORTS/ECRR_GATE_RECONCILIATION_20251027.md | Cannot find file
+[ERROR] file:///C:/otel/docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_20251025_204303.md | Cannot find file
+[ERROR] file:///C:/otel/docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_20251025_204628.md | Cannot find file
+[ERROR] file:///C:/otel/docs/ecrr/ECRR_REPORTS/ECRR_GATE_RUN_LATEST.md | Cannot find file
+[ERROR] file:///C:/otel/docs/ecrr/ECRR_REPORTS/ECRR_STATUS_AUTO_UPDATE_GREEN_20251022.md | Cannot find file
+[ERROR] file:///C:/otel/docs/ecrr/ECRR_REPORTS/ECRR_VIZ_ENGINE_GATE_009_GREEN_20251024.md | Cannot find file
+[ERROR] file:///C:/otel/docs/ecrr/ECRR_REPORTS/ECRR_VIZ_ENGINE_MILKDROP_FOUNDATION_20251023.md | Cannot find file
+[ERROR] file:///C:/otel/docs/ecrr/ECRR_REPORTS/ECRR_VIZ_ENGINE_REMEDIATION_2_20251023.md | Cannot find file
+[ERROR] file:///C:/otel/docs/ecrr/ECRR_REPORTS/ECRR_VIZ_ENGINE_REMEDIATION_3_20251024.md | Cannot find file
+[ERROR] file:///C:/otel/docs/ecrr/ECRR_REPORTS/ECRR_VIZ_ENGINE_REMEDIATION_4_FINAL_20251024.md | Cannot find file
+[ERROR] file:///C:/otel/docs/ecrr/ECRR_REPORTS/ECRR_VIZ_ENGINE_REMEDIATION_4B_20251024.md | Cannot find file
+[ERROR] file:///C:/otel/docs/ecrr/ECRR_REPORTS/ECRR_VIZ_ENGINE_REMEDIATION_20251023.md | Cannot find file
+📝 Summary
+---------------------
+🔍 Total...........59
+✅ Successful......54
+⏳ Timeouts.........0
+🔀 Redirected.......0
+👻 Excluded.........1
+❓ Unknown..........0
+🚫 Errors...........3
+⛔ Unsupported......3
+
+Errors in docs/notes/misc/FAST_TRACK_PRODUCTION_PLAN.md
+[ERROR] file:///C:/otel/docs/notes/misc/docs/BossCat/DEPENDABOT_SECURITY_GUIDE.md#priority-matrix | Cannot find file
+[ERROR] file:///C:/otel/docs/notes/misc/docs/BossCat/NIGHTLY_DASHBOARD_GUIDE.md | Cannot find file
+
+Errors in docs/notes/misc/IMMEDIATE_ACTION_SUMMARY.md
+[404] https://github.com/MoneyCat-inc/otel-ops-pack/security/dependabot | Rejected status code (this depends on your "accept" configuration): Not Found
+📝 Summary
+---------------------
+🔍 Total...........21
+✅ Successful.......0
+⏳ Timeouts.........0
+🔀 Redirected.......0
+👻 Excluded.........2
+❓ Unknown..........0
+🚫 Errors..........19
+⛔ Unsupported.....19
+
+Errors in docs/notes/misc/PRODUCTION_RELEASE_STATUS.md
+[404] https://github.com/MoneyCat-inc/otel-ops-pack/security/dependabot | Rejected status code (this depends on your "accept" configuration): Not Found
+
+Errors in docs/pr/misc/PR_BODY_PRODUCTION_ROLLOUT.md
+[ERROR] file:///C:/otel/docs/pr/misc/docs/BossCat/CURSOR_IMPLEMENTER_QUICKSTART.md | Cannot find file
+[ERROR] file:///C:/otel/docs/pr/misc/docs/BossCat/CURSOR_IMPLEMENTER_SETUP.md | Cannot find file
+[ERROR] file:///C:/otel/docs/pr/misc/docs/BossCat/README.md | Cannot find file
+
+Errors in docs/pr/misc/PR_BOSSCAT_WEEK1_GATE_REVIEW.md
+[ERROR] file:///C:/otel/docs/pr/misc/docs/BossCat/CHARTER.md | Cannot find file
+[ERROR] file:///C:/otel/docs/pr/misc/docs/BossCat/CREDENTIAL_ROTATION_CALENDAR.md | Cannot find file
+[ERROR] file:///C:/otel/docs/pr/misc/docs/BossCat/DEPENDABOT_SECURITY_GUIDE.md | Cannot find file
+[ERROR] file:///C:/otel/docs/pr/misc/docs/BossCat/GITHUB_APP_IMPLEMENTATION_GUIDE.md | Cannot find file
+[ERROR] file:///C:/otel/docs/pr/misc/docs/BossCat/misc/BOSSCAT_WEEK1_IMPLEMENTATION_COMPLETE.md | Cannot find file
+[ERROR] file:///C:/otel/docs/pr/misc/docs/BossCat/NIGHTLY_DASHBOARD_GUIDE.md | Cannot find file
+[ERROR] file:///C:/otel/docs/pr/misc/docs/BossCat/QUICK_START_CARD.md | Cannot find file
+[ERROR] file:///C:/otel/docs/pr/misc/docs/BossCat/README.md | Cannot find file
+[ERROR] file:///C:/otel/docs/pr/misc/docs/BossCat/SECURITY_MAINTENANCE_MASTER_GUIDE.md | Cannot find file
+
+Errors in docs/pr/misc/PR_COMMENT_GATE_READY_FINAL.md
+[ERROR] file:///C:/otel/docs/pr/misc/BRAV/SCPT/GUARDRAILS_LOCKED.md | Cannot find file
+[ERROR] file:///C:/otel/docs/pr/misc/CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_READY_FINAL_2025-10-10.md | Cannot find file
+[ERROR] file:///C:/otel/docs/pr/misc/docs/BossCat/README.md | Cannot find file
+[ERROR] file:///C:/otel/docs/pr/misc/docs/cheatsheets/GATE_CHEATSHEET.md | Cannot find file
+[ERROR] file:///C:/otel/docs/pr/misc/docs/cheatsheets/WATCHDOG_CHEATSHEET.md | Cannot find file
+[ERROR] file:///C:/otel/docs/pr/misc/docs/status/tests.json | Cannot find file
+📝 Summary
+---------------------
+🔍 Total...........57
+✅ Successful......38
+⏳ Timeouts.........0
+🔀 Redirected.......0
+👻 Excluded.........6
+❓ Unknown..........0
+🚫 Errors..........13
+⛔ Unsupported.....13
+
+Errors in docs/releases/misc/RELEASE_NOTES.md
+[404] https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/18629010288 | Rejected status code (this depends on your "accept" configuration): Not Found
+
+Errors in docs/releases/misc/RELEASE_NOTES_GATE_READY_1.0.md
+[ERROR] file:///C:/otel/docs/releases/misc/BRAV/SCPT/GUARDRAILS_LOCKED.md | Cannot find file
+[ERROR] file:///C:/otel/docs/releases/misc/CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_READY_FINAL_2025-10-10.md | Cannot find file
+[ERROR] file:///C:/otel/docs/releases/misc/CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_READY_FINAL_2025-10-10.pdf | Cannot find file
+[ERROR] file:///C:/otel/docs/releases/misc/docs/observability/snapshots/gate-final-ready-20251010-004510.json | Cannot find file
+
+Errors in docs/runbooks/misc/HUB_GO_LIVE_RUNBOOK.md
+[404] https://github.com/MoneyCat-inc/otel-ops-pack/settings/pages | Rejected status code (this depends on your "accept" configuration): Not Found
+
+Errors in docs/runbooks/signoz-api-proofs.md
+[ERROR] file:///C:/otel/docs/gate/2025-10/GATE_029_APPROVAL.md | Cannot find file
+[ERROR] file:///C:/otel/GATE_029_HYGIENE_PATCH_H1.md | Cannot find file
+[ERROR] file:///C:/otel/GATE_029_IMPLEMENTATION_COMPLETE.md | Cannot find file
+
+Errors in docs/runbooks/unified-telemetry-proofs.md
+[ERROR] file:///C:/otel/GATE_030_IMPLEMENTATION_COMPLETE.md | Cannot find file
+[ERROR] file:///C:/otel/GATE_030_SCOPE.md | Cannot find file
+
+Errors in docs/status/REFERENCES_MAP.md
+[ERROR] file:///C:/otel/docs/evidence | Cannot find file
+
+Errors in docs/vr/slimevr-smolslimes-quest3-setup.md
+[403] https://www.nordicsemi.com/Products/Development-tools/nrf-connect-for-desktop | Rejected status code (this depends on your "accept" configuration): Forbidden
