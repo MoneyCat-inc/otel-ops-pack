@@ -63,9 +63,21 @@ Next: remeasure markdownlint error count on the live set, then ≤10-file `--fix
 
 | Probe | Result |
 |-------|--------|
-| Live `docs/**/*.md` + README (excl. `docs/archive/**` and `docs/gate/archive/**`) | **244** |
-| Files with ≥1 markdownlint error | **214** |
-| Total errors | **7,402** |
-| Prior plan figure @ `4469d10de` | 10,718 / 370 |
+| Live set (glob method, see command below) | **271** files |
+| Total errors (post fix1, this branch head) | **6,445** |
+| Prior plan figure @ `4469d10de`, same method | 10,718 / 370 |
+
+**Canonical command** (run from repo root; this is the CI config-resolution path —
+`.markdownlint-cli2.yaml` base merged with `.markdownlint.json`, so MD013 enforces at 120):
+
+```bash
+npx --yes markdownlint-cli2@0.14.0 --config .markdownlint-cli2.yaml   "docs/**/*.md" "README.md" "!docs/archive" "!docs/gate/archive"
+```
+
+> Correction (OEM verify, 2026-08-15): an earlier revision recorded **7,402 / 244** here.
+> That run did not reproduce under the command above (file count and error total both off;
+> the error gap is consistent with MD013 falling back to 80 chars when the
+> `.markdownlint.json` merge is missed) and stated no command. Superseded by the
+> reproducible series: **10,718/370 → 6,445/271**. Numbers without commands are claims.
 
 First `--fix` batch: 10 low-debt live files (1–3 errors each) cleared to **0** issues — see git history on this branch.
