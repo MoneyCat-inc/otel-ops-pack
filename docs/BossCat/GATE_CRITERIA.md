@@ -7,6 +7,7 @@
 - ECRR: plan → preflight → edit → test → report; budgets respected
 
 Artifacts
+
 - Perf: `tests/perf/gate.js` (k6) and CI output
 - Synthetic trace: `scripts/synth-trace.ts` to OTLP 14318
 - Evidence: `artifacts/ecrr/gate/LATEST.md`, `DELT/ARTF/gate-verification-results.json`

@@ -10,7 +10,9 @@ Status: GREEN (exception closed; budgets revert ≤200 LOC)
 
 ## Summary
 
-Gate #007 is approved GREEN under exception EXC-2025-10-20-007 for a one-time canonical reference seed (docs/comfort-cat/). All five evidence artifacts are present and verified. No operational/code/config changes.
+Gate #007 is approved GREEN under exception EXC-2025-10-20-007 for a one-time
+canonical reference seed (`docs/comfort-cat/`). All five evidence artifacts are
+present and verified. No operational/code/config changes.
 
 ---
 
