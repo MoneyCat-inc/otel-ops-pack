@@ -47,3 +47,14 @@ Additional dated session / gate / PR reports (byte-identical `git mv`, see git h
 - `docs/notes/misc/*202510*`, `docs/pr/2025-10/**`, `docs/runbooks/2025-10/**`, `docs/security/*202510*`
 
 Re-measure residual live lint debt after merge before B1 fix batches.
+
+## Batch 3 scope — archive phase closeout
+
+Final dated session / gate-misc closeouts (10 files, ≤10 budget, no cleanup waiver):
+
+- `docs/gate/misc/GATE_006_*`
+- MILK / monetization / stakeholder / Bedrock session COMPLETE reports under `docs/notes/misc/`
+
+**Archive phase: CLOSED** after this batch. Residual `*_COMPLETE.md` notes without dates (e.g. `CLEANUP_COMPLETE.md`) stay live pending case-by-case review — not auto-archived.
+
+Next: remeasure markdownlint error count on the live set, then ≤10-file `--fix` batches. B2 lychee measurement unblocked.
