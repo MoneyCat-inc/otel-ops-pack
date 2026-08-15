@@ -18,6 +18,9 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
     "baseUrl": ".",
+    // Second Pass Q5 (2026-08-15): baseUrl still required for @/* path aliases;
+    // pin until imports migrate off baseUrl (TS5101 → hard error in TS 7.0).
+    "ignoreDeprecations": "6.0",
     "paths": {
       "@/scripts/*": [
         "BRAV/SCPT/*"
@@ -35,15 +38,14 @@
   "include": [
     "next-env.d.ts",
     "instrumentation.ts",
-    ".next/types/**/*.ts",
-    "app/**/*.ts",
-    "app/**/*.tsx",
+    "ALFA/APPS/app/**/*.ts",
+    "ALFA/APPS/app/**/*.tsx",
     "ALFA/LIBS/**/*.ts",
-    "ALFA/LIBS/**/*.tsx",
-    ".next/dev/types/**/*.ts"
+    "ALFA/LIBS/**/*.tsx"
   ],
   "exclude": [
     "node_modules",
+    ".next",
     "ALFA/LIBS/prisma/prisma.config.ts",
     "ALFA/LIBS/prisma/seed.ts"
   ]
