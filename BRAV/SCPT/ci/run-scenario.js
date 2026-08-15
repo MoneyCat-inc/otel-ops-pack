@@ -8,11 +8,26 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
+function loadOtelPorts() {
+  let dir = __dirname;
+  for (;;) {
+    const candidate = path.join(dir, 'DELT', 'CONF', 'otel-ports.json');
+    if (fs.existsSync(candidate)) {
+      return JSON.parse(fs.readFileSync(candidate, 'utf8'));
+    }
+    const parent = path.dirname(dir);
+    if (parent === dir) throw new Error('DELT/CONF/otel-ports.json not found');
+    dir = parent;
+  }
+}
+
+const otelPorts = loadOtelPorts();
+
 // Configuration
 const CONFIG = {
   dashboardUrl: 'http://localhost:3000',
-  signozUrl: 'http://localhost:8080',
-  otelCollectorUrl: 'http://localhost:5321',
+  signozUrl: `http://localhost:${otelPorts.signoz_ui.http}`,
+  otelCollectorUrl: `http://localhost:${otelPorts.windows_collector_ingest.http}`,
   scenariosFile: path.join(__dirname, '../../docs/dashboards/scenarios-example.json'),
   resultsDir: path.join(__dirname, '../../test-results')
 };
@@ -294,7 +309,7 @@ function postData(url, data) {
 async function checkServiceHealth() {
   const services = [
     { name: 'SigNoz', url: 'http://localhost:8080/api/v1/health' },
-    { name: 'OTel Collector', url: 'http://localhost:5321/v1/logs' }
+    { name: 'OTel Collector', url: `${CONFIG.otelCollectorUrl}/v1/logs` }
   ];
   
   for (const service of services) {

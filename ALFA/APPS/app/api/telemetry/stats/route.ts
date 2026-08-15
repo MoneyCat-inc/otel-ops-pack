@@ -6,6 +6,7 @@
  */
 
 import { NextResponse } from 'next/server';
+import { getOtelIngestHttpBase } from '@/lib/otel-ports';
 
 export async function GET() {
   try {
@@ -22,7 +23,7 @@ export async function GET() {
       },
       telemetry: {
         enabled: true,
-        endpoint: process.env.OTEL_EXPORTER_OTLP_ENDPOINT || 'http://127.0.0.1:5321',
+        endpoint: process.env.OTEL_EXPORTER_OTLP_ENDPOINT || getOtelIngestHttpBase(),
         serviceName: process.env.OTEL_SERVICE_NAME || 'iona-app',
         protocol: 'http/protobuf',
       },

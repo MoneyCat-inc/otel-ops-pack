@@ -20,6 +20,9 @@ param(
   [string]$ApiKey
 )
 
+Import-Module (Join-Path $PSScriptRoot 'lib\OtelPorts.psm1') -Force
+$otelPorts = Get-OtelPorts
+
 Write-Host "🐾 BossCat Hands-Free Switch-On - Complete Process" -ForegroundColor Green
 Write-Host "Authority: BossCat OEM" -ForegroundColor Cyan
 Write-Host "Mission: Flip Setup Alerts tile BLUE → GREEN + Apply full alert set" -ForegroundColor Yellow
@@ -152,7 +155,7 @@ Write-Host "══════════════════════�
 Write-Host "🎯 Sending trace canary to populate Frontend Canary Spans view..." -ForegroundColor White
 
 try {
-  $exitCode = & pwsh -File scripts/iona-trace-canary.ps1 -CollectorHost localhost -OtlpHttpPort 5321 -ZipkinPort 9411 -ServiceName frontend -DurationMs 1200 -Force 2>&1 | Out-Null
+  $exitCode = & pwsh -File scripts/iona-trace-canary.ps1 -CollectorHost localhost -OtlpHttpPort $otelPorts.IngestHttp -ZipkinPort 9411 -ServiceName frontend -DurationMs 1200 -Force 2>&1 | Out-Null
   if ($LASTEXITCODE -eq 0) {
     Write-Host "✅ Trace canary sent successfully" -ForegroundColor Green
     Write-Host "   → Check SigNoz Traces: service=frontend, span=iona-canary-span" -ForegroundColor DarkGray

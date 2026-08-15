@@ -3,8 +3,14 @@
 
 param(
     [string]$ResultsFile = "artifacts/e2-ratio-sweep-results.json",
-    [string]$Endpoint = "http://127.0.0.1:5321/v1/logs"
+    [string]$Endpoint = ""
 )
+
+Import-Module (Join-Path $PSScriptRoot 'lib\OtelPorts.psm1') -Force
+$otelPorts = Get-OtelPorts
+if (-not $Endpoint) {
+    $Endpoint = "$(Get-OtelIngestHttpBase)/v1/logs"
+}
 
 Write-Host "=== Publishing E2 Ratio Sweep Results to SigNoz ===" -ForegroundColor Cyan
 Write-Host "Results file: $ResultsFile" -ForegroundColor Yellow
@@ -28,7 +34,7 @@ try {
 # Check endpoint connectivity
 Write-Host "`nChecking endpoint connectivity..." -ForegroundColor Yellow
 try {
-    $testConnection = Test-NetConnection -ComputerName 127.0.0.1 -Port 5321 -WarningAction SilentlyContinue
+    $testConnection = Test-NetConnection -ComputerName 127.0.0.1 -Port $otelPorts.IngestHttp -WarningAction SilentlyContinue
     if (-not $testConnection.TcpTestSucceeded) {
         Write-Warning "Cannot reach OTLP endpoint at $Endpoint. Please ensure collector is running."
         Write-Host "You can manually check SigNoz UI at http://127.0.0.1:8080" -ForegroundColor Cyan

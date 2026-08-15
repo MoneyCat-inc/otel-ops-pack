@@ -8,6 +8,8 @@ param(
   [string]$RepoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..\..\..')).Path
 )
 $ErrorActionPreference = 'Stop'
+Import-Module (Join-Path $PSScriptRoot '..\lib\OtelPorts.psm1') -Force
+$otelPorts = Get-OtelPorts
 $agents = Join-Path $RepoRoot 'AGENTS.md'
 $outDir = Join-Path $RepoRoot '.kiro\steering'
 if (-not (Test-Path $agents)) { throw "Missing canonical $agents" }
@@ -46,20 +48,20 @@ $seatBlock
 "@
 
 $otel = @"
-<!-- GENERATED FILE — do not hand-edit. Sources: BRIEFING_CLEAN_HOST_E2E.md. Regen: regen-steering.ps1 -->
+<!-- GENERATED FILE - do not hand-edit. Sources: BRIEFING_CLEAN_HOST_E2E.md + DELT/CONF/otel-ports.json. Regen: regen-steering.ps1 -->
 # OTel stranger-path ports (steering projection)
 
 Generated: $generated
 
 | Concern | Canonical |
 |---------|-----------|
-| SigNoz UI | http://localhost:8080 |
-| SigNoz OTLP (Docker) | 4317 gRPC / 4318 HTTP |
-| Windows collector ingest | **5320** gRPC / **5321** HTTP |
-| Collector → SigNoz | localhost:4317 |
+| SigNoz UI | http://localhost:$($otelPorts.SignozUiHttp) |
+| SigNoz OTLP (Docker) | $($otelPorts.SignozOtlpGrpc) gRPC / $($otelPorts.SignozOtlpHttp) HTTP |
+| Windows collector ingest | **$($otelPorts.IngestGrpc)** gRPC / **$($otelPorts.IngestHttp)** HTTP |
+| Collector -> SigNoz | localhost:$($otelPorts.SignozOtlpGrpc) |
 | Collector pin | otelcol-contrib **0.104.0** |
 
-Do **not** use historical 5320/5321 for Windows collector ingest (PlariumPlay conflict class).
+Do **not** bind Windows collector ingest in the PlariumPlay range 5300-5319; use DELT/CONF/otel-ports.json.
 "@
 
 $utf8 = New-Object System.Text.UTF8Encoding $false
