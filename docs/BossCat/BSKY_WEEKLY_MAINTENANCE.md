@@ -1,7 +1,7 @@
 # Bluesky weekly maintenance — Resonai [OTel]
 
 **Cadence:** every **7 days** (recommended: Monday morning)  
-**Profile:** https://bsky.app/profile/resonai.bsky.social  
+**Profile:** <https://bsky.app/profile/resonai.bsky.social>  
 **Handle:** `@resonai.bsky.social` · **Owner:** Fubumaki (creator)  
 **Automation home:** [MoneyCat-inc/socm](https://github.com/MoneyCat-inc/socm) (Pack 3B extract)  
 **Agent cue:** run `pwsh -File scripts/bsky-weekly-reminder.ps1` when overdue
@@ -35,11 +35,11 @@ State file: `artifacts/bsky-maintenance-state.json` (local runtime; not tracked 
 
 ### Examine (5 min)
 
-- [ ] Public profile loads — https://bsky.app/profile/resonai.bsky.social
+- [ ] Public profile loads — <https://bsky.app/profile/resonai.bsky.social>
 - [ ] **Display name** still `BossCat` (or agreed project name)
 - [ ] **Bio** mentions hub + GitHub + support links (Ko-fi, Patreon)
 - [ ] **Pinned post** has current Hub, GitHub, Ko-fi, Patreon, Starter Pack URLs
-- [ ] Starter Pack still resolves: https://bsky.app/starter-pack/resonai.bsky.social/3m3rct677yo2t
+- [ ] Starter Pack still resolves: <https://bsky.app/starter-pack/resonai.bsky.social/3m3rct677yo2t>
 - [ ] `portal.html` Bluesky button → same profile URL
 
 ### Clean (10 min)
@@ -58,7 +58,7 @@ State file: `artifacts/bsky-maintenance-state.json` (local runtime; not tracked 
 
 ### Role
 
-- **Fubumaki:** tone, replies, app-password rotation at https://bsky.app/settings/app-passwords (`socm-actions` for Actions)
+- **Fubumaki:** tone, replies, app-password rotation at <https://bsky.app/settings/app-passwords> (`socm-actions` for Actions)
 - **Agent:** scripted status check; sync/export from **socm**; link audit vs README/portal
 
 ---
@@ -67,7 +67,7 @@ State file: `artifacts/bsky-maintenance-state.json` (local runtime; not tracked 
 
 **Bio** (max 256 chars) — enforced by socm `scripts/social/sync-bsky-profile.ts`:
 
-```
+```text
 Evidence-first observability + truth literacy.
 22 OTel features scored 0-100.
 Hub: https://hub.resonai.uk/

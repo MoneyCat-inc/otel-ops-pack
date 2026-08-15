@@ -1,6 +1,6 @@
 # Bluesky engagement playbook — Resonai [OTel]
 
-**Profile:** https://bsky.app/profile/resonai.bsky.social  
+**Profile:** <https://bsky.app/profile/resonai.bsky.social>  
 **Cadence:** 2–3 posts/week + 5–10 value-add replies/week  
 **Companion:** `docs/BossCat/BSKY_WEEKLY_MAINTENANCE.md`  
 **Automation:** [MoneyCat-inc/socm](https://github.com/MoneyCat-inc/socm) (Pack 3B)
@@ -22,7 +22,7 @@ After each week (ops-pack): `pwsh -File scripts/bsky-weekly-reminder.ps1 -MarkCo
 
 ## Funnel (one spine everywhere)
 
-```
+```text
 Bluesky → pinned post → hub.resonai.uk → GitHub → Ko-fi / Patreon
 ```
 
@@ -40,7 +40,7 @@ Bluesky → pinned post → hub.resonai.uk → GitHub → Ko-fi / Patreon
 
 ### CHECKLIST (trigger: reply "CHECKLIST")
 
-```
+```text
 🔍 Verification Checklist — before you repost:
 
 □ Two independent sources
@@ -55,7 +55,7 @@ Post as **reply to pinned post** when someone asks; refresh quarterly via socm `
 
 ### Source request
 
-```
+```text
 Good catch. We cite two independent outlets before calling something verified.
 
 Method + hub: https://hub.resonai.uk/
@@ -63,7 +63,7 @@ Method + hub: https://hub.resonai.uk/
 
 ### OTel question
 
-```
+```text
 Windows path we use: Event Logs → OTel Collector → SigNoz (~200ms batches).
 
 Quick health check: github.com/MoneyCat-inc/otel-ops-pack (scripts/quick-monitor.ps1)

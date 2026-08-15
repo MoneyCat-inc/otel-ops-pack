@@ -1,6 +1,6 @@
-# **The Art of ECRR**
+# The Art of ECRR
 
-**by BossCat --- IONA User Manual**
+by BossCat --- IONA User Manual
 
 > *"Speed is born from discipline. Discipline is born from rules that
 > end cleanly."*
@@ -53,7 +53,7 @@ monitors A's output and reports to BossCat.
 > *"A single sword cuts crooked. A paired guard keeps the edge
 > straight."*
 
-**Checklist (B)**
+### Checklist (B)
 
 1.  Watch `.agent/JOB.lock` heartbeat (mtime tick ≤ 60 s).
 2.  Tail `.agent/EVIDENCE.log`; enforce TTL & budgets.
@@ -72,7 +72,7 @@ monitors A's output and reports to BossCat.
 
 > *"One pen, one path, one purpose."*
 
-**Checklist (A)**
+### Checklist (A) — Rule #2
 
 1.  `if [ -e .agent/LOCK ]; then ECRR; exit 1; fi`
 2.  `if [ -e .agent/JOB.lock ]; then ECRR; exit 1; else touch .agent/JOB.lock; fi`
@@ -90,7 +90,7 @@ monitors A's output and reports to BossCat.
 
 > *"Enter only quiet rooms. Leave no prints but your own."*
 
-**Checklist (A)**
+### Checklist (A) — Rule #3
 
 - Verify: clean worktree, sync base, deterministic env, secrets scope
   OK.

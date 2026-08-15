@@ -81,3 +81,13 @@ npx --yes markdownlint-cli2@0.14.0 --config .markdownlint-cli2.yaml   "docs/**/*
 > reproducible series: **10,718/370 → 6,445/271**. Numbers without commands are claims.
 
 First `--fix` batch: 10 low-debt live files (1–3 errors each) cleared to **0** issues — see git history on this branch.
+
+## Fix batch 2 (2026-08-15)
+
+| Probe | Result |
+|-------|--------|
+| Before (canonical command @ `903b20df6`) | **6,445** / **271** (Linting: 272 = live docs + README) |
+| Batch (10 files → 0 issues) | PATREON / PHASE3 / ReviewerB / ART_OF_ECRR / BSKY×2 / GATE_DECISIONS / KOFI weekly / SBOM_AUDIT / cheatsheets/cursor-support-runbook |
+| After (same command) | **6,401** / **271** |
+
+Skipped generated `docs/BossCat/AGENTS.md` (regen via `pnpm agent:setup`).
