@@ -170,7 +170,7 @@ function Test-OptimizedConfig {
     $issues = @()
     
     # Validate batch settings
-    if ($Config.BatchTimeout -gt 1000ms) {
+    if ($Config.BatchTimeout -gt '1000ms') {
         $issues += "Batch timeout too high: $($Config.BatchTimeout)"
     }
     

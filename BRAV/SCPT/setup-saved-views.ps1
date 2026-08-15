@@ -26,7 +26,7 @@ $SavedViews = @(
         name = "Critical Errors Only"
         description = "Filter for critical and error level logs"
         type = "logs"
-        query = "severity=\"error\" OR severity=\"critical\""
+        query = 'severity="error" OR severity="critical"'
         filters = @{
             severity = @("error", "critical")
         }
@@ -36,7 +36,7 @@ $SavedViews = @(
         name = "Authentication Issues"
         description = "Logs related to authentication failures and security issues"
         type = "logs"
-        query = "message=~\"auth.*fail|login.*fail|unauthorized|forbidden\""
+        query = 'message=~"auth.*fail|login.*fail|unauthorized|forbidden"'
         filters = @{
             message = "auth.*fail|login.*fail|unauthorized|forbidden"
         }
@@ -46,7 +46,7 @@ $SavedViews = @(
         name = "Resonai Backend Logs"
         description = "All logs from Resonai backend service"
         type = "logs"
-        query = "service_name=\"resonai-backend\""
+        query = 'service_name="resonai-backend"'
         filters = @{
             service_name = "resonai-backend"
         }
@@ -56,7 +56,7 @@ $SavedViews = @(
         name = "High Status Code Responses"
         description = "HTTP responses with status codes >= 400"
         type = "logs"
-        query = "status_code>=400"
+        query = 'status_code>=400'
         filters = @{
             status_code = ">=400"
         }
@@ -66,7 +66,7 @@ $SavedViews = @(
         name = "Database Operations"
         description = "Logs related to database operations and queries"
         type = "logs"
-        query = "message=~\"database|db|sql|query|connection\""
+        query = 'message=~"database|db|sql|query|connection"'
         filters = @{
             message = "database|db|sql|query|connection"
         }
@@ -76,7 +76,7 @@ $SavedViews = @(
         name = "Windows Event Logs"
         description = "Windows Event Log entries from the system"
         type = "logs"
-        query = "log.source=\"windows_event_log\""
+        query = 'log.source="windows_event_log"'
         filters = @{
             log_source = "windows_event_log"
         }
@@ -86,7 +86,7 @@ $SavedViews = @(
         name = "Canary Test Results"
         description = "Results from canary tests and health checks"
         type = "logs"
-        query = "message=~\"canary|health.*check|test.*result\""
+        query = 'message=~"canary|health.*check|test.*result"'
         filters = @{
             message = "canary|health.*check|test.*result"
         }
@@ -100,7 +100,7 @@ $SavedViews = @(
         name = "Slow API Requests"
         description = "API requests taking longer than 1 second"
         type = "traces"
-        query = "service_name=\"resonai-backend\" AND duration>1000000000"
+        query = 'service_name="resonai-backend" AND duration>1000000000'
         filters = @{
             service_name = "resonai-backend"
             duration = ">1000000000"
@@ -111,7 +111,7 @@ $SavedViews = @(
         name = "Failed Requests"
         description = "Traces for failed HTTP requests"
         type = "traces"
-        query = "service_name=\"resonai-backend\" AND http.status_code>=400"
+        query = 'service_name="resonai-backend" AND http.status_code>=400'
         filters = @{
             service_name = "resonai-backend"
             http_status_code = ">=400"
@@ -122,7 +122,7 @@ $SavedViews = @(
         name = "Database Query Traces"
         description = "Traces containing database operations"
         type = "traces"
-        query = "service_name=\"resonai-backend\" AND span_name=~\"db.*|query.*|prisma.*\""
+        query = 'service_name="resonai-backend" AND span_name=~"db.*|query.*|prisma.*"'
         filters = @{
             service_name = "resonai-backend"
             span_name = "db.*|query.*|prisma.*"
@@ -133,7 +133,7 @@ $SavedViews = @(
         name = "Frontend User Interactions"
         description = "User interaction traces from the frontend"
         type = "traces"
-        query = "service_name=\"resonai-frontend\" AND span_name=~\"user.*interaction|click|submit\""
+        query = 'service_name="resonai-frontend" AND span_name=~"user.*interaction|click|submit"'
         filters = @{
             service_name = "resonai-frontend"
             span_name = "user.*interaction|click|submit"
@@ -144,7 +144,7 @@ $SavedViews = @(
         name = "Authentication Flow"
         description = "Traces related to authentication processes"
         type = "traces"
-        query = "service_name=\"resonai-backend\" AND span_name=~\"auth.*|login.*|session.*\""
+        query = 'service_name="resonai-backend" AND span_name=~"auth.*|login.*|session.*"'
         filters = @{
             service_name = "resonai-backend"
             span_name = "auth.*|login.*|session.*"
@@ -159,7 +159,7 @@ $SavedViews = @(
         name = "High Error Rate Services"
         description = "Services with error rates above 1%"
         type = "metrics"
-        query = "rate(http_requests_total{status_code=~\"5..\"}[5m]) / rate(http_requests_total[5m]) * 100"
+        query = 'rate(http_requests_total{status_code=~"5.."}[5m]) / rate(http_requests_total[5m]) * 100'
         filters = @{
             metric_name = "http_requests_total"
             status_code = "5.."
@@ -170,7 +170,7 @@ $SavedViews = @(
         name = "Memory Usage Trends"
         description = "Memory usage trends across services"
         type = "metrics"
-        query = "process_resident_memory_bytes / (1024*1024*1024)"
+        query = 'process_resident_memory_bytes / (1024*1024*1024)'
         filters = @{
             metric_name = "process_resident_memory_bytes"
         }
@@ -180,7 +180,7 @@ $SavedViews = @(
         name = "Request Rate by Service"
         description = "Request rates grouped by service"
         type = "metrics"
-        query = "rate(http_requests_total[5m])"
+        query = 'rate(http_requests_total[5m])'
         filters = @{
             metric_name = "http_requests_total"
         }

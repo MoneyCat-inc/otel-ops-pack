@@ -198,7 +198,7 @@ $AlertRules = @(
     @{
         name = "Critical Error Logs"
         description = "Critical error logs detected"
-        query = "logs{severity=\"error\" OR severity=\"critical\"}"
+        query = 'logs{severity="error" OR severity="critical"}'
         condition = "> 0"
         duration = "1m"
         severity = "critical"
@@ -215,7 +215,7 @@ $AlertRules = @(
     @{
         name = "Authentication Failures High"
         description = "High rate of authentication failures"
-        query = "rate(logs{message=~\"authentication.*failed\"}[5m])"
+        query = 'rate(logs{message=~"authentication.*failed"}[5m])'
         condition = "> 10"
         duration = "5m"
         severity = "warning"
