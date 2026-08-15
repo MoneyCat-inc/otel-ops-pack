@@ -22,7 +22,7 @@
 - **[Executive Status](docs/status/misc/STATUS.md)** — gate, SBOM, and pipeline summary
 
 ### 📊 Key Resources
-- **[Gate Archive (2025-10)](docs/gate/2025-10/)** — October 2025 gate verification evidence
+- **[Gate Archive (2025-10)](docs/archive/gate/2025-10/)** — October 2025 gate verification evidence
 - **[Security Master Guide](docs/BossCat/SECURITY_MAINTENANCE_MASTER_GUIDE.md)** — security and maintenance procedures
 - **[Windows Collector Runbook](docs/runbooks/windows-collector.md)** — OTLP ports and service config
 

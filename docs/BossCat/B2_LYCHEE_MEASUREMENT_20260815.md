@@ -85,3 +85,13 @@ lychee --config .lychee.toml --no-progress --max-redirects 5 --max-retries 2 \
 | Nordic nRF URL bot-403 | Prefer SlimeVR web flasher link (200); drop direct Nordic href in VR setup |
 
 **Deferred (bot-403 / auth / generated):** Ko-fi, Patreon, npmjs.com HTML, Dependabot UI links (already annotated private in places), `docs/BossCat/AGENTS.md` LATEST.json (generated registry).
+
+## Fix batch 2 (2026-08-15)
+
+| Action | Detail |
+|--------|--------|
+| `.lychee.toml` excludes | Bot-403: `ko-fi.com`, `patreon.com`; private UI: `…/security/dependabot`, `…/settings/` |
+| Archive path cites | `README.md`, `GATE_MILESTONES.md`, `runbooks/signoz-api-proofs.md` → `docs/archive/gate/2025-10/…` |
+| Own-the-debt | Touched markdown cleared to **0** under markdownlint (Summary match count) |
+
+Still deferred: generated `AGENTS.md` LATEST.json; human re-verify of Ko-fi/Patreon when convenient (excluded from lychee, not deleted).
