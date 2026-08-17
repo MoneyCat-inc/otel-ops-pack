@@ -43,7 +43,9 @@ jobs:
         ./
   scan-pr:
     if: ${{ github.event_name == 'pull_request' || github.event_name == 'merge_group' }}
-    continue-on-error: true
+    # continue-on-error is not a permitted key on jobs that call reusable workflows
+    # (only name/needs/if/uses/with/secrets/strategy/concurrency/permissions are).
+    # Its presence here was the third of three Actions-validation failures in this file.
     uses: "google/osv-scanner-action/.github/workflows/osv-scanner-reusable-pr.yml@6e4298ebc4db23e847df9b2e2de2939d6f066c67" # v2.5.1
     with:
       # Example of specifying custom arguments
