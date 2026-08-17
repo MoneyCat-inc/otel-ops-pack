@@ -154,7 +154,7 @@ function Test-ConfigValidation {
       return $false
     }
     # Run validation and capture output
-    $validationOutput = & C:\otel\config-schema.ps1 -ConfigPath $configPath -CheckSecurity -CheckPerformance 2>&1 | Out-String
+    $validationOutput = & C:\otel\scripts\legacy\config-schema.ps1 -ConfigPath $configPath -CheckSecurity -CheckPerformance 2>&1 | Out-String
     # Check if file exists and is readable (basic validation)
     # Exit code 1 may indicate warnings, which are acceptable for health checks
     # Only fail if file doesn't exist or can't be read
