@@ -111,6 +111,40 @@ explanation rather than assuming the cleanup was never finished.
 Keep the archive question for the 2025 shell reports as its own decision, judged on whether those
 reports still earn their place, not on a typo.
 
+## Addendum (2026-08-17) — the replacement criterion, verified and corrected
+
+Two corrections from re-running this memo's numbers against the live tree.
+
+**The proposed replacement grep is itself still unmeetable.** As written above it returns 18
+files. All of them are classes this memo argues to preserve — 13 under `CHAR/EVID`, one
+`CHAR/DOCS` historical mirror, the archived dashboard, and three documents (this memo, the
+roadmap, and `MEMO_GATE_DASHBOARD_20260813.md`) that match only because they *discuss* the
+string. A criterion that can never return empty is the defect this memo was written about,
+reproduced in its own proposal. The command that returns empty today, and is the operative form
+of the criterion:
+
+```bash
+git grep -nE '(^|[^aA])rtifacts/' -- \
+  ':!CHAR/ECRR/**' ':!CHAR/EVID/**' ':!CHAR/DOCS/**' \
+  ':!docs/GATE_STATUS_DASHBOARD.md' \
+  ':!docs/BossCat/MEMO_RTIFACTS_REFERENCES_20260813.md' \
+  ':!docs/BossCat/MEMO_GATE_DASHBOARD_20260813.md' \
+  ':!docs/BossCat/ROADMAP_2026H2.md'
+```
+
+Verified empty on 2026-08-17. A future document that discusses the defect will legitimately
+re-match and should extend the exclusion list consciously, rather than have its own subject
+matter "fixed".
+
+**The status line above overstates the dashboard fix.** "The 2 live fixes are done" is true of
+`BOSSCAT_LOG.md` (both occurrences repaired in #466, `cbff83e9f`) and was never true of
+`GATE_STATUS_DASHBOARD.md`: `git log -S` shows no commit ever corrected
+`rtifacts/icf/convergence-report.json` there — the only commit touching that string is the 2025
+gate(029) commit that introduced it. The same-day archive decision (#468) superseded the repair:
+the dashboard's banner preserves dead references verbatim as part of the frozen snapshot, so the
+occurrence at its line 443 (BEL byte included) is now **preserved by policy**, not overlooked.
+Recorded so nobody reopens it as a missed fix.
+
 ## If the operator prefers fix-everything
 
 It should be one mechanical commit, no reflow or reformatting alongside it, with the diff reviewable
