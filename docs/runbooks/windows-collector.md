@@ -349,6 +349,8 @@ Get-EventLog -LogName Application -Source "OpenTelemetry Collector" -Newest 10
 3. Check firewall: `Test-NetConnection localhost -Port 14317`
 4. Re-run install script: `pwsh -File .\scripts\windows\install-or-repair-otel-collector.ps1`
 
+If `docker ps` returns HTTP 500 or hangs while this collector is still Running, recover Docker/WSL first — see [wsl-recovery.md](./wsl-recovery.md) (prefer reboot when WSL is wedged).
+
 ---
 
 ### No Data in SigNoz
@@ -519,6 +521,7 @@ processors:
 - **Install Script:** `scripts/windows/install-or-repair-otel-collector.ps1`
 - **Verify Script:** `scripts/windows/verify-otel-collector.ps1`
 - **Gate Integration:** `BRAV/SCPT/verify-windows-collector.ps1`
+- **WSL / Docker engine wedge:** [wsl-recovery.md](./wsl-recovery.md)
 
 ---
 

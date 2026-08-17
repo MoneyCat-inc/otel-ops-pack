@@ -1,5 +1,7 @@
 # Docker Desktop failing to start – fix steps
 
+For a **wedged WSL engine** (`docker` HTTP 500, `wsl -l -v` hangs, SigNoz UI timeout while ports still listen), prefer [../wsl-recovery.md](../wsl-recovery.md) — reboot first; soft kill sequence second. This page covers helper-service and broken data-disk cases.
+
 ## What’s going on
 
 - **Privileged helper service** is not running (Docker needs admin to start it).
