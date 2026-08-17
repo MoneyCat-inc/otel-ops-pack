@@ -30,6 +30,9 @@ permissions:
   security-events: write
   # Read commit contents
   contents: read
+  # The v2 reusable workflows declare actions: read (SARIF upload via CodeQL needs it); a called
+  # workflow may not exceed the caller's grant, so omitting it here is a startup_failure.
+  actions: read
 
 jobs:
   scan-scheduled:
