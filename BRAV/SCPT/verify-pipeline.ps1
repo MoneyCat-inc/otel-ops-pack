@@ -260,17 +260,19 @@ if (Test-Path $CanaryScriptPath) {
   # (incl. other users' Local\Programs from Phase 0), then Windows 'py -3'.
   # Skip the WindowsApps Store stub (exit 9009).
   function Resolve-PythonInvocation {
-    $pythonCmd = Get-Command python -ErrorAction SilentlyContinue
-    if ($pythonCmd -and $pythonCmd.Source -notmatch '\\WindowsApps\\python\.exe$') {
-      return @{ Exe = $pythonCmd.Source; Args = "-u `"$CanaryScriptPath`"" }
-    }
+    # Prefer the gate-bootstrapped interpreter (has synthetic OTel deps) over PATH/`py`.
     $candidates = @(
+      'C:\TOOLS\Python\python.exe',
       'C:\Program\python.exe',
       "$env:LocalAppData\Programs\Python\Python312\python.exe",
       "$env:LocalAppData\Programs\Python\Python311\python.exe",
       "$env:ProgramFiles\Python312\python.exe",
       "$env:ProgramFiles\Python311\python.exe"
     )
+    $pythonCmd = Get-Command python -ErrorAction SilentlyContinue
+    if ($pythonCmd -and $pythonCmd.Source -notmatch '\\WindowsApps\\python\.exe$') {
+      $candidates += $pythonCmd.Source
+    }
     # Phase 0 sometimes installs per-user under the interactive desktop account
     $candidates += @(Get-ChildItem 'C:\Users\*\AppData\Local\Programs\Python\Python3*\python.exe' -ErrorAction SilentlyContinue |
       Select-Object -ExpandProperty FullName)
