@@ -276,16 +276,34 @@ if (Test-Path $CanaryScriptPath) {
     # Phase 0 sometimes installs per-user under the interactive desktop account
     $candidates += @(Get-ChildItem 'C:\Users\*\AppData\Local\Programs\Python\Python3*\python.exe' -ErrorAction SilentlyContinue |
       Select-Object -ExpandProperty FullName)
+    # Existence is not viability. C:\TOOLS\Python passed Test-Path while missing its entire
+    # stdlib (no Lib\) — it fatally failed 'import encodings' under the runner service and,
+    # worse, adopted a stray Lib\ in the repo cwd as its prefix when run interactively, which
+    # is where pip once installed *into the repo* (Scripts\ merged with scripts\ on a
+    # case-insensitive filesystem). Probe every candidate before trusting it.
+    function Test-PythonViable([string]$exe) {
+      try {
+        & $exe -c "import encodings" 2>$null | Out-Null
+        return ($LASTEXITCODE -eq 0)
+      } catch { return $false }
+    }
     foreach ($candidate in $candidates) {
       if ($candidate -and (Test-Path $candidate)) {
-        return @{ Exe = $candidate; Args = "-u `"$CanaryScriptPath`"" }
+        if (Test-PythonViable $candidate) {
+          return @{ Exe = $candidate; Args = "-u `"$CanaryScriptPath`"" }
+        }
+        Write-Warning "[verify] Skipping non-viable Python (import encodings failed): $candidate"
       }
     }
     $pyLauncher = Get-Command py -ErrorAction SilentlyContinue
     if ($pyLauncher) {
-      return @{ Exe = $pyLauncher.Source; Args = "-3 -u `"$CanaryScriptPath`"" }
+      # Probe with -3, matching how it is invoked below.
+      & $pyLauncher.Source -3 -c "import encodings" 2>$null | Out-Null
+      if ($LASTEXITCODE -eq 0) {
+        return @{ Exe = $pyLauncher.Source; Args = "-3 -u `"$CanaryScriptPath`"" }
+      }
     }
-    throw "Python not found on PATH (tried real 'python', known install paths, and 'py -3')"
+    throw "No viable Python found (candidates existed but none passed 'import encodings')"
   }
 
   $pyInv = Resolve-PythonInvocation
