@@ -9,10 +9,13 @@ on:
         default: 'main'
         type: string
 
+# 'administration: write' is not a valid workflow permission key; its presence failed Actions
+# validation on every push since this file was written, making the workflow un-dispatchable.
+# Branch-protection writes need a PAT or GitHub App token regardless - the default GITHUB_TOKEN
+# cannot administer branch protection even with every valid scope granted.
 permissions:
   contents: read
   actions: read
-  administration: write
 
 jobs:
   protect:

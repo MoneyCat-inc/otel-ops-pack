@@ -25,6 +25,28 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # Workflow files that fail YAML parsing spawn a "workflow file issue" failure run on every
+      # push, named by file path — noise everyone tunes out. Nine files did exactly that for two
+      # weeks (broken by the #428 retirement edits) because nothing here could fail on invalid
+      # YAML: actionlint in bosscat-gate-verify is continue-on-error, and the registry
+      # regeneration script parses with tolerant regexes. This step is the check that can fail.
+      - name: Workflow files must parse as YAML
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import sys, yaml, pathlib
+          bad = []
+          for p in sorted(pathlib.Path('.github/workflows').glob('*.y*ml')):
+              try:
+                  yaml.safe_load(p.read_text(encoding='utf-8'))
+              except yaml.YAMLError as e:
+                  bad.append(f"{p}: {str(e).splitlines()[0]}")
+          for b in bad:
+              print(f"::error::{b}")
+          print(f"checked {len(list(pathlib.Path('.github/workflows').glob('*.y*ml')))} files, {len(bad)} invalid")
+          sys.exit(1 if bad else 0)
+          PY
+
       - name: 🔄 Regenerate registry (location-independent)
         shell: pwsh
         run: |

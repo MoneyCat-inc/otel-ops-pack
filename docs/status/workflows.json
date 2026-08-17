@@ -1,27 +1,10 @@
 {
   "source": "scripts/regenerate-workflows-registry.ps1",
-  "total": 73,
+  "total": 62,
   "items": [
     {
-      "name": "adot-config-gate",
-      "modified": "2026-08-15T02:57:42.3509456Z",
-      "path": ".github/workflows/adot-config-gate.yml",
-      "size": 2636,
-      "triggers": {
-        "issues": false,
-        "other": [],
-        "pull_request": false,
-        "push": false,
-        "release": false,
-        "schedule": false,
-        "workflow_call": false,
-        "workflow_dispatch": true,
-        "workflow_run": false
-      }
-    },
-    {
       "name": "app-template",
-      "modified": "2026-08-15T02:57:42.3509456Z",
+      "modified": "2026-07-07T02:52:57.4124616Z",
       "path": ".github/workflows/app-template.yml",
       "size": 3111,
       "triggers": {
@@ -38,7 +21,7 @@
     },
     {
       "name": "benchmark-process-all-ecrr-reports",
-      "modified": "2026-08-15T02:57:42.3519464Z",
+      "modified": "2026-08-03T21:37:08.5386745Z",
       "path": ".github/workflows/benchmark-process-all-ecrr-reports.yml",
       "size": 1078,
       "triggers": {
@@ -55,7 +38,7 @@
     },
     {
       "name": "boss-gate-signal-and-merge",
-      "modified": "2026-08-15T02:57:42.3524513Z",
+      "modified": "2025-10-16T03:41:51.2166686Z",
       "path": ".github/workflows/boss-gate-signal-and-merge.yml",
       "size": 4854,
       "triggers": {
@@ -72,7 +55,7 @@
     },
     {
       "name": "boss-gate-verify",
-      "modified": "2026-08-15T02:57:42.3529559Z",
+      "modified": "2026-08-03T21:37:08.5401937Z",
       "path": ".github/workflows/boss-gate-verify.yml",
       "size": 6478,
       "triggers": {
@@ -89,9 +72,9 @@
     },
     {
       "name": "bosscat-branch-protection",
-      "modified": "2026-08-15T02:57:42.3539625Z",
+      "modified": "2026-08-17T09:04:23.6511711Z",
       "path": ".github/workflows/bosscat-branch-protection.yml",
-      "size": 3132,
+      "size": 3466,
       "triggers": {
         "issues": false,
         "other": [],
@@ -106,7 +89,7 @@
     },
     {
       "name": "bosscat-diagnostic",
-      "modified": "2026-08-15T02:57:42.3544691Z",
+      "modified": "2025-10-16T03:41:51.2172455Z",
       "path": ".github/workflows/bosscat-diagnostic.yml",
       "size": 5782,
       "triggers": {
@@ -123,7 +106,7 @@
     },
     {
       "name": "bosscat-gate-bot-native",
-      "modified": "2026-08-15T02:57:42.3550496Z",
+      "modified": "2026-08-03T21:37:08.5416977Z",
       "path": ".github/workflows/bosscat-gate-bot-native.yml",
       "size": 14890,
       "triggers": {
@@ -140,9 +123,9 @@
     },
     {
       "name": "bosscat-gate-verify",
-      "modified": "2026-08-15T02:57:42.3550496Z",
+      "modified": "2026-08-15T04:13:02.9997229Z",
       "path": ".github/workflows/bosscat-gate-verify.yml",
-      "size": 10823,
+      "size": 10966,
       "triggers": {
         "issues": false,
         "other": [],
@@ -157,7 +140,7 @@
     },
     {
       "name": "bosscat-governance",
-      "modified": "2026-08-15T02:57:42.3560565Z",
+      "modified": "2026-08-12T17:12:12.2044186Z",
       "path": ".github/workflows/bosscat-governance.yml",
       "size": 6779,
       "triggers": {
@@ -174,7 +157,7 @@
     },
     {
       "name": "bosscat-monthly-evidence-rollup",
-      "modified": "2026-08-15T02:57:42.3565611Z",
+      "modified": "2026-08-03T21:37:08.5447069Z",
       "path": ".github/workflows/bosscat-monthly-evidence-rollup.yml",
       "size": 8179,
       "triggers": {
@@ -191,7 +174,7 @@
     },
     {
       "name": "bosscat-tetragram-guard",
-      "modified": "2026-08-15T02:57:42.3565611Z",
+      "modified": "2026-08-03T21:37:08.5457088Z",
       "path": ".github/workflows/bosscat-tetragram-guard.yml",
       "size": 1035,
       "triggers": {
@@ -208,7 +191,7 @@
     },
     {
       "name": "ci-disabled",
-      "modified": "2026-08-15T02:57:42.3575669Z",
+      "modified": "2025-10-16T03:41:51.2202521Z",
       "path": ".github/workflows/ci-disabled.yml",
       "size": 4243,
       "triggers": {
@@ -225,7 +208,7 @@
     },
     {
       "name": "codeql",
-      "modified": "2026-08-15T02:57:42.3590726Z",
+      "modified": "2026-08-03T21:37:08.5492215Z",
       "path": ".github/workflows/codeql.yml",
       "size": 5222,
       "triggers": {
@@ -242,7 +225,7 @@
     },
     {
       "name": "codeql-analysis",
-      "modified": "2026-08-15T02:57:42.3575669Z",
+      "modified": "2026-08-03T21:37:08.5482144Z",
       "path": ".github/workflows/codeql-analysis.yml",
       "size": 1182,
       "triggers": {
@@ -259,7 +242,7 @@
     },
     {
       "name": "deploy-moneycat",
-      "modified": "2026-08-15T02:57:42.3590726Z",
+      "modified": "2026-08-03T21:37:08.5507345Z",
       "path": ".github/workflows/deploy-moneycat.yml",
       "size": 2389,
       "triggers": {
@@ -276,7 +259,7 @@
     },
     {
       "name": "docs-guard",
-      "modified": "2026-08-15T02:57:42.3595916Z",
+      "modified": "2026-06-12T11:51:47.8227094Z",
       "path": ".github/workflows/docs-guard.yml",
       "size": 2826,
       "triggers": {
@@ -293,9 +276,9 @@
     },
     {
       "name": "docs-lane-checks",
-      "modified": "2026-08-15T02:57:42.3605974Z",
+      "modified": "2026-08-15T09:20:10.3518908Z",
       "path": ".github/workflows/docs-lane-checks.yml",
-      "size": 18547,
+      "size": 19307,
       "triggers": {
         "issues": false,
         "other": [],
@@ -310,7 +293,7 @@
     },
     {
       "name": "drift-alert",
-      "modified": "2026-08-15T02:57:42.3605974Z",
+      "modified": "2026-08-03T21:37:08.5527414Z",
       "path": ".github/workflows/drift-alert.yml",
       "size": 2345,
       "triggers": {
@@ -327,7 +310,7 @@
     },
     {
       "name": "evidence-pat-rotation-reminder",
-      "modified": "2026-08-15T02:57:42.3605974Z",
+      "modified": "2026-08-03T21:37:08.5527414Z",
       "path": ".github/workflows/evidence-pat-rotation-reminder.yml",
       "size": 5824,
       "triggers": {
@@ -344,7 +327,7 @@
     },
     {
       "name": "evidence-retention-prune",
-      "modified": "2026-08-15T02:57:42.3615978Z",
+      "modified": "2026-08-03T21:37:08.5542445Z",
       "path": ".github/workflows/evidence-retention-prune.yml",
       "size": 4979,
       "triggers": {
@@ -361,7 +344,7 @@
     },
     {
       "name": "gate-019-audio-r1-test",
-      "modified": "2026-08-15T02:57:42.3615978Z",
+      "modified": "2026-07-25T23:41:58.4188872Z",
       "path": ".github/workflows/gate-019-audio-r1-test.yml",
       "size": 897,
       "triggers": {
@@ -378,7 +361,7 @@
     },
     {
       "name": "gate-026-performance",
-      "modified": "2026-08-15T02:57:42.3625978Z",
+      "modified": "2026-08-03T21:37:08.5542445Z",
       "path": ".github/workflows/gate-026-performance.yml",
       "size": 7349,
       "triggers": {
@@ -395,7 +378,7 @@
     },
     {
       "name": "gate-nightly",
-      "modified": "2026-08-15T02:57:42.3631907Z",
+      "modified": "2026-08-14T18:31:33.3553160Z",
       "path": ".github/workflows/gate-nightly.yml",
       "size": 10219,
       "triggers": {
@@ -412,7 +395,7 @@
     },
     {
       "name": "gate-site-evidence",
-      "modified": "2026-08-15T02:57:42.3641980Z",
+      "modified": "2026-08-03T21:37:08.5567589Z",
       "path": ".github/workflows/gate-site-evidence.yml",
       "size": 9672,
       "triggers": {
@@ -429,7 +412,7 @@
     },
     {
       "name": "gitleaks",
-      "modified": "2026-08-15T02:57:42.3652229Z",
+      "modified": "2026-08-03T21:37:08.5593277Z",
       "path": ".github/workflows/gitleaks.yml",
       "size": 2026,
       "triggers": {
@@ -446,7 +429,7 @@
     },
     {
       "name": "gitleaks-security-scan",
-      "modified": "2026-08-15T02:57:42.3647038Z",
+      "modified": "2026-08-12T17:12:12.1655793Z",
       "path": ".github/workflows/gitleaks-security-scan.yml",
       "size": 3507,
       "triggers": {
@@ -463,7 +446,7 @@
     },
     {
       "name": "guardrails",
-      "modified": "2026-08-15T02:57:42.3652229Z",
+      "modified": "2026-08-03T21:37:08.5634694Z",
       "path": ".github/workflows/guardrails.yml",
       "size": 2400,
       "triggers": {
@@ -479,25 +462,8 @@
       }
     },
     {
-      "name": "guardrails-recert",
-      "modified": "2026-08-15T02:57:42.3652229Z",
-      "path": ".github/workflows/guardrails-recert.yml",
-      "size": 5824,
-      "triggers": {
-        "issues": false,
-        "other": [],
-        "pull_request": false,
-        "push": false,
-        "release": false,
-        "schedule": false,
-        "workflow_call": false,
-        "workflow_dispatch": true,
-        "workflow_run": false
-      }
-    },
-    {
       "name": "hub-smoke",
-      "modified": "2026-08-15T02:57:42.3667360Z",
+      "modified": "2026-08-03T21:37:08.5639789Z",
       "path": ".github/workflows/hub-smoke.yml",
       "size": 1182,
       "triggers": {
@@ -514,7 +480,7 @@
     },
     {
       "name": "icf-filename-ratchet",
-      "modified": "2026-08-15T02:57:42.3667360Z",
+      "modified": "2026-08-03T21:37:08.5654961Z",
       "path": ".github/workflows/icf-filename-ratchet.yml",
       "size": 2045,
       "triggers": {
@@ -531,7 +497,7 @@
     },
     {
       "name": "icf-smoke",
-      "modified": "2026-08-15T02:57:42.3677418Z",
+      "modified": "2026-08-03T21:37:08.5654961Z",
       "path": ".github/workflows/icf-smoke.yml",
       "size": 1009,
       "triggers": {
@@ -548,7 +514,7 @@
     },
     {
       "name": "iona-gate-verify",
-      "modified": "2026-08-15T02:57:42.3677418Z",
+      "modified": "2026-08-12T17:12:12.1655793Z",
       "path": ".github/workflows/iona-gate-verify.yml",
       "size": 2938,
       "triggers": {
@@ -565,7 +531,7 @@
     },
     {
       "name": "json-validation-gate",
-      "modified": "2026-08-15T02:57:42.3677418Z",
+      "modified": "2026-08-14T18:31:33.3573317Z",
       "path": ".github/workflows/json-validation-gate.yml",
       "size": 4089,
       "triggers": {
@@ -581,25 +547,8 @@
       }
     },
     {
-      "name": "k6-performance-gate",
-      "modified": "2026-08-15T02:57:42.3692463Z",
-      "path": ".github/workflows/k6-performance-gate.yml",
-      "size": 2513,
-      "triggers": {
-        "issues": false,
-        "other": [],
-        "pull_request": false,
-        "push": false,
-        "release": false,
-        "schedule": false,
-        "workflow_call": false,
-        "workflow_dispatch": true,
-        "workflow_run": false
-      }
-    },
-    {
       "name": "link-check",
-      "modified": "2026-08-15T02:57:42.3697631Z",
+      "modified": "2026-08-03T21:37:08.5705263Z",
       "path": ".github/workflows/link-check.yml",
       "size": 607,
       "triggers": {
@@ -616,7 +565,7 @@
     },
     {
       "name": "main",
-      "modified": "2026-08-15T02:57:42.3702794Z",
+      "modified": "2026-08-03T21:37:08.5720386Z",
       "path": ".github/workflows/main.yml",
       "size": 1042,
       "triggers": {
@@ -633,7 +582,7 @@
     },
     {
       "name": "multi-app-ci",
-      "modified": "2026-08-15T02:57:42.3702794Z",
+      "modified": "2026-08-03T21:37:08.5725614Z",
       "path": ".github/workflows/multi-app-ci.yml",
       "size": 6157,
       "triggers": {
@@ -649,42 +598,8 @@
       }
     },
     {
-      "name": "nightly-dashboard-export",
-      "modified": "2026-08-15T02:57:42.3712877Z",
-      "path": ".github/workflows/nightly-dashboard-export.yml",
-      "size": 12357,
-      "triggers": {
-        "issues": false,
-        "other": [],
-        "pull_request": false,
-        "push": false,
-        "release": false,
-        "schedule": false,
-        "workflow_call": false,
-        "workflow_dispatch": true,
-        "workflow_run": false
-      }
-    },
-    {
-      "name": "nightly-dashboard-reports",
-      "modified": "2026-08-15T02:57:42.3712877Z",
-      "path": ".github/workflows/nightly-dashboard-reports.yml",
-      "size": 8163,
-      "triggers": {
-        "issues": false,
-        "other": [],
-        "pull_request": false,
-        "push": false,
-        "release": false,
-        "schedule": false,
-        "workflow_call": false,
-        "workflow_dispatch": true,
-        "workflow_run": false
-      }
-    },
-    {
       "name": "nightly-ecrr-aggregates",
-      "modified": "2026-08-15T02:57:42.3727965Z",
+      "modified": "2026-08-03T21:37:08.5745717Z",
       "path": ".github/workflows/nightly-ecrr-aggregates.yml",
       "size": 1092,
       "triggers": {
@@ -700,25 +615,8 @@
       }
     },
     {
-      "name": "nightly-tetragrammaton-benchmarks",
-      "modified": "2026-08-15T02:57:42.3727965Z",
-      "path": ".github/workflows/nightly-tetragrammaton-benchmarks.yml",
-      "size": 4478,
-      "triggers": {
-        "issues": false,
-        "other": [],
-        "pull_request": false,
-        "push": false,
-        "release": false,
-        "schedule": false,
-        "workflow_call": false,
-        "workflow_dispatch": true,
-        "workflow_run": false
-      }
-    },
-    {
       "name": "osv-scanner",
-      "modified": "2026-08-15T02:57:42.3743149Z",
+      "modified": "2026-08-17T09:04:38.9588582Z",
       "path": ".github/workflows/osv-scanner.yml",
       "size": 1759,
       "triggers": {
@@ -735,7 +633,7 @@
     },
     {
       "name": "perf-gate-demo",
-      "modified": "2026-08-15T02:57:42.3743149Z",
+      "modified": "2026-08-03T21:37:08.5780898Z",
       "path": ".github/workflows/perf-gate-demo.yml",
       "size": 5706,
       "triggers": {
@@ -752,7 +650,7 @@
     },
     {
       "name": "performance-gate",
-      "modified": "2026-08-15T02:57:42.3753216Z",
+      "modified": "2026-08-03T21:37:08.5801153Z",
       "path": ".github/workflows/performance-gate.yml",
       "size": 3043,
       "triggers": {
@@ -769,7 +667,7 @@
     },
     {
       "name": "powershell",
-      "modified": "2026-08-15T02:57:42.3758282Z",
+      "modified": "2026-08-03T21:37:08.5811230Z",
       "path": ".github/workflows/powershell.yml",
       "size": 2258,
       "triggers": {
@@ -786,7 +684,7 @@
     },
     {
       "name": "quil-docs-lane",
-      "modified": "2026-08-15T02:57:42.3758282Z",
+      "modified": "2026-08-03T21:37:08.5821238Z",
       "path": ".github/workflows/quil-docs-lane.yml",
       "size": 2181,
       "triggers": {
@@ -803,7 +701,7 @@
     },
     {
       "name": "registry-drift-check",
-      "modified": "2026-08-15T02:57:42.3768341Z",
+      "modified": "2026-08-03T21:37:08.5821238Z",
       "path": ".github/workflows/registry-drift-check.yml",
       "size": 3539,
       "triggers": {
@@ -820,9 +718,9 @@
     },
     {
       "name": "registry-guard",
-      "modified": "2026-08-15T02:57:42.3768341Z",
+      "modified": "2026-08-17T09:05:07.9514454Z",
       "path": ".github/workflows/registry-guard.yml",
-      "size": 5617,
+      "size": 6748,
       "triggers": {
         "issues": false,
         "other": [],
@@ -836,25 +734,8 @@
       }
     },
     {
-      "name": "repository-security-check",
-      "modified": "2026-08-15T02:57:42.3768341Z",
-      "path": ".github/workflows/repository-security-check.yml",
-      "size": 3330,
-      "triggers": {
-        "issues": false,
-        "other": [],
-        "pull_request": false,
-        "push": false,
-        "release": false,
-        "schedule": false,
-        "workflow_call": false,
-        "workflow_dispatch": true,
-        "workflow_run": false
-      }
-    },
-    {
       "name": "required-check-shims",
-      "modified": "2026-08-15T02:57:42.3783394Z",
+      "modified": "2026-08-12T17:12:12.1655793Z",
       "path": ".github/workflows/required-check-shims.yml",
       "size": 3262,
       "triggers": {
@@ -871,7 +752,7 @@
     },
     {
       "name": "research-conversion-verify",
-      "modified": "2026-08-15T02:57:42.3789195Z",
+      "modified": "2026-08-03T21:37:08.5856395Z",
       "path": ".github/workflows/research-conversion-verify.yml",
       "size": 2201,
       "triggers": {
@@ -888,7 +769,7 @@
     },
     {
       "name": "rsi-archive",
-      "modified": "2026-08-15T02:57:42.3789195Z",
+      "modified": "2025-10-16T03:41:51.2368090Z",
       "path": ".github/workflows/rsi-archive.yml",
       "size": 625,
       "triggers": {
@@ -905,7 +786,7 @@
     },
     {
       "name": "rsi-gate",
-      "modified": "2026-08-15T02:57:42.3789195Z",
+      "modified": "2026-08-03T21:37:08.5866415Z",
       "path": ".github/workflows/rsi-gate.yml",
       "size": 1248,
       "triggers": {
@@ -922,26 +803,9 @@
     },
     {
       "name": "rsi-index",
-      "modified": "2026-08-15T02:57:42.3804394Z",
+      "modified": "2026-06-26T13:20:17.1928227Z",
       "path": ".github/workflows/rsi-index.yml",
-      "size": 758,
-      "triggers": {
-        "issues": false,
-        "other": [],
-        "pull_request": false,
-        "push": false,
-        "release": false,
-        "schedule": false,
-        "workflow_call": false,
-        "workflow_dispatch": true,
-        "workflow_run": false
-      }
-    },
-    {
-      "name": "rsi-sweep-nightly",
-      "modified": "2026-08-15T02:57:42.3814459Z",
-      "path": ".github/workflows/rsi-sweep-nightly.yml",
-      "size": 7142,
+      "size": 759,
       "triggers": {
         "issues": false,
         "other": [],
@@ -956,7 +820,7 @@
     },
     {
       "name": "run-archiver",
-      "modified": "2026-08-15T02:57:42.3824461Z",
+      "modified": "2026-08-13T19:08:24.5923664Z",
       "path": ".github/workflows/run-archiver.yml",
       "size": 3682,
       "triggers": {
@@ -973,7 +837,7 @@
     },
     {
       "name": "run-archiver-backfill",
-      "modified": "2026-08-15T02:57:42.3814459Z",
+      "modified": "2026-07-24T13:54:24.7403080Z",
       "path": ".github/workflows/run-archiver-backfill.yml",
       "size": 9231,
       "triggers": {
@@ -990,7 +854,7 @@
     },
     {
       "name": "run-rotation",
-      "modified": "2026-08-15T02:57:42.3824461Z",
+      "modified": "2026-08-03T21:37:08.5881477Z",
       "path": ".github/workflows/run-rotation.yml",
       "size": 3918,
       "triggers": {
@@ -1007,7 +871,7 @@
     },
     {
       "name": "sbom-stability-tracker",
-      "modified": "2026-08-15T02:57:42.3839544Z",
+      "modified": "2026-08-03T21:37:08.5896618Z",
       "path": ".github/workflows/sbom-stability-tracker.yml",
       "size": 2595,
       "triggers": {
@@ -1024,7 +888,7 @@
     },
     {
       "name": "security-notifications-archive-nightly",
-      "modified": "2026-08-15T02:57:42.3839544Z",
+      "modified": "2026-08-03T21:37:08.5901692Z",
       "path": ".github/workflows/security-notifications-archive-nightly.yml",
       "size": 10756,
       "triggers": {
@@ -1041,7 +905,7 @@
     },
     {
       "name": "security-scan",
-      "modified": "2026-08-15T02:57:42.3839544Z",
+      "modified": "2026-08-12T17:12:12.1045491Z",
       "path": ".github/workflows/security-scan.yml",
       "size": 5542,
       "triggers": {
@@ -1058,7 +922,7 @@
     },
     {
       "name": "signoz-alerts",
-      "modified": "2026-08-15T02:57:42.3854752Z",
+      "modified": "2026-08-03T21:37:08.5921779Z",
       "path": ".github/workflows/signoz-alerts.yml",
       "size": 3059,
       "triggers": {
@@ -1074,25 +938,8 @@
       }
     },
     {
-      "name": "signoz-automation",
-      "modified": "2026-08-15T02:57:42.3860055Z",
-      "path": ".github/workflows/signoz-automation.yml",
-      "size": 3560,
-      "triggers": {
-        "issues": false,
-        "other": [],
-        "pull_request": false,
-        "push": false,
-        "release": false,
-        "schedule": false,
-        "workflow_call": false,
-        "workflow_dispatch": true,
-        "workflow_run": false
-      }
-    },
-    {
       "name": "signoz-automation-fresh",
-      "modified": "2026-08-15T02:57:42.3860055Z",
+      "modified": "2026-08-03T21:37:08.5936914Z",
       "path": ".github/workflows/signoz-automation-fresh.yml",
       "size": 7344,
       "triggers": {
@@ -1109,7 +956,7 @@
     },
     {
       "name": "signoz-config",
-      "modified": "2026-08-15T02:57:42.3860055Z",
+      "modified": "2026-08-03T21:37:08.5967142Z",
       "path": ".github/workflows/signoz-config.yml",
       "size": 2967,
       "triggers": {
@@ -1125,25 +972,8 @@
       }
     },
     {
-      "name": "status-auto-update",
-      "modified": "2026-08-15T02:57:42.3875660Z",
-      "path": ".github/workflows/status-auto-update.yml",
-      "size": 11856,
-      "triggers": {
-        "issues": false,
-        "other": [],
-        "pull_request": false,
-        "push": false,
-        "release": false,
-        "schedule": false,
-        "workflow_call": false,
-        "workflow_dispatch": true,
-        "workflow_run": false
-      }
-    },
-    {
       "name": "stress-test-nightly",
-      "modified": "2026-08-15T02:57:42.3885760Z",
+      "modified": "2026-08-03T21:37:08.5987467Z",
       "path": ".github/workflows/stress-test-nightly.yml",
       "size": 4687,
       "triggers": {
@@ -1159,25 +989,8 @@
       }
     },
     {
-      "name": "stress-test-pr",
-      "modified": "2026-08-15T02:57:42.3895752Z",
-      "path": ".github/workflows/stress-test-pr.yml",
-      "size": 4648,
-      "triggers": {
-        "issues": false,
-        "other": [],
-        "pull_request": false,
-        "push": false,
-        "release": false,
-        "schedule": false,
-        "workflow_call": false,
-        "workflow_dispatch": true,
-        "workflow_run": false
-      }
-    },
-    {
       "name": "trivy-security-scan",
-      "modified": "2026-08-15T02:57:42.3895752Z",
+      "modified": "2026-08-13T19:08:24.5933697Z",
       "path": ".github/workflows/trivy-security-scan.yml",
       "size": 2761,
       "triggers": {
@@ -1194,7 +1007,7 @@
     },
     {
       "name": "update-kpis",
-      "modified": "2026-08-15T02:57:42.3910847Z",
+      "modified": "2026-08-03T21:37:08.6027619Z",
       "path": ".github/workflows/update-kpis.yml",
       "size": 1231,
       "triggers": {
@@ -1211,7 +1024,7 @@
     },
     {
       "name": "weekly-cleanup",
-      "modified": "2026-08-15T02:57:42.3910847Z",
+      "modified": "2026-08-03T21:37:08.6042699Z",
       "path": ".github/workflows/weekly-cleanup.yml",
       "size": 1938,
       "triggers": {
@@ -1228,7 +1041,7 @@
     },
     {
       "name": "weekly-executive-review",
-      "modified": "2026-08-15T02:57:42.3916704Z",
+      "modified": "2026-08-03T21:37:08.6052820Z",
       "path": ".github/workflows/weekly-executive-review.yml",
       "size": 6351,
       "triggers": {
