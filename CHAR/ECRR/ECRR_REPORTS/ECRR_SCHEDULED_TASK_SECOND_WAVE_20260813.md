@@ -135,3 +135,22 @@ Note also that `MoneyCat-inc/socm` currently has **no counterpart reminder scrip
 them here would lose the capability rather than relocate it.
 
 **Status:** COMPLETE
+
+## Addendum (2026-08-17) — disposition executed
+
+The proposal above is now fully executed by the machine operator, elevated, in three passes:
+
+- **2026-08-17:** the 22 gone-script tasks unregistered (22/22 verified absent), plus
+  `OTel Benchmark ECRR Processor` — the recurring writer that dirtied tracked
+  `DELT/ARTF/ecrr-benchmark.json` daily.
+- **2026-08-17:** the 19 relocated-script tasks resolved **18 unregister / 1 repoint** under the
+  `PURPOSE.md` test. The ECRR seven would have resurrected the engine retired in #433; the BossCat
+  three were the 2025 agent machinery, failing silently with nothing noticing; the monitor eight
+  duplicated the living verification set (`gate-nightly`, `BossCat-OtelcolWatchdog`,
+  `OTel-Canary-ECRR`). `OTel-Artifacts-Cleanup` alone survived, repointed to
+  `BRAV\SCPT\cleanup-artifacts.ps1` — the only task serving a standing criterion.
+- Verified after execution: all 18 named tasks absent; **zero registered project tasks point at a
+  path that does not exist**.
+
+Remaining live set: the healthy exit-0 tasks, the social-maintenance trio (exit 2 = "due", by
+design), and the repointed cleanup.
