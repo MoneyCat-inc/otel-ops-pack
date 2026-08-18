@@ -168,3 +168,10 @@ This report carries quantified credits (7.69 vs 500.69 threshold), verification 
 ### What a permanent seat means in practice
 
 Same rules as Cursor{Implementer}: scoped credentials (machine operator handles auth), actor logged per commit, lane discipline enforced by hooks, no nesting between implementer seats, briefing-canonical / spec-projection rule. The "provisional" qualifier drops from `AGENTS.md`; all other standing rules remain unchanged.
+
+## ECRR Gate
+
+- Gate: PASS
+- Scope: Structural normalization only.
+- Evidence Reference: artifacts/ecrr-compliance-metrics.json.
+- Guardrail: Append-only; original report body unchanged.

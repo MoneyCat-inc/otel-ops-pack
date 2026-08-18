@@ -33,3 +33,10 @@ Artifacts: `artifacts/boot-reports/boot-health-20260802-161033.json` · `artifac
 Cursor{Implementer} examined and verified; machine operator re-enabled and started the service. No further action required.
 
 **Status:** COMPLETE
+
+## ECRR Gate
+
+- Gate: PASS
+- Scope: Structural normalization only.
+- Evidence Reference: artifacts/ecrr-compliance-metrics.json.
+- Guardrail: Append-only; original report body unchanged.

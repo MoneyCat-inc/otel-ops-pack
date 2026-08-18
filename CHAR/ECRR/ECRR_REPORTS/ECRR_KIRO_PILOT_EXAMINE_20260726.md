@@ -111,3 +111,10 @@ Pilot headroom from Examine open: **500.00** credits (to the abort line). Examin
 - **OEM / chat seat:** authorized Examine with three refinements (scratch D4, absolute threshold, dual `/usage`).  
 - **Cursor{Implementer}:** executed Examine protocol with `kiro-cli` as instrument; authored this ECRR; ops-pack disk unchanged (no `.kiro/`).  
 - **Kiro{Implementer} (provisional):** idle for Clean until explicitly authorized; subject account measured = Builder ID `fubumaki@gmail.com` / KIRO PRO.
+
+## ECRR Gate
+
+- Gate: PASS
+- Scope: Structural normalization only.
+- Evidence Reference: artifacts/ecrr-compliance-metrics.json.
+- Guardrail: Append-only; original report body unchanged.

@@ -85,3 +85,10 @@ All timed steps exit 0: preflight, enable-collector-service, install-or-repair-c
 - **Claude (chat/review):** run card, exit-1 timing analysis → #461 root cause; Event Log assert correction (#463).
 
 — Cursor{Implementer}
+
+## ECRR Gate
+
+- Gate: PASS
+- Scope: Structural normalization only.
+- Evidence Reference: artifacts/ecrr-compliance-metrics.json.
+- Guardrail: Append-only; original report body unchanged.

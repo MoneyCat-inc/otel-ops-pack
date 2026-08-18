@@ -47,3 +47,10 @@ Bootstrap paths: `.kiro/`, `BRAV/SCPT/kiro/`, `lefthook.yml` on feature branch.
 - **OEM:** authorized Clean sequence after Examine gate met  
 - **Cursor{Implementer}:** evidence #398 merge; feature branch; steering regen; H1–H3 wiring; H1 remasure  
 - **Kiro{Implementer}:** idle for scheduled clean-host E2E **automation** implementation next (Actor trailer on those commits)
+
+## ECRR Gate
+
+- Gate: PASS
+- Scope: Structural normalization only.
+- Evidence Reference: artifacts/ecrr-compliance-metrics.json.
+- Guardrail: Append-only; original report body unchanged.

@@ -75,3 +75,10 @@ BossCat OEM — board acceptance.
 ## Follow-on (not this ECRR)
 
 CHAR/docs 26 mismatches; CHAR/DELT/ALFA disposition; deploy-hub rename; clean-host E2E; sibling maturity.
+
+## ECRR Gate
+
+- Gate: PASS
+- Scope: Structural normalization only.
+- Evidence Reference: artifacts/ecrr-compliance-metrics.json.
+- Guardrail: Append-only; original report body unchanged.

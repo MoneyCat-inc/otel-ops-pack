@@ -47,3 +47,10 @@ Backup: `artifacts/deployment-backups/signoz-upgrade-20260803-114335/`
 Machine operator performed upgrade and migration; Cursor{Implementer} documented. `Get-HttpErrorBody` (added previous session) confirmed the root cause during diagnosis. No further action required — SigNoz upgrade closes the last open item from the 2026-08-02 recovery session.
 
 **Status:** COMPLETE
+
+## ECRR Gate
+
+- Gate: PASS
+- Scope: Structural normalization only.
+- Evidence Reference: artifacts/ecrr-compliance-metrics.json.
+- Guardrail: Append-only; original report body unchanged.

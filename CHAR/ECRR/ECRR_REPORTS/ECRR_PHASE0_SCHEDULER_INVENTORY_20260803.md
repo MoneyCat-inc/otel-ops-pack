@@ -95,3 +95,10 @@ Get-ScheduledTask | Where-Object { $_.TaskName -match 'ecrr|otel|bosscat|iona|ag
 
 Filed against the second-wave cleanup, alongside the ~20-file ECRR script cluster inventoried in
 `ECRR_COMPLIANCE_ENGINE_RETIREMENT_20260803.md`.
+
+## ECRR Gate
+
+- Gate: PASS
+- Scope: Structural normalization only.
+- Evidence Reference: artifacts/ecrr-compliance-metrics.json.
+- Guardrail: Append-only; original report body unchanged.
