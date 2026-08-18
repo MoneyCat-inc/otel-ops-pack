@@ -23,7 +23,7 @@ jobs:
     
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       # Workflow files that fail YAML parsing spawn a "workflow file issue" failure run on every
       # push, named by file path — noise everyone tunes out. Nine files did exactly that for two

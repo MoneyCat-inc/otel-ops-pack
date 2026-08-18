@@ -17,7 +17,7 @@ jobs:
       UI_P95_MS: ${{ vars.UI_P95_MS || '1500' }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Run ICF smoke
         shell: pwsh
