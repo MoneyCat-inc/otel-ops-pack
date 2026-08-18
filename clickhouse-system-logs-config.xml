@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!--
+  Bound ClickHouse's internal system.* log tables.
+
+  Incident 2026-08-18: these tables had no TTL and accumulated 50 GiB since
+  2025-10-05 (text_log 20.4 GiB at Debug/Trace level, trace_log 17.6 GiB from
+  the query profiler) while actual SigNoz telemetry was under 400 MiB. Their
+  merges then exceeded the container's 2 GiB memory limit and failed ~98k
+  times/day, each retry writing fresh ext4 blocks that permanently inflated
+  docker_data.vhdx (WSL2 VHDX never shrinks on its own) until C: filled.
+
+  Mounted by docker-compose.yml as /etc/clickhouse-server/config.d/system-logs.xml.
+  NOTE: when TTL/settings here differ from an existing table, ClickHouse renames
+  the old table with a _N suffix on startup and creates a fresh one; the renamed
+  tables must be dropped manually (see docs/DOCKER_VHDX_MAINTENANCE.md).
+-->
+<clickhouse>
+    <!-- Query profiler output; useless for a local SigNoz stack and the single
+         largest system-log writer. Removing the config disables the log. -->
+    <trace_log remove="remove"/>
+    <processors_profile_log remove="remove"/>
+    <query_views_log remove="remove"/>
+    <latency_log remove="remove"/>
+    <asynchronous_metric_log remove="remove"/>
+
+    <!-- Operationally useful logs stay, but bounded to 7 days. -->
+    <query_log>
+        <ttl>event_date + INTERVAL 7 DAY DELETE</ttl>
+    </query_log>
+    <part_log>
+        <ttl>event_date + INTERVAL 7 DAY DELETE</ttl>
+    </part_log>
+    <metric_log>
+        <ttl>event_date + INTERVAL 7 DAY DELETE</ttl>
+    </metric_log>
+
+    <!-- Was logging ~15M Debug/Trace rows per day. Warnings and errors only. -->
+    <text_log>
+        <level>warning</level>
+        <ttl>event_date + INTERVAL 7 DAY DELETE</ttl>
+    </text_log>
+</clickhouse>

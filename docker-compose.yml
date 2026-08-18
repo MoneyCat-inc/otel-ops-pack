@@ -51,6 +51,7 @@ services:
       - clickhouse_data:/var/lib/clickhouse
       - ./clickhouse-cluster-config.xml:/etc/clickhouse-server/config.d/signoz-cluster.xml:ro
       - ./clickhouse-zookeeper-config.xml:/etc/clickhouse-server/config.d/zookeeper.xml:ro
+      - ./clickhouse-system-logs-config.xml:/etc/clickhouse-server/config.d/system-logs.xml:ro
     healthcheck:
       test: ["CMD", "wget", "--spider", "-q", "0.0.0.0:8123/ping"]
       interval: 15s
