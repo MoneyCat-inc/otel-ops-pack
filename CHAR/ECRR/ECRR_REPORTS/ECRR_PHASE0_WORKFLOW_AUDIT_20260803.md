@@ -39,3 +39,10 @@ Follow-ups filed here, not acted on: `trivy-security-scan` pins pre-upgrade imag
 Chat/review seat classified, edited, and documented; machine operator gates the merge via PR review. This closes the workflow half of the Phase 0 exit criterion "no recurring writer left running against the working tree" — the compliance-engine retire-or-fix decision remains the last open Phase 0 item.
 
 **Status:** COMPLETE
+
+## ECRR Gate
+
+- Gate: PASS
+- Scope: Structural normalization only.
+- Evidence Reference: ECRR processor run 2026-08-18, 389/389 gated (PR #571).
+- Guardrail: Append-only; original report body unchanged.

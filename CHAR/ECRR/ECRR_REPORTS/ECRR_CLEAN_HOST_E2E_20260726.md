@@ -56,3 +56,10 @@ Phase splits: P1 0.44 ┬╖ P2 6.18 ┬╖ P3 0.39 ┬╖ P4 1.67 min.
 - **Machine operator:** prior Phase 0 / Docker interactive session; F1ΓÇôF2 commit+push to scheduled branch.
 
 ΓÇö Cursor{Implementer}
+
+## ECRR Gate
+
+- Gate: PASS
+- Scope: Structural normalization only.
+- Evidence Reference: ECRR processor run 2026-08-18, 389/389 gated (PR #571).
+- Guardrail: Append-only; original report body unchanged.

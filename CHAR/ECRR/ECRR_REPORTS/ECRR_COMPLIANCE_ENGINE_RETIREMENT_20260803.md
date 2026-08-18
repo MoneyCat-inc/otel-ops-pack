@@ -81,3 +81,10 @@ With those two gone, the final Phase 0 item of Roadmap 2026 H2 is closed and Pha
 Windows collector keep-or-retire decision — is the next gate.
 
 **Status:** COMPLETE
+
+## ECRR Gate
+
+- Gate: PASS
+- Scope: Structural normalization only.
+- Evidence Reference: ECRR processor run 2026-08-18, 389/389 gated (PR #571).
+- Guardrail: Append-only; original report body unchanged.

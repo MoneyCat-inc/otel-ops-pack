@@ -154,3 +154,10 @@ The proposal above is now fully executed by the machine operator, elevated, in t
 
 Remaining live set: the healthy exit-0 tasks, the social-maintenance trio (exit 2 = "due", by
 design), and the repointed cleanup.
+
+## ECRR Gate
+
+- Gate: PASS
+- Scope: Structural normalization only.
+- Evidence Reference: ECRR processor run 2026-08-18, 389/389 gated (PR #571).
+- Guardrail: Append-only; original report body unchanged.

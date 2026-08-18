@@ -45,3 +45,10 @@ Files changed (3):
 Cursor{Implementer} designed and implemented; machine operator verified live run and confirmed `Get-HttpErrorBody` PS7 path. SigNoz upgrade (to fix `failed to get traces keys`) is a separate work item — ClickHouse fallback remains the confirmed gate path until then.
 
 **Status:** COMPLETE
+
+## ECRR Gate
+
+- Gate: PASS
+- Scope: Structural normalization only.
+- Evidence Reference: ECRR processor run 2026-08-18, 389/389 gated (PR #571).
+- Guardrail: Append-only; original report body unchanged.
