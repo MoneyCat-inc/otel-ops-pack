@@ -25,7 +25,7 @@ jobs:
       OTEL_COLLECTOR_HEALTH_URL: http://127.0.0.1:13134/healthz
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Check live stack reachability
         id: stack

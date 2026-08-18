@@ -19,7 +19,7 @@ jobs:
   guardrails:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-python@v5
         with: { python-version: '3.x' }
       - name: Guardrails (strict on main)
@@ -40,7 +40,7 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
@@ -69,7 +69,7 @@ jobs:
     needs: build_test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Login to registry
         run: echo "${{ secrets.REGISTRY_TOKEN }}" | docker login ${{ vars.REGISTRY_HOST }} -u ${{ secrets.REGISTRY_USER }} --password-stdin
       - name: Containerize

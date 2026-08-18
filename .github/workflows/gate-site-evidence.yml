@@ -38,7 +38,7 @@ jobs:
     env:
       GATE_BASE_URL: ${{ inputs.gate_base_url || vars.GATE_BASE_URL || 'http://localhost:3000' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: PR lane short-circuit
         if: ${{ github.event_name == 'pull_request' }}
         run: |
@@ -87,7 +87,7 @@ jobs:
     env:
       OTLP_HTTP: ${{ inputs.otlp_http || vars.OTLP_HTTP || 'http://localhost:4318/v1/traces' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: PR lane short-circuit
         if: ${{ github.event_name == 'pull_request' }}
         run: |
@@ -149,7 +149,7 @@ jobs:
     name: "Site • links + a11y + CSP (coarse)"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: PR lane short-circuit
         if: ${{ github.event_name == 'pull_request' }}
         run: |

@@ -65,10 +65,10 @@ jobs:
           fi
 
       - name: Checkout ops pack
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Checkout evidence repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: ${{ env.EVIDENCE_REPO }}
           token: ${{ secrets.EVIDENCE_REPO_TOKEN }}
