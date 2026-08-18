@@ -4,10 +4,16 @@
 
   Incident 2026-08-18: these tables had no TTL and accumulated 50 GiB since
   2025-10-05 (text_log 20.4 GiB at Debug/Trace level, trace_log 17.6 GiB from
-  the query profiler) while actual SigNoz telemetry was under 400 MiB. Their
+  the profilers) while actual SigNoz telemetry was under 400 MiB. Their
   merges then exceeded the container's 2 GiB memory limit and failed ~98k
   times/day, each retry writing fresh ext4 blocks that permanently inflated
   docker_data.vhdx (WSL2 VHDX never shrinks on its own) until C: filled.
+
+  On ClickHouse 25.x these logs are enabled by compiled-in defaults, so
+  <table remove="remove"/> does NOT disable them (verified live: trace_log
+  and asynchronous_metric_log kept writing with the element absent from the
+  preprocessed config). Every table therefore gets an explicit 7-day TTL
+  instead - bounded beats disabled-in-theory.
 
   Mounted by docker-compose.yml as /etc/clickhouse-server/config.d/system-logs.xml.
   NOTE: when TTL/settings here differ from an existing table, ClickHouse renames
@@ -15,15 +21,6 @@
   tables must be dropped manually (see docs/DOCKER_VHDX_MAINTENANCE.md).
 -->
 <clickhouse>
-    <!-- Query profiler output; useless for a local SigNoz stack and the single
-         largest system-log writer. Removing the config disables the log. -->
-    <trace_log remove="remove"/>
-    <processors_profile_log remove="remove"/>
-    <query_views_log remove="remove"/>
-    <latency_log remove="remove"/>
-    <asynchronous_metric_log remove="remove"/>
-
-    <!-- Operationally useful logs stay, but bounded to 7 days. -->
     <query_log>
         <ttl>event_date + INTERVAL 7 DAY DELETE</ttl>
     </query_log>
@@ -33,10 +30,35 @@
     <metric_log>
         <ttl>event_date + INTERVAL 7 DAY DELETE</ttl>
     </metric_log>
+    <trace_log>
+        <ttl>event_date + INTERVAL 7 DAY DELETE</ttl>
+    </trace_log>
+    <asynchronous_metric_log>
+        <ttl>event_date + INTERVAL 7 DAY DELETE</ttl>
+    </asynchronous_metric_log>
+    <processors_profile_log>
+        <ttl>event_date + INTERVAL 7 DAY DELETE</ttl>
+    </processors_profile_log>
+    <query_views_log>
+        <ttl>event_date + INTERVAL 7 DAY DELETE</ttl>
+    </query_views_log>
+    <query_metric_log>
+        <ttl>event_date + INTERVAL 7 DAY DELETE</ttl>
+    </query_metric_log>
+    <latency_log>
+        <ttl>event_date + INTERVAL 7 DAY DELETE</ttl>
+    </latency_log>
+    <error_log>
+        <ttl>event_date + INTERVAL 7 DAY DELETE</ttl>
+    </error_log>
 
     <!-- Was logging ~15M Debug/Trace rows per day. Warnings and errors only. -->
     <text_log>
         <level>warning</level>
         <ttl>event_date + INTERVAL 7 DAY DELETE</ttl>
     </text_log>
+
+    <!-- Server-level memory profiler was the main trace_log writer
+         (Memory/MemoryPeak samples). Off: SigNoz never reads it. -->
+    <total_memory_tracker_sample_probability>0</total_memory_tracker_sample_probability>
 </clickhouse>
