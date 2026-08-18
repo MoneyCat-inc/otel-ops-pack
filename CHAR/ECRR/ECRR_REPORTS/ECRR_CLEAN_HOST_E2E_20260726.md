@@ -61,5 +61,5 @@ Phase splits: P1 0.44 ┬╖ P2 6.18 ┬╖ P3 0.39 ┬╖ P4 1.67 min.
 
 - Gate: PASS
 - Scope: Structural normalization only.
-- Evidence Reference: artifacts/ecrr-compliance-metrics.json.
+- Evidence Reference: ECRR processor run 2026-08-18, 389/389 gated (PR #571).
 - Guardrail: Append-only; original report body unchanged.

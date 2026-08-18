@@ -47,5 +47,5 @@ Chat/review diagnosed merge-loop vs collector firehose. Cursor{Implementer} trun
 
 - Gate: PASS
 - Scope: Structural normalization only.
-- Evidence Reference: artifacts/ecrr-compliance-metrics.json.
+- Evidence Reference: ECRR processor run 2026-08-18, 389/389 gated (PR #571).
 - Guardrail: Append-only; original report body unchanged.

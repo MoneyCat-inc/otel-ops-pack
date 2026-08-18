@@ -71,5 +71,5 @@ Phase splits: P1 clone 0.3 min · P2 SigNoz 6.9 min (+ ~19 min Docker engine out
 
 - Gate: PASS
 - Scope: Structural normalization only.
-- Evidence Reference: artifacts/ecrr-compliance-metrics.json.
+- Evidence Reference: ECRR processor run 2026-08-18, 389/389 gated (PR #571).
 - Guardrail: Append-only; original report body unchanged.
