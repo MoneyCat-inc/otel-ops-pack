@@ -64,7 +64,7 @@ jobs:
         run: pwsh -File BRAV/SCPT/check-otel-ports-drift.ps1
 
       - name: Lint workflow (actionlint)
-        uses: rhysd/actionlint@v1.7.4
+        uses: rhysd/actionlint@v1.7.12
         continue-on-error: true
 
       - name: Setup Node
