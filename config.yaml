@@ -95,11 +95,19 @@ exporters:
       enabled: true
       initial_interval: 100ms
       max_interval: 5s
-      max_elapsed_time: 30s
+      # 0 = retry until delivered. The former 30s cap silently dropped batches
+      # during any backend outage longer than 30s (observed 2026-08-18: SigNoz
+      # down for hours, ~7.4k log records lost after retries were exhausted).
+      # The file_storage-backed queue below holds data across outages/restarts.
+      max_elapsed_time: 0
     sending_queue:
       enabled: true
       num_consumers: 8
-      queue_size: 2048
+      # Sized for multi-hour outages: items are batches (batch/logs flushes at
+      # 200ms), so worst-case ~5 batches/s sustained ≈ 5.5h at 100k; at the
+      # observed ~1 log/s trickle this covers days. Disk-backed via file_storage
+      # (C:\ProgramData\Otelcol\FileStorage), so RAM impact is bookkeeping only.
+      queue_size: 100000
       storage: file_storage
 
 service:

@@ -68,7 +68,11 @@ exporters:
       enabled: true
       initial_interval: 5s
       max_interval: 30s
-      max_elapsed_time: 300s
+      # 0 = retry until delivered; a finite cap drops data once retries exhaust
+      # (2026-08-18 incident: 30s cap in the canonical config lost ~7.4k log
+      # records during a multi-hour SigNoz outage). Pair with a file_storage
+      # persistent sending_queue as in the canonical C:\otel\config.yaml.
+      max_elapsed_time: 0
 
   # Debug exporter (replaces removed `logging` exporter; otelcol-contrib ≥0.111)
   debug:
