@@ -7,7 +7,7 @@ settings:
 overrides:
   protobufjs: '>=8.0.1'
   fast-xml-parser: '>=5.3.4'
-  '@atproto/api': 0.20.39
+  '@atproto/api': 0.20.41
   find-my-way: '>=9.7.0'
   fast-json-patch: '>=3.1.1'
   minimatch: '>=3.1.4'
@@ -28,8 +28,8 @@ importers:
   .:
     dependencies:
       '@atproto/api':
-        specifier: 0.20.39
-        version: 0.20.39
+        specifier: 0.20.41
+        version: 0.20.41
       '@aws-sdk/client-bedrock-runtime':
         specifier: ^3.1111.0
         version: 3.1111.0
@@ -202,8 +202,8 @@ importers:
 
 packages:
 
-  '@atproto/api@0.20.39':
-    resolution: {integrity: sha512-FRjwAmYe0kKlWsAe8IvfbmAAKyjpXnl2NV67vWEEjux0FwIEIG6JbOo6YkD5tjK2xjL0Daa429R0E8phmxRrrQ==}
+  '@atproto/api@0.20.41':
+    resolution: {integrity: sha512-qNgnB8VE9z9DMQkP3twlwNeIlmosfcmGVAkACqDpArvlUmtlOiXVX1t6xhOC3AjznzJvXxdXJcPmlPIQiGMRRg==}
     engines: {node: '>=22'}
 
   '@atproto/common-web@0.5.9':
@@ -5309,7 +5309,7 @@ packages:
 
 snapshots:
 
-  '@atproto/api@0.20.39':
+  '@atproto/api@0.20.41':
     dependencies:
       '@atproto/common-web': 0.5.9
       '@atproto/lexicon': 0.7.11
