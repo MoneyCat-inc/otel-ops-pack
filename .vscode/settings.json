@@ -59,5 +59,10 @@
   "git.ignoreLimitWarning": true,
 
   // Prefer PowerShell in integrated terminals (repo is PowerShell-heavy)
-  "terminal.integrated.defaultProfile.windows": "PowerShell"
+  "terminal.integrated.defaultProfile.windows": "PowerShell",
+
+  // Cursor/VS Code npm task detection wraps openTextDocument failures as
+  // "failed to parse …/package.json" even when the JSON is valid (large
+  // workspace race). Scripts still run via `pnpm run …` in the terminal.
+  "npm.autoDetect": "off"
 }

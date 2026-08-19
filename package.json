@@ -8,6 +8,8 @@
     "build": "next build --webpack",
     "start": "next start",
     "lint": "next lint",
+    "test": "jest",
+    "test:pester": "pwsh -NoProfile -Command \"Invoke-Pester -Path ALFA/TEST/unit/Hygiene.Tests.ps1,ALFA/TEST/unit/GateVerification.tests.ps1 -Output Detailed\"",
     "emit": "node scripts/emit-simple-trace.mjs",
     "emit:full": "tsx scripts/emit-synthetic-span.ts",
     "emit:enhanced": "tsx scripts/emit-synthetic-enhanced.ts",
