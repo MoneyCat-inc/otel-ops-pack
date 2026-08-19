@@ -1,0 +1,73 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://otel-ops-pack.local/schemas/gate_verification.schema.json",
+  "title": "Gate verification artifact",
+  "description": "Contract for out/gate_verification.json produced by BRAV/SCPT/verify-pipeline.ps1",
+  "type": "object",
+  "required": [
+    "timestamp_utc",
+    "service_name",
+    "gate_id",
+    "steps",
+    "gate_checks",
+    "outcome",
+    "exit_code"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "timestamp_utc": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 UTC timestamp when verification completed"
+    },
+    "service_name": { "type": "string", "minLength": 1 },
+    "gate_id": { "type": "string", "minLength": 1 },
+    "steps": {
+      "type": "object",
+      "required": ["canary_send"],
+      "additionalProperties": true,
+      "properties": {
+        "quick_monitor": { "type": "string" },
+        "canary_send": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "exit_code": { "type": "integer" },
+            "trace_id": { "type": ["string", "null"] },
+            "canary_id": { "type": ["string", "null"] },
+            "api_confirmed": { "type": "boolean" },
+            "api_reason": { "type": ["string", "null"] },
+            "api_mode": { "type": ["string", "null"] },
+            "ingest_latency_ms": { "type": ["integer", "null"] },
+            "log_confirmed": { "type": "boolean" },
+            "status": { "type": "string" }
+          }
+        }
+      }
+    },
+    "gate_checks": {
+      "type": "object",
+      "required": [
+        "collector_service_running",
+        "otlp_reachable",
+        "span_rate_nonzero"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "collector_service_running": { "type": "boolean" },
+        "otlp_reachable": { "type": "boolean" },
+        "span_rate_nonzero": { "type": "boolean" },
+        "export_drops_zero": { "type": "boolean" },
+        "error_ratio_under_5pct": { "type": "boolean" }
+      }
+    },
+    "outcome": {
+      "type": "string",
+      "enum": ["OK", "WARN", "FAIL"]
+    },
+    "exit_code": {
+      "type": "integer",
+      "enum": [0, 1, 2]
+    }
+  }
+}

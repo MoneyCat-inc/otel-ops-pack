@@ -58,10 +58,12 @@ export const ConsentUpdateSchema = z.object({
 );
 
 export const EngagementProfileSchema = z.object({
-  streakDays: z.number().int().min(0).max(365),
+  streakDays: z.number().int().min(0, 'streakDays must be >= 0').max(365, 'streakDays cannot exceed 365').optional(),
   lastPracticeAt: z.string().datetime().optional(),
   reducedMotion: z.boolean().optional(),
-  theme: z.enum(['light', 'dark', 'auto']).optional(),
+  theme: z.enum(['light', 'dark', 'auto'], {
+    message: 'theme must be light, dark, or auto',
+  }).optional(),
   preferredLanguage: z.string().length(2).optional(), // ISO 639-1
 });
 
@@ -84,33 +86,106 @@ export const EventKindSchema = z.enum([
   'feature_flag_toggle',
 ]);
 
-export const EventPropsSchema = z.record(
-  z.string(),
-  z.union([z.string(), z.number(), z.boolean()])
-).refine(
-  (props) => Object.keys(props).length <= 10,
-  { message: 'Event properties cannot exceed 10 fields' }
-).refine(
-  (props) => {
-    // Ensure no PII in props
-    const piiFields = ['email', 'name', 'phone', 'address', 'ssn', 'ip'];
-    return !Object.keys(props).some(key => 
-      piiFields.some(pii => key.toLowerCase().includes(pii))
-    );
-  },
-  { message: 'Event properties cannot contain PII' }
-);
+const AUDIO_KEY_TOKENS = ['audio', 'voice', 'speech'] as const;
+
+const PII_KEY_TOKENS = [
+  'email',
+  'name',
+  'phone',
+  'address',
+  'ssn',
+  'socialsecurity',
+  'credit',
+  'birth',
+  'dob',
+  'ipv4',
+  'ipv6',
+  'ipaddress',
+  'geo',
+  'latitude',
+  'longitude',
+  'coordinate',
+  'location',
+  'country',
+  'region',
+  'state',
+  'city',
+  'zipcode',
+  'zip',
+  'postal',
+  'networklocation',
+] as const;
+
+function normalizePropKey(key: string): string {
+  return key.toLowerCase().replace(/[^a-z0-9]/g, '');
+}
+
+function isAudioPropKey(normalized: string): boolean {
+  return AUDIO_KEY_TOKENS.some((token) => normalized.includes(token));
+}
+
+function isPiiPropKey(normalized: string): boolean {
+  if (normalized === 'ip') return true;
+  return PII_KEY_TOKENS.some((token) => normalized.includes(token));
+}
+
+export const EventPropsSchema = z.record(z.string(), z.any()).superRefine((props, ctx) => {
+  const keys = Object.keys(props);
+  if (keys.length > 10) {
+    ctx.addIssue({
+      code: 'custom',
+      message: 'Event properties cannot exceed 10 fields',
+    });
+  }
+
+  for (const key of keys) {
+    const normalized = normalizePropKey(key);
+    if (isAudioPropKey(normalized)) {
+      ctx.addIssue({
+        code: 'custom',
+        message: `Event properties cannot contain audio data (${key})`,
+      });
+      continue;
+    }
+    if (isPiiPropKey(normalized)) {
+      ctx.addIssue({
+        code: 'custom',
+        message: `Event properties cannot contain PII (${key})`,
+      });
+      continue;
+    }
+    const value = props[key];
+    if (
+      typeof value !== 'string' &&
+      typeof value !== 'number' &&
+      typeof value !== 'boolean'
+    ) {
+      ctx.addIssue({
+        code: 'custom',
+        message: `Event property ${key} must be string, number, or boolean`,
+      });
+    }
+  }
+});
 
 export const EventSchema = z.object({
   id: z.string().optional(), // Client can provide or server generates
   ts: z.number().int().positive().optional(), // Unix timestamp
   kind: EventKindSchema,
-  props: EventPropsSchema,
+  props: EventPropsSchema.optional(),
   schema: z.literal('v1').optional(),
+}).superRefine((event, ctx) => {
+  if (event.props === undefined) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['props'],
+      message: 'props is required',
+    });
+  }
 });
 
 export const EventsBatchSchema = z.object({
-  events: z.array(EventSchema).min(1).max(50), // Batch size limit
+  events: z.array(EventSchema).min(1).max(50, 'Batch cannot exceed 50 events'),
 }).refine(
   (data) => {
     // Ensure batch doesn't exceed rate limits

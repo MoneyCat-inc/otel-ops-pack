@@ -2,15 +2,23 @@ import type { Config } from 'jest';
 
 const config: Config = {
   testEnvironment: 'node',
-  roots: ['<rootDir>/tests/tetragrammaton/__tests__'],
-  transform: {
-    '^.+\\.(ts|tsx)$': ['ts-jest', { tsconfig: 'tests/tetragrammaton/tsconfig.json' }],
-  },
+  injectGlobals: true,
+  roots: ['<rootDir>/ALFA/TEST/unit'],
+  testMatch: ['**/*.test.ts'],
+  testPathIgnorePatterns: [
+    '/node_modules/',
+    '/\\.next/',
+    'memx\\.normalize\\.test\\.ts',
+  ],
+  modulePathIgnorePatterns: ['<rootDir>/.next/'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'json'],
-  moduleNameMapper: {
-    '^@tetragrammaton/(.*)$': '<rootDir>/tests/tetragrammaton/src/$1',
+  transform: {
+    '^.+\\.tsx?$': '<rootDir>/jest-ts-transform.cjs',
   },
-  collectCoverageFrom: ['tests/tetragrammaton/src/**/*.{ts,tsx}'],
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/ALFA/LIBS/$1',
+    '^@tetragrammaton/(.*)$': '<rootDir>/ALFA/TEST/unit/tetragrammaton/src/$1',
+  },
 };
 
 export default config;
