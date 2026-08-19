@@ -6,7 +6,7 @@ Describe "Gate verification artifact" {
     . (Join-Path $PSScriptRoot '..\helpers\RepoRoot.ps1')
     $script:root = Get-OtelRepoRoot
     $script:artifact = Join-Path $script:root 'out\gate_verification.json'
-    $script:schema = Join-Path $script:root 'schemas\gate_verification.schema.json'
+    $script:schema = Join-Path $script:root 'schema\gate_verification.schema.json'
     $script:csvPath = Join-Path $script:root 'out\gate_verification_trend.csv'
   }
 

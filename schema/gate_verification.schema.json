@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://otel-ops-pack.local/schemas/gate_verification.schema.json",
+  "$id": "https://otel-ops-pack.local/schema/gate_verification.schema.json",
   "title": "Gate verification artifact",
   "description": "Contract for out/gate_verification.json produced by BRAV/SCPT/verify-pipeline.ps1",
   "type": "object",
