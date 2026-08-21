@@ -85,6 +85,7 @@
     "@prisma/adapter-pg": "^7.9.1",
     "@prisma/client": "^7.9.1",
     "@types/sqlite3": "^5.1.0",
+    "better-sqlite3": "^9.6.0",
     "butterchurn": "^2.6.7",
     "butterchurn-presets": "^2.4.7",
     "express": "^5.2.1",
