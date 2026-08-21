@@ -62,7 +62,7 @@ and `%LOCALAPPDATA%\docker-secrets-engine\`, crash-looping Docker Desktop on res
 | Control | Where | Notes |
 |---|---|---|
 | ClickHouse system-log TTLs, `text_log` at warning, memory sampler off | `clickhouse-system-logs-config.xml`, mounted via `docker-compose.yml` | Apply: `docker compose -p otel up -d --force-recreate signoz-clickhouse` |
-| Weekly prune + fstrim, warn at 200 GB | `scripts/windows/docker-weekly-trim.ps1` | Registered: `OTel-Docker-Weekly-Trim` Mondays 09:00. Re-register: `pwsh -File scripts/windows/docker-weekly-trim.ps1 -Register`. Logs to `artifacts/docker-trim-log.txt` |
+| Weekly prune + fstrim, warn at 200 GB | `scripts/windows/docker-weekly-trim.ps1` | Registered: `OTel-Docker-Weekly-Trim` Mondays 09:00. Re-register: `pwsh -File scripts/windows/docker-weekly-trim.ps1 -Register`. Logs to `logs/docker-trim.log` (gitignored; 2026-08-21 baseline frozen at `artifacts/docker-trim-log.txt`) |
 | Offline compact (elevated) | `scripts/shrink-docker-vhdx.ps1` | Run when the weekly log warns (VHDX > 200 GB). `-SkipPrune -Force` if guest data is already small. |
 
 Notes on hard caps (checked 2026-08-18): this Docker Desktop on the WSL2 backend exposes **no
