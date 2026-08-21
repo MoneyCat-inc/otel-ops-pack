@@ -9,19 +9,21 @@
        returned to the VHDX layer. With sparse mode enabled on the VHDX this
        shrinks the host file immediately; without it, it keeps the file from
        growing past real usage and makes the next offline compact effective.
-    3. Appends before/after sizes to artifacts/docker-trim-log.txt.
+    3. Appends before/after sizes to logs/docker-trim.log (gitignored; the
+       2026-08-21 baseline is frozen in git at artifacts/docker-trim-log.txt).
 
     Full offline compaction (elevated) remains scripts/shrink-docker-vhdx.ps1.
 .PARAMETER Register
     Register a weekly scheduled task (Mon 09:00, current user) and exit.
 .PARAMETER LogPath
-    Log file (default: artifacts/docker-trim-log.txt under the repo root).
+    Log file (default: logs/docker-trim.log under the repo root; logs/ is
+    gitignored so weekly appends never dirty the working tree).
 #>
 
 [CmdletBinding()]
 param(
     [switch]$Register,
-    [string]$LogPath = (Join-Path (Split-Path (Split-Path $PSScriptRoot -Parent) -Parent) 'artifacts\docker-trim-log.txt')
+    [string]$LogPath = (Join-Path (Split-Path (Split-Path $PSScriptRoot -Parent) -Parent) 'logs\docker-trim.log')
 )
 
 $ErrorActionPreference = 'Continue'
