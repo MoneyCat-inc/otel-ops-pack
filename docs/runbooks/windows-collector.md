@@ -39,8 +39,15 @@ hand in Oct 2025.
 
 **Pin moved to `v0.159.0` on 2026-08-23** (quarterly upgrade review, step 1; PR #591). Release notes
 carry no windowseventlog/stanza changes; the hostmetrics `cpu`-attribute opt-in landed in v0.157.0
-and was already absorbed at 0.158.0. Clean-host E2E re-run is the go/no-go — record the result
-here when it lands. Upstream note for the SigNoz side of the stack: as of SigNoz v0.138.0 the
+and was already absorbed at 0.158.0. Clean-host E2E re-run 2026-08-23 (`clean-host-e2e-20260823`, HEAD `710f1608`): **GREEN** —
+`verify-pipeline` exit 0 on 0.159.0. Caveats, stated plainly: the gate clock was **estimated at
+~5–7 min**, not measured (quick-monitor ~3.1 min + verify; Phase 0 6.69 min excluded), and
+`canary-test.ps1` was skipped because it hangs on first Event Log source registration — verify
+covers the canary path. Treat this as a functional GREEN, not a timing datapoint; the 6.86 min
+figure (2026-08-13) remains the last measured clock. Install path used was the MSI-only Phase 0
+script, **not** `startup-observability.ps1` — which means the version a clean host installs is
+decided by `scripts/windows/phase0-setup.ps1`, currently untracked, and the "pinned in one
+place" statement above no longer holds. Open item: track that script and make a single pin feed both. Upstream note for the SigNoz side of the stack: as of SigNoz v0.138.0 the
 bundled `deploy/` compose and `install.sh` are deprecated in favour of Foundry (`foundryctl`); our
 `docker-compose.yml` is hand-maintained, so the Helm chart `values.yaml` is now the pin authority
 (chart signoz-0.138.0: signoz-otel-collector v0.144.8, ClickHouse 25.12.5).
