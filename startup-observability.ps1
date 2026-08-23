@@ -143,8 +143,14 @@ function Install-WindowsCollector {
     
     # Collector version pin. Phase 1 decision (Roadmap 2026 H2): keep the Windows collector as
     # first-class and upgrade off 0.104.0 (July 2024). Bump deliberately, then re-run clean-host
-    # E2E — this is the only place the installed version is decided.
-    $CollectorVersion = "0.159.0"
+    # E2E. The pin lives in scripts/windows/collector-version.txt so this script and the Phase 0
+    # clean-host installer (scripts/windows/phase0-setup.ps1) cannot disagree; hygiene-fast
+    # asserts the Phase 0 embedded fallback matches. No silent default here: a missing pin file
+    # is a failure, not 'latest'.
+    $pinFile = Join-Path $PSScriptRoot 'scripts\windows\collector-version.txt'
+    if (-not (Test-Path $pinFile)) { throw "Collector pin file missing: $pinFile" }
+    $CollectorVersion = (Get-Content $pinFile -Raw).Trim()
+    if ($CollectorVersion -notmatch '^\d+\.\d+\.\d+$') { throw "Bad collector pin '$CollectorVersion' in $pinFile" }
 
     # MSIs are published by opentelemetry-collector-RELEASES, not -contrib, and the asset name
     # carries the version and uses x64/arm64 (not amd64). The previous URL got all three wrong and
