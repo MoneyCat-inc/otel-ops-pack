@@ -58,7 +58,15 @@
         <ttl>event_date + INTERVAL 7 DAY DELETE</ttl>
     </text_log>
 
-    <!-- Server-level memory profiler was the main trace_log writer
-         (Memory/MemoryPeak samples). Off: SigNoz never reads it. -->
+    <!-- Server-level memory profilers were the main trace_log writer (Memory/MemoryPeak
+         samples). SigNoz never reads them. There are TWO knobs and the 2026-08-18 fix only
+         zeroed the first:
+           total_memory_tracker_sample_probability - random allocation sampling
+           total_memory_profiler_step              - stack trace every N bytes of peak growth
+                                                     (default 4 MiB; this is what wrote
+                                                     ~45M Memory/MemoryPeak rows/day, ~2 GiB/day,
+                                                     observed 2026-08-23 audit)
+         Zero means disabled for both. -->
     <total_memory_tracker_sample_probability>0</total_memory_tracker_sample_probability>
+    <total_memory_profiler_step>0</total_memory_profiler_step>
 </clickhouse>
