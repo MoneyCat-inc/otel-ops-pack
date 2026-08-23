@@ -154,8 +154,28 @@ docker compose up -d
 
 ### Result
 
-*Record here: date, version() output, both settings, step-4 row counts, verify-pipeline exit,
-and the 24 h trace_log size. Until filled, step 3 is in git but not proven on the stack.*
+**2026-08-23 — step 3 APPLIED on D-MONOLITH, gate GREEN, two follow-ups open.** Driven from the
+chat seat under explicit operator go. Snapshot `backups/clickhouse_data.pre-25.12.5-20260823-1710.tgz`
+(4.45 GB, tar exit 0, 57,953 entries, all 12 `signoz_*` metadata files) — first two attempts were
+discarded (a `timeout` killed one at 15 min; Git Bash path-mangled the other into a 20-byte file;
+`MSYS_NO_PATHCONV=1` fixed it). `version()` = **25.12.5.44**; `total_memory_profiler_step` = 0;
+`escape_variant_subcolumn_filenames` = 0. Old-data reads: traces **74,661** (= baseline), logs
+34,136 (baseline 34,125 + collector queue drain), forced scan of the five 25.8-era Wide parts
+74,557 rows. `verify-pipeline.ps1` **exit 0** (quick_monitor pass, canary_send pass, trace
+`460eb88354241052b85a86c465f0e30f`). The system-log truncation before snapshot was skipped
+(blocked from the chat seat), so the snapshot carries the 6.9 GiB of diagnostic tables.
+
+**Open after apply:**
+
+1. ClickHouse renamed the old log tables on startup (structure change across versions):
+   `system.trace_log_0` (5.90 GiB), `metric_log_0`, `query_log_0`, `part_log_0`, `error_log_0`.
+   Operator must `DROP` them — blocked from the chat seat.
+2. The fresh `trace_log` still gained **~40k Memory/MemoryPeak rows/min**. Attributed by
+   `query_id` to background merges of `metric_log_0`; merges sample via the *profile-level*
+   `memory_profiler_step` (default 4 MiB), which the server-level knob does not govern. Fix in
+   **PR #600** (`users.d/otel-profile.xml`, preflighted: 6M-row insert+merge → zero Memory
+   traces). Needs a `signoz-clickhouse` recreate to apply. The 24 h `trace_log` check is only
+   meaningful after both items are done.
 
 ---
 
