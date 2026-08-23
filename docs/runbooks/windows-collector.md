@@ -37,6 +37,14 @@ The version is now pinned in one place, `startup-observability.ps1` (`$Collector
 #452 nothing in the repo decided the version at all; `0.104.0` was simply what had been installed by
 hand in Oct 2025.
 
+**Pin moved to `v0.159.0` on 2026-08-23** (quarterly upgrade review, step 1; PR #591). Release notes
+carry no windowseventlog/stanza changes; the hostmetrics `cpu`-attribute opt-in landed in v0.157.0
+and was already absorbed at 0.158.0. Clean-host E2E re-run is the go/no-go — record the result
+here when it lands. Upstream note for the SigNoz side of the stack: as of SigNoz v0.138.0 the
+bundled `deploy/` compose and `install.sh` are deprecated in favour of Foundry (`foundryctl`); our
+`docker-compose.yml` is hand-maintained, so the Helm chart `values.yaml` is now the pin authority
+(chart signoz-0.138.0: signoz-otel-collector v0.144.8, ClickHouse 25.12.5).
+
 ---
 
 ## 🚨 Canonical Configuration Path (CRITICAL)
@@ -83,7 +91,7 @@ pwsh -File .\scripts\windows\install-or-repair-otel-collector.ps1
 **Critical Requirements:**
 - ✅ Endpoint MUST be: `127.0.0.1:14317` (gRPC to localhost aggregator)
 - ❌ OLD/WRONG: `host.docker.internal:4318` (causes connection refused errors)
-- ✅ Collector Version: `v0.158.0` (upgraded and verified 2026-08-13; pinned in `startup-observability.ps1`)
+- ✅ Collector Version: `v0.159.0` pinned 2026-08-23 (0.158.0 verified 2026-08-13; pin lives in `startup-observability.ps1`)
 - ✅ Config Syntax: Standard receivers format (see compatibility notes below)
 
 **Drift Guard Health Check:**
