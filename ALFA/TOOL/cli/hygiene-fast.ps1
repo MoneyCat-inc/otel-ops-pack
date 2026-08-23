@@ -30,4 +30,20 @@ if (-not $canParseYaml) {
     }
 }
 
+# Collector pin consistency: the Phase 0 clean-host installer carries an embedded fallback because
+# it runs before the clone. It must equal the canonical pin or the clean-host gate tests a
+# different version than the one startup-observability.ps1 installs.
+$pinFile = 'scripts/windows/collector-version.txt'
+$phase0 = 'scripts/windows/phase0-setup.ps1'
+if ((Test-Path $pinFile) -and (Test-Path $phase0)) {
+    $canonical = (Get-Content $pinFile -Raw).Trim()
+    $m = [regex]::Match((Get-Content $phase0 -Raw), "\`$CollectorVersion = '([0-9.]+)'")
+    if (-not $m.Success) { Write-Error "No embedded collector pin found in $phase0"; exit 1 }
+    if ($m.Groups[1].Value -ne $canonical) {
+        Write-Error "Collector pin drift: $pinFile=$canonical but $phase0 fallback=$($m.Groups[1].Value)"
+        exit 1
+    }
+    Write-Host "  collector pin $canonical consistent" -ForegroundColor DarkGray
+}
+
 Write-Host "[Hygiene:fast] OK" -ForegroundColor Green
