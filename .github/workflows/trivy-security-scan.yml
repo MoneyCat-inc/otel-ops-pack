@@ -42,7 +42,7 @@ jobs:
       - name: Scan SigNoz image
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'signoz/signoz:v0.135.1'
+          image-ref: 'signoz/signoz:v0.138.0'
           format: 'table'
           severity: 'CRITICAL,HIGH'
           exit-code: '0'
@@ -50,7 +50,7 @@ jobs:
       - name: Scan OTel Collector image
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'signoz/signoz-otel-collector:v0.144.6'
+          image-ref: 'signoz/signoz-otel-collector:v0.144.8'
           format: 'table'
           severity: 'CRITICAL,HIGH'
           exit-code: '0'

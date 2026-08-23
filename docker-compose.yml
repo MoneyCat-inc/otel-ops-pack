@@ -76,7 +76,7 @@ services:
   # SIGNOZ CORE SERVICES
   # =============================================================================
   signoz:
-    image: signoz/signoz:v0.135.1
+    image: signoz/signoz:v0.138.0
     container_name: signoz
     restart: unless-stopped
     depends_on:
@@ -126,7 +126,7 @@ services:
   # TELEMETRYSTORE MIGRATOR (v0.113+ — replaces signoz-schema-migrator)
   # =============================================================================
   signoz-telemetrystore-migrator:
-    image: signoz/signoz-otel-collector:v0.144.6
+    image: signoz/signoz-otel-collector:v0.144.8
     container_name: signoz-telemetrystore-migrator
     depends_on:
       signoz-clickhouse:
@@ -165,7 +165,7 @@ services:
   # OBSERVABILITY SERVICES
   # =============================================================================
   signoz-otel-collector:
-    image: signoz/signoz-otel-collector:v0.144.6
+    image: signoz/signoz-otel-collector:v0.144.8
     container_name: signoz-otel-collector
     restart: unless-stopped
     depends_on:

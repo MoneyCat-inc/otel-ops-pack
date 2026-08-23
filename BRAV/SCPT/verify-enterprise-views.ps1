@@ -64,7 +64,11 @@ $expectedViews = @(
 )
 
 # Try to find Saved Views endpoint
+# v2 first (SigNoz >= 0.137); v1 kept as fallback while upstream still serves it. A non-existent
+# /api/v2 path on older SigNoz returns index.html with HTTP 200, so a successful call is not
+# enough - the response must look like a JSON list or a {data: [...]} envelope.
 $candidates = @(
+  "/api/v2/saved_views",
   "/api/v1/saved-views",
   "/api/v1/explorer/saved-views",
   "/api/v1/views",
@@ -75,6 +79,8 @@ $viewsEndpoint = $null
 foreach ($p in $candidates) {
   try {
     $resp = Invoke-RestMethod -Method GET -Uri ($SigNozUrl.TrimEnd('/') + $p) -Headers (Hdr "k") -TimeoutSec 10
+    $looksJson = ($resp -is [array]) -or ($null -ne $resp.PSObject.Properties['data'])
+    if (-not $looksJson) { continue }
     $viewsEndpoint = $p
     break
   } catch { 

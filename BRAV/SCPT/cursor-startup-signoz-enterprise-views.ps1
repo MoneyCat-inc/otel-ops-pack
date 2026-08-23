@@ -242,7 +242,13 @@ Log "Defined $($Views.Count) enterprise views" "Gray" "INFO"
 Log "" "Gray"
 Log "Phase 2: CLEAN - API Discovery & Upsert" "Cyan" "INFO"
 
+# SigNoz >= 0.137 serves saved views at /api/v2/saved_views; /api/v1/explorer/views is deprecated
+# (still functional in 0.138). Try v2 first. NOTE: the v2 POST body differs (schemaVersion "v2",
+# displayName, validated queries) - the upsert below still speaks v1 and must be rewritten before
+# v1 is removed upstream. On pre-0.137 instances the v2 path returns the SPA's index.html with
+# HTTP 200, which is why discovery insists on a JSON array/data shape and not just a 2xx.
 $candidates = @(
+  "/api/v2/saved_views",
   "/api/v1/saved-views",
   "/api/v1/explorer/saved-views",
   "/api/v1/views",
