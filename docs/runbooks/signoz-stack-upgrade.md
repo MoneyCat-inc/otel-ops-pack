@@ -132,8 +132,8 @@ docker exec signoz-clickhouse clickhouse-client -q "SELECT name, value FROM syst
 docker exec signoz-clickhouse clickhouse-client -q "SELECT name, value FROM system.merge_tree_settings WHERE name='escape_variant_subcolumn_filenames'"  # 0
 
 # 4. Prove old data still reads - the compat pin exists for exactly this
-docker exec signoz-clickhouse clickhouse-client -q "SELECT count() FROM signoz_traces.signoz_index_v3 WHERE resource.'service.name' IS NOT NULL"
-docker exec signoz-clickhouse clickhouse-client -q "SELECT count() FROM signoz_logs.logs_v2 WHERE body_v2.message IS NOT NULL"
+docker exec signoz-clickhouse clickhouse-client -q "SELECT count() FROM signoz_traces.signoz_index_v3 WHERE resource.\`service.name\` IS NOT NULL"   # baseline 2026-08-23: 74661
+docker exec signoz-clickhouse clickhouse-client -q "SELECT count() FROM signoz_logs.logs_v2 WHERE body_v2.message IS NOT NULL"   # baseline 2026-08-23: 34125
 
 # 5. Gate
 pwsh -File BRAV/SCPT/verify-pipeline.ps1 -CanaryScriptPath synthetic/send_synthetic_otel_simple.py
