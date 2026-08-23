@@ -82,22 +82,82 @@ runs). UI/dashboard spot-check: operator to confirm saved view renders. Evidence
 
 ---
 
-## Step 3 (next, separate gate): ClickHouse 25.8 → 25.12.5
+## Step 3: ClickHouse 25.8 → 25.12.5 — PR #598
 
 Not a prerequisite for step 2 — the chart pin is pre-emptive (a future collector will require
 ≥ 25.12.5 for trace attributes as JSON). ClickHouse upgrades its on-disk format in place and does
-not guarantee downgrade, so the gate is:
+not guarantee downgrade; from 25.10 the default `String` serialization makes newly written parts
+unreadable by older versions. **The volume snapshot is the only rollback.**
 
-1. Snapshot the `clickhouse_data` volume (`docker run --rm -v otel_clickhouse_data:/from -v
-   ${PWD}/backups:/to alpine tar czf /to/clickhouse_data.tgz -C /from .`) — this is the rollback.
-2. Bump `clickhouse/clickhouse-server:25.8` → `25.12.5` in compose.
-3. Same restart carries the system-log profiler fix: add
-   `<total_memory_profiler_step>0</total_memory_profiler_step>` to
-   `clickhouse-system-logs-config.xml` (the 2026-08-18 fix zeroed
-   `total_memory_tracker_sample_probability`, which is the *random* sampler; the Memory/MemoryPeak
-   rows filling `system.trace_log` at ~2 GiB/day come from the *step* profiler).
-4. Gate as above, plus `SELECT table, formatReadableSize(sum(bytes_on_disk)) FROM system.parts
-   WHERE database='system' AND active GROUP BY table` 24 h later — trace_log must stop growing.
+What #598 changes besides the tag, and why:
+
+- **`clickhouse-mergetree-compat-config.xml` — `escape_variant_subcolumn_filenames=0`.**
+  ClickHouse 25.11 (#87300) renamed Variant subcolumn stream files inside Wide parts; it is a
+  listed backward-incompatible change for tables with Variant/Dynamic/JSON columns, and the
+  filename is derived from the table's current settings at read time rather than stored per part.
+  This stack has JSON columns on `signoz_logs.logs_v2` and `signoz_traces.signoz_index_v3`, with
+  Wide parts written on 25.8. Keeping the old naming is the changelog's prescribed remedy; the
+  SigNoz chart sets nothing for it. Only revisit on a fresh volume.
+- **`clickhouse-system-logs-config.xml` — `total_memory_profiler_step=0`.** The 2026-08-18 fix
+  zeroed `total_memory_tracker_sample_probability` (random allocation sampler). The
+  Memory/MemoryPeak rows that refilled `system.trace_log` to 5.88 GiB by 2026-08-23 (~2 GiB/day)
+  come from the *step* profiler. Both are now zero.
+
+Both files were preflighted on a throwaway 25.12.5 container: server starts, both settings read
+back as 0.
+
+### Apply (operator)
+
+```powershell
+# 0. Preconditions: stack healthy, step 2 PROVEN, C: headroom >= 3x clickhouse_data size
+docker compose ps
+docker system df -v | Select-String clickhouse_data
+
+# 1. Snapshot the ClickHouse volume - THIS IS THE ROLLBACK. Stop writers first so the snapshot
+#    is consistent; the collector's on-disk queue buffers telemetry while it is down.
+docker compose stop signoz-otel-collector signoz signoz-clickhouse
+New-Item -ItemType Directory -Force backups | Out-Null
+docker run --rm -v otel_clickhouse_data:/from -v "${PWD}/backups:/to" alpine `
+  tar czf ("/to/clickhouse_data.pre-25.12.5-" + (Get-Date -Format yyyyMMdd-HHmm) + ".tgz") -C /from .
+
+# 2. Pull and start. ClickHouse converts the on-disk format on first start; watch the log.
+docker compose pull signoz-clickhouse
+docker compose up -d
+docker compose logs signoz-clickhouse --tail 100     # no "Exception" / "CANNOT" lines; healthy
+docker compose ps
+
+# 3. Prove the settings landed on the real server, not just the preflight
+docker exec signoz-clickhouse clickhouse-client -q "SELECT version()"
+docker exec signoz-clickhouse clickhouse-client -q "SELECT name, value FROM system.server_settings WHERE name='total_memory_profiler_step'"          # 0
+docker exec signoz-clickhouse clickhouse-client -q "SELECT name, value FROM system.merge_tree_settings WHERE name='escape_variant_subcolumn_filenames'"  # 0
+
+# 4. Prove old data still reads - the compat pin exists for exactly this
+docker exec signoz-clickhouse clickhouse-client -q "SELECT count() FROM signoz_traces.signoz_index_v3 WHERE resource.\`service.name\` IS NOT NULL"   # baseline 2026-08-23: 74661
+docker exec signoz-clickhouse clickhouse-client -q "SELECT count() FROM signoz_logs.logs_v2 WHERE body_v2.message IS NOT NULL"   # baseline 2026-08-23: 34125
+
+# 5. Gate
+pwsh -File BRAV/SCPT/verify-pipeline.ps1 -CanaryScriptPath synthetic/send_synthetic_otel_simple.py
+
+# 6. 24 h later: trace_log must have stopped growing (was 5.88 GiB on 2026-08-23)
+docker exec signoz-clickhouse clickhouse-client -q "SELECT table, formatReadableSize(sum(bytes_on_disk)) FROM system.parts WHERE database='system' AND active GROUP BY table ORDER BY sum(bytes_on_disk) DESC LIMIT 5"
+```
+
+### Rollback
+
+```powershell
+docker compose stop signoz-otel-collector signoz signoz-clickhouse
+git checkout main -- docker-compose.yml clickhouse-system-logs-config.xml   # or revert #598
+docker run --rm -v otel_clickhouse_data:/to -v "${PWD}/backups:/from" alpine `
+  sh -c "rm -rf /to/* && tar xzf /from/clickhouse_data.pre-25.12.5-<stamp>.tgz -C /to"
+docker compose up -d
+```
+
+### Result
+
+*Record here: date, version() output, both settings, step-4 row counts, verify-pipeline exit,
+and the 24 h trace_log size. Until filled, step 3 is in git but not proven on the stack.*
+
+---
 
 **ClickHouse 26.x: deferred** until the SigNoz chart pins it. 26.1 removed codecs and the Lazy
 engine and changed `system.metric_log` modes; none of that is tested under SigNoz.
