@@ -38,7 +38,7 @@ services:
           memory: 256M
 
   signoz-clickhouse:
-    image: clickhouse/clickhouse-server:25.8
+    image: clickhouse/clickhouse-server:25.12.5
     container_name: signoz-clickhouse
     restart: unless-stopped
     depends_on:
@@ -52,6 +52,7 @@ services:
       - ./clickhouse-cluster-config.xml:/etc/clickhouse-server/config.d/signoz-cluster.xml:ro
       - ./clickhouse-zookeeper-config.xml:/etc/clickhouse-server/config.d/zookeeper.xml:ro
       - ./clickhouse-system-logs-config.xml:/etc/clickhouse-server/config.d/system-logs.xml:ro
+      - ./clickhouse-mergetree-compat-config.xml:/etc/clickhouse-server/config.d/mergetree-compat.xml:ro
     healthcheck:
       test: ["CMD", "wget", "--spider", "-q", "0.0.0.0:8123/ping"]
       interval: 15s
