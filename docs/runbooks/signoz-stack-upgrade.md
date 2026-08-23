@@ -70,8 +70,15 @@ saved-view migration.
 
 ### Result
 
-_Record here: date, `verify-pipeline` exit code, migrator exit, anything that did not go to plan.
-Until this line is filled in, step 2 is applied in git but not proven on the stack._
+**2026-08-23 — step 2 PROVEN on D-MONOLITH (daily host).** Metastore backup:
+`backups/signoz.db.pre-0.138.0-20260823-1614` (684 KB). `docker compose pull` +
+`up -d`: migrator **exit 0** (schema migrations finished, container Exited as expected);
+`signoz` **v0.138.0 healthy**; `signoz-otel-collector` **v0.144.8 healthy**; ClickHouse
+unchanged at **25.8** (step 3). Gate: `verify-pipeline.ps1` **exit 0** — SigNoz API
+health `ok`, version **v0.138.0**, canary trace **PINPOINT** confirmed
+(`fc81dc50a43d358ce8e1331eb5b49d5d`). Collector log scrape inconclusive (same as prior
+runs). UI/dashboard spot-check: operator to confirm saved view renders. Evidence:
+`out/evidence-20260823-151711Z.zip`.
 
 ---
 
