@@ -3,7 +3,7 @@ import type { Config } from 'jest';
 const config: Config = {
   testEnvironment: 'node',
   injectGlobals: true,
-  roots: ['<rootDir>/ALFA/TEST/unit'],
+  roots: ['<rootDir>/ALFA/TEST/unit', '<rootDir>/BRAV/SCPT/agent'],
   testMatch: ['**/*.test.ts'],
   testPathIgnorePatterns: [
     '/node_modules/',

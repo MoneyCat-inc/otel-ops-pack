@@ -251,7 +251,7 @@ export class SQLiteQueueDB {
       run.job_id,
       run.started_at,
       run.finished_at || null,
-      run.exit_code || null,
+      run.exit_code ?? null,
       run.stdout || null,
       run.stderr || null,
       run.metrics_json || null
