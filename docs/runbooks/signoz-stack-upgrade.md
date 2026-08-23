@@ -154,8 +154,8 @@ docker compose up -d
 
 ### Result
 
-_Record here: date, version() output, both settings, step-4 row counts, verify-pipeline exit,
-and the 24 h trace_log size. Until filled, step 3 is in git but not proven on the stack._
+*Record here: date, version() output, both settings, step-4 row counts, verify-pipeline exit,
+and the 24 h trace_log size. Until filled, step 3 is in git but not proven on the stack.*
 
 ---
 
