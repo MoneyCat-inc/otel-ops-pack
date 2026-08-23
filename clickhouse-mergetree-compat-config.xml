@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!--
+  MergeTree compatibility pins for the ClickHouse 25.8 -> 25.12.5 upgrade (quarterly review
+  2026-08-23, step 3).
+
+  ClickHouse 25.11 (PR #87300) changed how Variant subcolumn stream files are NAMED inside Wide
+  parts and lists it as a backward-incompatible change for existing tables with Variant/Dynamic/
+  JSON columns. Stream filenames are derived from the table's CURRENT settings at read time, not
+  recorded per part, so a Wide part written on 25.8 whose variant type names need escaping would
+  not be found after the upgrade. SigNoz's logs_v2 and signoz_index_v3 carry JSON columns and
+  this instance has Wide parts written on 25.8.
+
+  The changelog's own remedy: disable the new escaping to keep the old naming. We do not need
+  the bug it fixes (special characters in variant type names). Revisit only on a fresh volume.
+
+  Mounted by docker-compose.yml as /etc/clickhouse-server/config.d/mergetree-compat.xml.
+  Verify after upgrade:
+    SELECT value FROM system.merge_tree_settings WHERE name='escape_variant_subcolumn_filenames'
+  must return 0.
+-->
+<clickhouse>
+    <merge_tree>
+        <escape_variant_subcolumn_filenames>0</escape_variant_subcolumn_filenames>
+    </merge_tree>
+</clickhouse>
