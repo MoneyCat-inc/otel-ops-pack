@@ -144,7 +144,7 @@ function Install-WindowsCollector {
     # Collector version pin. Phase 1 decision (Roadmap 2026 H2): keep the Windows collector as
     # first-class and upgrade off 0.104.0 (July 2024). Bump deliberately, then re-run clean-host
     # E2E — this is the only place the installed version is decided.
-    $CollectorVersion = "0.158.0"
+    $CollectorVersion = "0.159.0"
 
     # MSIs are published by opentelemetry-collector-RELEASES, not -contrib, and the asset name
     # carries the version and uses x64/arm64 (not amd64). The previous URL got all three wrong and
