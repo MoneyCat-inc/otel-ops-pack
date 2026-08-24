@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!--
+  Default-profile settings for ClickHouse. Mounted by docker-compose.yml as
+  /etc/clickhouse-server/users.d/otel-profile.xml.
+
+  memory_profiler_step is a PROFILE-level setting (not a server setting) and it is what
+  background merges and every query inherit for memory sampling into system.trace_log. The
+  server-level total_memory_profiler_step (config.d/system-logs.xml) covers only the global
+  tracker. Observed after the 25.12.5 upgrade (2026-08-23): with the server knob at 0, merges of
+  the renamed system.metric_log_0 alone produced ~40,000 Memory/MemoryPeak rows per minute.
+  Zero disables it. SigNoz never reads these samples.
+-->
+<clickhouse>
+    <profiles>
+        <default>
+            <memory_profiler_step>0</memory_profiler_step>
+        </default>
+    </profiles>
+</clickhouse>
