@@ -154,7 +154,7 @@ docker compose up -d
 
 ### Result
 
-**2026-08-23 — step 3 APPLIED on D-MONOLITH, gate GREEN, two follow-ups open.** Driven from the
+**2026-08-23 — step 3 APPLIED on D-MONOLITH, gate GREEN.** Driven from the
 chat seat under explicit operator go. Snapshot `backups/clickhouse_data.pre-25.12.5-20260823-1710.tgz`
 (4.45 GB, tar exit 0, 57,953 entries, all 12 `signoz_*` metadata files) — first two attempts were
 discarded (a `timeout` killed one at 15 min; Git Bash path-mangled the other into a 20-byte file;
@@ -165,17 +165,16 @@ discarded (a `timeout` killed one at 15 min; Git Bash path-mangled the other int
 `460eb88354241052b85a86c465f0e30f`). The system-log truncation before snapshot was skipped
 (blocked from the chat seat), so the snapshot carries the 6.9 GiB of diagnostic tables.
 
-**Open after apply:**
+**2026-08-24 follow-up (chat seat, operator sequence):**
 
-1. ClickHouse renamed the old log tables on startup (structure change across versions):
-   `system.trace_log_0` (5.90 GiB), `metric_log_0`, `query_log_0`, `part_log_0`, `error_log_0`.
-   Operator must `DROP` them — blocked from the chat seat.
-2. The fresh `trace_log` still gained **~40k Memory/MemoryPeak rows/min**. Attributed by
-   `query_id` to background merges of `metric_log_0`; merges sample via the *profile-level*
-   `memory_profiler_step` (default 4 MiB), which the server-level knob does not govern. Fix in
-   **PR #600** (`users.d/otel-profile.xml`, preflighted: 6M-row insert+merge → zero Memory
-   traces). Needs a `signoz-clickhouse` recreate to apply. The 24 h `trace_log` check is only
-   meaningful after both items are done.
+1. Dropped renamed leftovers: `system.trace_log_0` (5.90 GiB), `metric_log_0`, `query_log_0`,
+   `part_log_0`, `error_log_0`. Confirming `SELECT` returns no `*_log_0` tables.
+2. Merged **PR #600**; `docker compose up -d signoz-clickhouse` recreated the container.
+   `memory_profiler_step` (profile) = 0; `otel-profile.xml` mounted under `users.d`.
+   Fresh `trace_log` still held ~57.5M Memory + 57.5M MemoryPeak rows (~2.40 GiB) written
+   *before* the profile pin. Post-recreate 25 s delta on those types: **0** new rows.
+
+**Still open:** 24 h `trace_log` size check — should be flat (no Memory growth) after this pin.
 
 ---
 
