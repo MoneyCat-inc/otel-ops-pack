@@ -69,4 +69,10 @@
          Zero means disabled for both. -->
     <total_memory_tracker_sample_probability>0</total_memory_tracker_sample_probability>
     <total_memory_profiler_step>0</total_memory_profiler_step>
+
+    <!-- ClickHouse 25.12 enables the server-wide thread profiler by default (10s period; it was
+         0/off on 25.8). Observed 2026-08-24: ~127k 'Real' rows per 5 min into system.trace_log
+         with query_id='' - the third profiler knob after the two above. SigNoz never reads it. -->
+    <global_profiler_real_time_period_ns>0</global_profiler_real_time_period_ns>
+    <global_profiler_cpu_time_period_ns>0</global_profiler_cpu_time_period_ns>
 </clickhouse>
