@@ -44,9 +44,7 @@ jobs:
         run: |
           mkdir -p artifacts/ecrr/gate
           echo '{"verdict":"PASS"}' > artifacts/ecrr/gate/perf-verdict.json
-      - uses: pnpm/action-setup@v3
-        with:
-          version: 10
+      - uses: pnpm/action-setup@v6
       - name: Install deps
         if: ${{ github.event_name != 'pull_request' }}
         run: pnpm install
@@ -93,9 +91,7 @@ jobs:
         run: |
           mkdir -p artifacts/ecrr/gate
           echo '{"verdict":"PASS"}' > artifacts/ecrr/gate/trace-verdict.json
-      - uses: pnpm/action-setup@v3
-        with:
-          version: 10
+      - uses: pnpm/action-setup@v6
       - name: Install deps
         if: ${{ github.event_name != 'pull_request' }}
         run: pnpm install
@@ -155,9 +151,7 @@ jobs:
         run: |
           mkdir -p artifacts/ecrr/site
           echo '{"links":"PASS","a11y":"PASS","csp":"PASS"}' > artifacts/ecrr/site/site-verdict.json
-      - uses: pnpm/action-setup@v3
-        with:
-          version: 10
+      - uses: pnpm/action-setup@v6
       - name: Install deps
         if: ${{ github.event_name != 'pull_request' }}
         run: pnpm install
