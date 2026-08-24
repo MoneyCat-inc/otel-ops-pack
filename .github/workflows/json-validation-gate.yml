@@ -39,7 +39,7 @@ jobs:
       # the npm lockfile desynced and `npm ci` refused to run. Removed in the
       # 2026-08-14 cleanup; this job now uses pnpm like the gate workflows do.
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
 
       - name: Setup Node.js
         uses: actions/setup-node@v7
