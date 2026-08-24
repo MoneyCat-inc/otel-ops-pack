@@ -53,6 +53,7 @@ services:
       - ./clickhouse-zookeeper-config.xml:/etc/clickhouse-server/config.d/zookeeper.xml:ro
       - ./clickhouse-system-logs-config.xml:/etc/clickhouse-server/config.d/system-logs.xml:ro
       - ./clickhouse-mergetree-compat-config.xml:/etc/clickhouse-server/config.d/mergetree-compat.xml:ro
+      - ./clickhouse-users-profile-config.xml:/etc/clickhouse-server/users.d/otel-profile.xml:ro
     healthcheck:
       test: ["CMD", "wget", "--spider", "-q", "0.0.0.0:8123/ping"]
       interval: 15s
