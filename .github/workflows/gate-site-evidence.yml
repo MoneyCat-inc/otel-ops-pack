@@ -44,6 +44,8 @@ jobs:
         run: |
           mkdir -p artifacts/ecrr/gate
           echo '{"verdict":"PASS"}' > artifacts/ecrr/gate/perf-verdict.json
+      # No 'version:' input here - action-setup v4+ errors if it is set while package.json
+      # declares packageManager (pnpm@x.y.z), which is the authoritative pin. Broke #604.
       - uses: pnpm/action-setup@v6
       - name: Install deps
         if: ${{ github.event_name != 'pull_request' }}
