@@ -207,7 +207,7 @@ jobs:
           SITE=$(cat out/site/site-verdict.json 2>/dev/null || echo '{"links":"HOLD","a11y":"HOLD","csp":"HOLD"}')
           echo "{\"gate\":{\"perf\":\"$PERF\",\"trace\":\"$TRACE\"},\"site\":$SITE}" > status/LATEST.json
           printf "# Gate & Site Evidence\n\n- Gate/perf: %s\n- Gate/trace: %s\n- Site: %s\n" "$PERF" "$TRACE" "$SITE" > status/LATEST.md
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with: { path: status }
       - id: deploy
         if: ${{ github.event_name != 'pull_request' }}
