@@ -1,0 +1,9 @@
+{
+  "run_id": "clean-host-e2e-20260823",
+  "date": "2026-08-23",
+  "verdict": "GREEN",
+  "verdict_detail": "functional GREEN - verify-pipeline exit 0 on clean guest; clock estimated ~5-7 min (unmeasured, transcript broken); canary-test skipped (hangs on first Event Log source registration)",
+  "collector": "0.159.0",
+  "head": "710f1608",
+  "recorded_by": "operator run 2026-08-23, seeded into freshness tracking 2026-08-25"
+}
