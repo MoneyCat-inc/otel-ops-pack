@@ -133,7 +133,7 @@ jobs:
       
       - name: 📤 Upload Executive Review
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: executive-review-${{ github.run_number }}
           path: |
@@ -145,7 +145,7 @@ jobs:
 
       - name: 📊 Upload Dashboard
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: executive-dashboard-${{ github.run_number }}
           path: docs/executive-dashboard.html

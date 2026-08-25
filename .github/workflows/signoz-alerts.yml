@@ -80,7 +80,7 @@ jobs:
 
       - name: Upload verification report (always)
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: signoz-completion-report
           path: docs/BossCat/signoz-completion-verification.json
