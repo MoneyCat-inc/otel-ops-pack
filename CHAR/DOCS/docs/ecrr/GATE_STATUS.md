@@ -1,5 +1,11 @@
 # 🐾 Current Gate Status
 
+> ## ARCHIVED — snapshot of 2025-10-08, not current status
+>
+> Pre-Pack-3B-split Resonai-era document; describes systems retired by Roadmap 2026 H2
+> (`docs/BossCat/ROADMAP_2026H2.md`, all phases closed 2026-08-14). Current authority:
+> `docs/PURPOSE.md`. Bannered in place 2026-08-25 (audit follow-up); not maintained.
+
 ![Gate Status](https://img.shields.io/badge/Gate%20Status-HOLD-red?style=for-the-badge)
 ![Health Score](https://img.shields.io/badge/Health%20Score-CHECK%20REQUIRED-orange?style=for-the-badge)
 

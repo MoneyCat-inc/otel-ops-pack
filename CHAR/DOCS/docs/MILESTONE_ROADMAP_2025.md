@@ -1,5 +1,11 @@
 # 🎯 Resonai Beta Stabilization Roadmap (2025)
 
+> ## ARCHIVED — snapshot of 2025-10, not current status
+>
+> Pre-Pack-3B-split Resonai-era document; describes systems retired by Roadmap 2026 H2
+> (`docs/BossCat/ROADMAP_2026H2.md`, all phases closed 2026-08-14). Current authority:
+> `docs/PURPOSE.md`. Bannered in place 2026-08-25 (audit follow-up); not maintained.
+
 ## Executive Summary
 
 Resonai is **beta-ready** with core flows, audio engine, and governance systems operational. This roadmap focuses on **calibration, validation, and safety** to prepare for controlled public beta expansion.
