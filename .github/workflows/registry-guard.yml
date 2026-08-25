@@ -121,7 +121,7 @@ jobs:
           Write-Host "   Validated: $($committed.total) workflows, all triggers match"
 
       - name: 📐 Install JSON schema validator
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: '3.12'
 
