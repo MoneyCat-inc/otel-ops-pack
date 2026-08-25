@@ -155,9 +155,31 @@ The proposal above is now fully executed by the machine operator, elevated, in t
 Remaining live set: the healthy exit-0 tasks, the social-maintenance trio (exit 2 = "due", by
 design), and the repointed cleanup.
 
+## Addendum (2026-08-25) — residual disposition (elevated, Cursor{Implementer})
+
+Re-inventory against the 08-17 executed set. Second-wave unregister list still **absent**
+(22+18). Four residuals cleared elevated:
+
+| Task | Why unregister |
+|---|---|
+| `SigNozCanaryRemediation` | Target script gone (`monitor-signoz-canary-remediate-wrapper.ps1`) |
+| `OTel-Test-Task` | 2025 echo one-shot writing `test-task-output.txt` |
+| `OTel Monitor Optimized Pipeline Hourly` | `PT1H` × `P7D` from 2025-09-24 — duration expired, no NextRun |
+| `BossCat-CH-trace-log-24h` | Spent one-shot; formal T+24h record already on disk |
+
+**Kept (disposition = keep, not repair):**
+
+| Task | Rationale |
+|---|---|
+| `OTel-Canary-ECRR` (PT5M) | Living verification set (second-wave); writes gitignored `artifacts/canary-ecrr-report.txt`; overlaps `otel_canary_10m` but is not a tracked-file dirty writer |
+| Resonai social trio (exit 2 = due) | Working signal; SOCM has no counterpart reminders — unregister would lose capability. Ownership stays here until SOCM absorbs them |
+| Watchdog / canary-10m / cleanup / docker-trim / wiring-weekly / boot-health | Healthy exit 0 |
+
+**Verified:** 10 project-owned tasks remain; **zero** point at a missing script.
+
 ## ECRR Gate
 
 - Gate: PASS
 - Scope: Structural normalization only.
-- Evidence Reference: ECRR processor run 2026-08-18, 389/389 gated (PR #571).
+- Evidence Reference: ECRR processor run 2026-08-18, 389/389 gated (PR #571); residual pass 2026-08-25.
 - Guardrail: Append-only; original report body unchanged.
