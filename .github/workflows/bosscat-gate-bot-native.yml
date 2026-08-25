@@ -208,7 +208,7 @@ jobs:
       
       - name: Upload Evidence
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: smoke-evidence
           path: |
@@ -227,7 +227,7 @@ jobs:
       
       - name: 📤 Upload Compose Logs (on failure)
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: signoz-compose-logs-${{ github.run_id }}
           path: artifacts/docker-debug/
@@ -284,7 +284,7 @@ jobs:
       
       - name: Upload k6 Results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: k6-results
           path: |

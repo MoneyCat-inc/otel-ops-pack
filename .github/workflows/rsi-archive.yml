@@ -16,7 +16,7 @@ jobs:
         run: |
           pwsh BRAV/SCPT/rsi-bench/bench-archive.ps1 -ArchQps 2.0 -ArchConcurrency 48 -Tasks 480 -TaskMs 800 -Tag "baseline-ci"
       - name: Upload RSI artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: rsi-arch-artifacts
           path: |
