@@ -213,4 +213,4 @@ jobs:
         with: { path: status }
       - id: deploy
         if: ${{ github.event_name != 'pull_request' }}
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
