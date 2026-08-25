@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
-          node-version: '20'
+          node-version: '22'
       - name: Propose candidate (conservative)
         run: |
           node BRAV/SCPT/rsi/propose-conservative.mjs > .agent/rsi-candidate.json
