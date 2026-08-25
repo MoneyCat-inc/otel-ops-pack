@@ -41,7 +41,7 @@ jobs:
 
       - name: Create ratchet PR (CI/ops labeled, NOT 'icf')
         if: steps.detect.outputs.mode == 'warn'
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v8
         with:
           branch: chore/icf-filename-enforce-20251019
           title: "ci: enforce ICF filename PR-bound reports (ratchet)"
