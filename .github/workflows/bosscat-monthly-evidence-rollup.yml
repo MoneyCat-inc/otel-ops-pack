@@ -35,6 +35,10 @@ jobs:
         uses: actions/checkout@v7
         with:
           fetch-depth: 0
+          # BOSSCAT_TOKEN, not github.token: main is protected (PRs only), so the rollup
+          # lands via a PR, and a PR opened by the default workflow token never triggers the
+          # required checks - it would hang unmergeable. A PAT-authored branch/PR runs CI.
+          token: ${{ secrets.BOSSCAT_TOKEN }}
 
       - name: Abort if kill-switch engaged
         id: kill
@@ -192,20 +196,27 @@ jobs:
           
           cat "${REPORT}"
 
-      - name: Commit evidence rollup
+      - name: Commit evidence rollup via PR
         if: steps.kill.outputs.killed != 'true' && steps.archive.outputs.files_archived > 0
         shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.BOSSCAT_TOKEN }}
         run: |
-          git config user.name "boss-cat[bot]"
-          git config user.email "boss-cat-bot@users.noreply.github.com"
-          
+          # main is protected (PRs only; verified live 2026-08-25 when a direct push was
+          # rejected with GH006), so the rollup lands through a branch + auto-merge PR.
           # This step runs only when files_archived > 0, so an empty commit here means the
           # archive was not actually produced - that is a failure, not a skip. No fallbacks:
-          # any git error must fail the job (a rollup that cannot fail is the defect this
-          # workflow had until 2026-08).
+          # any git or gh error must fail the job (a rollup that cannot fail is the defect
+          # this workflow had until 2026-08).
+          git config user.name "boss-cat[bot]"
+          git config user.email "boss-cat-bot@users.noreply.github.com"
+
+          MONTH=$(date -u +'%Y-%m')
+          BRANCH="evidence/rollup-${MONTH}"
+          git checkout -b "${BRANCH}"
           git add "${{ steps.archive.outputs.archive_path }}" "${{ steps.report.outputs.report_path }}"
           git diff --cached --quiet && { echo "::error::files_archived>0 but nothing staged"; exit 1; }
-          git commit -m "chore(evidence): monthly rollup $(date -u +'%Y-%m') [skip ci]
+          git commit -m "chore(evidence): monthly rollup ${MONTH}
 
           ECRR: Evidence archival
           
@@ -215,8 +226,10 @@ jobs:
           
           Actor: BossCat monthly rollup
           Status: Complete"
-          
-          git push
+          git push -u origin "${BRANCH}"
+
+          gh pr create --title "chore(evidence): monthly rollup ${MONTH}"             --body "Automated monthly evidence rollup: ${{ steps.archive.outputs.files_archived }} files, ${{ steps.archive.outputs.archive_size }}. Auto-merges on green."             --base main --head "${BRANCH}"
+          gh pr merge "${BRANCH}" --squash --auto
 
       - name: Upload rollup artifacts
         if: steps.kill.outputs.killed != 'true'
