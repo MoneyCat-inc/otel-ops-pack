@@ -1,8 +1,16 @@
-# KEEP -- Phase 0 workflow audit 2026-08-03: armed amber for EVIDENCE_REPO_TOKEN expiry 2026-10-22 (Phase 3 hard deadline)
+# KEEP -- Phase 0 workflow audit 2026-08-03: armed amber for FG PAT expiries (Phase 3 hard deadline)
 name: Evidence PAT Rotation Reminder
 
-# Amber reminder 14 days before EVIDENCE_REPO_TOKEN FG PAT expiry.
-# After rotating the PAT, update EXPIRES_ON below (safe failure: stale date → spurious amber).
+# Amber reminder 14 days before each fine-grained PAT expiry.
+# After rotating a PAT, update its `expires` date in the matrix below
+# (safe failure: stale date -> spurious amber).
+#
+# 2026-08-25: generalized to a matrix after BOSSCAT_TOKEN was found expired-in-place
+# (secret set 2025-10-04, dead by 2026-08-25, discovered only when a workflow first
+# tried to use it). Every long-lived PAT this repo depends on belongs in the matrix.
+# The BOSSCAT_LOG auto-append step was dropped: main is protected so its direct push
+# could never succeed; the issue is the alert, and the log line is part of the
+# operator's rotation checklist in that issue.
 
 on:
   schedule:
@@ -14,26 +22,37 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: write
   issues: write
 
 env:
-  EXPIRES_ON: '2026-10-22'
   AMBER_DAYS: '14'
 
 jobs:
   remind:
-    name: FG PAT amber check
+    name: amber check — ${{ matrix.secret }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - secret: EVIDENCE_REPO_TOKEN
+            expires: '2026-10-22'
+            scope: 'fine-grained PAT -> MoneyCat-inc/otel-ops-evidence, Contents R/W only'
+            mint: 'MoneyCat-inc / otel-ops-evidence / Contents R/W / 90d'
+            used_by: 'run-archiver.yml, evidence pushes to otel-ops-evidence'
+          - secret: BOSSCAT_TOKEN
+            expires: '2027-08-26'
+            scope: 'fine-grained PAT bosscat-rollup-otel-ops-pack -> MoneyCat-inc/otel-ops-pack, Contents R/W + Pull requests R/W'
+            mint: 'MoneyCat-inc / otel-ops-pack / Contents R/W + Pull requests R/W / <=1y'
+            used_by: 'bosscat-monthly-evidence-rollup.yml (branch + auto-merge PR)'
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v7
-
       - name: Evaluate window
         id: win
         shell: bash
+        env:
+          EXPIRES_ON: ${{ matrix.expires }}
         run: |
           set -euo pipefail
           expires="${EXPIRES_ON}"
@@ -56,23 +75,25 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
+            const secret = '${{ matrix.secret }}';
             const expires = '${{ steps.win.outputs.expires_on }}';
             const daysLeft = '${{ steps.win.outputs.days_left }}';
-            const title = `AMBER: EVIDENCE_REPO_TOKEN FG PAT expires ${expires}`;
+            const title = `AMBER: ${secret} FG PAT expires ${expires}`;
             const body = [
-              '## Evidence PAT rotation reminder',
+              '## PAT rotation reminder',
               '',
               `**Expires:** \`${expires}\` (${daysLeft} days from run date)`,
-              '**Secret:** `EVIDENCE_REPO_TOKEN` on `otel-ops-pack`',
-              '**Scope:** fine-grained PAT → `MoneyCat-inc/otel-ops-evidence` Contents R/W only',
+              `**Secret:** \`${secret}\` on \`otel-ops-pack\``,
+              '**Scope:** ${{ matrix.scope }}',
+              '**Used by:** ${{ matrix.used_by }}',
               '',
               '### Actions',
-              '1. Mint a new fine-grained PAT (MoneyCat-inc / otel-ops-evidence / Contents R/W / 90d).',
-              '2. Update repo secret `EVIDENCE_REPO_TOKEN`.',
-              '3. Update `EXPIRES_ON` in `.github/workflows/evidence-pat-rotation-reminder.yml`.',
-              '4. Append `[D2 FG ROTATE]` to `docs/BossCat/BOSSCAT_LOG.md` and close this issue.',
+              '1. Mint a new fine-grained PAT (${{ matrix.mint }}).',
+              `2. Update repo secret \`${secret}\` (gh secret set ${secret} --repo MoneyCat-inc/otel-ops-pack).`,
+              '3. Update the `expires` date for this secret in `.github/workflows/evidence-pat-rotation-reminder.yml`.',
+              '4. Append a `[FG PAT ROTATE]` line to `docs/BossCat/BOSSCAT_LOG.md` (docs PR) and close this issue.',
               '',
-              'Stale `EXPIRES_ON` after rotate causes a **spurious** amber (annoying, safe) — preferred over silent miss.',
+              'Stale `expires` after rotate causes a **spurious** amber (annoying, safe) — preferred over silent miss.',
             ].join('\n');
 
             const labels = ['security', 'rotation'];
@@ -83,7 +104,7 @@ jobs:
               labels: 'rotation',
               per_page: 50,
             });
-            const existing = issues.find((i) => i.title.startsWith('AMBER: EVIDENCE_REPO_TOKEN'));
+            const existing = issues.find((i) => i.title.startsWith(`AMBER: ${secret}`));
             if (existing) {
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
@@ -103,44 +124,13 @@ jobs:
               core.info(`Opened issue #${created.data.number}`);
             }
 
-      - name: Append BOSSCAT_LOG amber line
-        if: steps.win.outputs.amber == 'true'
-        shell: bash
-        run: |
-          set -euo pipefail
-          ts=$(date -u +%Y-%m-%dT%H:%M:%SZ)
-          line="- ${ts} — **[FG PAT AMBER]** EVIDENCE_REPO_TOKEN expires ${{ steps.win.outputs.expires_on }} (${{ steps.win.outputs.days_left }}d). Rotate FG PAT + update EXPIRES_ON in evidence-pat-rotation-reminder.yml. — **github-actions**"
-          # Insert after the heading block (first log bullet section)
-          if ! grep -q '\[FG PAT AMBER\].*'"${{ steps.win.outputs.expires_on }}" docs/BossCat/BOSSCAT_LOG.md; then
-            tmp=$(mktemp)
-            awk -v line="$line" '
-              BEGIN { done=0 }
-              /^# BOSSCAT_LOG/ { print; next }
-              /^<!--/ { print; next }
-              /^$/ && !done { print; print line; done=1; next }
-              { print }
-              END { if (!done) print line }
-            ' docs/BossCat/BOSSCAT_LOG.md > "$tmp"
-            mv "$tmp" docs/BossCat/BOSSCAT_LOG.md
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add docs/BossCat/BOSSCAT_LOG.md
-            # No "|| true": main is protected (PRs only), so a direct push here can never
-            # succeed and the fallbacks hid that. The log line is best-effort secondary to
-            # the issue alert above, but a broken step must say so, not pass green.
-            git commit -m "docs(bosscat): FG PAT amber reminder for ${{ steps.win.outputs.expires_on }} [skip ci]"
-            git push || { echo "::error::amber log-line push rejected (protected main) - the issue alert above is still the primary signal; convert this step to a PR flow or drop it"; exit 1; }
-          else
-            echo "Amber line for this expiry already present."
-          fi
-
       - name: Job summary
         if: always()
         run: |
           {
-            echo '### Evidence PAT Rotation Reminder'
+            echo '### PAT Rotation Reminder — ${{ matrix.secret }}'
             echo ''
-            echo "**EXPIRES_ON:** \`${{ env.EXPIRES_ON }}\`"
+            echo "**Expires:** \`${{ matrix.expires }}\`"
             echo "**Days left:** \`${{ steps.win.outputs.days_left }}\`"
             echo "**Amber:** \`${{ steps.win.outputs.amber }}\`"
           } >> "$GITHUB_STEP_SUMMARY"
