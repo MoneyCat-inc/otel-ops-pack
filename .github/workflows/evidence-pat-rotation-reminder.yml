@@ -125,8 +125,11 @@ jobs:
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add docs/BossCat/BOSSCAT_LOG.md
-            git commit -m "docs(bosscat): FG PAT amber reminder for ${{ steps.win.outputs.expires_on }} [skip ci]" || true
-            git push || true
+            # No "|| true": main is protected (PRs only), so a direct push here can never
+            # succeed and the fallbacks hid that. The log line is best-effort secondary to
+            # the issue alert above, but a broken step must say so, not pass green.
+            git commit -m "docs(bosscat): FG PAT amber reminder for ${{ steps.win.outputs.expires_on }} [skip ci]"
+            git push || { echo "::error::amber log-line push rejected (protected main) - the issue alert above is still the primary signal; convert this step to a PR flow or drop it"; exit 1; }
           else
             echo "Amber line for this expiry already present."
           fi
