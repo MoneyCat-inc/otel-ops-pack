@@ -83,7 +83,7 @@ jobs:
           pwsh -File BRAV/SCPT/sec-archiver/generate-security-index.ps1
       
       - name: Upload Security Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: security-archive-${{ github.run_number }}
@@ -96,7 +96,7 @@ jobs:
           retention-days: 30
       
       - name: Upload Security Evidence
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: security-evidence-${{ github.run_number }}
@@ -140,7 +140,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Upload Notifications Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: notifications-archive-${{ github.run_number }}
@@ -152,7 +152,7 @@ jobs:
           retention-days: 30
       
       - name: Upload Notifications Evidence
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: notifications-evidence-${{ github.run_number }}
