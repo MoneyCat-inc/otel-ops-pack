@@ -90,20 +90,41 @@ jobs:
           # Find files older than cutoff
           echo "🗜️ Creating archive of evidence older than ${CUTOFF_DAYS} days..."
           
-          # Create temporary file list
+          # Create temporary file list.
+          # Age comes from the FILENAME date (YYYYMMDD or YYYY-MM-DD), never mtime: a CI
+          # checkout stamps every file with checkout time, so "-mtime +N" matches nothing and
+          # this workflow archived zero files on every run while reporting success (found in
+          # the 2026-08-23 audit; the standing-cadence rule in ROADMAP_2026H2 already said
+          # "age from filename timestamp, not mtime"). Undated files are left alone.
           FILELIST=$(mktemp)
-          
-          # Find old snapshots (excluding .gitkeep)
-          find "${SNAPSHOT_DIR}" -type f -name "*.json" -mtime +${CUTOFF_DAYS} 2>/dev/null > "$FILELIST" || true
-          
-          # Find old ECRR reports (exclude LATEST files)
-          find "${ECRR_DIR}" -type f \( -name "*.md" -o -name "*.pdf" \) ! -name "*LATEST*" -mtime +${CUTOFF_DAYS} 2>/dev/null >> "$FILELIST" || true
-          
+
+          python3 - "$CUTOFF_DAYS" > "$FILELIST" <<'PYSEL'
+          import datetime, pathlib, re, sys
+          cutoff = datetime.date.today() - datetime.timedelta(days=int(sys.argv[1]))
+          pats = [re.compile(r'(20\d{2})-(\d{2})-(\d{2})'), re.compile(r'(20\d{2})(\d{2})(\d{2})')]
+          roots = [('docs/observability/snapshots', ('.json',)),
+                   ('CHAR/ECRR/ECRR_REPORTS', ('.md', '.pdf'))]
+          for root, exts in roots:
+              for f in sorted(pathlib.Path(root).rglob('*')):
+                  if not f.is_file() or f.suffix not in exts or 'LATEST' in f.name:
+                      continue
+                  for pat in pats:
+                      m = pat.search(f.name)
+                      if m:
+                          try:
+                              d = datetime.date(*map(int, m.groups()))
+                          except ValueError:
+                              break
+                          if d < cutoff:
+                              print(f)
+                          break
+          PYSEL
+
           FILE_COUNT=$(wc -l < "$FILELIST")
           
           if [ "$FILE_COUNT" -gt 0 ]; then
             echo "📦 Archiving ${FILE_COUNT} files..."
-            tar -czf "${ARCHIVE_PATH}" -T "$FILELIST" 2>/dev/null || echo "::warning::Archive creation had warnings"
+            tar -czf "${ARCHIVE_PATH}" -T "$FILELIST"
             
             # Optionally remove archived files to save space (commented out for safety)
             # while IFS= read -r file; do
@@ -178,7 +199,12 @@ jobs:
           git config user.name "boss-cat[bot]"
           git config user.email "boss-cat-bot@users.noreply.github.com"
           
-          git add "${{ steps.archive.outputs.archive_path }}" "${{ steps.report.outputs.report_path }}" || true
+          # This step runs only when files_archived > 0, so an empty commit here means the
+          # archive was not actually produced - that is a failure, not a skip. No fallbacks:
+          # any git error must fail the job (a rollup that cannot fail is the defect this
+          # workflow had until 2026-08).
+          git add "${{ steps.archive.outputs.archive_path }}" "${{ steps.report.outputs.report_path }}"
+          git diff --cached --quiet && { echo "::error::files_archived>0 but nothing staged"; exit 1; }
           git commit -m "chore(evidence): monthly rollup $(date -u +'%Y-%m') [skip ci]
 
           ECRR: Evidence archival
@@ -188,7 +214,7 @@ jobs:
           - Report: ${{ steps.report.outputs.report_path }}
           
           Actor: BossCat monthly rollup
-          Status: Complete" || echo "No changes to commit"
+          Status: Complete"
           
           git push
 
