@@ -16,6 +16,11 @@ if (-not (Test-Path $agents)) { throw "Missing canonical $agents" }
 New-Item -ItemType Directory -Path $outDir -Force | Out-Null
 
 $agentsText = Get-Content -Raw -Path $agents
+# Collector pin comes from the single canonical pin file (#594) - hardcoding it here is how
+# the steering doc served 0.104.0 for two upgrades after Phase 1 retired it.
+$pinFile = Join-Path $RepoRoot 'scripts\windows\collector-version.txt'
+if (-not (Test-Path $pinFile)) { throw "Missing collector pin file $pinFile" }
+$collectorPin = (Get-Content -Raw $pinFile).Trim()
 $generated = (Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ')
 $seatMatch = [regex]::Match($agentsText, '(?ms)^## Actor seats.*?(?=^## |\z)')
 $seatBlock = if ($seatMatch.Success) { $seatMatch.Value.Trim() } else { '(see AGENTS.md — seats section missing)' }
@@ -59,7 +64,7 @@ Generated: $generated
 | SigNoz OTLP (Docker) | $($otelPorts.SignozOtlpGrpc) gRPC / $($otelPorts.SignozOtlpHttp) HTTP |
 | Windows collector ingest | **$($otelPorts.IngestGrpc)** gRPC / **$($otelPorts.IngestHttp)** HTTP |
 | Collector -> SigNoz | localhost:$($otelPorts.SignozOtlpGrpc) |
-| Collector pin | otelcol-contrib **0.104.0** |
+| Collector pin | otelcol-contrib **$collectorPin** |
 
 Do **not** bind Windows collector ingest in the PlariumPlay range 5300-5319; use DELT/CONF/otel-ports.json.
 "@

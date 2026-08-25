@@ -39,15 +39,15 @@ Four seats (OEM D2, 2026-07-26) — do not route human mint/login work to the wr
   - See CHAR/DOCS/README.md
 
 ## Recurring maintenance
-- Patreon weekly upkeep (7-day cadence): docs/BossCat/PATREON_WEEKLY_MAINTENANCE.md
-  - Check: `pwsh -File scripts/patreon-weekly-reminder.ps1`
-- Ko-fi weekly upkeep (7-day cadence): docs/BossCat/KOFI_WEEKLY_MAINTENANCE.md
-  - Check: `pwsh -File scripts/kofi-weekly-reminder.ps1`
-- Bluesky weekly upkeep (7-day cadence): docs/BossCat/BSKY_WEEKLY_MAINTENANCE.md
-  - Check: `pwsh -File scripts/bsky-weekly-reminder.ps1`
-  - Engagement: docs/BossCat/BSKY_ENGAGEMENT_PLAYBOOK.md
-  - SkyFeed feeds (manual): docs/social/SKYFEED_SETUP_STATUS.md — `npm run social:skyfeed-wizard`
-- Cursor `sessionStart` hooks nudge agents when any of the above is overdue (`.cursor/hooks.json`)
+
+Social/monetization upkeep (Patreon, Ko-fi, Bluesky) belongs to the split-out **socm** repo
+(Pack 3B, 2026-07-24) and is out of scope here per `docs/PURPOSE.md` and Roadmap 2026 H2
+Phase 2. The weekly reminder scripts and `Resonai-*-Weekly-Maintenance` scheduled tasks that
+remain on the host are legacy (exiting rc=2 since 2026-08); their disposition is operator
+work tracked in `CHAR/ECRR/ECRR_REPORTS/ECRR_SCHEDULED_TASK_SECOND_WAVE_20260813.md`.
+
+This repo's own cadence (quarterly upgrade check, monthly evidence rollup, per-change ECRR,
+clean-host gate) is defined in `docs/PURPOSE.md`.
 
 ## Archives
 - Archived historical copy (not canonical): docs/BossCat/misc/AGENTS.md

@@ -1,5 +1,11 @@
 # 🗺️ Roadmap Status Summary
 
+> ## ARCHIVED — snapshot of 2025-10-01, not current status
+>
+> Pre-Pack-3B-split Resonai-era document; describes systems retired by Roadmap 2026 H2
+> (`docs/BossCat/ROADMAP_2026H2.md`, all phases closed 2026-08-14). Current authority:
+> `docs/PURPOSE.md`. Bannered in place 2026-08-25 (audit follow-up); not maintained.
+
 **Last Updated:** 01/10/2025, 20:11:31
 
 **Roadmap Version:** 1.0.0
