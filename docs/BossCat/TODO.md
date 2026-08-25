@@ -1,5 +1,13 @@
 # BossCat Pinned TODOs
 
+> ## ARCHIVED — content frozen October 2025; not a live queue
+>
+> These BossCat TODOs predate the four-seat model and the 2026 H2 roadmap; every open item
+> here was either completed or retired by Phase 0–4 closeout (2026-08-14). Current work is
+> tracked per-change via ECRR against `docs/PURPOSE.md`, not in this file.
+> Bannered 2026-08-25 (audit follow-up); not maintained.
+
+
 Purpose
 
 - Track downstream actions BossCat wants to execute when convenient.

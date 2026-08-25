@@ -1,5 +1,13 @@
 # 🐾 Gate Milestones Tracker
 
+> ## ARCHIVED — frozen at Gate #008, 2025-10-22; not current status
+>
+> Pre-Pack-3B Resonai-era gate tracker (hub.resonai.uk, Bluesky campaign). The gate log
+> continued through #031 and beyond — see `docs/GATE_STATUS_DASHBOARD.md` (archived index)
+> and `CHAR/ECRR/ECRR_REPORTS/` for the canonical trail. Current authority: `docs/PURPOSE.md`.
+> Bannered 2026-08-25 (audit follow-up); not maintained.
+
+
 **Project:** Cat Nap Control Room - OTel Observability Pipeline  
 **Last Updated:** 2025-10-22  
 **Current Gate:** #008 (APPROVED)
