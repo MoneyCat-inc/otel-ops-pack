@@ -75,7 +75,7 @@ jobs:
           mkdir -p artifacts/ecrr/gate
           test -s artifacts/ecrr/gate/k6-summary.json || echo '{}' > artifacts/ecrr/gate/k6-summary.json
           echo "{\"verdict\":\"${{ job.status == 'success' && 'PASS' || 'FAIL' }}\"}" > artifacts/ecrr/gate/perf-verdict.json
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: ecrr-gate-perf
@@ -137,7 +137,7 @@ jobs:
           mkdir -p artifacts/ecrr/gate
           docker logs otelcol --since=5m > artifacts/ecrr/gate/otelcol.log 2>&1 || true
           if grep -Eq "TracesExporter|ResourceSpans|Exporting|exporter/logging|Span #0" artifacts/ecrr/gate/otelcol.log; then echo '{"verdict":"PASS"}' > artifacts/ecrr/gate/trace-verdict.json; else echo '{"verdict":"HOLD"}' > artifacts/ecrr/gate/trace-verdict.json; fi
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: ecrr-gate-trace
@@ -183,7 +183,7 @@ jobs:
           (jq -e '.violations[]?|select(.impact=="critical" or .impact=="serious")' artifacts/ecrr/site/axe.json >/dev/null 2>&1) && A=HOLD || A=PASS
           C=$(jq -r '.verdict' artifacts/ecrr/site/csp.json 2>/dev/null || echo HOLD)
           echo "{\"links\":\"$L\",\"a11y\":\"$A\",\"csp\":\"$C\"}" > artifacts/ecrr/site/site-verdict.json
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: ecrr-site

@@ -19,7 +19,7 @@ jobs:
         run: |
           pwsh BRAV/SCPT/rsi/evaluate.ps1 -Candidate .agent/rsi-candidate.json -DryRun
       - name: Upload RSI artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: rsi-artifacts
           path: |

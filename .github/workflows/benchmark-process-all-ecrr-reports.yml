@@ -27,7 +27,7 @@ jobs:
           -ReportCount 300 -Iterations 3 -IncludeAutoParallel
 
       - name: Upload benchmark artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: benchmark-process-all-ecrr-reports
           path: artifacts/benchmarks/process-all-ecrr-reports/**
