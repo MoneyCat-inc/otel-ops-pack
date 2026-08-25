@@ -41,7 +41,7 @@ jobs:
 
       - name: 📝 Create PR if drift detected
         if: steps.drift.outputs.drift == 'true'
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           title: "chore(registry): nightly refresh of workflows.json"
