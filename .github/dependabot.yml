@@ -9,3 +9,12 @@ updates:
   - package-ecosystem: "npm"
     directory: "/"
     schedule: { interval: "daily" }
+  # Nested npm lockfiles outside the root workspace. Found in the 2026-08-23 audit: 10 of the
+  # 12 open high-severity Dependabot alerts lived in these two and could never get PRs because
+  # only "/" was watched. Weekly is enough - they are small tool dirs, not the app.
+  - package-ecosystem: "npm"
+    directory: "/BRAV/SCPT/run-archiver"
+    schedule: { interval: "weekly" }
+  - package-ecosystem: "npm"
+    directory: "/BRAV/INFR/deployment-pipeline"
+    schedule: { interval: "weekly" }
