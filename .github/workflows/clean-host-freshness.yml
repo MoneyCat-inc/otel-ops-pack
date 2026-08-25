@@ -1,0 +1,106 @@
+# KEEP -- clean-host E2E freshness watch (design call 2026-08-25: option B, PURPOSE.md standing proof)
+name: Clean-Host E2E Freshness
+
+# The clean-host gate is "the one thing that must keep working" (docs/PURPOSE.md), but it can
+# only run on an operator-driven Hyper-V VM - GitHub-hosted runners cannot host it (Windows
+# runners cannot run the Linux SigNoz containers; Linux runners cannot exercise the MSI path).
+# So the automation watches FRESHNESS instead of running the gate: when the last recorded
+# result in CHAR/EVID/clean-host/latest.json is older than the cadence (or not GREEN), it
+# opens an amber issue. Skipping the gate stays possible; skipping it silently does not.
+# Cadence: 31 days for now; flip CADENCE_DAYS to 92 once the drill is refined (decision
+# 2026-08-25, operator).
+
+on:
+  schedule:
+    - cron: '15 12 * * 1' # Mondays 12:15 UTC (offset from the PAT watcher)
+  workflow_dispatch:
+
+concurrency:
+  group: clean-host-freshness
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  CADENCE_DAYS: '31'
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Evaluate freshness
+        id: fresh
+        shell: bash
+        run: |
+          set -euo pipefail
+          f=CHAR/EVID/clean-host/latest.json
+          [ -f "$f" ] || { echo "::error::$f missing - freshness cannot be evaluated"; exit 1; }
+          date=$(python3 -c "import json;print(json.load(open('$f'))['date'])")
+          verdict=$(python3 -c "import json;print(json.load(open('$f'))['verdict'])")
+          run_id=$(python3 -c "import json;print(json.load(open('$f'))['run_id'])")
+          age=$(( ( $(date -u +%s) - $(date -u -d "$date" +%s) ) / 86400 ))
+          echo "date=$date" >> "$GITHUB_OUTPUT"
+          echo "verdict=$verdict" >> "$GITHUB_OUTPUT"
+          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+          echo "age=$age" >> "$GITHUB_OUTPUT"
+          if [ "$verdict" != "GREEN" ]; then echo "state=red" >> "$GITHUB_OUTPUT";
+          elif [ "$age" -gt "$CADENCE_DAYS" ]; then echo "state=amber" >> "$GITHUB_OUTPUT";
+          else echo "state=green" >> "$GITHUB_OUTPUT"; fi
+          echo "last=$date ($age d ago) verdict=$verdict"
+
+      - name: Open or update issue
+        if: steps.fresh.outputs.state != 'green'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const state = '${{ steps.fresh.outputs.state }}';
+            const date = '${{ steps.fresh.outputs.date }}';
+            const age = '${{ steps.fresh.outputs.age }}';
+            const runId = '${{ steps.fresh.outputs.run_id }}';
+            const title = state === 'red'
+              ? `RED: last clean-host E2E was not GREEN (${runId})`
+              : `AMBER: clean-host E2E stale — last GREEN ${date} (${age}d > ${{ env.CADENCE_DAYS }}d)`;
+            const body = [
+              '## Clean-host E2E freshness',
+              '',
+              `**Last recorded run:** \`${runId}\` on \`${date}\` (${age} days ago), verdict \`${{ steps.fresh.outputs.verdict }}\``,
+              `**Cadence:** ${{ env.CADENCE_DAYS }} days (monthly for now; quarterly once the drill is refined)`,
+              '',
+              '### Actions (operator)',
+              '1. Run the drill: `docs/runbooks/clean-host-e2e.md` (restore clean snapshot, Phase 0, gate clock).',
+              '2. Update `CHAR/EVID/clean-host/latest.json` with the new run (PR).',
+              '3. Close this issue. It reopens on the next Monday past cadence.',
+              '',
+              'The gate is PURPOSE.md\'s standing proof. This watcher cannot run it — it can only make skipping visible.',
+            ].join('\n');
+            const labels = ['gate', 'clean-host'];
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo,
+              state: 'open', labels: 'clean-host', per_page: 20,
+            });
+            const existing = issues[0];
+            if (existing) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: existing.number, body: `Re-fired: ${age}d since last GREEN.`,
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner, repo: context.repo.repo, title, body, labels,
+              });
+            }
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo '### Clean-host E2E freshness'
+            echo "**Last:** \`${{ steps.fresh.outputs.date }}\` (${{ steps.fresh.outputs.age }}d) verdict \`${{ steps.fresh.outputs.verdict }}\`"
+            echo "**State:** \`${{ steps.fresh.outputs.state }}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
