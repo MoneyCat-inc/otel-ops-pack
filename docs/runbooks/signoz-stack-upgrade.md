@@ -174,7 +174,14 @@ discarded (a `timeout` killed one at 15 min; Git Bash path-mangled the other int
    Fresh `trace_log` still held ~57.5M Memory + 57.5M MemoryPeak rows (~2.40 GiB) written
    *before* the profile pin. Post-recreate 25 s delta on those types: **0** new rows.
 
-**Still open:** 24 h `trace_log` size check — should be flat (no Memory growth) after this pin.
+**24 h flatness verdict (formal T+24h read 2026-08-25T12:41:26Z): GREEN — CLOSED.** Clock
+2026-08-24T12:41:25Z (post-#602 recreate). Since clock: Memory/MemoryPeak **0**; empty-`query_id`
+rows **57.9/h** against the <500/h bar (all from the single `RuntimeData` housekeeping thread under
+the deliberately-retained 1 s query profiler); `trace_log` flat at **2.42 GiB**. Note #602 landed
+inside the window: 25.12 enables the server-wide thread profiler by default
+(`global_profiler_*_period_ns` 10 s; ~25M Real rows/day) — zeroed, third knob of the family.
+Step 3 and the Q3-2026 quarterly review are **CLOSED**; full record in
+`CHAR/ECRR/ECRR_REPORTS/ECRR_QUARTERLY_UPGRADE_2026Q3_20260825.md`.
 
 ---
 
