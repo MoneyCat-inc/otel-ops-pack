@@ -21,7 +21,7 @@ jobs:
         run: |
           pwsh -NoProfile -File scripts/generate-hub-kpis.ps1 -Site ci
       - name: Open KPI refresh PR
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           add-paths: docs/status/kpis.json
