@@ -1,20 +1,20 @@
 <!-- GENERATED FILE — do not hand-edit. Source: /AGENTS.md. Regen: pwsh -File BRAV/SCPT/kiro/regen-steering.ps1 -->
 # BossCat governance (steering projection)
 
-SOURCE: `/AGENTS.md` (canonical). Generated: 2026-07-26T17:23:13Z
+SOURCE: `/AGENTS.md` (canonical). Generated: 2026-08-25T12:55:01Z
 
 ## Actor seats (credential / browser steps)
 
-Four seats during the Kiro pilot (OEM D2, 2026-07-26) — do not route human mint/login work to the wrong one. Provisional tag resolves only at the pilot ECRR (`docs/BossCat/BRIEFING_KIRO_PILOT_CLEAN_HOST_E2E_AUTOMATION.md`).
+Four seats (OEM D2, 2026-07-26) — do not route human mint/login work to the wrong one. The Kiro provisional tag **resolved to permanent on 2026-08-14**: all three criteria frozen before the report was read (`docs/BossCat/KIRO_VERDICT_CRITERIA_20260813.md`) passed on independent scoring, recorded in `CHAR/ECRR/ECRR_REPORTS/ECRR_KIRO_PILOT_20260814.md`.
 
 | Seat | Who | Does | Does **not** |
 |------|-----|------|----------------|
 | **Chat / review** | Oversight in chat (e.g. Claude review) | Decisions, plan approval, review | Browser, passwords, API-key mint, GitHub Secrets UI |
 | **Cursor{Implementer}** | Agent in Cursor | Code, CI, ECRR, `gh` with existing auth, drive the loop; ops/PR mechanics | Invent secrets; mint OpenAI keys without the machine operator; nest under/over Kiro for pilot impl |
-| **Kiro{Implementer} (provisional — pilot-scoped)** | Kiro CLI peer seat | Spec-shaped feature work for the approved pilot delivery; log `Actor: Kiro{Implementer}` per commit | Nest with Cursor{Implementer}; mint/auth; open a second (AWS) evidence plane; work before the pilot briefing merges |
-| **Machine operator** | Human at the Cursor/IDE tab (`@fubumaki`) | OpenAI mint, GitHub Secrets paste, sudo/browser confirmations; Kiro login if needed | Being asked via the chat seat as if chat can type keys |
+| **Kiro{Implementer}** (permanent, 2026-08-14) | Kiro CLI peer seat | Spec-shaped feature work; log `Actor: Kiro{Implementer}` per commit | Nest with Cursor{Implementer}; mint/auth; open a second (AWS) evidence plane; self-merge |
+| **Machine operator: `@fubumaki` (human — the only seat with hands)** | The person at the keyboard — not a process, not chat, not an agent | OpenAI mint, GitHub Secrets paste, sudo/browser confirmations; Kiro login; **launching `kiro-cli` sessions**; any keystroke on a password/mint/Secrets page | Being asked via the chat seat as if chat can type keys; being treated as a fourth remote party to “brief” |
 
-**Standing rule (routing):** Any step that needs a keyboard on a password page, mint button, or Secrets UI is **machine-operator only**. Cursor briefs that seat and verifies after; chat never “owns” the mint. Saying “blocked on Fae/chat” for `LUMI_API_KEY` is a routing bug — the handoff is: machine operator mints → tells Cursor → Cursor dry-runs and logs.
+**Standing rule (routing):** Any step that needs a keyboard — password page, mint button, Secrets UI, or **starting an interactive agent session** — is **machine-operator only**. That seat is `@fubumaki`, the only human in the system. Cursor may open a visible terminal window to the right cwd, but the operator owns the session. Chat never “owns” the mint or the launch. Saying “blocked on Fae/chat” for `LUMI_API_KEY` (or for `kiro-cli chat`) is a routing bug — the handoff is: machine operator acts → tells Cursor → Cursor verifies and logs.
 
 **Standing rule (implementer seats):** Cursor and Kiro are **peers**, not a nested chain. No Cursor→Kiro→model telephone game for pilot implementation. Scoped credentials only; machine operator handles auth; actor logged per commit.
 

@@ -1,5 +1,11 @@
 # 🎨 Live Status Dashboard — Persona-Tailored Views
 
+> ## ARCHIVED — snapshot of 2025-10, not current status
+>
+> Pre-Pack-3B-split Resonai-era document; describes systems retired by Roadmap 2026 H2
+> (`docs/BossCat/ROADMAP_2026H2.md`, all phases closed 2026-08-14). Current authority:
+> `docs/PURPOSE.md`. Bannered in place 2026-08-25 (audit follow-up); not maintained.
+
 **Location:** `docs/status.html`  
 **Type:** Self-contained HTML (no external dependencies)  
 **Data:** Auto-refreshes from `docs/status/*.json`
