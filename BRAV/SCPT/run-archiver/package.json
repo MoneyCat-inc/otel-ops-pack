@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@octokit/rest": "^20.1.1",
-    "adm-zip": "^0.5.12",
     "bottleneck": "^2.19.5",
     "cli-progress": "^3.12.0",
     "fast-xml-parser": "^5.7.0",
