@@ -21,7 +21,11 @@
       try {
         const qp = new URLSearchParams(window.location.search);
         const fromQuery = qp.get('status_base');
-        if (fromQuery) return String(fromQuery).replace(/\/$/, '');
+        if (fromQuery) {
+          // Same-origin only: a crafted ?status_base= link must not steer fetches off-site.
+          const u = new URL(String(fromQuery), window.location.origin);
+          if (u.origin === window.location.origin) return u.pathname.replace(/\/$/, '');
+        }
         if (window.STATUS_BASE) return String(window.STATUS_BASE).replace(/\/$/, '');
         const meta = document.querySelector('meta[name="status-base"]');
         if (meta && meta.content) return String(meta.content).replace(/\/$/, '');
