@@ -1,4 +1,0 @@
-2026-08-21 12:44:17 START vhdx=102.82GB
-2026-08-21 12:44:18 prune: done (dangling images + build cache >7d)
-2026-08-21 12:44:22 fstrim: /mnt/docker-desktop-disk: 982.8 GiB (1055220006912 bytes) trimmed
-2026-08-21 12:44:22 END vhdx=102.82GB (delta 0GB)
