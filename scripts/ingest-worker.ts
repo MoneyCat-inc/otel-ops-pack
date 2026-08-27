@@ -8,10 +8,11 @@
  */
 
 import express from 'express'
+import crypto from 'crypto'
 import fs from 'fs'
 import path from 'path'
 import JSZip from 'jszip'
-import { ecrrPath, ensureDir, redact, writeJson, writeText, safeString } from './ingest-utils'
+import { ecrrPath, ensureDir, redact, writeJson, writeText, safeString, safeSegment } from './ingest-utils'
 
 type WorkflowRun = {
   id: number
@@ -39,10 +40,10 @@ function parseRepo(body: WebhookBody): { org: string; repo: string } {
   const full = safeString(body?.repository?.full_name)
   if (full.includes('/')) {
     const [org, repo] = full.split('/')
-    return { org, repo }
+    return { org: safeSegment(org, 'unknown-org'), repo: safeSegment(repo, 'unknown-repo') }
   }
-  const org = safeString(body?.repository?.owner?.login) || 'unknown-org'
-  const repo = safeString(body?.repository?.name) || 'unknown-repo'
+  const org = safeSegment(body?.repository?.owner?.login, 'unknown-org')
+  const repo = safeSegment(body?.repository?.name, 'unknown-repo')
   return { org, repo }
 }
 
@@ -69,8 +70,11 @@ function recordEvent(dir: string, kind: string, data: any) {
 async function handle(body: WebhookBody) {
   const run = body?.workflow_run
   if (!run?.id || !run?.created_at) return { ok: false, reason: 'no run' }
+  const runId = Number(run.id)
+  if (!Number.isSafeInteger(runId) || runId <= 0) return { ok: false, reason: 'invalid run id' }
   const { org, repo } = parseRepo(body)
-  const p = ecrrPath(ROOT, org, repo, run.created_at, run.id)
+  if (org === 'unknown-org' || repo === 'unknown-repo') return { ok: false, reason: 'invalid repository name' }
+  const p = ecrrPath(ROOT, org, repo, run.created_at, runId)
 
   // Files
   const meta = {
@@ -99,10 +103,15 @@ async function handle(body: WebhookBody) {
   ensureDir(path.join(p.dir, 'logs'))
   writeText(path.join(p.dir, 'logs', 'ingest.txt'), redact(`ingested ${org}/${repo} run ${run.id} at ${new Date().toISOString()}`))
 
-  // Optional enrichment via GitHub API (jobs + logs)
-  if (process.env.GITHUB_TOKEN) {
+  // Optional enrichment via GitHub API (jobs + logs). org/repo/run are
+  // validated segments (see safeSegment/ecrrPath), so the token-bearing
+  // request cannot be steered outside /repos/<org>/<repo>/actions/runs/<id>.
+  const allowedOrgs = (process.env.INGEST_ALLOWED_ORGS || '')
+    .split(',').map((s) => s.trim()).filter(Boolean)
+  const enrichAllowed = allowedOrgs.length === 0 || allowedOrgs.includes(p.org)
+  if (process.env.GITHUB_TOKEN && enrichAllowed) {
     try {
-      const base = `https://api.github.com/repos/${org}/${repo}/actions/runs/${run.id}`
+      const base = `https://api.github.com/repos/${encodeURIComponent(p.org)}/${encodeURIComponent(p.repo)}/actions/runs/${p.run}`
       const headers: Record<string, string> = {
         Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
         'User-Agent': 'bosscat-ingest-worker',
@@ -128,9 +137,9 @@ async function handle(body: WebhookBody) {
           if (!file) continue
           if (file.dir) continue
           const txt = await file.async('text')
-          const rel = name.replace(/\\/g, '/').split('/').pop() || 'log.txt'
+          const rel = safeSegment(name.replace(/\\/g, '/').split('/').pop(), 'log.txt')
           const dest = path.join(outDir, rel)
-          writeText(dest, redact(txt))
+          writeText(dest, redact(txt.slice(0, 10 * 1024 * 1024)))
         }
         recordEvent(p.dir, 'enrich.logs_extracted', { files: entries.length })
       }
@@ -155,10 +164,29 @@ async function main() {
   }
 
   const app = express()
-  app.use(express.json({ limit: '2mb' }))
+  app.use(express.json({
+    limit: '2mb',
+    verify: (req, _res, buf) => { (req as any).rawBody = buf },
+  }))
+
+  // If INGEST_WEBHOOK_SECRET is set, require a valid GitHub HMAC signature.
+  const webhookSecret = process.env.INGEST_WEBHOOK_SECRET || ''
+  function signatureOk(req: express.Request): boolean {
+    if (!webhookSecret) return true
+    const sig = req.header('x-hub-signature-256') || ''
+    const raw = (req as any).rawBody as Buffer | undefined
+    if (!sig.startsWith('sha256=') || !raw) return false
+    const expected = 'sha256=' + crypto.createHmac('sha256', webhookSecret).update(raw).digest('hex')
+    const a = Buffer.from(sig)
+    const b = Buffer.from(expected)
+    return a.length === b.length && crypto.timingSafeEqual(a, b)
+  }
 
   app.post('/webhook', async (req, res) => {
     try {
+      if (!signatureOk(req)) {
+        return res.status(401).json({ ok: false, error: 'invalid webhook signature' })
+      }
       const event = req.header('x-github-event') || req.header('X-GitHub-Event')
       if (event !== 'workflow_run') {
         return res.status(202).json({ ok: true, skipped: `event=${event}` })
