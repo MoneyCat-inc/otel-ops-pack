@@ -76,7 +76,6 @@
     "@atproto/api": "0.20.41",
     "@aws-sdk/client-bedrock-runtime": "^3.1115.0",
     "@opentelemetry/core": "^2.10.0",
-    "@opentelemetry/exporter-otlp-http": "^0.26.0",
     "@opentelemetry/instrumentation-document-load": "^0.66.0",
     "@opentelemetry/instrumentation-fetch": "^0.221.0",
     "@opentelemetry/instrumentation-user-interaction": "^0.65.0",
@@ -104,7 +103,6 @@
     "@jest/globals": "^30.4.1",
     "@opentelemetry/api": "^1.9.1",
     "@opentelemetry/auto-instrumentations-node": "^0.79.0",
-    "@opentelemetry/exporter-otlp-proto": "^0.26.0",
     "@opentelemetry/exporter-trace-otlp-http": "^0.221.0",
     "@opentelemetry/exporter-trace-otlp-proto": "^0.221.0",
     "@opentelemetry/resources": "^2.10.0",
@@ -153,7 +151,8 @@
       "sharp": ">=0.35.0",
       "postcss": ">=8.5.18",
       "nanoid": ">=3.3.18",
-      "@istanbuljs/load-nyc-config>js-yaml": "4.3.1"
+      "@istanbuljs/load-nyc-config>js-yaml": "4.3.1",
+      "deepmerge-ts": ">=8.0.0"
     }
   },
   "engines": {
