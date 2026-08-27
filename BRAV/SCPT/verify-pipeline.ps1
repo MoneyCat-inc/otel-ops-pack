@@ -352,8 +352,8 @@ if (Test-Path $CanaryScriptPath) {
   
   # Collector log check (heuristic)
   try {
-    $log = docker logs --since 1m $CollectorName 2>$null
-    if ($log -match "Exported spans" -or $log -match "exporter.*otlp" -or $log -match "TracesExporter") { 
+    $log = docker logs --since 2m $CollectorName 2>&1
+    if ($log -match "Exported spans" -or $log -match "exporter.*otlp" -or $log -match "TracesExporter" -or $log -match "clickhousetracesexporter") { 
       $canaryConfirmed = $true 
       Write-Host "[verify] ✓ Canary confirmed in collector logs" -ForegroundColor Green
     } else {
@@ -498,7 +498,7 @@ $gate = [ordered]@{
 
 # detect drops/retries in last 2m logs
 try {
-  $scan = docker logs --since 2m $CollectorName 2>$null
+  $scan = docker logs --since 2m $CollectorName 2>&1
   if ($scan -match "dropped" -or $scan -match "retry") { 
     $gate.export_drops_zero = $false 
     Write-Warning "[verify] Detected drops/retries in collector logs"
