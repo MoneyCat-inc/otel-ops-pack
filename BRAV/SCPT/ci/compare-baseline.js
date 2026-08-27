@@ -25,9 +25,10 @@ function compareBaseline() {
   // Load or create baseline
   let baseline = { logs: 0, metrics: 0, timestamp: new Date().toISOString() };
   
-  if (fs.existsSync(BASELINE_FILE)) {
+  try {
     baseline = JSON.parse(fs.readFileSync(BASELINE_FILE, 'utf8'));
-  } else {
+  } catch (e) {
+    if (e.code !== 'ENOENT') throw e;
     // First run - create baseline
     baseline.logs = currentLogs;
     fs.writeFileSync(BASELINE_FILE, JSON.stringify(baseline, null, 2), 'utf8');

@@ -9,11 +9,13 @@ const badge = `[![ECRR](https://img.shields.io/badge/✅%20ECRR-Required-7c5cff?
 
 const gateHeader = '## ✅ ECRR Gate';
 
-if (!fs.existsSync(p)) {
-  fs.mkdirSync('.github', { recursive: true });
-  fs.writeFileSync(p, `${badge}\n\n${gateHeader}\n\n- [ ] **Examine**\n- [ ] **Clean**\n- [ ] **Report**\n- [ ] **Role**\n`);
+fs.mkdirSync('.github', { recursive: true });
+try {
+  fs.writeFileSync(p, `${badge}\n\n${gateHeader}\n\n- [ ] **Examine**\n- [ ] **Clean**\n- [ ] **Report**\n- [ ] **Role**\n`, { flag: 'wx' });
   console.log('🆕 Created PR template with ECRR badge + Gate.');
   process.exit(0);
+} catch (e) {
+  if (e.code !== 'EEXIST') throw e;
 }
 
 const orig = fs.readFileSync(p, 'utf8');
