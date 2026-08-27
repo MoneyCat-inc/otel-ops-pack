@@ -14,19 +14,38 @@ export function ensureDir(p: string) {
   if (!fs.existsSync(p)) fs.mkdirSync(p, { recursive: true })
 }
 
+// GitHub org/repo names: alphanumeric plus ._- and no leading dot; also
+// excludes anything that could act as a path or URL segment separator.
+const SEGMENT_RE = /^[A-Za-z0-9][A-Za-z0-9_.-]{0,99}$/
+
+export function safeSegment(v: any, fallback: string): string {
+  const s = safeString(v)
+  if (s === '.' || s === '..' || !SEGMENT_RE.test(s)) return fallback
+  return s
+}
+
 export function ecrrPath(root: string, org: string, repo: string, createdAtISO: string, runId: string | number): EcrrPaths {
+  const safeOrg = safeSegment(org, 'unknown-org')
+  const safeRepo = safeSegment(repo, 'unknown-repo')
+  const run = safeString(runId)
+  if (!/^\d{1,20}$/.test(run)) throw new Error(`invalid run id: ${JSON.stringify(run).slice(0, 64)}`)
   const d = new Date(createdAtISO)
+  if (Number.isNaN(d.getTime())) throw new Error('invalid created_at timestamp')
   const yyyy = String(d.getUTCFullYear())
   const mm = String(d.getUTCMonth() + 1).padStart(2, '0')
   const dd = String(d.getUTCDate()).padStart(2, '0')
-  const dir = path.join(root, `org=${org}`, `repo=${repo}`, `dt=${yyyy}`, mm, dd, `run=${runId}`)
+  const dir = path.join(root, `org=${safeOrg}`, `repo=${safeRepo}`, `dt=${yyyy}`, mm, dd, `run=${run}`)
+  const resolvedRoot = path.resolve(root)
+  if (path.resolve(dir) !== resolvedRoot && !path.resolve(dir).startsWith(resolvedRoot + path.sep)) {
+    throw new Error('resolved artifact path escapes ECRR root')
+  }
   ensureDir(dir)
   return {
     root,
-    org,
-    repo,
+    org: safeOrg,
+    repo: safeRepo,
     date: `${yyyy}-${mm}-${dd}`,
-    run: String(runId),
+    run,
     dir,
   }
 }
