@@ -10,6 +10,9 @@ concurrency:
   group: executive-review-${{ github.ref }}
   cancel-in-progress: false
 
+permissions:
+  contents: read
+
 jobs:
   executive-review:
     runs-on: windows-latest

@@ -18,6 +18,9 @@ concurrency:
   group: multi-app-ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   detect-changes:
     name: Detect Changed Apps

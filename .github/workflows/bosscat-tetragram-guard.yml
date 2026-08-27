@@ -9,6 +9,9 @@ concurrency:
   group: tetragram-guard-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   guard:
     # Skip on PRs; validate on main and manual

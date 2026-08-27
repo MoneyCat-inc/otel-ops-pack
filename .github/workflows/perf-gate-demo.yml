@@ -16,6 +16,9 @@ concurrency:
   group: perf-gate-demo-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   performance-gate:
     name: k6 Performance Gate

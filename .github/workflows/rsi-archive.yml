@@ -3,6 +3,9 @@ name: rsi-archive
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   bench-archive:
     runs-on: ubuntu-latest
