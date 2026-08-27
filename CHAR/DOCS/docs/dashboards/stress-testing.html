@@ -1135,11 +1135,15 @@
     const activityLog = document.getElementById('stressActivityLog');
     const entry = document.createElement('div');
     entry.className = 'log-entry';
-    entry.innerHTML = `
-      <span class="log-time">${timestamp}</span>
-      <span class="log-level ${level}">${level.toUpperCase()}</span>
-      <span class="log-message">${message}</span>
-    `;
+    const mkSpan = (cls, text) => {
+      const s = document.createElement('span');
+      s.className = cls;
+      s.textContent = text;
+      return s;
+    };
+    entry.appendChild(mkSpan('log-time', timestamp));
+    entry.appendChild(mkSpan(`log-level ${level}`, level.toUpperCase()));
+    entry.appendChild(mkSpan('log-message', message));
     activityLog.insertBefore(entry, activityLog.firstChild);
     while (activityLog.children.length > 50) activityLog.removeChild(activityLog.lastChild);
   }

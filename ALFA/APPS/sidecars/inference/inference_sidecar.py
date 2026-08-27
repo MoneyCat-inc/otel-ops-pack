@@ -136,11 +136,13 @@ class GPUInferenceSidecar:
                         try:
                             info = self.triton_client.get_model_metadata(model_name=model_name)
                             meta.append({"name": model_name, "ok": True, "metadata": info})
-                        except Exception as e:
-                            meta.append({"name": model_name, "ok": False, "error": str(e)})
+                        except Exception:
+                            logger.exception("model metadata fetch failed for %s", model_name)
+                            meta.append({"name": model_name, "ok": False, "error": "metadata unavailable"})
                     details["model_metadata"] = meta
-            except Exception as e:
-                details["error"] = str(e)
+            except Exception:
+                logger.exception("deep health check failed")
+                details["error"] = "health check error"
             return {"status": "healthy" if triton_ok else "degraded", "triton_available": triton_ok, "details": details}
         
         @self.app.get("/models")
