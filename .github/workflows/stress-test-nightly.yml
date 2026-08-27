@@ -30,7 +30,7 @@ jobs:
           python-version: '3.11'
       
       - name: 🐳 Setup Docker Buildx
-        uses: docker/setup-buildx-action@v4
+        uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e # v4
       
       - name: 📦 Start SigNoz Stack
         run: |
