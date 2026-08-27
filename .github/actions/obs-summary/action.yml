@@ -25,14 +25,15 @@ runs:
   steps:
     - name: Write Observability Summary
       shell: bash
+      env:
+        OUTCOME: ${{ inputs.outcome }}
+        GOLDEN: ${{ inputs.golden_pr_url }}
+        CHECKLIST: ${{ inputs.checklist_path }}
+        QUICK: ${{ inputs.quick_guide_path }}
+        ARTIFACTS: ${{ inputs.include_artifacts_list }}
       run: |
         set -euo pipefail
 
-        OUTCOME="${{ inputs.outcome }}"
-        GOLDEN="${{ inputs.golden_pr_url }}"
-        CHECKLIST="${{ inputs.checklist_path }}"
-        QUICK="${{ inputs.quick_guide_path }}"
-        ARTIFACTS="${{ inputs.include_artifacts_list }}"
         ARTIFACT_LIST=$(echo "$ARTIFACTS" | tr ',' '\n' | sed -E 's/^[[:space:]]+|[[:space:]]+$//g' | sed -E 's/^/- `&`/')
 
         if [ "$OUTCOME" = "success" ]; then
