@@ -267,8 +267,10 @@ async function report(): Promise<void> {
 
   // Also update SSOT artifact
   const ssotPath = '.artifacts/SSOT.md';
-  if (fs.existsSync(ssotPath)) {
-    let ssot = fs.readFileSync(ssotPath, 'utf-8');
+  let existingSsot: string | null = null;
+  try { existingSsot = fs.readFileSync(ssotPath, 'utf-8'); } catch {}
+  if (existingSsot !== null) {
+    let ssot = existingSsot;
     
     // Update roadmap section if it exists
     const roadmapSectionRegex = /## 🗺️ Roadmap Status[\s\S]*?(?=\n## |\n---\n\n|\Z)/;

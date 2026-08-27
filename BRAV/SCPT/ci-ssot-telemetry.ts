@@ -65,8 +65,9 @@ function buildBlock(data: {
 }
 
 function updateTopBlock(mdPath: string, block: string) {
-  const exists = fs.existsSync(mdPath);
-  const original = exists ? fs.readFileSync(mdPath, 'utf8') : '';
+  let exists = true;
+  let original = '';
+  try { original = fs.readFileSync(mdPath, 'utf8'); } catch { exists = false; }
   const begin = '<!-- SSOT:BEGIN -->';
   const end = '<!-- SSOT:END -->';
 

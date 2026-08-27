@@ -507,7 +507,6 @@ pnpm agent:stop
 
   private async isAgentSystemRunning(): Promise<boolean> {
     try {
-      await fs.access('.agent/system-status.json');
       const status = await fs.readFile('.agent/system-status.json', 'utf-8');
       const data = JSON.parse(status);
       return data.status === 'active' || data.status === 'running';
