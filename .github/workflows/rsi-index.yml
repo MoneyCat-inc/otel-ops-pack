@@ -3,6 +3,9 @@ name: rsi-index
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   bench-index:
     runs-on: ubuntu-latest

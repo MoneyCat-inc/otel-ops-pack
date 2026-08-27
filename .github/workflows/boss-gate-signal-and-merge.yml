@@ -23,6 +23,9 @@ concurrency:
   group: boss-gate-signal-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: false
 
+permissions:
+  contents: read
+
 jobs:
   signal-gate:
     name: Signal Boss Gate
@@ -93,6 +96,8 @@ jobs:
   merge-execution:
     name: Execute Merge
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     needs: signal-gate
     if: needs.signal-gate.outputs.gate_status == 'completed' && needs.signal-gate.outputs.merge_approved == 'true' && github.event.inputs.auto_merge == 'true'
 

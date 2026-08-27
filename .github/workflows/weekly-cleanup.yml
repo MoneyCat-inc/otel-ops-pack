@@ -10,6 +10,9 @@ concurrency:
   group: weekly-cleanup-${{ github.ref }}
   cancel-in-progress: false
 
+permissions:
+  contents: read
+
 jobs:
   cleanup:
     runs-on: ubuntu-latest

@@ -10,6 +10,9 @@ concurrency:
 on:
   workflow_dispatch: {}
 
+permissions:
+  contents: read
+
 jobs:
   guardrails-check:
     # Run on main and manual only; avoid blocking PRs

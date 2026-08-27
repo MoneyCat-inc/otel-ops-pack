@@ -18,6 +18,9 @@ concurrency:
   group: ci-disabled-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   ci-status-check:
     name: CI Status Check

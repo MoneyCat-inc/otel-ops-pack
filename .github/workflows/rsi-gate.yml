@@ -6,6 +6,9 @@ name: rsi-gate
 on:
   workflow_dispatch: {}
 
+permissions:
+  contents: read
+
 jobs:
   rsi-gate:
     # BossCat governance: run on main/manual; skip gating on PR lane

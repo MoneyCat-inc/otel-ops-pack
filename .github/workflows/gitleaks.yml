@@ -20,6 +20,9 @@ concurrency:
   group: gitleaks-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: false
 
+permissions:
+  contents: read
+
 jobs:
   gitleaks:
     name: gitleaks
