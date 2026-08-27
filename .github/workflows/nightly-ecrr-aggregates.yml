@@ -6,6 +6,9 @@ name: Nightly ECRR Aggregates
 on:
   workflow_dispatch: {}
 
+permissions:
+  contents: read
+
 jobs:
   rollup:
     runs-on: ubuntu-latest

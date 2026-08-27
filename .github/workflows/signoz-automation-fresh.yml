@@ -16,6 +16,9 @@ env:
   SIGNOZ_USER: ${{ secrets.SIGNOZ_USER }}
   SIGNOZ_PASS: ${{ secrets.SIGNOZ_PASS }}
 
+permissions:
+  contents: read
+
 jobs:
   # Pre-flight checks
   validate-secrets:

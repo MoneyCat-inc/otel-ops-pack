@@ -10,6 +10,11 @@ concurrency:
   group: boss-gate-verify-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
 jobs:
   verify-gate:
     name: Boss Gate Verification

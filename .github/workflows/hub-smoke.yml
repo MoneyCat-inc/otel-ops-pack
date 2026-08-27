@@ -5,6 +5,9 @@ name: Hub Uptime Smoke
 on:
   workflow_dispatch: {}
 
+permissions:
+  contents: read
+
 jobs:
   smoke:
     runs-on: ubuntu-latest

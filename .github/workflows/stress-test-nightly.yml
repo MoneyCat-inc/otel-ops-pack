@@ -10,6 +10,11 @@ concurrency:
   group: stress-test-nightly-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: false
 
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
 jobs:
   stress-test:
     runs-on: ubuntu-latest

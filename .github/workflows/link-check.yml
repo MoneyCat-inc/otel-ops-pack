@@ -5,12 +5,15 @@ name: Link Check
 on:
   workflow_dispatch: {}
 
+permissions:
+  contents: read
+
 jobs:
   lychee:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: lycheeverse/lychee-action@v1
+      - uses: lycheeverse/lychee-action@v2
         with:
           args: --verbose --no-progress --config .lychee.toml "index.html" "docs/**/*.html"
         env:

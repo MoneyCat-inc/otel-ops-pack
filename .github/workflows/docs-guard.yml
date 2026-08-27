@@ -13,6 +13,9 @@ concurrency:
   group: docs-guard-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   root-cap:
     name: Enforce Root Markdown Cap
