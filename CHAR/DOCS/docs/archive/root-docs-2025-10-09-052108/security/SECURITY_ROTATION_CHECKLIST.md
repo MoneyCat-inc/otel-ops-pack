@@ -2,7 +2,7 @@
 
 **Date**: 2025-10-07  
 **Incident**: IONA-GATE-002 Security Remediation  
-**Old Key**: `YMJnm6c+/poKMuEGsjOQZCKrOealu8NjX22QE66VdnQ=` ⚠️ **REVOKE THIS**  
+**Old Key**: `[REDACTED-old-SigNoz-key-rotated-2025-10-07]` ⚠️ **REVOKE THIS**  
 **Status**: 🔄 **ROTATION IN PROGRESS**
 
 ---
@@ -19,7 +19,7 @@ You must rotate the SigNoz API key to complete the security remediation.
 ```
 1. Open: http://localhost:8080
 2. Navigate to: Settings → API Keys
-3. Find existing key: YMJnm6c+/poKMuEGsjOQZCKrOealu8NjX22QE66VdnQ=
+3. Find existing key: [REDACTED-old-SigNoz-key-rotated-2025-10-07]
 4. Click: "Revoke" or "Delete"
 5. Click: "Generate New API Key"
 6. Copy the new key immediately (shown only once!)
@@ -29,7 +29,7 @@ You must rotate the SigNoz API key to complete the security remediation.
 ```bash
 # Revoke old key
 curl -X DELETE http://localhost:8080/api/v1/auth/api-keys \
-  -H "Authorization: Bearer YMJnm6c+/poKMuEGsjOQZCKrOealu8NjX22QE66VdnQ=" \
+  -H "Authorization: Bearer [REDACTED-old-SigNoz-key-rotated-2025-10-07]" \
   -H "Content-Type: application/json"
 
 # Generate new key
