@@ -1,9 +1,11 @@
 # Security Alert Operations Runbook
 
-Mechanics for managing GitHub code-scanning alerts on this repo: dismissing alerts
-with reasons, and purging analyses left behind by retired scanner configurations.
-Distilled from the 2026-08-27 security burn-down (PRs #630–#639), which took the
-security tab from ~3,470 open alerts to 16 note-level findings with the
+Mechanics for managing GitHub security alerts on this repo: dismissing
+code-scanning alerts with reasons, purging analyses left behind by retired
+scanner configurations, resolving leaked-secret alerts, and fixing
+PSScriptAnalyzer parse errors. Distilled from the 2026-08-27/28 security
+burn-down (PRs #630–#641), which took the security tab from ~3,470 open alerts
+to zero across Dependabot, code scanning, and secret scanning — with the
 `security-extended` CodeQL suite enabled.
 
 All commands use `gh api` against `repos/MoneyCat-inc/otel-ops-pack`.
@@ -121,7 +123,86 @@ set-ordered) are described in the burn-down PRs; the approach in short:
    then skip the rest of that group (it is pinned by a live config).
 3. Time-guard each run and relaunch until the listing comes back empty.
 
-## 4. Related repo conventions
+## 4. Secret-scanning alerts (leaked credentials)
+
+From the 2026-08-28 resolution of alert #1 (a fine-grained PAT committed in 2025,
+publicly leaked, history-only).
+
+### 4.1 Triage order
+
+1. **Locations**: `GET /secret-scanning/alerts/<N>/locations` — the UI's alert
+   count can include per-location rows, so the tab number may exceed the alert
+   count.
+2. **Live vs history-only**: check whether the flagged files still exist on
+   main (`git ls-tree origin/main -- <path>`). If they exist, remove them in a
+   PR first. If history-only: **history rewrite is permanently foreclosed on
+   this repo** (Second Pass decision), so revocation is the *only* remediation.
+3. **Is it the active credential?** Extract the token from the historical blob
+   and compare against the running credential **by hash, never by printing**:
+
+   ```powershell
+   # fingerprint only: prefix + last 4 + sha256, compare to (gh auth token)
+   ```
+
+   Token regexes: classic `gh[pousr]_[A-Za-z0-9]{20,}`, fine-grained
+   `github_pat_[A-Za-z0-9_]{30,}` — the fine-grained prefix is the one naive
+   greps miss.
+4. **Is it still live?** Fine-grained PATs have a max 1-year lifetime, so each
+   listed token's expiry date implies its creation date. If every token in the
+   owning account's list was created *after* the leak date, the leaked token
+   was already deleted/rotated. Confirm the list came from the account that
+   owned the token (for bot-committed secrets, that's the bot account, not the
+   operator's personal account). Never probe a found credential against the API
+   without explicit operator approval.
+
+### 4.2 Resolving
+
+Revocation/rotation is an account-level action — **operator-only**. Once they
+confirm the token is revoked or no longer exists:
+
+```bash
+gh api -X PATCH "repos/MoneyCat-inc/otel-ops-pack/secret-scanning/alerts/<N>" \
+  -f state=resolved -f resolution=revoked \
+  -f resolution_comment="<how revocation was established, max 280 chars>"
+```
+
+`resolution_comment` has the same **280-character cap** as code-scanning
+dismissals. Resolutions are reversible — reopen if the evidence changes.
+
+## 5. PSScriptAnalyzer parse-error alerts
+
+PSSA "note" findings with rule ids like `UnexpectedToken`,
+`TerminatorExpectedAtEndOfString`, `MissingEndCurlyBrace` are **parser
+failures**, not style nits — the file cannot run as PowerShell. All 16 cleared
+in #641 reduced to three root causes worth checking first:
+
+- **Wrong file type**: a markdown/text document saved with a `.ps1` extension
+  produces ~1 alert per prose construct. Fix by renaming to `.md` (10 of the
+  16 alerts were one such file).
+- **Markdown fences inside double-quoted here-strings**: in `@"..."@`, the
+  backtick is the escape character, so a ``` fence line leaves an odd backtick
+  that escapes the newline — the parser then never sees the `"@` terminator at
+  start-of-line and the whole rest of the file fails. If the body needs no
+  interpolation, convert to a literal `@'...'@` here-string (also remove any
+  hand-backslashed `` \` `` fence escapes, which emit broken markdown). Two
+  generator scripts had shipped unparseable — and therefore unrunnable — for
+  months this way.
+- **`"$var:"` in double-quoted strings**: parses as a drive-qualified variable
+  reference (`$var:x`). Write `${var}:` instead.
+
+Verify fixes with the real parser, not by eye:
+
+```powershell
+[System.Management.Automation.Language.Parser]::ParseFile($path, [ref]$t, [ref]$e) | Out-Null
+$e   # must be empty
+```
+
+To locate an invisible breakage inside a here-string, bisect: parse growing
+prefixes of the content wrapped in `$x = @"…"@` until the error appears — byte
+inspection (`cat -A`, BOM/CR hunts) can come up empty when the cause is an
+escape-character interaction.
+
+## 6. Related repo conventions
 
 - **Branch cascade**: this repo requires up-to-date branches; after each merge,
   update the next queued PR with
