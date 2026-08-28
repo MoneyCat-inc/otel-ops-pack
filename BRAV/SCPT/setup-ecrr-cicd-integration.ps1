@@ -247,7 +247,7 @@ function Deploy-Workflows {
     
     # Create workflow documentation
     $docPath = "docs/ECRR_CI_CD_INTEGRATION.md"
-    $documentation = @"
+    $documentation = @'
 # ECRR Compliance CI/CD Integration
 
 ## Overview
@@ -285,22 +285,22 @@ This document describes the CI/CD integration for ECRR compliance monitoring and
 ## Usage
 
 ### Manual Compliance Check
-\`\`\`bash
+```bash
 # Trigger compliance check manually
 gh workflow run "ECRR Compliance Check" --ref main
-\`\`\`
+```
 
 ### Generate Dashboard
-\`\`\`bash
+```bash
 # Generate compliance dashboard
 gh workflow run "ECRR Compliance Check" --ref main -f generate_dashboard=true
-\`\`\`
+```
 
 ### Post-Workshop Validation
-\`\`\`powershell
+```powershell
 # Run after workshop sessions
 pwsh -File scripts/post-workshop-validation.ps1 -WorkshopName "workshop-2025-01-27" -GenerateTrends -SendAlerts
-\`\`\`
+```
 
 ## Monitoring
 
@@ -343,7 +343,7 @@ pwsh -File scripts/post-workshop-validation.ps1 -WorkshopName "workshop-2025-01-
 4. **Dashboard not loading**: Verify HTML generation
 
 ### Debug Commands
-\`\`\`powershell
+```powershell
 # Test compliance validation
 pwsh -File scripts/validate-ecrr-compliance.ps1 -Verbose
 
@@ -352,8 +352,8 @@ pwsh -File scripts/monitor-ecrr-compliance-trends.ps1 -GenerateReport
 
 # Test dashboard generation
 pwsh -File scripts/generate-compliance-dashboard.ps1
-\`\`\`
-"@
+```
+'@
 
     $documentation | Set-Content -Path $docPath -Encoding UTF8
     Write-Host "✅ CI/CD integration documentation created: $docPath" -ForegroundColor Green

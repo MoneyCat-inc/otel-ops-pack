@@ -234,7 +234,7 @@ if ($StartWebServer -and $PublishMethod -eq "WebServer") {
 if ($GenerateGitHubPages -and $PublishMethod -eq "GitHubPages") {
     Write-Host "`nGenerating GitHub Pages configuration..." -ForegroundColor Yellow
     
-    $GitHubPagesConfig = @"
+    $GitHubPagesConfig = @'
 # GitHub Pages Configuration for ECRR Dashboard
 
 ## Setup Instructions
@@ -297,8 +297,8 @@ jobs:
         git commit -m "Update ECRR compliance dashboard" || exit 0
         git push
 ```
-"@
-    
+'@
+
     $GitHubPagesFile = Join-Path $OutputDir "github-pages-setup.md"
     $GitHubPagesConfig | Out-File -FilePath $GitHubPagesFile -Encoding UTF8
     Write-Host "✅ GitHub Pages configuration saved to: $GitHubPagesFile" -ForegroundColor Green
