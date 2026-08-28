@@ -128,6 +128,17 @@ set-ordered) are described in the burn-down PRs; the approach in short:
 From the 2026-08-28 resolution of alert #1 (a fine-grained PAT committed in 2025,
 publicly leaked, history-only).
 
+### 4.0 The list API hides non-provider patterns
+
+`GET /secret-scanning/alerts?state=open` returns **only provider-pattern
+alerts** (GitHub PATs, cloud keys, etc.). Alerts from *non-provider* patterns —
+RSA/private keys, HTTP bearer headers, generic passwords — are excluded from
+the default listing even while open: during the 2026-08 burn-down the UI showed
+3 alerts while this query returned 1. **Trust the UI count over the list API.**
+When they disagree, fetch the missing alerts directly by number
+(`GET /secret-scanning/alerts/<N>` works regardless of pattern class), walking
+the numbers the UI shows.
+
 ### 4.1 Triage order
 
 1. **Locations**: `GET /secret-scanning/alerts/<N>/locations` — the UI's alert
@@ -168,6 +179,14 @@ gh api -X PATCH "repos/MoneyCat-inc/otel-ops-pack/secret-scanning/alerts/<N>" \
 
 `resolution_comment` has the same **280-character cap** as code-scanning
 dismissals. Resolutions are reversible — reopen if the evidence changes.
+
+Resolution precedents from the 2026-08 burn-down:
+
+- Key documented as rotated by its own incident checklist (alert #2, SigNoz):
+  `revoked` — and **redact the dead value from any copy still live on main**
+  (PR #643); a live copy of even a dead credential keeps the alert anchored.
+- Published vendor example key in committed `node_modules` (alert #3,
+  @octokit/openapi-types sample RSA key): `false_positive`.
 
 ## 5. PSScriptAnalyzer parse-error alerts
 
