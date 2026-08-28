@@ -49,7 +49,7 @@ jobs:
           curl -f http://localhost:5555/health
 
       - name: Setup k6
-        uses: grafana/setup-k6-action@v1
+        uses: grafana/setup-k6-action@db07bd9765aac508ef18982e52ab937fe633a065 # v1
         with:
           k6-version: '0.57.0'
 

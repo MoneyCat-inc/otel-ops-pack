@@ -197,11 +197,12 @@ class LaneExecutor {
 
     const logEntry = `- **${timestamp}** - ${lesson}\n`;
 
-    if (fs.existsSync(logPath)) {
+    const header = `# BossCat Operations Log\n## AUTO-BOTS Lessons Learned\n\n`;
+    try {
+      fs.writeFileSync(logPath, header + logEntry, { flag: 'wx' });
+    } catch (e: any) {
+      if (e?.code !== 'EEXIST') throw e;
       fs.appendFileSync(logPath, logEntry);
-    } else {
-      const header = `# BossCat Operations Log\n## AUTO-BOTS Lessons Learned\n\n`;
-      fs.writeFileSync(logPath, header + logEntry);
     }
 
     console.log(`📝 BossCat log updated: ${lesson}`);

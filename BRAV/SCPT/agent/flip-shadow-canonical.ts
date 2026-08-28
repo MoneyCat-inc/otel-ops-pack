@@ -181,31 +181,30 @@ export class ShadowToCanonicalFlipper {
     const envFiles = ['.env', '.env.local', '.env.production'];
     
     for (const envFile of envFiles) {
-      if (existsSync(envFile)) {
-        try {
-          let content = readFileSync(envFile, 'utf8');
-          
-          // Update QUEUE_SHADOW to 0
-          content = content.replace(/QUEUE_SHADOW=1/g, 'QUEUE_SHADOW=0');
-          
-          // If QUEUE_SHADOW doesn't exist, add it
-          if (!content.includes('QUEUE_SHADOW=')) {
-            content += '\nQUEUE_SHADOW=0\n';
-          }
-          
-          writeFileSync(envFile, content, 'utf8');
-          console.log(`✓ Updated ${envFile}`);
-          
-        } catch (error) {
-          console.warn(`⚠️ Failed to update ${envFile}:`, error);
+      try {
+        let content = readFileSync(envFile, 'utf8');
+
+        // Update QUEUE_SHADOW to 0
+        content = content.replace(/QUEUE_SHADOW=1/g, 'QUEUE_SHADOW=0');
+
+        // If QUEUE_SHADOW doesn't exist, add it
+        if (!content.includes('QUEUE_SHADOW=')) {
+          content += '\nQUEUE_SHADOW=0\n';
         }
+
+        writeFileSync(envFile, content, 'utf8');
+        console.log(`✓ Updated ${envFile}`);
+
+      } catch (error: any) {
+        if (error?.code === 'ENOENT') continue;
+        console.warn(`⚠️ Failed to update ${envFile}:`, error);
       }
     }
 
     // Update package.json scripts if needed
     try {
       const packageJsonPath = 'package.json';
-      if (existsSync(packageJsonPath)) {
+      {
         const content = readFileSync(packageJsonPath, 'utf8');
         const packageJson = JSON.parse(content);
         
@@ -236,15 +235,14 @@ export class ShadowToCanonicalFlipper {
     const envFiles = ['.env', '.env.local', '.env.production'];
     
     for (const envFile of envFiles) {
-      if (existsSync(envFile)) {
-        try {
-          let content = readFileSync(envFile, 'utf8');
-          content = content.replace(/QUEUE_SHADOW=0/g, 'QUEUE_SHADOW=1');
-          writeFileSync(envFile, content, 'utf8');
-          console.log(`✓ Rolled back ${envFile}`);
-        } catch (error) {
-          console.warn(`⚠️ Failed to rollback ${envFile}:`, error);
-        }
+      try {
+        let content = readFileSync(envFile, 'utf8');
+        content = content.replace(/QUEUE_SHADOW=0/g, 'QUEUE_SHADOW=1');
+        writeFileSync(envFile, content, 'utf8');
+        console.log(`✓ Rolled back ${envFile}`);
+      } catch (error: any) {
+        if (error?.code === 'ENOENT') continue;
+        console.warn(`⚠️ Failed to rollback ${envFile}:`, error);
       }
     }
   }
