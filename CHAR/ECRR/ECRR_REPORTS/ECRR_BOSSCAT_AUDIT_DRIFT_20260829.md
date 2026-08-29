@@ -185,3 +185,16 @@ OEM adopted Draft A ("adopt Draft A and execute the enactment checklist"). Enact
 - Operator follow-ups closed: Repository Structure Compliance added to required checks on `main`; scheduled-task sweep found a single root-path caller (`\otel_canary_10m` → `canary-check-min.ps1`, blessed at root — no change needed).
 
 Every ADR-0002 success criterion is now demonstrated, both halves of "a check must be able to both pass and fail" on real PRs under branch protection. The audit arc — three-stream audit → P0–P3 → ADR-0002 adoption → enactment → verification — is complete.
+
+---
+
+## Addendum (2026-08-29) — CodeQL workflow consolidation (OEM-ordered backlog item)
+
+OEM order: "consolidate the CodeQL workflows down to codeql.yml". Executed:
+
+- **Deleted `.github/workflows/main.yml`** ("CodeQL") and **`.github/workflows/codeql-analysis.yml`** ("CodeQL Analysis"). Both were retired dispatch-only since the 2026-08-03 Phase 0 audit, and both are strict coverage subsets of `codeql.yml` ("CodeQL Advanced": actions + javascript-typescript + python, `security-extended` queries, push/PR/schedule). The only nominal delta — `codeql-analysis.yml` ran `security-and-quality` on javascript — has produced nothing since 2026-08-03 because the workflow could only fire by hand.
+- **Registry**: `docs/status/workflows.json` 63 → 61 (two entries removed, `total` updated), mirrored identically to `CHAR/DOCS/docs/status/workflows.json` — registry-guard's deep semantic comparison (names, trigger booleans, total) satisfied without regeneration drift.
+- **Branch protection unaffected**: the required "CodeQL" context is app-bound to github-code-scanning (app 57789), fed by `codeql.yml`'s analyses — not by the Actions workflow named "CodeQL" that this deletes (documented in `codeql.yml` and `required-check-shims.yml` headers).
+- **Left alone, with reasons**: `security-scan.yml` also carries a CodeQL job but is an already-retired dispatch-only *bundle* (gitleaks + CodeQL + Trivy) whose header names its canonical successors — retiring the file entirely is a separate disposition, not part of this order. `docs/reference/reference-map.json` lists both deleted paths but is a stale generated snapshot (2026-08-15; already lists 11 dead workflows and misses one live) with no CI consumer — its fix is regeneration (`scripts/generate-reference-map.ts`), queued behind this, not a two-row hand edit.
+
+Validation: all remaining workflow YAMLs parse; `workflows.json` validates against `docs/status/workflows.schema.json`; registry name-set equals the on-disk workflow set (61/61); `HEAD:docs` and `HEAD:CHAR/DOCS/docs` remain the same tree.

@@ -1,6 +1,6 @@
 {
   "source": "scripts/regenerate-workflows-registry.ps1",
-  "total": 63,
+  "total": 61,
   "items": [
     {
       "name": "app-template",
@@ -237,23 +237,6 @@
         "schedule": true,
         "workflow_call": false,
         "workflow_dispatch": false,
-        "workflow_run": false
-      }
-    },
-    {
-      "name": "codeql-analysis",
-      "modified": "2026-08-03T21:37:08.5482144Z",
-      "path": ".github/workflows/codeql-analysis.yml",
-      "size": 1182,
-      "triggers": {
-        "issues": false,
-        "other": [],
-        "pull_request": false,
-        "push": false,
-        "release": false,
-        "schedule": false,
-        "workflow_call": false,
-        "workflow_dispatch": true,
         "workflow_run": false
       }
     },
@@ -568,23 +551,6 @@
       "modified": "2026-08-03T21:37:08.5705263Z",
       "path": ".github/workflows/link-check.yml",
       "size": 607,
-      "triggers": {
-        "issues": false,
-        "other": [],
-        "pull_request": false,
-        "push": false,
-        "release": false,
-        "schedule": false,
-        "workflow_call": false,
-        "workflow_dispatch": true,
-        "workflow_run": false
-      }
-    },
-    {
-      "name": "main",
-      "modified": "2026-08-03T21:37:08.5720386Z",
-      "path": ".github/workflows/main.yml",
-      "size": 1042,
       "triggers": {
         "issues": false,
         "other": [],
