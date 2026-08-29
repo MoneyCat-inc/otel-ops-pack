@@ -627,6 +627,66 @@ All security-relevant actions must be:
 | Incident Reports | `docs/security/incidents/` | Permanent | Incident history |
 | Workflow Logs | GitHub Actions | 90 days | Process verification |
 
+### Accepted Risk Waivers
+
+Formal acceptance of known, intentional security warnings that are scoped to local development and self-hosted observability. Each waiver must be reviewable (pass *and* fail) and re-evaluated when scope changes.
+
+#### WAIVER-OTEL-001 — Insecure TLS on local OTLP export
+
+| Field | Value |
+|-------|-------|
+| **ID** | WAIVER-OTEL-001 |
+| **Status** | Active |
+| **Accepted** | 2026-08-29 |
+| **Actor** | Cursor{Implementer} (machine operator request) |
+| **Review cadence** | Quarterly (with `docs/PURPOSE.md` upgrade check) |
+
+**Finding:** `health-check.ps1 -Mode full` and `scripts/legacy/config-schema.ps1` emit:
+
+```text
+WARNING: Insecure TLS detected - ensure it's only for local connections
+```
+
+**Configuration:** Windows collector OTLP exporter uses `tls.insecure: true` when forwarding to the local SigNoz aggregator on loopback:
+
+- `config.yaml` — `exporters.otlp.endpoint: localhost:4317`
+- `windows/otelcol/otelcol-contrib-config.yaml` — canonical service template
+- `C:\ProgramData\otelcol-contrib\config.yaml` — installed service config (BOSSCAT-022A)
+
+**Risk accepted:** Telemetry between the Windows collector and the SigNoz Docker collector traverses `127.0.0.1` only. No encryption on this hop is required because the traffic does not leave the host and is not exposed to the network.
+
+**Controls in place:**
+
+- Endpoints bound to localhost / loopback only (`4317`, `4318`, `5320`, `5321` on host)
+- `config-schema.ps1` continues to warn on every full health check (detection, not suppression)
+- SigNoz UI and external ingress remain separate surfaces with their own hardening
+
+**Re-evaluation required when any of:**
+
+- OTLP exporter target is not loopback (remote host, LAN IP, or cloud endpoint)
+- Collector ports are exposed beyond `127.0.0.1`
+- Production or multi-tenant deployment is declared for this stack
+
+**Remediation path:** Set `tls.insecure: false`, provision TLS certs for the OTLP receiver, and update exporter `endpoint` to `https://…` per [SigNoz OTLP docs](https://signoz.io/docs/opentelemetry-collection/).
+
+#### WAIVER-OTEL-002 — Kafka exporter not configured
+
+| Field | Value |
+|-------|-------|
+| **ID** | WAIVER-OTEL-002 |
+| **Status** | Active (not applicable) |
+| **Accepted** | 2026-08-29 |
+| **Actor** | Cursor{Implementer} (machine operator request) |
+| **Review cadence** | On Kafka adoption |
+
+**Finding:** Full health check reports `Kafka: SKIPPED (not configured)`.
+
+**Risk accepted:** No Kafka exporter is present in the active collector config. The pipeline uses direct OTLP export to SigNoz; Kafka is out of scope for the Windows OTel pack.
+
+**Controls in place:** `health-check.ps1` only runs `kafka-smoke.ps1` when a `kafka` exporter block exists in config; skip is informational, not a failure.
+
+**Re-evaluation required when:** A `kafka` exporter is added to `config.yaml` or service config — remove this waiver and verify broker reachability in full health checks.
+
 ### Compliance Frameworks
 
 #### SOC 2 (Type II)
@@ -858,6 +918,7 @@ Track improvements in GitHub Issues with labels:
 | Date | Version | Changes | Author |
 |------|---------|---------|--------|
 | 2025-10-07 | 1.0 | Initial master guide created | BossCat OEM |
+| 2026-08-29 | 1.1 | Added WAIVER-OTEL-001 (local OTLP TLS) and WAIVER-OTEL-002 (Kafka N/A) | Cursor{Implementer} |
 
 ---
 
