@@ -1,5 +1,12 @@
 name: BossCat Diagnostic Workflow
 
+# Repo-side checks (file existence, Python syntax) FAIL the run when broken —
+# per docs/PURPOSE.md, a check must be able to both pass and fail. Network/runner
+# probes (pip/k6 dry-runs) stay informational because they diagnose the runner
+# environment, not the repository. Paths updated 2026-08-29 for the tetragram
+# reorg (tests/ -> ALFA/TEST/unit/, scripts/ -> BRAV/SCPT/); see
+# CHAR/ECRR/ECRR_REPORTS/ECRR_BOSSCAT_AUDIT_DRIFT_20260829.md (P0-2).
+
 on:
   workflow_dispatch:
     inputs:
@@ -19,29 +26,27 @@ permissions:
 jobs:
   diagnostic:
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v7
-      
+
     - name: Debug - List repository contents
       run: |
         echo "=== Repository Structure ==="
         ls -la
         echo "=== Scripts Directory ==="
-        ls -la BRAV/SCPT/ || echo "scripts/ directory not found"
-        echo "=== Tests Directory ==="
-        ls -la tests/ || echo "tests/ directory not found"
-        echo "=== Docs Directory ==="
-        ls -la docs/ || echo "docs/ directory not found"
+        ls -la BRAV/SCPT/ | head -40
+        echo "=== Test Directories ==="
+        ls -la ALFA/TEST/unit/k6/ ALFA/TEST/unit/locust/
         echo "=== Requirements File ==="
-        cat requirements.txt || echo "requirements.txt not found"
-        
+        cat requirements.txt
+
     - name: Set up Python
       uses: actions/setup-python@v7
       with:
         python-version: '3.12'
-        
+
     - name: Debug - Python setup verification
       run: |
         echo "=== Python Version ==="
@@ -50,17 +55,8 @@ jobs:
         pip --version
         echo "=== Python Path ==="
         which python
-        
-    - name: Debug - Create directories
-      run: |
-        echo "=== Creating directories ==="
-        mkdir -p artifacts
-        mkdir -p docs/BossCat/reports
-        echo "=== Directory verification ==="
-        ls -la artifacts/
-        ls -la docs/BossCat/reports/
-        
-    - name: Debug - Test pip install
+
+    - name: Debug - Test pip install (informational, runner env)
       run: |
         echo "=== Testing pip upgrade ==="
         python -m pip install --upgrade pip
@@ -70,8 +66,8 @@ jobs:
         pip install locust --dry-run || echo "locust install would fail"
         pip install flake8 --dry-run || echo "flake8 install would fail"
         pip install black --dry-run || echo "black install would fail"
-        
-    - name: Debug - Test k6 installation
+
+    - name: Debug - Test k6 installation (informational, runner env)
       run: |
         echo "=== Testing k6 GPG key ==="
         sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69 || echo "GPG key fetch failed"
@@ -81,47 +77,41 @@ jobs:
         sudo apt-get update || echo "apt update failed"
         echo "=== Testing k6 install ==="
         sudo apt-get install k6 --dry-run || echo "k6 install would fail"
-        
-    - name: Debug - Test script existence
+
+    - name: Check script files exist (FAILS when missing)
       run: |
-        echo "=== Checking script files ==="
-        test -f BRAV/SCPT/test-otlp-smoke.py && echo "test-otlp-smoke.py exists" || echo "test-otlp-smoke.py missing"
-        test -f BRAV/SCPT/test-dry-run.py && echo "test-dry-run.py exists" || echo "test-dry-run.py missing"
-        test -f BRAV/SCPT/run-local-pipeline.py && echo "run-local-pipeline.py exists" || echo "run-local-pipeline.py missing"
-        test -f BRAV/SCPT/generate-ecrr-report.py && echo "generate-ecrr-report.py exists" || echo "generate-ecrr-report.py missing"
-        test -f BRAV/SCPT/generate-boss-v2-report.py && echo "generate-boss-v2-report.py exists" || echo "generate-boss-v2-report.py missing"
-        test -f BRAV/SCPT/send_synthetic_otel_simple.py && echo "send_synthetic_otel_simple.py exists" || echo "send_synthetic_otel_simple.py missing"
-        
-    - name: Debug - Test script syntax
+        set -e
+        for f in \
+          BRAV/SCPT/test-otlp-smoke.py \
+          BRAV/SCPT/test-dry-run.py \
+          BRAV/SCPT/run-local-pipeline.py \
+          BRAV/SCPT/generate-ecrr-report.py \
+          BRAV/SCPT/generate-boss-v2-report.py \
+          BRAV/SCPT/send_synthetic_otel_simple.py; do
+          test -f "$f" && echo "OK: $f" || { echo "MISSING: $f"; exit 1; }
+        done
+
+    - name: Check script syntax (FAILS on syntax errors)
       run: |
-        echo "=== Testing script syntax ==="
-        python -m py_compile BRAV/SCPT/test-otlp-smoke.py || echo "test-otlp-smoke.py has syntax errors"
-        python -m py_compile BRAV/SCPT/test-dry-run.py || echo "test-dry-run.py has syntax errors"
-        python -m py_compile BRAV/SCPT/run-local-pipeline.py || echo "run-local-pipeline.py has syntax errors"
-        
-    - name: Debug - Test imports
+        set -e
+        python -m py_compile BRAV/SCPT/test-otlp-smoke.py
+        python -m py_compile BRAV/SCPT/test-dry-run.py
+        python -m py_compile BRAV/SCPT/run-local-pipeline.py
+        echo "All scripts compile"
+
+    - name: Check k6 test files exist (FAILS when missing)
       run: |
-        echo "=== Testing script imports ==="
-        python -c "import sys; sys.path.insert(0, 'scripts'); import test_otlp_smoke" || echo "test-otlp-smoke import failed"
-        python -c "import sys; sys.path.insert(0, 'scripts'); import test_dry_run" || echo "test-dry-run import failed"
-        
-    - name: Debug - Test k6 files
+        set -e
+        for f in baseline-test.js load-test.js stress-test.js soak-test.js mock-friendly-test.js; do
+          test -f "ALFA/TEST/unit/k6/$f" && echo "OK: $f" || { echo "MISSING: ALFA/TEST/unit/k6/$f"; exit 1; }
+        done
+
+    - name: Check locust test files exist (FAILS when missing)
       run: |
-        echo "=== Checking k6 test files ==="
-        test -f tests/k6/baseline-test.js && echo "baseline-test.js exists" || echo "baseline-test.js missing"
-        test -f tests/k6/load-test.js && echo "load-test.js exists" || echo "load-test.js missing"
-        test -f tests/k6/stress-test.js && echo "stress-test.js exists" || echo "stress-test.js missing"
-        test -f tests/k6/soak-test.js && echo "soak-test.js exists" || echo "soak-test.js missing"
-        test -f tests/k6/mock-friendly-test.js && echo "mock-friendly-test.js exists" || echo "mock-friendly-test.js missing"
-        
-    - name: Debug - Test locust files
-      run: |
-        echo "=== Checking locust test files ==="
-        test -f tests/locust/signoz_user_journey.py && echo "signoz_user_journey.py exists" || echo "signoz_user_journey.py missing"
-        
+        set -e
+        test -f ALFA/TEST/unit/locust/signoz_user_journey.py && echo "OK: signoz_user_journey.py" || { echo "MISSING: ALFA/TEST/unit/locust/signoz_user_journey.py"; exit 1; }
+
     - name: Debug - Final summary
       run: |
         echo "=== DIAGNOSTIC COMPLETE ==="
-        echo "All diagnostic steps completed successfully"
-        echo "If you see this message, the basic setup is working"
-        echo "The issue is likely in the main workflow execution"
+        echo "All repo-side checks passed; runner-env probes above are informational"
