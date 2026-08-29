@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Notifications Index",
+  "type": "object",
+  "required": ["thread_id","repo","reason","subject_type","updated_at","url","done"],
+  "properties": {
+    "thread_id": { "type": "string" },
+    "repo": { "type": "string" },
+    "reason": { "type": "string" },
+    "subject_type": { "type": "string" },
+    "updated_at": { "type": "string", "format": "date-time" },
+    "url": { "type": "string" },
+    "done": { "type": "boolean" }
+  }
+}
+

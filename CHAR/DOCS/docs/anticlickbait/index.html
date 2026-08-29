@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ANTIclickbait Transparency Hub - Resonai [OTel]</title>
+  <meta name="description" content="Evidence-based project transparency. Every claim scored and sourced.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>ANTIclickbait Transparency Hub</h1>
+      <p class="tagline">Every claim backed by evidence. Every score honest.</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="intro">
+      <h2>What This Is</h2>
+      <p>An inventory of what this project actually does. Each card shows:</p>
+      <ul>
+        <li><strong>Score</strong> (0-100) based on evidence quality</li>
+        <li><strong>Claims</strong> we make about the feature</li>
+        <li><strong>Evidence</strong> you can verify yourself</li>
+        <li><strong>Limitations</strong> we will not hide</li>
+        <li><strong>Sources</strong> for independent verification</li>
+      </ul>
+      <p><strong>Scoring:</strong> 100 = perfect evidence | 90-99 = excellent | 80-89 = good | &lt;80 = needs work</p>
+    </section>
+
+    <section id="filter">
+      <label for="category">Filter by category:</label>
+      <select id="category">
+        <option value="all">All Categories</option>
+      </select>
+      <span id="count"></span>
+    </section>
+
+    <section id="cards" class="card-grid"></section>
+
+    <section id="methodology">
+      <h2>Scoring Methodology</h2>
+      <p><strong>Version:</strong> anticlickbait-v1</p>
+      <h3>Criteria</h3>
+      <ol>
+        <li>Verifiable evidence (source links, artifacts)</li>
+        <li>Honest limitations disclosed</li>
+        <li>No exaggerated claims</li>
+        <li>Reproducible results</li>
+        <li>Transparent methodology</li>
+      </ol>
+      <h3>Scale</h3>
+      <ul>
+        <li><strong>100:</strong> Perfect transparency, complete evidence trail</li>
+        <li><strong>90-99:</strong> Excellent evidence, only minor gaps</li>
+        <li><strong>80-89:</strong> Good evidence, some limitations acknowledged</li>
+        <li><strong>70-79:</strong> Adequate evidence, notable limitations</li>
+        <li><strong>&lt;70:</strong> Insufficient evidence or concerning gaps</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    <p>Data: <a href="data.json">data.json</a> | Updated: <span id="updated"></span></p>
+    <p>Resonai [OTel] | Local-First | ECRR-Compliant | MIT License</p>
+    <p style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #2A2F36;">
+      <strong>Support This Project:</strong> 
+      <a href="https://github.com/sponsors/MoneyCat-inc" style="color: #37FFC4; margin: 0 0.5rem;">GitHub Sponsors</a> •
+      <a href="https://ko-fi.com/fubumaki" style="color: #37FFC4; margin: 0 0.5rem;">Ko-fi</a> •
+      <a href="https://www.patreon.com/c/FaeMcLachlan" style="color: #37FFC4; margin: 0 0.5rem;">Patreon</a>
+    </p>
+    <p style="margin-top: 0.5rem; color: #8A94A0; font-size: 0.9rem;">
+      <strong>Follow:</strong>
+      <a href="https://www.linkedin.com/in/fae-mclachlan-b32b0738a/" style="color: #37FFC4; margin: 0 0.5rem;">LinkedIn</a> •
+      <a href="https://bsky.app/profile/resonai.bsky.social" style="color: #37FFC4; margin: 0 0.5rem;">Bluesky</a> •
+      <a href="https://github.com/MoneyCat-inc/otel-ops-pack" style="color: #37FFC4; margin: 0 0.5rem;">GitHub</a>
+    </p>
+  </footer>
+
+  <script src="app.js"></script>
+
+  <!-- Bluesky Widget -->
+  <link rel="stylesheet" href="../assets/bluesky-widget.css">
+  <script src="../assets/bluesky-widget.js" defer></script>
+</body>
+</html>

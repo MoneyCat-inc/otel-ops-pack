@@ -1,0 +1,22 @@
+{
+  "type": "bosscat_session",
+  "title": "Gate #007 — Governance + SBOM Enforcement",
+  "timestamp": "${NOW}",
+  "status": {
+    "gate": "merged",
+    "sbom_enforcement": "prod_blocking",
+    "tracker": "enabled"
+  },
+  "artifacts": {
+    "sbom_json": "DELT/ARTF/sbom.json",
+    "sbom_checksum": "DELT/ARTF/sbom.json.sha256",
+    "signature_registry": "DELT/ARTF/sbom/signature-registry.json",
+    "governance_json": "docs/BOSS/CATX/RESE/SYAR/BOSS-CATX-RESE-SYAR.json",
+    "status_page": "docs/status.html"
+  },
+  "tracker": {
+    "issue": 135,
+    "workflow": "BossCat Gate Verification",
+    "policy": "require 3 prod successes"
+  }
+}

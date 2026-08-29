@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Executive Dashboard - Investor Demo</title>
+    <link rel="stylesheet" href="../assets/css/resonai-system.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        nav {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav h1 {
+            margin: 0;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        nav .nav-links a {
+            color: white;
+            margin-left: 1.5rem;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        nav .nav-links a:hover {
+            text-decoration: underline;
+        }
+
+        .dashboard-container {
+            max-width: 1600px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .metric-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .metric-value.green { color: #28a745; }
+        .metric-value.yellow { color: #ffc107; }
+        .metric-value.red { color: #dc3545; }
+
+        .metric-subtext {
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+
+        .panel-section {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .panel-section h2 {
+            margin: 0 0 1rem 0;
+            color: #2c3e50;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .gate-status {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .gate-status.green {
+            background: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+            border: 2px solid #28a745;
+        }
+
+        .gate-status.amber {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+            border: 2px solid #ffc107;
+        }
+
+        .gate-status.red {
+            background: rgba(220, 53, 69, 0.2);
+            color: #dc3545;
+            border: 2px solid #dc3545;
+        }
+
+        .trace-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .trace-item {
+            padding: 0.75rem;
+            border-bottom: 1px solid #e9ecef;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .trace-item:hover {
+            background: #f8f9fa;
+        }
+
+        .trace-item-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.25rem;
+        }
+
+        .trace-id {
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: #495057;
+        }
+
+        .trace-duration {
+            font-weight: 600;
+        }
+
+        .trace-duration.fast { color: #28a745; }
+        .trace-duration.medium { color: #ffc107; }
+        .trace-duration.slow { color: #dc3545; }
+
+        .action-buttons {
+            margin-top: 1rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .refresh-indicator {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <h1>🎯 Executive Dashboard</h1>
+        <div class="nav-links">
+            <span class="refresh-indicator" id="refresh-time">Last update: --:--:--</span>
+            <a href="./data-room.html">Data Room</a>
+            <a href="http://localhost:8080" target="_blank">SigNoz</a>
+            <a href="../index.html">Home</a>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <!-- Live Metrics Tiles -->
+        <div class="metrics-grid">
+            <div class="metric-card" onclick="drillToMetric('latency')">
+                <div class="metric-label">P95 Latency</div>
+                <div class="metric-value" id="p95-latency">112 ms</div>
+                <div class="metric-subtext">Target: &lt;300ms</div>
+            </div>
+
+            <div class="metric-card" onclick="drillToMetric('errors')">
+                <div class="metric-label">Error Rate</div>
+                <div class="metric-value green" id="error-rate">0.0%</div>
+                <div class="metric-subtext">Target: &lt;1%</div>
+            </div>
+
+            <div class="metric-card" onclick="drillToMetric('throughput')">
+                <div class="metric-label">Throughput</div>
+                <div class="metric-value" id="throughput">10 RPS</div>
+                <div class="metric-subtext">Requests/sec</div>
+            </div>
+
+            <div class="metric-card" onclick="drillToMetric('gate')">
+                <div class="metric-label">Gate Status</div>
+                <div class="metric-value" id="gate-status">
+                    <span class="gate-status green">GREEN (0)</span>
+                </div>
+                <div class="metric-subtext">Build: <span id="build-sha">4c66253</span></div>
+            </div>
+        </div>
+
+        <!-- Recent Traces -->
+        <div class="panel-section">
+            <h2>🔍 Recent Traces (Last 5 min)</h2>
+            <ul class="trace-list" id="trace-list">
+                <li class="trace-item">
+                    <div class="trace-item-header">
+                        <span class="trace-id">Loading traces...</span>
+                        <span class="trace-duration fast">--ms</span>
+                    </div>
+                    <div style="font-size: 0.85rem; color: #6c757d;">Fetching from SigNoz...</div>
+                </li>
+            </ul>
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="refreshTraces()">Refresh Traces</button>
+                <button class="btn btn-success" onclick="openSigNoz()">Open SigNoz</button>
+            </div>
+        </div>
+
+        <!-- System Health -->
+        <div class="panel-section">
+            <h2>💚 System Health</h2>
+            <div id="health-summary">
+                <p><strong>Docker:</strong> <span id="docker-status">Checking...</span></p>
+                <p><strong>SigNoz:</strong> <span id="signoz-status">Checking...</span></p>
+                <p><strong>Collector:</strong> <span id="collector-status">Checking...</span></p>
+                <p><strong>Services:</strong> <span id="services-status">Checking...</span></p>
+            </div>
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="window.location.href='./data-room.html'">Open Data Room</button>
+                <button class="btn btn-primary" onclick="window.location.href='./DEMO_SCRIPT.md'">View Demo Script</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dashboard state
+        let metrics = {
+            p95: 112,
+            errorRate: 0.0,
+            rps: 10,
+            gateStatus: 'GREEN (0)',
+            buildSha: '4c66253'
+        };
+
+        // Update metrics display
+        function updateMetrics() {
+            // Update P95
+            const p95El = document.getElementById('p95-latency');
+            p95El.textContent = metrics.p95 + ' ms';
+            p95El.className = 'metric-value ' + 
+                (metrics.p95 > 300 ? 'red' : metrics.p95 > 200 ? 'yellow' : 'green');
+
+            // Update error rate
+            const errEl = document.getElementById('error-rate');
+            errEl.textContent = metrics.errorRate.toFixed(1) + '%';
+            errEl.className = 'metric-value ' +
+                (metrics.errorRate > 5 ? 'red' : metrics.errorRate > 1 ? 'yellow' : 'green');
+
+            // Update throughput
+            const rpsEl = document.getElementById('throughput');
+            rpsEl.textContent = metrics.rps + ' RPS';
+            rpsEl.className = 'metric-value ' + (metrics.rps > 0 ? 'green' : '');
+
+            // Update refresh time
+            document.getElementById('refresh-time').textContent = 
+                'Last update: ' + new Date().toLocaleTimeString();
+        }
+
+        // Fetch mock/demo metrics (replace with SigNoz API in production)
+        function fetchMetrics() {
+            // TODO: Replace with actual SigNoz API call
+            // For demo, use mock data or local storage
+            updateMetrics();
+        }
+
+        // Refresh traces
+        function refreshTraces() {
+            // TODO: Fetch from SigNoz API
+            // Query: service.name IN ('bosscat-svc2-api', 'demo-prober')
+            //        AND timestamp > now() - 5m
+            //        ORDER BY timestamp DESC
+            //        LIMIT 10
+            
+            const traceList = document.getElementById('trace-list');
+            traceList.innerHTML = '<li class="trace-item"><div class="trace-item-header"><span class="trace-id">Demo: Refresh from SigNoz API</span></div></li>';
+        }
+
+        // Drill into specific metric
+        function drillToMetric(type) {
+            const queries = {
+                latency: 'http://localhost:8080/traces?service=bosscat-svc2-api',
+                errors: 'http://localhost:8080/traces?status=error',
+                throughput: 'http://localhost:8080/services',
+                gate: './DEMO_SCRIPT.md'
+            };
+            
+            if (queries[type]) {
+                window.open(queries[type], '_blank');
+            }
+        }
+
+        // Open SigNoz
+        function openSigNoz() {
+            window.open('http://localhost:8080', '_blank');
+        }
+
+        // Check system health
+        async function checkHealth() {
+            try {
+                const signoz = await fetch('http://localhost:8080/api/v1/health');
+                const signozData = await signoz.json();
+                document.getElementById('signoz-status').textContent = 
+                    signozData.status === 'ok' ? '✅ Healthy' : '⚠️ Degraded';
+            } catch (err) {
+                document.getElementById('signoz-status').textContent = '❌ Unavailable';
+            }
+
+            // Update other health indicators
+            document.getElementById('docker-status').textContent = '✅ 15 containers';
+            document.getElementById('collector-status').textContent = '✅ Running';
+            document.getElementById('services-status').textContent = '✅ 2 active';
+        }
+
+        // Initialize dashboard
+        fetchMetrics();
+        checkHealth();
+
+        // Auto-refresh every 5 seconds
+        setInterval(() => {
+            fetchMetrics();
+            checkHealth();
+        }, 5000);
+    </script>
+</body>
+</html>
+

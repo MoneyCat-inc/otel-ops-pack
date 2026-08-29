@@ -343,7 +343,7 @@ Audit-ready documentation demonstrating standards adherence and governance compl
 **Evidence Artifacts:**
 - Security scans: `.github/workflows/security-scan.yml`
 - Dashboard exports: `docs/observability/snapshots/`
-- ECRR reports: `docs/ecrr/ECRR_REPORTS/`
+- ECRR reports: `CHAR/ECRR/ECRR_REPORTS/`
 - Rotation log: `docs/BossCat/CREDENTIAL_ROTATION_CALENDAR.md`
 
 ---
@@ -670,4 +670,5 @@ Move-Item "artifacts/stakeholder-review-*" "docs/audit/reviews/"
 **Approver:** BossCat OEM Executive Overseer
 
 🐾 *Complete transparency - like a cat meticulously organizing evidence artifacts.*
+
 

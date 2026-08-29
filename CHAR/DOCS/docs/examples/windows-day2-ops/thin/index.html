@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Thin Example — Collector-only (Windows)</title>
+<meta name="description" content="Minimal, vendor-neutral Windows Day-2 guardrails with stock OTel Collector.">
+<link rel="canonical" href="https://hub.resonai.uk/docs/examples/windows-day2-ops/thin/">
+<link rel="stylesheet" href="/docs/assets/hub.css">
+</head>
+<body>
+<div class="container">
+<h1>🪟 Thin Example — Collector-only (Windows)</h1>
+<p><strong>Minimal, vendor-neutral Day-2 guardrails with stock OpenTelemetry Collector.</strong></p>
+
+<h2>What's Included</h2>
+<ul>
+<li><strong>Stock OTel Collector config</strong> - Windows Event Logs + file logs to OTLP export</li>
+<li><strong>NSSM service wrapper</strong> — Install/uninstall scripts for production deployment</li>
+<li><strong>CI snippet</strong> — Policy gate + SBOM generation in GitHub Actions</li>
+<li><strong>No external dependencies</strong> — Self-contained, works with any OTLP backend</li>
+</ul>
+
+<h2>Quick Start</h2>
+<pre><code># Clone the kit
+git clone https://github.com/MoneyCat-inc/otel-ops-pack.git
+cd otel-ops-pack
+
+# Review the collector config
+cat config/otel-collector-config.yaml
+
+# Install as Windows service
+pwsh scripts/install-service.ps1
+
+# Verify
+sc query otelcol-contrib
+</code></pre>
+
+<h2>Key Features</h2>
+<ul>
+<li>✅ Windows Event Log collection (Security, Application, System)</li>
+<li>✅ File log tailing (custom app logs)</li>
+<li>✅ Low-latency batching (200ms)</li>
+<li>✅ Noise filtering (~50% volume reduction)</li>
+<li>✅ OTLP export (gRPC or HTTP)</li>
+<li>✅ Service management (NSSM)</li>
+</ul>
+
+<h2>Reference</h2>
+<ul>
+<li><a href="/docs/day2/windows/overview/">Overview & goals</a></li>
+<li><a href="/CHAR/DOCS/docs/BossCat/FINAL_GATE_READINESS_GUIDE.md">Gate Readiness Guide</a></li>
+<li><a href="https://github.com/MoneyCat-inc/otel-ops-pack" target="_blank" rel="noopener">Full repo on GitHub</a></li>
+</ul>
+
+<div class="footer">
+<p><a href="/">&larr; Back to BossCat Hub</a></p>
+<p><small>By <a href="https://patreon.com/FaeMcLachlan" target="_blank" rel="noopener">Fae McLachlan</a> &bull; Evidence-First Observability</small></p>
+</div>
+</div>
+</body>
+</html>
+

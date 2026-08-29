@@ -1,47 +1,78 @@
-# BossCat Gate Verification TODO
+# BossCat Pinned TODOs
 
-## CI/CD Pipeline
-- [x] Move `scripts/github-workflows/bosscat-gate-verify.yml` into `.github/workflows/` and align triggers with BossCat governance (PR, main, nightly)
-- [x] Fix artifact handling in the workflow (download to a shared `artifacts/` directory, ensure results are available for later stages)
-- [x] Remove ad-hoc `git push` from the workflow and replace with artifact publishing plus evidence upload
-- [x] Add conditional logic so `workflow_dispatch` input `test_type` controls which k6 stages run (baseline/load/stress/soak/all)
-- [x] Ensure `kubectl` context setup (or KinD cluster) is documented or mocked when running in CI to avoid failed namespace creation
-- [x] Add lint/test hooks to the workflow (flake8, black, pytest, eslint)
-- [x] Integrate mock SigNoz API for CI runs
+> ## ARCHIVED — content frozen October 2025; not a live queue
+>
+> These BossCat TODOs predate the four-seat model and the 2026 H2 roadmap; every open item
+> here was either completed or retired by Phase 0–4 closeout (2026-08-14). Current work is
+> tracked per-change via ECRR against `docs/PURPOSE.md`, not in this file.
+> Bannered 2026-08-25 (audit follow-up); not maintained.
 
-## Performance Test Assets
-- [x] Update all k6 scripts to emit an `overall_status` flag in their JSON summaries based on thresholds
-- [x] Add reusable helper (JS module) to prevent duplicated threshold logic across k6 scripts
-- [x] Validate k6 scripts produce deterministic outputs when environment variables are missing (fallbacks stay in SLA)
-- [x] Parse Locust CSV outputs into a consolidated JSON artifact with computed success/error rates for gating
-- [x] Provide a one-command runner (PowerShell + npm script) that executes k6 and Locust suites locally with configurable targets
 
-## Synthetic Trace Tooling
-- [x] Reconcile duplicate `send_synthetic_otel_simple.py` implementations (keep one canonical version under `scripts/` and update callers)
-- [x] Add CLI flags for OTLP protocol selection (gRPC vs HTTP) and insecure/secure toggles
-- [ ] Add unit-style smoke test to verify synthetic trace generation without contacting SigNoz (use OTLP exporter mock)
-- [x] Replace emoji placeholders in PowerShell scripts with ASCII status markers (e.g., `[OK]`, `[WARN]`, `[ERROR]`)
+Purpose
 
-## Verification and Reporting
-- [x] Fix `verify-gate-readiness.py` so the default JSON report is written to `artifacts/gate-verification-results.json`
-- [x] Teach gate verifier to emit `overall_status` for each test segment and propagate pass/fail reasons
-- [x] Update `generate-ecrr-report.py` and `generate-boss-v2-report.py` to compute metrics from raw artifacts instead of hard-coded placeholders; strip control characters
-- [x] Ensure both report generators support Markdown and optional PDF export into `docs/ecrr/ECRR_REPORTS/` and `docs/observability/snapshots/`
-- [x] Wire the workflow to publish generated reports as build artifacts and copy them into the repo only in manual/local runs
+- Track downstream actions BossCat wants to execute when convenient.
+- All items follow ECRR and produce evidence on completion.
 
-## Documentation & Guides
-- [x] Create `docs/BossCat/guides/PERFORMANCE_PIPELINE.md` describing local, CI, and Kubernetes execution paths
-- [x] Update existing BossCat guides to reference the new scripts and workflows (local testing, CI integration, final gate readiness)
-- [x] Add quick-start sections for each agent role (Investigator, Gap-Closer, QA Scribe) outlining how to trigger relevant scripts
-- [x] Document expectations for evidence directories (`docs/ecrr/ECRR_REPORTS`, `docs/observability/snapshots`, `artifacts/`)
+## Queue (Pending)
 
-## Automation & Evidence
-- [x] Add Playwright script or Node helper that moves latest screenshots into date-stamped folders under `docs/observability/snapshots/`
-- [x] Ensure nightly automation script (`scripts/nightly-dashboard-export.ps1`) chains into the new performance pipeline or documents sequencing
-- [x] Provide checksum/logging helper so every run appends an entry to `docs/BossCat/reports/BOSSCAT_LOG.md`
-- [x] Add health check CLI that confirms SigNoz endpoints, OTLP ports, and Kubernetes namespace readiness before tests run
+- **BOSS-CATX-OPER-DIRE-009** – ✅ EXECUTED (2025-10-13 00:40) - Gate Workflow Unblocker
+  - Status: Minimal validated skeleton deployed
+  - Context: Evolved from BOSS-CATX-COMP-CI01 (0s duration failures)
+  - Solution: Replace 500+ line complex workflow with 180-line minimal skeleton
+  - Features: actionlint guard, budget enforcement, SBOM strict mode (prod)
+  - Files: bosscat-gate-verify.yml (replaced), enforce-budgets.mjs (new)
+  - Tracking Doc: `docs/BossCat/DIRECTIVE_009_GATE_WORKFLOW_UNBLOCKER.md`
+  - Validation: Next push will test unconditional matrix execution
+  - Owner: BossCat OEM
+  - Priority: P0 → COMPLETE (awaiting CI validation)
 
-## Validation
-- [x] Add lint/test hooks (e.g., `pnpm lint`, `pytest`, `pwsh` PSScriptAnalyzer) to the workflow to guard custom logic
-- [x] Execute a dry-run locally (documented in artifacts) covering synthetic trace, k6 baseline, Locust user journey, and report generation
-- [x] Capture follow-up issues or open questions in `docs/IONA_ERRORS.md` after the first full pipeline execution
+- PR #118 – ✅ PARTIALLY REMEDIATED (2025-10-10 to 2025-10-13)
+  - Status: Guardrails passing, 3/4 required checks GREEN
+  - Remaining: CI workflow configuration issue (tracked as BOSS-CATX-COMP-CI01)
+  - Security scans: 8 tools failing (non-blocking per policy)
+  - Evidence: Local gate verification confirms system health
+  - Next: Complete CI fix within T+48h
+  - Owner: BossCat OEM
+  - Priority: P0 → P1 (downgraded, tracked separately)
+
+## Done (Add entries as items complete)
+
+1) ✅ Normalize canonical analysis doc (P1) - **COMPLETE 2025-10-10**
+
+- Path: docs/BossCat/analysis/system-issues-fractal.download.md
+- Goal: Production-ready Markdown (frontmatter, no HTML anchors, clean citations)
+- Actions completed:
+  - ✅ pwsh -File scripts/normalize-markdown-analysis.ps1 -Path docs/BossCat/analysis/system-issues-fractal.download.md
+  - ✅ pnpm map:generate (57 nodes, 9 edges generated)
+  - ✅ pnpm map:validate (0 missing files)
+  - ✅ pnpm map:guard (P0 check passed)
+- Owner: BossCat OEM
+- Evidence: .agent/EVIDENCE.log event "doc_normalized" logged
+- Status: **DONE** ✅
+
+1) 🐾 Launch BossCat OEM v3 background monitoring worker (P0) - **COMPLETE 2025-10-23**
+
+- Path: bosscat-oem-v3-monitor.ps1
+- Goal: Stand up redundant V3 monitoring loops (2x) with schema health checks
+- Actions completed:
+  - ✅ Start-Process BossCat OEM v3 monitor (PID 3740)
+  - ✅ Start-Process BossCat OEM v3 monitor (PID 32900)
+  - ✅ pwsh -File .\bosscat-oem-v3-monitor.ps1 -DryRun -MaxChecks 1
+- Owner: BossCat OEM
+- Evidence: Get-Process -Id 3740,32900 confirms active workers
+- Status: **DONE** ✅
+
+1) 🚀 Implement Edge Writer - GATE FLIPPED TO GREEN (P0) - **COMPLETE 2025-10-23**
+
+- Path: signoz-writer.yaml + docker-compose-signoz.yml
+- Goal: Bypass flaky SigNoz transformer hop with direct ClickHouse v3 writer
+- Actions completed:
+  - ✅ Created signoz-writer.yaml (clickhousetraces exporter)
+  - ✅ Added signoz-writer service to docker-compose-signoz.yml
+  - ✅ Updated send-canary-trace-direct.ps1 to localhost:14321
+  - ✅ Launched edge writer service (ports 14320/14321)
+  - ✅ Verified 66 traces in signoz_index_v3 (serviceName='canary-test')
+  - ✅ Executed bosscat-oem-v3-complete.ps1 (gate advancement)
+- Owner: BossCat OEM
+- Evidence: docker ps shows signoz-writer running, ClickHouse query returns 66 spans
+- Status: **DONE** ✅

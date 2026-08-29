@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Security Analyses Index",
+  "type": "object",
+  "required": ["analysis_id","tool","ref","commit_sha","created_at","sarif_path"],
+  "properties": {
+    "analysis_id": { "type": "integer" },
+    "tool": { "type": "string" },
+    "ref": { "type": "string" },
+    "commit_sha": { "type": "string" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "sarif_path": { "type": "string" },
+    "alerts_count": { "type": "integer" }
+  }
+}
+

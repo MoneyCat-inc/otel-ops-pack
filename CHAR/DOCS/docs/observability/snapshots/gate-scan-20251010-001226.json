@@ -1,0 +1,33 @@
+{
+  "actor": "BossCat OEM",
+  "startedAt": "2025-10-10T00:12:17.4918449+01:00",
+  "checks": [
+    {
+      "name": "layout",
+      "ok": true,
+      "details": {
+        "paths": "ok"
+      }
+    },
+    {
+      "name": "collector_health",
+      "ok": false,
+      "details": {
+        "ok": false,
+        "status": 0,
+        "body": "No connection could be made because the target machine actively refused it. (localhost:13133)",
+        "target": "http://localhost:13133/healthz"
+      }
+    },
+    {
+      "name": "synthetic_trace",
+      "ok": true,
+      "details": {
+        "attempted": true,
+        "ok": true,
+        "exitCode": 0
+      }
+    }
+  ],
+  "gatePhrase": "@cat ready-for-gate"
+}

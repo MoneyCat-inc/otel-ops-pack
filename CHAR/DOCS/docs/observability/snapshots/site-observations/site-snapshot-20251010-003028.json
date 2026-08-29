@@ -1,0 +1,222 @@
+{
+  "bot": "SITE",
+  "statistics": {
+    "healthPercentage": 0.0,
+    "totalChecks": 5,
+    "unhealthy": 5,
+    "healthy": 0
+  },
+  "allObservations": [
+    {
+      "metrics": {
+        "Reachable": false,
+        "Error": "The property 'X-Response-Time' cannot be found on this object. Verify that the property exists.",
+        "ErrorType": "PropertyNotFoundException",
+        "Timestamp": "2025-10-10T00:29:28.1803035+01:00"
+      },
+      "timestamp": "2025-10-10T00:29:24.0561689+01:00",
+      "diagnostics": {
+        "timestamp": "2025-10-10T00:29:28.1841855+01:00",
+        "processes": {
+          "workingSet": 164012032,
+          "cpu": 2.265625,
+          "pid": 2260,
+          "startTime": "2025-10-10T00:28:04.0447925+01:00"
+        },
+        "ports": {
+          "55679": "Listening",
+          "4318": "Closed",
+          "4317": "Closed",
+          "13133": "Closed",
+          "8888": "Listening"
+        },
+        "service": {
+          "canStop": true,
+          "startType": "Automatic",
+          "displayName": "OpenTelemetry Collector (Contrib)",
+          "status": "Running"
+        }
+      },
+      "health": {
+        "Reachable": false,
+        "Error": "No connection could be made because the target machine actively refused it. (localhost:13133)",
+        "ErrorType": "HttpRequestException",
+        "Timestamp": "2025-10-10T00:29:28.1522116+01:00"
+      },
+      "checkNumber": 1
+    },
+    {
+      "metrics": {
+        "Reachable": false,
+        "Error": "The property 'X-Response-Time' cannot be found on this object. Verify that the property exists.",
+        "ErrorType": "PropertyNotFoundException",
+        "Timestamp": "2025-10-10T00:29:43.3417659+01:00"
+      },
+      "timestamp": "2025-10-10T00:29:39.3062754+01:00",
+      "diagnostics": {
+        "timestamp": "2025-10-10T00:29:43.3419843+01:00",
+        "processes": {
+          "workingSet": 164810752,
+          "cpu": 2.703125,
+          "pid": 2260,
+          "startTime": "2025-10-10T00:28:04.0447925+01:00"
+        },
+        "ports": {
+          "55679": "Listening",
+          "4318": "Closed",
+          "4317": "Closed",
+          "13133": "Closed",
+          "8888": "Listening"
+        },
+        "service": {
+          "canStop": true,
+          "startType": "Automatic",
+          "displayName": "OpenTelemetry Collector (Contrib)",
+          "status": "Running"
+        }
+      },
+      "health": {
+        "Reachable": false,
+        "Error": "No connection could be made because the target machine actively refused it. (localhost:13133)",
+        "ErrorType": "HttpRequestException",
+        "Timestamp": "2025-10-10T00:29:43.3365649+01:00"
+      },
+      "checkNumber": 2
+    },
+    {
+      "metrics": {
+        "Reachable": false,
+        "Error": "The property 'X-Response-Time' cannot be found on this object. Verify that the property exists.",
+        "ErrorType": "PropertyNotFoundException",
+        "Timestamp": "2025-10-10T00:29:58.0194365+01:00"
+      },
+      "timestamp": "2025-10-10T00:29:53.9695433+01:00",
+      "diagnostics": {
+        "timestamp": "2025-10-10T00:29:58.0195641+01:00",
+        "processes": {
+          "workingSet": 165257216,
+          "cpu": 2.90625,
+          "pid": 2260,
+          "startTime": "2025-10-10T00:28:04.0447925+01:00"
+        },
+        "ports": {
+          "55679": "Listening",
+          "4318": "Closed",
+          "4317": "Closed",
+          "13133": "Closed",
+          "8888": "Listening"
+        },
+        "service": {
+          "canStop": true,
+          "startType": "Automatic",
+          "displayName": "OpenTelemetry Collector (Contrib)",
+          "status": "Running"
+        }
+      },
+      "health": {
+        "Reachable": false,
+        "Error": "No connection could be made because the target machine actively refused it. (localhost:13133)",
+        "ErrorType": "HttpRequestException",
+        "Timestamp": "2025-10-10T00:29:58.0145849+01:00"
+      },
+      "checkNumber": 3
+    },
+    {
+      "metrics": {
+        "Reachable": false,
+        "Error": "The property 'X-Response-Time' cannot be found on this object. Verify that the property exists.",
+        "ErrorType": "PropertyNotFoundException",
+        "Timestamp": "2025-10-10T00:30:12.6592557+01:00"
+      },
+      "timestamp": "2025-10-10T00:30:08.6145760+01:00",
+      "diagnostics": {
+        "timestamp": "2025-10-10T00:30:12.6593718+01:00",
+        "processes": {
+          "workingSet": 165818368,
+          "cpu": 3.6875,
+          "pid": 2260,
+          "startTime": "2025-10-10T00:28:04.0447925+01:00"
+        },
+        "ports": {
+          "55679": "Listening",
+          "4318": "Closed",
+          "4317": "Closed",
+          "13133": "Closed",
+          "8888": "Listening"
+        },
+        "service": {
+          "canStop": true,
+          "startType": "Automatic",
+          "displayName": "OpenTelemetry Collector (Contrib)",
+          "status": "Running"
+        }
+      },
+      "health": {
+        "Reachable": false,
+        "Error": "No connection could be made because the target machine actively refused it. (localhost:13133)",
+        "ErrorType": "HttpRequestException",
+        "Timestamp": "2025-10-10T00:30:12.6549180+01:00"
+      },
+      "checkNumber": 4
+    },
+    {
+      "metrics": {
+        "Reachable": false,
+        "Error": "The property 'X-Response-Time' cannot be found on this object. Verify that the property exists.",
+        "ErrorType": "PropertyNotFoundException",
+        "Timestamp": "2025-10-10T00:30:27.3445974+01:00"
+      },
+      "timestamp": "2025-10-10T00:30:23.3046074+01:00",
+      "diagnostics": {
+        "timestamp": "2025-10-10T00:30:27.3446982+01:00",
+        "processes": {
+          "workingSet": 165855232,
+          "cpu": 4.21875,
+          "pid": 2260,
+          "startTime": "2025-10-10T00:28:04.0447925+01:00"
+        },
+        "ports": {
+          "55679": "Listening",
+          "4318": "Closed",
+          "4317": "Closed",
+          "13133": "Closed",
+          "8888": "Listening"
+        },
+        "service": {
+          "canStop": true,
+          "startType": "Automatic",
+          "displayName": "OpenTelemetry Collector (Contrib)",
+          "status": "Running"
+        }
+      },
+      "health": {
+        "Reachable": false,
+        "Error": "No connection could be made because the target machine actively refused it. (localhost:13133)",
+        "ErrorType": "HttpRequestException",
+        "Timestamp": "2025-10-10T00:30:27.3410694+01:00"
+      },
+      "checkNumber": 5
+    }
+  ],
+  "session": {
+    "duration": {
+      "Ticks": 641156100,
+      "Days": 0,
+      "Hours": 0,
+      "Milliseconds": 115,
+      "Microseconds": 610,
+      "Nanoseconds": 0,
+      "Minutes": 1,
+      "Seconds": 4,
+      "TotalDays": 0.0007420788194444444,
+      "TotalHours": 0.017809891666666668,
+      "TotalMilliseconds": 64115.61,
+      "TotalMicroseconds": 64115610.0,
+      "TotalNanoseconds": 64115610000.0,
+      "TotalMinutes": 1.0685935,
+      "TotalSeconds": 64.11561
+    },
+    "endTime": "2025-10-10T00:30:28.0637288+01:00",
+    "startTime": "2025-10-10T00:29:23.9481386+01:00"
+  }
+}

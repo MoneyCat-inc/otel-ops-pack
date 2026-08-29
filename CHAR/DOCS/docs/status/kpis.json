@@ -1,29 +1,35 @@
 {
-  "last_update": "2025-10-09T06:40:43.029897+00:00",
   "kpis": [
     {
+      "value": "healthy",
+      "details": "Version: v0.144.6",
       "label": "SigNoz Status",
-      "value": "unhealthy: ok",
-      "status": "bad",
-      "details": "Version: v0.96.1"
+      "status": "ok"
     },
     {
-      "label": "Windows Collector",
       "value": "running",
-      "status": "ok",
-      "details": "Service: otelcol-contrib"
+      "details": "Service: otelcol-contrib",
+      "label": "Windows Collector",
+      "status": "ok"
     },
     {
+      "value": "Stale",
+      "details": "Age: 243.2 hours",
       "label": "ECRR Compliance",
-      "value": "Active",
-      "status": "ok",
-      "details": "**Agent:** BossCat OEM (Executive Overseer Manager) | **Operation:** Automated Status Dashboard Implementation | **Status:** ✅ **IMPLEMENTATION COMPLETE**"
+      "status": "warn"
     },
     {
+      "value": "Needs Attention",
+      "details": "BossCat OEM monitoring active",
       "label": "Repository Health",
-      "value": "Excellent",
-      "status": "ok",
-      "details": "BossCat OEM monitoring active"
+      "status": "warn"
+    },
+    {
+      "value": "Attention Required",
+      "details": "Critical: 0, High: 13",
+      "label": "Security Posture",
+      "status": "warn"
     }
-  ]
+  ],
+  "last_update": "2026-08-12T18:26:31Z"
 }

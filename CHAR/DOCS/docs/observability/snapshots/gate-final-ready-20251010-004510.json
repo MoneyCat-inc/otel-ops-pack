@@ -1,0 +1,28 @@
+{
+  "timestamp": "2025-10-10T00:45:13.4005701+01:00",
+  "commit": "ebe6007",
+  "actor": "BossCat OEM",
+  "gatePhrase": "@cat ready-for-gate",
+  "collector": {
+    "service": "otelcol-contrib",
+    "status": "Running",
+    "startType": "Automatic",
+    "uptime": "{\"status\":\"Server available\",\"upSince\":\"2025-10-10T00:28:04.1711225+01:00\",\"uptime\":\"17m8.029319s\"}"
+  },
+  "health": {
+    "endpoint": "http://localhost:13134/healthz",
+    "status": 200,
+    "ok": true,
+    "body": "{\"status\":\"Server available\",\"upSince\":\"2025-10-10T00:28:04.1711225+01:00\",\"uptime\":\"17m8.029319s\"}"
+  },
+  "ports": {
+    "listening": [
+      13134,
+      5317,
+      5318,
+      8888,
+      55679
+    ],
+    "count": 5
+  }
+}

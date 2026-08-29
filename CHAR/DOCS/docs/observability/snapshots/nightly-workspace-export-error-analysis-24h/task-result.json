@@ -1,13 +1,13 @@
 {
-  "TimeRange": "24h",
-  "Status": "completed",
-  "Duration": 1374.3392,
   "Artifacts": [
     "error-analysis.png",
     "error-analysis.json"
   ],
-  "StartTime": "2025-10-08T02:00:03.1115673+01:00",
   "TaskId": "nightly-export-error-analysis-24h",
+  "EndTime": "2025-10-07T16:59:42.4827249+01:00",
   "Workspace": "docs\\observability\\snapshots\\nightly-workspace-export-error-analysis-24h",
-  "EndTime": "2025-10-08T02:00:04.4859065+01:00"
+  "TimeRange": "24h",
+  "StartTime": "2025-10-07T16:59:40.8398821+01:00",
+  "Duration": 1642.8428,
+  "Status": "completed"
 }

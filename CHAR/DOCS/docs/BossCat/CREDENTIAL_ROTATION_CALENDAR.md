@@ -6,7 +6,9 @@
 
 ## Overview
 
-This document defines the **mandatory rotation schedule** for all credentials, keys, and secrets used in the BossCat OEM observability stack. Regular rotation reduces risk from compromised credentials and ensures compliance with security best practices.
+This document defines the **mandatory rotation schedule** for all credentials, keys, and secrets used in the BossCat OEM
+observability stack. Regular rotation reduces risk from compromised credentials and ensures compliance with security
+best practices.
 
 ---
 
@@ -51,6 +53,7 @@ This document defines the **mandatory rotation schedule** for all credentials, k
    - Click "Update secret"
 
 3. **Verify New Key Works**
+
    ```bash
    # Trigger a workflow that uses the GitHub App token
    gh workflow run iona-gate-verify.yml
@@ -76,6 +79,7 @@ This document defines the **mandatory rotation schedule** for all credentials, k
 #### Rollback Plan
 
 If new key fails:
+
 1. Re-upload previous key to `BOSSCAT_APP_PRIVATE_KEY` secret
 2. Verify workflows function
 3. Investigate failure cause before retry
@@ -91,6 +95,7 @@ If new key fails:
 #### Rotation Process
 
 1. **Generate New SSH Key Pair**
+
    ```bash
    # Generate ED25519 key (recommended)
    ssh-keygen -t ed25519 -C "deploy-key-bosscat-$(date +%Y)" -f ~/.ssh/deploy_key_new
@@ -109,6 +114,7 @@ If new key fails:
 
 3. **Update CI/CD Configuration**
    - Update deploy key secret in GitHub Actions:
+
      ```bash
      # View current secret
      gh secret list
@@ -118,6 +124,7 @@ If new key fails:
      ```
 
 4. **Test New Key**
+
    ```bash
    # Test SSH connection
    ssh -i ~/.ssh/deploy_key_new -T git@github.com
@@ -131,6 +138,7 @@ If new key fails:
    - Click "Delete" and confirm
 
 6. **Securely Delete Old Private Key**
+
    ```bash
    # Shred old key (Linux)
    shred -vfz ~/.ssh/deploy_key_old
@@ -160,6 +168,7 @@ If new key fails:
    - Copy the generated key **immediately** (won't be shown again)
 
 2. **Update Environment Variables**
+
    ```bash
    # Update .env file (if used locally)
    SIGNOZ_API_KEY=<new-key>
@@ -174,6 +183,7 @@ If new key fails:
 3. **Update Configuration Files**
    - Check for hardcoded keys (should not exist!)
    - Verify references use environment variables:
+
      ```yaml
      # config.yaml
      exporters:
@@ -183,6 +193,7 @@ If new key fails:
      ```
 
 4. **Verify Functionality**
+
    ```bash
    # Test API access
    curl -H "Authorization: Bearer <new-key>" http://localhost:8080/api/v1/dashboards
@@ -220,6 +231,7 @@ If new key fails:
    - Copy token immediately
 
 2. **Update GitHub Actions Secret**
+
    ```bash
    gh secret set DOCKER_USERNAME --body "<username>"
    gh secret set DOCKER_PASSWORD --body "<new-token>"
@@ -227,6 +239,7 @@ If new key fails:
 
 3. **Update Docker Login in Workflows**
    - Verify workflows use secrets:
+
      ```yaml
      - name: Login to Docker Hub
        uses: docker/login-action@v3
@@ -236,6 +249,7 @@ If new key fails:
      ```
 
 4. **Test Docker Operations**
+
    ```bash
    # Test login
    echo "<new-token>" | docker login -u "<username>" --password-stdin
@@ -272,6 +286,7 @@ If new key fails:
    - Copy token immediately
 
 2. **Update Local Git Configuration**
+
    ```bash
    # Update remote URL with new token
    git remote set-url origin https://<new-token>@github.com/<owner>/<repo>.git
@@ -291,6 +306,7 @@ If new key fails:
    - Local scripts: Update in secure storage
 
 4. **Verify Access**
+
    ```bash
    # Test git operations
    git fetch origin
@@ -498,7 +514,7 @@ Supports compliance with:
 
 ### Email Template: Rotation Reminder
 
-```
+```yaml
 Subject: [Action Required] Credential Rotation Due - <Credential Type>
 
 Hi <Team>,
@@ -556,5 +572,5 @@ BossCat OEM Security Team
 
 ---
 
-**🐾 End of Credential Rotation Calendar**
+### 🐾 End of Credential Rotation Calendar
 

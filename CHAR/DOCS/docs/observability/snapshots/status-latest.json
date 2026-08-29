@@ -1,0 +1,13 @@
+{
+  "generated_at": "2026-08-12T18:27:03.954Z",
+  "file": "docs/observability/snapshots/status-2026-08-12T1827.json",
+  "source": "manual-refresh",
+  "url": "http://localhost:8080",
+  "note": "Refreshed after SigNoz stack restart + pipeline verify (2026-08-12)",
+  "health": {
+    "gate": "GREEN",
+    "signoz": "healthy",
+    "verified_trace_id": "ec2d3c56e3d254430e8d2e9eedc55d55",
+    "collector": "running"
+  }
+}

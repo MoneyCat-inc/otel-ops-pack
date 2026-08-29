@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Policy Bundle & Cosign Attestations</title>
+<meta name="description" content="Policy-as-code enforcement with OPA bundles and cosign verification.">
+<link rel="canonical" href="https://hub.resonai.uk/docs/security/policy-bundle/">
+<link rel="stylesheet" href="/docs/assets/hub.css">
+</head>
+<body>
+<div class="container">
+<h1>🔒 Policy Bundle & Cosign Attestations</h1>
+<p><strong>Enforce guardrails with signed OPA bundles and supply-chain verification.</strong></p>
+
+<h2>What This Provides</h2>
+<ul>
+<li><strong>OPA Policy Bundle</strong> — Rego rules for config validation, security policies, and compliance checks</li>
+<li><strong>Cosign Attestations</strong> — Cryptographically signed artifacts with keyless verification</li>
+<li><strong>Supply-Chain Security</strong> — Verify policy bundles before deployment</li>
+<li><strong>Audit Trail</strong> — Every policy change is signed and traceable</li>
+</ul>
+
+<h2>Verification Example</h2>
+<pre><code># Verify signed policy bundle
+cosign verify --certificate-identity-regexp=".*" \
+  --certificate-oidc-issuer="https://token.actions.githubusercontent.com" \
+  ghcr.io/moneycat-inc/policy-bundle:latest
+
+# Download and extract bundle
+opa run \
+  --server \
+  --bundle https://hub.resonai.uk/security/policy-bundle/bundle.tar.gz
+</code></pre>
+
+<h2>Policy Examples</h2>
+<ul>
+<li><strong>Config Validation</strong> — Ensure OTel Collector configs meet security baselines</li>
+<li><strong>SBOM Requirements</strong> — Enforce CycloneDX SBOM presence in releases</li>
+<li><strong>Attestation Checks</strong> — Verify all artifacts are signed before deployment</li>
+</ul>
+
+<h2>Reference</h2>
+<ul>
+<li><a href="/docs/security/supply-chain/sbom/">SBOM & Release Attestations</a></li>
+<li><a href="https://www.openpolicyagent.org/" target="_blank" rel="noopener">Open Policy Agent (OPA)</a></li>
+<li><a href="https://docs.sigstore.dev/cosign/overview/" target="_blank" rel="noopener">Cosign Documentation</a></li>
+</ul>
+
+<div class="footer">
+<p><a href="/">&larr; Back to BossCat Hub</a></p>
+<p><small>By <a href="https://patreon.com/FaeMcLachlan" target="_blank" rel="noopener">Fae McLachlan</a> &bull; Evidence-First Observability</small></p>
+</div>
+</div>
+</body>
+</html>
+
