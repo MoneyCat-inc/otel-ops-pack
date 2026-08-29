@@ -14,7 +14,7 @@
 [CmdletBinding()]
 param(
   [string]$ServiceName      = "synthetic-windows-check",
-  [string]$CanaryScriptPath = "C:\otel\synthetic\send_synthetic_otel_simple.py",
+  [string]$CanaryScriptPath = "C:\otel\BRAV\SCPT\send_synthetic_otel_simple.py",
   [string]$CollectorName    = "signoz-otel-collector",   # docker service name
   [string]$OutDir           = "out",
   [int]$CanaryWaitSeconds   = 60

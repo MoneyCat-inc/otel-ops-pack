@@ -17,7 +17,7 @@ Write-Host ""
 # Step 1: Fire synthetic trace
 Write-Host "1️⃣ Firing synthetic trace..." -ForegroundColor Yellow
 try {
-    python synthetic/send_synthetic_otel_simple.py
+    python BRAV/SCPT/send_synthetic_otel_simple.py
     Write-Host "   ✅ Synthetic trace sent" -ForegroundColor Green
 } catch {
     Write-Host "   ⚠️ Trace generation completed with warnings" -ForegroundColor Yellow

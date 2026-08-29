@@ -37,7 +37,6 @@
       "next-env.d.ts",
       "jest.config.ts",
       "lefthook.yml",
-      "vercel.json",
       "Dockerfile",
       "Dockerfile.dev",
       "docker-compose.yml",
@@ -56,8 +55,6 @@
       "dotnet-autoinstrumentation",
       "windows",
       "third_party",
-      "bosscat-svc2-api",
-      "bosscat-svc3-worker",
       "moneycat",
       "otel-agent-coordination",
       "artifacts",
@@ -107,19 +104,42 @@
     "tetragram_structure": {
       "ALFA": {
         "description": "Application plane - source code, instrumentation, apps",
-        "subdirs": ["CORE", "INST", "APPS", "LIBS"]
+        "subdirs": [
+          "CORE",
+          "INST",
+          "APPS",
+          "LIBS"
+        ]
       },
       "BRAV": {
         "description": "Build/Runtime/Automation/Verification plane - scripts, infra, CI/CD",
-        "subdirs": ["SCPT", "INFR", "DOCK", "CICD", "HOOK"]
+        "subdirs": [
+          "SCPT",
+          "INFR",
+          "DOCK",
+          "CICD",
+          "HOOK"
+        ]
       },
       "CHAR": {
         "description": "Compliance/Human/Audit/Review plane - docs, reports, evidence",
-        "subdirs": ["DOCS", "EVID", "AUDT", "REPO"]
+        "subdirs": [
+          "DOCS",
+          "EVID",
+          "AUDT",
+          "REPO"
+        ]
       },
       "DELT": {
         "description": "Data/Environment/Load/Test plane - configs, fixtures, test data, artifacts",
-        "subdirs": ["CONF", "FIXT", "ASST", "LOAD", "TMPL", "ARTF"]
+        "subdirs": [
+          "CONF",
+          "FIXT",
+          "ASST",
+          "LOAD",
+          "TMPL",
+          "ARTF"
+        ]
       }
     },
     "ci_workflow_rules": {
@@ -172,4 +192,3 @@
     "exit_code_on_violation": 1
   }
 }
-

@@ -88,7 +88,7 @@ jobs:
         if: steps.stack.outputs.stack_available == 'true'
         shell: pwsh
         run: |
-          $canaryScript = Join-Path $PWD 'synthetic/send_synthetic_otel_simple.py'
+          $canaryScript = Join-Path $PWD 'BRAV/SCPT/send_synthetic_otel_simple.py'
           pwsh -File BRAV/SCPT/verify-pipeline.ps1 -CanaryScriptPath $canaryScript
           $code = $LASTEXITCODE
           echo "exit_code=$code" >> $env:GITHUB_OUTPUT

@@ -13,7 +13,7 @@ $ErrorCaptureConfig = @{
     ServiceName = $ServiceName
     ScriptName = $ScriptName
     EnableCapture = $EnableCapture
-    AdapterPath = "scripts/agent/error-watcher/publish.ps1-adapter.js"
+    AdapterPath = "BRAV/SCPT/agent/error-watcher/publish.ps1-adapter.js"
     LogLevel = "error"
 }
 
