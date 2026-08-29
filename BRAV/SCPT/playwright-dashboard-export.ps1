@@ -1,116 +1,146 @@
-# Playwright Dashboard Export Automation
-# Captures SigNoz dashboard snapshots for evidence and verification
-# BossCat OEM - Post-Gate Evidence Collection
+# Playwright Dashboard Export Script
+# Captures SigNoz UI screenshots and saves to docs/observability/snapshots/
 
 param(
-    [string]$OutputDir = "docs/observability/snapshots",
-    [string]$DashboardUrl = "http://localhost:8080",
-    [switch]$FullSuite
+  [string]$SigNozUrl = "http://localhost:8080",
+  [string]$OutputDir = "docs/observability/snapshots",
+  [switch]$Headless = $true
 )
 
-$ErrorActionPreference = "Stop"
+$ErrorActionPreference = 'Stop'
 
-Write-Host "📸 BossCat Playwright Dashboard Export" -ForegroundColor Cyan
-Write-Host "Target: $DashboardUrl" -ForegroundColor Gray
-Write-Host ""
-
-# Ensure output directory exists
-if (-not (Test-Path $OutputDir)) {
-    New-Item -ItemType Directory -Path $OutputDir -Force | Out-Null
-    Write-Host "✅ Created output directory: $OutputDir" -ForegroundColor Green
+function New-DirIfMissing {
+  param([string]$Path)
+  if (-not (Test-Path $Path)) {
+    New-Item -ItemType Directory -Path $Path -Force | Out-Null
+  }
 }
 
-$timestamp = Get-Date -Format "yyyy-MM-dd-HHmmss"
-$sessionDir = Join-Path $OutputDir "session-$timestamp"
-New-Item -ItemType Directory -Path $sessionDir -Force | Out-Null
+# Ensure output directory exists (normalize for Node/ESM)
+$OutputDir = $OutputDir -replace '\\','/'
+New-DirIfMissing $OutputDir
 
-Write-Host "📁 Session directory: $sessionDir" -ForegroundColor Gray
-Write-Host ""
-
-# Check if SigNoz is accessible
+# Check if playwright is installed
+$playwrightInstalled = $false
 try {
-    $health = Invoke-RestMethod -Uri "$DashboardUrl/api/v1/health" -TimeoutSec 3 -ErrorAction Stop
-    Write-Host "✅ SigNoz is accessible (health: $($health.status))" -ForegroundColor Green
-}
-catch {
-    Write-Host "🔴 SigNoz not accessible at $DashboardUrl" -ForegroundColor Red
-    Write-Host "   Error: $($_.Exception.Message)" -ForegroundColor Gray
-    Write-Host "   Ensure SigNoz is running: docker ps --filter name=signoz" -ForegroundColor Yellow
-    exit 1
+  $npmList = npm list --depth=0 2>&1
+  if ($npmList -match '@playwright/test') {
+    $playwrightInstalled = $true
+  }
+} catch {}
+
+if (-not $playwrightInstalled) {
+  Write-Warning "Playwright not installed. Install with: pnpm install @playwright/test"
+  Write-Warning "Skipping dashboard export."
+  exit 0
 }
 
-Write-Host ""
-Write-Host "🎭 Running Playwright dashboard export..." -ForegroundColor Cyan
+# Create inline Playwright script
+$timestamp = Get-Date -Format 'yyyyMMdd-HHmmss'
+$scriptPath = ".playwright-export-temp.mjs"
+$baseUrlNorm = ($SigNozUrl.TrimEnd('/'))
+$outDirNorm  = $OutputDir
+$headlessStr = $Headless.ToString().ToLower()
 
-# Check if Playwright is available
-$playwrightConfig = "playwright.signoz.config.ts"
-if (-not (Test-Path $playwrightConfig)) {
-    Write-Host "⚠️  Playwright config not found: $playwrightConfig" -ForegroundColor Yellow
-    Write-Host "   Creating minimal config..." -ForegroundColor Gray
+# Use single-quoted here-string; replace placeholders explicitly to avoid escaping issues
+$playwrightScript = @'
+import { chromium } from '@playwright/test';
+
+async function captureScreenshots() {
+  const browser = await chromium.launch({ headless: __HEADLESS__ });
+  const context = await browser.newContext({ viewport: { width: 1920, height: 1080 } });
+  const page = await context.newPage();
+
+  try {
+    const baseUrl = "__BASE__";
+    const outputDir = "__OUT__";
+    const timestamp = "__TS__";
+
+    // 1. Home dashboard
+    console.log('Capturing home dashboard...');
+    await page.goto(baseUrl, { waitUntil: 'networkidle', timeout: 30000 });
+    await page.waitForTimeout(2000);
+    await page.screenshot({ path: `${outputDir}/signoz-home-${timestamp}.png`, fullPage: true });
+
+    // 2. Logs view
+    console.log('Capturing logs view...');
+    await page.goto(`${baseUrl}/logs`, { waitUntil: 'networkidle', timeout: 30000 });
+    await page.waitForTimeout(2000);
+    await page.screenshot({ path: `${outputDir}/signoz-logs-${timestamp}.png`, fullPage: true });
+
+    // 3. Traces view with iona.boot filter
+    console.log('Capturing traces view (iona.boot filter)...');
+    await page.goto(`${baseUrl}/traces`, { waitUntil: 'networkidle', timeout: 30000 });
+    await page.waitForTimeout(2000);
     
-    # Create minimal Playwright config for dashboard export
-    $minimalConfig = @"
-import { defineConfig } from '@playwright/test';
+    // Try to apply filter (best-effort)
+    try {
+      const filterInput = await page.locator('input[placeholder*="Search"], input[type="search"]').first();
+      if (await filterInput.isVisible({ timeout: 5000 })) {
+        await filterInput.fill('iona.boot');
+        await page.keyboard.press('Enter');
+        await page.waitForTimeout(2000);
+      }
+    } catch (e) {
+      console.log('Filter not applied (input not found), continuing...');
+    }
+    
+    await page.screenshot({ path: `${outputDir}/signoz-traces-iona-boot-${timestamp}.png`, fullPage: true });
 
-export default defineConfig({
-  testDir: './tests/dashboard',
-  timeout: 30000,
-  use: {
-    baseURL: '$DashboardUrl',
-    screenshot: 'only-on-failure',
-    video: 'off',
-  },
-  reporter: [['list'], ['json', { outputFile: 'playwright-report/dashboard-results.json' }]],
+    // 4. Status page (if exists)
+    console.log('Capturing status page...');
+    try {
+      await page.goto('file:///' + process.cwd().replace(/\\/g, '/') + '/docs/status.html', { waitUntil: 'load', timeout: 10000 });
+      await page.waitForTimeout(1000);
+      await page.screenshot({ path: `${outputDir}/status-page-${timestamp}.png`, fullPage: true });
+    } catch (e) {
+      console.log('Status page not captured (file not found or error):', e.message);
+    }
+
+    console.log(`✅ Screenshots saved to ${outputDir}/`);
+  } catch (error) {
+    console.error('Error during screenshot capture:', error.message);
+    throw error;
+  } finally {
+    await browser.close();
+  }
+}
+
+captureScreenshots().catch((error) => {
+  console.error('Fatal error:', error);
+  process.exit(1);
 });
-"@
-    $minimalConfig | Out-File $playwrightConfig -Encoding UTF8
-    Write-Host "✅ Created minimal config" -ForegroundColor Green
-}
+'@
 
-# Run Playwright export
 try {
-    Write-Host "   Exporting dashboards..." -ForegroundColor Gray
-    
-    # Check if playwright is installed
-    $playwrightInstalled = Test-Path "node_modules/@playwright/test"
-    if (-not $playwrightInstalled) {
-        Write-Host "   Installing Playwright..." -ForegroundColor Yellow
-        pnpm add -D @playwright/test 2>&1 | Out-Null
-        npx playwright install chromium --with-deps 2>&1 | Out-Null
-    }
-    
-    # For now, just capture basic evidence via screenshots
-    Write-Host "   📸 Capturing dashboard evidence..." -ForegroundColor Cyan
-    
-    # Create evidence document
-    $evidence = @{
-        timestamp = (Get-Date).ToString("o")
-        signoz_url = $DashboardUrl
-        session_id = $timestamp
-        captures = @()
-    }
-    
-    # Basic health evidence (already captured)
-    $evidence.captures += @{
-        type = "health_check"
-        status = "ok"
-        verified = $true
-    }
-    
-    $evidenceFile = Join-Path $sessionDir "dashboard-evidence.json"
-    $evidence | ConvertTo-Json -Depth 10 | Out-File $evidenceFile -Encoding UTF8
-    
-    Write-Host "   ✅ Evidence captured" -ForegroundColor Green
-    Write-Host ""
-    Write-Host "💾 Exported to: $sessionDir" -ForegroundColor Green
-    Write-Host "   - dashboard-evidence.json" -ForegroundColor Gray
+  # Fill placeholders and write temporary script
+  $js = $playwrightScript.Replace('__HEADLESS__', $headlessStr).Replace('__BASE__', $baseUrlNorm).Replace('__OUT__', $outDirNorm).Replace('__TS__', $timestamp)
+  $js | Set-Content -Path $scriptPath -Encoding UTF8
+  # Fix escaped template placeholders introduced for PowerShell safety
+  try {
+    $js = Get-Content -LiteralPath $scriptPath -Raw -Encoding UTF8
+    $js = $js -replace '\\\$\{outputDir\}','${outputDir}'
+    $js = $js -replace '\\\$\{timestamp\}','${timestamp}'
+    $js = $js -replace '\\\$\{baseUrl\}','${baseUrl}'
+    $js | Set-Content -LiteralPath $scriptPath -Encoding UTF8
+  } catch {}
+  
+  # Execute with node
+  Write-Host "Launching Playwright to capture SigNoz dashboards..." -ForegroundColor Cyan
+  node $scriptPath
+  
+  if ($LASTEXITCODE -eq 0) {
+    Write-Host "✅ Dashboard export completed successfully" -ForegroundColor Green
+  } else {
+    Write-Warning "Playwright export failed with exit code: $LASTEXITCODE"
+  }
+} catch {
+  Write-Warning "Error running Playwright: $_"
+  Write-Warning "Continuing without screenshots (best-effort)"
+} finally {
+  # Cleanup temp script
+  if (Test-Path $scriptPath) {
+    Remove-Item -Path $scriptPath -Force -ErrorAction SilentlyContinue
+  }
 }
-catch {
-    Write-Host "🔴 Playwright export failed: $($_.Exception.Message)" -ForegroundColor Red
-    exit 1
-}
-
-Write-Host ""
-Write-Host "✅ Dashboard export complete" -ForegroundColor Green
-Write-Host "🐾 BossCat: Dashboard snapshots captured for gate evidence" -ForegroundColor Cyan
 
