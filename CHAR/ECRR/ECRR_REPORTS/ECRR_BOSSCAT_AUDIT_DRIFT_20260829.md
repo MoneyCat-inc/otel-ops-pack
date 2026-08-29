@@ -174,3 +174,14 @@ OEM adopted Draft A ("adopt Draft A and execute the enactment checklist"). Enact
 - `docs/REPOSITORY_STRUCTURE.md` caveat flipped from "describes, does not prescribe" to the ratified state.
 
 **Left for the operator (cannot be done from this seat):** marking `guardrails.yml` *required* in branch protection (GitHub admin UI), and the live RED demonstration — the first PR that adds a stray root file will show the guard failing, completing the last success criterion. Host-side note: any legacy scheduled task calling the rehomed validation scripts by `C:\otel\<name>.ps1` root path needs its path updated or retiring (the AGENTS.md rc=2 legacy-task disposition already tracks that class).
+
+
+---
+
+## Addendum (2026-08-29) — enactment demos complete; arc closed
+
+- **GREEN demo**: PR #647 (operator's rebased ECRR sync) merged with Repository Structure Compliance passing on its first run as a *required* check.
+- **RED demo** (OEM-ordered): PR #648 added one stray root file; the required check **failed** on it ([run 33254203928](https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/33254203928/job/99104976407)) and blocked the merge; PR closed unmerged, branch deleted.
+- Operator follow-ups closed: Repository Structure Compliance added to required checks on `main`; scheduled-task sweep found a single root-path caller (`\otel_canary_10m` → `canary-check-min.ps1`, blessed at root — no change needed).
+
+Every ADR-0002 success criterion is now demonstrated, both halves of "a check must be able to both pass and fail" on real PRs under branch protection. The audit arc — three-stream audit → P0–P3 → ADR-0002 adoption → enactment → verification — is complete.
