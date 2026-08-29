@@ -27,7 +27,7 @@ This master guide provides a **comprehensive overview** of all security and main
 | [Nightly Dashboard Guide](NIGHTLY_DASHBOARD_GUIDE.md) | Automated dashboard exports | 2025-10-07 |
 | [Credential Rotation Calendar](CREDENTIAL_ROTATION_CALENDAR.md) | Secret rotation schedule | 2025-10-07 |
 | [AGENTS.md](../../AGENTS.md) | BossCat agent hierarchy | Current |
-| [Security Remediation](../../SECURITY_REMEDIATION.md) | Security incident procedures | Current |
+| [Security Remediation](DEPENDABOT_SECURITY_GUIDE.md) | Security incident procedures | Current |
 
 ### External Resources
 
@@ -629,7 +629,9 @@ All security-relevant actions must be:
 
 ### Accepted Risk Waivers
 
-Formal acceptance of known, intentional security warnings that are scoped to local development and self-hosted observability. Each waiver must be reviewable (pass *and* fail) and re-evaluated when scope changes.
+Formal acceptance of known, intentional security warnings that are scoped to local development and
+self-hosted observability. Each waiver must be reviewable (pass *and* fail) and re-evaluated when
+scope changes.
 
 #### WAIVER-OTEL-001 — Insecure TLS on local OTLP export
 
@@ -647,13 +649,16 @@ Formal acceptance of known, intentional security warnings that are scoped to loc
 WARNING: Insecure TLS detected - ensure it's only for local connections
 ```
 
-**Configuration:** Windows collector OTLP exporter uses `tls.insecure: true` when forwarding to the local SigNoz aggregator on loopback:
+**Configuration:** Windows collector OTLP exporter uses `tls.insecure: true` when forwarding to the
+local SigNoz aggregator on loopback:
 
 - `config.yaml` — `exporters.otlp.endpoint: localhost:4317`
 - `windows/otelcol/otelcol-contrib-config.yaml` — canonical service template
 - `C:\ProgramData\otelcol-contrib\config.yaml` — installed service config (BOSSCAT-022A)
 
-**Risk accepted:** Telemetry between the Windows collector and the SigNoz Docker collector traverses `127.0.0.1` only. No encryption on this hop is required because the traffic does not leave the host and is not exposed to the network.
+**Risk accepted:** Telemetry between the Windows collector and the SigNoz Docker collector traverses
+`127.0.0.1` only. No encryption on this hop is required because the traffic does not leave the host
+and is not exposed to the network.
 
 **Controls in place:**
 
@@ -667,7 +672,9 @@ WARNING: Insecure TLS detected - ensure it's only for local connections
 - Collector ports are exposed beyond `127.0.0.1`
 - Production or multi-tenant deployment is declared for this stack
 
-**Remediation path:** Set `tls.insecure: false`, provision TLS certs for the OTLP receiver, and update exporter `endpoint` to `https://…` per [SigNoz OTLP docs](https://signoz.io/docs/opentelemetry-collection/).
+**Remediation path:** Set `tls.insecure: false`, provision TLS certs for the OTLP receiver, and
+update exporter `endpoint` to `https://…` per
+[SigNoz instrumentation docs](https://signoz.io/docs/instrumentation/).
 
 #### WAIVER-OTEL-002 — Kafka exporter not configured
 
@@ -681,11 +688,14 @@ WARNING: Insecure TLS detected - ensure it's only for local connections
 
 **Finding:** Full health check reports `Kafka: SKIPPED (not configured)`.
 
-**Risk accepted:** No Kafka exporter is present in the active collector config. The pipeline uses direct OTLP export to SigNoz; Kafka is out of scope for the Windows OTel pack.
+**Risk accepted:** No Kafka exporter is present in the active collector config. The pipeline uses
+direct OTLP export to SigNoz; Kafka is out of scope for the Windows OTel pack.
 
-**Controls in place:** `health-check.ps1` only runs `kafka-smoke.ps1` when a `kafka` exporter block exists in config; skip is informational, not a failure.
+**Controls in place:** `health-check.ps1` only runs `kafka-smoke.ps1` when a `kafka` exporter block
+exists in config; skip is informational, not a failure.
 
-**Re-evaluation required when:** A `kafka` exporter is added to `config.yaml` or service config — remove this waiver and verify broker reachability in full health checks.
+**Re-evaluation required when:** A `kafka` exporter is added to `config.yaml` or service config —
+remove this waiver and verify broker reachability in full health checks.
 
 ### Compliance Frameworks
 
