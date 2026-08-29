@@ -76,4 +76,4 @@ and the specific allowlist are replaced by this ADR).
 - [x] `guardrails.yml` re-enabled on `pull_request` (marking it *required* is a branch-protection setting — operator/admin step in the GitHub UI)
 - [x] Zero full `.ps1` bodies under `scripts/` (wrapper rule holds as of the P1-7 fork resolution)
 - [x] ADR-0001 header updated; Draft B removed from the tree (preserved in history)
-- [ ] RED verified on a test PR adding a stray root file (first real PR against the re-enabled guard will demonstrate this; cannot be exercised from this session)
+- [x] RED verified: PR #648 (stray `RED_DEMO_STRAY_FILE.txt`) was blocked by a Repository Structure Compliance **failure** as a required check ([run 33254203928](https://github.com/MoneyCat-inc/otel-ops-pack/actions/runs/33254203928/job/99104976407), 2026-08-29) and closed unmerged; the GREEN half was demonstrated on PR #647. All success criteria met.
