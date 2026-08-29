@@ -54,8 +54,10 @@ const metrics = {
   types: types.size,
   inputFile: path.basename(inputFile),
   timestamp: new Date().toISOString(),
-  // ICF fields (placeholders until full convergence tracking implemented)
-  convergence_rate_7d: 0.93,  // TODO: Calculate from ECRR trends
+  // Not computed: no convergence tracking is implemented, so publish null rather
+  // than a fabricated value — the status panel renders '-' for null (P0-3,
+  // ECRR_BOSSCAT_AUDIT_DRIFT_20260829).
+  convergence_rate_7d: null,
   warnings_7d: deltaPPL > 0.50 ? 1 : 0,  // Simple threshold for now
   delta_perplexity: parseFloat(deltaPPL.toFixed(4)),
   lii: parseFloat(LII.toFixed(4))

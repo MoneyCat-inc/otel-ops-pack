@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generated_at": "2025-10-13T09:09:41Z",
-  "convergence_rate_7d": 0.96,
+  "convergence_rate_7d": null,
   "self_heals_7d": 0,
   "u_turns_7d": 0,
   "kb_coverage": 45,
