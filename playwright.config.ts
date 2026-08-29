@@ -2,10 +2,10 @@ import { defineConfig, devices } from '@playwright/test';
 
 /**
  * Playwright configuration for IONA gate verification
- * Used by scripts/iona-snapshot.spec.ts
+ * Used by BRAV/SCPT/iona-snapshot.spec.ts
  */
 export default defineConfig({
-  testDir: './scripts',
+  testDir: './BRAV/SCPT',
   testMatch: '**/iona-snapshot.spec.ts',
   fullyParallel: true,
   forbidOnly: !!process.env['CI'],
@@ -28,11 +28,7 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
   ],
-  webServer: {
-    command: 'pnpm dev',
-    url: 'http://localhost:3000',
-    reuseExistingServer: !process.env['CI'],
-    timeout: 120 * 1000,
-  },
+  // webServer removed 2026-08-29 (audit P2): 'pnpm dev' no longer exists — point
+  // PLAYWRIGHT_BASE_URL at a running server instead.
 });
 
