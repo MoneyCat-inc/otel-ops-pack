@@ -105,10 +105,10 @@ Details and rewrite policy: [Partial clone (Second Pass D1)](docs/BossCat/PARTIA
 
 We follow **BossCat governance** with immutable merge rules:
 
-- **Budget enforcement:** ≤10 files, ≤200 LOC per merge
+- **Docs-lane budget (GR-02):** ≤10 files, ≤200 LOC per docs merge (`lane:cleanup` waiver for repo-wide passes)
 - **ECRR methodology:** Examine → Clean → Report → Role
-- **Gate verification:** must pass before merge
-- **Kill-switch:** active for drift control
+- **Gate verification:** must pass before merge (required checks incl. Repository Structure Compliance)
+- **Structure guard:** file-aware, required on every PR ([ADR-0002](CHAR/DOCS/ADR/0002-ratify-hybrid.md)); recurring writers need an owner, review date, and kill switch ([PURPOSE](docs/PURPOSE.md))
 
 See: [AGENTS.md](AGENTS.md) | [ECRR Manual](docs/BossCat/misc/ART_OF_ECRR.md) | [Charter](docs/BossCat/CHARTER.md) | [Second Pass Plan](docs/BossCat/SECOND_PASS_PLAN.md)
 
@@ -116,7 +116,7 @@ See: [AGENTS.md](AGENTS.md) | [ECRR Manual](docs/BossCat/misc/ART_OF_ECRR.md) | 
 
 ## 📊 Project Status
 
-**Last updated:** June 2026 — see [Executive Status](docs/status/misc/STATUS.md) for current gate, SBOM, and pipeline health.
+**Last updated:** August 2026 — see [Executive Status](docs/status/misc/STATUS.md) for current gate, SBOM, and pipeline health.
 
 - **Main branch gates:** green (BossCat Gate Verify, CodeQL, Gitleaks)
 - **Local pipeline:** Docker + SigNoz + Windows collector (`quick-monitor` health check)
@@ -178,7 +178,9 @@ pwsh -File scripts\preflight-health-check.ps1
 
 ## Related repos
 
-- **[socm](https://github.com/MoneyCat-inc/socm)** — Bluesky / social ops (extracted Pack 3B)
-- **[scorebot](https://github.com/MoneyCat-inc/scorebot)** — Visual quality metrics (extracted Pack 3B)
-- **[viz-engine](https://github.com/MoneyCat-inc/viz-engine)** — Milkdrop / ProjectM / Butterchurn (extracted Pack 3B)
-- **[moneycat-site](https://github.com/MoneyCat-inc/moneycat-site)** — MoneyCat Inc company site (extracted Pack 3B)
+All four are **private** (org members only — the links 404 for everyone else):
+
+- **[socm](https://github.com/MoneyCat-inc/socm)** *(private)* — Bluesky / social ops (extracted Pack 3B)
+- **[scorebot](https://github.com/MoneyCat-inc/scorebot)** *(private)* — Visual quality metrics (extracted Pack 3B)
+- **[viz-engine](https://github.com/MoneyCat-inc/viz-engine)** *(private, archived)* — Milkdrop / ProjectM / Butterchurn (extracted Pack 3B)
+- **[moneycat-site](https://github.com/MoneyCat-inc/moneycat-site)** *(private)* — MoneyCat Inc company site (extracted Pack 3B)
