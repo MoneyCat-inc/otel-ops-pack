@@ -101,3 +101,17 @@ ls .github/workflows/*.yml | wc -l                                         # 63 
 ```
 
 **ECRR Mantra**: *Examine → Clean → Report → Role — every change begins with evidence, removes drift, leaves an artifact, declares its actor.*
+
+---
+
+## Addendum (2026-08-29) — P0 tier executed on OEM order
+
+OEM directed execution of the P0 tier ("start executing the P0 tier"). Applied on this branch:
+
+- **P0-1** (`154114c`): Hurst/fractal lane retired — 13 files deleted (three estimators, the non-importing importer, the alert verifier, the daily-drills orchestration, `signoz-hurst-exponent-drift-alert.json`). All "Fractal Drift" labels over coefficient-of-variation queries renamed honestly: `deploy-fractal-drift-dashboard.ps1` → `deploy-queue-health-dashboard.ps1` (dashboard "Queue Health Monitors", panel "Queue Variability (CV)"), alert "Queue Variance Drift Detected", matching renames in `manual-dashboard-import.ps1`, `deploy-alerts.ps1`, `deploy-alert-thresholds-notifications.ps1`; dead Hurst/pattern query blocks removed from `test-signoz-queries.ps1`. Net −2,139 lines.
+- **P0-2** (`2720af5`): `bosscat-diagnostic.yml` repointed to post-reorg paths with fatal repo-side checks (runner-env probes stay informational); `multi-app-ci.yml` `|| true` mask removed, real `ALFA/APPS/sidecars/requirements.txt` created from the sidecars' imports, false retirement rationale corrected.
+- **P0-3** (`0b8a11d`): `convergence_rate_7d` placeholder replaced with `null` in `scripts/rsi-extract.mjs` and both published status JSONs; the ICF/RSI panel renders `-` for null.
+
+Validation: both edited workflows parse (PyYAML), both status JSONs parse, `node --check` passes on the extractor, and a repo-wide sweep finds zero remaining live references to any deleted file (historical ECRR/evidence archives intentionally untouched). Budget note: P0-1 exceeds the GR-02 ≤10-file guideline (18 files, overwhelmingly deletions of one dead component); commits are split per item so the OEM can merge separately if lane discipline requires.
+
+Remaining honesty items outside P0 scope, noted for P1+: `bosscat-gate-verify.yml:172` soft-fails the RSI extraction (`|| echo WARNING`), and `docs/status/*.json` still carry other unverified static fields (`self_heals_7d`, `u_turns_7d`, `kb_coverage`).
