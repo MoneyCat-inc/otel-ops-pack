@@ -1,0 +1,103 @@
+# ECRR — Full-Project Audit: Internals, Exponent Telemetry, Structural Drift
+
+**Date**: 2026-08-29
+**Actor**: Chat/review seat (Claude Code remote session, branch `claude/bosscat-audit-drift-ohc8yb`)
+**Role**: Auditor — proposes, does not decide (per `docs/PURPOSE.md` authority model)
+**Task**: OEM-requested audit: (1) internal component consistency after additions/removals, (2) exponent pipeline vs. reality, (3) drift from founding documents.
+**Verdict**: ⚠️ Governance/evidence lanes healthy; executable layer substantially broken; exponent telemetry disconnected and non-measuring; founding architecture reversed without record.
+
+---
+
+## 1. Examine
+
+### 1a. Internals — component consistency
+
+The executable layer is unverified by CI (no workflow runs `pnpm build`/`test`/`lint` or `docker compose config`), which is why none of the following has surfaced:
+
+- **Root `docker-compose.yml`** mounts `./configs/prometheus/prometheus.yml` and `./configs/dashboards` — `configs/` moved to `DELT/CONF/configs/`; Docker silently creates empty dirs. `demo-app` and the three `gpu-*` services reference images (`otel-otel-demo-app`, `otel-gpu-sidecar`) this file never builds; the gpu services also lost their `command:` lines (present only in `compose/legacy.yml`).
+- **All four `compose/*.yml` files are unrunnable as written**: relative paths (`./clickhouse-cluster-config.xml`, `./signoz-collector-config.yaml`, `Dockerfile.demo`, `./sidecars/`, `./triton-models/`) resolve against `compose/`, where none of those files exist. Nothing in the repo invokes them with `--project-directory ..`.
+- **`package.json`**: `dev/build/start/lint` (Next.js — no `app/`/`pages/` at root; moved to `ALFA/APPS/app`, `ALFA/CORE/pages`), `db:*` (Prisma — schema at `ALFA/LIBS/prisma/`), `gate:perf` (`tests/perf/gate.js` — no `tests/` dir), `emit:enhanced`, `security:scan|monitor|cleanup` (missing scripts) are all broken. `pnpm-workspace.yaml` lists non-existent `resonai-mock`. `AGENTS.md` cites a `pnpm agent:setup` script that does not exist.
+- **Playwright/TS configs**: 3 of 4 Playwright configs point at moved/deleted test dirs; `tsconfig.error-watcher.json` points at pre-reorg `scripts/agent/error-watcher/`.
+- **Workflows (63)**: broken paths in `gate-site-evidence.yml` (`tests/perf/gate.js`, live on dispatch/push), `signoz-automation-fresh.yml`, `bosscat-diagnostic.yml` (all six k6/locust paths pre-reorg; soft-fails so it "diagnoses nothing"), `multi-app-ci.yml` (missing requirements.txt masked by `|| true`; retirement rationale contradicts tree state). `docs/status/workflows.json` says 62 workflows, disk has 63 (`clean-host-freshness.yml` unregistered) — the exact drift `registry-guard.yml` exists to fail on.
+- **`scripts/` vs `BRAV/SCPT/` have diverged**: 28+ colliding filenames, at least 6 with different content (`verify-iona-gate.ps1` 11.9KB vs 9.4KB; `diagnostic.sh` 197B vs 12.7KB), no declared source of truth. `.pre-commit-config.yaml` lints only `scripts/`, so the 758-file `BRAV/SCPT/` tree is never linted pre-commit.
+- **`bosscat-svc2-api/` + `bosscat-svc3-worker/` are dead code**: no build, no compose, no CI; their own gate specs (`scripts/gate029/specs/*.json`) point `appPath` at `dotnet-test-app`. No `svc1` exists anywhere in the repo — grep returns zero hits.
+- **CODEOWNERS** reserves six NATO subdirs that were never created (`ALFA/INST`, `BRAV/CICD`, `BRAV/HOOK`, `CHAR/AUDT`, `CHAR/REPO`, `DELT/LOAD`) and three non-existent files.
+- **Root orphans**: `canary.yml`, `ci-cd-pipeline.yml`, `ci-cd-pipeline-ecrr.yml` (workflows outside `.github/workflows/` — never run), `vercel.json` (**invalid JSON** — `#` comments before `{`; targets moved `app/api/**`), `signoz-scan-critical-high.json` (220KB Trivy *log* misnamed `.json`), duplicate gate schemas (root vs `schema/` — diverged), `tests.schema.json` superseded, `third_party/resonai` submodule uninitialized yet cited by `AGENTS.md`. 23 of 24 root `.ps1` files unreferenced by any workflow.
+- **Working-tree corruption**: 4 files under `CHAR/PRSV/archive/` carried bare `\r\r\r` runs that CRLF normalization rewrites on every checkout — every fresh clone showed a permanently dirty tree. (Fixed this session, see §2.)
+
+### 1b. Exponents — are we seeing what is really happening?
+
+**No. The exponent telemetry does not reflect reality, and in its current wiring cannot.**
+
+- **Transport does not exist**: the estimators write `hurst_estimate` as a JSON field to relative `artifacts/*.json`; the collector (`config.yaml:33-39`) tails only `C:/logs/**/*.log`. The Hurst value physically cannot enter the pipeline.
+- **The alert can never fire**: `signoz-hurst-exponent-drift-alert.json` queries `message contains "hurst_estimate" AND log.file.path contains "canary-pattern-results.json"` — data that never enters SigNoz. Its `threshold: 0.7` compares a *record count*, not the exponent value. Its JSON is not in the schema the repo's own installer (`bosscat-create-signoz-alerts.ps1`) speaks; the 8 alerts CI installs do not include it. `import-hurst-drift-alert.ps1` prints manual instructions and never imports.
+- **The estimator is not a Hurst estimator**: all three copies (`canary-pattern-drills.ps1:180-191`, `investigate-poisson-anomaly.ps1:57-79`, `enhanced-statistical-validation.ps1:41-52`) compute single-scale `log(R/S)/log(n)` — no multi-window regression, no detrending, no small-sample correction. At n≈30-60 (below the repo's own stated 200-500 minimum) the standard error spans the entire 0.3-0.7 decision band.
+- **Inputs are fabricated**: every exponent is computed on inter-arrivals the script generated from `System.Random` moments earlier — it measures the .NET PRNG, not the system. The "Steady" pattern's H=0.5 is a divide-by-zero fallback constant (inter-arrival is the literal `10`, StdDev=0) reported back as a confirmed prediction. The "enhanced" validator labels one exponential distribution as three patterns (all λ=0.1; committed evidence shows CV≈1 for all three, including "Steady" and "Pareto"). The bootstrap CI resamples with replacement, destroying the temporal ordering Hurst measures. `investigate-poisson-anomaly.ps1:277-330` hardcodes its findings text regardless of computed numbers.
+- **Nothing runs**: no CI, no compose service; `setup-daily-pattern-drills.ps1:6` points at pre-reorg `scripts\canary-pattern-drills.ps1` and exits 1 before registering the task. Last evidence artifacts: 2025-10-01, containing unexpanded PowerShell variables.
+- **The one live panel is mislabeled**: "Fractal Drift Detection" (`deploy-fractal-drift-dashboard.ps1:119-145`) plots coefficient of variation of `otelcol_exporter_queue_size` — real, measured, useful, and not fractal. The name is the only connection to the Hurst work.
+- **Adjacent placeholder**: `scripts/rsi-extract.mjs:57` ships `convergence_rate_7d: 0.93 // TODO`; published `docs/status/*.json` carry the static value since 2025-10-13.
+
+### 1c. Drift from founding documents
+
+Original mission (`.agent/policies.md`, `.agent/runbook.md`): a small Windows OTel collector pack feeding Event Logs into self-hosted SigNoz. ADR-0001 (2025-10-09) imposed the ALFA/BRAV/CHAR/DELT tetragram explicitly to eliminate 17 legacy roots including `scripts/` and `docs/`, enforced by CI guardrail.
+
+- **The tetragram was reversed in place, with no ADR**: `scripts/` and `docs/` are back in `BRAV/SCPT/guardrails.json` `allowed_top_level`. `CHAR/DOCS/ADR/` contains exactly one ADR — the reversal of the founding decision is unrecorded.
+- **The guardrail cannot see the largest violation**: `check_guardrails.py:80-85` iterates *directories only*; over half the allowlist entries are files it can never evaluate. 130 loose root files, ~112 outside the allowlist, all invisible. This is the exact failure mode PURPOSE.md's rule names: *"A check must be able to both pass and fail."*
+- **The guardrail is RED right now and nothing runs it**: `python3 BRAV/SCPT/check_guardrails.py --config BRAV/SCPT/guardrails.json` exits 1 (`synthetic/` — an explicitly forbidden legacy root, re-created; `.kiro/` — unauthorized). Both enforcement workflows RETIRED 2026-08-03 to `workflow_dispatch`.
+- **Evidence-to-product inversion**: `CHAR/EVID` 2,318 files + `CHAR/ECRR` 601 files vs. the actual deliverable `windows/otelcol/` — 2 files. Compliance plane outweighs application plane ~30:1.
+- **Out-of-scope subsystems still live at root** despite Pack 3B split and `AGENTS.md`'s own out-of-scope declaration: web hub (`index.html`, `portal.html`, `patreon-cover-banner.html`, `CNAME`, `og/`, deployed by `deploy-moneycat.yml`), GPU/Triton/CUDA residue (`DELT/CONF/triton-models/`, 4 root gpu scripts, `Dockerfile.gpu-base`), viz/socm remnants across 9+ `docs/` subdirs.
+- **Documentation contradicts itself**: `docs/REPOSITORY_STRUCTURE.md` (dated *after* ADR-0001) documents the abolished pre-tetragram layout with zero tetragram mentions. README says 386 ECRR reports, AGENTS.md says 385; actual: **409** (410 including this one). PURPOSE.md says 11 scheduled workflows; actual: 12 (the 12th, `clean-host-freshness.yml`, does carry the required written justification — the count is stale, the process held).
+- **Six AGENTS.md copies**, three ECRR locations, three IONA_ERRORS copies, two CODEOWNERS, four agent frameworks (`.agent`, `.cursor`, `.kiro`, `otel-agent-coordination`), container definitions in four places.
+- Mitigating: PURPOSE.md (2026-08-14) already names steady-state drift as the standing risk, and the actor-seat governance rules themselves are *not* violated — the drift is structural, not procedural.
+
+---
+
+## 2. Clean
+
+Scope of this session was **audit, not remediation** — chat/review seat proposes, does not decide. One mechanical fix was applied because it blocked a clean working tree on every fresh clone:
+
+- `c63ef1f` — renormalized bare-CR runs in 4 `CHAR/PRSV/archive/` reports (whitespace-only, 4 files / 5 lines; within GR-02 budget). Fresh clones now check out clean.
+
+All other findings are left for OEM disposition (see §3 recommendations).
+
+---
+
+## 3. Report — ranked dispositions proposed
+
+**P0 — truthfulness (the PURPOSE.md rule):**
+1. Retire or rewrite the Hurst/fractal lane honestly: delete `signoz-hurst-exponent-drift-alert.json`, the three copy-pasted estimators, and `import-hurst-drift-alert.ps1`, or rebuild on real measured inter-arrivals with a multi-window estimator and a working transport. Rename the "Fractal Drift Detection" panel to what it is (queue-size CV).
+2. Fix or remove `bosscat-diagnostic.yml` (reports "missing" for every path and passes) and the `|| true` mask in `multi-app-ci.yml` — both are checks that cannot fail.
+3. Replace the `convergence_rate_7d` placeholder or remove the metric from published status JSON.
+
+**P1 — live breakage:**
+4. Repoint root `docker-compose.yml` `./configs/` → `DELT/CONF/configs/`; restore gpu `command:` lines or drop the gpu services; fix or park `compose/*.yml` (add `--project-directory` docs or move configs).
+5. Refresh `docs/status/workflows.json` (62→63) before `registry-guard.yml` fails a workflow PR.
+6. Fix `gate-site-evidence.yml` k6 path → `ALFA/TEST/load/k6/`.
+7. Decide one canonical side of the `scripts/` vs `BRAV/SCPT/` fork (6+ diverged twins) and delete the other; extend pre-commit PSSA to the survivor.
+
+**P2 — dead weight:**
+8. Delete: `bosscat-svc2-api/`, `bosscat-svc3-worker/` (gate specs already run dotnet-test-app), root orphan workflows (`canary.yml`, `ci-cd-pipeline*.yml`), invalid `vercel.json`, `signoz-scan-critical-high.json`, duplicate root gate schemas, `requirements-synthetic.txt`/`synthetic/`, `tsconfig.error-watcher.json` or repoint it.
+9. Fix broken `package.json` scripts or delete them (Next/Prisma/security:*/gate:perf); drop `resonai-mock` from workspace; fix 3 Playwright configs.
+10. CODEOWNERS: remove the six never-created NATO dirs and three phantom files.
+
+**P3 — record-keeping:**
+11. Write ADR-0002 recording the tetragram partial reversal (or re-enforce ADR-0001 — either is defensible; the unrecorded state is not).
+12. Extend `check_guardrails.py` to files, fix the diverged `guardrails.json` `tetragram_structure` block, and re-enable the guard on PRs — or formally retire ADR-0001.
+13. Correct stale counts: README/AGENTS ECRR counts, PURPOSE.md workflow count, `docs/REPOSITORY_STRUCTURE.md` rewrite or deletion.
+
+**Quantified before/after** (this session): dirty-on-clone files 4→0; ECRR reports 409→410; all other counts unchanged — this is an audit artifact, not a remediation.
+
+---
+
+## 4. Role
+
+**Chat/review seat** (Claude Code remote session) acting as **Auditor** under the standing delegation model: this report proposes dispositions and decides none of them. No credentials touched, no browser steps, no secrets referenced by value. Evidence gathered read-only from the working tree at `0a6e222` plus one whitespace-only commit (`c63ef1f`). All checks reproducible:
+
+```bash
+python3 BRAV/SCPT/check_guardrails.py --config BRAV/SCPT/guardrails.json  # exits 1
+python3 -c "import json; json.load(open('vercel.json'))"                  # fails
+grep -rn "svc1" --include="*.yml" --include="*.ps1" --include="*.json" .   # no hits
+ls .github/workflows/*.yml | wc -l                                         # 63 vs workflows.json total:62
+```
+
+**ECRR Mantra**: *Examine → Clean → Report → Role — every change begins with evidence, removes drift, leaves an artifact, declares its actor.*
