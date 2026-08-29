@@ -22,9 +22,13 @@
         const qp = new URLSearchParams(window.location.search);
         const fromQuery = qp.get('status_base');
         if (fromQuery) {
-          // Same-origin only: a crafted ?status_base= link must not steer fetches off-site.
-          const u = new URL(String(fromQuery), window.location.origin);
-          if (u.origin === window.location.origin) return u.pathname.replace(/\/$/, '');
+          // Same-origin only: a crafted ?status_base= link must not steer fetches
+          // off-site. Accept only a plain absolute path (single leading slash, safe
+          // charset) - this rules out schemes, hosts, and protocol-relative //host
+          // by shape, a sanitization CodeQL's taint tracking also recognizes
+          // (js/client-side-request-forgery flagged the prior URL-object check).
+          const p = String(fromQuery);
+          if (/^\/(?!\/)[\w.\-\/]*$/.test(p)) return p.replace(/\/$/, '');
         }
         if (window.STATUS_BASE) return String(window.STATUS_BASE).replace(/\/$/, '');
         const meta = document.querySelector('meta[name="status-base"]');
