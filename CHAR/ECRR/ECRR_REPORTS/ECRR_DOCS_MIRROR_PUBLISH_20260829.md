@@ -32,3 +32,13 @@ The operator's first Windows dry-run reported 200 copies / 3 deletes instead of 
 - **False drift — ~200 phantom copies**: every flagged shared path was blob-identical; the mismatch was stale-smudge (worktree files materialized under older line-ending rules vs fresh `eol=lf` checkouts). Raw worktree-byte comparison (`Get-FileHash`) cannot distinguish this from drift. Fixed: the script now compares via `git hash-object` (clean-filtered), which is platform- and checkout-age-independent.
 
 Post-fix parity: 778/778 tracked paths, 0 blob mismatches. Expected operator verification: v2 `-DryRun` reports 0 copies / 0 deletes; if any deletes persist on Windows, capture the paths (suspect Unicode-name edge) and report.
+
+---
+
+## Addendum (2026-08-29) — operator v2 dry-run: 9/9 residual; v3 retires the failure family
+
+The operator's v2 dry-run reported 9 copies / 9 deletes — the same 9 non-ASCII-named files (U+2019 apostrophes, en-dashes) seen under two spellings. Root cause: the script compared path strings decoded from git output against path strings returned by the .NET filesystem; on Windows those decode paths disagree for non-ASCII names, so identical files mis-paired as copy+delete. Meanwhile the committed state was already provably perfect: `git rev-parse HEAD:docs` and `HEAD:CHAR/DOCS/docs` return the **same tree OID** (`9515adb…`) — a one-hash, platform-independent proof.
+
+**v3 rewrite**: the sync now happens at git's tree level and no file path ever crosses a decode boundary — `git diff-tree` for dry-run, `git rm --cached` + `git read-tree --prefix=CHAR/DOCS/docs/` for the graft, scoped `git checkout`/`git clean -fdx` for the worktree, and a `write-tree` proof that the staged mirror tree equals the source tree before anything is committed. Also fixes a v2 latent hazard found on self-review: unscoped index materialization could have clobbered unrelated uncommitted edits; v3 scopes every worktree operation to `CHAR/DOCS/docs/`.
+
+Validated by simulation (Linux): perturbed mirror (tracked file deleted, stray added) → publish sequence → staged tree == source tree, deletion restored, stray purged, force-tracked binaries retained, unrelated worktree edits untouched. Acceptance for any platform, forever: the dry-run prints "Mirror in sync" iff the two tree OIDs are equal.
