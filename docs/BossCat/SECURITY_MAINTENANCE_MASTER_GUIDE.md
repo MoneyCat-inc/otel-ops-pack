@@ -6,7 +6,8 @@
 
 ## Document Purpose
 
-This master guide provides a **comprehensive overview** of all security and maintenance operations for the BossCat OEM observability framework. It serves as the **single source of truth** for:
+This master guide provides a **comprehensive overview** of all security and maintenance operations for the
+BossCat OEM observability framework. It serves as the **single source of truth** for:
 
 - Security workflows and automation
 - Maintenance schedules and procedures
@@ -107,7 +108,7 @@ This master guide provides a **comprehensive overview** of all security and main
 
 ### Defense in Depth
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │                     Code Repository                         │
 │  ┌────────────────────────────────────────────────────┐    │
@@ -148,6 +149,7 @@ This master guide provides a **comprehensive overview** of all security and main
 **Tools**: Gitleaks, ESLint, Prettier
 
 **Process**:
+
 1. Developer makes changes locally
 2. Pre-commit hook runs automatically
 3. Gitleaks scans for secrets
@@ -160,11 +162,13 @@ This master guide provides a **comprehensive overview** of all security and main
 #### 2. Pull Request Security Checks
 
 **Workflows**:
+
 - `security-scan.yml` - Secret scanning, CodeQL, Trivy
 - `iona-gate-verify.yml` - BossCat gate verification
 - `dependency-review-action` - PR-based dependency analysis
 
 **Process**:
+
 1. Developer creates PR
 2. All security workflows trigger
 3. Results posted as PR comments
@@ -174,11 +178,13 @@ This master guide provides a **comprehensive overview** of all security and main
 #### 3. Continuous Monitoring
 
 **Workflows**:
+
 - `nightly-dashboard-export.yml` - Daily at 2 AM UTC
 - `security-scan.yml` - Daily at 2 AM UTC (scheduled run)
 - `gitleaks-security-scan.yml` - Weekly Monday at 3 AM
 
 **Process**:
+
 1. Scheduled workflow runs
 2. Scans entire repository
 3. Results uploaded as artifacts
@@ -188,11 +194,13 @@ This master guide provides a **comprehensive overview** of all security and main
 #### 4. Dependabot Automation
 
 **Schedule**:
+
 - **GitHub Actions**: Weekly
 - **Python (pip)**: Daily
 - **Node.js (npm)**: Daily
 
 **Process**:
+
 1. Dependabot scans dependencies
 2. Creates PR for updates
 3. CI runs tests on PR
@@ -214,6 +222,7 @@ This master guide provides a **comprehensive overview** of all security and main
 | Dependabot PRs | Automatic | N/A | Review open PRs |
 
 **Manual Verification** (Morning):
+
 ```powershell
 # Quick daily check
 pwsh scripts/quick-status.ps1
@@ -247,6 +256,7 @@ pwsh scripts/quick-status.ps1
   - Schedule testing for high-risk updates
 
 - [ ] **Check Workflow Success Rate**
+
   ```bash
   # View workflow runs
   gh run list --workflow=iona-gate-verify.yml --limit 50
@@ -263,6 +273,7 @@ pwsh scripts/quick-status.ps1
   - Verify all access is authorized
 
 **Checklist Script**:
+
 ```powershell
 # scripts/weekly-security-review.ps1
 # Run: pwsh -File scripts/weekly-security-review.ps1
@@ -473,6 +484,7 @@ function Send-SecurityMetrics {
 #### 🔴 Critical (P0)
 
 **Examples**:
+
 - Secrets leaked in public repository
 - Active security breach
 - Critical vulnerability being exploited
@@ -481,6 +493,7 @@ function Send-SecurityMetrics {
 **Response Time**: Immediate (within 1 hour)
 
 **Actions**:
+
 1. Activate incident response team
 2. Contain breach (revoke credentials, block access)
 3. Assess impact and scope
@@ -491,6 +504,7 @@ function Send-SecurityMetrics {
 #### 🟠 High (P1)
 
 **Examples**:
+
 - High-severity vulnerability discovered
 - Failed security audit
 - Unauthorized access attempt detected
@@ -499,6 +513,7 @@ function Send-SecurityMetrics {
 **Response Time**: Within 4 hours
 
 **Actions**:
+
 1. Investigate and validate
 2. Assess impact
 3. Plan remediation
@@ -509,6 +524,7 @@ function Send-SecurityMetrics {
 #### 🟡 Moderate (P2)
 
 **Examples**:
+
 - Moderate vulnerability discovered
 - Security workflow failing
 - Compliance issue identified
@@ -517,6 +533,7 @@ function Send-SecurityMetrics {
 **Response Time**: Within 24 hours
 
 **Actions**:
+
 1. Create issue to track
 2. Investigate root cause
 3. Schedule remediation
@@ -526,6 +543,7 @@ function Send-SecurityMetrics {
 #### 🟢 Low (P3)
 
 **Examples**:
+
 - Low-severity vulnerability
 - Documentation outdated
 - Minor policy clarification needed
@@ -534,55 +552,65 @@ function Send-SecurityMetrics {
 **Response Time**: Within 1 week
 
 **Actions**:
+
 1. Add to backlog
 2. Prioritize with other work
 3. Implement when capacity allows
 
 ### Incident Response Playbook
 
-**Phase 1: Detection & Triage**
-```
+#### Phase 1: Detection & Triage
+
+```text
 [Alert Received] → [Validate Issue] → [Determine Severity] → [Assign Owner]
 ```
 
-**Phase 2: Containment**
-```
+#### Phase 2: Containment
+
+```text
 [Revoke Credentials] → [Block Access] → [Isolate Affected Systems]
 ```
 
-**Phase 3: Investigation**
-```
+#### Phase 3: Investigation
+
+```text
 [Gather Evidence] → [Analyze Logs] → [Determine Scope] → [Identify Root Cause]
 ```
 
-**Phase 4: Remediation**
-```
+#### Phase 4: Remediation
+
+```text
 [Develop Fix] → [Test Fix] → [Deploy Fix] → [Verify Resolution]
 ```
 
-**Phase 5: Recovery**
-```
+#### Phase 5: Recovery
+
+```text
 [Restore Services] → [Monitor for Issues] → [Verify Functionality]
 ```
 
-**Phase 6: Post-Incident**
-```
+#### Phase 6: Post-Incident
+
+```text
 [Document Incident] → [Conduct Retrospective] → [Update Procedures] → [Train Team]
 ```
 
 ### Communication Plan
 
 **Internal Communication**:
+
 - **Team**: Slack/Discord/Teams channel
 - **Management**: Email + status page
 - **Stakeholders**: Regular updates every 2-4 hours
 
 **External Communication** (if applicable):
+
 - **Users**: Status page update
 - **Partners**: Direct email
 - **Public**: Blog post / social media (if needed)
 
 **Template**:
+
 ```markdown
 ## Security Incident - [DATE] - [SEVERITY]
 
@@ -702,12 +730,14 @@ remove this waiver and verify broker reachability in full health checks.
 #### SOC 2 (Type II)
 
 **Relevant Controls**:
+
 - **CC6.1**: Access controls and authentication
 - **CC6.6**: Vulnerability management
 - **CC7.2**: Change management
 - **CC8.1**: Data classification and handling
 
 **Evidence Provided By**:
+
 - GitHub App token authentication
 - Dependabot vulnerability tracking
 - BossCat gate verification
@@ -716,12 +746,14 @@ remove this waiver and verify broker reachability in full health checks.
 #### ISO 27001
 
 **Relevant Controls**:
+
 - **A.9.2**: User access management
 - **A.12.6**: Technical vulnerability management
 - **A.14.2**: Security in development and support
 - **A.16.1**: Incident management
 
 **Evidence Provided By**:
+
 - Credential rotation calendar
 - Security scanning workflows
 - GitHub branch protection
@@ -730,6 +762,7 @@ remove this waiver and verify broker reachability in full health checks.
 #### NIST Cybersecurity Framework
 
 **Functions Addressed**:
+
 - **Identify**: Asset and vulnerability identification
 - **Protect**: Access control and protective technology
 - **Detect**: Security monitoring and detection processes
@@ -788,6 +821,7 @@ New team members should:
 ### Training Topics
 
 **Required Training**:
+
 1. **Security Fundamentals** (2 hours)
    - Threat landscape
    - Common vulnerabilities
@@ -809,6 +843,7 @@ New team members should:
    - Respond to a simulated incident
 
 **Recommended Training**:
+
 - OWASP Top 10 course
 - GitHub Advanced Security certification
 - Cloud security fundamentals
@@ -877,7 +912,7 @@ All documentation must:
 
 ### Feedback Loop
 
-```
+```text
 [Monitor Metrics] → [Identify Issues] → [Root Cause Analysis] → 
 [Implement Fix] → [Verify Improvement] → [Document] → [Repeat]
 ```
@@ -896,6 +931,7 @@ Track improvements in GitHub Issues with labels:
 **Frequency**: After incidents, Quarterly for routine operations
 
 **Format**:
+
 1. **What went well?**
 2. **What could be improved?**
 3. **What will we do differently?**
@@ -939,7 +975,7 @@ Track improvements in GitHub Issues with labels:
 
 ---
 
-**🐾 End of Security & Maintenance Master Guide**
+## 🐾 End of Security & Maintenance Master Guide
 
 *For questions or clarifications, open an issue with the `documentation` label.*
 
