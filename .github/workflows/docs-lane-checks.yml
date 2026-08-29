@@ -121,7 +121,12 @@ jobs:
           git diff --name-only "$MERGE_BASE" "$HEAD_SHA" > all_changed.txt || true
           # Generated registry — not prose; exclude from GR-02 file/LOC budgets
           grep -E '^(docs/|README\.md$)' all_changed.txt | grep -Ev '^docs/status/workflows\.json$' > changed_docs.txt || true
-          grep -Ev '^(docs/|README\.md$)' all_changed.txt > out_of_lane.txt || true
+          # Mirror republish (CHAR/DOCS/docs/**) is the prescribed companion of any
+          # docs/ change (ADR-0002 publish mechanism, BRAV/SCPT/publish-docs-mirror.ps1):
+          # byte-derived from docs/ with tree-OID proof, and the underlying change is
+          # already counted once in the lane budgets above. Not out-of-lane (decision
+          # 2026-08-29, OEM; same precedent as the workflows.json budget exclusion).
+          grep -Ev '^(docs/|README\.md$|CHAR/DOCS/docs/)' all_changed.txt > out_of_lane.txt || true
           FILES=$(wc -l < changed_docs.txt | tr -d ' ')
           LOC=$(git diff --numstat "$MERGE_BASE" "$HEAD_SHA" | awk '
             $3 ~ /^(docs\/|README\.md$)/ && $3 != "docs/status/workflows.json" {a+=$1; d+=$2}
