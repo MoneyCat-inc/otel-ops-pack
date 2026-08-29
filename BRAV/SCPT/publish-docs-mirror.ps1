@@ -1,26 +1,29 @@
 #Requires -Version 7.0
 <#
 .SYNOPSIS
-  Publish step for the CHAR/DOCS documentation mirror.
+  Publish step for the CHAR/DOCS documentation mirror (v3, tree-level).
 
 .DESCRIPTION
-  Makes CHAR/DOCS/docs/ an exact copy of the GIT-TRACKED contents of docs/.
-  This is the "publish step" that CHAR/DOCS/README.md has referenced since the
-  mirror was created but which never existed (found in the 2026-08-29 audit
-  close-out; ECRR_BOSSCAT_AUDIT_DRIFT_20260829.md). Run it manually after
-  docs/ changes land; it is deliberately NOT a scheduled workflow — per
-  docs/PURPOSE.md, recurring writers need an owner, review date and kill
-  switch, and a manually run script needs none of that.
+  Makes CHAR/DOCS/docs/ an exact copy of the last COMMITTED state of docs/ by
+  grafting the docs tree object into the index at the mirror prefix. No file
+  paths ever cross a string-decode boundary, which retires the entire failure
+  family found on 2026-08-29:
+    v1: raw worktree-byte comparison -> hundreds of stale-smudge phantoms;
+        `git add -A` silently skipped gitignored-but-mirrored *.docx/*.pdf.
+    v2: per-file `git hash-object` fixed the smudge phantoms, but comparing
+        git-decoded path strings against .NET filesystem path strings still
+        mis-paired 9 non-ASCII filenames on Windows (U+2019, en-dash).
+    v3: `git read-tree --prefix` + tree-OID comparison. Content is compared
+        by hash inside git; equality of the two tree OIDs IS the proof.
 
-  Scope guard: this script only ever writes or deletes inside CHAR/DOCS/docs/.
-  The rest of CHAR/DOCS/ (ADR/, policies/, runbooks/, IONA_ERRORS.md, ...) is
-  first-class content, NOT mirror output, and is never touched.
-
-  The source file list comes from `git ls-files docs` so local untracked or
-  ignored files under docs/ are never published into the mirror.
+  Publishes committed content only: uncommitted edits under docs/ are not
+  mirrored until they land in a commit (the script warns when it sees any).
+  Scope guard unchanged: only CHAR/DOCS/docs/ is ever written or deleted;
+  the first-class content at CHAR/DOCS/ top level (ADR/, policies/, ...) is
+  untouched. Manual by design (docs/PURPOSE.md: no new recurring writers).
 
 .PARAMETER DryRun
-  Report what would be copied/deleted without writing anything.
+  Report the tree-level differences without touching index or worktree.
 
 .EXAMPLE
   pwsh -File BRAV/SCPT/publish-docs-mirror.ps1 -DryRun
@@ -37,77 +40,57 @@ $repoRoot = (git rev-parse --show-toplevel).Trim()
 if (-not $repoRoot) { throw 'Not inside a git repository.' }
 Set-Location $repoRoot
 
-$src = 'docs'
-$dst = Join-Path 'CHAR' (Join-Path 'DOCS' 'docs')
+$srcTree = (git rev-parse 'HEAD:docs').Trim()
+if (-not $srcTree) { throw 'HEAD:docs did not resolve - refusing to continue.' }
 
-# Source of truth: git-tracked files under docs/ only.
-# core.quotepath=off keeps non-ASCII paths raw instead of C-quoted octal escapes.
-$srcRel = git -c core.quotepath=off ls-files -- $src | ForEach-Object {
-    $_.Substring($src.Length + 1)
-}
-if (-not $srcRel -or $srcRel.Count -eq 0) { throw "git ls-files returned nothing under $src/ - refusing to empty the mirror." }
+git rev-parse -q --verify 'HEAD:CHAR/DOCS/docs' *> $null
+$dstTree = if ($LASTEXITCODE -eq 0) { (git rev-parse 'HEAD:CHAR/DOCS/docs').Trim() } else { $null }
 
-$relSet = @{}
-foreach ($r in $srcRel) { $relSet[$r] = $true }
-
-$copied = 0; $deleted = 0; $unchanged = 0
-
-# 1. Copy new/changed files source -> mirror.
-foreach ($r in $srcRel) {
-    $s = Join-Path $src $r
-    $d = Join-Path $dst $r
-    # Compare clean-filtered content via git hash-object, NOT raw worktree bytes:
-    # a worktree checked out under older line-ending rules differs byte-wise from a
-    # fresh checkout of the identical blob, which made raw-byte comparison report
-    # hundreds of phantom copies on Windows (found 2026-08-29). hash-object applies
-    # the clean filter, so identical committed content always compares equal.
-    if (Test-Path -LiteralPath $d) {
-        $hashes = git hash-object -- "$s" "$d"
-        if ($hashes[0] -eq $hashes[1]) {
-            $unchanged++
-            continue
-        }
-    }
-    if ($DryRun) {
-        Write-Host "would copy:   $r"
-    } else {
-        $dir = Split-Path -Parent $d
-        if ($dir) { New-Item -ItemType Directory -Force -Path $dir | Out-Null }
-        Copy-Item -LiteralPath $s -Destination $d -Force
-    }
-    $copied++
+# Uncommitted docs/ edits are not published; say so up front.
+$dirty = git status --porcelain -- docs/
+if ($dirty) {
+    Write-Host "NOTE: docs/ has uncommitted changes; this publishes the last COMMITTED docs tree."
 }
 
-# 2. Delete mirror files that have no source counterpart.
-if (Test-Path -LiteralPath $dst) {
-    $dstPrefix = (Resolve-Path -LiteralPath $dst).Path
-    Get-ChildItem -LiteralPath $dst -Recurse -File | ForEach-Object {
-        $r = $_.FullName.Substring($dstPrefix.Length + 1) -replace '\\', '/'
-        if (-not $relSet.ContainsKey($r)) {
-            if ($DryRun) {
-                Write-Host "would delete: $r"
-            } else {
-                Remove-Item -LiteralPath $_.FullName -Force
-            }
-            $script:deleted++
-        }
-    }
-    # 3. Prune directories the deletions emptied.
-    if (-not $DryRun) {
-        Get-ChildItem -LiteralPath $dst -Recurse -Directory |
-            Sort-Object { $_.FullName.Length } -Descending |
-            Where-Object { -not (Get-ChildItem -LiteralPath $_.FullName -Force) } |
-            ForEach-Object { Remove-Item -LiteralPath $_.FullName -Force }
-    }
+if ($dstTree -eq $srcTree) {
+    Write-Host "Mirror in sync: HEAD:docs and HEAD:CHAR/DOCS/docs are the same tree ($srcTree)."
+    exit 0
 }
 
-$mode = if ($DryRun) { 'DRY RUN - nothing written' } else { 'published' }
-Write-Host ""
-Write-Host "Mirror $mode : copied $copied, deleted $deleted, unchanged $unchanged (source: $($srcRel.Count) tracked files)"
-if (-not $DryRun) {
-    # Stage with -f: .gitignore excludes *.docx/*.pdf repo-wide, but docs/ tracks
-    # force-added research binaries; a plain `git add -A` silently skips their mirror
-    # copies (which is exactly how 16 files went missing from the first catch-up).
-    git add -f -A -- $dst
-    Write-Host "Mirror changes staged (git add -f). Review with:  git status; git diff --cached --stat"
+# Show what differs, straight from git (byte-exact, platform-independent).
+Write-Host "Tree diff (mirror -> source):"
+if ($dstTree) {
+    git diff-tree -r --name-status $dstTree $srcTree
+} else {
+    Write-Host "  (mirror tree absent - full publish)"
+}
+
+if ($DryRun) {
+    Write-Host ""
+    Write-Host "DRY RUN - nothing written. source tree $srcTree vs mirror tree $(if ($dstTree) { $dstTree } else { '<none>' })"
+    exit 0
+}
+
+# 1. Drop the mirror subtree from the index (tolerate an empty mirror).
+git rm -r -q --cached --ignore-unmatch -- 'CHAR/DOCS/docs' | Out-Null
+
+# 2. Graft the committed docs tree at the mirror prefix (index-level, exact).
+git read-tree --prefix='CHAR/DOCS/docs/' $srcTree
+
+# 3. Materialize the worktree from the index (scoped to the mirror so no
+#    unrelated uncommitted edit is ever touched), then drop strays - files
+#    no longer tracked under the mirror, whatever their names or ignore
+#    status.
+git checkout -q -- 'CHAR/DOCS/docs'
+git clean -qfdx -- 'CHAR/DOCS/docs'
+
+# 4. Prove the staged result before anyone commits it.
+$staged = (git write-tree).Trim()
+$stagedMirror = (git rev-parse "${staged}:CHAR/DOCS/docs").Trim()
+if ($stagedMirror -eq $srcTree) {
+    Write-Host ""
+    Write-Host "Published and staged. PROOF: staged mirror tree == source tree ($srcTree)."
+    Write-Host "Commit with:  git commit -m 'docs: publish CHAR/DOCS mirror'"
+} else {
+    throw "Staged mirror tree $stagedMirror does not match source tree $srcTree - do not commit; investigate."
 }
