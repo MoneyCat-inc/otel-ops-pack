@@ -138,7 +138,10 @@ Write-Host ""
 Write-Host "  → Checking agent health..." -ForegroundColor Gray
 try {
     $agentDoctorOutput = pnpm agent:doctor 2>&1 | Out-String
-    $agentHealthy = $agentDoctorOutput -match "\[PASS\]" -and $agentDoctorOutput -notmatch "\[FAIL\]"
+    $agentHealthy = (
+        ($agentDoctorOutput -match "\[PASS\]" -or $agentDoctorOutput -match "\[preflight\] OK" -or $agentDoctorOutput -match "(?m)^OK$") -and
+        ($agentDoctorOutput -notmatch "\[FAIL\]" -and $agentDoctorOutput -notmatch "ERR_PNPM")
+    )
     
     $agentDoctorOutput | Set-Content "$OutputDir/agent-doctor.log"
     
@@ -159,7 +162,8 @@ try {
 # OTel Wiring
 Write-Host "  → Verifying OTel wiring..." -ForegroundColor Gray
 try {
-    $wiringCheck = pwsh -File "$PSScriptRoot/verify-wiring.ps1" 2>&1 | Tee-Object -FilePath "$OutputDir/wiring-check.log"
+    # Skip Resonai :3003 — collector/SigNoz wiring is enough for gate diagnostics
+    $wiringCheck = pwsh -File "$PSScriptRoot/verify-wiring.ps1" -SkipDevServer 2>&1 | Tee-Object -FilePath "$OutputDir/wiring-check.log"
     $wiringPassed = $wiringCheck -match "Wiring verification (PASSED|PARTIAL)"
     
     if ($wiringPassed) {
@@ -279,17 +283,30 @@ if ($SigNozCheck -or $Mode -eq 'gate') {
         }
     }
     
-    # OTel Collector Health
+    # OTel Collector Health (canonical: config.yaml health_check on :13134/healthz)
     Write-Host "  → Checking OTel Collector..." -ForegroundColor Gray
+    $collectorReachable = $false
+    $collectorDetail = $null
     try {
-        $null = Invoke-WebRequest -Uri "http://localhost:4318" -Method Head -TimeoutSec 3 -ErrorAction Stop
+        $collectorDetail = Invoke-RestMethod -Uri "http://127.0.0.1:13134/healthz" -Method Get -TimeoutSec 3 -ErrorAction Stop
+        $collectorReachable = $true
+    } catch {
+        try {
+            $null = Invoke-WebRequest -Uri "http://127.0.0.1:8888/metrics" -Method Get -TimeoutSec 3 -UseBasicParsing -ErrorAction Stop
+            $collectorReachable = $true
+            $collectorDetail = @{ status = "metrics_ok"; fallback = "8888/metrics" }
+        } catch {
+            $collectorDetail = @{ error = $_.Exception.Message }
+        }
+    }
+    if ($collectorReachable) {
         Write-Host "    ✅ OTel Collector reachable" -ForegroundColor Green
-        $diagnosticResults.metrics.otel_collector = @{ status = "reachable" }
+        $diagnosticResults.metrics.otel_collector = @{ status = "reachable"; detail = $collectorDetail }
         $diagnosticResults.gate_readiness.score++
         $diagnosticResults.gate_readiness.total++
-    } catch {
+    } else {
         Write-Host "    ⚠️  OTel Collector not responding" -ForegroundColor Yellow
-        $diagnosticResults.metrics.otel_collector = @{ status = "unreachable" }
+        $diagnosticResults.metrics.otel_collector = @{ status = "unreachable"; detail = $collectorDetail }
         $diagnosticResults.gate_readiness.warnings += "OTel Collector not responding"
         $diagnosticResults.gate_readiness.total++
     }

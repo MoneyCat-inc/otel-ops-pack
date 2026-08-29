@@ -19,5 +19,7 @@ repos:
       - id: pssa
         name: PSScriptAnalyzer
         language: system
-        entry: pwsh -NoLogo -NoProfile -Command "Install-Module PSScriptAnalyzer -Scope CurrentUser -Force; Invoke-ScriptAnalyzer -Path scripts -Recurse"
-        files: ^scripts/.*\.ps1$
+        # BRAV/SCPT is the canonical implementation tree (fork resolution, ECRR 20260829
+        # P1-7); scripts/ holds operator-facing wrappers. Lint both.
+        entry: pwsh -NoLogo -NoProfile -Command "Install-Module PSScriptAnalyzer -Scope CurrentUser -Force; Invoke-ScriptAnalyzer -Path scripts -Recurse; Invoke-ScriptAnalyzer -Path BRAV/SCPT -Recurse"
+        files: ^(scripts|BRAV/SCPT)/.*\.ps1$

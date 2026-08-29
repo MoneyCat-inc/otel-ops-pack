@@ -28,7 +28,7 @@ This index provides quick access to all components of the autonomous gate self-s
 
 ### For Visual Status
 
-→ **View:** `GATE_SELF_SIGNAL_STATUS_BANNER.txt`
+→ **View:** `CHAR/PRSV/root-status-artifacts/GATE_SELF_SIGNAL_STATUS_BANNER.txt`
 
 ---
 
@@ -51,7 +51,7 @@ This index provides quick access to all components of the autonomous gate self-s
 | `GATE_SELF_SIGNAL_FINAL_STATUS.md` | Complete operational summary | Understanding system |
 | `GATE_SELF_SIGNAL_OPERATIONAL_SUMMARY.md` | System overview & expectations | Learning details |
 | `GATE_SELF_SIGNAL_INFRASTRUCTURE_FIX.md` | Docker exec solution | Troubleshooting |
-| `GATE_SELF_SIGNAL_STATUS_BANNER.txt` | ASCII visual overview | Quick status check |
+| `CHAR/PRSV/root-status-artifacts/GATE_SELF_SIGNAL_STATUS_BANNER.txt` | ASCII visual overview | Quick status check |
 | `GATE_SELF_SIGNAL_INDEX.md` | This file | Navigating system |
 
 ### 📊 Prior Diagnostics & Evidence
@@ -287,7 +287,7 @@ fdeae88de docs(gate): operational summary - monitoring loop active
 
 1. Start: `GATE_SELF_SIGNAL_README.md`
 2. Deep dive: `GATE_SELF_SIGNAL_FINAL_STATUS.md`
-3. Visual: `GATE_SELF_SIGNAL_STATUS_BANNER.txt`
+3. Visual: `CHAR/PRSV/root-status-artifacts/GATE_SELF_SIGNAL_STATUS_BANNER.txt`
 
 ### **To Troubleshoot**
 

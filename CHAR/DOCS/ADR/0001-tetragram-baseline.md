@@ -1,7 +1,7 @@
 # ADR-0001: Tetragram Repository Structure Baseline
 
 **Date:** 2025-10-09  
-**Status:** Accepted ✅  
+**Status:** Accepted — superseded in part by [ADR-0002](0002-ratify-hybrid.md) (2026-08-29): the plane structure and 4-letter convention stand; the zero-legacy-roots criterion and the original allowlist are replaced by ADR-0002's ratified hybrid.  
 **Decision Makers:** BossCat OEM  
 **Gate Approval:** GATE-2025-10-09-001
 

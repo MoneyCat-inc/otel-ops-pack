@@ -120,7 +120,7 @@ See: [AGENTS.md](AGENTS.md) | [ECRR Manual](docs/BossCat/misc/ART_OF_ECRR.md) | 
 
 - **Main branch gates:** green (BossCat Gate Verify, CodeQL, Gitleaks)
 - **Local pipeline:** Docker + SigNoz + Windows collector (`quick-monitor` health check)
-- **ECRR reports:** 386 under `CHAR/ECRR/ECRR_REPORTS/`
+- **ECRR reports:** complete audit trail under `CHAR/ECRR/ECRR_REPORTS/` (410+; count with `ls CHAR/ECRR/ECRR_REPORTS/ | wc -l`)
 
 Live metrics: [Status Dashboard](docs/status.html)
 

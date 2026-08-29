@@ -4,10 +4,13 @@ concurrency:
   group: tetragram-guardrails-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-# RETIRED 2026-08-03 -- Phase 0 workflow audit (docs/BossCat/ROADMAP_2026H2.md).
-# Reason: push-to-main structure check; same machinery retired.
-# Automatic triggers removed; manual dispatch retained. Restore the on: block from git history to re-enable.
+# RE-ENABLED 2026-08-29 by ADR-0002 (ratify hybrid) — CHAR/DOCS/ADR/0002-ratify-hybrid.md.
+# Retired 2026-08-03 (Phase 0 workflow audit); restored as a pull_request check per the
+# adopted ADR's enactment: the guard is file-aware, guardrails.json is the single source
+# of truth, and the check was verified GREEN on the enacting branch before this trigger
+# was restored. It must stay able to both pass and fail (docs/PURPOSE.md).
 on:
+  pull_request:
   workflow_dispatch: {}
 
 permissions:
@@ -15,8 +18,6 @@ permissions:
 
 jobs:
   guardrails-check:
-    # Run on main and manual only; avoid blocking PRs
-    if: ${{ github.event_name != 'pull_request' }}
     name: Repository Structure Compliance
     runs-on: ubuntu-latest
     

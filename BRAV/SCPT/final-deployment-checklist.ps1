@@ -191,7 +191,7 @@ try {
 # Test integration
 Write-Info "Testing integration..."
 try {
-    $integrationResult = pwsh -File verify-integration.ps1
+    $integrationResult = pwsh -File scripts/verify-integration.ps1
     Write-Success "Integration tests passed"
 } catch {
     Write-Error "Integration tests failed: $($_.Exception.Message)"

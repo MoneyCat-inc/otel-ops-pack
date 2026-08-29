@@ -1,6 +1,6 @@
 # IONA Synthetic Span Emitter
 
-**File**: `scripts/emit-synthetic-span.mjs`  
+**File**: `BRAV/SCPT/emit-iona-span.ts`  
 **Purpose**: Emit synthetic OTLP spans via HTTP for IONA gate verification  
 **Protocol**: HTTP/protobuf  
 **Part of**: IONA-GATE-002 - BossCat Gating Framework

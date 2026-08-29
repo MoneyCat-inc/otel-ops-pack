@@ -11,7 +11,6 @@
 
 /ALFA/ @BossCat @alfa-team
 /ALFA/CORE/ @BossCat @core-developers
-/ALFA/INST/ @BossCat @instrumentation-team
 /ALFA/APPS/ @BossCat @app-developers
 /ALFA/LIBS/ @BossCat @library-maintainers
 
@@ -24,8 +23,6 @@
 /BRAV/SCPT/ @BossCat @ops-team
 /BRAV/INFR/ @BossCat @infrastructure-team
 /BRAV/DOCK/ @BossCat @docker-maintainers
-/BRAV/CICD/ @BossCat @ci-cd-team
-/BRAV/HOOK/ @BossCat @git-hooks-team
 
 # Critical automation requires BossCat approval
 /BRAV/SCPT/check_guardrails.py @BossCat
@@ -41,12 +38,8 @@
 /CHAR/ @BossCat @char-team
 /CHAR/DOCS/ @BossCat @documentation-team
 /CHAR/EVID/ @BossCat @qa-team
-/CHAR/AUDT/ @BossCat @audit-team
-/CHAR/REPO/ @BossCat @report-writers
 
 # ECRR reports require audit team review
-/CHAR/EVID/**/ECRR_REPORTS/ @BossCat @audit-team
-/CHAR/DOCS/ecrr/ @BossCat @audit-team
 
 # ============================================
 # DELT - Data/Environment/Load/Test
@@ -57,7 +50,6 @@
 /DELT/CONF/ @BossCat @config-team
 /DELT/FIXT/ @BossCat @qa-team
 /DELT/ASST/ @BossCat @asset-team
-/DELT/LOAD/ @BossCat @performance-team
 /DELT/TMPL/ @BossCat @template-team
 
 # Production configs require elevated review
@@ -96,10 +88,7 @@
 # ============================================
 
 /AGENTS.md @BossCat
-/ART_OF_ECRR.md @BossCat
-/DECISIONS.md @BossCat
 /CODEOWNERS @BossCat
-/.github/pull_request_template.md @BossCat
 
 # Docker Compose files require infrastructure approval
 docker-compose*.yml @BossCat @infrastructure-team @docker-maintainers

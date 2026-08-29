@@ -141,21 +141,21 @@ if ($GenerateAlerts -or $FullDeployment) {
                 }
             },
             @{
-                name = "Fractal Drift Detected"
-                description = "Alert when fractal drift coefficient exceeds 0.5 for 10 minutes"
+                name = "Queue Variance Drift Detected"
+                description = "Alert when queue-size coefficient of variation exceeds 0.5 for 10 minutes"
                 query = "stddev_over_time(otelcol_exporter_queue_size[10m]) / avg_over_time(otelcol_exporter_queue_size[10m]) > 0.5"
                 severity = "warning"
                 duration = "10m"
                 labels = @{
-                    alert_type = "fractal"
+                    alert_type = "queue-variance"
                     service = "otel-collector"
                     environment = "production"
                     team = "observability"
                 }
                 annotations = @{
-                    summary = "Fractal drift pattern detected"
-                    description = "Fractal drift coefficient has exceeded 0.5 for 10 minutes. This indicates unusual pattern variance in queue behavior."
-                    runbook_url = "https://github.com/your-org/otel-observability/blob/main/docs/troubleshooting.md#fractal-drift"
+                    summary = "Queue variance drift detected"
+                    description = "Queue-size coefficient of variation has exceeded 0.5 for 10 minutes. This indicates unusual variance in queue behavior."
+                    runbook_url = "https://github.com/your-org/otel-observability/blob/main/docs/troubleshooting.md#queue-variance-drift"
                 }
                 thresholds = @{
                     warning = @{
@@ -252,7 +252,7 @@ if ($GenerateAlerts -or $FullDeployment) {
                 name = "Warning Alerts"
                 description = "Warning alerts for monitoring and investigation"
                 alerts = @(
-                    "Fractal Drift Detected"
+                    "Queue Variance Drift Detected"
                 )
                 notification_channels = @("Webhook Notification")
                 repeat_interval = "15m"
@@ -368,7 +368,7 @@ if ($TestAlerts -or $FullDeployment) {
             queue_monitoring = "Queue utilization and pressure alerts"
             failure_monitoring = "Send failure rate tracking"
             latency_monitoring = "Batch processing latency alerts"
-            fractal_monitoring = "Fractal drift pattern detection"
+            variance_monitoring = "Queue variance (CV) drift detection"
             memory_monitoring = "Memory usage and limits alerts"
             notification_system = "Webhook, Slack, and email notifications"
             alert_grouping = "Critical and warning alert groups"

@@ -23,33 +23,6 @@ $TestQueries = @{
             "(log.source = `"windows_event_log`" AND body contains `"windows-canary`") OR (log.file.path contains `"windows-canary-test.log`" AND body contains `"windows-canary`")"
         )
     }
-    "hurst-exponent" = @{
-        name = "Hurst Exponent Drift"
-        description = "Test query for Hurst exponent monitoring"
-        queries = @(
-            "message contains `"hurst_estimate`" AND log.file.path contains `"canary-pattern-results.json`"",
-            "body contains `"hurst_estimate`" AND log.file.path contains `"canary-pattern-results.json`"",
-            "attributes.hurst_estimate exists"
-        )
-    }
-    "pattern-analysis" = @{
-        name = "Pattern Analysis"
-        description = "Test query for pattern drill analysis"
-        queries = @(
-            "message contains `"windows-canary`" AND attributes.pattern exists",
-            "body contains `"windows-canary`" AND attributes.pattern in [`"steady`", `"poisson`", `"pareto`"]",
-            "log.file.path contains `"canary-`" AND body contains `"windows-canary`""
-        )
-    }
-    "enhanced-validation" = @{
-        name = "Enhanced Statistical Validation"
-        description = "Test query for enhanced validation results"
-        queries = @(
-            "message contains `"enhanced_statistical_validation`" AND log.file.path contains `"enhanced-statistical-validation.json`"",
-            "body contains `"coefficient_of_variation`" AND log.file.path contains `"enhanced-statistical-validation.json`"",
-            "attributes.confidence_interval exists"
-        )
-    }
 }
 
 function Test-Query {

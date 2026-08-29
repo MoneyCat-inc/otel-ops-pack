@@ -21,7 +21,7 @@
     "snapshots": "docs/observability/snapshots/",
     "status_page": "docs/status.html",
     "signature_registry": "signature-registry.json",
-    "mascot_image": "Vasilisa_High_Priestess_TinCanForest.jpg"
+    "mascot_image": "assets/Vasilisa_High_Priestess_TinCanForest.jpg"
   },
   "workflows": {
     "gate_verify": ".github/workflows/bosscat-gate-verify.yml",

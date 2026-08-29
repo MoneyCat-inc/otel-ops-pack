@@ -68,7 +68,7 @@ jobs:
         if: ${{ github.event_name != 'pull_request' }}
         env:
           GATE_BASE_URL: ${{ env.GATE_BASE_URL }}
-        run: k6 run ./tests/perf/gate.js --summary-export artifacts/ecrr/gate/k6-summary.json
+        run: k6 run ./ALFA/TEST/load/k6/gate-simple.js --summary-export artifacts/ecrr/gate/k6-summary.json
       - name: Collect k6 summary & verdict
         if: always()
         run: |

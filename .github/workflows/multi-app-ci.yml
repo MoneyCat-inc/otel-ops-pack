@@ -4,8 +4,11 @@
 name: Multi-App CI/CD
 
 # RETIRED 2026-08-03 -- Phase 0 workflow audit (docs/BossCat/ROADMAP_2026H2.md).
-# Reason: ALFA/APPS contains no applications post-split.
+# Reason: no ALFA/APPS application is under active development post-split (the
+# directories still exist; the earlier wording "contains no applications" was wrong —
+# corrected 2026-08-29, ECRR_BOSSCAT_AUDIT_DRIFT_20260829 P0-2).
 # Automatic triggers removed; manual dispatch retained. Restore the on: block from git history to re-enable.
+# The sidecars pip install is unmasked (no "|| true") so a broken requirements file fails the run.
 on:
   workflow_dispatch:
     inputs:
@@ -110,7 +113,7 @@ jobs:
             pnpm install --frozen-lockfile
           fi
           if [ "${{ matrix.app }}" = "sidecars" ]; then
-            pip install -r ALFA/APPS/sidecars/requirements.txt || true
+            pip install -r ALFA/APPS/sidecars/requirements.txt
           fi
 
       - name: Build app

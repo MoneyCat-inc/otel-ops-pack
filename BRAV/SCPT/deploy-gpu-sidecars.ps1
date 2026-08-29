@@ -418,7 +418,7 @@ $runbook = @'
 pwsh -File scripts/test-gpu-sidecars.ps1
 
 # Complete integration test
-pwsh -File verify-integration.ps1
+pwsh -File scripts/verify-integration.ps1
 
 # Production validation
 pwsh -File scripts/validate-production-gpu.ps1 -Iterations 20

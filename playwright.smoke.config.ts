@@ -1,7 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
-  testDir: 'tests/smoke',
+  testDir: 'ALFA/TEST/unit/smoke',
   retries: 0,
   workers: 1,
   timeout: 20_000,
