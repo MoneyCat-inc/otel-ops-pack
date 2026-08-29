@@ -55,7 +55,7 @@
     "agent:run:icfx": "tsx scripts/agent/run-lane.ts --lane=icfx --dry-run",
     "agent:run:gate": "tsx scripts/agent/run-lane.ts --lane=gate --dry-run",
     "agent:run:site": "tsx scripts/agent/run-lane.ts --lane=site --dry-run",
-    "gate:perf": "k6 run tests/perf/gate.js",
+    "gate:perf": "k6 run ALFA/TEST/load/k6/gate-simple.js",
     "gate:trace": "OTEL_SERVICE_NAME=gate-synth OTLP_HTTP=http://localhost:4318/v1/traces tsx scripts/synth-trace.ts",
     "icf:rollup": "tsx scripts/icf/write-rollup.ts",
     "sec:archive": "pwsh -File BRAV/SCPT/sec-archiver/run-security.ps1 -Owner MoneyCat-inc -Repo otel-ops-pack -Mode alerts+analyses -ChunkSize 200",

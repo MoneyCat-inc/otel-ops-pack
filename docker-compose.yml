@@ -90,8 +90,8 @@ services:
       - "8080:8080"
     volumes:
       - signoz_data:/var/lib/signoz
-      - ./configs/prometheus/prometheus.yml:/root/config/prometheus.yml:ro
-      - ./configs/dashboards:/root/config/dashboards:ro
+      - ./DELT/CONF/configs/prometheus/prometheus.yml:/root/config/prometheus.yml:ro
+      - ./DELT/CONF/configs/dashboards:/root/config/dashboards:ro
     environment:
       SIGNOZ_ALERTMANAGER_PROVIDER: signoz
       SIGNOZ_TELEMETRYSTORE_CLICKHOUSE_DSN: tcp://signoz-clickhouse:9000
@@ -215,6 +215,9 @@ services:
           memory: 512M
 
   demo-app:
+    build:
+      context: .
+      dockerfile: Dockerfile.demo
     image: otel-otel-demo-app
     container_name: demo-app
     restart: unless-stopped
@@ -252,74 +255,12 @@ services:
         reservations:
           memory: 256M
 
-  # =============================================================================
-  # GPU SERVICES (Optional - Only if images exist)
-  # =============================================================================
-  gpu-aggregation:
-    image: otel-gpu-sidecar:latest
-    container_name: gpu-aggregation
-    restart: "no"
-    ports:
-      - "8002:8002"
-    networks:
-      - signoz-net
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
-    profiles:
-      - gpu
-    deploy:
-      resources:
-        limits:
-          memory: 512M
-        reservations:
-          memory: 256M
-
-  gpu-inference:
-    image: otel-gpu-sidecar:latest
-    container_name: gpu-inference
-    restart: "no"
-    ports:
-      - "8003:8003"
-    networks:
-      - signoz-net
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
-    profiles:
-      - gpu
-    deploy:
-      resources:
-        limits:
-          memory: 512M
-        reservations:
-          memory: 256M
-
-  gpu-compression:
-    image: otel-gpu-sidecar:latest
-    container_name: gpu-compression
-    restart: "no"
-    ports:
-      - "8001:8001"
-    networks:
-      - signoz-net
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
-    profiles:
-      - gpu
-    deploy:
-      resources:
-        limits:
-          memory: 512M
-        reservations:
-          memory: 256M
+  # ---------------------------------------------------------------------------
+  # GPU sidecar services removed 2026-08-29 (audit P1-4): they referenced an
+  # image (otel-gpu-sidecar) this file never builds and had no command:, so the
+  # containers could never serve. The parked definitions live in
+  # compose/docker-compose.unified.yml. ECRR_BOSSCAT_AUDIT_DRIFT_20260829.
+  # ---------------------------------------------------------------------------
 
 # =============================================================================
 # VOLUMES

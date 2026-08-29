@@ -165,18 +165,21 @@ jobs:
           fi
         continue-on-error: ${{ env.SBOM_STRICT != 'true' }}
 
+      # The "|| echo WARNING" masks were removed 2026-08-29 (audit P1-8): a failure
+      # now reds the step so it is visible in the run, while continue-on-error keeps
+      # this auxiliary metrics feed from blocking the gate verdict itself.
       - name: RSI metrics extraction
         if: always()
         shell: bash
         run: |
-          node scripts/rsi-extract.mjs docs/BossCat/README.md || echo "WARNING: RSI extraction failed"
+          node scripts/rsi-extract.mjs docs/BossCat/README.md
         continue-on-error: true
 
       - name: ICF rollup (panel feeder)
         if: always()
         shell: bash
         run: |
-          pnpm icf:rollup || echo "WARNING: ICF rollup failed"
+          pnpm icf:rollup
         continue-on-error: true
       - name: Archive ICF rollup (timestamped)
         if: matrix.site == 'ci' && always()

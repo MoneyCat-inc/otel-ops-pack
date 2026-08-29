@@ -1,6 +1,6 @@
 {
   "source": "scripts/regenerate-workflows-registry.ps1",
-  "total": 62,
+  "total": 63,
   "items": [
     {
       "name": "app-template",
@@ -201,6 +201,23 @@
         "push": false,
         "release": false,
         "schedule": false,
+        "workflow_call": false,
+        "workflow_dispatch": true,
+        "workflow_run": false
+      }
+    },
+    {
+      "name": "clean-host-freshness",
+      "modified": "2026-08-25T12:55:01.0000000Z",
+      "path": ".github/workflows/clean-host-freshness.yml",
+      "size": 4867,
+      "triggers": {
+        "issues": false,
+        "other": [],
+        "pull_request": false,
+        "push": false,
+        "release": false,
+        "schedule": true,
         "workflow_call": false,
         "workflow_dispatch": true,
         "workflow_run": false

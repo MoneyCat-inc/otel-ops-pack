@@ -7,6 +7,14 @@ Canonical SigNoz stack for this repo is the root **`docker-compose.yml`**
 docker compose up -d
 ```
 
+> **Path caveat (audit P1-4, 2026-08-29):** every file in this directory references
+> repo-root configs (`clickhouse-*.xml`, `signoz-collector-config.yaml`, Dockerfiles)
+> with `./` paths that resolve against `compose/`, so they only work when invoked as
+> `docker compose --project-directory .. -f compose/<file>.yml up`. The `legacy.yml`
+> and `docker-compose.unified.yml` sidecar/triton mounts additionally point at
+> pre-reorg roots (`./sidecars/`, `./triton-models/`) that moved to
+> `ALFA/APPS/sidecars/` and `DELT/CONF/triton-models/` — fix before resurrecting.
+
 | File | Purpose | Status |
 |------|---------|--------|
 | `../docker-compose.yml` | Canonical SigNoz + OTel collector stack | **active** |
