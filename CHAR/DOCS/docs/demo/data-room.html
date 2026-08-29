@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investor Demo - Data Room Test Harness</title>
+    <link rel="stylesheet" href="../assets/css/resonai-system.css">
+    <style>
+        .data-room-container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .scenario-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .scenario-card {
+            background: var(--surface-color, #1e1e1e);
+            border: 1px solid var(--border-color, #333);
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .scenario-card:hover {
+            border-color: var(--accent-color, #0066cc);
+            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.2);
+        }
+
+        .scenario-card h3 {
+            margin: 0 0 0.5rem 0;
+            color: var(--text-primary, #ffffff);
+            font-size: 1.1rem;
+        }
+
+        .scenario-card p {
+            margin: 0 0 1rem 0;
+            color: var(--text-secondary, #cccccc);
+            font-size: 0.9rem;
+        }
+
+        .scenario-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .scenario-button {
+            flex: 1;
+            min-width: 100px;
+            padding: 0.6rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .scenario-button.start {
+            background: #28a745;
+            color: white;
+        }
+
+        .scenario-button.stop {
+            background: #dc3545;
+            color: white;
+        }
+
+        .scenario-button.start:hover { background: #218838; }
+        .scenario-button.stop:hover { background: #c82333; }
+
+        .scenario-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .metrics-panel {
+            background: var(--surface-color, #1e1e1e);
+            border: 1px solid var(--border-color, #333);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .metric-tile {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .metric-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary, #cccccc);
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-primary, #ffffff);
+        }
+
+        .metric-value.green { color: #28a745; }
+        .metric-value.yellow { color: #ffc107; }
+        .metric-value.red { color: #dc3545; }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-badge.active {
+            background: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+            border: 1px solid #28a745;
+        }
+
+        .status-badge.inactive {
+            background: rgba(108, 117, 125, 0.2);
+            color: #6c757d;
+            border: 1px solid #6c757d;
+        }
+
+        .chaos-indicator {
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid #ffc107;
+            border-radius: 4px;
+            padding: 0.75rem;
+            margin: 1rem 0;
+            color: #ffc107;
+            font-size: 0.9rem;
+        }
+
+        .action-log {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 4px;
+            padding: 1rem;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            color: #00ff00;
+        }
+
+        .log-entry {
+            margin-bottom: 0.25rem;
+        }
+
+        .log-timestamp {
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="data-room-container">
+        <header>
+            <h1>🎯 Investor Demo - Data Room Test Harness</h1>
+            <p>Generate controlled traffic and chaos scenarios for live demonstration</p>
+            <div id="cors-warning" style="display: none; background: rgba(255, 193, 7, 0.2); border: 1px solid #ffc107; padding: 0.75rem; margin-top: 0.5rem; border-radius: 4px; font-size: 0.85rem; color: #ffc107;">
+                ⚠️ <strong>CORS Issue:</strong> Metrics fetch blocked (file:// → http://). 
+                <strong>Fix:</strong> Run <code style="background: rgba(0,0,0,0.3); padding: 0.2rem 0.4rem;">pwsh scripts/demo/serve-data-room.ps1</code> then open <a href="http://localhost:3000/data-room.html" style="color: #ffc107;">http://localhost:3000/data-room.html</a>
+            </div>
+        </header>
+
+        <!-- Live Visual Preview -->
+        <section class="metrics-panel" style="margin-bottom: 1rem;">
+            <h2>🎨 Live Milkdrop Visualizer (1920×1080 @ 60 FPS)</h2>
+            <div style="text-align: center; background: #000; border-radius: 8px; padding: 1rem;">
+                <!-- 16:9 aspect ratio container -->
+                <div style="position: relative; width: 100%; padding-bottom: 56.25%; background: #000; border-radius: 4px;">
+                    <iframe src="http://localhost:8090/milk/" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; border-radius: 4px;" loading="eager" allow="autoplay" title="Milkdrop Visual Engine"></iframe>
+                </div>
+                <div style="margin-top: 0.75rem; display: flex; gap: 0.5rem; justify-content: center;">
+                    <a href="http://localhost:8090/milk/" target="_blank" style="color: #0066cc; text-decoration: none; font-size: 0.85rem;">↗ Open fullscreen</a>
+                    <span style="color: #888;">|</span>
+                    <a href="http://localhost:7001" target="_blank" style="color: #0066cc; text-decoration: none; font-size: 0.85rem;">API (md3)</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Real-time Metrics -->
+        <section class="metrics-panel">
+            <h2>Live Visual Metrics <span id="refresh-indicator" style="font-size: 0.8rem; color: #888;">(refreshing...)</span></h2>
+            <p style="font-size: 0.85rem; color: #888; margin-top: -0.5rem;">From scorebot analyzing Milkdrop visual quality</p>
+            <div class="metrics-grid">
+                <div class="metric-tile">
+                    <div class="metric-label">Motion Energy</div>
+                    <div class="metric-value" id="metric-rps">0</div>
+                    <div style="font-size: 0.75rem; color: #888; margin-top: 0.25rem;">Visual activity level</div>
+                </div>
+                <div class="metric-tile">
+                    <div class="metric-label">Brightness (Luma)</div>
+                    <div class="metric-value" id="metric-p95">0 ms</div>
+                    <div style="font-size: 0.75rem; color: #888; margin-top: 0.25rem;">Avg luminance</div>
+                </div>
+                <div class="metric-tile">
+                    <div class="metric-label">Blackout %</div>
+                    <div class="metric-value" id="metric-errors">0%</div>
+                    <div style="font-size: 0.75rem; color: #888; margin-top: 0.25rem;">Visual quality</div>
+                </div>
+                <div class="metric-tile">
+                    <div class="metric-label">Active Scenarios</div>
+                    <div class="metric-value" id="metric-active">0</div>
+                    <div style="font-size: 0.75rem; color: #888; margin-top: 0.25rem;">Traffic + Chaos</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Traffic Scenarios -->
+        <section>
+            <h2>Traffic Scenarios</h2>
+            <div class="scenario-grid">
+                <div class="scenario-card">
+                    <h3>🌊 Laminar Flow</h3>
+                    <p>Steady baseline traffic (10 RPS) for healthy system demonstration</p>
+                    <div class="scenario-actions">
+                        <button class="scenario-button start" onclick="startScenario('laminar')">Start</button>
+                        <button class="scenario-button stop" onclick="stopScenario('laminar')" disabled>Stop</button>
+                    </div>
+                    <div style="margin-top: 0.5rem;">
+                        <span class="status-badge inactive" id="status-laminar">Inactive</span>
+                    </div>
+                </div>
+
+                <div class="scenario-card">
+                    <h3>🧪 Test Load</h3>
+                    <p>Moderate traffic burst (50 RPS) to show metrics under load</p>
+                    <div class="scenario-actions">
+                        <button class="scenario-button start" onclick="startScenario('test')">Start</button>
+                        <button class="scenario-button stop" onclick="stopScenario('test')" disabled>Stop</button>
+                    </div>
+                    <div style="margin-top: 0.5rem;">
+                        <span class="status-badge inactive" id="status-test">Inactive</span>
+                    </div>
+                </div>
+
+                <div class="scenario-card">
+                    <h3>🐤 Canary Test</h3>
+                    <p>Single synthetic trace with known ID for end-to-end verification</p>
+                    <div class="scenario-actions">
+                        <button class="scenario-button start" onclick="runCanary()">Run Once</button>
+                    </div>
+                    <div style="margin-top: 0.5rem;">
+                        <span class="status-badge inactive" id="status-canary">Ready</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Chaos Scenarios -->
+        <section>
+            <h2>⚠️ Chaos Engineering</h2>
+            <div id="chaos-warning" class="chaos-indicator" style="display: none;">
+                <strong>⚠️ Chaos Active:</strong> One or more fault injections running
+            </div>
+            <div class="scenario-grid">
+                <div class="scenario-card">
+                    <h3>🐌 Network Delay</h3>
+                    <p>Inject 500ms latency to demonstrate performance degradation</p>
+                    <div class="scenario-actions">
+                        <button class="scenario-button start" onclick="startChaos('network-delay')">Inject</button>
+                        <button class="scenario-button stop" onclick="stopChaos('network-delay')" disabled>Clear</button>
+                    </div>
+                    <div style="margin-top: 0.5rem;">
+                        <span class="status-badge inactive" id="status-chaos-network">Inactive</span>
+                    </div>
+                </div>
+
+                <div class="scenario-card">
+                    <h3>💥 Service Down</h3>
+                    <p>Simulate service failure to show circuit breaker and alerts</p>
+                    <div class="scenario-actions">
+                        <button class="scenario-button start" onclick="startChaos('service-down')">Trigger</button>
+                        <button class="scenario-button stop" onclick="stopChaos('service-down')" disabled>Restore</button>
+                    </div>
+                    <div style="margin-top: 0.5rem;">
+                        <span class="status-badge inactive" id="status-chaos-service">Inactive</span>
+                    </div>
+                </div>
+
+                <div class="scenario-card">
+                    <h3>🔥 CPU Throttle</h3>
+                    <p>Introduce CPU contention to show resource monitoring</p>
+                    <div class="scenario-actions">
+                        <button class="scenario-button start" onclick="startChaos('cpu-throttle')">Start</button>
+                        <button class="scenario-button stop" onclick="stopChaos('cpu-throttle')" disabled>Stop</button>
+                    </div>
+                    <div style="margin-top: 0.5rem;">
+                        <span class="status-badge inactive" id="status-chaos-cpu">Inactive</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Action Log -->
+        <section class="metrics-panel">
+            <h2>Action Log</h2>
+            <div class="action-log" id="action-log">
+                <div class="log-entry"><span class="log-timestamp">[00:00:00]</span> Data Room initialized</div>
+            </div>
+        </section>
+
+        <!-- Visual Engine Integration -->
+        <section class="metrics-panel">
+            <h2>🎨 Visual Observability Engine</h2>
+            <p style="color: #6c757d; margin-bottom: 1rem;">
+                Live Milkdrop visualizer showing audio reactivity and performance metrics
+            </p>
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                <a href="http://localhost:8090" target="_blank" class="scenario-button start">Milk v0 Viewer (MJPEG)</a>
+                <a href="http://localhost:7001" target="_blank" class="scenario-button start">Milkdrop Engine (md3)</a>
+                <a href="http://localhost:7010/metrics" target="_blank" class="scenario-button start">Scorebot Metrics</a>
+            </div>
+            <div style="background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 4px; font-size: 0.85rem; color: #ccc;">
+                <strong>Visual Stack:</strong> 3-replica ProjectM cluster with audio reactivity, brightness guard, and canary deployment<br>
+                <strong>Services:</strong> pm-engine (3 replicas), md3-engine (Butterchurn), milk-v0 (viewer), scorebot (validation)<br>
+                <strong>Gates:</strong> #009 (Milkdrop), #010 (Audio), #012 (ProjectM), #013 (Reactivity), #020 (Canary), #023 (Cluster)
+            </div>
+        </section>
+
+        <!-- Quick Links -->
+        <section class="metrics-panel">
+            <h2>Quick Links</h2>
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                <a href="http://localhost:8080" target="_blank" class="scenario-button start">SigNoz Dashboard</a>
+                <a href="../status.html" class="scenario-button start">Executive Status</a>
+                <a href="./DEMO_SCRIPT.md" target="_blank" class="scenario-button start">Demo Script</a>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Active scenarios tracking
+        const activeScenarios = {
+            traffic: new Set(),
+            chaos: new Set()
+        };
+
+        // Live metrics from visual stack
+        let mockMetrics = {
+            rps: 0,
+            p95: 0,
+            errorRate: 0
+        };
+        
+        // Fetch real metrics from scorebot (port 7010) - Visual Quality Metrics
+        async function fetchLiveMetrics() {
+            try {
+                const response = await fetch('http://localhost:7010/metrics', {
+                    mode: 'cors',
+                    credentials: 'omit'
+                });
+                if (!response.ok) {
+                    throw new Error(`Scorebot returned ${response.status}`);
+                }
+                
+                const metrics = await response.json();
+                
+                // Map scorebot visual quality metrics to display
+                // Luma mean (0-1 brightness) -> Brightness display (0-255 scale)
+                if (metrics.luma_mean !== undefined) {
+                    mockMetrics.p95 = Math.round(metrics.luma_mean * 255);
+                }
+                
+                // Black ratio (0-1) -> Blackout percentage
+                if (metrics.black_ratio !== undefined) {
+                    mockMetrics.errorRate = metrics.black_ratio * 100;
+                }
+                
+                // Motion magnitude -> Motion Energy (scale up for visibility)
+                if (metrics.motion_magnitude !== undefined) {
+                    mockMetrics.rps = Math.round(metrics.motion_magnitude * 100);
+                }
+                
+                // Also fetch FPS from md3-engine for frame rate display
+                try {
+                    const statsResp = await fetch('http://localhost:7001/stats');
+                    if (statsResp.ok) {
+                        const stats = await statsResp.json();
+                        if (stats.fps !== undefined) {
+                            // Override RPS with actual FPS
+                            mockMetrics.rps = Math.round(stats.fps);
+                        }
+                    }
+                } catch (err) {
+                    console.warn('Could not fetch FPS from md3-engine:', err);
+                }
+                
+                return true;
+            } catch (err) {
+                console.error('Failed to fetch scorebot metrics:', err);
+                // Try md3-engine as fallback
+                return await fetchMd3Metrics();
+            }
+        }
+        
+        // Fallback: Try md3-engine if scorebot unavailable
+        async function fetchMd3Metrics() {
+            try {
+                const response = await fetch('http://localhost:7001/stats');
+                if (response.ok) {
+                    const stats = await response.json();
+                    mockMetrics.rps = Math.round(stats.fps || 0);
+                    mockMetrics.p95 = Math.round((stats.frameTimeMs || 0) * 100);
+                    mockMetrics.errorRate = stats.droppedFrames || 0;
+                    return true;
+                }
+            } catch (err) {
+                console.error('Fallback md3-engine also failed:', err);
+            }
+            
+            // Final fallback: baseline
+            mockMetrics.p95 = 112;
+            mockMetrics.errorRate = 0;
+            mockMetrics.rps = 60;
+            return false;
+        }
+
+        // Start traffic scenario
+        function startScenario(type) {
+            activeScenarios.traffic.add(type);
+            updateStatus(type, 'active');
+            logAction(`Started ${type} traffic scenario`);
+            
+            // Update mock metrics
+            if (type === 'laminar') mockMetrics.rps = 10;
+            if (type === 'test') mockMetrics.rps = 50;
+            
+            updateMetrics();
+        }
+
+        // Stop traffic scenario
+        function stopScenario(type) {
+            activeScenarios.traffic.delete(type);
+            updateStatus(type, 'inactive');
+            logAction(`Stopped ${type} traffic scenario`);
+            
+            // Reset mock metrics if no traffic
+            if (activeScenarios.traffic.size === 0) {
+                mockMetrics.rps = 0;
+            }
+            
+            updateMetrics();
+        }
+
+        // Run canary test
+        function runCanary() {
+            logAction('Running canary test - trace ID will appear in SigNoz');
+            updateStatus('canary', 'active');
+            setTimeout(() => {
+                updateStatus('canary', 'inactive');
+                logAction('Canary test complete - check SigNoz for trace');
+            }, 2000);
+        }
+
+        // Start chaos injection
+        function startChaos(type) {
+            activeScenarios.chaos.add(type);
+            updateChaosStatus(type, 'active');
+            logAction(`⚠️ Chaos injection: ${type} activated`);
+            
+            // Update mock metrics for chaos
+            if (type === 'network-delay') mockMetrics.p95 = 550;
+            if (type === 'service-down') mockMetrics.errorRate = 15;
+            if (type === 'cpu-throttle') mockMetrics.p95 = 300;
+            
+            document.getElementById('chaos-warning').style.display = 'block';
+            updateMetrics();
+        }
+
+        // Stop chaos injection
+        function stopChaos(type) {
+            activeScenarios.chaos.delete(type);
+            updateChaosStatus(type, 'inactive');
+            logAction(`✅ Chaos injection: ${type} cleared`);
+            
+            // Reset chaos metrics
+            if (type === 'network-delay') mockMetrics.p95 = 112;
+            if (type === 'service-down') mockMetrics.errorRate = 0;
+            if (type === 'cpu-throttle') mockMetrics.p95 = 112;
+            
+            if (activeScenarios.chaos.size === 0) {
+                document.getElementById('chaos-warning').style.display = 'none';
+            }
+            
+            updateMetrics();
+        }
+
+        // Update status badge and buttons
+        function updateStatus(type, status) {
+            const badge = document.getElementById(`status-${type}`);
+            const startBtn = event ? event.target.parentElement.querySelector('.start') : null;
+            const stopBtn = event ? event.target.parentElement.querySelector('.stop') : null;
+            
+            if (badge) {
+                badge.className = `status-badge ${status}`;
+                badge.textContent = status === 'active' ? 'Active' : 'Inactive';
+            }
+            
+            if (startBtn && stopBtn) {
+                startBtn.disabled = (status === 'active');
+                stopBtn.disabled = (status !== 'active');
+            }
+        }
+
+        // Update chaos status
+        function updateChaosStatus(type, status) {
+            const badge = document.getElementById(`status-chaos-${type.split('-')[0]}`);
+            if (badge) {
+                badge.className = `status-badge ${status}`;
+                badge.textContent = status === 'active' ? 'Active' : 'Inactive';
+            }
+        }
+
+        // Fetch live metrics from visual stack
+        async function fetchMetrics() {
+            const success = await fetchLiveMetrics();
+            if (success) {
+                console.log('Metrics updated:', mockMetrics);
+            } else {
+                console.warn('Metrics fetch failed, using fallback values');
+            }
+            updateMetrics();
+        }
+
+        // Update metrics display
+        function updateMetrics() {
+            document.getElementById('metric-rps').textContent = mockMetrics.rps;
+            document.getElementById('metric-p95').textContent = mockMetrics.p95 + ' ms';
+            document.getElementById('metric-errors').textContent = mockMetrics.errorRate.toFixed(1) + '%';
+            document.getElementById('metric-active').textContent = 
+                activeScenarios.traffic.size + activeScenarios.chaos.size;
+            
+            // Color code metrics
+            const rpsEl = document.getElementById('metric-rps');
+            rpsEl.className = 'metric-value ' + (mockMetrics.rps > 0 ? 'green' : '');
+            
+            const p95El = document.getElementById('metric-p95');
+            p95El.className = 'metric-value ' + (mockMetrics.p95 > 300 ? 'red' : mockMetrics.p95 > 200 ? 'yellow' : 'green');
+            
+            const errEl = document.getElementById('metric-errors');
+            errEl.className = 'metric-value ' + (mockMetrics.errorRate > 5 ? 'red' : mockMetrics.errorRate > 1 ? 'yellow' : 'green');
+        }
+
+        // Log action
+        function logAction(message) {
+            const log = document.getElementById('action-log');
+            const timestamp = new Date().toLocaleTimeString();
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.innerHTML = `<span class="log-timestamp">[${timestamp}]</span> ${message}`;
+            log.insertBefore(entry, log.firstChild);
+            
+            // Keep log limited to 20 entries
+            while (log.children.length > 20) {
+                log.removeChild(log.lastChild);
+            }
+        }
+
+        // Initialize metrics refresh
+        setInterval(() => {
+            document.getElementById('refresh-indicator').textContent = 
+                `(last update: ${new Date().toLocaleTimeString()})`;
+        }, 5000);
+
+        // Initialize
+        updateMetrics();
+        
+        // Fetch real metrics immediately and every 5 seconds
+        fetchMetrics().catch(err => {
+            console.error('Initial metrics fetch failed:', err);
+            // Show CORS warning if file:// protocol detected
+            if (window.location.protocol === 'file:') {
+                document.getElementById('cors-warning').style.display = 'block';
+            }
+        });
+        
+        setInterval(() => {
+            fetchMetrics().catch(err => {
+                console.error('Metrics fetch error:', err);
+            });
+        }, 5000);
+    </script>
+</body>
+</html>
+

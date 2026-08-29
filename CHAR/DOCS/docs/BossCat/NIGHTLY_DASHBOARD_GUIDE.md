@@ -6,7 +6,8 @@
 
 ## Overview
 
-The nightly dashboard export system automatically captures SigNoz dashboards at **2:00 AM UTC daily** and commits them to the repository. This provides:
+The nightly dashboard export system automatically captures SigNoz dashboards at **2:00 AM UTC daily** and commits them
+to the repository. This provides:
 
 ✅ **Historical tracking** - View dashboard states over time  
 ✅ **Compliance evidence** - Automated audit trail for BossCat  
@@ -51,7 +52,8 @@ The nightly dashboard export system automatically captures SigNoz dashboards at 
 **Path**: `docs/observability/snapshots/YYYY-MM-DD/`
 
 **Contents**:
-```
+
+```text
 docs/observability/snapshots/
 ├── 2025-10-07/
 │   ├── README.md                     # Auto-generated index
@@ -135,6 +137,7 @@ Minimum expected files:
 - [ ] `*.json` - Optional metrics extracts
 
 **Quality checks**:
+
 ```bash
 # Check PNG files are valid (not corrupted)
 Get-ChildItem $snapshotDir -Filter "*.png" | ForEach-Object {
@@ -176,10 +179,12 @@ if ($latestPng) {
 ### Issue: Workflow Fails at "Start SigNoz stack"
 
 **Symptoms**:
+
 - Workflow logs show timeout waiting for SigNoz health check
-- Error: "Failed to connect to http://localhost:8080/api/v1/health"
+- Error: "Failed to connect to <http://localhost:8080/api/v1/health>"
 
 **Diagnosis**:
+
 ```bash
 # Check if SigNoz is running
 docker ps | grep signoz
@@ -197,6 +202,7 @@ docker logs signoz-otel-collector
 4. **Networking issues**: Check if containers can communicate
 
 **Workflow Fix**:
+
 ```yaml
 # Increase health check timeout
 for i in {1..60}; do  # Currently 60 attempts × 10s = 600s
@@ -207,10 +213,12 @@ for i in {1..60}; do  # Currently 60 attempts × 10s = 600s
 ### Issue: No Snapshots Generated
 
 **Symptoms**:
+
 - Workflow completes but `docs/observability/snapshots/` is empty
 - No commit from BossCat OEM Bot
 
 **Diagnosis**:
+
 ```bash
 # Check workflow artifacts
 gh run view <run-id> --log
@@ -229,6 +237,7 @@ gh run view <run-id> --log
 4. **SigNoz not ready**: Health check passes but dashboard not accessible
 
 **Manual Test**:
+
 ```bash
 # Run export locally
 pwsh -File scripts/nightly-dashboard-export.ps1
@@ -240,6 +249,7 @@ ls artifacts/*.png
 ### Issue: Commit Fails with "Nothing to commit"
 
 **Symptoms**:
+
 - Export succeeds but no commit created
 - Workflow logs: "No changes to commit"
 
@@ -247,6 +257,7 @@ ls artifacts/*.png
 This is **expected behavior** if snapshots are identical to previous day.
 
 **Verification**:
+
 ```bash
 # Check if files changed
 git diff --name-only docs/observability/snapshots/
@@ -259,10 +270,12 @@ git diff --name-only docs/observability/snapshots/
 ### Issue: Snapshots are Corrupted/Blank
 
 **Symptoms**:
+
 - PNG files exist but are blank/corrupted
 - File sizes are unusually small (<1 KB)
 
 **Diagnosis**:
+
 ```bash
 # Check file sizes
 Get-ChildItem docs/observability/snapshots/$(Get-Date -Format "yyyy-MM-dd")/*.png | 
@@ -276,6 +289,7 @@ Get-ChildItem docs/observability/snapshots/$(Get-Date -Format "yyyy-MM-dd")/*.pn
 3. **Dashboard loading**: Increase wait time for data rendering
 
 **Workflow Fix** (in Playwright script):
+
 ```typescript
 // Wait for dashboard to fully load
 await page.goto('http://localhost:8080/dashboard');
@@ -287,10 +301,12 @@ await page.screenshot({ path: 'dashboard.png', fullPage: true });
 ### Issue: Repository Growing Too Large
 
 **Symptoms**:
+
 - Repository size increasing rapidly
 - Clone times becoming slow
 
 **Diagnosis**:
+
 ```bash
 # Check repository size
 git count-objects -vH
@@ -307,6 +323,7 @@ du -sh docs/observability/snapshots/
 4. **Use Git LFS**: Store large files externally
 
 **Compression Script**:
+
 ```bash
 # Optimize PNG files (lossless)
 find docs/observability/snapshots/ -name "*.png" -exec optipng -o7 {} \;
@@ -329,6 +346,7 @@ find docs/observability/snapshots/ -name "*.png" -exec pngquant --ext .png --for
 4. **Test manual export** to ensure script works
 
 **Quick Check Script**:
+
 ```powershell
 # Check last 7 days of snapshots
 $last7Days = 0..6 | ForEach-Object {
@@ -351,6 +369,7 @@ foreach ($date in $last7Days) {
 **First of every month**:
 
 1. **Archive old snapshots** (>90 days)
+
    ```bash
    # Move to archive
    mkdir -p archive/observability-snapshots
@@ -358,6 +377,7 @@ foreach ($date in $last7Days) {
    ```
 
 2. **Verify disk usage** is acceptable
+
    ```bash
    du -sh docs/observability/snapshots/
    # Should be < 500 MB

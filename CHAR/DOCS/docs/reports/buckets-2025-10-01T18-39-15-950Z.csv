@@ -1,6 +1,0 @@
-tag,failed,examples
-@dashboard,80,Total Sessions not found | Region count mismatch
-@data-control,70,Loading text missing | Focus mgmt strict-mode
-@prosody,110,Start Recording timeout | Mock toggle not checkbox
-@strain,60,Fixture buttons not visible | Threshold input missing
-@offline,20,Worklet load timeout offline

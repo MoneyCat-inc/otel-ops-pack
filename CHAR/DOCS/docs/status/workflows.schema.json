@@ -1,0 +1,71 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "BossCat Workflows Registry",
+  "description": "GitHub Actions workflows registry with YAML-aware trigger extraction",
+  "type": "object",
+  "required": ["total", "items", "source"],
+  "properties": {
+    "source": {
+      "type": "string",
+      "description": "Generation source script path"
+    },
+    "total": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Total number of workflows in registry"
+    },
+    "items": {
+      "type": "array",
+      "description": "Array of workflow metadata objects",
+      "items": {
+        "type": "object",
+        "required": ["name", "path", "triggers"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Workflow basename without extension"
+          },
+          "path": {
+            "type": "string",
+            "pattern": "^\\.github/workflows/.+\\.ya?ml$",
+            "description": "Relative path from repo root"
+          },
+          "triggers": {
+            "type": "object",
+            "description": "Event triggers from on: block (YAML-aware extraction)",
+            "properties": {
+              "push": { "type": "boolean" },
+              "pull_request": { "type": "boolean" },
+              "workflow_dispatch": { "type": "boolean" },
+              "workflow_call": { "type": "boolean" },
+              "workflow_run": { "type": "boolean" },
+              "schedule": { "type": "boolean" },
+              "release": { "type": "boolean" },
+              "issues": { "type": "boolean" },
+              "other": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "Any non-standard triggers detected"
+              }
+            },
+            "additionalProperties": false
+          },
+          "size": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "File size in bytes"
+          },
+          "modified": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last modification timestamp"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
+

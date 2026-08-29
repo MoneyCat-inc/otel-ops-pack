@@ -1,0 +1,175 @@
+/**
+ * Visualizer Styles - Gate #031 (Phase 1 MVP)
+ * Minimal additions to Resonai design system
+ */
+
+/* Controls Bar */
+.controls-bar {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.controls-bar label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #2c3e50;
+}
+
+.controls-bar select {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+}
+
+.controls-bar button {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background: #667eea;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #5568d3;
+}
+
+.btn-secondary {
+  background: #f8f9fa;
+  color: #2c3e50;
+  border: 1px solid #ddd;
+}
+
+.btn-secondary:hover {
+  background: #e9ecef;
+}
+
+/* Panel Variants */
+.panel.traces-panel { border-left-color: #7c5cff; }
+.panel.logs-panel { border-left-color: #00c2b2; }
+.panel.metrics-panel { border-left-color: #ffc107; }
+.panel.health-panel { border-left-color: #4caf50; }
+.panel.icf-panel { border-left-color: #667eea; }
+
+/* Metric Cards */
+.metric-card {
+  padding: 0.75rem;
+  background: #f8f9fa;
+  border-radius: 6px;
+  margin-bottom: 0.75rem;
+}
+
+.metric-label {
+  font-size: 0.85rem;
+  color: #6c757d;
+  margin-bottom: 0.25rem;
+}
+
+.metric-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.metric-value.small {
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: #495057;
+}
+
+/* Status Badges */
+.status-badge {
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-top: 0.5rem;
+}
+
+.status-badge.green, .status-badge[data-status="GREEN"] {
+  background: rgba(76, 175, 80, 0.18);
+  color: #4caf50;
+  border: 1px solid rgba(76, 175, 80, 0.35);
+}
+
+.status-badge.amber, .status-badge[data-status="AMBER"] {
+  background: rgba(255, 193, 7, 0.20);
+  color: #ffc107;
+  border: 1px solid rgba(255, 193, 7, 0.40);
+}
+
+.status-badge.red, .status-badge[data-status="RED"] {
+  background: rgba(244, 67, 54, 0.18);
+  color: #f44336;
+  border: 1px solid rgba(244, 67, 54, 0.35);
+}
+
+/* Info Message */
+.info-message {
+  padding: 0.75rem;
+  background: rgba(0, 194, 178, 0.10);
+  border: 1px solid rgba(0, 194, 178, 0.25);
+  border-radius: 6px;
+  color: #495057;
+  font-size: 0.9rem;
+  margin: 0.5rem 0;
+}
+
+/* ICF Actions Table */
+.icf-actions-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.icf-actions-table th {
+  text-align: left;
+  padding: 0.5rem;
+  background: #f8f9fa;
+  color: #6c757d;
+  font-weight: 600;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.icf-actions-table td {
+  padding: 0.5rem;
+  border-bottom: 1px solid #e9ecef;
+}
+
+/* Footer */
+.footer {
+  margin-top: 2rem;
+  padding: 1rem;
+  text-align: center;
+  color: #6c757d;
+  font-size: 0.85rem;
+}
+
+.footer a {
+  color: #667eea;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
+

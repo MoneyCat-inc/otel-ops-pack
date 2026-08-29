@@ -1,0 +1,118 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ANTIclickbait Transparency Card Schema",
+  "description": "Schema for evidence-based project transparency cards",
+  "type": "object",
+  "required": ["metadata", "cards", "scoring"],
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "required": ["version", "updated", "total_cards"],
+      "properties": {
+        "version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$",
+          "description": "Semantic version of the data format"
+        },
+        "updated": {
+          "type": "string",
+          "format": "date",
+          "description": "Last update date in YYYY-MM-DD format"
+        },
+        "total_cards": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total number of cards in dataset"
+        },
+        "scoring_version": {
+          "type": "string",
+          "description": "Version of the scoring methodology"
+        }
+      }
+    },
+    "cards": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/card"
+      }
+    },
+    "scoring": {
+      "type": "object",
+      "required": ["methodology", "criteria", "scale"],
+      "properties": {
+        "methodology": {
+          "type": "string",
+          "description": "Name/version of scoring methodology"
+        },
+        "criteria": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of scoring criteria"
+        },
+        "scale": {
+          "type": "object",
+          "description": "Score ranges and their meanings"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "card": {
+      "type": "object",
+      "required": ["id", "title", "category", "score", "sources", "claims", "evidence", "limitations"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9-]+$",
+          "description": "Unique identifier (kebab-case)"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "description": "Card title"
+        },
+        "category": {
+          "type": "string",
+          "pattern": "^[a-z]+$",
+          "description": "Category (lowercase, single word)"
+        },
+        "score": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Evidence quality score (0-100)"
+        },
+        "sources": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          },
+          "description": "Verifiable sources (URLs or file paths)"
+        },
+        "claims": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "Claims made about this feature"
+        },
+        "evidence": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Evidence supporting claims"
+        },
+        "limitations": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Honest disclosure of limitations"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,9 @@
+flowchart LR
+  A[Prod Gate Runs] --> B[SBOM Tracker Triggers]
+  B --> C[Fetch Recent Runs]
+  C --> D[Check SBOM Artifacts]
+  D --> E[Update Issue #135]
+  E --> F{3 Runs Complete?}
+  F -->|Yes| G[Declare Ready for PR #136]
+  F -->|No| H[Wait for Next Run]
+  H --> A

@@ -1,4 +1,5 @@
 # 🐾 Cursor{Implementer} Setup Prompt
+
 ## BossCat OEM Autonomous Observability Pipeline
 
 **Issued by:** BossCat OEM (Executive Overseer Manager)  
@@ -10,19 +11,26 @@
 
 ## 💼 Mission
 
-You are responsible for automating the **Bosscat observability pipeline** using the **ECRR process** (Examine → Clean → Report → Role). Your goal is to produce and maintain an enterprise-ready roadmap with actionable tasks, clear next steps, and built-in validation and verification.
+You are responsible for automating the **Bosscat observability pipeline** using the
+**ECRR process** (Examine → Clean → Report → Role). Your goal is to produce and
+maintain an enterprise-ready roadmap with actionable tasks, clear next steps, and
+built-in validation and verification.
 
 ## 📌 Context & Objectives
 
 ### System Architecture
-- **Dashboard**: `docs/status.html` - Persona-tailored views (Project Manager, Implication Agent, Verifier, Stakeholder, Operator)
+
+- **Dashboard**: `docs/status.html` - Persona-tailored views (Project Manager,
+  Implication Agent, Verifier, Stakeholder, Operator)
 - **Data Sources**: `docs/status/*.json` files (roadmap.json, tests.json, ssot.json)
 - **Generation**: Automated via `pnpm roadmap:update`
 - **Observability Stack**: SigNoz + ClickHouse + Windows OTel Collector
 - **Pipeline Latency**: 200ms batches with ~50% noise reduction
 
 ### Persona Views
+
 Each persona sees customized KPIs, gates, and next actions:
+
 1. **Project Manager** - Overall pass rates, roadmap status, failing buckets
 2. **Implication Agent** - Risk analysis, blocked features, dependency chains
 3. **Verifier** - Gate enforcement, test quarantine, compliance status
@@ -30,6 +38,7 @@ Each persona sees customized KPIs, gates, and next actions:
 5. **Operator (You)** - Action items, fix lists, operational tasks
 
 ### Success Metrics Categories
+
 1. **Fleet Health** - ≥90% repos green badge status
 2. **Policy Compliance** - Guardrail enforcement and governance
 3. **Supply-Chain Security** - SBOM coverage and attestation
@@ -37,6 +46,7 @@ Each persona sees customized KPIs, gates, and next actions:
 5. **Technical Excellence** - Performance, reliability, maintainability
 
 ### Development Phases
+
 1. **Premium UX** - Polished user experience and accessibility
 2. **Autonomous Subsystem** - Self-healing and automated operations
 3. **Production Hardening** - Security, compliance, reliability
@@ -47,10 +57,12 @@ Each persona sees customized KPIs, gates, and next actions:
 ## 🔍 Phase 1: Examine
 
 ### Baseline Data Collection
+
 1. **Run Enhanced Diagnostic Shell** (Examine Mode)
+
    ```powershell
    pwsh -File scripts\quick-monitor.ps1
-   pwsh -File scripts\verify-pipeline.ps1
+   pwsh -File BRAV\SCPT\verify-pipeline.ps1
    ```
 
 2. **Gather Environment Information**
@@ -65,6 +77,7 @@ Each persona sees customized KPIs, gates, and next actions:
    - Document current configuration baseline
 
 ### Configuration Audit
+
 1. **Read Canonical Guides**
    - Gate readiness: `docs/BossCat/gates/`
    - CI integration: `.github/workflows/`
@@ -82,6 +95,7 @@ Each persona sees customized KPIs, gates, and next actions:
    - Feature flags and toggles
 
 ### Metrics Inventory
+
 1. **Identify Tracking Requirements**
    - Fleet badge status per repository
    - Policy compliance scores
@@ -100,6 +114,7 @@ Each persona sees customized KPIs, gates, and next actions:
 ## 🧹 Phase 2: Clean
 
 ### Resolve Blockers
+
 1. **Fix Wiring/Health Issues**
    - Ensure OTLP gRPC (14317) and HTTP (14318) endpoints are active
    - Verify Windows OTel Collector is running
@@ -107,6 +122,7 @@ Each persona sees customized KPIs, gates, and next actions:
    - Resolve Docker service issues
 
 2. **Service Management**
+
    ```powershell
    # Start Windows Collector
    Start-Service otelcol-contrib
@@ -120,6 +136,7 @@ Each persona sees customized KPIs, gates, and next actions:
    ```
 
 ### Standardize Configuration
+
 1. **Consolidate Settings**
    - Centralize config in `.agent/config.json`
    - Align with policy bundles
@@ -127,6 +144,7 @@ Each persona sees customized KPIs, gates, and next actions:
    - Apply supply-chain security policies
 
 2. **Configuration Structure**
+
    ```json
    {
      "version": "1.0",
@@ -144,6 +162,7 @@ Each persona sees customized KPIs, gates, and next actions:
    ```
 
 ### Update CI/CD
+
 1. **Modify GitHub Actions**
    - Run tests automatically
    - Execute ECRR automation
@@ -160,7 +179,9 @@ Each persona sees customized KPIs, gates, and next actions:
 ## 📊 Phase 3: Report
 
 ### Generate Monitoring Reports
+
 1. **Run Monitoring with Export**
+
    ```powershell
    pwsh -File scripts\monitor-optimized-pipeline.ps1 -ExportReport
    ```
@@ -177,7 +198,9 @@ Each persona sees customized KPIs, gates, and next actions:
    - Archive with timestamps
 
 ### Regenerate Roadmap JSON
+
 1. **Execute Update Command**
+
    ```bash
    pnpm roadmap:update
    ```
@@ -195,6 +218,7 @@ Each persona sees customized KPIs, gates, and next actions:
    - Review failing buckets table
 
 ### Track Success Metrics
+
 1. **Reporting Categories**
    - **Fleet Health**: Percentage of repos with green badges
    - **Policy Compliance**: Guardrail enforcement scores
@@ -212,6 +236,7 @@ Each persona sees customized KPIs, gates, and next actions:
 ## 🎭 Phase 4: Role
 
 ### Assign Ownership
+
 1. **Task-to-Role Mapping**
    - **Project Manager**: Monitor pass rates, roadmap status, KPI trends
    - **Implication Agent**: Flag blocked features, analyze risks
@@ -225,6 +250,7 @@ Each persona sees customized KPIs, gates, and next actions:
    - On-call rotation (if applicable)
 
 ### Define Validation Criteria
+
 1. **Acceptance Metrics**
    - PR lane ≥95% pass rate
    - 100% SBOM coverage for production artifacts
@@ -238,6 +264,7 @@ Each persona sees customized KPIs, gates, and next actions:
    - Verify in SigNoz UI with query: `message contains "canary test"`
 
 ### Schedule Reviews
+
 1. **Review Cadence**
    - **Daily**: Quick health checks (`quick-monitor.ps1`)
    - **Weekly**: Full ECRR cycle and compliance review
@@ -251,6 +278,7 @@ Each persona sees customized KPIs, gates, and next actions:
    - ECRR compliance reports
 
 ### Plan Next Phases
+
 1. **Phase Alignment**
    - **Current Phase**: Production Hardening
    - **Next Phase**: Reference Implementation
@@ -267,12 +295,14 @@ Each persona sees customized KPIs, gates, and next actions:
 ## ✅ Deliverables
 
 ### 1. Automated ECRR Reports
+
 - **Location**: `docs/BossCat/reports/`
 - **Frequency**: After every significant operation
 - **Integration**: CI/CD pipeline (`ci-cd-pipeline-ecrr.yml`)
 - **Format**: Markdown with PDF export capability
 
 ### 2. Status Dashboard
+
 - **File**: `docs/status.html`
 - **Data Sources**: `docs/status/*.json`
 - **Features**:
@@ -284,6 +314,7 @@ Each persona sees customized KPIs, gates, and next actions:
 - **Export Options**: MD, CSV, PDF
 
 ### 3. Success Metrics Report
+
 - **Tracking**:
   - Fleet health (≥90% green repos)
   - Policy compliance scores
@@ -293,6 +324,7 @@ Each persona sees customized KPIs, gates, and next actions:
 - **Dashboard**: `artifacts/ecrr-compliance-dashboard.html`
 
 ### 4. Living Roadmap
+
 - **Source**: `docs/status/roadmap.json`
 - **Update Mechanism**: `pnpm roadmap:update`
 - **Contents**:
@@ -306,6 +338,7 @@ Each persona sees customized KPIs, gates, and next actions:
 ## 🛠️ BossCat Tooling Baseline
 
 ### PowerShell Functions
+
 ```powershell
 # Start OTel stack
 otel-start
@@ -321,17 +354,21 @@ otel-canary
 ```
 
 ### Core Scripts
+
 - `scripts/monitor-optimized-pipeline.ps1` - Enhanced real-time monitoring with ECRR
 - `scripts/quick-monitor.ps1` - Fast health check and status verification
 - `scripts/generate-windows-canary.ps1` - Generate test logs and traces
-- `scripts/verify-pipeline.ps1` - End-to-end pipeline validation
+- `BRAV/SCPT/verify-pipeline.ps1` - End-to-end gate validation (exit codes 0/1/2)
+- `operator-pipeline-check.ps1` - Operator linear check after collector restart
 
 ### Docker Compose
+
 - **SigNoz Stack**: `docker-compose-signoz.yml`
 - **Services**: ClickHouse, ZooKeeper, Query Service, Frontend
 - **Volumes**: Persistent data storage for observability data
 
 ### Playwright Automation
+
 - **Nightly Exports**: `pnpm run export:signoz:playwright`
 - **Dashboard Snapshots**: `docs/observability/snapshots/`
 - **GitHub Actions**: `.github/workflows/nightly-dashboard-export.yml`
@@ -341,7 +378,8 @@ otel-canary
 ## 📜 BossCat Compliance Framework
 
 ### Commit Message Standards (ECRR Format)
-```
+
+```text
 docs(ecrr): <artifact>        # Documentation updates
 fix(gap): <patch>             # Bug fixes and patches
 test(canary): <target>        # Test execution and validation
@@ -349,12 +387,14 @@ feat(bosscat): <enhancement>  # New BossCat features
 ```
 
 ### Mandatory Workflows
+
 1. **All changes require BossCat-approved PRs**
 2. **Nightly automation runs regardless of human intervention**
 3. **Executive dashboard exports delivered automatically**
 4. **ECRR reports generated after every significant operation**
 
 ### Governance Enforcement
+
 - BossCat approval required for production deployments
 - Automated compliance checking via nightly scripts
 - Evidence collection mandatory for all agent actions
@@ -365,11 +405,13 @@ feat(bosscat): <enhancement>  # New BossCat features
 ## 🌙 Nightly BossCat Automation
 
 ### Automated Export Schedule
+
 - **Daily**: Executive dashboard snapshots at 2 AM UTC
 - **Weekly**: Compliance trend analysis and drift detection
 - **Escalation**: BossCat alerted on metrics threshold breaches
 
 ### Export Stack
+
 ```bash
 # PowerShell automation
 scripts/nightly-dashboard-export.ps1
@@ -382,6 +424,7 @@ pnpm run export:signoz:playwright
 ```
 
 ### SigNoz Integration
+
 - **UI**: `http://localhost:8080`
 - **OTLP Endpoints**: 5317 (gRPC), 5318 (HTTP)
 - **Key Queries**:
@@ -395,6 +438,7 @@ pnpm run export:signoz:playwright
 ## 🎯 Success Metrics
 
 ### BossCat Dashboards Track
+
 1. **Pipeline Performance**
    - Latency: Target <200ms batches
    - Noise reduction: ~50% volume reduction
@@ -420,6 +464,7 @@ pnpm run export:signoz:playwright
 ## 🚀 Quick Start Commands
 
 ### Health Checks
+
 ```powershell
 # Quick health check
 pwsh -File scripts\quick-monitor.ps1
@@ -428,10 +473,11 @@ pwsh -File scripts\quick-monitor.ps1
 pwsh -File scripts\monitor-optimized-pipeline.ps1 -DurationMinutes 10
 
 # Verify end-to-end pipeline
-pwsh -File scripts\verify-pipeline.ps1
+pwsh -File BRAV\SCPT\verify-pipeline.ps1
 ```
 
 ### Canary Testing
+
 ```powershell
 # Generate canary test logs
 pwsh -File scripts\generate-windows-canary.ps1
@@ -443,6 +489,7 @@ pwsh -File scripts\generate-windows-canary.ps1
 ```
 
 ### Dashboard Operations
+
 ```powershell
 # Update roadmap data
 pnpm roadmap:update
@@ -454,6 +501,7 @@ pnpm roadmap:update
 ```
 
 ### Service Management
+
 ```powershell
 # Check Windows Collector
 sc query otelcol-contrib
@@ -477,6 +525,7 @@ docker-compose -f docker-compose-signoz.yml ps
 ### Common Issues
 
 #### Windows Collector Not Running
+
 ```powershell
 # Check service status
 sc query otelcol-contrib
@@ -489,6 +538,7 @@ Get-EventLog -LogName Application -Source otelcol-contrib -Newest 20
 ```
 
 #### SigNoz Unhealthy
+
 ```bash
 # Check Docker services
 docker ps
@@ -501,6 +551,7 @@ docker-compose -f docker-compose-signoz.yml logs -f query-service
 ```
 
 #### OTLP Endpoints Unreachable
+
 ```powershell
 # Test connectivity
 Test-NetConnection -ComputerName localhost -Port 5317
@@ -515,6 +566,7 @@ cat config\signoz-collector.yaml
 ```
 
 #### Dashboard Data Not Loading
+
 ```bash
 # Regenerate JSON files
 pnpm roadmap:update
@@ -531,6 +583,7 @@ Get-Acl docs/status/roadmap.json
 ## 📚 Reference Documentation
 
 ### Key Documentation Locations
+
 - **AGENTS.md**: Agent hierarchy and operating principles
 - **ECRR_TEMPLATE_GUIDE.md**: Template for ECRR reports
 - **ECRR_QUICK_REFERENCE.md**: Quick reference for compliance
@@ -540,11 +593,13 @@ Get-Acl docs/status/roadmap.json
 - **docs/cheatsheets/**: Quick reference guides
 
 ### Canonical Creative Reference
+
 - **In Repo**: `docs/comfort-cat/`
 - **Windows Mirror**: `C:\otel\docs\comfort cat`
 - **Guideline**: When uncertain, add or update guideline doc before proceeding
 
 ### GitHub Workflows
+
 - `.github/workflows/nightly-dashboard-export.yml` - Automated exports
 - `.github/workflows/ci-cd-pipeline-ecrr.yml` - ECRR automation
 - Security scanning: CodeQL, Gitleaks, Dependabot
@@ -553,20 +608,25 @@ Get-Acl docs/status/roadmap.json
 
 ## 🐾 Cat Nap Control Room Aesthetic
 
-This system embodies the **"Cat Nap Control Room"** concept - a serene, minimalist observability cockpit where logs, metrics, and traces flow seamlessly at sub-second cadence.
+This system embodies the **"Cat Nap Control Room"** concept - a serene, minimalist
+observability cockpit where logs, metrics, and traces flow seamlessly at
+sub-second cadence.
 
 ### Design Principles
+
 - **Calm and Efficient**: Like a cat resting beside a softly glowing control board
 - **Low-Latency**: 200ms batches for real-time feel
 - **Noise Filtering**: ~50% volume reduction for signal clarity
 - **Playful Yet Professional**: Friendly UX with enterprise reliability
 
 ### Status Indicators
+
 - **Green (✅)**: Healthy, operational, compliant
 - **Yellow (🟨)**: Warning, attention needed, degraded
 - **Red (🟥)**: Critical, action required, failed
 
 ### Monitoring Philosophy
+
 - **Observe, Don't Intrude**: Minimal overhead, maximum insight
 - **Local-First**: Privacy-preserving, no unnecessary network calls
 - **Evidence-Based**: All decisions backed by telemetry
@@ -577,6 +637,7 @@ This system embodies the **"Cat Nap Control Room"** concept - a serene, minimali
 ## 🎓 Usage Instructions
 
 ### For Cursor IDE Implementer
+
 1. **Copy this document** to your context
 2. **Start with Phase 1 (Examine)** - Gather baseline data
 3. **Progress through ECRR cycle** - Don't skip phases
@@ -585,6 +646,7 @@ This system embodies the **"Cat Nap Control Room"** concept - a serene, minimali
 6. **Generate artifacts** - Document everything
 
 ### Success Criteria
+
 - [ ] All four ECRR phases completed
 - [ ] Automated reports integrated into CI
 - [ ] Status dashboard auto-refreshing with real-time KPIs
@@ -593,11 +655,15 @@ This system embodies the **"Cat Nap Control Room"** concept - a serene, minimali
 - [ ] BossCat approval obtained for production changes
 
 ### North Star Principle
-**Focus on incremental improvements, continuously verifying with ECRR reports and success metrics. This ensures the Bosscat observability pipeline remains fully compliant, transparent, and enterprise-ready.**
+
+**Focus on incremental improvements, continuously verifying with ECRR reports and
+success metrics. This ensures the Bosscat observability pipeline remains fully
+compliant, transparent, and enterprise-ready.**
 
 ---
 
 🐾 **End of Cursor{Implementer} Setup Prompt**
 
+<!-- markdownlint-disable-next-line MD013 -->
 *This document serves as the foundational setup guide for autonomous cursor{implementer} operations within the Resonai [OTel] observability stack under BossCat OEM governance.*
 

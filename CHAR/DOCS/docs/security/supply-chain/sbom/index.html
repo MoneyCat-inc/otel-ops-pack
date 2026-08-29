@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SBOM & Release Attestations</title>
+<meta name="description" content="Supply-chain transparency with CycloneDX SBOMs and sigstore attestations.">
+<link rel="canonical" href="https://hub.resonai.uk/docs/security/supply-chain/sbom/">
+<link rel="stylesheet" href="/docs/assets/hub.css">
+</head>
+<body>
+<div class="container">
+<h1>📦 SBOM & Release Attestations</h1>
+<p><strong>Supply-chain transparency with CycloneDX and sigstore attestations.</strong></p>
+
+<h2>What We Provide</h2>
+<ul>
+<li><strong>CycloneDX SBOMs</strong> — Complete software bill of materials for all releases</li>
+<li><strong>Sigstore Attestations</strong> — Keyless signing with GitHub OIDC</li>
+<li><strong>Vulnerability Tracking</strong> — Automated scanning and reporting</li>
+<li><strong>Audit Trail</strong> — Every release is signed and verifiable</li>
+</ul>
+
+<h2>SBOM Format</h2>
+<p>We use CycloneDX 1.5 (JSON format) generated via GitHub Actions.</p>
+
+<h3>Example SBOM Generation</h3>
+<pre><code># In GitHub Actions
+- name: Generate SBOM
+  uses: anchore/sbom-action@v0
+  with:
+    format: cyclonedx-json
+    output-file: sbom.cyclonedx.json
+
+- name: Sign SBOM
+  uses: sigstore/cosign-installer@v3
+- run: |
+    cosign attest --yes --type cyclonedx \
+      --predicate sbom.cyclonedx.json \
+      ghcr.io/moneycat-inc/otel-ops-pack:${{ github.sha }}
+</code></pre>
+
+<h2>Verification</h2>
+<pre><code># Verify attestation
+cosign verify-attestation \
+  --type cyclonedx \
+  --certificate-identity-regexp=".*" \
+  --certificate-oidc-issuer="https://token.actions.githubusercontent.com" \
+  ghcr.io/moneycat-inc/otel-ops-pack:latest
+
+# Download SBOM
+cosign download attestation \
+  ghcr.io/moneycat-inc/otel-ops-pack:latest | jq -r '.payload' | base64 -d | jq .
+</code></pre>
+
+<h2>Automated Workflows</h2>
+<ul>
+<li><strong>SBOM Stability Tracker</strong> — Monitors dependency changes and vulnerabilities</li>
+<li><strong>Security Scanning</strong> — CodeQL, Trivy, and other SAST tools</li>
+<li><strong>Dependency Updates</strong> — Dependabot with automatic testing</li>
+</ul>
+
+<h2>Reference</h2>
+<ul>
+<li><a href="/docs/security/policy-bundle/">Policy Bundle & Attestations</a></li>
+<li><a href="https://cyclonedx.org/" target="_blank" rel="noopener">CycloneDX Specification</a></li>
+<li><a href="https://docs.sigstore.dev/" target="_blank" rel="noopener">Sigstore Documentation</a></li>
+<li><a href="https://github.com/MoneyCat-inc/otel-ops-pack/security" target="_blank" rel="noopener">Security Advisories</a></li>
+</ul>
+
+<div class="footer">
+<p><a href="/">&larr; Back to BossCat Hub</a></p>
+<p><small>By <a href="https://patreon.com/FaeMcLachlan" target="_blank" rel="noopener">Fae McLachlan</a> &bull; Evidence-First Observability</small></p>
+</div>
+</div>
+</body>
+</html>
+

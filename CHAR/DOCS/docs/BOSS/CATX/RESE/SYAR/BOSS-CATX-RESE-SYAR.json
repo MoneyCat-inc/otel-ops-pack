@@ -1,0 +1,45 @@
+{
+  "id": "BOSS-CATX-RESE-SYAR",
+  "schema_version": "1.0",
+  "generated_at": "${NOW}",
+  "governance": {
+    "budgets": { 
+      "jobs_max": 10, 
+      "files_max": 10, 
+      "loc_max": 2000,
+      "sticky_threshold_pct": 80,
+      "notes": "Sticky warnings at ≥80% thresholds (≥8 jobs, ≥1600 LOC)"
+    },
+    "lanes": ["SSOT", "FLAK", "SELE", "COMP", "DOCS"],
+    "gates": ["IONA", "GPU_FIX", "PERF_SUMMARY"],
+    "sites": ["ci", "local", "prod"],
+    "modes": { "ci": "warn", "local": "warn", "prod": "strict" }
+  },
+  "artifacts": {
+    "ecrr_reports": "CHAR/ECRR/ECRR_REPORTS/",
+    "gate_results_json": "DELT/ARTF/gate-verification-results.json",
+    "snapshots": "docs/observability/snapshots/",
+    "status_page": "docs/status.html",
+    "signature_registry": "signature-registry.json",
+    "mascot_image": "assets/Vasilisa_High_Priestess_TinCanForest.jpg"
+  },
+  "workflows": {
+    "gate_verify": ".github/workflows/bosscat-gate-verify.yml",
+    "nightly_dashboards": ".github/workflows/nightly-dashboard-export.yml"
+  },
+  "perf": {
+    "thresholds": {
+      "ci": { "p95_ms": 500, "error_rate": 0.01 },
+      "prod": { "p95_ms": 200, "error_rate": 0.005 }
+    },
+    "tools": ["k6", "locust"],
+    "reports": ["DELT/ARTF/gpu_fix/k6-summary.json"]
+  },
+  "evidence": {
+    "queue_steward": [
+      "DELT/ARTF/queue-steward-verification.txt",
+      "artifacts/queue-steward-verification.txt"
+    ]
+  }
+}
+

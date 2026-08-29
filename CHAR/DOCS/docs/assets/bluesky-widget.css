@@ -1,0 +1,11 @@
+.bsky-list { list-style:none; margin:0; padding:0; display:grid; gap:.75rem }
+.bsky-card { border:1px solid var(--border,#e5e7eb); border-radius:.5rem; padding:.75rem }
+.bsky-text { margin:0 0 .5rem 0; line-height:1.35 }
+.bsky-meta { font-size:.875rem; opacity:.8 }
+.bsky-link { text-decoration:underline; }
+@media (prefers-color-scheme: dark) {
+  :root { --border:#2e3440; }
+  .bsky-card { background:#111827; border-color:#374151; }
+  .bsky-link { color:#93c5fd; }
+}
+

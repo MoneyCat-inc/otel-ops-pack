@@ -1,0 +1,128 @@
+{
+  "version": "1.1",
+  "updated": "2026-07-24",
+  "description": "Canonical reference map for Resonai [OTel] observability pack - single source of truth for all working parts",
+  "changelog": "v1.1: Updated paths after root consolidation (177 files organized by domain)",
+  "buckets": [
+    {
+      "name": "Gate & Readiness",
+      "description": "Authoritative playbooks for gate verification and production readiness",
+      "canonical": [
+        {
+          "title": "Gate Archive (2025-10)",
+          "path": "docs/gate/2025-10/",
+          "purpose": "October 2025 gate verification evidence"
+        }
+      ]
+    },
+    {
+      "name": "Persona & Governance",
+      "description": "Immutable rules for merge discipline, budgets, and ECRR methodology",
+      "canonical": [
+        {
+          "title": "The Art of ECRR (Manual)",
+          "path": "docs/bosscat/misc/ART_OF_ECRR.md",
+          "purpose": "Paired-agent protocol, kill-switch, strict budgets"
+        },
+        {
+          "title": "Agents & Hierarchy",
+          "path": "docs/bosscat/misc/AGENTS.md",
+          "purpose": "Agent roles and ECRR methodology"
+        }
+      ]
+    },
+    {
+      "name": "Stakeholder Evidence",
+      "description": "Executive packages for sign-offs and audit trails",
+      "canonical": [
+        {
+          "title": "Stakeholder Evidence Package",
+          "path": "docs/BossCat/STAKEHOLDER_EVIDENCE_PACKAGE.md",
+          "purpose": "Top-down view for stakeholder review"
+        }
+      ]
+    },
+    {
+      "name": "Security & Maintenance",
+      "description": "Master security guide and tracked risk waivers",
+      "canonical": [
+        {
+          "title": "Security & Maintenance Master Guide",
+          "path": "docs/BossCat/SECURITY_MAINTENANCE_MASTER_GUIDE.md",
+          "purpose": "Week-by-week operations and security procedures"
+        }
+      ]
+    },
+    {
+      "name": "Dashboards & Data Room",
+      "description": "Live 'see it working' observability interfaces",
+      "canonical": [
+        {
+          "title": "Status/KPI Dashboard",
+          "path": "docs/status.html",
+          "purpose": "Real-time metrics and system health dashboard"
+        }
+      ]
+    },
+    {
+      "name": "Bots & Lanes",
+      "description": "AUTO-BOTS registry and lane enforcement (SSOT/FLAK/SELE/COMP/DOCS)",
+      "canonical": []
+    },
+    {
+      "name": "Rebuild History",
+      "description": "Professional site rebuild and unified UX documentation",
+      "canonical": []
+    }
+  ],
+  "organized_domains": [
+    {
+      "name": "gate",
+      "path": "docs/gate/",
+      "description": "Gate verification and readiness evidence"
+    },
+    {
+      "name": "socm",
+      "path": "https://github.com/MoneyCat-inc/socm",
+      "description": "Bluesky / social ops (extracted Pack 3B; was docs/socm/)"
+    },
+    {
+      "name": "pr",
+      "path": "docs/pr/",
+      "description": "Pull request reviews and comments"
+    },
+    {
+      "name": "releases",
+      "path": "docs/releases/",
+      "description": "Release notes and roadmaps"
+    },
+    {
+      "name": "runbooks",
+      "path": "docs/runbooks/",
+      "description": "Operational runbooks and deployment guides"
+    },
+    {
+      "name": "evidence",
+      "path": "docs/evidence/",
+      "description": "Commit evidence and system status"
+    },
+    {
+      "name": "status",
+      "path": "docs/status/",
+      "description": "Session status and implementation reports"
+    }
+  ],
+  "meta": {
+    "hub_url": "docs/index.html",
+    "inventory_location": "artifacts/index/",
+    "inventory_location_note": "gitignored; absent in a fresh clone until generated locally",
+    "orphans_list": "artifacts/index/md_orphans.csv",
+    "scripts_registry": "docs/status/scripts.json",
+    "workflows_registry": "docs/status/workflows.json",
+    "ecrr_reports": "CHAR/ECRR/ECRR_REPORTS/",
+    "total_canonical_refs": 6,
+    "buckets_count": 7,
+    "organized_domains_count": 7,
+    "root_docs_consolidated": 177
+  }
+}

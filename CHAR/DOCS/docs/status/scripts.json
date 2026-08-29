@@ -1,0 +1,328 @@
+{
+  "updated": "2025-10-19T08:10:52.3767180+01:00",
+  "scripts": [
+    {
+      "name": "codemods.ps1",
+      "path": ".agent\\scripts\\codemods.ps1",
+      "size": 245,
+      "modified": "2025-09-17T21:49:46.6061389+01:00",
+      "lane": "UTIL"
+    },
+    {
+      "name": "enqueue-task.ps1",
+      "path": ".agent\\scripts\\enqueue-task.ps1",
+      "size": 203,
+      "modified": "2025-09-17T21:49:46.4196128+01:00",
+      "lane": "UTIL"
+    },
+    {
+      "name": "run-codex.ps1",
+      "path": ".agent\\scripts\\run-codex.ps1",
+      "size": 668,
+      "modified": "2025-09-17T21:49:46.5442534+01:00",
+      "lane": "UTIL"
+    },
+    {
+      "name": "tetragrammaton-cord.ps1",
+      "path": ".agent\\scripts\\tetragrammaton-cord.ps1",
+      "size": 12270,
+      "modified": "2025-09-28T16:13:15.983937+01:00",
+      "lane": "UTIL"
+    },
+    {
+      "name": "tetragrammaton-impl.ps1",
+      "path": ".agent\\scripts\\tetragrammaton-impl.ps1",
+      "size": 10257,
+      "modified": "2025-09-28T16:10:54.0060714+01:00",
+      "lane": "UTIL"
+    },
+    {
+      "name": "tetragrammaton-orch.ps1",
+      "path": ".agent\\scripts\\tetragrammaton-orch.ps1",
+      "size": 6038,
+      "modified": "2025-09-28T16:10:54.0060714+01:00",
+      "lane": "UTIL"
+    },
+    {
+      "name": "generate-codex-tasks.ps1",
+      "path": "ALFA\\APPS\\codex\\scripts\\generate-codex-tasks.ps1",
+      "size": 2810,
+      "modified": "2025-10-16T04:41:51.2685635+01:00",
+      "lane": "UTIL"
+    },
+    {
+      "name": "status-fleet.ps1",
+      "path": "CHAR\\DOCS\\upstream-contribution\\windows_day2_ops\\scripts\\status-fleet.ps1",
+      "size": 1336,
+      "modified": "2025-10-16T04:41:52.6491714+01:00",
+      "lane": "UTIL"
+    },
+    {
+      "name": "comfort-checklist.ps1",
+      "path": "CHAR\\PRSV\\comfort-cat-stubs\\comfort-cat-stubs\\scripts\\comfort-checklist.ps1",
+      "size": 496,
+      "modified": "2025-10-16T04:41:54.1912303+01:00",
+      "lane": "UTIL"
+    },
+    {
+      "name": "sync-comfort-cat.ps1",
+      "path": "CHAR\\PRSV\\comfort-cat-stubs\\comfort-cat-stubs\\scripts\\sync-comfort-cat.ps1",
+      "size": 349,
+      "modified": "2025-10-16T04:41:54.1912303+01:00",
+      "lane": "UTIL"
+    },
+    {
+      "name": "Activate.ps1",
+      "path": "CHAR\\PRSV\\experiments\\experiments\\codex-local-logfilter\\.venv\\Scripts\\Activate.ps1",
+      "size": 9031,
+      "modified": "2025-08-14T15:34:28+01:00",
+      "lane": "UTIL"
+    },
+    {
+      "name": "set-credentials.ps1",
+      "path": "scripts\\social\\set-credentials.ps1",
+      "size": 1425,
+      "modified": "2025-10-18T03:08:13.9601155+01:00",
+      "lane": "UTIL"
+    },
+    {
+      "name": "build-milk-vendors.ps1",
+      "path": "scripts\\visuals\\build-milk-vendors.ps1",
+      "size": 2250,
+      "modified": "2025-10-17T14:12:06.4525183+01:00",
+      "lane": "UTIL"
+    },
+    {
+      "name": "Install-PresetPack.ps1",
+      "path": "scripts\\visuals\\Install-PresetPack.ps1",
+      "size": 4730,
+      "modified": "2025-10-16T11:35:47.1866704+01:00",
+      "lane": "UTIL"
+    },
+    {
+      "name": "Install-ResonaiDefault.ps1",
+      "path": "scripts\\visuals\\Install-ResonaiDefault.ps1",
+      "size": 2397,
+      "modified": "2025-10-16T10:10:10.1449011+01:00",
+      "lane": "UTIL"
+    },
+    {
+      "name": "Validate-Preset.ps1",
+      "path": "scripts\\visuals\\Validate-Preset.ps1",
+      "size": 6120,
+      "modified": "2025-10-16T11:35:47.1866704+01:00",
+      "lane": "UTIL"
+    },
+    {
+      "name": "append-ecrr-benchmark-trend.ps1",
+      "path": "scripts\\append-ecrr-benchmark-trend.ps1",
+      "size": 2359,
+      "modified": "2025-10-16T04:42:06.7816025+01:00",
+      "lane": "COMP"
+    },
+    {
+      "name": "archive-gate-007-session.ps1",
+      "path": "scripts\\archive-gate-007-session.ps1",
+      "size": 6949,
+      "modified": "2025-10-16T04:42:06.7831073+01:00",
+      "lane": "GATE"
+    },
+    {
+      "name": "auto-rerun-guard.ps1",
+      "path": "scripts\\auto-rerun-guard.ps1",
+      "size": 991,
+      "modified": "2025-10-16T04:42:06.7831073+01:00",
+      "lane": "UTIL"
+    },
+    {
+      "name": "benchmark-process-all-ecrr-reports.ps1",
+      "path": "scripts\\benchmark-process-all-ecrr-reports.ps1",
+      "size": 2265,
+      "modified": "2025-10-16T04:42:06.7831073+01:00",
+      "lane": "COMP"
+    },
+    {
+      "name": "boot-health-check.ps1",
+      "path": "scripts\\boot-health-check.ps1",
+      "size": 8917,
+      "modified": "2025-10-16T10:19:29.2930089+01:00",
+      "lane": "UTIL"
+    },
+    {
+      "name": "check-site-refmap.ps1",
+      "path": "scripts\\check-site-refmap.ps1",
+      "size": 2316,
+      "modified": "2025-10-16T04:42:06.7846225+01:00",
+      "lane": "UTIL"
+    },
+    {
+      "name": "check-site.ps1",
+      "path": "scripts\\check-site.ps1",
+      "size": 3297,
+      "modified": "2025-10-16T04:42:06.7846225+01:00",
+      "lane": "UTIL"
+    },
+    {
+      "name": "cleanup-parallel-aggressive.ps1",
+      "path": "scripts\\cleanup-parallel-aggressive.ps1",
+      "size": 15301,
+      "modified": "2025-10-16T04:42:06.78563+01:00",
+      "lane": "UTIL"
+    },
+    {
+      "name": "cursor-implementer-run.ps1",
+      "path": "scripts\\cursor-implementer-run.ps1",
+      "size": 7189,
+      "modified": "2025-10-16T04:42:06.7872425+01:00",
+      "lane": "UTIL"
+    },
+    {
+      "name": "deploy-production.ps1",
+      "path": "scripts\\deploy-production.ps1",
+      "size": 14060,
+      "modified": "2025-10-16T10:19:29.2930089+01:00",
+      "lane": "UTIL"
+    },
+    {
+      "name": "diagnostic-shell-enhanced.ps1",
+      "path": "scripts\\diagnostic-shell-enhanced.ps1",
+      "size": 25797,
+      "modified": "2025-10-16T10:19:29.2930089+01:00",
+      "lane": "UTIL"
+    },
+    {
+      "name": "enterprise-readiness-check.ps1",
+      "path": "scripts\\enterprise-readiness-check.ps1",
+      "size": 16104,
+      "modified": "2025-10-16T10:19:29.2945238+01:00",
+      "lane": "UTIL"
+    },
+    {
+      "name": "generate-queue-steward-evidence.ps1",
+      "path": "scripts\\generate-queue-steward-evidence.ps1",
+      "size": 2936,
+      "modified": "2025-10-16T04:42:06.7897547+01:00",
+      "lane": "UTIL"
+    },
+    {
+      "name": "gpu-fix-lane.ps1",
+      "path": "scripts\\gpu-fix-lane.ps1",
+      "size": 10283,
+      "modified": "2025-10-16T04:42:06.790766+01:00",
+      "lane": "UTIL"
+    },
+    {
+      "name": "hub-smoke-test.ps1",
+      "path": "scripts\\hub-smoke-test.ps1",
+      "size": 3518,
+      "modified": "2025-10-19T05:00:12.1019776+01:00",
+      "lane": "SSOT"
+    },
+    {
+      "name": "hub-verify-dns.ps1",
+      "path": "scripts\\hub-verify-dns.ps1",
+      "size": 2063,
+      "modified": "2025-10-19T05:00:12.1080242+01:00",
+      "lane": "GATE"
+    },
+    {
+      "name": "ingest-backfill.ps1",
+      "path": "scripts\\ingest-backfill.ps1",
+      "size": 4265,
+      "modified": "2025-10-16T04:42:06.7917665+01:00",
+      "lane": "UTIL"
+    },
+    {
+      "name": "integrate-boot-health.ps1",
+      "path": "scripts\\integrate-boot-health.ps1",
+      "size": 5593,
+      "modified": "2025-10-16T10:19:29.2945238+01:00",
+      "lane": "UTIL"
+    },
+    {
+      "name": "nightly-dashboard-export.ps1",
+      "path": "scripts\\nightly-dashboard-export.ps1",
+      "size": 965,
+      "modified": "2025-10-17T14:12:06.4511129+01:00",
+      "lane": "DOCS"
+    },
+    {
+      "name": "playwright-dashboard-export.ps1",
+      "path": "scripts\\playwright-dashboard-export.ps1",
+      "size": 5271,
+      "modified": "2025-10-16T04:42:06.7937959+01:00",
+      "lane": "DOCS"
+    },
+    {
+      "name": "run-normalize-summarize.ps1",
+      "path": "scripts\\run-normalize-summarize.ps1",
+      "size": 1055,
+      "modified": "2025-10-16T04:42:06.7953138+01:00",
+      "lane": "UTIL"
+    },
+    {
+      "name": "setup-bedrock-prerequisites.ps1",
+      "path": "scripts\\setup-bedrock-prerequisites.ps1",
+      "size": 8528,
+      "modified": "2025-10-16T10:19:29.2945238+01:00",
+      "lane": "UTIL"
+    },
+    {
+      "name": "setup-parallel-agent-automation.ps1",
+      "path": "scripts\\setup-parallel-agent-automation.ps1",
+      "size": 5876,
+      "modified": "2025-10-16T10:19:29.2955307+01:00",
+      "lane": "UTIL"
+    },
+    {
+      "name": "setup-scaled-scheduler.ps1",
+      "path": "scripts\\setup-scaled-scheduler.ps1",
+      "size": 4938,
+      "modified": "2025-10-16T10:19:29.2955307+01:00",
+      "lane": "UTIL"
+    },
+    {
+      "name": "socm-fat.ps1",
+      "path": "scripts\\socm-fat.ps1",
+      "size": 3983,
+      "modified": "2025-10-18T23:25:15.3594537+01:00",
+      "lane": "UTIL"
+    },
+    {
+      "name": "test-bedrock-connection.ps1",
+      "path": "scripts\\test-bedrock-connection.ps1",
+      "size": 635,
+      "modified": "2025-10-16T10:19:29.2955307+01:00",
+      "lane": "SSOT"
+    },
+    {
+      "name": "track-sbom-stability.ps1",
+      "path": "scripts\\track-sbom-stability.ps1",
+      "size": 8402,
+      "modified": "2025-10-16T04:42:06.7973237+01:00",
+      "lane": "UTIL"
+    },
+    {
+      "name": "update-status-dashboard.ps1",
+      "path": "scripts\\update-status-dashboard.ps1",
+      "size": 19758,
+      "modified": "2025-10-16T10:19:29.2970375+01:00",
+      "lane": "UTIL"
+    },
+    {
+      "name": "verify-correlation.ps1",
+      "path": "scripts\\verify-correlation.ps1",
+      "size": 2282,
+      "modified": "2025-10-16T04:42:06.7983322+01:00",
+      "lane": "GATE"
+    },
+    {
+      "name": "verify-iona-gate.ps1",
+      "path": "scripts\\verify-iona-gate.ps1",
+      "size": 12221,
+      "modified": "2025-10-18T19:12:48.9082029+01:00",
+      "lane": "GATE"
+    }
+  ],
+  "total": 46
+}

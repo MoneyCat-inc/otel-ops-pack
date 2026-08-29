@@ -1,0 +1,48 @@
+{
+  "generatedAt": "2025-10-18T03:20:41.178Z",
+  "count": 3,
+  "posts": [
+    {
+      "text": "🐾 Introducing Resonai [OTel] - Evidence-first Windows observability with OpenTelemetry + SigNoz. No vendor lock-in, no hype, just production telemetry that ships with audit trails. #OpenTelemetry #Observability #Windows https://github.com/MoneyCat-inc/otel-ops-pack",
+      "createdAt": "2025-10-18T02:09:15.054Z",
+      "uri": "at://did:plc:ohvz4d5ucvbqiykwp2pkfato/app.bsky.feed.post/3m3gpf45i652i",
+      "url": "https://bsky.app/profile/resonai.bsky.social/post/3m3gpf45i652i",
+      "hashtags": [
+        "OpenTelemetry",
+        "Observability",
+        "Windows"
+      ],
+      "links": [
+        "https://github.com/MoneyCat-inc/otel-ops-pack"
+      ]
+    },
+    {
+      "text": "🐾 Introducing Resonai [OTel] - Evidence-first Windows observability with OpenTelemetry + SigNoz. No vendor lock-in, no hype, just production telemetry that ships with audit trails. #OpenTelemetry #Observability #Windows https://github.com/MoneyCat-inc/otel-ops-pack",
+      "createdAt": "2025-10-18T01:51:17.822Z",
+      "uri": "dry-run://missing-credentials",
+      "url": "https://bsky.app/profile//post/missing-credentials",
+      "hashtags": [
+        "OpenTelemetry",
+        "Observability",
+        "Windows"
+      ],
+      "links": [
+        "https://github.com/MoneyCat-inc/otel-ops-pack"
+      ]
+    },
+    {
+      "text": "🐾 Introducing Resonai [OTel] - Evidence-first Windows observability with OpenTelemetry + SigNoz. No vendor lock-in, no hype, just production telemetry that ships with audit trails. #OpenTelemetry #Observability #Windows https://github.com/MoneyCat-inc/otel-ops-pack",
+      "createdAt": "2025-10-18T01:43:58.923Z",
+      "uri": "dry-run://missing-credentials",
+      "url": "https://bsky.app/profile//post/missing-credentials",
+      "hashtags": [
+        "OpenTelemetry",
+        "Observability",
+        "Windows"
+      ],
+      "links": [
+        "https://github.com/MoneyCat-inc/otel-ops-pack"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Security Alerts Index",
+  "type": "object",
+  "required": ["alert_number","rule_id","severity","state","created_at","updated_at","file","line"],
+  "properties": {
+    "alert_number": { "type": "integer" },
+    "rule_id": { "type": "string" },
+    "severity": { "type": "string", "enum": ["note","warning","error","critical","high","medium","low"] },
+    "state": { "type": "string", "enum": ["open","dismissed","fixed"] },
+    "created_at": { "type": "string", "format": "date-time" },
+    "updated_at": { "type": "string", "format": "date-time" },
+    "html_url": { "type": "string" },
+    "file": { "type": "string" },
+    "line": { "type": "integer" },
+    "commit_sha": { "type": "string" }
+  }
+}
+

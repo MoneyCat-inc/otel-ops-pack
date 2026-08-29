@@ -1,0 +1,67 @@
+{
+  "allObservations": [
+    {
+      "timestamp": "2025-10-10T00:20:13.2403112+01:00",
+      "checkNumber": 1,
+      "health": {
+        "Reachable": false,
+        "Error": "No connection could be made because the target machine actively refused it. (localhost:13133)",
+        "ErrorType": "HttpRequestException",
+        "Timestamp": "2025-10-10T00:20:17.3922198+01:00"
+      },
+      "diagnostics": {
+        "timestamp": "2025-10-10T00:20:21.4731714+01:00",
+        "service": {
+          "canStop": false,
+          "startType": "Disabled",
+          "status": "Stopped",
+          "displayName": "OpenTelemetry Collector (Contrib)"
+        },
+        "ports": {
+          "4317": "Closed",
+          "8888": "Closed",
+          "13133": "Closed",
+          "4318": "Closed",
+          "55679": "Closed"
+        },
+        "processes": {
+          "status": "NotRunning"
+        }
+      },
+      "metrics": {
+        "Reachable": false,
+        "Error": "No connection could be made because the target machine actively refused it. (localhost:8888)",
+        "ErrorType": "HttpRequestException",
+        "Timestamp": "2025-10-10T00:20:21.4677656+01:00"
+      }
+    }
+  ],
+  "session": {
+    "startTime": "2025-10-10T00:20:13.1557534+01:00",
+    "endTime": "2025-10-10T00:20:22.4884679+01:00",
+    "duration": {
+      "Ticks": 93327544,
+      "Days": 0,
+      "Hours": 0,
+      "Milliseconds": 332,
+      "Microseconds": 754,
+      "Nanoseconds": 400,
+      "Minutes": 0,
+      "Seconds": 9,
+      "TotalDays": 0.00010801799074074074,
+      "TotalHours": 0.0025924317777777776,
+      "TotalMilliseconds": 9332.7544,
+      "TotalMicroseconds": 9332754.4,
+      "TotalNanoseconds": 9332754400.0,
+      "TotalMinutes": 0.15554590666666668,
+      "TotalSeconds": 9.3327544
+    }
+  },
+  "statistics": {
+    "healthPercentage": 0.0,
+    "totalChecks": 1,
+    "healthy": 0,
+    "unhealthy": 1
+  },
+  "bot": "SITE"
+}

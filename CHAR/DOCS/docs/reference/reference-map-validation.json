@@ -1,0 +1,10 @@
+{
+  "ok": true,
+  "generated_at": "${NOW}",
+  "counts": {
+    "missing": 0,
+    "nodes": 0,
+    "edges": 0
+  },
+  "notes": "Placeholder validation; CI should overwrite with real report."
+}

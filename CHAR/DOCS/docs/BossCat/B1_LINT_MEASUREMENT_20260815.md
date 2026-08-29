@@ -1,0 +1,160 @@
+<!-- markdownlint-disable MD013 MD034 MD060 -->
+# B1 Measurement — docs lint debt (archive-first)
+
+**Date:** 2026-08-15  
+**Authority:** BossCat OEM · Second Pass Wave 2 B1  
+**Actor:** Cursor{Implementer}  
+**Grounded against:** `origin/main` @ `7fc711a9e` (+ docs_gate archive exclusion PR)
+
+## Measurement
+
+| Probe | Result |
+|-------|--------|
+| Live `docs/**/*.md` (excl. `docs/archive/`) | **477** |
+| Already under `docs/archive/` | **131** |
+| Dated session / planner archive candidates (this wave) | **105** |
+| Worst known offender | `docs/BossCat/PLANNER_BRIEF_20251012.md` (hundreds of MD032/MD022 — not reflowed) |
+
+Prior plan figure: **10,718** markdownlint errors across **370** live docs @ `4469d10de`. Re-rank after archive batches land (do not trust this doc for residual counts).
+
+## Ordering
+
+1. **Gate:** exclude `docs/archive/**` from docs_gate lintable set (markdownlint + lychee); budgets still count.
+2. **Archive:** byte-identical `git mv` of dated session reports → `docs/archive/<same relative path>`.
+3. **Then:** lint-fix live remainder in ≤10-file batches; path-fix Q3 stale run-card cites on live high-debt guides (own debt / budget).
+4. **B2** lychee full-scope waits until archive PRs merge.
+
+## Batch 1 scope
+
+Trees / files moved in the paired commit (see git history):
+
+- `docs/BossCat/2025-10/**`
+- `docs/status/2025-10/**`
+- `docs/gate/2025-10/**`
+- `docs/evidence/2025-10/**`
+- `docs/BossCat/PLANNER_BRIEF_20251012.md`
+- `docs/BossCat/reports/**`
+
+`lane:cleanup` AMBER — file count exceeds ≤10; lint never waived on live docs.
+
+## Batch 2 scope
+
+Additional dated session / gate / PR reports (byte-identical `git mv`, see git history):
+
+- Remaining `docs/gate/2025-10/**` (approvals / certs; excluded living `GATE_GREEN_FLIP_PROCEDURE`)
+- `docs/gate/misc/GATE_007_*`, `GATE_008_*`
+- `docs/BossCat/*202510*`, diagnostic/ECRR/PR-summary/release-notes session files
+- `docs/notes/misc/*202510*`, `docs/pr/2025-10/**`, `docs/runbooks/2025-10/**`, `docs/security/*202510*`
+
+Re-measure residual live lint debt after merge before B1 fix batches.
+
+## Batch 3 scope — archive phase closeout
+
+Final dated session / gate-misc closeouts (10 files, ≤10 budget, no cleanup waiver):
+
+- `docs/gate/misc/GATE_006_*`
+- MILK / monetization / stakeholder / Bedrock session COMPLETE reports under `docs/notes/misc/`
+
+**Archive phase: CLOSED** after this batch. Residual `*_COMPLETE.md` notes without dates (e.g. `CLEANUP_COMPLETE.md`) stay live pending case-by-case review — not auto-archived.
+
+Next: remeasure markdownlint error count on the live set, then ≤10-file `--fix` batches. B2 lychee measurement unblocked.
+
+## Remeasure (post archive batches 1–3, on closeout branch)
+
+| Probe | Result |
+|-------|--------|
+| Live set (glob method, see command below) | **271** files |
+| Total errors (post fix1, this branch head) | **6,445** |
+| Prior plan figure @ `4469d10de`, same method | 10,718 / 370 |
+
+**Canonical command** (run from repo root; this is the CI config-resolution path —
+`.markdownlint-cli2.yaml` base merged with `.markdownlint.json`, so MD013 enforces at 120):
+
+```bash
+npx --yes markdownlint-cli2@0.14.0 --config .markdownlint-cli2.yaml   "docs/**/*.md" "README.md" "!docs/archive" "!docs/gate/archive"
+```
+
+> Correction (OEM verify, 2026-08-15): an earlier revision recorded **7,402 / 244** here.
+> That run did not reproduce under the command above (file count and error total both off;
+> the error gap is consistent with MD013 falling back to 80 chars when the
+> `.markdownlint.json` merge is missed) and stated no command. Superseded by the
+> reproducible series: **10,718/370 → 6,445/271**. Numbers without commands are claims.
+
+First `--fix` batch: 10 low-debt live files (1–3 errors each) cleared to **0** issues — see git history on this branch.
+
+## Fix batch 2 (2026-08-15)
+
+| Probe | Result |
+|-------|--------|
+| Before (canonical command @ `903b20df6`) | **6,445** / **271** (Linting: 272 = live docs + README) |
+| Batch (10 files → 0 issues) | PATREON / PHASE3 / ReviewerB / ART_OF_ECRR / BSKY×2 / GATE_DECISIONS / KOFI weekly / SBOM_AUDIT / cheatsheets/cursor-support-runbook |
+| After (same command) | **6,401** / **271** |
+
+Skipped generated `docs/BossCat/AGENTS.md` (regen via `pnpm agent:setup`).
+
+## Fix batch 3 (2026-08-15)
+
+| Probe | Result |
+|-------|--------|
+| Before (canonical command @ `b63f4bf2f`) | **6,162** / **271** (Linting: 272; post-#517 debt clearance from 6,401) |
+| Batch (10 files → 0 issues) | STATUS_AUTO_UPDATE setup / ANTIclickbait portal+README / BRIEFING_CHAR_DOCS_D3 / ecrr INDEX / IONA_ERRORS / TETRAGRAM_PHASE1 / visualizer README / KOFI_WELCOME / cursor-implementer |
+| After (same command) | **6,128** / **271** |
+
+Counted with `Summary:` / error-line match count (not `tail -1`).
+
+## Fix batch 4 scale (2026-08-15)
+
+| Probe | Result |
+|-------|--------|
+| Before (canonical command @ branch start from `main`) | **6,096** / **271** (Linting: 272) |
+| Batch (35 files → 0 issues) | Low-debt live docs with 1–15 errors (excl. generated `docs/BossCat/AGENTS.md`); ranked from `rollback_plan`, `vr/README`, `CANARY_INCIDENT_TEMPLATE`, etc. |
+| After (same command) | **5,749** / **271** |
+
+`lane:cleanup` AMBER — file count exceeds ≤10; every touched file owned to **0**.
+
+**Command:**
+
+```bash
+npx --yes markdownlint-cli2@0.14.0 --config .markdownlint-cli2.yaml \
+  "docs/**/*.md" "README.md" "!docs/archive" "!docs/gate/archive"
+```
+
+Counted with `Summary:` / error-line match on `\.md:\d+` (not `tail -1`).
+
+## Fix batch 5 scale (2026-08-15)
+
+| Probe | Result |
+|-------|--------|
+| Before (canonical command @ branch start from `main` @ `f9c522418`) | **5,744** / **271** (Linting: 272) |
+| Batch (32 files → 0 issues) | Live docs with 16-25 errors (excl. generated `docs/BossCat/AGENTS.md`, `B1_*`/`B2_*` measurement docs, `docs/BossCat/Research/**`) |
+| After (same command) | **5,058** / **271** |
+
+`lane:cleanup` AMBER - file count exceeds ≤10; every touched file owned to **0**.
+
+**Command:**
+
+```bash
+npx --yes markdownlint-cli2@0.14.0 --config .markdownlint-cli2.yaml \
+  "docs/**/*.md" "README.md" "!docs/archive" "!docs/gate/archive"
+```
+
+Counted with `Summary:` / error-line match on `\.md:\d+` (not `tail -1`).
+
+## Fix batch 6 scale (2026-08-15)
+
+| Probe | Result |
+|-------|--------|
+| Before (canonical command @ branch start from `main` @ `88f59e929`) | **5,058** / **271** (Linting: 272) |
+| Batch (35 files → 0 issues) | Live docs with 26-35 errors (excl. generated `docs/BossCat/AGENTS.md`, `B1_*`/`B2_*` measurement docs, `docs/BossCat/Research/**`) |
+| After (same command) | **3,992** / **271** |
+
+`lane:cleanup` AMBER - file count exceeds ≤10; every touched file owned to **0**.
+
+**Command:**
+
+```bash
+npx --yes markdownlint-cli2@0.14.0 --config .markdownlint-cli2.yaml \
+  "docs/**/*.md" "README.md" "!docs/archive" "!docs/gate/archive"
+```
+
+Counted with `Summary:` / error-line match on `\.md:\d+` (not `tail -1`).

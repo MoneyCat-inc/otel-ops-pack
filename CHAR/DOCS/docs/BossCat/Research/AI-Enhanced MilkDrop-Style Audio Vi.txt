@@ -1,0 +1,334 @@
+AI-Enhanced MilkDrop-Style Audio Visualizations
+MilkDrop-style shaders produce vibrant, fluid visuals that react in real time to audio frequencies, creating a
+“psychedelic” experience. Modern open-source tools let developers embed these visualizations on Windows 11 and
+even augment them with AI.
+1. Tools and Frameworks for MilkDrop-Style Visuals
+MilkDrop and Open-Source Clones: MilkDrop was the classic Winamp visualizer by Ryan Geiss, known for
+its audio-reactive shader presets. Today, multiple open-source projects carry this torch. ProjectM is a cross-
+platform MilkDrop reimplementation and library – it transforms audio into mesmerizing equations and
+graphics, much like MilkDrop, and runs on Windows, macOS, Linux, even in browsers . ProjectM
+provides a reusable libprojectM (C++), and front-ends (standalone apps, plugins) to visualize any audio
+source . There’s even a new Project Milk Syphon app for macOS that uses ProjectM to output visuals
+via Syphon (for VJ software), essentially bringing MilkDrop back on Mac . On Windows, the analogous
+solution is NestDrop (free “Classic” version), which uses the MilkDrop engine under the hood and can
+output via Spout for integration into VJ workflows .
+Butterchurn (WebGL): Butterchurn is a WebGL MilkDrop 2 implementation that runs in browsers and
+Electron. It uses the Web Audio API and MilkDrop preset files to render the same trippy visuals on a
+<canvas> element . Butterchurn exposes a JavaScript API – developers can create a visualizer
+instance, connect it to an audio source (mic, HTML5 audio, etc.), load any MilkDrop preset, and even
+programmatically switch presets or adjust blend times . This makes it ideal for a “containerized” visual
+window with real-time control via code. For example, Butterchurn has been integrated into projects like
+Webamp (HTML5 Winamp) and various music apps . Its portability (just a JS library) means it’s
+1 2
+3 4
+5 3
+6 4
+7 8
+9
+10 11
+1
+Windows-friendly (runs in Chrome/Electron on Win11) and easy to embed in custom UIs. A variety of pre-
+made preset packs (e.g. butterchurn-presets) are available, so you can load classics or user-created visuals
+out of the box .
+MilkDrop 3 (Standalone): MilkDrop 3 is a modernized, standalone version of MilkDrop, built on the earlier
+BeatDrop project. It’s portable and supports any audio source (Spotify, YouTube, system sound, etc.) by
+capturing global audio . MilkDrop3 is fully MilkDrop 2 preset compatible, but adds new features: double-
+presets (blending two presets simultaneously), one-key preset mashups (press F9 then Space to auto-mix
+two random presets) and one-key color theme randomization (press 'c' to recolor a preset) – all without
+writing code . It can auto-transition presets on beat detection, offering an automated VJ experience .
+MilkDrop3 also introduced an in-app shader code editor and support for modern GPU shader effects
+(HLSL) for more complex visuals . It runs on Windows 11 (with optional Linux builds) and includes
+conveniences like always-on-top borderless mode (for overlaying on stage displays) . ProjectM and
+MilkDrop3 both come with huge preset libraries (MilkDrop3 includes ~800+ presets, plus thousands more
+available) , making it easy to get started.
+Other Notables: BeatDrop Music Visualizer is another open-source standalone MilkDrop variant (the
+predecessor to MilkDrop3). It similarly supports high-resolution output and preset editing . For
+developers, there’s a GStreamer plugin for ProjectM , and community media players like Cider have
+plugins to embed Butterchurn visuals . These tools confirm that MilkDrop’s legacy thrives in open-
+source: you can run MilkDrop-style shaders in your own app or container window, with full control over
+presets and rendering. Even commercial visualizer products often leverage these projects – for example,
+Syqel (a web-based “AI Powered” music visualizer) integrates Butterchurn under the hood .
+2. AI Integration in Visualizers (LLMs, Voice, and Generative AI)
+LLM-Driven Shader Generation: A new frontier is using large language models to generate or evolve shader
+presets. A community-led effort fine-tuned a language model specifically on 10,000+ MilkDrop preset scripts,
+resulting in MilkDropLM (available on HuggingFace). This 7B-parameter model “understands” MilkDrop’s
+unique scripting (math equations and pixel shaders) and can produce novel preset code via text prompts
+. In essence, you can ask for “a preset with calming blue waves” or “a frenetic strobe effect” and get
+a .milk preset in return. The model outputs properly formatted MilkDrop presets (in markdown code blocks)
+that you can save and run . Early results are promising – the authors batch-generated 3,176 presets with
+the AI and found about 1 in 24 were high quality after curation . This is significant, since MilkDrop
+has 52,000+ handcrafted presets over decades – now an AI can contribute new ones, potentially with
+styles never seen before. The project’s goal is to let artists create visuals by describing them in natural
+language, instead of manually coding math. A larger 32B version (MilkDropLM-32b) is in the works . For
+practical use, one might run MilkDropLM locally (it supports tools like Kobold or llama.cpp ) – generate a
+preset from an idea, then load it into ProjectM or MilkDrop3 to see it live .
+ChatGPT for Shader Coding: Even without a custom model, creators have leveraged general LLMs (like
+ChatGPT) to assist in shader creation. For example, converting a complex Shadertoy (GLSL) effect into
+MilkDrop’s HLSL format can be tricky – but users report that ChatGPT can translate and “adapt 3D logic into a
+2D effect suitable for MilkDrop’s shader pipeline”, doing 90% of the grunt work in seconds . In one case,
+a 3D spinning cube shader (which MilkDrop can’t do natively since it lacks a Z-axis) was flattened by
+ChatGPT into a faux-3D variant that MilkDrop could render . While some manual debugging is still
+needed, AI is dramatically speeding up the preset creation and porting process. This technique can be used
+8
+12
+13 14
+15
+16 17
+18
+19
+20
+21
+11
+22 23
+24
+25 26
+27
+28
+29
+30
+31 32
+32
+2
+to expand MilkDrop’s visuals by bringing in shader art from outside sources (ShaderToy, GLSL demos, etc.)
+with minimal effort. It essentially allows AI-driven mutation of visuals: you feed in an idea or code fragment
+and let the LLM suggest the MilkDrop-compatible implementation.
+Voice Input and LLM Conversation Visuals: With the advent of voice-enabled AI (e.g. OpenAI’s voice chat
+API), developers are experimenting with visualizing not just music but spoken conversations. The simplest
+integration is treating the voice audio itself as an input to the visualizer. Since MilkDrop-style engines
+accept any audio stream, an AI’s TTS output (or a user’s live speech) can drive reactive graphics just like a
+song would. For instance, one open-source Svelte demo uses OpenAI’s real-time API: as the user speaks and
+the LLM responds via synthesized voice, it visualizes both the microphone input and the AI’s voice output
+with classic waveform and spectral effects . In practice, the voice’s audio spectrum may be narrower
+than music, but it still produces dynamic visuals – peaks for loud phonetics or intonation changes will
+animate the waveform. This can give a “living avatar” feel to an AI’s voice, especially when combined with
+imaginative presets (e.g. a calm pulsating pattern for a gentle voice, or jittery strobe for an excited tone).
+Mapping Meaning to Visuals: Beyond raw audio reactivity, AI opens up possibilities to visualize the content
+or emotion of speech and text. For example, using sentiment analysis or the LLM’s own signals, one could
+programmatically switch presets or color schemes based on the mood of the conversation. An AI assistant’s
+response could carry a sentiment score (happy, serious, curious, etc.), and the visualization might morph
+accordingly – warmer colors and flowing shapes for positive or calm dialog, versus jagged forms or rapid
+cuts for intense or negative sentiment. While specific open-source projects are nascent, this idea is being
+explored in research and art installations. NVIDIA’s AI researchers, for instance, have looked at analyzing
+audio to convey its emotional tone visually for accessibility . In a desktop context, one could imagine
+a shader preset that listens to keywords from the LLM: if the AI starts talking about “space” or “stars,” the
+visualization could subtly shift to a nebula-like preset. Since MilkDrop presets can be loaded on-the-fly (and
+Butterchurn or ProjectM allow programmatic preset changes), a smart controller (perhaps even the LLM
+itself via a script) could choose visuals that semantically match the conversation. This remains experimental
+but is a compelling frontier – essentially using an LLM not just as a source of text, but as a live VJ that
+automates visual storytelling in sync with spoken dialogue.
+Generative Imagery and Hybrid Approaches: Some projects venture outside MilkDrop’s purely procedural
+visuals by incorporating generative AI images or GAN outputs. For example, Stable Diffusion or similar
+models could generate thematic backgrounds or textures based on the conversation topic or music lyrics.
+These images (even abstract ones) could then feed into a shader – e.g. as a texture layer or as a palette.
+MilkDrop3 recently added support for embedding image sprites directly into presets , so one could
+conceivably use an AI-generated image (say, a style GAN’s output for “angry aura”) and have MilkDrop warp
+it to the music. However, such pipelines are not yet turnkey in open-source tools, due to performance limits
+(generating images in real-time each few seconds is heavy). Still, there are DIY experiments: some VJ artists
+use AI-generated visuals (produced in advance or on a separate thread) and then apply audio-reactive
+shader effects to them in real time. The open-source tool TouchDesigner, for instance, has community
+examples of integrating Stable Diffusion for live visuals, using text prompts and audio triggers to update
+imagery (though typically at low FPS) . For most Windows users focused on MilkDrop-style output,
+the more practical AI integrations today remain LLM-driven preset generation and intelligent control,
+rather than on-the-fly image generation.
+33 34
+35 36
+37
+38 39
+3
+3. Windows-Friendly Implementation Options
+Running Visualizers on Windows 11: All the mentioned frameworks are compatible with Windows.
+ProjectM offers a Windows standalone app (Development Preview 4.x) and even a Microsoft Store version
+(3.1.12) . MilkDrop 3 is built for Windows and is distributed as a portable .EXE – it uses DirectX/
+OpenGL and will automatically utilize your GPU for best performance (it can even auto-select the high-
+performance GPU on laptops) . Butterchurn runs in any modern browser on Windows 11 (Chrome,
+Firefox, Edge support WebGL2), or can be packaged in an Electron app for a desktop experience. Because
+Butterchurn just needs a canvas and audio source, one can embed it into a Win32 application via a WebView
+as well.
+To capture system audio (e.g. Spotify or game sound) in these visualizers, Windows offers a loopback
+recording interface (WASAPI). MilkDrop3 and BeatDrop natively support capturing “any audio source” – they
+presumably tap into the WASAPI loopback or similar method . ProjectM’s Qt frontend on Windows may
+require selecting “Stereo Mix” or an audio cable if not using the default device, but the new previews aim to
+simplify output capture. For Butterchurn in a browser, you can’t directly capture system output due to
+browser sandbox, but workarounds exist: using an Audio Worklet or Web Audio API node that receives audio
+(for example, some Electron apps use a native module to feed system audio into Web Audio, or simply play
+the music through the web context itself). Alternatively, on Windows you can use a virtual audio device (like
+VB-Audio Virtual Cable) to route output into a browser as if it were “microphone” input – Butterchurn can
+then connect to it as a live source.
+Embedding and Automation: If your goal is a container window with programmatic control, both
+Butterchurn and ProjectM shine. ProjectM is essentially a library: you can include libprojectM in a C++
+app or use one of its bindings to create a visualization context, then feed it audio data buffers or connect to
+an audio input. It exposes methods to load specific presets, adjust settings, and render frames to an
+OpenGL texture – perfect for integrating into game engines or custom GUIs . In fact, Vidvox’s
+Project Milk Syphon on macOS is just a lightweight wrapper around libprojectM that outputs to Syphon for
+other apps . On Windows, the equivalent is Spout (for inter-app sharing of visuals). NestDrop (pro edition)
+supports Spout output and even an OSC remote control interface, so you can script it or tie it to MIDI/OSC
+messages from another program . While NestDrop isn’t open-source, it demonstrates what’s possible:
+e.g. using Ableton Link or OSC, a DJ can sync visual changes to the music’s BPM or trigger preset changes
+from a controller . In open-source land, you could implement similar control by modifying MilkDrop3
+(which is on GitHub) or by controlling ProjectM’s state from your code. For example, you might write a
+Python script that listens to an event (say, a certain word from the LLM or a beat drop in the audio) and then
+calls a ProjectM function to switch to a specific preset or alter the waveform color. With Butterchurn, since
+it’s JavaScript, one can expose a small API over a WebSocket or Electron’s IPC – allowing an external Python/
+Node process or the LLM itself to issue visual commands (e.g. visualizer.loadPreset(name) or
+visualizer.setRendererSize(w,h) ).
+Performance and Compatibility: Windows 11 with a decent GPU can easily handle these visualizers at high
+resolutions (1080p, 4K). MilkDrop3 has optimized shader caching and even supports very high refresh rates
+(120+ FPS) if the preset permits . When using AI-generated presets, caution is advised: some may be
+more GPU-intensive or even glitchy. Always test new .milk files – MilkDrop3 fortunately sandboxes shader
+compilation better now to avoid crashes . If running in an Electron container, GPU acceleration
+should be enabled (Chrome’s WebGL2). For real-time voice visualization, latency is a consideration: the
+OpenAI voice API streaming has a slight delay, but Butterchurn/ProjectM will visualize audio in real-time
+40 41
+42 15
+12
+43 44
+3
+45
+46
+17 47
+48 49
+4
+once it’s received. Keep audio buffers small to maintain responsiveness of visuals to speech (Web Audio and
+PortAudio APIs allow adjusting buffer sizes).
+In summary, Windows users have a rich toolkit: you can run a standalone visualizer (MilkDrop3/ProjectM)
+and capture it via Spout or screen capture, or embed the visualization directly using libraries. Thanks to
+open-source, the barrier to creating a “MilkDrop window” inside your own app is low – and you can script its
+behavior, from automatic preset cycling on beats to AI-driven shader generation, all on Windows 11 without
+proprietary software .
+4. Best Practices for AI-Augmented Audio Displays
+Leverage Community Presets & Guides: The MilkDrop community has amassed thousands of presets; use
+these as a starting point for both inspiration and baseline visuals. Curated packs like “Cream of the Crop”
+(9,795 presets from 2001–2019) are available from community forums . Studying these or using them as
+fallback ensures you always have a visual even if an AI-generated one fails. The original MilkDrop author’s
+Preset Authoring Guide and forums like Winamp Forums or /r/MilkDrop contain tips on tuning presets
+(e.g. adjusting waveforms or motion vectors). When using AI-generated presets, it’s wise to run them in a
+safe environment first – check for extreme strobing or performance issues. The MilkDropLM authors advise
+that not every AI output will be perfect, so batch generate and curate is a good workflow . They even
+provide example packs of AI-created presets for reference .
+Real-Time Tuning & Automation: Implement controls for live tweaking without coding, so users can steer
+the visuals on the fly. MilkDrop3’s extensive hotkeys (e.g. press A for random mashup, N to display
+variables, F to filter preset types ) are a model example – consider exposing similar hotkeys or UI
+buttons in your setup. For instance, if you embed Butterchurn, you might add a “Next Preset” button or
+keyboard shortcut, a slider for blending speed, or a toggle for enabling AI-generated presets vs classic
+ones. When integrating voice or LLM responses, provide an override or “theme” selection – e.g. a user could
+choose “mood visuals” mode where the AI controls presets based on sentiment, or turn that off to just use a
+default visualizer. Testing in a live setting (with actual music or conversation) is crucial: fine-tune audio
+sensitivity (most visualizers let you adjust reaction to bass/mid/treble). Community guides often suggest
+tweaking the waveform gain or decay to best fit speech versus music. In Butterchurn, for example, you can
+adjust the audio levels feeding it to avoid a monotone visual when using voice.
+AI Ethics and Safety in Visuals: If using generative AI for content, remember to respect content guidelines
+– e.g. ensure the LLM isn’t outputting any malicious code in a shader (unlikely but worth sandboxing, which
+MilkDrop3 does by limiting shader instructions ). Visually, be mindful of photosensitive epilepsy triggers
+when designing an automated system. MilkDrop presets sometimes contain intense flashes; an AI might
+create even more unpredictable ones. Use techniques like frame rate limiting or flash detection if possible.
+The MilkDropLM project actually issues an epilepsy warning due to this concern . As best practice,
+provide a variety of presets (calm, medium, wild) and possibly let the AI or user switch to a “low intensity
+mode” for safety.
+Community Plugins and Extensions: Keep an eye on evolving community projects that bridge AI and
+visuals. For example, there are early-stage plugins for generative visuals in VJ software (TouchDesigner
+plugins for Stable Diffusion, etc.) – while not MilkDrop-style, they can be combined. If you’re coding your
+own, you might use an LLM API to interpret natural language commands like “make it crazier” or “slow
+down”, then map that to visualizer API calls (change presets or alter motion speed). This kind of LLM-as-UI
+44
+50
+51
+52 26
+53
+54 55
+56
+57
+5
+approach can make live tuning very intuitive. In fact, TouchDesigner users have experimented with ChatGPT
+to generate code or respond to chat commands in their visual patch . A simple version for MilkDrop
+could be a chatbot that on the back end translates “I want more bass effect” into increasing the waveform
+amplitude in the preset code – feasibly done by prompting an LLM to edit the preset text (with the
+MilkDropLM model or even GPT-4 coding abilities).
+Setting Up an AI-Augmented Visual System: To summarize a possible setup on Windows 11: you could
+run MilkDrop3 or ProjectM in a window (or embedded via library). Use a virtual audio driver to funnel both
+music and AI voice TTS into the visualizer (so it reacts to all sound). Run an LLM (like GPT-4 via API or local
+MilkDropLM) in parallel – use it to generate presets offline and load them in, or to analyze the transcript of a
+conversation. Employ a simple scheduler: e.g. on song change or every X minutes, ask the LLM for a new preset
+or style. For voice conversations, maybe after each response, adjust a parameter based on sentiment. Many
+of these pieces have community documentation: OpenAI’s API docs show how to get live transcripts; the flo-
+bit Svelte example on GitHub provides a template for streaming voice chat with waveform visualization
+included . By combining these, you’ll have a pipeline where AI drives the narrative and the visuals,
+and open-source MilkDrop tech renders it beautifully in real-time.
+Lastly, don’t forget to engage with the community: share your AI-augmented presets on the MilkDrop
+Reddit or GitHub discussions. Others are experimenting with similar ideas, from generative art meetups to
+VJ forums. As one developer put it, we now have “a new generation of artists using NestDrop in live concerts”
+and even AI tools to expand what’s possible . The intersection of audio visualization and AI is just
+beginning – and largely happening in open-source spaces where enthusiasts collaborate. Use the available
+repos, follow their wikis (MilkDrop3’s README and NestDrop’s manual), and you’ll be on the cutting edge of
+audiovisual art, with Windows 11 as your canvas and AI as your paintbrush.
+Sources: The information and examples above were compiled from open-source project documentation
+and community discussions, including Butterchurn’s GitHub README , the MilkDrop3 project notes
+, a recent developer blog by Vidvox (creators of VDMX) , and the MilkDropLM model card on
+HuggingFace , among other references. These sources highlight the state of the art in MilkDrop-style
+visualization and how AI is being woven into the experience.
+GitHub - projectM-visualizer/projectm: projectM - Cross-platform Music Visualization Library.
+Open-source and Milkdrop-compatible.
+https://github.com/projectM-visualizer/projectm
+VDMX 6.2 update, plus a don't-miss free music visualizer for everyone - CDM Create
+Digital Music
+https://cdm.link/vdmx-6-2-and-milkdrop/
+NestDrop V2 - Advanced VJ tool using Milkdrop
+https://nestimmersion.ca/nestdrop.php
+GitHub - jberg/butterchurn: Butterchurn is a WebGL implementation of the Milkdrop
+Visualizer
+https://github.com/jberg/butterchurn
+58
+33
+59
+7 8
+13 14 3 4
+22 25
+1 2 40 41
+3 4 5 43 44
+6 45 46 50
+7 8 9 10 11
+6
+GitHub - milkdrop2077/MilkDrop3: MilkDrop 3.0, supports
+any audio source, double-preset (.milk2), loading presets based on beat detection and much more...
+https://github.com/milkdrop2077/MilkDrop3
+MilkDrop 3.2 + 800 presets! : r/winamp - Reddit
+https://www.reddit.com/r/winamp/comments/15960vi/milkdrop_32_800_presets/
+OfficialIncubo/BeatDrop-Music-Visualizer: The MilkDrop2 ... - GitHub
+https://github.com/OfficialIncubo/BeatDrop-Music-Visualizer
+projectM Visualizer - GitHub
+https://github.com/projectM-visualizer
+booploops/Cider-Butterchurn: Visualizer for Cider - GitHub
+https://github.com/booploops/Cider-Butterchurn
+InferenceIllusionist/MilkDropLM-7b-v0.3 · Hugging Face
+https://huggingface.co/InferenceIllusionist/MilkDropLM-7b-v0.3
+NestDrop Tutorial: How to create Presets from OpenGL Shaders : r/NestDrop
+https://www.reddit.com/r/NestDrop/comments/1kkvm2k/nestdrop_tutorial_how_to_create_presets_from/
+GitHub - flo-bit/svelte-openai-realtime-api: svelte component for using the openai realtime api
+https://github.com/flo-bit/svelte-openai-realtime-api
+Added some voice visualizations to my openai realtime wrapper : r/sveltejs
+https://www.reddit.com/r/sveltejs/comments/1fxfnxe/added_some_voice_visualizations_to_my_openai/
+Speech AI Spotlight: Visualizing Spoken Language and Sounds on AR Glasses | NVIDIA Technical
+Blog
+https://developer.nvidia.com/blog/speech-ai-spotlight-visualizing-spoken-language-and-sounds-on-ar-glasses/
+MilkDrop3 : save any image directly in the preset - YouTube
+https://www.youtube.com/watch?v=CA7vSUgY5Ps
+Real Time AI Generations in Touch Designer ft ... - YouTube
+https://www.youtube.com/watch?v=CgnC0IJF22A
+Recent AI-TouchDesigner interactive installation projects - Facebook
+https://www.facebook.com/groups/touchdesignerartists/posts/1119444349343096/
+ChatGPT & TouchDesigner - The Interactive & Immersive HQ
+https://interactiveimmersive.io/blog/touchdesigner-lessons/chatgpt-for-touchdesigner-developers/
+12 13 14 15 16 17 42 47 48 49 54 55 56
+18
+19
+20
+21
+22 23 24 25 26 27 28 29 30 52 53 57 59
+31 32 51
+33
+34
+35 36
+37
+38
+39
+58
+7
