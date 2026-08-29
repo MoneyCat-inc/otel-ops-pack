@@ -1,0 +1,1 @@
+This file exists to demonstrate the ADR-0002 structure guard's fail path (RED demo). It is not in allowed_top_level and must be blocked by Repository Structure Compliance.
