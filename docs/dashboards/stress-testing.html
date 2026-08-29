@@ -1135,11 +1135,19 @@
     const activityLog = document.getElementById('stressActivityLog');
     const entry = document.createElement('div');
     entry.className = 'log-entry';
-    entry.innerHTML = `
-      <span class="log-time">${timestamp}</span>
-      <span class="log-level ${level}">${level.toUpperCase()}</span>
-      <span class="log-message">${message}</span>
-    `;
+    // Build with textContent, never innerHTML: message can carry text from
+    // fetched scenario data / error messages (CodeQL js/xss-through-dom).
+    const safeLevel = ['info', 'warn', 'error', 'debug'].includes(level) ? level : 'info';
+    const timeSpan = document.createElement('span');
+    timeSpan.className = 'log-time';
+    timeSpan.textContent = timestamp;
+    const levelSpan = document.createElement('span');
+    levelSpan.className = 'log-level ' + safeLevel;
+    levelSpan.textContent = safeLevel.toUpperCase();
+    const msgSpan = document.createElement('span');
+    msgSpan.className = 'log-message';
+    msgSpan.textContent = String(message);
+    entry.append(timeSpan, levelSpan, msgSpan);
     activityLog.insertBefore(entry, activityLog.firstChild);
     while (activityLog.children.length > 50) activityLog.removeChild(activityLog.lastChild);
   }
