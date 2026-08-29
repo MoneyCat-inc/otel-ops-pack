@@ -23,8 +23,6 @@
       "SECURITY.md",
       "CHANGELOG.md",
       "AGENTS.md",
-      "ART_OF_ECRR.md",
-      "DECISIONS.md",
       "QUICKSTART.md",
       "STATUS.md",
       "TASKS.md",
@@ -41,26 +39,16 @@
       "Dockerfile.dev",
       "docker-compose.yml",
       "compose",
-      "compose/docker-compose.viz.yml",
-      "compose/docker-compose.gpu.yml",
       "compose/docker-compose.unified.yml",
       "compose/legacy.yml",
       "schema",
-      "scorebot",
-      "viz-engine-butterchurn",
-      "viz-engine-projectm",
-      "viz-engine-projectm-gpu",
-      "presets-projectm",
       "dotnet-test-app",
-      "dotnet-autoinstrumentation",
       "windows",
       "third_party",
-      "moneycat",
       "otel-agent-coordination",
       "artifacts",
       "assets",
       "config.yaml",
-      "package-lock.json",
       "instrumentation.ts",
       "og",
       ".well-known",
@@ -105,40 +93,39 @@
       "ALFA": {
         "description": "Application plane - source code, instrumentation, apps",
         "subdirs": [
-          "CORE",
-          "INST",
           "APPS",
-          "LIBS"
+          "CORE",
+          "LIBS",
+          "OTEL",
+          "TEST",
+          "TOOL"
         ]
       },
       "BRAV": {
         "description": "Build/Runtime/Automation/Verification plane - scripts, infra, CI/CD",
         "subdirs": [
-          "SCPT",
-          "INFR",
           "DOCK",
-          "CICD",
-          "HOOK"
+          "INFR",
+          "SCPT"
         ]
       },
       "CHAR": {
         "description": "Compliance/Human/Audit/Review plane - docs, reports, evidence",
         "subdirs": [
           "DOCS",
+          "ECRR",
           "EVID",
-          "AUDT",
-          "REPO"
+          "PRSV"
         ]
       },
       "DELT": {
         "description": "Data/Environment/Load/Test plane - configs, fixtures, test data, artifacts",
         "subdirs": [
+          "ARTF",
+          "ASST",
           "CONF",
           "FIXT",
-          "ASST",
-          "LOAD",
-          "TMPL",
-          "ARTF"
+          "TMPL"
         ]
       }
     },

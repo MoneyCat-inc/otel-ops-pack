@@ -76,6 +76,8 @@ that made drift *invisible*: a compliance gate that could not fail, a drift guar
 pass, a permanently red CI check, an unsatisfiable exit criterion, 41 scheduled tasks failing
 silently for months, and an installer URL that had returned 404 since it was written. What remains
 is 11 scheduled workflows each carrying a written justification, and gates that can report failure.
+*(Count as of 2026-08-29: 12 — `clean-host-freshness.yml` was added 2026-08-25 under this document's
+own rule, with a written justification, an owner decision, and the ability to fail. Audit P3.)*
 
 The rule that follows from that experience, and applies to anything added under this purpose:
 

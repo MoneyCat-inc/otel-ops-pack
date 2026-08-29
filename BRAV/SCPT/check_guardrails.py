@@ -182,11 +182,52 @@ def check_path_depth(repo_root: Path, max_depth: int, exemptions: Set[str]) -> L
     
     return violations
 
-def check_plane_subdirs(repo_root: Path) -> Tuple[bool, List[str]]:
-    """Check that plane subdirectories follow 4-char uppercase naming convention"""
+def scan_top_level_files(repo_root: Path, exemptions: Set[str]) -> List[str]:
+    """Get all top-level FILES, excluding exemptions.
+
+    Added 2026-08-29 (audit P3): the guard previously iterated directories only,
+    so over half the allowed_top_level entries (files) could never be evaluated
+    and loose root files were invisible — the exact failure mode docs/PURPOSE.md
+    names ("a check must be able to both pass and fail")."""
+    try:
+        items = [item.name for item in repo_root.iterdir()
+                 if item.is_file() and item.name not in exemptions]
+        return sorted(items)
+    except PermissionError:
+        log('ERROR', f"Permission denied scanning files: {repo_root}")
+        return []
+
+def check_allowed_files(top_files: List[str], allowed: List[str],
+                        patterns: List[str]) -> List[str]:
+    """Check for top-level files not in allowed_top_level (or matching an
+    allowed_top_level_patterns glob)."""
+    import fnmatch
+    allowed_set = set(allowed)
     violations = []
-    
-    for plane, allowed in FOUR_CHAR_DIRS.items():
+    for f in top_files:
+        if f in allowed_set:
+            continue
+        if any(fnmatch.fnmatch(f, pat) for pat in patterns):
+            continue
+        violations.append(f)
+    return violations
+
+def check_plane_subdirs(repo_root: Path, config: dict = None) -> Tuple[bool, List[str]]:
+    """Check that plane subdirectories follow 4-char uppercase naming convention.
+
+    The allowed subdir sets are read from guardrails.json tetragram_structure
+    (single source of truth, audit P3); FOUR_CHAR_DIRS remains only as the
+    fallback when the config block is absent."""
+    violations = []
+
+    structure = FOUR_CHAR_DIRS
+    if config:
+        ts = config.get('rules', {}).get('tetragram_structure')
+        if ts:
+            structure = {plane: set(spec.get('subdirs', []))
+                         for plane, spec in ts.items()}
+
+    for plane, allowed in structure.items():
         plane_path = repo_root / plane
         if not plane_path.exists() or not plane_path.is_dir():
             continue
@@ -284,6 +325,16 @@ def generate_report(repo_root: Path, config: dict, violations: Dict[str, List]) 
             print(f"  ❌ {root}/")
         print()
     
+    # Top-level file check (audit P3 — previously invisible to the guard)
+    if violations.get('disallowed_files'):
+        has_violations = True
+        log('ERROR', f"Found {len(violations['disallowed_files'])} unauthorized top-level files:")
+        for f in violations['disallowed_files'][:15]:
+            print(f"  ❌ {f}")
+        if len(violations['disallowed_files']) > 15:
+            print(f"  ... and {len(violations['disallowed_files']) - 15} more")
+        print()
+
     # Allowed roots warnings (ephemeral/untracked)
     if violations.get('disallowed_warnings'):
         log('WARN', f"Found {len(violations['disallowed_warnings'])} ephemeral/untracked directories (ignored):")
@@ -372,9 +423,13 @@ def main():
     log('INFO', 'Scanning repository structure...')
     
     top_level = scan_top_level_dirs(repo_root, exemptions)
-    
+    top_files = scan_top_level_files(
+        repo_root,
+        set(config['exemptions'].get('files', []))
+    )
+
     # Check plane subdirectory structure
-    plane_ok, plane_violations = check_plane_subdirs(repo_root)
+    plane_ok, plane_violations = check_plane_subdirs(repo_root, config)
     
     # Check allowed roots with ephemeral handling
     disallowed_errors, disallowed_warnings = check_allowed_roots(
@@ -392,6 +447,11 @@ def main():
             config['rules']['forbidden_legacy_roots']
         ),
         'disallowed_roots': disallowed_errors,
+        'disallowed_files': check_allowed_files(
+            top_files,
+            config['rules']['allowed_top_level'],
+            config['rules'].get('allowed_top_level_patterns', [])
+        ),
         'disallowed_warnings': disallowed_warnings,
         'plane_subdirs': plane_violations,
         'path_depth': check_path_depth(

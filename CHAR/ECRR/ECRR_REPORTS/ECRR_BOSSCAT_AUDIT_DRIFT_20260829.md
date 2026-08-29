@@ -138,3 +138,19 @@ Branch first merged current `origin/main` (`b2f2a79`, waiver guide PR #645) — 
 - **Guardrail state**: `check_guardrails.py` violations 2 → 1. The remaining violation is `.kiro/` — an OEM governance decision (authorize in the allowlist or relocate), left for P3 alongside ADR-0002.
 
 Validation: package.json / guardrails.json / pnpm-workspace / gate-nightly all parse; the promoted emitter compiles; a repo-wide sweep shows remaining name-matches only in legacy cleanup/fixer scripts and archives — no live invocations of anything deleted.
+
+---
+
+## Addendum (2026-08-29) — P3 tier executed on OEM order; ADR-0002 drafted both ways
+
+Mechanics applied (direction-independent):
+
+- **Guard is file-aware**: `check_guardrails.py` now scans top-level files against `allowed_top_level` (plus an optional `allowed_top_level_patterns`), and reads the tetragram plane sets from `guardrails.json` (single source of truth; the hardcoded table is fallback only). It reports honestly: **98 unauthorized root files + `.kiro/`** — the violation class that was structurally invisible before. Not wired into CI: re-enabling is the adopted ADR's enactment step.
+- **`guardrails.json` matched to reality**: plane subdir sets reduced to what exists (phantoms like `ALFA/INST`, `BRAV/CICD`, `CHAR/AUDT` dropped; real `ALFA/OTEL`, `CHAR/ECRR`, `CHAR/PRSV`, `DELT/ARTF` authorized); 12 Pack 3B ghost allowlist entries pruned (`moneycat`, `scorebot`, `viz-engine-*`, `presets-projectm`, …) — 65 → 53 entries.
+- **Stale governance text corrected**: README/AGENTS ECRR counts replaced with count-free references (410+ and how to count); the dead `pnpm agent:setup` citation in AGENTS.md marked; PURPOSE.md workflow count amended in place (11 → 12, noting the addition followed the document's own rule); `docs/REPOSITORY_STRUCTURE.md` rewritten from the abolished 2025 layout to the actual hybrid, with an explicit "describes, does not prescribe" caveat pending ADR-0002.
+
+Decision materials delivered, not decided:
+
+- **`CHAR/DOCS/ADR/0002-DRAFT-A-ratify-hybrid.md`** — ratify the hybrid: planes canonical for implementation, `docs/` ratified as source with mirror, `scripts/` wrapper-only, `.kiro/` authorized; enactment = triage the 98 files, re-enable the guard on PRs. Low cost, consistent with PURPOSE.md steady-state.
+- **`CHAR/DOCS/ADR/0002-DRAFT-B-reenforce-tetragram.md`** — restore ADR-0001 in full: dissolve `scripts/`, flip the docs mirror, rehome the root files; phased with clean-host gate re-runs. Honest about the cost: churn of exactly the class PURPOSE.md exists to prevent, touching the live site and the clean-host host paths.
+- The OEM adopts exactly one (rename to final, delete the other). Chat/review seat's recommendation, for what it is worth under the authority model: **Draft A** — it records reality, re-arms enforcement within days, and defers Draft B's churn until a PURPOSE.md trigger justifies it.
