@@ -21,3 +21,14 @@
 
 ## Role
 Chat/review seat executing an OEM-ordered build; local implementer seat stood down to avoid duplicate work. No credentials, no browser steps. Future cadence: run the publish step whenever `docs/` changes land — or fold it into the per-change checklist at the OEM's discretion.
+
+---
+
+## Addendum (2026-08-29) — operator dry-run investigated; two defects fixed (v2)
+
+The operator's first Windows dry-run reported 200 copies / 3 deletes instead of 0/0. Blob-level comparison (`git ls-files -s` on both trees — platform-independent truth) showed the real state: **all 762 shared paths blob-identical, zero stale mirror files, 16 source files genuinely missing**.
+
+- **Real defect — 16 files silently skipped**: `.gitignore` excludes `*.docx`/`*.pdf` repo-wide; the `docs/BossCat/Research/` binaries are tracked only via historical force-add. The catch-up sync copied them to the mirror worktree (which is why `diff -rq` legitimately verified 0), but `git add -A` skipped them as ignored. Fixed: the 16 force-added; the script now stages its own output with `git add -f` so this cannot recur.
+- **False drift — ~200 phantom copies**: every flagged shared path was blob-identical; the mismatch was stale-smudge (worktree files materialized under older line-ending rules vs fresh `eol=lf` checkouts). Raw worktree-byte comparison (`Get-FileHash`) cannot distinguish this from drift. Fixed: the script now compares via `git hash-object` (clean-filtered), which is platform- and checkout-age-independent.
+
+Post-fix parity: 778/778 tracked paths, 0 blob mismatches. Expected operator verification: v2 `-DryRun` reports 0 copies / 0 deletes; if any deletes persist on Windows, capture the paths (suspect Unicode-name edge) and report.
