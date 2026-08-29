@@ -62,8 +62,8 @@ Write-Host "=================================" -ForegroundColor Cyan
 
 $DashboardJson = @"
 {
-  "title": "Fractal Drift Monitors",
-  "description": "Queue pressure, send failure rates, and trace time-to-use monitoring for fractal drift detection",
+  "title": "Queue Health Monitors",
+  "description": "Queue pressure, send failure rates, and trace time-to-use monitoring for the collector export path",
   "version": "1.0.0",
   "created": "2025-01-27T06:58:00Z",
   "panels": [
@@ -120,13 +120,13 @@ $DashboardJson = @"
 Write-Host $DashboardJson -ForegroundColor Gray
 
 # Save dashboard JSON to file
-$DashboardJson | Set-Content -Path "$ArtifactsDir/fractal-drift-dashboard.json"
-Write-Host "`n📁 Dashboard JSON saved to: $ArtifactsDir/fractal-drift-dashboard.json" -ForegroundColor Yellow
+$DashboardJson | Set-Content -Path "$ArtifactsDir/queue-health-dashboard.json"
+Write-Host "`n📁 Dashboard JSON saved to: $ArtifactsDir/queue-health-dashboard.json" -ForegroundColor Yellow
 
 Write-Host "`n5. ⚙️ Configure Dashboard Settings" -ForegroundColor Yellow
-Write-Host "   - Dashboard Name: 'Fractal Drift Monitors'" -ForegroundColor White
+Write-Host "   - Dashboard Name: 'Queue Health Monitors'" -ForegroundColor White
 Write-Host "   - Folder: Create new folder 'OTel Monitoring' or use existing" -ForegroundColor White
-Write-Host "   - Tags: Add tags: otel, fractal, drift, monitoring, queue, latency" -ForegroundColor White
+Write-Host "   - Tags: Add tags: otel, queue, variability, monitoring, latency" -ForegroundColor White
 Write-Host "   - Time Range: Set default to 'Last 1 hour'" -ForegroundColor White
 Write-Host "   - Refresh Interval: Set to '5s'" -ForegroundColor White
 
@@ -260,7 +260,7 @@ $ECRRReport = @"
 - Created verification script
 
 ## Report
-- Dashboard JSON: $ArtifactsDir/fractal-drift-dashboard.json
+- Dashboard JSON: $ArtifactsDir/queue-health-dashboard.json
 - Import guide: docs/MANUAL_DASHBOARD_IMPORT_GUIDE.md
 - Verification script: scripts/verify-dashboard-import.ps1
 - SigNoz URL: $SigNozUrl
@@ -274,7 +274,7 @@ $ECRRReport | Set-Content -Path "$ArtifactsDir/manual-dashboard-import-ecrr.md"
 Write-Host "`n📁 ECRR Report saved to: $ArtifactsDir/manual-dashboard-import-ecrr.md" -ForegroundColor Magenta
 
 Write-Host "`n🎉 Manual Dashboard Import Helper Complete!" -ForegroundColor Green
-Write-Host "📊 Dashboard JSON: $ArtifactsDir/fractal-drift-dashboard.json" -ForegroundColor Blue
+Write-Host "📊 Dashboard JSON: $ArtifactsDir/queue-health-dashboard.json" -ForegroundColor Blue
 Write-Host "📝 Next steps:" -ForegroundColor Yellow
 Write-Host "   1. Follow the import instructions above" -ForegroundColor White
 Write-Host "   2. Verify import: pwsh -File scripts/verify-dashboard-import.ps1" -ForegroundColor White

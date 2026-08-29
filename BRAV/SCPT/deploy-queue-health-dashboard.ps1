@@ -1,5 +1,5 @@
-# Deploy Fractal Drift Monitors Dashboard Script
-# Implements T-2025-01-27-005: Fractal Drift Monitors Dashboard
+# Deploy Queue Health Monitors Dashboard Script
+# Implements T-2025-01-27-005: Queue Health Monitors Dashboard
 
 param(
     [switch]$GenerateDashboard,
@@ -7,8 +7,8 @@ param(
     [switch]$FullDeployment
 )
 
-Write-Host "=== Fractal Drift Monitors Dashboard Deployment ===" -ForegroundColor Green
-Write-Host "Task: T-2025-01-27-005 - Fractal Drift Monitors Dashboard" -ForegroundColor Yellow
+Write-Host "=== Queue Health Monitors Dashboard Deployment ===" -ForegroundColor Green
+Write-Host "Task: T-2025-01-27-005 - Queue Health Monitors Dashboard" -ForegroundColor Yellow
 
 # Ensure artifacts directory exists
 if (-not (Test-Path "artifacts")) {
@@ -16,15 +16,15 @@ if (-not (Test-Path "artifacts")) {
     Write-Host "Created artifacts directory" -ForegroundColor Green
 }
 
-$dashboardConfigFile = "artifacts/signoz-fractal-drift-dashboard.json"
+$dashboardConfigFile = "artifacts/signoz-queue-health-dashboard.json"
 
 if ($GenerateDashboard -or $FullDeployment) {
-    Write-Host "`n=== Generating Fractal Drift Dashboard Configuration ===" -ForegroundColor Yellow
+    Write-Host "`n=== Generating Queue Health Dashboard Configuration ===" -ForegroundColor Yellow
     
-    # Create comprehensive fractal drift dashboard configuration
+    # Create comprehensive queue health dashboard configuration
     $dashboardConfig = @{
-        title = "Fractal Drift Monitors"
-        description = "Queue pressure, send failure rates, and trace time-to-use monitoring for fractal drift detection"
+        title = "Queue Health Monitors"
+        description = "Queue pressure, send failure rates, and trace time-to-use monitoring for the collector export path"
         version = "1.0.0"
         created = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
         panels = @(
@@ -117,10 +117,10 @@ if ($GenerateDashboard -or $FullDeployment) {
                 )
             },
             @{
-                id = "fractal-drift-detection"
-                title = "Fractal Drift Detection"
+                id = "queue-variability-cv"
+                title = "Queue Variability (CV)"
                 type = "graph"
-                description = "Pattern variance analysis for queue behavior"
+                description = "Coefficient of variation of queue size, failure rate, and latency (plain dispersion ratio, not a fractal statistic)"
                 targets = @(
                     @{
                         queryType = "promql"
@@ -208,7 +208,7 @@ if ($GenerateDashboard -or $FullDeployment) {
             to = "now"
         }
         refresh = "5s"
-        tags = @("otel", "fractal", "drift", "monitoring", "queue", "latency")
+        tags = @("otel", "queue", "variability", "monitoring", "latency")
         folderId = $null
         folderTitle = "OTel Monitoring"
     }
@@ -224,7 +224,7 @@ if ($GenerateDashboard -or $FullDeployment) {
     Write-Host "   - Queue Utilization Ratio" -ForegroundColor Gray
     Write-Host "   - Send Failure Rate" -ForegroundColor Gray
     Write-Host "   - Trace Time-to-Use Latency" -ForegroundColor Gray
-    Write-Host "   - Fractal Drift Detection" -ForegroundColor Gray
+    Write-Host "   - Queue Variability (CV)" -ForegroundColor Gray
     Write-Host "   - Batch Efficiency & Size Distribution" -ForegroundColor Gray
     Write-Host "   - Memory Usage & Limits" -ForegroundColor Gray
 }
@@ -248,7 +248,7 @@ if ($TestDashboard -or $FullDeployment) {
     # Generate test report
     $testResults = @{
         task_id = "T-2025-01-27-005"
-        task_name = "Fractal Drift Monitors Dashboard"
+        task_name = "Queue Health Monitors Dashboard"
         deployment_time = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
         dashboard_config_file = $dashboardConfigFile
         status = "deployed"
@@ -264,27 +264,27 @@ if ($TestDashboard -or $FullDeployment) {
             "Verify all 6 panels load correctly",
             "Check threshold configurations",
             "Test real-time data updates",
-            "Validate fractal drift detection queries"
+            "Validate variability (CV) queries"
         )
         signoz_ui_url = "http://localhost:8080"
         dashboard_features = @{
             queue_monitoring = "Real-time queue utilization with 24h trends"
             failure_monitoring = "Multi-type failure rate tracking"
             latency_monitoring = "p50/p95/p99 latency percentiles"
-            fractal_drift = "Pattern variance analysis with CV metrics"
+            variability = "Coefficient-of-variation dispersion metrics"
             batch_efficiency = "Batch size and processing performance"
             memory_monitoring = "Memory usage and limits tracking"
         }
     }
     
-    $reportFile = "artifacts/fractal-drift-dashboard-deployment-$(Get-Date -Format 'yyyyMMdd-HHmmss').json"
+    $reportFile = "artifacts/queue-health-dashboard-deployment-$(Get-Date -Format 'yyyyMMdd-HHmmss').json"
     $testResults | ConvertTo-Json -Depth 4 | Set-Content -Path $reportFile -Encoding UTF8
     Write-Host "`nDeployment report saved to: $reportFile" -ForegroundColor Blue
 }
 
-Write-Host "`n=== Fractal Drift Monitors Dashboard Deployment Complete ===" -ForegroundColor Green
+Write-Host "`n=== Queue Health Monitors Dashboard Deployment Complete ===" -ForegroundColor Green
 Write-Host "Next steps:" -ForegroundColor Yellow
 Write-Host "1. Import dashboard configuration in SigNoz UI" -ForegroundColor White
 Write-Host "2. Verify all 6 panels load correctly" -ForegroundColor White
 Write-Host "3. Test real-time data updates" -ForegroundColor White
-Write-Host "4. Validate fractal drift detection queries" -ForegroundColor White
+Write-Host "4. Validate variability (CV) queries" -ForegroundColor White

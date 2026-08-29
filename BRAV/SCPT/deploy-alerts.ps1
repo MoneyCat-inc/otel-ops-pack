@@ -239,7 +239,7 @@ Write-Host "🎭 ECRR Report saved to: $ArtifactsDir/alert-deployment-ecrr.md" -
 
 Write-Host "`n🎉 Threshold-Based Notifications Deployed!" -ForegroundColor Green
 Write-Host "🚨 Monitor alerts in SigNoz UI: $SigNozUrl/alerts" -ForegroundColor Blue
-Write-Host "📊 Dashboard: $SigNozUrl/dashboard/fractal-drift-monitors" -ForegroundColor Blue
+Write-Host "📊 Dashboard: $SigNozUrl/dashboard/queue-health-monitors" -ForegroundColor Blue
 
 if ($WebhookUrl) {
     Write-Host "🔔 Webhook notifications configured: $WebhookUrl" -ForegroundColor Green
