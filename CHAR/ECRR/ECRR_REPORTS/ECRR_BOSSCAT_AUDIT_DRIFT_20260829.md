@@ -154,3 +154,23 @@ Decision materials delivered, not decided:
 - **`CHAR/DOCS/ADR/0002-DRAFT-A-ratify-hybrid.md`** — ratify the hybrid: planes canonical for implementation, `docs/` ratified as source with mirror, `scripts/` wrapper-only, `.kiro/` authorized; enactment = triage the 98 files, re-enable the guard on PRs. Low cost, consistent with PURPOSE.md steady-state.
 - **`CHAR/DOCS/ADR/0002-DRAFT-B-reenforce-tetragram.md`** — restore ADR-0001 in full: dissolve `scripts/`, flip the docs mirror, rehome the root files; phased with clean-host gate re-runs. Honest about the cost: churn of exactly the class PURPOSE.md exists to prevent, touching the live site and the clean-host host paths.
 - The OEM adopts exactly one (rename to final, delete the other). Chat/review seat's recommendation, for what it is worth under the authority model: **Draft A** — it records reality, re-arms enforcement within days, and defers Draft B's churn until a PURPOSE.md trigger justifies it.
+
+---
+
+## Addendum (2026-08-29) — ADR-0002 Draft A ADOPTED by OEM; enactment executed
+
+OEM adopted Draft A ("adopt Draft A and execute the enactment checklist"). Enacted on this branch:
+
+**Root-file triage (98 files, every disposition reference-swept first):**
+- **Deleted 7** true orphans: `validate-yaml.py`, `yaml-check.py`, `setup_cursor_implementer.sh`, `test-webhook-payload.json`, `queue-steward-dashboard-logs.json`, `patreon-cover-banner.html` (socm residue), `start-signoz.sh` (zero refs; the `.ps1` twin — which the clean-host E2E calls — stays blessed).
+- **Rehomed 12**: three dated status artifacts → `CHAR/PRSV/root-status-artifacts/` (index links updated); the eight-file 2025 validation-campaign set (`chaos-drill`, `check-validation-status`, `quick-status-check`, `collect-validation-evidence`, `monitor-ci-background`, `monitor-parallel-validation`, `run-agent`, `test-reviewdog.js`) → `BRAV/SCPT/` with internal cross-refs converted to `$PSScriptRoot`; the mascot JPG → `assets/` with all three gate assertions updated (`bosscat-gate-verify.yml`, `guard-required-files.sh`, BOSS metadata).
+- **Blessed 79** by name: tool dotfiles, the canonical stack configs (clickhouse XMLs, signoz collector/alert/dashboard files), the Pages site, and the heavily-wired operator scripts (`canary-test.ps1` 43 refs, `health-check.ps1` 36, `start-signoz.ps1` — called by the clean-host E2E). The evidence-driven call: mass-rehoming the referenced operator surface would have required editing 100+ consumers — Draft B churn under a Draft A adoption — so the working set is ratified in place, each file individually named in the allowlist.
+
+**Governance mechanics:**
+- `CHAR/DOCS/ADR/0002-ratify-hybrid.md` finalized (Status: Accepted, OEM decision recorded); both draft files removed from the tree (Draft B preserved at `ade4b6e` in history, adoptable later if a PURPOSE.md trigger fires).
+- ADR-0001 header marked superseded-in-part with the precise scope of what stands and what is replaced.
+- `.kiro/` exempted as agent-seat metadata; `__pycache__` added to temp exemptions.
+- **Guard verified GREEN** (file-checking on, warnings only) *before* re-enabling `guardrails.yml` on `pull_request` — satisfying "must be GREEN at re-enable time". `workflows.json` updated for the trigger change so `registry-guard` stays satisfied.
+- `docs/REPOSITORY_STRUCTURE.md` caveat flipped from "describes, does not prescribe" to the ratified state.
+
+**Left for the operator (cannot be done from this seat):** marking `guardrails.yml` *required* in branch protection (GitHub admin UI), and the live RED demonstration — the first PR that adds a stray root file will show the guard failing, completing the last success criterion. Host-side note: any legacy scheduled task calling the rehomed validation scripts by `C:\otel\<name>.ps1` root path needs its path updated or retiring (the AGENTS.md rc=2 legacy-task disposition already tracks that class).

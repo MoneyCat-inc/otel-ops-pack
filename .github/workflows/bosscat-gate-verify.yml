@@ -94,7 +94,7 @@ jobs:
       - name: Assert required artifacts in repo
         run: |
           test -f signature-registry.json || { echo "::error title=Missing file::signature-registry.json not found"; exit 1; }
-          test -f Vasilisa_High_Priestess_TinCanForest.jpg || { echo "::error title=Missing mascot::Vasilisa_High_Priestess_TinCanForest.jpg not found"; exit 1; }
+          test -f assets/Vasilisa_High_Priestess_TinCanForest.jpg || { echo "::error title=Missing mascot::assets/Vasilisa_High_Priestess_TinCanForest.jpg not found"; exit 1; }
           echo "[OK] Required artifacts present"
 
       - name: Compute LOC delta

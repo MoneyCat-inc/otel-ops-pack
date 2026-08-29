@@ -1,13 +1,16 @@
-# ADR-0002 (DRAFT A): Ratify the Hybrid Structure
+# ADR-0002: Ratify the Hybrid Structure
 
-**Date:** 2026-08-29 (draft)
-**Status:** DRAFT — one of two alternatives (see `0002-DRAFT-B-reenforce-tetragram.md`).
-The OEM adopts exactly one; on adoption it is renamed `0002-…` final and the other draft is deleted.
-**Drafted by:** Chat/review seat (proposes, does not decide — `docs/PURPOSE.md` authority model)
+**Date:** 2026-08-29
+**Status:** Accepted ✅
+**Decision Maker:** BossCat OEM ("adopt Draft A and execute the enactment checklist", 2026-08-29)
+**Drafted by:** Chat/review seat; the alternative (re-enforce ADR-0001 in full) was drafted,
+considered, and not adopted — its content is preserved in this branch's git history
+(`CHAR/DOCS/ADR/0002-DRAFT-B-reenforce-tetragram.md` at `ade4b6e`) and remains adoptable
+later if a `docs/PURPOSE.md` trigger justifies the churn.
 
 ---
 
-## Context (shared by both drafts)
+## Context
 
 ADR-0001 (2025-10-09) abolished 17 legacy roots — `scripts/` and `docs/` among them — and made a
 CI guardrail a required check. What actually happened since:
@@ -22,11 +25,12 @@ CI guardrail a required check. What actually happened since:
 - ADR-0001's success criteria "zero forbidden legacy roots" and "guardrails enforced via CI"
   are no longer true, and no decision record says why.
 
-Both drafts exist because the unrecorded state is the defect; either decision is defensible.
+Two drafts existed because the unrecorded state was the defect; either decision was defensible.
+The OEM adopted this one.
 
 ---
 
-## Decision (Draft A)
+## Decision
 
 **Ratify the hybrid as the intended structure.** The tetragram remains canonical for
 implementation, evidence, and configuration; a small, named set of legacy roots is ratified as
@@ -43,7 +47,7 @@ the operator/publishing surface:
 ADR-0001 is marked **superseded in part** (structure intent stands; zero-legacy-roots criterion
 and the specific allowlist are replaced by this ADR).
 
-## Enactment (the adoption checklist)
+## Enactment (executed 2026-08-29, this branch)
 
 1. **Root-file triage** of the 98 flagged files, each to exactly one of: *bless* (add to
    `allowed_top_level` — canonical stack configs, dotfiles), *rehome* (dated status artifacts →
@@ -66,7 +70,10 @@ and the specific allowlist are replaced by this ADR).
 
 ## Success criteria (must be able to fail)
 
-- [ ] Guard GREEN on main with file-checking on, and RED on a test PR adding a stray root file
-- [ ] `guardrails.yml` required on PRs
-- [ ] Zero full `.ps1` bodies under `scripts/` (wrapper rule holds)
-- [ ] ADR-0001 header updated; Draft B deleted
+- [x] Root-file triage executed: 7 deleted, 12 rehomed (3 dated artifacts → `CHAR/PRSV/root-status-artifacts/`, 8 legacy validation scripts → `BRAV/SCPT/`, mascot → `assets/` with its 3 gate references updated), 79 blessed by name
+- [x] Guard GREEN with file-checking on (verified on the enacting branch before re-enable)
+- [x] `.kiro/` exempted as agent-seat metadata; `guardrails.json` is the guard's single source of truth
+- [x] `guardrails.yml` re-enabled on `pull_request` (marking it *required* is a branch-protection setting — operator/admin step in the GitHub UI)
+- [x] Zero full `.ps1` bodies under `scripts/` (wrapper rule holds as of the P1-7 fork resolution)
+- [x] ADR-0001 header updated; Draft B removed from the tree (preserved in history)
+- [ ] RED verified on a test PR adding a stray root file (first real PR against the re-enabled guard will demonstrate this; cannot be exercised from this session)

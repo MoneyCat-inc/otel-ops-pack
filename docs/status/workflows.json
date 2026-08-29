@@ -469,7 +469,7 @@
       "triggers": {
         "issues": false,
         "other": [],
-        "pull_request": false,
+        "pull_request": true,
         "push": false,
         "release": false,
         "schedule": false,

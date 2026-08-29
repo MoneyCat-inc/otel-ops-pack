@@ -8,7 +8,7 @@ set -euo pipefail
 missing=0
 required_files=(
   "signature-registry.json"
-  "Vasilisa_High_Priestess_TinCanForest.jpg"
+  "assets/Vasilisa_High_Priestess_TinCanForest.jpg"
 )
 
 for f in "${required_files[@]}"; do
