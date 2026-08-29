@@ -56,11 +56,17 @@ $copied = 0; $deleted = 0; $unchanged = 0
 foreach ($r in $srcRel) {
     $s = Join-Path $src $r
     $d = Join-Path $dst $r
-    if ((Test-Path -LiteralPath $d) -and
-        ((Get-FileHash -LiteralPath $s -Algorithm SHA256).Hash -eq
-         (Get-FileHash -LiteralPath $d -Algorithm SHA256).Hash)) {
-        $unchanged++
-        continue
+    # Compare clean-filtered content via git hash-object, NOT raw worktree bytes:
+    # a worktree checked out under older line-ending rules differs byte-wise from a
+    # fresh checkout of the identical blob, which made raw-byte comparison report
+    # hundreds of phantom copies on Windows (found 2026-08-29). hash-object applies
+    # the clean filter, so identical committed content always compares equal.
+    if (Test-Path -LiteralPath $d) {
+        $hashes = git hash-object -- "$s" "$d"
+        if ($hashes[0] -eq $hashes[1]) {
+            $unchanged++
+            continue
+        }
     }
     if ($DryRun) {
         Write-Host "would copy:   $r"
@@ -99,5 +105,9 @@ $mode = if ($DryRun) { 'DRY RUN - nothing written' } else { 'published' }
 Write-Host ""
 Write-Host "Mirror $mode : copied $copied, deleted $deleted, unchanged $unchanged (source: $($srcRel.Count) tracked files)"
 if (-not $DryRun) {
-    Write-Host "Verify with:  git diff --stat   and   diff -rq $src $dst"
+    # Stage with -f: .gitignore excludes *.docx/*.pdf repo-wide, but docs/ tracks
+    # force-added research binaries; a plain `git add -A` silently skips their mirror
+    # copies (which is exactly how 16 files went missing from the first catch-up).
+    git add -f -A -- $dst
+    Write-Host "Mirror changes staged (git add -f). Review with:  git status; git diff --cached --stat"
 }
