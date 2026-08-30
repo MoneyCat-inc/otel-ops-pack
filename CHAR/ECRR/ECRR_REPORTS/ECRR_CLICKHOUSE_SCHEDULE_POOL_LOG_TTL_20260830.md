@@ -2,7 +2,7 @@
 
 **Date:** 2026-08-30
 **Actor:** Claude (chat/review), execution under standing delegation from `@fubumaki`
-**Verdict:** **GREEN** — TTL applied and verified live; one operator follow-up (leftover `_0` drop)
+**Verdict:** **GREEN** — TTL applied and verified live; operator follow-up (leftover `_0` drop) closed 2026-08-30
 
 ## 1. Examine
 
@@ -31,13 +31,9 @@ server 25.12.5.44, table's first row 2026-08-23 16:15, the upgrade window). Size
 | --- | --- |
 | `background_schedule_pool_log` TTL | 7-day DELETE, active |
 | `crash_log` | unbounded by design (black box, ~KiB) |
-| Leftover `background_schedule_pool_log_0` | **pending operator drop** — automation was correctly denied the destructive statement |
+| Leftover `background_schedule_pool_log_0` | **dropped by machine operator, 2026-08-30** (~1.04 MiB reclaimed); post-drop verified: `_0` gone, TTL table present and active, all four SigNoz containers healthy |
 
-Operator one-liner for the leftover (per `docs/DOCKER_VHDX_MAINTENANCE.md` `_N` practice):
-
-```text
-docker exec signoz-clickhouse clickhouse-client -q "DROP TABLE system.background_schedule_pool_log_0"
-```
+The drop was executed by the operator (`docker exec signoz-clickhouse clickhouse-client -q "DROP TABLE system.background_schedule_pool_log_0"`) after automation was correctly denied the destructive statement.
 
 ## 4. Role
 
@@ -45,4 +41,4 @@ Claude (chat/review) edited config, restarted the container, and verified under 
 delegation. The destructive `DROP TABLE` of the renamed leftover was blocked by the
 permission layer and is left to the machine operator.
 
-**Status:** COMPLETE (one operator follow-up)
+**Status:** COMPLETE
