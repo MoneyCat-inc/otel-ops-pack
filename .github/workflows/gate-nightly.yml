@@ -72,6 +72,13 @@ jobs:
             Write-Host "::notice::Live observability stack not reachable — skipping gate verification (expected on GitHub-hosted runners)."
           }
 
+      - name: Watchdog freshness + disk floor
+        if: steps.stack.outputs.stack_available == 'true'
+        shell: pwsh
+        # Watches the watchman: fails honest-red if the 5-min heartbeat is stale (>15 min),
+        # unparseable, or reports C: free below the 50 GB VHDX-incident floor.
+        run: pwsh -File scripts/windows/check-watchdog-freshness.ps1
+
       - name: Setup Python
         if: steps.stack.outputs.stack_available == 'true'
         uses: actions/setup-python@v7
