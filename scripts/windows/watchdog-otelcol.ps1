@@ -13,7 +13,13 @@
   (start error, start type, recent Service Control Manager events) to
   artifacts\watchdog\incidents\, capped at $MaxIncidentFiles files. Worst-case
   runtime (~100s) stays inside the task's 2-minute execution limit; the healthy
-  path is unchanged - one line, immediate exit.
+  path stays one line and an immediate exit.
+
+  Every tick line also carries start_type (Disabled-while-Running is remediated
+  on the spot - the MSI pattern) and host vitals: c_free_gb and vhdx_gb (size of
+  docker_data.vhdx - the 2026-08 incident signal nothing was watching). The
+  nightly gate asserts on freshness and the C: floor via
+  scripts\windows\check-watchdog-freshness.ps1.
 #>
 
 param(
@@ -23,7 +29,9 @@ param(
   [int]$MaxArchives      = 3,
   [int]$BurstSeconds     = 90,
   [int]$BurstSampleSec   = 10,
-  [int]$MaxIncidentFiles = 20
+  [int]$MaxIncidentFiles = 20,
+  # Explicit user path: the task runs as SYSTEM, whose $env:LOCALAPPDATA is not this profile.
+  [string]$VhdxPath      = "C:\Users\fubum\AppData\Local\Docker\wsl\disk\docker_data.vhdx"
 )
 
 $ErrorActionPreference = "Stop"
@@ -35,6 +43,14 @@ function Write-WdLine([hashtable]$Fields) {
   $Fields.ts  = (Get-Date -Format "o")
   $Fields.svc = $ServiceName
   ($Fields | ConvertTo-Json -Compress) | Out-File -Append -Encoding UTF8 $LogFile
+}
+
+function Get-HostVitals {
+  # Cheap per-tick host observations. Null means unreadable, never a thrown error.
+  $v = @{ c_free_gb = $null; vhdx_gb = $null }
+  try { $v.c_free_gb = [math]::Round((Get-PSDrive C).Free / 1GB, 1) } catch {}
+  try { if (Test-Path $VhdxPath) { $v.vhdx_gb = [math]::Round((Get-Item $VhdxPath).Length / 1GB, 1) } } catch {}
+  $v
 }
 
 $logItem = Get-Item $LogFile -ErrorAction SilentlyContinue
@@ -57,21 +73,34 @@ if (-not $svc) {
   exit 1
 }
 
-$before = $svc.Status.ToString()
+$before    = $svc.Status.ToString()
+$startType = $null
+try { $startType = (Get-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Services\$ServiceName" -Name Start).Start } catch {}
+$vitals = Get-HostVitals
 
 if ($svc.Status -eq "Running") {
-  Write-WdLine @{ before = $before; after = "Running"; action = "ok"; ok = $true }
+  $line = @{ before = $before; after = "Running"; action = "ok"; ok = $true; start_type = $startType; c_free_gb = $vitals.c_free_gb; vhdx_gb = $vitals.vhdx_gb }
+  if ($startType -eq 4) {
+    # Disabled while Running - the MSI pattern. Left alone, the next stop goes dark;
+    # re-enable now instead of waiting for the not-Running tick to notice.
+    sc.exe config $ServiceName start= delayed-auto | Out-Null
+    if ($LASTEXITCODE -eq 0) {
+      $line.action = "reenabled_while_running"
+    } else {
+      $line.action = "reenable_failed"
+      $line.err    = "sc.exe config exit $LASTEXITCODE"
+    }
+  }
+  Write-WdLine $line
   exit 0
 }
 
 # --- Not Running: remediate, then observe at burst resolution ---
-$runStart  = Get-Date
-$action    = "started"
-$startErr  = $null
-$startType = $null
+$runStart = Get-Date
+$action   = "started"
+$startErr = $null
 try {
   # Re-enable if disabled (the MSI-install / post-Update pattern)
-  $startType = (Get-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Services\$ServiceName" -Name Start).Start
   if ($startType -eq 4) {  # 4 = Disabled
     sc.exe config $ServiceName start= delayed-auto | Out-Null
     $action = "reenabled_and_started"
@@ -118,7 +147,7 @@ try {
   Write-WdLine @{ action = "bundle_failed"; ok = $false; err = $_.Exception.Message }
 }
 
-$final = @{ before = $before; after = $svc.Status.ToString(); action = $action; ok = $ok; burst_samples = $samples; elapsed_s = [int]((Get-Date) - $runStart).TotalSeconds }
+$final = @{ before = $before; after = $svc.Status.ToString(); action = $action; ok = $ok; burst_samples = $samples; elapsed_s = [int]((Get-Date) - $runStart).TotalSeconds; start_type = $startType; c_free_gb = $vitals.c_free_gb; vhdx_gb = $vitals.vhdx_gb }
 if ($startErr) { $final.err = $startErr }
 Write-WdLine $final
 
