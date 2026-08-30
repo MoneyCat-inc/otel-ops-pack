@@ -51,6 +51,11 @@
     <error_log>
         <ttl>event_date + INTERVAL 7 DAY DELETE</ttl>
     </error_log>
+    <!-- Missed by the 2026-08-18 fix (table did not exist on 25.8; appeared with 25.12).
+         crash_log stays unbounded on purpose - a few KiB, and it is the black box. -->
+    <background_schedule_pool_log>
+        <ttl>event_date + INTERVAL 7 DAY DELETE</ttl>
+    </background_schedule_pool_log>
 
     <!-- Was logging ~15M Debug/Trace rows per day. Warnings and errors only. -->
     <text_log>
