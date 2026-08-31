@@ -126,8 +126,11 @@ if (-not $ok) { $action = "start_failed" }
 try {
   $incDir = Join-Path $LogDir "incidents"
   if (-not (Test-Path $incDir)) { New-Item -ItemType Directory -Force -Path $incDir | Out-Null }
+  # SCM messages use the service display name ("OpenTelemetry Collector"), not the short name.
+  $scmMatch = [regex]::Escape($ServiceName)
+  if ($svc.DisplayName) { $scmMatch = "$scmMatch|$([regex]::Escape($svc.DisplayName))" }
   $scm = Get-WinEvent -FilterHashtable @{ LogName = 'System'; ProviderName = 'Service Control Manager'; StartTime = (Get-Date).AddMinutes(-30) } -ErrorAction SilentlyContinue |
-    Where-Object { $_.Message -match [regex]::Escape($ServiceName) } |
+    Where-Object { $_.Message -match $scmMatch } |
     Select-Object -First 40 TimeCreated, Id, LevelDisplayName, Message
   $bundle = @{
     ts         = (Get-Date -Format "o")

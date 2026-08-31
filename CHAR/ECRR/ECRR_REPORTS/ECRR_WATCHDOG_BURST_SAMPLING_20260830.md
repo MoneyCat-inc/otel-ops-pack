@@ -57,3 +57,24 @@ Claude (chat/review) analyzed, drafted, tested, and merged under standing delega
 No elevation used; the scheduled task was not touched.
 
 **Status:** COMPLETE
+
+---
+
+## Addendum (2026-08-31) — production validation + SCM filter fix
+
+The burst path fired for real on 2026-08-30 20:55: host was shut down 13:55→20:53; the
+post-boot catch-up tick found the collector Stopped, started it (beating delayed-auto),
+confirmed Running at +11 s with one burst sample, wrote `incident-20260830-205513.json`,
+clean `started` verdict. First live exercise of the design — worked as intended.
+
+The incident exposed one latent bug: the bundle's SCM filter matched the short service
+name (`otelcol-contrib`), but SCM messages use the display name ("OpenTelemetry
+Collector") — so `scm_events` could never populate. Harmless on 08-30 (this host
+suppresses informational 7036 events; the boot window genuinely had no matching events),
+but crash-loop incidents log 7031/7034/7000 with the display name, and those would have
+been silently missed. Fixed: filter now matches short name OR display name (applied by
+the machine operator's seat, committed here). Regression: bundle path re-tested against a
+stopped service — `incident_bundle` written, no `bundle_failed`; happy path exit 0.
+
+Watch item recorded: `vhdx_gb` 105.6 → 119.9 GB in ~24 h; weekly trim is the lever,
+the gate's 50 GB C: floor is the tripwire.
