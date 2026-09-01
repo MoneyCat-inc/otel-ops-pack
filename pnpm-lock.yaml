@@ -177,8 +177,8 @@ importers:
         specifier: ^30.5.0
         version: 30.5.0(@types/node@26.4.0)
       jest-environment-node:
-        specifier: ^30.4.1
-        version: 30.4.1
+        specifier: ^30.5.0
+        version: 30.5.0
       jszip:
         specifier: ^3.10.1
         version: 3.10.1
@@ -951,10 +951,6 @@ packages:
     resolution: {integrity: sha512-OsqBjHXCn8cadasoAZBP6nWYvMsRhpMzGXTpxJ5aO04NlbdhIz+FVe3q49l0AwVhsz/cEmIpBes6gAFl1/dWQg==}
     engines: {node: ^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0}
 
-  '@jest/environment@30.4.1':
-    resolution: {integrity: sha512-AK9yNRqgKxiabqMoe4oW+3/TSSeV8vkdC7BGaxZdU0AFXfOpofTLqdru2GXKZghP3sdgwE9XXpnVwfZ8JnFV4w==}
-    engines: {node: ^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0}
-
   '@jest/environment@30.5.0':
     resolution: {integrity: sha512-HUaqexIauIh69IQ4NTuPDEUCB8g8T4TOPSIzQOS18mwI/KEHKQk1j013K2o6ra031szZE2t5jGmVx3xbzdjgKA==}
     engines: {node: ^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0}
@@ -969,10 +965,6 @@ packages:
 
   '@jest/expect@30.5.0':
     resolution: {integrity: sha512-jEmgmgJEobJ3zEhDOGp1VAJ6JkoVelpS8uZ1ae1Ul/5lP78UKJKmmU0lciJwd6JdnqOXHaaS/QCKwbf1dHI9MA==}
-    engines: {node: ^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0}
-
-  '@jest/fake-timers@30.4.1':
-    resolution: {integrity: sha512-iW5umdmfPeWzehrVhugFQZqCchSCud5S1l2YT0O9ZhjRR0ExclANDZkiSBwzqtnlOn0J1JXvO+HZ6rkuyOVOgQ==}
     engines: {node: ^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0}
 
   '@jest/fake-timers@30.5.0':
@@ -3659,10 +3651,6 @@ packages:
     resolution: {integrity: sha512-NiMFNhRygJEFqYNt8pnkxppUF6CR486GEpt9rSU6lPBf7KeccaOL0zbjxG8fgJgD//6e7zYdssnlt6j+1kI31A==}
     engines: {node: ^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0}
 
-  jest-environment-node@30.4.1:
-    resolution: {integrity: sha512-4FZYVOk85hz2AyT6BbarKy9u37g6DbrDyCdFhsnDdXqyrueYQvB+0zO4f/kqLCRD0BsPRXPMNJeQwihKZV8naw==}
-    engines: {node: ^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0}
-
   jest-environment-node@30.5.0:
     resolution: {integrity: sha512-bTc79ywKLz0ogbT3JIYuEhgWV4Ffd/cJe06co4v8CyRtlmju8x5gokMlGFR8ARWhmk5SnbDRxmf50XWnlZVhDg==}
     engines: {node: ^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0}
@@ -3733,10 +3721,6 @@ packages:
 
   jest-util@30.5.0:
     resolution: {integrity: sha512-lzU4aGUWaS+2X/B0CmgheDasfnsVlRfZh/rNQxB9b9s8cSYUq5BcqdQA95ld+KqJXBUVVt1sqnMQ2T3OxIalmg==}
-    engines: {node: ^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0}
-
-  jest-validate@30.4.1:
-    resolution: {integrity: sha512-PDWi4SOwLnwqNDfHZjOcsEFyZ4fc/2W2gVL3DEoyqnB6jCQMLRtfBong8s6omIw3lI0HWOus12xfnFmQtjW3fw==}
     engines: {node: ^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0}
 
   jest-validate@30.5.0:
@@ -5848,13 +5832,6 @@ snapshots:
 
   '@jest/diff-sequences@30.5.0': {}
 
-  '@jest/environment@30.4.1':
-    dependencies:
-      '@jest/fake-timers': 30.4.1
-      '@jest/types': 30.4.1
-      '@types/node': 26.4.0
-      jest-mock: 30.4.1
-
   '@jest/environment@30.5.0':
     dependencies:
       '@jest/fake-timers': 30.5.0
@@ -5876,15 +5853,6 @@ snapshots:
       jest-snapshot: 30.5.0
     transitivePeerDependencies:
       - supports-color
-
-  '@jest/fake-timers@30.4.1':
-    dependencies:
-      '@jest/types': 30.4.1
-      '@sinonjs/fake-timers': 15.4.0
-      '@types/node': 26.4.0
-      jest-message-util: 30.4.1
-      jest-mock: 30.4.1
-      jest-util: 30.4.1
 
   '@jest/fake-timers@30.5.0':
     dependencies:
@@ -9171,16 +9139,6 @@ snapshots:
       jest-util: 30.5.0
       pretty-format: 30.5.0
 
-  jest-environment-node@30.4.1:
-    dependencies:
-      '@jest/environment': 30.4.1
-      '@jest/fake-timers': 30.4.1
-      '@jest/types': 30.4.1
-      '@types/node': 26.4.0
-      jest-mock: 30.4.1
-      jest-util: 30.4.1
-      jest-validate: 30.4.1
-
   jest-environment-node@30.5.0:
     dependencies:
       '@jest/environment': 30.5.0
@@ -9382,15 +9340,6 @@ snapshots:
       ci-info: 4.4.0
       graceful-fs: 4.2.11
       picomatch: 4.0.7
-
-  jest-validate@30.4.1:
-    dependencies:
-      '@jest/get-type': 30.1.0
-      '@jest/types': 30.4.1
-      camelcase: 6.3.0
-      chalk: 4.1.2
-      leven: 3.1.0
-      pretty-format: 30.4.1
 
   jest-validate@30.5.0:
     dependencies:
