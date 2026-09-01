@@ -72,7 +72,7 @@ jobs:
 
       - name: Open or update amber issue
         if: steps.win.outputs.amber == 'true'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const secret = '${{ matrix.secret }}';
