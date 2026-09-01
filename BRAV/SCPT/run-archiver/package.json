@@ -9,7 +9,7 @@
     "lint": "echo 'no lint configured'"
   },
   "dependencies": {
-    "@octokit/rest": "^20.1.1",
+    "@octokit/rest": "^22.0.1",
     "bottleneck": "^2.19.5",
     "cli-progress": "^3.12.0",
     "fast-xml-parser": "^5.11.1",
