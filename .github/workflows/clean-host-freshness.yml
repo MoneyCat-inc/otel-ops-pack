@@ -56,7 +56,7 @@ jobs:
 
       - name: Open or update issue
         if: steps.fresh.outputs.state != 'green'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const state = '${{ steps.fresh.outputs.state }}';
