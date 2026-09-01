@@ -1,20 +1,66 @@
+# Demand shaping 2026-09-01: grouped updates + weekly cadence. Ungrouped daily
+# pip/npm produced 19-PR batches (2026-08); with strict branch protection every
+# merge staled every other open PR, Dependabot rebased them all, and each rebase
+# re-ran the ~10 checks that survive the PR path filters (required lanes are
+# unfilterable by design). Grouping collapses each ecosystem's batch into ~1 PR
+# per interval, shrinking the rebase cascade roughly quadratically. Security
+# updates are grouped separately so they still land promptly and visibly.
 version: 2
 updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule: { interval: "weekly" }
+    groups:
+      actions-all:
+        applies-to: version-updates
+        patterns: ["*"]
+      actions-security:
+        applies-to: security-updates
+        patterns: ["*"]
+
   - package-ecosystem: "pip"
     directory: "/"
-    schedule: { interval: "daily" }
+    schedule: { interval: "weekly" }
+    groups:
+      pip-all:
+        applies-to: version-updates
+        patterns: ["*"]
+      pip-security:
+        applies-to: security-updates
+        patterns: ["*"]
+
   - package-ecosystem: "npm"
     directory: "/"
-    schedule: { interval: "daily" }
+    schedule: { interval: "weekly" }
+    groups:
+      npm-all:
+        applies-to: version-updates
+        patterns: ["*"]
+      npm-security:
+        applies-to: security-updates
+        patterns: ["*"]
+
   # Nested npm lockfiles outside the root workspace. Found in the 2026-08-23 audit: 10 of the
   # 12 open high-severity Dependabot alerts lived in these two and could never get PRs because
   # only "/" was watched. Weekly is enough - they are small tool dirs, not the app.
   - package-ecosystem: "npm"
     directory: "/BRAV/SCPT/run-archiver"
     schedule: { interval: "weekly" }
+    groups:
+      archiver-npm-all:
+        applies-to: version-updates
+        patterns: ["*"]
+      archiver-npm-security:
+        applies-to: security-updates
+        patterns: ["*"]
+
   - package-ecosystem: "npm"
     directory: "/BRAV/INFR/deployment-pipeline"
     schedule: { interval: "weekly" }
+    groups:
+      pipeline-npm-all:
+        applies-to: version-updates
+        patterns: ["*"]
+      pipeline-npm-security:
+        applies-to: security-updates
+        patterns: ["*"]
