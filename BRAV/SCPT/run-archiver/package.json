@@ -12,7 +12,7 @@
     "@octokit/rest": "^20.1.1",
     "bottleneck": "^2.19.5",
     "cli-progress": "^3.12.0",
-    "fast-xml-parser": "^5.7.0",
+    "fast-xml-parser": "^5.11.1",
     "p-queue": "^7.4.1",
     "pretty-ms": "^9.1.0",
     "resonai-backend": "file:../../..",
