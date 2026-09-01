@@ -32,8 +32,8 @@ importers:
         specifier: 0.20.42
         version: 0.20.42
       '@aws-sdk/client-bedrock-runtime':
-        specifier: ^3.1115.0
-        version: 3.1119.0
+        specifier: ^3.1121.0
+        version: 3.1121.0
       '@opentelemetry/core':
         specifier: ^2.10.0
         version: 2.10.0(@opentelemetry/api@1.9.1)
@@ -228,8 +228,8 @@ packages:
     resolution: {integrity: sha512-5M38m9REQouVIA4/Gh0wqo6Vncr3QbG7rb5oqlEbqB+f77pruCk4JLDipfrOrsXH+pdnVnU2IaPXvpsSAC7Mqw==}
     engines: {node: '>=22'}
 
-  '@aws-sdk/client-bedrock-runtime@3.1119.0':
-    resolution: {integrity: sha512-NmmWFYYj+thIRMoWFL4rS2qSe2nzHiS1eF23bHu99iN3F8+TAAzWTl60wqwpnkR41eV0DMO0Y2COqHrFTfV4bw==}
+  '@aws-sdk/client-bedrock-runtime@3.1121.0':
+    resolution: {integrity: sha512-fSMUxttOVPfPkIDrrPO1IqDVK83/0yAKUYweEYsR8IayFRB2z/yvdGzTom7ZtgKH+97j8JKHSYIqM2t8qEZpSA==}
     engines: {node: '>=20.0.0'}
 
   '@aws-sdk/core@3.977.9':
@@ -292,8 +292,8 @@ packages:
     resolution: {integrity: sha512-ygIivKqh8aHzNkucOCXHyIBgBpLPfrSI0mCqXF+vLBsPTUKqj0VSqAY0GFPe7lQl4HntjOcQ+KSyS7oUV2C54Q==}
     engines: {node: '>=20.0.0'}
 
-  '@aws-sdk/token-providers@3.1119.0':
-    resolution: {integrity: sha512-yykRe5L/yHukeHJteTsYFFu4NpxTE4+zirs7mf1GjH8In2iohYv/wbe/n1jQyx6WzVg2TpXx4KNno2O0DsU6gA==}
+  '@aws-sdk/token-providers@3.1121.0':
+    resolution: {integrity: sha512-kyRVbJnFDDHDqPzgNzQdXyj2P3ANq2LQyg65o9IvQnuqiNrsP1zK+fDe5BzT0xKVnvAAGhmqzd5cvdzWP69Sfg==}
     engines: {node: '>=20.0.0'}
 
   '@aws-sdk/types@3.974.5':
@@ -5092,14 +5092,14 @@ snapshots:
       '@atproto/lexicon': 0.7.12
       zod: 3.25.76
 
-  '@aws-sdk/client-bedrock-runtime@3.1119.0':
+  '@aws-sdk/client-bedrock-runtime@3.1121.0':
     dependencies:
       '@aws-sdk/core': 3.977.9
       '@aws-sdk/credential-provider-node': 3.972.81
       '@aws-sdk/eventstream-handler-node': 3.972.34
       '@aws-sdk/middleware-eventstream': 3.972.29
       '@aws-sdk/middleware-websocket': 3.972.52
-      '@aws-sdk/token-providers': 3.1119.0
+      '@aws-sdk/token-providers': 3.1121.0
       '@aws-sdk/types': 3.974.5
       '@smithy/core': 3.33.3
       '@smithy/fetch-http-handler': 5.7.2
@@ -5253,7 +5253,7 @@ snapshots:
       '@smithy/types': 4.17.2
       tslib: 2.8.1
 
-  '@aws-sdk/token-providers@3.1119.0':
+  '@aws-sdk/token-providers@3.1121.0':
     dependencies:
       '@aws-sdk/core': 3.977.9
       '@aws-sdk/nested-clients': 3.997.44
