@@ -29,6 +29,21 @@ updates:
         applies-to: security-updates
         patterns: ["*"]
 
+  # Sidecar requirements outside the root manifest. Found 2026-09-01 via Dependabot
+  # alert triage: the requests>=2.32 floor sat in two vulnerable ranges (PYSEC-2026-2275,
+  # PYSEC-2026-1872) with no fix PR possible because this directory was unwatched —
+  # same gap class as the nested npm dirs below (2026-08-23 audit).
+  - package-ecosystem: "pip"
+    directory: "/ALFA/APPS/sidecars"
+    schedule: { interval: "weekly" }
+    groups:
+      sidecars-pip-all:
+        applies-to: version-updates
+        patterns: ["*"]
+      sidecars-pip-security:
+        applies-to: security-updates
+        patterns: ["*"]
+
   - package-ecosystem: "npm"
     directory: "/"
     schedule: { interval: "weekly" }
