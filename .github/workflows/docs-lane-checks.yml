@@ -381,7 +381,7 @@ jobs:
 
       - name: Comment guard telemetry
         if: ${{ always() }}
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const fs = require('fs');
@@ -407,7 +407,7 @@ jobs:
 
       - name: Comment ready-for-gate
         if: ${{ env.GUARD_STATUS == 'PASS' && env.PIPELINE_SHOULD_FAIL != '1' }}
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const fs = require('fs');

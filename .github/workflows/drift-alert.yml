@@ -49,7 +49,7 @@ jobs:
 
       - name: Open drift issue (if needed)
         if: steps.guardrails.outcome == 'failure'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const health = JSON.parse(`${{ steps.health.outputs.json }}`);
