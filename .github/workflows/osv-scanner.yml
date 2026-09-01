@@ -12,9 +12,19 @@
 
 name: OSV-Scanner
 
+# Demand shaping 2026-09-01: docs/markdown-only PRs cannot introduce
+# dependency vulnerabilities — skip the PR scan for them. Workflow-file changes
+# are NOT ignored, so filter changes themselves still get exercised.
+# Not a required branch-protection context (verified live 2026-09-01; see
+# required-check-shims.yml header) — no shim needed. push (main) / merge_group /
+# schedule stay unfiltered: full coverage on main and in merge queues
+# (merge_group does not support path filters anyway).
 on:
   pull_request:
     branches: [ "main" ]
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
   merge_group:
   schedule:
     - cron: '28 9 * * 5'
