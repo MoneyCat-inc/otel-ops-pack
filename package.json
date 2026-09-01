@@ -61,7 +61,7 @@
     "hub:links": "pwsh -File scripts/check-hub-links.ps1"
   },
   "dependencies": {
-    "@atproto/api": "0.20.41",
+    "@atproto/api": "0.20.42",
     "@aws-sdk/client-bedrock-runtime": "^3.1115.0",
     "@opentelemetry/core": "^2.10.0",
     "@opentelemetry/instrumentation-document-load": "^0.66.0",
@@ -125,7 +125,7 @@
     "overrides": {
       "protobufjs": ">=8.0.1",
       "fast-xml-parser": ">=5.3.4",
-      "@atproto/api": "0.20.41",
+      "@atproto/api": "0.20.42",
       "find-my-way": ">=9.7.0",
       "fast-json-patch": ">=3.1.1",
       "minimatch": ">=3.1.4",
