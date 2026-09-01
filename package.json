@@ -62,7 +62,7 @@
   },
   "dependencies": {
     "@atproto/api": "0.20.42",
-    "@aws-sdk/client-bedrock-runtime": "^3.1115.0",
+    "@aws-sdk/client-bedrock-runtime": "^3.1121.0",
     "@opentelemetry/core": "^2.10.0",
     "@opentelemetry/instrumentation-document-load": "^0.66.0",
     "@opentelemetry/instrumentation-fetch": "^0.221.0",
@@ -111,7 +111,7 @@
     "ajv-formats": "^3.0.1",
     "eslint": "^9.38.0",
     "eslint-config-next": "^16.3.2",
-    "jest": "^30.2.0",
+    "jest": "^30.5.0",
     "jest-environment-node": "^30.4.1",
     "jszip": "^3.10.1",
     "playwright": "^1.62.1",
