@@ -173,13 +173,13 @@ jobs:
           fetch-depth: 0
       
       - name: Download Security Artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: security-archive-${{ github.run_number }}
           path: .
       
       - name: Download Notifications Artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: notifications-archive-${{ github.run_number }}
           path: .
@@ -221,14 +221,14 @@ jobs:
         uses: actions/checkout@v7
       
       - name: Download Security Evidence
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         continue-on-error: true
         with:
           name: security-evidence-${{ github.run_number }}
           path: evidence/security
       
       - name: Download Notifications Evidence
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         continue-on-error: true
         with:
           name: notifications-evidence-${{ github.run_number }}
