@@ -14,7 +14,7 @@
     "cli-progress": "^3.12.0",
     "fast-xml-parser": "^5.11.1",
     "p-queue": "^9.3.3",
-    "pretty-ms": "^9.1.0",
+    "pretty-ms": "^9.3.1",
     "resonai-backend": "file:../../..",
     "undici": "^8.10.0"
   }
