@@ -1,7 +1,17 @@
 # KEEP -- Phase 0 workflow audit 2026-08-03: only remaining Trivy scan (image pins need refresh post-SigNoz-upgrade)
 name: BossCat · Trivy Security Scan
+# Demand shaping 2026-09-01: PR runs only when the scan inputs can change.
+# This workflow scans docker-compose.yml (config) plus image pins that live in
+# THIS file — nothing else in a PR can alter its results. Not a required
+# branch-protection context (verified live 2026-09-01; see
+# .github/workflows/required-check-shims.yml header) — no shim needed.
+# push (main) / schedule / dispatch stay unfiltered: full coverage on main.
 on:
   pull_request:
+    paths:
+      - 'docker-compose*.yml'
+      - 'compose/**'
+      - '.github/workflows/trivy-security-scan.yml'
   push:
     branches: [main, master]
   schedule:

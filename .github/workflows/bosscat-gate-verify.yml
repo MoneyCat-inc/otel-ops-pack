@@ -1,11 +1,23 @@
 # KEEP -- Phase 0 workflow audit 2026-08-03: primary IONA gate verification on main; candidate for Phase 2 slimming
 name: BossCat Gate Verification
 
+# Demand shaping 2026-09-01: docs/markdown-only PRs skip the 4-site gate matrix
+# (heaviest PR workflow: 4 jobs x pnpm install per push). assets/** is
+# deliberately NOT ignored — guard-required-files.sh asserts the mascot under
+# assets/ and must keep running when assets change. RSI extraction reads
+# docs/BossCat/README.md but is a continue-on-error feed re-run on every main
+# push, so docs PRs skipping it lose nothing. Not a required branch-protection
+# context (verified live 2026-09-01; REQUIRED_STATUS_CHECKS.md's "already
+# required" claim is stale — see required-check-shims.yml header) — no shim
+# needed. push (main) / dispatch stay unfiltered.
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
   workflow_dispatch:
 
 permissions:

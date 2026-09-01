@@ -31,6 +31,24 @@
 #   CI-tested). Not a path-filter deadlock; do not re-introduce always-green shims
 #   (latest-wins hazard vs primary FAIL remains).
 #
+# Demand-shaping re-audit (2026-09-01, ci/demand-shaping-path-filters):
+#   Required contexts re-verified live (branches/main/protection API; rules/branches/main
+#   returned [] — no rulesets). One context ADDED since the 07-24 header:
+#     Repository Structure Compliance (Actions, guardrails.yml — unfiltered, untouched).
+#   Path filters were added to four workflows, NONE of which report a required
+#   context, so zero shim jobs remains correct:
+#     trivy-security-scan.yml   — pull_request paths: docker-compose*.yml, compose/**, self
+#     osv-scanner.yml           — pull_request paths-ignore: docs/**, **/*.md
+#     bosscat-governance.yml    — pull_request paths-ignore: docs/**, **/*.md
+#     bosscat-gate-verify.yml   — pull_request paths-ignore: docs/**, **/*.md
+#   Deliberately left UNFILTERED (required-context semantics):
+#     codeql.yml / powershell.yml — contexts app-bound to 57789; shims useless (above)
+#     gitleaks.yml — required Actions context AND secret scans are content-agnostic
+#       (secrets leak in .md too); its own header forbids filtering
+#     gate-site-evidence.yml — out of scope, still unfiltered
+#   If any of the four filtered workflows is EVER promoted to a required context,
+#   add an inverse same-name shim job here first (rules below), or unfilter it.
+#
 # Conclusion: zero shim jobs remain correct. Do NOT add competing Gate•/Site•
 # jobs here unless gate-site-evidence.yml gains `paths:` (then inverse
 # `paths-ignore:` jobs with identical `name:` strings — see below).
@@ -59,6 +77,9 @@ jobs:
     steps:
       - name: Confirm no competing required-context jobs
         run: |
-          echo "No Gate/Site/gitleaks/CodeQL shim jobs — primaries remain unfiltered."
+          echo "No Gate/Site/gitleaks/CodeQL shim jobs — required-context primaries remain unfiltered."
           echo "2026-07-24 re-audit: package-only Dependabot tips reported Gate•/Site• SUCCESS."
-          echo "See header for re-introduction rules if paths: are added later."
+          echo "2026-09-01 re-audit: path filters added to four NON-required workflows only"
+          echo "  (trivy / osv-scanner / bosscat-governance / bosscat-gate-verify);"
+          echo "  required contexts re-verified live incl. new 'Repository Structure Compliance'."
+          echo "See header for re-introduction rules if a filtered workflow becomes required."

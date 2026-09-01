@@ -1,9 +1,19 @@
 # KEEP -- Phase 0 workflow audit 2026-08-03: only commit-message lint in the repo (conventional-commit gate)
 name: BossCat Governance Suite
 
+# Demand shaping 2026-09-01: docs/markdown-only PRs skip this suite. Trade-off
+# accepted: those PRs lose the commit-message lint, but the repo squash-merges
+# (branch commit subjects are discarded) and docs PRs have their own lane
+# (docs-lane-checks.yml). The substantive checks here (scripts/*.ps1 syntax,
+# ECRR-presence-on-script-change) cannot be affected by docs-only diffs.
+# Not a required branch-protection context (verified live 2026-09-01; see
+# required-check-shims.yml header) — no shim needed. push (main) unfiltered.
 on:
   pull_request:
     branches: [main, develop]
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
   push:
     branches: [main]
   workflow_dispatch:
