@@ -1,15 +1,20 @@
-# KEEP -- Phase 0 workflow audit 2026-08-03: run-report conveyor to otel-ops-evidence (hourly)
+# KEEP -- Phase 0 workflow audit 2026-08-03: run-report conveyor to otel-ops-evidence (4-hourly)
 name: Archive & Analyze Workflow Runs
 
-# Demand shaping 2026-09-01: 30-min → hourly. At */30 this conveyor was itself
-# ~1,490 runs/month (~11% of August's total) while the evidence repo often went
-# hours between pushes — most cycles were no-op polls. Hourly halves that for
-# evidence-latency only; otel-ops-evidence has no CI of its own (verified live:
-# no .github/), so nothing downstream depends on the cadence. Off-hour minute
-# to dodge top-of-hour scheduler congestion. dispatch unchanged for on-demand.
+# Demand shaping 2026-09-01 (corrected same day): the nominal */30 cron never
+# actually fired 48×/day — GitHub's scheduler throttled it to a measured 4-6
+# scheduled runs/day with 5-11 h gaps (Actions API, last week of runs; interval
+# crons in busy repos are the most-dropped). The first correction to hourly
+# ('19 * * * *') would therefore have RAISED volume (pinned-minute crons fire
+# reliably, up to 24/day). Every-4-hours matches the measured de facto rate
+# (6/day) while making it predictable: fires 00:19/04:19/08:19/12:19/16:19/
+# 20:19 UTC (= operator local time, GMT). otel-ops-evidence has no CI of its
+# own (verified live: no .github/), so nothing downstream depends on cadence.
+# Evidence in ECRR_CI_DEMAND_SHAPING_DEPENDABOT_ARCHIVER_20260901.md (see its
+# correction addendum). dispatch unchanged for on-demand runs.
 on:
   schedule:
-    - cron: '19 * * * *'
+    - cron: '19 */4 * * *'
   workflow_dispatch:
 
 permissions:
