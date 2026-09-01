@@ -2,7 +2,7 @@
 
 **Date:** 2025-10-10  
 **Authority:** Comfort Cat Strategic Direction  
-**Status:** 🎯 **VISION RECEIVED** — Ready for implementation
+**Status:** 📌 **PARTIALLY REALIZED, PARTIALLY RETIRED** — see Status Addendum (2026-09-01) at the end of this document
 
 ---
 
@@ -697,4 +697,72 @@ Change from 90 → 14 days
 **Authority:** BossCat Operations + Comfort Cat Strategic Vision  
 **Status:** Architecture documented, awaiting implementation directive  
 **Seal:** 🐾 **Ready to build the machine**
+
+---
+
+## 📌 Status Addendum — 2026-09-01 (verified against live repo)
+
+Eleven months on, here is what this vision actually became. Every claim below was
+checked live on 2026-09-01, not carried forward from the text above.
+
+### Shipped and live
+
+- **Concurrency groups (Loop 2):** 48 of 62 workflows carry a `concurrency` block.
+  Of the 14 without one, 11 are manual-dispatch-only utilities, one is push-only,
+  and one (`required-check-shims`) is an instant shim — coverage is effectively
+  complete where it matters.
+- **Run-archiver conveyor (Loop 4):** [run-archiver.yml](../../.github/workflows/run-archiver.yml)
+  runs every 30 minutes, analyzes runs, and publishes evidence to
+  `MoneyCat-inc/otel-ops-evidence`. Green as of today. The PowerShell backfill
+  toolkit lives in `BRAV/SCPT/run-archiver/` and includes the time-sliced
+  fetching this doc proposed (the 1k pagination wall is solved).
+- **Retention:** the run horizon on the repo is ~90 days (only 14 runs remain
+  older than 2026-06-01). Better than the ∞ of 2025-10, but the 14-day target
+  was never adopted.
+
+### Built but never went live
+
+- The **Ingest → Normalize → Summarize → Classify → Act spine** exists as
+  scripts (`scripts/ingest-worker.ts`, `normalize-events.ts`,
+  `summarize-run.ts`, `classify-run.ts`, `auto-rerun-guard.ps1`) but is wired
+  into **no live workflow**. Loops 1 and 3 (run explanation, signature
+  trending) never closed.
+- The **signature registry** (`ALFA/APPS/signature-registry.json`) still
+  contains only its single 2025-10-10 seed entry. No learning ever occurred.
+- The rerun policy now lives at `DELT/CONF/policy/ecrr-policy.json`
+  (PHASE3_QUICKSTART.md's `config/policy/` path is stale).
+
+### Retired (Phase 0 workflow audit, 2026-08-03 — see [ROADMAP_2026H2.md](ROADMAP_2026H2.md))
+
+- `nightly-ecrr-aggregates.yml` — "daily rollup with no consumer."
+- `run-rotation.yml` — parallel conveyor; one archiver suffices.
+
+### The metric reality (2026-09-01)
+
+- **19,814 runs on the repo** — nominally worse than the 10,149 this doc called
+  a crisis, but the composition changed entirely: the old backlog is gone;
+  the count is fresh demand. **13,287 runs were created since 2026-08-01**
+  (~430/day).
+- Demand is dominated by ~9 workflows (PSScriptAnalyzer, Gitleaks, OSV-Scanner,
+  Trivy, CodeQL, Governance Suite, Gate Verification, Tetragram Guardrails,
+  Gate & Site Evidence) firing on **every PR push and every push to main**.
+  Dependabot batches multiply this: one 19-PR batch × update-branch cascades
+  × 9 workflows per push. 8 of those 9 workflows have **zero path filters** —
+  a docs-only change still runs the full security suite.
+
+### Standing verdict
+
+- This doc's core insight ("fix the leak, not the floor") is **half done**: the
+  floor now cleans itself (archiver + retention), and superseded runs get
+  cancelled — but the leak itself (per-push full-suite triggers, no
+  change-aware lanes) was never plugged.
+- [ROADMAP_2026H2.md](ROADMAP_2026H2.md)'s guiding model (subtract machinery;
+  no new gate frameworks or compliance engines) **forecloses building the rest
+  of the machine** — the webhook ingest service, the learning registry, the PR
+  comment bot stay unbuilt unless the Phase 4 purpose decision revives them.
+  The unwired scripts and seed registry remain in place as inventory.
+- The one open, roadmap-compatible lever from this doc is **demand shaping**:
+  path filters / lanes on the 8 unfiltered per-push workflows would cut the
+  ~430/day materially with no new machinery. That is the natural next ECRR if
+  run volume is ever prioritized.
 
