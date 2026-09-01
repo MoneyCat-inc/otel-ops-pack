@@ -7,13 +7,23 @@
 
 ## Recommended Required Checks
 
-### Core Gates (Already Required)
+### Core Gates (Live Required Set)
 
-These should be marked as required in branch protection:
+> **Correction (2026-09-01):** earlier revisions claimed `bosscat-gate-verify`,
+> `boss-gate-verify`, and `iona-gate-verify` were required. None of them is in
+> the live branch-protection config (verified via
+> `branches/main/protection/required_status_checks`; see the
+> `.github/workflows/required-check-shims.yml` header audit trail).
 
-1. **bosscat-gate-verify** (Core infrastructure validation)
-2. **boss-gate-verify** (Legacy compatibility)
-3. **iona-gate-verify** (IONA gate validation)
+The contexts actually required on `main` (verified live 2026-09-01):
+
+1. **CodeQL** (github-code-scanning app)
+2. **PSScriptAnalyzer** (github-code-scanning app)
+3. **gitleaks** (gitleaks.yml)
+4. **Gate • k6 thresholds** (gate-site-evidence.yml)
+5. **Gate • synthetic trace (OTLP/HTTP)** (gate-site-evidence.yml)
+6. **Site • links + a11y + CSP (coarse)** (gate-site-evidence.yml)
+7. **Repository Structure Compliance** (guardrails.yml)
 
 ### Docs Lane (Recommended to Add)
 
@@ -53,11 +63,15 @@ Under **"Require status checks to pass before merging"**:
 
 - `docs_checks` (from docs-lane-checks.yml)
 
-**Existing required** (keep these):
+**Existing required** (keep these — live set as of 2026-09-01):
 
-- `bosscat-gate-verify` ✅
-- `boss-gate-verify` ✅
-- `iona-gate-verify` ✅
+- `CodeQL` ✅
+- `PSScriptAnalyzer` ✅
+- `gitleaks` ✅
+- `Gate • k6 thresholds` ✅
+- `Gate • synthetic trace (OTLP/HTTP)` ✅
+- `Site • links + a11y + CSP (coarse)` ✅
+- `Repository Structure Compliance` ✅
 
 ### Step 3: Optional Settings
 
@@ -80,13 +94,19 @@ Under **"Require status checks to pass before merging"**:
 # List current required checks
 gh api repos/MoneyCat-inc/otel-ops-pack/branches/main/protection/required_status_checks
 
-# Add docs_checks to required checks (requires existing rule)
+# Add docs_checks to required checks (requires existing rule).
+# IMPORTANT: contexts[] REPLACES the whole list — re-send every live required
+# context (list them with the GET above) plus the new one, e.g.:
 gh api --method PATCH \
   repos/MoneyCat-inc/otel-ops-pack/branches/main/protection/required_status_checks \
   -f strict=true \
-  -F contexts[]=bosscat-gate-verify \
-  -F contexts[]=boss-gate-verify \
-  -F contexts[]=iona-gate-verify \
+  -F contexts[]=CodeQL \
+  -F contexts[]=PSScriptAnalyzer \
+  -F contexts[]=gitleaks \
+  -F "contexts[]=Gate • k6 thresholds" \
+  -F "contexts[]=Gate • synthetic trace (OTLP/HTTP)" \
+  -F "contexts[]=Site • links + a11y + CSP (coarse)" \
+  -F "contexts[]=Repository Structure Compliance" \
   -F contexts[]=docs_checks
 ```
 
@@ -259,6 +279,6 @@ gh run download <run-id> --name ecrr-docs
 
 **Authority**: BossCat OEM  
 **Status**: Production-ready  
-**Last Updated**: 2025-10-15
+**Last Updated**: 2026-09-01 (required-set lists corrected against live branch protection)
 
 🐾 **BossCat Branch Protection — Governance Framework**
