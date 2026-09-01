@@ -9,13 +9,16 @@
 ## 🎯 The Insight: We've Been Cleaning The Floor, Not Fixing The Leak
 
 ### What We Just Did (Tactical)
+
 - Cleaned 3,000 workflow runs manually
 - Hit GitHub CLI pagination wall (1k limit)
 - Found tool limitations through investigation
 - Proposed overnight batch cleanup
 
 ### What We Should Build (Strategic)
+
 **A loop-closing machine that:**
+
 1. **Prevents** the clutter from forming (demand shaping)
 2. **Accelerates** what must run (supply expansion)
 3. **Learns** from failures to auto-suggest fixes
@@ -26,9 +29,11 @@
 ## 🔄 The Four Loop Sizes
 
 ### Loop 1: Run Loop (seconds–minutes)
+
 **Goal:** Explain a single red/slow run and suggest the next click.
 
 **Close by:**
+
 - Error signature extraction
 - Tiny fix hint
 - Auto-rerun if flaky
@@ -39,9 +44,11 @@
 ---
 
 ### Loop 2: PR Loop (minutes–hours)
+
 **Goal:** Show author only **net-new** problems.
 
 **Close by:**
+
 - Collapse repeats (same signature)
 - Cancel superseded runs (`concurrency` group)
 - Change-aware checks (only run affected)
@@ -50,20 +57,24 @@
 **Target State:** ✅ One card: "3 runs with same error, auto-retrying"
 
 **Immediate Win:**
+
 ```yaml
 # Add to ALL PR workflows
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 ```
+
 [GitHub Docs: Concurrency](https://docs.github.com/en/actions/using-jobs/using-concurrency)
 
 ---
 
 ### Loop 3: Workflow-Family Loop (days–weeks)
+
 **Goal:** Reduce recurring failure types, cut median runtime.
 
 **Close by:**
+
 - Track top error signatures
 - Identify slowest steps
 - Measure cache hit rate
@@ -75,9 +86,11 @@ concurrency:
 ---
 
 ### Loop 4: Org Loop (weeks–quarters)
+
 **Goal:** Shape the volume - fewer wasteful triggers, better strategy.
 
 **Close by:**
+
 - Concurrency policies org-wide
 - Retention policies (prevent 10k run pileup)
 - Path filters (docs ≠ full CI)
@@ -87,10 +100,12 @@ concurrency:
 **Target State:** ✅ 14-day retention, smart triggers, managed queue
 
 **Immediate Win:**
+
 ```yaml
 # Set org-wide retention
 Settings → Actions → Artifact and log retention: 14 days
 ```
+
 [GitHub Docs: Retention Policy](https://docs.github.com/en/organizations/managing-organization-settings/configuring-the-retention-period-for-github-actions-artifacts-and-logs-in-your-organization)
 
 ---
@@ -99,7 +114,7 @@ Settings → Actions → Artifact and log retention: 14 days
 
 ### Ingest → Normalize → Summarize → Classify → Act → Learn
 
-```
+```text
 ┌─────────────┐
 │   GitHub    │
 │   Actions   │
@@ -162,7 +177,7 @@ Settings → Actions → Artifact and log retention: 14 days
 
 ### Folder Structure
 
-```
+```text
 /ecrr/org=MoneyCat-inc/repo=otel-ops-pack/dt=2025/10/10/run=18397294115/
 ├── meta.json              # run, jobs, steps, timings, actor
 ├── summary.md             # 8-line human synopsis
@@ -191,6 +206,7 @@ sig_id = hashlib.sha256(
 ```
 
 **Why file before reading?**
+
 - Bulk operations (aggregate, GC, train)
 - Don't re-parse every time
 - Query with tools (jq, duckdb, pandas)
@@ -205,6 +221,7 @@ sig_id = hashlib.sha256(
 **Problem:** 5 pushes to PR = 5 full CI runs, but only last matters
 
 **Solution:**
+
 ```yaml
 # Top of EVERY PR workflow
 concurrency:
@@ -223,6 +240,7 @@ concurrency:
 **Problem:** Docs change triggers 45-minute test suite
 
 **Solution:**
+
 ```yaml
 on:
   pull_request:
@@ -233,6 +251,7 @@ on:
 ```
 
 **Lanes:**
+
 - **Smoke lane:** Docs/config changes (5 min)
 - **Fast lane:** Unit tests + build (15 min)
 - **Full lane:** E2E, integration (45 min, nightly only)
@@ -244,6 +263,7 @@ on:
 **Problem:** 10,149 runs accumulated because retention = ∞
 
 **Solution:**
+
 ```yaml
 # Org-wide: Settings → Actions → Retention
 Default: 14 days (was 90)
@@ -274,6 +294,7 @@ Default: 14 days (was 90)
 ```
 
 **Check cache hit:**
+
 ```yaml
 - id: cache-deps
   uses: actions/cache@v4
@@ -293,6 +314,7 @@ Default: 14 days (was 90)
 **Problem:** Developers dig through 5000-line logs
 
 **Solution:**
+
 ```yaml
 - name: Add failure summary
   if: failure()
@@ -320,6 +342,7 @@ Default: 14 days (was 90)
 ### The Problem
 
 **GitHub API caps:**
+
 - Search API: ~1,000 results max
 - List endpoints: Page 10+ returns duplicates
 - CLI `gh run list --limit 1000`: Hard stop
@@ -359,6 +382,7 @@ echo "Total runs: $(wc -l < run_ids.txt)"
 ```
 
 **Why it works:**
+
 - Each day has <1,000 runs
 - Pagination within day works fine
 - Aggregate across days = full dataset
@@ -395,6 +419,7 @@ echo "Total runs: $(wc -l < run_ids.txt)"
 **Goal:** Ingest → File
 
 **Tasks:**
+
 ```python
 # webhook_receiver.py
 @app.post("/webhook/workflow_run")
@@ -423,6 +448,7 @@ def handle_workflow_run(payload):
 **Goal:** Logs → Structured Events
 
 **Tasks:**
+
 ```python
 # normalizer.py
 def normalize_logs(log_text):
@@ -457,6 +483,7 @@ def generate_signature(events, step_name, workflow):
 **Goal:** JSONL → 8-line synopsis
 
 **Tasks:**
+
 ```python
 # summarizer.py
 def generate_summary(run_dir):
@@ -490,6 +517,7 @@ def generate_summary(run_dir):
 **Goal:** Summaries → Actions
 
 **Tasks:**
+
 ```python
 # actor.py
 def act_on_failure(run_id, sig_id):
@@ -522,6 +550,7 @@ def act_on_failure(run_id, sig_id):
 **Goal:** Prevent clutter formation
 
 **Tasks:**
+
 1. Add `concurrency` to all PR workflows
 2. Set org retention to 14 days
 3. Add path filters to slow workflows
@@ -536,6 +565,7 @@ def act_on_failure(run_id, sig_id):
 **Goal:** Visibility into loop health
 
 **Metrics:**
+
 - Failure rate (7d trend)
 - New signatures this week
 - Flake rate
@@ -569,7 +599,7 @@ done
 
 ### 2. Set Retention Policy (2 minutes)
 
-```
+```text
 Settings → Actions → Artifact and log retention
 Change from 90 → 14 days
 ```
@@ -598,6 +628,7 @@ Change from 90 → 14 days
 **What we thought:** "We have too many old runs, let's delete them"
 
 **What's actually happening:** 
+
 - Retention = ∞ (demand shaping missing)
 - Every push = full suite (no concurrency)
 - No loop-closing (failures just... exist)
@@ -652,6 +683,7 @@ Change from 90 → 14 days
 3. **Signature registry** (learning system)
 
 **What we need to decide:**
+
 - Start with immediate wins (concurrency, retention, summaries)?
 - Build the full loop-closing machine (7-day plan)?
 - Focus on specific component first (which loop size)?
@@ -661,6 +693,7 @@ Change from 90 → 14 days
 ## 📚 Reference Links (From Comfort Cat)
 
 ### GitHub Docs
+
 - [Concurrency](https://docs.github.com/en/actions/using-jobs/using-concurrency)
 - [Workflow Runs API](https://docs.github.com/en/rest/actions/workflow-runs)
 - [Caching](https://docs.github.com/en/actions/reference/workflows-and-actions/dependency-caching)
@@ -669,6 +702,7 @@ Change from 90 → 14 days
 - [Job Summaries Blog](https://github.blog/news-insights/product-news/supercharging-github-actions-with-job-summaries/)
 
 ### Tools
+
 - [actions/cache](https://github.com/actions/cache)
 - [gh CLI pagination discussion](https://github.com/cli/cli/discussions/7010)
 
@@ -679,12 +713,14 @@ Change from 90 → 14 days
 **Status:** 🎯 **VISION RECEIVED & UNDERSTOOD**
 
 **Recognition:**
+
 - We were tactical (cleaning), you're strategic (preventing)
 - Our pagination investigation **validated** the 1k wall
 - Loop-closing at 4 levels is the right abstraction
 - ECRR as "filed artifact" = queryable intelligence
 
 **Ready to:**
+
 - [ ] Start with immediate wins (concurrency + retention)
 - [ ] Begin 7-day build plan (ingest → act → learn)
 - [ ] Accept starter code/templates
