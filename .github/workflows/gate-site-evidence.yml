@@ -195,11 +195,11 @@ jobs:
     needs: [gate_perf, gate_trace, site_checks]
     if: always()
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with: { name: ecrr-gate-perf, path: out/gate }
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with: { name: ecrr-gate-trace, path: out/gate }
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with: { name: ecrr-site, path: out/site }
       - name: Assemble LATEST.{json,md}
         run: |
