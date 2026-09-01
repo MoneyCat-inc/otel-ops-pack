@@ -72,4 +72,38 @@ Claude (chat/review) surveyed remaining demand after the path-filter merge
 edited two config files, and opened the PR under the operator's standing
 delegation. PR left for operator review/merge. No credentials, no elevation.
 
-**Status:** COMPLETE (pending PR review/merge)
+**Status:** COMPLETE — superseded in part by the correction addendum below.
+
+---
+
+## Correction Addendum — 2026-09-01 (same day, post-merge)
+
+Triggered by the Cursor{Implementer} local-ingest verification, which noted
+the latest scheduled archiver run at 12:25 UTC — a ~4-hour gap that a */30
+cron should not show. Actions API check (schedule-event runs, last week):
+
+- **The */30 cron never fired 48×/day.** Measured scheduled fires were
+  **4-6/day with 5-11 h gaps** (e.g. Sep 1: 01:05, 06:38, 12:25; Aug 31:
+  08:20, 16:18, 21:33). 863 scheduled runs lifetime. GitHub's scheduler
+  throttles interval crons in busy repos; this one was throttled ~10× below
+  nominal.
+- **Retractions from §1/§3 above:** the "~1,490 runs/month (~11% of August)"
+  figure was cron arithmetic, not measurement — actual is ~150-180/month.
+  The "deterministic −~745 runs/month" saving does not exist. "Most cycles
+  were no-op polls" was likewise derived, not observed — at ~5 fires/day each
+  run had work. This violated the addendum discipline this repo runs on
+  ("checked live, not carried forward"); the error is the chat seat's.
+- **Second-order find:** the hourly correction (`19 * * * *`, merged in
+  PR #696) would likely have **raised** archiver volume — pinned-minute
+  hourly crons fire reliably (up to 24/day) where throttled */30 did not.
+- **Fix (this addendum's PR):** cron → `19 */4 * * *` — 6 fires/day, matching
+  the measured de facto rate while making it predictable, at
+  00:19/04:19/08:19/12:19/16:19/20:19 UTC (= operator local time, GMT).
+  Evidence latency ≤4 h, unchanged in practice from the throttled reality.
+- **Revised combined estimate vs August:** path filters (15-25%, measured
+  baseline, stands) + Dependabot grouping (5-15%, stands) + archiver (~0%,
+  corrected) = **20-35%**, down from the 25-40% claimed above. Same
+  measurement checkpoint: 2026-10-01 rollup.
+
+**Correction status:** ACTIVE — figures above in §1/§3 stand corrected here;
+original text left intact per audit-trail convention.
