@@ -1,5 +1,10 @@
 # Optional Enhancement: Preserve Canary Service Names
 
+> **Status check (2026-09-02 truth pass).** Still an *unapplied* option: the root
+> `signoz-collector-config.yaml` keeps the `resource/defaults` upsert to `resonai-backend` (line
+> numbers quoted below have drifted). Gate #008 context and the 1,390-trace figure are from
+> 2025-10. Apply only through the SigNoz collector config PR lane, with a canary before/after.
+
 **Status:** Production-ready now. Enhancement is optional, low-risk, and can be applied anytime.
 
 ---

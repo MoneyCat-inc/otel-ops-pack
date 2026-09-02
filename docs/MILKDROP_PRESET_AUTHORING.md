@@ -1,5 +1,10 @@
 # Milkdrop Preset Authoring Guide
 
+> **Split-lane note (2026-09-02).** The visualizer lane was extracted to `viz-engine` in Pack 3B
+> (2026-07-24), but preset tooling still ships here (`scripts/author-loop.ps1`,
+> `scripts/score-curated-presets.ps1`, `scripts/bedrock-coauthor.ts`). This guide is unrelated to
+> the telemetry pipeline and is kept as a crib sheet for that tooling.
+
 **Authority:** BossCat OEM - Cat Nap Control Room  
 **Purpose:** Codex-friendly crib sheet for authoring .milk presets  
 **Reference:** Geisswerks Milkdrop authoring guide

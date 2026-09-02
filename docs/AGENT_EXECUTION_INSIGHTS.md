@@ -1,4 +1,12 @@
+<!-- markdownlint-disable MD013 MD031 MD032 MD036 MD040 -->
 # Agent Execution Patterns & Emergent Capabilities
+
+> **HISTORICAL (2026-09-02 truth pass).** Analysis of the 2025 multi-agent system (observers and
+> executors, IONA, Tetragram, viz lanes). The `2025-01-27` date line predates the system it
+> describes; the content matches the Oct–Nov 2025 roster, all of which was retired by the
+> CHARTER four-seat model. Script paths cited as `scripts/…` now live under `BRAV/SCPT/`; the
+> visualizer material belongs to `viz-engine` (extracted Pack 3B, 2026-07-24). Kept as a record;
+> nothing here is operative. Added to the repo 2026-08-28 (`9659249d`).
 
 **Date:** 2025-01-27  
 **Authority:** BossCat OEM  
