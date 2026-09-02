@@ -1,5 +1,9 @@
 # 🐾 EXECUTIVE SUMMARY: GitHub Actions Cleanup
 
+> **Dated record (2025-10-14) — 2026-09-02 truth pass.** Summary of the one-shot Actions cleanup; the
+> conveyor described here is superseded by `.github/workflows/run-archiver.yml` (cron `19 */4 * * *`)
+> archiving to `otel-ops-evidence`.
+
 **Date**: 2025-10-14  
 **Status**: ✅ **MISSION COMPLETE**  
 **Target**: Reduce workflow runs from 13,500 → 100  

@@ -161,7 +161,7 @@ curl http://localhost:8080/api/v1/health
 Test-NetConnection localhost -Port 5321
 
 # Send canary
-pnpm emit:enhanced
+pnpm emit   # (emit:enhanced no longer exists; see package.json)
 ```
 
 ---

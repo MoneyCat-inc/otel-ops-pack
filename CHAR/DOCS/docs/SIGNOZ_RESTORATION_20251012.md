@@ -1,4 +1,9 @@
+<!-- markdownlint-disable MD013 MD022 MD031 MD032 MD034 MD040 -->
 # SigNoz Stack Restoration — 2025-10-12
+
+> **Dated record (2025-10-12) — 2026-09-02 truth pass.** Point-in-time stack restoration log; ports, versions and
+> paths are as of that date (14317/14318 exporter scheme, SigNoz UI 3301, v0.96-era stack) and the
+> `cursor{implementer}`/IONA roster is retired. Current truth: `docs/architecture/CURRENT_ARCHITECTURE.md`.
 
 **Date:** 2025-10-12 01:15:00 +01:00  
 **Operator:** Human (reported to cursor{implementer})  

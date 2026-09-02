@@ -1,5 +1,11 @@
 # Status Auto-Update: PAT Required
 
+> **HISTORICAL (2026-09-02 truth pass).** The `status-auto-update.yml` workflow this page
+> describes was removed in commit `31423808` ("ci(workflows): clear the 13 per-push
+> validation failures"); no workflow refreshes the status dashboard today. Status updates
+> are manual: `pwsh scripts/update-status-dashboard.ps1`, then commit through the normal PR
+> lane. Kept as the design/setup record.
+
 ## 🚨 GITHUB_TOKEN Limitation Discovered
 
 <!-- markdownlint-disable-next-line MD013 -->

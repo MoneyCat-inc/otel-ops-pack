@@ -1,4 +1,9 @@
+<!-- markdownlint-disable MD013 MD022 MD031 MD032 MD034 MD036 MD040 MD049 MD058 -->
 # Cursor Implementer Ops Run Report — 3-Iteration Test
+
+> **Dated record (2025-10-12) — 2026-09-02 truth pass.** Point-in-time three-iteration ops run report; ports, versions and
+> paths are as of that date (14317/14318 exporter scheme, SigNoz UI 3301, v0.96-era stack) and the
+> `cursor{implementer}`/IONA roster is retired. Current truth: `docs/architecture/CURRENT_ARCHITECTURE.md`.
 
 **Authority:** cursor{implementer}  
 **Runbook:** BossCat multi-iteration validation protocol  

@@ -1,5 +1,8 @@
 # Fractal Reference Map (Silicon → Site)
 
+> **SUPERSEDED (2026-09-02).** Navigation map from the 2025 site/agent era. The live maps are
+> `docs/status/REFERENCES_MAP.md` (v1.3) and `docs/architecture/CURRENT_ARCHITECTURE.md`.
+
 **Tetragram IDs:**
 
 - System Architecture View: `BOSS-CATX-RESE-SYAR`

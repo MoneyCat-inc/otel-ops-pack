@@ -1,4 +1,9 @@
+<!-- markdownlint-disable MD013 MD022 MD032 MD058 -->
 # 🎯 BossCat Stakeholder Development Plan
+
+> **HISTORICAL (2025-10-07) — 2026-09-02 truth pass.** Four-week plan for the IONA-era org model;
+> undelivered as written and its four `docs/*.md` deliverables do not exist. The CHARTER four-seat model
+> and `docs/PURPOSE.md` replaced it.
 
 **MoneyCat Inc · Resonai [OTel] · otel-ops-pack**  
 **Issued by:** BossCat OEM (Executive Overseer Manager)  

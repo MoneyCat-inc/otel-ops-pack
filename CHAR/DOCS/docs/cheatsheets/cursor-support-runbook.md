@@ -128,7 +128,8 @@ Please check the internal trace for the Request ID above. Let me know if this is
 ## 5. Evidence Logging
 
 - Record the completed steps, probe results, and support ticket reference in an ECRR report (`CHAR/ECRR/ECRR_REPORTS/`).
-- Update `artifacts/queue-steward-verification.txt` or the relevant queue tracker with the ticket status.
-- Inform BossCat OEM if repeated failures occur to align with nightly governance checks.
+- Add a one-line entry to `docs/BossCat/BOSSCAT_LOG.md` with the ticket status (the queue-steward tracker belonged to
+  the site lane, split out in Pack 3B).
+- Inform BossCat OEM if repeated failures occur (there is no nightly governance check — review is per change).
 
 

@@ -1,5 +1,9 @@
 # 🚨 P0 TRACKING: BossCat Gate Verify CI Failure
 
+> **CLOSED P0 record (2025) — 2026-09-02 truth pass.** The tracked failure was resolved in the 2025-10
+> gate cycle; `bosscat-gate-verify.yml` is a KEEP required lane today (`REQUIRED_STATUS_CHECKS.md`).
+> Nothing here is open.
+
 **Tracking ID**: `BOSS-CATX-COMP-CI01`  
 **Created**: 2025-10-13 00:25:00 +01:00  
 **Resolved**: 2025-10-13 00:36:00 +01:00  

@@ -65,11 +65,12 @@ git commit -m "chore(registry): regenerate workflows.json"
 
 ---
 
-## 🌙 Nightly Drift Check (Optional)
+## 🌙 Nightly Drift Check — RETIRED 2026-08-03
 
-**Workflow:** `.github/workflows/registry-drift-check.yml`
+**Workflow:** `.github/workflows/registry-drift-check.yml` (now `workflow_dispatch` only)
 
-Runs nightly at 03:00 UTC to detect registry drift. If workflows changed without updating the registry, it automatically:
+Retired in the Phase 0 workflow audit (`docs/BossCat/ROADMAP_2026H2.md`): `registry-guard.yml` enforces
+freshness at PR time, so the nightly PR-opener was a redundant recurring writer. When it ran nightly it would:
 
 1. Regenerates `workflows.json`
 2. Creates a PR with changes
@@ -101,7 +102,7 @@ pwsh scripts/regenerate-workflows-registry.ps1
 ```json
 {
   "source": "scripts/regenerate-workflows-registry.ps1",
-  "total": 76,
+  "total": 61,
   "items": [
     {
       "name": "workflow-name",
@@ -222,7 +223,7 @@ Write-Host "✅ scripts.json regenerated ($($scripts.Count) scripts)" -Foregroun
 - ✅ Registry MUST be up to date (enforced by `registry-guard.yml`)
 - ✅ Schema MUST validate (enforced by `registry-guard.yml`)
 - ✅ PRs CANNOT merge if registry is stale
-- ✅ Nightly check catches any drift
+- ✅ `registry-guard.yml` on every workflow PR is the sole enforcement (nightly check retired 2026-08-03)
 
 **YAML Parsing Rules:**
 
@@ -236,7 +237,7 @@ Write-Host "✅ scripts.json regenerated ($($scripts.Count) scripts)" -Foregroun
 ```json
 {
   "source": "scripts/regenerate-workflows-registry.ps1",
-  "total": 76,
+  "total": 61,
   "items": [
     {
       "name": "workflow-name",
@@ -303,17 +304,18 @@ if ($falseIssues.Count -gt 0) {
 - Verify no false positives (automated validation)
 - Commit with descriptive message
 
-**Daily (automated):**
+**On demand (manual):**
 
-- Nightly drift check at 03:00 UTC
-- Auto-PR created if drift detected
+- Drift check: re-run the regenerate script and `git diff docs/status/workflows.json`
+- The nightly drift workflow and its auto-PRs were RETIRED 2026-08-03; `registry-guard.yml`
+  still fails a PR whose workflow change is not reflected in the registry
 
 **Monthly:**
 
 - Review `artifacts/index/md_orphans.csv` for triage (regenerate first; it is gitignored)
 - Update `REFERENCES_MAP.json` if canonical refs change
 - Regenerate full inventory (`artifacts/index/`)
-- Review auto-generated drift PRs
+- Review `workflows.json` against `.github/workflows/` (61 files as of 2026-09-02)
 
 **Quarterly:**
 
@@ -337,7 +339,7 @@ When modifying workflows, use this checklist (included in PR template):
 
 ---
 
-**Last Updated:** 2025-10-19  
+**Last Updated:** 2025-10-19; counts and cadence refreshed 2026-09-02  
 **Maintained by:** Cursor{Implementer} under BossCat OEM  
 **Methodology:** ECRR (Examine → Clean → Report → Role)  
 **CI Guard:** `.github/workflows/registry-guard.yml`  

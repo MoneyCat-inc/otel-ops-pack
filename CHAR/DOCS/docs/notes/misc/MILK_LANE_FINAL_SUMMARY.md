@@ -1,5 +1,9 @@
 # 🐾 MILK Lane - Complete Implementation Summary
 
+> **Split-lane record (2026-09-02).** The visualizer lane (VIZR / MILK / ProjectM) was extracted to
+> `viz-engine` in Pack 3B (2026-07-24; that repo is now archived). Nothing in this pack's telemetry
+> pipeline depends on it; kept as the record of the 2025 lane.
+
 **Cursor{Implementer}** → **BossCat OEM**  
 **Lane**: MILK (MilkDrop Integration Layer & Kit)  
 **Session**: 2025-10-16 11:30:00 - 12:05:00 (~60 minutes)  

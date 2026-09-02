@@ -8,7 +8,9 @@
 
 Artifacts
 
-- Perf: `tests/perf/gate.js` (k6) and CI output
-- Synthetic trace: `scripts/synth-trace.ts` to OTLP 14318
-- Evidence: `artifacts/ecrr/gate/LATEST.md`, `DELT/ARTF/gate-verification-results.json`
+- Perf: `ALFA/TEST/load/k6/perf-gate-thresholds.js` (k6) and CI output (`gate-site-evidence.yml`)
+- Synthetic trace: `scripts/synth-trace.ts` to OTLP `4318` (SigNoz collector); `5321` proves the Windows
+  collector path
+- Evidence: `artifacts/ecrr/gate/perf-verdict.json` (CI), `artifacts/gate-verification-results.json`
+  (runtime; `DELT/ARTF/` holds dated copies)
 

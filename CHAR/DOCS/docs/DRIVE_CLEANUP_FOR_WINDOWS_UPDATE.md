@@ -1,5 +1,10 @@
 # Drive cleanup for Windows 11 update
 
+> **SUPERSEDED — do not run the reset step (2026-09-02).** The "Docker WSL reset" below deletes
+> every image, container and volume, including the SigNoz ClickHouse data. The 2026-08-18 VHDX
+> incident (516 GB) was closed with bounded retention and in-place compaction instead; follow
+> `docs/DOCKER_VHDX_MAINTENANCE.md`. Kept as the record of the original one-off cleanup note.
+
 Scan showed **Docker is ~202 GB** on C:. Other targets: Windows Update cache (~5 GB), Package Cache (~4 GB), user caches.
 
 ## Summary: What to run

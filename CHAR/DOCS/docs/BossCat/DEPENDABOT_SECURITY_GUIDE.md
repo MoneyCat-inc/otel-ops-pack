@@ -23,28 +23,25 @@ repository. This guide covers:
 Located at `.github/dependabot.yml`:
 
 ```yaml
+# .github/dependabot.yml — grouped + weekly since 2026-09-01 (PR #696); sidecars dir added 2026-09-01 (#702)
 version: 2
 updates:
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    schedule: { interval: "weekly" }
-  
-  - package-ecosystem: "pip"
-    directory: "/"
-    schedule: { interval: "daily" }
-  
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule: { interval: "daily" }
+  - package-ecosystem: "github-actions"   # directory "/", weekly, groups actions-all / actions-security
+  - package-ecosystem: "pip"              # "/" and "/ALFA/APPS/sidecars", weekly, grouped
+  - package-ecosystem: "npm"              # "/", "/BRAV/SCPT/run-archiver", "/BRAV/INFR/deployment-pipeline", weekly, grouped
 ```
+
+Each ecosystem has a `groups:` block that collapses version updates into one PR per interval and
+security updates into a separate grouped PR (security PRs are raised as alerts arrive, not on the
+weekly schedule). See the file for the exact blocks.
 
 ### Monitored Ecosystems
 
 | Ecosystem | Frequency | Files Monitored |
 |-----------|-----------|-----------------|
 | **GitHub Actions** | Weekly | `.github/workflows/*.yml` |
-| **Python (pip)** | Daily | `requirements*.txt`, `setup.py` |
-| **Node.js (npm)** | Daily | `package.json`, `package-lock.json`, `pnpm-lock.yaml` |
+| **Python (pip)** | Weekly, grouped (root + `ALFA/APPS/sidecars`) | `requirements*.txt`, `setup.py` |
+| **Node.js (npm)** | Weekly, grouped (root + 2 tool dirs) | `package.json`, `package-lock.json`, `pnpm-lock.yaml` |
 
 ---
 

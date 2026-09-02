@@ -1,93 +1,76 @@
 # BossCat Operations Guide
 
-![Gate Status](https://img.shields.io/badge/Gate-READY-green?style=flat-square&logo=checkmarx)
-![Guardrails](https://img.shields.io/badge/Guardrails-LOCKED-blue?style=flat-square&logo=shield)
-![Collector](https://img.shields.io/badge/Collector-RUNNING-green?style=flat-square&logo=opentelemetry)
-
 [![BossCat Gate Verification](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/bosscat-gate-verify.yml/badge.svg)](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/bosscat-gate-verify.yml)
-[![Weekly Re-Cert](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/guardrails-recert.yml/badge.svg)](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/guardrails-recert.yml)
+[![Repository Structure Compliance](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/guardrails.yml/badge.svg)](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/guardrails.yml)
 [![Monthly Rollup](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/bosscat-monthly-evidence-rollup.yml/badge.svg)](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/bosscat-monthly-evidence-rollup.yml)
 
-- Governance: [Run Branch Protection Setup](https://github.com/MoneyCat-inc/otel-ops-pack/actions/workflows/bosscat-branch-protection.yml)
+Governance and local-first operations for **otel-ops-pack** (Resonai [OTel]).
+*Rewritten 2026-09-01 — the previous version badged a workflow that no longer exists, described a
+visuals lane split out in Pack 3B, and defined the planes differently from ADR-0001.*
 
-Purpose: Governance and local-first operations for Resonai [OTel].
+## Read first
 
-Key Artifacts:
+| Document | What it settles |
+| --- | --- |
+| [`CHARTER.md`](CHARTER.md) | The four seats, lane discipline, operating principles |
+| [`../PURPOSE.md`](../PURPOSE.md) | Deliberate steady-state; the test every change must pass |
+| [`ROADMAP_2026H2.md`](ROADMAP_2026H2.md) | Roadmap of record — all five phases closed 2026-08-14 |
+| [`BOSSCAT_LOG.md`](BOSSCAT_LOG.md) | Live log, one line per change |
+| [`REQUIRED_STATUS_CHECKS.md`](REQUIRED_STATUS_CHECKS.md) | Live required-check set on `main` |
+| [`../REPOSITORY_STRUCTURE.md`](../REPOSITORY_STRUCTURE.md) | Planes, legacy roots, where things run from |
 
-- CHAR/ECRR/ECRR_REPORTS/ - ECRR audit trails
-- docs/observability/snapshots/ - Dashboard exports
-- docs/status/ - Status and test summaries
-- docs/IONA_ERRORS.md - Error ledger
-- docs/BossCat/visuals/ - MILK control surface
-- CHAR/ECRR/ECRR_REPORTS/ECRR_MILK_CONSOLIDATED_LATEST.md - MILK lane summary
-- docs/BossCat/visuals/presets/registry.json - MILK preset registry (moods/tags)
+## Key artifacts
 
-Runbooks:
+- `CHAR/ECRR/ECRR_REPORTS/` — per-change evidence (lean ECRR: quantified before/after, honest verdict)
+- `docs/status/` — registries (`workflows.json` is CI-guarded) and the executive status page
+- `docs/IONA_ERRORS.md` — error ledger
+- `MoneyCat-inc/otel-ops-evidence` — raw evidence archive (monthly rollup, quarterly prune)
 
-- Gate verify: pwsh -NoProfile -File scripts/verify-iona-gate.ps1 -Strict
-- ECRR benchmark: pwsh -NoProfile -File scripts/benchmark-process-all-ecrr-reports.ps1
-- Watchdog control: pwsh -File BRAV/SCPT/watchdog-control.ps1 [start|stop|status|logs|evidence] [gate|site|both]
-- MILK visuals: start docs\BossCat\visuals\control.html
+## Runbook commands
 
-## Quick Commands
+```powershell
+# Gate verification (strict) — alias: pnpm run agent:ready-for-gate[:local|:ci|:stg|:prod]
+pwsh -NoProfile -File scripts/verify-iona-gate.ps1 -Strict
 
-### Gate Verification
+# ECRR benchmark across all reports
+pwsh -NoProfile -File scripts/benchmark-process-all-ecrr-reports.ps1
 
-```bash
-# Default (auto-detect strictness by site)
-pnpm run agent:ready-for-gate
+# Windows collector watchdog
+pwsh -File BRAV/SCPT/watchdog-control.ps1 [start|stop|status|logs|evidence] [gate|site|both]
 
-# Explicit per-site helpers
-pnpm run agent:ready-for-gate:local
-pnpm run agent:ready-for-gate:ci
-pnpm run agent:ready-for-gate:stg
-pnpm run agent:ready-for-gate:prod
+# Fast pipeline health
+pwsh -File scripts/quick-monitor.ps1
 ```
 
-- Purpose: Run local gate verification and generate artifacts.
-  - Produces:
-    - `artifacts/gate-verification-results.json` - Gate verification results with verdict
-  - `PR_COMMENT_IONA_GATE_002_FINAL.md` - Formatted PR comment for gate approval
-  - ECRR gate reports (when applicable) in `CHAR/ECRR/ECRR_REPORTS/`
-- Use cases:
-  - Local pre-flight checks before PR submission
-  - Manual gate verification during development
-  - Refreshing gate artifacts for status dashboard
-  - Alias for `scripts/verify-iona-gate.ps1` with the standard
-    `-OutputJson`/`-PrCommentPath` arguments (see `package.json`)
+Gate verification writes `artifacts/gate-verification-results.json` and, when applicable, an ECRR
+gate report. `scripts/*.ps1` are thin wrappers; implementations live in `BRAV/SCPT/`.
 
-### MILK Visual Control
+## The planes (ADR-0001, ratified hybrid ADR-0002)
 
-```bash
-# Open control surface
-start docs\BossCat\visuals\control.html
+| Plane | Holds |
+| --- | --- |
+| `ALFA/` | Application: app trees, libs, canary emitters, tests |
+| `BRAV/` | Build/automation: **`BRAV/SCPT/` is the canonical PowerShell tree** |
+| `CHAR/` | Compliance: docs mirror, ECRR audit trail, evidence, preservation archive |
+| `DELT/` | Data/config: artifacts, configs (`DELT/CONF/configs/`), fixtures, templates |
 
-# Verify installation
-node scripts/visuals/visu-shim.ts verify
+`docs/` is the documentation source of truth (`CHAR/DOCS/` mirrors it). Full detail in
+`../REPOSITORY_STRUCTURE.md`.
 
-# Get control path
-node scripts/visuals/visu-shim.ts url
+## Lane discipline (from the charter)
 
-# Test automation commands
-node scripts/visuals/visu-shim.ts test
-```
+One lane per pull request, never mixed: **docs** (`docs/**`, `README.md`; budget 10 files / 200 LOC,
+`lane:cleanup` waiver for sweeps), **code**, **CI/ops** (`.github/workflows/**`, registry-guarded),
+**evidence** (`CHAR/ECRR/**`). Conventional commit prefixes are enforced.
 
-- Purpose: Launch BossCat visual control surface (Butterchurn/MilkDrop)
-- Lane: MILK (MilkDrop Integration Layer & Kit)
-- Features: Real-time audio visualization, preset management, automation API
-- Docs: `docs/BossCat/visuals/CONTROL_README.md`
+## Cadence (from PURPOSE.md)
 
-## BossCat Seal
+Per change: lean ECRR · Monthly: evidence rollup · Quarterly: dependency/stack upgrade check and
+evidence prune · Standing: the clean-host E2E gate stays green. No new recurring writer without an
+owner, a review date and a kill switch.
 
-All operations follow ECRR methodology (Examine -> Clean -> Report -> Role) and maintain full audit trails in `CHAR/ECRR/ECRR_REPORTS/`.
+## Historical material in this directory
 
-**Tetragram Lanes**:
-
-- **ALFA**: Agent Framework & Automation
-- **BRAV**: Build, Release, Archive & Versioning
-- **CHAR**: CHaracterization, Analysis & Reporting
-- **DELT**: Deployment, Evidence, Logs & Telemetry
-- **MILK**: MilkDrop Integration Layer & Kit
-
-For detailed documentation, see lane-specific subdirectories under `docs/BossCat/`.
-
+Dated briefings, memos, measurement reports and run cards (`BRIEFING_*`, `MEMO_*`, `*_2026MMDD.md`,
+`CLEAN_HOST_E2E_RUN_CARD_*`) are records of their own dates. Read them for provenance, not as
+current instructions; corrections are filed as addenda.

@@ -1,5 +1,9 @@
 # Ko-fi welcome post — Resonai [OTel]
 
+> **Split-lane record (2026-09-02).** The social and funding lanes were extracted in Pack 3B
+> (2026-07-24: `socm`, `moneycat-site`). `scripts/kofi-weekly-reminder.ps1` still ships here as a
+> reminder stub; maintain the Ko-fi material in those repos.
+
 **Status:** Published 2026-06-12  
 **Page:** <https://ko-fi.com/fubumaki>  
 **Post:** <https://ko-fi.com/post/welcome-to-resonai-otel-v3e2219nlh>  

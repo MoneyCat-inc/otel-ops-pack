@@ -10,7 +10,8 @@ Contents
 Generate a status page screenshot
 
 - Prereqs: `pnpm i` (Playwright is a devDependency)
-- Command: `pnpm export:status:screenshot`
+- Command: `pnpm dashboard:export` (the former `export:status:screenshot` script no longer exists in
+  `package.json`; `pnpm dashboard:rollup` also writes `--snapshot` files here)
 - Output: `docs/observability/snapshots/status-*.png` + `status-*.json`
 
 Notes

@@ -2,7 +2,7 @@
 
 **Authority:** BossCat OEM Gate #006 P1-D  
 **Lane:** SSOT  
-**Status:** ✅ ACTIVE
+**Status:** ✅ ACTIVE — enforced by `gate-026-performance.yml` (`performance-gate.yml` RETIRED 2026-08-03)
 
 ---
 
@@ -65,13 +65,14 @@ pnpm perf:gate
 
 ## 📈 **Current Performance**
 
-**Baseline (from gate verification):**
+**Baseline (from gate verification, 2025-10 — re-measure before citing):**
 
 - p95: 1.92ms (96% under SLO) ✅
 - p50: ~1ms ✅
 - Success rate: 99.97% ✅
 
-**77× Throughput Uplift:** Maintained  
+**Throughput uplift:** 7× (the 77× figure was retracted repo-wide on 2025-10-20 — `BOSSCAT_LOG.md`,
+`scripts/guard-inflated-metrics.ps1`)  
 **Batch Latency:** <200ms target achieved
 
 ---

@@ -10,7 +10,11 @@
 
 ### Core Governance (Present)
 
-- **[ROLES.md](ROLES.md)** - Agent roles and authority hierarchy
+> **Governing authority is `docs/BossCat/CHARTER.md`** (four seats, lane discipline; rewritten 2026-08-13)
+> and `docs/PURPOSE.md` (deliberate steady-state, 2026-08-14). The documents here restate or apply them
+> and must not diverge.
+
+- **[ROLES.md](ROLES.md)** - Seats restated for the creative/ops context (aligned to the charter 2026-09-02)
 - **[GATE_PROTOCOL.md](GATE_PROTOCOL.md)** - Gate readiness and approval protocol
 - **[ECRR_FRAMEWORK.md](ECRR_FRAMEWORK.md)** - Examine → Clean → Report → Role methodology
 
@@ -36,7 +40,8 @@
 **When uncertain about any creative, copy, motion, or accessibility decision:**
 
 1. **Check this directory first** for existing guidance
-2. **If guidance is missing**, create a stub document before proceeding
+2. **If guidance is missing**, ask the operator before proceeding (new standing documents need an owner and a
+   review date — `docs/PURPOSE.md`; do not create stubs to satisfy the protocol)
 3. **Never guess** - always establish written precedent
 4. **Reference this location** in all creative work
 

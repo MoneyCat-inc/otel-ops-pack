@@ -15,6 +15,11 @@ OTEL_TRACES_EXPORTER=otlp
 OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317
 ```
 
+> **Which path this proves (2026-09-02).** `localhost:4317` is the SigNoz collector directly — the .NET
+> trace-routing preference from Gate #026A. It does **not** exercise the Windows collector. To prove the
+> collector path instead, export to `http://127.0.0.1:5321` (HTTP) or `5320` (gRPC); the collector's
+> traces pipeline forwards to SigNoz on 4317.
+
 ---
 
 ## Steps (Windows PowerShell)
@@ -50,7 +55,7 @@ dotnet run
 # - Navigate to Traces
 # - Filter: service="hub-synth"
 # - Screenshot the span detail
-# - Save to: docs/ecrr/screens/otel-synth.png
+# - Save to: docs/observability/snapshots/otel-synth-<date>.png (docs/ecrr/screens/ does not exist)
 ```
 
 ---

@@ -1,5 +1,8 @@
 # SOCM 48-Hour Watch — Bluesky Launch
 
+> **OUT-OF-SCOPE here (2026-09-02).** Social operations live in `socm` since Pack 3B (2026-07-24);
+> the `npm run social:*` scripts below are not in this repo's `package.json`. Kept as the launch record.
+
 ## Objectives (T+0 → T+48h)
 
 - Maintain post health, thread Day-1 replies, and approve social suggestions (≤5 follows/week).

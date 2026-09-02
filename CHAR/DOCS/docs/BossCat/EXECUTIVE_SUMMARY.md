@@ -1,4 +1,10 @@
+<!-- markdownlint-disable MD022 MD031 MD032 MD036 -->
 # 🐾 BossCat OEM Executive Summary
+
+> **HISTORICAL (2025-10-07) — 2026-09-02 truth pass.** Executive snapshot from the Gate #006/#007 era;
+> the IONA/48-agent roster it describes is retired (CHARTER four seats) and the collector ports have
+> since moved (5320/5321). Current truth: `docs/architecture/CURRENT_ARCHITECTURE.md`.
+
 ## Autonomous Observability Pipeline - Production Status
 
 **Issued by:** BossCat OEM (Executive Overseer Manager)  
@@ -370,7 +376,7 @@ pwsh -File scripts/boot-health-check.ps1
 - [x] SigNoz platform deployed
 - [x] ClickHouse database operational
 - [x] Docker services healthy
-- [x] OTLP endpoints accessible (5317 gRPC, 5318 HTTP)
+- [x] OTLP endpoints accessible (5320 gRPC, 5321 HTTP — corrected 2026-09-02; the 2025 layout was 5317/5318)
 
 ### Automation
 - [x] Boot health checks registered

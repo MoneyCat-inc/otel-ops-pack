@@ -1,5 +1,9 @@
 # Persona: Lumi
 
+> **Split-lane record (2026-09-02).** The visualizer lane (VIZR / MILK / ProjectM) was extracted to
+> `viz-engine` in Pack 3B (2026-07-24; that repo is now archived). Nothing in this pack's telemetry
+> pipeline depends on it; kept as the record of the 2025 lane.
+
 **Designation:** LumiPulse-MkII ("Lumi")  
 **Role:** VIZR lane automation sentinel  
 **Domain:** Cat Nap Control Room – Visual Telemetry & Trendkeeping

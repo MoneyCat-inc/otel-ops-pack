@@ -2,6 +2,12 @@
 
 **BossCat OEM Framework** - Complete Security Operations & Maintenance Handbook
 
+> **Correction 2026-09-02.** Schedules, Dependabot cadence and the merge/credential chain below were
+> re-checked against the live workflows and `docs/BossCat/CHARTER.md`: the only scheduled security scan
+> is `gitleaks.yml` (daily 02:00 UTC); Dependabot is weekly and grouped; and the machine operator
+> `@fubumaki` is the only seat that merges or touches a credential — there is no security team,
+> DevOps team or on-call rota. Corrected in place; the 2026-08-29 waivers stand.
+
 ---
 
 ## Document Purpose
@@ -179,9 +185,9 @@ BossCat OEM observability framework. It serves as the **single source of truth**
 
 **Workflows**:
 
-- `nightly-dashboard-export.yml` - Daily at 2 AM UTC
-- `security-scan.yml` - Daily at 2 AM UTC (scheduled run)
-- `gitleaks-security-scan.yml` - Weekly Monday at 3 AM
+- `gitleaks.yml` - Daily at 2 AM UTC (the only scheduled security scan)
+- `security-scan.yml`, `gitleaks-security-scan.yml` - RETIRED 2026-08-03, `workflow_dispatch` only
+- `nightly-dashboard-export.yml` - does not exist (never shipped)
 
 **Process**:
 
@@ -189,22 +195,22 @@ BossCat OEM observability framework. It serves as the **single source of truth**
 2. Scans entire repository
 3. Results uploaded as artifacts
 4. Issues created for new findings
-5. Notifications sent to security team
+5. Findings surface in the repository Security tab; the operator triages
 
 #### 4. Dependabot Automation
 
 **Schedule**:
 
 - **GitHub Actions**: Weekly
-- **Python (pip)**: Daily
-- **Node.js (npm)**: Daily
+- **Python (pip)**: Weekly, grouped (`.github/dependabot.yml`, 2026-09-01)
+- **Node.js (npm)**: Weekly, grouped
 
 **Process**:
 
 1. Dependabot scans dependencies
 2. Creates PR for updates
 3. CI runs tests on PR
-4. Security team reviews and merges
+4. Machine operator (`@fubumaki`) reviews and merges — the only seat that merges (CHARTER)
 5. Alert closes automatically
 
 ---
@@ -225,7 +231,7 @@ BossCat OEM observability framework. It serves as the **single source of truth**
 
 ```powershell
 # Quick daily check
-pwsh scripts/quick-status.ps1
+pwsh scripts/quick-monitor.ps1   # (scripts/quick-status.ps1 does not exist)
 
 # Or manual steps:
 # 1. Check GitHub Actions for failed runs
@@ -275,8 +281,7 @@ pwsh scripts/quick-status.ps1
 **Checklist Script**:
 
 ```powershell
-# scripts/weekly-security-review.ps1
-# Run: pwsh -File scripts/weekly-security-review.ps1
+# scripts/weekly-security-review.ps1 — NOT in the repo (2026-09-02); the steps below are manual
 
 Write-Host "🔍 Weekly Security Review - $(Get-Date -Format 'yyyy-MM-dd')" -ForegroundColor Cyan
 
@@ -945,10 +950,10 @@ Track improvements in GitHub Issues with labels:
 
 | Role | Responsibility | Contact |
 |------|---------------|---------|
-| **BossCat OEM Lead** | Overall framework oversight | Tag in issues |
-| **Security Team Lead** | Security operations | Tag `@security-team` |
-| **DevOps Team** | Infrastructure & deployment | Tag `@devops-team` |
-| **On-Call Engineer** | 24/7 incident response | See on-call schedule |
+| **BossCat OEM** | Framework oversight, decisions | Tag in issues |
+| **Machine operator (`@fubumaki`)** | Merges, credentials, elevated actions, incident response | Tag `@fubumaki` |
+| **Cursor{Implementer} / Kiro{Implementer}** | PRs, ECRRs, remediation under lane discipline | PR thread |
+| **Chat/review seat** | Audits, drafts, proposals — never merges | Session notes |
 
 ### External Resources
 

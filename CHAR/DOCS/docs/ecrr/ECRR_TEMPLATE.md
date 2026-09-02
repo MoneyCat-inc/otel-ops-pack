@@ -6,19 +6,19 @@
 
 ## Metadata
 
-- **Lane**: [COMP/FLAK/DOCS/SELE/VIZR/AUDIO/AGENT/SSOT]
+- **Lane**: [docs / code / CI-ops / evidence] (one lane per PR — `docs/BossCat/CHARTER.md`)
 - **Date**: YYYY-MM-DD
 - **Gate**: [if applicable, e.g., GATE_030]
 - **Author**: [Your name/role]
 - **Status**: [READY/PARTIAL/BLOCKED]
 
-**Note**: This template reflects the current **direct-to-SigNoz architecture**. See
-[docs/architecture/CURRENT_ARCHITECTURE.md](../architecture/CURRENT_ARCHITECTURE.md) for details.
+**Note**: This template reflects the current architecture — **Windows collector (first-class) → SigNoz**;
+see [docs/architecture/CURRENT_ARCHITECTURE.md](../architecture/CURRENT_ARCHITECTURE.md). (Until 2026-09-02 this
+line claimed a "direct-to-SigNoz" architecture with the collector deprecated; that was rescinded 2026-08-13.)
 
 **Resources**:
 
 - Troubleshooting guides: `docs/runbooks/` (e.g. [windows-collector](../runbooks/windows-collector.md))
-- Architecture diagrams: [docs/vizr/ARCHITECTURE_DIAGRAM.md](../vizr/ARCHITECTURE_DIAGRAM.md)
 - Current architecture: [docs/architecture/CURRENT_ARCHITECTURE.md](../architecture/CURRENT_ARCHITECTURE.md)
 
 ---
@@ -76,8 +76,8 @@ pwsh -File scripts\quick-monitor.ps1
 
 ```powershell
 # Commands run to verify changes
-pwsh -File scripts\verify-pipeline.ps1
-pwsh -File scripts\canary-test.ps1
+pwsh -File BRAV\SCPT\verify-pipeline.ps1
+pwsh -File canary-test.ps1
 ```
 
 **Output**: [Paste or link to validation results]
@@ -105,7 +105,8 @@ pwsh -File scripts\canary-test.ps1
 
 ### Evidence Artifacts
 
-- **Location**: `artifacts/ecrr-reports/YYYYMMDD-gate-XXX/`
+- **Location**: link or quote the evidence inside the report; `artifacts/` is untracked runtime output, and durable
+  evidence goes to `CHAR/EVID/` or `MoneyCat-inc/otel-ops-evidence`
 - **Contents**:
   - `before-snapshot.json`
   - `after-snapshot.json`
@@ -174,15 +175,14 @@ pwsh -File scripts\canary-test.ps1
 
 Before submitting this report, verify:
 
-- [ ] All 4 phases (Examine, Clean, Report, Role) are completed
-- [ ] Evidence artifacts are generated and archived
-- [ ] Budget limits respected (≤10 files, ≤200 LOC per PR)
-- [ ] A/B roles are declared with names
-- [ ] Gate phrase included if gate-ready
-- [ ] Rollback plan documented
-- [ ] Testing strategy executed
-- [ ] SigNoz verification completed
-- [ ] Documentation updated
+- [ ] Quantified **before and after** (numbers, not adjectives)
+- [ ] An **honest verdict** — including anything that undercuts the change
+- [ ] Actor declared (which seat did what)
+- [ ] Budget respected (≤10 files, ≤200 LOC per docs PR) and one lane only
+- [ ] Rollback noted where a change is not trivially reversible
+
+*(The 2025 nine-item checklist and A/B sign-off were retired with the compliance engine, 2026-08-03; the
+charter asks for a lean report with "no checkbox apparatus".)*
 
 ---
 

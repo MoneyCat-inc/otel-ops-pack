@@ -1,6 +1,10 @@
 <!-- markdownlint-disable MD013 MD034 -->
 # Second Pass Plan
 
+> **EXECUTED — 2026-09-02 truth pass.** This 2026-08-15 plan's waves landed (see `BOSSCAT_LOG.md`
+> 2026-08-15 onward); the metrics in §1 are pre-execution (e.g. 28 workflows now carry the RETIRED
+> header, not 3) and "Status: APPROVED" is historical.
+
 **otel-ops-pack** · drafted 2026-08-15 · grounded against `origin/main` @ `4469d10de` · authority: BossCat OEM  
 **Executor:** Cursor{Implementer}  
 **Status:** Wave 0 decisions **APPROVED** 2026-08-15 (OEM recommendations affirmed)

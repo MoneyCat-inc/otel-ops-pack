@@ -1,5 +1,13 @@
 # 📋 PR-1: JSON Contracts + Validation Gate (AJV)
 
+> ## IMPLEMENTED — pre-merge spec of 2025-10-23, shipped
+>
+> The gate this spec describes is live: `.github/workflows/json-validation-gate.yml` (push + PR on
+> `schema/**`, `docs/status/**`; KEEP per the 2026-08-03 audit) validates `schema/status-tests.schema.json`
+> and `schema/gate-verification-results.schema.json` with `ajv` (`^8.20.0`, `ajv-formats ^3.0.1` — newer
+> than the versions pinned below). The `status-auto-update.yml` workflow it planned to chain from was
+> removed in the per-push-failure cleanup and no longer exists. Kept unedited as the design record.
+
 **Authority:** BossCat OEM  
 **Status:** Ready to Implement  
 **Created:** 2025-10-23  

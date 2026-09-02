@@ -29,7 +29,7 @@ with API-signed, timestamped JSON proofs.
 | Variable | Required | Description | Example |
 |----------|----------|-------------|---------|
 | `SIGNOZ_API_KEY` | Yes | API key from SigNoz Settings → API Keys (Viewer role) | `<redacted>` |
-| `SIGNOZ_BASE_URL` | No | SigNoz base URL (default: `http://localhost:8080`) | `http://127.0.0.1:3301` or `https://<tenant>.signoz.io` |
+| `SIGNOZ_BASE_URL` | No | SigNoz base URL (default: `http://localhost:8080`) | `http://localhost:8080` or `https://<tenant>.signoz.io` |
 | `SIGNOZ_SERVICE_NAME` | No | Service name to query | `bosscat-svc2-api` |
 | `SIGNOZ_LOOKBACK_MINUTES` | No | Minutes to look back (default: 3) | `5` |
 
@@ -65,7 +65,7 @@ with API-signed, timestamped JSON proofs.
 ```powershell
 # Set environment variables
 $env:SIGNOZ_API_KEY = "<your-api-key>"
-$env:SIGNOZ_BASE_URL = "http://127.0.0.1:3301"
+$env:SIGNOZ_BASE_URL = "http://localhost:8080"
 $env:SIGNOZ_SERVICE_NAME = "bosscat-svc2-api"
 
 # Run with API proof enabled
@@ -126,7 +126,7 @@ jobs:
 **Setup:**
 
 1. Add `SIGNOZ_API_KEY` to repository secrets (**Settings** → **Secrets and variables** → **Actions**)
-2. Add `SIGNOZ_BASE_URL` to repository variables (e.g., `http://127.0.0.1:3301`)
+2. Add `SIGNOZ_BASE_URL` to repository variables (e.g., `http://localhost:8080`)
 3. Workflow will fail if telemetry verification fails (exit code 21)
 
 ---
@@ -156,7 +156,7 @@ JSON files generated in `artifacts/proofs/` with naming pattern: `proof-traces-<
   "startMs": 1730047200000,
   "endMs": 1730047380000,
   "count": 15,
-  "endpoint": "http://127.0.0.1:3301/api/v5/query_range",
+  "endpoint": "http://localhost:8080/api/v5/query_range",
   "timestamp": "20251027-154500",
   "verification_type": "api-signed",
   "api_version": "v5"
@@ -221,7 +221,7 @@ pwsh -File .\scripts\windows\health-check-otlp.ps1 -UseApiProof
 **Fix:**
 
 1. Verify `SIGNOZ_BASE_URL` points to correct SigNoz instance
-2. Self-hosted: Usually `http://127.0.0.1:3301` or `http://localhost:8080`
+2. Self-hosted: `http://localhost:8080` (legacy SigNoz installs used `:3301`)
 3. Cloud: Use your tenant URL (e.g., `https://<tenant>.signoz.io`)
 4. Ensure SigNoz version supports `/api/v5/query_range` (v0.31+)
 
@@ -308,9 +308,10 @@ pwsh -File .\scripts\windows\health-check-otlp.ps1 -UseApiProof
 
 ---
 
-## Future Enhancements (Gate #030)
+## Unified proofs (Gate #030) — shipped
 
-The current implementation supports **traces only**. Gate #030 (Evidence-as-Code v1) will extend to:
+This runbook covers the **traces-only** proof. Gate #030 delivered the unified proof (v2: traces + logs +
+metrics, 3/3 signals) — see `unified-telemetry-proofs.md`. What it added, for reference:
 
 - **Logs:** Query `/api/v5/query_range` with `signal: "logs"`
 - **Metrics:** Query `/api/v5/query_range` with `signal: "metrics"`
@@ -328,7 +329,7 @@ The current implementation supports **traces only**. Gate #030 (Evidence-as-Code
 
 ---
 
-**Last Updated:** 2025-10-27  
+**Last Updated:** 2025-10-27; truth pass 2026-09-01 (SigNoz UI port 8080, Gate #030 shipped)  
 **Authority:** BossCat OEM (Fubumaki)  
 **Status:** ACTIVE — Gate #029-H1 Hygiene Patch
 
