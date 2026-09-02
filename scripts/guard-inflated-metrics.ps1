@@ -102,12 +102,33 @@ $repoRoot = (Get-Location).Path
 # original rg-based scan effectively saw (rg skips .gitignore'd trees). Enumerating the working
 # tree instead pulled untracked local artifact and third_party trees into the scan (887 vs 739
 # files, false positives in minified report HTML) — reported by the Cursor seat, 2026-09-02.
-$tracked = @(& git ls-files -z 2>$null)
-if ($LASTEXITCODE -ne 0 -or $tracked.Count -eq 0) {
+# Read git's output as UTF-8 bytes directly. `@(& git ls-files -z)` decodes through the
+# console's output encoding, which on a Windows code-page console turns UTF-8 file names
+# (e.g. U+2019 in docs/BossCat/Research/markdown) into mojibake, so Test-Path then reports
+# tracked files as missing and the guard fails closed (Cursor seat, 2026-09-02). A Process
+# with an explicit StandardOutputEncoding is platform-independent; core.quotepath=off keeps
+# git from octal-escaping non-ASCII bytes.
+function Get-TrackedFiles {
+    $psi = [System.Diagnostics.ProcessStartInfo]::new('git')
+    foreach ($a in @('-c', 'core.quotepath=off', 'ls-files', '-z')) { $psi.ArgumentList.Add($a) }
+    $psi.WorkingDirectory = $repoRoot
+    $psi.UseShellExecute = $false
+    $psi.RedirectStandardOutput = $true
+    $psi.RedirectStandardError = $true
+    $psi.StandardOutputEncoding = [System.Text.UTF8Encoding]::new($false)
+    $proc = [System.Diagnostics.Process]::Start($psi)
+    $stdout = $proc.StandardOutput.ReadToEnd()
+    $null = $proc.StandardError.ReadToEnd()
+    $proc.WaitForExit()
+    if ($proc.ExitCode -ne 0) { return $null }
+    return @($stdout -split "`0" | Where-Object { $_ -ne '' })
+}
+$tracked = $null
+try { $tracked = Get-TrackedFiles } catch { $tracked = $null }
+if ($null -eq $tracked -or $tracked.Count -eq 0) {
     Write-Host "❌ 'git ls-files' failed or returned nothing — the guard cannot enumerate the tree; failing closed" -ForegroundColor Red
     exit 1
 }
-$tracked = ($tracked -join "`n") -split "`0" | Where-Object { $_ -ne '' }
 
 $productionRegex = '^(docs/.+\.md|CHAR/ECRR/ECRR_REPORTS/[^/]+\.md|DELT/ARTF/[^/]+\.json|(.+/)?[^/]+\.html|(.+/)?README[^/]*\.md)$'
 $excludeRegex = '(^|/)(archive|history|deprecated|legacy|node_modules|\.git)(/|$)|^CHAR/PRSV/|^CHAR/DOCS/'
