@@ -4,14 +4,16 @@
 #
 # 2026-09-02 repair (ECRR_DOCS_TRUTH_SWEEP_20260902 follow-up #2). The guard had been a silent
 # no-op since 2025-10-20:
-#   1. The exclude globs were splatted as bare positional arguments, which rg treats as PATHS.
-#      None exist -> "No such file or directory" (exit 2) -> stderr was discarded -> zero
-#      matches -> the guard passed on every run. docs/status.html carried "77× throughput
-#      uplift" from 2026-08-28 through sixteen green Gate Verify runs. Globs now go through -g.
+#   1. It shelled out to ripgrep, which the GitHub-hosted runner does not have; the
+#      CommandNotFound error went to the discarded error stream, zero lines came back, and the
+#      guard passed on every run. (With rg present the exclude globs were splatted as bare
+#      positional arguments, which rg treats as PATHS -> exit 2, also discarded.)
+#      docs/status.html carried "77× throughput uplift" from 2026-08-28 through sixteen green
+#      Gate Verify runs. The scan is now pure PowerShell — no external tool to be missing.
 #   2. `docs/*.md` was non-recursive, so docs/BossCat/** was never scanned. Now docs/**/*.md.
 #   3. The 196.7 pattern used a look-ahead that rg's default regex engine rejects (parse error,
 #      again swallowed). Rewritten without look-around.
-#   4. rg errors and a missing rg now fail closed instead of passing.
+#   4. Any scan error now fails closed instead of passing.
 #   5. Retraction records legitimately name the banned figures. A line whose wording shows it
 #      documents the ban (retracted / banned / inflated / unverified / unsubstantiated / zombie /
 #      "-> 7×" / ❌) is allowed, and a file carrying the token `inflated-metrics:allow-file`
@@ -93,27 +95,38 @@ if ('Throughput: 77× maintained' -match $retractionContext) {
     Write-Host "❌ SELF-TEST FAILED: retraction-context filter allows a bare claim" -ForegroundColor Red; exit 1
 }
 
-# --- Scan ---
-if (-not (Get-Command rg -ErrorAction SilentlyContinue)) {
-    Write-Host "❌ ripgrep (rg) not found — the guard cannot scan; failing closed" -ForegroundColor Red
+# --- Scan (pure PowerShell; no external tools) ---
+$repoRoot = (Get-Location).Path
+function Get-RelativePath([string]$fullPath) {
+    $rel = $fullPath.Substring($repoRoot.Length).TrimStart('\', '/')
+    return ($rel -replace '\\', '/')
+}
+$excludeRegex = '(^|/)(archive|history|deprecated|legacy|node_modules|\.git)(/|$)|^CHAR/PRSV/|^CHAR/DOCS/'
+
+$candidates = @()
+$candidates += Get-ChildItem -Path (Join-Path $repoRoot 'docs') -Recurse -File -Filter '*.md' -ErrorAction SilentlyContinue
+$candidates += Get-ChildItem -Path (Join-Path $repoRoot 'CHAR/ECRR/ECRR_REPORTS') -File -Filter '*.md' -ErrorAction SilentlyContinue
+$candidates += Get-ChildItem -Path (Join-Path $repoRoot 'DELT/ARTF') -File -Filter '*.json' -ErrorAction SilentlyContinue
+$candidates += Get-ChildItem -Path $repoRoot -Recurse -File -Filter '*.html' -ErrorAction SilentlyContinue
+$candidates += Get-ChildItem -Path $repoRoot -Recurse -File -Filter 'README*.md' -ErrorAction SilentlyContinue
+
+$files = @{}
+foreach ($item in $candidates) {
+    $rel = Get-RelativePath $item.FullName
+    if ($rel -match $excludeRegex) { continue }
+    $files[$rel] = $item.FullName
+}
+if ($files.Count -eq 0) {
+    Write-Host "❌ scan found no production files to check — failing closed (wrong working directory?)" -ForegroundColor Red
     exit 1
 }
 
-$rgArgs = @('-n', '--hidden', '--no-heading', '--color', 'never')
-foreach ($glob in $productionGlobs) { $rgArgs += @('-g', $glob) }
-foreach ($glob in $excludeGlobs)    { $rgArgs += @('-g', $glob) }
-foreach ($pattern in $bannedPatterns) { $rgArgs += @('-e', $pattern) }
-$rgArgs += '.'
-
-# Native stderr must not become a terminating error under Stop; rg's own exit code decides.
-$previousEap = $ErrorActionPreference
-$ErrorActionPreference = 'Continue'
-$rawLines = @(& rg @rgArgs)
-$rgExit = $LASTEXITCODE
-$ErrorActionPreference = $previousEap
-if ($rgExit -eq 2) {
-    Write-Host "❌ ripgrep reported an error (exit 2) — failing closed. Arguments: rg $($rgArgs -join ' ')" -ForegroundColor Red
-    exit 1
+$rawLines = @()
+foreach ($rel in ($files.Keys | Sort-Object)) {
+    $found = Select-String -Path $files[$rel] -Pattern $bannedPatterns -AllMatches -ErrorAction Stop
+    foreach ($hit in $found) {
+        $rawLines += ('{0}:{1}:{2}' -f $rel, $hit.LineNumber, $hit.Line)
+    }
 }
 
 $allowedByContext = @()
@@ -125,18 +138,18 @@ foreach ($line in $rawLines) {
     if ([string]::IsNullOrWhiteSpace($line)) { continue }
     $parts = $line -split ':', 3           # path:line:content (relative POSIX paths carry no colon)
     if ($parts.Count -lt 3) { $violations += $line; continue }
-    $file = $parts[0] -replace '^\./', ''
+    $file = $parts[0]
     $text = $parts[2]
     if ($text -match $retractionContext) { $allowedByContext += $line; continue }
     if (-not $allowFileCache.ContainsKey($file)) {
-        $allowFileCache[$file] = [bool](Select-String -Path $file -Pattern $allowFileToken -SimpleMatch -Quiet)
+        $allowFileCache[$file] = [bool](Select-String -Path $files[$file] -Pattern $allowFileToken -SimpleMatch -Quiet)
     }
     if ($allowFileCache[$file]) { $allowedByFile += $line; continue }
     $violations += $line
 }
 
-Write-Host ("  scanned: rg exit {0}; raw matches {1}; allowed as retraction context {2}; allowed by file token {3}" -f `
-    $rgExit, $rawLines.Count, $allowedByContext.Count, $allowedByFile.Count) -ForegroundColor DarkGray
+Write-Host ("  scanned {0} files; raw matches {1}; allowed as retraction context {2}; allowed by file token {3}" -f `
+    $files.Count, $rawLines.Count, $allowedByContext.Count, $allowedByFile.Count) -ForegroundColor DarkGray
 if ($allowedByFile.Count -gt 0) {
     $allowFiles = ($allowedByFile | ForEach-Object { ($_ -split ':', 2)[0] } | Sort-Object -Unique) -join ', '
     Write-Host "  allow-file records: $allowFiles" -ForegroundColor DarkGray
