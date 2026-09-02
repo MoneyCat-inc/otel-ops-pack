@@ -134,7 +134,7 @@ live `.md` files as of 2026-09-02 (excluding `archive/` subfolders):
 
 **Date-based organization:** Files with dates organized into `YYYY-MM/` subfolders  
 **Redirect stubs:** the 177 root stubs were removed after the consolidation (root holds only
-`README.md`, `AGENTS.md`, `CHANGELOG.md`); `redirect-map.json` went with them on 2026-09-02
+`README.md`, `AGENTS.md`, `CHANGELOG.md`); `redirect-map.json`/`.csv` went with them on 2026-09-02
 
 ---
 

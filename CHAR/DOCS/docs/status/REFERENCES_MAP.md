@@ -8,7 +8,8 @@
 
 - Every link and count re-checked against disk; domain counts are live `.md` files
   (excluding `archive/`) as of 2026-09-02
-- Registries are live, not pending: `scripts.json` (46 entries), `workflows.json` (61)
+- Registries are live, not pending: `scripts.json` (171 entries, regenerated 2026-09-02),
+  `workflows.json` (61)
 - `docs/evidence/` dropped (no such directory); `docs/socm/` extracted to the `socm`
   repo in Pack 3B (2026-07-24)
 - Gate bucket gains the live runner; two rationale entries for buckets that no longer
@@ -102,7 +103,8 @@
 
 ### Operational Registries
 
-- **Scripts Registry:** [`scripts.json`](scripts.json) — 46 entries
+- **Scripts Registry:** [`scripts.json`](scripts.json) — 171 entries (tracked `scripts/**/*.ps1`);
+  regenerate with `scripts/regenerate-scripts-registry.ps1`
 - **Workflows Registry:** [`workflows.json`](workflows.json) — 61 workflows, guarded by
   `registry-guard.yml`; regenerate with `scripts/regenerate-workflows-registry.ps1`
 
@@ -126,19 +128,20 @@ live `.md` files as of 2026-09-02 (excluding `archive/` subfolders):
 - **[docs/pr/](../pr/)** — Pull request reviews and comments (11 files)
 - **[docs/releases/](../releases/)** — Release notes and roadmaps (3 files)
 - **[docs/runbooks/](../runbooks/)** — Operational guides and deployment (13 files)
-- **[docs/status/](../status/)** — This map, the registries README and STATUS (3 docs + 12 JSON registries)
+- **[docs/status/](../status/)** — This map, the registries README and STATUS (3 docs + 11 JSON files, see the README)
 - **[docs/notes/](../notes/)** — Notes, tasks, and misc documentation (42 files)
 - **[docs/BossCat/](../BossCat/)** — Governance guides and records (119 files; see its README)
 
 **Date-based organization:** Files with dates organized into `YYYY-MM/` subfolders  
-**Redirect stubs:** 177 stubs at original locations preserve inbound links
+**Redirect stubs:** the 177 root stubs were removed after the consolidation (root holds only
+`README.md`, `AGENTS.md`, `CHANGELOG.md`); `redirect-map.json`/`.csv` went with them on 2026-09-02
 
 ---
 
 ## 📊 Map Statistics
 
 - **Version:** 1.3
-- **Total Canonical References:** 11
+- **Total Canonical References:** 10
 - **Buckets:** 5
 - **Organized Domains:** 8
 - **Root Docs Consolidated:** 177
