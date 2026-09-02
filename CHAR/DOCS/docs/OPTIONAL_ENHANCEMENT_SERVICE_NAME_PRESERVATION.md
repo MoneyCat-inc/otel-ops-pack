@@ -1,11 +1,15 @@
 # Optional Enhancement: Preserve Canary Service Names
 
-> **Status check (2026-09-02 truth pass).** Still an *unapplied* option: the root
-> `signoz-collector-config.yaml` keeps the `resource/defaults` upsert to `resonai-backend` (line
-> numbers quoted below have drifted). Gate #008 context and the 1,390-trace figure are from
-> 2025-10. Apply only through the SigNoz collector config PR lane, with a canary before/after.
+> **APPLIED — historical proposal (corrected 2026-09-02).** The enhancement described below
+> has been live since Gate #026 (2025-10-27): the root `signoz-collector-config.yaml`
+> `resource/defaults` processor sets `service.name` with `action: insert`, so incoming service
+> names are preserved and `resonai-backend` is only the default for spans that arrive without
+> one (verification step in `gate/2025-10/GATE_GREEN_FLIP_PROCEDURE.md`). The earlier
+> 2026-09-02 banner on this file said the option was still unapplied; that was wrong — it read
+> the stale comment block in the config rather than the setting. Everything below is the
+> Gate #008-era (2025-10) proposal, kept as the record of why the change was made.
 
-**Status:** Production-ready now. Enhancement is optional, low-risk, and can be applied anytime.
+**Status:** Proposal from 2025-10; applied at Gate #026. Not a live decision.
 
 ---
 
