@@ -1,5 +1,9 @@
 # IONA Error Ledger
 
+> **Closed ledger (2026-09-02).** IONA was retired with the 2025-10 agent roster; no entry has
+> been written since 2025-10-22 and none should be. Operational incidents go to
+> `docs/BossCat/BOSSCAT_LOG.md`; canary incidents use `docs/CANARY_INCIDENT_TEMPLATE.md`.
+
 This ledger tracks anomalies and recurring error classes for BossCat operations.
 
 Format: `YYYY-MM-DD HH:mm:ss K | site | gate | class | note`
