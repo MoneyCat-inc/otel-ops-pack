@@ -1,7 +1,12 @@
 # RSI Auto-Promotion System
 
 **Authority**: BossCat OEM Governance Framework  
-**Status**: ✅ Operational (Nightly Automation)
+**Status**: ⛔ RETIRED — no nightly automation exists (see notice)
+
+> **Truth pass 2026-09-02.** `.github/workflows/rsi-sweep-nightly.yml`, cited throughout, does not
+> exist and never shipped under that name; the baseline evaluation lives in `rsi-gate.yml`, which was
+> RETIRED 2026-08-03 (`workflow_dispatch` only). No PR is opened automatically. Body kept as the
+> design record of the promotion rules.
 
 ---
 
