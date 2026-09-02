@@ -1,4 +1,10 @@
+<!-- markdownlint-disable MD013 MD022 MD031 MD032 MD034 MD036 MD040 -->
 # 🔗 IONA → SigNoz Integration Guide
+
+> **HISTORICAL (2026-09-02 truth pass).** IONA was retired in the 2025-10 roster change;
+> `scripts/agent/watchdog.ps1` and the agent watchdog loop this guide wires into SigNoz no longer
+> exist, and the ports/paths reflect 2025-10-07. The SigNoz side is superseded by
+> `docs/architecture/CURRENT_ARCHITECTURE.md` and `docs/runbooks/windows-collector.md`.
 
 **MoneyCat Inc · Resonai [OTel] · otel-ops-pack**  
 **Version:** 1.0  
@@ -536,9 +542,9 @@ Evidence: artifacts/iona-integration-test-results.json
 - [OTel Semantic Conventions](https://opentelemetry.io/docs/specs/semconv/)
 
 ### Internal Docs
-- [IONA Setup Guide](docs/BossCat/IONA_SETUP_GUIDE.md)
-- [OTel Wiring Guide](docs/WIRING_GUIDE.md)
-- [Observability Setup](docs/OBSERVABILITY_SETUP.md)
+- `docs/BossCat/IONA_SETUP_GUIDE.md` (removed)
+- `docs/WIRING_GUIDE.md` (removed)
+- `docs/OBSERVABILITY_SETUP.md` (removed)
 
 ---
 
