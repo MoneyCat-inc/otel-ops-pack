@@ -1,6 +1,17 @@
 <!-- markdownlint-disable MD013 MD034 -->
 # BossCat Architecture Map — Components, Flows, and Links
 
+> ## HISTORICAL — design map of October 2025, not the current system
+>
+> This map describes the ingest → normalize → classify → summarize "loop-closing" spine and its
+> dashboards as the "single source of truth for how the system fits together". Per the 2026-09-01
+> status addendum in `LOOP_CLOSING_MACHINE_ARCHITECTURE.md`, that spine **exists as scripts but was
+> never wired into any live workflow**; `nightly-ecrr-aggregates.yml` was retired 2026-08-03, and
+> `stress-test-pr.yml` and `config/policy/` no longer exist. Kept as the record of the design.
+>
+> **For how the repository actually fits together, read:** `docs/REPOSITORY_STRUCTURE.md` (planes,
+> roots, where things run) and `docs/architecture/CURRENT_ARCHITECTURE.md` (telemetry topology).
+
 ## Purpose
 
 - Single source of truth for how BossCat’s bot-native observability system fits together.

@@ -65,11 +65,12 @@ git commit -m "chore(registry): regenerate workflows.json"
 
 ---
 
-## 🌙 Nightly Drift Check (Optional)
+## 🌙 Nightly Drift Check — RETIRED 2026-08-03
 
-**Workflow:** `.github/workflows/registry-drift-check.yml`
+**Workflow:** `.github/workflows/registry-drift-check.yml` (now `workflow_dispatch` only)
 
-Runs nightly at 03:00 UTC to detect registry drift. If workflows changed without updating the registry, it automatically:
+Retired in the Phase 0 workflow audit (`docs/BossCat/ROADMAP_2026H2.md`): `registry-guard.yml` enforces
+freshness at PR time, so the nightly PR-opener was a redundant recurring writer. When it ran nightly it would:
 
 1. Regenerates `workflows.json`
 2. Creates a PR with changes
@@ -222,7 +223,7 @@ Write-Host "✅ scripts.json regenerated ($($scripts.Count) scripts)" -Foregroun
 - ✅ Registry MUST be up to date (enforced by `registry-guard.yml`)
 - ✅ Schema MUST validate (enforced by `registry-guard.yml`)
 - ✅ PRs CANNOT merge if registry is stale
-- ✅ Nightly check catches any drift
+- ✅ `registry-guard.yml` on every workflow PR is the sole enforcement (nightly check retired 2026-08-03)
 
 **YAML Parsing Rules:**
 
