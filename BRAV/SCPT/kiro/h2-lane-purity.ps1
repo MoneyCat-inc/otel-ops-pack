@@ -14,7 +14,7 @@ $outOfLane = @()
 foreach ($f in $staged) {
   $n = $f -replace '\\', '/'
   if ($n -eq 'README.md' -or $n.StartsWith('docs/')) {
-    if ($n -ne 'docs/status/workflows.json') { $docsLane += $n }
+    if ($n -notin @('docs/status/workflows.json', 'docs/status/scripts.json')) { $docsLane += $n }
   } else {
     $outOfLane += $n
   }
