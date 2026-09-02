@@ -51,7 +51,7 @@ Test-NetConnection -ComputerName localhost -Port 5321
 
 ```bash
 # Use existing synthetic span emitter
-pnpm emit:enhanced
+pnpm emit   # (emit:enhanced no longer exists; see package.json)
 ```
 
 ### 3. Verify in SigNoz

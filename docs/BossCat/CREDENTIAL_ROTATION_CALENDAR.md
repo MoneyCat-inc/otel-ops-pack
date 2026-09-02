@@ -1,5 +1,10 @@
 # 🔄 Credential Rotation Calendar
 
+> **Correction 2026-09-02.** Under `docs/BossCat/CHARTER.md` the machine operator `@fubumaki` is the
+> only seat that mints, rotates or reads a credential — the team owners below are replaced accordingly.
+> The reminder workflow shipped as `.github/workflows/evidence-pat-rotation-reminder.yml`; the
+> `iona-gate-verify.yml` smoke test is RETIRED (use `bosscat-gate-verify.yml`).
+
 **BossCat OEM Framework** - Security Key & Secret Rotation Schedule
 
 ---
@@ -16,12 +21,12 @@ best practices.
 
 | Credential Type | Frequency | Last Rotated | Next Due | Owner |
 |----------------|-----------|--------------|----------|-------|
-| **GitHub App Private Key** | Annually | TBD | TBD | BossCat OEM |
-| **GitHub Deploy Keys** | Annually | TBD | TBD | DevOps Team |
-| **SigNoz API Keys** | Quarterly | TBD | TBD | Observability Team |
-| **Docker Registry Credentials** | Quarterly | TBD | TBD | Platform Team |
-| **OTel Service Account Tokens** | Semi-annually | TBD | TBD | BossCat OEM |
-| **CI/CD Secrets (General)** | Annually | TBD | TBD | DevOps Team |
+| **GitHub App Private Key** | Annually | TBD | TBD | Machine operator (`@fubumaki`) |
+| **GitHub Deploy Keys** | Annually | TBD | TBD | Machine operator (`@fubumaki`) |
+| **SigNoz API Keys** | Quarterly | TBD | TBD | Machine operator (`@fubumaki`) |
+| **Docker Registry Credentials** | Quarterly | TBD | TBD | Machine operator (`@fubumaki`) |
+| **OTel Service Account Tokens** | Semi-annually | TBD | TBD | Machine operator (`@fubumaki`) |
+| **CI/CD Secrets (General)** | Annually | TBD | TBD | Machine operator (`@fubumaki`) |
 | **Personal Access Tokens (PATs)** | 90 days | TBD | TBD | Individual Users |
 | **SSH Keys** | Annually | TBD | TBD | Individual Users |
 
@@ -33,7 +38,7 @@ best practices.
 
 **Frequency**: Annually (or immediately if compromised)  
 **Priority**: 🔴 Critical  
-**Owner**: BossCat OEM Lead
+**Owner**: Machine operator (`@fubumaki`) — only seat that rotates credentials (CHARTER)
 
 #### Rotation Process
 
@@ -56,10 +61,10 @@ best practices.
 
    ```bash
    # Trigger a workflow that uses the GitHub App token
-   gh workflow run iona-gate-verify.yml
+   gh workflow run bosscat-gate-verify.yml
    
    # Monitor workflow run
-   gh run list --workflow=iona-gate-verify.yml --limit 1
+   gh run list --workflow=bosscat-gate-verify.yml --limit 1
    
    # Check for "Generate GitHub App token" step success
    gh run view <run-id> --log | grep "Generate GitHub App token"
@@ -90,7 +95,7 @@ If new key fails:
 
 **Frequency**: Annually  
 **Priority**: 🟠 High  
-**Owner**: DevOps Team
+**Owner**: Machine operator (`@fubumaki`) — only seat that rotates credentials (CHARTER)
 
 #### Rotation Process
 
@@ -155,7 +160,7 @@ If new key fails:
 
 **Frequency**: Quarterly (every 3 months)  
 **Priority**: 🟠 High  
-**Owner**: Observability Team
+**Owner**: Machine operator (`@fubumaki`) — only seat that rotates credentials (CHARTER)
 
 #### Rotation Process
 
@@ -218,7 +223,7 @@ If new key fails:
 
 **Frequency**: Quarterly  
 **Priority**: 🟡 Moderate  
-**Owner**: Platform Team
+**Owner**: Machine operator (`@fubumaki`) — only seat that rotates credentials (CHARTER)
 
 #### Rotation Process
 
@@ -379,7 +384,7 @@ Maintain rotation log at `docs/security/rotation-log.md`:
 **Reminder System** (optional):
 
 ```yaml
-# .github/workflows/credential-rotation-reminder.yml
+# Original sketch — shipped as .github/workflows/evidence-pat-rotation-reminder.yml
 name: Credential Rotation Reminder
 
 on:
