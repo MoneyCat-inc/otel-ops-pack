@@ -60,7 +60,16 @@ try {
                 elseif ($name -match 'hub|export') { 'DOCS' }
                 else { 'UTIL' }
 
-        $size = [int](& git cat-file -s $entries[$path])
+        # Size of the file as git would commit it: hash the working-tree content through the
+        # repo's clean filters (CRLF-safe) so an edited-but-unstaged script is measured as it is
+        # now, not as the index remembers it (a stale self-size failed the first CI run). Falls
+        # back to the index blob when the file is absent from disk.
+        $oid = $entries[$path]
+        if (Test-Path -LiteralPath (Join-Path $repoRoot $path)) {
+            $hashed = (& git hash-object -w --path $path -- $path 2>$null)
+            if ($LASTEXITCODE -eq 0 -and $hashed) { $oid = $hashed.Trim() }
+        }
+        $size = [int](& git cat-file -s $oid)
 
         [ordered]@{
             name = $name
