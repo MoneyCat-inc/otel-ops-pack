@@ -1,3 +1,17 @@
+> ## RESCINDED — 2026-08-13 (Roadmap 2026 H2, Phase 1)
+>
+> This notice is **no longer in force**. The Windows collector was **kept as first-class and
+> upgraded** (0.104.0 → 0.158.0 on 2026-08-13; pin 0.159.0 since 2026-08-23) after measurement
+> showed it is the **sole carrier of Windows Event Log telemetry** — a collector inside a Docker
+> container cannot read the Event Log, so "direct-to-SigNoz" never replaced it for that signal
+> class. Gate #026A established only a **trace-routing preference** for .NET apps, not a deprecation.
+>
+> - Decision: `docs/BossCat/MEMO_WINDOWS_COLLECTOR_20260803.md` · Phase 1 in `docs/BossCat/ROADMAP_2026H2.md`
+> - Current topology: [CURRENT_ARCHITECTURE.md](CURRENT_ARCHITECTURE.md) · operations: `docs/runbooks/windows-collector.md`
+>
+> The text below is preserved unedited as the record of what was declared on 2025-10-27.
+> Do not cite it as current guidance.
+
 # Windows Collector Deprecation Notice
 
 **Status**: 🚫 **DEPRECATED**  
