@@ -4,13 +4,14 @@
 .SYNOPSIS
     Regenerate docs/status/scripts.json from the tracked PowerShell scripts under scripts/.
 .DESCRIPTION
-    Deterministic on every platform: the file set comes from `git ls-files`, `size` is the
-    committed blob size (no CRLF drift), and `modified` is the commit date of the last change
-    to the file (no filesystem mtimes, which a fresh clone resets). Lanes follow the
-    categorisation documented in docs/status/README.md.
+    Deterministic on every platform and every clone: the file set comes from `git ls-files`
+    and `size` is the committed blob size (no CRLF drift, no filesystem mtimes). There is
+    deliberately no per-file date and no generated-at field — a first cut used
+    `git log -1` dates, which differ between a shallow CI/cloud clone and a full clone
+    (Cursor seat, 2026-09-02); git history is the timestamp source, as for workflows.json.
+    Lanes follow the categorisation documented in docs/status/README.md.
 
-    The top-level `updated` field is the newest `modified` value, so two clones at the same
-    commit produce byte-identical output.
+    Enforced in CI by registry-guard.yml (`-Check`).
 .PARAMETER Out
     Output path (default docs/status/scripts.json).
 .PARAMETER Check
@@ -56,25 +57,17 @@ try {
                 else { 'UTIL' }
 
         $size = [int](& git cat-file -s $entries[$path])
-        $modified = (& git log -1 --format=%cI -- $path)
-        if ([string]::IsNullOrWhiteSpace($modified)) { $modified = $null }  # staged, never committed
 
         [ordered]@{
-            name     = $name
-            path     = $path
-            size     = $size
-            modified = $modified
-            lane     = $lane
+            name = $name
+            path = $path
+            size = $size
+            lane = $lane
         }
     })
 
-    $updated = ($scripts | Where-Object { $_.modified } |
-        ForEach-Object { [datetimeoffset]::Parse($_.modified) } |
-        Sort-Object -Descending | Select-Object -First 1)
-
     $registry = [ordered]@{
         source  = 'scripts/regenerate-scripts-registry.ps1'
-        updated = if ($updated) { $updated.ToString('yyyy-MM-ddTHH:mm:ssK') } else { $null }
         total   = $scripts.Count
         scripts = $scripts
     }
@@ -95,7 +88,7 @@ try {
     }
 
     [IO.File]::WriteAllText((Join-Path $repoRoot $Out), $json, [Text.UTF8Encoding]::new($false))
-    Write-Host "scripts registry regenerated: $Out ($($scripts.Count) scripts, updated $($registry.updated))" -ForegroundColor Green
+    Write-Host "scripts registry regenerated: $Out ($($scripts.Count) scripts)" -ForegroundColor Green
 } finally {
     Pop-Location
 }
