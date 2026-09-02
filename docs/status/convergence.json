@@ -2,6 +2,7 @@
   "version": "1.0",
   "lastUpdated": "2025-10-22T11:30:00Z",
   "description": "Gate-over-gate convergence metrics for Cat Nap Control Room",
+  "status": "HISTORICAL snapshot (2025-10-22, Gates #007-#008). The panel proposed in docs/proposals/ITERATIVE_CONVERGENCE_PANEL_SPEC.md was never built and nothing reads this file; kept as the record, not maintained.",
   "gates": [
     {
       "number": 7,
@@ -10,9 +11,11 @@
       "daysSincePrevious": null,
       "issuesFound": 0,
       "reviewRounds": 1,
-      "dockerUptime Days": 0.25,
+      "dockerUptimeDays": 0.25,
       "blockers": 0,
-      "majorMilestones": ["Canonical creative reference"],
+      "majorMilestones": [
+        "Canonical creative reference"
+      ],
       "notes": "Clean gate approval, minimal issues"
     },
     {
@@ -78,7 +81,7 @@
     "scale": "0.0 (poor) to 1.0 (excellent)",
     "calculation": "Weighted average of velocity, quality, efficiency, stability",
     "interpretation": "Moderate - Room for improvement in documentation accuracy",
-    "targetNext": 0.80
+    "targetNext": 0.8
   },
   "nextGate": {
     "number": 9,
@@ -91,4 +94,3 @@
     ]
   }
 }
-

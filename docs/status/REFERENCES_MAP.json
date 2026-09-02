@@ -1,17 +1,28 @@
 {
-  "version": "1.1",
-  "updated": "2026-07-24",
+  "version": "1.3",
+  "updated": "2026-09-02",
   "description": "Canonical reference map for Resonai [OTel] observability pack - single source of truth for all working parts",
-  "changelog": "v1.1: Updated paths after root consolidation (177 files organized by domain)",
+  "changelog": "v1.3 (2026-09-02): parity with REFERENCES_MAP.md v1.3 — five buckets / 10 canonical refs re-checked on disk; paths corrected (docs/BossCat/…, root AGENTS.md); docs/evidence/ dropped (no such directory); socm extracted to the socm repo (Pack 3B); notes and BossCat domains added. v1.1: paths after root consolidation (177 files organized by domain)",
+  "markdown": "docs/status/REFERENCES_MAP.md",
   "buckets": [
     {
       "name": "Gate & Readiness",
       "description": "Authoritative playbooks for gate verification and production readiness",
       "canonical": [
         {
+          "title": "Gate Cheatsheet",
+          "path": "docs/cheatsheets/GATE_CHEATSHEET.md",
+          "purpose": "Live runner: scripts/verify-iona-gate.ps1 -Strict; budgets per GR-02"
+        },
+        {
+          "title": "Current Architecture",
+          "path": "docs/architecture/CURRENT_ARCHITECTURE.md",
+          "purpose": "What is actually deployed (Windows collector → SigNoz), from the canonical configs"
+        },
+        {
           "title": "Gate Archive (2025-10)",
           "path": "docs/gate/2025-10/",
-          "purpose": "October 2025 gate verification evidence"
+          "purpose": "October 2025 gate verification evidence (historical)"
         }
       ]
     },
@@ -21,13 +32,23 @@
       "canonical": [
         {
           "title": "The Art of ECRR (Manual)",
-          "path": "docs/bosscat/misc/ART_OF_ECRR.md",
+          "path": "docs/BossCat/misc/ART_OF_ECRR.md",
           "purpose": "Paired-agent protocol, kill-switch, strict budgets"
         },
         {
-          "title": "Agents & Hierarchy",
-          "path": "docs/bosscat/misc/AGENTS.md",
-          "purpose": "Agent roles and ECRR methodology"
+          "title": "BossCat Charter",
+          "path": "docs/BossCat/CHARTER.md",
+          "purpose": "Canonical governance and agent hierarchy (the four seats)"
+        },
+        {
+          "title": "Immutable Persona v1.1",
+          "path": "docs/BossCat/IMMUTABLE_PERSONA_v1.1.md",
+          "purpose": "Merge discipline and executive voice"
+        },
+        {
+          "title": "Repository Index (AGENTS.md)",
+          "path": "AGENTS.md",
+          "purpose": "Canonical agent entry point"
         }
       ]
     },
@@ -63,16 +84,6 @@
           "purpose": "Real-time metrics and system health dashboard"
         }
       ]
-    },
-    {
-      "name": "Bots & Lanes",
-      "description": "AUTO-BOTS registry and lane enforcement (SSOT/FLAK/SELE/COMP/DOCS)",
-      "canonical": []
-    },
-    {
-      "name": "Rebuild History",
-      "description": "Professional site rebuild and unified UX documentation",
-      "canonical": []
     }
   ],
   "organized_domains": [
@@ -84,7 +95,7 @@
     {
       "name": "socm",
       "path": "https://github.com/MoneyCat-inc/socm",
-      "description": "Bluesky / social ops (extracted Pack 3B; was docs/socm/)"
+      "description": "Bluesky / social ops (extracted Pack 3B, 2026-07-24; was docs/socm/)"
     },
     {
       "name": "pr",
@@ -102,14 +113,19 @@
       "description": "Operational runbooks and deployment guides"
     },
     {
-      "name": "evidence",
-      "path": "docs/evidence/",
-      "description": "Commit evidence and system status"
-    },
-    {
       "name": "status",
       "path": "docs/status/",
-      "description": "Session status and implementation reports"
+      "description": "This map, the registries README and STATUS, plus the JSON registries"
+    },
+    {
+      "name": "notes",
+      "path": "docs/notes/",
+      "description": "Notes, tasks, and misc documentation"
+    },
+    {
+      "name": "BossCat",
+      "path": "docs/BossCat/",
+      "description": "Governance guides and records (see its README)"
     }
   ],
   "meta": {
@@ -118,11 +134,13 @@
     "inventory_location_note": "gitignored; absent in a fresh clone until generated locally",
     "orphans_list": "artifacts/index/md_orphans.csv",
     "scripts_registry": "docs/status/scripts.json",
+    "scripts_registry_generator": "scripts/regenerate-scripts-registry.ps1",
     "workflows_registry": "docs/status/workflows.json",
+    "workflows_registry_generator": "scripts/regenerate-workflows-registry.ps1",
     "ecrr_reports": "CHAR/ECRR/ECRR_REPORTS/",
-    "total_canonical_refs": 6,
-    "buckets_count": 7,
-    "organized_domains_count": 7,
+    "total_canonical_refs": 10,
+    "buckets_count": 5,
+    "organized_domains_count": 8,
     "root_docs_consolidated": 177
   }
 }
