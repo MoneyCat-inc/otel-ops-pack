@@ -1,5 +1,11 @@
 # BossCat Operations Log
 
+> **ARCHIVED 2026-09-02 — October 2025 verbose operations log (2025-10-11 → 2025-10-16).**
+> Formerly `docs/BossCat/misc/BOSSCAT_LOG.md`. This is **not** a copy of the live one-liner log
+> [`docs/BossCat/BOSSCAT_LOG.md`](../../../BossCat/BOSSCAT_LOG.md), whose earliest entries are
+> 2025-10-24; the entries below (MILK gate-ready, IONA PROD approval, Gate #006, FLAK smoke) exist
+> only here. Kept verbatim as the record; nothing appends to it.
+
 **Authority:** BossCat OEM (Executive Overseer Manager)  
 **Purpose:** One-liner lesson logging for operational memory
 

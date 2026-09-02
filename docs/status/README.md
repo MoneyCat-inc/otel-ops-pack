@@ -50,7 +50,7 @@ is a hand-kept record or a dated snapshot (see the inventory below)
 | `version.json` | Release record for tag `bosscat-registry-1.0` (2025-10-19, PR #171) | hand-written | none |
 | `workflows.schema.json` | JSON Schema for `workflows.json` | hand-written | `registry-guard.yml` |
 
-> **Removed 2026-09-02:** `redirect-map.json` (177 old→new pairs from the 2025-10 root
+> **Removed 2026-09-02:** `redirect-map.json` and its `redirect-map.csv` twin (177 old→new pairs from the 2025-10 root
 > consolidation). The root stubs it described were deleted long ago and 133 of its 177 targets
 > no longer existed (lower-cased `docs/bosscat/`, extracted `docs/socm/`, records since archived).
 > `scripts/extract-redirect-map.ps1` can rebuild it from stubs if a consolidation ever recurs.

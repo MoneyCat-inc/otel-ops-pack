@@ -993,14 +993,14 @@ Canonical Reference:       docs/comfort-cat/ (5 docs) ✅
 
 ### Gate #018 Evidence Package (APPROVED GREEN - 2025-10-26) 🔒
 - **Gate #018 Security Evidence** — `../GATE_018_SECURITY_EVIDENCE.md` - Supply-chain hardening
-- [**Base Image Digests**](../base-image-digests.txt) - SHA256 digests for 3 base images
+- [**Base Image Digests**](../CHAR/PRSV/root-status-artifacts/base-image-digests.txt) - SHA256 digests for 3 base images (preserved root artifact)
 - **Git Tag:** `gate-018-green-2025-10-26` (commit: e89647155)
 
 ### Gate #017 Evidence Package (APPROVED GREEN - 2025-10-26) 🎉
 - **Gate #017 Readiness ECRR Report** — `ecrr/ECRR_REPORTS/ECRR_GATE_017_READY_20251026.md` - Full ECRR methodology
 - [**Gate #017 Verification JSON**](../DELT/ARTF/gate-verification-results-20251026-readiness.json) - Comprehensive gate matrix
 - **Gate #017 Executive Summary** — `../GATE_017_EXECUTIVE_SUMMARY.md` - One-page overview
-- [**Gate #017 Approval Document**](gate/2025-10/GATE_017_APPROVAL.md) - BossCat OEM approval
+- [**Gate #017 Approval Document**](archive/gate/2025-10/GATE_017_APPROVAL.md) - BossCat OEM approval
 - **Git Tag:** `gate-017-green-2025-10-26` (commit: 35a601e3e86c8ec066ddaec5229090dd8d8bb627)
 
 ### Gate #008 Evidence Package (GREEN - 2025-10-23)
@@ -1028,7 +1028,7 @@ Canonical Reference:       docs/comfort-cat/ (5 docs) ✅
 
 ### Operations Log
 - IONA Errors Ledger — `../IONA_ERRORS.md` - 3 LOW severity tracked
-- [BossCat Log](BossCat/misc/BOSSCAT_LOG.md)
+- [BossCat Log (Oct 2025 verbose log, archived)](archive/BossCat/misc/BOSSCAT_LOG_2025-10.md) · live one-liner log: [`BossCat/BOSSCAT_LOG.md`](BossCat/BOSSCAT_LOG.md)
 - BossCat TODO — `../BossCat/TODO.md`
 
 ---
