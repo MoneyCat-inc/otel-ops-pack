@@ -4,6 +4,13 @@
 **Created:** 2025-10-22  
 **Authority:** BossCat OEM post-approval condition
 
+> **Scope notice (2026-09-02 truth pass).** Written 2025-10-22 for the Gate #008 hub launch.
+> The hub/site checks and the Bluesky campaign section belong to lanes extracted in Pack 3B
+> (2026-07-24): `moneycat-site` and `socm`. `scripts/monitor-bluesky-metrics.ps1` and
+> `docs/evidence/bluesky/` do not exist in this repo. The three workflows under *Automation
+> Status* were RETIRED 2026-08-03 (`workflow_dispatch` only). The OTel pipeline section is
+> corrected in place; the rest is kept as the record of the schedule.
+
 ---
 
 ## Daily Monitoring Tasks
@@ -62,13 +69,13 @@
 
 - `scripts/quick-monitor.ps1` - Fast health check
 - `scripts/monitor-optimized-pipeline.ps1` - Detailed monitoring
-- `scripts/canary-test.ps1` - Synthetic tests
+- `BRAV/SCPT/send_synthetic_otel_simple.py` - Synthetic canary (Gate #026A route)
 
 **Checks:**
 
 - [x] Windows Collector service: RUNNING
 - [x] Docker containers: 7/7 healthy
-- [x] OTLP endpoints: 14317, 14318, 8080
+- [x] OTLP endpoints: 5320/5321 (Windows collector), 4317/4318 (SigNoz collector); UI 8080
 - [x] SigNoz health API: {"status":"ok"}
 - [x] Metrics port 8888: SERVING
 - [x] Canary tests: PASSING
@@ -84,7 +91,7 @@
 **Frequency:** Weekly (Monday mornings)  
 **Checklist:**
 
-- [ ] Review IONA_ERRORS.md for new incidents
+- [ ] Review `docs/BossCat/BOSSCAT_LOG.md` for new incidents (IONA_ERRORS.md is a closed ledger)
 - [ ] Check gate verification pass rate
 - [ ] Review ECRR report count and quality
 - [ ] Verify all services healthy
@@ -171,9 +178,9 @@
 
 ### Existing
 
-- ✅ Hub uptime smoke (.github/workflows/hub-smoke.yml) - Every 10 minutes
-- ✅ Link check (.github/workflows/link-check.yml) - Nightly at 1 AM
-- ✅ Update KPIs (.github/workflows/update-kpis.yml) - Nightly at 2 AM
+- ⛔ Hub uptime smoke (.github/workflows/hub-smoke.yml) - RETIRED 2026-08-03, dispatch only
+- ⛔ Link check (.github/workflows/link-check.yml) - RETIRED 2026-08-03; docs-lane-checks covers changed docs
+- ⛔ Update KPIs (.github/workflows/update-kpis.yml) - RETIRED 2026-08-03, dispatch only
 
 ### Manual (For Now)
 
@@ -203,5 +210,5 @@
 **Last Updated:** 2025-10-22  
 **Status:** Active monitoring post Gate #008 approval
 
-🐾 _Production monitoring schedule for Cat Nap Control Room_
+🐾 *Production monitoring schedule for Cat Nap Control Room*
 
