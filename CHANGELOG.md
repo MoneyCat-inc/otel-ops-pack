@@ -1,5 +1,16 @@
 # ECRR Consolidation Changelog
 
+> ## FROZEN at 1.0.0 (2025-10-19) — not the live change record
+>
+> This changelog was written for the BossCat Registry 1.0 release and has not been maintained since.
+> Several items below describe files that were later removed (`docs/status/orphans.md`, deleted
+> 2026-08-14) or retired (`registry-drift-check.yml`, 2026-08-03). The registry count it cites (76
+> workflows) is the October 2025 figure.
+>
+> **The live record is `docs/BossCat/BOSSCAT_LOG.md`** (one line per change) with per-change
+> evidence in `CHAR/ECRR/ECRR_REPORTS/`. Kept unedited below as the record of the 1.0.0 release.
+> *(Banner added 2026-09-02, truth-in-docs sweep.)*
+
 ## [1.0.0] - 2025-10-19 - BossCat Registry 1.0
 
 ### Added
