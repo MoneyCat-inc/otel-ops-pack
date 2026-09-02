@@ -26,16 +26,27 @@ foreach ($p in $paths) {
 }
 if (-not $hit) { exit 0 }
 
+# registry-guard.yml compares docs/status/workflows.json against a fresh run of
+# scripts/regenerate-workflows-registry.ps1, so that is the regeneration to nudge.
+# (An earlier version ran `pnpm agent:setup`, which generated the bots roster in
+# docs/BossCat/AGENTS.md — unrelated to the workflows registry, and the alias no
+# longer exists in package.json.)
 $repo = if ($evt.cwd) { $evt.cwd } else { (Get-Location).Path }
 Push-Location $repo
 try {
-  if (Get-Command pnpm -ErrorAction SilentlyContinue) {
-    Write-Host 'H3: workflow edited — running pnpm agent:setup (registry regen nudge)'
-    pnpm agent:setup
-    exit $LASTEXITCODE
+  $regen = Join-Path $repo 'scripts/regenerate-workflows-registry.ps1'
+  if (-not (Test-Path -LiteralPath $regen)) {
+    Write-Error "H3: workflow edited — regenerate docs/status/workflows.json before push; $regen not found."
+    exit 1
   }
-  Write-Error 'H3: workflow edited — regenerate registry before push (pnpm agent:setup). pnpm not found.'
-  exit 1
+  Write-Host 'H3: workflow edited — running scripts/regenerate-workflows-registry.ps1 (registry-guard shift-left)'
+  & $regen
+  if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+  $drift = @(& git status --porcelain -- docs/status/workflows.json)
+  if ($drift.Count -gt 0) {
+    Write-Host 'H3: docs/status/workflows.json changed — stage it with the workflow edit.'
+  }
+  exit 0
 } finally {
   Pop-Location
 }
