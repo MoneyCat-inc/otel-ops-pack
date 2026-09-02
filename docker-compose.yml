@@ -54,6 +54,7 @@ services:
       - ./clickhouse-system-logs-config.xml:/etc/clickhouse-server/config.d/system-logs.xml:ro
       - ./clickhouse-mergetree-compat-config.xml:/etc/clickhouse-server/config.d/mergetree-compat.xml:ro
       - ./clickhouse-users-profile-config.xml:/etc/clickhouse-server/users.d/otel-profile.xml:ro
+      - ./clickhouse-memory-config.xml:/etc/clickhouse-server/config.d/memory.xml:ro
     healthcheck:
       test: ["CMD", "wget", "--spider", "-q", "0.0.0.0:8123/ping"]
       interval: 15s
@@ -70,7 +71,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 2G
+          memory: 3G
         reservations:
           memory: 1G
 
