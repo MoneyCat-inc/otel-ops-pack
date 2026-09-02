@@ -1,7 +1,7 @@
 {
   "source": "scripts/regenerate-scripts-registry.ps1",
-  "updated": "2026-09-02T21:58:26+01:00",
-  "total": 171,
+  "updated": "2026-09-02T22:28:16+01:00",
+  "total": 172,
   "scripts": [
     {
       "name": "analyze-sqlite.ps1",
@@ -349,8 +349,8 @@
     {
       "name": "guard-inflated-metrics.ps1",
       "path": "scripts/guard-inflated-metrics.ps1",
-      "size": 9957,
-      "modified": "2026-09-02T21:58:26+01:00",
+      "size": 11109,
+      "modified": "2026-09-02T22:28:16+01:00",
       "lane": "UTIL"
     },
     {
@@ -870,6 +870,13 @@
       "size": 131,
       "modified": "2026-08-28T02:04:46+00:00",
       "lane": "SSOT"
+    },
+    {
+      "name": "regenerate-scripts-registry.ps1",
+      "path": "scripts/regenerate-scripts-registry.ps1",
+      "size": 3892,
+      "modified": "2026-09-02T22:17:59+01:00",
+      "lane": "UTIL"
     },
     {
       "name": "regenerate-workflows-registry.ps1",
