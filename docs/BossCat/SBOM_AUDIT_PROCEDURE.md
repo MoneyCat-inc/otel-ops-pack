@@ -137,7 +137,7 @@ For audit compliance, verify:
 
 ## References
 
-- **Workflow**: `.github/workflows/bosscat-gate-verify.yml` (lines 314-367)
+- **Workflow**: `.github/workflows/bosscat-gate-verify.yml` (SBOM steps, lines 136-176 as of 2026-09-02)
 - **SBOM Tool**: Syft (Anchore)
 - **Format**: CycloneDX JSON
 - **Retention**: 90 days (compliance artifact)
@@ -148,5 +148,5 @@ For audit compliance, verify:
 ## Contact
 
 **Questions**: Contact BossCat OEM or cursor{implementer}  
-**Emergency**: See `rollback_plan.md` for incident response
+**Emergency**: See `docs/runbooks/misc/rollback_plan.md` for incident response
 

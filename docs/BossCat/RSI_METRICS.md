@@ -1,5 +1,9 @@
 # RSI Metrics
 
+> **Frozen generated snapshot (undated) — 2026-09-02 truth pass.** Not live. The generator
+> (`BRAV/SCPT/run-archiver/index.mjs`) now publishes RSI metrics to `otel-ops-evidence`; the numbers
+> below are a 2025 sample.
+
 - Total runs: 150
 - Success: 111
 - Failure: 20

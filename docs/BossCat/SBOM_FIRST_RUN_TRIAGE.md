@@ -1,5 +1,10 @@
 # SBOM First-Run Triage — Operational Checklist
 
+> **Dated record (post-Gate #007, 2025-10-12) — 2026-09-02 truth pass.** `continue-on-error` now
+> sits at line 165 of `bosscat-gate-verify.yml`; `gh workflow run … -f site= -f gate=` will fail
+> (the dispatch takes no inputs — site/gate are matrix values); docs-only PRs no longer trigger the
+> lane (`paths-ignore` since 2026-09-01). Procedure kept as the first-run record.
+
 **Authority**: BossCat OEM — Operational Readiness  
 **Purpose**: Quick triage for SBOM blocking enforcement (now live in prod)  
 **Date**: Post-Gate #007 (2025-10-12)

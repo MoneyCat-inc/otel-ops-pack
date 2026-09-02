@@ -9,7 +9,7 @@ Scope
 Files
 
 - `ALFA/APPS/signature-registry.json` — seed entries with `sig_id`, `owner`, `playbook_url`, `confidence`.
-- `config/policy/ecrr-policy.json` — rerun policy and default owners per component.
+- `DELT/CONF/policy/ecrr-policy.json` — rerun policy and default owners per component.
 - `scripts/auto-rerun-guard.ps1` — decide rerun eligibility based on labels.json + policy.
 
 Usage
