@@ -3,8 +3,10 @@
 ## One-liner (local)
 
 ```powershell
-pwsh -File scripts/local-gate-runner.ps1
+pwsh -NoProfile -File scripts/verify-iona-gate.ps1 -Strict   # alias: pnpm run agent:ready-for-gate
 ```
+
+*(`scripts/local-gate-runner.ps1`, cited here until 2026-09-02, never existed in the tree.)*
 
 ## Kill-switch
 
@@ -24,19 +26,21 @@ When all checks pass and `docs/status/tests.json` shows `READY`:
 @cat ready-for-gate
 ```
 
-This signals the gatekeeper for hand-off (does NOT auto-merge).
+This signals the gatekeeper for hand-off (does NOT auto-merge). *Note (2026-09-02): the workflow that consumed
+the phrase, `boss-gate-signal-and-merge.yml`, is `workflow_dispatch`-only since 2026-08-03; merging is the machine
+operator's call per `docs/BossCat/CHARTER.md`.*
 
 ## Evidence Locations
 
 - `docs/status/tests.json` - Gate verdict ledger
-- `docs/status/ecrr-summary.json` - ECRR report metrics
+- `CHAR/ECRR/ECRR_REPORTS/` - per-change ECRR evidence
 - `docs/observability/snapshots/` - Raw evidence blobs
 
 ## Budgets (Immutable)
 
-- ≤2 jobs per pass
 - ≤10 files changed
-- ≤ 2,000 LOC non-move changes
+- ≤200 LOC per docs PR (GR-02; `lane:cleanup` waiver for sweep passes)
+- One lane per PR — docs / code / CI-ops / evidence, never mixed (`docs/BossCat/CHARTER.md`)
 
 ## ECRR Framework
 
@@ -51,13 +55,8 @@ Every gate run follows:
 
 ## Automated Evidence Management
 
-### Weekly Guardrails Re-Certification
-
-- **Schedule:** Monday 03:00 UTC
-- **Action:** Verify guardrails config hash, run compliance check
-- **Evidence:** `docs/observability/snapshots/guardrails-recert-*.json`
-- **Alert:** GitHub Issue on drift detection
-- **Workflow:** `.github/workflows/guardrails-recert.yml`
+*The "Weekly Guardrails Re-Certification" formerly listed here referenced `guardrails-recert.yml`, which does not
+exist; structure compliance runs on every PR via `guardrails.yml` (a required check).*
 
 ### Monthly Evidence Rollup
 

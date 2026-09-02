@@ -8,14 +8,17 @@
 ## 🎨 Progress Bars & Visualization
 
 **Default Behavior**:
+
 - **Local use**: Beautiful progress bars with real-time feedback (verbose mode)
 - **CI/GitHub Actions**: Clean logs with `-NoProgress` flag (quiet mode)
 
 **Why?**
+
 - ✅ **Local (interactive)**: Progress bars enhance operator experience
 - ✅ **CI (automated)**: Clean logs make parsing and debugging easier
 
 **Manual Override**: Add `-NoProgress` to any local command for quiet output:
+
 ```bash
 pwsh BRAV/SCPT/sec-archiver/run-security.ps1 -Owner ... -Repo ... -NoProgress
 ```
@@ -70,6 +73,7 @@ pnpm sec:index
 ### Security Archiver
 
 **Basic Usage:**
+
 ```powershell
 # Minimal - alerts only
 pwsh BRAV/SCPT/sec-archiver/run-security.ps1 `
@@ -95,6 +99,7 @@ pwsh BRAV/SCPT/sec-archiver/run-security.ps1 `
 ```
 
 **Advanced Options:**
+
 ```powershell
 # Custom chunk range
 pwsh BRAV/SCPT/sec-archiver/run-security.ps1 `
@@ -122,6 +127,7 @@ pwsh BRAV/SCPT/sec-archiver/run-security.ps1 `
 ```
 
 **Delete Old Analyses:**
+
 ```powershell
 # Delete analyses older than 180 days (requires archived SARIF)
 pwsh BRAV/SCPT/sec-archiver/run-security.ps1 `
@@ -139,6 +145,7 @@ pwsh BRAV/SCPT/sec-archiver/run-security.ps1 `
 ### Notifications Archiver
 
 **Basic Usage:**
+
 ```powershell
 # Archive only
 pwsh BRAV/SCPT/sec-archiver/run-notifications.ps1 -ChunkSize 500
@@ -151,6 +158,7 @@ pwsh BRAV/SCPT/sec-archiver/run-notifications.ps1 -ChunkSize 50 -DryRun
 ```
 
 **Advanced Options:**
+
 ```powershell
 # Custom chunk range
 pwsh BRAV/SCPT/sec-archiver/run-notifications.ps1 `
@@ -200,7 +208,7 @@ pwsh BRAV/SCPT/sec-archiver/generate-security-index.ps1
 | `GetQps` | double | `2.0` | Rate limit for GET requests |
 | `MutateQps` | double | `1.0` | Rate limit for DELETE requests |
 | `OutRoot` | string | `docs/BossCat/security` | Output directory |
-| `EvidenceRoot` | string | `CHAR/EVID/security` | Evidence logs directory |
+| `EvidenceRoot` | string | `CHAR/EVID/security` | Evidence logs directory (created on first run; not tracked) |
 | `Token` | string | `$env:GITHUB_TOKEN` | GitHub token (or use gh CLI) |
 | `IncludeDismissed` | switch | `true` | Include dismissed alerts |
 | `IncludeFixed` | switch | `false` | Include fixed alerts |
@@ -216,7 +224,7 @@ pwsh BRAV/SCPT/sec-archiver/generate-security-index.ps1
 | `GetQps` | double | `2.0` | Rate limit for GET requests |
 | `MarkReadQps` | double | `1.0` | Rate limit for mark-read mutations |
 | `OutRoot` | string | `docs/BossCat/notifications` | Output directory |
-| `EvidenceRoot` | string | `CHAR/EVID/notifications` | Evidence logs directory |
+| `EvidenceRoot` | string | `CHAR/EVID/notifications` | Evidence logs directory (created on first run; not tracked) |
 | `Token` | string | `$env:GITHUB_TOKEN` | GitHub token (PAT classic for mark-read) |
 | `FilterRepo` | string | `null` | Filter by repository (e.g., "owner/repo") |
 
@@ -226,7 +234,7 @@ pwsh BRAV/SCPT/sec-archiver/generate-security-index.ps1
 
 ### Security Alerts
 
-```
+```text
 docs/BossCat/security/
 ├── INDEX_ALERTS.jsonl              # JSONL index (append-only)
 ├── INDEX_ALERTS.schema.json        # JSON schema for index
@@ -240,7 +248,7 @@ docs/BossCat/security/
 
 ### Security Analyses
 
-```
+```text
 docs/BossCat/security/
 ├── INDEX_ANALYSES.jsonl            # JSONL index (append-only)
 ├── INDEX_ANALYSES.schema.json      # JSON schema for index
@@ -254,7 +262,7 @@ docs/BossCat/security/
 
 ### Notifications
 
-```
+```text
 docs/BossCat/notifications/
 ├── INDEX.jsonl                     # JSONL index (append-only)
 ├── INDEX.schema.json               # JSON schema for index
@@ -266,7 +274,7 @@ docs/BossCat/notifications/
 
 ### Evidence Logs
 
-```
+```text
 CHAR/EVID/security/
 ├── LEDGER.jsonl                    # Operation ledger (append-only)
 └── METRICS.jsonl                   # Metrics per run
@@ -361,6 +369,7 @@ pwsh run-security.ps1 -Owner ... -Repo ... -Token "ghp_..."
 ```
 
 **Token Scopes Required:**
+
 - `repo` - Full repository access
 - `security_events` - Code scanning alerts (read/write)
 - `notifications` - Mark notifications as read (classic token only)
@@ -391,6 +400,7 @@ pwsh run-security.ps1 -Owner ... -Repo ... -Token "ghp_..."
 ```
 
 **GitHub Rate Limits:**
+
 - Authenticated: 5,000 requests/hour (~1.39/sec)
 - Code Scanning: 1,000 requests/hour (~0.28/sec)
 - Our defaults (2.0 GET, 1.0 mutate) stay well within limits
@@ -408,6 +418,7 @@ pnpm notify:archive:dry
 ```
 
 **Dry run behavior:**
+
 - ✅ Fetches data from API
 - ✅ Logs what would be written
 - ❌ No disk writes
@@ -416,6 +427,7 @@ pnpm notify:archive:dry
 ### Delete Safety Gates
 
 **Analysis deletion requires:**
+
 1. ✅ SARIF archived locally (`analyses/YYYY/MM/analysis-{id}.sarif.json`)
 2. ✅ Analysis marked as deletable (manual review)
 3. ✅ Age threshold met (`-DeleteAnalysesOlderThanDays`)
@@ -428,6 +440,7 @@ pwsh run-security.ps1 -Owner ... -Repo ... -Mode analyses `
 ```
 
 **Manual review process:**
+
 1. Archive analyses first: `pnpm sec:archive:analyses`
 2. Review archived SARIFs: `docs/BossCat/security/analyses/`
 3. Mark deletable: Add `"deletable": true` to analysis metadata
@@ -496,11 +509,12 @@ pnpm sec:index
 
 ### Authentication Errors
 
-```
+```text
 ERROR: Missing GITHUB_TOKEN and gh CLI not available
 ```
 
 **Solution:**
+
 ```bash
 # Option 1: Use gh CLI
 gh auth login
@@ -511,11 +525,12 @@ $env:GITHUB_TOKEN = "ghp_..."
 
 ### Rate Limit Errors
 
-```
+```text
 ERROR: API rate limit exceeded
 ```
 
 **Solution:**
+
 ```powershell
 # Reduce QPS
 -GetQps 1.0 -MutateQps 0.5
@@ -526,11 +541,12 @@ gh api /rate_limit
 
 ### Missing SARIF for Deletion
 
-```
+```text
 ERROR: Cannot delete analysis - SARIF not archived
 ```
 
 **Solution:**
+
 ```bash
 # Archive analyses first
 pnpm sec:archive:analyses
@@ -541,12 +557,13 @@ pnpm sec:delete-old
 
 ### Notifications Mark-Read Fails
 
-```
+```text
 ERROR: mark-read requires PAT classic with notifications scope
 ```
 
 **Solution:**
-1. Create PAT classic: https://github.com/settings/tokens
+
+1. Create PAT classic: <https://github.com/settings/tokens>
 2. Scopes: `repo`, `notifications`
 3. Set token: `$env:GITHUB_TOKEN = "ghp_..."`
 
@@ -595,20 +612,24 @@ Get-Job | Wait-Job
 All archiver operations follow **ECRR methodology**:
 
 ### Examine
+
 - Fetch alerts, analyses, notifications from GitHub API
 - Log current state to evidence ledgers
 
 ### Clean
+
 - Archive to local-first storage (docs/BossCat/)
 - Normalize to JSONL indexes with schemas
 - Mark notifications as read (optional)
 
 ### Report
+
 - Evidence logs: `CHAR/EVID/{security,notifications}/`
 - Metrics per run: operations, items, duration
 - JSONL indexes for querying
 
 ### Role
+
 - **Authority**: BossCat OEM | Security Conveyor
 - **Evidence**: Append-only ledgers
 - **Traceability**: Full audit trail in Git
@@ -617,24 +638,28 @@ All archiver operations follow **ECRR methodology**:
 
 ## Integration with CI/CD
 
-### Production Workflow (Deployed)
+### Workflow (manual dispatch only — nightly schedule RETIRED 2026-08-03)
 
 **File**: `.github/workflows/security-notifications-archive-nightly.yml`
 
-The repository includes a production-ready nightly workflow:
+The nightly trigger was removed in the Phase 0 workflow audit (`docs/BossCat/ROADMAP_2026H2.md`): archives belong in
+`otel-ops-evidence` per the retention policy, not in this repository. The workflow remains `workflow_dispatch`-only;
+nothing runs it on a schedule. As designed, it had:
 
-**Schedule**: Daily at 2 AM UTC (cron: `0 2 * * *`)
+**Schedule**: *(retired)* daily at 2 AM UTC (cron: `0 2 * * *`)
 
 **Jobs**:
+
 1. `archive-security` - Archives alerts and SARIF analyses
 2. `archive-notifications` - Archives GitHub notifications
 3. `commit-archives` - Commits results to repository
 4. `report` - Generates summary with evidence counts
 
 **Features**:
+
 - ✅ Safe QPS (2.0 GET/sec, within GitHub rate limits)
 - ✅ Artifact uploads (30-day archives, 90-day evidence)
-- ✅ Auto-commit to main branch
+- ✅ Auto-commit to main branch *(this is the behaviour that led to its retirement)*
 - ✅ Job summaries with operation counts
 - ✅ Evidence tracking (LEDGER + METRICS)
 - ✅ Graceful error handling (inherits script resilience)
@@ -642,6 +667,7 @@ The repository includes a production-ready nightly workflow:
 **Manual Trigger**: Available via workflow_dispatch
 
 **Trigger Manually**:
+
 ```bash
 # Via GitHub UI: Actions → Security & Notifications Archive (Nightly) → Run workflow
 
@@ -652,6 +678,7 @@ gh workflow run security-notifications-archive-nightly.yml \
 ```
 
 **Parameters**:
+
 - `chunk_size` - Batch size (default: 500 for alerts, 200 for analyses)
 - `mark_notifications_read` - Mark notifications as read (default: false)
 
@@ -731,8 +758,8 @@ jobs:
 ---
 
 **Authority**: BossCat OEM  
-**Status**: Production-ready  
-**Last Updated**: 2025-10-15
+**Status**: Scripts current; workflow manual-dispatch only (truth pass 2026-09-02)  
+**Last Updated**: 2025-10-15; truth pass 2026-09-02
 
 🐾 **BossCat Security Conveyor — Local-First, Evidence-Based**
 

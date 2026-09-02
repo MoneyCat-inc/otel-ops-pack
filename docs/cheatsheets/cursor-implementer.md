@@ -6,7 +6,7 @@ Quick start
 
 - Install deps: `pnpm i`
 - Single run (local site):
-  - `pnpm ops:cursor:run`
+  - `pwsh -File scripts/cursor-implementer-run.ps1 -Site local` (the former `pnpm ops:cursor:run` alias no longer exists)
 - Multi-iteration (3 runs, 2s delay):
   - `pwsh -File scripts/cursor-implementer-run.ps1 -Site local -Loops 3 -DelaySec 2`
 
