@@ -1,6 +1,6 @@
 {
   "source": "scripts/regenerate-scripts-registry.ps1",
-  "updated": "2026-09-02T22:17:59+01:00",
+  "updated": "2026-09-02T22:28:16+01:00",
   "total": 172,
   "scripts": [
     {
@@ -349,8 +349,8 @@
     {
       "name": "guard-inflated-metrics.ps1",
       "path": "scripts/guard-inflated-metrics.ps1",
-      "size": 9957,
-      "modified": "2026-09-02T21:58:26+01:00",
+      "size": 11109,
+      "modified": "2026-09-02T22:28:16+01:00",
       "lane": "UTIL"
     },
     {
