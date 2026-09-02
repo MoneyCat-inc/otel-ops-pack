@@ -45,19 +45,18 @@ processors:
     detectors: [env, system]
     timeout: 2s
   # ────────────────────────────────────────────────────────────
-  # resource/defaults: Sets default resource attributes for all spans
-  # 
-  # CURRENT BEHAVIOR (action: upsert):
-  #   - Overwrites ALL incoming service.name values to "resonai-backend"
-  #   - Advantage: Single service identity for aggregation
-  #   - Disadvantage: Loses original service names for tracing multi-service calls
-  # 
-  # ALTERNATIVE (action: insert):
-  #   - Preserves original service.name if present
-  #   - Sets default only for spans without service.name
-  #   - Better for multi-service observability
-  # 
-  # To enable alternative: Change line 51 from "action: upsert" to "action: insert"
+  # resource/defaults: default resource attributes for the traces pipeline
+  #
+  # service.name uses action: insert — incoming service names are PRESERVED and
+  # "resonai-backend" is applied only to spans that arrive without one. This has
+  # been the live setting since Gate #026 (2025-10-27); the original upsert
+  # (overwrite everything to resonai-backend, Gate #008 era) was retired then and
+  # docs/gate/2025-10/GATE_GREEN_FLIP_PROCEDURE.md verifies "action: insert" here.
+  # Do not switch back to upsert: it collapses every service (canaries, .NET
+  # services, tests) into one name and the saved views/alerts cannot tell them apart.
+  #
+  # deployment.environment is upserted to "production" on purpose: this collector
+  # is the production sink, whatever the sender claims.
   # ────────────────────────────────────────────────────────────
   resource/defaults:
     attributes:
