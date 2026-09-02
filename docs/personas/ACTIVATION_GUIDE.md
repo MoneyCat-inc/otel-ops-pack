@@ -1,5 +1,10 @@
 # Persona Activation Guide
 
+> **Split-lane notice (2026-09-02 truth pass).** Only the Quil DOCS lane remains in this repo
+> (`.github/workflows/quil-docs-lane.yml`, KEEP per the 2026-08-03 audit). The Lumi/VIZR lane and
+> `lumi-vizr-lane.yml` were extracted to `viz-engine` in Pack 3B (2026-07-24); the Lumi steps
+> below are historical. Secrets steps are machine-operator work under `docs/BossCat/CHARTER.md`.
+
 **Status**: 🟡 Ready for Activation  
 **Last Updated**: 2025-11-01
 

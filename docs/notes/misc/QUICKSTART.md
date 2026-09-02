@@ -46,7 +46,7 @@ exit  # Open new PowerShell window
 
 ```powershell
 # One command - full forensic verification
-pwsh -File scripts\verify-pipeline.ps1
+pwsh -File BRAV\SCPT\verify-pipeline.ps1
 ```
 
 **Expected Output:**
@@ -91,10 +91,13 @@ dir out\evidence-*.zip | sort LastWriteTime -desc | select -first 1
 
 ## Documentation
 
-- **Full Guide:** `docs/POLISH_PACK_COMPLETE.md`
-- **API Setup:** `docs/API_VERIFICATION_GUIDE.md`
-- **Forensic Features:** `docs/FORENSIC_GRADE_COMPLETE.md`
-- **Operator Guide:** `docs/OPERATOR_QUICKSTART.md`
+- **Gate runner:** `docs/cheatsheets/GATE_CHEATSHEET.md`
+- **Collector runbook:** `docs/runbooks/windows-collector.md`
+- **SigNoz API proofs:** `docs/runbooks/signoz-api-proofs.md`
+- **Architecture:** `docs/architecture/CURRENT_ARCHITECTURE.md`
+
+(The four guides this section used to cite — POLISH_PACK, API_VERIFICATION, FORENSIC_GRADE,
+OPERATOR_QUICKSTART — no longer exist in the repo; truth pass 2026-09-02.)
 
 ---
 
