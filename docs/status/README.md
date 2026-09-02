@@ -2,10 +2,10 @@
 
 **Location:** `docs/status/`  
 **Purpose:** Canonical registries and operational metadata  
-**Maintained:** `workflows.json` is generated and CI-guarded; `scripts.json` is generated on demand;
-everything else is a hand-kept record or a dated snapshot (see the inventory below)
+**Maintained:** `workflows.json` and `scripts.json` are generated and CI-guarded; everything else
+is a hand-kept record or a dated snapshot (see the inventory below)
 
-**🛡️ Protected by Registry Guard:** `workflows.json` only (`registry-guard.yml`)
+**🛡️ Protected by Registry Guard:** `workflows.json` and `scripts.json` (`registry-guard.yml`)
 
 ---
 
@@ -22,11 +22,13 @@ everything else is a hand-kept record or a dated snapshot (see the inventory bel
 
 **`scripts.json`**
 
-- Tracked `scripts/**/*.ps1` (171 as of 2026-09-02), categorized by lane
-- `size` = committed blob size, `modified` = last commit date, `updated` = newest `modified`
-  (deterministic on every platform)
-- **Regenerate:** `pwsh scripts/regenerate-scripts-registry.ps1` after adding, moving or deleting
-  scripts (`-Check` exits 1 on drift)
+- Tracked `scripts/**/*.ps1` (172 as of 2026-09-02), categorized by lane
+- `size` = committed blob size; no dates by design — `git log` dates differ between a shallow
+  clone and a full one, so the file is byte-identical in every clone at the same commit
+- **Regenerate:** `pwsh scripts/regenerate-scripts-registry.ps1` after adding, moving, editing or
+  deleting anything under `scripts/` (`-Check` exits 1 on drift)
+- **Guard:** `registry-guard.yml` runs `-Check` on every `scripts/**` PR; like `workflows.json`
+  the file is outside the docs-lane budgets, so commit it with the script change
 
 **`workflows.json`** 🛡️ **CI-Guarded**
 
@@ -207,9 +209,9 @@ pwsh scripts/regenerate-scripts-registry.ps1 -Check   # exit 1 if the committed 
 ```
 
 The script enumerates tracked `scripts/**/*.ps1` with `git ls-files`, so it never picks up
-local-only files, and it takes sizes and dates from git rather than the filesystem, so two
-clones at the same commit produce byte-identical output. Lane assignment is by filename
-(see "Lane categorization" below). The 2025 recipe that read `artifacts/index/files.json`
+local-only files, and it takes sizes from the committed blobs rather than the filesystem, so
+two clones at the same commit produce byte-identical output (no dates: they would depend on
+clone depth). Lane assignment is by filename (see "Lane categorization" below). The 2025 recipe that read `artifacts/index/files.json`
 from `C:\otel` is retired: that inventory is gitignored and its mtimes were machine-local.
 
 ---
