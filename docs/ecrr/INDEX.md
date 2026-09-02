@@ -1,5 +1,13 @@
 # ECRR Reports Index
 
+> ## SNAPSHOT — generated 2025-11-01, not maintained
+>
+> This index was generated once (243 reports at the time); `CHAR/ECRR/ECRR_REPORTS/` now holds
+> 400+ and nothing regenerates this file. The "Architecture Note" below is **superseded**: the
+> Windows collector was kept as first-class (Roadmap Phase 1, 2026-08-13) — see
+> `../architecture/CURRENT_ARCHITECTURE.md`. For the live record use `../BossCat/BOSSCAT_LOG.md`
+> and list the reports directory directly; the lean template is `ECRR_TEMPLATE.md`.
+
 Generated: 2025-11-01 23:23:17
 
 ## Summary

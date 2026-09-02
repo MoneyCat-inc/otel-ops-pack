@@ -1,5 +1,13 @@
 # BossCat Governance View (Tetragram + Gates)
 
+> ## HISTORICAL — governance design of October 2025, superseded by the charter
+>
+> This view defines ECRR as "Evidence → Contain → Rollback → Report", an Auto-Bot lane set
+> (SSOT/FLAK/SELE/COMP) and a 2,000-LOC governance budget. None of that is current: ECRR is
+> **Examine → Clean → Report → Role**, the seats and lanes are those in `CHARTER.md` (rewritten
+> 2026-08-13), and the enforced docs budget is GR-02 (10 files / 200 LOC). The Auto-Bot lanes never
+> ran. Kept unedited as the record of the design; do not cite it as current governance.
+
 **Tetragram ID (canonical):** `BOSS-CATX-GOVN-VIEW`
 
 Register: Neutral Instructor (calm, documentary cadence)

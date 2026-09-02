@@ -1,5 +1,14 @@
 # 🚀 BossCat Quick Start Card
 
+> ## HISTORICAL — Week-1 onboarding card of 2025-10-07
+>
+> Written for a security-maintenance rollout that assumed a team (L1/L2/CISO escalation), a
+> `nightly-dashboard-export.yml` workflow that does not exist, and a `security-scan.yml` that has
+> been dispatch-only since 2026-08-03. The rotation table was never filled in. Kept as the record.
+>
+> **Current equivalents:** cadence and seats in `CHARTER.md` and `../PURPOSE.md`; Dependabot triage
+> in `DEPENDABOT_TRIAGE.md`; credential rules in `../../AGENTS.md` (blast-radius standing rule).
+
 ## Print this out or keep it handy for daily operations
 
 ---
