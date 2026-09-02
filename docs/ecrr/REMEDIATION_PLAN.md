@@ -1,4 +1,14 @@
+<!-- markdownlint-disable MD013 MD022 MD031 MD032 -->
 # ECRR Remediation Plan - DOCS & VIZR Lane Rebalance
+
+> ## SUPERSEDED — do not execute (plan of 2025-11-01)
+>
+> **Tickets 1 and 6 are void.** They would remove Windows-collector references and archive
+> `windows/otelcol/`; the Phase 1 decision of 2026-08-13 went the other way — the collector is
+> first-class and `windows/otelcol/otelcol-contrib-config.yaml` is the port authority enforced by
+> `BRAV/SCPT/check-otel-ports-drift.ps1`. Tickets 4 and 5 (VIZR / AUDIO) concern lanes split out on
+> 2026-07-24. The compliance-rate KPIs belong to the scoring engine retired 2026-08-03, and the
+> Quil trigger workflow is `workflow_dispatch`-only. Kept unedited as the record of the plan.
 
 **Generated**: 2025-11-01  
 **Source**: ECRR Analytics Review (318 reports)  
