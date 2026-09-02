@@ -1,5 +1,13 @@
 # 🐾 BossCat Hub — Go-Live Runbook
 
+> ## HISTORICAL — go-live plan of 2025-10-19, executed
+>
+> Every step below ran; the hub went live and later migrated to `moneycat.resonai.uk` (2026-08-15).
+> The automation section is stale in a way worth naming: `hub-smoke.yml` ("every 10 minutes"),
+> `link-check.yml` ("nightly") and `update-kpis.yml` ("nightly") have been `workflow_dispatch`-only
+> since the 2026-08-03 workflow audit — none runs on a schedule. The site lane belongs to the
+> `moneycat-site` repository since the Pack 3B split (2026-07-24). Kept unedited as the record.
+
 **Status:** Ready for Deployment  
 **Date:** 2025-10-19  
 **PRs Merged:** #168 (core), #169 (automations), #170 (polish)

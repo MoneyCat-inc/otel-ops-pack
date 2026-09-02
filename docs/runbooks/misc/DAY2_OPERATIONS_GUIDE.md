@@ -1,4 +1,18 @@
+<!-- markdownlint-disable MD022 MD031 MD032 MD036 MD040 -->
 # Day-2 Operations Guide - Tetragram 1.2
+
+> ## HISTORICAL — tetragram-1.2 day-2 guide (2025-10-09), predates ADR-0002
+>
+> Two rules here are no longer true: `scripts/` and `docs/` are **authorized roots** (ADR-0002
+> ratified the hybrid on 2026-08-29 — `scripts/*.ps1` are thin wrappers over `BRAV/SCPT/`, `docs/` is
+> the documentation source), so the "forbidden legacy root" error and the pre-commit `FORBID` list
+> below would reject the repository's own current layout. The five root status files linked under
+> "For Operations / For Compliance" were removed with the tetragram-1.2 milestone. The proposed
+> "nightly health snapshot" would be a new recurring writer, which `docs/PURPOSE.md` forbids without an
+> owner, review date and kill switch. The guardrail mechanics (`BRAV/SCPT/check_guardrails.py`,
+> `guardrails.json`, ≤40 inline run lines) remain accurate — the guard is live on every PR.
+>
+> **Current layout and rules:** `docs/REPOSITORY_STRUCTURE.md`.
 
 **Version:** 1.0  
 **Baseline:** tetragram-1.2  

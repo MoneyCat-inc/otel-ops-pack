@@ -20,7 +20,8 @@ regardless of calendar.
 2. **Phase 0** (guest, elevated): copy `scripts/windows/phase0-setup.ps1`, `RUN-PHASE0.cmd`,
    and `scripts/windows/collector-version.txt` (sibling pin — else the embedded fallback runs)
    to the guest; run `RUN-PHASE0.cmd`. Excluded from the gate clock. Writes `C:\Phase0\DONE.json`.
-3. **Gate clock** (guest, elevated): `RUN-GATE-CLOCK.cmd` — first clone byte to
+3. **Gate clock** (guest, elevated): `scripts/windows/invoke-clean-host-e2e.ps1` (there is no
+   `RUN-GATE-CLOCK.cmd`) — first clone byte to
    `verify-pipeline` exit 0. Known caveats: `canary-test.ps1` hangs on first Event Log source
    registration (skip it; verify covers the canary); do not Ctrl+C the transcript or the clock
    is lost (2026-08-23 lesson). Parameterise `run_id` before trusting the JSON it writes.

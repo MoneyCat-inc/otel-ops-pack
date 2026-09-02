@@ -1,5 +1,14 @@
 # 🐾 BossCat Hub Deployment Status
 
+> ## HISTORICAL — status snapshot of 2025-10-19 05:17 UTC
+>
+> A waiting-on-nameservers snapshot from the hub cutover. The blocker resolved the same week;
+> `hub.resonai.uk` served, and the site migrated to `moneycat.resonai.uk` on 2026-08-15 (see
+> `docs/PURPOSE.md`, 2026-08-17 amendment). The site lane itself moved to the `moneycat-site`
+> repository in the Pack 3B split (2026-07-24). The three workflows listed as "ready to trigger"
+> (`hub-smoke.yml`, `link-check.yml`, `update-kpis.yml`) were retired to `workflow_dispatch` on
+> 2026-08-03. Nothing here is pending. Kept unedited as the record.
+
 **Last Updated:** 2025-10-19 05:17 UTC  
 **Gate Status:** HOLD - Awaiting Nameserver Activation
 
