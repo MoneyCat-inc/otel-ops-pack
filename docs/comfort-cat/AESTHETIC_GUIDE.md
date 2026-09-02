@@ -8,31 +8,36 @@
 
 ## 🐈 Core Philosophy
 
-The **Cat Nap Control Room** embodies the calm, efficient, and playful spirit of a cat resting beside a softly glowing control board - alert but relaxed, monitoring without stress.
+The **Cat Nap Control Room** embodies the calm, efficient, and playful spirit of a cat resting beside a softly
+glowing control board - alert but relaxed, monitoring without stress.
 
 ---
 
 ## 🎯 Design Principles
 
 ### 1. **Calm**
+
 - **Serene**: No jarring colors, no aggressive alerts
 - **Minimalist**: Signal over noise, ~50% reduction in visual clutter
 - **Soothing**: Soft glows, gentle transitions, no harsh edges
 - **Restful**: Easy to monitor for hours without fatigue
 
 ### 2. **Efficient**
+
 - **Low-Latency**: 200ms batches, sub-second feedback
 - **Instant Clarity**: Status visible at a glance
 - **Reduced Cognitive Load**: Color-coded, iconographic, intuitive
 - **Fast Navigation**: No more than 2 clicks to any view
 
 ### 3. **Playful**
+
 - **Cat-Themed**: Paw prints 🐾, cat emoji, feline references
 - **Personality**: Friendly without being unprofessional
 - **Delight**: Subtle animations, hover surprises
 - **Approachable**: Technical but not intimidating
 
 ### 4. **Professional**
+
 - **Enterprise-Ready**: Meets compliance and audit standards
 - **Reliable**: 99.9% uptime target
 - **Evidence-Based**: All decisions backed by data
@@ -43,6 +48,7 @@ The **Cat Nap Control Room** embodies the calm, efficient, and playful spirit of
 ## 🎨 Color Palette
 
 ### Primary Status Colors
+
 ```css
 /* Green - Healthy, Operational, Success */
 --status-green: #2ecc71;
@@ -62,6 +68,7 @@ The **Cat Nap Control Room** embodies the calm, efficient, and playful spirit of
 ```
 
 ### UI Base Colors
+
 ```css
 /* Dark Theme (Primary) */
 --bg-dark: #1a1a1a;
@@ -87,12 +94,14 @@ The **Cat Nap Control Room** embodies the calm, efficient, and playful spirit of
 ## ✨ Motion Design
 
 ### Animation Principles
+
 1. **Subtle** - Animations should guide, not distract
 2. **Purposeful** - Only animate when it communicates state change
 3. **Fast** - Most animations 200-300ms (matches pipeline latency)
 4. **Smooth** - Ease-in-out curves, no linear motion
 
 ### Standard Transitions
+
 ```css
 /* Status Change */
 .status-transition {
@@ -131,12 +140,14 @@ The **Cat Nap Control Room** embodies the calm, efficient, and playful spirit of
 ## 📐 Layout & Spacing
 
 ### Grid System
+
 - **Base Unit**: 8px (0.5rem)
 - **Spacing Scale**: 8px, 16px, 24px, 32px, 48px, 64px
 - **Container Width**: Max 1440px for dashboards
 - **Columns**: 12-column responsive grid
 
 ### Responsive Breakpoints
+
 ```css
 /* Mobile First */
 --breakpoint-sm: 640px;  /* Small devices */
@@ -147,6 +158,7 @@ The **Cat Nap Control Room** embodies the calm, efficient, and playful spirit of
 ```
 
 ### Component Spacing
+
 - **Cards**: 16px padding, 24px margin
 - **Sections**: 48px vertical spacing
 - **Items**: 8px gap in flex/grid containers
@@ -157,6 +169,7 @@ The **Cat Nap Control Room** embodies the calm, efficient, and playful spirit of
 ## 🔤 Typography
 
 ### Font Stack
+
 ```css
 /* Primary - Sans Serif */
 --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -166,6 +179,7 @@ The **Cat Nap Control Room** embodies the calm, efficient, and playful spirit of
 ```
 
 ### Type Scale
+
 ```css
 --text-xs: 0.75rem;   /* 12px - Metadata, timestamps */
 --text-sm: 0.875rem;  /* 14px - Secondary text */
@@ -177,6 +191,7 @@ The **Cat Nap Control Room** embodies the calm, efficient, and playful spirit of
 ```
 
 ### Font Weights
+
 ```css
 --weight-normal: 400;
 --weight-medium: 500;
@@ -189,14 +204,17 @@ The **Cat Nap Control Room** embodies the calm, efficient, and playful spirit of
 ## 🎛️ Component Library
 
 ### Status Badge
+
 ```html
 <span class="status-badge status-badge--green">
   ✅ Operational
 </span>
 ```
+
 **Style:** Rounded corners (4px), 8px vertical padding, 12px horizontal padding
 
 ### Metric Card
+
 ```html
 <div class="metric-card">
   <div class="metric-card__label">p95 Latency</div>
@@ -204,23 +222,28 @@ The **Cat Nap Control Room** embodies the calm, efficient, and playful spirit of
   <div class="metric-card__status">✅ 96% under SLO</div>
 </div>
 ```
+
 **Style:** Elevated background, soft shadow, 16px padding
 
 ### Progress Bar
+
 ```html
 <div class="progress-bar">
   <div class="progress-bar__fill" style="width: 85%"></div>
   <span class="progress-bar__label">85% Complete</span>
 </div>
 ```
+
 **Style:** 8px height, rounded ends, smooth fill animation
 
 ### Cat Paw Button
+
 ```html
 <button class="btn btn--primary">
   🐾 Run Gate Check
 </button>
 ```
+
 **Style:** Cat accent color, soft hover lift, paw emoji included
 
 ---
@@ -228,6 +251,7 @@ The **Cat Nap Control Room** embodies the calm, efficient, and playful spirit of
 ## 🌈 Status Indicators
 
 ### Visual System
+
 | Status | Icon | Color | Background | Use Case |
 |--------|------|-------|------------|----------|
 | Success | ✅ | Green | Light green bg | Tests pass, services healthy |
@@ -238,6 +262,7 @@ The **Cat Nap Control Room** embodies the calm, efficient, and playful spirit of
 | Blocked | 🟥 | Red | Light red bg | Cannot proceed |
 
 ### Color-Coded Output
+
 ```powershell
 # PowerShell Status Colors
 Write-Host "✅ Pipeline operational" -ForegroundColor Green
@@ -250,6 +275,7 @@ Write-Host "❌ Service unreachable" -ForegroundColor Red
 ## 📊 Dashboard Design
 
 ### Executive Dashboard Layout
+
 1. **Header**: Gate status, last updated timestamp
 2. **KPI Summary**: 4-6 key metrics in cards
 3. **Status Matrix**: GATE-CORE, GATE-SITE, GOVERNANCE tables
@@ -258,12 +284,14 @@ Write-Host "❌ Service unreachable" -ForegroundColor Red
 6. **Footer**: Evidence links, export options
 
 ### Visual Hierarchy
+
 - **Most Important**: Largest, top-left, brightest
 - **Secondary**: Mid-size, grouped logically
 - **Tertiary**: Smaller text, muted colors
 - **Metadata**: Smallest, light gray, bottom-right
 
 ### Cat Nap Elements
+
 - **Paw Print Icons**: 🐾 used for BossCat actions
 - **Soft Glows**: Around active components
 - **Gentle Animations**: Pulse on status changes
@@ -274,6 +302,7 @@ Write-Host "❌ Service unreachable" -ForegroundColor Red
 ## ♿ Accessibility Requirements
 
 ### WCAG 2.1 Level AA Compliance
+
 - [ ] **Color Contrast**: Minimum 4.5:1 for text, 3:1 for UI components
 - [ ] **Keyboard Navigation**: All interactive elements accessible via keyboard
 - [ ] **Screen Reader Support**: Semantic HTML, ARIA labels
@@ -281,6 +310,7 @@ Write-Host "❌ Service unreachable" -ForegroundColor Red
 - [ ] **Motion Reduction**: Respect `prefers-reduced-motion` media query
 
 ### Implementation
+
 ```css
 /* Respect Motion Preferences */
 @media (prefers-reduced-motion: reduce) {
@@ -303,6 +333,7 @@ Write-Host "❌ Service unreachable" -ForegroundColor Red
 ## 🖼️ Iconography
 
 ### Primary Icons
+
 - **✅** Success, operational, approved
 - **⚠️** Warning, attention needed
 - **❌** Error, failed, blocked
@@ -315,6 +346,7 @@ Write-Host "❌ Service unreachable" -ForegroundColor Red
 - **🎯** Target, goal
 
 ### Usage Guidelines
+
 - Use emoji for personality and quick recognition
 - Always pair icons with text labels
 - Ensure color is not the only differentiator
@@ -325,11 +357,13 @@ Write-Host "❌ Service unreachable" -ForegroundColor Red
 ## 📱 Responsive Design
 
 ### Mobile-First Approach
+
 1. Design for mobile (320px+) first
 2. Enhance for tablet (768px+)
 3. Optimize for desktop (1024px+)
 
 ### Mobile Considerations
+
 - **Touch Targets**: Minimum 44px × 44px
 - **Simplified Layout**: Single column, stacked cards
 - **Reduced Motion**: Fewer animations on mobile
@@ -340,6 +374,7 @@ Write-Host "❌ Service unreachable" -ForegroundColor Red
 ## 🎭 Voice & Tone
 
 ### Writing Style
+
 - **Clear**: Simple language, no unnecessary jargon
 - **Concise**: Get to the point quickly
 - **Friendly**: Warm but professional
@@ -347,15 +382,17 @@ Write-Host "❌ Service unreachable" -ForegroundColor Red
 - **Actionable**: Tell users what to do next
 
 ### Example Copy
+
 ❌ **Don't:** "The observability pipeline has encountered a critical failure in the OTLP gRPC endpoint subsystem."
 
-✅ **Do:** "🐾 Meow! The OTLP gRPC endpoint (port 5317) isn't responding. Let's fix it."
+✅ **Do:** "🐾 Meow! The OTLP gRPC endpoint (port 5320) isn't responding. Let's fix it."
 
 ---
 
 ## 🔧 Implementation Checklist
 
 ### For New Components
+
 - [ ] Follows color palette (status or UI base colors)
 - [ ] Uses standard spacing (8px grid system)
 - [ ] Includes appropriate motion (200-300ms transitions)
@@ -365,6 +402,7 @@ Write-Host "❌ Service unreachable" -ForegroundColor Red
 - [ ] Documented (component added to style guide)
 
 ### For New Pages
+
 - [ ] Consistent header/footer
 - [ ] Status indicators visible at top
 - [ ] Clear hierarchy (most important info first)
