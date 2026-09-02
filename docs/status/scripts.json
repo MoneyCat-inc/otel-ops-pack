@@ -749,7 +749,7 @@
     {
       "name": "regenerate-scripts-registry.ps1",
       "path": "scripts/regenerate-scripts-registry.ps1",
-      "size": 5166,
+      "size": 5460,
       "lane": "UTIL"
     },
     {
