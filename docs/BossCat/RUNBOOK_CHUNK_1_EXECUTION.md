@@ -1,4 +1,10 @@
+<!-- markdownlint-disable MD022 MD026 MD031 MD032 MD040 -->
 # 🐾 BossCat Conveyor — Chunk 1 Execution Runbook
+
+> **HISTORICAL — one-shot run of 2025-10-14. Do not re-execute.** The `run-conveyor.ps1 -ChunkOffset
+> 1000 -DryRun:$false` commands below permanently delete workflow runs and the scripts still exist.
+> Today's conveyor is `.github/workflows/run-archiver.yml` (cron `19 */4 * * *`), which archives to
+> `otel-ops-evidence`; any manual deletion is a machine-operator decision logged in `BOSSCAT_LOG.md`.
 
 **Authority**: cursor{implementer} — BossCat OEM Executive Delegation  
 **Date**: 2025-10-14  

@@ -1,5 +1,10 @@
 # Reviewer B (codex‑cloud) — Read‑Only Playbook
 
+> **Seat note (2026-09-02).** "Reviewer B (codex-cloud)" is a retired 2025 seat; the read-only review
+> function now sits with the chat/review seat under `docs/BossCat/CHARTER.md`. The `IONA/BALANCER
+> STATUS` block is the retired status template — report the docs-lane guard codes (GR-00..GR-04)
+> directly. Budgets and guard codes below remain correct.
+
 Authority: BossCat OEM  
 Scope: Reviewer B (read‑only) gate reviews for docs and code
 
