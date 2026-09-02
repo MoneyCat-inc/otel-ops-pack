@@ -5,7 +5,7 @@
 
 **Authority:** BossCat OEM  
 **Gate:** #022 (BOSSCAT-022A - Deployed & Hardened)  
-**Purpose:** Collect Windows host metrics and Event Logs for observability pipeline  
+**Purpose:** Collect Windows Event Logs, local file logs and local OTLP for the observability pipeline  
 **Version:** 1.1.0 (Post-Op Hardened)
 
 ---
@@ -33,9 +33,10 @@ Operator decision (Phase 1, Roadmap 2026 H2): **keep as first-class and upgrade.
 zero send failures. The clean-host E2E finding **F3** (scraper list-syntax crash-loop on `0.104.0`)
 is **retired** — config validate exits 0 on `0.158.0`.
 
-The version is now pinned in one place, `startup-observability.ps1` (`$CollectorVersion`). Before
-#452 nothing in the repo decided the version at all; `0.104.0` was simply what had been installed by
-hand in Oct 2025.
+The version is pinned in one place, `scripts/windows/collector-version.txt` — read by
+`startup-observability.ps1` and, as a sibling file, by `scripts/windows/phase0-setup.ps1` (which carries an
+equal embedded fallback). Before #452 nothing in the repo decided the version at all; `0.104.0` was simply
+what had been installed by hand in Oct 2025.
 
 **Pin moved to `v0.159.0` on 2026-08-23** (quarterly upgrade review, step 1; PR #591). Release notes
 carry no windowseventlog/stanza changes; the hostmetrics `cpu`-attribute opt-in landed in v0.157.0
@@ -46,8 +47,8 @@ and was already absorbed at 0.158.0. Clean-host E2E re-run 2026-08-23 (`clean-ho
 covers the canary path. Treat this as a functional GREEN, not a timing datapoint; the 6.86 min
 figure (2026-08-13) remains the last measured clock. Install path used was the MSI-only Phase 0
 script, **not** `startup-observability.ps1` — which means the version a clean host installs is
-decided by `scripts/windows/phase0-setup.ps1`, currently untracked, and the "pinned in one
-place" statement above no longer holds. Open item: track that script and make a single pin feed both. Upstream note for the SigNoz side of the stack: as of SigNoz v0.138.0 the
+decided by `scripts/windows/phase0-setup.ps1`. *(Resolved: that script is tracked and both install paths
+now read `scripts/windows/collector-version.txt` — the single pin.)* Upstream note for the SigNoz side of the stack: as of SigNoz v0.138.0 the
 bundled `deploy/` compose and `install.sh` are deprecated in favour of Foundry (`foundryctl`); our
 `docker-compose.yml` is hand-maintained, so the Helm chart `values.yaml` is now the pin authority
 (chart signoz-0.138.0: signoz-otel-collector v0.144.8, ClickHouse 25.12.5).
@@ -96,9 +97,9 @@ pwsh -File .\scripts\windows\install-or-repair-otel-collector.ps1
 ```
 
 **Critical Requirements:**
-- ✅ Endpoint MUST be: `127.0.0.1:14317` (gRPC to localhost aggregator)
+- ✅ Endpoint MUST be: `127.0.0.1:4317` (gRPC to the SigNoz collector container; host port 4317)
 - ❌ OLD/WRONG: `host.docker.internal:4318` (causes connection refused errors)
-- ✅ Collector Version: `v0.159.0` pinned 2026-08-23 (0.158.0 verified 2026-08-13; pin lives in `startup-observability.ps1`)
+- ✅ Collector Version: `v0.159.0` pinned 2026-08-23 (0.158.0 verified 2026-08-13; pin lives in `scripts/windows/collector-version.txt`)
 - ✅ Config Syntax: Standard receivers format (see compatibility notes below)
 
 **Drift Guard Health Check:**
@@ -121,7 +122,7 @@ Run every 15 minutes via Task Scheduler. Exit code 20/21 = RED condition.
 **For .NET Auto-Instrumentation (OTLP Exporters):**
 
 ### PRIMARY PATH (Recommended) — Direct to SigNoz ✅
-**Endpoint:** `http://127.0.0.1:14317` (OTLP gRPC)  
+**Endpoint:** `http://127.0.0.1:4317` (OTLP gRPC)  
 **Status:** ✅ **PROVEN WORKING** (Gate #026A verified)  
 **Use Case:** .NET services, direct telemetry export  
 **Advantages:**
@@ -132,7 +133,7 @@ Run every 15 minutes via Task Scheduler. Exit code 20/21 = RED condition.
 
 **Configuration:**
 ```powershell
-$env:OTEL_EXPORTER_OTLP_ENDPOINT = "http://127.0.0.1:14317"
+$env:OTEL_EXPORTER_OTLP_ENDPOINT = "http://127.0.0.1:4317"
 $env:OTEL_EXPORTER_OTLP_PROTOCOL = "grpc"
 ```
 
@@ -171,14 +172,14 @@ The Windows OpenTelemetry Collector (`otelcol-contrib`) runs as a Windows servic
 - **File logs:** `filelog/canary` over `C:/logs/**/*.log`
 - **OTLP ingest:** local apps on `127.0.0.1:5320` (gRPC) / `5321` (HTTP)
 
-All telemetry is exported to the OTLP aggregator (signoz-otel-collector) via gRPC on port 14317.
+All telemetry is exported to the SigNoz collector (signoz-otel-collector) via gRPC on port 4317.
 
 > **⚠️ This section previously claimed host metrics — CPU, memory, disk, network, process stats at
 > 60s. That was wrong.** The canonical config has **no `hostmetrics` receiver**, and the live
 > collector reports no `otelcol_receiver_accepted_metric_points` series at all. If host metrics are
 > wanted, that is a change to make deliberately, not an assumption to inherit.
 
-**Version Compatibility Notes (v0.158.0):**
+**Version Compatibility Notes (v0.159.0; unchanged since 0.158.0):**
 - **Windows Event Log Receiver:** `windowseventlog` receiver name, unchanged from `0.104.0`
 - **Config validate:** exits 0 on `0.158.0` with the canonical config
 - **Retired with the upgrade:** the `0.104.0` hostmetrics scraper list-vs-map syntax caveat that
@@ -224,12 +225,12 @@ pwsh -File .\scripts\windows\install-or-repair-otel-collector.ps1
 **Parameters:**
 - `-ConfigSource` (default: `.\config.yaml` — the source of record; changed in #429, this runbook
   previously named the older `.\windows\otelcol\otelcol-contrib-config.yaml`)
-- `-OtlpGrpcEndpoint` (default: `127.0.0.1:14317`)
+- `-OtlpGrpcEndpoint` (default: `127.0.0.1:4317`)
 - `-ServiceName` (default: `otelcol-contrib`)
 
 **Example (custom endpoint):**
 ```powershell
-pwsh -File .\scripts\windows\install-or-repair-otel-collector.ps1 -OtlpGrpcEndpoint "192.168.1.100:14317"
+pwsh -File .\scripts\windows\install-or-repair-otel-collector.ps1 -OtlpGrpcEndpoint "192.168.1.100:4317"
 ```
 
 ---
@@ -243,7 +244,7 @@ pwsh -File .\scripts\windows\verify-otel-collector.ps1
 
 **What it checks:**
 1. Service status: RUNNING
-2. OTLP aggregator reachability (ports 14317/14318)
+2. SigNoz collector reachability (ports 4317/4318)
 3. Canary event written to Application log
 4. Wait for collector processing (3s)
 
@@ -287,11 +288,10 @@ sc.exe qc otelcol-contrib
 **Config Location:** `%ProgramData%\otelcol-contrib\config.yaml`
 
 **Key Settings:**
-- **OTLP Endpoint:** Configured via `OTLP_GRPC_ENDPOINT` (default: `127.0.0.1:14317`)
-- **Collection Interval:** 60 seconds for host metrics
-- **Event Log Channels:** Application, System
-- **Memory Limit:** 512 MiB (spike: 128 MiB)
-- **Batch Timeout:** 10 seconds
+- **OTLP Endpoint:** Configured via `OTLP_GRPC_ENDPOINT` (default: `127.0.0.1:4317`)
+- **Sources:** Windows Event Log (Application, System), `C:/logs/**/*.log`, local OTLP on 5320/5321
+- **Memory Limit:** 1024 MiB (spike: 512 MiB)
+- **Batch Timeout:** 200 ms for logs and traces, 1 s for metrics (batch size 1024, max 2048)
 
 **Editing Config:**
 1. Edit source: `.\config.yaml` (the repo source of record — **not** the ProgramData copy)
@@ -310,7 +310,7 @@ http://localhost:8888/metrics
 ```
 
 **Key Metrics:**
-- `otelcol_receiver_accepted_metric_points` - Metrics received
+- `otelcol_exporter_sent_log_records` - Logs exported to SigNoz
 - `otelcol_receiver_accepted_log_records` - Logs received
 - `otelcol_exporter_sent_metric_points` - Metrics exported
 - `otelcol_exporter_sent_log_records` - Logs exported
@@ -325,10 +325,10 @@ http://localhost:8888/metrics
 
 ### SigNoz UI
 
-**Check Host Metrics:**
+**Check Logs:**
 1. Navigate to: http://localhost:8080
-2. Dashboards → Host Metrics
-3. Filter by: `host.type = "windows"`
+2. Logs Explorer
+3. Filter by: `service.name = "windows-logs"` (set by `resource/logs_only` in `config.yaml`)
 
 **Check Event Logs:**
 1. Navigate to: http://localhost:8080 → Logs
@@ -361,7 +361,7 @@ Get-EventLog -LogName Application -Source "OpenTelemetry Collector" -Newest 10
 **Resolution:**
 1. Fix config syntax errors
 2. Verify Docker containers running: `docker ps`
-3. Check firewall: `Test-NetConnection localhost -Port 14317`
+3. Check firewall: `Test-NetConnection localhost -Port 4317`
 4. Re-run install script: `pwsh -File .\scripts\windows\install-or-repair-otel-collector.ps1`
 
 If `docker ps` returns HTTP 500 or hangs while this collector is still Running, recover Docker/WSL first — see [wsl-recovery.md](./wsl-recovery.md) (prefer reboot when WSL is wedged).
@@ -378,8 +378,8 @@ If `docker ps` returns HTTP 500 or hangs while this collector is still Running, 
 Invoke-RestMethod http://localhost:8888/metrics | Select-String "exporter_sent"
 
 # Check OTLP endpoint connectivity
-Test-NetConnection localhost -Port 14317
-Test-NetConnection localhost -Port 14318
+Test-NetConnection localhost -Port 4317
+Test-NetConnection localhost -Port 4318
 ```
 
 **Common Causes:**
@@ -410,11 +410,11 @@ Get-Process | Where-Object {$_.Name -like "*otelcol*"} | Select-Object Name, WS,
    ```yaml
    processors:
      memory_limiter:
-       limit_mib: 256  # Reduce from 512
-       spike_limit_mib: 64  # Reduce from 128
+       limit_mib: 512  # Reduce from 1024
+       spike_limit_mib: 256  # Reduce from 512
    ```
 2. Increase batch timeout to reduce processing frequency
-3. Reduce collection interval for hostmetrics
+3. Tighten `filter/drop_noise` or drop a channel (there is no hostmetrics receiver to tune)
 4. Re-run install script to apply changes
 
 ---
@@ -473,10 +473,10 @@ If collector cannot reach aggregator, add firewall rules:
 
 ```powershell
 # Allow outbound to OTLP gRPC
-New-NetFirewallRule -DisplayName "OTel Collector - OTLP gRPC" -Direction Outbound -LocalPort Any -RemotePort 14317 -Protocol TCP -Action Allow
+New-NetFirewallRule -DisplayName "OTel Collector - OTLP gRPC" -Direction Outbound -LocalPort Any -RemotePort 4317 -Protocol TCP -Action Allow
 
 # Allow outbound to OTLP HTTP
-New-NetFirewallRule -DisplayName "OTel Collector - OTLP HTTP" -Direction Outbound -LocalPort Any -RemotePort 14318 -Protocol TCP -Action Allow
+New-NetFirewallRule -DisplayName "OTel Collector - OTLP HTTP" -Direction Outbound -LocalPort Any -RemotePort 4318 -Protocol TCP -Action Allow
 ```
 
 ---
@@ -504,13 +504,9 @@ New-NetFirewallRule -DisplayName "OTel Collector - OTLP HTTP" -Direction Outboun
 **High-Frequency Environments:**
 
 ```yaml
-receivers:
-  hostmetrics:
-    collection_interval: 300s  # Reduce from 60s to 5 minutes
-
 processors:
-  batch:
-    timeout: 30s  # Increase from 10s
+  batch/logs:
+    timeout: 1s  # Increase from 200ms
     send_batch_size: 2048  # Increase from 1024
 ```
 
@@ -519,10 +515,10 @@ processors:
 ```yaml
 processors:
   memory_limiter:
-    limit_mib: 128  # Reduce from 512
-    spike_limit_mib: 32  # Reduce from 128
+    limit_mib: 512  # Reduce from 1024
+    spike_limit_mib: 256  # Reduce from 512
 
-  batch:
+  batch/logs:
     send_batch_size: 512  # Reduce from 1024
 ```
 
@@ -540,7 +536,7 @@ processors:
 
 ---
 
-**Last Updated:** 2025-10-26 (Gate #022)  
+**Last Updated:** 2025-10-26 (Gate #022); truth pass 2026-09-01 (exporter port 4317, no hostmetrics, memory/batch values from `config.yaml`, pin file)  
 **Authority:** BossCat OEM  
 **Status:** Production-ready
 

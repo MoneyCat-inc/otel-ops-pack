@@ -1,4 +1,14 @@
+<!-- markdownlint-disable MD022 MD031 MD032 MD034 MD040 MD058 -->
 # 🚀 Production Deployment Summary
+
+> ## HISTORICAL — deployment record of 2025-10-07 (retired agent framework)
+>
+> Records the "IONA + BossCat" 48-agent parallel deployment. IONA and the multi-agent arrangement
+> were retired (see `docs/BossCat/CHARTER.md`, four seats); the nightly orchestration and logon
+> scheduled tasks it describes were removed in the 2026 scheduled-task cleanup. Values are correct
+> for their date only: SigNoz was v0.96.1 (now v0.138.0) and the OTLP ports quoted as 14317/14318
+> are the legacy scheme (SigNoz now 4317/4318; Windows collector ingest 5320/5321). Script paths
+> under `scripts/` now live under `BRAV/SCPT/`. Kept unedited as the record of that session.
 ## IONA + BossCat Observability Framework
 
 **Deployment Date:** October 7, 2025  
