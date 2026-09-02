@@ -1,5 +1,12 @@
 # ADOT Exporter Configuration Guide
 
+> ## UNBUILT — companion to the never-implemented ADOT lane (2025-10-15)
+>
+> References `.aws/adot-collector-config.yaml`, a `deployment/resonai-otel-collector` manifest and
+> `base/` / `overlays/aws-prod/` config trees that do not exist, and a "Phase 3: SigNoz decommissioned"
+> cutover that `docs/PURPOSE.md` rules out. The exporter trade-off table is generic guidance; nothing in
+> this repository consumes it. Kept as the record of the design.
+
 **Quick Reference**: How to configure trace exporters to avoid dual egress costs
 
 ---

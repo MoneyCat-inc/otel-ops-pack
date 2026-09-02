@@ -1,5 +1,14 @@
 # AWS ADOT Setup Cheatsheet
 
+> ## UNBUILT — design for an AWS ADOT lane that was never implemented (2025-10-15)
+>
+> Every artefact this cheatsheet operates on is absent: there is no `.aws/` directory, no
+> `adot-collector-config.yaml`, no `adot-operator-cr.yaml`, and no `adot-config-gate.yml` workflow. Its
+> "Migration from Windows OTel Collector … decommission" step contradicts the Phase 1 decision
+> (2026-08-13): the Windows collector is first-class and the sole carrier of Event Log telemetry. Kept as
+> the record of the design; do not follow it as a procedure. Current topology:
+> `docs/architecture/CURRENT_ARCHITECTURE.md`.
+
 **Purpose**: Deploy AWS Distro for OpenTelemetry (ADOT) collector for hybrid cloud observability  
 **Compatibility**: Maintains OTLP endpoints (4317/4318) for vendor-neutral ingestion  
 **Target Platforms**: EKS, ECS, EC2, Local Docker
