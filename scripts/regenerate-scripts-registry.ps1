@@ -48,7 +48,11 @@ try {
         $entries[$path] = $oid
     }
 
-    $scripts = @(foreach ($path in ($entries.Keys | Sort-Object -Culture 'en-US' -CaseSensitive)) {
+    # Ordinal sort: culture-aware sorting differs between ICU builds and crashes outright in
+    # globalization-invariant mode (both seen 2026-09-02); ordinal is identical everywhere.
+    $paths = [string[]]$entries.Keys
+    [System.Array]::Sort($paths, [System.StringComparer]::Ordinal)
+    $scripts = @(foreach ($path in $paths) {
         $name = [IO.Path]::GetFileName($path)
         $lane = if ($name -match 'gate|verify') { 'GATE' }
                 elseif ($name -match 'monitor|canary|test') { 'SSOT' }
@@ -73,21 +77,34 @@ try {
     }
     $json = ($registry | ConvertTo-Json -Depth 4) + "`n"
 
+    $outPath = [System.IO.Path]::GetFullPath($Out, $repoRoot)
+
     if ($Check) {
-        if (-not (Test-Path -LiteralPath $Out)) {
+        if (-not (Test-Path -LiteralPath $outPath)) {
             Write-Host "scripts registry: $Out missing" -ForegroundColor Red
             exit 1
         }
-        $committed = Get-Content -LiteralPath $Out -Raw
-        if ($committed -ne $json) {
+        $committed = [System.IO.File]::ReadAllText($outPath)
+        if (-not [string]::Equals($committed, $json, [System.StringComparison]::Ordinal)) {
             Write-Host "scripts registry: $Out is stale (re-run without -Check)" -ForegroundColor Red
+            $a = $committed -split "`n"; $b = $json -split "`n"
+            $n = [Math]::Max($a.Count, $b.Count)
+            for ($i = 0; $i -lt $n; $i++) {
+                $l = if ($i -lt $a.Count) { $a[$i] } else { '<eof>' }
+                $r = if ($i -lt $b.Count) { $b[$i] } else { '<eof>' }
+                if (-not [string]::Equals($l, $r, [System.StringComparison]::Ordinal)) {
+                    Write-Host ("  first difference at line {0}: committed {1} | expected {2}" -f ($i + 1), $l.Trim(), $r.Trim())
+                    break
+                }
+            }
+            Write-Host ("  committed {0} lines / {1} chars; expected {2} lines / {3} chars" -f $a.Count, $committed.Length, $b.Count, $json.Length)
             exit 1
         }
         Write-Host "scripts registry: $Out is current ($($scripts.Count) scripts)" -ForegroundColor Green
         exit 0
     }
 
-    [IO.File]::WriteAllText((Join-Path $repoRoot $Out), $json, [Text.UTF8Encoding]::new($false))
+    [System.IO.File]::WriteAllText($outPath, $json, [System.Text.UTF8Encoding]::new($false))
     Write-Host "scripts registry regenerated: $Out ($($scripts.Count) scripts)" -ForegroundColor Green
 } finally {
     Pop-Location

@@ -537,27 +537,21 @@
       "lane": "UTIL"
     },
     {
-      "name": "bring-up.ps1",
-      "path": "scripts/legacy/setup/bring-up.ps1",
-      "size": 10341,
-      "lane": "UTIL"
-    },
-    {
       "name": "Fix-CursorPrematureClose.ps1",
       "path": "scripts/legacy/setup/Fix-CursorPrematureClose.ps1",
       "size": 3352,
       "lane": "UTIL"
     },
     {
-      "name": "migrate-to-agent-structure.ps1",
-      "path": "scripts/legacy/setup/migrate-to-agent-structure.ps1",
-      "size": 6041,
+      "name": "bring-up.ps1",
+      "path": "scripts/legacy/setup/bring-up.ps1",
+      "size": 10341,
       "lane": "UTIL"
     },
     {
-      "name": "setup_cursor_implementer.ps1",
-      "path": "scripts/legacy/setup/setup_cursor_implementer.ps1",
-      "size": 14634,
+      "name": "migrate-to-agent-structure.ps1",
+      "path": "scripts/legacy/setup/migrate-to-agent-structure.ps1",
+      "size": 6041,
       "lane": "UTIL"
     },
     {
@@ -579,9 +573,21 @@
       "lane": "UTIL"
     },
     {
+      "name": "setup_cursor_implementer.ps1",
+      "path": "scripts/legacy/setup/setup_cursor_implementer.ps1",
+      "size": 14634,
+      "lane": "UTIL"
+    },
+    {
       "name": "test-portal-links.ps1",
       "path": "scripts/legacy/test-portal-links.ps1",
       "size": 1252,
+      "lane": "SSOT"
+    },
+    {
+      "name": "Test-ResonaiStack.ps1",
+      "path": "scripts/legacy/test/Test-ResonaiStack.ps1",
+      "size": 2706,
       "lane": "SSOT"
     },
     {
@@ -612,12 +618,6 @@
       "name": "test-config.ps1",
       "path": "scripts/legacy/test/test-config.ps1",
       "size": 371,
-      "lane": "SSOT"
-    },
-    {
-      "name": "Test-ResonaiStack.ps1",
-      "path": "scripts/legacy/test/Test-ResonaiStack.ps1",
-      "size": 2706,
       "lane": "SSOT"
     },
     {
@@ -749,7 +749,7 @@
     {
       "name": "regenerate-scripts-registry.ps1",
       "path": "scripts/regenerate-scripts-registry.ps1",
-      "size": 3892,
+      "size": 3485,
       "lane": "UTIL"
     },
     {
