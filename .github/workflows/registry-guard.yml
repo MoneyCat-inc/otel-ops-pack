@@ -1,14 +1,16 @@
 # KEEP -- Phase 0 workflow audit 2026-08-03: enforces docs/status/workflows.json freshness on workflow PRs
+# 2026-09-02: also enforces docs/status/scripts.json freshness on scripts/ PRs (-Check).
 name: Registry Guard
-# Enforce workflows.json stays in sync with actual workflows
+# Enforce workflows.json and scripts.json stay in sync with the tree
 
 on:
   pull_request:
     paths:
       - ".github/workflows/**"
-      - "scripts/regenerate-workflows-registry.ps1"
+      - "scripts/**"
       - "docs/status/workflows.json"
       - "docs/status/workflows.schema.json"
+      - "docs/status/scripts.json"
       - ".github/workflows/registry-guard.yml"
   workflow_dispatch:
 
@@ -49,6 +51,17 @@ jobs:
           print(f"checked {len(list(pathlib.Path('.github/workflows').glob('*.y*ml')))} files, {len(bad)} invalid")
           sys.exit(1 if bad else 0)
           PY
+
+      # scripts.json is byte-deterministic (tracked set + blob sizes, no dates), so a plain
+      # comparison is enough. Fix: pwsh scripts/regenerate-scripts-registry.ps1, commit the file.
+      - name: 📜 Scripts registry must be current (scripts.json)
+        shell: pwsh
+        run: |
+          pwsh scripts/regenerate-scripts-registry.ps1 -Check
+          if ($LASTEXITCODE -ne 0) {
+            Write-Host "::error::docs/status/scripts.json is stale — run: pwsh scripts/regenerate-scripts-registry.ps1 && git add docs/status/scripts.json"
+            exit 1
+          }
 
       - name: 🔄 Regenerate registry (location-independent)
         shell: pwsh
@@ -167,6 +180,7 @@ jobs:
             echo "";
             echo "**Status:** ${{ job.status }}";
             echo "**Workflows:** $(jq '.total' docs/status/workflows.json)";
+            echo "**Scripts:** $(jq '.total' docs/status/scripts.json)";
             echo "**Schema:** docs/status/workflows.schema.json";
             echo "";
             if [ "${{ job.status }}" == "success" ]; then
