@@ -1,3 +1,12 @@
+# LEGACY SNAPSHOT — not deployed. The Windows collector service loads the root `config.yaml`
+# (installed by scripts/windows/install-or-repair-otel-collector.ps1 -ConfigSource .\config.yaml);
+# the reference template is windows/otelcol/otelcol-contrib-config.yaml and the port authority is
+# DELT/CONF/otel-ports.json. Only BRAV/SCPT/setup.ps1 (pre-reorg, path no longer resolves) ever
+# pointed at this file.
+# 2026-09-02: exporter endpoints corrected from the retired 14317/14318 remap to the SigNoz
+# collector's 4317/4318 so a copy of this file no longer exports to ports nothing listens on. Everything
+# else here still differs from the canonical config (no OTLP receivers on 5320/5321, no System
+# channel, no retry/queue, smaller memory limits) — use config.yaml, not this file.
 extensions:
   health_check:
     endpoint: 0.0.0.0:13134
@@ -50,11 +59,11 @@ processors:
     send_batch_size: 1024
 exporters:
   otlp:
-    endpoint: localhost:14317
+    endpoint: localhost:4317        # SigNoz collector gRPC (docker-compose.yml; DELT/CONF/otel-ports.json)
     tls:
       insecure: true
   otlphttp:
-    endpoint: http://localhost:14318
+    endpoint: http://localhost:4318  # SigNoz collector HTTP
     tls:
       insecure: true
 service:
