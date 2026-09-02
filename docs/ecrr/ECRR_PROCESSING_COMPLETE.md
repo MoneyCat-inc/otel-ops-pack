@@ -1,4 +1,13 @@
+<!-- markdownlint-disable MD013 MD022 MD029 MD031 MD032 MD036 -->
 # ECRR Processing Complete - 318 Reports Analyzed
+
+> ## HISTORICAL — completion record of 2025-11-01; two deliverables since reversed or never produced
+>
+> Deliverable 2 (the Windows collector deprecation notice) was **rescinded on 2026-08-13** — see the
+> banner on `../architecture/WINDOWS_COLLECTOR_DEPRECATION.md`. Deliverables 1 and 4
+> (`scripts/new-ecrr-report.ps1`, the `artifacts/ecrr-analytics/` dashboard) were never created. The
+> corpus count (318) and compliance percentages reflect the retired scoring engine; the reports directory
+> now holds 400+. Kept unedited as the record of that analysis.
 
 **Date**: 2025-11-01  
 **Initiative**: Comprehensive ECRR Repository Analysis  

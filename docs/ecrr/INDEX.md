@@ -16,9 +16,11 @@ Generated: 2025-11-01 23:23:17
 - **Archived Gate Reports**: 75
 - **Total Corpus**: 318
 
-**Architecture Note**: Reports reference the **direct-to-SigNoz architecture** as canonical
-(effective 2025-10-27). See [Windows Collector Deprecation](../architecture/WINDOWS_COLLECTOR_DEPRECATION.md)
-for migration details.
+**Architecture Note (corrected 2026-09-02)**: reports dated 2025-10-27 to 2026-08-12 may describe a
+"direct-to-SigNoz" architecture with the Windows collector deprecated. That declaration was **rescinded on
+2026-08-13** (Roadmap Phase 1: keep, upgraded). Current topology:
+[CURRENT_ARCHITECTURE.md](../architecture/CURRENT_ARCHITECTURE.md); the old notice is kept as a record with a
+RESCINDED banner.
 
 ## Recent Reports (Last 30)
 
