@@ -50,7 +50,7 @@ docker compose logs signoz-telemetrystore-migrator --tail 50   # expect "migrati
 docker compose ps                                              # signoz + collector healthy
 
 # 4. Gate — the same check gate-nightly runs, against the live stack
-pwsh -File BRAV/SCPT/verify-pipeline.ps1 -CanaryScriptPath synthetic/send_synthetic_otel_simple.py
+pwsh -File BRAV/SCPT/verify-pipeline.ps1 -CanaryScriptPath BRAV/SCPT/send_synthetic_otel_simple.py
 # GREEN = exit 0 and the canary span is queryable. Then confirm the UI loads and an existing
 # dashboard + one saved view still render (the saved-view migration is the only data-shape change).
 ```
@@ -62,7 +62,7 @@ docker compose down signoz signoz-otel-collector signoz-telemetrystore-migrator
 git checkout main -- docker-compose.yml          # or revert #595
 docker cp backups/signoz.db.pre-0.138.0-<stamp> signoz:/var/lib/signoz/signoz.db   # after recreate, before start
 docker compose up -d
-pwsh -File BRAV/SCPT/verify-pipeline.ps1 -CanaryScriptPath synthetic/send_synthetic_otel_simple.py
+pwsh -File BRAV/SCPT/verify-pipeline.ps1 -CanaryScriptPath BRAV/SCPT/send_synthetic_otel_simple.py
 ```
 
 Restoring the metastore is what makes rollback real; the image tags alone do not undo the
@@ -136,7 +136,7 @@ docker exec signoz-clickhouse clickhouse-client -q "SELECT count() FROM signoz_t
 docker exec signoz-clickhouse clickhouse-client -q "SELECT count() FROM signoz_logs.logs_v2 WHERE body_v2.message IS NOT NULL"   # baseline 2026-08-23: 34125
 
 # 5. Gate
-pwsh -File BRAV/SCPT/verify-pipeline.ps1 -CanaryScriptPath synthetic/send_synthetic_otel_simple.py
+pwsh -File BRAV/SCPT/verify-pipeline.ps1 -CanaryScriptPath BRAV/SCPT/send_synthetic_otel_simple.py
 
 # 6. 24 h later: trace_log must have stopped growing (was 5.88 GiB on 2026-08-23)
 docker exec signoz-clickhouse clickhouse-client -q "SELECT table, formatReadableSize(sum(bytes_on_disk)) FROM system.parts WHERE database='system' AND active GROUP BY table ORDER BY sum(bytes_on_disk) DESC LIMIT 5"

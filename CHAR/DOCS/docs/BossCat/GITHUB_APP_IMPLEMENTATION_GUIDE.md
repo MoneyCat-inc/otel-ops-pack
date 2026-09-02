@@ -40,10 +40,13 @@ The following workflows now use GitHub App authentication:
 
 | Workflow | File | Status |
 |----------|------|--------|
-| IONA Gate Verification | `.github/workflows/iona-gate-verify.yml` | ✅ Integrated |
-| Boss Gate Verification | `.github/workflows/boss-gate-verify.yml` | ✅ Integrated |
-| Security Scanning | `.github/workflows/security-scan.yml` | ✅ Integrated |
-| Gitleaks Security Scan | `.github/workflows/gitleaks-security-scan.yml` | ✅ Integrated |
+| IONA Gate Verification | `.github/workflows/iona-gate-verify.yml` | ⛔ RETIRED 2026-08-03 (dispatch only) |
+| Boss Gate Verification | `.github/workflows/boss-gate-verify.yml` | ⛔ RETIRED 2026-08-03 (dispatch only) |
+| Security Scanning | `.github/workflows/security-scan.yml` | ⛔ RETIRED 2026-08-03 (dispatch only) |
+| Gitleaks Security Scan | `.github/workflows/gitleaks-security-scan.yml` | ⛔ RETIRED 2026-08-03 (dispatch only) |
+
+As of 2026-09-02 no scheduled or PR-triggered workflow consumes the App token; the integration is
+dormant (truth pass).
 
 ### Pattern Used
 
@@ -266,4 +269,4 @@ All actions performed via the GitHub App are logged:
 
 **Last Updated**: 2025-10-07  
 **Maintained By**: BossCat OEM Framework  
-**Status**: ✅ Production Ready
+**Status**: Dormant — all four consumer workflows RETIRED 2026-08-03 (truth pass 2026-09-02)

@@ -3,7 +3,16 @@
 **Authority:** BossCat OEM  
 **Source:** SigNoz OpenTelemetry Resource Center  
 **Updated:** 2025-10-10 (Phase 1.4)  
-**Status:** ✅ Active
+**Status:** ✅ Active — corrected 2026-09-02 (see notice)
+
+> **Corrected 2026-09-02 — two P0 items.** (1) The Windows collector must **not** export to
+> `localhost:5321`: that is its own HTTP receiver, and the original block wired a self-loop. The
+> canonical exporter is `otlp` → `localhost:4317` (`config.yaml`); 5320/5321 are the collector's
+> *ingest* ports for local apps and browsers. (2) Never cap `retry_on_failure.max_elapsed_time`: the
+> former 30 s cap silently dropped ~7.4k log records while SigNoz was down for hours on 2026-08-18;
+> `config.yaml` sets `max_elapsed_time: 0` with a `file_storage`-backed `sending_queue`. Both blocks
+> are corrected in place below. `config/otelcol-windows.yaml` is a legacy path — the canonical file is
+> the root `config.yaml`.
 
 ---
 
@@ -13,16 +22,19 @@
 
 **Problem:** gRPC (port 4317/5320) can cause parse errors, especially in bot/script environments.
 
-**Solution:** Default to HTTP/protobuf (port 4318/5321) for all OTLP exports.
+**Solution:** Default to HTTP/protobuf for *application and script* exports — into the Windows
+collector (`5321`) or straight to SigNoz (`4318`). The collector's own exporter stays `otlp` gRPC →
+`localhost:4317` per `config.yaml`.
 
 **Implementation:**
 
 ```yaml
-# config/otelcol-windows.yaml
+# config.yaml (Windows collector) — canonical exporter; never point this at 5320/5321
 exporters:
-  otlphttp/signoz:
-    endpoint: http://localhost:5321  # HTTP, not gRPC
-    compression: gzip
+  otlp:
+    endpoint: localhost:4317   # signoz-otel-collector (docker-compose.yml)
+    tls:
+      insecure: true
 ```
 
 ```typescript
@@ -336,14 +348,19 @@ Invoke-WebRequest -Uri $url -TimeoutSec 5 -MaximumRetryCount 3 -RetryIntervalSec
 **OTel Collector (YAML):**
 
 ```yaml
+# config.yaml — retry until delivered; the disk-backed queue is the outage mitigation
 exporters:
-  otlphttp/signoz:
-    timeout: 10s
+  otlp:
     retry_on_failure:
       enabled: true
-      initial_interval: 5s
-      max_interval: 30s
-      max_elapsed_time: 300s
+      initial_interval: 100ms
+      max_interval: 5s
+      max_elapsed_time: 0        # 0 = never give up (a 30s cap lost ~7.4k records on 2026-08-18)
+    sending_queue:
+      enabled: true
+      num_consumers: 8
+      queue_size: 100000
+      storage: file_storage      # C:\ProgramData\Otelcol\FileStorage
 ```
 
 **Benefits:**
@@ -444,8 +461,8 @@ export SIGNOZ_INGESTION_KEY=$(cat .env | grep SIGNOZ_INGESTION_KEY | cut -d'=' -
 
 **BossCat Internal:**
 
-- `AGENTS.md` — Bot hierarchy and governance
-- `docs/BossCat/ECRR_PIPELINE_REBUILD_20251010.md` — Pipeline rebuild ECRR
+- `AGENTS.md` / `docs/BossCat/CHARTER.md` — four-seat governance
+- `docs/archive/BossCat/ECRR_PIPELINE_REBUILD_20251010.md` — Pipeline rebuild ECRR (archived)
 - `.agent/config.json` — Lane configuration
 
 ---

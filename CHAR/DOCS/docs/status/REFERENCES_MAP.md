@@ -1,8 +1,18 @@
 # 🗺️ Resonai [OTel] — Canonical References Map
 
-**Version:** 1.2  
-**Updated:** 2026-06-12  
+**Version:** 1.3  
+**Updated:** 2026-09-02  
 **Purpose:** Single source of truth for all working parts
+
+**What's New in v1.3 (2026-09-02 truth pass):**
+
+- Every link and count re-checked against disk; domain counts are live `.md` files
+  (excluding `archive/`) as of 2026-09-02
+- Registries are live, not pending: `scripts.json` (46 entries), `workflows.json` (61)
+- `docs/evidence/` dropped (no such directory); `docs/socm/` extracted to the `socm`
+  repo in Pack 3B (2026-07-24)
+- Gate bucket gains the live runner; two rationale entries for buckets that no longer
+  exist (Bots, Rebuild) removed — the map has five buckets
 
 **What's New in v1.1:**
 
@@ -20,8 +30,14 @@
 
 **Authoritative playbooks for gate verification and production readiness.**
 
+- **[Gate Cheatsheet](../cheatsheets/GATE_CHEATSHEET.md)**  
+  Live runner: `scripts/verify-iona-gate.ps1 -Strict`; budgets per GR-02
+
+- **[Current Architecture](../architecture/CURRENT_ARCHITECTURE.md)**  
+  What is actually deployed (Windows collector → SigNoz), from the canonical configs
+
 - **[Gate Archive (2025-10)](../gate/2025-10/)**  
-  October 2025 gate verification evidence
+  October 2025 gate verification evidence (historical)
 
 ---
 
@@ -86,12 +102,15 @@
 
 ### Operational Registries
 
-- **Scripts Registry:** [`scripts.json`](scripts.json) *(pending)*
-- **Workflows Registry:** [`workflows.json`](workflows.json) *(pending)*
+- **Scripts Registry:** [`scripts.json`](scripts.json) — 46 entries
+- **Workflows Registry:** [`workflows.json`](workflows.json) — 61 workflows, guarded by
+  `registry-guard.yml`; regenerate with `scripts/regenerate-workflows-registry.ps1`
 
 ### Evidence Trails
 
-- **ECRR Reports:** [`CHAR/ECRR/ECRR_REPORTS/`](../../CHAR/ECRR/ECRR_REPORTS/)
+- **ECRR Reports:** [`CHAR/ECRR/ECRR_REPORTS/`](../../CHAR/ECRR/ECRR_REPORTS/) — 409 reports
+  as of 2026-09-02 (`ls CHAR/ECRR/ECRR_REPORTS/*.md | wc -l`)
+- **Operating log:** [`docs/BossCat/BOSSCAT_LOG.md`](../BossCat/BOSSCAT_LOG.md)
 - **Latest Processing:** [`ECRR_PROCESSING_SUMMARY_LATEST.md`](../../CHAR/ECRR/ECRR_REPORTS/ECRR_PROCESSING_SUMMARY_LATEST.md)
 - **Benchmark Data:** [`DELT/ARTF/ecrr-benchmark.json`](../../DELT/ARTF/ecrr-benchmark.json)
 
@@ -99,16 +118,17 @@
 
 ## 🗂️ Organized Domains
 
-The root consolidation organized 177 files into domain-specific folders:
+The root consolidation organized 177 files into domain-specific folders. Counts below are
+live `.md` files as of 2026-09-02 (excluding `archive/` subfolders):
 
-- **[docs/gate/](../gate/)** — Gate verification and readiness evidence (25 files)
+- **[docs/gate/](../gate/)** — Gate verification and readiness evidence (17 files)
 - **[socm](https://github.com/MoneyCat-inc/socm)** — Bluesky / social ops (extracted Pack 3B; was `docs/socm/`)
-- **[docs/pr/](../pr/)** — Pull request reviews and comments (15 files)
+- **[docs/pr/](../pr/)** — Pull request reviews and comments (11 files)
 - **[docs/releases/](../releases/)** — Release notes and roadmaps (3 files)
-- **[docs/runbooks/](../runbooks/)** — Operational guides and deployment (6 files)
-- **[docs/evidence/](../evidence/)** — Commit evidence and system status (3 files)
-- **[docs/status/](../status/)** — Session reports and implementation status (12 files)
-- **[docs/notes/](../notes/)** — Notes, tasks, and misc documentation (56 files)
+- **[docs/runbooks/](../runbooks/)** — Operational guides and deployment (13 files)
+- **[docs/status/](../status/)** — This map, the registries README and STATUS (3 docs + 12 JSON registries)
+- **[docs/notes/](../notes/)** — Notes, tasks, and misc documentation (42 files)
+- **[docs/BossCat/](../BossCat/)** — Governance guides and records (119 files; see its README)
 
 **Date-based organization:** Files with dates organized into `YYYY-MM/` subfolders  
 **Redirect stubs:** 177 stubs at original locations preserve inbound links
@@ -117,14 +137,14 @@ The root consolidation organized 177 files into domain-specific folders:
 
 ## 📊 Map Statistics
 
-- **Version:** 1.1
-- **Total Canonical References:** 6
-- **Buckets:** 7
+- **Version:** 1.3
+- **Total Canonical References:** 11
+- **Buckets:** 5
 - **Organized Domains:** 8
 - **Root Docs Consolidated:** 177
-- **Inventory Files:** 4 (complete)
-- **Registries:** 3 (operational)
-- **Last Updated:** 2026-06-12T13:00:00+00:00
+- **Inventory Files:** 4 (local only, gitignored)
+- **Registries:** 2 operational (`scripts.json`, `workflows.json`) + `REFERENCES_MAP.json`
+- **Last Updated:** 2026-09-02
 
 ---
 
@@ -146,8 +166,6 @@ The root consolidation organized 177 files into domain-specific folders:
 - **Stakeholder:** Packaged top-down view for sign-offs
 - **Security:** Master guide + SigNoz waiver with tracked risk
 - **Dashboards:** Live "see it working" assets
-- **Bots:** Tetragram registry + Stability Pack enforce A/B lanes
-- **Rebuild:** Oct-07 professional rebuild that unified UX
 
 ---
 

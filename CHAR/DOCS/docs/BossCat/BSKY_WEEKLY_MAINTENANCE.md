@@ -1,5 +1,9 @@
 # Bluesky weekly maintenance — Resonai [OTel]
 
+> **Split-lane record (2026-09-02).** Bluesky/social operations moved to the `socm` repo in Pack 3B
+> (2026-07-24). `scripts/bsky-weekly-reminder.ps1` still ships here as a reminder stub; the playbook
+> itself is maintained in `socm`.
+
 **Cadence:** every **7 days** (recommended: Monday morning)  
 **Profile:** <https://bsky.app/profile/resonai.bsky.social>  
 **Handle:** `@resonai.bsky.social` · **Owner:** Fubumaki (creator)  

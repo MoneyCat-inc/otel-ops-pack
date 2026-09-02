@@ -113,13 +113,17 @@ When creating or updating workflows:
 
 ## 🎯 Templates & Examples
 
-**Full Template:** See `.github/workflows/template.yml` (TBD - DELT-2)
+**Full Template:** none exists — the `template.yml` planned as DELT-2 was never created. Copy the header of a
+working example below.
 
 **Working Examples:**
 
-- `.github/workflows/bosscat-gate-verify.yml` (all 3 patterns)
-- `.github/workflows/boss-gate-verify.yml` (all 3 patterns)
-- `.github/workflows/iona-gate-verify.yml` (all 3 patterns)
+- `.github/workflows/bosscat-gate-verify.yml` (push + PR; all 3 patterns)
+- `.github/workflows/docs-lane-checks.yml` (PR; all 3 patterns)
+- `.github/workflows/gate-nightly.yml` (schedule; all 3 patterns)
+
+*(`boss-gate-verify.yml` and `iona-gate-verify.yml`, cited here until 2026-09-01, still carry the patterns but have
+been `workflow_dispatch`-only since the 2026-08-03 audit — not representative examples.)*
 
 **Pattern Library:** See `docs/BossCat/WORKFLOW_IMMEDIATE_WINS_PATTERN.md`
 
@@ -142,15 +146,14 @@ When creating or updating workflows:
 ## 🐾 BossCat Compliance
 
 **Authority:** BossCat OEM  
-**Enforcement:** Automated policy checker (Phase 3)  
-**Review:** Monthly compliance scorecard  
-**Exceptions:** Require BossCat OEM approval + documentation
-
-**Non-Compliance Actions:**
-
-- Warning: Auto-generated PR with fixes
-- Repeated: Workflow disabled until compliant
-- Release Blockers: Gate fails if critical workflows non-compliant
+**Enforcement (truth pass 2026-09-01):** review-time. The "automated policy checker" and "monthly compliance
+scorecard" this section promised were never built, and the ECRR compliance engine was retired on 2026-08-03
+(#433) because its verdict could not fail. What actually enforces workflow hygiene: `registry-guard.yml` (trigger registry
+freshness + YAML validity on every workflow PR) and PR review against this document.  
+**Measured coverage (2026-09-01):** 48 of 62 workflows carry a `concurrency` block; of the 14 without, 11 are
+`workflow_dispatch`-only utilities, one is push-only and one is an instant shim — effectively complete where it
+matters.  
+**Exceptions:** documented in the workflow header (the Phase 0 audit convention).
 
 ---
 
@@ -163,7 +166,7 @@ When creating or updating workflows:
 
 ---
 
-**Last Updated:** 2025-10-10 (Phase 1 execution)  
-**Status:** Active standard - all new workflows must comply  
+**Last Updated:** 2025-10-10 (Phase 1 execution); truth pass 2026-09-01 (examples, enforcement, coverage)  
+**Status:** Active convention - all new workflows must comply  
 **Seal:** 🐾 **BossCat Executive Standard**
 

@@ -1,5 +1,16 @@
 # 🐾 Cursor{Implementer} Setup Prompt
 
+> ## HISTORICAL — 2025 onboarding for a seat arrangement that has since changed
+>
+> Cites pre-reorg paths (`config/otelcol-windows.yaml`, `config/signoz-collector.yaml` — configs now
+> live under `DELT/CONF/`), workflows that no longer exist (`nightly-dashboard-export.yml`,
+> `ci-cd-pipeline-ecrr.yml`) and compliance-dashboard artifacts retired with the compliance engine
+> (2026-08-03). Kept as the record of the October 2025 setup.
+>
+> **Current onboarding for Cursor{Implementer}:** `CHARTER.md` (seat rules, lane discipline),
+> `../cheatsheets/cursor-implementer.md` (local ops run), `../REPOSITORY_STRUCTURE.md` (where things
+> run from), `../PURPOSE.md` (what work is in scope).
+
 ## BossCat OEM Autonomous Observability Pipeline
 
 **Issued by:** BossCat OEM (Executive Overseer Manager)  

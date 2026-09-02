@@ -1,175 +1,104 @@
-# Current Architecture - Direct-to-SigNoz
+# Current Architecture — Windows Collector → SigNoz
 
-**Status**: ✅ **ACTIVE**  
-**Last Updated**: 2025-11-02  
-**Authority**: BossCat OEM
+**Status**: ✅ **ACTIVE** (rewritten 2026-09-01 from the canonical config files, not from memory)
+**Authority**: BossCat OEM · decision record: `docs/BossCat/MEMO_WINDOWS_COLLECTOR_20260803.md`,
+Roadmap 2026 H2 Phase 1 (closed 2026-08-13: **keep as first-class, upgraded**)
+
+> **Correction (2026-09-01).** The previous version of this document (2025-11-02) described a
+> "direct-to-SigNoz" architecture with the Windows collector **deprecated**. That was reversed by
+> the Phase 1 decision: the Windows collector is the **sole carrier of Windows Event Log
+> telemetry** — a Docker container cannot read the Event Log — and it was upgraded, not retired.
+> The companion deprecation notice carries a RESCINDED banner. Everything below is read from
+> `config.yaml`, `docker-compose.yml` and `DELT/CONF/otel-ports.json` as of 2026-09-01.
 
 ---
 
-## Overview
-
-This document outlines the architecture of the **direct-to-SigNoz integration** as the
-canonical approach for the OpenTelemetry observability pipeline.
-
-### Current Architecture (Active)
+## Topology
 
 ```text
-Windows Event Logs + File Logs
-    ↓
-Docker OTel Collectors (direct ingestion)
-    ↓
-SigNoz Backend
-    ↓
-SigNoz UI (http://localhost:8080)
+Windows host                                         Docker (root docker-compose.yml)
+─────────────────────────────────────────            ───────────────────────────────────────
+Windows Event Log (Application, System) ─┐
+C:/logs/**/*.log (filelog/canary) ───────┤           signoz-otel-collector  v0.144.8
+local OTLP 127.0.0.1:5320 gRPC / 5321 ───┤──► otlp ─► 4317 gRPC / 4318 HTTP
+                                         │           │
+  otelcol-contrib service (v0.159.0 pin) ┘           ▼
+  canonical config: config.yaml                      clickhouse-server 25.12.5 (+ zookeeper 3.9.3)
+                                                     │
+.NET apps: OTLP traces direct ──────────────────────►│  (Gate #026A routing preference for traces)
+                                                     ▼
+                                                     SigNoz UI  http://localhost:8080  (v0.138.0)
 ```
 
----
-
-## Key Components
-
-### 1. Data Sources
-
-- **Windows Event Logs** (Security, Application, System)
-- **File Logs** (application logs, custom logs)
-- **Metrics** (system performance, OTel collector metrics)
-- **Traces** (distributed tracing via OTLP)
-
-### 2. OpenTelemetry Collectors (Docker)
-
-- **Primary Collector**: `signoz-otel-collector`
-- **Metrics Collector**: `signoz-otel-collector-metrics`
-- **Configuration**: `config.yaml`
-- **Batch Processing**: 200ms timeout (optimized for low latency)
-- **Noise Filtering**: ~50% volume reduction via event ID filters
-
-### 3. SigNoz Backend
-
-- **OTLP Endpoints**:
-  - gRPC: `localhost:5320`
-  - HTTP: `localhost:5321`
-- **Query Service**: Real-time log/trace/metrics queries
-- **Alerting**: Threshold-based alerts
-- **Retention**: Configurable per signal type
-
-### 4. SigNoz UI
-
-- **URL**: <http://localhost:8080>
-- **Features**: Logs explorer, traces explorer, metrics dashboards, alerts
+Two tiers, one hop between them. The host tier collects what only the host can see; the Docker
+tier stores and serves it.
 
 ---
 
-## Performance Characteristics
+## Tier 1 — Windows collector (`otelcol-contrib` service)
 
-- **Batch Latency**: ≤200ms (target achieved)
-- **Noise Reduction**: ~50% (via selective event filtering)
-- **Throughput**: 512 events per batch, max 1024
-- **Send Timeout**: 200ms
+| Item | Value (canonical) |
+| --- | --- |
+| Config the service loads | `config.yaml` (repo root). `windows/otelcol/otelcol-contrib-config.yaml` is the reference template |
+| Version pin | **0.159.0** (moved 2026-08-23, PR #591; upgraded 0.104.0 → 0.158.0 on 2026-08-13). Pinned in one place — see the runbook |
+| Receivers | `windowseventlog/application`, `windowseventlog/system`, `filelog/canary` (`C:/logs/**/*.log`), `otlp` on **127.0.0.1:5320** (gRPC) / **5321** (HTTP) |
+| Processors | `memory_limiter`, `filter/drop_noise` (drops event IDs 6005/6006/7036 and Windows-Update / SCM chatter), `attributes/redact_sensitive`, `resource/*`, per-signal `batch/*` (logs: 200 ms, 1024/2048) |
+| Exporter | `otlp` → **localhost:4317** (the Docker SigNoz collector) |
+| Extensions | `health_check` on `127.0.0.1:13134/healthz`, `file_storage` (`C:\ProgramData\Otelcol\FileStorage`) |
+| Pipelines | **logs**: all four receivers · **traces**: `otlp` · **metrics**: `otlp` only — **there is no `hostmetrics` receiver** |
+| Supervision | `watchdog-otelcol.ps1` scheduled task: heartbeat, start-type repair, host vitals, incident bundles — `docs/cheatsheets/WATCHDOG_CHEATSHEET.md` |
+
+Port authority is `DELT/CONF/otel-ports.json`, drift-checked by `BRAV/SCPT/check-otel-ports-drift.ps1`.
+Ingest deliberately avoids the PlariumPlay 5300–5319 bind range.
+
+## Tier 2 — SigNoz stack (`docker-compose.yml`)
+
+| Service | Image | Ports |
+| --- | --- | --- |
+| `signoz` | `signoz/signoz:v0.138.0` | 8080 (UI) |
+| `signoz-otel-collector` | `signoz/signoz-otel-collector:v0.144.8` | 4317 gRPC, 4318 HTTP, 18888/18889 internal metrics |
+| `signoz-clickhouse` | `clickhouse/clickhouse-server:25.12.5` | internal |
+| `signoz-zookeeper` | `signoz/zookeeper:3.9.3` | internal |
+| `signoz-telemetrystore-migrator` | `signoz/signoz-otel-collector:v0.144.8` | one-shot |
+| `demo-app` | `otel-otel-demo-app` (local build) | 3001 |
+
+Mounted configs live under `DELT/CONF/configs/`. Parked compose variants under `compose/` require
+`--project-directory ..` (see `compose/README.md`); the root file is the canonical stack.
 
 ---
 
-## Configuration Files
+## What Gate #026A actually established
 
-### Active
-
-- ✅ `config.yaml` - Primary OTel collector config (Docker)
-- ✅ `docker-compose-signoz.yml` - SigNoz stack
-- ✅ `BRAV/SCPT/verify-pipeline.ps1` - End-to-end gate validation (exit codes 0/1/2)
-- ✅ `scripts/legacy/operator-pipeline-check.ps1` - Operator linear check after collector restart
-- ✅ `scripts/canary-test.ps1` - Test data generation
-
-### Deprecated
-
-- ❌ `windows/otelcol/otelcol-contrib-config.yaml` - See [WINDOWS_COLLECTOR_DEPRECATION.md](WINDOWS_COLLECTOR_DEPRECATION.md)
+Gate #026A (Oct 2025) is the source of the old "bypassed" reading. What it established is narrower:
+for **.NET trace export**, sending OTLP straight to the Docker collector (4318) is preferred over
+routing through the Windows collector. That is a routing preference for one signal type. It was
+never a verdict on the component — the record was corrected in #436 (Phase 2).
 
 ---
 
-## Monitoring & Validation
-
-### Health Checks
+## Health, validation, proof
 
 ```powershell
-# Quick health check
-pwsh -File scripts\quick-monitor.ps1
-
-# Detailed monitoring  
-pwsh -File scripts\monitor-optimized-pipeline.ps1 -DurationMinutes 10
-
-# End-to-end validation
-pwsh -File BRAV\SCPT\verify-pipeline.ps1
+pwsh -File scripts\quick-monitor.ps1                       # fast health check
+pwsh -File scripts\preflight-health-check.ps1              # readiness
+pwsh -File BRAV\SCPT\verify-pipeline.ps1                   # end-to-end gate validation (exit 0/1/2)
+pwsh -File scripts\windows\test-otlp-e2e.ps1               # OTLP canary through the Windows collector
 ```
 
-### SigNoz Queries
-
-```text
-# Logs
-message contains "canary test"
-
-# Metrics
-otelcol_*
-
-# Traces
-service.name = "resonai_analytics"
-```
+The standing proof that the whole thing installs from nothing is the **clean-host E2E gate**
+(`docs/runbooks/clean-host-e2e.md`): 6.86 min clone-to-first-span on a clean Windows host
+(2026-08-13). It is the one gate `docs/PURPOSE.md` commits to keeping green.
 
 ---
 
-## Architecture Decisions
+## Related documentation
 
-### Why Direct-to-SigNoz?
-
-1. **Eliminated Redundant Hop**: Previous dual-hop (Windows service → Docker) added 2-5s latency
-2. **Simplified Configuration**: Single config file vs. dual configs
-3. **Better Performance**: Achieved sub-200ms batch processing
-4. **Reduced Drift**: No config synchronization issues
-
-### Trade-offs
-
-| Aspect | Direct-to-SigNoz | Previous (Windows Collector) |
-| -------- | ------------------ | ------------------------------ |
-| **Latency** | ≤200ms | 2-5s |
-| **Config Files** | 1 (Docker only) | 2 (Windows + Docker) |
-| **Maintenance** | Low | Medium |
-| **Complexity** | Simple | Moderate |
+- **Runbook**: `docs/runbooks/windows-collector.md` (status, version notes, repair surface)
+- **Decision record**: `docs/BossCat/MEMO_WINDOWS_COLLECTOR_20260803.md`; roadmap Phase 1 in `docs/BossCat/ROADMAP_2026H2.md`
+- **Rescinded notice**: [WINDOWS_COLLECTOR_DEPRECATION.md](WINDOWS_COLLECTOR_DEPRECATION.md) (kept as record)
+- **Repository layout**: [REPOSITORY_STRUCTURE.md](../REPOSITORY_STRUCTURE.md)
+- **Stack upgrade runbook**: `docs/runbooks/signoz-stack-upgrade.md`
 
 ---
 
-## Telemetry Flow
-
-### Logs
-
-```text
-Windows Event Logs → OTel Receiver → Processors → Batch → SigNoz
-                                    ↓
-                            Noise Filter (50% reduction)
-                            Format Transform
-                            Resource Detection
-```
-
-### Traces
-
-```text
-Application (OTLP) → OTel Collector → Batch → SigNoz
-```
-
-### Metrics
-
-```text
-System Metrics → OTel Collector → Batch → SigNoz
-OTel Collector Internal Metrics → SigNoz
-```
-
----
-
-## Related Documentation
-
-- **Deprecation Notice**: [WINDOWS_COLLECTOR_DEPRECATION.md](WINDOWS_COLLECTOR_DEPRECATION.md)
-- **Repository Structure**: [REPOSITORY_STRUCTURE.md](../REPOSITORY_STRUCTURE.md)
-- **ECRR Framework**: [../comfort-cat/ECRR_FRAMEWORK.md](../comfort-cat/ECRR_FRAMEWORK.md)
-- **Runbooks**: [../runbooks/unified-telemetry-proofs.md](../runbooks/unified-telemetry-proofs.md)
-
----
-
-**Version**: 1.0  
-**Last Updated**: 2025-11-02  
-**Status**: Active - Canonical Architecture  
-**Maintained by**: MoneyCat-inc
+**Version**: 2.0 · **Last verified against config**: 2026-09-01 · **Maintained by**: MoneyCat-inc

@@ -3,7 +3,11 @@
 **Authority:** BossCat OEM (Fubumaki)  
 **Gate:** #030 (Evidence-as-Code v1)  
 **Date:** 2025-10-27  
-**Status:** ACTIVE — v1 (Traces + Logs, Metrics deferred to v2)
+**Status:** ACTIVE — **v2** (Traces + Logs + Metrics via collector health, 3/3 signals)
+
+> **Version note (2026-09-01).** This runbook accumulated v1 and v2 text. **v2 is current.** Sample
+> outputs showing `metrics ... SKIPPED` / `PARTIAL`, the "Known Limitations (v1)" section and the
+> "Roadmap: Gate #030 v2" section describe the superseded v1 state and are kept as history.
 
 ---
 
@@ -16,7 +20,7 @@ The `proof-of-telemetry.ps1` script generates unified proof artifacts that verif
 
 - ✅ **Traces:** Service-scoped query with count
 - ✅ **Logs:** Global query with count  
-- ⚠️ **Metrics:** Deferred to v2 (requires metric-specific query structure)
+- ✅ **Metrics:** v2 — collector health endpoint (v1 had deferred this)
 
 **Extension from Gate #029-H1:** Single-signal proofs → Unified multi-signal proofs
 
@@ -51,7 +55,7 @@ pwsh -File .\scripts\windows\proof-of-telemetry.ps1 -ServiceName "my-service" -A
 | Variable | Required | Description | Example |
 |----------|----------|-------------|---------|
 | `SIGNOZ_API_KEY` | Yes | API key from SigNoz (Settings → API Keys, Viewer role) | `<redacted>` |
-| `SIGNOZ_BASE_URL` | No | SigNoz base URL (default: `http://localhost:8080`) | `http://127.0.0.1:3301` |
+| `SIGNOZ_BASE_URL` | No | SigNoz base URL (default: `http://localhost:8080`) | `http://localhost:8080` |
 | `SIGNOZ_SERVICE_NAME` | No | Service name for traces query | `bosscat-svc2-api` |
 | `SIGNOZ_LOOKBACK_MINUTES` | No | Minutes to look back (default: 3) | `60` |
 
@@ -507,7 +511,7 @@ Overall: PARTIAL (2/3 signals)
 
 **Exit:** 1 (AMBER) — Metrics missing
 
-**Note:** In v1, `-ExpectAll` will always exit AMBER since metrics not implemented
+**Note (historical, v1):** `-ExpectAll` always exited AMBER before metrics were implemented in v2
 
 ### Example 3: Custom Timeframe
 
@@ -584,7 +588,7 @@ pwsh -File .\scripts\windows\proof-of-telemetry.ps1
 
 ### Use Single-Signal Proof When
 
-- ✅ Troubleshooting specific path (e.g., collector 5317)
+- ✅ Troubleshooting specific path (e.g., collector ingest 5320)
 - ✅ Testing individual signal types
 - ✅ Debugging instrumentation issues
 
@@ -595,7 +599,7 @@ pwsh -File .\scripts\windows\proof-of-telemetry.ps1
 
 ---
 
-## Known Limitations (v1)
+## Known Limitations (v1 — superseded by v2, kept as history)
 
 ### 1. Metrics Not Implemented
 
@@ -647,9 +651,12 @@ pwsh -File .\scripts\windows\proof-of-telemetry.ps1 -ServiceName "my-service"
 
 ---
 
-## Roadmap: Gate #030 v2
+## Roadmap: Gate #030 v2 (historical)
 
-**Planned Enhancements:**
+*Item 1 was delivered via the collector health endpoint; items 2–5 were not pursued under `docs/PURPOSE.md`
+steady-state.*
+
+**Planned Enhancements (as written 2025-10-27):**
 
 1. **Metrics Query Implementation**
    - Support metric name parameter

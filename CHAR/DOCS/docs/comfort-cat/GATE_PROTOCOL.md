@@ -73,11 +73,15 @@ and transition in the Cat Nap Control Room observability pipeline.
 |-----------|-------|-----------|---------|
 | OTLP gRPC | Port 5320 listening | Response < 200ms | `Test-NetConnection localhost -Port 5320` |
 | OTLP HTTP | Port 5321 listening | Response < 200ms | `Test-NetConnection localhost -Port 5321` |
-| Synthetic Span | End-to-end trace | SUCCESS status | `pwsh scripts\canary-test.ps1` |
+| Synthetic Span | End-to-end trace | SUCCESS status | `pwsh -File canary-test.ps1` (repo root) |
 | SigNoz Health | API health check | "ok" response | `curl http://localhost:8080/api/v1/health` |
 | Batch Latency | Pipeline latency | p95 < 200ms | Via SigNoz metrics |
 
 ### GATE-SITE (Web Assets)
+
+*Scope note (2026-09-02): the public site lane moved to `moneycat-site` in the Pack 3B split. What remains
+in this repository is the status page, checked by `gate-site-evidence.yml` (links, axe a11y, CSP) on every
+PR — those three contexts are required checks on `main`.*
 
 | Component | Check | Threshold | Tool |
 |-----------|-------|-----------|------|
@@ -93,7 +97,7 @@ and transition in the Cat Nap Control Room observability pipeline.
 |-----------|-------|-----------|----------|
 | Budget Compliance | LOC per job | ≤200 LOC | Job analysis |
 | Lane Discipline | PR/Nightly separation | Perfect execution | Workflow logs |
-| ECRR Methodology | Report generation | 100% coverage | `CHAR/ECRR/ECRR_REPORTS/` |
+| ECRR Methodology | One lean report per change | Present, honest verdict | `CHAR/ECRR/ECRR_REPORTS/` |
 | Evidence Trails | Artifact presence | Comprehensive | `artifacts/`, `DELT/ARTF/` |
 
 ---
@@ -112,9 +116,10 @@ and transition in the Cat Nap Control Room observability pipeline.
 
 ### Evidence Collection
 
-- [ ] Generate gate verification JSON: `DELT/ARTF/gate-verification-results.json`
+- [ ] Generate gate verification JSON: `artifacts/gate-verification-results.json`
+  (runtime output; `DELT/ARTF/` is the legacy path)
 - [ ] Create gate readiness report: `CHAR/ECRR/ECRR_REPORTS/ECRR_GATE_READY_LATEST.md`
-- [ ] Update gate status dashboard: `docs/GATE_STATUS_DASHBOARD.md`
+- [ ] Log the verdict in `docs/BossCat/BOSSCAT_LOG.md` (the gate status dashboard is archived, frozen at Gate #031)
 - [ ] Capture SigNoz dashboard snapshots
 - [ ] Archive test results and logs
 
@@ -136,8 +141,8 @@ and transition in the Cat Nap Control Room observability pipeline.
 
    ```powershell
    pwsh -File scripts\quick-monitor.ps1
-   pwsh -File scripts\verify-pipeline.ps1
-   pwsh -File scripts\canary-test.ps1
+   pwsh -File BRAV\SCPT\verify-pipeline.ps1
+   pwsh -File canary-test.ps1
    ```
 
 2. **Collect evidence**

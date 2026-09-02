@@ -1,7 +1,7 @@
 # 📋 JSON Schema Validation Guide
 
 **Authority:** BossCat OEM  
-**Status:** Active (as of PR-1)  
+**Status:** Active — enforced by `.github/workflows/json-validation-gate.yml` (KEEP, 2026-08-03 audit)  
 **Purpose:** Document the validation gate mechanism for artifact contracts
 
 ---
@@ -24,7 +24,8 @@ All schema files are in the `schema/` directory at the repository root.
 ```text
 schema/
 ├── status-tests.schema.json              # Validates docs/status/tests.json
-└── gate-verification-results.schema.json # Validates artifacts/gate-verification-results.json
+├── gate-verification-results.schema.json # Validates artifacts/gate-verification-results.json
+└── gate_verification.schema.json         # Gate verification contract (copy also at ALFA/LIBS/schemas/)
 ```
 
 ### `status-tests.schema.json`
@@ -43,7 +44,8 @@ schema/
 
 **File Path:** `docs/status/tests.json`
 
-**Updated By:** Status auto-update workflow, gate verification scripts
+**Updated By:** Gate verification scripts and `scripts/update-status-dashboard.ps1` (the status
+auto-update workflow was removed in commit `31423808`)
 
 ### `gate-verification-results.schema.json`
 
@@ -137,21 +139,11 @@ The validation runs automatically via `.github/workflows/json-validation-gate.ym
 5. Validate `gate-verification-results.json` (if exists)
 6. Generate job summary
 
-### Integration with Status Auto-Update
+### Integration with Status Auto-Update (historical)
 
-The `status-auto-update.yml` workflow now has a dependency:
-
-```yaml
-jobs:
-  validate-schemas:
-    runs-on: ubuntu-latest
-    # Validation steps...
-  
-  auto-update:
-    runs-on: ubuntu-latest
-    needs: [validate-schemas]  # Must pass before proceeding
-    # Auto-update steps...
-```
+The `status-auto-update.yml` workflow once ran this gate as a `needs:` dependency. That workflow
+was removed in commit `31423808`; `json-validation-gate.yml` runs standalone on push/PR touching the
+schemas or `docs/status/tests.json`, and on `workflow_dispatch`.
 
 ---
 

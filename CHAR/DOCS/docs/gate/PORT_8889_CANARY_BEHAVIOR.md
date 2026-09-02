@@ -1,5 +1,10 @@
 # Port 8889 Canary Behavior - Expected Connection Refusals
 
+> **Resolved (2026-09-02 truth pass).** The 8889 → 8888 fallback was removed: `canary-check-min.ps1`
+> now defaults `-MetricsUrl` to `http://127.0.0.1:8888/metrics` and never probes 8889, so no
+> connection-refused lines are expected. (`docker-compose.yml` maps `18889:8889` for the SigNoz
+> collector's Prometheus exporter — unrelated to the Windows collector.) Kept as the 2025-10-22 record.
+
 **Date:** 2025-10-22  
 **Context:** Gate #008 Post-Approval Audit  
 **Issue:** Canary logs show repeated connection refusals on `http://127.0.0.1:8889/metrics`

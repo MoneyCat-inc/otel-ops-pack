@@ -1,8 +1,14 @@
+<!-- markdownlint-disable MD022 MD031 MD032 MD036 -->
 # GitHub Actions Workflow Cleanup Guide
+
+> **SUPERSEDED (2026-09-02 truth pass).** Neither `scripts/archive-workflow-runs.ps1` nor
+> `scripts/cleanup-old-workflow-runs.ps1` exists. The live tooling is `BRAV/SCPT/run-archiver/`
+> (`run-conveyor.ps1`) driven by `.github/workflows/run-archiver.yml` (cron `19 */4 * * *`); the run
+> counts below are 2025 figures.
 
 **Authority:** BossCat OEM  
 **Purpose:** Manage and archive 10,000+ workflow runs  
-**Status:** ✅ Tools ready for use
+**Status:** ⛔ SUPERSEDED — see notice (the tools named here do not exist)
 
 ---
 

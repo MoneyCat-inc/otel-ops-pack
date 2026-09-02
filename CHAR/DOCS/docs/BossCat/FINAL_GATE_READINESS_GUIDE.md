@@ -1,5 +1,10 @@
 # 🐾 BossCat Final Gate Readiness Guide
 
+> **Dated record (2025-01-03 header) — 2026-09-02 truth pass.** Ports below (4317/4318/13133/55679)
+> are the 2025 Windows collector layout; today the collector listens on `5320/5321` with health on
+> `127.0.0.1:13134` (`config.yaml`) and 4317/4318 belong to the SigNoz collector. Scripts cited under
+> `scripts/` moved to `BRAV/SCPT/`. Current gate runner: `docs/cheatsheets/GATE_CHEATSHEET.md`.
+
 **Date:** 2025-01-03 23:20:00 UTC  
 **Agent:** BossCat OEM (Executive Overseer Manager)  
 **Status:** ✅ **100/100 GATE READY**
@@ -63,7 +68,7 @@ $env:SIGNOZ_API_KEY="<paste_api_key>"           # OR use cookie below
 
 ### **Enhanced Snapshot Script**
 
-- **File:** `scripts/signoz-snapshot.spec.ts`
+- **File:** `BRAV/SCPT/signoz-snapshot.spec.ts`
 - **Features:** 90-second polling, environment variables, robust error handling
 - **Timeout:** 120 seconds total
 - **Outputs:** Full-page screenshots of services, details, traces, and logs
