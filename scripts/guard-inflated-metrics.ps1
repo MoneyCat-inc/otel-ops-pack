@@ -9,7 +9,8 @@
 #      guard passed on every run. (With rg present the exclude globs were splatted as bare
 #      positional arguments, which rg treats as PATHS -> exit 2, also discarded.)
 #      docs/status.html carried "77× throughput uplift" from 2026-08-28 through sixteen green
-#      Gate Verify runs. The scan is now pure PowerShell — no external tool to be missing.
+#      Gate Verify runs. The scan is now pure PowerShell over git-tracked files — no external
+#      search tool to be missing, and the same file set CI checks out.
 #   2. `docs/*.md` was non-recursive, so docs/BossCat/** was never scanned. Now docs/**/*.md.
 #   3. The 196.7 pattern used a look-ahead that rg's default regex engine rejects (parse error,
 #      again swallowed). Rewritten without look-around.
@@ -97,24 +98,25 @@ if ('Throughput: 77× maintained' -match $retractionContext) {
 
 # --- Scan (pure PowerShell; no external tools) ---
 $repoRoot = (Get-Location).Path
-function Get-RelativePath([string]$fullPath) {
-    $rel = $fullPath.Substring($repoRoot.Length).TrimStart('\', '/')
-    return ($rel -replace '\\', '/')
+# Production set = git-tracked files only. That is what CI checks out, and it is what the
+# original rg-based scan effectively saw (rg skips .gitignore'd trees). Enumerating the working
+# tree instead pulled untracked local artifact and third_party trees into the scan (887 vs 739
+# files, false positives in minified report HTML) — reported by the Cursor seat, 2026-09-02.
+$tracked = @(& git ls-files -z 2>$null)
+if ($LASTEXITCODE -ne 0 -or $tracked.Count -eq 0) {
+    Write-Host "❌ 'git ls-files' failed or returned nothing — the guard cannot enumerate the tree; failing closed" -ForegroundColor Red
+    exit 1
 }
+$tracked = ($tracked -join "`n") -split "`0" | Where-Object { $_ -ne '' }
+
+$productionRegex = '^(docs/.+\.md|CHAR/ECRR/ECRR_REPORTS/[^/]+\.md|DELT/ARTF/[^/]+\.json|(.+/)?[^/]+\.html|(.+/)?README[^/]*\.md)$'
 $excludeRegex = '(^|/)(archive|history|deprecated|legacy|node_modules|\.git)(/|$)|^CHAR/PRSV/|^CHAR/DOCS/'
 
-$candidates = @()
-$candidates += Get-ChildItem -Path (Join-Path $repoRoot 'docs') -Recurse -File -Filter '*.md' -ErrorAction SilentlyContinue
-$candidates += Get-ChildItem -Path (Join-Path $repoRoot 'CHAR/ECRR/ECRR_REPORTS') -File -Filter '*.md' -ErrorAction SilentlyContinue
-$candidates += Get-ChildItem -Path (Join-Path $repoRoot 'DELT/ARTF') -File -Filter '*.json' -ErrorAction SilentlyContinue
-$candidates += Get-ChildItem -Path $repoRoot -Recurse -File -Filter '*.html' -ErrorAction SilentlyContinue
-$candidates += Get-ChildItem -Path $repoRoot -Recurse -File -Filter 'README*.md' -ErrorAction SilentlyContinue
-
 $files = @{}
-foreach ($item in $candidates) {
-    $rel = Get-RelativePath $item.FullName
+foreach ($rel in $tracked) {
+    if ($rel -notmatch $productionRegex) { continue }
     if ($rel -match $excludeRegex) { continue }
-    $files[$rel] = $item.FullName
+    $files[$rel] = Join-Path $repoRoot $rel
 }
 if ($files.Count -eq 0) {
     Write-Host "❌ scan found no production files to check — failing closed (wrong working directory?)" -ForegroundColor Red
