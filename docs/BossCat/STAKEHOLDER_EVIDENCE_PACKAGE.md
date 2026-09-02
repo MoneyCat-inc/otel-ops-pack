@@ -1,4 +1,10 @@
+<!-- markdownlint-disable MD013 MD022 MD029 MD031 MD032 MD034 MD040 -->
 # 📦 BossCat Stakeholder Evidence Package
+
+> **HISTORICAL (2025-10-07) — 2026-09-02 truth pass.** Gate-review evidence package from the
+> Gate #006/#007 era: scripts cited under `scripts/` now live in `BRAV/SCPT/`, the `codex-local`/IONA
+> services are retired, and several linked docs no longer exist. Current evidence: `CHAR/ECRR/ECRR_REPORTS/`
+> and `docs/architecture/CURRENT_ARCHITECTURE.md`.
 
 **MoneyCat Inc · Resonai [OTel] · otel-ops-pack**  
 **Package Version:** 1.0  

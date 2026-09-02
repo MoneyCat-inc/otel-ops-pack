@@ -1,4 +1,11 @@
+<!-- markdownlint-disable MD022 MD031 MD032 MD036 -->
 # Workflow Immediate Wins — Standard Pattern
+
+> **Truth pass 2026-09-02.** The rollout table below is corrected in place: win #1 was never applied to
+> `bosscat-gate-verify.yml` (it runs `cancel-in-progress: false`, deliberately, as a required lane);
+> `nightly-dashboard-export.yml` does not exist; `bosscat-gate-bot-native.yml` is RETIRED. The helper
+> scripts `scripts/audit-workflow-patterns.ps1` / `apply-immediate-wins.ps1` are not in the repo and the
+> template is `.github/workflows/app-template.yml`.
 
 **Authority:** BossCat Operations + Comfort Cat Architecture  
 **Status:** ✅ **APPROVED PATTERN** — Apply to all workflows  
@@ -266,9 +273,9 @@ git push
 ### Phase 1: Critical Workflows (Manual)
 
 Apply to 3-5 key workflows manually:
-1. ✅ `bosscat-gate-verify.yml` (DONE)
-2. ⏸️ `nightly-dashboard-export.yml`
-3. ⏸️ `bosscat-gate-bot-native.yml`
+1. ⏸️ `bosscat-gate-verify.yml` (NOT applied — `cancel-in-progress: false` is intentional for a required lane)
+2. ⛔ `nightly-dashboard-export.yml` (does not exist)
+3. ⛔ `bosscat-gate-bot-native.yml` (RETIRED 2026-08-03)
 4. ⏸️ Security scan workflow (if applicable)
 5. ⏸️ Main test workflow
 
@@ -366,8 +373,8 @@ Always include the three immediate wins...
 
 ### Internal Documentation
 - [Loop-Closing Machine Architecture](./LOOP_CLOSING_MACHINE_ARCHITECTURE.md)
-- [ECRR: Immediate Wins Implementation](../ecrr/ECRR_REPORTS/ECRR_IMMEDIATE_WINS_IMPLEMENTATION_20251010.md)
-- [Workflow Cleanup Investigation](./DIAGNOSTIC_PARALLEL_CLEANUP_FAILURE_20251010.md)
+- ECRR: Immediate Wins Implementation — `ECRR_IMMEDIATE_WINS_IMPLEMENTATION_20251010.md` (not in the repo)
+- [Workflow Cleanup Investigation](../archive/BossCat/DIAGNOSTIC_PARALLEL_CLEANUP_FAILURE_20251010.md)
 
 ---
 

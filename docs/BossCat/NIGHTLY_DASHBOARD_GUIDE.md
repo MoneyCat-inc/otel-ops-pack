@@ -1,5 +1,10 @@
 # 🌙 Nightly Dashboard Export Guide
 
+> **UNBUILT (2026-09-02 truth pass).** `.github/workflows/nightly-dashboard-export.yml` never shipped —
+> no such file and no such schedule exists anywhere in the repo, although many 2025 docs cite it.
+> Dashboard exports are manual: `pnpm dashboard:export` / `pnpm export:signoz:playwright`. The compose
+> file is the root `docker-compose.yml`. Kept as the design record.
+
 **BossCat OEM Framework** - Automated SigNoz Dashboard Capture & Archival
 
 ---
@@ -33,7 +38,7 @@ to the repository. This provides:
 1. **Checkout repository** - Get latest code
 2. **Setup tooling** - Node.js, PNPM, PowerShell, Playwright
 3. **Install dependencies** - `pnpm install --frozen-lockfile`
-4. **Start SigNoz stack** - `docker compose -f docker-compose-signoz.yml up -d`
+4. **Start SigNoz stack** - `docker compose up -d   # root docker-compose.yml`
 5. **Wait for health** - Poll `http://localhost:8080/api/v1/health` (max 60 attempts)
 6. **Run export script** - Execute `scripts/nightly-dashboard-export.ps1` or Playwright
 7. **Collect snapshots** - Copy artifacts to `docs/observability/snapshots/YYYY-MM-DD/`
