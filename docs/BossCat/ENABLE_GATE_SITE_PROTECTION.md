@@ -1,5 +1,10 @@
 # 🐾 Enable Gate/Site Evidence as Required Checks
 
+> **SUPERSEDED — already enforced (2026-09-02 truth pass).** The three gate/site evidence contexts
+> have been required checks on `main` since the 2026-09-01 audit; the live required set is in
+> `REQUIRED_STATUS_CHECKS.md`. Do **not** run the `gh api` PATCH below — it replaces the whole required
+> set with three contexts. Kept as the record of the original proposal.
+
 **Authority**: BossCat OEM  
 **Date**: 2025-10-13  
 **Status**: 🟢 **GATE GREEN ACHIEVED** — Optional enforcement available
