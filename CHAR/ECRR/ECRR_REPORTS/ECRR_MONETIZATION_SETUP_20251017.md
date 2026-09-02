@@ -280,7 +280,7 @@ What makes it different?
 ✅ MIT License (free forever, no enterprise gatekeeping)
 
 Key features:
-• 77× throughput improvement over naive configs
+• 7× throughput improvement over naive configs
 • <200ms batch latency for real-time monitoring
 • Complete ECRR audit trail for compliance
 • Visual feedback system (MILK Lane) for alert visualization
@@ -311,7 +311,7 @@ GitHub: https://github.com/MoneyCat-inc/otel-ops-pack
 - 🔜 Comment on SigNoz GitHub issues/PRs
 
 ### **Phase 3: Content** (Month 2)
-- 🔜 Write technical blog post: "77× Throughput Improvement: Our OTel Config Journey"
+- 🔜 Write technical blog post: "7× Throughput Improvement: Our OTel Config Journey"
 - 🔜 Create video walkthrough of MILK Lane visual feedback
 - 🔜 Publish "Anti-Clickbait Methodology" explainer
 

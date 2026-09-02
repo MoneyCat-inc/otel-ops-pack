@@ -47,7 +47,7 @@
 - **K6 Gates**: OPERATIONAL
 - **Batch Latency**: <200ms (target met)
 - **P95 Target**: <200ms (compliant)
-- **Throughput**: 77x maintained
+- **Throughput**: 7× maintained
 
 ---
 

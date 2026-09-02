@@ -1,5 +1,7 @@
 # ECRR: Governance Knobs — Inflated Metrics Protection
 
+<!-- inflated-metrics:allow-file — 2025-10-20 policy/remediation record; quotes the banned patterns verbatim (guard repair 2026-09-02) -->
+
 **Agent:** Cursor{Implementer}
 **Date:** 2026-01-14
 

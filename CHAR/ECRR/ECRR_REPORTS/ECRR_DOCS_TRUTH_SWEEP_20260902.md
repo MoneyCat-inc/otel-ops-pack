@@ -97,7 +97,7 @@ Code-lane follow-ups surfaced, **not** fixed in docs PRs:
 1. `DELT/CONF/config/otelcol-windows.yaml` still carries `localhost:14317/14318` exporter endpoints
    (legacy config that can mislead an operator).
 2. `scripts/guard-inflated-metrics.ps1` production glob is `docs/*.md` (non-recursive) — it never
-   reached `docs/BossCat/` where the 77× claim survived.
+   reached `docs/BossCat/` where the banned 77× claim survived.
 3. `scripts/auto-rerun-guard.ps1` default policy path is `config/policy/ecrr-policy.json`; the file is
    at `DELT/CONF/policy/ecrr-policy.json`.
 4. `signoz-collector-config.yaml` still upserts `service.name = resonai-backend` (the
