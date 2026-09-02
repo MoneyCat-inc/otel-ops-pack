@@ -1,5 +1,9 @@
 # 🐾 BossCat Background Agent Delegation Protocol
 
+> **HISTORICAL (2026-09-02 truth pass).** Delegation protocol for the 2025 background-agent roster
+> (Cursor background agents, IONA). No background agents run today; `docs/BossCat/CHARTER.md` (four
+> seats) and the `docs/AGENTS.md` lanes govern delegation. Kept as a record.
+
 **Authority:** BossCat OEM (Executive Overseer Manager)  
 **Timestamp:** 2025-10-08T04:32:00Z  
 **Operation:** Background Task Delegation - WyzWoz Style

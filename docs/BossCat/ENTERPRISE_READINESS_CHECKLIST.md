@@ -1,5 +1,9 @@
 # 🏢 Enterprise Readiness Checklist
 
+> **HISTORICAL (2025 checklist) — 2026-09-02 truth pass.** Written for the IONA/48-agent org model;
+> the teams, SLAs and workflows named inside were retired by the CHARTER (four seats) and the
+> 2026-08-03 workflow audit. `docs/PURPOSE.md` defines the steady state. Kept as a record.
+
 **BossCat OEM Framework** - Production-Ready Validation
 
 **Version**: 1.0  
