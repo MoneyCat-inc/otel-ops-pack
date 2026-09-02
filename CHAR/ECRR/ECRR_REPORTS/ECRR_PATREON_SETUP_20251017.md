@@ -218,7 +218,7 @@
    Open-source observability engineer building production-ready tools 
    for Windows environments. Evidence-based, anti-clickbait approach.
    
-   Resonai [OTel] delivers 77× throughput improvement, sub-200ms latency,
+   Resonai [OTel] delivers 7× throughput improvement, sub-200ms latency,
    and complete ECRR audit trails for compliance.
    
    GitHub: https://github.com/MoneyCat-inc/otel-ops-pack
@@ -265,7 +265,7 @@
 
 7. **Content Calendar**:
    - Week 1: Welcome + roadmap overview
-   - Week 2: Behind-the-scenes of 77× optimization
+   - Week 2: Behind-the-scenes of 7× optimization
    - Week 3: MILK Lane visual feedback demo
    - Week 4: Q&A with supporters
 

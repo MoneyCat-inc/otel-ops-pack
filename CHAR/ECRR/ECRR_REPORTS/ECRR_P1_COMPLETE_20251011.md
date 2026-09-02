@@ -330,7 +330,7 @@ bash BRAV/SCPT/flak-changed-paths-smoke.sh # Fast smoke
 ### Performance
 **Gate Status:** ✅ GREEN  
 **p95 Latency:** 1.92ms (96% under 200ms SLO)  
-**Throughput:** 77× uplift maintained  
+**Throughput:** 7× uplift maintained  
 **Success Rate:** 99.97%
 
 ---
