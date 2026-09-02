@@ -2,9 +2,10 @@
 
 **Location:** `docs/status/`  
 **Purpose:** Canonical registries and operational metadata  
-**Maintained:** Automatically generated, CI-enforced
+**Maintained:** `workflows.json` and `scripts.json` are generated and CI-guarded; everything else
+is a hand-kept record or a dated snapshot (see the inventory below)
 
-**🛡️ Protected by Registry Guard:** All changes are validated by CI
+**🛡️ Protected by Registry Guard:** `workflows.json` and `scripts.json` (`registry-guard.yml`)
 
 ---
 
@@ -14,15 +15,20 @@
 
 **`REFERENCES_MAP.json`** / **`REFERENCES_MAP.md`**
 
-- Canonical reference map with 7 buckets
+- Canonical reference map: 5 buckets, 10 canonical references, 8 organized domains
+- The JSON mirrors the markdown (same version number); keep them in step
 - Single source of truth for all working parts
 - **Update:** Manual (when adding canonical references)
 
 **`scripts.json`**
 
-- PowerShell scripts registry categorized by lane
-- Includes file size, modification date, lane assignment
-- **Regenerate:** After adding/modifying scripts in `scripts/`
+- Tracked `scripts/**/*.ps1` (172 as of 2026-09-02), categorized by lane
+- `size` = committed blob size; no dates by design — `git log` dates differ between a shallow
+  clone and a full one, so the file is byte-identical in every clone at the same commit
+- **Regenerate:** `pwsh scripts/regenerate-scripts-registry.ps1` after adding, moving, editing or
+  deleting anything under `scripts/` (`-Check` exits 1 on drift)
+- **Guard:** `registry-guard.yml` runs `-Check` on every `scripts/**` PR; like `workflows.json`
+  the file is outside the docs-lane budgets, so commit it with the script change
 
 **`workflows.json`** 🛡️ **CI-Guarded**
 
@@ -31,6 +37,23 @@
 - Schema-validated (`workflows.schema.json`)
 - **Regenerate:** After adding/modifying workflows in `.github/workflows/`
 - **Guard:** `.github/workflows/registry-guard.yml` enforces freshness
+
+### Snapshots and Records (not registries)
+
+| File | What it is | Writer | Reader |
+| --- | --- | --- | --- |
+| `kpis.json` | Hub KPI tiles, last generated 2026-08-12 | `BRAV/SCPT/generate_status_jsons.py` (that run) or `scripts/generate-hub-kpis.ps1`; manual — `update-kpis.yml` RETIRED 2026-08-03 | `DELT/ASST/hub/hub.js`, `BRAV/SCPT/diagnostic-shell-enhanced.ps1` |
+| `ssot.json` | Health summary from the same 2026-08-12 run | `BRAV/SCPT/generate_status_jsons.py` | `docs/status.html` (optional), diagnostic shell |
+| `tests.json` | Gate #008 reconciliation record (2025-10-24), schema `schema/status-tests.schema.json` | `BRAV/SCPT/update-status-dashboard.ps1` | `json-validation-gate.yml`, `verify-iona-gate.ps1`, `docs/status.html` |
+| `metrics.json`, `rsi-metrics.json` | RSI convergence rate (7d), `null` when unmeasured; written 2026-08-29 | RSI extractor lane (`scripts/rsi-extract.mjs` publishes to `artifacts/rsi/`) | `docs/assets/icf-rsi-panel.js` (last-resort fallback) |
+| `convergence.json` | HISTORICAL snapshot, Gates #007-#008 (2025-10-22); the proposed panel was never built | hand-written | none |
+| `version.json` | Release record for tag `bosscat-registry-1.0` (2025-10-19, PR #171) | hand-written | none |
+| `workflows.schema.json` | JSON Schema for `workflows.json` | hand-written | `registry-guard.yml` |
+
+> **Removed 2026-09-02:** `redirect-map.json` (177 old→new pairs from the 2025-10 root
+> consolidation). The root stubs it described were deleted long ago and 133 of its 177 targets
+> no longer existed (lower-cased `docs/bosscat/`, extracted `docs/socm/`, records since archived).
+> `scripts/extract-redirect-map.ps1` can rebuild it from stubs if a consolidation ever recurs.
 
 > **Removed 2026-08-14:** `orphans.md` was deleted in the deep-clean pass. It was a
 > 4.4 MB / 144k-line snapshot generated 2025-10-19, it reported 18,018 orphans against
@@ -178,39 +201,18 @@ $json.items | Where-Object { $_.name -in @('bosscat-gate-bot-native', 'apisec-sc
 - After moving scripts between directories
 - After lane reassignments
 
-**Command:**
+**Command (any platform, any directory):**
 
 ```powershell
-cd c:\otel
-
-$files = Get-Content artifacts\index\files.json -Raw | ConvertFrom-Json
-$scripts = $files | Where-Object {
-    $_.FullName -like "*\scripts\*" -and $_.FullName -like "*.ps1"
-} | ForEach-Object {
-    $name = [IO.Path]::GetFileName($_.FullName)
-    $lane = if ($name -match 'gate|verify') { 'GATE' }
-            elseif ($name -match 'monitor|canary|test') { 'SSOT' }
-            elseif ($name -match 'benchmark|process') { 'COMP' }
-            elseif ($name -match 'hub|export') { 'DOCS' }
-            else { 'UTIL' }
-    
-    [pscustomobject]@{
-        name = $name
-        path = $_.FullName.Replace('C:\otel\','').Replace('\','/')
-        size = $_.Length
-        modified = $_.LastWriteTime
-        lane = $lane
-    }
-}
-
-@{
-    updated = (Get-Date -Format 'o')
-    total = $scripts.Count
-    scripts = $scripts
-} | ConvertTo-Json -Depth 4 | Out-File docs\status\scripts.json -Encoding UTF8
-
-Write-Host "✅ scripts.json regenerated ($($scripts.Count) scripts)" -ForegroundColor Green
+pwsh scripts/regenerate-scripts-registry.ps1          # rewrite docs/status/scripts.json
+pwsh scripts/regenerate-scripts-registry.ps1 -Check   # exit 1 if the committed file is stale
 ```
+
+The script enumerates tracked `scripts/**/*.ps1` with `git ls-files`, so it never picks up
+local-only files, and it takes sizes from the committed blobs rather than the filesystem, so
+two clones at the same commit produce byte-identical output (no dates: they would depend on
+clone depth). Lane assignment is by filename (see "Lane categorization" below). The 2025 recipe that read `artifacts/index/files.json`
+from `C:\otel` is retired: that inventory is gitignored and its mtimes were machine-local.
 
 ---
 

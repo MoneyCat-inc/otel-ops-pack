@@ -1,328 +1,1038 @@
 {
-  "updated": "2025-10-19T08:10:52.3767180+01:00",
+  "source": "scripts/regenerate-scripts-registry.ps1",
+  "total": 172,
   "scripts": [
     {
-      "name": "codemods.ps1",
-      "path": ".agent\\scripts\\codemods.ps1",
-      "size": 245,
-      "modified": "2025-09-17T21:49:46.6061389+01:00",
-      "lane": "UTIL"
-    },
-    {
-      "name": "enqueue-task.ps1",
-      "path": ".agent\\scripts\\enqueue-task.ps1",
-      "size": 203,
-      "modified": "2025-09-17T21:49:46.4196128+01:00",
-      "lane": "UTIL"
-    },
-    {
-      "name": "run-codex.ps1",
-      "path": ".agent\\scripts\\run-codex.ps1",
-      "size": 668,
-      "modified": "2025-09-17T21:49:46.5442534+01:00",
-      "lane": "UTIL"
-    },
-    {
-      "name": "tetragrammaton-cord.ps1",
-      "path": ".agent\\scripts\\tetragrammaton-cord.ps1",
-      "size": 12270,
-      "modified": "2025-09-28T16:13:15.983937+01:00",
-      "lane": "UTIL"
-    },
-    {
-      "name": "tetragrammaton-impl.ps1",
-      "path": ".agent\\scripts\\tetragrammaton-impl.ps1",
-      "size": 10257,
-      "modified": "2025-09-28T16:10:54.0060714+01:00",
-      "lane": "UTIL"
-    },
-    {
-      "name": "tetragrammaton-orch.ps1",
-      "path": ".agent\\scripts\\tetragrammaton-orch.ps1",
-      "size": 6038,
-      "modified": "2025-09-28T16:10:54.0060714+01:00",
-      "lane": "UTIL"
-    },
-    {
-      "name": "generate-codex-tasks.ps1",
-      "path": "ALFA\\APPS\\codex\\scripts\\generate-codex-tasks.ps1",
-      "size": 2810,
-      "modified": "2025-10-16T04:41:51.2685635+01:00",
-      "lane": "UTIL"
-    },
-    {
-      "name": "status-fleet.ps1",
-      "path": "CHAR\\DOCS\\upstream-contribution\\windows_day2_ops\\scripts\\status-fleet.ps1",
-      "size": 1336,
-      "modified": "2025-10-16T04:41:52.6491714+01:00",
-      "lane": "UTIL"
-    },
-    {
-      "name": "comfort-checklist.ps1",
-      "path": "CHAR\\PRSV\\comfort-cat-stubs\\comfort-cat-stubs\\scripts\\comfort-checklist.ps1",
-      "size": 496,
-      "modified": "2025-10-16T04:41:54.1912303+01:00",
-      "lane": "UTIL"
-    },
-    {
-      "name": "sync-comfort-cat.ps1",
-      "path": "CHAR\\PRSV\\comfort-cat-stubs\\comfort-cat-stubs\\scripts\\sync-comfort-cat.ps1",
-      "size": 349,
-      "modified": "2025-10-16T04:41:54.1912303+01:00",
-      "lane": "UTIL"
-    },
-    {
-      "name": "Activate.ps1",
-      "path": "CHAR\\PRSV\\experiments\\experiments\\codex-local-logfilter\\.venv\\Scripts\\Activate.ps1",
-      "size": 9031,
-      "modified": "2025-08-14T15:34:28+01:00",
-      "lane": "UTIL"
-    },
-    {
-      "name": "set-credentials.ps1",
-      "path": "scripts\\social\\set-credentials.ps1",
-      "size": 1425,
-      "modified": "2025-10-18T03:08:13.9601155+01:00",
-      "lane": "UTIL"
-    },
-    {
-      "name": "build-milk-vendors.ps1",
-      "path": "scripts\\visuals\\build-milk-vendors.ps1",
-      "size": 2250,
-      "modified": "2025-10-17T14:12:06.4525183+01:00",
-      "lane": "UTIL"
-    },
-    {
-      "name": "Install-PresetPack.ps1",
-      "path": "scripts\\visuals\\Install-PresetPack.ps1",
-      "size": 4730,
-      "modified": "2025-10-16T11:35:47.1866704+01:00",
-      "lane": "UTIL"
-    },
-    {
-      "name": "Install-ResonaiDefault.ps1",
-      "path": "scripts\\visuals\\Install-ResonaiDefault.ps1",
-      "size": 2397,
-      "modified": "2025-10-16T10:10:10.1449011+01:00",
-      "lane": "UTIL"
-    },
-    {
-      "name": "Validate-Preset.ps1",
-      "path": "scripts\\visuals\\Validate-Preset.ps1",
-      "size": 6120,
-      "modified": "2025-10-16T11:35:47.1866704+01:00",
+      "name": "analyze-sqlite.ps1",
+      "path": "scripts/analyze-sqlite.ps1",
+      "size": 1107,
       "lane": "UTIL"
     },
     {
       "name": "append-ecrr-benchmark-trend.ps1",
-      "path": "scripts\\append-ecrr-benchmark-trend.ps1",
-      "size": 2359,
-      "modified": "2025-10-16T04:42:06.7816025+01:00",
+      "path": "scripts/append-ecrr-benchmark-trend.ps1",
+      "size": 2283,
       "lane": "COMP"
     },
     {
       "name": "archive-gate-007-session.ps1",
-      "path": "scripts\\archive-gate-007-session.ps1",
-      "size": 6949,
-      "modified": "2025-10-16T04:42:06.7831073+01:00",
+      "path": "scripts/archive-gate-007-session.ps1",
+      "size": 6724,
       "lane": "GATE"
     },
     {
+      "name": "audio-feeder.ps1",
+      "path": "scripts/audio-feeder.ps1",
+      "size": 3578,
+      "lane": "UTIL"
+    },
+    {
+      "name": "author-loop-ai.ps1",
+      "path": "scripts/author-loop-ai.ps1",
+      "size": 9933,
+      "lane": "UTIL"
+    },
+    {
+      "name": "author-loop.ps1",
+      "path": "scripts/author-loop.ps1",
+      "size": 10041,
+      "lane": "UTIL"
+    },
+    {
       "name": "auto-rerun-guard.ps1",
-      "path": "scripts\\auto-rerun-guard.ps1",
-      "size": 991,
-      "modified": "2025-10-16T04:42:06.7831073+01:00",
+      "path": "scripts/auto-rerun-guard.ps1",
+      "size": 1582,
       "lane": "UTIL"
     },
     {
       "name": "benchmark-process-all-ecrr-reports.ps1",
-      "path": "scripts\\benchmark-process-all-ecrr-reports.ps1",
-      "size": 2265,
-      "modified": "2025-10-16T04:42:06.7831073+01:00",
+      "path": "scripts/benchmark-process-all-ecrr-reports.ps1",
+      "size": 211,
       "lane": "COMP"
     },
     {
       "name": "boot-health-check.ps1",
-      "path": "scripts\\boot-health-check.ps1",
-      "size": 8917,
-      "modified": "2025-10-16T10:19:29.2930089+01:00",
+      "path": "scripts/boot-health-check.ps1",
+      "size": 177,
       "lane": "UTIL"
     },
     {
+      "name": "bsky-weekly-reminder.ps1",
+      "path": "scripts/bsky-weekly-reminder.ps1",
+      "size": 5252,
+      "lane": "UTIL"
+    },
+    {
+      "name": "check-hub-links.ps1",
+      "path": "scripts/check-hub-links.ps1",
+      "size": 573,
+      "lane": "DOCS"
+    },
+    {
       "name": "check-site-refmap.ps1",
-      "path": "scripts\\check-site-refmap.ps1",
-      "size": 2316,
-      "modified": "2025-10-16T04:42:06.7846225+01:00",
+      "path": "scripts/check-site-refmap.ps1",
+      "size": 2277,
       "lane": "UTIL"
     },
     {
       "name": "check-site.ps1",
-      "path": "scripts\\check-site.ps1",
-      "size": 3297,
-      "modified": "2025-10-16T04:42:06.7846225+01:00",
+      "path": "scripts/check-site.ps1",
+      "size": 3212,
       "lane": "UTIL"
     },
     {
       "name": "cleanup-parallel-aggressive.ps1",
-      "path": "scripts\\cleanup-parallel-aggressive.ps1",
-      "size": 15301,
-      "modified": "2025-10-16T04:42:06.78563+01:00",
+      "path": "scripts/cleanup-parallel-aggressive.ps1",
+      "size": 14880,
+      "lane": "UTIL"
+    },
+    {
+      "name": "chaos-service-down.ps1",
+      "path": "scripts/cluster/chaos-service-down.ps1",
+      "size": 3700,
+      "lane": "UTIL"
+    },
+    {
+      "name": "test-clusteraudio-03.ps1",
+      "path": "scripts/cluster/test-clusteraudio-03.ps1",
+      "size": 6192,
+      "lane": "SSOT"
+    },
+    {
+      "name": "test-manual-cluster-control.ps1",
+      "path": "scripts/cluster/test-manual-cluster-control.ps1",
+      "size": 5086,
+      "lane": "SSOT"
+    },
+    {
+      "name": "verify-audioswitch-cluster.ps1",
+      "path": "scripts/cluster/verify-audioswitch-cluster.ps1",
+      "size": 7979,
+      "lane": "GATE"
+    },
+    {
+      "name": "configure-collector-service.ps1",
+      "path": "scripts/configure-collector-service.ps1",
+      "size": 2002,
+      "lane": "UTIL"
+    },
+    {
+      "name": "consolidate-root-docs.ps1",
+      "path": "scripts/consolidate-root-docs.ps1",
+      "size": 6528,
       "lane": "UTIL"
     },
     {
       "name": "cursor-implementer-run.ps1",
-      "path": "scripts\\cursor-implementer-run.ps1",
-      "size": 7189,
-      "modified": "2025-10-16T04:42:06.7872425+01:00",
+      "path": "scripts/cursor-implementer-run.ps1",
+      "size": 7043,
       "lane": "UTIL"
     },
     {
+      "name": "chaos-cpu-throttle.ps1",
+      "path": "scripts/demo/chaos-cpu-throttle.ps1",
+      "size": 1589,
+      "lane": "UTIL"
+    },
+    {
+      "name": "chaos-network-delay.ps1",
+      "path": "scripts/demo/chaos-network-delay.ps1",
+      "size": 1561,
+      "lane": "UTIL"
+    },
+    {
+      "name": "chaos-service-down.ps1",
+      "path": "scripts/demo/chaos-service-down.ps1",
+      "size": 1406,
+      "lane": "UTIL"
+    },
+    {
+      "name": "deploy-demo-service.ps1",
+      "path": "scripts/demo/deploy-demo-service.ps1",
+      "size": 4891,
+      "lane": "UTIL"
+    },
+    {
+      "name": "export-evidence.ps1",
+      "path": "scripts/demo/export-evidence.ps1",
+      "size": 5635,
+      "lane": "DOCS"
+    },
+    {
+      "name": "run-investor-demo.ps1",
+      "path": "scripts/demo/run-investor-demo.ps1",
+      "size": 9339,
+      "lane": "UTIL"
+    },
+    {
+      "name": "serve-data-room.ps1",
+      "path": "scripts/demo/serve-data-room.ps1",
+      "size": 695,
+      "lane": "UTIL"
+    },
+    {
+      "name": "verify-telemetry.ps1",
+      "path": "scripts/demo/verify-telemetry.ps1",
+      "size": 6257,
+      "lane": "GATE"
+    },
+    {
       "name": "deploy-production.ps1",
-      "path": "scripts\\deploy-production.ps1",
-      "size": 14060,
-      "modified": "2025-10-16T10:19:29.2930089+01:00",
+      "path": "scripts/deploy-production.ps1",
+      "size": 177,
       "lane": "UTIL"
     },
     {
       "name": "diagnostic-shell-enhanced.ps1",
-      "path": "scripts\\diagnostic-shell-enhanced.ps1",
-      "size": 25797,
-      "modified": "2025-10-16T10:19:29.2930089+01:00",
+      "path": "scripts/diagnostic-shell-enhanced.ps1",
+      "size": 193,
+      "lane": "UTIL"
+    },
+    {
+      "name": "diagnostic.ps1",
+      "path": "scripts/diagnostic.ps1",
+      "size": 125,
       "lane": "UTIL"
     },
     {
       "name": "enterprise-readiness-check.ps1",
-      "path": "scripts\\enterprise-readiness-check.ps1",
-      "size": 16104,
-      "modified": "2025-10-16T10:19:29.2945238+01:00",
+      "path": "scripts/enterprise-readiness-check.ps1",
+      "size": 195,
       "lane": "UTIL"
+    },
+    {
+      "name": "extract-ecrr-metrics.ps1",
+      "path": "scripts/extract-ecrr-metrics.ps1",
+      "size": 11613,
+      "lane": "UTIL"
+    },
+    {
+      "name": "extract-redirect-map.ps1",
+      "path": "scripts/extract-redirect-map.ps1",
+      "size": 1913,
+      "lane": "UTIL"
+    },
+    {
+      "name": "free-drive-space-admin.ps1",
+      "path": "scripts/free-drive-space-admin.ps1",
+      "size": 2290,
+      "lane": "UTIL"
+    },
+    {
+      "name": "install-dotnet-autoinstrumentation.ps1",
+      "path": "scripts/gate026/install-dotnet-autoinstrumentation.ps1",
+      "size": 3214,
+      "lane": "UTIL"
+    },
+    {
+      "name": "run-dotnet-app-instrumented.ps1",
+      "path": "scripts/gate026/run-dotnet-app-instrumented.ps1",
+      "size": 4808,
+      "lane": "UTIL"
+    },
+    {
+      "name": "verify-dotnet-instrumentation.ps1",
+      "path": "scripts/gate026/verify-dotnet-instrumentation.ps1",
+      "size": 6837,
+      "lane": "GATE"
+    },
+    {
+      "name": "deploy-dotnet-service2.ps1",
+      "path": "scripts/gate027/deploy-dotnet-service2.ps1",
+      "size": 3463,
+      "lane": "UTIL"
+    },
+    {
+      "name": "deploy-dotnet-service3.ps1",
+      "path": "scripts/gate027/deploy-dotnet-service3.ps1",
+      "size": 2741,
+      "lane": "UTIL"
+    },
+    {
+      "name": "generate-traffic.ps1",
+      "path": "scripts/gate027/generate-traffic.ps1",
+      "size": 1483,
+      "lane": "UTIL"
+    },
+    {
+      "name": "generate-collector-test-traffic.ps1",
+      "path": "scripts/gate028/generate-collector-test-traffic.ps1",
+      "size": 1056,
+      "lane": "SSOT"
+    },
+    {
+      "name": "test-collector-path.ps1",
+      "path": "scripts/gate028/test-collector-path.ps1",
+      "size": 3206,
+      "lane": "SSOT"
+    },
+    {
+      "name": "generate-traffic.ps1",
+      "path": "scripts/gate029/generate-traffic.ps1",
+      "size": 3093,
+      "lane": "UTIL"
+    },
+    {
+      "name": "orchestrator.ps1",
+      "path": "scripts/gate029/orchestrator.ps1",
+      "size": 9875,
+      "lane": "UTIL"
+    },
+    {
+      "name": "verify-collector-5317.ps1",
+      "path": "scripts/gate029/verify-collector-5317.ps1",
+      "size": 5644,
+      "lane": "GATE"
+    },
+    {
+      "name": "generate-hub-kpis.ps1",
+      "path": "scripts/generate-hub-kpis.ps1",
+      "size": 2234,
+      "lane": "DOCS"
     },
     {
       "name": "generate-queue-steward-evidence.ps1",
-      "path": "scripts\\generate-queue-steward-evidence.ps1",
-      "size": 2936,
-      "modified": "2025-10-16T04:42:06.7897547+01:00",
+      "path": "scripts/generate-queue-steward-evidence.ps1",
+      "size": 2852,
       "lane": "UTIL"
     },
     {
-      "name": "gpu-fix-lane.ps1",
-      "path": "scripts\\gpu-fix-lane.ps1",
-      "size": 10283,
-      "modified": "2025-10-16T04:42:06.790766+01:00",
+      "name": "guard-inflated-metrics.ps1",
+      "path": "scripts/guard-inflated-metrics.ps1",
+      "size": 11109,
+      "lane": "UTIL"
+    },
+    {
+      "name": "audit-runbooks.ps1",
+      "path": "scripts/hardening/audit-runbooks.ps1",
+      "size": 5676,
       "lane": "UTIL"
     },
     {
       "name": "hub-smoke-test.ps1",
-      "path": "scripts\\hub-smoke-test.ps1",
-      "size": 3518,
-      "modified": "2025-10-19T05:00:12.1019776+01:00",
+      "path": "scripts/hub-smoke-test.ps1",
+      "size": 3485,
       "lane": "SSOT"
     },
     {
       "name": "hub-verify-dns.ps1",
-      "path": "scripts\\hub-verify-dns.ps1",
-      "size": 2063,
-      "modified": "2025-10-19T05:00:12.1080242+01:00",
+      "path": "scripts/hub-verify-dns.ps1",
+      "size": 2004,
       "lane": "GATE"
     },
     {
+      "name": "analyze-convergence.ps1",
+      "path": "scripts/icf/analyze-convergence.ps1",
+      "size": 6671,
+      "lane": "UTIL"
+    },
+    {
+      "name": "analyze-cycle-retrospective.ps1",
+      "path": "scripts/icf/analyze-cycle-retrospective.ps1",
+      "size": 4126,
+      "lane": "UTIL"
+    },
+    {
+      "name": "test-regex.ps1",
+      "path": "scripts/icf/test-regex.ps1",
+      "size": 1483,
+      "lane": "SSOT"
+    },
+    {
+      "name": "update-dashboard-icf.ps1",
+      "path": "scripts/icf/update-dashboard-icf.ps1",
+      "size": 3796,
+      "lane": "UTIL"
+    },
+    {
+      "name": "import-queue-steward-dashboard-api.ps1",
+      "path": "scripts/import-queue-steward-dashboard-api.ps1",
+      "size": 7868,
+      "lane": "UTIL"
+    },
+    {
+      "name": "index-performance-claims.ps1",
+      "path": "scripts/index-performance-claims.ps1",
+      "size": 2611,
+      "lane": "UTIL"
+    },
+    {
       "name": "ingest-backfill.ps1",
-      "path": "scripts\\ingest-backfill.ps1",
-      "size": 4265,
-      "modified": "2025-10-16T04:42:06.7917665+01:00",
+      "path": "scripts/ingest-backfill.ps1",
+      "size": 4148,
       "lane": "UTIL"
     },
     {
       "name": "integrate-boot-health.ps1",
-      "path": "scripts\\integrate-boot-health.ps1",
-      "size": 5593,
-      "modified": "2025-10-16T10:19:29.2945238+01:00",
+      "path": "scripts/integrate-boot-health.ps1",
+      "size": 185,
       "lane": "UTIL"
     },
     {
+      "name": "invoke-quil.ps1",
+      "path": "scripts/invoke-quil.ps1",
+      "size": 4797,
+      "lane": "UTIL"
+    },
+    {
+      "name": "kofi-weekly-reminder.ps1",
+      "path": "scripts/kofi-weekly-reminder.ps1",
+      "size": 5193,
+      "lane": "UTIL"
+    },
+    {
+      "name": "analyze-trace-schema.ps1",
+      "path": "scripts/legacy/analyze-trace-schema.ps1",
+      "size": 5065,
+      "lane": "UTIL"
+    },
+    {
+      "name": "bosscat-oem-v3-check.ps1",
+      "path": "scripts/legacy/bosscat-oem-v3-check.ps1",
+      "size": 7217,
+      "lane": "UTIL"
+    },
+    {
+      "name": "bosscat-oem-v3-complete.ps1",
+      "path": "scripts/legacy/bosscat-oem-v3-complete.ps1",
+      "size": 11881,
+      "lane": "UTIL"
+    },
+    {
+      "name": "bosscat-oem-v3-monitor.ps1",
+      "path": "scripts/legacy/bosscat-oem-v3-monitor.ps1",
+      "size": 17025,
+      "lane": "SSOT"
+    },
+    {
+      "name": "config-schema.ps1",
+      "path": "scripts/legacy/config-schema.ps1",
+      "size": 11304,
+      "lane": "UTIL"
+    },
+    {
+      "name": "final-verification.ps1",
+      "path": "scripts/legacy/final-verification.ps1",
+      "size": 6788,
+      "lane": "UTIL"
+    },
+    {
+      "name": "gate-advance.ps1",
+      "path": "scripts/legacy/gate-advance.ps1",
+      "size": 6324,
+      "lane": "GATE"
+    },
+    {
+      "name": "gate-self-signal-check.ps1",
+      "path": "scripts/legacy/gate-self-signal-check.ps1",
+      "size": 2642,
+      "lane": "GATE"
+    },
+    {
+      "name": "gate-self-signal-monitor.ps1",
+      "path": "scripts/legacy/gate-self-signal-monitor.ps1",
+      "size": 4265,
+      "lane": "GATE"
+    },
+    {
+      "name": "gate-v3-complete.ps1",
+      "path": "scripts/legacy/gate-v3-complete.ps1",
+      "size": 6276,
+      "lane": "GATE"
+    },
+    {
+      "name": "operator-pipeline-check.ps1",
+      "path": "scripts/legacy/operator-pipeline-check.ps1",
+      "size": 4082,
+      "lane": "UTIL"
+    },
+    {
+      "name": "ADOT_PR_COMMANDS.ps1",
+      "path": "scripts/legacy/ops/ADOT_PR_COMMANDS.ps1",
+      "size": 4351,
+      "lane": "UTIL"
+    },
+    {
+      "name": "agent-scheduler.ps1",
+      "path": "scripts/legacy/ops/agent-scheduler.ps1",
+      "size": 7312,
+      "lane": "UTIL"
+    },
+    {
+      "name": "cleanup-repository.ps1",
+      "path": "scripts/legacy/ops/cleanup-repository.ps1",
+      "size": 10967,
+      "lane": "UTIL"
+    },
+    {
+      "name": "cleanup-simple.ps1",
+      "path": "scripts/legacy/ops/cleanup-simple.ps1",
+      "size": 13063,
+      "lane": "UTIL"
+    },
+    {
+      "name": "cleanup-test-artifacts.ps1",
+      "path": "scripts/legacy/ops/cleanup-test-artifacts.ps1",
+      "size": 5537,
+      "lane": "SSOT"
+    },
+    {
+      "name": "deploy-pressure-monitoring.ps1",
+      "path": "scripts/legacy/ops/deploy-pressure-monitoring.ps1",
+      "size": 6604,
+      "lane": "SSOT"
+    },
+    {
+      "name": "import-canary-alert.ps1",
+      "path": "scripts/legacy/ops/import-canary-alert.ps1",
+      "size": 2810,
+      "lane": "SSOT"
+    },
+    {
+      "name": "import-metrics-alert.ps1",
+      "path": "scripts/legacy/ops/import-metrics-alert.ps1",
+      "size": 3069,
+      "lane": "UTIL"
+    },
+    {
+      "name": "monitor-canary-task.ps1",
+      "path": "scripts/legacy/ops/monitor-canary-task.ps1",
+      "size": 9012,
+      "lane": "SSOT"
+    },
+    {
+      "name": "post-deploy-smoke.ps1",
+      "path": "scripts/legacy/ops/post-deploy-smoke.ps1",
+      "size": 1383,
+      "lane": "UTIL"
+    },
+    {
+      "name": "repo-clean-inventory.ps1",
+      "path": "scripts/legacy/ops/repo-clean-inventory.ps1",
+      "size": 2529,
+      "lane": "UTIL"
+    },
+    {
+      "name": "run-gpu-analysis.ps1",
+      "path": "scripts/legacy/ops/run-gpu-analysis.ps1",
+      "size": 4067,
+      "lane": "UTIL"
+    },
+    {
+      "name": "security-remediation-ngrok.ps1",
+      "path": "scripts/legacy/ops/security-remediation-ngrok.ps1",
+      "size": 2305,
+      "lane": "UTIL"
+    },
+    {
+      "name": "quick-status.ps1",
+      "path": "scripts/legacy/quick-status.ps1",
+      "size": 1554,
+      "lane": "UTIL"
+    },
+    {
+      "name": "restart-collector.ps1",
+      "path": "scripts/legacy/restart-collector.ps1",
+      "size": 3518,
+      "lane": "UTIL"
+    },
+    {
+      "name": "Fix-CursorPrematureClose.ps1",
+      "path": "scripts/legacy/setup/Fix-CursorPrematureClose.ps1",
+      "size": 3352,
+      "lane": "UTIL"
+    },
+    {
+      "name": "bring-up.ps1",
+      "path": "scripts/legacy/setup/bring-up.ps1",
+      "size": 10341,
+      "lane": "UTIL"
+    },
+    {
+      "name": "migrate-to-agent-structure.ps1",
+      "path": "scripts/legacy/setup/migrate-to-agent-structure.ps1",
+      "size": 6041,
+      "lane": "UTIL"
+    },
+    {
+      "name": "setup-commit-template.ps1",
+      "path": "scripts/legacy/setup/setup-commit-template.ps1",
+      "size": 2114,
+      "lane": "UTIL"
+    },
+    {
+      "name": "setup-resonai-env.ps1",
+      "path": "scripts/legacy/setup/setup-resonai-env.ps1",
+      "size": 1150,
+      "lane": "UTIL"
+    },
+    {
+      "name": "setup-weekly-audit.ps1",
+      "path": "scripts/legacy/setup/setup-weekly-audit.ps1",
+      "size": 1382,
+      "lane": "UTIL"
+    },
+    {
+      "name": "setup_cursor_implementer.ps1",
+      "path": "scripts/legacy/setup/setup_cursor_implementer.ps1",
+      "size": 14634,
+      "lane": "UTIL"
+    },
+    {
+      "name": "test-portal-links.ps1",
+      "path": "scripts/legacy/test-portal-links.ps1",
+      "size": 1252,
+      "lane": "SSOT"
+    },
+    {
+      "name": "Test-ResonaiStack.ps1",
+      "path": "scripts/legacy/test/Test-ResonaiStack.ps1",
+      "size": 2706,
+      "lane": "SSOT"
+    },
+    {
+      "name": "basic-test.ps1",
+      "path": "scripts/legacy/test/basic-test.ps1",
+      "size": 1265,
+      "lane": "SSOT"
+    },
+    {
+      "name": "test-agent-processing.ps1",
+      "path": "scripts/legacy/test/test-agent-processing.ps1",
+      "size": 1989,
+      "lane": "SSOT"
+    },
+    {
+      "name": "test-agent.ps1",
+      "path": "scripts/legacy/test/test-agent.ps1",
+      "size": 823,
+      "lane": "SSOT"
+    },
+    {
+      "name": "test-canary-monitor.ps1",
+      "path": "scripts/legacy/test/test-canary-monitor.ps1",
+      "size": 2626,
+      "lane": "SSOT"
+    },
+    {
+      "name": "test-config.ps1",
+      "path": "scripts/legacy/test/test-config.ps1",
+      "size": 371,
+      "lane": "SSOT"
+    },
+    {
+      "name": "test-runbook-execution.ps1",
+      "path": "scripts/legacy/test/test-runbook-execution.ps1",
+      "size": 4919,
+      "lane": "SSOT"
+    },
+    {
+      "name": "test-scripts.ps1",
+      "path": "scripts/legacy/test/test-scripts.ps1",
+      "size": 1630,
+      "lane": "SSOT"
+    },
+    {
+      "name": "test-setup.ps1",
+      "path": "scripts/legacy/test/test-setup.ps1",
+      "size": 2503,
+      "lane": "SSOT"
+    },
+    {
+      "name": "test-validation-simple.ps1",
+      "path": "scripts/legacy/test/test-validation-simple.ps1",
+      "size": 3437,
+      "lane": "SSOT"
+    },
+    {
+      "name": "test-yaml.ps1",
+      "path": "scripts/legacy/test/test-yaml.ps1",
+      "size": 558,
+      "lane": "SSOT"
+    },
+    {
+      "name": "verify-collector.ps1",
+      "path": "scripts/legacy/verify-collector.ps1",
+      "size": 7441,
+      "lane": "GATE"
+    },
+    {
+      "name": "check-ports.ps1",
+      "path": "scripts/legacy/verify/check-ports.ps1",
+      "size": 904,
+      "lane": "UTIL"
+    },
+    {
+      "name": "validate-concurrency-queue.ps1",
+      "path": "scripts/legacy/verify/validate-concurrency-queue.ps1",
+      "size": 5457,
+      "lane": "UTIL"
+    },
+    {
+      "name": "validate-pipeline.ps1",
+      "path": "scripts/legacy/verify/validate-pipeline.ps1",
+      "size": 6525,
+      "lane": "UTIL"
+    },
+    {
+      "name": "verify-ci-fixes.ps1",
+      "path": "scripts/legacy/verify/verify-ci-fixes.ps1",
+      "size": 5749,
+      "lane": "GATE"
+    },
+    {
+      "name": "verify-hardened-collector.ps1",
+      "path": "scripts/legacy/verify/verify-hardened-collector.ps1",
+      "size": 6128,
+      "lane": "GATE"
+    },
+    {
+      "name": "monitor-hub-production.ps1",
+      "path": "scripts/monitor-hub-production.ps1",
+      "size": 2915,
+      "lane": "SSOT"
+    },
+    {
+      "name": "monitor-optimized-pipeline.ps1",
+      "path": "scripts/monitor-optimized-pipeline.ps1",
+      "size": 138,
+      "lane": "SSOT"
+    },
+    {
       "name": "nightly-dashboard-export.ps1",
-      "path": "scripts\\nightly-dashboard-export.ps1",
-      "size": 965,
-      "modified": "2025-10-17T14:12:06.4511129+01:00",
+      "path": "scripts/nightly-dashboard-export.ps1",
+      "size": 931,
       "lane": "DOCS"
+    },
+    {
+      "name": "patreon-weekly-reminder.ps1",
+      "path": "scripts/patreon-weekly-reminder.ps1",
+      "size": 5223,
+      "lane": "UTIL"
+    },
+    {
+      "name": "baseline-audioswitch-propagation.ps1",
+      "path": "scripts/perf/baseline-audioswitch-propagation.ps1",
+      "size": 6678,
+      "lane": "UTIL"
+    },
+    {
+      "name": "test-k6-thresholds.ps1",
+      "path": "scripts/perf/test-k6-thresholds.ps1",
+      "size": 5638,
+      "lane": "SSOT"
     },
     {
       "name": "playwright-dashboard-export.ps1",
-      "path": "scripts\\playwright-dashboard-export.ps1",
-      "size": 5271,
-      "modified": "2025-10-16T04:42:06.7937959+01:00",
+      "path": "scripts/playwright-dashboard-export.ps1",
+      "size": 197,
       "lane": "DOCS"
     },
     {
+      "name": "preflight-health-check.ps1",
+      "path": "scripts/preflight-health-check.ps1",
+      "size": 136,
+      "lane": "UTIL"
+    },
+    {
+      "name": "progress-indicators.ps1",
+      "path": "scripts/progress-indicators.ps1",
+      "size": 118,
+      "lane": "UTIL"
+    },
+    {
+      "name": "quick-monitor.ps1",
+      "path": "scripts/quick-monitor.ps1",
+      "size": 131,
+      "lane": "SSOT"
+    },
+    {
+      "name": "regenerate-scripts-registry.ps1",
+      "path": "scripts/regenerate-scripts-registry.ps1",
+      "size": 5166,
+      "lane": "UTIL"
+    },
+    {
+      "name": "regenerate-workflows-registry.ps1",
+      "path": "scripts/regenerate-workflows-registry.ps1",
+      "size": 5516,
+      "lane": "UTIL"
+    },
+    {
+      "name": "replace-redirects-and-clean-stubs.ps1",
+      "path": "scripts/replace-redirects-and-clean-stubs.ps1",
+      "size": 5039,
+      "lane": "UTIL"
+    },
+    {
+      "name": "reset-docker-wsl-free-space.ps1",
+      "path": "scripts/reset-docker-wsl-free-space.ps1",
+      "size": 1283,
+      "lane": "UTIL"
+    },
+    {
+      "name": "rollback-audio.ps1",
+      "path": "scripts/rollback-audio.ps1",
+      "size": 8634,
+      "lane": "UTIL"
+    },
+    {
+      "name": "run-benchmark-campaign.ps1",
+      "path": "scripts/run-benchmark-campaign.ps1",
+      "size": 9522,
+      "lane": "COMP"
+    },
+    {
       "name": "run-normalize-summarize.ps1",
-      "path": "scripts\\run-normalize-summarize.ps1",
-      "size": 1055,
-      "modified": "2025-10-16T04:42:06.7953138+01:00",
+      "path": "scripts/run-normalize-summarize.ps1",
+      "size": 1018,
+      "lane": "UTIL"
+    },
+    {
+      "name": "score-curated-presets.ps1",
+      "path": "scripts/score-curated-presets.ps1",
+      "size": 5632,
       "lane": "UTIL"
     },
     {
       "name": "setup-bedrock-prerequisites.ps1",
-      "path": "scripts\\setup-bedrock-prerequisites.ps1",
-      "size": 8528,
-      "modified": "2025-10-16T10:19:29.2945238+01:00",
+      "path": "scripts/setup-bedrock-prerequisites.ps1",
+      "size": 197,
       "lane": "UTIL"
     },
     {
       "name": "setup-parallel-agent-automation.ps1",
-      "path": "scripts\\setup-parallel-agent-automation.ps1",
-      "size": 5876,
-      "modified": "2025-10-16T10:19:29.2955307+01:00",
+      "path": "scripts/setup-parallel-agent-automation.ps1",
+      "size": 205,
       "lane": "UTIL"
     },
     {
       "name": "setup-scaled-scheduler.ps1",
-      "path": "scripts\\setup-scaled-scheduler.ps1",
-      "size": 4938,
-      "modified": "2025-10-16T10:19:29.2955307+01:00",
+      "path": "scripts/setup-scaled-scheduler.ps1",
+      "size": 187,
+      "lane": "UTIL"
+    },
+    {
+      "name": "setup-social-maintenance-tasks.ps1",
+      "path": "scripts/setup-social-maintenance-tasks.ps1",
+      "size": 782,
+      "lane": "UTIL"
+    },
+    {
+      "name": "shrink-docker-vhdx.ps1",
+      "path": "scripts/shrink-docker-vhdx.ps1",
+      "size": 6506,
+      "lane": "UTIL"
+    },
+    {
+      "name": "slimevr-sanity-check.ps1",
+      "path": "scripts/slimevr-sanity-check.ps1",
+      "size": 4416,
+      "lane": "UTIL"
+    },
+    {
+      "name": "slimevr-usb-dongles.ps1",
+      "path": "scripts/slimevr-usb-dongles.ps1",
+      "size": 3346,
       "lane": "UTIL"
     },
     {
       "name": "socm-fat.ps1",
-      "path": "scripts\\socm-fat.ps1",
-      "size": 3983,
-      "modified": "2025-10-18T23:25:15.3594537+01:00",
+      "path": "scripts/socm-fat.ps1",
+      "size": 3896,
+      "lane": "UTIL"
+    },
+    {
+      "name": "start-windows-collector.ps1",
+      "path": "scripts/start-windows-collector.ps1",
+      "size": 2855,
       "lane": "UTIL"
     },
     {
       "name": "test-bedrock-connection.ps1",
-      "path": "scripts\\test-bedrock-connection.ps1",
-      "size": 635,
-      "modified": "2025-10-16T10:19:29.2955307+01:00",
+      "path": "scripts/test-bedrock-connection.ps1",
+      "size": 189,
+      "lane": "SSOT"
+    },
+    {
+      "name": "test-visual-guard-v1b.ps1",
+      "path": "scripts/test-visual-guard-v1b.ps1",
+      "size": 5331,
+      "lane": "SSOT"
+    },
+    {
+      "name": "test-visual-guard-v2.ps1",
+      "path": "scripts/test-visual-guard-v2.ps1",
+      "size": 3503,
+      "lane": "SSOT"
+    },
+    {
+      "name": "test-visual-guard.ps1",
+      "path": "scripts/test-visual-guard.ps1",
+      "size": 6854,
       "lane": "SSOT"
     },
     {
       "name": "track-sbom-stability.ps1",
-      "path": "scripts\\track-sbom-stability.ps1",
-      "size": 8402,
-      "modified": "2025-10-16T04:42:06.7973237+01:00",
+      "path": "scripts/track-sbom-stability.ps1",
+      "size": 8280,
       "lane": "UTIL"
     },
     {
       "name": "update-status-dashboard.ps1",
-      "path": "scripts\\update-status-dashboard.ps1",
-      "size": 19758,
-      "modified": "2025-10-16T10:19:29.2970375+01:00",
+      "path": "scripts/update-status-dashboard.ps1",
+      "size": 189,
       "lane": "UTIL"
     },
     {
+      "name": "validate-gate-012b.ps1",
+      "path": "scripts/validate-gate-012b.ps1",
+      "size": 8698,
+      "lane": "GATE"
+    },
+    {
+      "name": "validate-gate-013.ps1",
+      "path": "scripts/validate-gate-013.ps1",
+      "size": 14477,
+      "lane": "GATE"
+    },
+    {
       "name": "verify-correlation.ps1",
-      "path": "scripts\\verify-correlation.ps1",
-      "size": 2282,
-      "modified": "2025-10-16T04:42:06.7983322+01:00",
+      "path": "scripts/verify-correlation.ps1",
+      "size": 2214,
+      "lane": "GATE"
+    },
+    {
+      "name": "verify-integration.ps1",
+      "path": "scripts/verify-integration.ps1",
+      "size": 177,
       "lane": "GATE"
     },
     {
       "name": "verify-iona-gate.ps1",
-      "path": "scripts\\verify-iona-gate.ps1",
-      "size": 12221,
-      "modified": "2025-10-18T19:12:48.9082029+01:00",
+      "path": "scripts/verify-iona-gate.ps1",
+      "size": 175,
       "lane": "GATE"
+    },
+    {
+      "name": "verify-wiring.ps1",
+      "path": "scripts/verify-wiring.ps1",
+      "size": 131,
+      "lane": "GATE"
+    },
+    {
+      "name": "proof-adapter.ps1",
+      "path": "scripts/visualizer/proof-adapter.ps1",
+      "size": 8020,
+      "lane": "UTIL"
+    },
+    {
+      "name": "check-watchdog-freshness.ps1",
+      "path": "scripts/windows/check-watchdog-freshness.ps1",
+      "size": 1801,
+      "lane": "UTIL"
+    },
+    {
+      "name": "deploy-dotnet-service.ps1",
+      "path": "scripts/windows/deploy-dotnet-service.ps1",
+      "size": 11362,
+      "lane": "UTIL"
+    },
+    {
+      "name": "docker-weekly-trim.ps1",
+      "path": "scripts/windows/docker-weekly-trim.ps1",
+      "size": 3596,
+      "lane": "UTIL"
+    },
+    {
+      "name": "health-check-collector-config.ps1",
+      "path": "scripts/windows/health-check-collector-config.ps1",
+      "size": 3894,
+      "lane": "UTIL"
+    },
+    {
+      "name": "health-check-otlp.ps1",
+      "path": "scripts/windows/health-check-otlp.ps1",
+      "size": 12478,
+      "lane": "UTIL"
+    },
+    {
+      "name": "install-dotnet-otel-autoinstrumentation.ps1",
+      "path": "scripts/windows/install-dotnet-otel-autoinstrumentation.ps1",
+      "size": 3415,
+      "lane": "UTIL"
+    },
+    {
+      "name": "install-or-repair-otel-collector.ps1",
+      "path": "scripts/windows/install-or-repair-otel-collector.ps1",
+      "size": 10553,
+      "lane": "UTIL"
+    },
+    {
+      "name": "install-watchdog-task.ps1",
+      "path": "scripts/windows/install-watchdog-task.ps1",
+      "size": 2148,
+      "lane": "UTIL"
+    },
+    {
+      "name": "invoke-clean-host-e2e.ps1",
+      "path": "scripts/windows/invoke-clean-host-e2e.ps1",
+      "size": 19620,
+      "lane": "UTIL"
+    },
+    {
+      "name": "orchestrate-two-services.ps1",
+      "path": "scripts/windows/orchestrate-two-services.ps1",
+      "size": 5897,
+      "lane": "UTIL"
+    },
+    {
+      "name": "phase0-setup.ps1",
+      "path": "scripts/windows/phase0-setup.ps1",
+      "size": 9076,
+      "lane": "UTIL"
+    },
+    {
+      "name": "proof-of-telemetry.ps1",
+      "path": "scripts/windows/proof-of-telemetry.ps1",
+      "size": 14394,
+      "lane": "UTIL"
+    },
+    {
+      "name": "run-dotnet-test-instrumented.ps1",
+      "path": "scripts/windows/run-dotnet-test-instrumented.ps1",
+      "size": 5121,
+      "lane": "SSOT"
+    },
+    {
+      "name": "test-otlp-e2e.ps1",
+      "path": "scripts/windows/test-otlp-e2e.ps1",
+      "size": 7440,
+      "lane": "SSOT"
+    },
+    {
+      "name": "verify-collector-traces.ps1",
+      "path": "scripts/windows/verify-collector-traces.ps1",
+      "size": 4070,
+      "lane": "GATE"
+    },
+    {
+      "name": "verify-dotnet-instrumentation.ps1",
+      "path": "scripts/windows/verify-dotnet-instrumentation.ps1",
+      "size": 3632,
+      "lane": "GATE"
+    },
+    {
+      "name": "verify-otel-collector.ps1",
+      "path": "scripts/windows/verify-otel-collector.ps1",
+      "size": 4938,
+      "lane": "GATE"
+    },
+    {
+      "name": "watchdog-otelcol.ps1",
+      "path": "scripts/windows/watchdog-otelcol.ps1",
+      "size": 6738,
+      "lane": "UTIL"
     }
-  ],
-  "total": 46
+  ]
 }
