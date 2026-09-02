@@ -84,7 +84,10 @@ try {
         total   = $scripts.Count
         scripts = $scripts
     }
-    $json = ($registry | ConvertTo-Json -Depth 4) + "`n"
+    # ConvertTo-Json joins lines with the platform newline (CRLF on Windows); the committed
+    # file is LF. Normalise the generated text, and the committed text in -Check, so a Windows
+    # seat compares like for like (Cursor seat, 2026-09-02).
+    $json = (($registry | ConvertTo-Json -Depth 4) -replace "`r`n", "`n") + "`n"
 
     $outPath = [System.IO.Path]::GetFullPath($Out, $repoRoot)
 
@@ -93,7 +96,7 @@ try {
             Write-Host "scripts registry: $Out missing" -ForegroundColor Red
             exit 1
         }
-        $committed = [System.IO.File]::ReadAllText($outPath)
+        $committed = [System.IO.File]::ReadAllText($outPath) -replace "`r`n", "`n"
         if (-not [string]::Equals($committed, $json, [System.StringComparison]::Ordinal)) {
             Write-Host "scripts registry: $Out is stale (re-run without -Check)" -ForegroundColor Red
             $a = $committed -split "`n"; $b = $json -split "`n"
