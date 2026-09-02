@@ -5,6 +5,15 @@
 **SBOM Status:** 🔒 **PROD BLOCKING ENABLED** (Issue #135 closed, PR #226)  
 **System State:** Production + local pipeline healthy
 
+> **Snapshot notice (2026-09-02 truth pass).** The header above and the *Dependabot*
+> block under *Active Monitoring & Next Actions* are the live parts of this page.
+> Everything else is the **Gate #007 executive snapshot of 2025-10-12**, kept as a
+> record: the ECRR count is now 409 (`ls CHAR/ECRR/ECRR_REPORTS/*.md | wc -l`), the
+> IONA/Tetragram items are historical, the P0–P2 planner briefs are closed, and
+> workflows named below may be `workflow_dispatch`-only since the 2026-08-03 audit.
+> Current truth lives in `docs/architecture/CURRENT_ARCHITECTURE.md`,
+> `docs/BossCat/BOSSCAT_LOG.md` and `docs/status/README.md`.
+
 ---
 
 ## 🎯 Executive Gate Status
