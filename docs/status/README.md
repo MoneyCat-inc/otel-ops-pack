@@ -40,7 +40,7 @@ everything else is a hand-kept record or a dated snapshot (see the inventory bel
 
 | File | What it is | Writer | Reader |
 | --- | --- | --- | --- |
-| `kpis.json` | Hub KPI tiles, last generated 2026-08-12 | `scripts/generate-hub-kpis.ps1` (manual; `update-kpis.yml` RETIRED 2026-08-03) | `DELT/ASST/hub/hub.js`, `BRAV/SCPT/diagnostic-shell-enhanced.ps1` |
+| `kpis.json` | Hub KPI tiles, last generated 2026-08-12 | `BRAV/SCPT/generate_status_jsons.py` (that run) or `scripts/generate-hub-kpis.ps1`; manual — `update-kpis.yml` RETIRED 2026-08-03 | `DELT/ASST/hub/hub.js`, `BRAV/SCPT/diagnostic-shell-enhanced.ps1` |
 | `ssot.json` | Health summary from the same 2026-08-12 run | `BRAV/SCPT/generate_status_jsons.py` | `docs/status.html` (optional), diagnostic shell |
 | `tests.json` | Gate #008 reconciliation record (2025-10-24), schema `schema/status-tests.schema.json` | `BRAV/SCPT/update-status-dashboard.ps1` | `json-validation-gate.yml`, `verify-iona-gate.ps1`, `docs/status.html` |
 | `metrics.json`, `rsi-metrics.json` | RSI convergence rate (7d), `null` when unmeasured; written 2026-08-29 | RSI extractor lane (`scripts/rsi-extract.mjs` publishes to `artifacts/rsi/`) | `docs/assets/icf-rsi-panel.js` (last-resort fallback) |
