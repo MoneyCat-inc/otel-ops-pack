@@ -1,5 +1,9 @@
 # Bluesky engagement playbook — Resonai [OTel]
 
+> **Split-lane record (2026-09-02).** Bluesky/social operations moved to the `socm` repo in Pack 3B
+> (2026-07-24). `scripts/bsky-weekly-reminder.ps1` still ships here as a reminder stub; the playbook
+> itself is maintained in `socm`.
+
 **Profile:** <https://bsky.app/profile/resonai.bsky.social>  
 **Cadence:** 2–3 posts/week + 5–10 value-add replies/week  
 **Companion:** `docs/BossCat/BSKY_WEEKLY_MAINTENANCE.md`  
