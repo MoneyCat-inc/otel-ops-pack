@@ -68,6 +68,7 @@
       "canary-monitor.ps1",
       "canary-test.ps1",
       "clickhouse-cluster-config.xml",
+      "clickhouse-memory-config.xml",
       "clickhouse-mergetree-compat-config.xml",
       "clickhouse-system-logs-config.xml",
       "clickhouse-users-profile-config.xml",

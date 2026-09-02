@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!--
+  ClickHouse server-level memory cap.
+
+  Context: the container hard limit is 3G (docker-compose.yml). ClickHouse's
+  default max_server_memory_usage is max_server_memory_usage_to_ram_ratio (0.9)
+  of cgroup total (~2.7 GiB on a 3G container), which is above the observed
+  resident peak of 1.83 GiB but leaves no headroom for merge spikes. Setting
+  an explicit 2.5 GiB cap keeps ClickHouse below the container OOM threshold
+  while giving ~650 MiB buffer.
+
+  max_server_memory_usage_to_ram_ratio must stay > 0. ClickHouse 25.12 computes
+  ratio * cgroup RAM as the ceiling; if ratio is 0 it lowers the absolute cap to
+  0 (unlimited) — observed 2026-09-02 on first apply. With a 3G container:
+    0.9 * 3 GiB = 2.7 GiB (ratio ceiling)
+    2.5 GiB absolute is lower, so the explicit cap wins.
+
+  Mounted by docker-compose.yml as /etc/clickhouse-server/config.d/memory.xml.
+  Revisit if resident peak consistently exceeds 2 GiB (raise cap or reduce load).
+-->
+<clickhouse>
+    <max_server_memory_usage>2684354560</max_server_memory_usage><!-- 2.5 GiB -->
+    <max_server_memory_usage_to_ram_ratio>0.9</max_server_memory_usage_to_ram_ratio>
+</clickhouse>
