@@ -123,12 +123,24 @@ if ($files.Count -eq 0) {
     exit 1
 }
 
+# -LiteralPath throughout: repo paths contain characters PowerShell would otherwise treat as
+# wildcards. A tracked file that is missing on disk means the checkout is inconsistent with the
+# index (seen on a Windows clone where U+2019 in three docs/BossCat/Research filenames had been
+# normalised to ASCII on disk); the guard cannot vouch for what it cannot read, so it fails closed
+# with the list rather than dying on an opaque .NET error.
+$missing = @()
 $rawLines = @()
 foreach ($rel in ($files.Keys | Sort-Object)) {
-    $found = Select-String -Path $files[$rel] -Pattern $bannedPatterns -AllMatches -ErrorAction Stop
+    if (-not (Test-Path -LiteralPath $files[$rel] -PathType Leaf)) { $missing += $rel; continue }
+    $found = Select-String -LiteralPath $files[$rel] -Pattern $bannedPatterns -AllMatches -ErrorAction Stop
     foreach ($hit in $found) {
         $rawLines += ('{0}:{1}:{2}' -f $rel, $hit.LineNumber, $hit.Line)
     }
+}
+if ($missing.Count -gt 0) {
+    Write-Host "❌ $($missing.Count) git-tracked production file(s) are missing on disk — checkout is inconsistent with the index; failing closed:" -ForegroundColor Red
+    foreach ($m in $missing | Select-Object -First 20) { Write-Host "  $m" -ForegroundColor Yellow }
+    exit 1
 }
 
 $allowedByContext = @()
@@ -144,7 +156,7 @@ foreach ($line in $rawLines) {
     $text = $parts[2]
     if ($text -match $retractionContext) { $allowedByContext += $line; continue }
     if (-not $allowFileCache.ContainsKey($file)) {
-        $allowFileCache[$file] = [bool](Select-String -Path $files[$file] -Pattern $allowFileToken -SimpleMatch -Quiet)
+        $allowFileCache[$file] = [bool](Select-String -LiteralPath $files[$file] -Pattern $allowFileToken -SimpleMatch -Quiet)
     }
     if ($allowFileCache[$file]) { $allowedByFile += $line; continue }
     $violations += $line
