@@ -38,6 +38,15 @@ The version is pinned in one place, `scripts/windows/collector-version.txt` — 
 equal embedded fallback). Before #452 nothing in the repo decided the version at all; `0.104.0` was simply
 what had been installed by hand in Oct 2025.
 
+**Daily host upgraded to `v0.159.0` on 2026-09-03** (audit P1-1,
+`ECRR_READY_FOR_GATE_AUDIT_20260903.md`: the host had stayed on 0.158.0 for eleven days after the
+pin moved, and the commit-time drift guard compares the two pin files to each other, never to the
+installed binary). Path used: the tarball sequence below, not the MSI — stop service, extract
+`otelcol-contrib.exe` over the install directory, start, then `install-or-repair-otel-collector.ps1`
+to rewrite the deployed config and service settings. Verified live: `--version` 0.159.0,
+Running / Automatic, 5320/5321 listening, exporter queue 0 with records flowing within minutes.
+A host-vs-pin check remains an open gap; until one exists, "pin moved" does not mean "host moved".
+
 **Pin moved to `v0.159.0` on 2026-08-23** (quarterly upgrade review, step 1; PR #591). Release notes
 carry no windowseventlog/stanza changes; the hostmetrics `cpu`-attribute opt-in landed in v0.157.0
 and was already absorbed at 0.158.0. Clean-host E2E re-run 2026-08-23 (`clean-host-e2e-20260823`, HEAD `710f1608`): **GREEN** —
