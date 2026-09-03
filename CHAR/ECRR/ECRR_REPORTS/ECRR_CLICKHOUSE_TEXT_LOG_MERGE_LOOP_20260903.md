@@ -93,3 +93,23 @@ All operator steps completed and verified:
 24-hour window opens: **2026-09-03T15:34Z**. Watchdog check due: **2026-09-04T15:34Z**.
 
 Verdict: **GREEN** — loop broken, config loaded, VHDX compacted. 24-hour watchdog window running. 🐾
+
+## 6. Independent verification — chat/review seat (2026-09-03 15:37–15:47Z)
+
+Read live from the recreated container (uptime 193 s at first read), not from the operator's
+transcript:
+
+| Check | Observed |
+| --- | --- |
+| `max_server_memory_usage` / `merges_mutations_memory_usage_soft_limit` | 2684354560 / 1073741824, both `changed = 1` |
+| `system.text_log` rows since restart | **0** (level `fatal` took) |
+| `system.errors` `MEMORY_LIMIT_EXCEEDED` | no row at 15:37Z and 15:47Z (zero since restart) |
+| Inserts rejected with code 241 | last at 15:10Z (pre-truncate); **0** since restart |
+| `MergesMutationsMemoryTracking` 5-min max | 1.74 GiB at 15:10Z (last failing `metric_log` merge, peak 1.89 GiB), then 23–148 MiB from 15:15Z on; 52 MiB over the last 10 min |
+| `MemoryTracking` 5-min max | 2.16 GiB at 15:10Z, then 289–428 MiB |
+| `vhdx_gb` (watchdog) | 156.3 → 50.2 (16:35 local) → 50.8 → 50.9; increments 0.6 then 0.1 GB — post-restart settle, not the 1.5 GB/h slope |
+
+The loop died at the truncate (~15:14Z), before the compact — the merge-memory series shows it.
+The 24-hour flat-`vhdx_gb` criterion is the only item still open; it is a watchdog read on
+2026-09-04T15:34Z, not a change. If the slope reappears, the diagnosis path is the same table
+above, starting with `system.part_log` `peak_memory_usage` by table.
