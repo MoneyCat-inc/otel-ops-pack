@@ -61,7 +61,8 @@ and `%LOCALAPPDATA%\docker-secrets-engine\`, crash-looping Docker Desktop on res
 
 | Control | Where | Notes |
 |---|---|---|
-| ClickHouse system-log TTLs, `text_log` at warning, memory sampler off | `clickhouse-system-logs-config.xml`, mounted via `docker-compose.yml` | Apply: `docker compose -p otel up -d --force-recreate signoz-clickhouse` |
+| ClickHouse system-log TTLs, `text_log` at fatal (warning until 2026-09-03), memory sampler off | `clickhouse-system-logs-config.xml`, mounted via `docker-compose.yml` | Apply: `docker compose -p otel up -d --force-recreate signoz-clickhouse` |
+| Server memory cap 2.5 GiB + merges soft limit 1 GiB | `clickhouse-memory-config.xml` | #741 / 2026-09-03. Confirm `changed=1` in `system.server_settings` after apply. |
 | Weekly prune + fstrim, warn at 200 GB | `scripts/windows/docker-weekly-trim.ps1` | Registered: `OTel-Docker-Weekly-Trim` Mondays 09:00. Re-register: `pwsh -File scripts/windows/docker-weekly-trim.ps1 -Register`. Logs to `logs/docker-trim.log` (gitignored; 2026-08-21 baseline frozen at `artifacts/docker-trim-log.txt`) |
 | Offline compact (elevated) | `scripts/shrink-docker-vhdx.ps1` | Run when the weekly log warns (VHDX > 200 GB). `-SkipPrune -Force` if guest data is already small. |
 
@@ -69,6 +70,46 @@ Notes on hard caps (checked 2026-08-18): this Docker Desktop on the WSL2 backend
 virtual-disk limit setting** (no `DiskSizeMiB` key; the ~1 TB ceiling is WSL's default virtual size),
 and sparse mode does not cover `docker_data.vhdx` (separately attached disk). The 200 GB threshold in
 the weekly script is therefore a soft cap — the log warning is the trigger to run the offline compact.
+
+## Recurrence 2026-09-03 — the loop came back at warning level
+
+Post-compact regrowth 101.9 → 156.3 GB in 35 h (watchdog `vhdx_gb`), live Docker data ~37 GB.
+Driver: merges of `system.text_log` (one 889 MiB part) and `system.metric_log` failed on the
+2.5 GiB server cap (#741) with `MEMORY_LIMIT_EXCEEDED`, 10–15k times/hour. Each failure was
+logged at Error level *into* `text_log` (~1M rows/day), and each retry held
+`MergesMutationsMemoryTracking` at ~1.9 GiB, so SigNoz inserts also hit code 241 (20–265/day,
+retried by the collector). TTL cannot drain a table whose merges fail, and a compact cannot hold
+while the churn continues — the 09-01 compact regrew from the first tick.
+Closeout: `CHAR/ECRR/ECRR_REPORTS/ECRR_CLICKHOUSE_TEXT_LOG_MERGE_LOOP_20260903.md`.
+
+Config side (this repo): `text_log` level → `fatal`; `merges_mutations_memory_usage_soft_limit`
+1 GiB. Operator side, in this order — TRUNCATE and the compact are operator-seat only:
+
+1. Recreate so the mounted config applies (plain `up -d` does not):
+   `docker compose -p otel up -d --force-recreate signoz-clickhouse`
+2. Verify the settings took (unknown keys fail silently) — both rows `changed = 1`, and the
+   preprocessed config shows `<level>fatal</level>`:
+
+   ```bash
+   docker exec signoz-clickhouse clickhouse-client -q "SELECT name, value, changed FROM system.server_settings WHERE name IN ('max_server_memory_usage','merges_mutations_memory_usage_soft_limit')"
+   docker exec signoz-clickhouse grep -A1 '<text_log>' /var/lib/clickhouse/preprocessed_configs/config.xml
+   ```
+
+3. Break the loop by removing the parts that cannot merge (diagnostics, not telemetry;
+   `metric_log` refills at one row per second under its TTL):
+   `docker exec signoz-clickhouse clickhouse-client -q "TRUNCATE TABLE system.text_log"`
+   `docker exec signoz-clickhouse clickhouse-client -q "TRUNCATE TABLE system.metric_log"`
+4. Confirm the loop is dead after ten minutes — the error counter read twice a few minutes apart
+   must not increase, and merge memory must sit well under 1 GiB:
+
+   ```bash
+   docker exec signoz-clickhouse clickhouse-client -q "SELECT value FROM system.errors WHERE name = 'MEMORY_LIMIT_EXCEEDED'"
+   docker exec signoz-clickhouse clickhouse-client -q "SELECT formatReadableSize(max(CurrentMetric_MergesMutationsMemoryTracking)) FROM system.metric_log WHERE event_time > now() - INTERVAL 10 MINUTE"
+   ```
+
+5. Only then trim + compact (elevated): `scripts/shrink-docker-vhdx.ps1 -SkipPrune -Force`. The
+   `clean-host-e2e` VM can stay Off. Pass criterion is not the compact: it is `vhdx_gb` in
+   `artifacts/watchdog/watchdog.log` staying flat across the following 24 h.
 
 ## Recovery runbook (engine down / disk full)
 
