@@ -17,8 +17,19 @@
 
   Mounted by docker-compose.yml as /etc/clickhouse-server/config.d/memory.xml.
   Revisit if resident peak consistently exceeds 2 GiB (raise cap or reduce load).
+
+  After any change here, confirm each key shows changed=1 in system.server_settings:
+  unknown config.d keys fail silently (#742 lesson).
 -->
 <clickhouse>
     <max_server_memory_usage>2684354560</max_server_memory_usage><!-- 2.5 GiB -->
     <max_server_memory_usage_to_ram_ratio>0.9</max_server_memory_usage_to_ram_ratio>
+
+    <!-- Soft ceiling for background merges + mutations combined (2026-09-03). Observed under
+         the 2.5 GiB cap: the system.text_log merge-retry loop held
+         MergesMutationsMemoryTracking at ~1.9 GiB every hour, leaving SigNoz inserts to fail
+         with code 241. Above this value ClickHouse schedules no NEW merges until usage drops.
+         A single oversized merge can still exceed it - this bounds stacking, not one bad
+         merge; the bad merge is removed by the operator TRUNCATE (docs/DOCKER_VHDX_MAINTENANCE.md). -->
+    <merges_mutations_memory_usage_soft_limit>1073741824</merges_mutations_memory_usage_soft_limit><!-- 1 GiB -->
 </clickhouse>
