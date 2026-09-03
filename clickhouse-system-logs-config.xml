@@ -57,9 +57,16 @@
         <ttl>event_date + INTERVAL 7 DAY DELETE</ttl>
     </background_schedule_pool_log>
 
-    <!-- Was logging ~15M Debug/Trace rows per day. Warnings and errors only. -->
+    <!-- Was logging ~15M Debug/Trace rows per day; cut to warning 2026-08-18. Cut to fatal
+         2026-09-03 because the loop recurred at warning level: every failed merge of text_log
+         itself (MEMORY_LIMIT_EXCEEDED under the 2.5 GiB cap, 10-15k/hour) logged an Error row
+         INTO text_log, so the one table that could not merge kept growing (~1M rows/day) and
+         each retry re-allocated ~1.9 GiB. Server errors remain in `docker logs
+         signoz-clickhouse`; nothing in this stack reads system.text_log. Level changes do not
+         rename the table (no _N leftover) - but existing parts must be TRUNCATEd by the
+         operator, since TTL needs the very merges that fail. -->
     <text_log>
-        <level>warning</level>
+        <level>fatal</level>
         <ttl>event_date + INTERVAL 7 DAY DELETE</ttl>
     </text_log>
 
