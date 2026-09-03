@@ -106,7 +106,7 @@ else fails the governance check.
 | Raw evidence archive | `MoneyCat-inc/otel-ops-evidence` |
 | Windows collector runbook | `docs/runbooks/windows-collector.md` |
 
-**Stack facts** (verified 2026-08-13): Windows collector `otelcol-contrib` **v0.158.0**, carrying
+**Stack facts** (verified 2026-09-03): Windows collector `otelcol-contrib` **v0.159.0**, carrying
 **logs only** — Windows Event Log, filelog, and local OTLP on **`127.0.0.1:5320`** (gRPC) and
 **`5321`** (HTTP). SigNoz UI on `http://localhost:8080`. There is no `hostmetrics` receiver.
 
