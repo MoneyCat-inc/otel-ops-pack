@@ -87,20 +87,26 @@ Config side (this repo): `text_log` level → `fatal`; `merges_mutations_memory_
 
 1. Recreate so the mounted config applies (plain `up -d` does not):
    `docker compose -p otel up -d --force-recreate signoz-clickhouse`
-2. Verify the settings took (unknown keys fail silently):
-   `docker exec signoz-clickhouse clickhouse-client -q "SELECT name, value, changed FROM system.server_settings WHERE name IN ('max_server_memory_usage','merges_mutations_memory_usage_soft_limit')"`
-   — both `changed = 1`;
-   `docker exec signoz-clickhouse grep -A1 '<text_log>' /var/lib/clickhouse/preprocessed_configs/config.xml`
-   — shows `<level>fatal</level>`.
+2. Verify the settings took (unknown keys fail silently) — both rows `changed = 1`, and the
+   preprocessed config shows `<level>fatal</level>`:
+
+   ```bash
+   docker exec signoz-clickhouse clickhouse-client -q "SELECT name, value, changed FROM system.server_settings WHERE name IN ('max_server_memory_usage','merges_mutations_memory_usage_soft_limit')"
+   docker exec signoz-clickhouse grep -A1 '<text_log>' /var/lib/clickhouse/preprocessed_configs/config.xml
+   ```
+
 3. Break the loop by removing the parts that cannot merge (diagnostics, not telemetry;
    `metric_log` refills at one row per second under its TTL):
    `docker exec signoz-clickhouse clickhouse-client -q "TRUNCATE TABLE system.text_log"`
    `docker exec signoz-clickhouse clickhouse-client -q "TRUNCATE TABLE system.metric_log"`
-4. Confirm the loop is dead after ten minutes:
-   `docker exec signoz-clickhouse clickhouse-client -q "SELECT value FROM system.errors WHERE name = 'MEMORY_LIMIT_EXCEEDED'"`
-   — read twice a few minutes apart, must not increase;
-   `docker exec signoz-clickhouse clickhouse-client -q "SELECT formatReadableSize(max(CurrentMetric_MergesMutationsMemoryTracking)) FROM system.metric_log WHERE event_time > now() - INTERVAL 10 MINUTE"`
-   — well under 1 GiB.
+4. Confirm the loop is dead after ten minutes — the error counter read twice a few minutes apart
+   must not increase, and merge memory must sit well under 1 GiB:
+
+   ```bash
+   docker exec signoz-clickhouse clickhouse-client -q "SELECT value FROM system.errors WHERE name = 'MEMORY_LIMIT_EXCEEDED'"
+   docker exec signoz-clickhouse clickhouse-client -q "SELECT formatReadableSize(max(CurrentMetric_MergesMutationsMemoryTracking)) FROM system.metric_log WHERE event_time > now() - INTERVAL 10 MINUTE"
+   ```
+
 5. Only then trim + compact (elevated): `scripts/shrink-docker-vhdx.ps1 -SkipPrune -Force`. The
    `clean-host-e2e` VM can stay Off. Pass criterion is not the compact: it is `vhdx_gb` in
    `artifacts/watchdog/watchdog.log` staying flat across the following 24 h.
