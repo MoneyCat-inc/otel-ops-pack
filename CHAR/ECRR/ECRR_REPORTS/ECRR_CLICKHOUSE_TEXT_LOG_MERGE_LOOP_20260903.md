@@ -113,3 +113,40 @@ The loop died at the truncate (~15:14Z), before the compact — the merge-memory
 The 24-hour flat-`vhdx_gb` criterion is the only item still open; it is a watchdog read on
 2026-09-04T15:34Z, not a change. If the slope reappears, the diagnosis path is the same table
 above, starting with `system.part_log` `peak_memory_usage` by table.
+
+## 7. Addendum (2026-09-03 18:30–19:00Z) — the loop is back on `metric_log` alone; verdict AMBER
+
+Read during the Ready-For-Gate follow-through, not from a relay:
+
+| Check | 16:20Z | 18:35Z |
+| --- | --- | --- |
+| `system.errors` `MEMORY_LIMIT_EXCEEDED` | absent | **390**, last 18:29:54Z |
+| Failed merges since 15:30Z (`system.part_log`, `error=241`) | 0 | **389**, all `system.metric_log`, 17:18:53Z → 18:29:23Z, peak 1.99 GiB |
+| `metric_log` active parts | (truncated 15:14Z) | 7 parts, **all Compact**, 11,664 rows, **4.96 MiB** |
+| `text_log` rows / SigNoz insert exceptions (code 241) | 0 / 0 | 0 / 0 |
+| `MergesMutationsMemoryTracking` between attempts | 0 B | 0 B |
+| ClickHouse active bytes | 2.24 GiB | 2.26 GiB |
+| Docker data disk, real usage (`df` in `docker-desktop`) | — | 36.4 GB of 1006.9 GB |
+| Watchdog `vhdx_gb` | 50.2 → 50.9 | **52.3** at 18:35Z; slope 0.2 GB/h before 17:18Z, 0.5 GB/h after |
+
+Reading: the 15:14Z TRUNCATE removed the oversized `text_log` part and the loop stopped, but the
+`metric_log` merge cost is structural. The wide schema carries 1,552 columns and a merge opens a
+stream per column, so seven Compact parts holding 5 MiB peak at 1.99 GiB — the same figure the
+889 MiB `text_log` part produced. Fewer rows cannot make it cheaper, and the 1 GiB soft limit
+bounds stacking, not one merge. Nothing self-feeds now (`text_log` at `fatal`) and inserts are
+unaffected, so the damage is confined to ext4 churn — the VHDX slope resumed the moment merges
+started failing, while real usage stayed flat.
+
+Section 5's GREEN stands for what it claimed (loop broken, config loaded, compact done) and is
+not edited. This addendum changes the verdict for the *item* to **AMBER**: the 24 h flat-`vhdx_gb`
+criterion cannot pass while `metric_log` merges fail, and the fix is a schema change, not another
+TRUNCATE. Config change filed the same evening in `clickhouse-system-logs-config.xml`
+(`<schema_type>transposed</schema_type>`, ClickHouse PR #78412) with operator lines in
+`docs/DOCKER_VHDX_MAINTENANCE.md`: recreate → verify create statement → `DROP` the renamed
+`metric_log_N` → error counter flat → 24 h read restarts. Alternative considered and not chosen:
+Altinity's `vertical_merge_algorithm_min_rows_to_activate = 1` via `ALTER TABLE` — a stopgap that
+keeps 1,552 columns and a table-local setting a later config-driven recreate would silently reset.
+
+Side finding, hygiene only: `signoz-zookeeper` has `autopurge.purgeInterval=0`; 202 preallocated
+64 MiB transaction logs since 2025-10 (sparse, 16 MiB real — `docker system df` reports the
+apparent 6.79 GB). Not a VHDX driver; recorded for the next config touch.
