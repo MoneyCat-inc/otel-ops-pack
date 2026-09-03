@@ -111,6 +111,44 @@ Config side (this repo): `text_log` level → `fatal`; `merges_mutations_memory_
    `clean-host-e2e` VM can stay Off. Pass criterion is not the compact: it is `vhdx_gb` in
    `artifacts/watchdog/watchdog.log` staying flat across the following 24 h.
 
+## Recurrence 2026-09-03, evening — `metric_log` alone, and why the schema changes
+
+The 15:14Z TRUNCATE ended the loop for three hours. From 17:18Z `system.metric_log` merges failed
+again: 389 `MEMORY_LIMIT_EXCEEDED` in 71 minutes, every one a merge of seven **Compact** parts
+totalling **5 MiB** that peaked at **1.99 GiB**. Nothing else was involved: `text_log` 0 rows,
+zero SigNoz insert exceptions, `MergesMutationsMemoryTracking` 0 B between attempts. The cost is
+the schema, not the data: the wide `metric_log` has 1,552 columns and a merge opens a stream per
+column, so it cannot get cheaper by holding fewer rows. A TRUNCATE therefore buys hours, not days.
+Real usage on the Docker disk stayed at 36.4 GB while `vhdx_gb` rose 49.9 → 52.3 (+0.5 GB/h from
+17:18Z): the same ext4 churn, smaller.
+
+Fix (this repo, `clickhouse-system-logs-config.xml`): `<schema_type>transposed</schema_type>` —
+one row per metric, like `asynchronous_metric_log`; upstream's answer for low-resource hosts
+(ClickHouse PR #78412, 25.4+; the host runs 25.12.5). Operator lines, in order:
+
+1. `docker compose -p otel up -d --force-recreate signoz-clickhouse`
+2. Verify the new table and find the renamed old one:
+
+   ```bash
+   docker exec signoz-clickhouse clickhouse-client -q "SHOW CREATE TABLE system.metric_log" | head -c 400
+   docker exec signoz-clickhouse clickhouse-client -q "SELECT name FROM system.tables WHERE database='system' AND name LIKE 'metric_log%'"
+   ```
+
+   The create statement must show `metric` / `value` columns, not `ProfileEvent_*`.
+3. Drop the renamed wide table (operator-seat statement): `DROP TABLE system.metric_log_N` with
+   the `_N` name from step 2. This removes the parts that cannot merge; no TRUNCATE needed.
+4. Confirm after ten minutes, as in step 4 above — but the merge-memory query changes with the
+   schema:
+
+   ```bash
+   docker exec signoz-clickhouse clickhouse-client -q "SELECT value FROM system.errors WHERE name = 'MEMORY_LIMIT_EXCEEDED'"
+   docker exec signoz-clickhouse clickhouse-client -q "SELECT formatReadableSize(max(value)) FROM system.metric_log WHERE metric = 'CurrentMetric_MergesMutationsMemoryTracking' AND event_time > now() - INTERVAL 10 MINUTE"
+   ```
+
+5. No compact is required for a 2 GB regrowth; the 24 h flat-`vhdx_gb` read restarts from the
+   recreate. If it is still not flat with zero failed merges, the driver is something other than
+   ClickHouse merges and the next place to look is `system.part_log` `peak_memory_usage` by table.
+
 ## Recovery runbook (engine down / disk full)
 
 1. Quit Docker Desktop from the systray (or `docker desktop stop`). Then `wsl --shutdown`.
