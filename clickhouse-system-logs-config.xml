@@ -28,6 +28,20 @@
         <ttl>event_date + INTERVAL 7 DAY DELETE</ttl>
     </part_log>
     <metric_log>
+        <!--
+          2026-09-03: the wide schema has 1,552 columns, and merging even seven
+          Compact parts totalling 5 MiB peaked at 1.99 GiB against the 2.5 GiB
+          server cap - 389 failed merges in 71 minutes after the TRUNCATE that
+          ended the text_log loop, each failure churning ext4 blocks into the
+          VHDX (+0.5 GB/h). The transposed schema stores one metric per row like
+          asynchronous_metric_log (a handful of columns), which is the upstream
+          answer for low-resource setups (ClickHouse PR #78412, 25.4+). On the
+          next recreate ClickHouse renames the wide table to metric_log_N and
+          creates the transposed one; the operator drops the renamed table.
+          Queries that read wide columns (CurrentMetric_*, ProfileEvent_*) must
+          filter on `metric` instead - see docs/DOCKER_VHDX_MAINTENANCE.md.
+        -->
+        <schema_type>transposed</schema_type>
         <ttl>event_date + INTERVAL 7 DAY DELETE</ttl>
     </metric_log>
     <trace_log>
