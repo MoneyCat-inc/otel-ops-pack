@@ -166,32 +166,14 @@ $queueHealthy = Test-ComponentHealth -Name "Agent Queue" -Required $true -Check 
     }
 }
 
-# Watchdog Auto-Start
-$watchdogHealthy = Test-ComponentHealth -Name "BossCat Watchdog" -Required $false -Check {
-    # Check if already running
-    $existing = Get-Process pwsh -ErrorAction SilentlyContinue | Where-Object { 
-        $_.CommandLine -like "*watchdog.ps1*" 
-    }
-    
-    if ($existing) {
-        Write-BootLog "Watchdog already running (PID: $($existing.Id))" -Level INFO
-        return $true
-    }
-    
-    # Auto-start watchdog
-    try {
-        $watchdogScript = Join-Path $PSScriptRoot "agent/watchdog.ps1"
-        if (Test-Path $watchdogScript) {
-            Start-Process pwsh -ArgumentList "-NoLogo","-NoProfile","-File","`"$watchdogScript`"" -WindowStyle Hidden
-            Start-Sleep -Seconds 2
-            Write-BootLog "Watchdog auto-started" -Level SUCCESS
-            return $true
-        }
-        return $false
-    } catch {
-        return $false
-    }
-}
+# Watchdog auto-start REMOVED 2026-09-03 (ECRR_READY_FOR_GATE_AUDIT_20260903.md, P1-2).
+# This block used to Start-Process agent/watchdog.ps1 (the codex-local "Local
+# Workflow Custodian": a 300 s loop appending to TASKS.md and rewriting a queue
+# JSON in the working tree). Roadmap 2026 H2 Phase 0 closed on "no recurring
+# writer left running against the working tree"; the spawn only failed at logon
+# because the task's cwd hid .agent/config.json. A health check must not start
+# services. The live watchdog for the collector is the SYSTEM scheduled task
+# BossCat-OtelcolWatchdog, which this script neither starts nor needs.
 
 # ============================================================================
 # 3. IONA APP INTEGRATION
