@@ -150,3 +150,28 @@ keeps 1,552 columns and a table-local setting a later config-driven recreate wou
 Side finding, hygiene only: `signoz-zookeeper` has `autopurge.purgeInterval=0`; 202 preallocated
 64 MiB transaction logs since 2025-10 (sparse, 16 MiB real — `docker system df` reports the
 apparent 6.79 GB). Not a VHDX driver; recorded for the next config touch.
+
+## 8. Close — GREEN on the schema fix (applied 2026-09-04T10:32Z, verified 10:47Z)
+
+Operator applied #767: `--force-recreate signoz-clickhouse` at 10:32:47Z, confirmed the new
+`system.metric_log` is transposed, dropped the renamed `metric_log_0` at 10:35:41Z. Independent read
+from the chat/review seat, 10:46–10:47Z:
+
+| Check | Observed |
+| --- | --- |
+| `system.metric_log` columns | 6 — `hostname event_date event_time event_time_microseconds metric value` |
+| `metric_log_0` | absent |
+| `max_server_memory_usage` / soft limit | 2684354560 / 1073741824, both `changed = 1` |
+| `MEMORY_LIMIT_EXCEEDED` | 493 at 10:36Z, **493** at 10:47Z; last error 10:35:41Z (476 on `metric_log_0` before the DROP, 65 logged under `metric_log` in the nine seconds before the rename) |
+| Failed merges after the DROP | **0** |
+| `metric_log` merges since | 19 succeeded, peak **23.76 MiB** (wide schema: 1.99 GiB) |
+| `MergesMutationsMemoryTracking` 10:36Z → 10:47Z max | 28.17 MiB |
+| `vhdx_gb` | +0.5 GB/h from 17:18Z through the night (52.6 → 60.5), then **flat at 60.5 for every tick since the recreate** |
+
+The loop ended at the DROP of the wide table, as §7 predicted: a merge of the wide schema costs
+per column, and no amount of truncating, TTL, or memory capping changes that. Item verdict returns
+to **GREEN** with one read still open: the 24 h flat-`vhdx_gb` window now runs from
+**2026-09-04T10:32Z** (due 2026-09-05T10:32Z). The routine armed for 09-04 15:36Z measures the old
+window and will report FAIL; that result is correct for what it measures and is not a regression.
+No compact is planned for the 10.6 GB the loop added — the next 200 GB warning or the quarterly
+prune is the trigger, per the runbook.
