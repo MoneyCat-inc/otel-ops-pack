@@ -133,13 +133,13 @@
       "lodash": ">=4.18.0",
       "brace-expansion": ">=1.1.18",
       "brace-expansion@>=4.0.0": ">=5.0.9",
-      "js-yaml": "4.3.1",
+      "js-yaml": "^4.3.2",
       "@opentelemetry/propagator-jaeger": ">=2.9.0",
       "fast-uri": ">=3.1.5",
       "sharp": ">=0.35.0",
       "postcss": ">=8.5.18",
       "nanoid": ">=3.3.18",
-      "@istanbuljs/load-nyc-config>js-yaml": "4.3.1",
+      "@istanbuljs/load-nyc-config>js-yaml": "^4.3.2",
       "deepmerge-ts": ">=8.0.0",
       "mysql2": ">=3.22.0"
     }
