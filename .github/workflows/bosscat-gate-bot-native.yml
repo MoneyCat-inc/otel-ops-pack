@@ -388,13 +388,23 @@ jobs:
                          `- Performance Gate: ${{ needs.perf.result }}\n` +
                          `- Guardrails: ${{ needs.guardrails.result }}\n\n` +
                          `**Evidence:** See workflow artifacts`;
-            
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: body
-            });
+
+            // Always surface the verdict in the run summary.
+            await core.summary.addRaw(body).write();
+
+            // The PR comment only has a target in pull_request context. On
+            // workflow_dispatch context.issue.number is undefined and the API
+            // call 404s (issues//comments), turning a passed gate red.
+            if (context.issue && context.issue.number) {
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: body
+              });
+            } else {
+              core.info('No PR context (event: ' + context.eventName + '); verdict written to run summary only.');
+            }
 
 # ============================================
 # Bot-Native Design Notes
