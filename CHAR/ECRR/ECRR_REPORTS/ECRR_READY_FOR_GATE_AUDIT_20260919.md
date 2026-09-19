@@ -117,9 +117,11 @@ Not a failure (the guard compares names/triggers/total); still invites churn com
 `0 2 1 * *` with `cancel-in-progress: true` on a group keyed to `github.ref`; the rollup runs at the
 same hour on the same day and lands a PR on `main`, whose push cancels the scheduled scan and starts
 a push-triggered one. 09-01's scheduled run was cancelled at 02:20Z for exactly this reason; the
-push-triggered Trivy on `ed6119c36` is green, so coverage is not lost, but the scheduled trigger is
-one that cannot pass on the day it fires. Either move the cron off the 1st/02:00 or drop the
-schedule and let the push trigger carry it. CI lane, one line.
+push-triggered Trivy on `ed6119c36` is green, so coverage was not lost that day, but the scheduled
+trigger is one that cannot pass on the day it fires. The schedule must stay: the rollup opens its PR
+only when `files_archived > 0` (line 200), so in a quiet month there is no push to `main` and the
+cron is the only periodic scan. Fix is to move the cron off the 1st/02:00 (or exempt scheduled runs
+from `cancel-in-progress`), never to drop it. CI lane, one line.
 
 **Record correction (addendum, not an edit).** The 09-03 audit's table 1b says "last scheduled
 run of each: success" for the 12 scheduled workflows. Trivy's last scheduled run at that time was
