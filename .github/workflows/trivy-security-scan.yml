@@ -15,8 +15,14 @@ on:
   push:
     branches: [main, master]
   schedule:
-    # Monthly scan on 1st of month at 02:00 UTC
-    - cron: '0 2 1 * *'
+    # Monthly scan on the 2nd of the month at 03:00 UTC.
+    # Moved off '0 2 1 * *' on 2026-09-19 (ECRR_READY_FOR_GATE_AUDIT_20260919.md, P3-3):
+    # that cron is byte-identical to bosscat-monthly-evidence-rollup.yml's, and the
+    # rollup's PR merge pushes main while this scan runs, so the concurrency group
+    # below cancelled every scheduled run that coincided (09-01: cancelled). The
+    # schedule must stay - the rollup only pushes when it archived files, so in a
+    # quiet month this cron is the only periodic scan (Codex review, #789).
+    - cron: '0 3 2 * *'
   workflow_dispatch:
 
 concurrency:
