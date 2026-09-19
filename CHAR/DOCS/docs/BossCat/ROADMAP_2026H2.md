@@ -184,7 +184,7 @@ clean and truthful.
 ## Standing cadence (from Phase 0 onward)
 
 - **Quarterly:** evidence-repo prune (age from filename timestamp, not mtime); dependency/stack
-  upgrade check (SigNoz current as of v0.135.1, 2026-08-03).
+  upgrade check (SigNoz current as of v0.138.0, 2026-08-23, #595).
 - **Monthly:** evidence rollup to `otel-ops-evidence`.
 - **Per change:** lean-format ECRR — quantified before/after, honest verdict, no checkbox
   apparatus.
