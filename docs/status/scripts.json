@@ -1,6 +1,6 @@
 {
   "source": "scripts/regenerate-scripts-registry.ps1",
-  "total": 172,
+  "total": 173,
   "scripts": [
     {
       "name": "analyze-sqlite.ps1",
@@ -942,6 +942,12 @@
       "name": "docker-weekly-trim.ps1",
       "path": "scripts/windows/docker-weekly-trim.ps1",
       "size": 3596,
+      "lane": "UTIL"
+    },
+    {
+      "name": "ensure-signoz-stack.ps1",
+      "path": "scripts/windows/ensure-signoz-stack.ps1",
+      "size": 3221,
       "lane": "UTIL"
     },
     {
