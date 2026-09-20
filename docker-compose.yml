@@ -9,7 +9,8 @@ services:
   signoz-zookeeper:
     image: signoz/zookeeper:3.9.3
     container_name: signoz-zookeeper
-    restart: unless-stopped
+    # Docker Desktop quit marks containers stopped; unless-stopped then skips restart.
+    restart: always
     environment:
       ZOO_SERVER_ID: "1"
       ALLOW_ANONYMOUS_LOGIN: "yes"
@@ -40,7 +41,7 @@ services:
   signoz-clickhouse:
     image: clickhouse/clickhouse-server:25.12.5
     container_name: signoz-clickhouse
-    restart: unless-stopped
+    restart: always
     depends_on:
       signoz-zookeeper:
         condition: service_healthy
@@ -81,7 +82,7 @@ services:
   signoz:
     image: signoz/signoz:v0.138.0
     container_name: signoz
-    restart: unless-stopped
+    restart: always
     depends_on:
       signoz-zookeeper:
         condition: service_healthy
@@ -170,7 +171,7 @@ services:
   signoz-otel-collector:
     image: signoz/signoz-otel-collector:v0.144.8
     container_name: signoz-otel-collector
-    restart: unless-stopped
+    restart: always
     depends_on:
       signoz:
         condition: service_healthy
@@ -221,7 +222,7 @@ services:
       dockerfile: Dockerfile.demo
     image: otel-otel-demo-app
     container_name: demo-app
-    restart: unless-stopped
+    restart: always
     profiles:
       - demo
     depends_on:
