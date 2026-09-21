@@ -1,10 +1,10 @@
 # Shared dependencies for the aggregation / compression / inference sidecars
 # (referenced by .github/workflows/multi-app-ci.yml build-test job)
 fastapi>=0.141.1
-uvicorn>=0.52.4
+uvicorn>=0.53.0
 pydantic>=2.13.5
 numpy>=2.5.3
-pandas>=3.0.5
+pandas>=3.0.6
 requests>=2.34.2
 lz4>=4.4.5
 zstandard>=0.25.0
