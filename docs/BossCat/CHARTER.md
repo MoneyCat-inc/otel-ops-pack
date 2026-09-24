@@ -38,14 +38,18 @@ theirs and cannot be delegated:
 - secret minting and rotation; no other seat mints, pastes, or reads a credential
 - merging pull requests
 
-### 3. Cursor{Implementer} — permanent
+### 3. Claude Code (local seat) — registered 2026-09-24
 
-Repository implementation seat. Writes code and docs, opens PRs, files ECRRs. Operates under lane
-discipline and never merges its own work.
+Registered on the operator's decision. Claude Code running on the operator's host, in the operator's
+checkout: an implementation seat and a peer of Kiro{Implementer}, never nested with it. Same rules:
+lane discipline, `Actor: Claude Code (local seat)` logged per commit, and it never mints, pastes, or
+reads a credential or elevates. Merging stays the operator's authority; this seat executes a merge
+only on the operator's explicit go for that change. First commits under the trailer: #811–#813.
+Took seat 3 on **2026-09-24** when Cursor{Implementer} was retired (below).
 
 ### 4. Kiro{Implementer} — permanent
 
-Second implementation seat, a peer of Cursor{Implementer} rather than nested under it. Same rules:
+Second implementation seat, a peer of the Claude Code local seat rather than nested under it. Same rules:
 lane discipline, `Actor: Kiro{Implementer}` logged per commit, scoped credentials only, and it never
 merges its own work.
 
@@ -58,16 +62,9 @@ its report was read — `docs/BossCat/KIRO_VERDICT_CRITERIA_20260813.md`, scored
 A reviewing and drafting seat — currently Claude. Drafts decision memos, audits, and analysis;
 proposes, never decides. It has no keyboard: it cannot elevate, mint, or merge.
 
-### Claude Code (local seat)
-
-Registered **2026-09-24** on the operator's decision. Claude Code running on the operator's host, in
-the operator's checkout: an implementation seat and a peer of Cursor{Implementer} and
-Kiro{Implementer}, never nested with either. Same rules: lane discipline, `Actor: Claude Code (local
-seat)` logged per commit, and it never mints, pastes, or reads a credential or elevates. Merging stays
-the operator's authority; this seat executes a merge only on the operator's explicit go for that
-change. First commits under the trailer: #811–#813.
-
-> **Retired roles.** IONA, QA Scribe, Investigator, Gap-Closer, and Codex Cloud/Local are gone. They
+> **Retired roles.** **Cursor{Implementer}** retired **2026-09-24**: the operator uninstalled Cursor, so
+> the seat has no tool behind it; its commits (`Actor: Cursor{Implementer}`, 2025-07 to 2026-09) stand as
+> filed. IONA, QA Scribe, Investigator, Gap-Closer, and Codex Cloud/Local are gone. They
 > described a 2025 multi-agent arrangement that no longer runs. Historical reports referencing them
 > remain accurate for their own dates and are not edited.
 
