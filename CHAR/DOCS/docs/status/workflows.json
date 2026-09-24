@@ -1,6 +1,6 @@
 {
   "source": "scripts/regenerate-workflows-registry.ps1",
-  "total": 61,
+  "total": 60,
   "items": [
     {
       "name": "app-template",
@@ -1010,23 +1010,6 @@
       "modified": "2026-08-03T21:37:08.6042699Z",
       "path": ".github/workflows/weekly-cleanup.yml",
       "size": 1938,
-      "triggers": {
-        "issues": false,
-        "other": [],
-        "pull_request": false,
-        "push": false,
-        "release": false,
-        "schedule": false,
-        "workflow_call": false,
-        "workflow_dispatch": true,
-        "workflow_run": false
-      }
-    },
-    {
-      "name": "weekly-executive-review",
-      "modified": "2026-08-03T21:37:08.6052820Z",
-      "path": ".github/workflows/weekly-executive-review.yml",
-      "size": 6351,
       "triggers": {
         "issues": false,
         "other": [],
