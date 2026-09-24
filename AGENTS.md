@@ -24,6 +24,8 @@ Four seats (OEM D2, 2026-07-26), plus the Claude Code local seat registered 2026
 
 **Standing rule (implementer seats):** Cursor, Kiro and the Claude Code local seat are **peers**, not a nested chain. No Cursor→Kiro→model telephone game for pilot implementation. Scoped credentials only; machine operator handles auth; actor logged per commit.
 
+**Standing rule (cascade driver, 2026-09-24):** the seat told to drive a set of merges also writes its log line and mirror; other seats review only. The driver posts `Driving: <seat>` on the head PR before the first merge; that comment is the assignment. Full text in `docs/BossCat/CHARTER.md` → Lane discipline.
+
 **Standing rule (blast radius, post FG-r2):** Any credential whose value transited automation (browser a11y snapshots, agent logs, chat tooling) is **rotated — no per-case deliberation**. CI-bound keys are minted **least privilege** (scoped / Restricted to the job), never “Permissions: All” / classic `repo`-wide PAT class.
 
 ## Generated Registries (Do Not Edit)
