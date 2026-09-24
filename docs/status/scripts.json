@@ -947,7 +947,7 @@
     {
       "name": "ensure-signoz-stack.ps1",
       "path": "scripts/windows/ensure-signoz-stack.ps1",
-      "size": 3221,
+      "size": 4670,
       "lane": "UTIL"
     },
     {
