@@ -175,3 +175,25 @@ the read of the baseline table, and every disposition in §3. Nothing on any hos
 
 **Status:** OPEN — the first push run has been read (above); closes when the operator picks route
 1 or 2 and the next push run on `main` is green.
+
+## 5. Addendum (2026-09-24T18:00Z) — CLOSED: route 1 landed, first green push run on `main`
+
+Operator picked route 1. #803 (`913cced`, operator go 17:52Z) made each requirements file
+pip-compile output with every transitive pinned and moved the floors to a `.in` beside it:
+`requirements.txt` 47 pins (Python 3.12), `ALFA/APPS/sidecars/requirements.txt` 40 (3.12),
+`otel-agent-coordination/requirements-dev.txt` 23 (3.11). Floors and install lines unchanged;
+`BRAV/SCPT/guardrails.json` allowlists `requirements.in`; `k6>=1.1.0` (an empty PyPI package,
+not Grafana k6) kept and flagged for curation.
+
+| Run on `main` | Scanner exit | Reporter | Meaning |
+| --- | --- | --- | --- |
+| 35538200970, `38382457`, 09-20 (v2.5.1) | 127 | "No issues found" on a missing file | vacuous (§1c) |
+| 36016700607, `5b668371`, 09-24 14:58Z | 1 | 43 findings, 7 packages | red, check working (§3) |
+| 36036259049 (PR #803 scan-pr, `a895cfb`) | base 1 / head 0 | "No issues found" | base 41,471 B results vs head 241 B: the pinned tree is clean online, deps.dev resolution included |
+| **36037330656, `913cced`, 09-24 17:52Z** | **0** | **"No issues found" on a real results file** | **first green scan in this workflow's history** |
+
+The §3 residual holds: the `.in` floors are no longer what the scanner measures, the pins are,
+and Dependabot updates the pins against the floors (pip-compile header kept). Still owed
+elsewhere: a Dependabot `pip` entry for `/otel-agent-coordination` (CI-ops lane), and the
+next-audit method row (duration sanity per scanner lane). **Status: CLOSED** with this addendum;
+the §4 line above stands as written.
