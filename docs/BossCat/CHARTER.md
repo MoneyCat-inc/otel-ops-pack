@@ -90,6 +90,12 @@ else fails **GR-02** on scope. This is the most common cause of a red gate; spli
 Commit messages are conventional: `feat fix docs test chore refactor perf ci build revert`. Anything
 else fails the governance check.
 
+**Cascade driver (2026-09-24).** When the operator tells a seat to drive a set of merges, that
+seat also writes the cascade's BOSSCAT_LOG line and its mirror republish; the other seats review
+and open no follow-ups unless asked. The driving seat posts `Driving: <seat>` as a comment on
+the cascade's head PR before its first merge, and every seat treats that comment as the
+assignment. Adopted after #818/#820 (both seats wrote the same log line on 2026-09-24).
+
 ---
 
 ## Operating principles
