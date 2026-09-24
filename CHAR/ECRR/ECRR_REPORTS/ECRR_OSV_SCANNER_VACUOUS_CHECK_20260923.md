@@ -115,7 +115,45 @@ does not. Two ways to read them, either is a browser click, neither needs a keyb
    `--fail-on-vuln=true` and **no baseline**, so it prints the full table and goes **red** if the
    findings persist. That red is the check working for the first time, not a regression.
 
-**Disposition per finding (operator decides, one PR per lane):** fixable → bump (Dependabot or a
+**First push run on `main` after the merge (2026-09-24T14:58Z, run 36016700607, `5b668371`) — red, as
+expected.** The reporter's table, condensed (43 findings: 3 Critical, 15 High, 18 Medium, 7 Low; all
+"can be fixed"; single ecosystem PyPI; nothing in any npm lockfile):
+
+| Package (resolved) | Findings | Source | Highest CVSS | Fixed in |
+| --- | --- | --- | --- | --- |
+| aiohttp 3.9.5 | 34 | `ALFA/APPS/sidecars/requirements.txt` | 9.1 (PYSEC-2026-2102) | 3.14.3 |
+| anyio 4.9.0 | 2 | sidecars | 9.3 (GHSA-82r6-8w77-94w6) | 4.14.2 |
+| h11 0.9.0 | 1 | sidecars | 9.1 (PYSEC-2026-348) | 0.16.0 |
+| idna 3.9.0 | 2 | sidecars, `requirements.txt` | 6.9 (PYSEC-2026-215) | 3.15 |
+| pygments 2.9.0 | 4 | `requirements.txt`, `otel-agent-coordination/requirements-dev.txt` | 6.8 (PYSEC-2023-117) | 2.20.0 |
+
+None of these packages is named in any requirements file. They are transitive dependencies that
+deps.dev resolved to the **lowest** versions the unpinned floors admit (h11 0.9.0 is from 2019),
+which is why a pip resolution of the same files, which takes the newest, scans clean. The finding
+class is therefore "unpinned floors admit vulnerable transitives", the same class Dependabot flagged
+on the `requests>=2.32` floor on 2026-09-01. Nothing here says the sidecar images as built today
+contain these versions; nothing here says they do not, either, because no lock file records what
+they contain. That gap is the actual finding.
+
+**Disposition per finding (operator decides, one PR per lane).** Two honest routes, one dishonest:
+
+1. **Lock the Python installs** (code lane): `pip-compile` each `requirements.txt` into a fully
+   pinned file the workflows install from (`multi-app-ci.yml` sidecars job, gate/stress workflows),
+   keep the floors as the `.in` source. The scan then measures what is installed, Dependabot bumps
+   the pins, and the 43 findings resolve to whatever the pinned set actually carries (the pip
+   resolution above suggests zero today).
+2. **Raise the floors or add transitive floors** (code lane, smaller): add `aiohttp>=3.14.3`,
+   `anyio>=4.14.2`, `h11>=0.16.0`, `idna>=3.15`, `pygments>=2.20.0` to the files that pull them.
+   Cheaper, but it treats symptoms and leaves the next transitive floor to the next scan.
+3. Not acceptable: `--no-resolve` (empties Python coverage: unpinned floors then have no version
+   to match and the scan is hollow again), an `osv-scanner.toml` blanket ignore, or dropping
+   `--fail-on-vuln`.
+
+Until one of the first two lands, every push to `main` and every Friday schedule shows
+`OSV-Scanner` red. That red is correct and stays visible; it is not a required check and blocks no
+merge.
+
+ fixable → bump (Dependabot or a
 manual `chore(deps)`); not fixable / not reachable → a dated entry in a new `osv-scanner.toml`
 (`[[IgnoredVulns]]` with `reason` and `ignoreUntil`). Never the third option of dropping
 `--fail-on-vuln` or re-adding a flag that makes the scan skip.
@@ -135,5 +173,5 @@ the Dependabot branch under the drive-to-green posture for a watched PR, reprodu
 could be reproduced, and files this report. Machine operator `@fubumaki` owns the merge of #799,
 the read of the baseline table, and every disposition in §3. Nothing on any host was touched.
 
-**Status:** OPEN — closes when the first push run on `main` after #799 has been read and each
-finding has a disposition on record.
+**Status:** OPEN — the first push run has been read (above); closes when the operator picks route
+1 or 2 and the next push run on `main` is green.
