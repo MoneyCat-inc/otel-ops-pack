@@ -170,3 +170,18 @@ Claude (chat/review) as OEM auditor, from a remote container with GitHub read ac
 repository only: read-only against GitHub and the tree; nothing started, nothing changed on any
 host; proposes, does not decide. Machine operator `@fubumaki` owns both P1 dispositions (a host
 read and a VM start) and the merge of this report.
+
+## 5. Addendum (2026-09-23) — record correction: OSV-Scanner was green without scanning
+
+Three rows above carried `OSV-Scanner` as ✅ (1a "CI green on `main`", 1a "Last scheduled run of
+each" — "OSV 09-18 ✅", and 1e "OSV-Scanner, Trivy, gitleaks and GitGuardian all green"). The
+conclusions were real; the scans were not. Since the 2026-08-17 bump to osv-scanner-action v2.5.1
+(`31423808`) every run passed the removed v1 flag `--skip-git`, the scanner exited 127, and the
+v2.5.1 reporter printed "No issues found" on the missing results file (job 106150937546 on
+`38382457`, 2026-09-20, is the example). Exposed by Dependabot #799 (v2.6.0 fails closed on an
+incomplete scan); fixed on that PR at `0acdeb5`; first real scan 2026-09-23T21:13Z. Full account,
+numbers and dispositions: `ECRR_OSV_SCANNER_VACUOUS_CHECK_20260923.md`. The 09-03 audit's
+"8/8 workflows success" row is affected the same way. Neither audit's method (conclusions, not
+logs) could have caught it; the next audit adds a duration-sanity row per scanner lane. Verdict of
+this audit unchanged (AMBER, non-blocking): the lane was never a required check, and the item is
+tracked in the new report.
