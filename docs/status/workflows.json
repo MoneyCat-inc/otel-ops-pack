@@ -661,7 +661,7 @@
     {
       "name": "registry-guard",
       "path": ".github/workflows/registry-guard.yml",
-      "size": 7534,
+      "size": 5314,
       "triggers": {
         "issues": false,
         "other": [],

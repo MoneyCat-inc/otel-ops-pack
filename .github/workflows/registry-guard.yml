@@ -1,5 +1,6 @@
 # KEEP -- Phase 0 workflow audit 2026-08-03: enforces docs/status/workflows.json freshness on workflow PRs
 # 2026-09-02: also enforces docs/status/scripts.json freshness on scripts/ PRs (-Check).
+# 2026-09-24: workflows.json checked with the generator's -Check (byte-deterministic since #811).
 name: Registry Guard
 # Enforce workflows.json and scripts.json stay in sync with the tree
 
@@ -52,8 +53,9 @@ jobs:
           sys.exit(1 if bad else 0)
           PY
 
-      # scripts.json is byte-deterministic (tracked set + blob sizes, no dates), so a plain
-      # comparison is enough. Fix: pwsh scripts/regenerate-scripts-registry.ps1, commit the file.
+      # Both registries are byte-deterministic (tracked set + blob sizes, no dates or mtimes;
+      # workflows.json since the generator rewrite on 2026-09-24), so each is checked with the
+      # generator's own -Check. Fix: re-run the named script without -Check and commit the file.
       - name: 📜 Scripts registry must be current (scripts.json)
         shell: pwsh
         run: |
@@ -63,78 +65,18 @@ jobs:
             exit 1
           }
 
-      - name: 🔄 Regenerate registry (location-independent)
+      # The diff guard keeps this step from passing vacuously: a generator without a -Check
+      # parameter would ignore the switch, rewrite the file and exit 0.
+      - name: 🔍 Workflows registry must be current (workflows.json)
         shell: pwsh
         run: |
-          Write-Host "Regenerating workflows registry..."
-          pwsh scripts/regenerate-workflows-registry.ps1
-
-      - name: 🔍 Deep semantic comparison (triggers + metadata)
-        shell: pwsh
-        run: |
-          # Compare committed vs regenerated - must check triggers not just names
-          $committed = Get-Content docs/status/workflows.json -Raw | ConvertFrom-Json
-          git checkout docs/status/workflows.json 2>$null
-          $original = Get-Content docs/status/workflows.json -Raw | ConvertFrom-Json
-          
-          $errors = @()
-          
-          # Check 1: Total count
-          if ($committed.total -ne $original.total) {
-            $errors += "Workflow count changed: $($original.total) → $($committed.total)"
-          }
-          
-          # Check 2: Build lookup maps for comparison
-          $committedMap = @{}
-          $committed.items | ForEach-Object { $committedMap[$_.name] = $_ }
-          
-          $originalMap = @{}
-          $original.items | ForEach-Object { $originalMap[$_.name] = $_ }
-          
-          # Check 3: Compare each workflow's triggers
-          foreach ($name in $committedMap.Keys) {
-            if (-not $originalMap.ContainsKey($name)) {
-              $errors += "New workflow: $name (missing in committed registry)"
-              continue
-            }
-            
-            $cTriggers = $committedMap[$name].triggers
-            $oTriggers = $originalMap[$name].triggers
-            
-            # Compare each trigger boolean
-            $triggerKeys = @('push', 'pull_request', 'workflow_dispatch', 'workflow_call', 'workflow_run', 'schedule', 'release', 'issues')
-            foreach ($key in $triggerKeys) {
-              $cVal = if ($cTriggers.$key) { $cTriggers.$key } else { $false }
-              $oVal = if ($oTriggers.$key) { $oTriggers.$key } else { $false }
-              
-              if ($cVal -ne $oVal) {
-                $errors += "Workflow '$name' trigger '$key' changed: $oVal → $cVal"
-              }
-            }
-          }
-          
-          # Check 4: Look for removed workflows
-          foreach ($name in $originalMap.Keys) {
-            if (-not $committedMap.ContainsKey($name)) {
-              $errors += "Workflow removed: $name (still in committed registry)"
-            }
-          }
-          
-          # Report results
-          if ($errors.Count -gt 0) {
-            Write-Host "::error::Registry is out of date - $($errors.Count) issue(s) found"
-            Write-Host ""
-            foreach ($err in $errors) {
-              Write-Host "  - $err"
-            }
-            Write-Host ""
-            Write-Host "Fix: pwsh scripts/regenerate-workflows-registry.ps1"
-            Write-Host "Then: git add docs/status/workflows.json && git commit"
+          pwsh scripts/regenerate-workflows-registry.ps1 -Check
+          $rc = $LASTEXITCODE
+          git diff --quiet -- docs/status/workflows.json
+          if ($rc -ne 0 -or $LASTEXITCODE -ne 0) {
+            Write-Host "::error::docs/status/workflows.json is stale — run: pwsh scripts/regenerate-workflows-registry.ps1 && git add docs/status/workflows.json"
             exit 1
           }
-          
-          Write-Host "✅ Registry is up to date (deep semantic check passed)"
-          Write-Host "   Validated: $($committed.total) workflows, all triggers match"
 
       - name: 📐 Install JSON schema validator
         uses: actions/setup-python@v7
