@@ -108,6 +108,12 @@ back as 0.
 
 ### Apply (operator)
 
+> **Since #794 the services run `restart: always`** (was `unless-stopped`): a container you stop by
+> hand stays stopped only until the Docker engine restarts, and the AtLogOn task
+> `OTel-Ensure-SigNoz-Stack` (#795) runs `compose up -d` at every logon. If Docker Desktop restarts
+> or you log on again inside the stop window below, the stack comes back mid-snapshot: re-run the
+> `compose stop` line before continuing.
+
 ```powershell
 # 0. Preconditions: stack healthy, step 2 PROVEN, C: headroom >= 3x clickhouse_data size
 docker compose ps
