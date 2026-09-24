@@ -9,7 +9,7 @@
 
 ### 2. Run codex-local
 ```powershell
-.\ .agent\scripts\run-codex.ps1
+# (Codex runner removed 2026-09-24: the Codex Cloud seat is retired; see docs/BossCat/CHARTER.md.)
 ```
 
 ### 3. Review with cursor-local
