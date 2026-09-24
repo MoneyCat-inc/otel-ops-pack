@@ -58,6 +58,15 @@ its report was read — `docs/BossCat/KIRO_VERDICT_CRITERIA_20260813.md`, scored
 A reviewing and drafting seat — currently Claude. Drafts decision memos, audits, and analysis;
 proposes, never decides. It has no keyboard: it cannot elevate, mint, or merge.
 
+### Claude Code (local seat)
+
+Registered **2026-09-24** on the operator's decision. Claude Code running on the operator's host, in
+the operator's checkout: an implementation seat and a peer of Cursor{Implementer} and
+Kiro{Implementer}, never nested with either. Same rules: lane discipline, `Actor: Claude Code (local
+seat)` logged per commit, and it never mints, pastes, or reads a credential or elevates. Merging stays
+the operator's authority; this seat executes a merge only on the operator's explicit go for that
+change. First commits under the trailer: #811–#813.
+
 > **Retired roles.** IONA, QA Scribe, Investigator, Gap-Closer, and Codex Cloud/Local are gone. They
 > described a 2025 multi-agent arrangement that no longer runs. Historical reports referencing them
 > remain accurate for their own dates and are not edited.
