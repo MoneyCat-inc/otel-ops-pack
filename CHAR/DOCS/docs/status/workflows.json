@@ -645,14 +645,14 @@
     {
       "name": "registry-drift-check",
       "path": ".github/workflows/registry-drift-check.yml",
-      "size": 3582,
+      "size": 3006,
       "triggers": {
         "issues": false,
         "other": [],
         "pull_request": false,
         "push": false,
         "release": false,
-        "schedule": false,
+        "schedule": true,
         "workflow_call": false,
         "workflow_dispatch": true,
         "workflow_run": false
