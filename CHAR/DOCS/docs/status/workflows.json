@@ -293,7 +293,7 @@
     {
       "name": "evidence-pat-rotation-reminder",
       "path": ".github/workflows/evidence-pat-rotation-reminder.yml",
-      "size": 5624,
+      "size": 5823,
       "triggers": {
         "issues": false,
         "other": [],
