@@ -1,0 +1,12 @@
+# Source floors for requirements-dev.txt (otel-agent-coordination dev tooling).
+# Edit THIS file, then regenerate the pinned requirements-dev.txt with:
+#   python3.11 -m piptools compile --strip-extras --allow-unsafe --output-file=requirements-dev.txt requirements-dev.in
+# Compiled under Python 3.11, the highest interpreter pyproject.toml targets. requirements-dev.txt
+# is the pip-compile output: every transitive package pinned, so OSV-Scanner and Dependabot
+# measure what gets installed instead of the lowest versions these floors admit
+# (ECRR_OSV_SCANNER_VACUOUS_CHECK_20260923.md §3). Nothing in CI installs this file today.
+pytest>=9.1.1
+pytest-cov>=7.1.0
+black>=26.5.1
+mypy>=2.3.1
+pylint>=4.0.8

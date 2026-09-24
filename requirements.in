@@ -1,0 +1,15 @@
+# Source floors for requirements.txt (BossCat Gate Verification tooling).
+# Edit THIS file, then regenerate the pinned requirements.txt with:
+#   python3.12 -m piptools compile --strip-extras --allow-unsafe --output-file=requirements.txt requirements.in
+# requirements.txt is the pip-compile output: every transitive package pinned, so OSV-Scanner and
+# Dependabot measure what pip actually installs instead of the lowest versions these floors admit
+# (ECRR_OSV_SCANNER_VACUOUS_CHECK_20260923.md §3). Nothing in CI installs this file today except
+# bosscat-diagnostic.yml's dry-run (Python 3.12); it is kept for operator venvs.
+
+# Testing & Load Generation
+locust>=2.46.6
+k6>=1.1.0
+
+# Code Quality
+flake8>=7.3.0
+black>=26.5.1

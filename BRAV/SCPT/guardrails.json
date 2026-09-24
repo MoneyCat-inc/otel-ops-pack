@@ -112,6 +112,7 @@
       "pnpm-workspace.yaml",
       "portal.html",
       "queue-steward-dashboard.json",
+      "requirements.in",
       "requirements.txt",
       "robots.txt",
       "rolling_run.py",
