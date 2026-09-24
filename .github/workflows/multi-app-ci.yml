@@ -40,7 +40,7 @@ jobs:
         id: set-matrix
         run: |
           # All apps
-          ALL_APPS='["app","apps","codex","collector","otel","sidecars"]'
+          ALL_APPS='["app","apps","collector","otel","sidecars"]'
           
           # Manual trigger
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
