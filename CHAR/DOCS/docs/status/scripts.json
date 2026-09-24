@@ -755,7 +755,7 @@
     {
       "name": "regenerate-workflows-registry.ps1",
       "path": "scripts/regenerate-workflows-registry.ps1",
-      "size": 5516,
+      "size": 10056,
       "lane": "UTIL"
     },
     {
