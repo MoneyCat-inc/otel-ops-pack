@@ -1,0 +1,15 @@
+# Source floors for requirements.txt (aggregation / compression / inference sidecars).
+# Edit THIS file, then regenerate the pinned requirements.txt with:
+#   python3.12 -m piptools compile --strip-extras --allow-unsafe --output-file=requirements.txt requirements.in
+# requirements.txt is the pip-compile output: every transitive package pinned, so OSV-Scanner and
+# Dependabot measure what the multi-app-ci.yml build-test job (Python 3.12) actually installs
+# instead of the lowest versions these floors admit (ECRR_OSV_SCANNER_VACUOUS_CHECK_20260923.md §3).
+fastapi>=0.141.1
+uvicorn>=0.53.0
+pydantic>=2.13.5
+numpy>=2.5.3
+pandas>=3.0.6
+requests>=2.34.2
+lz4>=4.4.5
+zstandard>=0.25.0
+tritonclient[http]>=2.72.0
