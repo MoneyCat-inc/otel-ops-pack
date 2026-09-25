@@ -1,5 +1,10 @@
 # BRIEFING — Audit Remediation Pack 3 (History + Split)
 
+> ## HISTORICAL — Pack 3 brief, executed
+>
+> Every step is done, including step 10 (the repo split, closed 2026-07-24 as Pack 3B).
+> Kept unedited as the record; do not cite it as current.
+
 **Repo:** MoneyCat-inc/otel-ops-pack  
 **Prerequisite:** Pack 2 (#357) merged; D2 closed (`EVIDENCE_REPO_TOKEN` FG-r2;
 archiver green; closeout on `origin/main` as `c937bd832` — tree-identical to

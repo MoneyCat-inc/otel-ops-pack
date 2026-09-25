@@ -79,7 +79,7 @@
         ".github\\workflows\\ci-disabled.yml",
         ".github\\workflows\\codeql-analysis.yml",
         ".github\\workflows\\codeql.yml",
-        ".github\\workflows\\deploy-moneycat.yml",
+        ".github\\workflows\\deploy-hub.yml",
         ".github\\workflows\\docs-guard.yml",
         ".github\\workflows\\docs-lane-checks.yml",
         ".github\\workflows\\drift-alert.yml",

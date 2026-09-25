@@ -1,5 +1,11 @@
 # 🐾 BossCat OEM - AWS Bedrock Integration Guide
 
+> ## HISTORICAL — 2025 Cursor ⇄ Bedrock AgentCore MCP setup, no longer wired
+>
+> The `bedrock-agentcore-mcp-server` (uvx) configured here is no longer set up in this repo, and Cursor was
+> uninstalled on 2026-09-24. The live Bedrock demo is `scripts/demo/explain-trace.ts`.
+> Kept unedited as the record; do not cite it as current.
+
 **MoneyCat Inc · Resonai [OTel] · Bedrock AgentCore Setup**  
 **Issued by:** BossCat OEM (Executive Overseer Manager)
 

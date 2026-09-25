@@ -359,7 +359,8 @@ When reviewing a Dependabot PR:
 
 ### Security Scanning Workflow
 
-Runs on: Push to main, PRs, Daily at 2 AM UTC
+**Retired:** `workflow_dispatch` only since 2026-08-03 (no push, PR or schedule). The live scans are listed in
+`SECURITY_MAINTENANCE_MASTER_GUIDE.md` → Continuous Monitoring.
 
 **File**: `.github/workflows/security-scan.yml`
 
@@ -413,7 +414,7 @@ npm audit summary
 pip-audit --format json > artifacts/pip-audit-$(date +%Y%m%d).json
 pip-audit
 
-# Generate report
+# Generate report (local scratch; docs/security/weekly-review.md is not kept in the repo)
 echo "# Security Review - $(date +%Y-%m-%d)" > docs/security/weekly-review.md
 echo "## npm Audit" >> docs/security/weekly-review.md
 npm audit summary >> docs/security/weekly-review.md
@@ -436,7 +437,7 @@ pip-audit >> docs/security/weekly-review.md
 Export metrics to SigNoz:
 
 ```bash
-# Add to scripts/security-metrics.ps1
+# not built: scripts/emit-security-metrics.ps1 does not exist
 pwsh scripts/emit-security-metrics.ps1
 
 # Schedule weekly in crontab/Task Scheduler
@@ -482,9 +483,9 @@ Escalate to **BossCat OEM** (security lead) if:
 
 ### Escalation Contact
 
-- **GitHub Issue**: Tag `@security-team` and label `security-escalation`
+- **Escalation**: the machine operator `@fubumaki` (the only seat that handles credentials; CHARTER)
 - **Emergency**: Follow incident response plan
-- **Documentation**: File details in `docs/security/incidents/`
+- **Documentation**: a `docs/BossCat/BOSSCAT_LOG.md` line (`docs/security/incidents/` was never built)
 
 ---
 
@@ -508,7 +509,7 @@ Escalate to **BossCat OEM** (security lead) if:
 
 ---
 
-**Last Updated**: 2025-10-07  
+**Last Updated**: 2026-09-01 (Dependabot config, #701); truth pass 2026-09-25  
 **Next Review**: Weekly  
 **Maintained By**: BossCat OEM Framework  
 **Status**: ✅ Production Ready

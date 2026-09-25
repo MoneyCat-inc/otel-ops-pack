@@ -1,5 +1,11 @@
 # Decision memo — Windows collector: keep as first-class or retire
 
+> ## HISTORICAL — decided memo
+>
+> The operator chose "keep as first-class and upgrade" (2026-08-03). The collector is now v0.159.0; the live
+> record is `docs/runbooks/windows-collector.md`.
+> Kept unedited as the record; do not cite it as current.
+
 **Date:** 2026-08-03
 
 **Drafted by:** Claude (chat/review seat) for operator decision
