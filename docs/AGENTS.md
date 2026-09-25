@@ -150,9 +150,9 @@ been `workflow_dispatch`-only since the 2026-08-03 audit — not representative 
 scorecard" this section promised were never built, and the ECRR compliance engine was retired on 2026-08-03
 (#433) because its verdict could not fail. What actually enforces workflow hygiene: `registry-guard.yml` (trigger registry
 freshness + YAML validity on every workflow PR) and PR review against this document.  
-**Measured coverage (2026-09-01):** 48 of 62 workflows carry a `concurrency` block; of the 14 without, 11 are
-`workflow_dispatch`-only utilities, one is push-only and one is an instant shim — effectively complete where it
-matters.  
+**Measured coverage (re-measured 2026-09-25):** 48 of 60 workflows carry a `concurrency` block (registry total 60
+since #807); of the 12 without, 10 are `workflow_dispatch`-only utilities, one is push + dispatch and one is an
+instant shim — effectively complete where it matters.  
 **Exceptions:** documented in the workflow header (the Phase 0 audit convention).
 
 ---
