@@ -44,9 +44,11 @@ Four seats (OEM D2, 2026-07-26; **Cursor{Implementer} retired 2026-09-24** when 
 
 Social/monetization upkeep (Patreon, Ko-fi, Bluesky) belongs to the split-out **socm** repo
 (Pack 3B, 2026-07-24) and is out of scope here per `docs/PURPOSE.md` and Roadmap 2026 H2
-Phase 2. The weekly reminder scripts and `Resonai-*-Weekly-Maintenance` scheduled tasks that
-remain on the host are legacy (exiting rc=2 since 2026-08); their disposition is operator
-work tracked in `CHAR/ECRR/ECRR_REPORTS/ECRR_SCHEDULED_TASK_SECOND_WAVE_20260813.md`.
+Phase 2. The weekly reminder scripts, their setup script and the `.cursor/` hooks that called
+them were deleted on 2026-09-25 (#835). The three `Resonai-*-Weekly-Maintenance` scheduled tasks
+remain registered on the host pending the operator's unregister (they had exited rc=2 since
+2026-08 and now fail on the missing script); the disposition is tracked in
+`CHAR/ECRR/ECRR_REPORTS/ECRR_SCHEDULED_TASK_SECOND_WAVE_20260813.md`.
 
 This repo's own cadence (quarterly upgrade check, monthly evidence rollup, per-change ECRR,
 clean-host gate) is defined in `docs/PURPOSE.md`.
