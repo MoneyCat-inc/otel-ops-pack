@@ -1,4 +1,5 @@
 # KEEP -- Phase 0 workflow audit 2026-08-03: GitHub Pages deploy of the live hub
+# 2026-09-25: renamed from deploy-moneycat.yml (Pack 3B "cosmetic later" item); no behaviour change.
 name: Deploy Hub Website
 
 # Pack 3B: moneycat/ extracted to MoneyCat-inc/moneycat-site.
@@ -19,7 +20,7 @@ on:
       - 'robots.txt'
       - 'humans.txt'
       - '_config.yml'
-      - '.github/workflows/deploy-moneycat.yml'
+      - '.github/workflows/deploy-hub.yml'
       - '.well-known/**'
       - 'og/**'
   workflow_dispatch:

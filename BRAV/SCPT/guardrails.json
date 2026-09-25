@@ -4,9 +4,6 @@
   "rules": {
     "allowed_top_level": [
       ".agent",
-      ".cursor",
-      ".cursorignore",
-      ".cursorrules",
       ".devskim.json",
       ".dockerignore",
       ".editorconfig",
@@ -233,7 +230,6 @@
   "exemptions": {
     "hidden_dirs": [
       ".agent",
-      ".cursor",
       ".git",
       ".github",
       ".idea",
