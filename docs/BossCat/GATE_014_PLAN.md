@@ -1,3 +1,4 @@
+<!-- markdownlint-disable MD013 MD022 MD031 MD032 MD040 -->
 # Gate #014 - Authoring + Feedback Loop
 
 > ## HISTORICAL — superseded 2025 plan, not open

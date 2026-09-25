@@ -1,3 +1,4 @@
+<!-- markdownlint-disable MD022 MD031 MD032 MD034 -->
 # 🐾 BossCat - AWS Bedrock Integration Files Manifest
 
 > ## HISTORICAL — file manifest for the 2025 Cursor ⇄ Bedrock integration
