@@ -1,4 +1,11 @@
+<!-- markdownlint-disable MD013 MD022 MD031 MD032 MD040 -->
 # Gate #014 - Authoring + Feedback Loop
+
+> ## HISTORICAL — superseded 2025 plan, not open
+>
+> The viz/authoring lane left this repo in Pack 3B (2026-07-24) and `viz-engine` was archived on 2026-08-16;
+> Codex is retired and Cursor{Implementer} with it (2026-09-24). The OPEN status below is stale.
+> Kept unedited as the record; do not cite it as current.
 
 **Authority:** BossCat OEM  
 **Executor:** Cursor{Implementer}  

@@ -1,5 +1,11 @@
 # Gate Decisions
 
+> ## HISTORICAL — 2025 gate ledger, stops at Gate #007
+>
+> No later gate was recorded here. The live record is `docs/BossCat/BOSSCAT_LOG.md`; the gate status dashboard
+> was archived as a dated snapshot in #468.
+> Kept unedited as the record; do not cite it as current.
+
 ## Gate #007 — GREEN (EXC-2025-10-20-007)
 
 - Commit: 29f02d6fe

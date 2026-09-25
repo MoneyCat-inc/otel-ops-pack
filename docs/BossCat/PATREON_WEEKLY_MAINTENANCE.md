@@ -1,5 +1,8 @@
 # Patreon weekly maintenance — Resonai [OTel]
 
+> **Split-lane record (2026-09-25).** The social and funding lanes were extracted in Pack 3B
+> (2026-07-24: `socm`, `moneycat-site`); maintain the Patreon material in those repos.
+
 **Cadence:** every **7 days** (recommended: Monday morning)  
 **Page:** <https://www.patreon.com/c/FaeMcLachlan>  
 **Owner:** Fubumaki (creator) · **Agent cue:** run `pwsh -File scripts/patreon-weekly-reminder.ps1` when overdue
