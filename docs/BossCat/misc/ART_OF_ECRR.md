@@ -1,5 +1,11 @@
 # The Art of ECRR
 
+> ## HISTORICAL — IONA-era user manual
+>
+> The ECRR it teaches is the 2025 expansion. The canonical ECRR is Examine → Clean → Report → Role, and the
+> seats are those in `CHARTER.md`.
+> Kept unedited as the record; do not cite it as current.
+
 by BossCat --- IONA User Manual
 
 > *"Speed is born from discipline. Discipline is born from rules that

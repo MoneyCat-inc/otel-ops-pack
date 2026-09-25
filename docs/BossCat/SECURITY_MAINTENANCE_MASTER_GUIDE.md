@@ -3,8 +3,9 @@
 **BossCat OEM Framework** - Complete Security Operations & Maintenance Handbook
 
 > **Correction 2026-09-02.** Schedules, Dependabot cadence and the merge/credential chain below were
-> re-checked against the live workflows and `docs/BossCat/CHARTER.md`: the only scheduled security scan
-> is `gitleaks.yml` (daily 02:00 UTC); Dependabot is weekly and grouped; and the machine operator
+> re-checked against the live workflows and `docs/BossCat/CHARTER.md`: five security scans are scheduled
+> (see Continuous Monitoring; corrected 2026-09-25, this line said gitleaks was the only one); Dependabot is
+> weekly and grouped; and the machine operator
 > `@fubumaki` is the only seat that merges or touches a credential — there is no security team,
 > DevOps team or on-call rota. Corrected in place; the 2026-08-29 waivers stand.
 
@@ -32,7 +33,7 @@ BossCat OEM observability framework. It serves as the **single source of truth**
 | [GitHub App Implementation Guide](GITHUB_APP_IMPLEMENTATION_GUIDE.md) | Configure automated PR commenting | 2025-10-07 |
 | [Dependabot Security Guide](DEPENDABOT_SECURITY_GUIDE.md) | Manage dependency vulnerabilities | 2025-10-07 |
 | [Nightly Dashboard Guide](NIGHTLY_DASHBOARD_GUIDE.md) | Automated dashboard exports | 2025-10-07 |
-| [Credential Rotation Calendar](CREDENTIAL_ROTATION_CALENDAR.md) | Secret rotation schedule | 2025-10-07 |
+| [Credential Rotation Calendar](CREDENTIAL_ROTATION_CALENDAR.md) | Secret rotation schedule | 2026-09-25 |
 | [AGENTS.md](../../AGENTS.md) | BossCat agent hierarchy | Current |
 | [Security Remediation](DEPENDABOT_SECURITY_GUIDE.md) | Security incident procedures | Current |
 
@@ -119,19 +120,19 @@ BossCat OEM observability framework. It serves as the **single source of truth**
 │                     Code Repository                         │
 │  ┌────────────────────────────────────────────────────┐    │
 │  │ Layer 1: Secret Scanning                           │    │
-│  │  • Gitleaks (pre-commit + CI)                      │    │
-│  │  • GitGuardian (real-time)                         │    │
+│  │  • Gitleaks (CI: push, PR, daily)                  │    │
+│  │  • GitGuardian (not wired)                         │    │
 │  └────────────────────────────────────────────────────┘    │
 │  ┌────────────────────────────────────────────────────┐    │
 │  │ Layer 2: Code Analysis                             │    │
 │  │  • CodeQL (security queries)                       │    │
-│  │  • Semgrep (SAST rules)                            │    │
+│  │  • Semgrep (not wired)                             │    │
 │  └────────────────────────────────────────────────────┘    │
 │  ┌────────────────────────────────────────────────────┐    │
 │  │ Layer 3: Dependency Scanning                       │    │
 │  │  • Dependabot (automated PRs)                      │    │
 │  │  • Trivy (vulnerability scanning)                  │    │
-│  │  • npm audit / pip-audit                           │    │
+│  │  • OSV-Scanner (PRs + weekly)                      │    │
 │  └────────────────────────────────────────────────────┘    │
 │  ┌────────────────────────────────────────────────────┐    │
 │  │ Layer 4: Access Control                            │    │
@@ -142,7 +143,7 @@ BossCat OEM observability framework. It serves as the **single source of truth**
 │  ┌────────────────────────────────────────────────────┐    │
 │  │ Layer 5: Monitoring & Audit                        │    │
 │  │  • BossCat gate verification                       │    │
-│  │  • Nightly dashboard exports                       │    │
+│  │  • Nightly dashboard exports (not built)           │    │
 │  │  • Access log monitoring                           │    │
 │  └────────────────────────────────────────────────────┘    │
 └─────────────────────────────────────────────────────────────┘
@@ -152,26 +153,19 @@ BossCat OEM observability framework. It serves as the **single source of truth**
 
 #### 1. Pre-Commit Protection
 
-**Tools**: Gitleaks, ESLint, Prettier
+**What runs (2026-09-25):** `lefthook.yml` pre-commit runs two commands, `hygiene_fast` and `kiro_lane_purity`.
+There is no gitleaks pre-commit hook; secret scanning happens in CI (`gitleaks.yml` on push, PR and daily).
+GitGuardian and Semgrep are not wired.
 
-**Process**:
-
-1. Developer makes changes locally
-2. Pre-commit hook runs automatically
-3. Gitleaks scans for secrets
-4. Linters check code quality
-5. If issues found: Commit blocked
-6. If clean: Commit proceeds
-
-**Configuration**: `.git/hooks/pre-commit`, `lefthook.yml`
+**Configuration**: `lefthook.yml`
 
 #### 2. Pull Request Security Checks
 
 **Workflows**:
 
-- `security-scan.yml` - Secret scanning, CodeQL, Trivy
-- `iona-gate-verify.yml` - BossCat gate verification
-- `dependency-review-action` - PR-based dependency analysis
+The seven required contexts on `main` (live 2026-09-25): CodeQL, PSScriptAnalyzer, gitleaks, Gate • k6 thresholds,
+Gate • synthetic trace (OTLP/HTTP), Site • links + a11y + CSP (coarse), Repository Structure Compliance.
+Dependency vulnerabilities are checked by OSV-Scanner on PRs and weekly (not npm audit / pip-audit).
 
 **Process**:
 
@@ -185,9 +179,14 @@ BossCat OEM observability framework. It serves as the **single source of truth**
 
 **Workflows**:
 
-- `gitleaks.yml` - Daily at 2 AM UTC (the only scheduled security scan)
+Five scheduled security scans (crons read from the workflow files, 2026-09-25):
+
+- `gitleaks.yml` - `0 2 * * *` (daily 02:00 UTC)
+- `codeql.yml` - `21 6 * * 6` (Saturdays)
+- `powershell.yml` (PSScriptAnalyzer) - `33 5 * * 2` (Tuesdays)
+- `osv-scanner.yml` - `28 9 * * 5` (Fridays)
+- `trivy-security-scan.yml` - `0 3 2 * *` (2nd of the month)
 - `security-scan.yml`, `gitleaks-security-scan.yml` - RETIRED 2026-08-03, `workflow_dispatch` only
-- `nightly-dashboard-export.yml` - does not exist (never shipped)
 
 **Process**:
 
@@ -223,8 +222,7 @@ BossCat OEM observability framework. It serves as the **single source of truth**
 
 | Task | Workflow | Duration | Status Check |
 |------|----------|----------|--------------|
-| Dashboard Export | `nightly-dashboard-export.yml` | ~10-12 min | Check `docs/observability/snapshots/` |
-| Security Scan | `security-scan.yml` (scheduled) | ~15 min | Check Security tab |
+| Secret Scan | `gitleaks.yml` (`0 2 * * *`) | — | Check Security tab |
 | Dependabot PRs | Automatic | N/A | Review open PRs |
 
 **Manual Verification** (Morning):
@@ -265,9 +263,9 @@ pwsh scripts/quick-monitor.ps1   # (scripts/quick-status.ps1 does not exist)
 
   ```bash
   # View workflow runs
-  gh run list --workflow=iona-gate-verify.yml --limit 50
-  gh run list --workflow=security-scan.yml --limit 50
-  gh run list --workflow=nightly-dashboard-export.yml --limit 7
+  gh run list --workflow=gitleaks.yml --limit 50
+  gh run list --workflow=codeql.yml --limit 10
+  gh run list --workflow=osv-scanner.yml --limit 10
   
   # Calculate success rate
   # Target: >95% success
@@ -335,8 +333,10 @@ Write-Host "🔍 Weekly Security Review - $(Get-Date -Format 'yyyy-MM-dd')" -For
 **Months**: January, April, July, October
 
 - [ ] **Credential Rotation**
+  - `EVIDENCE_REPO_TOKEN` (fine-grained PAT, 90 d): rotated 2026-09-24 (r3), expires 2026-12-23, amber ~2026-12-09
+  - `BOSSCAT_TOKEN` (fine-grained PAT): expires 2027-08-26, amber ~2027-08-12
   - Rotate SigNoz API keys
-  - Rotate Docker registry credentials
+  - Docker registry credentials: not in use (no workflow references them)
   - Update all secrets
   - Verify functionality
 
@@ -435,8 +435,10 @@ Write-Host "🔍 Weekly Security Review - $(Get-Date -Format 'yyyy-MM-dd')" -For
 
 Export security metrics to SigNoz:
 
+> Not built: `scripts/emit-security-metrics.ps1` does not exist. The block below is a sketch.
+
 ```powershell
-# scripts/emit-security-metrics.ps1
+# scripts/emit-security-metrics.ps1 (not built)
 function Send-SecurityMetrics {
     param(
         [int]$CriticalVulns,
@@ -656,8 +658,8 @@ All security-relevant actions must be:
 | Dashboard Snapshots | `docs/observability/snapshots/` | Permanent | Visual proof of metrics |
 | Security Scan Results | GitHub Actions artifacts | 90 days | Vulnerability tracking |
 | ECRR Reports | `CHAR/ECRR/ECRR_REPORTS/` | Permanent | Compliance evidence |
-| Rotation Log | `docs/security/rotation-log.md` | Permanent | Credential management |
-| Incident Reports | `docs/security/incidents/` | Permanent | Incident history |
+| Rotation Log | `docs/BossCat/BOSSCAT_LOG.md` lines (`[FG PAT ROTATE]`) | Permanent | Credential management |
+| Incident Reports | `docs/security/incidents/` (not built) | — | Incident history |
 | Workflow Logs | GitHub Actions | 90 days | Process verification |
 
 ### Accepted Risk Waivers
@@ -782,12 +784,11 @@ remove this waiver and verify broker reachability in full health checks.
 
 | Tool | Purpose | Trigger | Output |
 |------|---------|---------|--------|
-| **Gitleaks** | Secret detection | Pre-commit, PR, Scheduled | SARIF, JSON |
+| **Gitleaks** | Secret detection | Push, PR, Scheduled | SARIF, JSON |
 | **CodeQL** | Static application security testing | PR, Scheduled | Security events |
 | **Trivy** | Vulnerability scanning | PR, Scheduled | SARIF |
 | **Dependabot** | Dependency updates | Scheduled | PRs, Alerts |
-| **npm audit** | Node.js vulnerabilities | PR | JSON |
-| **pip-audit** | Python vulnerabilities | PR | JSON |
+| **OSV-Scanner** | Dependency vulnerabilities (npm, pip, …) | PR, weekly | SARIF |
 
 ### Automation
 
@@ -970,12 +971,13 @@ Track improvements in GitHub Issues with labels:
 |------|---------|---------|--------|
 | 2025-10-07 | 1.0 | Initial master guide created | BossCat OEM |
 | 2026-08-29 | 1.1 | Added WAIVER-OTEL-001 (local OTLP TLS) and WAIVER-OTEL-002 (Kafka N/A) | Cursor{Implementer} |
+| 2026-09-25 | 1.2 | Truth pass: five scheduled scans, seven required contexts, pre-commit reality, the two PATs, retired/never-built references | Claude Code (local seat) |
 
 ---
 
 **Document Owner**: BossCat OEM Framework Team  
 **Review Frequency**: Quarterly  
-**Next Review**: 2025-01-07  
+**Next Review**: 2026-12-25  
 **Status**: ✅ Production Ready
 
 ---

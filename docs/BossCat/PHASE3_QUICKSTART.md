@@ -1,5 +1,11 @@
 # Phase 3 — Learning & Autonomy (Quickstart)
 
+> ## HISTORICAL — 2025 loop-closing Phase 3 design, never wired
+>
+> The signature registry and auto-rerun guard described here were not built; see the Status Addendum
+> (2026-09-01) in `LOOP_CLOSING_MACHINE_ARCHITECTURE.md`.
+> Kept unedited as the record; do not cite it as current.
+
 Scope
 
 - Signature registry: known issues → owners + playbooks + confidence.
