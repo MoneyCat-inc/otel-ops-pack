@@ -1,5 +1,12 @@
 # 🐾 BossCat - AWS Bedrock Integration Files Manifest
 
+> ## HISTORICAL — file manifest for the 2025 Cursor ⇄ Bedrock integration
+>
+> The AgentCore MCP server it lists is no longer in `.cursor/mcp.json`, and Cursor was uninstalled on 2026-09-24.
+> The quickstart and status files it names now live in `docs/notes/misc/` (`BEDROCK_*.md`); the live Bedrock
+> demo is `scripts/demo/explain-trace.ts`.
+> Kept unedited as the record; do not cite it as current.
+
 **Created:** 2025-10-07  
 **Agent:** Cursor Implementer  
 **Purpose:** Complete file listing for Bedrock ⇄ Cursor integration

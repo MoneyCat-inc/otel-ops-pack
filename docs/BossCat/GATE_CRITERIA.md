@@ -1,5 +1,11 @@
 # BossCat Gate Criteria (Hard Gates)
 
+> ## HISTORICAL — 2025 hard-gate criteria
+>
+> `artifacts/gate-verification-results.json`, which these gates fed, is not in the tree. The live gate is the
+> clean-host E2E defined in `docs/PURPOSE.md`.
+> Kept unedited as the record; do not cite it as current.
+
 - Performance: p95 < 500ms, error rate < 1%, throughput meets baseline (k6 thresholds)
 - Resiliency: spike/stress recover; soak (≥30m) shows no leak/degradation
 - Observability: HTTP/DB traces present; metrics captured; logs correlated with trace IDs
