@@ -1,8 +1,8 @@
 # Ko-fi weekly maintenance — Resonai [OTel]
 
 > **Split-lane record (2026-09-02).** The social and funding lanes were extracted in Pack 3B
-> (2026-07-24: `socm`, `moneycat-site`). `scripts/kofi-weekly-reminder.ps1` still ships here as a
-> reminder stub; maintain the Ko-fi material in those repos.
+> (2026-07-24: `socm`, `moneycat-site`). `scripts/kofi-weekly-reminder.ps1` was deleted on 2026-09-25
+> (#835); maintain the Ko-fi material in those repos.
 
 **Cadence:** every **7 days** (recommended: Monday morning, offset from Patreon if both run same day)  
 **Page:** <https://ko-fi.com/fubumaki>  

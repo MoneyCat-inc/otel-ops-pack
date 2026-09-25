@@ -3,7 +3,8 @@
 > **Correction 2026-09-02.** Under `docs/BossCat/CHARTER.md` the machine operator `@fubumaki` is the
 > only seat that mints, rotates or reads a credential — the team owners below are replaced accordingly.
 > The reminder workflow shipped as `.github/workflows/evidence-pat-rotation-reminder.yml`; the
-> `iona-gate-verify.yml` smoke test is RETIRED (use `bosscat-gate-verify.yml`).
+> `iona-gate-verify.yml` smoke test is RETIRED. (2026-09-25: `bosscat-gate-verify.yml` has no App-token step either;
+> see §1 step 3.)
 
 **BossCat OEM Framework** - Security Key & Secret Rotation Schedule
 
@@ -22,13 +23,20 @@ best practices.
 | Credential Type | Frequency | Last Rotated | Next Due | Owner |
 |----------------|-----------|--------------|----------|-------|
 | **GitHub App Private Key** | Annually | TBD | TBD | Machine operator (`@fubumaki`) |
-| **GitHub Deploy Keys** | Annually | TBD | TBD | Machine operator (`@fubumaki`) |
+| **GitHub Deploy Keys** | Annually | not in use; see note | — | Machine operator (`@fubumaki`) |
 | **SigNoz API Keys** | Quarterly | TBD | TBD | Machine operator (`@fubumaki`) |
-| **Docker Registry Credentials** | Quarterly | TBD | TBD | Machine operator (`@fubumaki`) |
+| **Docker Registry Credentials** | Quarterly | not in use; see note | — | Machine operator (`@fubumaki`) |
 | **OTel Service Account Tokens** | Semi-annually | TBD | TBD | Machine operator (`@fubumaki`) |
 | **CI/CD Secrets (General)** | Annually | TBD | TBD | Machine operator (`@fubumaki`) |
 | **Personal Access Tokens (PATs)** | 90 days | TBD | TBD | Individual Users |
 | **SSH Keys** | Annually | TBD | TBD | Individual Users |
+| **`EVIDENCE_REPO_TOKEN`** (fine-grained PAT: MoneyCat-inc / `otel-ops-evidence` / Contents R/W) | 90 days | 2026-09-24 (r3) | 2026-12-23 (amber opens ~2026-12-09) | Machine operator (`@fubumaki`) |
+| **`BOSSCAT_TOKEN`** (fine-grained PAT `bosscat-rollup-otel-ops-pack`: `otel-ops-pack` / Contents + Pull requests R/W) | Before expiry | ~2026-08-25 (re-minted after it was found expired) | 2027-08-26 (amber opens ~2027-08-12) | Machine operator (`@fubumaki`) |
+
+**Note (2026-09-25):** `DEPLOY_KEY_PRIVATE`, `DOCKER_USERNAME` and `DOCKER_PASSWORD` are referenced by no workflow, so
+those rows have nothing to rotate. SigNoz stays live: `gate-nightly.yml` uses `SIGNOZ_API_KEY` and `signoz-*.yml` use
+`WYZWOZ_SIGNOZ`. The two PAT rows are watched by `evidence-pat-rotation-reminder.yml`; rotations are recorded as
+`[FG PAT ROTATE]` lines in `docs/BossCat/BOSSCAT_LOG.md`.
 
 ---
 
@@ -59,16 +67,9 @@ best practices.
 
 3. **Verify New Key Works**
 
-   ```bash
-   # Trigger a workflow that uses the GitHub App token
-   gh workflow run bosscat-gate-verify.yml
-   
-   # Monitor workflow run
-   gh run list --workflow=bosscat-gate-verify.yml --limit 1
-   
-   # Check for "Generate GitHub App token" step success
-   gh run view <run-id> --log | grep "Generate GitHub App token"
-   ```
+   The only workflows with an App-token step are four retired, `workflow_dispatch`-only ones: `boss-gate-verify.yml`,
+   `iona-gate-verify.yml`, `security-scan.yml` and `gitleaks-security-scan.yml`. Dispatch one of them and check that
+   its App-token step succeeds; no live workflow uses the key.
 
 4. **Revoke Old Key** (after verification)
    - Return to GitHub App settings → Private keys
@@ -79,7 +80,7 @@ best practices.
 5. **Document Rotation**
    - Update "Last Rotated" date in this document
    - Calculate "Next Due" date (1 year from now)
-   - Create entry in `docs/security/rotation-log.md`
+   - Add a one-line entry to `docs/BossCat/BOSSCAT_LOG.md` (the rotation log; `[FG PAT ROTATE]` is the precedent)
 
 #### Rollback Plan
 
@@ -353,7 +354,7 @@ Rotate credentials **immediately** if:
    - Determine scope of potential compromise
 
 3. **Notify Stakeholders**
-   - Alert security team
+   - Alert the machine operator `@fubumaki`
    - Inform affected users
    - Document incident details
 
@@ -369,51 +370,15 @@ Rotate credentials **immediately** if:
 
 ### Log Format
 
-Maintain rotation log at `docs/security/rotation-log.md`:
-
-```markdown
-| Date | Credential Type | Rotated By | Reason | Notes |
-|------|----------------|------------|--------|-------|
-| 2025-10-07 | GitHub App Key | @username | Scheduled annual | No issues |
-| 2025-10-05 | SigNoz API Key | @username | Scheduled quarterly | Q4 2025 |
-| 2025-09-15 | Deploy Key | @username | Scheduled annual | Updated CI/CD |
-```
+Rotations are recorded as one-line entries in `docs/BossCat/BOSSCAT_LOG.md` (e.g. `[D2 FG ROTATE]` 2026-07-24,
+`[FG PAT ROTATE]` 2026-09-24). There is no separate `docs/security/rotation-log.md`.
 
 ### Automation
 
-**Reminder System** (optional):
-
-```yaml
-# Original sketch — shipped as .github/workflows/evidence-pat-rotation-reminder.yml
-name: Credential Rotation Reminder
-
-on:
-  schedule:
-    - cron: '0 9 1 * *' # 1st of every month at 9 AM
-
-jobs:
-  check-rotation:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check rotation calendar
-        run: |
-          # Parse CREDENTIAL_ROTATION_CALENDAR.md
-          # Check for "Next Due" dates in current month
-          # Create issue if rotation is due
-          
-      - name: Create reminder issue
-        if: rotation_due
-        uses: actions/github-script@v7
-        with:
-          script: |
-            github.rest.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: '🔄 Credential Rotation Due',
-              body: 'See CREDENTIAL_ROTATION_CALENDAR.md for details.',
-              labels: ['security', 'maintenance']
-            });
-```
+**Reminder system (shipped):** `.github/workflows/evidence-pat-rotation-reminder.yml` runs `'0 12 * * 1'` (Mondays
+12:00 UTC) over an expiry matrix (`EVIDENCE_REPO_TOKEN`, `BOSSCAT_TOKEN`). Inside 14 days of an expiry it opens an
+amber issue labelled `security` + `rotation` (both labels exist since 2026-09-24) and comments on it on later Mondays.
+Update the matrix `expires` after every rotation.
 
 ---
 
@@ -496,15 +461,13 @@ Supports compliance with:
 
 ### Rotation Issues
 
-- **Technical Issues**: Open issue with label `security`, `credential-rotation`
+- **Technical Issues**: Open issue with labels `security`, `rotation`
 - **Security Incidents**: Follow incident response plan
-- **Questions**: Tag `@security-team` in repository
+- **Questions**: machine operator `@fubumaki` (the only seat that handles credentials; CHARTER)
 
 ### Escalation Path
 
-1. **Level 1**: Repository maintainers
-2. **Level 2**: Security team lead
-3. **Level 3**: CISO / Security Officer
+1. The machine operator `@fubumaki` (the only seat that handles credentials; CHARTER). There is no further level.
 
 ---
 
@@ -535,9 +498,9 @@ Please follow the rotation procedure in:
 docs/BossCat/CREDENTIAL_ROTATION_CALENDAR.md
 
 After rotation, update the rotation log at:
-docs/security/rotation-log.md
+docs/BossCat/BOSSCAT_LOG.md (one line)
 
-If you have any questions, contact the security team.
+If you have any questions, contact the machine operator.
 
 --
 BossCat OEM Security Team

@@ -1,5 +1,11 @@
 # BRIEFING — Audit Remediation Pack 2 (Steps 5–7)
 
+> ## HISTORICAL — Pack 2 brief, executed
+>
+> D3 (the `CHAR/DOCS/docs` divergence) was resolved at the 2026-07-25 CHAR/DOCS review, and the mirror is now
+> republished by `BRAV/SCPT/publish-docs-mirror.ps1`. The PAT it provisions is on r3 (2026-09-24).
+> Kept unedited as the record; do not cite it as current.
+
 **Repo:** MoneyCat-inc/otel-ops-pack  
 **Branch:** `audit-pack-2` off main (after Pack 1 PR merges)  
 **Method:** ECRR per task. Each task = separate commit. Evidence lines noted per task.  

@@ -64,7 +64,7 @@ Like a cat resting beside a softly glowing control board - alert but relaxed, mo
 
 - **In Repo**: `docs/comfort-cat/`
 - **Windows Mirror**: `C:\otel\docs\comfort cat`
-- **Reference in**: `.cursorrules`, project documentation, agent charters
+- **Reference in**: project documentation, agent charters (`.cursorrules` deleted 2026-09-25, #835)
 
 ---
 

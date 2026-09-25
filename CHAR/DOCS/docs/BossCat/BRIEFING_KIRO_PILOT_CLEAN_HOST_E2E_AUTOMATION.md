@@ -1,6 +1,12 @@
 <!-- markdownlint-disable MD013 MD031 MD034 -->
 # BRIEFING — Kiro pilot: scheduled clean-host E2E automation
 
+> ## HISTORICAL — the Kiro pilot brief, pilot complete
+>
+> Kiro{Implementer} has been a permanent seat since 2026-08-14 (#474, #475); "provisional" below is stale.
+> Live seats are in `CHARTER.md`.
+> Kept unedited as the record; do not cite it as current.
+
 **Authority:** OEM seat (D1–D4 pre-registered below)  
 **Owner (brief / PR / ECRR):** Cursor{Implementer}  
 **Owner (pilot implementer):** Kiro{Implementer} (provisional — peer seat, no nesting)  

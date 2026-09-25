@@ -33,7 +33,7 @@ top-level **files as well as directories**. As of ADR-0002 enactment
 | `scripts/` | **Thin operator wrappers only** — every colliding basename delegates to `BRAV/SCPT/`. Node tooling (`.mjs`/`.ts` entry points that package.json calls) is the exception: canonical here. |
 | `windows/` | The actual deliverable: canonical Windows collector config (`windows/otelcol/`). |
 | `compose/` | Parked compose variants; all require `docker compose --project-directory .. -f compose/<file>` (see `compose/README.md`). Root `docker-compose.yml` is the canonical stack. |
-| `.agent/`, `.cursor/`, `.kiro/`, `otel-agent-coordination/` | Agent-seat frameworks. `.kiro/` authorized as seat metadata by ADR-0002. |
+| `.agent/`, `.kiro/`, `otel-agent-coordination/` | Agent-seat frameworks. `.kiro/` authorized as seat metadata by ADR-0002. (`.cursor/` deleted 2026-09-25, #835.) |
 | `third_party/` | `third_party/resonai` is a registered but uninitialized submodule. |
 
 ## Root files
