@@ -1,6 +1,6 @@
 {
   "source": "scripts/regenerate-scripts-registry.ps1",
-  "total": 173,
+  "total": 169,
   "scripts": [
     {
       "name": "analyze-sqlite.ps1",
@@ -54,12 +54,6 @@
       "name": "boot-health-check.ps1",
       "path": "scripts/boot-health-check.ps1",
       "size": 177,
-      "lane": "UTIL"
-    },
-    {
-      "name": "bsky-weekly-reminder.ps1",
-      "path": "scripts/bsky-weekly-reminder.ps1",
-      "size": 5252,
       "lane": "UTIL"
     },
     {
@@ -372,12 +366,6 @@
       "name": "invoke-quil.ps1",
       "path": "scripts/invoke-quil.ps1",
       "size": 4797,
-      "lane": "UTIL"
-    },
-    {
-      "name": "kofi-weekly-reminder.ps1",
-      "path": "scripts/kofi-weekly-reminder.ps1",
-      "size": 5193,
       "lane": "UTIL"
     },
     {
@@ -705,12 +693,6 @@
       "lane": "DOCS"
     },
     {
-      "name": "patreon-weekly-reminder.ps1",
-      "path": "scripts/patreon-weekly-reminder.ps1",
-      "size": 5223,
-      "lane": "UTIL"
-    },
-    {
       "name": "baseline-audioswitch-propagation.ps1",
       "path": "scripts/perf/baseline-audioswitch-propagation.ps1",
       "size": 6678,
@@ -810,12 +792,6 @@
       "name": "setup-scaled-scheduler.ps1",
       "path": "scripts/setup-scaled-scheduler.ps1",
       "size": 187,
-      "lane": "UTIL"
-    },
-    {
-      "name": "setup-social-maintenance-tasks.ps1",
-      "path": "scripts/setup-social-maintenance-tasks.ps1",
-      "size": 782,
       "lane": "UTIL"
     },
     {
