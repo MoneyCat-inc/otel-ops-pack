@@ -1,5 +1,11 @@
 # Kiro seat verdict — criteria, fixed before the report
 
+> ## HISTORICAL — verdict criteria, applied
+>
+> Approved in #471 and scored: the verdict was CONVERT (Kiro permanent 2026-08-14). The `EVIDENCE_REPO_TOKEN`
+> rotation it lists as undone was done as r3 on 2026-09-24.
+> Kept unedited as the record; do not cite it as current.
+
 **Date:** 2026-08-13
 
 **Drafted by:** Claude (chat/review seat) for operator approval
