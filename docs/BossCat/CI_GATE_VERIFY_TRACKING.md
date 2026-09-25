@@ -1,5 +1,11 @@
 # 🚨 P0 TRACKING: BossCat Gate Verify CI Failure
 
+> ## HISTORICAL — closed 2025 P0
+>
+> Correction (2026-09-25) to the note below: `bosscat-gate-verify.yml` is KEEP but **not** a required check
+> (`REQUIRED_STATUS_CHECKS.md`). Its matrix is 4 jobs, not 6, and the mascot it asserts lives under `assets/`.
+> Kept unedited as the record; do not cite it as current.
+
 > **CLOSED P0 record (2025) — 2026-09-02 truth pass.** The tracked failure was resolved in the 2025-10
 > gate cycle; `bosscat-gate-verify.yml` is a KEEP required lane today (`REQUIRED_STATUS_CHECKS.md`).
 > Nothing here is open.
