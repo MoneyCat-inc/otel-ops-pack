@@ -1,6 +1,7 @@
 <!-- markdownlint-disable MD013 MD022 MD024 MD032 MD034 MD049 -->
 # BOSSCAT_LOG (one-liners)
 
+- 2026-09-25T02:05:00Z — **[LOG DEDUP: PACK 3B CLOSED LINE]** Operator decision: the 2026-07-24 line "Pack 3B closed (#378). Cosmetic later: rename `deploy-moneycat.yml` → `deploy-hub.yml`…" appeared 13 times, byte-identical, at lines 234–435 of the pre-change file — one copy inserted at the top of each `## 2025-10-24 …` entry in the 2025 section (an insertion artifact, not 13 events). The first copy (line 234, inside the Gate #010 entry) is kept as filed; the other 12 are removed. The "cosmetic later" item itself closed on 2026-09-25 (#836). Actor: Claude Code (local seat); go @fubumaki.
 - 2026-09-25T01:21:00Z — **[DEPLOY-HUB RENAME]** `.github/workflows/deploy-moneycat.yml` → `deploy-hub.yml` (#836, `faa5372`): git mv, the self-trigger path, one dated header line; `name:` stays `Deploy Hub Website`, so the Pages environment and hub.resonai.uk are untouched. Registry entry → `deploy-hub` (total 60). Last green run on the old name 36075932594; **first run on the new path 36078913226** (the merge push, run #1, `Deploy to GitHub Pages` step success). `docs/reference/reference-map.json` entry renamed by hand: a full `pnpm map:generate` rewrites ~41 lines because the map has been stale since 2026-08-15 (it still lists deleted workflows), which is a separate item. Pack 3B parked item closed. Actor: Claude Code (local seat) (driver); chat seat (review); go @fubumaki.
 - 2026-09-25T01:20:00Z — **[CURSOR CONFIG + SOCIAL REMINDERS DELETED]** #835 (`2538219`, code lane): 11 paths — `.cursor/hooks.json`, `.cursor/hooks/{bsky,kofi,patreon}-weekly-reminder-hook.ps1`, `.cursor/mcp.json`, `.cursorignore`, `.cursorrules`, `scripts/{bsky,kofi,patreon}-weekly-reminder.ps1`, `scripts/setup-social-maintenance-tasks.ps1`. `scripts.json` 173 → 169; `guardrails.json` drops `.cursor`, `.cursorignore`, `.cursorrules` (allowlist) and `.cursor` (hidden_dirs), passing in a clean worktree; two `.gitignore` lines gone. `.cursor/mcp.json` carried the repo's only Bedrock MCP entry (`npx tsx scripts/demo/explain-trace.ts`); it went with the Cursor config and can be recreated under `.kiro/` if the Kiro/Bedrock alignment proceeds (operator decision pending) — this closes the `mcp.json` finding the [DOCS TRUTH PASS 2] line left open. `setup-bedrock-prerequisites.ps1` step 7 now warns "not found" and is left as is (historical). Host: the three `Resonai-*-Weekly-Maintenance` tasks remain registered (Ready; last result 2 on 2026-09-21) pending the operator's elevated unregister; they fail on the missing script from Mon 09-28. Docs follow-ups in this PR: `REPOSITORY_STRUCTURE.md` and `comfort-cat/README.md` lines, and the four BSKY/KOFI split-lane banners no longer say the scripts ship. Root `AGENTS.md` in #837. Actor: Claude Code (local seat) (driver); chat seat (review); go @fubumaki.
 - 2026-09-25T00:55:00Z — **[DOCS TRUTH PASS 2: BOSSCAT]** Operator: "tell the local seat to take the docs-fix PRs" (source: the chat seat's `BOSSCAT_DOCS_REVIEW_20260924.md` §3A, §3B, §4 items 1, 2, 6). Four docs-lane PRs, every fact re-read live on `main`: **#831** false lines in the live security/CI guides (3 files, 195 LOC; `docs_checks`→`docs_gate`, the two PATs with dates, five scheduled scans with crons from the files, the seven required contexts, pre-commit reality, retired/never-built references, operator escalation); **#832** clean-host brief (four-run status, MSI 0.159.0, ProgramData config path, seats without Cursor), retention brief, concurrency coverage re-measured to 48 of 60, the immediate-wins counts, a PURPOSE addendum (13 scheduled workflows, #817) and the Dependabot guide (6 files, 58 LOC); **#833** + this PR: **15 HISTORICAL/split-lane banners**, bodies untouched (the two CURSOR_IMPLEMENTER files already had banners). Three findings went against the review: `SIGNOZ_API_KEY` is still live (`gate-nightly.yml`), so the SigNoz rotation row stays; `.cursor/mcp.json` still has a `bedrock` entry (it runs `explain-trace.ts`; only the AgentCore server is gone); and the 09-02 note claiming Gate Verify is a required lane was false, now corrected by a banner above it. Actor: Claude Code (local seat) (driver); chat seat (review); go @fubumaki.
@@ -246,7 +247,6 @@
 
 ## 2025-10-24 07:37 - Gate #010 Options A+B Exhausted - ESCALATION
 
-- 2026-07-24 — Pack 3B closed (#378). Cosmetic later: rename `deploy-moneycat.yml` → `deploy-hub.yml` on next docs-lane ride.
 **Authority:** BossCat OEM  
 **Executor:** Cursor{Implementer}  
 **Action:** Implemented Option A (normalizePreset schema fix) and tested Option B (library presets)  
@@ -261,7 +261,6 @@
 
 ## 2025-10-24 07:40 - Gate #010 Final Archive - PARTIAL SUCCESS
 
-- 2026-07-24 — Pack 3B closed (#378). Cosmetic later: rename `deploy-moneycat.yml` → `deploy-hub.yml` on next docs-lane ride.
 **Authority:** BossCat OEM  
 **Executor:** Cursor{Implementer}  
 **Action:** Completed all Gate #010 deliverables and packaged evidence for decision  
@@ -284,7 +283,6 @@ Budget: ✅ Within limits (8 files, ~250 LOC)
 
 ## 2025-10-24 08:15 - ProjectM Build Attempt - TIMELINE REASSESSMENT
 
-- 2026-07-24 — Pack 3B closed (#378). Cosmetic later: rename `deploy-moneycat.yml` → `deploy-hub.yml` on next docs-lane ride.
 **Authority:** BossCat OEM  
 **Executor:** Cursor{Implementer}  
 **Action:** Attempted Option C (ProjectM container) per BossCat directive  
@@ -301,7 +299,6 @@ Budget: ✅ Within limits (8 files, ~250 LOC)
 
 ## 2025-10-24 08:35 - Gate #010 AMBER CERTIFICATION - AUDIO REQUIREMENTS MET
 
-- 2026-07-24 — Pack 3B closed (#378). Cosmetic later: rename `deploy-moneycat.yml` → `deploy-hub.yml` on next docs-lane ride.
 **Authority:** BossCat OEM (Taskmaster-Overseer)  
 **Executor:** Cursor{Implementer}  
 **Action:** Pivoted to Option 2 (AMBER) per BossCat directive - ship audio bridge, defer visuals to Gate #011  
@@ -318,7 +315,6 @@ Budget: ✅ Within limits (8 files, ~250 LOC)
 
 ## 2025-10-24 08:55 - Gate #011 Track A Attempted - BLOCKED
 
-- 2026-07-24 — Pack 3B closed (#378). Cosmetic later: rename `deploy-moneycat.yml` → `deploy-hub.yml` on next docs-lane ride.
 **Authority:** BossCat OEM  
 **Executor:** Cursor{Implementer}  
 **Action:** Implemented Track A (Butterchurn scaffolding) per directive  
@@ -340,7 +336,6 @@ Budget: ✅ Within limits (8 files, ~250 LOC)
 - 2025-10-24T10:55Z — **Gate #012 CLOSED (Deferred)**: Option B accepted per BossCat directive; ProjectM API complete (179 LOC, 8 endpoints), SDL runtime blocker documented (3rd occurrence); visual rendering deferred to future scoped work (VIZ-001, est. 3-5h); AMBER bundle finalized with closure docs; evidence: artifacts/ecrr/gate010_011_amber_FINAL_20251024_094222.zip (37 files). — **Cursor{Implementer} + BossCat OEM**
 ## 2025-10-24 – GATE #016 AMBER (Preset Library Curation)
 
-- 2026-07-24 — Pack 3B closed (#378). Cosmetic later: rename `deploy-moneycat.yml` → `deploy-hub.yml` on next docs-lane ride.
 
 **Executor:** Cursor{Implementer} | **Status:** AMBER  
 **Deliverable:** 15 curated ProjectM presets with metadata index and scoring pipeline  
@@ -352,7 +347,6 @@ Budget: ✅ Within limits (8 files, ~250 LOC)
 
 ## 2025-10-24 – GATE #013B BLOCKED (Native Audio Bridge - FAILED)
 
-- 2026-07-24 — Pack 3B closed (#378). Cosmetic later: rename `deploy-moneycat.yml` → `deploy-hub.yml` on next docs-lane ride.
 
 **Executor:** Cursor{Implementer} | **Status:** 🔴 BLOCKED (Core objective unmet)  
 **Deliverable:** Native C++ audio monitor (NOT audio injector as required)  
@@ -371,7 +365,6 @@ Budget: ✅ Within limits (8 files, ~250 LOC)
 **Correction Document:** GATE_013B_CORRECTION.md
 ## 2025-10-24 – GATE #016 AMBER (Preset Library Curation)
 
-- 2026-07-24 — Pack 3B closed (#378). Cosmetic later: rename `deploy-moneycat.yml` → `deploy-hub.yml` on next docs-lane ride.
 
 **Executor:** Cursor{Implementer} | **Status:** 🟡 AMBER (Operational - Audio Required for GREEN)  
 **Deliverables:** 15 curated presets ✅, metadata index ✅, scoring script ✅, evidence bundle ✅  
@@ -384,7 +377,6 @@ Budget: ✅ Within limits (8 files, ~250 LOC)
 
 ## 2025-10-24 - GATE #016 V2 (Frame-Timing Stabilizer)
 
-- 2026-07-24 — Pack 3B closed (#378). Cosmetic later: rename `deploy-moneycat.yml` → `deploy-hub.yml` on next docs-lane ride.
 
 **Executor:** Cursor{Implementer} | **Status:** ? VALIDATION IN PROGRESS  
 **Deliverable:** FrameTimingStabilizer module + jitter/pin budget telemetry  
@@ -398,7 +390,6 @@ Budget: ✅ Within limits (8 files, ~250 LOC)
 
 ## 2025-10-24 - GATE #016 FINAL CERTIFICATION (GREEN)
 
-- 2026-07-24 — Pack 3B closed (#378). Cosmetic later: rename `deploy-moneycat.yml` → `deploy-hub.yml` on next docs-lane ride.
 
 **Executor:** Cursor{Implementer} | **Status:** ✅ APPROVED - RELEASE AUTHORIZED  
 **Deliverable:** Complete visual guard & jitter stabilization with synthetic trace verification  
@@ -413,7 +404,6 @@ Budget: ✅ Within limits (8 files, ~250 LOC)
 
 ## 2025-10-26 — Gate 022: Windows Collector Post-Op Hardening
 
-- 2026-07-24 — Pack 3B closed (#378). Cosmetic later: rename `deploy-moneycat.yml` → `deploy-hub.yml` on next docs-lane ride.
 
 **Status:** ✅ COMPLETE
 **Action:** Canonical path set; endpoint asserted; drift guard installed
@@ -432,7 +422,6 @@ Budget: ✅ Within limits (8 files, ~250 LOC)
 
 ## 2025-10-26 — Gate 025: Latency Envelope + Resilience + ICF
 
-- 2026-07-24 — Pack 3B closed (#378). Cosmetic later: rename `deploy-moneycat.yml` → `deploy-hub.yml` on next docs-lane ride.
 
 **Status:** ✅ COMPLETE (All 3 Tracks)
 
