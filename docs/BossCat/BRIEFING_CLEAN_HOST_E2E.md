@@ -2,8 +2,9 @@
 
 **Authority:** BossCat OEM / oversight seat (post–Pack 3B follow-on)  
 **Owner (brief):** Cursor{Implementer}  
-**Owner (run):** Machine operator at Cursor tab + Cursor{Implementer} verify  
-**Status:** **SCHEDULED** 2026-07-25 — awaiting fresh VM (see `CLEAN_HOST_E2E_RUN_CARD_20260725.md`)  
+**Owner (run):** Machine operator + Claude Code (local seat) verify (Cursor{Implementer} retired 2026-09-24)  
+**Status:** four runs complete: 07-25 RED (clock), 07-26 GREEN 7.47 min, 08-13 GREEN 6.86 min, 08-23 GREEN on 0.159.0
+(clock unmeasured, canary skipped); next gate before Mon 2026-09-28 12:15Z (freshness watcher)  
 <!-- markdownlint-disable-next-line MD013 -->
 **Promise under test:** A stranger on a fresh Windows host can go from clone → first span in SigNoz without tribal knowledge.  
 **Gate clock:** Phases **1–4 only** (clone → first span). Phase 0 tooling is recorded but **excluded** from the ≤30 min target.
@@ -42,7 +43,7 @@ Board order: after CHAR review (Unblock #2 closed). This item is the highest-lev
 | Step | Seat |
 |------|------|
 | Docker Desktop install, MSI download/install, admin Event Log, first SigNoz UI login | **Machine operator** |
-| Scripted compose up, config sync, canary, verify, ECRR + timing artifact | **Cursor{Implementer}** |
+| Scripted compose up, config sync, canary, verify, ECRR + timing artifact | **Claude Code (local seat)** or **Kiro{Implementer}** |
 | Accept GREEN / AMBER / RED; decide README fixes | **Chat / review / OEM** |
 
 <!-- markdownlint-disable-next-line MD013 -->
@@ -61,7 +62,7 @@ Lock these for the run. Document drift; do not improvise mid-gate.
 | SigNoz OTLP (Docker host) | `4317` gRPC / `4318` HTTP | — |
 | Windows collector ingest | `5320` gRPC / `5321` HTTP | `5317`/`5318` (historical / PlariumPlay conflict) |
 | Collector → SigNoz export | `localhost:4317` (template `windows/otelcol/otelcol-contrib-config.yaml`) | Mid-run inventing `14317` unless runbook path is explicitly chosen |
-| Collector config | Service `--config C:\otel\config.yaml` (runbook) synced from template | Silent ProgramData-only drift |
+| Collector config | Service `--config %ProgramData%\otelcol-contrib\config.yaml` (default since #429), deployed from the template by the repair script | Hand-editing the deployed copy |
 | Compose file | Root `docker-compose.yml` via `start-signoz.ps1` or `docker compose up -d` | Parked `compose/docker-compose-signoz.yml` |
 | Gate verify | `BRAV\SCPT\verify-pipeline.ps1` | Missing `scripts\verify-pipeline.ps1`; root `verify-pipeline.ps1` (legacy ClickHouse log script) |
 | Fast health | `scripts\quick-monitor.ps1` | — |
@@ -123,10 +124,10 @@ Machine operator: complete SigNoz first-run UI if prompted (admin user). Note wh
 
 | # | Step |
 |---|------|
-| 3.1 | Install pinned MSI (**0.104.0** Gate #022-proven): <https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v0.104.0/otelcol-contrib_0.104.0_windows_x64.msi> — usually done in Phase 0; confirm service exists before repair script |
-| 3.2 | Sync template → live config: ensure `C:\otel\config.yaml` matches `windows\otelcol\otelcol-contrib-config.yaml` (or documented sync command) |
-| 3.3 | `pwsh -File C:\otel\scripts\windows\install-or-repair-otel-collector.ps1` — service must point at `C:\otel\config.yaml` |
-| 3.4 | `sc qc otelcol-contrib` — confirm BINARY_PATH_NAME includes `C:\otel\config.yaml` |
+| 3.1 | Install pinned MSI (**0.159.0**, pin moved 2026-08-23 #591; see `docs/runbooks/windows-collector.md`): <https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v0.159.0/otelcol-contrib_0.159.0_windows_x64.msi> — usually done in Phase 0; confirm service exists before repair script |
+| 3.2 | Sync template → live config: the repair script deploys the template to `%ProgramData%\otelcol-contrib\config.yaml` |
+| 3.3 | `pwsh -File C:\otel\scripts\windows\install-or-repair-otel-collector.ps1` — service must point at `%ProgramData%\otelcol-contrib\config.yaml` |
+| 3.4 | `sc qc otelcol-contrib` — confirm BINARY_PATH_NAME includes `%ProgramData%\otelcol-contrib\config.yaml` |
 | 3.5 | `sc query otelcol-contrib` — RUNNING |
 
 ### Phase 4 — Prove the promise
@@ -188,9 +189,11 @@ Do not expand scope into sibling maturity, CHAR disposition, or deploy-hub renam
 
 | Seat | Does |
 |------|------|
+| BossCat OEM | Accept verdict; authorize README fixes |
 | Machine operator | Docker/MSI/UI/admin; owns the stopwatch honesty |
-| Cursor{Implementer} | Scripts, Examine capture, ECRR, timing artifact, docs fix PRs from findings |
-| Oversight / OEM | Accept verdict; authorize README fixes |
+| Claude Code (local seat) | Scripts, Examine capture, ECRR, timing artifact, docs fix PRs from findings |
+| Kiro{Implementer} | Peer implementer; same scope when assigned |
+| Chat / review | Review the run card and verdict; open nothing |
 
 ---
 

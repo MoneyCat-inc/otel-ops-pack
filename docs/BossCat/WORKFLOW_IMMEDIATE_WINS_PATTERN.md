@@ -9,7 +9,7 @@
 
 **Authority:** BossCat Operations + Comfort Cat Architecture  
 **Status:** ✅ **APPROVED PATTERN** — Apply to all workflows  
-**First Applied:** 2025-10-10 (`bosscat-gate-verify.yml`)
+**First Applied:** 2025-10-10. **Coverage (2026-09-25):** 48 of 60 workflows carry `concurrency` (see `docs/AGENTS.md`)
 
 ---
 
@@ -316,13 +316,13 @@ Apply to 3-5 key workflows manually:
 
 **1. Template Workflow**
 ```yaml
-# .github/workflows/template.yml
-# Copy-paste starter with patterns built-in
+# not built: .github/workflows/template.yml never existed;
+# .github/workflows/app-template.yml is the template
 ```
 
 **2. PR Template**
 ```markdown
-# .github/pull_request_template.md
+# not built: .github/PULL_REQUEST_TEMPLATE.md exists but has no workflow-changes section
 ## Workflow Changes
 - [ ] Concurrency added
 - [ ] Retention set
@@ -401,7 +401,7 @@ Always include the three immediate wins...
 
 **Status:** ✅ **APPROVED PATTERN**  
 **First Applied:** 2025-10-10  
-**Workflows Updated:** 1 (bosscat-gate-verify.yml)  
+**Coverage (2026-09-25):** 48 of 60 workflows carry `concurrency`  
 **Ready For:** Propagation to all workflows
 
 🐾 **BossCat Seal: Standard Pattern Established**
