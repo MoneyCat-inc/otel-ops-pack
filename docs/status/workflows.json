@@ -227,9 +227,9 @@
       }
     },
     {
-      "name": "deploy-moneycat",
-      "path": ".github/workflows/deploy-moneycat.yml",
-      "size": 2389,
+      "name": "deploy-hub",
+      "path": ".github/workflows/deploy-hub.yml",
+      "size": 2485,
       "triggers": {
         "issues": false,
         "other": [],
