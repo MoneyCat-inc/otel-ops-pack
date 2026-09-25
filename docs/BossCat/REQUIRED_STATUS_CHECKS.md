@@ -27,7 +27,7 @@ The contexts actually required on `main` (verified live 2026-09-01):
 
 ### Docs Lane (Recommended to Add)
 
-**Workflow**: `docs_checks` (from docs-lane-checks.yml)
+**Workflow**: `docs_gate` (the job id in docs-lane-checks.yml; it has no `name:`, so this is the check context)
 
 **What it validates**:
 
@@ -61,7 +61,7 @@ Under **"Require status checks to pass before merging"**:
 
 **Search for and add**:
 
-- `docs_checks` (from docs-lane-checks.yml)
+- `docs_gate` (from docs-lane-checks.yml)
 
 **Existing required** (keep these — live set as of 2026-09-01):
 
@@ -94,7 +94,7 @@ Under **"Require status checks to pass before merging"**:
 # List current required checks
 gh api repos/MoneyCat-inc/otel-ops-pack/branches/main/protection/required_status_checks
 
-# Add docs_checks to required checks (requires existing rule).
+# Add docs_gate to required checks (requires existing rule).
 # IMPORTANT: contexts[] REPLACES the whole list — re-send every live required
 # context (list them with the GET above) plus the new one, e.g.:
 gh api --method PATCH \
@@ -107,8 +107,12 @@ gh api --method PATCH \
   -F "contexts[]=Gate • synthetic trace (OTLP/HTTP)" \
   -F "contexts[]=Site • links + a11y + CSP (coarse)" \
   -F "contexts[]=Repository Structure Compliance" \
-  -F contexts[]=docs_checks
+  -F contexts[]=docs_gate
 ```
+
+`docs-lane-checks.yml` has a `paths:` filter (`docs/**`, `README.md`), so requiring `docs_gate` also needs the inverse
+`paths-ignore:` shim job with the identical name in `required-check-shims.yml` — otherwise every non-docs PR waits
+forever on a context that never reports.
 
 ---
 
@@ -118,12 +122,12 @@ For more flexible docs validation:
 
 ```yaml
 # .github/workflows/docs-lane-checks.yml
-# Current job name: docs_checks
+# Current job id (= check context): docs_gate
 
 # Optional: Create a status check group
 # In branch protection:
-# - docs_checks (main validation)
-# - docs_checks_minor (typo-fix fast track)
+# - docs_gate (main validation)
+# - docs_gate_minor (typo-fix fast track; not built)
 ```
 
 ---
@@ -174,9 +178,11 @@ git commit -m "chore: Deactivate kill-switch"
 
 ## Secrets Configuration (Notifications Mark-Read)
 
-### For Nightly Workflow
+### For the Notifications Archive Workflow
 
-**Current**: Mark-read disabled by default (no PAT required)
+**Current (2026-09-25)**: `security-notifications-archive-nightly.yml` is `workflow_dispatch: {}` only since
+2026-08-03 (no schedule) and declares no `mark_notifications_read` input, so mark-read never runs. The steps below
+describe how it would be re-enabled; none of them is in place.
 
 **To Enable**:
 
@@ -250,7 +256,7 @@ gh pr checks --watch
 Repository → Actions → Docs Lane Checks
 → View runs
 → Check job summaries
-→ Download ecrr-docs artifacts
+→ Download docs-guard-telemetry artifacts
 ```
 
 ### Via gh CLI
@@ -263,7 +269,7 @@ gh run list --workflow=docs-lane-checks.yml --limit 10
 gh run view <run-id>
 
 # Download evidence artifact
-gh run download <run-id> --name ecrr-docs
+gh run download <run-id> --name docs-guard-telemetry
 ```
 
 ---
