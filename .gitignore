@@ -105,8 +105,6 @@ test-*.jpg
 .agent/*.log
 .agent/task_queue/archive/
 .codex/
-.cursor/debug.log
-.cursor/plans/
 .vscode/launch.json
 .vscode/tasks.json
 __pycache__/
