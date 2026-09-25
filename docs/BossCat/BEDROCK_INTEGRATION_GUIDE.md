@@ -2,9 +2,8 @@
 
 > ## HISTORICAL — 2025 Cursor ⇄ Bedrock AgentCore MCP setup, no longer wired
 >
-> `.cursor/mcp.json` no longer contains the `bedrock-agentcore-mcp-server` entry described here (its `bedrock`
-> entry now runs `scripts/demo/explain-trace.ts`), and Cursor was uninstalled on 2026-09-24. The live Bedrock
-> demo is `scripts/demo/explain-trace.ts`.
+> The `bedrock-agentcore-mcp-server` (uvx) configured here is no longer set up in this repo, and Cursor was
+> uninstalled on 2026-09-24. The live Bedrock demo is `scripts/demo/explain-trace.ts`.
 > Kept unedited as the record; do not cite it as current.
 
 **MoneyCat Inc · Resonai [OTel] · Bedrock AgentCore Setup**  
