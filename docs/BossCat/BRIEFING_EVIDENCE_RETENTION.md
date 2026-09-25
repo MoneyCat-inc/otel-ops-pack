@@ -96,7 +96,7 @@ re-clone. **No second rewrite budget** on the archive in this delivery.
 |-------|------|
 | Prune workflow | `.github/workflows/evidence-retention-prune.yml` |
 | Prune script | `BRAV/SCPT/evidence-retention/prune.mjs` |
-| FG PAT amber | `.github/workflows/evidence-pat-rotation-reminder.yml` (`EXPIRES_ON=2026-10-22`) |
+| FG PAT amber | `.github/workflows/evidence-pat-rotation-reminder.yml` (matrix: `EVIDENCE_REPO_TOKEN` expires 2026-12-23 after the r3 rotation of 2026-09-24) |
 | Pointer README | `docs/BossCat/run-reports/README.md` |
 
 Shipped code: PR #381. This briefing / pointer / log / ECRR: docs follow-up.
@@ -108,7 +108,8 @@ Shipped code: PR #381. This briefing / pointer / log / ECRR: docs follow-up.
 1. Briefing + pointer README merged.
 2. Dry-run dispatch: would-delete counts + `date_source` breakdown in
    ECRR (`filename` vs `git-log`).
-3. `BOSSCAT_LOG`: `[EVIDENCE RETENTION]` + `[FG PAT AMBER]` + `[LUMI AWAITING MINT]`.
+3. `BOSSCAT_LOG`: `[EVIDENCE RETENTION]` + `[FG PAT AMBER]` + `[LUMI AWAITING MINT]`
+   (since minted 2026-07-25 and revoked 2026-08-16; BOSSCAT_LOG).
 4. Real prune (`dry_run=false`) only after dry-run looks sane (optional
    follow-up; not required to close this briefing).
 
