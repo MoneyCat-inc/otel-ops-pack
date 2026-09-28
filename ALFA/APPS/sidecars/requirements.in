@@ -5,7 +5,7 @@
 # Dependabot measure what the multi-app-ci.yml build-test job (Python 3.12) actually installs
 # instead of the lowest versions these floors admit (ECRR_OSV_SCANNER_VACUOUS_CHECK_20260923.md §3).
 fastapi>=0.141.1
-uvicorn>=0.53.0
+uvicorn>=0.54.0
 pydantic>=2.13.5
 numpy>=2.5.3
 pandas>=3.0.6
