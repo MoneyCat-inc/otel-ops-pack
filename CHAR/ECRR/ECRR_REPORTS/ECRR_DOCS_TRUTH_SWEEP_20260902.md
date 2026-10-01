@@ -117,3 +117,36 @@ and verify local `main` at the final squash SHA (handoff brief accompanies this 
 **Status:** COMPLETE — measurement checkpoint: re-run `deadref_scan` at the 2026-10-01 rollup
 alongside the CI demand-shaping ECRRs; expect the live-surface count to hold near zero and the
 residual to sit in bannered records only.
+
+---
+
+## Measurement Addendum — 2026-10-01 (rollup checkpoint: dead-reference re-scan)
+
+The original `deadref_scan.py` did not survive the cloud seat's container restarts, so this
+re-scan uses a re-implementation (backtick paths, relative links and `.github/workflows` names
+checked on disk over live docs: `docs/**` + `README.md`, excluding `docs/archive/**` and
+`docs/gate/archive/**`). It is stricter than the original — it also flags collector component
+names such as `filter/drop_noise` and documented local-only paths under `artifacts/` — so its
+absolute counts are **not comparable** with the 338 → 225 figures in §3. Only the delta between
+the two commits under the same scanner is meaningful.
+
+| Same scanner on | Live docs | Docs with ≥1 flag | Total flags |
+| --- | --- | --- | --- |
+| `90b4c8d` (post-sweep, #719) | 233 | 164 | 778 |
+| `c9e0cb2` (main, 2026-10-01) | 232 | 164 | 803 |
+
+- The +25 is entirely `docs/BossCat/BOSSCAT_LOG.md` (19 → 48 flags): September's one-liners
+  cite artifact and script paths that are records, not live guidance. Expected for a log.
+- **Live surfaces held:** identical flag counts at both commits on `docs/README.md` (0),
+  `comfort-cat/ROLES.md` (0), `CHARTER.md` (2), `architecture/CURRENT_ARCHITECTURE.md` (5),
+  `cheatsheets/GATE_CHEATSHEET.md` (5), `notes/misc/.cursor-prompt.md` (5),
+  `status/REFERENCES_MAP.md` (9). On inspection the REFERENCES_MAP, CURRENT_ARCHITECTURE and
+  CHARTER flags are all scanner false positives (documented gitignored `artifacts/index/*`
+  paths, `YYYY-MM/` placeholders, extracted `docs/socm/` named as extracted, collector
+  component ids, a repo slug and a regex). Three are worth a look in the next docs pass:
+  `scripts/local-gate-runner.ps1` and `.agent/LOCK` in GATE_CHEATSHEET, and
+  `docs/comfort-cat/HANDOFF_ECRR01_AND_LOGS.md` in `.cursor-prompt.md`.
+
+**Verdict:** the sweep's residual stayed in bannered records, as predicted; no live-surface
+regression in September. Next checkpoint: fold into the monthly evidence rollup rather than a
+dedicated reminder. Actor: Claude (chat/review).

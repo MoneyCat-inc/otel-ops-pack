@@ -107,3 +107,64 @@ cron should not show. Actions API check (schedule-event runs, last week):
 
 **Correction status:** ACTIVE — figures above in §1/§3 stand corrected here;
 original text left intact per audit-trail convention.
+
+---
+
+## Measurement Addendum — 2026-10-01 (rollup checkpoint)
+
+Same method and completeness proof as the path-filter ECRR's addendum of this date (Actions
+API, one-day windows, archiver delete lane inert under `actions: read`). The 09-01 correction's
+rule — measure, never derive from cron arithmetic — is applied to the correction itself.
+
+### Archiver
+
+| | August | September |
+| --- | --- | --- |
+| `run-archiver` runs | 649 (all `schedule`; 20.9/day, peak 36/day) | 121 (119 `schedule` + 2 dispatch; **3.97/day**) |
+| Scheduled fires per day | 2–36 | 2–5, **never 6** |
+
+- **The correction addendum over-corrected.** Its "~150-180/month" was measured over the last
+  week of August only, when the `*/30` cron had collapsed to 2–6 fires/day (08-27 onward:
+  24, 17, 3, 2, 6, 6, 4). Over the whole month `*/30` delivered **649** scheduled runs. So the
+  saving the correction retracted did exist: 649 → 119 is **−530 runs/month (−82%)**, about
+  4% of August's total — smaller than the original "~745" claim, larger than the "~0%" the
+  correction assumed. Retraction of the retraction, with the same lesson: a one-week sample of a
+  throttled scheduler is not a month.
+- **The cadence is not what `19 */4 * * *` promises.** 119 fires in 30 days is 3.97/day
+  against a nominal 6; the minute-of-hour is spread uniformly (not pinned to :19); hours
+  cluster at 04, 12–13, 18–19 and 22–23 UTC; inter-fire gaps run 5–10 h. GitHub delivers
+  roughly two of every three scheduled slots for this repo and drifts the rest. Every run that
+  did fire succeeded (119/119). Evidence latency is therefore "usually ≤ 4 h, up to ~10 h", not
+  the "≤ 4 h, predictable" stated in the correction. No further cron change is proposed:
+  a shorter interval would be throttled the same way (that is how `*/30` ended up at 2–6/day).
+
+### Dependabot
+
+| | August | September |
+| --- | --- | --- |
+| PRs opened | 19, all on 08-31 (one batch) | 23: 09-01 (4), 09-02 (1), 09-07 (4), 09-14 (5), 09-21 (4), 09-28 (5) |
+| Runs on `dependabot/*` branches | 2449 (20% of month) | 888 (22% of month) |
+| Pushes (rebases) per PR | 10.7 | 4.4 |
+| Runs per PR | 129 | 39 (−70%) |
+
+The grouped-weekly shape landed exactly as described: 4–5 grouped PRs per Monday batch
+instead of 19 ungrouped in a day, and the strict-mode rebase cascade shrank from 10.7 to
+4.4 pushes per PR. Dependabot's *share* of the month did not fall because the
+denominator fell faster (retired workflows; see the path-filter addendum). The 09-28 batch
+(5 PRs) was still open at measurement time.
+
+### Combined
+
+On September's own volume the two ECRRs together avoided an estimated 2241 runs
+(−41% of the counterfactual 5420); the archiver and the Dependabot cascade account
+for 498 and 1273 of those respectively. Against the 20–35% revised estimate: met and
+exceeded (−41%); −23% from the three firmer components alone, with the Dependabot cascade term
+the least certain (one 19-PR August batch vs six small September batches) and the docs-heavy
+mix caveat recorded in the path-filter addendum. What this does **not**
+support: any claim that the 09-01 changes produced the 12,452 → 4,076 fall — 5,033 of
+August's runs were retired workflows and 6,384 were a three-day burst.
+
+**Addendum status:** ACTIVE — the correction addendum's archiver retraction is itself
+corrected here (saving ≈ −530/month, not ≈ 0); its cadence claim is downgraded from
+"predictable" to "best-effort ~4/day". Original text above left intact. Actor: Claude
+(chat/review), scheduled rollup requested by `@fubumaki` on 2026-09-01.
