@@ -28,7 +28,7 @@ charset-normalizer==3.5.1
     # via requests
 click==8.5.0
     # via uvicorn
-fastapi==0.141.1
+fastapi==0.142.2
     # via -r requirements.in
 frozenlist==1.8.0
     # via
@@ -63,6 +63,8 @@ numpy==2.5.3
     #   ml-dtypes
     #   pandas
     #   tritonclient
+opentelemetry-api==1.45.0
+    # via fastapi
 pandas==3.0.6
     # via -r requirements.in
 propcache==0.5.4
@@ -85,7 +87,7 @@ six==1.17.0
     # via python-dateutil
 starlette==1.7.0
     # via fastapi
-tritonclient==2.72.0
+tritonclient==2.73.0
     # via -r requirements.in
 typing-extensions==4.16.0
     # via
@@ -93,6 +95,7 @@ typing-extensions==4.16.0
     #   aiosignal
     #   anyio
     #   fastapi
+    #   opentelemetry-api
     #   pydantic
     #   pydantic-core
     #   starlette
@@ -106,7 +109,7 @@ urllib3==2.8.0
     #   geventhttpclient
     #   requests
     #   tritonclient
-uvicorn==0.53.0
+uvicorn==0.54.0
     # via -r requirements.in
 yarl==1.25.1
     # via aiohttp
