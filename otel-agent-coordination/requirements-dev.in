@@ -7,6 +7,6 @@
 # (ECRR_OSV_SCANNER_VACUOUS_CHECK_20260923.md §3). Nothing in CI installs this file today.
 pytest>=9.1.1
 pytest-cov>=7.1.0
-black>=26.5.1
+black>=26.10.1
 mypy>=2.3.1
 pylint>=4.0.8
