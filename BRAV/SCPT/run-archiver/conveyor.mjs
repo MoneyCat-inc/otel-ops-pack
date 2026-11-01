@@ -295,8 +295,8 @@ const archiveLimiter = new Bottleneck({
 const archiveQ = new PQueue({ concurrency: ARCH_CONCURRENCY });
 
 // Track concurrency telemetry
-archiveQ.on('active', () => {
-  const inflight = archiveQ.pending + 1; // +1 for the one that just started
+archiveQ.addEventListener('active', () => {
+  const inflight = archiveQ.pending; // p-queue 10 (EventTarget): 'active' fires after pending is incremented
   if (inflight > stats.arch.inflightMax) stats.arch.inflightMax = inflight;
 });
 
