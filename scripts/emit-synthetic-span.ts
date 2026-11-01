@@ -21,12 +21,17 @@
  * Updated: 2025-10-10 (Phase 1.2 - .env support)
  */
 
-import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node';
+import { BatchSpanProcessor, TracerProvider } from '@opentelemetry/sdk-trace';
+import { AsyncLocalStorageContextManager } from '@opentelemetry/context-async-hooks';
+import {
+  CompositePropagator,
+  W3CBaggagePropagator,
+  W3CTraceContextPropagator,
+} from '@opentelemetry/core';
 import { resourceFromAttributes } from '@opentelemetry/resources';
 import { SemanticResourceAttributes as R } from '@opentelemetry/semantic-conventions';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
-import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-base';
-import { trace, context } from '@opentelemetry/api';
+import { trace, context, propagation } from '@opentelemetry/api';
 import { ensureCorrelationId, getCorrelationHeaders } from './lib/correlation';
 import { getOtelIngestHttpBase } from '../ALFA/LIBS/lib/otel-ports';
 
@@ -47,7 +52,7 @@ const config = {
 // ============================================
 // Provider Setup
 // ============================================
-const provider = new NodeTracerProvider({
+const provider = new TracerProvider({
   resource: resourceFromAttributes({
     [R.SERVICE_NAME]: config.serviceName,
     [R.SERVICE_NAMESPACE]: 'resonai',
@@ -70,7 +75,8 @@ const exporter = new OTLPTraceExporter({
   timeoutMillis: 5000,  // 5-second timeout (Phase 1.3 - explicit timeout)
 });
 
-const spanProcessor = new BatchSpanProcessor(exporter, {
+const spanProcessor = new BatchSpanProcessor({
+  exporter,
   maxQueueSize: 100,
   scheduledDelayMillis: 500,
   exportTimeoutMillis: 5000,  // 5-second export timeout
@@ -82,7 +88,7 @@ const spanProcessor = new BatchSpanProcessor(exporter, {
 // Default: 3 attempts with 1s, 2s, 4s delays (matches Stability Pack pattern)
 
 // Recreate provider to include processor in constructor (node SDK v2 pattern)
-const providerWithProc = new NodeTracerProvider({
+const providerWithProc = new TracerProvider({
   resource: resourceFromAttributes({
     [R.SERVICE_NAME]: config.serviceName,
     [R.SERVICE_NAMESPACE]: 'resonai',
@@ -94,7 +100,14 @@ const providerWithProc = new NodeTracerProvider({
   spanProcessors: [spanProcessor],
 });
 
-providerWithProc.register();
+// @opentelemetry/sdk-trace 3.0 has no register(): install what NodeTracerProvider.register() used to.
+context.setGlobalContextManager(new AsyncLocalStorageContextManager().enable());
+propagation.setGlobalPropagator(
+  new CompositePropagator({
+    propagators: [new W3CTraceContextPropagator(), new W3CBaggagePropagator()],
+  })
+);
+trace.setGlobalTracerProvider(providerWithProc);
 
 // ============================================
 // Synthetic Trace Emission (hierarchical)

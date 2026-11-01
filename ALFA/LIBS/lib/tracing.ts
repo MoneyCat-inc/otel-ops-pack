@@ -1,11 +1,16 @@
 // Frontend OpenTelemetry Tracing Setup
 // This file initializes tracing for the browser/client-side
 
-import { WebTracerProvider } from '@opentelemetry/sdk-trace-web';
+import { context, propagation, trace } from '@opentelemetry/api';
+import { BatchSpanProcessor, StackContextManager, TracerProvider } from '@opentelemetry/sdk-trace';
+import {
+  CompositePropagator,
+  W3CBaggagePropagator,
+  W3CTraceContextPropagator,
+} from '@opentelemetry/core';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { resourceFromAttributes } from '@opentelemetry/resources';
 import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
-import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-web';
 import { registerInstrumentations } from '@opentelemetry/instrumentation';
 import { DocumentLoadInstrumentation } from '@opentelemetry/instrumentation-document-load';
 import { FetchInstrumentation } from '@opentelemetry/instrumentation-fetch';
@@ -32,19 +37,18 @@ if (typeof globalThis !== 'undefined' && (globalThis as any).window) {
         'browser.version': (globalThis as any).navigator?.userAgent || '',
   });
 
-  // Create tracer provider
-  const tracerProvider = new WebTracerProvider({
+  // Create tracer provider with its span processor (addSpanProcessor() was removed in SDK 2.0)
+  const tracerProvider = new TracerProvider({
     resource,
+    spanProcessors: [
+      new BatchSpanProcessor({
+        exporter: otlpExporter,
+        maxExportBatchSize: 100,
+        exportTimeoutMillis: 30000,
+        scheduledDelayMillis: 5000,
+      }),
+    ],
   });
-
-  // Add span processor
-  (tracerProvider as any).addSpanProcessor(
-    new BatchSpanProcessor(otlpExporter, {
-      maxExportBatchSize: 100,
-      exportTimeoutMillis: 30000,
-      scheduledDelayMillis: 5000,
-    })
-  );
 
   // Register instrumentations
   registerInstrumentations({
@@ -66,8 +70,16 @@ if (typeof globalThis !== 'undefined' && (globalThis as any).window) {
     ],
   });
 
-  // Register the tracer provider
-  tracerProvider.register();
+  // Register the tracer provider. @opentelemetry/sdk-trace 3.0 has no register():
+  // install what WebTracerProvider.register() used to (stack context manager,
+  // W3C trace-context + baggage propagators, global provider).
+  context.setGlobalContextManager(new StackContextManager().enable());
+  propagation.setGlobalPropagator(
+    new CompositePropagator({
+      propagators: [new W3CTraceContextPropagator(), new W3CBaggagePropagator()],
+    })
+  );
+  trace.setGlobalTracerProvider(tracerProvider);
 
   console.log('OpenTelemetry frontend tracing initialized');
 }

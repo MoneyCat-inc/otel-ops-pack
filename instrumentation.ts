@@ -2,13 +2,19 @@
 // Sets up a lightweight Node tracer provider with the OTLP HTTP exporter
 // Skips the full @opentelemetry/sdk-node bundle to avoid optional gRPC deps.
 
-import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-base';
-import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node';
+import { context, propagation, trace } from '@opentelemetry/api';
+import { BatchSpanProcessor, TracerProvider } from '@opentelemetry/sdk-trace';
+import { AsyncLocalStorageContextManager } from '@opentelemetry/context-async-hooks';
+import {
+  CompositePropagator,
+  W3CBaggagePropagator,
+  W3CTraceContextPropagator,
+} from '@opentelemetry/core';
 import { resourceFromAttributes } from '@opentelemetry/resources';
 import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 
-let tracerProvider: NodeTracerProvider | undefined;
+let tracerProvider: TracerProvider | undefined;
 let shuttingDown = false;
 
 export async function register() {
@@ -28,9 +34,9 @@ export async function register() {
     headers: {},
   });
 
-  const spanProcessor = new BatchSpanProcessor(traceExporter);
+  const spanProcessor = new BatchSpanProcessor({ exporter: traceExporter });
 
-  tracerProvider = new NodeTracerProvider({
+  tracerProvider = new TracerProvider({
     resource: resourceFromAttributes({
       [SemanticResourceAttributes.SERVICE_NAME]: serviceName,
       [SemanticResourceAttributes.SERVICE_VERSION]: process.env['OTEL_SERVICE_VERSION'] || '1.0.0',
@@ -40,7 +46,15 @@ export async function register() {
     spanProcessors: [spanProcessor],
   });
 
-  tracerProvider.register();
+  // @opentelemetry/sdk-trace 3.0 has no register(): install what NodeTracerProvider.register() used to
+  // (AsyncLocalStorage context manager, W3C trace-context + baggage propagators, global provider).
+  context.setGlobalContextManager(new AsyncLocalStorageContextManager().enable());
+  propagation.setGlobalPropagator(
+    new CompositePropagator({
+      propagators: [new W3CTraceContextPropagator(), new W3CBaggagePropagator()],
+    })
+  );
+  trace.setGlobalTracerProvider(tracerProvider);
 
   const shutdown = async () => {
     if (shuttingDown) return;
