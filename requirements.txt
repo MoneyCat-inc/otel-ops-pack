@@ -10,9 +10,9 @@ black==26.10.1
     # via -r requirements.in
 blinker==1.9.0
     # via flask
-brotli==1.2.0
+brotli==1.2.1
     # via geventhttpclient
-certifi==2026.7.22
+certifi==2026.10.18
     # via
     #   geventhttpclient
     #   requests
@@ -64,7 +64,7 @@ markupsafe==3.0.3
     #   werkzeug
 mccabe==0.7.0
     # via flake8
-msgpack==1.2.2
+msgpack==1.2.3
     # via locust
 mypy-extensions==1.1.0
     # via black
