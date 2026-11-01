@@ -1,7 +1,9 @@
-import { context, trace } from "@opentelemetry/api";
-import { BasicTracerProvider, BatchSpanProcessor } from "@opentelemetry/sdk-trace-base";
+import { context, propagation, trace } from "@opentelemetry/api";
+import { BatchSpanProcessor, TracerProvider } from "@opentelemetry/sdk-trace";
+import { AsyncLocalStorageContextManager } from "@opentelemetry/context-async-hooks";
+import { CompositePropagator, W3CBaggagePropagator, W3CTraceContextPropagator } from "@opentelemetry/core";
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
-import { Resource } from "@opentelemetry/resources";
+import { resourceFromAttributes } from "@opentelemetry/resources";
 import { getOtelIngestHttpBase } from "../../ALFA/LIBS/lib/otel-ports";
 
 const endpoint = (process.env.OTEL_EXPORTER_OTLP_ENDPOINT || getOtelIngestHttpBase()).replace(/\/$/, "");
@@ -9,11 +11,16 @@ const url = `${endpoint}/v1/traces`;
 const serviceName = process.env.OTEL_SERVICE_NAME || "iona-app";
 
 const exporter = new OTLPTraceExporter({ url });
-const provider = new BasicTracerProvider({
-  resource: new Resource({ "service.name": serviceName }),
+const provider = new TracerProvider({
+  resource: resourceFromAttributes({ "service.name": serviceName }),
+  spanProcessors: [new BatchSpanProcessor({ exporter })],
 });
-provider.addSpanProcessor(new BatchSpanProcessor(exporter));
-provider.register();
+// @opentelemetry/sdk-trace 3.0 has no register(): install what the old register() used to.
+context.setGlobalContextManager(new AsyncLocalStorageContextManager().enable());
+propagation.setGlobalPropagator(
+  new CompositePropagator({ propagators: [new W3CTraceContextPropagator(), new W3CBaggagePropagator()] })
+);
+trace.setGlobalTracerProvider(provider);
 
 const tracer = trace.getTracer("iona-synthetic");
 

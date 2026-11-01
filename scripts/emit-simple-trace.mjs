@@ -59,14 +59,15 @@ const log = (lvl, msg, extra = {}) => console.log(JSON.stringify({ t: nowIso(), 
       process.exit(0);
     }
 
-    const { NodeTracerProvider } = require('@opentelemetry/sdk-trace-node');
-    const { BatchSpanProcessor } = require('@opentelemetry/sdk-trace-base');
-    const { Resource } = require('@opentelemetry/resources');
+    const { BatchSpanProcessor, TracerProvider } = require('@opentelemetry/sdk-trace');
+    const { AsyncLocalStorageContextManager } = require('@opentelemetry/context-async-hooks');
+    const { CompositePropagator, W3CBaggagePropagator, W3CTraceContextPropagator } = require('@opentelemetry/core');
+    const { resourceFromAttributes } = require('@opentelemetry/resources');
     const { SemanticResourceAttributes } = require('@opentelemetry/semantic-conventions');
     const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-http');
     const api = require('@opentelemetry/api');
 
-    const resource = new Resource({
+    const resource = resourceFromAttributes({
       [SemanticResourceAttributes.SERVICE_NAME]: SERVICE_NAME,
       'boss.gate': 'IONA',
       'boss.site': SITE,
@@ -74,10 +75,17 @@ const log = (lvl, msg, extra = {}) => console.log(JSON.stringify({ t: nowIso(), 
       'github.sha': GIT_SHA || 'unknown'
     });
 
-    const provider = new NodeTracerProvider({ resource });
     const exporter = new OTLPTraceExporter({ url: OTLP_ENDPOINT });
-    provider.addSpanProcessor(new BatchSpanProcessor(exporter));
-    provider.register();
+    const provider = new TracerProvider({
+      resource,
+      spanProcessors: [new BatchSpanProcessor({ exporter })],
+    });
+    // @opentelemetry/sdk-trace 3.0 has no register(): install what NodeTracerProvider.register() used to.
+    api.context.setGlobalContextManager(new AsyncLocalStorageContextManager().enable());
+    api.propagation.setGlobalPropagator(
+      new CompositePropagator({ propagators: [new W3CTraceContextPropagator(), new W3CBaggagePropagator()] })
+    );
+    api.trace.setGlobalTracerProvider(provider);
 
     const tracer = api.trace.getTracer('boss/iona-gate');
     const parent = tracer.startSpan('iona.boot', { attributes: { 'gate.phase': 'boot' } });

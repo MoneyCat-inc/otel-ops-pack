@@ -9,9 +9,13 @@
  * Gate: BossCat Gate Verify
  */
 
-import { trace, SpanStatusCode } from '@opentelemetry/api';
-import { WebTracerProvider } from '@opentelemetry/sdk-trace-web';
-import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-base';
+import { context, propagation, trace, SpanStatusCode } from '@opentelemetry/api';
+import { BatchSpanProcessor, StackContextManager, TracerProvider } from '@opentelemetry/sdk-trace';
+import {
+  CompositePropagator,
+  W3CBaggagePropagator,
+  W3CTraceContextPropagator,
+} from '@opentelemetry/core';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { resourceFromAttributes } from '@opentelemetry/resources';
 import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
@@ -23,7 +27,7 @@ const OTEL_ENDPOINT =
 const SERVICE_NAME = 'iona-app';
 const SERVICE_VERSION = '1.0.0';
 
-let provider: WebTracerProvider | null = null;
+let provider: TracerProvider | null = null;
 let isInitialized = false;
 
 /**
@@ -62,20 +66,28 @@ export function initializeTelemetry(): void {
       },
     });
 
-    const spanProcessor = new BatchSpanProcessor(exporter, {
+    const spanProcessor = new BatchSpanProcessor({
+      exporter,
       maxQueueSize: 100,
       maxExportBatchSize: 10,
       scheduledDelayMillis: 500,
       exportTimeoutMillis: 30000,
     });
 
-    provider = new WebTracerProvider({
+    provider = new TracerProvider({
       resource,
       spanProcessors: [spanProcessor],
     });
 
-    // Register provider
-    provider.register();
+    // Register provider. @opentelemetry/sdk-trace 3.0 has no register():
+    // install what WebTracerProvider.register() used to.
+    context.setGlobalContextManager(new StackContextManager().enable());
+    propagation.setGlobalPropagator(
+      new CompositePropagator({
+        propagators: [new W3CTraceContextPropagator(), new W3CBaggagePropagator()],
+      })
+    );
+    trace.setGlobalTracerProvider(provider);
 
     isInitialized = true;
     console.log('[iona-telemetry] OpenTelemetry initialized');
