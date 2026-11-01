@@ -49,3 +49,79 @@ Subtraction/config-only, `pull_request` triggers only; `push` (main), `schedule`
 Claude (chat/review) audited live branch protection, edited four trigger blocks plus the shim contract, and opened the PR under the operator's standing delegation. PR left unmerged for operator review per task instruction. No credentials, no elevation.
 
 **Status:** COMPLETE (pending PR review/merge)
+
+---
+
+## Measurement Addendum — 2026-10-01 (rollup checkpoint)
+
+Measured, not derived: every figure below is a count of workflow runs from the Actions API
+(`/actions/runs`, `created=` windows of one day or less, so no window hits the API's
+1,000-result listing limit or the 2,500 `total_count` cap; run inventory saved per month and
+re-summed). Counting is complete: `run-archiver.yml` runs with `permissions: actions: read`, so
+its delete lane cannot delete anything — today's August recount (12,452) plus the 897 runs of
+2026-09-01 before 16:00 UTC reproduces the 13,287 "since 08-01" recorded above on 09-01.
+
+### Headline
+
+| | August 2026 | September 2026 | Δ |
+| --- | --- | --- | --- |
+| Total runs | 12,452 (402/day) | 4,076 (136/day) | −67% |
+| Pre-filter 09-01 (before #694 merged 16:00:24Z) | — | 897 | ~16 h of unshaped traffic, counted in Sept |
+| Post-filter (09-01 16:00Z → 09-30) | — | 3179 (108/day) | |
+
+The −67% is **not** this ECRR's effect. Two things it cannot claim:
+
+- **5,033 August runs (40%) came from workflows that no longer exist.** Eleven push-triggered
+  workflows at exactly 383 runs each (`rsi-sweep-nightly`, `bosscat-branch-protection`,
+  `status-auto-update`, `nightly-tetragrammaton-benchmarks`, `adot-config-gate`,
+  `signoz-automation`, `nightly-dashboard-export`, `repository-security-check`, `stress-test-pr`,
+  `guardrails-recert`, `nightly-dashboard-reports`) fired on every branch push from 08-02 to
+  08-17 before their retirement took effect, plus `k6-performance-gate` 368, `hub-smoke` 106,
+  `icf-smoke` 90. September has zero runs of any of them. August on surviving workflows only:
+  7,419 (239/day).
+- **August was burst-shaped.** 08-13 to 08-15 alone produced 6,384 runs (51% of the month;
+  deep-clean + Kiro pilot). The per-day median was 205 in August and 21 in September.
+
+### The four filtered lanes
+
+| Workflow | Aug runs (Aug proper; ECRR §1 figures were "since 08-01" incl. 09-01 morning) | Sept runs | Share of PR pushes that ran the lane, Aug → Sept post-filter |
+| --- | --- | --- | --- |
+| trivy-security-scan | 756 | 249 (−67%) | 100% → **3%** |
+| osv-scanner | 766 | 347 (−55%) | 50% → 45% (already filtered before this ECRR) |
+| bosscat-governance | 749 | 343 (−54%) | 99% → **45%** |
+| bosscat-gate-verify | 749 | 343 (−54%) | 99% → **45%** |
+| codeql / gitleaks (required, unfiltered) | 754 / 780 | 471 / 497 | 99% → 100% |
+
+Runs per PR push (surviving workflows): 8.60 → 7.79 (−9%), net of the docs lanes
+(`docs-lane-checks`, `docs-guard`, `guardrails`) that docs PRs trigger instead.
+`bosscat-gate-verify` wall time: 23.7 → 10.7 run-hours (−55%; median run 98 → 101 s).
+
+Caveat that flatters the filters: 55% of September's PR pushes were docs-only — the
+2026-09-02 docs truth sweep (#704–#719) and its follow-ups. A code-heavy month will show a
+smaller governance/gate-verify cut; the trivy cut (dependency-only pushes) should hold.
+
+### Effect isolated on September's own volume
+
+What September would have cost at August's per-event behaviour, component by component, on
+September's actual 226 post-filter PR pushes, 23 Dependabot PRs and 29.3 days:
+
+| Component | Runs avoided in Sept |
+| --- | --- |
+| trivy on every PR push | +220 |
+| governance + gate-verify on docs-only pushes | +250 |
+| Dependabot rebase cascade (10.7 → 4.4 pushes per PR; ECRR II) | +1273 |
+| run-archiver cadence (ECRR II) | +498 |
+| **Counterfactual** | **5420** vs actual 3179 → **−41%** |
+
+**Verdict:** the combined 20–35% estimate (as corrected in ECRR II) is **met and exceeded on a
+like-for-like basis**: −41% of what September would otherwise have run, above the range. The
+least certain term is the Dependabot cascade (+1,273), which compares August's single 19-PR
+batch with six batches of 4–5; without it the three firmer components give −23%, inside the
+range. The raw "vs August" number (−67%) is dominated by retired workflows and activity level
+and must not be quoted as the result of these changes. Required-check coverage unchanged, as
+designed: CodeQL and gitleaks ran on 100% of PR pushes.
+
+**Addendum status:** ACTIVE — §3's "measure at the 2026-10-01 rollup" is discharged; the
+15–25% path-filter estimate stands as measured on the filtered lanes, with the mix caveat.
+Original text above left intact per audit-trail convention. Actor: Claude (chat/review),
+scheduled rollup requested by `@fubumaki` on 2026-09-01.
