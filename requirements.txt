@@ -6,7 +6,7 @@
 #
 bidict==0.24.1
     # via python-socketio
-black==26.5.1
+black==26.10.1
     # via -r requirements.in
 blinker==1.9.0
     # via flask
@@ -55,7 +55,7 @@ jinja2==3.1.6
     # via flask
 k6==1.1.0
     # via -r requirements.in
-locust==2.46.6
+locust==2.46.7
     # via -r requirements.in
 markupsafe==3.0.3
     # via
@@ -110,7 +110,7 @@ urllib3==2.8.0
     #   requests
 websocket-client==1.9.2
     # via python-socketio
-werkzeug==3.1.8
+werkzeug==3.1.9
     # via
     #   flask
     #   flask-cors
