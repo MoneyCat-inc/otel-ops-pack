@@ -5,12 +5,13 @@
  * - Writes JSON logs enriched with trace_id/span_id to logs/app.log
  */
 
-import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node'
+import { BatchSpanProcessor, TracerProvider } from '@opentelemetry/sdk-trace'
+import { AsyncLocalStorageContextManager } from '@opentelemetry/context-async-hooks'
+import { CompositePropagator, W3CBaggagePropagator, W3CTraceContextPropagator } from '@opentelemetry/core'
 import { resourceFromAttributes } from '@opentelemetry/resources'
 import { SemanticResourceAttributes as R } from '@opentelemetry/semantic-conventions'
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http'
-import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-base'
-import { context, trace } from '@opentelemetry/api'
+import { context, propagation, trace } from '@opentelemetry/api'
 import loggerInstance, { getLogger } from '../lib/logger'
 import { ensureCorrelationId, getCorrelationHeaders, withCorrelationId } from '../lib/correlation'
 import { getOtelIngestHttpBase } from '../../ALFA/LIBS/lib/otel-ports'
@@ -34,21 +35,26 @@ try {
   fs.writeFileSync(logPath, '')
 } catch {}
 
-const provider = new NodeTracerProvider({
+const provider = new TracerProvider({
   resource: resourceFromAttributes({
     [R.SERVICE_NAME]: serviceName,
     [R.SERVICE_NAMESPACE]: 'resonai',
     [R.DEPLOYMENT_ENVIRONMENT]: process.env.DEPLOYMENT_ENVIRONMENT ?? 'production',
   }),
   spanProcessors: [
-    new BatchSpanProcessor(
-      new OTLPTraceExporter({ url: endpoint, timeoutMillis: 5000, headers: { ...getCorrelationHeaders(correlationId) } }),
-      { exportTimeoutMillis: 5000 }
-    ),
+    new BatchSpanProcessor({
+      exporter: new OTLPTraceExporter({ url: endpoint, timeoutMillis: 5000, headers: { ...getCorrelationHeaders(correlationId) } }),
+      exportTimeoutMillis: 5000,
+    }),
   ],
 })
 
-provider.register()
+// @opentelemetry/sdk-trace 3.0 has no register(): install what NodeTracerProvider.register() used to.
+context.setGlobalContextManager(new AsyncLocalStorageContextManager().enable())
+propagation.setGlobalPropagator(
+  new CompositePropagator({ propagators: [new W3CTraceContextPropagator(), new W3CBaggagePropagator()] })
+)
+trace.setGlobalTracerProvider(provider)
 const tracer = provider.getTracer('bosscat-example', '1.0.0')
 const logger = () => getLogger()
 
