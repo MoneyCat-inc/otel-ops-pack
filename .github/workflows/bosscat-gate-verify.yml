@@ -307,3 +307,84 @@ jobs:
             echo "**ECRR**: Examine ✓ | Contain ✓ | Rollback ✓ | Report ✓"
           } >> $GITHUB_STEP_SUMMARY
 
+
+  # 2026-11-02: unit job added (audit P1-3, #886): jest + tsc had no CI gate since
+  # TypeScript 7 (#699) broke both at HEAD; #894 repaired them. Not a required
+  # branch-protection context. Prisma generation needs only a placeholder
+  # DATABASE_URL (the config's env() throws at load); no database is contacted.
+  unit:
+    name: Unit tests (jest, tsc)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v6
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies (frozen lockfile)
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma client (types only)
+        env:
+          DATABASE_URL: postgresql://unit:unit@localhost:5432/unit
+        run: pnpm exec prisma generate --config ALFA/LIBS/prisma/prisma.config.ts
+
+      - name: Unit tests (jest)
+        run: |
+          mkdir -p artifacts
+          pnpm exec jest --ci --json --outputFile=artifacts/jest-results.json
+
+      - name: Type check (tsc --noEmit)
+        run: pnpm exec tsc --noEmit -p tsconfig.json
+
+      - name: Test summary
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo '### Unit tests (jest, tsc)'
+            echo ''
+            if [ -f artifacts/jest-results.json ]; then
+              node -e '
+                const r = require("./artifacts/jest-results.json");
+                console.log("| Metric | Value |");
+                console.log("|--------|-------|");
+                console.log("| Suites | " + r.numPassedTestSuites + " passed / " + r.numTotalTestSuites + " |");
+                console.log("| Tests | " + r.numPassedTests + " passed, " + r.numFailedTests + " failed, " + r.numPendingTests + " pending / " + r.numTotalTests + " |");
+                console.log("| Jest success | " + r.success + " |");
+              '
+            else
+              echo '_artifacts/jest-results.json missing: jest did not run to completion._'
+            fi
+            echo ''
+            echo 'Type check: see the "Type check (tsc --noEmit)" step.'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload jest results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: jest-results
+          path: artifacts/jest-results.json
+          retention-days: 14
+          if-no-files-found: warn
