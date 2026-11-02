@@ -71,11 +71,11 @@ propcache==0.5.4
     # via
     #   aiohttp
     #   yarl
-pydantic==2.14.1
+pydantic==2.14.2
     # via
     #   -r requirements.in
     #   fastapi
-pydantic-core==2.50.1
+pydantic-core==2.50.2
     # via pydantic
 python-dateutil==2.9.0.post0
     # via pandas
