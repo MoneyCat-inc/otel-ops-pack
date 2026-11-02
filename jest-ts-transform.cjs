@@ -7,35 +7,45 @@
  * lib/version.cjs, so the old transform threw on every suite. esbuild is
  * already resolved in the lockfile (via tsx) and is now declared directly.
  *
- * Semantics kept from the old transform: CommonJS output, ES2020 target,
- * classic React JSX (ts.JsxEmit.React), inline source maps, one file at a
- * time (isolatedModules). Class fields keep TypeScript's pre-ES2022
- * assignment semantics, which is what transpileModule emitted for ES2020.
+ * Parity with the old transform's output: CommonJS, ES2020 target, "use
+ * strict" prologue (alwaysStrict), classic React JSX (ts.JsxEmit.React),
+ * dynamic import() lowered to require() as TypeScript did for CommonJS, raw
+ * UTF-8 string literals, class fields with the pre-ES2022 assignment
+ * semantics transpileModule emitted for ES2020, one file at a time
+ * (isolatedModules). esbuild's CommonJS interop behaves like esModuleInterop.
+ * The source map is returned to Jest as `map` (external), which Jest prefers
+ * over an inline comment.
  */
 const crypto = require('node:crypto');
+const fs = require('node:fs');
 const esbuild = require('esbuild');
 
 const OPTIONS = {
   format: 'cjs',
   target: 'es2020',
   platform: 'node',
-  sourcemap: 'inline',
+  sourcemap: 'external',
+  charset: 'utf8',
   logLevel: 'silent',
+  supported: { 'dynamic-import': false },
   tsconfigRaw: {
     compilerOptions: {
+      alwaysStrict: true,
       jsx: 'react',
       target: 'ES2020',
       useDefineForClassFields: false,
-      esModuleInterop: true,
     },
   },
 };
 
+// Any change to this file, to esbuild, or to the options invalidates Jest's
+// transform cache; Jest's default key never looks at the transformer itself.
 const CACHE_SALT = crypto
   .createHash('sha1')
   .update('jest-ts-transform/esbuild/')
   .update(esbuild.version)
   .update(JSON.stringify(OPTIONS))
+  .update(fs.readFileSync(__filename))
   .digest('hex');
 
 function loaderFor(sourcePath) {
@@ -48,7 +58,7 @@ exports.process = (sourceText, sourcePath) => {
     loader: loaderFor(sourcePath),
     sourcefile: sourcePath,
   });
-  return { code: result.code };
+  return { code: result.code, map: result.map };
 };
 
 exports.getCacheKey = (sourceText, sourcePath, options) => {
