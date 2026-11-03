@@ -27,7 +27,11 @@
  * members are inlined; a const read during a circular import throws (TDZ)
  * instead of yielding undefined; import.meta becomes an empty object;
  * top-level `this` is not module.exports; and parameter decorators fail to
- * transform unless experimentalDecorators is added to tsconfigRaw.
+ * transform unless experimentalDecorators is added to tsconfigRaw. Under
+ * coverage, esbuild's CommonJS export code maps to line 1 of each module:
+ * babel coverage counts one extra covered function and statement there, and
+ * v8 coverage one function per export, uncovered unless the export is read,
+ * so do not gate on function coverage with this transform.
  */
 const crypto = require('node:crypto');
 const fs = require('node:fs');
