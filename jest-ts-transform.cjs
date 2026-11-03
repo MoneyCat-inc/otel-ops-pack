@@ -13,8 +13,21 @@
  * UTF-8 string literals, class fields with the pre-ES2022 assignment
  * semantics transpileModule emitted for ES2020, one file at a time
  * (isolatedModules). esbuild's CommonJS interop behaves like esModuleInterop.
- * The source map is returned to Jest as `map` (external), which Jest prefers
- * over an inline comment.
+ * The source map goes back to Jest as an object: Jest hands `map` unchanged to
+ * istanbul as inputSourceMap, and a JSON string there breaks the coverage
+ * remapping to TypeScript lines. sourcemap 'both' also keeps the inline
+ * comment, which the instrumented output's own map composes with, so stack
+ * frames under --coverage point at TypeScript lines too.
+ *
+ * Known differences from transpileModule output, none used by the current
+ * suites: a module's exports are getter-only, so jest.spyOn or assignment on
+ * a TypeScript module's own export throws (mock it with a jest.mock factory);
+ * import-derived require() calls run before the module's other top-level
+ * statements (ES module order; TypeScript kept them in place); same-file enum
+ * members are inlined; a const read during a circular import throws (TDZ)
+ * instead of yielding undefined; import.meta becomes an empty object;
+ * top-level `this` is not module.exports; and parameter decorators fail to
+ * transform unless experimentalDecorators is added to tsconfigRaw.
  */
 const crypto = require('node:crypto');
 const fs = require('node:fs');
@@ -24,7 +37,7 @@ const OPTIONS = {
   format: 'cjs',
   target: 'es2020',
   platform: 'node',
-  sourcemap: 'external',
+  sourcemap: 'both',
   charset: 'utf8',
   logLevel: 'silent',
   supported: { 'dynamic-import': false },
@@ -58,7 +71,7 @@ exports.process = (sourceText, sourcePath) => {
     loader: loaderFor(sourcePath),
     sourcefile: sourcePath,
   });
-  return { code: result.code, map: result.map };
+  return { code: result.code, map: JSON.parse(result.map) };
 };
 
 exports.getCacheKey = (sourceText, sourcePath, options) => {
