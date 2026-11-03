@@ -315,6 +315,20 @@ test('script: rejects a non-integer RETAIN_DAYS or GIT_LOG_FALLBACK_MAX before a
   assert.deepEqual(deletedFiles(repo), []);
 });
 
+test('script: a live run never keeps fewer than the policy 90 days; a dry run may', t => {
+  const repo = evidenceRepo(t);
+  const live = runPrune(t, repo, { RETAIN_DAYS: '30', DRY_RUN: 'false' });
+  assert.equal(live.status, 1, live.stderr);
+  assert.match(live.stderr, /a live prune keeps at least 90 days/);
+  assert.equal(live.manifest, null);
+  assert.deepEqual(deletedFiles(repo), []);
+
+  const dry = runPrune(t, repo, { RETAIN_DAYS: '5' });
+  assert.equal(dry.status, 0, dry.stderr);
+  assert.equal(dry.manifest.retain_days, 5);
+  assert.equal(dry.manifest.would_delete_count, 3, 'the 10-day-old badge too, at 5 days');
+});
+
 test('script: runs when its path goes through a junction or symlink (no silent no-op)', t => {
   const repo = evidenceRepo(t);
   const holder = fs.mkdtempSync(path.join(os.tmpdir(), 'prune-link-'));

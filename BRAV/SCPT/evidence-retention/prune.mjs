@@ -23,7 +23,8 @@
  *
  * Env:
  *   REPO_ROOT            evidence checkout root (default: cwd)
- *   RETAIN_DAYS          integer >= 1 (default 90)
+ *   RETAIN_DAYS          integer >= 1 (default 90); a live run needs >= 90,
+ *                        the policy value (BRIEFING_EVIDENCE_RETENTION.md)
  *   DRY_RUN              anything but "false" is a dry run (default true)
  *   MANIFEST_PATH        output JSON (default artifacts/evidence-prune-manifest.json)
  *   GIT_LOG_FALLBACK_MAX integer >= 0 (default 100)
@@ -49,6 +50,8 @@ export const PERMANENT = new Set([
 /** Starts each commit header in the streamed log (git prints it for %x01). */
 const COMMIT_MARK = '\u0001';
 const DAY_MS = 24 * 60 * 60 * 1000;
+/** Raw run reports are kept 90 days (BRIEFING_EVIDENCE_RETENTION.md); a live run never keeps fewer. */
+const POLICY_RETAIN_DAYS = 90;
 
 /** Bad input or a refusal: reported as one ::error:: line, exit 1. */
 export class PruneError extends Error {}
@@ -291,7 +294,7 @@ function intSetting(env, name, fallback, min) {
 
 function readConfig(env) {
   const repoRoot = env.REPO_ROOT || process.cwd();
-  return {
+  const cfg = {
     repoRoot,
     retainDays: intSetting(env, 'RETAIN_DAYS', 90, 1),
     fallbackMax: intSetting(env, 'GIT_LOG_FALLBACK_MAX', 100, 0),
@@ -300,6 +303,12 @@ function readConfig(env) {
       env.MANIFEST_PATH ||
       path.join(env.GITHUB_WORKSPACE || repoRoot, 'artifacts', 'evidence-prune-manifest.json'),
   };
+  if (!cfg.dryRun && cfg.retainDays < POLICY_RETAIN_DAYS) {
+    throw new PruneError(
+      `a live prune keeps at least ${POLICY_RETAIN_DAYS} days of reports (retention policy); RETAIN_DAYS=${cfg.retainDays} is allowed only with DRY_RUN=true`
+    );
+  }
+  return cfg;
 }
 
 function assertScoped(candidates) {
