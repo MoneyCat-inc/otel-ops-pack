@@ -61,8 +61,8 @@
     "hub:links": "pwsh -File scripts/check-hub-links.ps1"
   },
   "dependencies": {
-    "@atproto/api": "0.20.44",
-    "@aws-sdk/client-bedrock-runtime": "^3.1159.0",
+    "@atproto/api": "0.30.0",
+    "@aws-sdk/client-bedrock-runtime": "^3.1161.0",
     "@opentelemetry/core": "^3.0.0",
     "@opentelemetry/exporter-metrics-otlp-http": "^0.300.0",
     "@opentelemetry/instrumentation": "^0.300.0",
@@ -112,7 +112,7 @@
     "ajv-cli": "^5.0.0",
     "ajv-formats": "^3.0.1",
     "esbuild": "^0.28.2",
-    "eslint": "^10.13.0",
+    "eslint": "^10.14.0",
     "eslint-config-next": "^16.4.3",
     "jest": "^30.5.2",
     "jest-environment-node": "^30.5.2",
@@ -128,7 +128,7 @@
     "overrides": {
       "protobufjs": ">=8.0.1",
       "fast-xml-parser": ">=5.3.4",
-      "@atproto/api": "0.20.44",
+      "@atproto/api": "0.30.0",
       "find-my-way": ">=9.7.0",
       "fast-json-patch": ">=3.1.1",
       "minimatch": ">=3.1.4",
