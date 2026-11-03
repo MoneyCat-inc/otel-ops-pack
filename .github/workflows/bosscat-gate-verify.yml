@@ -10,6 +10,10 @@ name: BossCat Gate Verification
 # context (verified live 2026-09-01; REQUIRED_STATUS_CHECKS.md's "already
 # required" claim is stale — see required-check-shims.yml header) — no shim
 # needed. push (main) / dispatch stay unfiltered.
+# 2026-11-02: second job `unit` (jest, node --test under BRAV/SCPT, tsc) for
+# audit P1-3 (#886): nothing ran them, and TypeScript 7 (#699) broke jest and
+# tsc unnoticed for two months. Not a required context; making it one needs an
+# unfiltered trigger or a same-name shim first (see required-check-shims.yml).
 on:
   push:
     branches: [ main ]
@@ -307,3 +311,119 @@ jobs:
             echo "**ECRR**: Examine ✓ | Contain ✓ | Rollback ✓ | Report ✓"
           } >> $GITHUB_STEP_SUMMARY
 
+  # Header note 2026-11-02. Least privilege: read-only token, never persisted.
+  unit:
+    name: Unit tests (jest, node --test, tsc)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v6
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies (frozen lockfile)
+        id: install
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma client (types only)
+        id: prisma
+        env:
+          # prisma.config.ts calls env('DATABASE_URL') at load; generate never connects.
+          DATABASE_URL: postgresql://localhost:5432/unit
+        run: pnpm exec prisma generate --config ALFA/LIBS/prisma/prisma.config.ts
+
+      - name: Unit tests (jest)
+        id: jest
+        run: |
+          mkdir -p artifacts
+          pnpm exec jest --ci --json --outputFile=artifacts/jest-results.json
+
+      # Quoted so node expands the glob. No match passes with 0 tests, so the
+      # summary shows the count. The suite uses only node: built-ins and git.
+      - name: Script tests (node --test)
+        id: nodetest
+        if: ${{ !cancelled() }}
+        run: |
+          mkdir -p artifacts
+          node --test --test-reporter=spec --test-reporter-destination=stdout --test-reporter=tap --test-reporter-destination=artifacts/node-test.tap "BRAV/SCPT/**/*.test.mjs"
+
+      - name: Type check (tsc --noEmit)
+        id: tsc
+        if: ${{ !cancelled() && steps.prisma.outcome == 'success' }}
+        run: pnpm exec tsc --noEmit -p tsconfig.json
+
+      - name: Test summary
+        if: always()
+        shell: bash
+        env:
+          JEST_OUTCOME: ${{ steps.jest.outcome }}
+          NODETEST_OUTCOME: ${{ steps.nodetest.outcome }}
+          TSC_OUTCOME: ${{ steps.tsc.outcome }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          {
+            echo '### Unit tests (jest, node --test, tsc)'
+            echo ''
+            echo "**Workflow:** ${GITHUB_WORKFLOW}, run [#${GITHUB_RUN_NUMBER}](${RUN_URL})"
+            echo ''
+            echo '| Step | Outcome |'
+            echo '|------|---------|'
+            echo "| jest | ${JEST_OUTCOME:-not run} |"
+            NODE_TESTS="$(sed -n 's/^# tests \([0-9][0-9]*\)$/\1/p' artifacts/node-test.tap 2>/dev/null | tail -1)"
+            echo "| node --test BRAV/SCPT/**/*.test.mjs | ${NODETEST_OUTCOME:-not run}, ${NODE_TESTS:-no} tests |"
+            echo "| tsc --noEmit | ${TSC_OUTCOME:-not run} |"
+            echo ''
+            if [ -f artifacts/jest-results.json ]; then
+              node -e '
+                let r;
+                try {
+                  r = require("./artifacts/jest-results.json");
+                } catch (e) {
+                  console.log("_artifacts/jest-results.json unreadable: " + e.message + "_");
+                  process.exit(0);
+                }
+                console.log("| Jest | Count |");
+                console.log("|------|-------|");
+                console.log("| Suites | " + r.numPassedTestSuites + " passed, " + r.numFailedTestSuites + " failed (" + r.numRuntimeErrorTestSuites + " of them could not run) / " + r.numTotalTestSuites + " |");
+                console.log("| Tests | " + r.numPassedTests + " passed, " + r.numFailedTests + " failed, " + r.numPendingTests + " skipped, " + r.numTodoTests + " todo / " + r.numTotalTests + " |");
+              '
+            else
+              echo '_artifacts/jest-results.json missing: jest did not run to completion._'
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: unit-test-results
+          path: |
+            artifacts/jest-results.json
+            artifacts/node-test.tap
+          retention-days: 14
+          if-no-files-found: warn
+          overwrite: true
