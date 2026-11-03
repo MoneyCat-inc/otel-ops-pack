@@ -4,11 +4,14 @@ name: Evidence Retention Prune
 # Quarterly prune of raw run reports in otel-ops-evidence (90-day retain).
 # Age from filename/path stamp or git log — never filesystem mtime.
 # Policy: docs/BossCat/BRIEFING_EVIDENCE_RETENTION.md
-# 2026-11-03: the push rebases onto run-archiver.yml's pushes and retries (both
-# push to otel-ops-evidence main from separate concurrency groups; one shared
-# group would let a queued archiver, cancel-in-progress: true, cancel a running
-# prune). A run that exits 0 without a manifest fails, and the summary shows
-# the dating pass and the pushed evidence commit (audit P1-1 follow-up, #893).
+# 2026-11-03: run-archiver.yml (every 4 h) and run-rotation.yml (dispatch) push
+# to the same evidence main from their own concurrency groups (one shared group
+# would let a queued archiver, cancel-in-progress: true, cancel a running
+# prune). The push rebases when main moved and waits and retries on any other
+# failure. The archiver still pushes once, so a red archiver run right after a
+# live prune is expected and heals on its next run. A run that exits 0 without
+# a manifest fails, and the summary shows the dating pass and the pushed
+# evidence commit (audit P1-1 follow-up, #893).
 
 on:
   schedule:
@@ -110,18 +113,40 @@ jobs:
             exit 0
           fi
           git commit -m "chore(evidence): prune run-reports older than ${RETAIN_DAYS}d [skip ci]"
-          # run-archiver.yml pushes to the same branch every 4 h: rebase onto
-          # whatever it pushed since the checkout, then push again.
+          # run-archiver.yml (every 4 h) and run-rotation.yml (dispatch) also push
+          # here. Rebase only when origin/main moved; any other push failure
+          # (server error, permission, branch protection) waits and retries.
           for attempt in 1 2 3; do
-            if git push; then
+            if git push origin HEAD:main; then
               echo "PRUNE_COMMIT=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
               echo "Pushed $(git rev-parse HEAD) (attempt ${attempt})"
               exit 0
             fi
-            echo "::warning::push rejected (attempt ${attempt}); rebasing onto origin/main"
-            git pull --rebase origin main
+            [ "$attempt" -lt 3 ] || break
+            before="$(git rev-parse origin/main)"
+            if ! git fetch origin main; then
+              echo "::warning::push and fetch both failed (attempt ${attempt}); retrying in $((attempt * 15)) s"
+              sleep $((attempt * 15))
+              continue
+            fi
+            if [ "$(git rev-parse origin/main)" = "$before" ]; then
+              echo "::warning::push failed (attempt ${attempt}) and origin/main did not move, so not a race (server, permission or branch protection); retrying in $((attempt * 15)) s"
+              sleep $((attempt * 15))
+              continue
+            fi
+            echo "::warning::origin/main moved during the prune (attempt ${attempt}); rebasing onto it"
+            if ! git rebase origin/main; then
+              conflicts="$(git diff --name-only --diff-filter=U | head -20 | tr '\n' ' ')"
+              git rebase --abort || true
+              echo "::error::rebasing the prune onto origin/main conflicted (${conflicts}); nothing was pushed"
+              exit 1
+            fi
+            if [ "$(git rev-list --count origin/main..HEAD)" = 0 ]; then
+              echo "::notice::the deletions are already on origin/main; this run pushed nothing"
+              exit 0
+            fi
           done
-          echo "::error::the prune commit could not be pushed after 3 attempts"
+          echo "::error::the prune commit was not pushed after 3 attempts; the git output above has the cause"
           exit 1
 
       - name: Job summary
