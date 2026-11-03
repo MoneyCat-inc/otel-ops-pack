@@ -34,7 +34,7 @@ Fresh `pnpm install --frozen-lockfile` at `main` `0054eea5e` (pnpm 10.18.1, Node
 
 - Method: each specifier resolved with a `require` anchored at its own file under tsx; each module imported in its own `tsx` process from the repo root, where the `require.main === module` guards keep the entry points from running; `otel.ts` flushed through its own SIGTERM handler with `OTEL_EXPORTER_OTLP_ENDPOINT` set to the capture server. The probes were scratch files outside the repository. The same run on #894's head, before it merged, gave identical results.
 - `unit` job on #900 (run 41656177752, head `634a413a1`): jest 4 suites / 124 tests, `node --test` 17 / 17, `tsc --noEmit` clean. 21 checks green, 1 skipped (`scan-scheduled`).
-- Found, not changed: `BRAV/SCPT/agent/pr-template.md:15,17`, the 2025-09 checklist, still runs `scripts/agent/test-sqlite.ts` and `require('./lib/config/queue')`; `BRAV/SCPT/agent/error-watcher/smoke.js:8` and `publish.ps1-adapter.js:8` require `./dist/capture`, a build output nothing in the repository produces (the only other dead relative specifiers under `BRAV/`).
+- Found, not changed: `BRAV/SCPT/agent/pr-template.md:15,17`, the 2025-09 checklist, still runs `scripts/agent/test-sqlite.ts` and `require('./lib/config/queue')`; `BRAV/SCPT/agent/error-watcher/smoke.js:8` and `publish.ps1-adapter.js:8` require `./dist/capture`, a build output nothing in the repository produces (the only other dead relative specifiers under `BRAV/`); `docs/IONA_SIGNOZ_INTEGRATION.md:89` still shows `metricReader:` in its `otel.ts` sample, under the old `scripts/agent/otel.ts` path (lines 65 and 73), a docs-lane fix.
 - Proposed `BOSSCAT_LOG.md` line (docs lane, after the merge):
 
 ```text
