@@ -23,11 +23,11 @@
  *
  * Env:
  *   REPO_ROOT            evidence checkout root (default: cwd)
- *   RETAIN_DAYS          integer >= 1 (default 90); a live run needs >= 90,
+ *   RETAIN_DAYS          integer 1-3650 (default 90); a live run needs >= 90,
  *                        the policy value (BRIEFING_EVIDENCE_RETENTION.md)
- *   DRY_RUN              anything but "false" is a dry run (default true)
+ *   DRY_RUN              anything but "false" (any case) is a dry run (default true)
  *   MANIFEST_PATH        output JSON (default artifacts/evidence-prune-manifest.json)
- *   GIT_LOG_FALLBACK_MAX integer >= 0 (default 100)
+ *   GIT_LOG_FALLBACK_MAX integer 0-100000 (default 100)
  *
  * Exit: 0 done; 1 bad input, missing prune root, or a git/history refusal;
  * 2 scope assertion; 3 more per-file fallbacks than GIT_LOG_FALLBACK_MAX.
@@ -152,7 +152,7 @@ export function assertLinearCompleteHistory(cwd) {
   const merges = Number(gitText(cwd, ['rev-list', '--merges', '--count', 'HEAD']));
   if (merges !== 0) {
     throw new PruneError(
-      `refusing to date: the history has ${merges} merge commit(s), and the single git log pass equals the per-file git log -1 only on linear history`
+      `refusing to date: the history has ${merges} merge commit(s), and the single git log pass equals the per-file git log -1 only on linear history. The prune stays stopped until the evidence history is linear again (a history rewrite) or this script learns to date across merges; see BRIEFING_EVIDENCE_RETENTION.md`
     );
   }
   return { merge_commits: 0, shallow: false };
@@ -200,11 +200,18 @@ export async function foldGitLogLines(lines, map) {
 export async function buildGitDateMap({ cwd, pathspec = SCOPE_PREFIX.slice(0, -1) }) {
   const t0 = Date.now();
   const history = assertLinearCompleteHistory(cwd);
+  // Pinned against user and system config: root commits list their files
+  // (log.showRoot=false would hide them), no signature or colour lines,
+  // raw non-ASCII names.
   const args = [
     '-c',
     'core.quotePath=false',
+    '-c',
+    'log.showRoot=true',
     '--literal-pathspecs',
     'log',
+    '--no-show-signature',
+    '--no-color',
     '--format=%x01%ct',
     '--name-only',
     '--no-renames',
@@ -283,21 +290,22 @@ export function walkFiles(dir, acc = []) {
   return acc;
 }
 
-function intSetting(env, name, fallback, min) {
+function intSetting(env, name, fallback, min, max) {
   const raw = env[name];
   const text = raw === undefined || raw.trim() === '' ? String(fallback) : raw.trim();
-  if (!/^\d+$/.test(text) || Number(text) < min) {
-    throw new PruneError(`${name} must be an integer >= ${min}, got ${JSON.stringify(raw)}`);
+  const n = Number(text);
+  if (!/^\d+$/.test(text) || !Number.isSafeInteger(n) || n < min || n > max) {
+    throw new PruneError(`${name} must be an integer from ${min} to ${max}, got ${JSON.stringify(raw)}`);
   }
-  return Number(text);
+  return n;
 }
 
 function readConfig(env) {
   const repoRoot = env.REPO_ROOT || process.cwd();
   const cfg = {
     repoRoot,
-    retainDays: intSetting(env, 'RETAIN_DAYS', 90, 1),
-    fallbackMax: intSetting(env, 'GIT_LOG_FALLBACK_MAX', 100, 0),
+    retainDays: intSetting(env, 'RETAIN_DAYS', 90, 1, 3650),
+    fallbackMax: intSetting(env, 'GIT_LOG_FALLBACK_MAX', 100, 0, 100000),
     dryRun: (env.DRY_RUN || 'true').toLowerCase() !== 'false',
     manifestPath:
       env.MANIFEST_PATH ||

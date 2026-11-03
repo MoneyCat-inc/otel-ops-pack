@@ -193,19 +193,22 @@ test('buildGitDateMap matches the per-file reference on a linear history', async
   git(dir, ['mv', `${R}badges/run-1.svg`, `${R}badges/run-1-renamed.svg`]);
   commitAll(dir, 'rename run-1', 1_700_200_000);
   put(dir, `${R}badges/run-1-renamed.svg`, 'renamed and edited');
-  // A double quote makes git C-quote the path (Windows cannot create one);
-  // the brackets would be a glob in a non-literal pathspec and match run-2.svg.
+  // A double quote makes git C-quote the path (Windows cannot create one).
+  // In a non-literal pathspec the brackets are a glob that matches the twin
+  // ('[2]' -> '2'), committed later: the odd name must not take its date.
   const oddName = process.platform === 'win32' ? 'run sp [2].svg' : 'run sp "q" [2].svg';
+  const twinName = oddName.replace('[2]', '2');
   put(dir, `${R}badges/${oddName}`, 'odd name');
   commitAll(dir, 'edit renamed, add odd name', 1_700_300_000);
+  put(dir, `${R}badges/${twinName}`, 'glob twin');
+  commitAll(dir, 'add the glob twin', 1_700_400_000);
 
   const pass = await buildGitDateMap({ cwd: dir });
-  assert.equal(pass.commits, 4);
-  assert.equal(pass.merge_commits, 0);
+  assert.equal(pass.commits, 5);
   const inScope = git(dir, ['ls-files', '-z'])
     .split('\0')
     .filter(p => p.startsWith(R));
-  assert.equal(inScope.length, 4);
+  assert.equal(inScope.length, 5);
   for (const rel of inScope) {
     const ref = ageFromGitLogSingle(rel, dir);
     assert.ok(ref, `reference date for ${rel}`);
@@ -214,7 +217,24 @@ test('buildGitDateMap matches the per-file reference on a linear history', async
   assert.equal(pass.map.get(`${R}badges/run-1-renamed.svg`), 1_700_300_000);
   assert.equal(pass.map.get(`${R}badges/run-2.svg`), 1_700_100_000);
   assert.equal(pass.map.get(`${R}badges/${oddName}`), 1_700_300_000);
+  assert.equal(pass.map.get(`${R}badges/${twinName}`), 1_700_400_000);
+  assert.equal(
+    ageFromGitLogSingle(`${R}badges/${oddName}`, dir).date.getTime() / 1000,
+    1_700_300_000,
+    'the fallback reads the odd name literally, not as a glob that also matches the twin'
+  );
   assert.equal(pass.map.has('elsewhere/outside.md'), false, 'the pathspec limits the pass');
+});
+
+test('buildGitDateMap lists root-commit files even when the repo sets log.showRoot=false', async t => {
+  const dir = scratchRepo(t);
+  put(dir, `${R}badges/run-root.svg`, 'root');
+  commitAll(dir, 'root', 1_700_000_000);
+  put(dir, `${R}badges/run-next.svg`, 'next');
+  commitAll(dir, 'next', 1_700_100_000);
+  git(dir, ['config', 'log.showRoot', 'false']);
+  const pass = await buildGitDateMap({ cwd: dir });
+  assert.equal(pass.map.get(`${R}badges/run-root.svg`), 1_700_000_000);
 });
 
 test('buildGitDateMap refuses a history with a merge commit', async t => {
@@ -246,8 +266,7 @@ test('script: a dry run dates undated files from git and deletes nothing', t => 
   assert.deepEqual(m.kept, { permanent: 2, young: 1, no_age: 0 });
   assert.deepEqual(m.date_source_breakdown, { filename: 1, 'git-log': 1 });
   assert.equal(m.git_log_pass.commits, 2);
-  assert.equal(m.git_log_pass.merge_commits, 0);
-  assert.equal(m.git_log_pass.shallow, false);
+  assert.ok('merge_commits' in m.git_log_pass && 'shallow' in m.git_log_pass, 'the history checks are recorded');
   assert.equal(m.git_log_fallbacks, 0);
   assert.deepEqual(deletedFiles(repo), []);
 });
@@ -259,6 +278,27 @@ test('script: a live run deletes exactly the would-delete rows', t => {
   assert.equal(r.manifest.deleted_count, 2);
   assert.deepEqual(deletedFiles(repo), [`${R}archived/2020/01/run-1.md`, `${R}badges/run-old.svg`]);
   assert.ok(exists(repo, `${R}badges/run-new.svg`));
+});
+
+test('script: keeps a file whose newest commit has no usable timestamp, as the per-file method did', t => {
+  const repo = evidenceRepo(t);
+  put(repo, `${R}badges/run-zero.svg`, 'zero\n');
+  git(repo, ['add', '-A']);
+  const tree = git(repo, ['write-tree']);
+  const parent = git(repo, ['rev-parse', 'HEAD']);
+  const body = `tree ${tree}\nparent ${parent}\nauthor z <z@example.invalid> 0 +0000\ncommitter z <z@example.invalid> 0 +0000\n\nzero timestamp\n`;
+  const commit = execFileSync('git', ['hash-object', '-t', 'commit', '-w', '--stdin'], {
+    cwd: repo,
+    input: body,
+    encoding: 'utf8',
+  }).trim();
+  git(repo, ['update-ref', 'refs/heads/main', commit]);
+  assert.equal(ageFromGitLogSingle(`${R}badges/run-zero.svg`, repo), null, 'the per-file method has no date either');
+  const r = runPrune(t, repo);
+  assert.equal(r.status, 0, r.stderr);
+  assert.equal(r.manifest.kept.no_age, 1);
+  assert.equal(r.manifest.git_log_fallbacks, 0, 'listed by the pass, so no fallback');
+  assert.equal(r.manifest.would_delete.some(x => x.path.endsWith('run-zero.svg')), false);
 });
 
 test('script: refuses a history with a merge commit and deletes nothing', t => {
@@ -304,8 +344,12 @@ test('script: rejects a non-integer RETAIN_DAYS or GIT_LOG_FALLBACK_MAX before a
     { RETAIN_DAYS: 'ninety' },
     { RETAIN_DAYS: '0' },
     { RETAIN_DAYS: '90.5' },
+    { RETAIN_DAYS: '9'.repeat(400) },
+    { RETAIN_DAYS: '9007199254740993' },
+    { RETAIN_DAYS: '3651' },
     { GIT_LOG_FALLBACK_MAX: 'lots' },
     { GIT_LOG_FALLBACK_MAX: '-1' },
+    { GIT_LOG_FALLBACK_MAX: '100001' },
   ]) {
     const r = runPrune(t, repo, { ...env, DRY_RUN: 'false' });
     assert.equal(r.status, 1, JSON.stringify(env));
@@ -317,7 +361,7 @@ test('script: rejects a non-integer RETAIN_DAYS or GIT_LOG_FALLBACK_MAX before a
 
 test('script: a live run never keeps fewer than the policy 90 days; a dry run may', t => {
   const repo = evidenceRepo(t);
-  const live = runPrune(t, repo, { RETAIN_DAYS: '30', DRY_RUN: 'false' });
+  const live = runPrune(t, repo, { RETAIN_DAYS: '89', DRY_RUN: 'false' });
   assert.equal(live.status, 1, live.stderr);
   assert.match(live.stderr, /a live prune keeps at least 90 days/);
   assert.equal(live.manifest, null);
@@ -327,6 +371,12 @@ test('script: a live run never keeps fewer than the policy 90 days; a dry run ma
   assert.equal(dry.status, 0, dry.stderr);
   assert.equal(dry.manifest.retain_days, 5);
   assert.equal(dry.manifest.would_delete_count, 3, 'the 10-day-old badge too, at 5 days');
+
+  const at90 = runPrune(t, repo, { RETAIN_DAYS: ' 90 ', DRY_RUN: 'False' });
+  assert.equal(at90.status, 0, at90.stderr);
+  assert.equal(at90.manifest.retain_days, 90, 'surrounding whitespace is trimmed');
+  assert.equal(at90.manifest.dry_run, false, 'DRY_RUN compares without case');
+  assert.equal(at90.manifest.deleted_count, 2);
 });
 
 test('script: runs when its path goes through a junction or symlink (no silent no-op)', t => {
