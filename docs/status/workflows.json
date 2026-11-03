@@ -309,7 +309,7 @@
     {
       "name": "evidence-retention-prune",
       "path": ".github/workflows/evidence-retention-prune.yml",
-      "size": 6897,
+      "size": 6935,
       "triggers": {
         "issues": false,
         "other": [],
