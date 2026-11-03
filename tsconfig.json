@@ -17,16 +17,12 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
-    "baseUrl": ".",
-    // Second Pass Q5 (2026-08-15): baseUrl still required for @/* path aliases;
-    // pin until imports migrate off baseUrl (TS5101 → hard error in TS 7.0).
-    "ignoreDeprecations": "6.0",
     "paths": {
       "@/scripts/*": [
-        "BRAV/SCPT/*"
+        "./BRAV/SCPT/*"
       ],
       "@/*": [
-        "ALFA/LIBS/*"
+        "./ALFA/LIBS/*"
       ]
     },
     "plugins": [

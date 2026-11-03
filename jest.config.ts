@@ -16,6 +16,7 @@ const config: Config = {
     '^.+\\.tsx?$': '<rootDir>/jest-ts-transform.cjs',
   },
   moduleNameMapper: {
+    '^@/scripts/(.*)$': '<rootDir>/BRAV/SCPT/$1',
     '^@/(.*)$': '<rootDir>/ALFA/LIBS/$1',
     '^@tetragrammaton/(.*)$': '<rootDir>/ALFA/TEST/unit/tetragrammaton/src/$1',
   },
