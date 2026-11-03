@@ -117,7 +117,7 @@
     {
       "name": "bosscat-gate-verify",
       "path": ".github/workflows/bosscat-gate-verify.yml",
-      "size": 16421,
+      "size": 16867,
       "triggers": {
         "issues": false,
         "other": [],

@@ -362,11 +362,14 @@ jobs:
           mkdir -p artifacts
           pnpm exec jest --ci --json --outputFile=artifacts/jest-results.json
 
-      # Quoted so node expands the glob; no match is a pass with 0 tests.
+      # Quoted so node expands the glob. No match passes with 0 tests, so the
+      # summary shows the count. The suite uses only node: built-ins and git.
       - name: Script tests (node --test)
         id: nodetest
-        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
-        run: node --test "BRAV/SCPT/**/*.test.mjs"
+        if: ${{ !cancelled() }}
+        run: |
+          mkdir -p artifacts
+          node --test --test-reporter=spec --test-reporter-destination=stdout --test-reporter=tap --test-reporter-destination=artifacts/node-test.tap "BRAV/SCPT/**/*.test.mjs"
 
       - name: Type check (tsc --noEmit)
         id: tsc
@@ -390,7 +393,8 @@ jobs:
             echo '| Step | Outcome |'
             echo '|------|---------|'
             echo "| jest | ${JEST_OUTCOME:-not run} |"
-            echo "| node --test BRAV/SCPT/**/*.test.mjs | ${NODETEST_OUTCOME:-not run} |"
+            NODE_TESTS="$(sed -n 's/^# tests \([0-9][0-9]*\)$/\1/p' artifacts/node-test.tap 2>/dev/null | tail -1)"
+            echo "| node --test BRAV/SCPT/**/*.test.mjs | ${NODETEST_OUTCOME:-not run}, ${NODE_TESTS:-no} tests |"
             echo "| tsc --noEmit | ${TSC_OUTCOME:-not run} |"
             echo ''
             if [ -f artifacts/jest-results.json ]; then
@@ -404,20 +408,22 @@ jobs:
                 }
                 console.log("| Jest | Count |");
                 console.log("|------|-------|");
-                console.log("| Suites | " + r.numPassedTestSuites + " passed, " + r.numFailedTestSuites + " failed, " + r.numRuntimeErrorTestSuites + " runtime errors / " + r.numTotalTestSuites + " |");
-                console.log("| Tests | " + r.numPassedTests + " passed, " + r.numFailedTests + " failed, " + r.numPendingTests + " pending / " + r.numTotalTests + " |");
+                console.log("| Suites | " + r.numPassedTestSuites + " passed, " + r.numFailedTestSuites + " failed (" + r.numRuntimeErrorTestSuites + " of them could not run) / " + r.numTotalTestSuites + " |");
+                console.log("| Tests | " + r.numPassedTests + " passed, " + r.numFailedTests + " failed, " + r.numPendingTests + " skipped, " + r.numTodoTests + " todo / " + r.numTotalTests + " |");
               '
             else
               echo '_artifacts/jest-results.json missing: jest did not run to completion._'
             fi
           } >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Upload jest results
+      - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: jest-results
-          path: artifacts/jest-results.json
+          name: unit-test-results
+          path: |
+            artifacts/jest-results.json
+            artifacts/node-test.tap
           retention-days: 14
           if-no-files-found: warn
           overwrite: true
