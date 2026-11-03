@@ -4,6 +4,11 @@ name: Evidence Retention Prune
 # Quarterly prune of raw run reports in otel-ops-evidence (90-day retain).
 # Age from filename/path stamp or git log — never filesystem mtime.
 # Policy: docs/BossCat/BRIEFING_EVIDENCE_RETENTION.md
+# 2026-11-03: the push rebases onto run-archiver.yml's pushes and retries (both
+# push to otel-ops-evidence main from separate concurrency groups; one shared
+# group would let a queued archiver, cancel-in-progress: true, cancel a running
+# prune). A run that exits 0 without a manifest fails, and the summary shows
+# the dating pass and the pushed evidence commit (audit P1-1 follow-up, #893).
 
 on:
   schedule:
@@ -81,6 +86,7 @@ jobs:
         run: |
           mkdir -p artifacts
           node BRAV/SCPT/evidence-retention/prune.mjs
+          test -s "$MANIFEST_PATH" || { echo "::error::prune.mjs exited 0 without writing $MANIFEST_PATH"; exit 1; }
 
       - name: Upload prune manifest
         if: always()
@@ -104,7 +110,19 @@ jobs:
             exit 0
           fi
           git commit -m "chore(evidence): prune run-reports older than ${RETAIN_DAYS}d [skip ci]"
-          git push
+          # run-archiver.yml pushes to the same branch every 4 h: rebase onto
+          # whatever it pushed since the checkout, then push again.
+          for attempt in 1 2 3; do
+            if git push; then
+              echo "PRUNE_COMMIT=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+              echo "Pushed $(git rev-parse HEAD) (attempt ${attempt})"
+              exit 0
+            fi
+            echo "::warning::push rejected (attempt ${attempt}); rebasing onto origin/main"
+            git pull --rebase origin main
+          done
+          echo "::error::the prune commit could not be pushed after 3 attempts"
+          exit 1
 
       - name: Job summary
         if: always()
@@ -120,16 +138,25 @@ jobs:
             if [ -f artifacts/evidence-prune-manifest.json ]; then
               node -e '
                 const m = require("./artifacts/evidence-prune-manifest.json");
+                const p = m.git_log_pass;
                 console.log("| Metric | Value |");
                 console.log("|--------|-------|");
                 console.log("| Would delete | " + m.would_delete_count + " |");
                 console.log("| Bytes | " + m.would_delete_bytes + " |");
                 console.log("| date_source filename | " + m.date_source_breakdown.filename + " |");
                 console.log("| date_source git-log | " + m.date_source_breakdown["git-log"] + " |");
-                if (m.deleted_count != null) console.log("| Deleted | " + m.deleted_count + " |");
+                console.log("| Kept (permanent / young / no age) | " + m.kept.permanent + " / " + m.kept.young + " / " + m.kept.no_age + " |");
+                if (p) console.log("| git log pass | " + p.commits + " commits, " + p.paths + " paths, " + p.ms + " ms" + (p.merge_commits != null ? "; merge commits " + p.merge_commits + ", shallow " + p.shallow : "") + " |");
+                if (m.git_log_fallbacks != null) console.log("| Per-file fallbacks | " + m.git_log_fallbacks + " |");
+                if (m.elapsed_ms != null) console.log("| Script time | " + m.elapsed_ms + " ms |");
+                if (m.deleted_count != null) console.log("| Deleted in the checkout | " + m.deleted_count + " |");
               '
             else
               echo '_Manifest missing._'
+            fi
+            if [ -n "${PRUNE_COMMIT:-}" ]; then
+              echo ''
+              echo "**Evidence commit pushed:** \`${PRUNE_COMMIT}\` to ${EVIDENCE_REPO} main"
             fi
             echo ''
             echo 'Policy: docs/BossCat/BRIEFING_EVIDENCE_RETENTION.md'
