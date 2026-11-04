@@ -2,12 +2,18 @@
 # Creates dashboard panels for compliance trends and threshold breaches
 
 param(
-    [string]$SigNozAPIKey = "YMJnm6c+/poKMuEGsjOQZCKrOealu8NjX22QE66VdnQ=",
+    [string]$SigNozAPIKey = $env:SIGNOZ_API_KEY,
     [string]$SigNozBaseURL = "http://localhost:8080",
     [string]$DashboardName = "ECRR Compliance Monitoring",
     [switch]$CreateDashboard,
     [switch]$TestQueries
 )
+
+# The key comes from the environment, never from this file. Only the API modes need it;
+# writing the dashboard JSON alone does not.
+if (($TestQueries -or $CreateDashboard) -and -not $SigNozAPIKey) {
+    throw 'SigNoz API key required for -TestQueries/-CreateDashboard: set $env:SIGNOZ_API_KEY or pass -SigNozAPIKey.'
+}
 
 Write-Host "📊 SigNoz ECRR Compliance Dashboard Creator" -ForegroundColor Cyan
 Write-Host "=============================================" -ForegroundColor Cyan

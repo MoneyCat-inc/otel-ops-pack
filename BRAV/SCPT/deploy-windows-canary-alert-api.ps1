@@ -2,7 +2,7 @@
 # Implements T-2025-01-27-003: Canary Alert for Windows Logs with API integration
 
 param(
-    [string]$ApiToken = "YMJnm6c+/poKMuEGsjOQZCKrOealu8NjX22QE66VdnQ=",
+    [string]$ApiToken = $env:SIGNOZ_API_KEY,
     [string]$SigNozUrl = "http://localhost:8080",
     [switch]$DeployAlert,
     [switch]$TestAlert,
@@ -10,6 +10,12 @@ param(
     [switch]$FullDeployment,
     [switch]$DryRun
 )
+
+# The key comes from the environment, never from this file. Only the API deployment needs it;
+# -GenerateCanary and -TestAlert write local log lines.
+if (($DeployAlert -or $FullDeployment) -and -not $ApiToken) {
+    throw 'SigNoz API key required for -DeployAlert/-FullDeployment: set $env:SIGNOZ_API_KEY or pass -ApiToken.'
+}
 
 Write-Host "=== Windows Canary Alert API Deployment ===" -ForegroundColor Green
 Write-Host "Task: T-2025-01-27-003 - Canary Alert for Windows Logs (API)" -ForegroundColor Yellow
@@ -44,7 +50,7 @@ try {
 } catch {
     Write-Host "❌ SigNoz API not accessible: $($_.Exception.Message)" -ForegroundColor Red
     Write-Host "   URL: $SigNozUrl" -ForegroundColor Gray
-    Write-Host "   Token: $($ApiToken.Substring(0,8))..." -ForegroundColor Gray
+    Write-Host "   Token: $(if ($ApiToken) { 'set (value not shown)' } else { 'not set' })" -ForegroundColor Gray
     exit 1
 }
 
