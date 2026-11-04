@@ -82,3 +82,17 @@ Claude Code (local seat): investigation, probes, PRs #903 and #904 and this repo
 
 - Merge #903 and #904 on the operator's go, then the `BOSSCAT_LOG.md` line and the mirror republish.
 - Addendum: the `unit` job on `main` after #903 merges.
+
+## 6. Addendum (2026-11-04): merged, green on `main`, rotation still owed
+
+- Merged on the operator's go, squash, one at a time after an update-branch and fresh checks, with the `Driving:` assignment posted on #900 before the cascade's first merge: #903 `82d1040bc` (21:00Z), #904 `63927bfa4` (21:01Z), this report #905 `d5c5509af` (21:03Z).
+- The `unit` job on `main` after #903 (push run 41911900610, head `82d1040bc`): jest 5 suites and 126 tests (4 and 124 before; the new `signoz-endpoint` suite adds 2), `node --test` 17 of 17, `tsc --noEmit` clean. The header's code condition is met; the rotation below keeps the verdict AMBER.
+- **Rotation owed (operator).** The three values §4 records were printed into a session log, so under the blast-radius rule they are rotated, and that is a keyboard step for `@fubumaki`. The full list, wider than §4's:
+  1. Revoke every SigNoz API key.
+  2. Put the new key in the host variables `SIGNOZ_API_KEY` and `SIGNOZ_API_TOKEN`, in every scope that holds them (`SIGNOZ_API_KEY` is set at User and Machine scope), and in the Actions secret `SIGNOZ_API_KEY` (last updated 2026-08-14). `gate-nightly.yml` uses that secret only for read queries (`POST /api/v5/query_range`, sent by `verify-pipeline.ps1`), and under the blast-radius rule a CI-bound key is minted least privilege.
+  3. Replace `SIGNOZ_JWT_SECRET`.
+  4. Recreate the `signoz` container so it reads the new secret.
+  5. Run Gate Nightly Verification and see it green with the new key.
+- When it is done, record the date here and add rows for `SIGNOZ_API_TOKEN` and `SIGNOZ_JWT_SECRET` to `docs/BossCat/CREDENTIAL_ROTATION_CALENDAR.md`, which today has a row for `SIGNOZ_API_KEY` only.
+
+**Status:** AMBER until the rotation is recorded here (operator); the code and docs changes are closed.
