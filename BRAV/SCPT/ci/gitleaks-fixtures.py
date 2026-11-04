@@ -116,10 +116,11 @@ class Gen:
         # 32 random bytes in standard base64 (44 characters): the SigNoz API key format.
         return base64.b64encode(self.raw(32)).decode()
 
-    def password(self, n=20):
+    def symbol_mix(self, n=20):
+        # Letters, digits and symbols, first character alphanumeric (password-shaped).
         return self.s(1) + self.s(n - 1, ALNUM + "!@#%^*-_")
 
-    def passphrase(self, words=5):
+    def word_chain(self, words=5):
         # Word-like dev defaults are what the built-in generic rule's stopwords drop.
         pool = [
             "amber",
@@ -311,7 +312,7 @@ def build_cases(g):
         "compose/db.yml",
         "services:\n  db:\n    environment:\n      @NAME@: @V@\n",
         "POSTGRES" "_PASSWORD",
-        g.password(),
+        g.symbol_mix(),
     )
     pos(
         "P17",
@@ -320,7 +321,7 @@ def build_cases(g):
         "scripts/setup.sh",
         'export @NAME@="@V@"\n',
         "SIGNOZ" "_PASS",
-        g.password(16),
+        g.symbol_mix(16),
     )
     pos(
         "P18",
@@ -348,7 +349,7 @@ def build_cases(g):
         "scripts/setup-dashboards.ps1",
         'param(\n    [string]$@NAME@ = "@V@",\n    [string]$BaseUrl = "http://localhost:8080"\n)\n',
         "Api" "Token",
-        g.passphrase(),
+        g.word_chain(),
     )
     pos(
         "P21",
@@ -357,7 +358,7 @@ def build_cases(g):
         "docs/deploy-guide.md",
         '[Environment]::SetEnvironmentVariable("@NAME@", "@V@", "Machine")\n',
         "SIGNOZ_WEBHOOK" "_SECRET",
-        g.passphrase(4) + "-" + g.s(4, string.digits),
+        g.word_chain(4) + "-" + g.s(4, string.digits),
     )
     pos(
         "P22",
@@ -652,10 +653,13 @@ def config_problems(path):
                 groups = re.compile(rule["regex"]).groups
             except re.error:
                 continue  # RE2-only syntax; gitleaks itself validates the regex
-            if groups != 1 or rule.get("secretGroup") != 1:
+            # Only whether the field is 1 is kept: its value never reaches a message.
+            group_is_one = rule.get("secretGroup") == 1
+            if groups != 1 or not group_is_one:
                 problems.append(
-                    f"rule {rid}: {groups} capture groups, secretGroup "
-                    f"{rule.get('secretGroup', 'unset')} (want exactly 1 and 1)"
+                    f"rule {rid}: {groups} capture group(s), secretGroup "
+                    f"{'= 1' if group_is_one else 'missing or not 1'} "
+                    "(want one group, the value, and secretGroup = 1)"
                 )
     return problems, bool(problems)
 
