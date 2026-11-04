@@ -1,0 +1,460 @@
+# Gitleaks baseline: known historical findings for otel-ops-pack.
+#
+# Loaded by every gitleaks run from the repository root (CI: .github/workflows/gitleaks.yml).
+# Built 2026-11-04 from a full-history scan (gitleaks 8.24.3 `detect`, no --log-opts: all refs
+# fetched by checkout, 1,914 commits with patches) using .gitleaks.toml as of this commit:
+# 261 findings, 55 distinct values, one line per finding.
+#
+# Each entry is a commit fingerprint, <commit>:<file>:<rule>:<line>. It silences that one
+# finding in that one commit and nothing else: the same value committed again, anywhere, is a
+# new finding. No value is written here; groups refer to values by length and sha256[:8].
+# A rule change that moves a finding (new rule id or line) shows up as a new finding on the
+# next full-history run; rebuild then from `gitleaks detect --report-format json` with this
+# file moved aside, and re-triage.
+#
+# Rules for this file: add only findings already in history that have been triaged
+# (credential revoked or confirmed dead, or not a credential), under a group comment that
+# says which. Never baseline new content: fix it, or mark a false positive `gitleaks:allow`.
+# Revocation status of the credential groups is the operator's to confirm (ECRR, 2026-11-04).
+
+# ======================================================================================
+# SigNoz API keys (credentials)
+# ======================================================================================
+
+# len=44 sha8=8abc66bc: SigNoz API key (32-byte base64). Credential: confirm revoked in SigNoz; pasted as 'API token from user' into ECRRs and summaries.
+#   35 finding(s) 2025-09-27..2025-10-22; bare-base64-key 27, signoz-api-key 7, powershell-secret-literal 1; at HEAD in 8 line(s), 5 file(s).
+f27614f23b4803e237028e8f7c8d41f1ccfbdb4e:FINAL_AUTHENTICATION_AND_SETUP_COMPLETE.md:bare-base64-key:12
+f27614f23b4803e237028e8f7c8d41f1ccfbdb4e:docs/API_TOKEN_SETUP_COMPLETE.md:bare-base64-key:11
+f27614f23b4803e237028e8f7c8d41f1ccfbdb4e:scripts/setup-signoz-monitoring.ps1:powershell-secret-literal:7
+28c0644e3b829b48f554cf753440b13f97dc7e02:docs/ECRR_REPORTS/2025-01-27-final-rollout-merge-ecrr-complete.md:bare-base64-key:92
+e057eefdc5ebeaa97c34c487d3f5890a10070846:FINAL_SETUP_COMPLETION_REPORT.md:bare-base64-key:14
+c5f9c654defd9b93b7868b470bfd1d586322e923:FINAL_COMPLETE_SETUP_SUMMARY.md:bare-base64-key:14
+c5f9c654defd9b93b7868b470bfd1d586322e923:FINAL_COMPLETE_SETUP_SUMMARY.md:signoz-api-key:133
+c5f9c654defd9b93b7868b470bfd1d586322e923:docs/ECRR_REPORTS/2025-01-27-rollout-merge-ecrr-complete.md:bare-base64-key:34
+c5f9c654defd9b93b7868b470bfd1d586322e923:docs/ECRR_REPORTS/2025-01-27-rollout-merge-ecrr-complete.md:bare-base64-key:93
+c5f9c654defd9b93b7868b470bfd1d586322e923:docs/ECRR_REPORTS/2025-01-27-rollout-merge-ecrr-complete.md:bare-base64-key:191
+44931ff17405042a3d3aacb8d71e25d3f9244027:ROLLOUT_MERGE_AND_ECRR_COMPLETE.md:bare-base64-key:39
+44931ff17405042a3d3aacb8d71e25d3f9244027:ROLLOUT_MERGE_AND_ECRR_COMPLETE.md:signoz-api-key:91
+91a4154ba8b83c915080aac41f84da7fb4aa28bb:GPU_AUTOMATION_FINAL_STATUS.md:bare-base64-key:29
+91a4154ba8b83c915080aac41f84da7fb4aa28bb:GPU_AUTOMATION_ROLLOUT_COMPLETE.md:bare-base64-key:33
+91a4154ba8b83c915080aac41f84da7fb4aa28bb:docs/ECRR_REPORTS/2025-09-27-rollout-merge-api-token-dashboard-ecrr.md:bare-base64-key:30
+91a4154ba8b83c915080aac41f84da7fb4aa28bb:docs/ECRR_REPORTS/2025-09-27-rollout-merge-api-token-dashboard-ecrr.md:signoz-api-key:227
+91a4154ba8b83c915080aac41f84da7fb4aa28bb:docs/reports/snapshot/20250127-project-snapshot.md:bare-base64-key:88
+a8f4704aa205002abd07034ea1a389ae286b85b5:docs/ECRR_REPORTS/2025-01-27-rollout-merge-final-consolidated.md:bare-base64-key:157
+a8f4704aa205002abd07034ea1a389ae286b85b5:docs/ECRR_REPORTS/2025-01-27-rollout-merge-final-consolidated.md:bare-base64-key:199
+a8f4704aa205002abd07034ea1a389ae286b85b5:docs/ECRR_REPORTS/2025-09-27-rollout-merge-api-token-dashboard-ecrr.md:bare-base64-key:30
+a8f4704aa205002abd07034ea1a389ae286b85b5:docs/ECRR_REPORTS/2025-09-27-rollout-merge-api-token-dashboard-ecrr.md:signoz-api-key:227
+a8f4704aa205002abd07034ea1a389ae286b85b5:docs/ECRR_REPORTS/archive/2025-01-27-rollout-merge-ecrr-complete.md:bare-base64-key:34
+a8f4704aa205002abd07034ea1a389ae286b85b5:docs/ECRR_REPORTS/archive/2025-01-27-rollout-merge-ecrr-complete.md:bare-base64-key:93
+a8f4704aa205002abd07034ea1a389ae286b85b5:docs/ECRR_REPORTS/archive/2025-01-27-rollout-merge-ecrr-complete.md:bare-base64-key:191
+68ee0933d88ebf83528e6f5611d278779078c77d:docs/ECRR_REPORTS/archive/2025-01-27-rollout-merge-final-consolidated.md:bare-base64-key:157
+68ee0933d88ebf83528e6f5611d278779078c77d:docs/ECRR_REPORTS/archive/2025-01-27-rollout-merge-final-consolidated.md:bare-base64-key:199
+bc03083d51a4e927694bd991f0357a68dabbbba4:docs/ECRR_REPORTS/archive/2025-01-27-final-rollout-merge-ecrr-complete.md.backup.20250929-211505:bare-base64-key:92
+c6dfbecf00e5a70f568bac8d662ae432abde7641:docs/ECRR_REPORTS/archive/2025-09-29-rollout-merge-oct-2025-consolidated.archived-2025-10-07_02-00-02.md:bare-base64-key:53
+c6dfbecf00e5a70f568bac8d662ae432abde7641:docs/ECRR_REPORTS/archive/2025-09-29-rollout-merge-oct-2025-consolidated.archived-2025-10-07_02-00-02.md:signoz-api-key:250
+da0d5bb1c25abe194a140410193792ee2d3c4724:CHAR/ECRR/ECRR_REPORTS/archive/2025-01-27-rollout-merge-final-consolidated.md:bare-base64-key:157
+da0d5bb1c25abe194a140410193792ee2d3c4724:CHAR/ECRR/ECRR_REPORTS/archive/2025-01-27-rollout-merge-final-consolidated.md:bare-base64-key:199
+da0d5bb1c25abe194a140410193792ee2d3c4724:CHAR/ECRR/ECRR_REPORTS/archive/2025-09-27-rollout-merge-api-token-dashboard-ecrr.md:bare-base64-key:30
+da0d5bb1c25abe194a140410193792ee2d3c4724:CHAR/ECRR/ECRR_REPORTS/archive/2025-09-27-rollout-merge-api-token-dashboard-ecrr.md:signoz-api-key:227
+da0d5bb1c25abe194a140410193792ee2d3c4724:CHAR/ECRR/ECRR_REPORTS/archive/2025-09-29-rollout-merge-oct-2025-consolidated.archived-2025-10-07_02-00-02.md:bare-base64-key:53
+da0d5bb1c25abe194a140410193792ee2d3c4724:CHAR/ECRR/ECRR_REPORTS/archive/2025-09-29-rollout-merge-oct-2025-consolidated.archived-2025-10-07_02-00-02.md:signoz-api-key:250
+
+# len=44 sha8=3e775a2b: SigNoz API key (32-byte base64). Credential: confirm revoked in SigNoz; env.template, docker-compose.yml, signoz.ts, .ps1 defaults, and the remediation script's own search pattern.
+#   23 finding(s) 2025-09-28..2025-10-08; bare-base64-key 14, signoz-api-key 7, curl-auth-header 1, powershell-secret-literal 1; at HEAD in 6 line(s), 5 file(s).
+eec483e1ea9eac8082990849f088fecae2decc7a:scripts/deploy-windows-canary-alert-api.ps1:powershell-secret-literal:5
+d5fb749dc1a0c084bd8826d6c137c6910d58bddd:lib/observability/signoz.ts:signoz-api-key:14
+c933a141eb4d233bd016c05918cfc0f215876599:docker-compose.yml:signoz-api-key:29
+c933a141eb4d233bd016c05918cfc0f215876599:env.template:signoz-api-key:66
+2a78de4150f7f0b1803689567f2b5cf4a5dd8010:docs/smoke-test-results.md:bare-base64-key:147
+2a78de4150f7f0b1803689567f2b5cf4a5dd8010:docs/smoke-test-results.md:bare-base64-key:225
+cfea6a3f2376b2e46bd9a61a88a84b5304e1dc39:docs/DEPLOYMENT_CHECKLIST.md:bare-base64-key:33
+cfea6a3f2376b2e46bd9a61a88a84b5304e1dc39:docs/ECRR_REPORTS/2025-01-27-resonai-backend-implementation.md:bare-base64-key:15
+cfea6a3f2376b2e46bd9a61a88a84b5304e1dc39:docs/ROLLOUT_MERGE_COMPLETE.md:bare-base64-key:108
+bfeb7d6effb9913f350f491ddf0f1e2365fd8940:docs/INTEGRATION_POINTS.md:signoz-api-key:25
+bfeb7d6effb9913f350f491ddf0f1e2365fd8940:docs/INTEGRATION_POINTS.md:signoz-api-key:321
+bc03083d51a4e927694bd991f0357a68dabbbba4:scripts/create-signoz-compliance-dashboard.ps1:signoz-api-key:5
+997ff01392972f77fa92e320b673f896139ff45d:docs/ECRR_REPORTS/archive/2025-01-27-resonai-backend-implementation.archived-2025-10-02_00-47-15.md:bare-base64-key:25
+a0e3b344a2e817a5effe5b43c7674d94ca8e0d12:IONA_GATE_002_COMPLETE_WITH_SECURITY.md:bare-base64-key:76
+a0e3b344a2e817a5effe5b43c7674d94ca8e0d12:SECURITY_REMEDIATION.md:bare-base64-key:15
+a0e3b344a2e817a5effe5b43c7674d94ca8e0d12:SECURITY_ROTATION_CHECKLIST.md:bare-base64-key:5
+a0e3b344a2e817a5effe5b43c7674d94ca8e0d12:SECURITY_ROTATION_CHECKLIST.md:bare-base64-key:22
+a0e3b344a2e817a5effe5b43c7674d94ca8e0d12:SECURITY_ROTATION_CHECKLIST.md:curl-auth-header:31
+a0e3b344a2e817a5effe5b43c7674d94ca8e0d12:SECURITY_ROTATION_CHECKLIST.md:bare-base64-key:32
+4f66ba1d6f0dcaf4f46aeabc9f88b40587db553f:docs/SECURITY_REMEDIATION_PLAN.md:signoz-api-key:12
+4f66ba1d6f0dcaf4f46aeabc9f88b40587db553f:scripts/security/pre-commit-hook.sh:bare-base64-key:57
+4f66ba1d6f0dcaf4f46aeabc9f88b40587db553f:scripts/security/remediate-secrets.ps1:bare-base64-key:21
+4f66ba1d6f0dcaf4f46aeabc9f88b40587db553f:scripts/security/remediate-secrets.ps1:bare-base64-key:27
+
+# len=44 sha8=c66026b5: SigNoz API key (32-byte base64). Credential: confirm revoked in SigNoz; the doc calls it a test key that expires in 1 day; the 14 .md lines (still at HEAD).
+#   14 finding(s) 2025-10-27..2026-08-29; signoz-api-key 8, bare-base64-key 6; at HEAD in 14 line(s), 14 file(s).
+2dfd2d8d486b5771c5ed68be75f438e784786095:GATE_029_HYGIENE_PATCH_H1.md:signoz-api-key:140
+49dd4f6e01de37ef79d62dbaf6c3c3cac61759d1:COLLECTOR_5317_INVESTIGATION_COMPLETE.md:bare-base64-key:95
+688d8ad1b13f41a43ae12340fcec575cb34c6331:READY_FOR_GATE_029_EXECUTION_COMPLETE.md:bare-base64-key:108
+d294d943389bdf65de81becb7ca44ec9741f4995:GATE_030_IMPLEMENTATION_COMPLETE.md:signoz-api-key:87
+bb82f3401e1abea3cb19d99ce095d891c47b12f6:GATE_030_V2_IMPLEMENTATION.md:bare-base64-key:127
+7fcc41b7ec614f3d0a825f68f43ba5cb94ddb6b4:docs/archive/gates/2025-11/GATE_029_HYGIENE_PATCH_H1.md:signoz-api-key:140
+7fcc41b7ec614f3d0a825f68f43ba5cb94ddb6b4:docs/archive/gates/2025-11/GATE_030_IMPLEMENTATION_COMPLETE.md:signoz-api-key:87
+8ba9cbfd046f4116706b3be1e8d92ae1df332d8c:CHAR/DOCS/docs/archive/gates/2025-11/GATE_029_HYGIENE_PATCH_H1.md:signoz-api-key:140
+8ba9cbfd046f4116706b3be1e8d92ae1df332d8c:CHAR/DOCS/docs/archive/gates/2025-11/GATE_030_IMPLEMENTATION_COMPLETE.md:signoz-api-key:87
+8ba9cbfd046f4116706b3be1e8d92ae1df332d8c:CHAR/DOCS/docs/gate/archive/COLLECTOR_5317_INVESTIGATION_COMPLETE.md:bare-base64-key:95
+8ba9cbfd046f4116706b3be1e8d92ae1df332d8c:CHAR/DOCS/docs/gate/archive/GATE_029_HYGIENE_PATCH_H1.md:signoz-api-key:140
+8ba9cbfd046f4116706b3be1e8d92ae1df332d8c:CHAR/DOCS/docs/gate/archive/GATE_030_IMPLEMENTATION_COMPLETE.md:signoz-api-key:87
+8ba9cbfd046f4116706b3be1e8d92ae1df332d8c:CHAR/DOCS/docs/gate/archive/GATE_030_V2_IMPLEMENTATION.md:bare-base64-key:127
+8ba9cbfd046f4116706b3be1e8d92ae1df332d8c:CHAR/DOCS/docs/gate/archive/READY_FOR_GATE_029_EXECUTION_COMPLETE.md:bare-base64-key:108
+
+# len=44 sha8=869a41b7: SigNoz API key (32-byte base64). Credential: confirm revoked in SigNoz; .ps1 $ApiToken defaults and the remediation script's search pattern.
+#   5 finding(s) 2025-09-28..2025-10-08; powershell-secret-literal 3, bare-base64-key 2; at HEAD in 4 line(s), 4 file(s).
+870b9c8ac1838486f2a639423b7074fe90ddeace:scripts/deploy-windows-canary-alert-api.ps1:powershell-secret-literal:5
+870b9c8ac1838486f2a639423b7074fe90ddeace:scripts/manage-signoz-alerts-api.ps1:powershell-secret-literal:5
+870b9c8ac1838486f2a639423b7074fe90ddeace:scripts/test-signoz-api-auth.ps1:powershell-secret-literal:5
+4f66ba1d6f0dcaf4f46aeabc9f88b40587db553f:scripts/security/pre-commit-hook.sh:bare-base64-key:62
+4f66ba1d6f0dcaf4f46aeabc9f88b40587db553f:scripts/security/remediate-secrets.ps1:bare-base64-key:33
+
+# len=44 sha8=089c8993: SigNoz API key (32-byte base64). Credential: confirm revoked in SigNoz; SIGNOZ-API-KEY header literal in .ps1.
+#   4 finding(s) 2025-10-08; signoz-api-key 3, bare-base64-key 1; at HEAD in 2 line(s), 2 file(s).
+2b0369c84dfaf9090fcbba25283e4e3d07ebc397:docs/BossCat/EXECUTION_SUMMARY.md:bare-base64-key:135
+2b0369c84dfaf9090fcbba25283e4e3d07ebc397:scripts/check-alerts.ps1:signoz-api-key:1
+2b0369c84dfaf9090fcbba25283e4e3d07ebc397:scripts/debug-alert-fields.ps1:signoz-api-key:1
+2b0369c84dfaf9090fcbba25283e4e3d07ebc397:scripts/debug-alerts.ps1:signoz-api-key:1
+
+# len=44 sha8=b4376d4d: SigNoz API key (32-byte base64). Credential: confirm revoked in SigNoz; BRAV/SCPT/secrets/signoz.secrets.ps1 and one .md.
+#   2 finding(s) 2025-10-08..2025-10-09; signoz-api-key 2; not at HEAD.
+be93df586bccbc9ea997c9665b3ea46dbe03e199:docs/BossCat/SHOWTIME_VIEWS_DEPLOYED.md:signoz-api-key:168
+3fdbd88db29cf62b51b86420a5432271a790d839:BRAV/SCPT/secrets/signoz.secrets.ps1:signoz-api-key:5
+
+# ======================================================================================
+# Other secrets, passwords and tokens (credentials or credential-like)
+# ======================================================================================
+
+# len=30 sha8=7b2b10c7: SIGNOZ_JWT_SECRET compose default, reused as the [string]$ApiToken default in 7 .ps1. Credential-like (word-like dev default): rotate if any deployment kept it.
+#   13 finding(s) 2025-09-30..2026-08-03; powershell-secret-literal 7, compose-secret-default 5, named-secret-literal 1; at HEAD in 8 line(s), 8 file(s).
+bc03083d51a4e927694bd991f0357a68dabbbba4:docker-compose-signoz.yml:compose-secret-default:93
+583ba20c299eed7824c9d1fdb6d2029ef4e5afb1:.env:named-secret-literal:22
+583ba20c299eed7824c9d1fdb6d2029ef4e5afb1:docker-compose-optimized.yml:compose-secret-default:96
+583ba20c299eed7824c9d1fdb6d2029ef4e5afb1:docker-compose.yml:compose-secret-default:158
+ec0fadb3dc1c0217e6f3dc81171d327218cd7009:docker-compose.unified.yml:compose-secret-default:93
+ec0fadb3dc1c0217e6f3dc81171d327218cd7009:scripts/setup-comprehensive-alerts-fixed.ps1:powershell-secret-literal:6
+ec0fadb3dc1c0217e6f3dc81171d327218cd7009:scripts/setup-comprehensive-alerts.ps1:powershell-secret-literal:6
+ec0fadb3dc1c0217e6f3dc81171d327218cd7009:scripts/setup-dashboards.ps1:powershell-secret-literal:6
+ec0fadb3dc1c0217e6f3dc81171d327218cd7009:scripts/setup-saved-views.ps1:powershell-secret-literal:6
+ec0fadb3dc1c0217e6f3dc81171d327218cd7009:scripts/simple-signoz-setup.ps1:powershell-secret-literal:6
+ec0fadb3dc1c0217e6f3dc81171d327218cd7009:scripts/simple-verification.ps1:powershell-secret-literal:6
+ec0fadb3dc1c0217e6f3dc81171d327218cd7009:scripts/verify-observability-stack.ps1:powershell-secret-literal:6
+323a045ba4d2e4bd035454c99e983e012f32cbb0:docker-compose.yml:compose-secret-default:97
+
+# len=56 sha8=0b3dc10f: SIGNOZ_JWT_SECRET in docker-compose.yml (2025-09-19), reused as [string]$AuthToken default. Credential-like: rotate if live.
+#   5 finding(s) 2025-09-19..2025-09-22; powershell-secret-literal 4, named-secret-literal 1; at HEAD in 1 line(s), 1 file(s).
+95877327a9a80faa963985ba76a81a0c225b8ea4:docker-compose.yml:named-secret-literal:29
+c64236f1a427dee9f45cbd3935e4677007c170d3:scripts/setup-signoz-auth.ps1:powershell-secret-literal:106
+c64236f1a427dee9f45cbd3935e4677007c170d3:scripts/signoz-auth-helpers.ps1:powershell-secret-literal:7
+3c64cf5ae525dd11edc57eb1bc0227f97757fe4f:scripts/setup-signoz-auth.ps1:powershell-secret-literal:106
+3c64cf5ae525dd11edc57eb1bc0227f97757fe4f:scripts/signoz-auth-helpers.ps1:powershell-secret-literal:7
+
+# len=30 sha8=f0eb808a: SIGNOZ_WEBHOOK_SECRET literal (guide, drill script; also in DELT/CONF alert JSON). Credential-like: rotate if live.
+#   5 finding(s) 2025-10-02; named-secret-literal 5; at HEAD in 5 line(s), 4 file(s).
+e583e80f45fafb577fea894e3eb3782d90d8e4de:docs/PRODUCTION_SECURITY_DEPLOYMENT_GUIDE.md:named-secret-literal:11
+e583e80f45fafb577fea894e3eb3782d90d8e4de:docs/PRODUCTION_SECURITY_DEPLOYMENT_GUIDE.md:named-secret-literal:23
+e583e80f45fafb577fea894e3eb3782d90d8e4de:docs/PRODUCTION_SECURITY_DEPLOYMENT_GUIDE.md:named-secret-literal:27
+e583e80f45fafb577fea894e3eb3782d90d8e4de:docs/PRODUCTION_SECURITY_DEPLOYMENT_GUIDE.md:named-secret-literal:39
+e583e80f45fafb577fea894e3eb3782d90d8e4de:scripts/agent/staged-failure-drill.ps1:named-secret-literal:190
+
+# len=16 sha8=955940b5: SIGNOZ_PASS (SigNoz UI admin password) in docs and a transcript. Credential: confirm changed.
+#   3 finding(s) 2025-10-02..2025-10-04; named-secret-literal 3; not at HEAD.
+756ccb4d499ee517f28828a90e6b9aefde8a9772:docs/SIGNOZ_CREDENTIAL_MANAGEMENT.md:named-secret-literal:118
+748a31a110ace03f8188184d2f2ae4c774e56397:SIGNOZ_SANITIZED_AUTOMATION_COMPLETE.md:named-secret-literal:107
+4e30910521f50d77b098330bd6b5a6f6268acc7f:artifacts/automate-signoz-sleekify.txt:named-secret-literal:18
+
+# len=29 sha8=75d8676a: CRON_SECRET in docs/INTEGRATION_POINTS.md (+ .backup); lowercase words. Credential-like.
+#   2 finding(s) 2025-09-28..2025-10-08; named-secret-literal 2; not at HEAD.
+bfeb7d6effb9913f350f491ddf0f1e2365fd8940:docs/INTEGRATION_POINTS.md:named-secret-literal:324
+4f66ba1d6f0dcaf4f46aeabc9f88b40587db553f:docs/INTEGRATION_POINTS.md.backup.20251008-040249:named-secret-literal:324
+
+# len=39 sha8=7d781201: AUTH_TOKEN literal. Credential-like.
+#   2 finding(s) 2025-10-02; generic-api-key 2; not at HEAD.
+da7a5782f0e2cdc762cfbee6081e9c2799625831:SIGNOZ_AUTHENTICATION_TROUBLESHOOTING.md:generic-api-key:19
+da7a5782f0e2cdc762cfbee6081e9c2799625831:SIGNOZ_AUTHENTICATION_TROUBLESHOOTING.md:generic-api-key:21
+
+# len=42 sha8=820356b0: MAGIC_LINK_SECRET in docs/INTEGRATION_POINTS.md (+ .backup); lowercase words. Credential-like.
+#   2 finding(s) 2025-09-28..2025-10-08; named-secret-literal 2; not at HEAD.
+bfeb7d6effb9913f350f491ddf0f1e2365fd8940:docs/INTEGRATION_POINTS.md:named-secret-literal:311
+4f66ba1d6f0dcaf4f46aeabc9f88b40587db553f:docs/INTEGRATION_POINTS.md.backup.20251008-040249:named-secret-literal:311
+
+# len=18 sha8=a01c0f2d: MAGIC_LINK_SECRET in docs/INTEGRATION_POINTS.md (+ .backup). Credential-like.
+#   2 finding(s) 2025-09-28..2025-10-08; named-secret-literal 2; not at HEAD.
+bfeb7d6effb9913f350f491ddf0f1e2365fd8940:docs/INTEGRATION_POINTS.md:named-secret-literal:229
+4f66ba1d6f0dcaf4f46aeabc9f88b40587db553f:docs/INTEGRATION_POINTS.md.backup.20251008-040249:named-secret-literal:229
+
+# len=14 sha8=0537dfd2: NEXTAUTH_SECRET compose default (word-like). Credential-like dev default.
+#   1 finding(s) 2025-09-28; named-secret-literal 1; not at HEAD.
+c933a141eb4d233bd016c05918cfc0f215876599:docker-compose.yml:named-secret-literal:152
+
+# len=19 sha8=259b329f: BSKY_APP_PASSWORD, Bluesky app-password format (xxxx-xxxx-xxxx-xxxx). Credential: confirm revoked.
+#   1 finding(s) 2025-10-18; named-secret-literal 1; not at HEAD.
+e773cd54cce4a980efe874a4230feaa8137aa836:docs/social/CREDENTIALS_SETUP.md:named-secret-literal:32
+
+# len=23 sha8=26e535a5: SIGNOZ_JWT_SECRET literal in a compose file. Credential-like dev default.
+#   1 finding(s) 2025-10-05; named-secret-literal 1; at HEAD in 1 line(s), 1 file(s).
+583ba20c299eed7824c9d1fdb6d2029ef4e5afb1:docker-compose-signoz-simple.yml:named-secret-literal:58
+
+# len=41 sha8=5199942c: NEXTAUTH_SECRET in a committed .env (2025-10-05). Credential: rotate if live.
+#   1 finding(s) 2025-10-05; named-secret-literal 1; not at HEAD.
+583ba20c299eed7824c9d1fdb6d2029ef4e5afb1:.env:named-secret-literal:9
+
+# len=26 sha8=5aa2092d: Bearer token for the webhook-handler drill (word-like; also in DELT/CONF alert JSON). Credential-like: rotate if live.
+#   1 finding(s) 2025-10-02; curl-auth-header 1; at HEAD in 5 line(s), 4 file(s).
+e583e80f45fafb577fea894e3eb3782d90d8e4de:docs/PRODUCTION_SECURITY_DEPLOYMENT_GUIDE.md:curl-auth-header:231
+
+# len=49 sha8=8b62e59e: 49-character token after '- Token:' (ngrok authtoken shape; still at HEAD in scripts/legacy/ops/security-remediation-ngrok.ps1). Credential: confirm revoked.
+#   1 finding(s) 2025-10-04; generic-api-key 1; at HEAD in 1 line(s), 1 file(s).
+b46a8ecadddf7a3b4f206578e7a274b04bd8aaa0:security-remediation-execution-log.txt:generic-api-key:16
+
+# len=44 sha8=979a10ec: webhook-auth in a deployment guide (base64). Credential-like.
+#   1 finding(s) 2025-10-02; generic-api-key 1; not at HEAD.
+e583e80f45fafb577fea894e3eb3782d90d8e4de:docs/PRODUCTION_SECURITY_DEPLOYMENT_GUIDE.md:generic-api-key:55
+
+# len=19 sha8=98c36d34: SIGNOZ_PASS (SigNoz UI admin password) in docs. Credential: confirm changed.
+#   1 finding(s) 2025-10-02; named-secret-literal 1; not at HEAD.
+756ccb4d499ee517f28828a90e6b9aefde8a9772:docs/SIGNOZ_CREDENTIAL_MANAGEMENT.md:named-secret-literal:53
+
+# len=40 sha8=a9d67955: webhook-secret in a deployment guide (base64). Credential-like.
+#   1 finding(s) 2025-10-02; generic-api-key 1; not at HEAD.
+e583e80f45fafb577fea894e3eb3782d90d8e4de:docs/PRODUCTION_SECURITY_DEPLOYMENT_GUIDE.md:generic-api-key:54
+
+# len=33 sha8=d3ca3474: SIGNOZ_JWT_SECRET inside a sed command in a doc. Credential-like.
+#   1 finding(s) 2025-10-08; named-secret-literal 1; not at HEAD.
+4f66ba1d6f0dcaf4f46aeabc9f88b40587db553f:docs/SECURE_ENVIRONMENT_TEMPLATE.md:named-secret-literal:147
+
+# ======================================================================================
+# Not credentials: labels, placeholders, examples, markers
+# ======================================================================================
+
+# len=19 sha8=bbbe1c54: Label printed as 'API key created in SigNoz' (word-and-digit shape, not the 44-character key format).
+#   14 finding(s) 2025-10-27..2026-08-29; generic-api-key 14; at HEAD in 22 line(s), 14 file(s).
+2dfd2d8d486b5771c5ed68be75f438e784786095:GATE_029_HYGIENE_PATCH_H1.md:generic-api-key:153
+49dd4f6e01de37ef79d62dbaf6c3c3cac61759d1:COLLECTOR_5317_INVESTIGATION_COMPLETE.md:generic-api-key:217
+49dd4f6e01de37ef79d62dbaf6c3c3cac61759d1:SESSION_REPORT_GATE_029_COLLECTOR_INVESTIGATION.md:generic-api-key:70
+688d8ad1b13f41a43ae12340fcec575cb34c6331:READY_FOR_GATE_029_EXECUTION_COMPLETE.md:generic-api-key:330
+d294d943389bdf65de81becb7ca44ec9741f4995:GATE_030_IMPLEMENTATION_COMPLETE.md:generic-api-key:278
+7fcc41b7ec614f3d0a825f68f43ba5cb94ddb6b4:docs/archive/gates/2025-11/GATE_029_HYGIENE_PATCH_H1.md:generic-api-key:153
+7fcc41b7ec614f3d0a825f68f43ba5cb94ddb6b4:docs/archive/gates/2025-11/GATE_030_IMPLEMENTATION_COMPLETE.md:generic-api-key:278
+8ba9cbfd046f4116706b3be1e8d92ae1df332d8c:CHAR/DOCS/docs/archive/gates/2025-11/GATE_029_HYGIENE_PATCH_H1.md:generic-api-key:153
+8ba9cbfd046f4116706b3be1e8d92ae1df332d8c:CHAR/DOCS/docs/archive/gates/2025-11/GATE_030_IMPLEMENTATION_COMPLETE.md:generic-api-key:278
+8ba9cbfd046f4116706b3be1e8d92ae1df332d8c:CHAR/DOCS/docs/gate/archive/COLLECTOR_5317_INVESTIGATION_COMPLETE.md:generic-api-key:217
+8ba9cbfd046f4116706b3be1e8d92ae1df332d8c:CHAR/DOCS/docs/gate/archive/GATE_029_HYGIENE_PATCH_H1.md:generic-api-key:153
+8ba9cbfd046f4116706b3be1e8d92ae1df332d8c:CHAR/DOCS/docs/gate/archive/GATE_030_IMPLEMENTATION_COMPLETE.md:generic-api-key:278
+8ba9cbfd046f4116706b3be1e8d92ae1df332d8c:CHAR/DOCS/docs/gate/archive/READY_FOR_GATE_029_EXECUTION_COMPLETE.md:generic-api-key:330
+8ba9cbfd046f4116706b3be1e8d92ae1df332d8c:CHAR/DOCS/docs/gate/archive/SESSION_REPORT_GATE_029_COLLECTOR_INVESTIGATION.md:generic-api-key:70
+
+# len=12 sha8=a2ae6a9e: Placeholder of the your-...-key form in curl examples.
+#   4 finding(s) 2025-09-25; curl-auth-header 4; at HEAD in 14 line(s), 7 file(s).
+27229011852dd31988b5d03039ca593ca5f1fc9c:docs/ECRR_PHASE1_SETUP_GUIDE.md:curl-auth-header:262
+27229011852dd31988b5d03039ca593ca5f1fc9c:docs/ECRR_PHASE1_SETUP_GUIDE.md:curl-auth-header:276
+27229011852dd31988b5d03039ca593ca5f1fc9c:docs/ECRR_PHASE1_SETUP_GUIDE.md:curl-auth-header:283
+27229011852dd31988b5d03039ca593ca5f1fc9c:docs/ECRR_PHASE1_SETUP_GUIDE.md:curl-auth-header:296
+
+# len=14 sha8=69f5fb34: Identifier in a .ps1 key = "..." lookup (lowercase, underscores).
+#   2 finding(s) 2025-09-22; generic-api-key 2; at HEAD in 31 line(s), 13 file(s).
+c64236f1a427dee9f45cbd3935e4677007c170d3:scripts/publish-e2-results.ps1:generic-api-key:87
+3c64cf5ae525dd11edc57eb1bc0227f97757fe4f:scripts/publish-e2-results.ps1:generic-api-key:87
+
+# len=16 sha8=cd76b30a: Documentation anti-example ('Secret in config').
+#   2 finding(s) 2025-09-19; generic-api-key 2; at HEAD in 2 line(s), 2 file(s).
+95877327a9a80faa963985ba76a81a0c225b8ea4:ai-context/best-practices.md:generic-api-key:242
+95877327a9a80faa963985ba76a81a0c225b8ea4:ai-context/integration-patterns.md:generic-api-key:150
+
+# len=18 sha8=6babfcd9: Design color tokens.
+#   1 finding(s) 2025-10-17; generic-api-key 1; at HEAD in 3 line(s), 3 file(s).
+15392303c3643e7febf52143a81f50518b8a1ed6:COMMIT_MESSAGE_MONETIZATION.txt:generic-api-key:18
+
+# len=27 sha8=9a5a048e: Marker string held in $allowFileToken (scripts/guard-inflated-metrics.ps1).
+#   1 finding(s) 2026-09-02; powershell-secret-literal 1; at HEAD in 5 line(s), 4 file(s).
+cd47964ca79bf0e059bc295fbf5936921e980bd8:scripts/guard-inflated-metrics.ps1:powershell-secret-literal:71
+
+# len=22 sha8=e55b080f: Header value in a curl example (lowercase words).
+#   1 finding(s) 2025-10-26; curl-auth-header 1; not at HEAD.
+966c0bdc3553c9c1f237c6b903ccc17521495523:docs/runbooks/audioswitch-cluster.md:curl-auth-header:410
+
+# ======================================================================================
+# Not credentials: canary event tokens (2025 drills)
+# ======================================================================================
+
+# len=32 sha8=3ce2b182: Canary event token from the 2025 canary drills (trace marker, not a credential).
+#   6 finding(s) 2025-09-28..2025-10-09; generic-api-key 6; at HEAD in 3 line(s), 2 file(s).
+859797955f702650a96d66cb4212470006a82ad0:artifacts/signoz-execution-implementation-guide-2025-01-27.md:generic-api-key:10
+859797955f702650a96d66cb4212470006a82ad0:artifacts/signoz-execution-implementation-summary-2025-01-27.md:generic-api-key:10
+859797955f702650a96d66cb4212470006a82ad0:artifacts/signoz-execution-implementation-summary-2025-01-27.md:generic-api-key:76
+327864b72b891a1c9bbce3fc1b2c57d26a505aba:CHAR/EVID/artifacts/signoz-execution-implementation-guide-2025-01-27.md:generic-api-key:10
+327864b72b891a1c9bbce3fc1b2c57d26a505aba:CHAR/EVID/artifacts/signoz-execution-implementation-summary-2025-01-27.md:generic-api-key:10
+327864b72b891a1c9bbce3fc1b2c57d26a505aba:CHAR/EVID/artifacts/signoz-execution-implementation-summary-2025-01-27.md:generic-api-key:76
+
+# len=32 sha8=3fec6ce6: Canary event token from the 2025 canary drills (trace marker, not a credential).
+#   6 finding(s) 2025-09-28..2025-10-09; generic-api-key 6; at HEAD in 3 line(s), 2 file(s).
+859797955f702650a96d66cb4212470006a82ad0:artifacts/signoz-demonstration-execution-guide-2025-01-27.md:generic-api-key:10
+859797955f702650a96d66cb4212470006a82ad0:artifacts/signoz-demonstration-execution-summary-2025-01-27.md:generic-api-key:10
+859797955f702650a96d66cb4212470006a82ad0:artifacts/signoz-demonstration-execution-summary-2025-01-27.md:generic-api-key:75
+327864b72b891a1c9bbce3fc1b2c57d26a505aba:CHAR/EVID/artifacts/signoz-demonstration-execution-guide-2025-01-27.md:generic-api-key:10
+327864b72b891a1c9bbce3fc1b2c57d26a505aba:CHAR/EVID/artifacts/signoz-demonstration-execution-summary-2025-01-27.md:generic-api-key:10
+327864b72b891a1c9bbce3fc1b2c57d26a505aba:CHAR/EVID/artifacts/signoz-demonstration-execution-summary-2025-01-27.md:generic-api-key:75
+
+# len=32 sha8=46270816: Canary event token from the 2025 canary drills (trace marker, not a credential).
+#   6 finding(s) 2025-09-28..2025-10-02; generic-api-key 6; at HEAD in 1 line(s), 1 file(s).
+859797955f702650a96d66cb4212470006a82ad0:docs/ECRR_REPORTS/2025-01-27-c8-beta-launch-observability-validations-token-complete.md:generic-api-key:59
+859797955f702650a96d66cb4212470006a82ad0:docs/ECRR_REPORTS/2025-01-27-c8-beta-launch-observability-validations-token-complete.md:generic-api-key:92
+bc03083d51a4e927694bd991f0357a68dabbbba4:docs/ECRR_REPORTS/2025-01-27-c8-beta-launch-observability-validations-token-complete.md.backup.20250929-211504:generic-api-key:59
+bc03083d51a4e927694bd991f0357a68dabbbba4:docs/ECRR_REPORTS/2025-01-27-c8-beta-launch-observability-validations-token-complete.md.backup.20250929-211504:generic-api-key:92
+997ff01392972f77fa92e320b673f896139ff45d:docs/ECRR_REPORTS/archive/2025-01-27-c8-beta-launch-observability-validations-token-complete.archived-2025-10-02_00-47-15.md:generic-api-key:59
+997ff01392972f77fa92e320b673f896139ff45d:docs/ECRR_REPORTS/archive/2025-01-27-c8-beta-launch-observability-validations-token-complete.archived-2025-10-02_00-47-15.md:generic-api-key:92
+
+# len=32 sha8=47e2f996: Canary event token from the 2025 canary drills (trace marker, not a credential).
+#   6 finding(s) 2025-09-28..2025-10-09; generic-api-key 6; at HEAD in 3 line(s), 2 file(s).
+859797955f702650a96d66cb4212470006a82ad0:artifacts/signoz-walkthrough-execution-guide-2025-01-27.md:generic-api-key:10
+859797955f702650a96d66cb4212470006a82ad0:artifacts/signoz-walkthrough-execution-summary-2025-01-27.md:generic-api-key:10
+859797955f702650a96d66cb4212470006a82ad0:artifacts/signoz-walkthrough-execution-summary-2025-01-27.md:generic-api-key:71
+327864b72b891a1c9bbce3fc1b2c57d26a505aba:CHAR/EVID/artifacts/signoz-walkthrough-execution-guide-2025-01-27.md:generic-api-key:10
+327864b72b891a1c9bbce3fc1b2c57d26a505aba:CHAR/EVID/artifacts/signoz-walkthrough-execution-summary-2025-01-27.md:generic-api-key:10
+327864b72b891a1c9bbce3fc1b2c57d26a505aba:CHAR/EVID/artifacts/signoz-walkthrough-execution-summary-2025-01-27.md:generic-api-key:71
+
+# len=32 sha8=5f2d6a35: Canary event token from the 2025 canary drills (trace marker, not a credential).
+#   6 finding(s) 2025-09-28..2025-10-09; generic-api-key 6; at HEAD in 3 line(s), 2 file(s).
+859797955f702650a96d66cb4212470006a82ad0:artifacts/signoz-implementation-execution-follow-up-completion-guide-2025-01-27.md:generic-api-key:10
+859797955f702650a96d66cb4212470006a82ad0:artifacts/signoz-implementation-execution-follow-up-completion-summary-2025-01-27.md:generic-api-key:10
+859797955f702650a96d66cb4212470006a82ad0:artifacts/signoz-implementation-execution-follow-up-completion-summary-2025-01-27.md:generic-api-key:82
+327864b72b891a1c9bbce3fc1b2c57d26a505aba:CHAR/EVID/artifacts/signoz-implementation-execution-follow-up-completion-guide-2025-01-27.md:generic-api-key:10
+327864b72b891a1c9bbce3fc1b2c57d26a505aba:CHAR/EVID/artifacts/signoz-implementation-execution-follow-up-completion-summary-2025-01-27.md:generic-api-key:10
+327864b72b891a1c9bbce3fc1b2c57d26a505aba:CHAR/EVID/artifacts/signoz-implementation-execution-follow-up-completion-summary-2025-01-27.md:generic-api-key:82
+
+# len=32 sha8=6a159e99: Canary event token from the 2025 canary drills (trace marker, not a credential).
+#   6 finding(s) 2025-09-28..2025-10-02; generic-api-key 6; at HEAD in 4 line(s), 1 file(s).
+859797955f702650a96d66cb4212470006a82ad0:docs/ECRR_REPORTS/2025-01-27-c8-beta-launch-observability-validations-latest-token-complete.md:generic-api-key:60
+859797955f702650a96d66cb4212470006a82ad0:docs/ECRR_REPORTS/2025-01-27-c8-beta-launch-observability-validations-latest-token-complete.md:generic-api-key:93
+bc03083d51a4e927694bd991f0357a68dabbbba4:docs/ECRR_REPORTS/2025-01-27-c8-beta-launch-observability-validations-latest-token-complete.md.backup.20250929-211504:generic-api-key:60
+bc03083d51a4e927694bd991f0357a68dabbbba4:docs/ECRR_REPORTS/2025-01-27-c8-beta-launch-observability-validations-latest-token-complete.md.backup.20250929-211504:generic-api-key:93
+997ff01392972f77fa92e320b673f896139ff45d:docs/ECRR_REPORTS/archive/2025-01-27-c8-beta-launch-observability-validations-latest-token-complete.archived-2025-10-02_00-47-15.md:generic-api-key:60
+997ff01392972f77fa92e320b673f896139ff45d:docs/ECRR_REPORTS/archive/2025-01-27-c8-beta-launch-observability-validations-latest-token-complete.archived-2025-10-02_00-47-15.md:generic-api-key:93
+
+# len=32 sha8=87478ade: Canary event token from the 2025 canary drills (trace marker, not a credential).
+#   6 finding(s) 2025-09-28..2025-10-02; generic-api-key 6; at HEAD in 1 line(s), 1 file(s).
+859797955f702650a96d66cb4212470006a82ad0:docs/ECRR_REPORTS/2025-01-27-c8-beta-launch-observability-validations-token-complete.md:generic-api-key:57
+859797955f702650a96d66cb4212470006a82ad0:docs/ECRR_REPORTS/2025-01-27-c8-beta-launch-observability-validations-token-complete.md:generic-api-key:90
+bc03083d51a4e927694bd991f0357a68dabbbba4:docs/ECRR_REPORTS/2025-01-27-c8-beta-launch-observability-validations-token-complete.md.backup.20250929-211504:generic-api-key:57
+bc03083d51a4e927694bd991f0357a68dabbbba4:docs/ECRR_REPORTS/2025-01-27-c8-beta-launch-observability-validations-token-complete.md.backup.20250929-211504:generic-api-key:90
+997ff01392972f77fa92e320b673f896139ff45d:docs/ECRR_REPORTS/archive/2025-01-27-c8-beta-launch-observability-validations-token-complete.archived-2025-10-02_00-47-15.md:generic-api-key:57
+997ff01392972f77fa92e320b673f896139ff45d:docs/ECRR_REPORTS/archive/2025-01-27-c8-beta-launch-observability-validations-token-complete.archived-2025-10-02_00-47-15.md:generic-api-key:90
+
+# len=32 sha8=8e8aac7b: Canary event token from the 2025 canary drills (trace marker, not a credential).
+#   6 finding(s) 2025-09-28..2025-10-09; generic-api-key 6; at HEAD in 3 line(s), 2 file(s).
+859797955f702650a96d66cb4212470006a82ad0:artifacts/signoz-implementation-execution-follow-up-guide-2025-01-27.md:generic-api-key:10
+859797955f702650a96d66cb4212470006a82ad0:artifacts/signoz-implementation-execution-follow-up-summary-2025-01-27.md:generic-api-key:10
+859797955f702650a96d66cb4212470006a82ad0:artifacts/signoz-implementation-execution-follow-up-summary-2025-01-27.md:generic-api-key:80
+327864b72b891a1c9bbce3fc1b2c57d26a505aba:CHAR/EVID/artifacts/signoz-implementation-execution-follow-up-guide-2025-01-27.md:generic-api-key:10
+327864b72b891a1c9bbce3fc1b2c57d26a505aba:CHAR/EVID/artifacts/signoz-implementation-execution-follow-up-summary-2025-01-27.md:generic-api-key:10
+327864b72b891a1c9bbce3fc1b2c57d26a505aba:CHAR/EVID/artifacts/signoz-implementation-execution-follow-up-summary-2025-01-27.md:generic-api-key:80
+
+# len=32 sha8=8f1e21da: Canary event token from the 2025 canary drills (trace marker, not a credential).
+#   6 finding(s) 2025-09-28..2025-10-02; generic-api-key 6; at HEAD in 1 line(s), 1 file(s).
+859797955f702650a96d66cb4212470006a82ad0:docs/ECRR_REPORTS/2025-01-27-c8-beta-launch-observability-validations-latest-token-complete.md:generic-api-key:58
+859797955f702650a96d66cb4212470006a82ad0:docs/ECRR_REPORTS/2025-01-27-c8-beta-launch-observability-validations-latest-token-complete.md:generic-api-key:91
+bc03083d51a4e927694bd991f0357a68dabbbba4:docs/ECRR_REPORTS/2025-01-27-c8-beta-launch-observability-validations-latest-token-complete.md.backup.20250929-211504:generic-api-key:58
+bc03083d51a4e927694bd991f0357a68dabbbba4:docs/ECRR_REPORTS/2025-01-27-c8-beta-launch-observability-validations-latest-token-complete.md.backup.20250929-211504:generic-api-key:91
+997ff01392972f77fa92e320b673f896139ff45d:docs/ECRR_REPORTS/archive/2025-01-27-c8-beta-launch-observability-validations-latest-token-complete.archived-2025-10-02_00-47-15.md:generic-api-key:58
+997ff01392972f77fa92e320b673f896139ff45d:docs/ECRR_REPORTS/archive/2025-01-27-c8-beta-launch-observability-validations-latest-token-complete.archived-2025-10-02_00-47-15.md:generic-api-key:91
+
+# len=32 sha8=91adff93: Canary event token from the 2025 canary drills (trace marker, not a credential).
+#   6 finding(s) 2025-09-28..2025-10-09; generic-api-key 6; at HEAD in 3 line(s), 2 file(s).
+859797955f702650a96d66cb4212470006a82ad0:artifacts/signoz-implementation-execution-guide-2025-01-27.md:generic-api-key:10
+859797955f702650a96d66cb4212470006a82ad0:artifacts/signoz-implementation-execution-summary-2025-01-27.md:generic-api-key:10
+859797955f702650a96d66cb4212470006a82ad0:artifacts/signoz-implementation-execution-summary-2025-01-27.md:generic-api-key:78
+327864b72b891a1c9bbce3fc1b2c57d26a505aba:CHAR/EVID/artifacts/signoz-implementation-execution-guide-2025-01-27.md:generic-api-key:10
+327864b72b891a1c9bbce3fc1b2c57d26a505aba:CHAR/EVID/artifacts/signoz-implementation-execution-summary-2025-01-27.md:generic-api-key:10
+327864b72b891a1c9bbce3fc1b2c57d26a505aba:CHAR/EVID/artifacts/signoz-implementation-execution-summary-2025-01-27.md:generic-api-key:78
+
+# len=32 sha8=9c1ed738: Canary event token from the 2025 canary drills (trace marker, not a credential).
+#   6 finding(s) 2025-09-28..2025-10-02; generic-api-key 6; at HEAD in 2 line(s), 1 file(s).
+859797955f702650a96d66cb4212470006a82ad0:docs/ECRR_REPORTS/2025-01-27-c8-beta-launch-observability-validations-complete.md:generic-api-key:95
+859797955f702650a96d66cb4212470006a82ad0:docs/ECRR_REPORTS/2025-01-27-c8-beta-launch-observability-validations-complete.md:generic-api-key:166
+bc03083d51a4e927694bd991f0357a68dabbbba4:docs/ECRR_REPORTS/2025-01-27-c8-beta-launch-observability-validations-complete.md.backup.20250929-211504:generic-api-key:95
+bc03083d51a4e927694bd991f0357a68dabbbba4:docs/ECRR_REPORTS/2025-01-27-c8-beta-launch-observability-validations-complete.md.backup.20250929-211504:generic-api-key:166
+997ff01392972f77fa92e320b673f896139ff45d:docs/ECRR_REPORTS/archive/2025-01-27-c8-beta-launch-observability-validations-complete.archived-2025-10-02_00-47-15.md:generic-api-key:95
+997ff01392972f77fa92e320b673f896139ff45d:docs/ECRR_REPORTS/archive/2025-01-27-c8-beta-launch-observability-validations-complete.archived-2025-10-02_00-47-15.md:generic-api-key:166
+
+# len=32 sha8=a460751f: Canary event token from the 2025 canary drills (trace marker, not a credential).
+#   6 finding(s) 2025-09-28..2025-10-09; generic-api-key 6; at HEAD in 3 line(s), 2 file(s).
+859797955f702650a96d66cb4212470006a82ad0:artifacts/signoz-implementation-execution-follow-up-completion-finalization-guide-2025-01-27.md:generic-api-key:10
+859797955f702650a96d66cb4212470006a82ad0:artifacts/signoz-implementation-execution-follow-up-completion-finalization-summary-2025-01-27.md:generic-api-key:10
+859797955f702650a96d66cb4212470006a82ad0:artifacts/signoz-implementation-execution-follow-up-completion-finalization-summary-2025-01-27.md:generic-api-key:84
+327864b72b891a1c9bbce3fc1b2c57d26a505aba:CHAR/EVID/artifacts/signoz-implementation-execution-follow-up-completion-finalization-guide-2025-01-27.md:generic-api-key:10
+327864b72b891a1c9bbce3fc1b2c57d26a505aba:CHAR/EVID/artifacts/signoz-implementation-execution-follow-up-completion-finalization-summary-2025-01-27.md:generic-api-key:10
+327864b72b891a1c9bbce3fc1b2c57d26a505aba:CHAR/EVID/artifacts/signoz-implementation-execution-follow-up-completion-finalization-summary-2025-01-27.md:generic-api-key:84
+
+# len=32 sha8=bafbe701: Canary event token from the 2025 canary drills (trace marker, not a credential).
+#   6 finding(s) 2025-09-28..2025-10-09; generic-api-key 6; at HEAD in 4 line(s), 1 file(s).
+859797955f702650a96d66cb4212470006a82ad0:artifacts/implementation-follow-up-canary-verification-summary-2025-01-27.md:generic-api-key:10
+859797955f702650a96d66cb4212470006a82ad0:artifacts/implementation-follow-up-canary-verification-summary-2025-01-27.md:generic-api-key:49
+859797955f702650a96d66cb4212470006a82ad0:artifacts/implementation-follow-up-canary-verification-summary-2025-01-27.md:generic-api-key:86
+327864b72b891a1c9bbce3fc1b2c57d26a505aba:CHAR/EVID/artifacts/implementation-follow-up-canary-verification-summary-2025-01-27.md:generic-api-key:10
+327864b72b891a1c9bbce3fc1b2c57d26a505aba:CHAR/EVID/artifacts/implementation-follow-up-canary-verification-summary-2025-01-27.md:generic-api-key:49
+327864b72b891a1c9bbce3fc1b2c57d26a505aba:CHAR/EVID/artifacts/implementation-follow-up-canary-verification-summary-2025-01-27.md:generic-api-key:86
+
+# len=32 sha8=d27319f7: Canary event token from the 2025 canary drills (trace marker, not a credential).
+#   6 finding(s) 2025-09-28..2025-10-09; generic-api-key 6; at HEAD in 3 line(s), 2 file(s).
+859797955f702650a96d66cb4212470006a82ad0:artifacts/signoz-implementation-status-report-2025-01-27.md:generic-api-key:10
+859797955f702650a96d66cb4212470006a82ad0:artifacts/signoz-implementation-status-report-2025-01-27.md:generic-api-key:74
+859797955f702650a96d66cb4212470006a82ad0:artifacts/signoz-implementation-walkthrough-2025-01-27.md:generic-api-key:10
+327864b72b891a1c9bbce3fc1b2c57d26a505aba:CHAR/EVID/artifacts/signoz-implementation-status-report-2025-01-27.md:generic-api-key:10
+327864b72b891a1c9bbce3fc1b2c57d26a505aba:CHAR/EVID/artifacts/signoz-implementation-status-report-2025-01-27.md:generic-api-key:74
+327864b72b891a1c9bbce3fc1b2c57d26a505aba:CHAR/EVID/artifacts/signoz-implementation-walkthrough-2025-01-27.md:generic-api-key:10
+
+# len=32 sha8=d831bf5e: Canary event token from the 2025 canary drills (trace marker, not a credential).
+#   6 finding(s) 2025-09-28..2025-10-02; generic-api-key 6; at HEAD in 1 line(s), 1 file(s).
+859797955f702650a96d66cb4212470006a82ad0:docs/ECRR_REPORTS/2025-01-27-c8-beta-launch-observability-validations-latest-token-complete.md:generic-api-key:59
+859797955f702650a96d66cb4212470006a82ad0:docs/ECRR_REPORTS/2025-01-27-c8-beta-launch-observability-validations-latest-token-complete.md:generic-api-key:92
+bc03083d51a4e927694bd991f0357a68dabbbba4:docs/ECRR_REPORTS/2025-01-27-c8-beta-launch-observability-validations-latest-token-complete.md.backup.20250929-211504:generic-api-key:59
+bc03083d51a4e927694bd991f0357a68dabbbba4:docs/ECRR_REPORTS/2025-01-27-c8-beta-launch-observability-validations-latest-token-complete.md.backup.20250929-211504:generic-api-key:92
+997ff01392972f77fa92e320b673f896139ff45d:docs/ECRR_REPORTS/archive/2025-01-27-c8-beta-launch-observability-validations-latest-token-complete.archived-2025-10-02_00-47-15.md:generic-api-key:59
+997ff01392972f77fa92e320b673f896139ff45d:docs/ECRR_REPORTS/archive/2025-01-27-c8-beta-launch-observability-validations-latest-token-complete.archived-2025-10-02_00-47-15.md:generic-api-key:92
+
+# len=32 sha8=fb4d12b6: Canary event token from the 2025 canary drills (trace marker, not a credential).
+#   6 finding(s) 2025-09-28..2025-10-09; generic-api-key 6; at HEAD in 3 line(s), 2 file(s).
+859797955f702650a96d66cb4212470006a82ad0:artifacts/signoz-step-by-step-implementation-guide-2025-01-27.md:generic-api-key:10
+859797955f702650a96d66cb4212470006a82ad0:artifacts/signoz-ui-implementation-summary-2025-01-27.md:generic-api-key:10
+859797955f702650a96d66cb4212470006a82ad0:artifacts/signoz-ui-implementation-summary-2025-01-27.md:generic-api-key:64
+327864b72b891a1c9bbce3fc1b2c57d26a505aba:CHAR/EVID/artifacts/signoz-step-by-step-implementation-guide-2025-01-27.md:generic-api-key:10
+327864b72b891a1c9bbce3fc1b2c57d26a505aba:CHAR/EVID/artifacts/signoz-ui-implementation-summary-2025-01-27.md:generic-api-key:10
+327864b72b891a1c9bbce3fc1b2c57d26a505aba:CHAR/EVID/artifacts/signoz-ui-implementation-summary-2025-01-27.md:generic-api-key:64
+
+# len=32 sha8=b767a4ba: Canary event token from the 2025 canary drills (trace marker, not a credential).
+#   4 finding(s) 2025-09-28..2025-10-09; generic-api-key 4; at HEAD in 8 line(s), 2 file(s).
+859797955f702650a96d66cb4212470006a82ad0:artifacts/signoz-ui-log-verification-guide-2025-01-27.md:generic-api-key:10
+859797955f702650a96d66cb4212470006a82ad0:artifacts/signoz-ui-log-verification-summary-2025-01-27.md:generic-api-key:10
+327864b72b891a1c9bbce3fc1b2c57d26a505aba:CHAR/EVID/artifacts/signoz-ui-log-verification-guide-2025-01-27.md:generic-api-key:10
+327864b72b891a1c9bbce3fc1b2c57d26a505aba:CHAR/EVID/artifacts/signoz-ui-log-verification-summary-2025-01-27.md:generic-api-key:10
+
+# len=32 sha8=a661c620: Canary event token from the 2025 canary drills (trace marker, not a credential).
+#   2 finding(s) 2025-09-28..2025-10-09; generic-api-key 2; at HEAD in 1 line(s), 1 file(s).
+859797955f702650a96d66cb4212470006a82ad0:artifacts/signoz-execution-summary-2025-01-27.md:generic-api-key:86
+327864b72b891a1c9bbce3fc1b2c57d26a505aba:CHAR/EVID/artifacts/signoz-execution-summary-2025-01-27.md:generic-api-key:86
+
+# len=32 sha8=d235f348: Canary event token from the 2025 canary drills (trace marker, not a credential).
+#   2 finding(s) 2025-09-28..2025-10-09; generic-api-key 2; at HEAD in 2 line(s), 1 file(s).
+859797955f702650a96d66cb4212470006a82ad0:artifacts/signoz-ingestion-verification-report-2025-01-27.md:generic-api-key:11
+327864b72b891a1c9bbce3fc1b2c57d26a505aba:CHAR/EVID/artifacts/signoz-ingestion-verification-report-2025-01-27.md:generic-api-key:11
+
+# len=32 sha8=10ddcefb: Canary event token from the 2025 canary drills (trace marker, not a credential).
+#   1 finding(s) 2025-09-30; powershell-secret-literal 1; at HEAD in 4 line(s), 2 file(s).
+bc03083d51a4e927694bd991f0357a68dabbbba4:scripts/queue-steward-canary-automation.ps1:powershell-secret-literal:13
+
+# len=32 sha8=13fdb52e: Canary event token from the 2025 canary drills (trace marker, not a credential).
+#   1 finding(s) 2025-09-25; generic-api-key 1; not at HEAD.
+27229011852dd31988b5d03039ca593ca5f1fc9c:artifacts/signoz-export.csv:generic-api-key:1350
+
+# len=32 sha8=27e08580: Canary event token from the 2025 canary drills (trace marker, not a credential).
+#   1 finding(s) 2025-09-25; generic-api-key 1; not at HEAD.
+27229011852dd31988b5d03039ca593ca5f1fc9c:artifacts/signoz-export.csv:generic-api-key:57
+
+# len=32 sha8=8469d7dc: Canary event token from the 2025 canary drills (trace marker, not a credential).
+#   1 finding(s) 2025-09-25; generic-api-key 1; not at HEAD.
+27229011852dd31988b5d03039ca593ca5f1fc9c:artifacts/signoz-export.csv:generic-api-key:401
+
+# len=32 sha8=a16c69fe: Canary event token from the 2025 canary drills (trace marker, not a credential).
+#   1 finding(s) 2025-09-25; generic-api-key 1; not at HEAD.
+27229011852dd31988b5d03039ca593ca5f1fc9c:artifacts/signoz-export.csv:generic-api-key:872

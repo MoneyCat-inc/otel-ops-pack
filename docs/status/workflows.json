@@ -389,7 +389,7 @@
     {
       "name": "gitleaks",
       "path": ".github/workflows/gitleaks.yml",
-      "size": 2057,
+      "size": 4549,
       "triggers": {
         "issues": false,
         "other": [],
