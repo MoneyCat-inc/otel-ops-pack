@@ -27,7 +27,7 @@
 ## 🧹 Clean (Actions Taken)
 
 ### 1. API Token Setup
-- **Received**: SigNoz API token from user: `eE5syxJUco90j8vq34YPlbHaUg3NpS0UUEYyCzgE7mc=`
+- **Received**: SigNoz API token from user: `[REDACTED-SigNoz-key-8abc66bc-see-ECRR-20261104]`
 - **Set Environment Variable**: `$env:SIGNOZ_API_TOKEN` configured
 - **Validated**: Token working for logs and traces APIs
 - **Tested**: Authentication successful for most endpoints
@@ -224,7 +224,7 @@
 - **Webhook Server**: http://localhost:3003 ✅
 
 ### Environment Variables
-- `$env:SIGNOZ_API_TOKEN` = "eE5syxJUco90j8vq34YPlbHaUg3NpS0UUEYyCzgE7mc=" ✅
+- `$env:SIGNOZ_API_TOKEN` = "[REDACTED-SigNoz-key-8abc66bc-see-ECRR-20261104]" ✅
 - `$env:ALERT_WEBHOOK_URL` = "http://localhost:3003/api/webhooks/alerts" ✅
 
 ### Configuration Files
