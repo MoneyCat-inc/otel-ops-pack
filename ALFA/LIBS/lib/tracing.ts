@@ -20,12 +20,13 @@ import { getOtelIngestHttpBase } from './otel-ports';
 
 // Only initialize tracing in browser environment
 if (typeof globalThis !== 'undefined' && (globalThis as any).window) {
-  // Create OTLP exporter for SigNoz
+  // Create OTLP exporter for SigNoz. No fallback token: anything compiled into browser code is
+  // public, so the header is sent only when NEXT_PUBLIC_SIGNOZ_ACCESS_TOKEN is set (for an
+  // ingest endpoint that requires one).
+  const signozAccessToken = process.env['NEXT_PUBLIC_SIGNOZ_ACCESS_TOKEN'];
   const otlpExporter = new OTLPTraceExporter({
     url: process.env['NEXT_PUBLIC_OTEL_EXPORTER_OTLP_ENDPOINT'] || `${getOtelIngestHttpBase('localhost')}/v1/traces`,
-    headers: {
-      'signoz-access-token': process.env['NEXT_PUBLIC_SIGNOZ_ACCESS_TOKEN'] || 'local-signoz-jwt-secret-rotate',
-    },
+    headers: signozAccessToken ? { 'signoz-access-token': signozAccessToken } : {},
   });
 
   // Create resource with service information

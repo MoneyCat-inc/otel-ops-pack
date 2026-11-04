@@ -101,7 +101,8 @@ function Create-SecureEnvTemplate {
 # SigNoz Configuration
 SIGNOZ_API_KEY=your-signoz-api-key-here
 SIGNOZ_API_URL=http://localhost:8080/api/v1
-SIGNOZ_JWT_SECRET=your-jwt-secret-here
+# Leave empty: start-signoz.ps1 writes a random value into .env (ensure-signoz-signing-key.ps1)
+SIGNOZ_JWT_SECRET=
 
 # OpenTelemetry Configuration
 OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317
