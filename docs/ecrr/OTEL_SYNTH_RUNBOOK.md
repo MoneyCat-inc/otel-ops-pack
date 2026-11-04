@@ -13,12 +13,17 @@ CORECLR_PROFILER={918728DD-259F-4A6A-AC2B-B85E1B658318}
 OTEL_SERVICE_NAME=hub-synth
 OTEL_TRACES_EXPORTER=otlp
 OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317
+OTEL_EXPORTER_OTLP_PROTOCOL=grpc
 ```
 
 > **Which path this proves (2026-09-02).** `localhost:4317` is the SigNoz collector directly — the .NET
 > trace-routing preference from Gate #026A. It does **not** exercise the Windows collector. To prove the
-> collector path instead, export to `http://127.0.0.1:5321` (HTTP) or `5320` (gRPC); the collector's
-> traces pipeline forwards to SigNoz on 4317.
+> collector path instead, export to `http://127.0.0.1:5321` with `http/protobuf` or `5320` with `grpc`; the
+> collector's traces pipeline forwards to SigNoz on 4317.
+>
+> **Set the protocol with the port (2026-11-03).** The .NET auto-instrumentation defaults to `http/protobuf`
+> (the .NET SDK defaults to `grpc`), so 4317 or 5320 without `OTEL_EXPORTER_OTLP_PROTOCOL=grpc` sends HTTP to
+> a gRPC port and nothing arrives.
 
 ---
 
@@ -31,6 +36,7 @@ $env:CORECLR_PROFILER="{918728DD-259F-4A6A-AC2B-B85E1B658318}"
 $env:OTEL_SERVICE_NAME="hub-synth"
 $env:OTEL_TRACES_EXPORTER="otlp"
 $env:OTEL_EXPORTER_OTLP_ENDPOINT="http://localhost:4317"
+$env:OTEL_EXPORTER_OTLP_PROTOCOL="grpc"
 
 # 2. Create test console app
 dotnet new console -o HubSynth
