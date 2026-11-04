@@ -127,7 +127,7 @@ be93df586bccbc9ea997c9665b3ea46dbe03e199:docs/BossCat/SHOWTIME_VIEWS_DEPLOYED.md
 # ======================================================================================
 
 # len=30 sha8=7b2b10c7: SIGNOZ_JWT_SECRET compose default, reused as the [string]$ApiToken default in 7 .ps1. Credential-like (word-like dev default): rotate if any deployment kept it.
-#   13 finding(s) 2025-09-30..2026-08-03; powershell-secret-literal 7, compose-secret-default 5, named-secret-literal 1; at HEAD in 8 line(s), 8 file(s).
+#   13 finding(s) 2025-09-30..2026-08-03; powershell-secret-literal 7, compose-secret-default 5, named-secret-literal 1; at HEAD in 13 line(s), 12 file(s).
 bc03083d51a4e927694bd991f0357a68dabbbba4:docker-compose-signoz.yml:compose-secret-default:93
 583ba20c299eed7824c9d1fdb6d2029ef4e5afb1:.env:named-secret-literal:22
 583ba20c299eed7824c9d1fdb6d2029ef4e5afb1:docker-compose-optimized.yml:compose-secret-default:96
@@ -246,7 +246,7 @@ d294d943389bdf65de81becb7ca44ec9741f4995:GATE_030_IMPLEMENTATION_COMPLETE.md:gen
 8ba9cbfd046f4116706b3be1e8d92ae1df332d8c:CHAR/DOCS/docs/gate/archive/SESSION_REPORT_GATE_029_COLLECTOR_INVESTIGATION.md:generic-api-key:70
 
 # len=12 sha8=a2ae6a9e: Placeholder of the your-...-key form in curl examples.
-#   4 finding(s) 2025-09-25; curl-auth-header 4; at HEAD in 14 line(s), 7 file(s).
+#   4 finding(s) 2025-09-25; curl-auth-header 4; at HEAD in 15 line(s), 8 file(s).
 27229011852dd31988b5d03039ca593ca5f1fc9c:docs/ECRR_PHASE1_SETUP_GUIDE.md:curl-auth-header:262
 27229011852dd31988b5d03039ca593ca5f1fc9c:docs/ECRR_PHASE1_SETUP_GUIDE.md:curl-auth-header:276
 27229011852dd31988b5d03039ca593ca5f1fc9c:docs/ECRR_PHASE1_SETUP_GUIDE.md:curl-auth-header:283
