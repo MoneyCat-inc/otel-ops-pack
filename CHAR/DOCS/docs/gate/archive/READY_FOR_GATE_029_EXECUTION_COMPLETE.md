@@ -1,3 +1,4 @@
+<!-- markdownlint-disable MD022 MD031 MD032 MD036 MD040 -->
 # Ready-for-Gate #029 — Execution Complete
 
 **Command:** `@cat ready-for-gate`  
@@ -105,7 +106,7 @@
 **API Key Created:**
 - Name: `gate-029-proof-test`
 - Role: Viewer (least privilege)
-- Key: `HB6zeFehlbXZ2mmi+F9jMUEDPDBXiYx61lRfpOlg5to=`
+- Key: `[REDACTED-SigNoz-test-key-expired-2025-10-28]`
 - Expires: Oct 28, 2025 16:04:13
 
 **Test Results:**

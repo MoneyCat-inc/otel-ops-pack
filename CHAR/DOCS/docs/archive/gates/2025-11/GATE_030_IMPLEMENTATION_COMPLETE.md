@@ -84,7 +84,7 @@ Gate #030 delivers a **unified telemetry proof system** that verifies traces and
 
 **Command:**
 ```powershell
-$env:SIGNOZ_API_KEY = "HB6zeFehlbXZ2mmi+F9jMUEDPDBXiYx61lRfpOlg5to="
+$env:SIGNOZ_API_KEY = "[REDACTED-SigNoz-test-key-expired-2025-10-28]"
 pwsh -File .\scripts\windows\proof-of-telemetry.ps1 -ServiceName "iona-app" -LookbackMinutes 60
 ```
 
