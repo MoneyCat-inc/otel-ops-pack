@@ -44,7 +44,12 @@ forever while reporting green.
 1. Prefer a **filename / path stamp**:
    - Basename contains `YYYYMMDD` → that calendar day (UTC midnight).
    - Path matches `.../archived/YYYY/MM/...` → first day of that month (UTC).
-2. Else fallback: `git log -1 --format=%ct -- <path>` (last commit touch).
+2. Else: the last commit that touched the path (git `%ct`), read for every path in one
+   streamed `git log --name-only` pass over the prune root. A per-file
+   `git log -1 --format=%ct -- <path>` is only a capped fallback for a path the pass
+   did not list. The pass equals that per-file call only on a complete, linear history,
+   so the prune refuses a shallow clone or any merge commit on evidence `main`: one
+   merge there stops every later prune until the history is linear again (2026-11, #893).
 3. **Never** use `LastWriteTime`, `mtime`, or any working-tree filesystem clock.
 
 Dry-run and live manifests **must** include per file:
