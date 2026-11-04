@@ -11,7 +11,7 @@
 import { existsSync } from 'fs';
 import { join } from 'path';
 import { SQLiteQueueDB, Job, Run, JobMetrics } from './db';
-import { getQueueConfig, QueueConfig } from '../../lib/config/queue';
+import { getQueueConfig, QueueConfig } from '../../../ALFA/LIBS/lib/config/queue';
 import { writeFileAtomicIfChanged, readJsonFile, ensureDir } from './io';
 
 export interface RunnerStatus {

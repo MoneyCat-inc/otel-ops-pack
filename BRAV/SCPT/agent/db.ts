@@ -6,7 +6,7 @@
  */
 
 import Database from 'better-sqlite3';
-import { QueueConfig } from '../../lib/config/queue';
+import { QueueConfig } from '../../../ALFA/LIBS/lib/config/queue';
 
 export interface Job {
   id: string;

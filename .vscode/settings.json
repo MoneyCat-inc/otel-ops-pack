@@ -47,7 +47,6 @@
 
   // ESLint: let it drive JS/TS diagnostics in-editor
   "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
-  "eslint.useFlatConfig": false,
 
   // Cursor/VSCode suggestions: keep deterministic edits
   "editor.inlineSuggest.enabled": false,

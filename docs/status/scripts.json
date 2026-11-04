@@ -941,7 +941,7 @@
     {
       "name": "install-dotnet-otel-autoinstrumentation.ps1",
       "path": "scripts/windows/install-dotnet-otel-autoinstrumentation.ps1",
-      "size": 3415,
+      "size": 3485,
       "lane": "UTIL"
     },
     {
@@ -983,7 +983,7 @@
     {
       "name": "run-dotnet-test-instrumented.ps1",
       "path": "scripts/windows/run-dotnet-test-instrumented.ps1",
-      "size": 5121,
+      "size": 5170,
       "lane": "SSOT"
     },
     {

@@ -3,7 +3,7 @@
  */
 
 import { SQLiteQueueDB } from './db';
-import { QueueConfig } from '../../lib/config/queue';
+import { QueueConfig } from '../../../ALFA/LIBS/lib/config/queue';
 import { unlinkSync } from 'fs';
 
 describe('SQLiteQueueDB', () => {
