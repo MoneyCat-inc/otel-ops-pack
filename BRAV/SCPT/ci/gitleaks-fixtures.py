@@ -574,6 +574,14 @@ def build_cases(g):
         "web/http.js",
         'const csrf = {cookie: "XSRF-TOKEN", header: ["X-XSRF-TOKEN", xsrfHeaderName]};\n',
     )
+    # Found by the first full-history dispatch (run 41760400116): a header fed from a variable.
+    neg(
+        "N27",
+        "SigNoz header fed from a variable",
+        "lib/tracing.ts",
+        "    headers: @NAME@ ? { 'signoz-access-token': @NAME@ } : {},\n",
+        "signoz" "AccessToken",
+    )
     return cases
 
 

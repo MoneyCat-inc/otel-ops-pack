@@ -53,6 +53,9 @@ regexes = [
   '''(?i)[-_.](?:here|value|goes[-_]here)$''',
   '''(?i)^(?:process\.env|os\.environ|os\.getenv|import\.meta\.env|env\.|config\.|settings\.|secrets\.|vars\.)''',
   '''^[A-Z][A-Z0-9_]*$''',
+  # Letters only: a variable or a word, e.g. { 'signoz-access-token': signozToken }. Every
+  # SigNoz key or token format carries digits or symbols (the 44-char key ends in "=").
+  '''^[A-Za-z_]+$''',
   '''^(?:gh[pousr]_|github_pat_|glpat-|xox[abposr]-|AKIA|ASIA|AIza|eyJ)''',
   '''^/(?:run|etc|home|opt|tmp|usr|var|mnt|secrets?)/''',
   '''(?i)\.(?:ps1|psm1|sh|py|js|mjs|cjs|ts|tsx|md|txt|json|ya?ml|toml|ini|env|html?|xml|pem|crt|key)$''',
