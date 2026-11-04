@@ -28,8 +28,9 @@ OTEL_LOGS_EXPORTER=otlp
 OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:5321
 OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
 
-# OR gRPC:
+# OR gRPC (the protocol line is required: this agent defaults to http/protobuf):
 # OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:5320
+# OTEL_EXPORTER_OTLP_PROTOCOL=grpc
 
 # Additional Metadata
 OTEL_RESOURCE_ATTRIBUTES=deployment.environment=local,service.version=1.0.0
