@@ -1,10 +1,10 @@
 /**
  * Simple test script for SQLite DAL
- * Run with: npx tsx scripts/agent/test-sqlite.ts
+ * Run with: npx tsx BRAV/SCPT/agent/test-sqlite.ts
  */
 
 import { SQLiteQueueDB } from './db';
-import { getQueueConfig, describeQueueConfig } from '../../lib/config/queue';
+import { getQueueConfig, describeQueueConfig } from '../../../ALFA/LIBS/lib/config/queue';
 import { unlinkSync } from 'fs';
 
 async function testSQLiteDAL() {
