@@ -117,7 +117,7 @@
     {
       "name": "bosscat-gate-verify",
       "path": ".github/workflows/bosscat-gate-verify.yml",
-      "size": 11956,
+      "size": 16867,
       "triggers": {
         "issues": false,
         "other": [],
@@ -293,7 +293,7 @@
     {
       "name": "evidence-pat-rotation-reminder",
       "path": ".github/workflows/evidence-pat-rotation-reminder.yml",
-      "size": 5823,
+      "size": 5905,
       "triggers": {
         "issues": false,
         "other": [],
@@ -309,7 +309,7 @@
     {
       "name": "evidence-retention-prune",
       "path": ".github/workflows/evidence-retention-prune.yml",
-      "size": 4979,
+      "size": 8427,
       "triggers": {
         "issues": false,
         "other": [],
