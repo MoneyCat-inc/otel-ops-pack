@@ -5,6 +5,12 @@
 > `scripts/agent/watchdog.ps1` and the agent watchdog loop this guide wires into SigNoz no longer
 > exist, and the ports/paths reflect 2025-10-07. The SigNoz side is superseded by
 > `docs/architecture/CURRENT_ARCHITECTURE.md` and `docs/runbooks/windows-collector.md`.
+>
+> **Note (2026-11-05).** Phase B.1 (2025-10-09) moved the agent scripts from `scripts/agent/` to
+> `BRAV/SCPT/agent/`. There, `watchdog.ts` loads `otel.ts` through its first import, and since #900
+> `otel.ts` passes `metricReaders` instead of the sample's `metricReader`, which sdk-node 0.300.0 no
+> longer reads. Issue 1's check still reads the old `scripts/agent/watchdog.ps1` path, so it reports
+> "Cannot find path" and no warning. Both are recorded in `ECRR_AGENT_QUEUE_IMPORTS_20261103.md` (§3, §5).
 
 **MoneyCat Inc · Resonai [OTel] · otel-ops-pack**  
 **Version:** 1.0  
