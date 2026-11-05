@@ -86,3 +86,9 @@ Claude Code (local seat): the reproduction, PRs #906 and #907, and this report. 
 - Verdict: **GREEN**. The header's condition is met. Open for the operator: item 4's decision, §3's three decisions, and `pnpm install --frozen-lockfile` in `C:\otel`.
 
 **Status:** CLOSED (2026-11-04).
+
+## 6. Addendum (2026-11-05): the step's comment corrected
+
+- #919 (`17acdd000`, 13:05Z) rewrote the comment above the `Lint (eslint)` step, which §5's correction 2 found naming the wrong mechanism. It now says that a parser that refuses to load (typescript-eslint under TypeScript 7) makes ESLint exit 2, which the exit-code check catches, and that a parser that throws while parsing gives a fatal "Parsing error" per file. Comment only; `docs/status/workflows.json` was regenerated for Registry Guard. #907's description and §2's sentence stay as filed, corrected by §5.
+
+**Status:** CLOSED (unchanged).
