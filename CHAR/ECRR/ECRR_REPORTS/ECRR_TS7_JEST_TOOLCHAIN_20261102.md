@@ -74,3 +74,12 @@ Claude Code (local seat): the reproduction, the code and CI changes, PRs #894 an
 - Verdict: **GREEN** for P1-3. Still open, as §1c records: ESLint, the dead `../../lib/config/queue` imports and the SigNoz exporter port (each proposed as its own task), and the operator's `pnpm install --frozen-lockfile` in `C:\otel`.
 
 **Status:** CLOSED for P1-3 (2026-11-03).
+
+## 6. Addendum (2026-11-04): the §1c follow-ups landed; corrections to §1b and §1c
+
+- The three follow-ups that §1c and §5 left open merged on 2026-11-04 on the operator's go, each with its own ECRR: the dead `../../lib/config/queue` imports and `otel.ts`'s metric reader (#900, `ECRR_AGENT_QUEUE_IMPORTS_20261103.md`), the SigNoz exporter port (#903 and #904, `ECRR_OTLP_HTTP_DEFAULT_PORT_20261103.md`) and ESLint (#906 and #907, `ECRR_ESLINT10_FLAT_CONFIG_20261103.md`). The `unit` job on `main` now runs ESLint too (push run 41913165686).
+- §1c says "#699 also moved ESLint to 10.13.0". #699 (`753e1a844`) moved it to 10.9.1; `main` reached 10.13.0 through #776 and #876 (`ECRR_ESLINT10_FLAT_CONFIG_20261103.md` §5).
+- §1b says "`otel.ts` has no importer, script or workflow". `BRAV/SCPT/agent/watchdog.ts:1` imports it; no script or workflow references either file (`ECRR_AGENT_QUEUE_IMPORTS_20261103.md` §5).
+- Still open: the operator's `pnpm install --frozen-lockfile` in `C:\otel`, which still has TypeScript 6.0.3 and ESLint 9.38.0.
+
+**Status:** CLOSED for P1-3 (unchanged).
