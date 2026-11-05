@@ -379,9 +379,10 @@ jobs:
         run: pnpm exec tsc --noEmit -p tsconfig.json
 
       # Gates on ESLint running, not on the code being clean: findings (exit 1;
-      # 3,387 errors at the 2026-11-03 baseline) pass. Exit 2 (no config, a plugin
-      # or rule crash) fails, and so does any fatal message: a TypeScript parser
-      # without its API reports "Parsing error" on every file with exit 1.
+      # 3,387 errors at the 2026-11-03 baseline) pass. Exit 2 fails: no config, a
+      # plugin or rule crash, or a parser that refuses to load (typescript-eslint
+      # throws when required under TypeScript 7). Any fatal message fails too: a
+      # parser that throws while parsing reports "Parsing error" per file, exit 1.
       - name: Lint (eslint)
         id: eslint
         if: ${{ !cancelled() && steps.install.outcome == 'success' }}
