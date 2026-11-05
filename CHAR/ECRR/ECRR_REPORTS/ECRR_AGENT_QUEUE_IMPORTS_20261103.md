@@ -56,3 +56,9 @@ Claude Code (local seat): investigation, the change, PR #900 and this report. No
 - Verdict: **GREEN**. The header's condition (#900 merged) is met.
 
 **Status:** CLOSED (2026-11-04).
+
+## 6. Addendum (2026-11-05): the IONA doc items noted on its banner
+
+- The two `docs/IONA_SIGNOZ_INTEGRATION.md` items found on the way (§3, the `metricReader` sample at line 89; §5, the Issue 1 check at lines 437-438; both sit six lines lower since the note) are now on the doc's HISTORICAL banner, in a dated note added by #920 (`07a4e522a`, 13:07Z). The note says where the agent scripts live since Phase B.1 and what #900 changed. The body stays as filed: #712 gave the doc its banner and left its body unedited.
+
+**Status:** CLOSED (unchanged).
