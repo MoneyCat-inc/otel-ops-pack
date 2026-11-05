@@ -62,3 +62,10 @@ Claude Code (local seat): investigation, the change, PR #900 and this report. No
 - The two `docs/IONA_SIGNOZ_INTEGRATION.md` items found on the way (§3, the `metricReader` sample at line 89; §5, the Issue 1 check at lines 437-438; both sit six lines lower since the note) are now on the doc's HISTORICAL banner, in a dated note added by #920 (`07a4e522a`, 13:07Z). The note says where the agent scripts live since Phase B.1 and what #900 changed. The body stays as filed: #712 gave the doc its banner and left its body unedited.
 
 **Status:** CLOSED (unchanged).
+
+## 7. Addendum (2026-11-05): corrections to §6
+
+- §6 says #712 "left its body unedited". Besides the banner, #712 (`5e53a665e`) made two changes. It added the line-1 `markdownlint-disable` header, so the file's 2025 formatting passes markdownlint (GR-03). It also unlinked the three dead Internal Docs links as "(removed)" (lines 554-556 since #924), so the link check (GR-04) passes on the whole file. The 2025-10-07 text is otherwise as filed, and #920 changed none of it. #920's description has the same slip and stays as filed.
+- #924 (`675668a58`, 13:59Z) extended §6's banner note. It now says that the banner's "no longer exist" holds for the old `scripts/agent/` paths only. It also says that the Issue 1 check, pointed at the moved `BRAV/SCPT/agent/watchdog.ps1`, would always warn: that script never names `otel.ts`, and the import is in `watchdog.ts`, as §5 records. The note is three lines longer, so the body now sits nine lines below the numbers in §3 and §5, not six as §6 says. The `metricReader` sample is at line 98, the old `scripts/agent/otel.ts` path at lines 74 and 82, and the Issue 1 check at lines 446-447.
+
+**Status:** CLOSED (unchanged).
