@@ -4,7 +4,7 @@
 #
 #    python3.11 -m piptools compile --strip-extras --allow-unsafe --output-file=requirements-dev.txt requirements-dev.in
 #
-ast-serialize==0.11.2
+ast-serialize==0.13.1
     # via mypy
 astroid==4.3.4
     # via pylint
@@ -24,7 +24,7 @@ librt==0.16.0
     # via mypy
 mccabe==0.7.0
     # via pylint
-mypy==2.4.0
+mypy==2.4.1
     # via -r otel-agent-coordination/requirements-dev.in
 mypy-extensions==1.1.0
     # via
@@ -49,9 +49,9 @@ pluggy==1.6.0
     #   pytest-cov
 pygments==2.21.0
     # via pytest
-pylint==4.1.2
+pylint==4.1.3
     # via -r otel-agent-coordination/requirements-dev.in
-pytest==9.1.1
+pytest==9.2.0
     # via
     #   -r otel-agent-coordination/requirements-dev.in
     #   pytest-cov
