@@ -14,25 +14,22 @@ if ($DryRun) {
     Write-Host "🔍 DRY RUN MODE - No changes will be made" -ForegroundColor Yellow
 }
 
-# Define critical files with hardcoded secrets
+# Define critical files with hardcoded secrets.
+# Matched by shape, not by value: a SigNoz API key is 44 base64 characters (32 bytes). The
+# revoked key literals this list used to carry were removed on 2026-11-04 (public repository).
+$SigNozKeyPattern = '(?<![A-Za-z0-9+/=])[A-Za-z0-9+/]{43}=(?![A-Za-z0-9+/=])'
 $CriticalFiles = @(
     @{
         File = "lib/observability/signoz.ts"
-        Pattern = "YMJnm6c+/poKMuEGsjOQZCKrOealu8NjX22QE66VdnQ="
+        Pattern = $SigNozKeyPattern
         Replacement = "process.env['SIGNOZ_API_KEY'] || process.env['OTEL_EXPORTER_OTLP_HEADERS']?.split('=')[1] || ''"
         Description = "SigNoz API Key"
     },
     @{
         File = "docs/INTEGRATION_POINTS.md"
-        Pattern = "YMJnm6c+/poKMuEGsjOQZCKrOealu8NjX22QE66VdnQ="
+        Pattern = $SigNozKeyPattern
         Replacement = "`${SIGNOZ_API_KEY}"
-        Description = "SigNoz API Key in documentation"
-    },
-    @{
-        File = "docs/INTEGRATION_POINTS.md"
-        Pattern = "eE5syxJUco90j8vq34YPlbHaUg3NpS0UUEYYCzgE7mc="
-        Replacement = "`${SIGNOZ_API_TOKEN}"
-        Description = "SigNoz API Token in documentation"
+        Description = "SigNoz API key or token in documentation"
     }
 )
 
@@ -73,10 +70,11 @@ function Replace-SecretsInFile {
             Write-Host "🔧 Replacing $($Replacement.Description) in $FilePath" -ForegroundColor Green
             
             if (-not $DryRun) {
-                $Content = $Content -replace [regex]::Escape($Replacement.Pattern), $Replacement.Replacement
+                $Content = $Content -replace $Replacement.Pattern, $Replacement.Replacement
                 $Modified = $true
             } else {
-                Write-Host "   Would replace: $($Replacement.Pattern)" -ForegroundColor Yellow
+                $MatchCount = ([regex]::Matches($Content, $Replacement.Pattern)).Count
+                Write-Host "   Would replace $MatchCount key-shaped value(s) (values not shown)" -ForegroundColor Yellow
                 Write-Host "   With: $($Replacement.Replacement)" -ForegroundColor Yellow
             }
         }

@@ -53,16 +53,23 @@ for pattern in "${SECRET_PATTERNS[@]}"; do
     fi
 done
 
-# Check for specific hardcoded API keys
-if grep -r -i "YMJnm6c+/poKMuEGsjOQZCKrOealu8NjX22QE66VdnQ=" $EXCLUDE_PATTERN . >/dev/null 2>&1; then
-    echo "❌ Hardcoded SigNoz API key detected!"
-    SECRETS_FOUND=1
-fi
-
-if grep -r -i "eE5syxJUco90j8vq34YPlbHaUg3NpS0UUEYYCzgE7mc=" $EXCLUDE_PATTERN . >/dev/null 2>&1; then
-    echo "❌ Hardcoded API token detected!"
-    SECRETS_FOUND=1
-fi
+# Check for the revoked SigNoz API keys. They are matched by SHA-256 prefix of each 44-char
+# base64 token, so this hook never stores the key values themselves (literals removed
+# 2026-11-04; the repository is public).
+REVOKED_SIGNOZ_SHA256_PREFIXES=" 089c8993 3e775a2b 869a41b7 8abc66bc c66026b5 "
+sha256_prefix() {
+    if command -v sha256sum >/dev/null 2>&1; then sha256sum; else shasum -a 256; fi | cut -c1-8
+}
+while IFS= read -r candidate; do
+    [ -n "$candidate" ] || continue
+    prefix=$(printf '%s' "$candidate" | sha256_prefix)
+    case "$REVOKED_SIGNOZ_SHA256_PREFIXES" in
+        *" $prefix "*)
+            echo "❌ Revoked SigNoz API key detected (sha256 prefix $prefix)!"
+            SECRETS_FOUND=1
+            ;;
+    esac
+done < <(grep -r -h -o -E "[A-Za-z0-9+/]{43}=" $EXCLUDE_PATTERN . 2>/dev/null | sort -u)
 
 # Check for placeholder secrets that shouldn't be committed
 if grep -r -i "your-[a-z-]*-here" $EXCLUDE_PATTERN . >/dev/null 2>&1; then
