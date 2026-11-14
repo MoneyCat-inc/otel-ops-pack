@@ -137,7 +137,7 @@ pwsh -File .\scripts\windows\health-check-otlp.ps1 -ServiceName "bosscat-svc2-ap
 
 **Command:**
 ```powershell
-$env:SIGNOZ_API_KEY = "HB6zeFehlbXZ2mmi+F9jMUEDPDBXiYx61lRfpOlg5to="
+$env:SIGNOZ_API_KEY = "[REDACTED-SigNoz-test-key-expired-2025-10-28]"
 $env:SIGNOZ_BASE_URL = "http://localhost:8080"
 # Standalone test of Query-SigNozTraces function
 .\test-api-proof.ps1
