@@ -1,4 +1,12 @@
 # KEEP -- Phase 0 workflow audit 2026-08-03: required branch-protection check (secret scan)
+# 2026-11-04 (OEM review; audit P2-2 §6c/§6d): the scan scope follows the event and the job
+# proves its config before scanning. pull_request scans base..head; push scans the pushed
+# commit (-1; main squash-merges); schedule and workflow_dispatch scan the full history of
+# every ref checkout fetches (fetch-depth: 0) against the committed baseline .gitleaksignore,
+# so a leak in any earlier commit, or one a rule added later now sees, turns the nightly red.
+# The fixture step (BRAV/SCPT/ci/gitleaks-fixtures.py, synthetic values only) fails the job
+# when a leak class goes uncaught, a placeholder is reported, or --redact would leave a
+# value in the report.
 name: Gitleaks Security Scan
 # Required context "gitleaks" (app 15368). No path filters — secret scan every PR.
 # Do not add an always-green shim (latest-wins would mask a FAIL).
@@ -12,7 +20,7 @@ on:
       - main
       - develop
   schedule:
-    - cron: 0 2 * * * # Daily at 2 AM
+    - cron: 0 2 * * * # Daily at 2 AM: full history against .gitleaksignore
   workflow_dispatch:
 
 # Do not cancel mid-run (branch protection).
@@ -27,11 +35,12 @@ jobs:
   gitleaks:
     name: gitleaks
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
         with:
-          fetch-depth: 0 # Full history for better detection
+          fetch-depth: 0 # Full history: the schedule/dispatch scan reads every fetched ref
 
       # OSS CLI avoids gitleaks-action org license requirement on Dependabot PRs
       # (Dependabot workflows cannot read repository secrets like GITLEAKS_LICENSE).
@@ -42,18 +51,53 @@ jobs:
           sudo mv gitleaks /usr/local/bin/gitleaks
           gitleaks version
 
+      # A scan result means nothing unless the config can both pass and fail: every leak class
+      # this repository has had must be caught, and no placeholder or reference reported.
+      - name: Prove the config on synthetic fixtures
+        id: fixtures
+        run: python3 BRAV/SCPT/ci/gitleaks-fixtures.py --config .gitleaks.toml --summary-json gitleaks-fixtures.json
+
       - name: Run Gitleaks
+        id: scan
+        if: ${{ !cancelled() }}
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            gitleaks detect --redact --verbose --config .gitleaks.toml --report-format json --report-path gitleaks-report.json --log-opts="${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}"
-          else
-            gitleaks detect --redact --verbose --config .gitleaks.toml --report-format json --report-path gitleaks-report.json --log-opts=-1
-          fi
+          case "$EVENT" in
+            pull_request) scope="pull request ${BASE_SHA:0:8}..${HEAD_SHA:0:8}"; set -- "--log-opts=${BASE_SHA}..${HEAD_SHA}" ;;
+            push)         scope="pushed commit (-1)"; set -- "--log-opts=-1" ;;
+            *)            scope="full history, every fetched ref, baseline .gitleaksignore"; set -- ;;
+          esac
+          echo "scope=$scope" >> "$GITHUB_OUTPUT"
+          echo "Scan scope: $scope"
+          gitleaks detect --redact --verbose --config .gitleaks.toml --report-format json --report-path gitleaks-report.json "$@" 2>&1 | tee gitleaks.log
+          exit "${PIPESTATUS[0]}"
 
       - name: Upload Gitleaks report
         uses: actions/upload-artifact@v7
         if: always()
         with:
           name: gitleaks-report
-          path: gitleaks-report.json
+          path: |
+            gitleaks-report.json
+            gitleaks-fixtures.json
           retention-days: 30
+
+      - name: Run Summary
+        if: always()
+        env:
+          SCOPE: ${{ steps.scan.outputs.scope }}
+          SCAN: ${{ steps.scan.outcome }}
+          FIXTURES: ${{ steps.fixtures.outcome }}
+        run: |
+          {
+            echo "### Gitleaks: ${{ job.status }}"
+            echo ""
+            echo "**Scope:** ${SCOPE:-not run}  "
+            echo "**Scan:** ${SCAN}, $(grep -oE '[0-9]+ commits scanned' gitleaks.log 2>/dev/null || echo 'no log'), $(jq length gitleaks-report.json 2>/dev/null || echo 'no') finding(s) after the baseline  "
+            echo "**Fixtures:** ${FIXTURES} (table above)  "
+            echo "**Baseline:** $(grep -cE '^[0-9a-f]{40}:' .gitleaksignore) commit fingerprints in .gitleaksignore  "
+            echo "**Run:** #${{ github.run_number }} (attempt ${{ github.run_attempt }}), \`${{ github.ref }}\`, @${{ github.actor }}"
+          } >> "$GITHUB_STEP_SUMMARY"
