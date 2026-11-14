@@ -87,6 +87,10 @@ function Start-SigNozStack {
     
     try {
         Write-Host "🔄 Starting SigNoz containers from $composeFile..." -ForegroundColor Yellow
+        # docker-compose.yml requires SIGNOZ_JWT_SECRET and ships no default; write a random one
+        # into .env next to the compose file on first start (an existing value is kept).
+        $envFile = Join-Path (Split-Path -Parent (Resolve-Path $composeFile)) '.env'
+        & (Join-Path $scriptDir 'BRAV/SCPT/security/ensure-signoz-signing-key.ps1') -EnvFile $envFile
         Push-Location $scriptDir
         docker-compose -f $composeFile up -d
         Pop-Location

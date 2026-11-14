@@ -182,7 +182,7 @@ services:
       signoz-clickhouse:
         condition: service_healthy
     ports:
-      - "8080:8080"
+      - "127.0.0.1:8080:8080"
     volumes:
       - signoz_data:/var/lib/signoz
       - ./configs/prometheus/prometheus.yml:/root/config/prometheus.yml:ro
@@ -191,7 +191,7 @@ services:
       SIGNOZ_ALERTMANAGER_PROVIDER: signoz
       SIGNOZ_TELEMETRYSTORE_CLICKHOUSE_DSN: tcp://signoz-clickhouse:9000
       SIGNOZ_SQLSTORE_SQLITE_PATH: /var/lib/signoz/signoz.db
-      SIGNOZ_JWT_SECRET: '${SIGNOZ_JWT_SECRET:-local-signoz-jwt-secret-rotate}'
+      SIGNOZ_JWT_SECRET: '${SIGNOZ_JWT_SECRET:?set SIGNOZ_JWT_SECRET in .env}'
       STORAGE: clickhouse
       GODEBUG: netdns=go
       DOT_METRICS_ENABLED: "true"

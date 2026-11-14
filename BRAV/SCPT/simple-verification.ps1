@@ -3,9 +3,14 @@
 
 param(
     [string]$SigNozUrl = "http://localhost:8080",
-    [string]$ApiToken = "local-signoz-jwt-secret-rotate",
+    [string]$ApiToken = $env:SIGNOZ_API_KEY,
     [string]$AppUrl = "http://localhost:3000"
 )
+
+# The key comes from the environment, never from this file.
+if (-not $ApiToken) {
+    throw 'SigNoz API key required: set $env:SIGNOZ_API_KEY or pass -ApiToken.'
+}
 
 Write-Host "🔍 Simple Observability Verification" -ForegroundColor Cyan
 Write-Host "ECRR Framework Implementation" -ForegroundColor Yellow
