@@ -6,7 +6,7 @@
 
 import { AgentRunner } from './runner';
 import { SQLiteQueueDB } from './db';
-import { getQueueConfig } from '../../lib/config/queue';
+import { getQueueConfig } from '../../../ALFA/LIBS/lib/config/queue';
 import { writeFileAtomicIfChanged, ensureDir } from './io';
 import { existsSync, unlinkSync } from 'fs';
 

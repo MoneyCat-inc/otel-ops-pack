@@ -2,11 +2,16 @@
 # Test different authentication methods for SigNoz API
 
 param(
-    [string]$ApiToken = "eE5syxJUco90j8vq34YPlbHaUg3NpS0UUEYYCzgE7mc=",
+    [string]$ApiToken = $env:SIGNOZ_API_KEY,
     [string]$SigNozUrl = "http://localhost:8080",
     [string]$Username = "admin",
     [string]$Password = "admin"
 )
+
+# The key comes from the environment, never from this file.
+if (-not $ApiToken) {
+    throw 'SigNoz API key required: set $env:SIGNOZ_API_KEY or pass -ApiToken.'
+}
 
 Write-Host "=== SigNoz API Authentication Test ===" -ForegroundColor Green
 
