@@ -1,3 +1,4 @@
+<!-- markdownlint-disable MD013 MD031 MD032 MD036 MD040 -->
 # Gate #030 v2 — Implementation Complete (AMBER → GREEN Upgrade)
 
 **Gate ID:** #030 v2  
@@ -124,7 +125,7 @@ function Build-AuthHeaders {
 ### Test Results
 
 **Header:** `SIGNOZ-API-KEY`  
-**Token:** `HB6zeFehlbXZ2mmi+F9jMUEDPDBXiYx61lRfpOlg5to=` (test key, expires in 1 day)  
+**Token:** `[REDACTED-SigNoz-test-key-expired-2025-10-28]` (test key, expires in 1 day)  
 **Authentication:** ✅ **SUCCESS**  
 **Masking:** ✅ **VERIFIED** (proof artifact shows `"***masked***"`)
 

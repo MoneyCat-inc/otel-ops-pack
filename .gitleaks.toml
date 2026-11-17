@@ -1,84 +1,243 @@
-# Gitleaks configuration for IONA-GATE-002 security hardening
-title = "Gitleaks Config for OTel Observability Kit"
+# Gitleaks configuration for otel-ops-pack. Read by .github/workflows/gitleaks.yml (gitleaks
+# 8.24.3) and by any `gitleaks` run from the repository root.
+#
+# Rewritten 2026-11-04 (OEM review; extends audit P2-2 in
+# CHAR/ECRR/ECRR_REPORTS/ECRR_READY_FOR_GATE_AUDIT_20261101.md §6c/§6d). Three rules hold:
+#  1. No custom rule reuses a built-in id. A same-id rule merges into the built-in one: the
+#     old custom "generic-api-key" replaced the built-in regex with a two-group regex while
+#     the built-in entropy and stopwords stayed, so group 1 (the key NAME) became the secret
+#     and was filtered out. The built-in rule now runs as shipped; the custom intent is
+#     api-key-assignment below.
+#  2. Every custom rule has exactly one capture group, the value, named by secretGroup = 1.
+#     A rule whose secret is the name defeats --redact: the name is masked and the value is
+#     printed in the job log and the report artifact (the old signoz-api-key did this).
+#  3. No global path allowlist. Markdown, *.example, *.template and README are scanned (a
+#     SigNoz key sat in 14 public .md lines from 2025-10-27). The only path allowlists are
+#     the vendored bundles, on the rules that fire on them (bottom of this file).
+# Proof: BRAV/SCPT/ci/gitleaks-fixtures.py (synthetic values only), run by gitleaks.yml.
+# Known historical findings: .gitleaksignore (commit fingerprints, no values).
+#
+# Custom assignment rules leave provider-shaped values (ghp_, glpat-, xoxb-, AKIA, AIza,
+# eyJ...) to the built-in provider rules, and the built-in generic-api-key yields to any
+# custom rule that reports the same value on the same line, so one value is one finding.
+# A false positive in new content: add `gitleaks:allow` to that line, or fix the rule here
+# with a fixture case; never a path allowlist for first-party files.
+
+title = "otel-ops-pack secret scan"
 
 [extend]
+# Built-in rules (github-pat, aws-access-token, slack-bot-token, gitlab-pat, gcp-api-key,
+# private-key, jwt, generic-api-key, ...) and the built-in global allowlist.
 useDefault = true
+
+# ---------------------------------------------------------------------------------------
+# SigNoz API keys: the leak class this repository has actually had. Six distinct 44-char
+# keys in .md, .ps1, .sh, .ts, .json, env.template and docker-compose.yml since 2025-09-27,
+# most of them pasted into prose ("**Key:** `...`"), not assigned to a name.
+# ---------------------------------------------------------------------------------------
 
 [[rules]]
 id = "signoz-api-key"
-description = "SigNoz API Key"
-regex = '''(?i)(signoz[_-]?api[_-]?key|SIGNOZ_API_KEY)[\s]*[:=][\s]*['"]*([a-zA-Z0-9+/=]{40,})['"]*'''
-tags = ["signoz", "api-key", "secret"]
+description = "SigNoz API key or token assigned to a SigNoz-named variable, parameter, header or key"
+regex = '''(?i)signoz[\w-]{0,30}?(?:api[_-]?key|api[_-]?token|access[_-]?token|ingestion[_-]?key|token|key)['"\x60\]]{0,2}\s{0,4}(?:(?::=|=>|=|:)\s{0,4}['"\x60]?|,\s{0,4}['"\x60])([A-Za-z0-9+/=_.~-]{16,})(?:['"\x60\s;,)\]}]|$)'''
+secretGroup = 1
+entropy = 3.0
+keywords = ["signoz"]
+tags = ["signoz", "api-key"]
+[[rules.allowlists]]
+description = "Placeholders, references, names, file names and provider-shaped values (reported by their own rule)"
+regexTarget = "secret"
+regexes = [
+  '''(?i)^(?:your|my|insert|enter|replace|put|add|test|mock|fake|dummy|sample|example|demo)[-_.]''',
+  '''(?i)(?:placeholder|example|redacted|changeme|change[-_]me|xxxx|\*\*\*|\.\.\.)''',
+  '''(?i)[-_.](?:here|value|goes[-_]here)$''',
+  '''(?i)^(?:process\.env|os\.environ|os\.getenv|import\.meta\.env|env\.|config\.|settings\.|secrets\.|vars\.)''',
+  '''^[A-Z][A-Z0-9_]*$''',
+  # Letters only: a variable or a word, e.g. { 'signoz-access-token': signozToken }. Every
+  # SigNoz key or token format carries digits or symbols (the 44-char key ends in "=").
+  '''^[A-Za-z_]+$''',
+  '''^(?:gh[pousr]_|github_pat_|glpat-|xox[abposr]-|AKIA|ASIA|AIza|eyJ)''',
+  '''^/(?:run|etc|home|opt|tmp|usr|var|mnt|secrets?)/''',
+  '''(?i)\.(?:ps1|psm1|sh|py|js|mjs|cjs|ts|tsx|md|txt|json|ya?ml|toml|ini|env|html?|xml|pem|crt|key)$''',
+]
 
 [[rules]]
-id = "generic-api-key"
-description = "Generic API Key"
-regex = '''(?i)(api[_-]?key|apikey|api_key|access[_-]?key)[\s]*[:=][\s]*['"]*([a-zA-Z0-9+/=]{32,})['"]*'''
-tags = ["api-key", "secret"]
-[rules.allowlist]
-  paths = [
-    '''env\.template''',
-    '''.*\.example$''',
-    '''.*\.md$''',
-    '''docs/.*'''
-  ]
-  regexes = [
-    '''your-.*-here''',
-    '''<.*>''',
-    '''PLACEHOLDER''',
-    '''EXAMPLE'''
-  ]
+id = "bare-base64-key"
+description = "Bare 32-byte base64 value (44 characters, the SigNoz API key format) with no name to anchor on"
+# No keyword gate: in a git scan a fragment is one file's added lines, so a key pasted into a
+# doc whose hunk never says "SigNoz" would skip a keyword-gated rule. Ungated, full history
+# (1,914 commits, all refs) gives the same 50 findings, all SigNoz keys: no extra noise.
+regex = '''(?:^|[^A-Za-z0-9+/=])([A-Za-z0-9+/]{43}=)(?:[^A-Za-z0-9+/=]|$)'''
+secretGroup = 1
+entropy = 4.0
+tags = ["signoz", "api-key", "base64"]
+[[rules.allowlists]]
+description = "Lines a named rule owns (this is the fallback for prose); integrity and digest contexts"
+regexTarget = "line"
+regexes = [
+  '''(?i)signoz[\w-]{0,30}?(?:api[_-]?key|api[_-]?token|access[_-]?token|ingestion[_-]?key|token|key)['"\x60\]]{0,2}\s{0,4}(?::=|=>|=|:|,)''',
+  '''(?i)\$[a-z][a-z0-9_]*?(?:api[_-]?token|api[_-]?key|apikey|access[_-]?token|token|secret|password|passwd|pwd)\s*=\s*['"]''',
+  '''(?i)(?:api[_-]?key|access[_-]?key)['"\x60\]]{0,2}\s{0,4}(?::=|=>|=|:|,)''',
+  '''(?:^|[^\w{])(?:[A-Z][A-Z0-9]*_)*(?:JWT_SECRET|SECRET_KEY|SECRET|PASSWORD|PASSWD|API_TOKEN|AUTH_TOKEN|ACCESS_TOKEN|REFRESH_TOKEN|TOKEN)\b['"\x60\]]{0,2}\s{0,4}(?::=|=>|=|:|,)''',
+  '''(?i)(?:integrity|sha(?:1|224|256|384|512)[-:=])''',
+]
 
+# ---------------------------------------------------------------------------------------
+# Named secrets: env-style *_JWT_SECRET, *_SECRET, *_PASSWORD, *_PASS, *_API_TOKEN, *_TOKEN
+# (and the bare names) assigned a literal, in env, YAML, JSON, PowerShell, shell or code;
+# PowerShell $Variables named like a token, key, secret or password.
+# ---------------------------------------------------------------------------------------
+
+[[rules]]
+id = "named-secret-literal"
+description = "Literal assigned to an env-style *_JWT_SECRET, *_SECRET, *_PASSWORD, *_PASS, *_API_TOKEN or *_TOKEN name"
+regex = '''(?:^|[^\w{])(?:(?:[A-Z][A-Z0-9]*_)*(?:JWT_SECRET|SECRET_KEY|SECRET|PASSWORD|PASSWD|API_TOKEN|AUTH_TOKEN|ACCESS_TOKEN|REFRESH_TOKEN|TOKEN)|(?:[A-Z][A-Z0-9]*_)+PASS)\b['"\x60\]]{0,2}\s{0,4}(?:(?::=|=>|=|:)\s{0,4}['"\x60]?|,\s{0,4}['"\x60])([^\s'"\x60$%{}<>()\[\],;|\\*!&#][^\s'"\x60,;(){}\[\]]{7,})(?:['"\x60\s;,)\]}]|$)'''
+secretGroup = 1
+keywords = ["secret", "password", "passwd", "_pass", "token"]
+tags = ["secret", "password", "token"]
+[[rules.allowlists]]
+description = "Placeholders, references, names, file names, well-known service defaults and provider-shaped values"
+regexTarget = "secret"
+regexes = [
+  '''(?i)^(?:your|my|insert|enter|replace|put|add|test|mock|fake|dummy|sample|example|demo)[-_.]''',
+  '''(?i)(?:placeholder|example|redacted|changeme|change[-_]me|xxxx|\*\*\*|\.\.\.)''',
+  '''(?i)[-_.](?:here|value|goes[-_]here)$''',
+  '''(?i)^(?:undefined|required|optional|string|none|null|true|false|secret|password|token)$''',
+  '''(?i)^(?:postgres|postgresql|mysql|root|admin|guest)$''',
+  '''(?i)^(?:process\.env|os\.environ|os\.getenv|import\.meta\.env|env\.|config\.|settings\.|secrets\.|vars\.)''',
+  '''^[A-Z][A-Z0-9_]*$''',
+  '''^(?:gh[pousr]_|github_pat_|glpat-|xox[abposr]-|AKIA|ASIA|AIza|eyJ)''',
+  '''^/(?:run|etc|home|opt|tmp|usr|var|mnt|secrets?)/''',
+  '''(?i)\.(?:ps1|psm1|sh|py|js|mjs|cjs|ts|tsx|md|txt|json|ya?ml|toml|ini|env|html?|xml|pem|crt|key)$''',
+]
+[[rules.allowlists]]
+description = "SigNoz key and token names belong to signoz-api-key"
+regexTarget = "line"
+regexes = [
+  '''(?i)signoz[\w-]{0,30}?(?:api[_-]?key|api[_-]?token|access[_-]?token|ingestion[_-]?key|token|key)['"\x60\]]{0,2}\s{0,4}(?::=|=>|=|:|,)''',
+]
+[[rules.allowlists]]
+# A second [[rules]] block with this id would replace the rule, not extend it: same-id
+# merging applies to built-in rules only (see the bottom of this file).
+description = "Vendored bundles (the SigNoz UI bundle ships its own SENTRY_AUTH_TOKEN); see the bottom of this file"
+paths = [
+  '''^SigNoz _ Home(?:_files/|\.html?$)''',
+  '''^docs/research/SigNoz _ Logs(?:_files/|\.html?$)''',
+  '''^patches/LLM_8080_OTel_x86/''',
+]
+
+[[rules]]
+id = "powershell-secret-literal"
+description = "Literal assigned to a PowerShell variable or parameter whose name ends in Token, ApiKey, Secret, Password or Pwd"
+regex = '''(?i)\$[a-z][a-z0-9_]*?(?:api[_-]?token|api[_-]?key|apikey|access[_-]?token|token|secret|password|passwd|pwd)\s*=\s*['"]([^'"\s$\x60]{8,})['"]'''
+secretGroup = 1
+keywords = ["token", "secret", "password", "passwd", "pwd", "apikey", "api_key"]
+tags = ["powershell", "secret"]
+[[rules.allowlists]]
+description = "Placeholders, names, paths, file names, well-known service defaults and provider-shaped values"
+regexTarget = "secret"
+regexes = [
+  '''(?i)^(?:your|my|insert|enter|replace|put|add|test|mock|fake|dummy|sample|example|demo)[-_.]''',
+  '''(?i)(?:placeholder|example|redacted|changeme|change[-_]me|xxxx|\*\*\*|\.\.\.)''',
+  '''(?i)[-_.](?:here|value|goes[-_]here)$''',
+  '''(?i)^(?:postgres|postgresql|mysql|root|admin|guest)$''',
+  '''^[A-Z][A-Z0-9_]*$''',
+  '''^(?:gh[pousr]_|github_pat_|glpat-|xox[abposr]-|AKIA|ASIA|AIza|eyJ)''',
+  '''^(?:[A-Za-z]:\\|\\\\|\.{0,2}[\\/])''',
+  '''(?i)\.(?:ps1|psm1|sh|py|js|mjs|cjs|ts|tsx|md|txt|json|ya?ml|toml|ini|env|html?|xml|pem|crt|key)$''',
+]
+[[rules.allowlists]]
+description = "SigNoz key and token names belong to signoz-api-key"
+regexTarget = "line"
+regexes = ['''(?i)signoz[\w-]{0,30}?(?:api[_-]?key|api[_-]?token|access[_-]?token|ingestion[_-]?key|token|key)\s*=''']
+
+[[rules]]
+id = "compose-secret-default"
+description = "Non-empty default in ${NAME:-value}, ${NAME-value} or ${NAME:=value} where NAME holds SECRET, TOKEN, PASSWORD or API_KEY"
+regex = '''\$\{[A-Za-z_][A-Za-z0-9_]*?(?i:secret|token|password|passwd|_pass|api_?key)[A-Za-z0-9_]*:?[-=]([^\s}$][^\s}]{3,})\}'''
+secretGroup = 1
+keywords = ["${"]
+tags = ["compose", "default", "secret"]
+[[rules.allowlists]]
+description = "Placeholder defaults"
+regexTarget = "secret"
+regexes = [
+  '''(?i)^(?:changeme|change[-_]me|placeholder|secret|password|token|none|null|xxx+|\*+|<[^>]*>|your[-_].*)$''',
+]
+
+# ---------------------------------------------------------------------------------------
+# The custom generic rule's intent, renamed so it no longer merges into the built-in
+# generic-api-key (see rule 1 at the top), with the value as its only group.
+# ---------------------------------------------------------------------------------------
+
+[[rules]]
+id = "api-key-assignment"
+description = "Literal of 32+ characters assigned to an api_key, apikey or access_key name"
+regex = '''(?i)(?:api[_-]?key|access[_-]?key)['"\x60\]]{0,2}\s{0,4}(?:(?::=|=>|=|:)\s{0,4}['"\x60]?|,\s{0,4}['"\x60])([A-Za-z0-9+/=_.~-]{32,})(?:['"\x60\s;,)\]}]|$)'''
+secretGroup = 1
+entropy = 3.0
+keywords = ["api_key", "api-key", "apikey", "access_key", "access-key", "accesskey"]
+tags = ["api-key", "secret"]
+[[rules.allowlists]]
+description = "Placeholders, names, file names and provider-shaped values (reported by their own rule)"
+regexTarget = "secret"
+regexes = [
+  '''(?i)^(?:your|my|insert|enter|replace|put|add|test|mock|fake|dummy|sample|example|demo)[-_.]''',
+  '''(?i)(?:placeholder|example|redacted|changeme|change[-_]me|xxxx|\*\*\*|\.\.\.)''',
+  '''(?i)[-_.](?:here|value|goes[-_]here)$''',
+  '''^[A-Z][A-Z0-9_]*$''',
+  '''^(?:gh[pousr]_|github_pat_|glpat-|xox[abposr]-|AKIA|ASIA|AIza|eyJ)''',
+  '''(?i)\.(?:ps1|psm1|sh|py|js|mjs|cjs|ts|tsx|md|txt|json|ya?ml|toml|ini|env|html?|xml|pem|crt|key)$''',
+]
+[[rules.allowlists]]
+description = "SigNoz key names belong to signoz-api-key"
+regexTarget = "line"
+regexes = ['''(?i)signoz[\w-]{0,30}?(?:api[_-]?key|access[_-]?key)''']
+
+# ---------------------------------------------------------------------------------------
+# Built-in rules extended with an allowlist only (regex, entropy and keywords stay as
+# shipped). gitleaks 8.24.3 ignores [[allowlists]].targetRules, so per-rule means here.
+# ---------------------------------------------------------------------------------------
+
+# Documentation examples elide the key body ("MIIE...") and base64 never contains "...".
 [[rules]]
 id = "private-key"
-description = "Private Key"
-regex = '''-----BEGIN [A-Z ]*PRIVATE KEY-----'''
-tags = ["private-key", "secret"]
+[[rules.allowlists]]
+description = "Elided PEM examples"
+regexTarget = "secret"
+regexes = ['''\.\.\.''']
+
+# Vendored bundles: browser "Save page as" captures of the SigNoz UI (2025-09-22/23) and of
+# an OpenTelemetry page, removed from the tree in a8f4704a (2025-09-27). Third-party
+# minified code; its tokens are the vendors' public client values, not this repository's.
+# Four rules fire on them, so four carry the paths: the three below and named-secret-literal
+# (in its own definition above). Any other rule still sees these paths.
+[[rules]]
+id = "generic-api-key"
+[[rules.allowlists]]
+description = "Vendored bundles"
+paths = [
+  '''^SigNoz _ Home(?:_files/|\.html?$)''',
+  '''^docs/research/SigNoz _ Logs(?:_files/|\.html?$)''',
+  '''^patches/LLM_8080_OTel_x86/''',
+]
 
 [[rules]]
-id = "github-pat"
-description = "GitHub Personal Access Token"
-regex = '''ghp_[0-9a-zA-Z]{36,}'''
-tags = ["github", "token"]
+id = "sentry-org-token"
+[[rules.allowlists]]
+description = "Vendored bundles"
+paths = [
+  '''^SigNoz _ Home(?:_files/|\.html?$)''',
+  '''^docs/research/SigNoz _ Logs(?:_files/|\.html?$)''',
+  '''^patches/LLM_8080_OTel_x86/''',
+]
 
 [[rules]]
-id = "aws-access-key"
-description = "AWS Access Key ID"
-regex = '''AKIA[0-9A-Z]{16}'''
-tags = ["aws", "access-key"]
-
-[[rules]]
-id = "jwt-token"
-description = "JWT Token"
-regex = '''eyJ[A-Za-z0-9-_=]+\.eyJ[A-Za-z0-9-_=]+\.[A-Za-z0-9-_.+/=]+'''
-tags = ["jwt", "token"]
-[rules.allowlist]
-  regexes = [
-    '''example\.jwt''',
-    '''sample\.token'''
-  ]
-
-[allowlist]
-  description = "Global allowlist"
-  paths = [
-    '''^\.git/''',
-    '''node_modules/''',
-    '''vendor/''',
-    '''third_party/''',
-    '''^package-lock\.json$''',
-    '''^pnpm-lock\.yaml$''',
-    '''^yarn\.lock$''',
-    '''.*/package-lock\.json$''',
-    '''.*/pnpm-lock\.yaml$''',
-    '''.*/yarn\.lock$''',
-    '''.*\.md$''',
-    '''.*\.example$''',
-    '''.*\.template$''',
-    '''LICENSE''',
-    '''README'''
-  ]
-  commits = []
-  regexes = [
-    '''(your|placeholder|example|sample|test|dummy)-[a-zA-Z0-9-]+''',
-  ]
-
+id = "jwt"
+[[rules.allowlists]]
+description = "Vendored bundles"
+paths = [
+  '''^SigNoz _ Home(?:_files/|\.html?$)''',
+  '''^docs/research/SigNoz _ Logs(?:_files/|\.html?$)''',
+  '''^patches/LLM_8080_OTel_x86/''',
+]

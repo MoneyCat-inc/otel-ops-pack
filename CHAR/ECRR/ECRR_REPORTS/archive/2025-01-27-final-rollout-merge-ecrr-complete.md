@@ -89,7 +89,7 @@
 - **Status**: ✅ **HEALTHY** pipeline confirmed
 
 #### **3. SigNoz API Authentication**
-- **Token**: `eE5syxJUco90j8vq34YPlbHaUg3NpS0UUEYyCzgE7mc=`
+- **Token**: `[REDACTED-SigNoz-key-8abc66bc-see-ECRR-20261104]`
 - **Testing**: Authentication confirmed, webhook delivery verified
 - **Status**: Ready for dashboard import and alert configuration
 
