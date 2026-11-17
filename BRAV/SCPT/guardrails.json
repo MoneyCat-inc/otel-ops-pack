@@ -14,6 +14,7 @@
       ".github",
       ".gitignore",
       ".gitleaks.toml",
+      ".gitleaksignore",
       ".gitmessage",
       ".gitmodules",
       ".lefthook-local.yml.example",
