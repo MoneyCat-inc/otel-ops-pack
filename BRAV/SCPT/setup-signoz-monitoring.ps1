@@ -4,9 +4,14 @@
 
 param(
     [string]$SigNozUrl = "http://localhost:8080",
-    [string]$ApiToken = "eE5syxJUco90j8vq34YPlbHaUg3NpS0UUEYyCzgE7mc=",
+    [string]$ApiToken = $env:SIGNOZ_API_KEY,
     [switch]$DryRun = $false
 )
+
+# The key comes from the environment, never from this file.
+if (-not $ApiToken) {
+    throw 'SigNoz API key required: set $env:SIGNOZ_API_KEY or pass -ApiToken.'
+}
 
 # Set up headers for SigNoz API
 $headers = @{
@@ -196,7 +201,7 @@ function Generate-MonitoringReport {
 Write-Host "🎮 SigNoz GPU Monitoring Setup" -ForegroundColor Cyan
 Write-Host "================================" -ForegroundColor Cyan
 Write-Host "SigNoz URL: $SigNozUrl" -ForegroundColor White
-Write-Host "API Token: $($ApiToken.Substring(0,8))..." -ForegroundColor White
+Write-Host "API Token: set (value not shown)" -ForegroundColor White
 Write-Host "Dry Run: $DryRun" -ForegroundColor White
 Write-Host ""
 

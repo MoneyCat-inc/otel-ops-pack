@@ -22,7 +22,7 @@
 
 ### **Pre-Implementation State**
 - **Existing Infrastructure**: OTel observability stack with SigNoz
-- **SigNoz API Key**: `YMJnm6c+/poKMuEGsjOQZCKrOealu8NjX22QE66VdnQ=`
+- **SigNoz API Key**: `[REDACTED-old-SigNoz-key-rotated-2025-10-07]`
 - **OTLP Endpoints**: `http://localhost:14317` (gRPC), `http://localhost:14318` (HTTP)
 - **Environment**: Windows 11, Node.js 18+, PowerShell 7
 - **Requirements**: Local-first, consent-first backend for T6 engagement features
