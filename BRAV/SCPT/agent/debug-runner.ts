@@ -5,7 +5,7 @@
  */
 
 import { SQLiteQueueDB } from './db';
-import { getQueueConfig } from '../../lib/config/queue';
+import { getQueueConfig } from '../../../ALFA/LIBS/lib/config/queue';
 
 async function debugRunner() {
   console.log('🔍 Debugging Agent Runner...\n');

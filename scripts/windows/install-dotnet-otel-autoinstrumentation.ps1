@@ -76,6 +76,7 @@ Write-Host "  DOTNET_STARTUP_HOOKS=$startupHookDll" -ForegroundColor Gray
 Write-Host "  OTEL_DOTNET_AUTO_HOME=$InstallDir" -ForegroundColor Gray
 Write-Host "  OTEL_SERVICE_NAME=<your-service-name>" -ForegroundColor Gray
 Write-Host "  OTEL_EXPORTER_OTLP_ENDPOINT=http://127.0.0.1:4317" -ForegroundColor Gray
+Write-Host "  OTEL_EXPORTER_OTLP_PROTOCOL=grpc" -ForegroundColor Gray
 Write-Host "  OTEL_TRACES_EXPORTER=otlp" -ForegroundColor Gray
 Write-Host "  OTEL_METRICS_EXPORTER=otlp" -ForegroundColor Gray
 Write-Host ""

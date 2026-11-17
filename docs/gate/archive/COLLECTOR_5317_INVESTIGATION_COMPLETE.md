@@ -1,3 +1,4 @@
+<!-- markdownlint-disable MD013 MD022 MD031 MD032 MD034 MD040 -->
 # Windows Collector 5317 Investigation — RESOLVED
 
 **Date:** 2025-10-27 16:25:00 UTC  
@@ -92,7 +93,7 @@ otelcol_exporter_sent_spans{exporter="otlp"} 501
 ### 16:25 - API Key Test
 
 **Created:** `gate-029-proof-test` API key (Viewer role)  
-**Key:** `HB6zeFehlbXZ2mmi+F9jMUEDPDBXiYx61lRfpOlg5to=`  
+**Key:** `[REDACTED-SigNoz-test-key-expired-2025-10-28]`  
 **Tested:** Query-SigNozTraces function  
 **Result:** ✅ **API authentication working, proof artifact generated**
 

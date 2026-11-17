@@ -49,13 +49,13 @@ services:
     image: signoz/signoz:v0.96.1
     container_name: signoz-simple
     ports:
-      - "8080:8080"
+      - "127.0.0.1:8080:8080"
     volumes:
       - signoz_data:/var/lib/signoz
     environment:
       SIGNOZ_TELEMETRYSTORE_CLICKHOUSE_DSN: tcp://clickhouse:9000
       SIGNOZ_SQLSTORE_SQLITE_PATH: /var/lib/signoz/signoz.db
-      SIGNOZ_JWT_SECRET: 'local-signoz-jwt-secret'
+      SIGNOZ_JWT_SECRET: '${SIGNOZ_JWT_SECRET:?set SIGNOZ_JWT_SECRET in .env}'
       STORAGE: clickhouse
       DEPLOYMENT_TYPE: docker-local
     depends_on:
