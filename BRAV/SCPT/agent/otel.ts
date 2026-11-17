@@ -12,10 +12,12 @@ const sdk = new NodeSDK({
     'resonai.agent.role': 'local-workflow-custodian'
   }),
   traceExporter: new OTLPTraceExporter(), // honors OTEL_EXPORTER_OTLP_ENDPOINT
-  metricReader: new PeriodicExportingMetricReader({
-    exporter: new OTLPMetricExporter(),
-    exportIntervalMillis: 60000
-  })
+  metricReaders: [
+    new PeriodicExportingMetricReader({
+      exporter: new OTLPMetricExporter(),
+      exportIntervalMillis: 60000
+    })
+  ]
 });
 
 try {
