@@ -3,6 +3,11 @@
 
 Write-Host "Starting SigNoz Observability Stack..." -ForegroundColor Green
 
+# docker-compose.yml requires SIGNOZ_JWT_SECRET and ships no default (the old default was public).
+# On first start this writes a random value into .env next to the compose file; an existing value
+# is kept. A new value on a host that already runs SigNoz signs every session out (a rotation).
+& (Join-Path $PSScriptRoot 'BRAV/SCPT/security/ensure-signoz-signing-key.ps1') -EnvFile (Join-Path $PSScriptRoot '.env')
+
 # Start core services
 Write-Host "Starting ZooKeeper and ClickHouse..." -ForegroundColor Yellow
 docker-compose -f docker-compose.yml up -d signoz-zookeeper signoz-clickhouse
