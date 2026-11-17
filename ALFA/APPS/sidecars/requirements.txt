@@ -15,7 +15,9 @@ annotated-doc==0.0.5
 annotated-types==0.8.0
     # via pydantic
 anyio==4.15.1
-    # via starlette
+    # via
+    #   fastapi
+    #   starlette
 attrs==26.1.0
     # via aiohttp
 brotli==1.2.1
@@ -28,7 +30,7 @@ charset-normalizer==3.5.1
     # via requests
 click==8.5.0
     # via uvicorn
-fastapi==0.162.0
+fastapi==0.162.6
     # via -r requirements.in
 frozenlist==1.8.0
     # via
@@ -65,17 +67,17 @@ numpy==2.5.4
     #   tritonclient
 opentelemetry-api==1.45.2
     # via fastapi
-pandas==3.1.0
+pandas==3.1.1
     # via -r requirements.in
 propcache==0.5.4
     # via
     #   aiohttp
     #   yarl
-pydantic==2.14.1
+pydantic==2.14.3
     # via
     #   -r requirements.in
     #   fastapi
-pydantic-core==2.50.1
+pydantic-core==2.50.4
     # via pydantic
 python-dateutil==2.9.0.post0
     # via pandas
@@ -87,7 +89,7 @@ six==1.17.0
     # via python-dateutil
 starlette==1.7.0
     # via fastapi
-tritonclient==2.73.0
+tritonclient==2.74.0
     # via -r requirements.in
 typing-extensions==4.16.0
     # via
