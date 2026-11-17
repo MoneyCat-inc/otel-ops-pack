@@ -23,7 +23,7 @@
 #>
 [CmdletBinding()]
 param(
-    [string]$EnvFile = (Join-Path (Split-Path (Split-Path $PSScriptRoot -Parent) -Parent) '.env')
+    [string]$EnvFile = (Join-Path (Split-Path (Split-Path (Split-Path $PSScriptRoot -Parent) -Parent) -Parent) '.env')
 )
 
 $ErrorActionPreference = 'Stop'
