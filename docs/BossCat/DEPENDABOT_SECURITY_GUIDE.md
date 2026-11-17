@@ -23,12 +23,12 @@ repository. This guide covers:
 Located at `.github/dependabot.yml`:
 
 ```yaml
-# .github/dependabot.yml — grouped + weekly since 2026-09-01 (PR #696); sidecars dir added 2026-09-01 (#702)
+# .github/dependabot.yml — grouped + weekly since 2026-09-01 (PR #696); sidecars dir added 2026-09-01 (#701); deployment-pipeline dir retired (#943)
 version: 2
 updates:
   - package-ecosystem: "github-actions"   # directory "/", weekly, groups actions-all / actions-security
   - package-ecosystem: "pip"              # "/" and "/ALFA/APPS/sidecars", weekly, grouped
-  - package-ecosystem: "npm"              # "/", "/BRAV/SCPT/run-archiver", "/BRAV/INFR/deployment-pipeline", weekly, grouped
+  - package-ecosystem: "npm"              # "/" and "/BRAV/SCPT/run-archiver", weekly, grouped
 ```
 
 Each ecosystem has a `groups:` block that collapses version updates into one PR per interval and
@@ -41,7 +41,7 @@ weekly schedule). See the file for the exact blocks.
 |-----------|-----------|-----------------|
 | **GitHub Actions** | Weekly | `.github/workflows/*.yml` |
 | **Python (pip)** | Weekly, grouped (root + `ALFA/APPS/sidecars`) | `requirements*.txt`, `setup.py` |
-| **Node.js (npm)** | Weekly, grouped (root + 2 tool dirs) | `package.json`, `package-lock.json`, `pnpm-lock.yaml` |
+| **Node.js (npm)** | Weekly, grouped (root + `BRAV/SCPT/run-archiver`) | `package.json`, `package-lock.json`, `pnpm-lock.yaml` |
 
 ---
 
@@ -509,7 +509,7 @@ Escalate to **BossCat OEM** (security lead) if:
 
 ---
 
-**Last Updated**: 2026-09-01 (Dependabot config, #701); truth pass 2026-09-25  
+**Last Updated**: 2026-11-17 (Dependabot config: deployment-pipeline directory retired, #943); truth pass 2026-09-25  
 **Next Review**: Weekly  
 **Maintained By**: BossCat OEM Framework  
 **Status**: ✅ Production Ready
