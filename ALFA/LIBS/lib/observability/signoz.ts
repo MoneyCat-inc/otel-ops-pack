@@ -11,7 +11,8 @@ import { MeterProvider, PeriodicExportingMetricReader } from '@opentelemetry/sdk
 
 // SigNoz configuration
 const SIGNOZ_API_KEY = process.env['SIGNOZ_API_KEY'] || process.env['OTEL_EXPORTER_OTLP_HEADERS']?.split('=')[1] || '';
-const SIGNOZ_ENDPOINT = process.env['OTEL_EXPORTER_OTLP_ENDPOINT'] || 'http://localhost:4317';
+// OTLP/HTTP base URL: the exporter below speaks HTTP, so 4318, not the gRPC port 4317
+const SIGNOZ_ENDPOINT = (process.env['OTEL_EXPORTER_OTLP_ENDPOINT'] || 'http://localhost:4318').replace(/\/$/, '');
 const SERVICE_NAME = process.env['OTEL_SERVICE_NAME'] || 'resonai-backend';
 const SERVICE_VERSION = process.env['OTEL_SERVICE_VERSION'] || '1.0.0';
 const ENVIRONMENT = process.env['OTEL_ENVIRONMENT'] || 'development';

@@ -6,7 +6,7 @@
 
 import { readJsonFile } from './io';
 import { SQLiteQueueDB } from './db';
-import { getQueueConfig } from '../../lib/config/queue';
+import { getQueueConfig } from '../../../ALFA/LIBS/lib/config/queue';
 import { existsSync } from 'fs';
 
 export interface StatusOutput {

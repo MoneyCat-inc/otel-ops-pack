@@ -8,7 +8,7 @@
 import { readFileSync, existsSync } from 'fs';
 // import { join } from 'path';
 import { SQLiteQueueDB, Job } from '../db';
-import { QueueConfig } from '../../../lib/config/queue';
+import { QueueConfig } from '../../../../ALFA/LIBS/lib/config/queue';
 
 export interface JsonJob {
   id: string;
@@ -244,11 +244,11 @@ export class JsonToSQLiteMigrator {
  * CLI interface for migration
  */
 export async function runMigration(): Promise<void> {
-  const config = require('../../../lib/config/queue').getQueueConfig();
+  const config = require('../../../../ALFA/LIBS/lib/config/queue').getQueueConfig();
   const dbPath = '.agent/queue.db';
   
   console.log('Starting JSON to SQLite migration...');
-  console.log('Configuration:', require('../../../lib/config/queue').describeQueueConfig(config));
+  console.log('Configuration:', require('../../../../ALFA/LIBS/lib/config/queue').describeQueueConfig(config));
   
   const db = new SQLiteQueueDB(dbPath, config);
   const migrator = new JsonToSQLiteMigrator(db, config);
