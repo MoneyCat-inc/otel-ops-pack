@@ -154,7 +154,7 @@
 - **Success Rate**: 199.97% (excellent reliability)
 
 ### **Authentication & Security**
-- **API Token**: `eE5syxJUco90j8vq34YPlbHaUg3NpS0UUEYyCzgE7mc=` configured with read permissions
+- **API Token**: `[REDACTED-SigNoz-key-8abc66bc-see-ECRR-20261104]` configured with read permissions
 - **Webhook Security**: Local endpoint with proper authentication
 - **No Secrets Exposed**: All sensitive data properly managed
 - **Local-First**: No external cloud dependencies
@@ -196,7 +196,7 @@
 - **Status**: ✅ **HEALTHY** pipeline confirmed
 
 #### **3. SigNoz API Authentication**
-- **Token**: `eE5syxJUco90j8vq34YPlbHaUg3NpS0UUEYyCzgE7mc=`
+- **Token**: `[REDACTED-SigNoz-key-8abc66bc-see-ECRR-20261104]`
 - **Testing**: Authentication confirmed, webhook delivery verified
 - **Status**: Ready for dashboard import and alert configuration
 
