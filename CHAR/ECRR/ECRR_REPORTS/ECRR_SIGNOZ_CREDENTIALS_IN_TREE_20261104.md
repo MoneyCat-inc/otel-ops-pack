@@ -102,3 +102,55 @@ One lane per PR (CHARTER, Lane discipline). Nothing was merged by this seat.
 - **Kiro{Implementer} / Claude Code (local seat):** no part. F1 and F2 mint and rotate, so no implementer seat runs them.
 
 **Status:** OPEN. Closes when F1 and F2 are recorded as done (an addendum here) and the five PRs are merged. The tree is GREEN at that point by the proof in §2.
+
+## 5. Addendum (2026-11-17): merged; a sixth key; F1 and F2 widened; F4 answered
+
+Filed by Claude Code (local seat), which drove the merges on the operator's explicit go of 2026-11-16. The corrections come from the chat/review seat's review of 2026-11-16 and were re-checked here against files, git history and run logs. No value was read, searched for or displayed: every value is named by `sha256[:8]`, length, path and commit, as above. Nothing above this section is edited.
+
+**Merged.** Squash merges on 2026-11-17, one at a time, each after a branch update on GitHub and fresh checks on the updated head. The `Driving:` comment went on #909 at 00:00:52Z. The commits keep their `Actor:` lines as filed, and each squash body adds the `Driving:` line.
+
+| PR | Merge commit | Merged (UTC) | Note |
+| --- | --- | --- | --- |
+| #909 | `2c1b9a34` | 00:04:32 | first run of its PowerShell, below |
+| #910 | `f64e8b5d` | 00:12:13 | one fix commit by the driver, below |
+| #911 | `7238ed5a` | 00:17:01 | redaction inside frozen records: the operator's exception, on the precedent of #643 |
+| #913 | `d8dac859` | 00:21:01 | this report, merged as filed; the same exception for the five archived reports |
+| #914 | `2e4324a2` | 00:24:37 | the scan that can fail; its report is `ECRR_GITLEAKS_SCAN_CAN_FAIL_20261117.md` |
+
+- **#912 is superseded.** Its tree proof (`ace0ba2a`) was built on `729121a1`, and #914 and the log line move `docs/` again. The cascade's own mirror republish follows in a separate pull request, and #912 is closed after it. That republish cannot exist before this addendum and its log line are on `main`, so its tree proof is recorded in that pull request and not here.
+- **§2's end state holds for the tree only after that republish.** By path, line and hunk range, #909 replaced 12 of the 48 lines, #910 14, #911 7 and #913 8. The other 7 are the `CHAR/DOCS/docs` copies of the records #911 redacted, which still carry `c66026b5`, one line each.
+
+**The driver's part.** §4 says the local seat has no part and gives the operator "every merge". That was the position on 2026-11-04. On 2026-11-17 the local seat executed the five merges on the operator's explicit go, and GitHub records them under the operator's account, through which every seat acts. It also wrote these records, and before merging it ran what had never been run: no PowerShell in #909 or #910 had been executed by the authoring sessions or in review. It minted, read and rotated no credential. F1 and F2 stay with the operator.
+
+- #909, at the merged head `6ee36e8c`: the PowerShell parser reports 0 errors in the eight changed `.ps1` files. With `SIGNOZ_API_KEY` and `SIGNOZ_API_TOKEN` removed in a child process, `check-alerts.ps1` stops at line 1, before its request, with "SigNoz API key required: set $env:SIGNOZ_API_KEY (no key is stored in this script)."
+- #910: the helper resolved its default `-EnvFile` two directories up, which is `BRAV/.env`, a file Compose never reads. The driver's one fix commit, `df85bcdd`, changes that line to the repository root. The six helper checks then passed in a throwaway clone with dummy values (results in the comment on #910): a 64-hex value is written when none is set, an existing value is left unchanged, and nothing is written when the variable is set in the environment. `docker compose config -q` on the five compose files exits 1 with "required variable SIGNOZ_JWT_SECRET is missing a value" when the variable is absent, and exits 0 with a dummy.
+
+**F1 widened: a sixth API key, and "delete every key".** `.gitleaksignore` (#914) lists a sixth SigNoz API key that §1a does not have: `b4376d4d`, 44 characters, in history only.
+
+- `BRAV/SCPT/secrets/signoz.secrets.ps1:5`, from `3fdbd88d` (2025-10-09) until the file was deleted in `a88e155b` (2025-10-16).
+- `docs/BossCat/SHOWTIME_VIEWS_DEPLOYED.md:168`, from `be93df58` (2025-10-08); the file moved to `CHAR/DOCS/docs/BossCat/` in `3891847c` (2025-10-09) and was deleted in `8ba9cbfd` (2026-08-29).
+- Neither file is on `main` or on any branch tip. By blob identity, the tip trees of 50 of the 62 tags and of 505 of the 899 pull-request head refs still hold one or both files (measured on 2026-11-17).
+
+F1 therefore reads: delete every API key in SigNoz, including any that is not recognised. Six keys have been public. The replacement stays least-privilege, as F1 says.
+
+**F2 corrected.** F2 says that `git pull` and `start-signoz.ps1` recreate the container "with a fresh value", and that until then the AtLogOn task's `compose up` "fails closed". Neither holds on a host that still holds a value.
+
+- The helper never replaces an existing value. It writes nothing when `SIGNOZ_JWT_SECRET` is set in the process environment (its lines 31 to 34), and it leaves a non-placeholder `.env` line unchanged (lines 46 to 51). Compose prefers the environment over `.env`.
+- The logon task (`scripts/windows/ensure-signoz-stack.ps1`) runs `docker compose up -d` and never calls the helper. On a host with a value still set in the environment or in `.env`, the stack starts with the old secret and nothing fails.
+
+So a rotation first clears the old value from every scope and from the `.env` line, and closes every process that inherited it. Only then does `start-signoz.ps1` print "Generated SIGNOZ_JWT_SECRET into ...". If it prints "Nothing written" or "left unchanged", an old value is still set somewhere.
+
+**F4 answered by #914.** The scheduled scan now reads full history with markdown in scope, and a fixture harness proves on every run that the config can fail (`ECRR_GITLEAKS_SCAN_CAN_FAIL_20261117.md`). Option (b) is not taken. `BRAV/SCPT/security/pre-commit-hook.sh` greps the whole working tree, not the staged change, and exits 1 on any match of its name patterns or of a `your-...-here` placeholder. On `main` its name patterns match 56 tracked files and its placeholder check 25, `.env.example` and the compose lines of #910 among them, so the hook would refuse every commit. Nothing calls it today. Its list holds five fingerprints, not the sixth, and its comments call the keys "revoked", which no record supports yet.
+
+**F7, two additions.**
+
+- `README.md:52` still sends a fresh host to `docker compose pull` and `docker compose up`. The review found that both now fail closed without the helper; the driver measured the same refusal with `docker compose config -q` only. The go of 2026-11-16 has a docs-lane follow-up opened for this line and for the briefing line F7 names, so that a fresh host runs `start-signoz.ps1` before any compose command. It merges on its own go.
+- The retired, dispatch-only `stress-test-nightly.yml` runs `docker compose up -d` (line 43) and sets no `SIGNOZ_JWT_SECRET`, like the two workflows F7 names. No change to it is planned.
+
+**Ports.** #910 moved only the SigNoz UI and API to loopback: `127.0.0.1:8080:8080` in all five compose files. In the root `docker-compose.yml` the collector's 4317, 4318, 18888 and 18889 are still published on every interface (lines 188 to 191), and so is the demo app's 3001 when its `demo` profile is started (line 232). The four parked files under `compose/` publish further ports the same way. F3's "#910 closes the port to loopback" means 8080.
+
+**Five values that stay in the tree and are in no part of this report.** By `sha8` and length: `0b3dc10f` (56, `BRAV/SCPT/signoz-auth-helpers.ps1:7`), `f0eb808a` (30) and `5aa2092d` (26) in `BRAV/SCPT/agent/staged-failure-drill.ps1` and three alert JSON files under `DELT/CONF/config/`, `8b62e59e` (49, `scripts/legacy/ops/security-remediation-ngrok.ps1:26`) and `ee58f3d0` (29, `.agent/github-integration.ps1:54`). That is 12 lines in 7 files; §3c of the gitleaks report lists them. They are not covered by the go of 2026-11-16. After the rotation sitting the operator says live or dead for each and gives a separate go for changing the lines without displaying them.
+
+**Disclosure: the review's tooling.** From the chat/review seat's runbook of 2026-11-16. Its masking script missed three shapes: a value after the word Bearer, a value passed as a named PowerShell argument, and a quoted literal after `||`. Six review agents saw one or more of three values unmasked in their own tool output inside the cloud container: the old public JWT default (`7b2b10c7`) and the webhook secret and bearer (`f0eb808a`, `5aa2092d`). All three were readable on `main` at the time (2026-11-16). None reached the review seat's conversation, a report or GitHub; that rests on the runbook's statement and cannot be checked from this seat. The script now has a fingerprint deny-list: 8 of 66 known-value occurrences were left readable before, 0 after. Under the blast-radius rule the JWT default already owes its rotation (F2). For the two webhook values the operator's answer becomes "dead, recorded" or "rotated".
+
+**Verdict and status:** unchanged. **RED and OPEN for F1 and F2**: no revocation and no rotation is on record. The next addendum here records the operator's rotation sitting: its date, the comparison results and the Gate Nightly run. F3 stays with the operator.
