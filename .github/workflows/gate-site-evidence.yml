@@ -23,8 +23,6 @@ on:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 # Required Gate/Site contexts — do not cancel mid-run (branch protection).
 concurrency:
@@ -56,14 +54,14 @@ jobs:
           echo '<!DOCTYPE html><html><body><h1>Gate Test Server</h1></body></html>' > index.html
           pnpm dlx http-server . -p 3000 -s >/dev/null 2>&1 &
           for i in {1..10}; do curl -s http://localhost:3000 >/dev/null && break || sleep 1; done
-      - name: Install k6
+      # k6 comes from the pinned setup action, as in gate-026-performance.yml. The apt install this step
+      # replaced failed on ubuntu-26.04 (run 44153344159): apt ignored the keyring that gpg wrote.
+      # Pull-request runs skip this step.
+      - name: 🔧 Setup k6
         if: ${{ github.event_name != 'pull_request' }}
-        run: |
-          sudo gpg -k || true
-          sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
-          echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
-          sudo apt-get update
-          sudo apt-get install -y k6
+        uses: grafana/setup-k6-action@c47136d33d365efbeb9ae7266908b5dcf98cdece # v1
+        with:
+          k6-version: '0.57.0'
       - name: Run k6 perf
         if: ${{ github.event_name != 'pull_request' }}
         env:
@@ -189,8 +187,11 @@ jobs:
           name: ecrr-site
           path: artifacts/ecrr/site/
 
+  # The status bundle is a run artifact. It is not deployed to Pages: this repository's Pages site is the
+  # hub (deploy-hub.yml), and deploying status/ from here replaced the whole hub with two files
+  # (runs 41333286676 and 44153344159). Add no Pages deployment here.
   publish_status:
-    name: Publish status bundle to Pages (no trunk writes)
+    name: Publish status bundle as run artifact (no trunk writes)
     runs-on: ubuntu-latest
     needs: [gate_perf, gate_trace, site_checks]
     if: always()
@@ -209,8 +210,8 @@ jobs:
           SITE=$(cat out/site/site-verdict.json 2>/dev/null || echo '{"links":"HOLD","a11y":"HOLD","csp":"HOLD"}')
           echo "{\"gate\":{\"perf\":\"$PERF\",\"trace\":\"$TRACE\"},\"site\":$SITE}" > status/LATEST.json
           printf "# Gate & Site Evidence\n\n- Gate/perf: %s\n- Gate/trace: %s\n- Site: %s\n" "$PERF" "$TRACE" "$SITE" > status/LATEST.md
-      - uses: actions/upload-pages-artifact@v5
-        with: { path: status }
-      - id: deploy
-        if: ${{ github.event_name != 'pull_request' }}
-        uses: actions/deploy-pages@v5
+      - uses: actions/upload-artifact@v7
+        with:
+          name: ecrr-status
+          path: status
+          retention-days: 14
