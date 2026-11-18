@@ -32,7 +32,7 @@ updates:
   # Sidecar requirements outside the root manifest. Found 2026-09-01 via Dependabot
   # alert triage: the requests>=2.32 floor sat in two vulnerable ranges (PYSEC-2026-2275,
   # PYSEC-2026-1872) with no fix PR possible because this directory was unwatched —
-  # same gap class as the nested npm dirs below (2026-08-23 audit).
+  # same gap class as the nested npm dir below (2026-08-23 audit).
   - package-ecosystem: "pip"
     directory: "/ALFA/APPS/sidecars"
     schedule: { interval: "weekly" }
@@ -55,9 +55,10 @@ updates:
         applies-to: security-updates
         patterns: ["*"]
 
-  # Nested npm lockfiles outside the root workspace. Found in the 2026-08-23 audit: 10 of the
-  # 12 open high-severity Dependabot alerts lived in these two and could never get PRs because
-  # only "/" was watched. Weekly is enough - they are small tool dirs, not the app.
+  # Nested npm lockfile outside the root workspace. Found in the 2026-08-23 audit: 10 of the
+  # 12 open high-severity Dependabot alerts lived in two such directories and could never get
+  # PRs because only "/" was watched. Weekly is enough - it is a small tool dir, not the app.
+  # The second directory, /BRAV/INFR/deployment-pipeline, has been retired.
   - package-ecosystem: "npm"
     directory: "/BRAV/SCPT/run-archiver"
     schedule: { interval: "weekly" }
@@ -66,16 +67,5 @@ updates:
         applies-to: version-updates
         patterns: ["*"]
       archiver-npm-security:
-        applies-to: security-updates
-        patterns: ["*"]
-
-  - package-ecosystem: "npm"
-    directory: "/BRAV/INFR/deployment-pipeline"
-    schedule: { interval: "weekly" }
-    groups:
-      pipeline-npm-all:
-        applies-to: version-updates
-        patterns: ["*"]
-      pipeline-npm-security:
         applies-to: security-updates
         patterns: ["*"]
