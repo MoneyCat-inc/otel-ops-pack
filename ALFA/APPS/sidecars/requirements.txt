@@ -30,7 +30,7 @@ charset-normalizer==3.5.1
     # via requests
 click==8.5.0
     # via uvicorn
-fastapi==0.162.6
+fastapi==0.163.1
     # via -r requirements.in
 frozenlist==1.8.0
     # via
