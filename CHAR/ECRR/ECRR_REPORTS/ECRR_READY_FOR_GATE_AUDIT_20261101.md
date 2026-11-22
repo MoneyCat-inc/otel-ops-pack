@@ -270,3 +270,230 @@ Claude Code (local seat): verification and PR only. Worktree in the session scra
 Recommend the go on **#886** (with this section), then **#887** (one update-branch, `docs_gate` re-run), then the mirror republish PR with the tree-OID line. Then, in order: an addendum to `ECRR_ACTIONS_BILLING_LOCK_20261101.md` (OSV on `main`, "October rollup", the derivation of 126); the N1 decision on the required set; the two leftover `claude/*` branches (operator delete); the three cards as corrected in §6d. Overnight at 04:17Z on 11-02 none of Gate Nightly 398, the gitleaks cron, Trivy's 03:00Z or the registry-drift check had reached its delayed slot; the archiver has fired twice. Verdict **AMBER, unchanged**. N1 does not move it only because the three contexts were never the proof of anything — the same class as the OSV lane before 09-23 — and it is listed here so that the required set stops being read as one.
 
 **Role.** Claude (chat/review) as OEM review seat, from the remote container: read-only against GitHub and the tree; one scratch worktree for the TS 6.0.3 run, removed; nothing merged, nothing posted to GitHub, nothing changed on any host. Merge on `@fubumaki`'s go.
+
+## 7. Closing addendum — Claude Code (local seat), from the notes of Claude (chat/review), 2026-11-21
+
+**Why this section exists.** The operator's go of 2026-11-16 for the wrap-up put this addendum last and made its filing wait for the operator's word, which came on 2026-11-20. The local seat wrote it from notes that the chat/review seat wrote on 2026-11-20 with read access to this repository only. The local seat checked those notes against GitHub (pull requests, workflow runs, jobs, job logs, issue #849, the required checks) and against the tree at `f3621983`, on 2026-11-20 and 2026-11-21. A statement it could not check is either marked as the review seat's own or left out and listed in 7f. The operator's instructions in this wrap-up were dated texts given in session: the go of 2026-11-16, then answers from 2026-11-17 to 2026-11-20. They are not in this repository and are named here by their dates. §1–§6 are left as written.
+
+### 7a. The three closing conditions of §4, as they stand on 2026-11-21
+
+| Condition (§4) | State on 2026-11-21 | Record |
+|---|---|---|
+| P1-1 "has a live prune on record" | **Met.** One live run at 120 days on 2026-11-18: 4,246 files deleted, proven by the evidence commit. | §5 of `ECRR_EVIDENCE_PRUNE_TIMEOUT_20261102.md` (#949, `bef0d8d0`) |
+| P1-2 "has a GREEN `latest.json` or a logged pause" | **Met by a logged pause, not by a drill.** Issue #849 is still open. | The pause line of 2026-11-17T13:46Z in the log, headed "CLEAN-HOST E2E GATE: PAUSED" (#938, `d3a35db7`) |
+| P1-3 "has `jest` executing tests under a push workflow" | **Met.** | `ECRR_TS7_JEST_TOOLCHAIN_20261102.md`, closed for P1-3 on 2026-11-03; push run 42041908973 |
+
+- **P1-1.** `evidence-retention-prune.yml` ran once live: dry run 44365006036 and live run 44365311410, both on `main` at `b8428c4d` with `retain_days=120`, created 98 seconds apart, inside the window from 17:49Z to 19:49Z that the go set between the archiver's scheduled runs. The dry run skipped its push step, and the live run's push step succeeded. Both manifests list the same 4,246 files: 40 under `archived/2026/06` and 4,206 under `archived/2026/07`. The evidence commit is `672855ede4b5f64800b482bbcb2e989400a67cb1`. The fix was #893 (`94472891`) and #896 (`f4a6ad79`). The review seat read both runs' steps on GitHub. The evidence repository and the manifests are the local seat's reading, and §5 of the prune report says how the job summary was read: in the job log, not by sight. Open by design: the month-dating decision (7e).
+- **P1-2.** The pause line records that the operator paused the drill on 2026-11-16, 85 days after the last GREEN, to run it by 2026-12-07, after #910 is on `main`. `CHAR/EVID/clean-host/latest.json` still reads 2026-08-23, GREEN, collector 0.159.0. It is 90 days old on 2026-11-21, against the 31-day cadence, and it predates #910. Issue #849 is open (read on 2026-11-21). By the go, the pause has lapsed if 2026-12-07 passes without a drill.
+- **P1-3.** #894 (`47adf97a`) and #895 (`0e2339c5`) restored jest and tsc and added the unit job. Push run 42041908973 of BossCat Gate Verification on `main` at `37c0f6a3` (2026-11-05) has unit job 127294596437 with its jest, node --test, tsc and ESLint steps success. In this wrap-up the unit job ran on the checked head of each of the 14 code-lane and CI-lane pull requests (#909, #910, #914, #934, #889, #933, #891, #935, #936, #943, #945, #946, #948, #962): each time jest 5 suites and 126 tests, node --test 17 tests, and the tsc and ESLint steps success. The ESLint step fails only when ESLint cannot run. Still true: the unit job is not one of the seven required checks.
+
+**Verdict.** Read by the three conditions alone, the audit would now close to GREEN: §4 accepts a logged pause for P1-2, and all three conditions are met on 2026-11-21. **It does not close. The operator ruled on 2026-11-20 that the verdict stays AMBER**, in these words: "By its own three conditions the audit has no open P1, but two things are open that a green gate would be read to cover: the SigNoz values that were public are not yet rotated, and the clean-host proof is paused, not run. It turns GREEN when both are on record, and that line is mine to give." The ruling adds two conditions that §4 does not carry: the rotation on record, and a clean-host run where §4 accepts a pause. A gate verdict is the operator's call. This section records the ruling and does not decide it.
+
+One fact of this report stands beside the ruling. §6c raised a fourth finding rated P1: N1, three of the seven required checks cannot fail on a pull request. It is not one of the three closing conditions, §6e says it does not move the verdict, and it is still open as the operator's decision (7e).
+
+**What this section does not claim.**
+
+- That credentials are out of the tree. Five credential-like values were on 12 lines in 7 files on 2026-11-17 (F3 of `ECRR_GITLEAKS_SCAN_CAN_FAIL_20261117.md`, still open), and no commit since has touched those seven files. No revocation and no rotation of the SigNoz values that were public is on record (F1 and F2 of `ECRR_SIGNOZ_CREDENTIALS_IN_TREE_20261104.md`, RED and OPEN).
+- That OSV-Scanner is green. It is red on `main`, with one row (7c).
+- That the k6 step of the repaired `gate-site-evidence.yml` works. It has not run: no dispatch has been allowed (`ECRR_GATE_SITE_EVIDENCE_NO_PAGES_20261119.md`, AMBER and OPEN).
+- That the hub deploy fix is proven. Why the deploy step found no artifact is not established (`ECRR_DEPLOY_HUB_TWO_JOBS_20261120.md`). The two-job file has run five times, each time deploying at its first attempt.
+- That the clean-host gate passed. It is paused.
+
+### 7b. What reached `main` since §6
+
+§6 was written against the tree at `50afce78`. `main` is at `f36219834d308be788e1addcbb138fc69d750c98` (2026-11-20T20:04:36Z), 66 commits later. Every one of them has a single parent.
+
+**2026-11-02 to 2026-11-05: 31 commits, `397bd5b6` to `37c0f6a3`.**
+
+| Date | Pull requests (commit) | What |
+|---|---|---|
+| 11-02 | #886 (`397bd5b6`), #887 (`276019f8`), #888 (`f1110171`) | This audit, its log line, the mirror |
+| 11-03 | #893 (`94472891`), #896 (`f4a6ad79`) | P1-1: the prune dates undated run reports in one `git log` pass; the workflow's push retries and fails without a manifest |
+| 11-03 | #894 (`47adf97a`), #895 (`0e2339c5`) | P1-3: jest and tsc run again under TypeScript 7; the unit job on pushes and pull requests |
+| 11-03 | #897 (`0054eea5`), #898 (`a3704676`), #899 (`06f16466`), #901 (`729121a1`) | Reports for both, log line, mirror |
+| 11-04 | #900 (`e7140592`), #903 (`82d1040b`), #904 (`63927bfa`), #906 (`8542c978`), #907 (`e4d60b5d`) | Agent scripts' imports and metric reader; OTLP/HTTP metrics to port 4318; the .NET recipes; ESLint 10 with a flat config; ESLint in the unit job |
+| 11-04 | #902 (`24a1fd4b`), #905 (`d5c5509a`), #908 (`c81c351b`), #916 (`682d6093`), #917 (`3517db89`), #918 (`62630d95`) | Their reports and addenda, log line, mirror |
+| 11-05 | #919 (`17acdd00`), #920 (`07a4e522`), #924 (`675668a5`) | A comment on the ESLint step; dated banner notes on an IONA document |
+| 11-05 | #921 (`e2a773be`), #922 (`0172ec20`), #923 (`1f4e76d5`), #925 (`271817fb`), #926 (`e74d42f4`), #927 (`37c0f6a3`) | Addenda, log lines, mirrors |
+
+Nothing reached `main` between `37c0f6a3` (2026-11-05T14:07Z) and the first merge of the wrap-up (2026-11-17T00:04Z).
+
+**The wrap-up, 2026-11-17 to 2026-11-20: 35 commits, merged by the local seat as driver on the operator's go of 2026-11-16 and the answers that followed it.**
+
+| Group | Pull requests (commit) |
+|---|---|
+| Security cascade, 11-17 | #909 (`2c1b9a34`), #910 (`f64e8b5d`, with the local seat's one fix commit `df85bcdd`), #911 (`7238ed5a`), #913 (`d8dac859`), #914 (`2e4324a2`); #912 closed as superseded, not merged |
+| Its records | #937 (`55959da6`), #938 (`d3a35db7`), #939 (`6a91e1b8`) |
+| Dependabot cascade, 11-17 | #934 (`624faea2`), #889 (`aca8dea3`), #933 (`c276a793`), #891 (`d6f55e6f`), #935 (`527435a6`), #936 (`60e2c9d3`) |
+| Its records | #941 (`39ac4f98`), #942 (`b8428c4d`) |
+| Prune records, 11-18 | #949 (`bef0d8d0`), #950 (`33ec407a`), #951 (`4e49bca4`) |
+| Follow-ups, 11-18 to 11-20 | #943 (`f94ea999`), #944 (`f12958d9`), #945 (`4c376136`), #946 (`ee275901`), #947 (`d5b54848`), #948 (`852cd8fa`), #962 (`065cb3cc`) |
+| Their reports | #958 (`0aeabaf0`), #956 (`2a9f5a3a`), #955 (`ea76c1ad`), #959 (`ba74fcb5`), #960 (`472129a3`), #961 (`f2e3ec50`), #964 (`f3621983`) |
+| Batch log line and mirror | #963 (`2c331bc0`), #965 (`2c00bd32`) |
+
+- Each of the 35 is a squash whose tree is the tree of the pull request head on which the checks ran. The local seat compared the two trees for every one of them on 2026-11-20.
+- For the 26 of them whose head the go or an answer names, the local seat also compared every file the squash changes with the same file at the named head, by blob id. They are identical in 22. In #909 (one file), #910 (two) and #914 (two), GitHub's Update-branch merge brought `main`'s changes into files that the pull request also changes. A third file of #910 differs by the local seat's fix commit. In #955 the report took the one further commit that an answer of 2026-11-19 asked for. Between the named head and the merged head no branch holds anything but GitHub's Update-branch merges and these two commits, except that Dependabot rebased #935 onto a later `main`, with the same content in every file it changes.
+- The review seat reports its own comparison, for every squash of the cascades and the follow-ups, of the files the pull request changes with the head it had reviewed or the go had named: same files, same blobs. Against the named heads that holds with the differences of the bullet above.
+- At `f3621983`, `docs` and `CHAR/DOCS/docs` are the same tree, `74200bcf`.
+- What each change did, and what it left open, is in its own report and in the log lines of 2026-11-17T13:46Z, 16:59Z and 22:09Z, of 2026-11-18T16:56Z and 20:25Z, and of 2026-11-20T18:47Z.
+
+### 7c. Alerts and OSV rows
+
+**Alert counts.** These are the local seat's readings: counts and tool names with the three commands of the wrap-up's runbook and, from 2026-11-18, the numbers of Dependabot and code scanning alerts (7d). A secret scanning alert is never listed or opened.
+
+| Read (UTC) | Dependabot | Code scanning | Secret scanning |
+|---|---|---|---|
+| 2026-11-16, before the wrap-up | 7 | 13 | 0 |
+| 2026-11-17 13:57, after the security cascade and its records | 6 | 12 (osv-scanner) | 0 |
+| 2026-11-17 22:07, after the Dependabot cascade | 5 | 13 (osv-scanner) | 0 |
+| 2026-11-18 21:02, after #943 to #945 | 0 | 3 (osv-scanner 2, CodeQL 1) | 0 |
+| 2026-11-19 04:31, after #946 | 0 | 1 (CodeQL: alert 11432) | 0 |
+| 2026-11-19 22:00, after the dismissal of alert 11432 | 0 | 1 (osv-scanner: alert 11433) | 0 |
+| 2026-11-20 18:41, 18:52 and 20:10 | 1 (alert 632) | 1 (osv-scanner: alert 11433) | 0 |
+| 2026-11-21 03:49 | 1 (alert 632) | 1 (osv-scanner: alert 11433) | 0 |
+
+- CodeQL alert 11432 (`js/log-injection`) opened with the merge of #943, in a test helper that the change did not touch. The local seat dismissed it on 2026-11-19 at 21:48:39Z as "used in tests", on the operator's instruction of that day. Alert 11433 opened at 21:56:04Z, before the next reading, so no reading with all three counts at zero exists.
+- Alerts 632 and 11433 are one advisory: GHSA-7589-6fvf-x4pw (CVE-2026-121707, high, published 2026-11-19T20:51Z) for `effect` 3.20.0, fixed in 3.22.1. In the lock only `@prisma/config` 7.10.1 depends on `effect`. No merge of the wrap-up brought the version in: it was in the lock at `37c0f6a3`, before the wrap-up, and at `50afce78`.
+
+**OSV-Scanner rows on `main`,** read row by row by the local seat from 2026-11-17 on:
+
+- 13 in the review seat's runbook of 2026-11-16, then 12 before the Dependabot cascade (run 44097664623). The security cascade changed no lockfile, so that move is advisory data.
+- 15 in the five runs between the Dependabot cascade's merges: #934 removed one row and advisory data added four. 13 after #936 (run 44152364568).
+- 10 on 2026-11-18 (run 44386644307): three rows had gone by advisory data alone.
+- 3 after #943 (run 44393679640), 2 after #945 (run 44395911508).
+- None after #946. Run 44458070265 (2026-11-19T04:24Z) was the first green OSV-Scanner run on `main` since run 36148970175 of 2026-09-25, and four more green runs followed that morning.
+- One row since run 44623596172 (2026-11-19T21:55Z): the `effect` row above. OSV-Scanner has been red on `main` in every run since, run 44808037188 of 2026-11-20 20:04Z included.
+
+**Credential-like values.** The review seat's notes say: "Known SigNoz and JWT values on main: 0 lines by the review seat's fingerprint scan", and "Five other credential-like values are still on main: 12 lines in 7 files". The local seat did not repeat that scan: the operator's go and answers keep it from opening those lines. What it can say is this. The five are on record as F3 of the gitleaks report. §3c of that report describes them as an earlier `SIGNOZ_JWT_SECRET` value, a webhook secret, a webhook bearer, an ngrok-authtoken shape and a second webhook secret. No commit of the wrap-up touched the seven files that hold them. So the earlier `SIGNOZ_JWT_SECRET` value is still in the tree.
+
+### 7d. Corrections and disclosures
+
+**Carried from the review seat's runbook of 2026-11-16.**
+
+- On 2026-11-02 the chat/review seat merged #886, #887 and #888 on the operator's go, although `docs/BossCat/CHARTER.md` (lines 62–63) says that seat cannot merge. GitHub shows the operator's account for every seat, so this rests on the seats' own record. In this wrap-up the local seat drove every merge.
+- The squash commits of #909, #910, #911 and #913 carry `Actor: Claude (chat/review seat), cloud session`, and that of #914 carries `Actor: Claude (chat/review seat), from a remote container on the operator's request`. These lines name the chat/review seat, which the charter describes as a reviewing and drafting seat that cannot merge (lines 62–63), for changes written in cloud sessions; the review seat's runbook adds that the charter has no seat for those. The operator kept the lines as filed. #910 also carries the local seat's Actor line for its fix commit.
+- The review seat reports that its masking script missed three shapes, and that six of its review agents saw up to three values in their own tool output. All three were already public: the old JWT default and two webhook values. It reports that none reached its conversation, a report or GitHub, and that the script now has a fingerprint deny-list.
+- The rotation steps of 2026-11-04 were tightened: delete every API key, because six have been public, and clear the old JWT value from every scope before the helper runs (§5 of the SigNoz report).
+
+**The review seat's own errors in this wrap-up, as it reports them.** Where the local seat could check a point against GitHub or the tree, it says "checked".
+
+1. Its runbook said that no CI lane runs the OpenTelemetry SDK. That is too wide. The sentence went into the squash body of #936 (checked) and is corrected in the log line of 2026-11-17T22:09Z (checked). The runbook also counted fifteen `@opentelemetry` packages in #936 where there are sixteen (checked: the same log line).
+2. Its predictions of the OSV rows went stale as advisory data moved. The measured rows are in 7c.
+3. An interim note of its gave 122 days and 2026-12-01 for the prune, where the go says 120 days and 2026-11-29.
+4. Its first answer to the OSV stop of 2026-11-17 was flawed. The answer that the operator adopted at 16:59Z that day replaced it.
+5. It proposed the dispatch of `gate-site-evidence.yml`, in a supplement of 2026-11-16 to the go, without reading that the workflow's publish job deployed to Pages. That dispatch (run 44153344159) replaced the hub from 18:58Z to 22:32Z on 2026-11-17 (checked: log line of 2026-11-18T16:56Z and the report of #948).
+6. An answer of 2026-11-19 had the operator say that CodeQL alert 11432 was dismissed when it was not. The local seat held #955 for it, and the operator's next answer corrected it (checked: the alert was dismissed only then, 7c).
+7. It told the operator that OSV-Scanner would be green "for the first time". The last green run was on 2026-09-25. The phrase stands in the squash body of #946 (checked) and is corrected in `ECRR_GLOB_OVERRIDE_20261119.md` and in the log line of 2026-11-20T18:47Z.
+8. It reviewed the diff of #948 but not its description. The description's fault is the local seat's (below).
+9. An answer of 2026-11-19 allowed one re-run of a failed Deploy Hub Website job. In a one-job workflow the re-run uploaded a second artifact and failed (checked: run 44694482152, second attempt). The operator withdrew that permission on 2026-11-20.
+10. Two rules it had drafted contradicted each other for alerts that mirror an advisory-only OSV row: one in the answers of 2026-11-18 and one in the first answer of 2026-11-19. A later answer of 2026-11-19 settled it.
+11. One of its status notes carried a time label that was an estimate, 11 minutes off.
+12. It reports that panels of independent review agents checked the go of 2026-11-16 and the answers of 2026-11-18 before the operator received them, and that it wrote the answers of 2026-11-19 and 2026-11-20 alone, without such a panel. Each answer became the operator's when the operator adopted it in session. Its notes say that three of those answers carried the faults above. The local seat finds the faults of points 6, 9 and 10 in two of them, the first and the third answer of 2026-11-19; one of the two rules of point 10 is in the answers of 2026-11-18.
+
+**The local seat's own.**
+
+1. The OSV stop of 2026-11-17 (log line of 2026-11-17T16:59Z). OSV run 43984631421 (00:05Z, after #909) carried a row that the runbook did not list, `next` 16.4.3. The local seat read OSV runs by their conclusion, not by their rows, merged #910, #911, #913 and #914 and dispatched gitleaks. It first read the row at 13:12:37Z and entered it as known in its merge tool. Then it merged the records #937 to #939, closed #912 and commented on #849, before it recorded the stop at 13:58Z and reported it at 14:00Z. No merge changed a lockfile.
+2. Its stop report of 2026-11-17T19:00Z on the failed dispatch (run 44153344159) named the failed job and said that the Pages publish had succeeded. It did not say what the publish had replaced: the hub. The operator's "Yes, go on" of 20:40Z was given without that fact. One of the local seat's own review agents, checking the draft of the log line, found the hub's root answering 404 at 21:07Z. Its output reached the session at 21:59Z, and the local seat told the operator at about 22:00Z. On 2026-11-18 the operator ruled that a stop report lists every job with what it changed outside the run, and that a fact left out or wrong that could have changed the answer reopens the stop.
+3. On 2026-11-18 two of its review agents ran searches whose path scope took in files that hold leftover values. The searches returned file names only; no line was printed or opened. One agent ran a read-only git command in the operator's checkout, which the go keeps untouched. One agent's output showed a commit author's e-mail address. On 2026-11-19 the operator ruled that those files are excluded by path in everything given to an agent.
+4. A usage limit stopped the seat from about 18:50Z to 19:59Z on 2026-11-18 and left it without review agents that evening. The seat alone re-read the two log lines of #950, and the review seat read them after the merge.
+5. Its alert reads go beyond the runbook's counts: number, tool, rule, rating and package name, for Dependabot and code scanning. The operator accepted that on 2026-11-19. Secret scanning stays a count. It dismissed one alert, 11432, on the operator's instruction: an exception to the go, which keeps dismissals with the operator.
+6. The heading of its log line for the security cascade (2026-11-17T13:46Z), "SIGNOZ CREDENTIALS OUT OF THE TREE", is too wide. The same line records five values still in the tree (F3 of the gitleaks report). The log is not edited; this is the correction.
+7. It wrote the two wrong sentences of points 1 and 7 above into the squash bodies of #936 and #946 without checking them.
+8. Its description of #948 says that the k6 setup action "has never run on Ubuntu in this repository". The action's `v1` tag ran there once, on 2026-07-24 (run 30115733634); the pinned commit has run only on Windows. The report of #948 carries the correction.
+9. Before the merges of #889 and #933 its consistency check of the pip pins could not fail on a `>=` floor. A check of every floor against its pin passed afterwards (log line of 2026-11-17T22:09Z).
+10. On 2026-11-18 it posted its proof logs as comments on #945 and #946 on the review seat's yes, which had reached it in a pasted note without words of the operator's own. The operator let the comments stand that day.
+11. Its report of #948 (`ECRR_GATE_SITE_EVIDENCE_NO_PAGES_20261119.md`, §1 and §4) says that the chat/review seat found the hub outage of 2026-11-17. The local seat's record of that evening says otherwise (point 2), and the log line of 2026-11-17T22:09Z has it as it was: found in the review of that line. The report is not edited; this is the correction.
+
+**Two questions of the operator's of 2026-11-18, for the record.** The local seat answered both in session on 2026-11-18 at 16:20Z. The operator's word of 2026-11-20 puts the answers here.
+
+- *The supplement that the log line of 2026-11-17T22:09Z cites.* That line cites points 1 and 3 of a "supplement to the operator's answer on the OSV stop". It was one text of four points, and the wording was the local seat's. The operator's answer listed 12 known rows. Four advisory-only rows outside them, three picomatch rows under GHSA-fc5q-39xc-vjpf and `next` 16.4.3 under a second advisory, GHSA-vc7v-qv4w-wrv8, are named in the supplement and in the log line of 2026-11-17T22:09Z. A review that the local seat ran on the operator's answer had found three cases that the answer did not cover: four new advisory-only rows, failed update jobs of Dependabot's own, and a conflict between sections 3 and 5 of the go. The local seat wrote the four points for them, points 1 and 2 for the first case, and put them to the operator at 17:07:54Z on 2026-11-17 with the words "If you would rather have the review seat word this, paste this message to it; I hold meanwhile". It asked again at 17:44:38Z. The operator adopted them at 17:51:51Z with "Yes, I adopt it", and the first merge of the Dependabot cascade, #934, followed at 17:58:37Z. Points 1, 3 and 4 each narrow what stops the local seat, the seat that worded them. Point 1 makes advisory-only rows known rows. Point 3 settles whether a failed update job of Dependabot's own is a stop: for two directories it is not, and for any other it is. Point 4 settles the conflict between sections 3 and 5 of the go in favour of section 3, so that a pull request after #934 that Dependabot rebases, replaces or closes does not halt the cascade. Point 2 widens the stop for `next` after #936 to every advisory, so that point 1 cannot exempt it. The review seat's notes say that it has never seen the text, so the four points as worded were adopted without that seat's read. The rule of point 1 had come from that seat: point 1 restated a point of its first answer, which had reached the session in a pasted note at 15:48:58Z and which the adopted answer replaced. On 2026-11-18 the operator replaced the test of point 1 by one against `b8428c4d`, and widened point 3: none of Dependabot's own runs is a stop. Word for word:
+
+  > Supplement to my answer of 2026-11-17 (same scope, same rules):
+  >
+  > 1. Advisory-only rows. An OSV row is also a known row when the package version it names was already in that lockfile at `37c0f6a3`, so that it comes from advisory data alone. Check that against the lockfile at `37c0f6a3`, and name each such row with its advisory id in your next report and in the cascade's log line. Today these are picomatch 2.3.2 and 4.0.7 in `pnpm-lock.yaml`, picomatch 2.3.2 in the deployment-pipeline lock (all GHSA-fc5q-39xc-vjpf), and `next` 16.4.3 under GHSA-vc7v-qv4w-wrv8. A row for a version that one of your merges brought in is still a stop, unless point 1 of my answer covers it as a version move.
+  > 2. Point 2 of my answer holds for every `next` row, whatever its advisory: if the first OSV run after PR 936 lists `next` at all, stop.
+  > 3. Dependabot's own update jobs (runs with event `dynamic`). A failed one for the root directory or for `BRAV/INFR/deployment-pipeline` is not a stop: both have security updates that fail for cause and that no pull request under this go repairs. Name each with its run id in your next report. A failed Dependabot job for any other directory or ecosystem is a stop. The two failures on `2e4324a2` after #914 (43987423504 and 43987425624) stand.
+  > 4. If Dependabot rebases, replaces or closes PR 889, 933, 891, 935 or 936 during the cascade, section 3 of my go governs, not section 5: the same list on a new head is covered once its checks are green; otherwise leave that pull request, tell me at once, and carry on with the others in order.
+
+- *The two times on record for the unlisted OSV row.* The local seat's report of 14:00Z on 2026-11-17 said that it had learned of the row at 00:44Z. That was wrong. 00:44Z is the time stamp that one of its fact-gathering agents put on its fact sheets; the agent had the row in its own output at 00:20:42Z and noted at 00:46:38Z that the runbook does not list it, and the local seat read those sheets only between 13:16Z and 13:22Z. The local seat first read the row itself at 13:12:37Z, when its own command printed the table of OSV run 43987393200. It gave the operator the corrected account at 16:16Z that day. No file on `main` carries the wrong time, and the squash body of #941 has 13:12:37Z.
+
+**Relay.** A block of ten points, which the review seat dates 2026-11-18 01:00Z, never reached the local seat. The operator's answers of 2026-11-18 say that nothing in it was in force.
+
+**Not established.**
+
+- Why CodeQL alert 11432 opened with the merge of #943. `ECRR_DEPLOYMENT_PIPELINE_RETIRED_20261118.md` gives a reading, not proven by a run.
+- Why the Deploy Hub Website deploy step found no artifact on 2026-11-19 and 2026-11-20, and whether the two-job split of #962 always prevents it.
+
+### 7e. Carried after the wrap-up
+
+**Dated.**
+
+- 2026-11-23 17:00 UTC: the go's cover for the rotation records lapses. After it they need a new go.
+- 2026-11-25: the Q4 quarterly upgrade check (§3). The operator decides whether the Dependabot cascade counts toward it.
+- 2026-12-01 02:00 UTC: the monthly evidence rollup. Its Report step still names `${MONTH}.tar.gz` where the archive is `evidence-rollup-${MONTH}.tar.gz` (§6c N8; checked).
+- 2026-12-07: the clean-host pause ends (#849). `ECRR_START_SIGNOZ_BEFORE_COMPOSE_20261118.md` closes with a clean-host run made after #910.
+- 2026-12-09 to 2026-12-23: `EVIDENCE_REPO_TOKEN` r3 turns amber, then expires. Minting r4 is the operator's.
+- Before 2027-01-01 06:00 UTC: the month-dating decision. From §5 of the prune report: by commit date the deleted files were 109.7 to 117.2 days old, and 31,118 files between 90 and 120 days old were left for the scheduled run of that day, which runs at 90 days.
+- With no end date: nobody re-runs `gate-site-evidence.yml` runs 41333286676 and 44153344159, because a re-run uses the old workflow file and would deploy to Pages again (the operator's ruling of 2026-11-19). And the local seat re-runs no Deploy Hub Website run of the one-job file, runs 44624637058 and 44694482152 among them, and never a whole run or its build job (the operator's rulings of 2026-11-20).
+
+**Operator, at the keyboard.**
+
+- The SigNoz rotation sitting. Until the operator reports it done, #910 does not reach the operator's checkout on the host. Its records follow it: F1 and F2 on the SigNoz report, an addendum on `ECRR_OTLP_HTTP_DEFAULT_PORT_20261103.md` (AMBER until then), the rows of `docs/BossCat/CREDENTIAL_ROTATION_CALENDAR.md` (line 27 still reads `TBD | TBD`), the log line and the mirror.
+- The clean-host drill. It is also the first clean-clone proof of #910. `start-signoz.ps1` waits for ClickHouse without a limit (lines 17 to 24), and `scripts/windows/invoke-clean-host-e2e.ps1` (line 237) fails the phase only when the step was aborted, so a compose failure shows as a hang.
+- Three branches to delete: `claude/cloud-agent-pr-694-eilzo9` and `claude/confident-mayer-92ba2l`, both 0 commits ahead of `main`, and the branch of the closed #928. All three were read on 2026-11-21.
+- Archiver run 43097684277, queued since 2026-11-11 with no job. GitHub refused the local seat's one cancel on 2026-11-17, and the run was still queued on 2026-11-21.
+- Carried unchanged: the 24-hour `vhdx_gb` read (P2-4); which meter produced the invoice, for the billing-lock report; unregistering the three `Resonai-*-Weekly-Maintenance` tasks; `QUIL_API_KEY` (§6c N5); "Require linear history" on the evidence repository.
+
+**Operator, decisions.**
+
+- The line that turns this verdict GREEN (7a).
+- A proof dispatch of `gate-site-evidence.yml`. None is allowed until the operator says so. On `main` the file uploads four run artifacts, has no deploy step and no Pages permission, and pins k6 0.57.0 through the setup action (checked). The setup action checks no checksum, as the report of #948 records.
+- The `effect` advisory: wait for a `@prisma/config` release that moves it, or add a pnpm override to 3.22.1 or later.
+- Dependabot's open pull requests #952, #953 and #957.
+- The five values still in the tree (F3 of the gitleaks report): live or dead for each after the rotation, then a go that says how the lines change without displaying them, together with the refresh of the comments in `.gitleaksignore`.
+- The blanket `minimatch` override. glob 7.2.3, which only `ajv-cli` 5.0.0 pulls in, resolves minimatch 11.0.8 (checked in the lock). The review seat measured on Linux, and the local seat on Windows, that it then throws on wildcard patterns (`ECRR_GLOB_OVERRIDE_20261119.md`, §1).
+- pnpm. The pinned pnpm 10.18.1 drops the 36 `libc:` lines when it rewrites the lock (the local seat's measurement, in the reports of #945 and #946). Still to find: which pnpm Dependabot runs, so that `packageManager` can match it.
+- 54 reports under `CHAR/ECRR/ECRR_REPORTS`, 12 at the top level and 42 under `archive/`, are stored with CR bytes, while `.gitattributes` says `*.md text eol=lf` (checked). A checkout that normalises line ends shows them modified, and renormalising them changes the bytes of records.
+- Whether the hub deploy gets a wait or a retry. Until then the operator's rules of 2026-11-20 for reading each Deploy Hub Website run stand.
+- `BRAV/INFR/helm/codex-local` (three files; checked), and whether a container package exists for the retired pipeline image (not checked).
+- Carried unchanged: the required set (§6c N1; the unit job is not in it); the commit prefix list (P2-1); the TypeScript 6 alias, which takes `typescript` out of Dependabot's version updates; the billing-lock detector; the per-change report gap for #817, #835, #836, #871, #872, #877, #879 and #881; PURPOSE and the rollup's target; the Kiro seat (P2-5); the lint baseline; a majors group for Dependabot; `NEXTAUTH_SECRET` and `USER_HASH_SALT` in history (F5 of the SigNoz report); and charter wording, now also for an alert dismissal delegated to a seat, for answers that the review seat drafts for the operator, and for a text on a seat's own stops that the seat itself words for the operator, as the supplement of 2026-11-17 was (7d).
+
+**Implementer seat.** Each item needs its own go.
+
+- CI lane, checked on `main`:
+  - `powershell.yml` sets no `enableExit`, and Trivy sets `exit-code: '0'` on all five scans, so neither can fail on findings. Trivy also scans ClickHouse 25.8 where compose runs 25.12.5.
+  - Gate Verification's verdict step is `continue-on-error`.
+  - 9 of 44 `upload-artifact` steps have no `retention-days` (§6c N7 counted 9 of 42).
+  - Gate Nightly ends green when it skips because SigNoz is unreachable. Run 44222173081 of 2026-11-18 did: `Run pipeline verification` skipped, `Write skip summary` success, conclusion success.
+  - The retired `gitleaks-security-scan.yml` can still be dispatched and scans one commit.
+  - The required k6 check now downloads the k6 setup action on every pull request, although the step is skipped there (job log of that check on #964).
+- Code lane, from the review seat's ledger of 2026-11-16:
+  - Checked: `dotenv` is imported in `ALFA/LIBS/prisma/prisma.config.ts` and not declared; three Dockerfiles are on `node:18-alpine`; two collector configs export OTLP gRPC to the HTTP port 4318 (`DELT/FIXT/baseline/config.yaml:53-54`, `DELT/TMPL/templates/complete-integration.yaml:112-113`); no workflow uses the `obs-summary` action, and `.agent/schedule.json` is still there; run-archiver declares `fast-xml-parser`, which none of its sources names, and a `file:../../..` dependency; compose publishes 4317, 4318, 18888 and 18889 on all interfaces, and 3001 when its `demo` profile is started.
+  - Added by the wrap-up, checked: six files under `BRAV/SCPT`, the migration helpers of 2025-10 and their guide, still name the retired `BRAV/INFR/deployment-pipeline` (`cleanup_shims.ps1`, `cleanup_shims.sh`, `migrate_configs.ps1`, `migrate_configs.sh`, `validate_pathmap.py`, `README_NEXT_STEPS.md`); `pnpm-workspace.yaml` has a second `overrides` block, which pnpm 10.18.1 does not use for the lock (report of #946); `start-signoz.ps1` waits without a limit; and two security scripts call keys "revoked" that have no revocation on record (`BRAV/SCPT/security/pre-commit-hook.sh`, lines 56 and 68; `BRAV/SCPT/security/remediate-secrets.ps1`, line 19).
+- Docs lane, from the same ledger:
+  - Checked: port 14317 is still in live documents under `docs/`; `docs/BossCat/ROADMAP_2026H2.md` (lines 132–133) still says that the token rotation is due 2026-10-22.
+  - Carried unchanged from §6c: the old config path in `windows/otelcol/README.md` (N6), and the runbook truth items and the stale "Last Updated" stamps (N8). #947 corrected the Dependabot guide's directories and its #701 credit; the guide's other two items of N8 were not re-checked.
+  - Added by the wrap-up, checked: `docs/BossCat/SECURITY_MAINTENANCE_MASTER_GUIDE.md` (line 34) still dates the Dependabot guide 2025-10-07; the heading of the security cascade's log line (7d); and the rotation calendar's own procedure puts the new key on a command line (lines 183 and 186).
+- The local seat's own tools: the script fixes that the operator asked for on 2026-11-18 were made in its working copies. None of them is in this repository.
+
+### 7f. What rests on whom, and what differs from the notes
+
+- **The review seat could not reach** the evidence repository, the alert tabs, the hub site, the host and SigNoz, and it has never seen the text of the supplement of 2026-11-17 (7d). For these the record rests on the local seat's readings and on the operator's word. It states that in this wrap-up it posted nothing to GitHub, merged nothing and dispatched nothing.
+- **The local seat did not check** the lines that hold the five values, and so not the review seat's fingerprint scan; the review seat's account of its own work in 7d, except the points marked "checked" there; the rendered job summaries of the prune runs; and anything on the host that belongs to the rotation.
+- **Different from the notes, or left out:**
+  1. The notes give "0 / 0 / 0" as an alert reading after the dismissal of 2026-11-19. No such reading exists: alert 11433 had opened before the next reading (7c).
+  2. The notes put "until about 2026-12-20" on the ban on re-running four runs. The operator's rulings carry no end date, and 7e gives none.
+  3. The notes give a fingerprint, a length and line numbers for each of the five values. The local seat cannot confirm them and leaves them out; F3 of the gitleaks report is the record.
+  4. The notes count three answers with faults. The local seat counts two (7d).
+  5. The notes say of the local seat on 2026-11-17 only that it merged the three records after reading the row. 7d gives the whole of it, as the log line of 2026-11-17T16:59Z has it.
+  6. The notes say that the review seat has never seen the answers to the operator's two questions of 2026-11-18. They were given in session that day and are recorded in 7d.
+  7. The review seat's ledger of 2026-11-16 also lists these for an implementer seat: errors of `tsc -p ALFA/APPS`; a dead `tsconfig.base.json`; `allowBuilds` in `pnpm-workspace.yaml`, said to be ignored by pnpm 10; a "Bearer Bearer" header in `signoz.ts`; agent-script leftovers; registry generator nits; and, at `docs/BossCat/DOTNET_OTEL_ACTIVATION.md` line 17, a profiler CLSID said to differ from every other occurrence, with no startup hook. The local seat did not check them and does not carry them as findings.
+  8. The notes carry the charter question for answers that the review seat drafts for the operator. 7e adds the supplement of 2026-11-17, a text on the local seat's own stops that the local seat worded itself (7d).
+
+### 7g. Role
+
+**Actor:** Claude Code (local seat), from the notes of Claude (chat/review).
+
+Claude (chat/review seat): the notes of 2026-11-20, from a remote container with read access to this repository only. Claude Code (local seat): the checks, this text and its pull request, and then, as driver on the operator's go of 2026-11-16 and word of 2026-11-20, its merge, the log line and the mirror. For this section nothing was dispatched or re-run, nothing was changed on any host, and no alert was opened beyond the counts and the alerts named in 7c. Machine operator `@fubumaki`: the ruling on the verdict, the word to file, and every item of 7e that is marked as the operator's.
+
+**Status:** AMBER, by the operator's ruling of 2026-11-20. The three closing conditions of §4 are met, P1-2 by a logged pause with #849 still open. GREEN is the operator's line to give, when the rotation of the SigNoz values that were public and a clean-host run are both on record.
