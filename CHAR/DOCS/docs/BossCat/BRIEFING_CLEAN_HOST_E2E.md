@@ -43,7 +43,7 @@ Board order: after CHAR review (Unblock #2 closed). This item is the highest-lev
 | Step | Seat |
 |------|------|
 | Docker Desktop install, MSI download/install, admin Event Log, first SigNoz UI login | **Machine operator** |
-| Scripted compose up, config sync, canary, verify, ECRR + timing artifact | **Claude Code (local seat)** or **Kiro{Implementer}** |
+| Scripted SigNoz start (`start-signoz.ps1`), config sync, canary, verify, ECRR + timing artifact | **Claude Code (local seat)** or **Kiro{Implementer}** |
 | Accept GREEN / AMBER / RED; decide README fixes | **Chat / review / OEM** |
 
 <!-- markdownlint-disable-next-line MD013 -->
@@ -63,7 +63,7 @@ Lock these for the run. Document drift; do not improvise mid-gate.
 | Windows collector ingest | `5320` gRPC / `5321` HTTP | `5317`/`5318` (historical / PlariumPlay conflict) |
 | Collector → SigNoz export | `localhost:4317` (template `windows/otelcol/otelcol-contrib-config.yaml`) | Mid-run inventing `14317` unless runbook path is explicitly chosen |
 | Collector config | Service `--config %ProgramData%\otelcol-contrib\config.yaml` (default since #429), deployed from the template by the repair script | Hand-editing the deployed copy |
-| Compose file | Root `docker-compose.yml` via `start-signoz.ps1` or `docker compose up -d` | Parked `compose/docker-compose-signoz.yml` |
+| Compose file | Root `docker-compose.yml`, started by `start-signoz.ps1` (it writes `SIGNOZ_JWT_SECRET` into `.env` first; compose has no default since #910) | Parked `compose/docker-compose-signoz.yml`; any `docker compose` command before `start-signoz.ps1` has run |
 | Gate verify | `BRAV\SCPT\verify-pipeline.ps1` | Missing `scripts\verify-pipeline.ps1`; root `verify-pipeline.ps1` (legacy ClickHouse log script) |
 | Fast health | `scripts\quick-monitor.ps1` | — |
 | Canary (no Python) | `canary-test.ps1` (repo root) | `scripts\windows\test-otlp-e2e.ps1` (**HISTORICAL**, wrong ports) |
@@ -113,6 +113,8 @@ cd C:\otel
 ### Phase 2 — SigNoz
 
 ```powershell
+# Run this first, from C:\otel, before any docker compose command. It writes SIGNOZ_JWT_SECRET
+# into C:\otel\.env (docker-compose.yml has no default since #910), then starts the stack.
 pwsh -File C:\otel\start-signoz.ps1
 # wait until http://localhost:8080/api/v1/health is OK
 pwsh -File C:\otel\scripts\preflight-health-check.ps1

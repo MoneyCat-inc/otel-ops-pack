@@ -49,7 +49,7 @@ A **small, evidence-first** Windows observability pack:
 
 - **Windows** (native support)
 - **PowerShell 7+** (monitoring scripts)
-- **Docker** (SigNoz stack) — on a fresh host, run `docker compose pull` before `docker compose up` (first SigNoz image pull measured ~6.2 min of a 7.5 min clean-host time-to-first-trace; see `clean-host-e2e-20260726`)
+- **Docker** (SigNoz stack) — on a fresh host, run `pwsh -File .\start-signoz.ps1` from the repository root before any `docker compose` command. The script first writes a random `SIGNOZ_JWT_SECRET` into `.env` (an existing value is kept); `docker-compose.yml` has no default for it, and compose stops with `required variable SIGNOZ_JWT_SECRET is missing a value` until it is set. The script then starts the stack, which pulls the images on a first run (first SigNoz image pull measured ~6.2 min of a 7.5 min clean-host time-to-first-trace; see `clean-host-e2e-20260726`)
 - **SigNoz UI:** http://localhost:8080
 - **OTLP ingest (Windows collector):** 5320 (gRPC), 5321 (HTTP) — avoids PlariumPlay’s 5300–5319 bind range
 - **OTLP export (collector → SigNoz):** localhost:4317
