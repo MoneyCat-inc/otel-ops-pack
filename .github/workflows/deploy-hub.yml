@@ -1,5 +1,7 @@
 # KEEP -- Phase 0 workflow audit 2026-08-03: GitHub Pages deploy of the live hub
 # 2026-09-25: renamed from deploy-moneycat.yml (Pack 3B "cosmetic later" item); no behaviour change.
+# 2026-11-20: two jobs in place of one (build, then deploy), so that the deploy does not list the run's
+# artifacts in the second the upload ends, and can be re-run alone without a second upload.
 name: Deploy Hub Website
 
 # Pack 3B: moneycat/ extracted to MoneyCat-inc/moneycat-site.
@@ -35,10 +37,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -81,6 +80,13 @@ jobs:
           retention-days: 30
           include-hidden-files: true
 
+  deploy:
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5

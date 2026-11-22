@@ -49,7 +49,7 @@ pluggy==1.6.0
     #   pytest-cov
 pygments==2.21.0
     # via pytest
-pylint==4.1.3
+pylint==4.1.4
     # via -r otel-agent-coordination/requirements-dev.in
 pytest==9.2.0
     # via
