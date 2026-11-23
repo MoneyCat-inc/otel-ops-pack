@@ -4,12 +4,12 @@
 # requirements.txt is the pip-compile output: every transitive package pinned, so OSV-Scanner and
 # Dependabot measure what the multi-app-ci.yml build-test job (Python 3.12) actually installs
 # instead of the lowest versions these floors admit (ECRR_OSV_SCANNER_VACUOUS_CHECK_20260923.md §3).
-fastapi>=0.163.1
+fastapi>=0.165.0
 uvicorn>=0.54.0
-pydantic>=2.14.3
-numpy>=2.5.4
+pydantic>=2.14.4
+numpy>=2.5.5
 pandas>=3.1.1
 requests>=2.34.2
 lz4>=4.4.5
 zstandard>=0.25.0
-tritonclient[http]>=2.74.0
+tritonclient[http]>=2.75.0
