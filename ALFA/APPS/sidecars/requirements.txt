@@ -30,7 +30,7 @@ charset-normalizer==3.5.1
     # via requests
 click==8.5.0
     # via uvicorn
-fastapi==0.163.1
+fastapi==0.165.0
     # via -r requirements.in
 frozenlist==1.8.0
     # via
@@ -59,7 +59,7 @@ multidict==6.9.1
     # via
     #   aiohttp
     #   yarl
-numpy==2.5.4
+numpy==2.5.5
     # via
     #   -r requirements.in
     #   ml-dtypes
@@ -73,11 +73,11 @@ propcache==0.5.4
     # via
     #   aiohttp
     #   yarl
-pydantic==2.14.3
+pydantic==2.14.4
     # via
     #   -r requirements.in
     #   fastapi
-pydantic-core==2.50.4
+pydantic-core==2.50.5
     # via pydantic
 python-dateutil==2.9.0.post0
     # via pandas
@@ -89,7 +89,7 @@ six==1.17.0
     # via python-dateutil
 starlette==1.7.0
     # via fastapi
-tritonclient==2.74.0
+tritonclient==2.75.0
     # via -r requirements.in
 typing-extensions==4.16.0
     # via
