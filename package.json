@@ -148,7 +148,8 @@
       "deepmerge-ts": ">=8.0.0",
       "mysql2": ">=3.22.0",
       "glob@10": "^14.0.6",
-      "glob@13": "^14.0.6"
+      "glob@13": "^14.0.6",
+      "@prisma/config>effect": "3.22.1"
     }
   },
   "engines": {
